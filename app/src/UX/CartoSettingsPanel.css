@@ -1,0 +1,61 @@
+@media only screen and (min-width: 1016px) {
+  .csp-grid {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+  }
+}
+
+@media only screen and (max-width: 1015px) {
+}
+
+.csp-grid {
+  padding: 10px;
+  padding-top: 10px;
+  padding-bottom: 30px;
+  overflow-y: auto;
+}
+
+.csp-label {
+  padding-left: 2px;
+  padding-bottom: 10px;
+  padding-top: 5px;
+}
+
+.csp-autostartlabel {
+  grid-row: 1;
+  grid-column: 2;
+  padding-top: 2px;
+}
+
+.csp-autostart {
+  grid-row: 1;
+  grid-column: 1;
+  text-align: right;
+  padding-right: 0px;
+  padding-bottom: 20px;
+}
+
+.csp-namelabel {
+  grid-row: 2;
+  grid-column: 1;
+}
+
+.csp-nameinput {
+  grid-row: 2;
+  grid-column: 2;
+  padding-bottom: 20px;
+  margin-right: 4px;
+}
+
+.csp-nameinput input {
+  max-width: 200px;
+  margin-top: 4px;
+}
+
+.csp-nameinput button {
+  margin-top: 4px;
+}
+
+.csp-nameinput input {
+  width: 300px;
+}

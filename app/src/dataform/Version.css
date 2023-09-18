@@ -1,0 +1,38 @@
+.ver-data {
+  display: table;
+  max-width: 170px;
+  margin-top: 2px !important;
+}
+
+.ver-inner {
+  display: table-row;
+}
+
+.ver-cell {
+  display: table-cell;
+}
+
+.ver-input {
+  width: 60px;
+  max-width: 60px;
+}
+
+.ver-input input {
+  min-width: 55px;
+  width: 52px;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+}
+
+.ver-ambient {
+  display: table-cell;
+  width: 50px;
+  max-width: 50px;
+}
+
+.ver-ambient button {
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  padding: 0px;
+}

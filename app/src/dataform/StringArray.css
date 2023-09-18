@@ -1,0 +1,34 @@
+.sarr-outer {
+  max-width: 270px;
+  margin-top: 2px !important;
+}
+
+.sarr-add BUTTON {
+  padding-left: 3px;
+  padding-right: 3px;
+  margin-left: 200px;
+  min-width: 30px;
+  width: 30px;
+}
+
+.sarr-inner {
+  display: grid;
+}
+
+.sarr-input {
+  grid-column: 1;
+}
+
+.sarr-input .ui-box {
+  min-width: 500px;
+}
+
+.sarr-input INPUT {
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+  min-width: 500px;
+}
+
+.sarr-none {
+  padding-bottom: 30px;
+}

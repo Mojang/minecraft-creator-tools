@@ -1,0 +1,41 @@
+.lia-outer {
+  padding: 2px;
+  vertical-align: middle;
+  display: grid;
+  grid-template-columns: 1fr 30px;
+  height: 100%;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.lia-message {
+  grid-column: 1;
+  vertical-align: top;
+  padding-top: 6px;
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+
+.lia-tools {
+  grid-column: 2;
+  vertical-align: middle;
+}
+
+.lia-list {
+  height: 180px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.lia-list LI {
+  min-height: 1.25rem;
+  white-space: nowrap;
+}
+
+.lia-list .ui-list__itemcontent {
+  font-size: small;
+}
+
+.lia-list li {
+  padding-left: 3px;
+}

@@ -1,0 +1,44 @@
+.ett-outer 
+{
+  margin-left: 17px;
+  margin-top: 20px;
+  width: 200px;
+  height: 46px;
+  border: solid 3px black;
+  background: rgb(37,111,177);
+  background: linear-gradient(180deg, rgba(37,111,177,1) 0%, rgba(48,127,193,1) 37%, rgba(73,150,217,1) 100%);
+  display: inline-block; 
+}
+
+.ett-outer-selected
+{
+  margin-left: 17px;
+  margin-top: 20px;
+  width: 200px;
+  height: 46px;
+  border: solid 3px green;
+  background: rgb(37,111,177);
+  background: linear-gradient(180deg, rgba(37,111,177,1) 0%, rgba(48,127,193,1) 37%, rgba(73,150,217,1) 100%);
+  display: inline-block; 
+}
+
+.ett-grid
+{
+  display: grid;
+  height: 100%;
+  grid-template-rows: 1fr 48px;
+}
+
+.ett-mainArea
+{
+  grid-row: 1;
+  padding: 10px;
+}
+
+.ett-title
+{
+  font-weight: bold;
+  padding-bottom: 10px;
+  white-space: nowrap;
+  overflow-x: hidden;
+}

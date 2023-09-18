@@ -1,0 +1,34 @@
+.asge-area {
+  padding: 8px;
+  padding-top: 2px;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: 40px 1fr;
+}
+
+.asge-actionsToolBarArea {
+  height: 40px;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row: 1;
+}
+
+.asge-extraArea {
+  height: 40px;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row: 1;
+}
+
+.asge-actionBin {
+  height: 100%;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row: 2;
+}
+
+.asge-actionBinInterior {
+  height: 100%;
+  overflow-y: auto;
+}

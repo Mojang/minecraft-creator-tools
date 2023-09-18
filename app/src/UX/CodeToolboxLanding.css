@@ -1,0 +1,21 @@
+.ctl-outer {
+  min-width: 100%;
+  max-width: 100%;
+}
+
+.ctl-newButtonArea {
+  padding-top: 24px;
+  text-align: center;
+}
+
+.ctl-logo {
+  width: 128px;
+  height: 128px;
+  image-rendering: pixelated;
+}
+
+.ctl-logoArea {
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 10px;
+}

@@ -1,0 +1,39 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "ES2020",
+		"outDir": "dist",
+		"moduleResolution": "node",
+		"lib": [
+			"ES2020","dom"
+		],
+		"types": [ "@types/wicg-file-system-access"],
+		"sourceMap": true,
+		"rootDir": "src",
+		"jsx": "react-jsx",
+		"esModuleInterop": true,
+		"strict": true,   /* enable all strict type-checking options */
+		"noImplicitReturns": true, 
+		"noFallthroughCasesInSwitch": true,
+	},
+	"exclude": [
+		"src/monaco/**/*",
+		"src/local/**/*",
+		"src/cli/**/*",
+		"src/vscode/**/*",
+		"src/vscodeweb/**/*",
+		"src/test/**/*",
+		"out/**/*",
+		"public/**/*",
+		"dist/**/*",
+		"tools/**/*",
+		"build/**/*",
+		"gulp*",
+		"monaco*",
+		"webpack*",
+		"config-overrides*",
+		"node_modules_archive/**/*",
+		"src/vscwebindex.tsx",
+		"src/index.ts",
+	],
+}

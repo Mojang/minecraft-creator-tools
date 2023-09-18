@@ -1,0 +1,121 @@
+.label {
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 6px;
+  display: block;
+  margin-top: 3px;
+  border-radius: 3px 3px 0px 0px;
+  border-left: solid 1px transparent;
+  border-bottom: solid 1px transparent;
+  border-right: solid 1px transparent;
+}
+
+.label-text {
+  padding-left: 6px;
+  padding-right: 6px;
+  vertical-align: top;
+}
+
+.label-toolbar3 {
+  padding-top: 3px !important;
+  display: inline-block;
+}
+
+.label-toolbar {
+  padding-top: 3px !important;
+  display: inline-block;
+}
+
+.label-rpad {
+  padding-right: 4px;
+}
+
+.label-piece {
+  padding-left: 7px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  vertical-align: top;
+  border-radius: 3px 3px 0px 0px;
+  border-left: solid 1px transparent;
+  border-bottom: solid 1px transparent;
+  border-right: solid 1px transparent;
+}
+
+.label-arrowouter {
+  padding-top: 12px;
+  padding-bottom: 6px;
+  vertical-align: top;
+  border-radius: 3px 3px 0px 0px;
+  border-left: solid 1px transparent;
+  border-bottom: solid 1px transparent;
+  border-right: solid 1px transparent;
+}
+
+.label-tab {
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  vertical-align: top;
+  color: green;
+  background-color: #fafafa;
+  border-left: solid 1px green;
+  border-right: solid 1px green;
+}
+
+.label-deseltab {
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  vertical-align: top;
+  color: green;
+  background-color: #fafafa;
+  border-left: solid 1px transparent;
+  border-right: solid 1px transparent;
+}
+
+.icons-caption {
+  padding-left: 11px;
+  font-size: 12pt;
+}
+
+.label-arrow {
+  padding-left: 2px;
+  padding-right: 2px;
+  position: relative;
+  top: -4px;
+}
+
+.label-light {
+  font-size: 1pt;
+  width: 12px;
+  height: 12px;
+  margin-left: 12px;
+  border-radius: 6px;
+  border: solid 1px #303030;
+  position: fixed;
+}
+
+.label-yellow {
+  background-color: yellow;
+}
+
+.label-green {
+  background-color: green;
+}
+
+.label-button {
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  vertical-align: top;
+  background-color: #000000;
+  color: #c0c0c0;
+}
+
+.label-selected {
+  background-color: #202020;
+  color: green;
+}

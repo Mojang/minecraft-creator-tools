@@ -1,0 +1,135 @@
+.pil-outer {
+  border-top: inset 2px;
+  border-bottom: inset 2px;
+}
+
+.pil-wrap {
+  border-top: outset 2px;
+  border-bottom: outset 2px;
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  grid-template-rows: 46px 1fr;
+}
+
+.pil-newarea {
+  grid-column: 1;
+  grid-row: 1;
+  padding-top: 7px;
+  padding-bottom: 6px;
+  padding-left: 10px;
+}
+
+.pil-previewImage {
+  height: 40px;
+  grid-column: 1;
+}
+
+.pil-commands {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: right;
+  padding-top: 8px;
+  padding-bottom: 6px;
+  padding-left: 8px;
+}
+
+.pil-list {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 301px;
+}
+
+.pil-list LI {
+  max-width: 300px;
+}
+
+.pil-fixedLine {
+  padding-left: 10px;
+  height: 32px;
+  padding-top: 6px;
+}
+
+.pil-list UL LI {
+  padding-left: 0px;
+  min-height: auto;
+}
+
+.pil-item {
+  display: grid;
+  min-width: 282px;
+  max-width: 282px;
+  height: 36px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  grid-template-columns: 244px 38px;
+}
+
+.pil-itemLabel {
+  grid-column: 1;
+  text-overflow: ellipsis;
+}
+
+.pil-contextMenuButton button {
+  border: solid 0px;
+  max-width: 28px;
+  min-width: 28px;
+  grid-column: 2;
+  line-height: 1;
+  text-align: center;
+  padding: 0px;
+  margin: 2px 4px 0px 10px;
+  min-height: 32px;
+  max-height: 32px;
+  padding-bottom: 12px;
+  box-shadow: none;
+}
+
+.pil-name {
+  overflow-x: hidden;
+  width: 100%;
+  padding-top: 7px;
+  padding-bottom: 6px;
+  max-width: 254px;
+  min-width: 254px;
+  margin-right: 2px;
+  padding-left: 10px;
+  text-overflow: ellipsis;
+  z-index: 90;
+  display: block;
+  white-space: nowrap;
+}
+
+.pil-name-gh {
+  padding-left: 20px;
+}
+
+.pil-typetag {
+  font-size: x-small;
+  text-transform: uppercase;
+  border: solid 1px gray;
+  border-radius: 2px;
+  white-space: nowrap;
+  float: right;
+  top: 9px;
+  left: 180px;
+  background-color: rgba(120, 120, 120, 0.7);
+  position: absolute;
+  text-align: center;
+  min-width: 70px;
+  margin-right: 4px;
+  padding: 3px;
+  z-index: 100;
+  line-height: 1;
+}
+
+.pil-dialog {
+  min-height: 90px;
+  margin-top: 20px;
+  vertical-align: top;
+}
+
+.pil-extension {
+  padding-left: 8px;
+}

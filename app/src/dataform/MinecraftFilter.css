@@ -1,0 +1,38 @@
+.rng-outer {
+  display: table;
+  max-width: 170px;
+  margin-top: 2px !important;
+}
+
+.rng-inner {
+  display: table-row;
+}
+
+.rng-cell {
+  display: table-cell;
+}
+
+.rng-input {
+  width: 60px;
+  max-width: 60px;
+}
+
+.rng-input input {
+  min-width: 55px;
+  width: 52px;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+}
+
+.rng-ambient {
+  display: table-cell;
+  width: 50px;
+  max-width: 50px;
+}
+
+.rng-ambient button {
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  padding: 0px;
+}

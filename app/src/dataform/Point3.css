@@ -1,0 +1,38 @@
+.p3-data {
+  display: table;
+  max-width: 170px;
+  margin-top: 2px !important;
+}
+
+.p3-inner {
+  display: table-row;
+}
+
+.p3-cell {
+  display: table-cell;
+}
+
+.p3-input {
+  width: 60px;
+  max-width: 60px;
+}
+
+.p3-input input {
+  min-width: 55px;
+  width: 52px;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+}
+
+.p3-ambient {
+  display: table-cell;
+  width: 50px;
+  max-width: 50px;
+}
+
+.p3-ambient button {
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  padding: 0px;
+}

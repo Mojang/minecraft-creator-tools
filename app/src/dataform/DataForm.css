@@ -1,0 +1,125 @@
+.df-formArea .ms {
+  margin-bottom: 0px !important;
+}
+
+.df-form > div {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.df-form TEXTAREA {
+  min-width: 320px;
+  width: 500px;
+  max-width: calc(100vw - 30px);
+  min-height: 100px;
+  line-height: normal;
+  padding: 5px;
+  padding-left: 8px;
+}
+
+.df-outer {
+  padding: 2px;
+  vertical-align: top;
+}
+
+.df-headerOuter {
+  display: grid;
+  grid-template-columns: 1fr 30px;
+}
+
+.df-closeArea {
+  grid-column: 2;
+}
+
+.df-headerTitle {
+  font-size: 14pt;
+  grid-column: 1;
+}
+
+.df-headerSubTitle {
+  font-size: 12pt;
+  grid-column: 1;
+}
+
+.df-subHeaderTitle {
+  font-size: 12pt;
+  grid-column: 1;
+}
+
+.df-subHeaderSubTitle {
+  font-size: 10pt;
+  grid-column: 1;
+}
+
+.df-fieldDescription {
+  font-size: small;
+  padding-bottom: 2px;
+  margin-left: 4px;
+  margin-bottom: 2px;
+}
+
+.df-fieldTitle {
+  padding-bottom: 0px !important;
+  margin-bottom: 3px !important;
+}
+
+.df-fieldWrap {
+  padding-bottom: 20px;
+}
+
+.df-description {
+  font-size: 10pt;
+}
+
+.df-sliderSet {
+  display: grid;
+  grid-template-columns: 180px 80px;
+}
+
+.df-elementTitle {
+}
+
+.df-sliderTitle {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row: 1;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.df-sliderInput {
+  grid-column: 2;
+  grid-row: 2;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.df-slider {
+  grid-column: 1;
+  grid-row: 2;
+  padding: 3px;
+  padding-left: 10px;
+  padding-top: 11px;
+}
+
+.df-ro-row {
+  display: table-row;
+}
+
+.df-ro-title {
+  display: table-cell;
+  padding-left: 1px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-right: 8px;
+  font-weight: bold;
+}
+
+.df-ro-value {
+  display: table-cell;
+  padding: 4px;
+}
+
+.df-ro-table {
+  display: table;
+}

@@ -1,0 +1,135 @@
+import FileBase from "./FileBase";
+import BrowserFolder from "./BrowserFolder";
+import IFile from "./IFile";
+import BrowserStorage from "./BrowserStorage";
+import StorageUtilities from "./StorageUtilities";
+import localforage from "localforage";
+import Log from "../core/Log";
+
+export default class BrowserFile extends FileBase implements IFile {
+  private _name: string;
+  private _parentFolder: BrowserFolder;
+
+  lastSavedSize: number;
+
+  get name(): string {
+    return this._name;
+  }
+
+  get parentFolder(): BrowserFolder {
+    return this._parentFolder;
+  }
+
+  get fullPath(): string {
+    return this._parentFolder.fullPath + BrowserStorage.folderDelimiter + this.name;
+  }
+
+  get size(): number {
+    if (this.content == null) {
+      return -1;
+    }
+
+    return this.content.length;
+  }
+
+  constructor(parentFolder: BrowserFolder, fileName: string) {
+    super();
+
+    this.lastSavedSize = -1;
+
+    this._parentFolder = parentFolder;
+    this._name = fileName;
+  }
+
+  get isContentLoaded(): boolean {
+    return this.lastLoadedOrSaved != null || this.modified != null;
+  }
+
+  async deleteFile(): Promise<boolean> {
+    this._parentFolder._removeFile(this);
+
+    await localforage.removeItem(this.fullPath);
+
+    return true;
+  }
+
+  async moveTo(newStorageRelativePath: string): Promise<boolean> {
+    const newFolderPath = StorageUtilities.getPath(newStorageRelativePath);
+    const newFileName = StorageUtilities.getLeafName(newStorageRelativePath);
+
+    if (newFileName.length < 2) {
+      throw new Error("New path is not correct.");
+    }
+
+    const newParentFolder = await this._parentFolder.storage.ensureFolderFromStorageRelativePath(newFolderPath);
+
+    if (newParentFolder.files[newFileName] !== undefined) {
+      throw new Error("File exists at specified path.");
+    }
+
+    await this.loadContent();
+
+    const originalPath = this.fullPath;
+
+    this._name = newFileName;
+    this._parentFolder = newParentFolder as BrowserFolder;
+
+    this.modified = new Date();
+
+    (newParentFolder as BrowserFolder)._addExistingFile(this);
+
+    await localforage.removeItem(originalPath);
+
+    return true;
+  }
+
+  async loadContent(force?: boolean): Promise<Date> {
+    if (force || !this.lastLoadedOrSaved) {
+      this._content = await localforage.getItem(this.fullPath);
+
+      this.lastLoadedOrSaved = new Date();
+    }
+
+    return this.lastLoadedOrSaved;
+  }
+
+  setContent(newContent: string | Uint8Array | null) {
+    const areEqual = StorageUtilities.contentsAreEqual(this._content, newContent);
+
+    if (!areEqual) {
+      if (!this.lastLoadedOrSaved) {
+        this.lastLoadedOrSaved = new Date();
+        this.lastLoadedOrSaved = new Date(this.lastLoadedOrSaved.getTime() - 1);
+        // Log.debugAlert("Setting a file without loading it first.");
+      }
+
+      this._content = newContent;
+
+      this.contentWasModified();
+    }
+  }
+
+  async saveContent(force?: boolean): Promise<Date> {
+    if (this.needsSave || force) {
+      /*let contentDescript = "null";
+
+      if (this.content instanceof Uint8Array) {
+        contentDescript = this.content.length + " bytes";
+      } else if (typeof this.content === "string") {
+        contentDescript = this.content.length + " text";
+      }*/
+
+      Log.assert(this.content !== null, "Null content found.");
+
+      // Log.debug("Saving file " + contentDescript + " to '" + this.fullPath + "'");
+
+      await localforage.setItem(this.fullPath, this.content);
+
+      await this._parentFolder.save(false);
+    }
+
+    this.lastLoadedOrSaved = new Date();
+
+    return this.lastLoadedOrSaved;
+  }
+}

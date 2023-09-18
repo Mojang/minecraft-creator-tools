@@ -1,0 +1,50 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/.pnp
+bin/
+obj/
+PublishProfiles/
+wwwroot/
+.pnp.js
+.tgz
+profile.arm.json
+appsettings.json
+*.csproj.user
+/temp
+/out
+/app/out
+.vs/
+/data/~$MinecraftData.xlsm
+
+# testing
+/coverage
+
+# production
+app/build
+build/
+/res/index.json
+/res/latest/index.json
+ed_build/
+toolbuild/
+out/
+results/
+dist/
+/app/forge.config.js
+.vscode-test-web/
+node_modules/
+app/public/data/typedefs.beta.json
+app/public/data/typedefs.stable.json
+app/public/res/latest/van/
+/~$
+app/nod
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

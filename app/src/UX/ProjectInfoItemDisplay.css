@@ -1,0 +1,67 @@
+.piid-outer {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  display: table-row;
+  word-wrap: break-word;
+  font-size: small;
+}
+
+.piid-cell {
+  display: table-cell;
+  padding: 3px;
+  border: solid 1px;
+  font-size: smaller;
+}
+
+.piid-indicator {
+  min-height: 20px;
+  vertical-align: middle;
+  max-width: 30px;
+}
+
+.piid-icon {
+  padding-left: 7px;
+  padding-top: 4px;
+  padding-bottom: 8px;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.piid-successIconCell {
+  background-color: green;
+}
+
+.piid-failIconCell {
+  background-color: red;
+}
+
+.piid-infoIconCell {
+  background-color: gray;
+}
+
+.piid-errorIconCell {
+  background-color: orange;
+}
+
+.piid-link {
+  cursor: pointer;
+}
+
+.piid-link:hover {
+  text-decoration: underline;
+}
+
+.piid-contextMenuButton button {
+  border: solid 0px;
+  max-width: 24px;
+  min-width: 24px;
+  grid-column: 2;
+  line-height: 1;
+  text-align: center;
+  padding: 0px;
+  min-height: 22px;
+  margin-left: 14px;
+  max-height: 22px;
+  padding-bottom: 8px;
+  box-shadow: none;
+}

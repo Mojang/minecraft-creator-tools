@@ -1,0 +1,94 @@
+.et-outer {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  max-height: 100vh;
+  background-color: black;
+  display: grid;
+}
+
+.et-actionsHeader {
+  background-color: #242425;
+  color: white;
+  font-size: 16pt;
+  padding: 14px;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.et-area {
+  min-width: 650px;
+  max-width: 650px;
+  min-height: 450px;
+  max-height: 450px;
+  grid-column: 1;
+  grid-row: 1;
+  margin-left: calc(50vw - 325px);
+  margin-top: calc(50vh - 225px);
+  background-color: #d0c5c0;
+  color: #202020 !important;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.et-area .ui-box {
+  color: #202020 !important;
+}
+
+.et-selectedProject {
+  padding-top: 20px;
+  padding-left: 30px;
+}
+
+.et-optionsGrid {
+  display: grid;
+  height: 330px;
+}
+
+.et-type-label {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.et-type-options {
+  padding-bottom: 18px;
+}
+
+.et-import-label {
+  grid-row: 2;
+  grid-column: 1;
+  padding-top: 7px;
+}
+
+.et-import-input {
+  grid-row: 2;
+  grid-column: 2;
+  text-align: left;
+  padding-bottom: 8px;
+}
+
+.et-export-label {
+  grid-row: 3;
+  grid-column: 1;
+  padding-top: 7px;
+}
+
+.et-export-input {
+  grid-row: 3;
+  grid-column: 2;
+  text-align: left;
+  padding-bottom: 8px;
+}
+
+.et-export-input .ui-box {
+  color: white !important;
+}
+
+.et-buttonArea {
+  text-align: right;
+  padding: 10px;
+}
+
+.et-buttonArea button {
+  margin-left: 10px;
+}

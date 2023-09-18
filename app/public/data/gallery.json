@@ -1,0 +1,692 @@
+{
+  "projects": [
+    {
+      "title": "Starter Behavior Pack with TypeScript",
+      "description": "Starter Project with Typescript.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/ts-starter",
+      "localLogo": "ui/cartography_table_empty.png",
+      "fileList": [
+        "/README.md",
+        "/tsconfig.json",
+        "/package.json",
+        "/gulpfile.js",
+        "/.prettierrc.json",
+        "/.vscode/extensions.json",
+        "/.vscode/launch.json",
+        "/.vscode/settings.json",
+        "/.vscode/tasks.json",
+        "/behavior_packs/starterbp/manifest.json",
+        "/scripts/main.ts"
+      ],
+      "id": "tsStarter",
+      "type": 0
+    },
+    {
+      "title": "Script Box",
+      "description": "A simple project for experimenting with script.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/cartography_table_side1.png",
+      "fileList": [
+        "/README.md",
+        "/tsconfig.json",
+        "/package.json",
+        "/gulpfile.js",
+        "/.prettierrc.json",
+        "/.vscode/extensions.json",
+        "/.vscode/launch.json",
+        "/.vscode/settings.json",
+        "/.vscode/tasks.json",
+        "/behavior_packs/script-box/manifest.json",
+        "/scripts/main.ts",
+        "/scripts/SampleManager.ts",
+        "/scripts/ScriptBox.ts"
+      ],
+      "id": "scriptBox",
+      "type": 0
+    },
+    {
+      "title": "Custom Mobs",
+      "description": "A simple example of crea for experimenting with script.",
+      "gitHubOwner": "microsoft",
+      "gitHubBranch": "mammerla-custom-mobs-sample",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/custom-mobs",
+      "logoImage": "behavior_packs/custom-mobs/pack_icon.png",
+      "fileList": [
+        "/README.md",
+        "/tsconfig.json",
+        "/package.json",
+        "/gulpfile.js",
+        "/.prettierrc.json",
+        "/.vscode/extensions.json",
+        "/.vscode/launch.json",
+        "/.vscode/settings.json",
+        "/.vscode/tasks.json",
+        "/behavior_packs/custom-mobs/entities/biceson.behavior.json",
+        "/behavior_packs/custom-mobs/entities/black_bear.behavior.json",
+        "/behavior_packs/custom-mobs/entities/butterfly.behavior.json",
+        "/behavior_packs/custom-mobs/manifest.json",
+        "/behavior_packs/custom-mobs/pack_icon.png",
+        "/resource_packs/custom-mobs-rp/animations/biceson.animation.json",
+        "/resource_packs/custom-mobs-rp/animations/black_bear.animation.json",
+        "/resource_packs/custom-mobs-rp/animations/butterfly.animation.json",
+        "/resource_packs/custom-mobs-rp/entity/biceson.entity.json",
+        "/resource_packs/custom-mobs-rp/entity/black_bear.entity.json",
+        "/resource_packs/custom-mobs-rp/entity/butterfly.entity.json",
+        "/resource_packs/custom-mobs-rp/manifest.json",
+        "/resource_packs/custom-mobs-rp/models/entity/biceson.geo.json",
+        "/resource_packs/custom-mobs-rp/models/entity/black_bear.geo.json",
+        "/resource_packs/custom-mobs-rp/models/entity/butterfly.geo.json",
+        "/resource_packs/custom-mobs-rp/pack_icon.png",
+        "/resource_packs/custom-mobs-rp/sounds.json",
+        "/resource_packs/custom-mobs-rp/texts/en_US.lang",
+        "/resource_packs/custom-mobs-rp/textures/entity/biceson.png",
+        "/resource_packs/custom-mobs-rp/textures/entity/black_bear.png",
+        "/resource_packs/custom-mobs-rp/textures/entity/butterfly.png",
+        "/resource_packs/custom-mobs-rp/textures/entityicons/biceson.png",
+        "/resource_packs/custom-mobs-rp/textures/entityicons/blackbear.png",
+        "/resource_packs/custom-mobs-rp/textures/entityicons/butterfly.png",
+        "/scripts/entities/BlackBear.ts",
+        "/scripts/entities/Butterfly.ts",
+        "/scripts/environment/Environment.ts",
+        "/scripts/framework/EntityBase.ts",
+        "/scripts/framework/EntityFramework.ts",
+        "/scripts/framework/EntityItem.ts",
+        "/scripts/framework/ScriptComponent.ts",
+        "/scripts/framework/ScriptComponentFramework.ts",
+        "/scripts/generated/BlackBearBase.ts",
+        "/scripts/generated/ButterflyBase.ts",
+        "/scripts/main.ts",
+        "/scripts/scriptComponents/Avenge.ts",
+        "/tsconfig.json"
+      ],
+      "id": "scriptBox",
+      "type": 0
+    },
+    {
+      "title": "Starter Hello World GameTest",
+      "description": "A simple introduction to creating GameTests. See the tutorial at https://aka.ms/newgametest.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-gametests",
+      "gitHubFolder": "/behavior_packs/StarterTestsTutorial",
+      "logoImage": "pack_icon.png",
+      "id": "helloWorldGameTest",
+      "type": 0
+    },
+    {
+      "title": "Mob GameTest",
+      "description": "A collection of GameTests focused on exploring different facets of Mob Behavior.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-gametests",
+      "gitHubFolder": "/behavior_packs/MobBehaviorTests",
+      "logoImage": "pack_icon.png",
+      "id": "mobGameTest",
+      "type": 0
+    },
+    {
+      "title": "GameTest Challenges",
+      "description": "GameTests that implement exciting challenges for Mobs.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-gametests",
+      "gitHubFolder": "/behavior_packs/ChallengeTests",
+      "logoImage": "pack_icon.png",
+      "id": "gameTestChallenges",
+      "type": 0
+    },
+    {
+      "title": "Standard Minecraft GameTests",
+      "description": "A set of standard gametests for 'vanilla' gameplay in Minecraft.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-gametests",
+      "gitHubFolder": "/behavior_packs/vanilla_gametests",
+      "localLogo": "ui/cartography_table_empty.png",
+      "id": "vanillaGameTests",
+      "type": 0
+    },
+    {
+      "title": "Cotta Game with TypeScript",
+      "description": "A simple sample game written with Typescript.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/ts-starter-complete-cotta",
+      "localLogo": "blocks/glazed_terracotta_yellow.png",
+      "id": "cottaGame",
+      "type": 0
+    },
+    {
+      "title": "Command Tests",
+      "description": "GameTests that test and demonstrate different commands.",
+      "gitHubOwner": "microsoft",
+      "gitHubBranch": "beta",
+      "gitHubRepoName": "minecraft-gametests",
+      "gitHubFolder": "/behavior_packs/CommandTests",
+      "logoImage": "pack_icon.png",
+      "id": "commandTests",
+      "type": 0
+    },
+    {
+      "title": "Sample structures and helper scripts for GameTests",
+      "description": "Helper JS libraries and structures for GameTests.",
+      "gitHubOwner": "scriptVillager",
+      "gitHubRepoName": "GameTests",
+      "id": "jsHelpers",
+      "type": 1
+    },
+    {
+      "title": "Beautiful natural shapes for your building adventures",
+      "description": "Trees, trees, and more trees!",
+      "gitHubOwner": "scriptVillager",
+      "gitHubRepoName": "NaturalStructures",
+      "id": "naturalStructures",
+      "type": 1
+    },
+    {
+      "title": "Basic Die Block",
+      "description": "Basic cube die block.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/custom_blocks",
+      "logoImage": "resource_packs/custom_block_resource_pack/textures/blocks/die_1.png",
+      "fileList": [
+        "/.vscode/extensions.json",
+        "/.vscode/launch.json",
+        "/.vscode/settings.json",
+        "/.vscode/tasks.json",
+        "/behavior_packs/custom_block_behavior_pack/blocks/die.json",
+        "/behavior_packs/custom_block_behavior_pack/manifest.json",
+        "/resource_packs/custom_block_resource_pack/manifest.json",
+        "/resource_packs/custom_block_resource_pack/blocks.json",
+        "/scripts/main.ts",
+        "/resource_packs/custom_block_resource_pack/texts/en_US.lang",
+        "/resource_packs/custom_block_resource_pack/textures/blocks/die_1.png",
+        "/resource_packs/custom_block_resource_pack/textures/blocks/die_2.png",
+        "/resource_packs/custom_block_resource_pack/textures/blocks/die_3.png",
+        "/resource_packs/custom_block_resource_pack/textures/blocks/die_4.png",
+        "/resource_packs/custom_block_resource_pack/textures/blocks/die_5.png",
+        "/resource_packs/custom_block_resource_pack/textures/blocks/die_6.png",
+        "/resource_packs/custom_block_resource_pack/textures/blocks/die_red.png",
+        "/resource_packs/custom_block_resource_pack/textures/terrain_texture.json"
+      ],
+      "id": "basicDieBlock",
+      "type": 2
+    },
+    {
+      "title": "Basic Sushi Roll Block",
+      "description": "Basic sushi roll block.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/custom_blocks",
+      "logoImage": "resource_packs/custom_block_resource_pack/textures/blocks/california_roll.png",
+      "logoLocation": { "x": 12, "y": 12, "width": 12, "height": 12 },
+      "fileList": [
+        "/.vscode/extensions.json",
+        "/.vscode/launch.json",
+        "/.vscode/settings.json",
+        "/.vscode/tasks.json",
+        "/behavior_packs/custom_block_behavior_pack/blocks/salmon_roll.json",
+        "/behavior_packs/custom_block_behavior_pack/manifest.json",
+        "/resource_packs/custom_block_resource_pack/manifest.json",
+        "/resource_packs/custom_block_resource_pack/blocks.json",
+        "/scripts/main.ts",
+        "/resource_packs/custom_block_resource_pack/texts/en_US.lang",
+        "/resource_packs/custom_block_resource_pack/models/blocks/sushi.geo.json",
+        "/resource_packs/custom_block_resource_pack/textures/blocks/sushi_wrap.png",
+        "/resource_packs/custom_block_resource_pack/textures/blocks/salmon_roll.png",
+        "/resource_packs/custom_block_resource_pack/textures/terrain_texture.json"
+      ],
+      "id": "sushiRollBlock",
+      "type": 2
+    },
+    {
+      "title": "Fish Bowl Block",
+      "description": "Basic fish in a fish bowl.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/custom_blocks",
+      "logoImage": "resource_packs/custom_block_resource_pack/textures/blocks/bubble_fish.png",
+      "logoLocation": { "x": 0, "y": 16, "width": 16, "height": 16 },
+      "fileList": [
+        "/.vscode/extensions.json",
+        "/.vscode/launch.json",
+        "/.vscode/settings.json",
+        "/.vscode/tasks.json",
+        "/behavior_packs/custom_block_behavior_pack/blocks/bubble_fish.json",
+        "/behavior_packs/custom_block_behavior_pack/manifest.json",
+        "/resource_packs/custom_block_resource_pack/manifest.json",
+        "/resource_packs/custom_block_resource_pack/blocks.json",
+        "/scripts/main.ts",
+        "/resource_packs/custom_block_resource_pack/texts/en_US.lang",
+        "/resource_packs/custom_block_resource_pack/models/blocks/bubble.geo.json",
+        "/resource_packs/custom_block_resource_pack/models/blocks/bubble_fish.geo.json",
+        "/resource_packs/custom_block_resource_pack/textures/blocks/bubble_fish.png",
+        "/resource_packs/custom_block_resource_pack/textures/blocks/bubble_fish_blue.png",
+        "/resource_packs/custom_block_resource_pack/textures/blocks/bubble_fish_green.png",
+        "/resource_packs/custom_block_resource_pack/textures/terrain_texture.json"
+      ],
+      "id": "fishBowlBlock",
+      "type": 2
+    },
+    {
+      "title": "Create Explosion",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "items/fireball.png",
+      "id": "createExplosion",
+      "type": 3
+    },
+    {
+      "title": "Button Push Event",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/barrel_bottom.png",
+      "id": "buttonPushEvent",
+      "type": 3
+    },
+    {
+      "title": "Lever Activate Event",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/lever.png",
+      "id": "leverActivateEvent",
+      "type": 3
+    },
+    {
+      "title": "Tripwire Trip Event",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/cut_copper.png",
+      "id": "tripWireTripEvent",
+      "type": 3
+    },
+    {
+      "title": "Block Color Cube",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/wool_colored_red.png",
+      "id": "addBlockColorCube",
+      "type": 3
+    },
+    {
+      "title": "No-Block Explosion",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "items/fireball.png",
+      "id": "createNoBlockExplosion",
+      "type": 3
+    },
+    {
+      "title": "Fire Water Explosion",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "gui/newgui/mob_effects/fire_resistance_effect.png",
+      "id": "createFireAndWaterExplosions",
+      "type": 3
+    },
+    {
+      "title": "Item Stacks",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "items/diamond_pickaxe.png",
+      "id": "itemStacks",
+      "type": 3
+    },
+    {
+      "title": "Awesome Sword",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "items/diamond_sword.png",
+      "id": "diamondAwesomeSword",
+      "type": 3
+    },
+    {
+      "title": "Iron Fire Sword",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "items/iron_sword.png",
+      "id": "ironFireSword",
+      "type": 3
+    },
+    {
+      "title": "Spawn Mobs with Effects",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "entity/wolf/wolf.png",
+      "logoLocation": { "x": 4, "y": 4, "width": 6, "height": 6 },
+      "id": "quickFoxLazyDog",
+      "type": 3
+    },
+    {
+      "title": "Set Dynamic Property",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/structure_block_data.png",
+      "id": "incrementProperty",
+      "type": 3
+    },
+    {
+      "title": "Set Json Dynamic Property",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/structure_block_data.png",
+      "id": "incrementPropertyInJsonBlob",
+      "type": 3
+    },
+    {
+      "title": "Trigger Event",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/redstone_lamp_on.png",
+      "id": "triggerEvent",
+      "type": 3
+    },
+    {
+      "title": "Apply Impulse",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/impulseSquare.png",
+      "id": "applyImpulse",
+      "type": 3
+    },
+    {
+      "title": "Get Entity Velocity",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/speed_effect.png",
+      "id": "getFireworkVelocity",
+      "type": 3
+    },
+    {
+      "title": "Apply Damage and Heal",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "items/potion_bottle_splash_damageBoost.png",
+      "id": "applyDamageThenHeal",
+      "type": 3
+    },
+    {
+      "title": "Set On Fire",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/fire_1_placeholder.png",
+      "id": "setOnFire",
+      "type": 3
+    },
+    {
+      "title": "Teleport",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/portalBg.png",
+      "id": "teleport",
+      "type": 3
+    },
+    {
+      "title": "Teleport for Movement",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/portalBg.png",
+      "id": "teleportMovement",
+      "type": 3
+    },
+    {
+      "title": "Apply Knockback",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/cut_copper.png",
+      "id": "bounceSkeletons",
+      "type": 3
+    },
+    {
+      "title": "Tag Query",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "items/name_tag.png",
+      "id": "tagsQuery",
+      "type": 3
+    },
+    {
+      "title": "Run Entity Spawn Event",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/cut_copper.png",
+      "id": "runEntitySpawnEvent",
+      "type": 3
+    },
+    {
+      "title": "Create mob",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/promo_bee.png",
+      "id": "createOldHorse",
+      "type": 3
+    },
+    {
+      "title": "Give player equipment",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "items/elytra.png",
+      "id": "givePlayerElytra",
+      "type": 3
+    },
+    {
+      "title": "Play Music and Sound",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "items/record_cat.png",
+      "id": "playMusicAndSound",
+      "type": 3
+    },
+    {
+      "title": "Spawn Particles",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/particles.png",
+      "id": "spawnParticle",
+      "type": 3
+    },
+    {
+      "title": "Piston Before Event",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/piston_top_sticky.png",
+      "id": "pistonBeforeEvent",
+      "type": 3
+    },
+    {
+      "title": "Piston After Event",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/piston_side.png",
+      "id": "pistonAfterEvent",
+      "type": 3
+    },
+    {
+      "title": "Update Scoreboard",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "blocks/cut_copper.png",
+      "id": "updateScoreboard",
+      "type": 3
+    },
+    {
+      "title": "Set Onscreen Display Title",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/screenshot_frame.png",
+      "id": "setTitle",
+      "type": 3
+    },
+    {
+      "title": "Set Display Title/Subtitle",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/screenshot_frame.png",
+      "id": "setTitleAndSubtitle",
+      "type": 3
+    },
+    {
+      "title": "Countdown",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/timer.png",
+      "id": "countdown",
+      "type": 3
+    },
+    {
+      "title": "Send Basic Message",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/dialog_background_opaque_overlap_bottom.png",
+      "id": "sendBasicMessage",
+      "type": 3
+    },
+    {
+      "title": "Translated Message Form",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/dialog_background_opaque_overlap_bottom.png",
+      "id": "showTranslatedMessageForm",
+      "type": 3
+    },
+    {
+      "title": "Add Sign",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/icon_sign.png",
+      "id": "addSign",
+      "type": 3
+    },
+    {
+      "title": "Add Translated Sign",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/icon_sign.png",
+      "id": "addTranslatedSign",
+      "type": 3
+    },
+    {
+      "title": "Add Two Sided Sign",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/icon_sign.png",
+      "id": "addTwoSidedSign",
+      "type": 3
+    },
+    {
+      "title": "Trap Tick",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/timer.png",
+      "id": "trapTick",
+      "type": 3
+    },
+    {
+      "title": "Every 30 Seconds",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/timer.png",
+      "id": "every30Seconds",
+      "type": 3
+    },
+    {
+      "title": "Skeleton",
+      "gitHubOwner": "mojang",
+      "gitHubRepoName": "bedrock-samples",
+      "localLogo": "entity/skeleton/skeleton.png",
+      "id": "skeleton",
+      "type": 4,
+      "logoLocation": { "x": 8, "y": 8, "width": 8, "height": 8 },
+
+      "fileList": [
+        "/behavior_pack/entities/skeleton.json",
+        "/resource_pack/entity/skeleton.entity.json",
+        "/resource_pack/models/entity/skeleton.geo.json",
+        "/resource_pack/textures/entity/skeleton/skeleton.png",
+        "/resource_pack/textures/entity/skeleton/stray.png",
+        "/resource_pack/textures/entity/skeleton/stray_overlay.png",
+        "/resource_pack/textures/entity/skeleton/wither_skeleton.png"
+      ]
+    },
+    {
+      "title": "Rabbit",
+      "gitHubOwner": "mojang",
+      "gitHubRepoName": "bedrock-samples",
+      "localLogo": "entity/rabbit/brown.png",
+      "id": "rabbit",
+      "type": 4,
+      "logoLocation": { "x": 37, "y": 1, "width": 8, "height": 8 },
+      "fileList": [
+        "/behavior_pack/entities/rabbit.json",
+        "/resource_pack/entity/rabbit.entity.json",
+        "/resource_pack/models/entity/rabbit.geo.json",
+        "/resource_pack/textures/entity/rabbit/blackrabbit.png",
+        "/resource_pack/textures/entity/rabbit/brown.png",
+        "/resource_pack/textures/entity/rabbit/gold.png",
+        "/resource_pack/textures/entity/rabbit/toast.png",
+        "/resource_pack/textures/entity/rabbit/white.png",
+        "/resource_pack/textures/entity/rabbit/white_splotched.png",
+        "/resource_pack/textures/entity/rabbit/salt.png"
+      ]
+    },
+    {
+      "title": "Wolf",
+      "gitHubOwner": "mojang",
+      "gitHubRepoName": "bedrock-samples",
+      "id": "wolf",
+      "type": 4,
+      "localLogo": "entity/wolf/wolf.png",
+      "logoLocation": { "x": 4, "y": 4, "width": 6, "height": 6 },
+      "fileList": [
+        "/behavior_pack/entities/wolf.json",
+        "/resource_pack/entity/wolf.entity.json",
+        "/resource_pack/models/entity/wolf.geo.json",
+        "/resource_pack/textures/entity/wolf/wolf.png",
+        "/resource_pack/textures/entity/wolf/wolf_angry.png",
+        "/resource_pack/textures/entity/wolf/wolf_tame.tga"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+.ste-area {
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  width: calc(100% - 2px);
+  height: 100%;
+  display: grid;
+  grid-template-columns: 200px 1fr 260px;
+  grid-template-rows: 40px 1fr 120px;
+}
+
+.ste-toolbar {
+  grid-row-start: 1;
+  grid-row-end: 2;
+  grid-column-start: 1;
+  grid-column-end: 4;
+  padding: 3px;
+}
+
+.ste-toolbar-area {
+  display: grid;
+  grid-template-columns: 1fr 370px 1px;
+}
+
+.ste-toolbar-inner {
+  grid-column: 1;
+}
+
+.ste-entityselector-area {
+  grid-column: 2;
+  text-align: right;
+}
+
+.ste-entityadder-area {
+  grid-column: 3;
+}
+
+.ste-threedarea-lg {
+  grid-row-start: 2;
+  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+
+.ste-threedarea {
+  grid-row-start: 2;
+  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.ste-selectionarea {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  transition: all 0.3s ease-in-out;
+  padding: 0px;
+  margin: 0px;
+  height: 120px;
+}
+
+.ste-editorbin {
+  grid-row-start: 3;
+  grid-row-end: 4;
+  grid-column-start: 1;
+  grid-column-end: 4;
+  padding: 4px;
+}
+
+.ste-editorgrid {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: 290px 1fr;
+}
+
+.ste-editorsearchinput {
+  grid-column-start: 1;
+  grid-row: 1;
+  grid-column-end: 2;
+  margin-top: 4px;
+  margin-left: 20px;
+}
+
+.ste-searchview {
+  grid-column-end: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  text-align: left;
+  margin-top: 4px;
+  width: 120px;
+  height: 80px;
+}
+
+.ste-searchviewcontainer {
+  width: 80px;
+  height: 80px;
+}

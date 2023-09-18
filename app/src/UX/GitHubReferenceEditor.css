@@ -1,0 +1,10 @@
+.ghre-area {
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  width: calc(100% - 2px);
+  height: 100%;
+}
+
+.ghre-toolbar {
+  padding: 2px;
+}

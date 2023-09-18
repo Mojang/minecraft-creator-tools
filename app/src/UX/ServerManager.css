@@ -1,0 +1,71 @@
+.sm-outer {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: calc(100vh - 36px);
+  max-height: calc(100vh - 36px);
+  background-color: black;
+  display: grid;
+  grid-template-rows: 48px 1fr;
+}
+
+.sm-actionsHeader {
+  background-color: #242425;
+  color: white;
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  font-size: 12pt;
+  padding: 8px;
+  text-align: left;
+}
+
+.sm-area {
+  height: 100%;
+  width: 100%;
+  grid-column: 1;
+  grid-row: 1;
+  margin-left: 0px;
+  margin-top: 0px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.sm-motd {
+  font-size: larger;
+  text-align: left;
+  padding-left: 16px;
+}
+
+.sm-topTools {
+  display: inline-block;
+  grid-column: 1;
+  padding-top: 2px;
+}
+
+.sm-title {
+  grid-column: 2;
+  padding-top: 4px;
+  display: inline-block;
+}
+
+.sm-selectedProject {
+  padding-top: 20px;
+  padding-left: 30px;
+}
+
+.sm-optionsGrid {
+  display: grid;
+  height: 330px;
+}
+
+.sm-type-label {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.sm-type-options {
+  padding-bottom: 18px;
+}
+
+.sm-buttonArea button {
+  margin-left: 10px;
+}

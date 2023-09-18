@@ -1,0 +1,97 @@
+.sa-outer {
+  padding: 2px;
+  padding-top: 0px;
+  vertical-align: middle;
+  padding-left: 10px;
+  display: grid;
+  grid-template-columns: 1fr 30px;
+  height: 100%;
+  max-width: calc(100vw);
+}
+
+.sa-singleline {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  text-overflow: clip;
+  max-width: calc(100vw - 42px);
+  display: inline-block;
+}
+
+.sa-inputArea {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 40px 1fr;
+}
+
+.sa-loading {
+  width: 16px;
+  margin-top: 3px;
+  margin-right: 6px;
+}
+
+.sa-message {
+  vertical-align: top;
+  position: relative;
+  top: 1px;
+}
+
+.sa-inputButton {
+  grid-column: 1;
+}
+
+.sa-inputButton BUTTON {
+  max-width: 38px;
+  padding: 0px;
+  min-width: 38px;
+  height: 28px;
+}
+
+.sa-inputEditor {
+  grid-column: 2;
+}
+
+.sa-message {
+  grid-column: 1;
+  vertical-align: top;
+  cursor: pointer;
+  padding-top: 3px;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+  max-width: calc(100vw - 42px);
+}
+
+.sa-tools {
+  grid-column: 2;
+  vertical-align: middle;
+  padding-top: 2px;
+}
+
+.sa-listOuter {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row: 2;
+}
+
+.sa-list {
+  height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: calc(100vw - 42px);
+}
+
+.sa-list LI {
+  min-height: 1.25rem;
+  white-space: nowrap;
+}
+
+.sa-list .ui-list__itemcontent {
+  font-size: small;
+}
+
+.sa-list li {
+  padding-left: 3px;
+}

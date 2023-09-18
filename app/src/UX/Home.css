@@ -1,0 +1,216 @@
+.home-dragOver {
+  position: fixed;
+  width: calc(100vw - 20px);
+  height: calc(100vh - 20px);
+  background-color: rgba(48, 96, 48, 0.9);
+  border: solid 3px rgba(48, 96, 48, 1);
+  vertical-align: middle;
+  text-align: center;
+  margin: 10px;
+  z-index: 10000;
+  opacity: 0.9;
+}
+
+.home-header-sublink {
+  font-size: small;
+  color: white;
+}
+
+.home-header-sublink A {
+  font-size: small;
+  color: white;
+}
+
+.home-header-docsLink {
+  color: white;
+}
+
+.home-layout {
+  width: 100%;
+  display: grid;
+  grid-template-rows: 120px 1fr 30px 30px;
+  grid-template-columns: 360px 1fr;
+}
+
+.home-error {
+  background-color: #b07a14;
+  padding: 10px;
+  margin: 20px;
+  text-overflow: ellipsis;
+}
+
+.home-search-area {
+  padding-left: 30px;
+  padding-top: 20px;
+  padding-bottom: 16px;
+}
+
+.home-gallery-interior .pg-outer {
+  margin: 20px;
+}
+
+.home-header-area {
+  vertical-align: middle;
+  text-align: center;
+  background-image: url(../images/bg-wool-dark.png);
+  grid-row: 1;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.home-header-image {
+  background-image: url(../images/mctoolsbanner.png);
+  display: inline-block;
+  background-size: cover;
+  width: 297px;
+  height: 78px;
+}
+
+.home-header {
+  font-size: 30pt;
+  margin-top: 11px;
+}
+
+.home-gallery {
+  grid-row: 2;
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+.home-gallery-interior {
+  overflow-y: auto;
+  height: calc(100vh - 250px);
+}
+
+.home-dialog {
+  height: 270px;
+  display: grid;
+  grid-template-rows: 80px 80px;
+  grid-template-columns: 140px 1fr;
+  padding-bottom: 15px;
+}
+
+.home-newName {
+  padding-top: 35px;
+  grid-column: 1;
+}
+
+.home-newProjectText {
+  padding-top: 30px;
+  grid-column: 2;
+}
+
+.newType {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.newScriptType {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.home-newFolder {
+  padding-top: 0px;
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.home-newPath {
+  padding-top: 0px;
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.home-projects-bin {
+  grid-row: 2;
+  min-width: 280px;
+  padding: 20px;
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+
+.home-projects {
+  font-size: x-large;
+  margin-top: 20px;
+  margin-bottom: 3px;
+}
+
+.home-tools {
+  font-size: x-large;
+  margin-bottom: 3px;
+}
+
+.home-tools-bin {
+  margin-top: 12px;
+  margin-bottom: 43px;
+}
+
+.home-tools-wrap {
+  margin-right: 4px;
+}
+
+.home-tools-connectWrap {
+  margin-left: 10px;
+}
+
+.home-projects-list {
+  overflow-y: scroll;
+}
+.home-tools-export {
+  padding-left: 14px;
+}
+.home-projects-list .ui-list__itemheader {
+  white-space: nowrap;
+  max-width: 200px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-uploadButton {
+  margin-top: 10px;
+}
+
+.home-clickLink {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.home-uploadLabel {
+  padding-top: 10px;
+  padding-bottom: 4px;
+}
+
+.home-path {
+  padding-bottom: 6px;
+}
+
+.home-usage {
+  grid-row: 3;
+  padding-left: 30px;
+  padding-top: 7px;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.home-legal {
+  grid-row: 4;
+  padding-left: 30px;
+  padding-top: 2px;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.home-projects-buttonbar {
+  padding-top: 5px;
+}
+
+.home-projects-bin BUTTON {
+  min-width: 131px;
+  max-width: 131px;
+}
+
+.home-gallery-label {
+  font-size: x-large;
+  padding-top: 20px;
+  padding-left: 28px;
+}

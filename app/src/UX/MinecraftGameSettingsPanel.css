@@ -1,0 +1,42 @@
+.migs-outer {
+  padding: 12px;
+  padding-top: 10px;
+}
+
+.migs-header {
+  font-weight: bold;
+  padding-left: 1px;
+  padding-top: 6px;
+  padding-bottom: 26px;
+}
+
+.migs-label {
+  margin-bottom: 4px;
+}
+
+.migs-spacer {
+  margin-top: 20px;
+}
+
+.migs-connectHeader {
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.migs-modeinput .ui-dropdown__container {
+  width: 280px !important;
+}
+
+.migs-instruction {
+  padding-top: 20px;
+}
+
+.migs-connString {
+  padding-bottom: 12px;
+  padding-top: 4px;
+}
+
+.migs-connString input {
+  font-size: 14pt;
+  width: 260px;
+}

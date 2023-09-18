@@ -1,0 +1,112 @@
+.ete-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  overflow-y: auto;
+}
+
+.ete-message {
+  padding: 10px;
+}
+
+.ete-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.ete-mainArea {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 55px 1fr;
+}
+
+.ete-componentEditorInterior {
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  grid-template-rows: 55px 1fr;
+}
+
+.ete-select {
+  padding: 8px;
+}
+
+.ete-eventListHeader {
+  grid-column: 1;
+  grid-row: 1;
+  padding-left: 20px;
+  padding-top: 24px;
+}
+
+.ete-eventList {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.ete-componentListHeader {
+  grid-column: 1;
+  grid-row: 1;
+  padding-left: 20px;
+  padding-top: 24px;
+}
+
+.ete-itemBinHeader {
+  grid-column: 2;
+  grid-row: 1;
+  padding-left: 14px;
+  padding-top: 16px;
+}
+
+.ete-componentList {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.ete-componentListInterior {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.ete-itemBin {
+  grid-column: 2;
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.ete-header {
+  font-size: 16pt;
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-bottom: 13px;
+}
+
+.ete-componentHeader {
+  padding-top: 20px;
+  font-size: 14pt;
+  padding: 12px;
+  padding-top: 40px;
+  padding-bottom: 14px;
+}
+
+.ete-extraArea {
+  margin-bottom: 5px;
+  grid-column: 2;
+}
+
+.ete-commands {
+  display: grid;
+  padding: 3px;
+  grid-template-columns: 200px 1fr;
+}
+
+.ete-toolBarArea {
+  grid-column: 1;
+  width: 100%;
+  padding-top: 24px;
+  padding-left: 29px;
+}
+
+.ete-loading {
+  padding: 8px;
+}

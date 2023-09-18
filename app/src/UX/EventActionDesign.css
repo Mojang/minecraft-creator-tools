@@ -1,0 +1,46 @@
+.ead-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  overflow-y: auto;
+}
+
+.ead-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.ead-header {
+  font-size: 16pt;
+  padding-top: 15px;
+  padding-left: 30px;
+  padding-bottom: 8px;
+  background: #242425;
+}
+
+.ead-componentHeader {
+  padding-top: 20px;
+  font-size: 14pt;
+  padding: 12px;
+  padding-top: 40px;
+  padding-bottom: 14px;
+}
+
+.ead-extraArea {
+  margin-bottom: 5px;
+}
+
+.ead-commands {
+  display: grid;
+  padding: 3px;
+  grid-template-columns: 200px 1fr;
+}
+
+.ead-toolBarArea {
+  grid-column: 1;
+}
+
+.ead-extraArea {
+  grid-column: 2;
+}

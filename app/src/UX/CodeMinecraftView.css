@@ -1,0 +1,39 @@
+.cmv-outer {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  max-height: 100vh;
+  display: grid;
+}
+
+.cmv-loading {
+  padding: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.cmv-loading-main {
+  font-weight: bold;
+}
+
+.cmv-newProjectName {
+  padding: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.cmv-gallery {
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
+  min-height: calc(100vh - 100px);
+}
+
+.cmv-npnLabel {
+  padding-bottom: 4px;
+}
+
+.cmv-search-area {
+  padding-left: 23px;
+  padding-top: 20px;
+  padding-bottom: 2px;
+}

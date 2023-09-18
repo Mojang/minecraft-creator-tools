@@ -1,0 +1,53 @@
+body {
+  margin: 0;
+  font-family: "Noto Sans", "Segoe UI", "Helvetica Neue", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden !important;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}
+
+input[type="file"] {
+  padding: 6px;
+  border: solid 1px rgb(96, 94, 92);
+  border-radius: 0px !important;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.2rem 0.4rem -0.075rem;
+}
+
+input[type="file"]:hover {
+  padding: 6px;
+  border-color: rgb(96, 94, 92);
+  border-radius: 0px !important;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.2rem 0.4rem -0.075rem;
+}
+
+.ui-checkbox__label {
+  padding-top: 2px;
+}
+
+.ui-dialog {
+  border-radius: 0px;
+  max-width: calc(100vw - 8px);
+  margin: 4px;
+  width: calc(100vw - 40px) !important;
+}
+
+BUTTON {
+  border-radius: 0px !important;
+}

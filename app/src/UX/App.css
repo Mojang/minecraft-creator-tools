@@ -1,0 +1,17 @@
+.app-loading {
+  width: 100vw;
+  max-height: 100vh;
+  min-height: 100vh;
+  font-size: 20pt;
+  vertical-align: middle;
+  text-align: center;
+  padding-top: calc(50vh - 30px);
+}
+
+.app-subloading {
+  font-size: 10pt;
+}
+
+.app-editor {
+  width: 100vw;
+}

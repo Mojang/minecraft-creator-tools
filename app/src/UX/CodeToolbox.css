@@ -1,0 +1,86 @@
+.ct-outer {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  max-height: 100vh;
+  display: grid;
+}
+
+
+.ct-area {
+  min-width: 100vw;
+  max-width: 100vw;
+  min-height: 100vh;
+  max-height: 100vh;
+  grid-column: 1;
+  grid-row: 1;
+  margin-left: 0px;
+  margin-top: 0px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.ct-selectedProject {
+  padding-top: 20px;
+  padding-left: 30px;
+}
+
+.ct-optionsGrid {
+  display: grid;
+  height: 330px;
+}
+
+.ct-type-label {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.ct-type-options {
+  padding-bottom: 18px;
+}
+
+.ct-import-label {
+  grid-row: 2;
+  grid-column: 1;
+  padding-top: 7px;
+}
+
+.ct-import-input {
+  grid-row: 2;
+  grid-column: 2;
+  text-align: left;
+  padding-bottom: 8px;
+}
+
+.ct-export-label {
+  grid-row: 3;
+  grid-column: 1;
+  padding-top: 7px;
+}
+
+.ct-export-input {
+  grid-row: 3;
+  grid-column: 2;
+  text-align: left;
+  padding-bottom: 8px;
+}
+
+.ct-buttonArea {
+  text-align: right;
+  padding: 10px;
+}
+
+.ct-buttonArea button {
+  margin-left: 10px;
+}
+
+.ct-actionsToolBarArea {
+  padding-left: 24px;
+}
+.ct-actionsToolBarArea .ui-toolbar__itemicon {
+  color: green !important;
+}
+
+.ct-settingsArea {
+  padding-left: 0px;
+}

@@ -1,0 +1,114 @@
+.tt-outer {
+  margin-right: 17px;
+  margin-bottom: 20px;
+  width: 360px;
+  height: 240px;
+  background: #6b6562;
+  display: inline-block;
+}
+
+.tt-grid {
+  display: grid;
+  height: 100%;
+  grid-template-columns: 1fr 84px;
+  grid-template-rows: 0.5fr 0.5fr 48px;
+}
+
+.tt-mainArea {
+  grid-row: 1;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  padding: 10px;
+}
+
+.tt-iconArea {
+  grid-row: 1;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding: 10px;
+}
+
+.tt-descriptionArea {
+  grid-row: 2;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.tt-mini-toolbar {
+  grid-row: 3;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  vertical-align: middle;
+  text-align: right;
+  padding-top: 8px;
+  background-color: #aba09c;
+  padding-bottom: 8px;
+}
+
+.tt-mini-toolbar button {
+  width: 30px;
+  margin-left: 4px;
+  margin-right: 10px;
+}
+
+.tt-title {
+  font-weight: bold;
+  padding-bottom: 4px;
+}
+
+.tt-ghpath {
+  padding-bottom: 10px;
+}
+
+.tt-ghlogo {
+  margin-right: 4px;
+  position: relative;
+  top: 2px;
+}
+
+.tt-ghpath a {
+  color: white;
+}
+
+.tts-outer {
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-bottom: 8px;
+  width: 128px;
+  height: 72px;
+  background: #6b6562;
+  grid-template-columns: 1fr;
+  text-overflow: ellipsis;
+  border: solid 3px black;
+  display: inline-block;
+  font-size: small;
+}
+
+.tts-outer-selected {
+  border: solid 3px #242425;
+}
+
+.tts-grid {
+  display: grid;
+  height: 100%;
+  grid-template-rows: 1fr 48px;
+}
+
+.tts-mainArea {
+  grid-row: 1;
+  padding: 10px;
+}
+
+.tts-title {
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+
+.tts-iconArea {
+  grid-row: 1;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding: 10px;
+}

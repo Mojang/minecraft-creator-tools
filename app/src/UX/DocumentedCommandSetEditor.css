@@ -1,0 +1,50 @@
+.dcse-area {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  overflow-y: auto;
+  background-color: #d0c5c0;
+}
+
+.dcse-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.dcse-header {
+  font-size: 16pt;
+  padding-top: 15px;
+  padding-left: 30px;
+  padding-bottom: 2px;
+  background: #242425;
+}
+
+.dcse-moduleProps {
+  padding-left: 20px;
+  padding-top: 40px;
+  padding-bottom: 10px;
+  border-bottom: outset 1px black;
+}
+
+.dcse-classEditorOuter {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 226px 1fr;
+}
+
+.dcse-classList {
+  grid-column: 1;
+  border-right: outset 1px black;
+  overflow-y: scroll;
+}
+
+.dcse-classList LI {
+  padding-left: 6px;
+  margin-left: 0px;
+}
+
+.dcse-classEditor {
+  grid-column: 2;
+  overflow-y: scroll;
+}

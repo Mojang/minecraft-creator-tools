@@ -1,0 +1,36 @@
+.mid-outer {
+  display: block;
+  padding: 4px;
+  cursor: default;
+  border-top: solid 1px black;
+  width: 100%;
+  display: grid;
+  height: 100%;
+  grid-template-rows: 62px 1fr 32px;
+}
+
+.mid-main {
+  overflow-y: auto;
+}
+
+.mid-commander {
+  border: solid 1px gray;
+  margin-top: 30px;
+  margin-right: 5px;
+  margin-left: 10px;
+}
+
+.mid-toolBin {
+  width: 100%;
+  overflow-y: scroll;
+  padding-left: 9px;
+  padding-bottom: 10px;
+}
+
+.mid-actionsToolBarArea button {
+  border-width: 0px;
+}
+
+.mid-hostToolBarArea {
+  margin-top: 8px;
+}

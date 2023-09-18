@@ -1,0 +1,32 @@
+.dsee-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  overflow-y: auto;
+}
+
+.dsee-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.dsee-header {
+  font-size: 16pt;
+  padding-top: 12px;
+  padding-left: 12px;
+  padding-bottom: 12px;
+  background: #242425;
+}
+
+.dsee-enumProps {
+  padding-left: 4px;
+  padding-top: 4px;
+}
+
+.dsee-enumCard {
+  padding: 4px;
+  margin: 4px;
+  margin-bottom: 10px;
+  border: solid 1px black;
+}

@@ -1,0 +1,250 @@
+.pdisp-outer {
+  background-color: #d0c5c0;
+}
+
+.pdisp-header {
+  font-size: 16pt;
+  padding-top: 35px;
+  padding-left: 14px;
+  padding-bottom: 42px;
+  background: #242425;
+}
+
+.pdisp-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.pdisp-grid {
+  display: grid;
+  color: #262423;
+  background-color: #d0c5c0;
+  background-repeat: repeat;
+  grid-template-columns: 160px 340px 140px 1fr;
+  padding: 10px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  overflow-y: auto;
+}
+
+.pdisp-ghshareableUrl {
+  font-weight: bold;
+  margin-top: 2px;
+  margin-bottom: 3px;
+}
+
+.pdisp-signInButton {
+  padding-bottom: 8px;
+}
+
+.pdisp-link {
+  margin-top: 14px;
+  font-weight: bold;
+  color: white;
+}
+
+.pdisp-toolArea {
+  padding-top: 20px;
+  padding-bottom: 30px;
+  padding-left: 160px;
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+
+.pdisp-descriptionlabel {
+  grid-row: 1;
+  grid-column: 1;
+  padding-bottom: 4px;
+  padding-top: 6px;
+}
+
+.pdisp-descriptioninput {
+  grid-row: 1;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding-bottom: 4px;
+}
+
+.pdisp-descriptioninput textarea {
+  width: 400px;
+  height: 120px;
+}
+
+.pdisp-versionlabel {
+  grid-row: 2;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  padding-bottom: 20px;
+  padding-top: 6px;
+}
+
+.pdisp-versioninputline {
+  display: inline;
+}
+
+.pdisp-versioninput {
+  grid-row: 2;
+  grid-column: 2;
+  margin-top: 7px;
+  padding-bottom: 20px;
+}
+
+.pdisp-additional {
+  padding-top: 20px;
+}
+
+.pdisp-ghlabel {
+  grid-row: 6;
+  grid-column: 1;
+  padding-top: 26px;
+  padding-bottom: 20px;
+}
+
+.pdisp-ghinput {
+  grid-row: 6;
+  grid-column: 2;
+  padding-top: 26px;
+  padding-bottom: 20px;
+}
+
+.pdisp-ghbutton {
+  grid-row: 6;
+  grid-column: 3;
+  padding-top: 30px;
+  padding-bottom: 20px;
+}
+.pdisp-advancedArea {
+  grid-row: 7;
+  grid-column-start: 1;
+  grid-column-end: 5;
+  padding-top: 30px;
+}
+.pdisp-bedrock {
+  grid-row: 7;
+  background-repeat: repeat-x;
+  font-size: 2;
+  line-height: 0.5;
+  min-height: 16px;
+  max-height: 16px;
+}
+
+.pdisp-advgrid {
+  display: grid;
+  grid-template-columns: 160px 340px 140px;
+}
+
+.pdisp-bpuniqueidlabel {
+  grid-row: 1;
+  grid-column: 1;
+  padding-left: 20px;
+  padding-bottom: 20px;
+  padding-top: 27px;
+}
+
+.pdisp-bpuniqueidinput {
+  grid-row: 1;
+  grid-column: 2;
+  padding-bottom: 20px;
+  padding-top: 21px;
+}
+
+.pdisp-bpuniqueIdInputValue input {
+  min-width: 310px;
+  width: 310px;
+}
+
+.pdisp-bpuniqueidcreatenew {
+  grid-row: 1;
+  grid-column: 3;
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.pdisp-rpuniqueidlabel {
+  grid-row: 2;
+  grid-column: 1;
+  padding-left: 20px;
+  padding-bottom: 20px;
+  padding-top: 27px;
+}
+
+.pdisp-rpuniqueidinput {
+  grid-row: 2;
+  grid-column: 2;
+  padding-bottom: 20px;
+  padding-top: 21px;
+}
+
+.pdisp-rpuniqueIdInputValue input {
+  min-width: 310px;
+  width: 310px;
+}
+
+.pdisp-rpuniqueidcreatenew {
+  grid-row: 2;
+  grid-column: 3;
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.pdisp-datauniqueidlabel {
+  grid-row: 3;
+  grid-column: 1;
+  padding-bottom: 20px;
+  padding-top: 7px;
+  padding-left: 20px;
+}
+
+.pdisp-datauniqueidinput {
+  grid-row: 3;
+  grid-column: 2;
+  padding-bottom: 20px;
+  padding-top: 1px;
+}
+
+.pdisp-datauniqueIdInputValue input {
+  min-width: 310px;
+  width: 310px;
+}
+
+.pdisp-datauniqueidcreatenew {
+  grid-row: 3;
+  grid-column: 3;
+  padding-bottom: 20px;
+  padding-top: 0px;
+  height: 16px;
+}
+
+.pdisp-scriptuniqueidlabel {
+  grid-row: 4;
+  grid-column: 1;
+  padding-left: 20px;
+  padding-bottom: 20px;
+  padding-top: 7px;
+}
+
+.pdisp-toolArea button {
+  margin: 2px;
+  width: 260px;
+  display: inline-block;
+}
+
+.pdisp-scriptuniqueidinput {
+  grid-row: 4;
+  grid-column: 2;
+  padding-bottom: 20px;
+  padding-top: 1px;
+}
+
+.pdisp-scriptuniqueIdInputValue input {
+  min-width: 310px;
+  width: 310px;
+}
+
+.pdisp-scriptuniqueidcreatenew {
+  grid-row: 4;
+  grid-column: 3;
+  padding-bottom: 20px;
+  padding-top: 0px;
+}

@@ -1,0 +1,46 @@
+.ite-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  overflow-y: auto;
+}
+
+.ite-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.ite-header {
+  font-size: 16pt;
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-bottom: 13px;
+  background: #242425;
+}
+
+.ite-componentHeader {
+  padding-top: 20px;
+  font-size: 14pt;
+  padding: 12px;
+  padding-top: 40px;
+  padding-bottom: 14px;
+}
+
+.ite-extraArea {
+  margin-bottom: 5px;
+}
+
+.ite-commands {
+  display: grid;
+  padding: 3px;
+  grid-template-columns: 200px 1fr;
+}
+
+.ite-toolBarArea {
+  grid-column: 1;
+}
+
+.ite-extraArea {
+  grid-column: 2;
+}

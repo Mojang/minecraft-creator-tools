@@ -1,0 +1,100 @@
+.cose-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-right: 12px;
+  display: grid;
+  max-width: 590px;
+  grid-template-columns: 280px 1fr;
+}
+
+.cose-header {
+  font-size: 12pt;
+  font-size: 17pt;
+}
+
+.cose-componentForm {
+  margin-bottom: 12px;
+  padding: 3px;
+  padding-left: 10px;
+  display: inline-grid;
+  min-height: 220px;
+}
+
+.cose-componentForm .ui-form__input {
+  padding-top: 3px;
+  margin-bottom: 4px;
+}
+
+.cose-componentForm .ui-form__checkbox {
+  padding-top: 3px;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+.cose-componentForm .pu > :last-child {
+  margin-top: 0px;
+}
+.cose-componentForm .pt > :not(:last-child) {
+  margin-bottom: 0px;
+}
+
+.cose-componentHeader {
+  padding-top: 20px;
+  font-size: 11pt;
+  padding-bottom: 14px;
+}
+
+.cose-noeditor {
+  padding: 10px;
+}
+
+.cose-title {
+  width: 200px;
+}
+
+.cose-extraArea {
+  margin-bottom: 5px;
+}
+.cose-componentList {
+  grid-column: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.cose-componentBin {
+  padding: 4px;
+  border-radius: 4px;
+  height: 100%;
+  min-height: 200px;
+  vertical-align: top;
+  grid-column: 2;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.cose-componentBin:first-child {
+  margin-top: 1px;
+}
+
+.cose-componentArea {
+  display: grid;
+  padding: 3px;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-template-columns: 7px 7px 1fr;
+}
+
+.cose-titleArea {
+  grid-column: 1;
+}
+
+.cose-toolBarArea {
+  grid-column: 2;
+}
+
+.cose-extraArea {
+  grid-column: 3;
+}

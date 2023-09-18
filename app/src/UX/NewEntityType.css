@@ -1,0 +1,23 @@
+.net-outer {
+  padding: 8px;
+  padding-top: 2px;
+  width: 100%;
+  min-height: 450px;
+  height: 100%;
+}
+
+.net-gallery {
+  overflow-y: auto;
+  min-height: 280px;
+  background-color: #202020;
+  max-height: calc(100vh - 280px);
+}
+
+.net-projectGallery {
+  height: 360px;
+}
+
+.net-galleryHeader {
+  padding-top: 30px;
+  left: 4px;
+}

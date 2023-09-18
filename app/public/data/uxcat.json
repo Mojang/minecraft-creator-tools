@@ -1,0 +1,1606 @@
+{
+  "sampleValues": "int = 0,  boolean = 1,  string = 2,  float = 3,  stringEnum = 4,  intEnum = 5,  intBoolean = 6,  number = 7,  stringLookup = 8,  intValueLookup = 9,  long = 10,  point3 = 11,  intPoint3 = 12,  longFormString = 13,  keyedObjectCollection = 14,  objectArray = 15,  object = 16,  stringArray = 17,  intRange = 18,  floatRange = 19,  minecraftFilter = 20,  percentRange = 21,  minecraftEventTrigger = 22,  longFormStringArray = 23,  keyedStringCollection = 24,  version = 25, uuid === 26",
+
+  "mcworldProperties": {
+    "title": "MCWorld Properties",
+    "fields": [
+      {
+        "id": "spawnX",
+        "title": "Spawn X",
+        "dataType": 0
+      },
+      {
+        "id": "spawnY",
+        "title": "Spawn Y",
+        "dataType": 0
+      },
+      {
+        "id": "spawnZ",
+        "title": "Spawn Z",
+        "dataType": 0
+      },
+      {
+        "id": "difficulty",
+        "title": "Difficulty",
+        "dataType": 0
+      },
+      {
+        "id": "generator",
+        "title": "Generator",
+        "dataType": 0
+      },
+      {
+        "id": "gameType",
+        "title": "Game Type",
+        "dataType": 0
+      },
+      {
+        "id": "isEditor",
+        "title": "Editor World",
+        "dataType": 1
+      }
+    ]
+  },
+  "documentedModule": {
+    "title": "Documented Module",
+    "fields": [
+      {
+        "id": "uuid",
+        "title": "Unique Id",
+        "dataType": 2
+      },
+      {
+        "id": "version",
+        "title": "Version",
+        "dataType": 2
+      }
+    ]
+  },
+  "documentedClass": {
+    "title": "Documented Class",
+    "fields": [
+      {
+        "id": "id",
+        "title": "Name",
+        "dataType": 2
+      }
+    ]
+  },
+  "documentedScriptEnum": {
+    "title": "Documented Enum",
+    "fields": [
+      {
+        "id": "name",
+        "title": "Name",
+        "dataType": 2
+      }
+    ]
+  },
+  "simpleInfoJson": {
+    "fields": [
+      {
+        "id": "description",
+        "title": "Description",
+        "dataType": 13
+      }
+    ]
+  },
+  "commandOverload": {
+    "fields": [
+      {
+        "id": "id",
+        "title": "Id",
+        "dataType": 0,
+        "readOnly": true
+      },
+      {
+        "id": "header",
+        "title": "Header",
+        "dataType": 13
+      },
+      {
+        "id": "description",
+        "title": "Description",
+        "dataType": 17
+      }
+    ]
+  },
+  "commandArgument": {
+    "fields": [
+      {
+        "id": "name",
+        "title": "Name",
+        "dataType": 2,
+        "readOnly": true
+      },
+      {
+        "id": "description",
+        "title": "Description",
+        "dataType": 17
+      }
+    ]
+  },
+  "commandValue": {
+    "fields": [
+      {
+        "id": "name",
+        "title": "Name",
+        "dataType": 2,
+        "readOnly": true
+      },
+      {
+        "id": "description",
+        "title": "Description",
+        "dataType": 13
+      }
+    ]
+  },
+  "packageJson": {
+    "fields": [
+      {
+        "id": "name",
+        "title": "Name",
+        "dataType": 2
+      },
+      {
+        "id": "productName",
+        "title": "Product Name",
+        "dataType": 2
+      },
+      {
+        "id": "main",
+        "title": "Main Entrypoint",
+        "dataType": 2
+      },
+      {
+        "id": "homepage",
+        "title": "Homepage",
+        "dataType": 2
+      },
+      {
+        "id": "icon",
+        "title": "Icon",
+        "dataType": 2
+      },
+      {
+        "id": "private",
+        "title": "Private",
+        "dataType": 1
+      },
+      {
+        "id": "description",
+        "title": "Description",
+        "dataType": 13
+      },
+      {
+        "id": "version",
+        "title": "Version",
+        "dataType": 2
+      }
+    ]
+  },
+  "behaviorPackHeaderJson": {
+    "fields": [
+      {
+        "id": "name",
+        "title": "Name",
+        "dataType": 2
+      },
+      {
+        "id": "description",
+        "title": "Description",
+        "dataType": 13
+      },
+      {
+        "id": "version",
+        "title": "Version",
+        "dataType": 13
+      }
+    ]
+  },
+  "behaviorPackRestOfFile": {
+    "fields": [
+      {
+        "id": "modules",
+        "title": "Modules",
+        "dataType": 15,
+        "subForm": {
+          "fields": [
+            {
+              "id": "description",
+              "description": "Description of this module.",
+              "dataType": 13
+            },
+            {
+              "id": "language",
+              "description": "Description of this module.",
+              "dataType": 2
+            },
+            {
+              "id": "type",
+              "description": "Type of this module.",
+              "dataType": 2
+            },
+            {
+              "id": "uuid",
+              "description": "Unique identifier of this module.",
+              "dataType": 2
+            },
+            {
+              "id": "version",
+              "description": "Version",
+              "dataType": 2
+            },
+            {
+              "id": "entry",
+              "description": "Script entry point for this behavior pack.",
+              "dataType": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "dependencies",
+        "title": "Dependencies",
+        "dataType": 24
+      }
+    ]
+  },
+  "worldTestArea": {
+    "title": "World Test Area",
+    "fields": [
+      {
+        "id": "location",
+        "title": "Location",
+        "dataType": 11
+      }
+    ]
+  },
+  "scriptAction.entity.spawn": {
+    "title": "Spawn Entity",
+    "fields": [
+      {
+        "id": "location",
+        "title": "Location",
+        "dataType": 11
+      },
+      {
+        "id": "entityType",
+        "title": "Entity Type",
+        "dataType": 2
+      }
+    ]
+  },
+  "scriptAction.simulatedplayer.spawn": {
+    "title": "Spawn Entity",
+    "fields": [
+      {
+        "id": "location",
+        "title": "Location",
+        "dataType": 11
+      }
+    ]
+  },
+  "scriptAction.simulatedplayer.move": {
+    "title": "Move Entity",
+    "fields": [
+      {
+        "id": "location",
+        "title": "Location",
+        "dataType": 11
+      }
+    ]
+  },
+  "scriptAction.idle": {
+    "title": "Idle",
+    "fields": [
+      {
+        "id": "idle",
+        "title": "Ticks",
+        "dataType": 2
+      }
+    ]
+  },
+  "componentForms": {
+    "entityInstance": {
+      "fields": [
+        {
+          "id": "fallDistance",
+          "altId": "FallDistance",
+          "groupId": "minecraft:instance",
+          "dataType": 3,
+          "title": "Current max fall distance of the entity"
+        },
+        {
+          "id": "fire",
+          "altId": "Fire",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "title": "Fire time"
+        },
+        {
+          "id": "air",
+          "altId": "Air",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "title": "Air time"
+        },
+        {
+          "id": "attackTime",
+          "altId": "AttackTime",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "title": "Attack time"
+        },
+        {
+          "id": "hurtTime",
+          "altId": "HurtTime",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "title": "Hurt time"
+        },
+        {
+          "id": "invulnerable",
+          "altId": "Invulnerable",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Invulnerable"
+        },
+        {
+          "id": "bodyRot",
+          "altId": "BodyRot",
+          "groupId": "minecraft:instance",
+          "dataType": 3,
+          "title": "Body Rotation"
+        },
+        {
+          "id": "dead",
+          "altId": "Dead",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": false,
+          "title": "Dead"
+        },
+        {
+          "id": "deathTime",
+          "altId": "DeathTime",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "title": "Death Time"
+        },
+        {
+          "id": "invulnerable",
+          "altId": "Invulnerable",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "title": "Invulnerable time"
+        },
+        {
+          "id": "inventoryVersion",
+          "altId": "InventoryVersion",
+          "groupId": "minecraft:core",
+          "dataType": 2,
+          "title": "Inventory version"
+        },
+        {
+          "id": "isAngry",
+          "altId": "IsAngry",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Whether an entity is angry"
+        },
+        {
+          "id": "isAutonomous",
+          "altId": "IsAutonomous",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is autonomous"
+        },
+        {
+          "id": "isBaby",
+          "altId": "IsBaby",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is a baby"
+        },
+        {
+          "id": "isEating",
+          "altId": "IsEating",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is eating"
+        },
+        {
+          "id": "isGliding",
+          "altId": "IsGliding",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is gliding"
+        },
+        {
+          "id": "isGlobal",
+          "altId": "IsGlobal",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is global"
+        },
+        {
+          "id": "isIllagerCaptain",
+          "altId": "IsIllagerCaptain",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is an illager captain"
+        },
+        {
+          "id": "isOrphaned",
+          "altId": "IsOrphaned",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is orphaned"
+        },
+        {
+          "id": "isPregnant",
+          "altId": "IsPregnant",
+          "groupId": "minecraft:instance",
+          "defaultValue": 0,
+          "dataType": 6,
+          "title": "Entity is pregnant"
+        },
+        {
+          "id": "isOutOfControl",
+          "altId": "IsOutOfControl",
+          "groupId": "minecraft:instance",
+          "defaultValue": 0,
+          "dataType": 6,
+          "title": "Entity is out of control"
+        },
+        {
+          "id": "isRoaring",
+          "altId": "IsRoaring",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is roaring"
+        },
+        {
+          "id": "isScared",
+          "altId": "IsScared",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is scared"
+        },
+        {
+          "id": "isStunned",
+          "altId": "IsStunned",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is stunned"
+        },
+        {
+          "id": "isSwimming",
+          "altId": "IsSwimming",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is swimming"
+        },
+        {
+          "id": "isTamed",
+          "altId": "IsTamed",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is tamed"
+        },
+        {
+          "id": "isTrusting",
+          "altId": "IsTrusting",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is trusting"
+        },
+        {
+          "id": "lastDimensionId",
+          "altId": "LastDimensionId",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Last dimension ID"
+        },
+        {
+          "id": "leasherId",
+          "altId": "LeasherID",
+          "groupId": "minecraft:instance",
+          "dataType": 10,
+          "defaultValue": 0,
+          "title": "Leasher ID"
+        },
+        {
+          "id": "lootDropped",
+          "altId": "LootDropped",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Whether loot was dropped"
+        },
+        {
+          "id": "markVariant",
+          "altId": "MarkVariant",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Last dimension ID"
+        },
+        {
+          "id": "naturalSpawn",
+          "altId": "NaturalSpawn",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Natural spawn"
+        },
+        {
+          "id": "onGround",
+          "altId": "OnGround",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "On ground"
+        },
+        {
+          "id": "persistent",
+          "altId": "Persistent",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Persistent"
+        },
+        {
+          "id": "motion",
+          "altId": "Motion",
+          "groupId": "minecraft:instance",
+          "dataType": 3,
+          "title": "Motion"
+        },
+        {
+          "id": "onGround",
+          "altId": "OnGround",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Entity is on ground"
+        },
+        {
+          "id": "ownerNew",
+          "altId": "OwnerNew",
+          "groupId": "minecraft:instance",
+          "dataType": 10,
+          "defaultValue": 0,
+          "title": "Owner New"
+        },
+        {
+          "id": "portalCooldown",
+          "altId": "PortalCooldown",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Portal Cooldown"
+        },
+        {
+          "id": "breedCooldown",
+          "altId": "BreedCooldown",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Breed Cooldown"
+        },
+        {
+          "id": "inLove",
+          "altId": "InLove",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "In Love"
+        },
+        {
+          "id": "loveCause",
+          "altId": "LoveCause",
+          "groupId": "minecraft:instance",
+          "dataType": 10,
+          "defaultValue": 0,
+          "title": "Love Cause"
+        },
+        {
+          "id": "saddled",
+          "altId": "Saddled",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Saddled"
+        },
+        {
+          "id": "sheared",
+          "altId": "Sheared",
+          "groupId": "minecraft:instance",
+          "defaultValue": 0,
+          "dataType": 6,
+          "title": "Sheared"
+        },
+        {
+          "id": "showBottom",
+          "altId": "ShowBottom",
+          "groupId": "minecraft:instance",
+          "defaultValue": 0,
+          "dataType": 6,
+          "title": "Show bottom"
+        },
+        {
+          "id": "sitting",
+          "altId": "Sitting",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Sitting"
+        },
+        {
+          "id": "skinId",
+          "altId": "SkinID",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Skin ID"
+        },
+        {
+          "id": "strength",
+          "altId": "Strength",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Strength"
+        },
+        {
+          "id": "strengthMax",
+          "altId": "StrengthMax",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Max Strength"
+        },
+        {
+          "id": "surface",
+          "altId": "Surface",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Surface"
+        },
+        {
+          "id": "targetId",
+          "altId": "TargetID",
+          "groupId": "minecraft:instance",
+          "dataType": 10,
+          "defaultValue": 0,
+          "title": "Target Id"
+        },
+        {
+          "id": "temper",
+          "altId": "Temper",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Temper"
+        },
+        {
+          "id": "tradeExperience",
+          "altId": "TradeExperience",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Trade Experience"
+        },
+        {
+          "id": "tradeTier",
+          "altId": "TradeTier",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Trade Tier"
+        },
+        {
+          "id": "uniqueId",
+          "altId": "UniqueID",
+          "groupId": "minecraft:instance",
+          "dataType": 10,
+          "defaultValue": 0,
+          "title": "Unique Id"
+        },
+        {
+          "id": "variant",
+          "altId": "Variant",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Variant"
+        },
+        {
+          "id": "boundX",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Bound X"
+        },
+        {
+          "id": "boundY",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Bound Y"
+        },
+        {
+          "id": "boundZ",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Bound Z"
+        },
+        {
+          "id": "canPickupItems",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": 0,
+          "title": "Can pickup items"
+        },
+        {
+          "id": "hasBoundOrigin",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": false,
+          "title": "Has a bounding origin"
+        },
+        {
+          "id": "hasSetCanPickupItems",
+          "groupId": "minecraft:instance",
+          "dataType": 6,
+          "defaultValue": false,
+          "title": "Can Pickup Items was set"
+        },
+        {
+          "id": "limitedLife",
+          "groupId": "minecraft:instance",
+          "dataType": 0,
+          "defaultValue": 0,
+          "title": "Limited life"
+        }
+      ]
+    },
+    "entityCore": {
+      "fields": [
+        {
+          "id": "burns_in_daylight",
+          "groupId": "minecraft:burns_in_daylight",
+          "dataType": 1,
+          "defaultValue": false,
+          "description": "Whether this entity burns in daylight"
+        },
+        {
+          "id": "can_climb",
+          "groupId": "minecraft:can_climb",
+          "dataType": 1,
+          "defaultValue": false,
+          "description": "Whether this entity can climb ladders"
+        },
+        {
+          "id": "can_fly",
+          "groupId": "minecraft:can_fly",
+          "dataType": 1,
+          "defaultValue": false,
+          "description": "Whether this entity can fly"
+        },
+        {
+          "id": "can_power_jump",
+          "groupId": "minecraft:can_power_jump",
+          "dataType": 1,
+          "defaultValue": false,
+          "description": "Whether this entity can power jump"
+        },
+        {
+          "id": "chested",
+          "altId": "Chested",
+          "groupId": "minecraft:is_chested",
+          "dataType": 0,
+          "defaultValue": false,
+          "description": "Whether this entity has a chest"
+        },
+        {
+          "id": "color",
+          "altId": "Color",
+          "groupId": "minecraft:color",
+          "dataType": 0,
+          "defaultValue": 0,
+          "description": "Palette color of the entity"
+        },
+        {
+          "id": "color2",
+          "altId": "Color2",
+          "groupId": "minecraft:color2",
+          "dataType": 0,
+          "defaultValue": 0,
+          "description": "Second palette color of the entity"
+        }
+      ]
+    },
+    "minecraft:addrider": {
+      "title": "Add Rider",
+      "description": "Entity acquires riders. minecraft:addrider requires minecraft:rideable in order to work properly.",
+      "fields": [
+        {
+          "id": "entity_type",
+          "title": "Entity type to ride",
+          "description": "Type of entity to acquire as a rider",
+          "dataType": 8,
+          "lookupId": "entityType"
+        },
+        {
+          "id": "spawn_event",
+          "description": "Trigger event when a rider is acquired",
+          "dataType": 8,
+          "lookupId": "entityTypeEvents"
+        }
+      ]
+    },
+    "minecraft:admire_item": {
+      "description": "Allows an entity to ignore attackable targets for a given duration",
+      "fields": [
+        {
+          "id": "cooldown_after_being_attacked",
+          "description": "Duration, in seconds, for which mob won't admire items if it was hurt",
+          "dataType": 0
+        },
+        {
+          "id": "duration",
+          "description": "Duration, in seconds, that the mob is pacified",
+          "dataType": 0
+        }
+      ]
+    },
+    "minecraft:ageable": {
+      "description": "Adds a timer for the entity to grow up. It can be accelerated by giving the entity the items it likes as defined by feed_items.",
+      "fields": [
+        {
+          "id": "duration",
+          "description": "Length of time before an entity grows up (-1 to always stay a baby)",
+          "dataType": 0
+        },
+        {
+          "id": "feedItems",
+          "desciption": "List of items that can be fed to an entity to age them up",
+          "dataType": 17
+        },
+        {
+          "id": "drop_items",
+          "desciption": "List of items that are dropped when an entity grows up",
+          "dataType": 17
+        },
+        {
+          "id": "grow_up",
+          "title": "Grow up event",
+          "desciption": "Event to fire when an entity grows up",
+          "dataType": 7,
+          "lookupId": "entityTypeEvents"
+        }
+      ]
+    },
+    "minecraft:ambient_sound_interval": {
+      "description": "Delay for an entity playing its sound",
+      "fields": [
+        {
+          "id": "min",
+          "title": "Minimum time",
+          "dataType": 0
+        },
+        {
+          "id": "max",
+          "title": "Maximum time",
+          "dataType": 0
+        },
+        {
+          "id": "event_name",
+          "title": "Sound event that is played",
+          "dataType": 7,
+          "lookupId": "entityTypeEvents"
+        }
+      ]
+    },
+    "minecraft:angry": {
+      "description": "Defines an entity's 'angry' state using a timer.",
+      "fields": [
+        {
+          "id": "angry_sound",
+          "description": "The sound event to play when the mob is angry",
+          "dataType": 2
+        },
+        {
+          "id": "sound_interval",
+          "description": "The range of time in seconds to randomly wait before playing the sound again.",
+          "dataType": 18
+        },
+        {
+          "id": "duration",
+          "description": "The amount of time in seconds that the entity will be angry.",
+          "dataType": 0
+        },
+        {
+          "id": "duration_delta",
+          "description": "Variance in seconds added to the duration [-delta, delta].",
+          "dataType": 0
+        },
+        {
+          "id": "filters",
+          "title": "Anger exemption filters",
+          "description": "Filter out mob types that it should not attack while angry (other Piglins)",
+          "dataType": 20
+        },
+        {
+          "id": "broadcast_anger",
+          "description": "If set, other entities of the same entity definition within the broadcastRange will also become angry",
+          "dataType": 1,
+          "defaultValue": false
+        },
+        {
+          "id": "broadcast_anger_on_attack",
+          "description": "If set, other entities of the same entity definition within the broadcastRange will also become angry whenever this mob attacks",
+          "dataType": 1,
+          "defaultValue": false
+        },
+        {
+          "id": "broadcast_range",
+          "description": "Distance in blocks within which other entities of the same entity type will become angry",
+          "dataType": 0,
+          "defaultValue": 20
+        },
+        {
+          "id": "broadcast_targets",
+          "description": "A list of entity families to broadcast anger to",
+          "dataType": 17
+        },
+        {
+          "id": "broadcast_filters",
+          "description": "Conditions that make this entry in the list valid",
+          "dataType": 20
+        },
+        {
+          "id": "calm_event",
+          "description": "Event to fire when this entity is calmed down",
+          "dataType": 8,
+          "lookupId": "entityTypeEvents"
+        }
+      ]
+    },
+    "minecraft:annotation.break_door": {
+      "title": "Break doors annotation",
+      "description": "Allows an entity to break doors, assuming that that flags set up for the component to use in navigation. Requires the entity's navigation component to have the parameter can_break_doors set to true.",
+      "fields": [
+        {
+          "id": "break_time",
+          "description": "The time in seconds required to break through doors.",
+          "dataType": 0
+        },
+        {
+          "id": "min_difficulty",
+          "title": "Minimum Difficulty",
+          "description": "The minimum difficulty that the world must be on for this entity to break doors.",
+          "dataType": 8,
+          "lookupId": "difficulty"
+        }
+      ]
+    },
+    "minecraft:annotation.open_door": {
+      "title": "Open doors annotation",
+      "description": "Requires the entity's navigation component to have the parameter can_open_doors set to true."
+    },
+    "minecraft:area_attack": {
+      "description": "A component that does damage to entities that get within range.",
+      "fields": [
+        {
+          "id": "cause",
+          "description": "The type of damage that is applied to entities that enter the damage range.",
+          "dataType": 8,
+          "lookupId": "damageCause"
+        },
+        {
+          "id": "entity_filter",
+          "description": "The set of entities that are valid to apply the damage to when within range.",
+          "dataType": 20
+        },
+        {
+          "id": "damage_per_tick",
+          "description": "How much damage per tick is applied to entities that enter the damage range.",
+          "dataType": 0
+        },
+        {
+          "id": "damage_range",
+          "description": "How close a hostile entity must be to have the damage applied.",
+          "dataType": 0.2
+        }
+      ]
+    },
+    "minecraft:attack": {
+      "description": "Allows an entity to define an entity's melee attack and any additional effects on it's attack.",
+      "fields": [
+        {
+          "id": "damage",
+          "description": "Range of the random amount of damage the melee attack deals. A negative value can heal the entity instead of hurting it.",
+          "dataType": 19,
+          "minValue": -50,
+          "maxValue": 50
+        },
+        {
+          "id": "effect_duration",
+          "description": "Duration in seconds of the status ailment applied to the damaged entity.",
+          "dataType": 3
+        },
+        {
+          "id": "effect_name",
+          "description": "Identifier of the status ailment to apply to an entity attacked by this entity's melee attack.",
+          "dataType": 2
+        }
+      ]
+    },
+    "minecraft:attack_cooldown": {
+      "description": "Adds a cooldown to an entity. The intention of this cooldown is to be used to prevent the entity from attempting to acquire new attack targets.",
+      "fields": [
+        {
+          "id": "attack_cooldown_complete_event",
+          "description": "Event to be run when the cooldown is complete.",
+          "dataType": 8,
+          "lookupId": "entityTypeEvents"
+        },
+        {
+          "id": "attack_cooldown_time",
+          "description": "Amount of time in seconds for the cooldown. Can be specified as a number or a pair of numbers (min and max).",
+          "dataType": 19,
+          "minValue": 0,
+          "maxValue": 1
+        }
+      ]
+    },
+    "minecraft:attack_damage": {
+      "title": "Attack Damage",
+      "description": "specifies how much damage is dealt by the entity when it attacks.",
+      "fields": [
+        {
+          "id": "value",
+          "description": "How much an attack should damage a target.",
+          "dataType": 18,
+          "minValue": -50,
+          "maxValue": 50
+        }
+      ]
+    },
+    "minecraft:balloonable": {
+      "description": "Allows this entity to have a balloon attached and defines the conditions and events for this entity when is ballooned.",
+      "fields": [
+        {
+          "id": "soft_distance",
+          "description": "Distance in blocks at which the 'spring' effect that lifts it.",
+          "dataType": 3,
+          "minValue": 0,
+          "maxValue": 30
+        },
+        {
+          "id": "max_distance",
+          "description": "Distance in blocks at which the balloon breaks.",
+          "dataType": 3,
+          "minValue": 0,
+          "maxValue": 30
+        },
+        {
+          "id": "on_balloon",
+          "description": "Event to call when this entity is ballooned.",
+          "dataType": 8,
+          "lookupId": "entityTypeEvents"
+        },
+        {
+          "id": "on_unballoon",
+          "description": "Event to call when this entity is unballooned.",
+          "dataType": 8,
+          "lookupId": "entityTypeEvents"
+        },
+        {
+          "id": "mass",
+          "description": "Mass that this entity will have when computing balloon pull forces.",
+          "dataType": 3,
+          "minValue": 0,
+          "maxValue": 30
+        }
+      ]
+    },
+    "minecraft:barter": {
+      "description": "Enables the component to drop an item as a barter exchange.",
+      "fields": [
+        {
+          "id": "barter_table",
+          "description": "Loot table that's used to drop a random item.",
+          "dataType": 8,
+          "lookupId": "lootTable"
+        },
+        {
+          "id": "cooldown_after_being_attacked",
+          "description": "Duration, in seconds, for which mob won't barter items if it was hurt.",
+          "dataType": 18,
+          "minValue": 0,
+          "maxValue": 60
+        }
+      ]
+    },
+    "minecraft:block_climber": {
+      "description": "Allows the player to detect and manuever on the scaffolding block.",
+      "fields": []
+    },
+    "minecraft:block_sensor": {
+      "description": "Fires off a specified event when a block in the block list is broken within the sensor range.",
+      "fields": [
+        {
+          "id": "on_break",
+          "description": "List of blocks to watch for being broken to fire off a specified event. If a block is in multiple lists, multiple events will fire.",
+          "dataType": 16,
+          "subForm": {
+            "fields": [
+              {
+                "id": "block_list",
+                "description": "List of blocks that will trigger the sensor.",
+                "dataType": 17
+              },
+              {
+                "id": "on_block_broken",
+                "dataType": 8,
+                "lookupId": "entityTypeEvents"
+              }
+            ]
+          }
+        },
+        {
+          "id": "sensor_radius",
+          "description": "The maximum radial distance in which a specified block can be detected. The biggest radius is 32.0.",
+          "dataType": 3
+        },
+        {
+          "id": "sources",
+          "description": "List of sources that break the block to listen for. If none are specified, all block breaks will be detected.",
+          "dataType": 17
+        }
+      ]
+    },
+    "minecraft:boostable": {
+      "description": "Defines the conditions and behavior of a rideable entity's boost.",
+      "fields": [
+        {
+          "id": "boost_items",
+          "description": "List of items that can be used to boost while riding this entity.",
+          "dataType": 16,
+          "subForm": {
+            "fields": [
+              {
+                "id": "damage",
+                "description": "This is the damage that the item will take each time it is used.",
+                "dataType": 17
+              },
+              {
+                "id": "item",
+                "dataType": 2,
+                "description": "Name of the item that can be used to boost."
+              },
+              {
+                "id": "replace_item",
+                "dataType": 2,
+                "description": "The item used to boost will become this item once it is used up."
+              }
+            ]
+          }
+        },
+        {
+          "id": "duration",
+          "description": "Time in seconds for the boost.",
+          "dataType": 3,
+          "defaultValue": 3
+        },
+        {
+          "id": "speed_multiplier",
+          "description": "Factor by which the entity's normal speed increases. E.g. 2.0 means go twice as fast.",
+          "dataType": 3,
+          "defaultValue": 1
+        }
+      ]
+    },
+    "minecraft:boss": {
+      "description": "Defines the current state of the boss for updating the boss HUD.",
+      "fields": [
+        {
+          "id": "hud_range",
+          "description": "The max distance from the boss at which the boss's health bar is present on the players screen.",
+          "dataType": 0,
+          "defaultValue": 55
+        },
+        {
+          "id": "name",
+          "description": "The name that will be displayed above the boss's health bar.",
+          "dataType": 2,
+          "defaultValue": 55
+        },
+        {
+          "id": "should_darken_sky",
+          "description": "Whether the sky should darken in the presence of the boss.",
+          "dataType": 1,
+          "defaultValue": false
+        }
+      ]
+    },
+    "minecraft:break_blocks": {
+      "description": "Specifies the blocks that the entity can break as it moves around.",
+      "fields": [
+        {
+          "id": "breakable_blocks",
+          "description": "A list of the blocks that can be broken as this entity moves around.",
+          "dataType": 17
+        }
+      ]
+    },
+    "minecraft:breathable": {
+      "description": "Defines what blocks an entity can breathe in and gives them the ability to suffocate.",
+      "fields": [
+        {
+          "id": "total_supply",
+          "title": "Total air supply",
+          "description": "Time in seconds the entity can hold its breath.",
+          "dataType": 0,
+          "experienceType": 3,
+          "minValue": 0,
+          "suggestedMaxValue": 120,
+          "defaultValue": 15
+        },
+        {
+          "id": "suffocate_time",
+          "title": "Suffocate length",
+          "description": "Time in seconds between suffocation damage.",
+          "dataType": 0,
+          "defaultValue": -20
+        },
+        {
+          "id": "breathes_air",
+          "title": "Breathes in air",
+          "description": "If set, this entity can breathe in air.",
+          "dataType": 1,
+          "defaultValue": true
+        },
+        {
+          "id": "breathes_lava",
+          "title": "Breathes in lava",
+          "description": "If set, this entity can breathe in lava.",
+          "dataType": 1,
+          "defaultValue": true
+        },
+        {
+          "id": "breathes_solids",
+          "title": "Breathes in solids",
+          "description": "If set, this entity can breathe in solid blocks.",
+          "dataType": 1,
+          "defaultValue": false
+        },
+        {
+          "id": "breathes_water",
+          "title": "Breathes in water",
+          "description": "If set, this entity can breathe in water.",
+          "dataType": 1,
+          "defaultValue": false
+        },
+        {
+          "id": "generates_bubbles",
+          "description": "If set, this entity will have visible bubbles while in water.",
+          "dataType": 1,
+          "defaultValue": true
+        },
+        {
+          "id": "inhale_time",
+          "description": "Time in seconds to recover breath to maximum.",
+          "dataType": 7,
+          "defaultValue": 0
+        },
+        {
+          "id": "breathe_blocks",
+          "title": "Breathable blocks",
+          "description": "List of blocks this entity can breathe in, in addition to the selected items above.",
+          "dataType": 17
+        },
+        {
+          "id": "non_breathe_blocks",
+          "title": "Non-breathable blocks",
+          "description": "List of blocks this entity cannot breathe in, in addition to the selected items above.",
+          "dataType": 17
+        }
+      ]
+    },
+    "minecraft:breedable": {
+      "description": "Allows an entity to establish a way to get into the love state used for breeding.",
+      "fields": [
+        {
+          "id": "allow_sitting",
+          "description": "If true, entities can breed while sitting",
+          "dataType": 1,
+          "defaultValue": false
+        },
+        {
+          "id": "blend_attributes",
+          "description": "If true, the entities will blend their attributes in the offspring after they breed. For example, horses blend their health, movement, and jump_strength in their offspring.",
+          "dataType": 1,
+          "defaultValue": true
+        },
+        {
+          "id": "breed_cooldown",
+          "description": "Time in seconds before the Entity can breed again.",
+          "dataType": 3,
+          "defaultValue": 60
+        },
+        {
+          "id": "breed_items",
+          "description": "The list of items that can be used to get the entity into the 'love' state.",
+          "dataType": 17
+        },
+        {
+          "id": "breeds_with",
+          "description": "The list of entity definitions that this entity can breed with.",
+          "dataType": 15,
+          "subForm": {
+            "fields": [
+              {
+                "id": "baby_type",
+                "description": "The entity definition of this entity's babies.",
+                "dataType": 2
+              },
+              {
+                "id": "breed_event",
+                "description": "Event to run when this entity breeds.",
+                "dataType": 8,
+                "lookupId": "entityTypeEvents"
+              },
+              {
+                "id": "mate_type",
+                "description": "The inclusive minimum of the variant range.",
+                "dataType": 8,
+                "lookupId": "entityTypePlusVariants"
+              }
+            ]
+          }
+        },
+        {
+          "id": "causes_pregnancy",
+          "description": "If true, the entity will become pregnant instead of spawning a baby.",
+          "dataType": 1,
+          "defaultValue": false
+        },
+        {
+          "id": "deny_parents_variant",
+          "description": "Determines how likely the baby of parents with the same variant will deny that variant and take a random variant within the given range instead.",
+          "dataType": 16,
+          "subForm": {
+            "fields": [
+              {
+                "id": "chance",
+                "description": "The percentage chance of denying the parents' variant.",
+                "dataType": 3
+              },
+              {
+                "id": "max_variant",
+                "description": "The inclusive maximum of the variant range.",
+                "dataType": 2
+              },
+              {
+                "id": "min_variant",
+                "description": "The inclusive minimum of the variant range.",
+                "dataType": 2
+              }
+            ]
+          }
+        },
+        {
+          "id": "environment_requirements",
+          "description": "The list of nearby block requirements to get the entity into the 'love' state.",
+          "dataType": 15,
+          "subForm": {
+            "fields": [
+              {
+                "id": "block_types",
+                "description": "The block types required nearby for the entity to breed.",
+                "dataType": 17
+              },
+              {
+                "id": "count",
+                "description": "The number of the required block types nearby for the entity to breed.",
+                "dataType": 0
+              },
+              {
+                "id": "radius",
+                "description": "How many blocks radius from the mob's center to search in for the required blocks. Bounded between 0 and 16.",
+                "dataType": 3,
+                "minValue": 0,
+                "maxValue": 16
+              }
+            ]
+          }
+        },
+        {
+          "id": "extra_baby_chance",
+          "description": "Chance that up to 16 babies will spawn.",
+          "dataType": 21
+        },
+        {
+          "id": "inherit_tamed",
+          "description": "If true, the babies will be automatically tamed if its parents are.",
+          "dataType": 1
+        },
+        {
+          "id": "love_filters",
+          "description": "The filters to run when attempting to fall in love.",
+          "dataType": 20
+        },
+        {
+          "id": "mutation_factor",
+          "description": "Determines how likely the babies are to NOT inherit one of their parent's variances.",
+          "dataType": 16,
+          "subForm": {
+            "fields": [
+              {
+                "id": "color",
+                "description": "The percentage chance of denying the parents' variant.",
+                "dataType": 21
+              },
+              {
+                "id": "variant",
+                "description": "The percentage chance of a mutation on the entity's variant type.",
+                "dataType": 21
+              },
+              {
+                "id": "extra_variant",
+                "description": "The percentage chance of a mutation on the entity's extra variant type.",
+                "dataType": 21
+              }
+            ]
+          }
+        },
+        {
+          "id": "require_full_health",
+          "description": "If true, the entity needs to be at full health before it can breed.",
+          "dataType": 1,
+          "defaultValue": false
+        },
+        {
+          "id": "require_tame",
+          "description": "If true, the entities need to be tamed first before they can breed.",
+          "dataType": 1,
+          "defaultValue": true
+        }
+      ]
+    },
+    "minecraft:healable": {
+      "title": "Healable",
+      "description": "How entities heal",
+      "fields": [
+        {
+          "id": "force_use",
+          "title": "Whether an item can be used even if the entity is at full health",
+          "dataType": 1
+        },
+        {
+          "id": "filters",
+          "title": "Additional filters when healing happens",
+          "dataType": 20
+        }
+      ]
+    },
+    "minecraft:navigation.walk": {
+      "title": "Walk navigation",
+      "description": "Walking style of the mob",
+      "fields": [
+        {
+          "id": "can_float",
+          "title": "Entity can float",
+          "dataType": 1
+        },
+        {
+          "id": "avoid_water",
+          "title": "Avoids water",
+          "dataType": 1
+        },
+        {
+          "id": "avoid_damage_blocks",
+          "title": "Avoid damaging blocks",
+          "dataType": 1
+        }
+      ]
+    },
+    "minecraft:rideable": {
+      "title": "Rideable",
+      "description": "This entity can be ridden",
+      "fields": [
+        {
+          "id": "seat_count",
+          "title": "Number of seats",
+          "dataType": 0
+        },
+        {
+          "id": "crouching_skip_interact",
+          "title": "This entity can't be interacted with while crouching.",
+          "dataType": 1
+        },
+        {
+          "id": "controlling_seat",
+          "title": "The seat that controls how this entity moves",
+          "dataType": 0
+        },
+        {
+          "id": "pulls_in_entities",
+          "title": "This entity will pull in nearby entities.",
+          "dataType": 1
+        },
+        {
+          "id": "rider_can_interact",
+          "title": "Whether a rider can interact with this item.",
+          "dataType": 1
+        }
+      ]
+    },
+    "minecraft:tameable": {
+      "title": "Tameable",
+      "description": "This entity can be tamed",
+      "fields": [
+        {
+          "id": "probability",
+          "title": "Probability of being tamed"
+        },
+        {
+          "id": "tameItems",
+          "title": "List of items that can be fed to an entity to tame them"
+        },
+        {
+          "id": "tame_event",
+          "title": "Event to fire when the entity is tamed"
+        }
+      ]
+    },
+    "minecraft:health": {
+      "title": "Health",
+      "description": "Default and maximum health settings",
+      "fields": [
+        {
+          "id": "value",
+          "title": "Value",
+          "dataType": 0,
+          "experienceType": 3,
+          "minValue": 0,
+          "suggestedMaxValue": 120,
+          "defaultValue": 100
+        },
+        {
+          "id": "max",
+          "title": "Maximum health possible for this mob.",
+          "dataType": 0,
+          "experienceType": 3,
+          "minValue": 0,
+          "suggestedMaxValue": 120,
+          "defaultValue": 100
+        }
+      ]
+    }
+  }
+}

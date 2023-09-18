@@ -1,0 +1,3 @@
+diagnostic.disable.minecraft.manifest.version.minimum=true
+diagnostic.disable.=true
+diagnostic.disable.minecraft.manifest.module.missing=true

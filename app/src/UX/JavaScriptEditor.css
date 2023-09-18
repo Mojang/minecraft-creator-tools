@@ -1,0 +1,45 @@
+.jse-area {
+  min-width: 100%;
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+}
+
+.jse-commands {
+  display: grid;
+  padding: 3px;
+  grid-template-columns: 76px 1fr;
+}
+
+.jse-toolBarArea {
+  grid-column: 1;
+}
+
+.jse-toolBarLabel {
+  padding: 5px;
+}
+
+.jse-extraArea {
+  grid-column: 2;
+}
+
+.jse-snippets-overlay {
+  position: absolute;
+  overflow-y: auto;
+
+  left: 380px;
+  width: 440px;
+  height: 400px;
+  z-index: 200;
+  border-left: solid 1px black;
+  border-bottom: solid 1px black;
+  border-right: solid 1px black;
+}
+
+.jse-editor {
+  z-index: 100;
+}
+
+.jse-extraArea .ui-dropdown__container {
+  width: 260px !important;
+}

@@ -1,0 +1,37 @@
+.shp-url {
+}
+
+.shp-url .ui-box INPUT {
+  max-width: calc(100vw - 30px);
+  width: 500px;
+  padding-right: 6px;
+  padding-left: 6px;
+  padding-bottom: 3px;
+}
+
+.shp-optionsArea {
+  padding-top: 20px;
+  padding-bottom: 40px;
+  display: grid;
+  grid-template-columns: 200px 200px 100px;
+}
+
+.shp-summaryCell {
+  grid-column: 1;
+  padding-top: 4px;
+}
+
+.shp-contentCell {
+  grid-column: 2;
+  padding: 5px;
+  cursor: pointer;
+  padding-bottom: 2px;
+  background-color: white;
+  color: black;
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+
+.shp-copyButton {
+  grid-column: 3;
+}

@@ -1,0 +1,44 @@
+.texed-interior {
+  min-height: 47px;
+  height: 100%;
+  width: 100%;
+  border: solid 1px #999999;
+}
+
+.texed-area {
+  min-width: 100%;
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+}
+
+.texed-input-area {
+  display: grid;
+}
+
+.texed-input {
+  grid-column: 1;
+}
+
+.texed-accessoryToolBar {
+  grid-column: 2;
+}
+
+.texed-toolBarArea {
+  padding: 2px;
+  display: grid;
+  grid-template-columns: 1fr 87px;
+}
+
+.texed-text {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.texed-title {
+  grid-column: 1;
+  padding-top: 5px;
+}
+
+.texed-toolBar {
+  grid-column: 2;
+}

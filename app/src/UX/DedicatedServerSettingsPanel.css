@@ -1,0 +1,134 @@
+@media only screen and (min-width: 916px) {
+  .dssp-namelabel {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .dssp-grid {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+  }
+
+  .dssp-modeinput .ui-dropdown__container {
+    width: 320px;
+  }
+}
+
+@media only screen and (max-width: 915px) {
+  .dssp-modeinput .ui-dropdown__container {
+    width: 210px;
+  }
+}
+
+.dssp-outer {
+  padding: 12px;
+  padding-top: 10px;
+}
+
+.dssp-link {
+  display: inline;
+  text-decoration: none;
+}
+
+.dssp-link:hover {
+  display: inline;
+  text-decoration: underline;
+}
+
+.dssp-header {
+  font-weight: bold;
+  padding-left: 3px;
+  padding-top: 6px;
+  padding-bottom: 26px;
+}
+
+.dssp-grid {
+  padding-top: 10px;
+  padding-bottom: 30px;
+  overflow-y: auto;
+  display: grid;
+}
+
+.dssp-label {
+  padding-left: 2px;
+  padding-bottom: 10px;
+  padding-top: 8px;
+}
+
+.dssp-modelabel {
+  grid-row: 2;
+  grid-column: 1;
+  text-align: right;
+  padding-right: 18px;
+  padding-top: 5px;
+}
+
+.dssp-modeinput {
+  grid-row: 2;
+  grid-column: 2;
+  padding-bottom: 20px;
+}
+
+.dssp-openfolderbutton {
+  margin-left: 8px;
+}
+
+.dssp-iagreelabel {
+  grid-row: 3;
+  grid-column: 2;
+}
+
+.dssp-iagreeinput {
+  grid-row: 3;
+  grid-column: 1;
+  text-align: right;
+  padding-top: 4px;
+}
+
+.dssp-usepreviewlabel {
+  grid-row: 4;
+  grid-column: 2;
+  padding-bottom: 30px;
+}
+
+.dssp-usepreviewinput {
+  grid-row: 4;
+  grid-column: 1;
+  text-align: right;
+  padding-top: 4px;
+}
+
+.dssp-pathlabel {
+  grid-row: 3;
+  grid-column: 1;
+  text-align: right;
+  padding-bottom: 30px;
+  padding-top: 8px;
+  padding-right: 18px;
+}
+
+.dssp-pathinput {
+  grid-row: 3;
+  grid-column: 2;
+  padding-top: 4px;
+}
+
+.dssp-pathinput input {
+  width: 290px;
+}
+
+.dssp-slotcountlabel {
+  grid-row: 5;
+  grid-column: 1;
+  padding-right: 20px;
+}
+
+.dssp-slotcountinput {
+  grid-row: 5;
+  grid-column: 2;
+  padding-bottom: 20px;
+}
+
+.dssp-slotcountinput input {
+  width: 120px;
+}

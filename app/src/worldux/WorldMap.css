@@ -1,0 +1,22 @@
+.wm-spawnIcon {
+  vertical-align: top;
+  text-align: middle;
+  padding-top: 2px;
+  padding-bottom: 8px;
+  padding-left: 2px;
+  padding-right: 2px;
+  background-color: #f0f0f030;
+  border: solid 1px black;
+  border-radius: 10px;
+}
+.wm-playerIcon {
+  vertical-align: top;
+  text-align: middle;
+  padding-top: 1px;
+  padding-bottom: 2px;
+  padding-left: 1px;
+  padding-right: 2px;
+  background-color: blue;
+  border: solid 1px black;
+  border-radius: 10px;
+}

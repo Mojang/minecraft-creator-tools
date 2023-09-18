@@ -1,0 +1,29 @@
+.btt-outer {
+  display: block;
+}
+
+.btt-icon {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  max-width: 16px;
+  min-height: 16px;
+  max-height: 16px;
+  margin: 1px;
+  margin-top: 3px;
+}
+
+.btt-iconplaceholder {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  border: solid 1px silver;
+  margin: 1px;
+  margin-top: 3px;
+}
+
+.btt-title {
+  vertical-align: top;
+  padding-top: 2px;
+  padding-left: 4px;
+}

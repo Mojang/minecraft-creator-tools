@@ -1,0 +1,84 @@
+.mcfe-contentSingle {
+  display: grid;
+  grid-template-columns: 1fr 30px;
+}
+
+.mcfe-interior {
+  min-height: 47px;
+  height: 47px;
+  padding-top: 10px;
+}
+
+.mcfe-interiorSingle {
+  min-height: 47px;
+  height: 47px;
+  padding-right: 24px;
+  grid-column: 1;
+}
+
+.mcfe-interiorSingle .overflow-guard {
+  height: 24px !important;
+}
+
+.mcfe-area {
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  width: calc(100% - 2px);
+  height: 100%;
+}
+
+.mcfe-toolBarArea {
+  padding: 2px;
+  padding-top: 10px;
+  display: grid;
+  grid-template-columns: 140px 1fr;
+}
+
+.mcfe-accessoryToolBarAreaSingle {
+  grid-column: 2;
+}
+
+.mcfe-acessoryToolBarArea {
+  display: grid;
+  grid-template-columns: 1fr 40px;
+}
+
+.mcfe-title {
+  grid-column: 1;
+  padding-top: 5px;
+  padding-left: 10px;
+}
+
+.mcfe-toolBar {
+  grid-column: 2;
+}
+
+.mcfe-bottomStats {
+  grid-column: 1;
+}
+
+.mcfe-bottomToolBar {
+  grid-column: 2;
+}
+
+.mcfe-glyphMarginRunningClass {
+  background: gray;
+}
+
+.mcfe-glyphMarginSuccessClass {
+}
+
+.mcfe-glyphMarginFailClass {
+  background: red;
+}
+
+.mcfe-glyphContentClass {
+  background: #000000;
+}
+
+.mcfe-area .monaco-editor-background {
+  background-color: #000000;
+}
+.mcfe-area .monaco-editor .margin {
+  background-color: #000000;
+}

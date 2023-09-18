@@ -1,0 +1,12 @@
+.pcmn-outer {
+  padding: 0px;
+}
+
+.pcmn-grid {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+}
+
+.pcmn-list {
+  width: 400px;
+}

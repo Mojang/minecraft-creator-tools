@@ -1,0 +1,70 @@
+.npme-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  overflow-y: auto;
+}
+
+.npme-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.npme-mainArea {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+}
+
+.npme-componentList {
+  grid-column: 1;
+  padding-top: 40px;
+}
+
+.npme-componentListInterior {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.npme-itemBin {
+  grid-column: 2;
+}
+
+.npme-header {
+  font-size: 16pt;
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-bottom: 13px;
+  background: #242425;
+}
+
+.npme-form {
+  padding-top: 20px;
+  padding-left: 20px;
+}
+
+.npme-componentHeader {
+  padding-top: 20px;
+  font-size: 14pt;
+  padding: 12px;
+  padding-top: 40px;
+  padding-bottom: 14px;
+}
+
+.npme-extraArea {
+  margin-bottom: 5px;
+}
+
+.npme-commands {
+  display: grid;
+  padding: 3px;
+  grid-template-columns: 200px 1fr;
+}
+
+.npme-toolBarArea {
+  grid-column: 1;
+}
+
+.npme-extraArea {
+  grid-column: 2;
+}

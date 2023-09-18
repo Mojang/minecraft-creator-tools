@@ -1,0 +1,12 @@
+.tmmn-outer {
+  padding: 0px;
+}
+
+.tmmn-grid {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+}
+
+.tmmn-list {
+  width: 400px;
+}

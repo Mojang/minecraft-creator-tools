@@ -1,0 +1,75 @@
+@media only screen and (min-width: 916px) {
+  .mts-outer .ui-dropdown__container {
+    width: 160px;
+  }
+
+  .mts-label {
+    position: relative;
+    top: 1px;
+    padding-right: 12px;
+  }
+
+  .mts-toolArea {
+    display: grid;
+    grid-template-columns: 180px 180px 55px 1fr;
+  }
+
+  .mts-typeLabel {
+    grid-column: 3;
+    padding-left: 8px;
+    padding-top: 4px;
+    grid-row: 1;
+  }
+}
+
+@media only screen and (max-width: 915px) {
+  .mts-outer .ui-dropdown__container {
+    width: 100px;
+  }
+
+  .mts-toolArea {
+    display: grid;
+    grid-template-columns: 120px 180px 55px 1fr;
+  }
+
+  .mts-label {
+    display: none;
+  }
+
+  .mts-typeLabel {
+    display: none;
+  }
+}
+
+.mts-spacer {
+  margin-top: 20px;
+}
+
+.mts-header {
+  font-weight: bold;
+}
+
+.mts-toolPicker {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.mts-toolName {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.mts-toolName input {
+  width: 120px;
+}
+
+.mts-toolType {
+  grid-column: 4;
+  grid-row: 1;
+}
+
+.mts-interior {
+  grid-column-start: 1;
+  grid-column-end: 5;
+  grid-row: 2;
+}

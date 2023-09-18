@@ -1,0 +1,357 @@
+@media only screen and (min-width: 916px) {
+  .ppe-grid {
+    display: grid;
+    grid-template-columns: 200px 340px 140px 1fr;
+  }
+
+  .ppe-advgrid {
+    display: grid;
+    grid-template-columns: 200px 340px 140px;
+  }
+}
+
+@media only screen and (max-width: 915px) {
+}
+
+.ppe-advgrid {
+  padding-top: 2px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 12pt;
+}
+
+.ppe-grid {
+  padding: 20px;
+  padding-top: 50px;
+  overflow-y: auto;
+}
+
+.ppe-header {
+  font-size: 16pt;
+  padding-top: 15px;
+  padding-left: 30px;
+  padding-bottom: 16px;
+  background: #242425;
+  font-weight: bold;
+}
+
+.ppe-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.ppe-ghshareableUrl {
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 3px;
+}
+
+.ppe-signInButton {
+  padding-bottom: 8px;
+}
+
+.ppe-link {
+  margin-top: 14px;
+  font-weight: bold;
+}
+
+.ppe-toolArea {
+  padding-top: 20px;
+  padding-bottom: 30px;
+  padding-left: 20px;
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+
+.ppe-label {
+  font-size: 11pt;
+  font-weight: bold;
+  padding-bottom: 10px;
+  padding-top: 3px;
+}
+
+.ppe-namelabel {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.ppe-nameinput {
+  grid-row: 1;
+  grid-column: 2;
+  padding-bottom: 20px;
+}
+
+.ppe-titlelabel {
+  grid-row: 2;
+  grid-column: 1;
+}
+
+.ppe-titleinput {
+  grid-row: 2;
+  grid-column: 2;
+  padding-bottom: 20px;
+}
+
+.ppe-descriptionlabel {
+  grid-row: 3;
+  grid-column: 1;
+}
+
+.ppe-descriptioninput {
+  grid-row: 3;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding-bottom: 20px;
+}
+
+.ppe-namespacelabel {
+  grid-row: 4;
+  grid-column: 1;
+}
+
+.ppe-namespaceinput {
+  grid-row: 4;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding-bottom: 20px;
+}
+
+.ppe-descriptioninput textarea {
+  width: 400px;
+  height: 120px;
+}
+
+.ppe-defaultEditlabel {
+  grid-row: 5;
+  grid-column: 1;
+}
+
+.ppe-defaultEditinput {
+  grid-row: 5;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding-bottom: 20px;
+}
+
+.ppe-scriptLanguagelabel {
+  grid-row: 6;
+  grid-column: 1;
+}
+
+.ppe-scriptLanguageinput {
+  grid-row: 6;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding-bottom: 20px;
+}
+
+.ppe-scriptVersionlabel {
+  grid-row: 7;
+  grid-column: 1;
+}
+
+.ppe-scriptVersioninput {
+  grid-row: 7;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding-bottom: 20px;
+}
+
+.ppe-versionlabel {
+  grid-row: 8;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.ppe-versioninputline {
+  display: inline;
+}
+
+.ppe-versioninputline .ui-input__icon {
+  right: 15px;
+}
+
+.ppe-versioninputline input {
+  width: 90px;
+  margin-right: 10px;
+}
+
+.ppe-versioninput {
+  grid-row: 8;
+  grid-column: 2;
+  padding-bottom: 20px;
+}
+
+.ppe-ghheader {
+  font-weight: bold;
+  padding-bottom: 2px;
+}
+
+.ppe-additional {
+  padding-top: 20px;
+}
+
+.ppe-ghlabel {
+  grid-row: 9;
+  grid-column: 1;
+  padding-top: 27px;
+}
+
+.ppe-ghinput {
+  grid-row: 9;
+  grid-column: 2;
+  padding-top: 26px;
+  padding-bottom: 20px;
+}
+
+.ppe-ghbutton {
+  grid-row: 10;
+  grid-column: 3;
+  padding-top: 30px;
+  padding-bottom: 20px;
+}
+
+.ppe-advancedArea {
+  font-size: 14pt;
+  grid-row: 10;
+  grid-column-start: 1;
+  grid-column-end: 5;
+  padding-top: 30px;
+}
+
+.ppe-bedrock {
+  grid-row: 10;
+  font-size: 2;
+  line-height: 0.5;
+  min-height: 16px;
+  max-height: 16px;
+}
+
+.ppe-toolArea {
+  font-family: "Noto Sans", "Segoe UI", "Helvetica Neue", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", sans-serif;
+  font-size: 12pt;
+}
+
+.ppe-toolArea svg {
+  font-size: 14pt;
+  position: relative;
+  left: -4px;
+  top: 3px;
+}
+
+.ppe-bpuniqueidlabel {
+  grid-row: 1;
+  grid-column: 1;
+  padding-bottom: 10px;
+  padding-top: 26px;
+}
+
+.ppe-bpuniqueidinput {
+  grid-row: 1;
+  grid-column: 2;
+  padding-bottom: 4px;
+  padding-top: 21px;
+}
+
+.ppe-bpuniqueIdInputValue input {
+  min-width: 310px;
+  width: 310px;
+}
+
+.ppe-bpuniqueidcreatenew {
+  grid-row: 1;
+  grid-column: 3;
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.ppe-rpuniqueidlabel {
+  grid-row: 2;
+  grid-column: 1;
+  padding-bottom: 10px;
+  padding-top: 26px;
+}
+
+.ppe-rpuniqueidinput {
+  grid-row: 2;
+  grid-column: 2;
+  padding-bottom: 10px;
+  padding-top: 21px;
+}
+
+.ppe-rpuniqueIdInputValue input {
+  min-width: 310px;
+  width: 310px;
+}
+
+.ppe-rpuniqueidcreatenew {
+  grid-row: 2;
+  grid-column: 3;
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.ppe-datauniqueidlabel {
+  grid-row: 3;
+  grid-column: 1;
+  padding-top: 9px;
+  padding-bottom: 20px;
+}
+
+.ppe-datauniqueidinput {
+  grid-row: 3;
+  grid-column: 2;
+  padding-bottom: 20px;
+  padding-top: 1px;
+}
+
+.ppe-datauniqueIdInputValue input {
+  min-width: 310px;
+  width: 310px;
+}
+
+.ppe-datauniqueidcreatenew {
+  grid-row: 3;
+  grid-column: 3;
+  padding-bottom: 20px;
+  padding-top: 0px;
+  height: 16px;
+}
+
+.ppe-scriptuniqueidlabel {
+  grid-row: 4;
+  grid-column: 1;
+  padding-bottom: 20px;
+  padding-top: 6px;
+}
+
+.ppe-toolArea button {
+  margin: 2px;
+  width: 260px;
+  display: inline-block;
+}
+
+.ppe-scriptuniqueidinput {
+  grid-row: 4;
+  grid-column: 2;
+  padding-bottom: 20px;
+  padding-top: 1px;
+}
+
+.ppe-propertyNote {
+  padding: 2px;
+  padding-top: 6px;
+}
+
+.ppe-scriptuniqueIdInputValue input {
+  min-width: 310px;
+  width: 310px;
+}
+
+.ppe-scriptuniqueidcreatenew {
+  grid-row: 4;
+  grid-column: 3;
+  padding-bottom: 20px;
+  padding-top: 0px;
+}

@@ -1,0 +1,39 @@
+.dcomme-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  overflow-y: auto;
+}
+
+.dcomme-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.dcomme-header {
+  font-size: 16pt;
+  padding-top: 12px;
+  padding-left: 12px;
+  padding-bottom: 12px;
+  background: #242425;
+}
+
+.dcomme-commandProps {
+  padding-left: 4px;
+  padding-top: 4px;
+}
+
+.dcomme-commandCard {
+  padding: 12px;
+  margin: 4px;
+  margin-bottom: 10px;
+  border: solid 1px black;
+}
+
+.dcomme-section {
+  font-size: 14pt;
+  padding-top: 12px;
+  padding-left: 12px;
+  padding-bottom: 12px;
+}
