@@ -4,7 +4,6 @@ import "./CartoSettings.css";
 import CartoSettingsPanel from "./CartoSettingsPanel";
 import { ThemeInput } from "@fluentui/react-northstar";
 import IPersistable from "./IPersistable";
-import RemoteServerSettingsPanel from "./RemoteServerSettingsPanel";
 
 interface ICartoSettingsProps extends IAppProps {
   heightOffset: number;
@@ -73,12 +72,6 @@ export default class CartoSettings extends Component<ICartoSettingsProps, ICarto
             theme={this.props.theme}
             carto={this.props.carto}
             setActivePersistable={this.props.setActivePersistable}
-          />
-          <RemoteServerSettingsPanel
-            carto={this.props.carto}
-            forceCompact={false}
-            setActivePersistable={this.props.setActivePersistable}
-            ensureMinecraftOnLogin={false}
           />
         </div>
       </div>

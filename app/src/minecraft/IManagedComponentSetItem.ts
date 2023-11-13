@@ -1,4 +1,3 @@
-import IComponent from "./IComponent";
 import { IEvent } from "ste-events";
 import IManagedComponent from "./IManagedComponent";
 

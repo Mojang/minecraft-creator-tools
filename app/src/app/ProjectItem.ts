@@ -196,6 +196,12 @@ export default class ProjectItem {
         return "Minecraft world (f)";
       case ProjectItemType.structure:
         return "Structure";
+      case ProjectItemType.MCFunction:
+        return "Function";
+      case ProjectItemType.tickJson:
+        return "Tick";
+      case ProjectItemType.cameraJson:
+        return "Camera";
       case ProjectItemType.catalogIndexJs:
         return "Catalog index";
       case ProjectItemType.autoScriptJson:
@@ -880,10 +886,10 @@ export default class ProjectItem {
     let obj = undefined;
 
     try {
-      strContent = Utilities.stripJsonComments(strContent);
+      strContent = Utilities.fixJsonContent(strContent);
       obj = JSON.parse(strContent);
     } catch (e) {
-      Log.debug("Could not parse content '" + strContent + "': " + e);
+      Log.debug("Could not parse content '" + strContent + "': " + e, this.project.name);
     }
 
     return obj;
@@ -1054,11 +1060,14 @@ export default class ProjectItem {
       const zs = this.file.fileContainerStorage as ZipStorage;
 
       if (zs.isContentUpdated && (zs.errorStatus === undefined || zs.errorStatus === StorageErrorStatus.none)) {
-        const op = this._project.carto.notifyOperationStarted(
+        const op = await this._project.carto.notifyOperationStarted(
           "Zipping file '" + this.file.storageRelativePath + "'..."
         );
         const bytes = await zs.generateUint8ArrayAsync();
-        this._project.carto.notifyOperationEnded(op, "Done zipping file '" + this.file.storageRelativePath + "'.");
+        await this._project.carto.notifyOperationEnded(
+          op,
+          "Done zipping file '" + this.file.storageRelativePath + "'."
+        );
 
         this.file.setContent(bytes);
       }

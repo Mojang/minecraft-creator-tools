@@ -147,7 +147,7 @@ export default class GitHubFile extends FileBase implements IFile {
               headers: {},
             });
           } catch (e) {
-            Log.error("Could not retrieve file '" + this.fullPath + "' from '" + path + "'");
+            Log.error("Could not retrieve file '" + this.fullPath + "'", path);
 
             this.lastLoadedOrSaved = new Date();
             return this.lastLoadedOrSaved;

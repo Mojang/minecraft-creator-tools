@@ -218,11 +218,11 @@ export default class DocumentedModuleEditor
     for (const className in classes) {
       const docClass = classes[className];
 
-      let header = docClass.id;
+      let nodeTitle = docClass.id;
       let media = <div>&#160;</div>;
 
       if (docClass.undocumentedCount > 0) {
-        header += " (" + docClass.undocumentedCount + ")";
+        nodeTitle += " (" + docClass.undocumentedCount + ")";
         media = (
           <div className="dme-incompleteItem">
             <FontAwesomeIcon icon={faPenToSquare} className="fa-lg" />
@@ -230,11 +230,13 @@ export default class DocumentedModuleEditor
         );
       }
 
+      const contentNode = <div title={docClass.id}>{nodeTitle}</div>;
+
       if (!filterOnTypesNeedingEdits || docClass.undocumentedCount > 0) {
         classListing.push({
           key: docClass.id,
           media: media,
-          header: header,
+          content: contentNode,
         });
       }
     }
@@ -244,11 +246,11 @@ export default class DocumentedModuleEditor
     for (const enumName in enums) {
       const docEnum = enums[enumName];
 
-      let header = docEnum.id;
+      let nodeTitle = docEnum.id;
       let media = <div>&#160;</div>;
 
       if (docEnum.undocumentedCount > 0) {
-        header += " (" + docEnum.undocumentedCount + ")";
+        nodeTitle += " (" + docEnum.undocumentedCount + ")";
         media = (
           <div className="dme-incompleteItem">
             <FontAwesomeIcon icon={faPenToSquare} className="fa-lg" />
@@ -256,11 +258,13 @@ export default class DocumentedModuleEditor
         );
       }
 
+      const contentNode = <div title={docEnum.id}>{nodeTitle}</div>;
+
       if (!filterOnTypesNeedingEdits || docEnum.undocumentedCount > 0) {
         classListing.push({
           key: docEnum.id,
           media: media,
-          header: header,
+          content: contentNode,
         });
       }
     }

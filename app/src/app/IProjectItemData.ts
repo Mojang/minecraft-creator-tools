@@ -1,6 +1,6 @@
 import IGitHubInfo from "./IGitHubInfo";
 
-export const MaxItemTypes = 80;
+export const MaxItemTypes = 83;
 
 export enum ProjectItemType {
   unknown = 0,
@@ -83,6 +83,9 @@ export enum ProjectItemType {
   vsCodeSettingsJson = 77,
   vsCodeExtensionsJson = 78,
   lang = 79,
+  projectSummaryMetadata = 80,
+  tickJson = 81,
+  cameraJson = 82,
 }
 
 export enum ProjectItemStorageType {

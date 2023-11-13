@@ -171,7 +171,7 @@ export default class StorageProxy {
   fileIsContainer() {}
 
   async writeUtf8File(sender: any, command: string, data: any) {
-    Log.assert(typeof data.path === "string");
+    Log.assert(typeof data.path === "string", "StorageProxy writeUtf8File not expected type.");
 
     const ensureFile = await this._storage.rootFolder.ensureFileFromRelativePath(data.path as string);
 
@@ -189,7 +189,7 @@ export default class StorageProxy {
   }
 
   async writeFile(sender: any, command: string, data: any) {
-    Log.assert(typeof data.path === "string");
+    Log.assert(typeof data.path === "string", "Data path not expected string type.");
 
     const ensureFile = await this._storage.rootFolder.ensureFileFromRelativePath(data.path as string);
 

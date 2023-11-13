@@ -152,9 +152,8 @@ export default class NodeFolder extends FolderBase implements IFolder {
     this._name = newFolderName;
 
     const newFullPath = this.fullPath;
-    console.log("RENAMING FROM " + oldFullPath + "|" + newFullPath);
+    Log.verbose("Renaming folder from: " + oldFullPath + " to " + newFullPath);
     fs.renameSync(oldFullPath, newFullPath);
-    console.log("NEW PATH" + this.storageRelativePath);
     return true;
   }
 
@@ -305,7 +304,7 @@ export default class NodeFolder extends FolderBase implements IFolder {
               targetFileSize.size &&
               arrData.length > targetFileSize.size
             ) {
-              console.log("Making truncated buffer copy of " + file.fullPath + " to size " + targetFileSize.size);
+              Log.verbose("Making truncated buffer copy of " + file.fullPath + " to size " + targetFileSize.size);
               arrData = arrData.subarray(0, targetFileSize.size);
             } else if (
               targetFileSize &&
@@ -313,7 +312,7 @@ export default class NodeFolder extends FolderBase implements IFolder {
               targetFileSize.size &&
               arrData.length > targetFileSize.size
             ) {
-              console.log("Making truncated array copy of " + file.fullPath + " to size " + targetFileSize.size);
+              Log.verbose("Making truncated array copy of " + file.fullPath + " to size " + targetFileSize.size);
               arrData = arrData.subarray(0, targetFileSize.size);
             }
 

@@ -2,7 +2,7 @@ import { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
 import "./MinecraftToolEditor.css";
 import { CartoMinecraftState } from "../app/Carto";
-import { Dropdown, DropdownProps, Input, InputProps, ThemeInput } from "@fluentui/react-northstar";
+import { Dropdown, DropdownProps, Input, InputProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
 import FunctionEditor from "./FunctionEditor";
 import IPersistable from "./IPersistable";
 import IMinecraft from "../app/IMinecraft";
@@ -13,17 +13,22 @@ import { CustomToolType } from "../app/ICustomTool";
 import JavaScriptEditor, { ScriptEditorRole } from "./JavaScriptEditor";
 import { ProjectScriptLanguage } from "../app/IProjectData";
 import Project from "../app/Project";
+import LogItemArea from "./LogItemArea";
+import { ProjectStatusAreaMode } from "./ProjectEditor";
 
 interface IMinecraftToolEditorProps extends IAppProps {
   heightOffset: number;
   project?: Project;
   theme: ThemeInput<any>;
+  widthOffset: number;
+
   setActivePersistable?: (persistObject: IPersistable) => void;
 }
 
 interface IMinecraftToolEditorState {
   activeCommandIndex: number;
   toolName: string;
+  minecraftStatus: ProjectStatusAreaMode;
 }
 
 export default class MinecraftToolEditor
@@ -46,12 +51,14 @@ export default class MinecraftToolEditor
     this._handleCommandTypeChange = this._handleCommandTypeChange.bind(this);
     this._connectionStateChanged = this._connectionStateChanged.bind(this);
     this._handleToolNameUpdate = this._handleToolNameUpdate.bind(this);
+    this._statusExpandedSizeChanged = this._statusExpandedSizeChanged.bind(this);
 
     this._connectToProps();
 
     this.state = {
       activeCommandIndex: 0,
       toolName: this.getNameForTool(0),
+      minecraftStatus: ProjectStatusAreaMode.expanded,
     };
   }
 
@@ -130,6 +137,7 @@ export default class MinecraftToolEditor
     } else {
       customTool.type = CustomToolType.function;
     }
+
     await this.persist();
 
     this.forceUpdate();
@@ -144,11 +152,22 @@ export default class MinecraftToolEditor
 
     customTool.name = data.value;
 
+    this.props.carto.save();
+
     this.persist();
 
     this.setState({
       activeCommandIndex: this.state.activeCommandIndex,
       toolName: data.value,
+      minecraftStatus: this.state.minecraftStatus,
+    });
+  }
+
+  _statusExpandedSizeChanged(newMode: ProjectStatusAreaMode) {
+    this.setState({
+      activeCommandIndex: this.state.activeCommandIndex,
+      toolName: this.state.toolName,
+      minecraftStatus: newMode,
     });
   }
 
@@ -184,7 +203,7 @@ export default class MinecraftToolEditor
     this._commandValues = [];
 
     for (let i = 0; i < 9; i++) {
-      const name = this.getNameForTool(i);
+      const name = "Ctrl-" + (i + 1).toString() + ": " + this.getNameForTool(i);
 
       this._commandValues.push(name);
     }
@@ -199,6 +218,9 @@ export default class MinecraftToolEditor
           onUpdatePreferredTextSize={this._updatePreferredTextSize}
           preferredTextSize={this.props.carto.preferredTextSize}
           readOnly={false}
+          project={this.props.project}
+          runCommandButton={true}
+          onUpdateContent={this._updateToolContent}
           carto={this.props.carto}
           initialContent={content}
         />
@@ -225,7 +247,7 @@ export default class MinecraftToolEditor
           theme={this.props.theme}
           initialContent={content}
           project={this.props.project}
-          isCommandEditor={false}
+          isCommandEditor={true}
           roleId={"toolEditor"}
           onUpdateContent={this._updateToolContent}
           readOnly={false}
@@ -238,16 +260,19 @@ export default class MinecraftToolEditor
       );
     }
     const toolType = customTool.type === CustomToolType.function ? "Commands" : "Script";
-
+    const toolbarItems: any[] = [];
     return (
       <div className="mts-outer">
         <div className="mts-toolArea">
+          <div className="cose-componentToolBarArea">
+            <Toolbar aria-label="Editor toolbar overflow menu" items={toolbarItems} />
+          </div>
           <div className="mts-toolPicker">
             <Dropdown
               items={this._commandValues}
               placeholder="Select a command"
               defaultValue={this.state.toolName}
-              value={this.state.toolName}
+              value={"Ctrl-" + (this.state.activeCommandIndex + 1).toString() + ": " + this.state.toolName}
               onChange={this._handleCommandChange}
             />
           </div>
@@ -255,7 +280,12 @@ export default class MinecraftToolEditor
             <span className="mts-label">Name:</span>
             <Input
               clearable
-              placeholder={this.getNameForTool(this.state.activeCommandIndex)}
+              placeholder={
+                "Ctrl-" +
+                (this.state.activeCommandIndex + 1).toString() +
+                ": " +
+                this.getNameForTool(this.state.activeCommandIndex)
+              }
               value={this.state.toolName}
               onChange={this._handleToolNameUpdate}
             />
@@ -270,6 +300,14 @@ export default class MinecraftToolEditor
             />
           </div>
           <div className="mts-interior">{interior}</div>
+          <div className="mts-logArea">
+            <LogItemArea
+              carto={this.props.carto}
+              onSetExpandedSize={this._statusExpandedSizeChanged}
+              mode={this.state.minecraftStatus}
+              widthOffset={this.props.widthOffset}
+            />
+          </div>
         </div>
       </div>
     );

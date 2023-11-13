@@ -16,6 +16,10 @@
   font-weight: bold;
 }
 
+.pid-summaryArea {
+  overflow-y: auto;
+}
+
 .pis-summaryArea {
   display: grid;
   margin-bottom: 20px;

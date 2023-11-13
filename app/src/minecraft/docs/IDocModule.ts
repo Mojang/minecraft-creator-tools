@@ -3,6 +3,7 @@ import IDocScriptEnum from "./IDocScriptEnum";
 
 export default interface IDocModule {
   classes: IDocClass[];
+  errors: IDocClass[];
   constants: [];
   dependencies: [];
   enums: IDocScriptEnum[];

@@ -8,16 +8,12 @@ import Project, { ProjectErrorState } from "./../app/Project";
 import IGalleryProject, { GalleryProjectType } from "../app/IGalleryProject";
 import IFolder from "../storage/IFolder";
 import { GalleryProjectCommand } from "./ProjectGallery";
-import { LocalGalleryCommand, LocalFolderType } from "./LocalGallery";
 import GitHubStorage from "../github/GitHubStorage";
 import Log from "../core/Log";
 import { ProjectFocus, ProjectScriptLanguage } from "../app/IProjectData";
 import CartoApp, { HostType } from "../app/CartoApp";
 import StorageUtilities from "../storage/StorageUtilities";
-import ElectronTitleBar from "./ElectronTitleBar";
 import CodeToolbox from "./CodeToolbox";
-import RemoteServerManager from "./RemoteServerManager";
-import ServerManager from "./ServerManager";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { CartoEditorViewMode } from "../app/ICartoData";
 import MCWorld from "../minecraft/MCWorld";
@@ -29,6 +25,7 @@ import ProjectUtilities from "../app/ProjectUtilities";
 import CodeToolboxLanding from "./CodeToolboxLanding";
 import ProjectExporter from "../app/ProjectExporter";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
+import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
 
 export enum NewProjectTemplateType {
   empty,
@@ -43,10 +40,10 @@ export enum AppMode {
   projectReadOnly = 5,
   exporterTool = 6,
   remoteServerManager = 7,
-  serverManager = 8,
+  companion = 8,
   codeStartPage = 9,
-  serverManagerPlusBack = 10,
-  serverManagerMinusTitlebar = 11,
+  companionPlusBack = 10,
+  companionMinusTitlebar = 11,
   codeStartPageForceNewProject = 12,
   codeLandingForceNewProject = 13,
   codeMinecraftView = 14,
@@ -272,11 +269,11 @@ export default class App extends Component<AppProps, AppState> {
       case "remoteservermanager":
         return AppMode.remoteServerManager;
 
-      case "servermanager":
-        return AppMode.serverManager;
+      case "companion":
+        return AppMode.companion;
 
-      case "servermanagerht":
-        return AppMode.serverManagerMinusTitlebar;
+      case "companionht":
+        return AppMode.companionMinusTitlebar;
 
       default:
         return undefined;
@@ -493,14 +490,14 @@ export default class App extends Component<AppProps, AppState> {
             mode: AppMode.codeLandingForceNewProject,
             activeProject: null,
           };
-        } else if (commandToken === "servermanager") {
+        } else if (commandToken === "companion") {
           return {
-            mode: AppMode.serverManager,
+            mode: AppMode.companion,
             activeProject: null,
           };
-        } else if (commandToken === "servermanagerht") {
+        } else if (commandToken === "companionht") {
           return {
-            mode: AppMode.serverManagerMinusTitlebar,
+            mode: AppMode.companionMinusTitlebar,
             activeProject: null,
           };
         }
@@ -818,7 +815,7 @@ export default class App extends Component<AppProps, AppState> {
 
     await carto.load();
 
-    const operId = carto.notifyOperationStarted("Creating new project from '" + title + "'");
+    const operId = await carto.notifyOperationStarted("Creating new project from '" + title + "'");
 
     if (gitHubOwner !== undefined && gitHubRepoName !== undefined) {
       const gh = new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
@@ -917,7 +914,7 @@ export default class App extends Component<AppProps, AppState> {
       });
     }
 
-    carto.notifyOperationEnded(operId, "New project '" + title + "' created.  Have fun!");
+    await carto.notifyOperationEnded(operId, "New project '" + title + "' created.  Have fun!");
   }
 
   private async _gitHubAddingMessageUpdater(additionalMessage: string) {
@@ -1011,7 +1008,7 @@ export default class App extends Component<AppProps, AppState> {
 
     const folderName = StorageUtilities.getLeafName(canonPath);
 
-    const operId = carto.notifyOperationStarted("Creating new project from '" + canonPath + "'");
+    const operId = await carto.notifyOperationStarted("Creating new project from '" + canonPath + "'");
 
     if (folderName !== undefined) {
       let projName = "my-" + folderName;
@@ -1048,7 +1045,7 @@ export default class App extends Component<AppProps, AppState> {
       });
     }
 
-    carto.notifyOperationEnded(operId, "New project '" + folderName + "' created. Have fun!");
+    await carto.notifyOperationEnded(operId, "New project '" + folderName + "' created. Have fun!");
   }
 
   private initProject(newProject: Project) {
@@ -1144,20 +1141,6 @@ export default class App extends Component<AppProps, AppState> {
     let top = <></>;
     let borderStr = "";
     let height = "100vh";
-    let heightOffset = 0;
-
-    if (CartoApp.hostType === HostType.electronWeb) {
-      top = <ElectronTitleBar mode={this.state.mode} />;
-      borderStr = "solid 1px black";
-
-      if (this.state?.mode === AppMode.serverManagerPlusBack) {
-        height = "calc(100vh - 42px)";
-        heightOffset = 42;
-      } else {
-        height = "calc(100vh - 36px)";
-        heightOffset = 36;
-      }
-    }
 
     if (this.state.mode === AppMode.loading) {
       let message = "loading...";
@@ -1228,30 +1211,6 @@ export default class App extends Component<AppProps, AppState> {
           onModeChangeRequested={this._handleModeChangeRequested}
         />
       );
-    } else if (this.state.mode === AppMode.remoteServerManager) {
-      interior = (
-        <RemoteServerManager
-          carto={this.state.carto}
-          onModeChangeRequested={this._handleModeChangeRequested}
-          onProjectSelected={this._handleProjectSelected}
-        />
-      );
-    } else if (
-      this.state.mode === AppMode.serverManager ||
-      this.state.mode === AppMode.serverManagerPlusBack ||
-      this.state.mode === AppMode.serverManagerMinusTitlebar
-    ) {
-      interior = (
-        <ServerManager
-          theme={this.props.theme}
-          carto={this.state.carto}
-          heightOffset={heightOffset}
-          displayBackButton={this.state.mode === AppMode.serverManagerPlusBack}
-          hideTitlebar={this.state.mode === AppMode.serverManagerMinusTitlebar}
-          onModeChangeRequested={this._handleModeChangeRequested}
-          onProjectSelected={this._handleProjectSelected}
-        />
-      );
     } else if (this.state.mode === AppMode.home) {
       interior = (
         <Home
@@ -1297,11 +1256,13 @@ export default class App extends Component<AppProps, AppState> {
       );
     } else if (this.state.activeProject !== null) {
       if (this.state.activeProject.errorState === ProjectErrorState.projectFolderOrFileDoesNotExist) {
-        let error = "Could not find project data folder. ";
+        let error = "Could not find project data folder: ";
 
         if (this.state.activeProject.localFolderPath) {
           error += this.state.activeProject.localFolderPath;
         }
+
+        error += ". It may not be available on this PC?";
 
         interior = (
           <Home
@@ -1314,6 +1275,19 @@ export default class App extends Component<AppProps, AppState> {
             onNewProjectSelected={this._handleNewProject}
             onNewProjectFromFolderSelected={this._handleNewProjectFromFolder}
             onProjectSelected={this._handleProjectSelected}
+          />
+        );
+      } else if (this.state.activeProject.originalSampleId) {
+        // show main view (no sidebar) if it's a code sample.
+        interior = (
+          <ProjectEditor
+            carto={this.state.carto}
+            theme={this.props.theme}
+            viewMode={CartoEditorViewMode.mainFocus}
+            project={this.state.activeProject}
+            selectedItem={this.state.selectedItem}
+            readOnly={isReadOnly}
+            onModeChangeRequested={this._handleModeChangeRequested}
           />
         );
       } else {

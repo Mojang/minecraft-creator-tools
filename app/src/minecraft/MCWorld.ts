@@ -18,7 +18,7 @@ import BlockCube from "./BlockCube";
 import IDimension from "./IDimension";
 import Block from "./Block";
 import Entity from "./Entity";
-import { IPackReference, IWorldSettings } from "./IWorldSettings";
+import { IPackReferenceSet, IWorldSettings } from "./IWorldSettings";
 import { StorageErrorStatus } from "../storage/IStorage";
 import MinecraftUtilities from "./MinecraftUtilities";
 import NbtBinary from "./NbtBinary";
@@ -27,6 +27,7 @@ import AnchorSet from "./AnchorSet";
 import Project from "../app/Project";
 import { ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 import ActorItem from "./ActorItem";
+import { StatusTopic } from "../app/Status";
 
 const BEHAVIOR_PACKS_RELPATH = "/world_behavior_packs.json";
 const BEHAVIOR_PACK_HISTORY_RELPATH = "/world_behavior_pack_history.json";
@@ -51,7 +52,6 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
 
   private _file?: IFile;
   private _folder?: IFolder;
-  private _bytes?: Uint8Array;
   private _project?: Project;
 
   private _autogenJsFile?: IFile;
@@ -79,7 +79,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
   worldResourcePackHistory?: IPackHistory;
   chunkCount = 0;
 
-  private _absoluteY = -64;
+  private _chunkMinY = -64;
   imageBase64?: string;
 
   levelDb?: LevelDb;
@@ -93,7 +93,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
   private _minZ: number | undefined;
   private _maxZ: number | undefined;
 
-  chunks: { [x: number]: { [z: number]: WorldChunk } } = {};
+  chunks: { [dim: number]: { [x: number]: { [z: number]: WorldChunk } } } = {};
 
   public get project() {
     return this._project;
@@ -107,12 +107,12 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     return this._anchors;
   }
 
-  public get absoluteY() {
-    return this._absoluteY;
+  public get chunkMinY() {
+    return this._chunkMinY;
   }
 
-  public set absoluteY(newY: number) {
-    this._absoluteY = newY;
+  public set chunkMinY(newY: number) {
+    this._chunkMinY = newY;
   }
 
   public get effectiveRootFolder() {
@@ -204,6 +204,30 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     return undefined;
   }
 
+  get deferredTechnicalPreviewExperiment() {
+    if (this.levelData !== undefined) {
+      const val = this.levelData.deferredTechnicalPreviewExperiment;
+
+      if (val === undefined) {
+        return false;
+      }
+
+      return val;
+    }
+
+    return false;
+  }
+
+  set deferredTechnicalPreviewExperiment(newVal: boolean) {
+    if (this.levelData === undefined) {
+      this.levelData = new WorldLevelDat();
+    }
+
+    if (this.levelData !== undefined) {
+      this.levelData.deferredTechnicalPreviewExperiment = newVal;
+    }
+  }
+
   get betaApisExperiment() {
     if (this.levelData !== undefined) {
       const val = this.levelData.betaApisExperiment;
@@ -225,6 +249,30 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
 
     if (this.levelData !== undefined) {
       this.levelData.betaApisExperiment = newVal;
+    }
+  }
+
+  get dataDrivenItemsExperiment() {
+    if (this.levelData !== undefined) {
+      const val = this.levelData.dataDrivenItemsExperiment;
+
+      if (val === undefined) {
+        return false;
+      }
+
+      return val;
+    }
+
+    return false;
+  }
+
+  set dataDrivenItemsExperiment(newVal: boolean) {
+    if (this.levelData === undefined) {
+      this.levelData = new WorldLevelDat();
+    }
+
+    if (this.levelData !== undefined) {
+      this.levelData.dataDrivenItemsExperiment = newVal;
     }
   }
 
@@ -413,6 +461,8 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     await this.saveAutoGenItems();
     await this.saveWorldBehaviorPacks();
     await this.saveWorldBehaviorPackHistory();
+    await this.saveWorldResourcePacks();
+    await this.saveWorldResourcePackHistory();
   }
 
   private async saveWorldManifest() {
@@ -509,7 +559,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     }
   }
 
-  ensurePackReference(packRef: IPackReference) {
+  ensurePackReferenceSet(packRefSet: IPackReferenceSet) {
     if (this.worldBehaviorPacks === undefined) {
       this.worldBehaviorPacks = [];
     }
@@ -534,31 +584,34 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       };
     }
 
-    if (packRef.behaviorPackReferences) {
-      for (let i = 0; i < packRef.behaviorPackReferences.length; i++) {
-        this.ensurePackReferenceInCollection(packRef.behaviorPackReferences[i], this.worldBehaviorPacks);
+    if (packRefSet.behaviorPackReferences) {
+      for (let i = 0; i < packRefSet.behaviorPackReferences.length; i++) {
+        this.ensurePackReferenceInCollection(packRefSet.behaviorPackReferences[i], this.worldBehaviorPacks);
         this.ensurePackReferenceInHistory(
-          packRef.behaviorPackReferences[i],
+          packRefSet.behaviorPackReferences[i],
           this.worldBehaviorPackHistory,
-          packRef.name
+          packRefSet.name
         );
       }
     }
 
-    if (packRef.resourcePackReferences) {
-      for (let i = 0; i < packRef.resourcePackReferences.length; i++) {
-        this.ensurePackReferenceInCollection(packRef.resourcePackReferences[i], this.worldResourcePacks);
+    if (packRefSet.resourcePackReferences) {
+      for (let i = 0; i < packRefSet.resourcePackReferences.length; i++) {
+        this.ensurePackReferenceInCollection(packRefSet.resourcePackReferences[i], this.worldResourcePacks);
         this.ensurePackReferenceInHistory(
-          packRef.resourcePackReferences[i],
+          packRefSet.resourcePackReferences[i],
           this.worldResourcePackHistory,
-          packRef.name
+          packRefSet.name
         );
       }
     }
   }
 
-  ensurePackReferenceInCollection(packRef: { uuid: string; version: number[] }, packRefs: IPackRegistration[]) {
-    Log.assert(packRef.version.length === 3);
+  ensurePackReferenceInCollection(
+    packRef: { uuid: string; version: number[]; priority?: number },
+    packRefs: IPackRegistration[]
+  ) {
+    Log.assert(packRef.version.length === 3, "Packref version not within bounds.");
 
     const compareUuid = Utilities.canonicalizeId(packRef.uuid);
 
@@ -568,11 +621,19 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       }
     }
 
-    packRefs.push({ pack_id: packRef.uuid, version: packRef.version });
+    packRefs.push({
+      pack_id: packRef.uuid,
+      version: packRef.version,
+      priority: packRef.priority ? packRef.priority : 32767,
+    });
   }
 
-  ensurePackReferenceInHistory(packRef: { uuid: string; version: number[] }, packHistory: IPackHistory, name: string) {
-    Log.assert(packRef.version.length === 3);
+  ensurePackReferenceInHistory(
+    packRef: { uuid: string; version: number[]; priority?: number },
+    packHistory: IPackHistory,
+    name: string
+  ) {
+    Log.assert(packRef.version.length === 3, "Packref version not within bounds.");
     if (packHistory.packs === undefined) {
       packHistory.packs = [];
     }
@@ -663,7 +724,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     }
   }
 
-  public ensureBehaviorPack(packId: string, version: number[], packName: string) {
+  public ensureBehaviorPack(packId: string, version: number[], packName: string, packPriority?: number) {
     if (this.worldBehaviorPacks === undefined) {
       this.worldBehaviorPacks = [];
     }
@@ -682,6 +743,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       this.worldBehaviorPacks.push({
         pack_id: packId,
         version: version,
+        priority: packPriority,
       });
       wasAdded = true;
     }
@@ -738,6 +800,24 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     return undefined;
   }
 
+  static sortPackRegByPriority(a: IPackRegistration, b: IPackRegistration) {
+    return (a.priority === undefined ? 32767 : a.priority) - (b.priority === undefined ? 32767 : b.priority);
+  }
+
+  static sortPackCollectionByPriority(packRefs: IPackRegistration[]) {
+    MCWorld.freezePackRegistrationOrder(packRefs);
+
+    return packRefs.sort(MCWorld.sortPackRegByPriority);
+  }
+
+  static freezePackRegistrationOrder(packRefs: IPackRegistration[]) {
+    for (let i = 0; i < packRefs.length; i++) {
+      if (packRefs[i].priority === undefined) {
+        packRefs[i].priority = i * 100;
+      }
+    }
+  }
+
   async saveWorldBehaviorPacks() {
     if (this.effectiveRootFolder === undefined) {
       return;
@@ -752,9 +832,26 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
 
     const packsFile = await rootFolder.ensureFileFromRelativePath(BEHAVIOR_PACKS_RELPATH);
 
-    packsFile.setContent(JSON.stringify(this.worldBehaviorPacks, null, 2));
+    let packRefColl = MCWorld.freezeAndStripPriorities(this.worldBehaviorPacks);
+
+    packsFile.setContent(JSON.stringify(packRefColl, null, 2));
 
     packsFile.saveContent();
+  }
+
+  static freezeAndStripPriorities(coll: IPackRegistration[]) {
+    let returnColl: IPackRegistration[] = [];
+
+    const collSort = MCWorld.sortPackCollectionByPriority(coll);
+
+    for (let i = 0; i < collSort.length; i++) {
+      returnColl.push({
+        pack_id: collSort[i].pack_id,
+        version: collSort[i].version,
+      });
+    }
+
+    return returnColl;
   }
 
   async saveWorldBehaviorPackHistory() {
@@ -776,7 +873,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     packsFile.saveContent();
   }
 
-  public ensureResourcePack(packId: string, version: number[], packName: string) {
+  public ensureResourcePack(packId: string, version: number[], packName: string, packPriority?: number) {
     if (this.worldResourcePacks === undefined) {
       this.worldResourcePacks = [];
     }
@@ -795,6 +892,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       this.worldResourcePacks.push({
         pack_id: packId,
         version: version,
+        priority: packPriority,
       });
       wasAdded = true;
     }
@@ -860,13 +958,15 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     const rootFolder = this.effectiveRootFolder;
 
     if (this.worldResourcePacks === undefined || this.worldResourcePacks.length === 0) {
-      await rootFolder.deleteFileFromRelativePath(BEHAVIOR_PACKS_RELPATH);
+      await rootFolder.deleteFileFromRelativePath(RESOURCE_PACKS_RELPATH);
       return;
     }
 
     const packsFile = await rootFolder.ensureFileFromRelativePath(RESOURCE_PACKS_RELPATH);
 
-    packsFile.setContent(JSON.stringify(this.worldResourcePacks, null, 2));
+    let packRefColl = MCWorld.freezeAndStripPriorities(this.worldResourcePacks);
+
+    packsFile.setContent(JSON.stringify(packRefColl, null, 2));
 
     packsFile.saveContent();
   }
@@ -1050,11 +1150,18 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       return;
     }
 
+    const loadOper = await this._project?.carto.notifyOperationStarted(
+      "Starting first-pass load of '" + this.name + "' world",
+      StatusTopic.worldLoad
+    );
+
     const rootFolder = this.effectiveRootFolder;
 
     if (!rootFolder) {
       return;
     }
+
+    await rootFolder.load(false);
 
     const dbFolder = await rootFolder.getFolderFromRelativePath("/db");
 
@@ -1081,20 +1188,29 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       }
     }
 
-    this.levelDb = new LevelDb(ldbFileArr, logFileArr);
+    this.levelDb = new LevelDb(ldbFileArr, logFileArr, this.name);
 
-    await this.levelDb.init();
+    await this.levelDb.init(async (message: string): Promise<void> => {
+      await this._project?.carto.notifyStatusUpdate(message, StatusTopic.worldLoad);
+    });
 
-    this.processWorldData();
+    if (loadOper !== undefined) {
+      await this._project?.carto.notifyOperationEnded(
+        loadOper,
+        "Completed first-pass load of '" + this.name + "' world",
+        StatusTopic.worldLoad
+      );
+    }
+    await this.processWorldData();
 
     this._onDataLoaded.dispatch(this, this);
 
     this._isDataLoaded = true;
   }
 
-  getTopBlockY(x: number, z: number) {
+  getTopBlockY(x: number, z: number, dim?: number) {
     const chunkX = Math.floor(x / CHUNK_X_SIZE);
-    const xDim = this.chunks[chunkX];
+    const xDim = this.chunks[dim ? dim : 0][chunkX];
 
     if (xDim === undefined) {
       return undefined;
@@ -1110,9 +1226,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     return zDim.getTopBlockY(x - chunkX * CHUNK_X_SIZE, z - chunkZ * CHUNK_Z_SIZE);
   }
 
-  getTopBlock(x: number, z: number) {
+  getTopBlock(x: number, z: number, dim?: number) {
     const chunkX = Math.floor(x / CHUNK_X_SIZE);
-    const xDim = this.chunks[chunkX];
+    const xDim = this.chunks[dim ? dim : 0][chunkX];
 
     if (xDim === undefined) {
       return undefined;
@@ -1134,9 +1250,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     return e;
   }
 
-  getBlock(blockLocation: BlockLocation) {
+  getBlock(blockLocation: BlockLocation, dim?: number) {
     const chunkX = Math.floor(blockLocation.x / CHUNK_X_SIZE);
-    const xDim = this.chunks[chunkX];
+    const xDim = this.chunks[dim ? dim : 0][chunkX];
 
     if (xDim === undefined) {
       return new Block("air");
@@ -1167,12 +1283,17 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     return block;
   }
 
-  private processWorldData() {
+  private async processWorldData() {
     if (!this.levelDb) {
       return;
     }
 
     this.chunks = [];
+
+    const processOper = await this._project?.carto.notifyOperationStarted(
+      "Starting second-pass load of '" + this.name + "' world",
+      StatusTopic.worldLoad
+    );
 
     for (const keyname in this.levelDb.keys) {
       const keyValue = this.levelDb.keys[keyname];
@@ -1224,15 +1345,32 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
           const x = DataUtilities.getSignedInteger(keyBytes[4], keyBytes[5], keyBytes[6], keyBytes[7], true);
           const z = DataUtilities.getSignedInteger(keyBytes[8], keyBytes[9], keyBytes[10], keyBytes[11], true);
 
-          if (this.chunks[x] === undefined) {
-            this.chunks[x] = [];
+          Log.assert(
+            keyBytes.length === 16 || keyBytes.length === 24 || keyBytes.length === 20 || keyBytes.length === 12,
+            "Unexpected digp key size (" + keyBytes.length + ")"
+          );
+
+          let dim = 0;
+
+          if (keyBytes.length >= 25) {
+            dim = DataUtilities.getSignedInteger(keyBytes[8], keyBytes[9], keyBytes[10], keyBytes[11], true);
+
+            Log.assert(dim >= 0 && dim <= 2, "Unexpected dimension index - digp (" + dim + ")");
           }
 
-          if (this.chunks[x][z] === undefined) {
+          if (this.chunks[dim] === undefined) {
+            this.chunks[dim] = [];
+          }
+
+          if (this.chunks[dim][x] === undefined) {
+            this.chunks[dim][x] = [];
+          }
+
+          if (this.chunks[dim][x][z] === undefined) {
             const wc = new WorldChunk(this, x, z);
             this.chunkCount++;
 
-            this.chunks[x][z] = wc;
+            this.chunks[dim][x][z] = wc;
           }
 
           if (keyValue.value !== undefined) {
@@ -1253,16 +1391,10 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
                 ]);
               }
 
-              this.chunks[x][z].addActorDigest(hexStr);
+              this.chunks[dim][x][z].addActorDigest(hexStr);
             } else if (keyValueBytes.length !== 0) {
-              Log.error("Unexpected actor digest length");
+              // Log.error("Unexpected actor digest length", this.name);
             }
-          }
-
-          //    this.chunks[x][z].addKeyValue(keyValue);
-
-          if (this.chunkCount % 10000 === 0) {
-            console.log("Loaded " + this.chunkCount + " chunks.");
           }
         }
       } else if (keyname.startsWith("actorprefix") && keyValue !== undefined) {
@@ -1305,7 +1437,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
           const actorItem = new ActorItem(hexStr, keyValue.value);
           this.actorsById[hexStr] = actorItem;
         } else {
-          Log.error("Unexpected actor prefix length");
+          // Log.error("Unexpected actor prefix length - " + keyname + " (" + keyBytes?.length + ")", this.name);
         }
       } else if (keyname.startsWith("player")) {
       } else if (keyname.startsWith("portals")) {
@@ -1319,64 +1451,164 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       } else if (keyname.startsWith("mobevents")) {
       } else if (keyname.startsWith("game_flatworldlayers")) {
       } else if (keyname.startsWith("dimension")) {
+      } else if (keyname.startsWith("structureplacement")) {
+      } else if (keyname.startsWith("chunk_loaded_request")) {
+      } else if (keyname.startsWith("legacy_console_player")) {
+      } else if (keyname.startsWith("PosTrackDB")) {
+      } else if (keyname.startsWith("PositionTrackDB")) {
+      } else if (keyname.startsWith("OwnedEntitiesLimbo")) {
+      } else if (keyname.startsWith("MCeditMap")) {
+      } else if (keyname.startsWith("EDU_CurrentCodingURL")) {
+      } else if (keyname.startsWith("TheEnd")) {
+      } else if (keyname.indexOf("WasPicked") >= 0) {
+      } else if (keyname.indexOf("TextIg") >= 0) {
+      } else if (keyname.startsWith("SST_SALOG")) {
+      } else if (keyname.startsWith("SST_WORD")) {
+      } else if (keyname.startsWith("SST_NAME")) {
+      } else if (keyname.startsWith("SST_")) {
+      } else if (keyname.startsWith("neteaseData")) {
+      } else if (keyname.startsWith("scriptGid")) {
+      } else if (keyname.startsWith("Nether")) {
       } else if (
         keyValue !== undefined &&
         (keyname.length === 9 ||
           keyname.length === 10 ||
           keyname.length === 17 ||
           keyname.length === 18 ||
+          keyname.length === 21 ||
+          keyname.length === 22 ||
           keyname.length === 13 ||
           keyname.length === 14)
       ) {
         const keyBytes = keyValue.keyBytes;
+        const hasDimensionParam = keyname.length > 18 || keyname.length === 13 || keyname.length === 14;
 
         if (keyBytes) {
           const x = DataUtilities.getSignedInteger(keyBytes[0], keyBytes[1], keyBytes[2], keyBytes[3], true);
           const z = DataUtilities.getSignedInteger(keyBytes[4], keyBytes[5], keyBytes[6], keyBytes[7], true);
+          let dim = 0;
+
+          if (hasDimensionParam) {
+            dim = DataUtilities.getSignedInteger(keyBytes[8], keyBytes[9], keyBytes[10], keyBytes[11], true);
+
+            if (dim < 0 || dim > 2) {
+              // Log.assert(dim >= 0 && dim <= 2, "Unexpected dimension index. (" + dim + ")");
+              continue;
+            }
+          }
 
           if (this._minX === undefined || x * 16 < this._minX) {
             this._minX = x * 16;
           }
 
-          if (this._maxX === undefined || x * 16 > this._maxX) {
-            this._maxX = x * 16;
+          if (this._maxX === undefined || (x + 1) * 16 > this._maxX) {
+            this._maxX = (x + 1) * 16;
           }
 
           if (this._minZ === undefined || z * 16 < this._minZ) {
             this._minZ = z * 16;
           }
 
-          if (this._maxZ === undefined || z * 16 > this._maxZ) {
-            this._maxZ = z * 16;
+          if (this._maxZ === undefined || (z + 1) * 16 > this._maxZ) {
+            this._maxZ = (z + 1) * 16;
           }
 
-          if (this.chunks[x] === undefined) {
-            this.chunks[x] = [];
+          if (this.chunks[dim] === undefined) {
+            this.chunks[dim] = [];
           }
 
-          if (this.chunks[x][z] === undefined) {
+          if (this.chunks[dim][x] === undefined) {
+            this.chunks[dim][x] = [];
+          }
+
+          let didIncrement = false;
+
+          if (this.chunks[dim][x][z] === undefined) {
             const wc = new WorldChunk(this, x, z);
             this.chunkCount++;
+            didIncrement = true;
 
-            this.chunks[x][z] = wc;
+            this.chunks[dim][x][z] = wc;
           }
 
-          this.chunks[x][z].addKeyValue(keyValue);
+          this.chunks[dim][x][z].addKeyValue(keyValue);
 
-          if (this.chunkCount % 10000 === 0) {
-            console.log("Loaded " + this.chunkCount + " chunks.");
+          if (this.chunkCount % 10000 === 0 && didIncrement) {
+            await this._project?.carto.notifyStatusUpdate(
+              "Initialized " + this.chunkCount / 1000 + "K chunks in " + MCWorld.name
+            );
           }
         }
+      } else if (
+        keyValue === undefined &&
+        (keyname.length === 9 ||
+          keyname.length === 10 ||
+          keyname.length === 17 ||
+          keyname.length === 18 ||
+          keyname.length === 21 ||
+          keyname.length === 22 ||
+          keyname.length === 13 ||
+          keyname.length === 14)
+      ) {
+        const hasDimensionParam = keyname.length > 18 || keyname.length === 13 || keyname.length === 14;
+
+        const x = DataUtilities.getSignedInteger(
+          keyname.charCodeAt(0),
+          keyname.charCodeAt(1),
+          keyname.charCodeAt(2),
+          keyname.charCodeAt(3),
+          true
+        );
+        const z = DataUtilities.getSignedInteger(
+          keyname.charCodeAt(4),
+          keyname.charCodeAt(5),
+          keyname.charCodeAt(6),
+          keyname.charCodeAt(7),
+          true
+        );
+        let dim = 0;
+
+        if (hasDimensionParam) {
+          dim = DataUtilities.getSignedInteger(
+            keyname.charCodeAt(8),
+            keyname.charCodeAt(9),
+            keyname.charCodeAt(10),
+            keyname.charCodeAt(11),
+            true
+          );
+
+          Log.assert(dim >= 0 && dim <= 2, "Unexpected dimension index. (" + dim + ")");
+        }
+
+        if (
+          this.chunks[dim] !== undefined &&
+          this.chunks[dim][x] !== undefined &&
+          this.chunks[dim][x][z] !== undefined
+        ) {
+          this.chunks[dim][x][z].clearKeyValue(keyname);
+        }
       } else if (keyValue === undefined) {
-        console.log("Nulling record '" + keyname + "'");
+        // console.log("Nulling record '" + keyname + "'");
       } else if (keyValue !== undefined) {
-        Log.fail("Unknown record type: '" + keyname + "'");
+        Log.error("Unknown record type: '" + keyname + "'", this.name);
       } else {
-        Log.fail("Unknown record.");
+        Log.error("Unknown record.", this.name);
       }
     }
 
+    await this.notifyLoadEnded(processOper);
+
     // let block = this.getBlock(new BlockLocation(344, 58, 4));
+  }
+
+  private async notifyLoadEnded(processOper?: number) {
+    if (processOper !== undefined) {
+      await this._project?.carto.notifyOperationEnded(
+        processOper,
+        "Completed second-pass load of '" + this.name + "' world.",
+        StatusTopic.worldLoad
+      );
+    }
   }
 
   private async saveAutoGenItems() {
@@ -1446,13 +1678,13 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     return content.join("\n");
   }
 
-  getCube(from: BlockLocation, to: BlockLocation) {
+  getCube(from: BlockLocation, to: BlockLocation, dim?: number) {
     const bc = new BlockCube();
 
     let fromY = from.y;
     if (fromY) {
-      if (fromY < this.absoluteY) {
-        fromY = this.absoluteY;
+      if (fromY < this.chunkMinY) {
+        fromY = this.chunkMinY;
       }
     }
 
@@ -1476,7 +1708,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       let toGoZ = Math.abs(to.z - from.z) + 1;
 
       for (let iZ = subChunkZStart; iZ <= subChunkZEnd; iZ++) {
-        const chunkX = this.chunks[iX];
+        const chunkX = this.chunks[dim ? dim : 0][iX];
 
         if (chunkX) {
           const chunk = chunkX[iZ];
@@ -1521,8 +1753,8 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     return bc;
   }
 
-  getSubChunkCube(x: number, y: number, z: number) {
-    const xDim = this.chunks[Math.floor(x / 16)];
+  getSubChunkCube(x: number, y: number, z: number, dim?: number) {
+    const xDim = this.chunks[dim ? dim : 0][Math.floor(x / 16)];
 
     if (xDim === null) {
       return undefined;

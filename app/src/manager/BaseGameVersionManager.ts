@@ -9,6 +9,7 @@ import ProjectUpdateResult from "../updates/ProjectUpdateResult";
 import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import WorldTemplateManifestJson from "../minecraft/WorldTemplateManifestJson";
+import ProjectInfoSet from "../info/ProjectInfoSet";
 
 export default class BaseGameVersionManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "BASEGAMEVER";
@@ -82,6 +83,8 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
       title: updaterId.toString(),
     };
   }
+
+  summarize(info: any, infoSet: ProjectInfoSet) {}
 
   async generate(project: Project): Promise<ProjectInfoItem[]> {
     const infoItems: ProjectInfoItem[] = [];

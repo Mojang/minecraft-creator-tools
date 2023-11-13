@@ -1,5 +1,3 @@
-import Block from "./Block";
-import BlockLocation from "./BlockLocation";
 import Entity from "./Entity";
 import EntityQueryOptions from "./EntityQueryOptions";
 import IDimension from "./IDimension";

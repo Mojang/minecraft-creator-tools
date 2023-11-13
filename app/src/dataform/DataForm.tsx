@@ -1218,7 +1218,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
   addKeyedObjectArrayComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
     const val = this._getProperty(field.id, {});
     const fieldInterior = [];
-    Log.assert(val);
+    Log.assert(val !== undefined, "Keyed object is not available in DataForm.");
 
     if (val && field.subForm && field.subFields) {
       const keys = [];
@@ -1299,7 +1299,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
   addKeyedStringArrayComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
     const val = this._getProperty(field.id, {});
     const fieldInterior = [];
-    Log.assert(val);
+    Log.assert(val !== undefined, "Keyed string array not available in data form.");
 
     if (val && field.subForm && field.subFields) {
       const keys = [];

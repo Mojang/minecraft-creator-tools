@@ -10,6 +10,7 @@ export enum ToolType {
   reload = 3,
   say = 4,
   playSound = 5,
+  customTool = 6,
 }
 
 export default interface ITool {

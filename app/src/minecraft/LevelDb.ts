@@ -10,14 +10,16 @@ export default class LevelDb {
   ldbFiles: IFile[];
   logFiles: IFile[];
   keys: { [id: string]: LevelKeyValue | undefined };
+  context?: string;
 
-  public constructor(ldbFileArr: IFile[], logFileArr: IFile[]) {
+  public constructor(ldbFileArr: IFile[], logFileArr: IFile[], context?: string) {
     this.ldbFiles = ldbFileArr;
     this.logFiles = logFileArr;
+    this.context = context;
     this.keys = {};
   }
 
-  public async init() {
+  public async init(log?: (message: string) => Promise<void>) {
     this.keys = {};
 
     for (let i = 0; i < this.ldbFiles.length; i++) {
@@ -25,9 +27,11 @@ export default class LevelDb {
 
       const content = this.ldbFiles[i].content;
 
-      if (content instanceof Uint8Array) {
+      if (content instanceof Uint8Array && content.length > 0) {
         const kp = this.parseLdbContent(content);
-        console.log("Loaded LDB file '" + this.ldbFiles[i].fullPath + "'.  key count: " + kp);
+        if (log) {
+          await log("Loaded map record file '" + this.ldbFiles[i].fullPath + "'. Records: " + kp);
+        }
       }
     }
 
@@ -36,9 +40,11 @@ export default class LevelDb {
 
       const content = this.logFiles[i].content;
 
-      if (content instanceof Uint8Array) {
+      if (content instanceof Uint8Array && content.length > 0) {
         const kp = this.parseLogContent(content);
-        console.log("Loaded LOG file '" + this.logFiles[i].fullPath + "'.  key count: " + kp);
+        if (log) {
+          await log("Loaded map latest-updates file '" + this.logFiles[i].fullPath + "'. Records: " + kp);
+        }
       }
     }
   }
@@ -64,7 +70,8 @@ export default class LevelDb {
         magicF === 117 &&
         magicG === 71 &&
         magicH === 219,
-      "Unexpected end to Level DB stream."
+      "Unexpected no-magic end to Level DB stream. DB file could be corrupt.",
+      this.context
     );
 
     // https://github.com/google/leveldb/blob/main/doc/table_format.md
@@ -83,26 +90,38 @@ export default class LevelDb {
     const indexSize = new Varint(content, index);
     index += indexSize.byteLength;
 
-    Log.assert(indexOffset.value > 0 && indexOffset.value + indexSize.value < content.length);
-    Log.assert(metaIndexOffset.value > 0 && metaIndexOffset.value + metaIndexSize.value < content.length);
-
-    const indexContentCompressed = new Uint8Array(
-      content.buffer.slice(indexOffset.value, indexOffset.value + indexSize.value)
+    Log.assert(
+      indexOffset.value > 0 && indexOffset.value + indexSize.value < content.length,
+      "LDB content index offset not within bounds.",
+      this.context
     );
+    Log.assert(
+      metaIndexOffset.value > 0 && metaIndexOffset.value + metaIndexSize.value < content.length,
+      "LDB meta index offset not within bounds.",
+      this.context
+    );
+
+    const indexContentCompressed = content.subarray(indexOffset.value, indexOffset.value + indexSize.value);
 
     let indexContent = undefined;
 
     // I believe this logic replicates: https://twitter.com/_tomcc/status/894294552084860928
     try {
       indexContent = pako.inflate(indexContentCompressed, { raw: true });
-    } catch (e) {}
+    } catch (e) {
+      //      Log.fail("Error inflating index compressed content: " + e);
+    }
 
     if (!indexContent) {
       try {
         indexContent = pako.inflate(indexContentCompressed);
       } catch (e) {
-        Log.fail("Error inflating index content" + e);
+        Log.fail("Error inflating index content: " + e + ". Further content may fail to load.", this.context);
       }
+    }
+
+    if (!indexContent) {
+      indexContent = indexContentCompressed;
     }
 
     if (indexContent) {
@@ -126,29 +145,30 @@ export default class LevelDb {
           Log.assert(blockOffset.value >= 0 && blockOffset.value + blockSize.value < content.length);
           Log.assert(indexByteIndex === indexBytes.length);
 
-          const blockContentCompressed = new Uint8Array(
-            content.buffer.slice(blockOffset.value, blockOffset.value + blockSize.value)
-          );
+          const blockContentCompressed = content.subarray(blockOffset.value, blockOffset.value + blockSize.value);
 
           let blockContent = undefined;
 
           try {
             blockContent = pako.inflate(blockContentCompressed, { raw: true });
           } catch (e) {}
+
           if (!blockContent) {
             try {
               blockContent = pako.inflate(blockContentCompressed);
             } catch (e) {
-              Log.fail("Error inflating block content" + e);
+              // Apparently, some content is just not compressed, so failing to decompress is an acceptable state.
+              // Log.fail("Error inflating block content: " + e);
             }
           }
-          if (blockContent) {
-            keysParsed += this.parseLdbBlockBytes(blockContent, 0, blockContent.length);
-          } else {
-            Log.fail("Could not find block content");
+
+          if (!blockContent) {
+            blockContent = blockContentCompressed;
           }
+
+          keysParsed += this.parseLdbBlockBytes(blockContent, 0, blockContent.length);
         } else {
-          Log.fail("Could not find index key");
+          Log.fail("Could not find index key.");
         }
       }
     }
@@ -165,6 +185,7 @@ export default class LevelDb {
     let index = offset;
 
     let lastKeyValuePair = undefined;
+
     const restarts = DataUtilities.getUnsignedInteger(
       data[length - 4],
       data[length - 3],
@@ -208,6 +229,11 @@ export default class LevelDb {
 
     const endRestartSize = restarts * 4 + 4;
 
+    if (endRestartSize > offset + length) {
+      Log.fail("Unexpected size received for LDB bytes: " + endRestartSize);
+      return 0;
+    }
+
     while (index < offset + length - endRestartSize) {
       const lb = new LevelKeyValue();
 
@@ -217,12 +243,13 @@ export default class LevelDb {
       const key = lb.key;
       lastKeyValuePair = lb;
 
-      Log.assert(this.keys[key] === undefined, "Unexpectedly re-setting a key: " + key);
+      // Log.assert(this.keys[key] === undefined, "Unexpectedly re-setting a key: " + key);
       this.keys[key] = lb;
 
-      if (lb.length === undefined) {
+      if (lb.length === undefined || lb.length < 0) {
         throw new Error("Unexpected parse of key " + key);
       }
+
       keysParsed++;
       index += lb.length;
     }
@@ -234,6 +261,8 @@ export default class LevelDb {
     let index = 0;
     let pendingBytes = undefined;
     let keysParsed = 0;
+
+    // https://github.com/google/leveldb/blob/main/doc/log_format.md
 
     while (index < content.length - 6) {
       /*const checksum = DataUtilities.getUnsignedInteger(
@@ -248,19 +277,11 @@ export default class LevelDb {
       const type = content[index + 6];
       index += 7; // size of record header
 
-      if (type === 1) {
-        /*const internalLength = DataUtilities.getUnsignedInteger(
-          content[index],
-          content[index + 1],
-          content[index + 2],
-          content[index + 3],
-          true
-        );*/
-
+      if (type === 1 /* Type 1 = FULL */) {
         keysParsed += this.addValueFromLog(content, index, length);
-      } else if (type === 2) {
+      } else if (type === 2 /* Type 2 = FIRST */) {
         pendingBytes = new Uint8Array(content.buffer, index, length);
-      } else if (type === 3 || type === 4) {
+      } else if (type === 3 /* Type 3 = MIDDLE */ || type === 4 /* Type 4 = LAST*/) {
         if (pendingBytes === undefined) {
           throw new Error("Unexpected middle to a set of bytes found.");
         }
@@ -274,14 +295,26 @@ export default class LevelDb {
 
         pendingBytes = newBytes;
 
-        if (type === 4) {
+        if (type === 4 /* This is the last part of a record */) {
           keysParsed += this.addValueFromLog(pendingBytes, 0, pendingBytes.length);
         }
       }
 
       index += length;
+
+      // new records don't start within 6 bytes of the end of a 32K block
+      // Per docs: "A record never starts within the last six bytes of a [32K] block (since it won't fit). Any
+      // leftover bytes here form the trailer, which must consist entirely of zero bytes and must be skipped by readers."
+      let bytesFromEndOfBlock = 32768 - (index % 32768);
+
+      while (bytesFromEndOfBlock <= 6 && bytesFromEndOfBlock > 0) {
+        bytesFromEndOfBlock--;
+        Log.assert(content[index] === 0, "Unexpectedly found a padding trailer with data");
+        index++;
+      }
     }
 
+    Log.assert(keysParsed !== 0, "Did not parse any keys out of log content.");
     return keysParsed;
   }
 
@@ -302,33 +335,42 @@ export default class LevelDb {
         keyBytes[i] = content[index + i];
       }
 
-      const dv = new DataView(content.buffer, index, keyLength.value);
-
-      const key = Utilities.getAsciiString(dv, 0, dv.byteLength);
       index += keyLength.value;
 
-      if (key === undefined) {
-        throw new Error("Unexpected null key.");
-      }
+      Log.assert(index <= content.length, "Unexpected log file length issue.");
 
-      if (isLive) {
-        const dataLength = new Varint(content, index);
-        index += dataLength.byteLength;
+      if (index <= content.length) {
+        const key = Utilities.getAsciiStringFromUint8Array(keyBytes);
 
-        const data = new Uint8Array(content.buffer, index, dataLength.value);
-        index += dataLength.value;
+        if (key === undefined) {
+          throw new Error("Unexpected null key.");
+        }
 
-        const kv = new LevelKeyValue();
-        kv.level = 0;
-        kv.sharedKey = "";
-        kv.keyDelta = key;
-        kv.unsharedKeyBytes = keyBytes;
-
-        kv.value = data;
         keysParsed++;
-        this.keys[key] = kv;
-      } else {
-        //    this.keys[key] = undefined;
+
+        if (isLive) {
+          Log.assert(index < content.length, "Unexpectedly looking for content at the end of a log.");
+
+          const dataLength = new Varint(content, index);
+          index += dataLength.byteLength;
+
+          if (dataLength.value + index <= content.buffer.byteLength) {
+            const data = new Uint8Array(content.buffer, index, dataLength.value);
+            index += dataLength.value;
+
+            const kv = new LevelKeyValue();
+            kv.level = 0;
+            kv.sharedKey = "";
+            kv.keyDelta = key;
+            kv.unsharedKeyBytes = keyBytes;
+
+            kv.value = data;
+
+            this.keys[key] = kv;
+          }
+        } else {
+          this.keys[key] = undefined;
+        }
       }
     }
     return keysParsed;

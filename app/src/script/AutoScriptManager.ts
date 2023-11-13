@@ -67,19 +67,13 @@ export default class AutoScriptManager {
       return;
     }
 
-    try {
-      const data: any = JSON.parse(this._jsonFile.content);
+    this._autoScriptData = StorageUtilities.getJsonObject(this._jsonFile);
 
-      this._autoScriptData = data;
+    if (this._autoScriptData) {
+      this._autoScript = new AutoScript(this._autoScriptData);
 
-      if (data) {
-        this._autoScript = new AutoScript(data);
-
-        this._autoScript.ensureLoaded();
-        this._autoScript.name = StorageUtilities.getBaseFromName(this._jsonFile.name);
-      }
-    } catch (e) {
-      Log.fail("Could not parse auto script JSON " + e);
+      this._autoScript.ensureLoaded();
+      this._autoScript.name = StorageUtilities.getBaseFromName(this._jsonFile.name);
     }
 
     this._isLoaded = true;

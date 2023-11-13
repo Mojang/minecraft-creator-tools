@@ -4,6 +4,7 @@ import IProjectInfoGenerator from "./IProjectInfoGenerator";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
 import IAddonManifest from "../minecraft/IAddonManifest";
+import ProjectInfoSet from "./ProjectInfoSet";
 
 export default class PackInformationGenerator implements IProjectInfoGenerator {
   id = "PACK";
@@ -13,6 +14,17 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
     return {
       title: topicId.toString(),
     };
+  }
+
+  summarize(info: any, infoSet: ProjectInfoSet) {
+    info.defaultBehaviorPackUuid = infoSet.getFirstStringValue("PACK", 2);
+    info.defaultBehaviorPackMinEngineVersion = infoSet.getFirstNumberArrayValue("PACK", 1);
+    info.defaultBehaviorPackName = infoSet.getFirstNumberArrayValue("PACK", 4);
+    info.defaultBehaviorPackDescription = infoSet.getFirstNumberArrayValue("PACK", 5);
+    info.defaultResourcePackUuid = infoSet.getFirstStringValue("PACK", 12);
+    info.defaultResourcePackMinEngineVersion = infoSet.getFirstNumberArrayValue("PACK", 11);
+    info.defaultResourcePackName = infoSet.getFirstNumberArrayValue("PACK", 14);
+    info.defaultResourcePackDescription = infoSet.getFirstNumberArrayValue("PACK", 15);
   }
 
   async generate(project: Project): Promise<ProjectInfoItem[]> {

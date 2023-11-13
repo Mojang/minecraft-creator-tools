@@ -36,6 +36,7 @@
   background-color: #b07a14;
   padding: 10px;
   margin: 20px;
+  word-break: break-all;
   text-overflow: ellipsis;
 }
 
@@ -78,7 +79,6 @@
 }
 .home-gallery-interior {
   overflow-y: auto;
-  height: calc(100vh - 250px);
 }
 
 .home-dialog {
@@ -213,4 +213,5 @@
   font-size: x-large;
   padding-top: 20px;
   padding-left: 28px;
+  user-select: none;
 }

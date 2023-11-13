@@ -571,6 +571,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       case ProjectItemType.MCFunction:
         return "function";
 
+      case ProjectItemType.tickJson:
+        return "tick";
+
+      case ProjectItemType.cameraJson:
+        return "camera";
+
       case ProjectItemType.autoScriptJson:
         return "actions";
 
@@ -776,7 +782,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     if (this.props.readOnly) {
       this._projectListItems.push({
-        header: (
+        content: (
           <div className="pil-item" key={"ro" + projectItem.storagePath}>
             <span className="pil-typetag">{tag}</span>
             <span className="pil-name" style={{ backgroundImage: sourceImage }}>
@@ -1204,7 +1210,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         icon: (
           <FunctionsLabel theme={this.props.theme} isSelected={this.props.project?.showFunctions} isCompact={true} />
         ),
-        key: "hideShow",
+        key: "hideShowFunctions",
         kind: "toggle",
         active: this.props.project?.showFunctions,
         onClick: this._showFunctionsClick,
@@ -1212,7 +1218,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       });
       toolbarItems.push({
         icon: <AssetsLabel theme={this.props.theme} isSelected={this.props.project?.showAssets} isCompact={true} />,
-        key: "hideShow",
+        key: "hideShowAssets",
         kind: "toggle",
         active: this.props.project?.showAssets,
         onClick: this._showAssetsClick,
@@ -1221,7 +1227,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       toolbarItems.push({
         icon: <TypesLabel theme={this.props.theme} isSelected={this.props.project?.showTypes} isCompact={true} />,
-        key: "hideShow",
+        key: "hideShowTypes",
         kind: "toggle",
         active: this.props.project?.showTypes,
         onClick: this._showTypesClick,
@@ -1232,7 +1238,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         icon: (
           <EyeSlashLabel theme={this.props.theme} isSelected={this.props.project?.showHiddenItems} isCompact={true} />
         ),
-        key: "hideShow",
+        key: "hideShowSlash",
         kind: "toggle",
         active: this.props.project?.showHiddenItems,
         onClick: this._showAllClick,

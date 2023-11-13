@@ -52,7 +52,7 @@ import CartoSettings from "./CartoSettings";
 import { CartoEditorViewMode, MinecraftGameConnectionMode } from "./../app/ICartoData";
 import ProjectDisplay from "./ProjectDisplay";
 import IGitHubInfo from "../app/IGitHubInfo";
-import MinecraftDisplay from "./MinecraftDisplay";
+import MinecraftDisplay from "../UXex/MinecraftDisplay";
 import WebUtilities from "./WebUtilities";
 import ProjectInfoDisplay, { InfoItemCommand } from "./ProjectInfoDisplay";
 import ProjectInfoItem from "../info/ProjectInfoItem";
@@ -866,11 +866,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
 
-    const operId = this.props.carto.notifyOperationStarted("Saving project '" + projName + "'...");
+    const operId = await this.props.carto.notifyOperationStarted("Saving project '" + projName + "'...");
 
     await this.props.project.save();
 
-    this.props.carto.notifyOperationEnded(operId, "Saved '" + projName + "'.");
+    await this.props.carto.notifyOperationEnded(operId, "Saved '" + projName + "'.");
   }
 
   private async _showMinecraftClick() {
@@ -1047,22 +1047,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
 
-    const operId = this.props.carto.notifyOperationStarted("Exporting '" + projName + "' as MCPack");
+    const operId = await this.props.carto.notifyOperationStarted("Exporting '" + projName + "' as MCPack");
 
-    const zipStorage = new ZipStorage();
+    const zipBinary = (await ProjectExporter.exportPackAsZip(this.props.carto, this.props.project, true)) as Blob;
 
-    const projectFolder = await this.props.project.ensureLoadedProjectFolder();
-
-    await StorageUtilities.syncFolderTo(projectFolder, zipStorage.rootFolder, true, true, false, [
-      "/mcworlds",
-      "/minecraftWorlds",
-    ]);
-
-    await zipStorage.rootFolder.saveAll();
-
-    const zipBinary = await zipStorage.generateBlobAsync();
-
-    this.props.carto.notifyOperationEnded(operId, "Export MCPack of '" + projName + "' created; downloading");
+    await this.props.carto.notifyOperationEnded(operId, "Export MCPack of '" + projName + "' created; downloading");
 
     saveAs(zipBinary, projName + ".mcpack");
 
@@ -1080,7 +1069,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
 
-    const operId = this.props.carto.notifyOperationStarted("Exporting '" + projName + "' as zip.");
+    const operId = await this.props.carto.notifyOperationStarted("Exporting '" + projName + "' as zip.");
 
     const zipStorage = new ZipStorage();
 
@@ -1092,7 +1081,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const zipBinary = await zipStorage.generateBlobAsync();
 
-    this.props.carto.notifyOperationEnded(operId, "Export zip of '" + projName + "' created; downloading.");
+    await this.props.carto.notifyOperationEnded(operId, "Export zip of '" + projName + "' created; downloading.");
 
     saveAs(zipBinary, projName + ".zip");
 
@@ -1207,7 +1196,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       productPhrase = "Minecraft Preview";
     }
 
-    const operId = this.props.carto.notifyOperationStarted("Deploying to " + productPhrase);
+    const operId = await this.props.carto.notifyOperationStarted("Deploying to " + productPhrase);
 
     await this.props.carto.ensureGameMinecraft();
 
@@ -1224,7 +1213,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       worldType: worldType,
     });
 
-    this.props.carto.notifyOperationEnded(operId, "Deploying to " + productPhrase);
+    await this.props.carto.notifyOperationEnded(operId, "Deploying to " + productPhrase);
 
     return result;
   }
@@ -1276,7 +1265,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
 
-    const operId = this.props.carto.notifyOperationStarted(
+    const operId = await this.props.carto.notifyOperationStarted(
       "Export deployment zip of '" + projName + "' created; downloading"
     );
 
@@ -1312,7 +1301,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const zipBinary = await zipStorage.generateBlobAsync();
 
-    this.props.carto.notifyOperationEnded(operId, "Export deployment zip of '" + projName + "' created; downloading");
+    await this.props.carto.notifyOperationEnded(
+      operId,
+      "Export deployment zip of '" + projName + "' created; downloading"
+    );
 
     saveAs(zipBinary, projName + ".zip");
 
@@ -1353,7 +1345,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await ProjectExporter.generateAndInvokeFlatPackRefMCWorld(this.props.carto, this.props.project);
 
-    Log.message("Done saving " + projectItem.name);
+    Log.message("Done saving " + projectItem.name, this.props.project.name);
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewDeployKey((data.icon as any).key, this._handleDeployWorldAndTestAssetsLocalClick, data);
@@ -1404,7 +1396,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       saveAs(new Blob([zipBytes], { type: "application/octet-stream" }), downloadTitle + ".mcworld");
     }
 
-    Log.message("Done saving " + projectItem.name);
+    Log.message("Done saving " + projectItem.name, this.props.project.name);
 
     this.props.carto.notifyStatusUpdate("Downloading deployment zip '" + downloadTitle + ".mcworld'.");
 
@@ -1452,7 +1444,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       saveAs(new Blob([zipBytes], { type: "application/octet-stream" }), downloadTitle);
     }
 
-    Log.message("Done saving " + projectItem.name);
+    Log.message("Done saving " + projectItem.name, this.props.project.name);
 
     this.props.carto.notifyStatusUpdate("Downloading " + downloadTitle + ".");
 
@@ -1512,13 +1504,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const content = projectItem.file.content;
 
-    Log.message("About to save " + projectItem.file.name);
+    Log.message("About to save " + projectItem.file.name, this.props.project.name);
 
     if (content instanceof Uint8Array) {
       saveAs(new Blob([content], { type: "application/octet-stream" }), projectItem.file.name);
     }
 
-    Log.message("Done saving " + projectItem.file.name);
+    Log.message("Done saving " + projectItem.file.name, this.props.project.name);
 
     this.props.carto.notifyStatusUpdate("Downloading mcworld '" + projectItem.file.name + "'.");
 
@@ -1601,11 +1593,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const newBytes = await mcworld.getBytes();
 
-    Log.message("About to save " + name);
+    Log.message("About to save " + name, this.props.project.name);
     if (newBytes !== undefined) {
       saveAs(new Blob([newBytes], { type: "application/octet-stream" }), name);
     }
-    Log.message("Done with save " + name);
+    Log.message("Done with save " + name, this.props.project.name, this.props.project.name);
   }
 
   private async saveAsWorldWithPackRefs(name: string, content: Uint8Array) {
@@ -2486,6 +2478,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           theme={this.props.theme}
           project={this.props.project}
           heightOffset={heightOffset}
+          widthOffset={widthOffset}
           setActivePersistable={this._setActiveEditorPersistable}
         />
       );

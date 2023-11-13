@@ -61,7 +61,7 @@ export default class NodeFile extends FileBase implements IFile {
       } else {
         // Log.debug(`NodeFS loading '${this.fullPath}' as text.`);
 
-        this._content = fs.readFileSync(this.fullPath, { encoding: "UTF8" });
+        this._content = fs.readFileSync(this.fullPath, { encoding: "utf8" });
       }
 
       //  this._content += "";

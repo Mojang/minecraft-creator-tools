@@ -109,7 +109,7 @@ export default class WorldTestArea {
         this.data.scripts = [];
       }
 
-      this.data.scripts.push(as.data);
+      this.data.scripts.push(as.scriptData);
     }
   }
 }

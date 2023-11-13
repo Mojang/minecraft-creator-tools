@@ -2,7 +2,6 @@ const gulp = require("gulp");
 const sourcemaps = require("gulp-sourcemaps");
 const ts = require("gulp-typescript");
 const del = require("del");
-const beeper = require("beeper");
 const importTransform = require("./tools/gulp-importTransform");
 const nodeifyScript = require("./tools/gulp-nodeifyScript");
 const jsonifyTypes = require("./tools/gulp-jsonifyTypes");
@@ -13,6 +12,7 @@ const jsnbuildfilesigs = [
   "src/**/*.ts",
   "!src/vscode/*.ts",
   "!src/UX/*.ts",
+  "!src/UXex/*.ts",
   "!out/**/*",
   "!build/**/*",
   "!toolbuild/**/*",
@@ -29,6 +29,7 @@ const jsnbuildfilesigs = [
 const vsccorebuildfilesigs = [
   "src/**/*.ts",
   "!src/UX/*.ts",
+  "!src/UXex/*.ts",
   "!out/**/*",
   "!build/**/*",
   "!toolbuild/**/*",
@@ -90,12 +91,8 @@ function compileVscCoreExeBuild() {
     .src(vsccorebuildfilesigs, { base: "" })
     .pipe(gulpWebpack(require("./webpack.vsccore.config.js")))
     .pipe(gulp.dest("toolbuild/vsc"))
-    .on("end", function () {
-      beeper(1);
-    })
-    .on("error", function () {
-      beeper(3);
-    });
+    .on("end", function () {})
+    .on("error", function () {});
 }
 
 function compileVscCoreWebBuild() {
@@ -103,12 +100,8 @@ function compileVscCoreWebBuild() {
     .src(vsccorebuildfilesigs, { base: "" })
     .pipe(gulpWebpack(require("./webpack.vsccoreweb.config.js")))
     .pipe(gulp.dest("toolbuild/vsc"))
-    .on("end", function () {
-      beeper(1);
-    })
-    .on("error", function () {
-      beeper(3);
-    });
+    .on("end", function () {})
+    .on("error", function () {});
 }
 
 function compileVscWebBuild() {
@@ -116,12 +109,8 @@ function compileVscWebBuild() {
     .src(vscwebbuildfilesigs, { base: "" })
     .pipe(gulpWebpack(require("./webpack.vscweb.config.js")))
     .pipe(gulp.dest("toolbuild/vsc/web"))
-    .on("end", function () {
-      beeper(1);
-    })
-    .on("error", function () {
-      beeper(3);
-    });
+    .on("end", function () {})
+    .on("error", function () {});
 }
 
 function compileJsnWebBuild() {
@@ -129,12 +118,8 @@ function compileJsnWebBuild() {
     .src(jsnwebbuildfilesigs, { base: "" })
     .pipe(gulpWebpack(require("./webpack.jsnweb.config.js")))
     .pipe(gulp.dest("toolbuild/jsn/web"))
-    .on("end", function () {
-      beeper(1);
-    })
-    .on("error", function () {
-      beeper(3);
-    });
+    .on("end", function () {})
+    .on("error", function () {});
 }
 
 function compileJsNodeBuild() {
@@ -161,12 +146,8 @@ function compileJsNodeBuild() {
     .pipe(nodeifyScript())
     .pipe(sourcemaps.write("./maps/"))
     .pipe(gulp.dest("toolbuild/jsn"))
-    .on("end", function () {
-      beeper(1);
-    })
-    .on("error", function () {
-      beeper(3);
-    });
+    .on("end", function () {})
+    .on("error", function () {});
 }
 
 function copyCheckedInRes() {
@@ -341,7 +322,6 @@ function compileWebJsBuild() {
     outDir: "web",
     moduleResolution: "node",
     sourceMap: true,
-    skipLibChecks: false,
     allowSyntheticDefaultImports: true,
     noImplicitAny: true,
   });
@@ -358,12 +338,8 @@ function compileWebJsBuild() {
     )
     .pipe(sourcemaps.write("./maps/"))
     .pipe(gulp.dest("out/web"))
-    .on("end", function () {
-      beeper(1);
-    })
-    .on("error", function () {
-      beeper(3);
-    });
+    .on("end", function () {})
+    .on("error", function () {});
 }
 
 function buildMinecraftJs() {

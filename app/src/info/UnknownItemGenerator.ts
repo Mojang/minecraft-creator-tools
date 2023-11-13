@@ -3,6 +3,7 @@ import ProjectItem from "../app/ProjectItem";
 import IProjectInfoItemGenerator from "./IProjectItemInfoGenerator";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
+import ProjectInfoSet from "./ProjectInfoSet";
 
 export default class UnknownFileGenerator implements IProjectInfoItemGenerator {
   id = "UNKJSON";
@@ -13,6 +14,8 @@ export default class UnknownFileGenerator implements IProjectInfoItemGenerator {
       title: topicId.toString(),
     };
   }
+
+  summarize(info: any, infoSet: ProjectInfoSet) {}
 
   async generate(projectItem: ProjectItem): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];

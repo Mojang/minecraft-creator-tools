@@ -8,6 +8,7 @@ import { ErrorObject, ValidateFunction } from "ajv";
 import Ajv from "ajv";
 
 import axios from "axios";
+import ProjectInfoSet from "./ProjectInfoSet";
 
 export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "SCHM";
@@ -32,6 +33,8 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
       title: topicId.toString(),
     };
   }
+
+  summarize(info: any, infoSet: ProjectInfoSet) {}
 
   async loadSchema(uri: string) {
     console.log("Retrieving " + uri);
@@ -62,6 +65,9 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
 
             ajv.addFormat("uuid", this.testUuid);
             ajv.addFormat("uri", this.testUri);
+            ajv.addFormat("color-hex", this.testUnknownFormat);
+            ajv.addFormat("colox-hex", this.testUnknownFormat);
+            ajv.addFormat("molang", this.testUnknownFormat);
 
             val = ajv.compile(schemaContents);
 
@@ -145,6 +151,10 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
 
   testUuid(uuidString: string) {
     return this.uuidRegex.test(uuidString);
+  }
+
+  testUnknownFormat(formatString: string) {
+    return true;
   }
 
   testUri(uriString: string) {

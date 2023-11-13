@@ -1,11 +1,11 @@
 import IFile from "../../storage/IFile";
-import Log from "../../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import IFolder from "../../storage/IFolder";
 import DocumentedCommand from "./DocumentedCommand";
 import { remappedMinecraftScriptModules } from "../../app/Project";
 import IDocCommandSet from "./IDocCommandSet";
 import IDocCommandEnum from "./IDocCommandEnum";
+import StorageUtilities from "../../storage/StorageUtilities";
 
 export default class DocumentedCommandSet {
   private _file?: IFile;
@@ -205,13 +205,7 @@ export default class DocumentedCommandSet {
 
     this.id = this._file.name;
 
-    try {
-      const data: any = JSON.parse(this._file.content);
-
-      this.commandSetDefinition = data;
-    } catch (e) {
-      Log.fail("Could not parse command set JSON " + e);
-    }
+    this.commandSetDefinition = StorageUtilities.getJsonObject(this._file);
 
     this._docCommands = {};
 

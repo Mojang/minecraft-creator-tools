@@ -9,6 +9,7 @@ import ProjectUpdateResult from "../updates/ProjectUpdateResult";
 import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
+import ProjectInfoSet from "../info/ProjectInfoSet";
 
 export default class BehaviorPackEntityTypeManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "BPENTITYTYPE";
@@ -83,6 +84,8 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
     };
   }
 
+  summarize(info: any, infoSet: ProjectInfoSet) {}
+
   async generate(project: Project): Promise<ProjectInfoItem[]> {
     const infoItems: ProjectInfoItem[] = [];
 
@@ -120,10 +123,54 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
 
         if (pi.file) {
           foundWorldTemplate = true;
-          const bpManifest = await EntityTypeDefinition.ensureEntityTypeOnFile(pi.file);
+          const bpEntityType = await EntityTypeDefinition.ensureEntityTypeOnFile(pi.file);
 
-          if (bpManifest) {
-            if (!bpManifest || !bpManifest.behaviorPackWrapper || !bpManifest.behaviorPackWrapper.format_version) {
+          if (bpEntityType) {
+            await bpEntityType.load();
+
+            const pii = new ProjectInfoItem(InfoItemType.info, this.id, 2, "Entity Type Description");
+
+            if (
+              bpEntityType &&
+              bpEntityType.behaviorPackEntityTypeDef &&
+              bpEntityType.behaviorPackEntityTypeDef.description
+            ) {
+              const desc = bpEntityType.behaviorPackEntityTypeDef.description;
+
+              if (desc.identifier !== undefined && desc.identifier.toLowerCase().startsWith("minecraft:")) {
+                pii.incrementFeature(desc.identifier.toLowerCase());
+              }
+
+              if (
+                desc.runtime_identifier !== undefined &&
+                desc.runtime_identifier.toLowerCase !== undefined &&
+                desc.runtime_identifier.toLowerCase().startsWith("minecraft:")
+              ) {
+                pii.incrementFeature(desc.runtime_identifier.toLowerCase());
+              }
+
+              if (desc.is_experimental) {
+                pii.incrementFeature("Experimental Entity Type");
+              }
+
+              if (desc.is_spawnable) {
+                pii.incrementFeature("Spawnable Entity Type");
+              }
+
+              if (desc.is_summonable) {
+                pii.incrementFeature("Summonable Entity Type");
+              }
+            } else {
+              pii.incrementFeature("Entity Type without description");
+            }
+
+            const fv = bpEntityType.getFormatVersion();
+            if (
+              !bpEntityType ||
+              !bpEntityType.behaviorPackWrapper ||
+              !bpEntityType.behaviorPackWrapper.format_version ||
+              !fv
+            ) {
               infoItems.push(
                 new ProjectInfoItem(
                   InfoItemType.error,
@@ -135,30 +182,28 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
               );
               foundError = true;
             } else {
-              const bpVer = bpManifest?.behaviorPackWrapper.format_version.split(".");
-
-              if (parseInt(bpVer[0]) < parseInt(verSplit[0])) {
+              if (fv.length > 0 && fv[0] < parseInt(verSplit[0])) {
                 infoItems.push(
                   new ProjectInfoItem(
                     InfoItemType.recommendation,
                     this.id,
                     110,
                     "Behavior pack entity type format version (" +
-                      bpVer.join(".") +
+                      fv.join(".") +
                       ") has a lower major version number compared to current version (" +
                       ver +
                       ")",
                     pi
                   )
                 );
-              } else if (parseInt(bpVer[0]) > parseInt(verSplit[0])) {
+              } else if (fv[0] > parseInt(verSplit[0])) {
                 infoItems.push(
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
                     111,
                     "Behavior pack entity type format version (" +
-                      bpVer.join(".") +
+                      fv.join(".") +
                       ") has a higher major version number compared to current version (" +
                       ver +
                       ")",
@@ -166,28 +211,28 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
                   )
                 );
                 foundError = true;
-              } else if (parseInt(bpVer[1]) < parseInt(verSplit[1]) - 1) {
+              } else if (fv[1] < parseInt(verSplit[1]) - 1) {
                 infoItems.push(
                   new ProjectInfoItem(
                     InfoItemType.recommendation,
                     this.id,
                     120,
                     "Behavior pack entity type format version (" +
-                      bpVer.join(".") +
+                      fv.join(".") +
                       ") has a lower minor version number compared to the current version or the previous current minor version (" +
                       ver +
                       ")",
                     pi
                   )
                 );
-              } else if (parseInt(bpVer[1]) > parseInt(verSplit[1])) {
+              } else if (fv[1] > parseInt(verSplit[1])) {
                 infoItems.push(
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
                     121,
                     "Behavior pack entity type format version (" +
-                      bpVer.join(".") +
+                      fv.join(".") +
                       ") has a higher minor version number compared to current version (" +
                       ver +
                       ")",
@@ -195,28 +240,28 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
                   )
                 );
                 foundError = true;
-              } else if (parseInt(bpVer[2]) < parseInt(verSplit[2])) {
+              } else if (fv[2] < parseInt(verSplit[2])) {
                 infoItems.push(
                   new ProjectInfoItem(
                     InfoItemType.recommendation,
                     this.id,
                     130,
                     "Behavior pack entity type format version (" +
-                      bpVer.join(".") +
+                      fv.join(".") +
                       ") has a lower patch version number compared to current version (" +
                       ver +
                       ")",
                     pi
                   )
                 );
-              } else if (parseInt(bpVer[2]) > parseInt(verSplit[2]) && parseInt(bpVer[1]) === parseInt(verSplit[1])) {
+              } else if (fv[2] > parseInt(verSplit[2]) && fv[1] === parseInt(verSplit[1])) {
                 infoItems.push(
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
                     131,
                     "Behavior pack entity type format version (" +
-                      bpVer.join(".") +
+                      fv.join(".") +
                       ") has a higher patch version number compared to current version (" +
                       ver +
                       ")",

@@ -1,9 +1,5 @@
 {
   "info": {
-    "defaultBehaviorPackUuid": "afeeb2ab-0404-4518-822f-9837117e78e1",
-    "defaultBehaviorPackMinEngineVersion": "1.20.10",
-    "defaultBehaviorPackName": "Starter Hello World Tests",
-    "defaultBehaviorPackDescription": "Introductory tests for Minecraft GameTest Framework.",
     "behaviorPackManifestCount": 1,
     "unknownJsonCount": 0,
     "entityTypeManifestCount": 0,
@@ -14,7 +10,38 @@
     "entityTypeResourceCount": 0,
     "behaviorPackAnimationCount": 0,
     "behaviorPackAnimationControllerCount": 0,
-    "features": {}
+    "defaultBehaviorPackUuid": "afeeb2ab-0404-4518-822f-9837117e78e1",
+    "defaultBehaviorPackMinEngineVersion": "1.20.10",
+    "defaultBehaviorPackName": "Starter Hello World Tests",
+    "defaultBehaviorPackDescription": "Introductory tests for Minecraft GameTest Framework.",
+    "chunkCount": 0,
+    "features": {
+      "Behavior pack manifest content-size count": 1,
+      "Behavior pack manifest content-size total": 18,
+      "Behavior pack manifest content-size max": 18,
+      "Behavior pack manifest content-size min": 18,
+      "Behavior pack manifest content-size average": 18,
+      "Image content-size count": 1,
+      "Image content-size total": 8092,
+      "Image content-size max": 8092,
+      "Image content-size min": 8092,
+      "Image content-size average": 8092,
+      "Catalog index content-size count": 1,
+      "Catalog index content-size total": 2,
+      "Catalog index content-size max": 2,
+      "Catalog index content-size min": 2,
+      "Catalog index content-size average": 2,
+      "JavaScript content-size count": 1,
+      "JavaScript content-size total": 16,
+      "JavaScript content-size max": 16,
+      "JavaScript content-size min": 16,
+      "JavaScript content-size average": 16,
+      "Structure content-size count": 1,
+      "Structure content-size total": 9872,
+      "Structure content-size max": 9872,
+      "Structure content-size min": 9872,
+      "Structure content-size average": 9872
+    }
   },
   "items": [
     {
@@ -64,6 +91,76 @@
       "generatorIndex": 174,
       "message": "Image item count",
       "data": 1
+    },
+    {
+      "itemType": 2,
+      "generatorId": "LINESIZE",
+      "generatorIndex": 105,
+      "message": "Linesize Complexity",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/manifest.json",
+      "features": {
+        "content-size count": 1,
+        "content-size total": 18,
+        "content-size max": 18,
+        "content-size min": 18,
+        "content-size average": 18
+      }
+    },
+    {
+      "itemType": 2,
+      "generatorId": "LINESIZE",
+      "generatorIndex": 174,
+      "message": "Linesize Complexity",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/pack_icon.png",
+      "features": {
+        "content-size count": 1,
+        "content-size total": 8092,
+        "content-size max": 8092,
+        "content-size min": 8092,
+        "content-size average": 8092
+      }
+    },
+    {
+      "itemType": 2,
+      "generatorId": "LINESIZE",
+      "generatorIndex": 103,
+      "message": "Linesize Complexity",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/index.js",
+      "features": {
+        "content-size count": 1,
+        "content-size total": 2,
+        "content-size max": 2,
+        "content-size min": 2,
+        "content-size average": 2
+      }
+    },
+    {
+      "itemType": 2,
+      "generatorId": "LINESIZE",
+      "generatorIndex": 102,
+      "message": "Linesize Complexity",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/starttests.js",
+      "features": {
+        "content-size count": 1,
+        "content-size total": 16,
+        "content-size max": 16,
+        "content-size min": 16,
+        "content-size average": 16
+      }
+    },
+    {
+      "itemType": 2,
+      "generatorId": "LINESIZE",
+      "generatorIndex": 104,
+      "message": "Linesize Complexity",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure",
+      "features": {
+        "content-size count": 1,
+        "content-size total": 9872,
+        "content-size max": 9872,
+        "content-size min": 9872,
+        "content-size average": 9872
+      }
     },
     {
       "itemType": 2,
@@ -194,6 +291,111 @@
       "message": "JS file: /behavior_packs/StarterTestsTutorial/scripts/starttests.js"
     },
     {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 1,
+      "message": "Blocks",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/manifest.json"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 2,
+      "message": "Block Data",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/manifest.json"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 3,
+      "message": "Commands",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/manifest.json"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 1,
+      "message": "Blocks",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/pack_icon.png"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 2,
+      "message": "Block Data",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/pack_icon.png"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 3,
+      "message": "Commands",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/pack_icon.png"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 1,
+      "message": "Blocks",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 2,
+      "message": "Block Data",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 3,
+      "message": "Commands",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 1,
+      "message": "Blocks",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/starttests.js"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 2,
+      "message": "Block Data",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/starttests.js"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 3,
+      "message": "Commands",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/starttests.js"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 1,
+      "message": "Blocks",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 2,
+      "message": "Block Data",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 3,
+      "message": "Commands",
+      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure"
+    },
+    {
       "itemType": 0,
       "generatorId": "UNKFILE",
       "generatorIndex": 1,
@@ -207,11 +409,23 @@
     },
     {
       "itemType": 0,
+      "generatorId": "PACKMETADATA",
+      "generatorIndex": 1,
+      "message": "Test General info completed successfully."
+    },
+    {
+      "itemType": 0,
       "generatorId": "WORLD",
       "generatorIndex": 1,
       "message": "Test World Validation completed successfully."
+    },
+    {
+      "itemType": 0,
+      "generatorId": "WORLDDATA",
+      "generatorIndex": 1,
+      "message": "Test World Data Validation completed successfully."
     }
   ],
   "generatorName": "Minecraft Creator Tools",
-  "generatorVersion": "0.1.51"
+  "generatorVersion": "0.1.58"
 }

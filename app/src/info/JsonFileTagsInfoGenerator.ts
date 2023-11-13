@@ -6,6 +6,7 @@ import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import IFile from "../storage/IFile";
 import ZipStorage from "../storage/ZipStorage";
+import ProjectInfoSet from "./ProjectInfoSet";
 
 export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator {
   id = "JSONTAGS";
@@ -30,6 +31,8 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
     return items;
   }
+
+  summarize(info: any, infoSet: ProjectInfoSet) {}
 
   async generateFromFolder(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
     await folder.load(false);
@@ -80,7 +83,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
       const jsonO = StorageUtilities.getJsonObject(file);
 
-      if (jsonO) {
+      if (jsonO !== undefined) {
         const entityNode = jsonO["minecraft:entity"];
 
         if (entityNode) {
@@ -154,7 +157,11 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
     for (const obj in rootTag) {
       if (obj) {
-        pi.incrementFeature(obj + " " + suffix);
+        let colon = obj.indexOf(":");
+
+        if (colon <= 0 || obj.substring(0, colon) === "minecraft") {
+          pi.incrementFeature(obj + " " + suffix);
+        }
       }
     }
   }

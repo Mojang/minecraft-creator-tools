@@ -128,10 +128,7 @@ export default abstract class FileBase implements IFile {
       return undefined;
     }
 
-    const hash = md5.create();
-    hash.update(this._content);
-
-    return md5.base64("");
+    return md5.base64(this._content);
   }
 
   dispose() {

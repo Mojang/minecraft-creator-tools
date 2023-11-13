@@ -15,14 +15,7 @@ export default class BlockAreaSize {
    * Z size (south to north) of this block area size.
    */
   "z": number;
-  /**
-   * @remarks
-   * Creates a new BlockAreaSize object.
-   * @param x
-   * @param y
-   * @param z
-   */
-  constructor(x: number, y: number, z: number) {}
+
   /**
    * @remarks
    * Tests whether this block area size is equal to another

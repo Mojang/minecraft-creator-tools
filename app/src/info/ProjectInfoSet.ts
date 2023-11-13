@@ -5,6 +5,7 @@ import IProjectItemInfoGenerator from "./IProjectItemInfoGenerator";
 import IProjectFileInfoGenerator from "./IProjectFileInfoGenerator";
 import ItemCountsInfoGenerator from "./ItemCountsInfoGenerator";
 import PackInformationGenerator from "./PackInfoGenerator";
+import LineSizeInfoGenerator from "./LineSizeInfoGenerator";
 import IProjectInfo from "./IProjectInfo";
 import ProjectInfoItem from "./ProjectInfoItem";
 import SchemaItemInfoGenerator from "./SchemaItemInfoGenerator";
@@ -18,13 +19,15 @@ import IProjectInfoData from "./IProjectInfoData";
 import JsonFileTagsInfoGenerator from "./JsonFileTagsInfoGenerator";
 import { constants } from "../core/Constants";
 import Utilities from "../core/Utilities";
-import { ProjectItemType } from "../app/IProjectItemData";
 import Log from "../core/Log";
 import ScriptModuleManager from "../manager/ScriptModuleManager";
 import VsCodeFileManager from "../manager/VsCodeFileManager";
 import MinEngineVersionManager from "../manager/MinEngineVersionManager";
 import BaseGameVersionManager from "../manager/BaseGameVersionManager";
 import BehaviorPackEntityTypeManager from "../manager/BehaviorPackEntityTypeManager";
+import WorldDataInfoGenerator from "./WorldDataInfoGenerator";
+import { StatusTopic } from "../app/Status";
+import PackMetaDataInformationGenerator from "./PackMetaDataInfoGenerator";
 
 export enum ProjectInfoSuite {
   all,
@@ -42,9 +45,32 @@ export default class ProjectInfoSet {
   _excludeTests?: string[];
   private _pendingGenerateRequests: ((value: unknown) => void)[] = [];
 
-  constructor(project: Project, suite?: ProjectInfoSuite, excludeTests?: string[]) {
+  constructor(
+    project?: Project,
+    suite?: ProjectInfoSuite,
+    excludeTests?: string[],
+    info?: IProjectInfo,
+    items?: IInfoItemData[]
+  ) {
     this.project = project;
-    this.info = {};
+    this.info = info ? info : {};
+
+    if (items) {
+      for (const item of items) {
+        this.items.push(
+          new ProjectInfoItem(
+            item.itemType,
+            item.generatorId,
+            item.generatorIndex,
+            item.message,
+            undefined,
+            item.data,
+            item.itemId,
+            item.content
+          )
+        );
+      }
+    }
 
     if (suite) {
       this.suite = suite;
@@ -57,6 +83,7 @@ export default class ProjectInfoSet {
 
   static projectGenerators = [
     new ItemCountsInfoGenerator(),
+    new LineSizeInfoGenerator(),
     new PackInformationGenerator(),
     new JsonFileTagsInfoGenerator(),
     new ScriptModuleManager(),
@@ -66,7 +93,13 @@ export default class ProjectInfoSet {
     new BehaviorPackEntityTypeManager(),
   ];
 
-  static itemGenerators = [new UnknownItemGenerator(), new SchemaItemInfoGenerator(), new WorldItemInfoGenerator()];
+  static itemGenerators = [
+    new UnknownItemGenerator(),
+    new PackMetaDataInformationGenerator(),
+    new SchemaItemInfoGenerator(),
+    new WorldItemInfoGenerator(),
+    new WorldDataInfoGenerator(),
+  ];
 
   static fileGenerators = [new UnknownFileGenerator()];
 
@@ -125,6 +158,11 @@ export default class ProjectInfoSet {
     } else {
       this._isGenerating = true;
 
+      const valOperId = await this.project?.carto.notifyOperationStarted(
+        "Validating '" + this.project.name + "'",
+        StatusTopic.validation
+      );
+
       const projGenerators: IProjectInfoGenerator[] = ProjectInfoSet.projectGenerators;
       const itemGenerators: IProjectItemInfoGenerator[] = ProjectInfoSet.itemGenerators;
       const fileGenerators: IProjectFileInfoGenerator[] = ProjectInfoSet.fileGenerators;
@@ -182,9 +220,25 @@ export default class ProjectInfoSet {
       this._pendingGenerateRequests = [];
       this._isGenerating = false;
 
+      if (valOperId !== undefined) {
+        await this.project?.carto.notifyOperationEnded(
+          valOperId,
+          "Completed validation of '" + this.project.name + "'",
+          StatusTopic.validation
+        );
+      }
+
       for (const prom of pendingLoad) {
         prom(undefined);
       }
+    }
+  }
+
+  disconnectFromProject() {
+    this.project = undefined;
+
+    for (const pi of this.items) {
+      pi.disconnect();
     }
   }
 
@@ -207,9 +261,28 @@ export default class ProjectInfoSet {
     }
   }
 
-  public mergeInFeatures(allFeatures: { [featureName: string]: number | undefined }) {
+  public mergeInFeatures(
+    allFeatures: { [featureName: string]: number | undefined },
+    allFields: { [featureName: string]: boolean | undefined }
+  ) {
     if (!this.info || !this.info.features) {
       return;
+    }
+
+    for (const str in this.info) {
+      if (str !== "features") {
+        allFields[str] = true;
+      }
+    }
+
+    for (const str in allFields) {
+      let inf = this.info as any;
+
+      if (str !== "features") {
+        if (inf[str] === undefined) {
+          inf[str] = "";
+        }
+      }
     }
 
     for (const featureName in this.info.features) {
@@ -251,7 +324,7 @@ export default class ProjectInfoSet {
     projectInfo: IProjectInfo,
     allFeatures: { [featureName: string]: number | undefined }
   ): string {
-    let csvLine = "Name,Title,";
+    let csvLine = "Name,Title,Reds,Area,";
 
     let fieldNames = [];
     let featureNames = [];
@@ -481,10 +554,8 @@ function _addReportJson(data) {
   getDataSummary(data: any | undefined) {
     if (typeof data === "number" || typeof data === "boolean") {
       return data.toString();
-    } else if (typeof data === "string") {
-      return '"' + data + '"';
     } else if (data) {
-      return data;
+      return '"' + data.replace(/"/gi, "'") + '"';
     }
 
     return "(not defined)";
@@ -497,12 +568,310 @@ function _addReportJson(data) {
     return a.localeCompare(b);
   }
 
+  getArea(title: string) {
+    title = title.toLowerCase();
+
+    if (title.indexOf("furniture") >= 0) {
+      return "Furniture";
+    }
+
+    if (title.indexOf("skyblock") >= 0 || title.indexOf("sky block") >= 0) {
+      return "Skyblock";
+    }
+
+    if (title.indexOf("oneblock") >= 0 || title.indexOf("one block") >= 0) {
+      return "One block";
+    }
+
+    if (title.indexOf("lucky") >= 0) {
+      return "Lucky";
+    }
+
+    if (title.indexOf("parkour") >= 0) {
+      return "Parkour";
+    }
+
+    if (title.indexOf("surviv") >= 0) {
+      return "Survival";
+    }
+
+    if (
+      title.indexOf("weapon") >= 0 ||
+      title.indexOf("potion") >= 0 ||
+      title.indexOf("tool") >= 0 ||
+      title.indexOf("hook") >= 0
+    ) {
+      return "Tools";
+    }
+
+    if (
+      title.indexOf("roleplay") >= 0 ||
+      title.indexOf("teen") >= 0 ||
+      title.indexOf("illionair") >= 0 ||
+      title.indexOf("hacker") >= 0
+    ) {
+      return "Roleplay";
+    }
+
+    if (
+      title.indexOf("mob") >= 0 ||
+      title.indexOf("pirate") >= 0 ||
+      title.indexOf("unicorn") >= 0 ||
+      title.indexOf("alien") >= 0 ||
+      title.indexOf("animals") >= 0 ||
+      title.indexOf("cats") >= 0 ||
+      title.indexOf("dogs") >= 0 ||
+      title.indexOf("dragon") >= 0
+    ) {
+      return "Mob";
+    }
+
+    if (title.indexOf("vehicles") >= 0 || title.indexOf("car") >= 0 || title.indexOf("plane") >= 0) {
+      return "Vehicles";
+    }
+
+    if (
+      title.indexOf("island") >= 0 ||
+      title.indexOf("kingdom") >= 0 ||
+      title.indexOf("tower") >= 0 ||
+      title.indexOf("mansion") >= 0 ||
+      title.indexOf("village") >= 0 ||
+      title.indexOf("resort") >= 0 ||
+      title.indexOf("castle") >= 0 ||
+      title.indexOf("base") >= 0 ||
+      title.indexOf("town") >= 0 ||
+      title.indexOf("city") >= 0 ||
+      title.indexOf("fortress") >= 0 ||
+      title.indexOf("citadel") >= 0 ||
+      title.indexOf("outpost") >= 0 ||
+      title.indexOf("farm") >= 0 ||
+      title.indexOf("hotel") >= 0 ||
+      title.indexOf("castle") >= 0
+    ) {
+      return "Area";
+    }
+
+    if (title.indexOf("simulat") >= 0) {
+      return "Simulator";
+    }
+
+    return "General";
+  }
+
+  getRed() {
+    let red = 0;
+
+    if (!this.info || !this.info.features) {
+      return 0;
+    }
+
+    let val = this.info.features["Animation content-size total"];
+    if (val) {
+      red += val * 0.2;
+    }
+
+    val = this.info.features["Animation controller content-size total"];
+    if (val) {
+      red += val * 0.5;
+    }
+
+    val = this.info.features["Attachable content-size total"];
+    if (val) {
+      red += val * 0.1;
+    }
+
+    val = this.info.features["Function content-size total"];
+    if (val) {
+      red += val * 2;
+    }
+
+    val = this.info.features["Tick content-size total"];
+    if (val) {
+      red += val * 20;
+    }
+
+    val = this.info.features["Command execute"];
+    if (val) {
+      red += val * 4;
+    }
+
+    val = this.info.features["Behavior pack animation content-size total"];
+    if (val) {
+      red += val * 0.8;
+    }
+
+    val = this.info.features["Behavior pack animation controller content-size total"];
+    if (val) {
+      red += val * 1.2;
+    }
+
+    val = this.info.features["Biome resources content-size total"];
+    if (val) {
+      red += val * 1.2;
+    }
+
+    val = this.info.features["Block minecraft:chain_command_block"];
+    if (val) {
+      red += val * 8;
+    }
+
+    val = this.info.features["Block minecraft:command_block"];
+    if (val) {
+      red += val * 8;
+    }
+
+    val = this.info.features["Block minecraft:repeating_command_block"];
+    if (val) {
+      red += val * 8;
+    }
+
+    val = this.info.features["Block minecraft:structure_block"];
+    if (val) {
+      red += val * 8;
+    }
+
+    val = this.info.features["Block minecraft:observer"];
+    if (val) {
+      red += val * 4;
+    }
+
+    val = this.info.features["Block minecraft:comparator"];
+    if (val) {
+      red += val * 4;
+    }
+
+    val = this.info.features["Block minecraft:dropper"];
+    if (val) {
+      red += val * 2;
+    }
+
+    val = this.info.features["Block minecraft:hopper"];
+    if (val) {
+      red += val * 2;
+    }
+
+    val = this.info.features["Block minecraft:pressure_plate"];
+    if (val) {
+      red += val * 1;
+    }
+
+    val = this.info.features["Block minecraft:lever"];
+    if (val) {
+      red += val * 4;
+    }
+
+    val = this.info.features["Block minecraft:lit_redstone_lamp"];
+    if (val) {
+      red += val;
+    }
+
+    val = this.info.features["Block minecraft:redstone_block"];
+    if (val) {
+      red += val;
+    }
+
+    val = this.info.features["Block minecraft:redstone_torch"];
+    if (val) {
+      red += val;
+    }
+
+    val = this.info.features["Block minecraft:redstone_wire"];
+    if (val) {
+      red += val;
+    }
+
+    val = this.info.features["Block type content-size total"];
+    if (val) {
+      red += val * 2;
+    }
+
+    val = this.info.features["Entity dialogue content-size total"];
+    if (val) {
+      red += val * 2;
+    }
+
+    val = this.info.features["Entity type content-size total"];
+    if (val) {
+      red += val * 2;
+    }
+
+    val = this.info.features["Entity type resources content-size total"];
+    if (val) {
+      red += val * 1;
+    }
+
+    val = this.info.features["Item type content-size total"];
+    if (val) {
+      red += val * 2;
+    }
+
+    val = this.info.features["Item type resources content-size total"];
+    if (val) {
+      red += val * 1;
+    }
+
+    val = this.info.features["JavaScript content-size total"];
+    if (val) {
+      red += val * 2;
+    }
+
+    val = this.info.features["Loot table content-size total"];
+    if (val) {
+      red += val;
+    }
+
+    val = this.info.features["Model content-size total"];
+    if (val) {
+      red += val * 0.1;
+    }
+
+    val = this.info.features["Particle content-size total"];
+    if (val) {
+      red += val * 0.4;
+    }
+
+    val = this.info.features["Recipe content-size total"];
+    if (val) {
+      red += val * 0.4;
+    }
+
+    val = this.info.features["Render controller content-size total"];
+    if (val) {
+      red += val * 0.5;
+    }
+
+    val = this.info.features["Spawn rule content-size total"];
+    if (val) {
+      red += val * 1;
+    }
+
+    val = this.info.features["Trading content-size total"];
+    if (val) {
+      red += val * 1;
+    }
+
+    val = this.info.features["User interface content-size total"];
+    if (val) {
+      red += val * 2;
+    }
+
+    return red;
+  }
+
   getSummaryCsvLine(
     containerName: string,
     title: string,
     allFeatures: { [featureName: string]: number | undefined }
   ): string {
-    let line = containerName + "," + title + ",";
+    let line =
+      this.getDataSummary(containerName) +
+      "," +
+      this.getDataSummary(title) +
+      "," +
+      this.getRed() +
+      "," +
+      this.getArea(title) +
+      ",";
 
     let fieldNames = [];
     let featureNames = [];
@@ -645,43 +1014,21 @@ function _addReportJson(data) {
   generateProjectMetaInfo() {
     this.info = {};
 
-    this.info.defaultBehaviorPackUuid = this.getFirstStringValue("PACK", 2);
-    this.info.defaultBehaviorPackMinEngineVersion = this.getFirstNumberArrayValue("PACK", 1);
-    this.info.defaultBehaviorPackName = this.getFirstNumberArrayValue("PACK", 4);
-    this.info.defaultBehaviorPackDescription = this.getFirstNumberArrayValue("PACK", 5);
-    this.info.defaultResourcePackUuid = this.getFirstStringValue("PACK", 12);
-    this.info.defaultResourcePackMinEngineVersion = this.getFirstNumberArrayValue("PACK", 11);
-    this.info.defaultResourcePackName = this.getFirstNumberArrayValue("PACK", 14);
-    this.info.defaultResourcePackDescription = this.getFirstNumberArrayValue("PACK", 15);
+    const projGenerators: IProjectInfoGenerator[] = ProjectInfoSet.projectGenerators;
+    const itemGenerators: IProjectItemInfoGenerator[] = ProjectInfoSet.itemGenerators;
+    const fileGenerators: IProjectFileInfoGenerator[] = ProjectInfoSet.fileGenerators;
 
-    this.info.behaviorPackManifestCount = this.getFirstNumberValue(
-      "ITEMS",
-      100 + ProjectItemType.behaviorPackManifestJson
-    );
-    this.info.unknownJsonCount = this.getFirstNumberValue("ITEMS", 100 + ProjectItemType.json);
-    this.info.entityTypeManifestCount = this.getFirstNumberValue("ITEMS", 100 + ProjectItemType.entityTypeBehaviorJson);
-    this.info.itemTypeManifestCount = this.getFirstNumberValue("ITEMS", 100 + ProjectItemType.itemTypeBehaviorJson);
-    this.info.blockTypeManifestCount = this.getFirstNumberValue("ITEMS", 100 + ProjectItemType.blockTypeBehaviorJson);
-    this.info.resourcePackManifestCount = this.getFirstNumberValue(
-      "ITEMS",
-      100 + ProjectItemType.resourcePackManifestJson
-    );
+    for (let j = 0; j < projGenerators.length; j++) {
+      projGenerators[j].summarize(this.info, this);
+    }
 
-    this.info.worldCount =
-      this.getFirstNumberValue("ITEMS", 100 + ProjectItemType.MCWorld) +
-      this.getFirstNumberValue("ITEMS", 100 + ProjectItemType.worldFolder);
+    for (let j = 0; j < itemGenerators.length; j++) {
+      itemGenerators[j].summarize(this.info, this);
+    }
 
-    this.info.entityTypeResourceCount = this.getFirstNumberValue("ITEMS", 100 + ProjectItemType.entityTypeResourceJson);
-
-    this.info.behaviorPackAnimationCount = this.getFirstNumberValue(
-      "ITEMS",
-      100 + ProjectItemType.animationBehaviorJson
-    );
-
-    this.info.behaviorPackAnimationControllerCount = this.getFirstNumberValue(
-      "ITEMS",
-      100 + ProjectItemType.animationControllerBehaviorJson
-    );
+    for (let j = 0; j < fileGenerators.length; j++) {
+      fileGenerators[j].summarize(this.info, this);
+    }
 
     this.aggregateFeatures();
   }
@@ -796,6 +1143,18 @@ function _addReportJson(data) {
     return 0;
   }
 
+  getSummedNumberValue(validatorName: string, validatorId: number) {
+    let sum = 0;
+    for (const item of this.items) {
+      if (item.generatorId === validatorName && item.generatorIndex === validatorId && item.data) {
+        if (typeof item.data === "number") {
+          sum += item.data;
+        }
+      }
+    }
+
+    return sum;
+  }
   getFirstNumberArrayValue(validatorName: string, validatorId: number) {
     for (const item of this.items) {
       if (item.generatorId === validatorName && item.generatorIndex === validatorId && item.data) {

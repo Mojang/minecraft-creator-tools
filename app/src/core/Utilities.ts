@@ -11,6 +11,12 @@ export default class Utilities {
   static defaultEncoding = "UTF-8";
   static replacementChar = 0xfffd;
 
+  static async sleep(ms: number) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+
   static get isDebug(): boolean {
     if (Utilities._isDebug === undefined) {
       if (AppServiceProxy.hasAppService) {
@@ -141,6 +147,27 @@ export default class Utilities {
     }).join("");
   }
 
+  static countSignificantLines(content: string) {
+    if (content.length <= 0) {
+      return 0;
+    }
+    let lineCount = 1;
+    let curStart = 0;
+    let nextNewline = content.indexOf("\n");
+
+    while (nextNewline >= curStart) {
+      let curContent = content.substring(curStart, nextNewline).trim();
+
+      if (curContent.length > 1) {
+        lineCount++;
+      }
+      curStart = nextNewline + 1;
+      nextNewline = content.indexOf("\n", curStart);
+    }
+
+    return lineCount;
+  }
+
   static stripWithoutWhitespace = () => "";
   static stripWithWhitespace = (str: string, start: number | undefined, end: number | undefined) =>
     str.slice(start, end).replace(/\S/g, " ");
@@ -188,10 +215,13 @@ export default class Utilities {
     return Boolean(backslashCount % 2);
   }
 
-  static stripJsonComments(jsonString: string, { whitespace = true, trailingCommas = false } = {}) {
+  static fixJsonContent(jsonString: string, { whitespace = true, trailingCommas = false } = {}) {
     if (typeof jsonString !== "string") {
       throw new TypeError(`Expected argument \`jsonString\` to be a \`string\`, got \`${typeof jsonString}\``);
     }
+
+    jsonString = jsonString.replace(/,\s*]/g, "]"); // remove trailing commas
+    jsonString = jsonString.replace(/,\s*}/g, "}"); // remove trailing commas
 
     const strip = whitespace ? Utilities.stripWithWhitespace : Utilities.stripWithoutWhitespace;
 
@@ -895,6 +925,25 @@ export default class Utilities {
     const result = Utilities.readStringASCII(view, byteOffset, byteLength);
 
     return result.str;
+  }
+
+  static getAsciiStringFromBytes(bytes: number[]) {
+    let str = "";
+    for (let i = 0; i < bytes.length; i++) {
+      str += String.fromCharCode(bytes[i]);
+    }
+
+    return str;
+  }
+
+  static getAsciiStringFromUint8Array(bytes: Uint8Array) {
+    let str = "";
+
+    for (let i = 0; i < bytes.length; i++) {
+      str += String.fromCharCode(bytes[i]);
+    }
+
+    return str;
   }
 
   static writeString(view: DataView, byteOffset: number, value: string, encoding: string) {

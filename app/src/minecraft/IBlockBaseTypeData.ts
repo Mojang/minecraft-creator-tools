@@ -11,6 +11,7 @@ export default interface IBlockBaseTypeData {
   name: string;
   shortId?: string;
   altShortId?: string;
+  mapColor?: string;
   icon?: string;
   abstract?: boolean;
   isOpaque?: boolean;

@@ -51,12 +51,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     this._handleNewChildPersistable = this._handleNewChildPersistable.bind(this);
     this.scrollToListBottom = this.scrollToListBottom.bind(this);
     this._commitCommand = this._commitCommand.bind(this);
-
-    if (Utilities.isDebug) {
-      Log.onItemAdded.subscribe(this._handleLogItemAdded);
-    }
-
-    this.props.carto.onStatusAdded.subscribe(this._handleStatusAdded);
+    this._prepareForFadeout = this._prepareForFadeout.bind(this);
 
     this.state = {
       displayEditor: false,
@@ -68,32 +63,56 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     this._update();
   }
 
-  _handleStatusAdded(carto: Carto, status: Status) {
-    if (status.type === StatusType.OperationStarted) {
-      this.setState({
-        displayEditor: this.state.displayEditor,
-        activeOperations: this.state.activeOperations + 1,
+  async _handleStatusAdded(carto: Carto, status: Status): Promise<void> {
+    if (status.type === StatusType.operationStarted) {
+      return new Promise((resolve: () => void, reject: () => void) => {
+        this.setState(
+          {
+            displayEditor: this.state.displayEditor,
+            activeOperations: this.state.activeOperations + 1,
+          },
+          () => {
+            this._prepareForFadeout();
+            window.setTimeout(() => {
+              resolve();
+            }, 1);
+          }
+        );
       });
-
       // this._prepareForFadeout(); // don't fade out text if an operation is ongoing.
-    } else if (status.type === StatusType.OperationEnded) {
-      this.setState({
-        displayEditor: this.state.displayEditor,
-        activeOperations: this.state.activeOperations - 1,
+    } else if (status.type === StatusType.operationEnded) {
+      return new Promise((resolve: () => void, reject: () => void) => {
+        this.setState(
+          {
+            displayEditor: this.state.displayEditor,
+            activeOperations: this.state.activeOperations - 1,
+          },
+          () => {
+            this._prepareForFadeout();
+            window.setTimeout(() => {
+              resolve();
+            }, 1);
+          }
+        );
       });
-
-      this._prepareForFadeout();
     } else {
-      this._update();
+      return new Promise((resolve: () => void, reject: () => void) => {
+        this.forceUpdate(() => {
+          this._prepareForFadeout();
+          window.setTimeout(() => {
+            resolve();
+          }, 1);
+        });
+      });
     }
   }
 
   private _update() {
     if (this._isMountedInternal) {
       this.forceUpdate();
-    }
 
-    this._prepareForFadeout();
+      window.setTimeout(this.scrollToListBottom, 1);
+    }
   }
 
   private _prepareForFadeout() {
@@ -132,10 +151,22 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
   componentDidMount(): void {
     this.scrollToListBottom();
     this._isMountedInternal = true;
+
+    if (Utilities.isDebug) {
+      Log.onItemAdded.subscribe(this._handleLogItemAdded);
+    }
+
+    this.props.carto.subscribeStatusAddedAsync(this._handleStatusAdded);
   }
 
   componentWillUnmount(): void {
     this._isMountedInternal = false;
+
+    if (Utilities.isDebug) {
+      Log.onItemAdded.unsubscribe(this._handleLogItemAdded);
+    }
+
+    this.props.carto.unsubscribeStatusAddedAsync(this._handleStatusAdded);
   }
 
   scrollToListBottom() {
@@ -317,7 +348,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         index += Log.items.length;
       }
 
-      for (let i = 0; i < this.props.carto.status.length; i++) {
+      for (let i = Math.max(0, this.props.carto.status.length - 1000); i < this.props.carto.status.length; i++) {
         const statusItem = this.props.carto.status[i];
 
         li.push({
@@ -329,6 +360,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
           ),
         });
       }
+
       index += this.props.carto.status.length;
 
       interior = (
@@ -340,8 +372,6 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         </div>
       );
     }
-
-    window.setTimeout(this.scrollToListBottom, 1);
 
     return (
       <div className="sa-outer">

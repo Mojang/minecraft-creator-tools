@@ -19,6 +19,10 @@ export default class ProjectInfoItem {
     return this.#data.message;
   }
 
+  set message(newMessage: string) {
+    this.#data.message = newMessage;
+  }
+
   get generatorId() {
     return this.#data.generatorId;
   }
@@ -33,6 +37,10 @@ export default class ProjectInfoItem {
 
   get data() {
     return this.#data.data;
+  }
+
+  set data(data: string | boolean | number | object | number[] | undefined) {
+    this.#data.data = data;
   }
 
   get content() {
@@ -55,6 +63,10 @@ export default class ProjectInfoItem {
     }
 
     return errorContent;
+  }
+
+  disconnect() {
+    this.#projectItem = undefined;
   }
 
   get typeSummary() {
@@ -138,6 +150,42 @@ export default class ProjectInfoItem {
     }
 
     this.#data.features[name] = curVal;
+  }
+
+  spectrumFeature(name: string, newValue: number) {
+    if (this.#data.features === undefined) {
+      this.#data.features = {};
+    }
+
+    this.incrementFeature(name + " count", 1);
+    this.incrementFeature(name + " total", newValue);
+    this.maxFeature(name + " max", newValue);
+    this.minFeature(name + " min", newValue);
+
+    const curTotal = this.#data.features[name + " total"];
+    const curCount = this.#data.features[name + " count"];
+
+    if (curCount && curTotal !== undefined) {
+      this.#data.features[name + " average"] = curTotal / curCount;
+    }
+  }
+
+  spectrumIntFeature(name: string, newValue: number) {
+    if (this.#data.features === undefined) {
+      this.#data.features = {};
+    }
+
+    this.incrementFeature(name + " count", 1);
+    this.incrementFeature(name + " total", newValue);
+    this.maxFeature(name + " max", newValue);
+    this.minFeature(name + " min", newValue);
+
+    const curTotal = this.#data.features[name + " total"];
+    const curCount = this.#data.features[name + " count"];
+
+    if (curCount && curTotal !== undefined) {
+      this.#data.features[name + " average"] = Math.round(curTotal / curCount);
+    }
   }
 
   incrementFeature(name: string, incrementalValue?: number) {

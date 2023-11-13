@@ -31,11 +31,6 @@ export default class ToolTile extends Component<IToolTileProps, IToolTileState> 
   }
 
   render() {
-    if (this.props.project === undefined) {
-      return;
-    }
-    const proj = this.props.project;
-
     let imageElement = <></>;
 
     //    const imagePath = "/test.gif";
@@ -63,9 +58,7 @@ export default class ToolTile extends Component<IToolTileProps, IToolTileState> 
               <div className="tt-title">{this.props.tool.title}</div>
             </div>
             <div className="tt-iconArea">{imageElement}</div>
-            <div className="tt-descriptionArea">
-              <div className="tt-description">{proj.description}</div>
-            </div>
+            <div className="tt-descriptionArea"></div>
           </div>
         </div>
       );

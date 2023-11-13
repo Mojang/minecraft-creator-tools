@@ -150,9 +150,7 @@ export default class DocumentedCommandSetEditor
 
       commandListing.push({
         key: docCommand.id,
-        header: docCommand.id,
-        headerMedia: " ",
-        content: " ",
+        content: <div title={docCommand.id}>{docCommand.id}</div>,
       });
     }
 

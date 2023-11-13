@@ -47,6 +47,7 @@ export default class WorldLevelDat implements IWorldSettings {
   public commandBlocksEnabled?: boolean;
   public experimentalGameplay?: boolean;
   public betaApisExperiment?: boolean;
+  public deferredTechnicalPreviewExperiment?: boolean;
   public dataDrivenItemsExperiment?: boolean;
   public savedWithToggledExperiments?: boolean;
   public experimentsEverUsed?: boolean;
@@ -187,7 +188,11 @@ export default class WorldLevelDat implements IWorldSettings {
       "Unexpected world level dat type (" + fileType + ")"
     );
 
-    Log.assert(restOfLength === bytes.length - 8, "Unexpected world level dat length.");
+    // some type 8 maps have restOfLength === bytes.length - 16 (?)
+    Log.assert(
+      restOfLength === bytes.length - 8 || restOfLength === bytes.length - 16,
+      "Unexpected world level dat length."
+    );
 
     tag.fromBinary(bytes, true, false, 8);
 
@@ -752,10 +757,20 @@ export default class WorldLevelDat implements IWorldSettings {
       this.levelName = settings.name;
     }
 
+    if (settings.lastPlayed !== undefined) {
+      this.lastPlayed = BigInt(settings.lastPlayed);
+    }
+
     if (settings.betaApisExperiment === true) {
       this.betaApisExperiment = settings.betaApisExperiment;
-    } else {
+    } else if (settings.betaApisExperiment === false) {
       this.betaApisExperiment = false;
+    }
+
+    if (settings.deferredTechnicalPreviewExperiment === true) {
+      this.deferredTechnicalPreviewExperiment = settings.deferredTechnicalPreviewExperiment;
+    } else if (settings.deferredTechnicalPreviewExperiment === false) {
+      this.deferredTechnicalPreviewExperiment = false;
     }
   }
 
@@ -1048,6 +1063,7 @@ export default class WorldLevelDat implements IWorldSettings {
     if (
       this.betaApisExperiment ||
       this.dataDrivenItemsExperiment ||
+      this.deferredTechnicalPreviewExperiment ||
       this.savedWithToggledExperiments ||
       this.experimentsEverUsed
     ) {
@@ -1063,6 +1079,12 @@ export default class WorldLevelDat implements IWorldSettings {
         experimentsTag.ensureTag("data_driven_items", NbtTagType.byte).value = 1;
       } else {
         experimentsTag.removeTag("data_driven_items");
+      }
+
+      if (this.deferredTechnicalPreviewExperiment) {
+        experimentsTag.ensureTag("deferred_technical_preview", NbtTagType.byte).value = 1;
+      } else {
+        experimentsTag.removeTag("deferred_technical_preview");
       }
 
       if (this.savedWithToggledExperiments !== undefined) {

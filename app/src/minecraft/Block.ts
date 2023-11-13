@@ -60,6 +60,10 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
     return this._data;
   }
 
+  public set data(newData: number) {
+    this._data = newData;
+  }
+
   public get surroundings() {
     if (this._surroundings !== undefined) {
       return this._surroundings;
@@ -73,7 +77,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
   public setType(blockType: BlockType) {
     this._type = blockType;
     this._bedrockType = undefined;
-    this._typeId = blockType.name;
+    this._typeId = blockType.typeId;
   }
 
   public get opaqueSideCount() {
@@ -256,7 +260,7 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
       return undefined;
     }
 
-    return this._bedrockType.name;
+    return this._bedrockType.typeId;
   }
 
   public copyFrom(block: Block) {
@@ -264,17 +268,17 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
   }
 
   public static fromLegacyId(byte: number) {
-    if (byte === 0 || byte >= 256) {
+    if (byte === 0 || byte >= 256 || byte === undefined) {
       return new Block("minecraft:air");
     }
 
     const blockType = Database.getBlockTypeByLegacyId(byte);
 
     if (blockType) {
-      return new Block(blockType.name);
+      return new Block(blockType.typeId);
     }
 
-    Log.fail("Could not find block identifier: " + byte);
+    // Log.fail("Could not find block identifier: " + byte);
 
     return new Block("minecraft:dirt");
   }

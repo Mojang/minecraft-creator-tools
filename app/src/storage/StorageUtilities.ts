@@ -285,6 +285,28 @@ export default class StorageUtilities {
     result = result.replace(/--/g, "-");
     result = result.replace(/--/g, "-");
 
+    result = result.replace(/\?/g, "-");
+    result = result.replace(/\|/g, "-");
+
+    return result;
+  }
+
+  public static ensureFileNameIsSafe(path: string): string {
+    let result = path.trim().toLowerCase();
+
+    path = path.replace(/%20/g, " ");
+    path = path.replace(/%28/g, "(");
+    path = path.replace(/%29/g, ")");
+
+    result = result.replace(/:/g, "_");
+    result = result.replace(/\//g, "-");
+    result = result.replace(/\\/g, "-");
+    result = result.replace(/%/g, "-");
+    result = result.replace(/--/g, "-");
+    result = result.replace(/`/g, "-");
+    result = result.replace(/'/g, "-");
+    result = result.replace(/–/g, "-");
+
     return result;
   }
 
@@ -792,7 +814,7 @@ export default class StorageUtilities {
     }
   }
 
-  public static getJsonObject(file: IFile) {
+  public static getJsonObject(file: IFile): any | undefined {
     if (!file.content) {
       return undefined;
     }
@@ -803,13 +825,15 @@ export default class StorageUtilities {
 
     let jsonObject = undefined;
 
+    let contents = file.content;
+
+    contents = Utilities.fixJsonContent(contents);
+
     try {
-      let contents = file.content;
-
-      contents = Utilities.stripJsonComments(contents);
-
       jsonObject = JSON.parse(contents);
-    } catch (e) {}
+    } catch (e) {
+      Log.fail("Could not parse JSON from '" + file.fullPath + "'");
+    }
 
     return jsonObject;
   }

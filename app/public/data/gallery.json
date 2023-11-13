@@ -289,12 +289,12 @@
       "type": 3
     },
     {
-      "title": "Lever Activate Event",
+      "title": "Lever Action Event",
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/script-box",
       "localLogo": "blocks/lever.png",
-      "id": "leverActivateEvent",
+      "id": "leverActionEvent",
       "type": 3
     },
     {

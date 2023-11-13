@@ -19,6 +19,7 @@
   padding-left: 2px;
   padding-bottom: 10px;
   padding-top: 5px;
+  user-select: none;
 }
 
 .csp-autostartlabel {

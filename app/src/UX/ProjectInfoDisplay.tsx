@@ -20,6 +20,8 @@ import {
 
 import { InfoItemType } from "../info/IInfoItemData";
 import WebUtilities from "./WebUtilities";
+import Carto from "../app/Carto";
+import Status, { StatusTopic } from "../app/Status";
 
 interface IProjectInfoDisplayProps extends IAppProps {
   project: Project;
@@ -39,6 +41,7 @@ interface IProjectInfoDisplayState {
   displayFailure: boolean;
   displayInfo: boolean;
   isLoading: boolean;
+  loadStatus?: string;
 }
 
 export enum ProjectInfoDisplayMode {
@@ -71,6 +74,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     this._setSummaryMode = this._setSummaryMode.bind(this);
     this._handleInfoItemCommand = this._handleInfoItemCommand.bind(this);
     this._handleSuiteChange = this._handleSuiteChange.bind(this);
+    this._handleStatusUpdates = this._handleStatusUpdates.bind(this);
 
     this.state = {
       infoSet: undefined,
@@ -83,17 +87,46 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       displayFailure: true,
       displayInfo: false,
       isLoading: true,
+      loadStatus: undefined,
     };
 
-    window.setTimeout(this._generateInfoSet, 1);
+    //    window.setTimeout(this._generateInfoSet, 1);
   }
 
   private async _generateInfoSet() {
     await this._generateInfoSetInternal(false);
   }
 
+  private async _handleStatusUpdates(carto: Carto, status: Status): Promise<void> {
+    if (status.topic === StatusTopic.projectLoad || status.topic === StatusTopic.validation) {
+      return new Promise((resolve: () => void, reject: () => void) => {
+        this.setState(
+          {
+            infoSet: this.state.infoSet,
+            displayErrors: this.state.displayErrors,
+            displaySuccess: this.state.displaySuccess,
+            displayFailure: this.state.displayFailure,
+            displayWarnings: this.state.displayWarnings,
+            displayRecommendation: this.state.displayRecommendation,
+            displayInfo: this.state.displayInfo,
+            isLoading: this.state.isLoading,
+            loadStatus: status.message,
+          },
+          () => {
+            window.setTimeout(() => {
+              resolve();
+            }, 1);
+          }
+        );
+      });
+    }
+  }
+
   private async _generateInfoSetInternal(force: boolean) {
+    this.props.carto.subscribeStatusAddedAsync(this._handleStatusUpdates);
+
     let newInfoSet = undefined;
+
     if (this.state.activeSuite === ProjectInfoSuite.all) {
       newInfoSet = this.props.project.infoSet;
     } else {
@@ -112,12 +145,17 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         displayRecommendation: this.state.displayRecommendation,
         displayInfo: this.state.displayInfo,
         isLoading: false,
+        loadStatus: undefined,
       });
     }
+
+    this.props.carto.unsubscribeStatusAddedAsync(this._handleStatusUpdates);
   }
 
   componentDidMount() {
     this._isMountedInternal = true;
+
+    this._generateInfoSet();
   }
 
   componentWillUnmount(): void {
@@ -295,7 +333,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   render() {
-    let height = "calc(100vh - " + (this.props.heightOffset + 126) + "px)";
+    let contentAreaHeightSmall = "calc(100vh - " + (this.props.heightOffset + 126) + "px)";
+    let contentAreaHeightLarge = "calc(100vh - " + (this.props.heightOffset + 95) + "px)";
     const width = WebUtilities.getWidth();
 
     const lines = [];
@@ -478,13 +517,20 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground4,
           }}
         >
-          <div className="pid-validating">Validating...</div>
+          <div className="pid-validating">
+            Validating... {this.state.loadStatus ? "(" + this.state.loadStatus + ")" : ""}
+          </div>
         </div>
       );
     } else if (this.state.viewMode === ProjectInfoDisplayMode.summary) {
       outer = (
         <div className="pid-areaOuter">
-          <div className="pid-summaryArea">
+          <div
+            className="pid-summaryArea"
+            style={{
+              maxHeight: contentAreaHeightLarge,
+            }}
+          >
             <div className="pid-header">Summary</div>
             <div className="pid-summary">
               <div className="pis-summaryArea">{lines}</div>
@@ -501,7 +547,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           <div
             className="pid-tableWrapper"
             style={{
-              maxHeight: height,
+              maxHeight: contentAreaHeightSmall,
             }}
           >
             <div

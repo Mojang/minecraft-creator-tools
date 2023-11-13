@@ -6,6 +6,7 @@
 		"lib": [
 			"ES2020","WebWorker"
 		],
+		"types": [ "@types/wicg-file-system-access", "mocha"],
 		"sourceMap": true,
 		"rootDir": "src",
 		"esModuleInterop": true,
@@ -16,6 +17,7 @@
 	},
 	"exclude": [
 		"src/UX/**/*",
+		"src/UXex/**/*",
 		"src/worldux/**/*",
 		"src/monaco/**/*",
 		"src/babylon/**/*",

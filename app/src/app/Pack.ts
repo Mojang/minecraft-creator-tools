@@ -1,6 +1,6 @@
 import { constants } from "../core/Constants";
 import IProjectInfoData from "../info/IProjectInfoData";
-import { IPackReference } from "../minecraft/IWorldSettings";
+import { IPackReferenceSet } from "../minecraft/IWorldSettings";
 import IFile from "../storage/IFile";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
@@ -151,7 +151,7 @@ export default class Pack {
     }
   }
 
-  createReference(): IPackReference {
+  createReference(): IPackReferenceSet {
     const bpRefs: { uuid: string; version: number[] }[] = [];
     const rpRefs: { uuid: string; version: number[] }[] = [];
 
@@ -180,7 +180,7 @@ export default class Pack {
       }
     }
 
-    const packRef: IPackReference = {
+    const packRef: IPackReferenceSet = {
       name: this.name,
       hash: this.data?.sourceHash,
       behaviorPackReferences: bpRefs,

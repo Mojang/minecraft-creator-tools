@@ -45,6 +45,8 @@ export default class LogItemArea extends Component<ILogItemAreaProps, ILogItemAr
   private _update() {
     this.forceUpdate();
 
+    window.setTimeout(this.scrollToListBottom, 1);
+
     window.setTimeout(this._checkForTimeOut, MESSAGE_FADEOUT_TIME + 100);
   }
 
@@ -139,8 +141,6 @@ export default class LogItemArea extends Component<ILogItemAreaProps, ILogItemAr
         </div>
       );
     }
-
-    window.setTimeout(this.scrollToListBottom, 1);
 
     return (
       <div className="lia-outer" onClick={this._toggleExpandedSize}>

@@ -5,6 +5,7 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import MCWorld from "../minecraft/MCWorld";
 import Log from "../core/Log";
 import { InfoItemType } from "./IInfoItemData";
+import ProjectInfoSet from "./ProjectInfoSet";
 
 export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "WORLD";
@@ -14,6 +15,10 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
     return {
       title: topicId.toString(),
     };
+  }
+
+  summarize(info: any, infoSet: ProjectInfoSet) {
+    info.baseGameVersion = infoSet.getFirstStringValue(this.id, 107);
   }
 
   async generate(projectItem: ProjectItem): Promise<ProjectInfoItem[]> {
@@ -44,7 +49,7 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
           InfoItemType.info,
           this.id,
           101,
-          "Game test experiment",
+          "Beta APIs experiment: " + mcworld.betaApisExperiment,
           projectItem,
           mcworld.betaApisExperiment,
           mcworld.name
@@ -56,24 +61,23 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
           InfoItemType.info,
           this.id,
           102,
-          "Chunk count",
+          "Data Driven Items experiment: " + mcworld.dataDrivenItemsExperiment,
           projectItem,
-          mcworld.chunkCount,
+          mcworld.dataDrivenItemsExperiment,
           mcworld.name
         )
       );
 
       items.push(
-        new ProjectInfoItem(InfoItemType.info, "WORLD", 103, "Min X", projectItem, mcworld.minX, mcworld.name)
-      );
-      items.push(
-        new ProjectInfoItem(InfoItemType.info, "WORLD", 104, "Min Z", projectItem, mcworld.minZ, mcworld.name)
-      );
-      items.push(
-        new ProjectInfoItem(InfoItemType.info, "WORLD", 105, "Max X", projectItem, mcworld.maxX, mcworld.name)
-      );
-      items.push(
-        new ProjectInfoItem(InfoItemType.info, "WORLD", 106, "Max Z", projectItem, mcworld.maxZ, mcworld.name)
+        new ProjectInfoItem(
+          InfoItemType.info,
+          this.id,
+          103,
+          "Deferred Technical Preview experiment: " + mcworld.deferredTechnicalPreviewExperiment,
+          projectItem,
+          mcworld.deferredTechnicalPreviewExperiment,
+          mcworld.name
+        )
       );
 
       if (mcworld.manifest && mcworld.manifest.header && mcworld.manifest.header.base_game_version) {
@@ -88,6 +92,7 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
         items.push(
           new ProjectInfoItem(InfoItemType.info, this.id, 107, "Base game version", projectItem, val, mcworld.name)
         );
+
         items.push(
           new ProjectInfoItem(
             InfoItemType.info,

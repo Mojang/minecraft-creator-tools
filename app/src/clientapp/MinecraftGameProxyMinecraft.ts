@@ -267,6 +267,7 @@ export default class MinecraftGameProxyMinecraft implements IMinecraft {
           AppServiceProxyCommands.getMinecraftGameProjectDeployDir,
           this._carto.minecraftGameMode
         );
+
         const getMinecraftGameWorldDeployDir = await AppServiceProxy.sendAsync(
           AppServiceProxyCommands.getMinecraftGameWorldDeployDir,
           this._carto.minecraftGameMode
@@ -279,8 +280,6 @@ export default class MinecraftGameProxyMinecraft implements IMinecraft {
         ) {
           this.worldFolder = this._carto.ensureLocalFolder(getMinecraftGameWorldDeployDir);
 
-          // Log.debug("Retrieved deployment project dir: |" + getMinecraftGameWorldDeployDir + "|");
-
           this._onWorldFolderReady.dispatch(this, this.worldFolder);
         }
 
@@ -290,8 +289,6 @@ export default class MinecraftGameProxyMinecraft implements IMinecraft {
           this._carto.ensureLocalFolder
         ) {
           this.projectFolder = this._carto.ensureLocalFolder(getMinecraftGameProjectDeployDir);
-
-          // Log.debug("Retrieved deployment world dir: |" + getMinecraftGameProjectDeployDir + "|");
 
           this._onProjectFolderReady.dispatch(this, this.projectFolder);
         }

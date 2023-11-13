@@ -14,6 +14,7 @@ import IBlockTypeWrapper from "./IBlockTypeWrapper";
 import IManagedComponentSetItem from "./IManagedComponentSetItem";
 import IManagedComponent from "./IManagedComponent";
 import { ManagedComponent } from "./ManagedComponent";
+import StorageUtilities from "../storage/StorageUtilities";
 
 const BLOCK_TYPE_MATERIALS = [
   "bone",
@@ -79,13 +80,13 @@ const BLOCK_TYPE_MATERIALS = [
 ];
 
 export default class BlockType implements IManagedComponentSetItem {
-  private _name = "";
+  private _typeId = "";
 
   public data: IBlockTypeData;
   public javaData: IJavaBlockTypeData | null;
 
   private _baseType?: BlockBaseType;
-  private _baseTypeName = "";
+  private _baseTypeId = "";
 
   private _material = "";
   private _isCustom = false;
@@ -106,8 +107,12 @@ export default class BlockType implements IManagedComponentSetItem {
     return this.data.id;
   }
 
-  public get baseTypeName() {
-    return this._baseTypeName;
+  public get baseTypeId() {
+    return this._baseTypeId;
+  }
+
+  public get mapColor() {
+    return this.data.mapColor;
   }
 
   public get isCustom() {
@@ -124,7 +129,7 @@ export default class BlockType implements IManagedComponentSetItem {
 
   public set baseType(baseType: BlockBaseType) {
     this._baseType = baseType;
-    this._baseTypeName = baseType.name;
+    this._baseTypeId = baseType.name;
   }
 
   public get material() {
@@ -143,12 +148,12 @@ export default class BlockType implements IManagedComponentSetItem {
     return val;
   }
 
-  get name() {
-    return this._name;
+  get typeId() {
+    return this._typeId;
   }
 
   get shortTypeName() {
-    let name = this._name;
+    let name = this._typeId;
 
     const colonIndex = name.indexOf(":");
 
@@ -166,7 +171,7 @@ export default class BlockType implements IManagedComponentSetItem {
   }
 
   constructor(name: string) {
-    this._name = name;
+    this._typeId = name;
     this.javaData = null;
 
     this.data = {
@@ -515,14 +520,10 @@ export default class BlockType implements IManagedComponentSetItem {
 
     let data: any = {};
 
-    try {
-      let content = this._behaviorPackFile.content;
+    let result = StorageUtilities.getJsonObject(this._behaviorPackFile);
 
-      content = Utilities.stripJsonComments(content);
-
-      data = JSON.parse(content);
-    } catch (e) {
-      Log.fail("Could not parse entity JSON " + e);
+    if (result) {
+      data = result;
     }
 
     this._behaviorPackData = data;

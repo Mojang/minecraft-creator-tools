@@ -22,4 +22,5 @@
 .fexfod-label {
   grid-column: 3;
   padding-top: 1px;
+  user-select: none;
 }

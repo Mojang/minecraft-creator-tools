@@ -248,6 +248,7 @@ export default class BrowserFolder extends FolderBase implements IFolder {
     const saveContent = JSON.stringify(folderState);
 
     if (this._lastSavedContent !== saveContent || force) {
+      this._lastSavedContent = saveContent;
       await localforage.setItem<string>(this.fullPath + BrowserStorage.folderDelimiter, saveContent);
     }
 
@@ -260,11 +261,18 @@ export default class BrowserFolder extends FolderBase implements IFolder {
       Log.throwIsDisposed();
     }
 
+    const initialDateTime = new Date().getTime();
+    let needsContentSave = false;
+
     for (const fileName in this.files) {
       const file = this.files[fileName];
 
       if (file !== undefined && file.needsSave) {
-        await file.saveContent();
+        let newContentSaveDate = await file.saveContent(false, true);
+
+        if (newContentSaveDate.getTime() > initialDateTime) {
+          needsContentSave = true;
+        }
       }
     }
 
@@ -272,11 +280,14 @@ export default class BrowserFolder extends FolderBase implements IFolder {
       const folder = this.folders[folderName];
 
       if (folder !== undefined && !folder.errorStatus) {
+        needsContentSave = true;
         await folder.saveAll();
       }
     }
 
-    await this.save(false);
+    if (needsContentSave || this._lastSavedContent === undefined) {
+      await this.save(false);
+    }
 
     return true;
   }

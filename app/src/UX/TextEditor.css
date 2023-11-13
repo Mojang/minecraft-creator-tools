@@ -27,7 +27,7 @@
 .texed-toolBarArea {
   padding: 2px;
   display: grid;
-  grid-template-columns: 1fr 87px;
+  grid-template-columns: 1fr 117px;
 }
 
 .texed-text {

@@ -1,8 +1,4 @@
-import Location from "./Location";
-import Log from "./../core/Log";
 import ComponentizedBase from "./ComponentizedBase";
-import NbtBinaryTag from "./NbtBinaryTag";
-import Rotation from "./Rotation";
 import IPropertyObject from "../dataform/IPropertyObject";
 import IProperty from "./../dataform/IProperty";
 import { EventDispatcher } from "ste-events";

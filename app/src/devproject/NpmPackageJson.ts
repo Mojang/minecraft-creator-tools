@@ -117,7 +117,7 @@ export default class NpmPackageJson {
 
       this.definition = data;
     } catch (e) {
-      Log.fail("Could not parse NPM package JSON " + e);
+      Log.fail("Could not parse NPM package JSON: " + e);
     }
 
     this._isLoaded = true;

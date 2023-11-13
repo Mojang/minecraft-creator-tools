@@ -23,6 +23,7 @@ interface IFunctionEditorProps {
   roleId?: string;
   setActivePersistable?: (persistObject: IPersistable) => void;
   heightOffset?: number;
+  fixedHeight?: number;
   readOnly: boolean;
   preferredTextSize: number;
   carto: Carto;
@@ -257,7 +258,9 @@ export default class FunctionEditor
   }
 
   _handleInputKey(event: React.KeyboardEvent<Element>) {
-    if (event.key === "Enter" && this.props.singleCommandMode) {
+    if (event.key === "Enter" && this.props.singleCommandMode === true) {
+      this._sendFunction();
+    } else if (event.ctrlKey === true && event.key === "Enter") {
       this._sendFunction();
     }
   }
@@ -353,7 +356,10 @@ export default class FunctionEditor
     let height = "106px";
     let editorHeight = "23px";
 
-    if (this.props.singleCommandMode) {
+    if (this.props.fixedHeight) {
+      height = this.props.fixedHeight + "px";
+      editorHeight = this.props.fixedHeight - 90 + "px";
+    } else if (this.props.singleCommandMode) {
       height = "32px";
       editorHeight = "32px";
     } else if (this.props.heightOffset) {

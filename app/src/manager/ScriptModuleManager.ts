@@ -11,6 +11,7 @@ import IProjectUpdater from "../updates/IProjectUpdater";
 import ProjectUpdateResult from "../updates/ProjectUpdateResult";
 import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
+import ProjectInfoSet from "../info/ProjectInfoSet";
 
 export default class ScriptModuleManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "SCRIPTMODULE";
@@ -30,6 +31,8 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
       title: topicId.toString(),
     };
   }
+
+  summarize(info: any, infoSet: ProjectInfoSet) {}
 
   private async generateProjectState(project: Project): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];

@@ -295,7 +295,9 @@ export default class ProjectExporter {
     deployFolder?: IFolder
   ) {
     let mcworld: MCWorld | undefined = undefined;
-    const operId = carto.notifyOperationStarted("Deploying world '" + worldProjectItem.name + "' and test assets.");
+    const operId = await carto.notifyOperationStarted(
+      "Deploying world '" + worldProjectItem.name + "' and test assets."
+    );
     await worldProjectItem.load();
 
     if (!worldProjectItem.file && !worldProjectItem.folder) {
@@ -303,10 +305,10 @@ export default class ProjectExporter {
       return;
     }
 
-    if (worldProjectItem.file) {
-      mcworld = await MCWorld.ensureMCWorldOnFile(worldProjectItem.file, project);
-    } else if (worldProjectItem.folder) {
+    if (worldProjectItem.folder) {
       mcworld = await MCWorld.ensureMCWorldOnFolder(worldProjectItem.folder, project);
+    } else if (worldProjectItem.file) {
+      mcworld = await MCWorld.ensureMCWorldOnFile(worldProjectItem.file, project);
     }
 
     if (!mcworld) {
@@ -401,7 +403,7 @@ export default class ProjectExporter {
 
     await newMcWorld.save();
 
-    carto.notifyOperationEnded(operId, "World + local assets deploy completed.");
+    await carto.notifyOperationEnded(operId, "World + local assets deploy completed.");
 
     if (zipStorage) {
       const zipBytes = await zipStorage.generateUint8ArrayAsync();
@@ -419,7 +421,9 @@ export default class ProjectExporter {
     returnZipBytes?: boolean,
     deployFolder?: IFolder
   ) {
-    const operId = carto.notifyOperationStarted("Deploying project '" + project.name + "' plus world and test assets.");
+    const operId = await carto.notifyOperationStarted(
+      "Deploying project '" + project.name + "' plus world and test assets."
+    );
 
     await project.autoCompleteProject();
 
@@ -510,7 +514,10 @@ export default class ProjectExporter {
 
     await mcworld.save();
 
-    carto.notifyOperationEnded(operId, "World + local assets deploy to '" + targetFolder.fullPath + "' completed.");
+    await carto.notifyOperationEnded(
+      operId,
+      "World + local assets deploy to '" + targetFolder.fullPath + "' completed."
+    );
 
     if (zipStorage) {
       const zipBytes = await zipStorage.generateUint8ArrayAsync();
@@ -620,16 +627,22 @@ export default class ProjectExporter {
   }
 
   static async exportPackAsZip(carto: Carto, project: Project, returnAsBlob: boolean): Promise<Blob | Uint8Array> {
-    const operId = carto.notifyOperationStarted("Exporting '" + project.name + "' as MCPack");
+    const operId = await carto.notifyOperationStarted("Exporting '" + project.name + "' as MCPack");
 
     const zipStorage = new ZipStorage();
+
+    await project.loadFolderStructure();
 
     const bpFolder = project.defaultBehaviorPackFolder;
 
     if (bpFolder) {
       const childFolder = zipStorage.rootFolder.ensureFolder(bpFolder.name);
 
-      await StorageUtilities.syncFolderTo(bpFolder, childFolder, true, true, false, ["/mcworlds", "/minecraftWorlds"]);
+      await StorageUtilities.syncFolderTo(bpFolder, childFolder, true, true, false, [
+        "/mcworlds",
+        "/minecraftWorlds",
+        "*.ts*",
+      ]);
 
       const scriptsFolder = await project.ensureScriptsFolder();
 
@@ -662,7 +675,7 @@ export default class ProjectExporter {
     if (returnAsBlob) {
       const zipBinary = await zipStorage.generateBlobAsync();
 
-      carto.notifyOperationEnded(operId, "Export MCPack of '" + project.name + "' created; downloading...");
+      await carto.notifyOperationEnded(operId, "Export MCPack of '" + project.name + "' created; downloading...");
 
       return zipBinary;
     } else {

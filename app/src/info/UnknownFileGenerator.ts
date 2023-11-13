@@ -3,6 +3,7 @@ import IProjectFileInfoGenerator from "./IProjectFileInfoGenerator";
 import { InfoItemType } from "./IInfoItemData";
 import IFile from "../storage/IFile";
 import StorageUtilities from "../storage/StorageUtilities";
+import ProjectInfoSet from "./ProjectInfoSet";
 
 export default class UnknownFileGenerator implements IProjectFileInfoGenerator {
   id = "UNKFILE";
@@ -13,6 +14,8 @@ export default class UnknownFileGenerator implements IProjectFileInfoGenerator {
       title: topicId.toString(),
     };
   }
+
+  summarize(info: any, infoSet: ProjectInfoSet) {}
 
   async generate(file: IFile): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];

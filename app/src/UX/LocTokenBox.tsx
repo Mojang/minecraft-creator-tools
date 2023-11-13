@@ -18,8 +18,13 @@ export default class LocTokenBox extends Component<ILocTokenBoxProps, ILocTokenB
     super(props);
 
     this._handleClick = this._handleClick.bind(this);
+    this._load = this._load.bind(this);
 
-    this._load();
+    this.state = {
+      token: undefined,
+    };
+
+    window.setTimeout(this._load, 1);
   }
 
   async _load() {

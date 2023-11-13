@@ -48,11 +48,11 @@ const webExtensionConfig = {
     rules: [
       {
         test: /\.js$/,
-        exclude: [/node_modules/, /toolbuild/, /out/, /build/, /ux/, /worldux/, /CHANGELOG/],
+        exclude: [/node_modules/, /toolbuild/, /out/, /build/, /ux/, /uxex/, /worldux/, /CHANGELOG/],
       },
       {
         test: /\.ts$/,
-        exclude: [/node_modules/, /toolbuild/, /out/, /build/, /ux/, /worldux/, /CHANGELOG/],
+        exclude: [/node_modules/, /toolbuild/, /out/, /build/, /ux/, /uxex/, /worldux/, /CHANGELOG/],
       },
       {
         test: /\.css$/,

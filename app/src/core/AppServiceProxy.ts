@@ -1,6 +1,6 @@
 import IAppServiceChannel from "./IAppServiceChannel";
 import Utilities from "./../core/Utilities";
-import Log from "./../core/Log";
+import Log, { LogItem } from "./../core/Log";
 import { EventDispatcher } from "ste-events";
 import CartoApp, { HostType } from "../app/CartoApp";
 
@@ -83,7 +83,12 @@ export default class AppServiceProxy {
 
     if (AppServiceProxy._api !== undefined) {
       AppServiceProxy._api.receive("appsvc", AppServiceProxy._handleNewMessage);
+      Log.onItemAdded.subscribe(AppServiceProxy._handleLog);
     }
+  }
+
+  static _handleLog(log: Log, item: LogItem) {
+    AppServiceProxy.logToConsole(item.message);
   }
 
   static async logToConsole(message: string) {
@@ -202,7 +207,9 @@ export default class AppServiceProxy {
           if (index >= 0) {
             const promiseResolver = AppServiceProxy._pendingPromiseResolvers[index];
 
-            // Log.verbose("Resolving prom: '" + argSplit[2] + "'");
+            // NOTE: Since logging goes from browser to client and then async is complete,
+            // DO NOT log inside of here or otherwise you may cause a loop.
+
             promiseResolver(argSplit[2]);
           }
         }

@@ -5,6 +5,7 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
 import ProjectItem from "../app/ProjectItem";
 import { MaxItemTypes } from "../app/IProjectItemData";
+import ProjectInfoSet from "./ProjectInfoSet";
 
 export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
   id = "ITEMS";
@@ -14,6 +15,34 @@ export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
     return {
       title: topicId.toString(),
     };
+  }
+
+  summarize(info: any, infoSet: ProjectInfoSet) {
+    info.behaviorPackManifestCount = infoSet.getFirstNumberValue(
+      "ITEMS",
+      100 + ProjectItemType.behaviorPackManifestJson
+    );
+    info.unknownJsonCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.json);
+    info.entityTypeManifestCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.entityTypeBehaviorJson);
+    info.itemTypeManifestCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.itemTypeBehaviorJson);
+    info.blockTypeManifestCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.blockTypeBehaviorJson);
+    info.resourcePackManifestCount = infoSet.getFirstNumberValue(
+      "ITEMS",
+      100 + ProjectItemType.resourcePackManifestJson
+    );
+
+    info.worldCount =
+      infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.MCWorld) +
+      infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.worldFolder);
+
+    info.entityTypeResourceCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.entityTypeResourceJson);
+
+    info.behaviorPackAnimationCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.animationBehaviorJson);
+
+    info.behaviorPackAnimationControllerCount = infoSet.getFirstNumberValue(
+      "ITEMS",
+      100 + ProjectItemType.animationControllerBehaviorJson
+    );
   }
 
   async generate(project: Project): Promise<ProjectInfoItem[]> {

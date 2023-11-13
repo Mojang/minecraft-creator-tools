@@ -81,7 +81,7 @@ export default class Database {
     for (const blockTypeName in this.blockTypes) {
       const blockType = this.blockTypes[blockTypeName];
 
-      if (blockType.numericId) {
+      if (blockType.numericId !== undefined) {
         Log.assert(
           this._blockTypesByLegacyId[blockType.numericId] === undefined,
           "Multiple block types registered for the same ID:" + blockType.id
@@ -134,7 +134,7 @@ export default class Database {
       versionUrl = "https://raw.githubusercontent.com/Mojang/bedrock-samples/preview/version.json";
     }
 
-    Log.message("Retrieving " + (preview ? "preview" : "retail") + " version data.");
+    // Log.message("Retrieving " + (preview ? "preview" : "retail") + " version data.");
 
     /*Log.verbose(
       "Getting latest version info from '" +
@@ -523,7 +523,7 @@ export default class Database {
           return undefined;
         }
       } else {
-        Log.fail("Unexpected database config for path:" + path);
+        Log.fail("Unexpected database config (no database available) when trying to load schema for:" + path);
         return undefined;
       }
     } catch (e: any) {
@@ -611,6 +611,7 @@ export default class Database {
               name: blockBaseTypeData.name,
               id: blockBaseTypeData.id,
               icon: blockBaseTypeData.icon,
+              mapColor: blockBaseTypeData.mapColor,
               shortId: blockBaseTypeData.shortId,
               altShortId: blockBaseTypeData.altShortId,
             };
@@ -640,6 +641,10 @@ export default class Database {
 
               if (!variantBlockTypeData.altShortId && blockBaseTypeData.altShortId) {
                 variantBlockTypeData.altShortId = blockBaseTypeData.altShortId;
+              }
+
+              if (!variantBlockTypeData.mapColor && blockBaseTypeData.mapColor) {
+                variantBlockTypeData.mapColor = blockBaseTypeData.mapColor;
               }
 
               blockType.data = variantBlockTypeData;

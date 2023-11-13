@@ -24,18 +24,17 @@ import IFolder from "../storage/IFolder";
 import IGalleryProject from "../app/IGalleryProject";
 import Database from "../minecraft/Database";
 import { GalleryProjectCommand } from "./ProjectGallery";
-import { LocalGalleryCommand, LocalFolderType } from "./LocalGallery";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import ProjectGallery from "./ProjectGallery";
-import LocalGallery from "./LocalGallery";
 import { ProjectScriptLanguage } from "../app/IProjectData";
 import { constants } from "../core/Constants";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ComputerLabel, ConnectLabel, ExportBackupLabel } from "./Labels";
 import FileSystemStorage from "../storage/FileSystemStorage";
-import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
+import CartoApp, { CartoThemeStyle, HostType } from "../app/CartoApp";
 import UrlUtilities from "../core/UrlUtilities";
 import { ProjectTileDisplayMode } from "./ProjectTile";
+import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
 
 enum HomeDialogMode {
   none = 0,
@@ -318,7 +317,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
   async _handleConnectClick() {
     if (this.props.onModeChangeRequested) {
-      this.props.onModeChangeRequested(AppMode.serverManagerPlusBack);
+      this.props.onModeChangeRequested(AppMode.companionPlusBack);
     }
   }
 
@@ -332,13 +331,13 @@ export default class Home extends Component<IHomeProps, IHomeState> {
   }
 
   async _handleExportAllClick() {
-    const operId = this.props.carto.notifyOperationStarted("Exporting all projects as zip.");
+    const operId = await this.props.carto.notifyOperationStarted("Exporting all projects as zip.");
 
     const zipStorage = await this.props.carto.getExportZip();
 
     const zipBinary = await zipStorage.generateBlobAsync();
 
-    this.props.carto.notifyOperationEnded(operId, "Export of projects created; downloading");
+    await this.props.carto.notifyOperationEnded(operId, "Export of projects created; downloading");
 
     saveAs(zipBinary, "mctbackup." + Utilities.getDateSummary(new Date()) + ".zip");
   }
@@ -610,19 +609,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       );
     }
 
-    if (this.state !== null && AppServiceProxy.hasAppService) {
-      localGallery = (
-        <div>
-          <div className="home-gallery-label">Start from an existing Minecraft World/Project</div>{" "}
-          <LocalGallery
-            search={this.state.search}
-            onGalleryItemCommand={this._handleLocalGalleryCommand}
-            carto={this.props.carto}
-          />
-        </div>
-      );
-    }
-
     if (AppServiceProxy.hasAppService) {
       openButton = (
         <span className="home-openButton">
@@ -756,10 +742,12 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
     let areaHeight = "100vh";
     let projectsListHeight = "calc(100vh - 570px)";
+    let galleryHeight = "calc(100vh - 250px)";
 
-    if (AppServiceProxy.hasAppService) {
-      areaHeight = "calc(100vh - 36px)";
-      projectsListHeight = "calc(100vh - 620px)";
+    if (CartoApp.hostType === HostType.electronWeb) {
+      areaHeight = "calc(100vh - 41px)";
+      projectsListHeight = "calc(100vh - 556px)";
+      galleryHeight = "calc(100vh - 306px)";
     }
 
     const extensionsArea = [];
@@ -841,7 +829,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
 
     return (
-      <div className="home-layout" style={{ minHeight: areaHeight, height: areaHeight }}>
+      <div className="home-layout" style={{ minHeight: areaHeight, height: areaHeight }} draggable={true}>
         {effectArea}
         {dialogArea}
         <div className="home-header-area">
@@ -905,7 +893,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               onChange={this._handleNewSearch}
             />
           </div>
-          <div className="home-gallery-interior">
+          <div className="home-gallery-interior" style={{ minHeight: galleryHeight, maxHeight: galleryHeight }}>
             {localGallery}
             {gallery}
           </div>

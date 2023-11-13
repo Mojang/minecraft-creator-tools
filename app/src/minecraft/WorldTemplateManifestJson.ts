@@ -1,9 +1,9 @@
 import IFile from "../storage/IFile";
-import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import Utilities from "../core/Utilities";
 import Project from "../app/Project";
 import IWorldTemplateManifest, { IWorldTemplateManifestHeader } from "./IWorldTemplateManifest";
+import StorageUtilities from "../storage/StorageUtilities";
 
 export default class WorldTemplateManifestJson {
   private _file?: IFile;
@@ -194,13 +194,7 @@ export default class WorldTemplateManifestJson {
 
     this.uuid = this._file.name;
 
-    try {
-      const data: any = JSON.parse(this._file.content);
-
-      this.definition = data;
-    } catch (e) {
-      Log.fail("Could not parse World Template Manifest JSON " + e);
-    }
+    this.definition = StorageUtilities.getJsonObject(this._file);
 
     this._isLoaded = true;
   }

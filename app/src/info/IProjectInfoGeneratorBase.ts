@@ -1,3 +1,5 @@
+import ProjectInfoSet from "./ProjectInfoSet";
+
 export interface IProjectUpdaterReference {
   updaterId: string;
   updaterIndex: number;
@@ -13,4 +15,5 @@ export default interface IProjectInfoGeneratorBase {
   id: string;
   title: string;
   getTopicData(topicId: number): IProjectInfoTopicData | undefined;
+  summarize(summaryDataObject: object, infoSet: ProjectInfoSet): void;
 }

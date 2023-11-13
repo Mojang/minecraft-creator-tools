@@ -6,6 +6,7 @@ import IStorage from "../storage/IStorage";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import Log from "../core/Log";
+import CommandRunner from "./CommandRunner";
 
 export default class ProjectTools {
   /*  static async getFlatGameTestWorldWithPacks(carto: Carto, project: Project, name: string) {
@@ -29,27 +30,47 @@ export default class ProjectTools {
     });
   }
 
-  static async generateTools(project: Project) {
+  static generateTools(carto: Carto, project?: Project) {
     const tools: ITool[] = [];
 
     ProjectTools.addGlobalTools(tools);
 
-    for (let i = 0; i < project.items.length; i++) {
-      const pi = project.items[i];
+    for (let i = 0; i < 10; i++) {
+      const ctool = carto.getCustomTool(i);
 
-      if (pi.itemType === ProjectItemType.structure && pi.storagePath !== null) {
-        let structureName = pi.name;
+      if (ctool.text && ctool.text.length > 3) {
+        let title = ctool.name;
 
-        structureName = structureName.replace(".mcstructure", "");
+        if (!title || title.length < 1) {
+          title = "Tool " + (i + 1).toString();
+        }
+        tools.push({
+          title: title,
+          type: ToolType.customTool,
+          scope: ToolScope.global,
+          parameter1: i.toString(),
+        });
+      }
+    }
 
-        const tool: ITool = {
-          title: "Push " + structureName + " to Minecraft",
-          type: ToolType.pushStructure,
-          scope: ToolScope.project,
-          parameter1: pi.storagePath,
-        };
+    if (project) {
+      for (let i = 0; i < project.items.length; i++) {
+        const pi = project.items[i];
 
-        tools.push(tool);
+        if (pi.itemType === ProjectItemType.structure && pi.storagePath !== null) {
+          let structureName = pi.name;
+
+          structureName = structureName.replace(".mcstructure", "");
+
+          const tool: ITool = {
+            title: "Push " + structureName + " to Minecraft",
+            type: ToolType.pushStructure,
+            scope: ToolScope.project,
+            parameter1: pi.storagePath,
+          };
+
+          tools.push(tool);
+        }
       }
     }
 
@@ -58,6 +79,11 @@ export default class ProjectTools {
 
   static async executeTool(tool: ITool, carto: Carto, project?: Project) {
     switch (tool.type) {
+      case ToolType.customTool:
+        if (tool.parameter1) {
+          CommandRunner.runCustomTool(carto, parseInt(tool.parameter1) + 1);
+        }
+        break;
       case ToolType.reload:
         ProjectTools.reload(carto);
         break;

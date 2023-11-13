@@ -18,7 +18,6 @@ import {
 } from "@fluentui/react-northstar";
 
 import { faDice, faMap, faBinoculars } from "@fortawesome/free-solid-svg-icons";
-import PushToGitHub from "./PushToGitHub";
 import ConnectToGitHub from "./ConnectToGitHub";
 import Utilities from "../core/Utilities";
 import Log from "../core/Log";
@@ -35,7 +34,10 @@ interface IProjectPropertyEditorProps extends IAppProps {
   heightOffset: number;
 }
 
-interface IProjectPropertyEditorState {}
+interface IProjectPropertyEditorState {
+  name: string;
+  title: string;
+}
 
 export enum GitHubPropertyType {
   repoName = 0,
@@ -96,6 +98,11 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     this._doSignIn = this._doSignIn.bind(this);
 
     this._connectToProps();
+
+    this.state = {
+      name: this.props.project.name,
+      title: this.props.project.title,
+    };
   }
 
   _githubPushUpdated(newCommitMessage: string) {
@@ -144,20 +151,30 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     }
   }
 
-  async _handleTitleChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
+  _handleTitleChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
     if (data === undefined || this.props === undefined) {
       return;
     }
 
-    await ProjectUtilities.applyTitle(this.props.project, data.value);
+    this.setState({
+      name: this.state.name,
+      title: data.value,
+    });
+
+    ProjectUtilities.applyTitle(this.props.project, data.value);
   }
 
-  async _handleNameChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
+  _handleNameChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
     if (data === undefined || this.props === undefined) {
       return;
     }
 
-    await ProjectUtilities.applyName(this.props.project, data.value);
+    this.setState({
+      name: data.value,
+      title: this.state.title,
+    });
+
+    ProjectUtilities.applyName(this.props.project, data.value);
   }
 
   async _handleBehaviorPackUuidChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
@@ -377,7 +394,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
 
   render() {
     const gitHubInner = [];
-    const gitHubCommands = [];
+    // const gitHubCommands = [];
 
     const baseUrl = window.location.href;
     const localTools = [];
@@ -480,7 +497,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           />
         );
 
-        gitHubCommands.push(
+        /* gitHubCommands.push(
           <Dialog
             key="ghCommandButton"
             cancelButton="Cancel"
@@ -496,7 +513,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
             header="Push to GitHub"
             trigger={<Button content="Commit changes to GitHub" iconPosition="before" primary />}
           />
-        );
+        );*/
       }
     }
 
@@ -626,8 +643,8 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
             <Input
               inline
               clearable
-              placeholder="title"
-              value={this.props.project.name}
+              placeholder="project name"
+              value={this.state.name}
               onChange={this._handleNameChanged}
             />
           </div>
@@ -636,8 +653,8 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
             <Input
               inline
               clearable
-              placeholder="title"
-              value={this.props.project.title}
+              placeholder="project title"
+              value={this.state.title}
               onChange={this._handleTitleChanged}
             />
           </div>
@@ -740,10 +757,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               <div>&#160;</div>
             )}
           </div>
-          <div className="ppe-ghinput">
-            {gitHubInner}
-            <div className="ppe-additional">{gitHubCommands}</div>
-          </div>
+          <div className="ppe-ghinput">{gitHubInner}</div>
           <div className="ppe-ghbutton">{gitHubConnect}</div>
           <div className="ppe-advancedArea">
             <Accordion

@@ -2,7 +2,6 @@ import { expect, assert } from "chai";
 import Carto from "../app/Carto";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project";
 import CartoApp, { HostType } from "../app/CartoApp";
-import DedicatedServerManager from "../local/DedicatedServerManager";
 import Status from "../app/Status";
 import NodeStorage from "../local/NodeStorage";
 import Database from "../minecraft/Database";
@@ -25,8 +24,6 @@ let scenariosFolder: IFolder | undefined = undefined;
 let resultsFolder: IFolder | undefined = undefined;
 
 localEnv = new LocalEnvironment(false);
-
-let dsm: DedicatedServerManager | undefined = undefined;
 
 (async () => {
   CartoApp.localFolderExists = _localFolderExists;
@@ -86,9 +83,6 @@ let dsm: DedicatedServerManager | undefined = undefined;
   if (!carto) {
     return;
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  dsm = new DedicatedServerManager(localEnv, carto);
 
   await carto.load();
 
@@ -187,6 +181,7 @@ describe("deployJs", async () => {
     const worldSettings: IWorldSettings = {
       generator: Generator.infinite,
       gameType: GameType.survival,
+      lastPlayed: BigInt(new Date(2023, 0, 1).getTime()),
     };
 
     const resultsOutFolder = resultsFolder.ensureFolder("deployJs");
@@ -194,7 +189,7 @@ describe("deployJs", async () => {
 
     await ProjectExporter.generateAndDeployProjectToWorld(carto, project, worldSettings, false, resultsOutFolder);
 
-    await folderMatches("deployJs", ["level.dat", "level.dat_old"]); // exclude manifest.json from consideration since their uuids will be randomly generated and therefore always different
+    await folderMatches("deployJs", ["manifest.json", "world_behavior_packs.json", "world_behavior_pack_history.json"]); // exclude manifest.json from consideration since their uuids will be randomly generated and therefore always different
   });
 });
 

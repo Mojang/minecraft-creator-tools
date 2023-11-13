@@ -7,10 +7,10 @@ import IComponent from "./IComponent";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import ScriptGen from "../script/ScriptGen";
 import ManagedComponentGroup from "./ManagedComponentGroup";
-import Utilities from "../core/Utilities";
 import IManagedComponent from "./IManagedComponent";
 import { ManagedComponent } from "./ManagedComponent";
 import ManagedEvent from "./ManagedEvent";
+import StorageUtilities from "../storage/StorageUtilities";
 
 export default class EntityTypeDefinition implements IManagedComponentSetItem {
   public behaviorPackWrapper?: IEntityTypeWrapper;
@@ -64,6 +64,33 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem {
 
   public set id(newId: string | undefined) {
     this._id = newId;
+  }
+
+  public getFormatVersion(): number[] | undefined {
+    if (!this.behaviorPackWrapper) {
+      return undefined;
+    }
+
+    const fv = this.behaviorPackWrapper.format_version;
+
+    if (typeof fv === "number") {
+      return [fv];
+    }
+
+    if (typeof fv === "string") {
+      let fvarr = this.behaviorPackWrapper.format_version.split(".");
+
+      let fvarrInt: number[] = [];
+      for (let i = 0; i < fvarr.length; i++) {
+        try {
+          fvarrInt.push(parseInt(fvarr[i]));
+        } catch (e) {}
+      }
+
+      return fvarrInt;
+    }
+
+    return undefined;
   }
 
   public get shortId() {
@@ -423,13 +450,10 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem {
 
     let data: any = {};
 
-    try {
-      let content = this._behaviorPackFile.content;
-      content = Utilities.stripJsonComments(content);
+    let result = StorageUtilities.getJsonObject(this._behaviorPackFile);
 
-      data = JSON.parse(content);
-    } catch (e) {
-      Log.fail("Could not parse entity JSON " + e);
+    if (result) {
+      data = result;
     }
 
     this.behaviorPackWrapper = data;

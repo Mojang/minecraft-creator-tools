@@ -7,6 +7,7 @@ import IItemTypeBehaviorPack from "./IItemTypeBehaviorPack";
 import IItemTypeWrapper from "./IItemTypeWrapper";
 import { ManagedComponent } from "./ManagedComponent";
 import IManagedComponent from "./IManagedComponent";
+import StorageUtilities from "../storage/StorageUtilities";
 
 export default class ItemTypeDefinition implements IManagedComponentSetItem {
   private _behaviorPackData: IItemTypeWrapper | null = null;
@@ -206,18 +207,14 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
       return;
     }
 
-    try {
-      const data: any = JSON.parse(this._behaviorPackFile.content);
+    this._behaviorPackData = StorageUtilities.getJsonObject(this._behaviorPackFile);
 
-      this._behaviorPackData = data;
-
-      const entity = data["minecraft:entity"];
+    if (this._behaviorPackData) {
+      const entity = (this._behaviorPackData as any)["minecraft:entity"];
 
       this.id = entity.description.identifier;
 
       this.behaviorPackDefinition = entity;
-    } catch (e) {
-      Log.fail("Could not parse item type JSON " + e);
     }
 
     this._isLoaded = true;

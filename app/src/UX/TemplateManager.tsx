@@ -4,7 +4,7 @@ import "./TemplateManager.css";
 import { RadioGroup, RadioGroupItemProps } from "@fluentui/react-northstar";
 import IPersistable from "./IPersistable";
 import WebUtilities from "./WebUtilities";
-import { IPackReference, IWorldSettings } from "../minecraft/IWorldSettings";
+import { IPackReferenceSet, IWorldSettings } from "../minecraft/IWorldSettings";
 import Pack from "../app/Pack";
 import StorageUtilities from "../storage/StorageUtilities";
 import Log from "../core/Log";
@@ -13,14 +13,14 @@ interface ITemplateManagerProps extends IAppProps {
   setActivePersistable?: (persistObject: IPersistable) => void;
   forceCompact?: boolean;
   worldSettings?: IWorldSettings;
-  packReferences: IPackReference[];
-  onPackSetChanged?: (packReferences: IPackReference[]) => void;
+  packReferences: IPackReferenceSet[];
+  onPackSetChanged?: (packReferences: IPackReferenceSet[]) => void;
 }
 
 interface ITemplateManagerState {
   packs?: Pack[];
   errorMessage?: string;
-  packReferences: IPackReference[];
+  packReferences: IPackReferenceSet[];
 }
 
 export default class TemplateManager
@@ -179,7 +179,7 @@ export default class TemplateManager
   }
 
   removeAllPackRefs() {
-    const newPackRefs: IPackReference[] = [];
+    const newPackRefs: IPackReferenceSet[] = [];
 
     if (this.props.onPackSetChanged) {
       this.props.onPackSetChanged(newPackRefs);

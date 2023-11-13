@@ -295,6 +295,12 @@ export default class DocumentedModule {
       }
     }
 
+    if (this.moduleDefinition && this.moduleDefinition.errors) {
+      for (const docError of this.moduleDefinition.errors) {
+        this._docClassesAndInterfaces[docError.name] = new DocumentedClass(this, docError);
+      }
+    }
+
     this._docEnums = {};
 
     if (this.moduleDefinition && this.moduleDefinition.enums) {

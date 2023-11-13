@@ -162,7 +162,7 @@ export default class ZipFolder extends FolderBase implements IFolder {
         }
 
         if (subPath.length > 0 && file) {
-          Log.assert(!file.dir);
+          Log.assert(!file.dir, "Unexpected non directory file.");
           const zipFile = lastFolder.ensureFile(subPath) as ZipFile;
           zipFile.updateZipNativeFile(file);
         }

@@ -59,6 +59,34 @@ export default class NbtBinary {
     return view.getBigInt64(0, littleEndian);
   }
 
+  private _getSignedDouble(
+    num1: number,
+    num2: number,
+    num3: number,
+    num4: number,
+    num5: number,
+    num6: number,
+    num7: number,
+    num8: number,
+    littleEndian: boolean
+  ) {
+    const buffer = new ArrayBuffer(8);
+    const bytes = new Uint8Array(buffer);
+
+    bytes[0] = num1;
+    bytes[1] = num2;
+    bytes[2] = num3;
+    bytes[3] = num4;
+    bytes[4] = num5;
+    bytes[5] = num6;
+    bytes[6] = num7;
+    bytes[7] = num8;
+
+    const view = new DataView(buffer);
+
+    return view.getFloat64(0, littleEndian);
+  }
+
   private _getVarInt(data: Uint8Array, index: number) {
     let bytesRead = 0;
     let result = 0;
@@ -327,6 +355,18 @@ export default class NbtBinary {
         activeTag.value = this._getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian);
       } else if (activeTag.type === NbtTagType.float) {
         activeTag.value = this._getFloat(data[i++], data[i++], data[i++], data[i++], littleEndian);
+      } else if (activeTag.type === NbtTagType.double) {
+        activeTag.value = this._getSignedDouble(
+          data[i++],
+          data[i++],
+          data[i++],
+          data[i++],
+          data[i++],
+          data[i++],
+          data[i++],
+          data[i++],
+          littleEndian
+        );
       } else if (activeTag.type === NbtTagType.long) {
         activeTag.value = this._getSignedLong(
           data[i++],

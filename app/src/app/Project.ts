@@ -26,6 +26,7 @@ import LocManager from "../minecraft/LocManager";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 import ProjectUpdateResult from "../updates/ProjectUpdateResult";
+import { StatusTopic } from "./Status";
 
 export enum ProjectAutoDeploymentMode {
   deployOnSave = 0,
@@ -99,6 +100,7 @@ export default class Project {
   public differencesFromGitHub?: DifferenceSet;
 
   #projectFolder: IFolder | null;
+  #accessoryFolders: IFolder[] | null = null;
   #projectCabinetFile: IFile | null = null;
 
   #buildFolder: IFolder | null = null;
@@ -127,6 +129,8 @@ export default class Project {
   #isProjectFolderEnsured = false;
   #useProjectNameInProjectStorage = false;
 
+  #accessoryFiles: string[] | undefined;
+
   private _onPropertyChanged = new EventDispatcher<Project, string>();
   private _onLoaded = new EventDispatcher<Project, Project>();
   private _onSaved = new EventDispatcher<Project, Project>();
@@ -152,6 +156,14 @@ export default class Project {
     return this.#file;
   }
 
+  public get accessoryFiles() {
+    return this.#accessoryFiles;
+  }
+
+  public set accessoryFiles(files: string[] | undefined) {
+    this.#accessoryFiles = files;
+  }
+
   public get infoSet() {
     if (!this.#infoSet) {
       this.#infoSet = new ProjectInfoSet(this);
@@ -166,6 +178,44 @@ export default class Project {
     }
 
     return false;
+  }
+
+  public getBehaviorPackCount() {
+    let count = 0;
+    for (const projectItem of this.items) {
+      if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  public getResourcePackCount() {
+    let count = 0;
+
+    for (const projectItem of this.items) {
+      if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  public getIsPackFolderManaged() {
+    let rpCount = 0;
+    let bpCount = 0;
+
+    for (const projectItem of this.items) {
+      if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
+        bpCount++;
+      } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
+        rpCount++;
+      }
+    }
+
+    return bpCount < 2 && rpCount < 2;
   }
 
   public get key() {
@@ -310,6 +360,10 @@ export default class Project {
 
   get projectFolder(): IFolder | null {
     return this.#projectFolder;
+  }
+
+  get accessoryFolders(): IFolder[] | null {
+    return this.#accessoryFolders;
   }
 
   get localFolderPath(): string | undefined {
@@ -485,7 +539,7 @@ export default class Project {
 
       contentFile.saveContent();
     } else if (extension === "snbt") {
-      const operId = this.#carto.notifyOperationStarted("Saving new SNBT structure file '" + file.name + "'");
+      const operId = await this.#carto.notifyOperationStarted("Saving new SNBT structure file '" + file.name + "'");
 
       const text = await file.text();
 
@@ -507,9 +561,9 @@ export default class Project {
         );
       }
 
-      this.#carto.notifyOperationEnded(operId, "New SNBT structure file '" + file.name + "' added");
+      await this.#carto.notifyOperationEnded(operId, "New SNBT structure file '" + file.name + "' added");
     } else if (extension === "mcworld") {
-      const operId = this.#carto.notifyOperationStarted("Saving new MCWorld file '" + file.name + "'");
+      const operId = await this.#carto.notifyOperationStarted("Saving new MCWorld file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -535,9 +589,9 @@ export default class Project {
         await this._inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
 
-      this.#carto.notifyOperationEnded(operId, "New MCWorld file '" + file.name + "' added");
+      await this.#carto.notifyOperationEnded(operId, "New MCWorld file '" + file.name + "' added");
     } else if (extension === "mcproject") {
-      const operId = this.#carto.notifyOperationStarted("Saving new MCProject file '" + file.name + "'");
+      const operId = await this.#carto.notifyOperationStarted("Saving new MCProject file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -563,9 +617,9 @@ export default class Project {
         await this._inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
 
-      this.#carto.notifyOperationEnded(operId, "New MCProject file '" + file.name + "' added");
+      await this.#carto.notifyOperationEnded(operId, "New MCProject file '" + file.name + "' added");
     } else if (extension === "mctemplate") {
-      const operId = this.#carto.notifyOperationStarted("Saving new MCTemplate file '" + file.name + "'");
+      const operId = await this.#carto.notifyOperationStarted("Saving new MCTemplate file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -591,9 +645,9 @@ export default class Project {
         await this._inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
 
-      this.#carto.notifyOperationEnded(operId, "New MCTemplate file '" + file.name + "' added");
+      await this.#carto.notifyOperationEnded(operId, "New MCTemplate file '" + file.name + "' added");
     } else if (extension === "mcaddon") {
-      const operId = this.#carto.notifyOperationStarted("Saving new MCAddon file '" + file.name + "'");
+      const operId = await this.#carto.notifyOperationStarted("Saving new MCAddon file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -619,9 +673,9 @@ export default class Project {
         await this._inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
 
-      this.#carto.notifyOperationEnded(operId, "New MCAddon file '" + file.name + "' added");
+      await this.#carto.notifyOperationEnded(operId, "New MCAddon file '" + file.name + "' added");
     } else if (extension === "zip") {
-      const operId = this.#carto.notifyOperationStarted("Saving new zip file '" + file.name + "'");
+      const operId = await this.#carto.notifyOperationStarted("Saving new zip file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -641,9 +695,9 @@ export default class Project {
         await this._inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
 
-      this.#carto.notifyOperationEnded(operId, "New zip file '" + file.name + "' added");
+      await this.#carto.notifyOperationEnded(operId, "New zip file '" + file.name + "' added");
     } else if (extension === "mcpack") {
-      const operId = this.#carto.notifyOperationStarted("Saving new MCPack file '" + file.name + "'");
+      const operId = await this.#carto.notifyOperationStarted("Saving new MCPack file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -669,9 +723,9 @@ export default class Project {
         await this._inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
 
-      this.#carto.notifyOperationEnded(operId, "New zip file '" + file.name + "' added");
+      await this.#carto.notifyOperationEnded(operId, "New zip file '" + file.name + "' added");
     } else if (extension === "mcstructure") {
-      const operId = this.#carto.notifyOperationStarted("Saving new structure file '" + file.name + "'");
+      const operId = await this.#carto.notifyOperationStarted("Saving new structure file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();
 
@@ -693,7 +747,7 @@ export default class Project {
         );
       }
 
-      this.#carto.notifyOperationEnded(operId, "New structure file '" + file.name + "' added");
+      await this.#carto.notifyOperationEnded(operId, "New structure file '" + file.name + "' added");
     }
   }
 
@@ -1273,6 +1327,11 @@ export default class Project {
       await this.ensureProjectFolder();
 
       if (this.#projectCabinetFile !== null) {
+        const operId = await this.carto.notifyOperationStarted(
+          "Loading project files for '" + this.name + "' from '" + this.#projectCabinetFile.fullPath + "'",
+          StatusTopic.projectLoad
+        );
+
         await this.ensureProjectFolderFromCabinet();
         /*await this._inferProjectItemsFromZipFile(
           this.#projectCabinetFile.storageRelativePath,
@@ -1283,6 +1342,12 @@ export default class Project {
         if (this.#projectFolder) {
           await this._inferProjectItemsFromFolder(this.#projectFolder, "", FolderContext.unknown, 0, force);
         }
+
+        await this.carto.notifyOperationEnded(
+          operId,
+          "Done loading project files for '" + this.name + "' from file '" + this.#projectCabinetFile.fullPath + "'",
+          StatusTopic.projectLoad
+        );
 
         this._hasInferredFiles = true;
       } else {
@@ -1296,7 +1361,18 @@ export default class Project {
   async inferProjectItemsFromFilesRootFolder(force?: boolean) {
     const rootFolder = await this.ensureProjectFolder();
 
+    const operId = await this.carto.notifyOperationStarted(
+      "Loading project files for '" + this.name + "' from folder '" + rootFolder.fullPath + "'",
+      StatusTopic.projectLoad
+    );
+
     await this._inferProjectItemsFromFolder(rootFolder, "", FolderContext.unknown, 0, force);
+
+    await this.carto.notifyOperationEnded(
+      operId,
+      "Done loading project files for '" + this.name + "' from folder '" + rootFolder.fullPath + "'",
+      StatusTopic.projectLoad
+    );
 
     this._hasInferredFiles = true;
   }
@@ -1475,7 +1551,22 @@ export default class Project {
       !folder.files["level.dat"] &&
       !folder.files["levelname.txt"]
     ) {
-      folderContext = FolderContext.behaviorPack;
+      if (
+        folder.folders["models"] ||
+        folder.folders["textures"] ||
+        folder.folders["lighting"] ||
+        folder.folders["subpacks"] ||
+        folder.folders["assets"] ||
+        folder.folders["sounds"] ||
+        folder.folders["texts"] ||
+        folder.folders["texture_sets"] ||
+        folder.folders["sounds"] ||
+        folder.folders["ui"]
+      ) {
+        folderContext = FolderContext.resourcePack;
+      } else {
+        folderContext = FolderContext.behaviorPack;
+      }
     }
 
     if (
@@ -1672,12 +1763,30 @@ export default class Project {
                 false,
                 candidateFile
               );
+            } else if (projectPath.endsWith("/tick.json")) {
+              this.ensureItemByStoragePath(
+                projectPath,
+                ProjectItemStorageType.singleFile,
+                candidateFile.name,
+                ProjectItemType.tickJson,
+                false,
+                candidateFile
+              );
             } else if (fileExtension === "mcstructure") {
               this.ensureItemByStoragePath(
                 projectPath,
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.structure,
+                false,
+                candidateFile
+              );
+            } else if (fileExtension === "mcfunction") {
+              this.ensureItemByStoragePath(
+                projectPath,
+                ProjectItemStorageType.singleFile,
+                candidateFile.name,
+                ProjectItemType.MCFunction,
                 false,
                 candidateFile
               );
@@ -1814,6 +1923,8 @@ export default class Project {
                 newJsonType = ProjectItemType.recipeBehaviorJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/spawn_rules/") >= 0) {
                 newJsonType = ProjectItemType.spawnRuleBehaviorJson;
+              } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/cameras/") >= 0) {
+                newJsonType = ProjectItemType.cameraJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/trading/") >= 0) {
                 newJsonType = ProjectItemType.tradingBehaviorJson;
               } else if (
@@ -1976,6 +2087,7 @@ export default class Project {
   }
 
   async _inferProjectItemsFromZipFile(projectPath: string, file: IFile, force?: boolean) {
+    let operId = await this.carto.notifyOperationStarted("Loading package  file " + file.name);
     await file.loadContent();
 
     const rootFolder = await StorageUtilities.getFileStorageFolder(file);
@@ -1985,6 +2097,8 @@ export default class Project {
     }
 
     this.adjustVisibleDefaults();
+
+    await this.carto.notifyOperationEnded(operId, "Done loading package file " + file.name);
   }
 
   adjustVisibleDefaults() {
@@ -2003,7 +2117,7 @@ export default class Project {
       return;
     }
 
-    const operId = this.#carto.notifyOperationStarted("Staging changes for a GitHub commit");
+    const operId = await this.#carto.notifyOperationStarted("Staging changes for a GitHub commit");
 
     await this.#carto.userGitHub.ensureUserStateLoaded();
 
@@ -2024,7 +2138,7 @@ export default class Project {
       projectFolder,
       false
     );
-    this.#carto.notifyOperationEnded(operId, "Done staging changes for a GitHub commit");
+    await this.#carto.notifyOperationEnded(operId, "Done staging changes for a GitHub commit");
   }
 
   async commitToGitHub(commitMessage: string) {
@@ -2037,7 +2151,7 @@ export default class Project {
       return;
     }
 
-    const operId = this.#carto.notifyOperationStarted(
+    const operId = await this.#carto.notifyOperationStarted(
       "Committing " + this.differencesFromGitHub.fileDifferences.length + " file changes to GitHub"
     );
     this.#carto.userGitHub.commitToRepo(
@@ -2048,7 +2162,7 @@ export default class Project {
       commitMessage,
       this.differencesFromGitHub
     );
-    this.#carto.notifyOperationEnded(
+    await this.#carto.notifyOperationEnded(
       operId,
       "Done committing " + this.differencesFromGitHub.fileDifferences.length + " file changes to GitHub"
     );
@@ -2066,7 +2180,7 @@ export default class Project {
         if (StorageUtilities.getTypeFromName(fileName) === "snbt") {
           const targetFileName = StorageUtilities.getBaseFromName(fileName) + ".mcstructure";
 
-          const operId = this.#carto.notifyOperationStarted(
+          const operId = await this.#carto.notifyOperationStarted(
             "Converting file '" + fileName + "' to '" + targetFileName + "'"
           );
 
@@ -2100,7 +2214,7 @@ export default class Project {
             }
           }
 
-          this.#carto.notifyOperationEnded(operId, "Conversion complete.");
+          await this.#carto.notifyOperationEnded(operId, "Conversion complete.");
         }
       }
     }
@@ -2588,6 +2702,40 @@ export default class Project {
           this.#projectFolder !== undefined,
           "Could not create a project folder from " + this.#data.localFilePath
         );
+
+        if (this.#accessoryFiles && this.#projectFolder) {
+          for (let i = 0; i < this.#accessoryFiles.length; i++) {
+            const addFile = containingFolder.ensureFile(this.#accessoryFiles[i]);
+
+            const additionalFileExists = await addFile.exists();
+            if (additionalFileExists) {
+              let isChildOfExistingFolder = false;
+
+              if (this.#accessoryFolders === null) {
+                this.#accessoryFolders = [];
+              }
+
+              for (let j = 0; j < this.#accessoryFolders.length; j++) {
+                let addFileStoragePath = addFile.getFolderRelativePath(this.#accessoryFolders[j]);
+
+                if (addFileStoragePath) {
+                  isChildOfExistingFolder = true;
+                  this._inferProjectItemFromFile(addFile, this.#accessoryFolders[j], addFileStoragePath);
+                }
+              }
+
+              if (!isChildOfExistingFolder) {
+                if (addFile.parentFolder) {
+                  let addFileStoragePath = addFile.getFolderRelativePath(addFile.parentFolder);
+                  if (addFileStoragePath) {
+                    this.#accessoryFolders.push(addFile.parentFolder);
+                    this._inferProjectItemFromFile(addFile, addFile.parentFolder, addFileStoragePath);
+                  }
+                }
+              }
+            }
+          }
+        }
       }
 
       if (!this.#projectFolder) {
@@ -2615,6 +2763,17 @@ export default class Project {
     this.#isProjectFolderEnsured = result;
 
     return this.#projectFolder;
+  }
+
+  async _inferProjectItemFromFile(file: IFile, folder: IFolder, fileStoragePath: string) {
+    this.ensureItemByStoragePath(
+      fileStoragePath,
+      ProjectItemStorageType.singleFile,
+      file.name,
+      ProjectItemType.projectSummaryMetadata,
+      false,
+      file
+    );
   }
 
   async _handleProjectFileContentsUpdated(storage: IStorage, file: IFile) {

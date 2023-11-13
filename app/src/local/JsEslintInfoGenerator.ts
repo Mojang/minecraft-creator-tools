@@ -7,6 +7,7 @@ import { ESLint } from "eslint";
 import ProjectInfoItem from "../info/ProjectInfoItem";
 import IProjectInfoGenerator from "../info/IProjectInfoGenerator";
 import { InfoItemType } from "../info/IInfoItemData";
+import ProjectInfoSet from "../info/ProjectInfoSet";
 
 export default class JsEslintInfoGenerator implements IProjectInfoGenerator {
   id = "ESLINT";
@@ -23,6 +24,8 @@ export default class JsEslintInfoGenerator implements IProjectInfoGenerator {
       title: topicId.toString(),
     };
   }
+
+  summarize(info: any, infoSet: ProjectInfoSet) {}
 
   async generate(project: Project): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];

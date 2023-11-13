@@ -8,7 +8,6 @@ import EntityRaycastOptions from "../minecraft/EntityRaycastOptions";
 import { GameMode } from "../minecraft/GameMode";
 import IDimension from "../minecraft/IDimension";
 import IEntityComponent from "../minecraft/IEntityComponent";
-import IEntityComponents from "../minecraft/IEntityComponents";
 import ItemStack from "../minecraft/ItemStack";
 import { NavigationResult } from "../minecraft/NavigationResult";
 import PitchYawRotation from "../minecraft/PitchYawRotation";
@@ -39,11 +38,6 @@ export default class SimulatedPlayer extends Player {
    * @throws This property can throw when used.
    */
   readonly "headRotation": PitchYawRotation;
-  /**
-   * Identifier for the player.
-   * @throws This property can throw when used.
-   */
-  readonly "id": string;
   /**
    * True if the player is currently using a sneaking movement.
    */

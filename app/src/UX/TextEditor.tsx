@@ -6,6 +6,8 @@ import Carto from "../app/Carto";
 import { FormInput, InputProps, TextArea, TextAreaProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearchPlus, faSearchMinus, faPlay } from "@fortawesome/free-solid-svg-icons";
+import Project from "../app/Project";
+import CommandRunner from "../app/CommandRunner";
 
 interface ITextEditorProps {
   file?: IFile;
@@ -13,8 +15,11 @@ interface ITextEditorProps {
   placeholder?: string;
   spellCheck?: boolean;
   commitButton?: boolean;
+  runCommandButton?: boolean;
   initialContent?: string;
   singleLineMode?: boolean;
+  fixedHeight?: number;
+  project?: Project;
   setActivePersistable?: (persistObject: IPersistable) => void;
   heightOffset?: number;
   readOnly: boolean;
@@ -28,6 +33,7 @@ interface ITextEditorProps {
 interface ITextEditorState {
   fileToEdit?: IFile;
   content?: string;
+  initialContent?: string;
 }
 
 export default class TextEditor extends Component<ITextEditorProps, ITextEditorState> implements IPersistable {
@@ -37,6 +43,7 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
     this._handleContentUpdated = this._handleContentUpdated.bind(this);
     this._zoomIn = this._zoomIn.bind(this);
     this._zoomOut = this._zoomOut.bind(this);
+    this._sendFunction = this._sendFunction.bind(this);
 
     this._handleTextAreaChange = this._handleTextAreaChange.bind(this);
     this._handleTextInputChange = this._handleTextInputChange.bind(this);
@@ -47,6 +54,7 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
     this.state = {
       fileToEdit: props.file,
       content: this.props.initialContent,
+      initialContent: this.props.initialContent,
     };
   }
 
@@ -58,6 +66,14 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
 
       return state;
     }
+
+    if (props.initialContent !== state.initialContent && props.initialContent !== undefined) {
+      state.content = props.initialContent;
+      state.initialContent = props.initialContent;
+
+      return state;
+    }
+
     if (props.file !== state.fileToEdit) {
       state.fileToEdit = props.file;
       return state;
@@ -71,15 +87,19 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
   async persist() {}
 
   _zoomIn() {
-    //    this.editor?.getAction("editor.action.fontZoomIn").run();
-
     this._updateZoom();
   }
 
   _zoomOut() {
-    //  this.editor?.getAction("editor.action.fontZoomOut").run();
-
     this._updateZoom();
+  }
+
+  async _sendFunction() {
+    if (!this.state.content) {
+      return;
+    }
+
+    await CommandRunner.runCommandText(this.props.carto, this.state.content);
   }
 
   _updateZoom() {
@@ -106,10 +126,11 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
 
     if (this.state && this.state.fileToEdit && data.value) {
       this.state.fileToEdit.setContent(data.value);
-    } else if (this.state && this.state.content && data.value) {
+    } else if (this.state && this.state.content !== undefined && data.value !== undefined) {
       this.setState({
         fileToEdit: this.state.fileToEdit,
         content: data.value,
+        initialContent: this.state.initialContent,
       });
       return;
     }
@@ -118,7 +139,9 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
   }
 
   _handleInputKey(event: React.KeyboardEvent<Element>) {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && this.props.singleLineMode === true) {
+      this._commitContent();
+    } else if (event.ctrlKey === true && event.key === "Enter") {
       this._commitContent();
     }
   }
@@ -143,6 +166,7 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
       this.setState({
         fileToEdit: this.state.fileToEdit,
         content: dataStr,
+        initialContent: this.state.initialContent,
       });
       return;
     }
@@ -156,7 +180,7 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
 
       this.setState({
         fileToEdit: this.state.fileToEdit,
-        content: "",
+        content: this.props.singleLineMode === true ? "" : this.state.content,
       });
     }
   }
@@ -169,7 +193,10 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
     let height = "106px";
     let editorHeight = "106px";
 
-    if (this.props.singleLineMode) {
+    if (this.props.fixedHeight) {
+      height = this.props.fixedHeight + "px";
+      editorHeight = this.props.fixedHeight - 40 + "px";
+    } else if (this.props.singleLineMode) {
       height = "32px";
       editorHeight = "32px";
     } else if (this.props.heightOffset) {
@@ -193,6 +220,15 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
         title: "Toggle whether hidden items are shown",
       },
     ];
+
+    if (this.props.runCommandButton) {
+      toolbarItems.push({
+        icon: <FontAwesomeIcon icon={faPlay} className="fa-lg" />,
+        key: "run",
+        onClick: this._sendFunction,
+        title: "Send this function over to Minecraft",
+      });
+    }
 
     const accessoryToolbarItems = [];
 
@@ -238,7 +274,7 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
               fluid={true}
               style={{
                 height: editorHeight,
-                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
               }}
               key="forminput"
               id="forminput"
@@ -257,7 +293,7 @@ export default class TextEditor extends Component<ITextEditorProps, ITextEditorS
               fluid={true}
               style={{
                 height: editorHeight,
-                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
               }}
               key="textarea"
               id="textarea"

@@ -4,7 +4,7 @@ import "./PackManager.css";
 import { Checkbox, CheckboxProps, List } from "@fluentui/react-northstar";
 import IPersistable from "./IPersistable";
 import WebUtilities from "./WebUtilities";
-import { IPackReference, IWorldSettings } from "../minecraft/IWorldSettings";
+import { IPackReferenceSet, IWorldSettings } from "../minecraft/IWorldSettings";
 import Pack from "../app/Pack";
 import StorageUtilities from "../storage/StorageUtilities";
 import Log from "../core/Log";
@@ -14,14 +14,14 @@ interface IPackManagerProps extends IAppProps {
   forceCompact?: boolean;
   worldSettings?: IWorldSettings;
   isWorldFocused: boolean;
-  packReferences: IPackReference[];
-  onPackSetChanged?: (packReferences: IPackReference[]) => void;
+  packReferences: IPackReferenceSet[];
+  onPackSetChanged?: (packReferences: IPackReferenceSet[]) => void;
 }
 
 interface IPackManagerState {
   packs?: Pack[];
   errorMessage?: string;
-  packReferences: IPackReference[];
+  packReferences: IPackReferenceSet[];
 }
 
 export default class PackManager extends Component<IPackManagerProps, IPackManagerState> implements IPersistable {

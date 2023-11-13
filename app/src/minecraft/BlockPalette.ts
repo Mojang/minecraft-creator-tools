@@ -1,3 +1,4 @@
+import Log from "../core/Log";
 import Block from "./Block";
 import NbtBinary from "./NbtBinary";
 
@@ -9,6 +10,8 @@ export default class BlockPalette {
       const nbt = new NbtBinary();
 
       index += nbt.fromBinary(bytes, true, false, index, true);
+
+      Log.assert(index <= bytes.length, "Unexpected expansion of bytes processed.");
 
       if (nbt.root === null) {
         return index;

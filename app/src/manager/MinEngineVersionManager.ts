@@ -10,6 +10,7 @@ import ProjectUpdateResult from "../updates/ProjectUpdateResult";
 import ResourceManifestJson from "../minecraft/ResourceManifestJson";
 import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
+import ProjectInfoSet from "../info/ProjectInfoSet";
 
 export default class MinEngineVersionManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "MINENGINEVER";
@@ -124,6 +125,8 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
       title: updaterId.toString(),
     };
   }
+
+  summarize(info: any, infoSet: ProjectInfoSet) {}
 
   async generate(project: Project): Promise<ProjectInfoItem[]> {
     const infoItems: ProjectInfoItem[] = [];

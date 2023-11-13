@@ -148,11 +148,11 @@ export const WebSocketMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElem
     }}
   >
     <FontAwesomeIcon icon={faPlug} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Minecraft Game</span> : <></>}
+    {!props.isCompact ? <span className="label-text">Minecraft Windows app</span> : <></>}
   </span>
 );
 
-export const InfoLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
+export const ConnectModeLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => (
   <span
@@ -173,6 +173,7 @@ export const InfoLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelect
     }}
   >
     <FontAwesomeIcon icon={faCircleInfo} className="fa-lg" />
+    {!props.isCompact ? <span className="label-text">Mode</span> : <></>}
   </span>
 );
 

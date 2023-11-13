@@ -18,13 +18,15 @@ export class LogItem {
   created: Date;
   operId?: number;
   category?: string;
+  context?: string;
 
   static alertFunction: ((message: string) => void) | undefined;
 
-  constructor(message: string, level: LogItemLevel, category?: string) {
+  constructor(message: string, level: LogItemLevel, context?: string, category?: string) {
     this.level = level;
     this.message = message;
     this.created = new Date();
+    this.context = context;
     this.category = category;
 
     if (this.level === LogItemLevel.operationStarted) {
@@ -46,20 +48,20 @@ export default class Log {
     return this._onItemAdded.asEvent();
   }
 
-  static message(message: string, category?: string) {
-    this.log(message, LogItemLevel.message);
+  static message(message: string, context?: string, category?: string) {
+    this.log(message, LogItemLevel.message, context, category);
   }
 
-  static important(message: string, category?: string) {
-    this.log(message, LogItemLevel.important);
+  static important(message: string, context?: string, category?: string) {
+    this.log(message, LogItemLevel.important, context, category);
   }
 
-  static verbose(message: string, category?: string) {
-    this.log(message, LogItemLevel.verbose, category);
+  static verbose(message: string, context?: string, category?: string) {
+    this.log(message, LogItemLevel.verbose, context, category);
   }
 
-  static error(message: string, category?: string) {
-    this.log(message, LogItemLevel.error);
+  static error(message: string, context?: string, category?: string) {
+    this.log(message, LogItemLevel.error, context, category);
   }
 
   static unexpectedUndefined(token?: string) {
@@ -96,8 +98,8 @@ export default class Log {
     Log.fail("Unexpected arguments found." + (token ? " (" + token + ")" : ""));
   }
 
-  static log(message: string, level: LogItemLevel, category?: string) {
-    const logItem = new LogItem(message, level, category);
+  static log(message: string, level: LogItemLevel, context?: string, category?: string) {
+    const logItem = new LogItem(message, level, context, category);
 
     this._log.push(logItem);
 
@@ -106,8 +108,8 @@ export default class Log {
     return logItem.operId;
   }
 
-  static debug(message: string) {
-    this.log(message, LogItemLevel.debug);
+  static debug(message: string, context?: string) {
+    this.log(message, LogItemLevel.debug, context);
   }
 
   static assertIsInt(number: number) {
@@ -116,12 +118,12 @@ export default class Log {
     }
   }
 
-  static assert(condition: boolean, message?: string) {
+  static assert(condition: boolean, message?: string, context?: string) {
     if (!condition) {
       if (!message) {
-        Log.debugAlert("Assertion failed.");
+        Log.debugAlert("Assertion failed.", context);
       } else {
-        Log.debugAlert("Assertion failed: " + message);
+        Log.debugAlert("Assertion failed: " + message, context);
       }
     }
   }
@@ -132,24 +134,24 @@ export default class Log {
     }
   }
 
-  static fail(message: string) {
-    Log.debugAlert("Failure case: " + message);
+  static fail(message: string, context?: string) {
+    Log.debugAlert("Failure case: " + message, context);
   }
 
-  static unexpectedError(errorMessage: string) {
+  static unexpectedError(errorMessage: string, context?: string) {
     if (Utilities.isDebug) {
-      this.debugAlert(errorMessage);
+      Log.debugAlert(errorMessage, context);
     }
 
     throw new Error(errorMessage);
   }
 
-  static debugAlert(message: string) {
+  static debugAlert(message: string, context?: string) {
     if (Log._suppressedLogs["all"] === true) {
       return;
     }
 
-    Log.debug(message);
+    Log.debug(message, context);
 
     if (!Utilities.isDebug) {
       return;

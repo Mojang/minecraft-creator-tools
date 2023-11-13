@@ -4,4 +4,5 @@ export default interface IBlockTypeData {
   icon?: string;
   shortId?: string;
   altShortId?: string;
+  mapColor?: string;
 }

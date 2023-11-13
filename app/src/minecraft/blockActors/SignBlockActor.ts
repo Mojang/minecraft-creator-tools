@@ -7,7 +7,6 @@ export default class SignBlockActor extends BlockActor {
   signTextColor?: number;
   text?: string;
   textOwner?: string;
-  isMovable?: boolean;
 
   public override load() {
     if (!this.rootTag) {

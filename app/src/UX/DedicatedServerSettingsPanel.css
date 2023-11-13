@@ -6,7 +6,7 @@
 
   .dssp-grid {
     display: grid;
-    grid-template-columns: 120px 1fr;
+    grid-template-columns: 80px 1fr;
   }
 
   .dssp-modeinput .ui-dropdown__container {
@@ -52,7 +52,8 @@
 .dssp-label {
   padding-left: 2px;
   padding-bottom: 10px;
-  padding-top: 8px;
+  padding-top: 4px;
+  user-select: none;
 }
 
 .dssp-modelabel {
@@ -82,7 +83,7 @@
   grid-row: 3;
   grid-column: 1;
   text-align: right;
-  padding-top: 4px;
+  padding-top: 1px;
 }
 
 .dssp-usepreviewlabel {
@@ -95,7 +96,7 @@
   grid-row: 4;
   grid-column: 1;
   text-align: right;
-  padding-top: 4px;
+  padding-top: 1px;
 }
 
 .dssp-pathlabel {
@@ -103,14 +104,14 @@
   grid-column: 1;
   text-align: right;
   padding-bottom: 30px;
-  padding-top: 8px;
+  padding-top: 5px;
   padding-right: 18px;
 }
 
 .dssp-pathinput {
   grid-row: 3;
   grid-column: 2;
-  padding-top: 4px;
+  padding-top: 1px;
 }
 
 .dssp-pathinput input {

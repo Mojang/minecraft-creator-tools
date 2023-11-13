@@ -228,6 +228,8 @@ export default class ProjectUtilities {
   static async applyName(project: Project, newName: string) {
     project.name = newName;
 
+    const isPackFolderManaged = project.getIsPackFolderManaged();
+
     if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
       for (const projectItem of project.items) {
         if (projectItem.itemType === ProjectItemType.packageJson) {
@@ -245,12 +247,42 @@ export default class ProjectUtilities {
           await projectItem.ensureFileStorage();
 
           if (projectItem.file) {
+            if (isPackFolderManaged) {
+              const manifestParentFolder = projectItem.file.parentFolder;
+
+              await manifestParentFolder.rename(newName + "_bp");
+            }
+
             const manifestJson = await BehaviorManifestJson.ensureOnFile(projectItem.file);
 
             if (
               manifestJson &&
               manifestJson.definition &&
               Utilities.uuidEqual(manifestJson.definition.header.uuid, project.defaultBehaviorPackUniqueId)
+            ) {
+              const header = manifestJson.ensureHeader(project.title, project.description);
+
+              header.name = newName;
+
+              manifestJson.save();
+            }
+          }
+        } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
+          await projectItem.ensureFileStorage();
+
+          if (projectItem.file) {
+            if (isPackFolderManaged) {
+              const manifestParentFolder = projectItem.file.parentFolder;
+
+              await manifestParentFolder.rename(newName + "_rp");
+            }
+
+            const manifestJson = await ResourceManifestJson.ensureOnFile(projectItem.file);
+
+            if (
+              manifestJson &&
+              manifestJson.definition &&
+              Utilities.uuidEqual(manifestJson.definition.header.uuid, project.defaultResourcePackUniqueId)
             ) {
               const header = manifestJson.ensureHeader(project.title, project.description);
 
@@ -536,6 +568,19 @@ export default class ProjectUtilities {
                     content.substring(0, previousNewLine) +
                     replacer.sampleContent +
                     content.substring(nextNewLine + 1);
+
+                  if (
+                    replacer.sampleContent.indexOf("overworld") >= 0 &&
+                    replacer.sampleContent.indexOf("const overworld") <= 0
+                  ) {
+                    let firstComment = content.indexOf("//");
+                    if (firstComment >= 0) {
+                      content =
+                        content.substring(0, firstComment) +
+                        '  const overworld = mc.world.getDimension("overworld");\r\n' +
+                        content.substring(firstComment, content.length);
+                    }
+                  }
                   file.setContent(content);
                 }
               }
@@ -602,7 +647,7 @@ export default class ProjectUtilities {
     const file = await pi.ensureFileStorage();
 
     if (file !== null) {
-      const content = Utilities.stripJsonComments(sourceFile.content);
+      const content = Utilities.fixJsonContent(sourceFile.content);
 
       file.setContent(content);
 

@@ -109,7 +109,7 @@ export default class BrowserFile extends FileBase implements IFile {
     }
   }
 
-  async saveContent(force?: boolean): Promise<Date> {
+  async saveContent(force?: boolean, skipParentFolderSave?: boolean): Promise<Date> {
     if (this.needsSave || force) {
       /*let contentDescript = "null";
 
@@ -125,10 +125,16 @@ export default class BrowserFile extends FileBase implements IFile {
 
       await localforage.setItem(this.fullPath, this.content);
 
-      await this._parentFolder.save(false);
+      this.lastLoadedOrSaved = new Date();
+
+      if (skipParentFolderSave !== true) {
+        await this._parentFolder.save(false);
+      }
     }
 
-    this.lastLoadedOrSaved = new Date();
+    if (this.lastLoadedOrSaved === null) {
+      this.lastLoadedOrSaved = new Date();
+    }
 
     return this.lastLoadedOrSaved;
   }

@@ -13,7 +13,7 @@ import ICartoData, {
 import Project from "./Project";
 import { EventDispatcher } from "ste-events";
 import { ProjectFocus, ProjectScriptLanguage } from "./IProjectData";
-import Status, { StatusType } from "./Status";
+import Status, { StatusTopic, StatusType } from "./Status";
 import StorageUtilities from "../storage/StorageUtilities";
 import Utilities from "../core/Utilities";
 import GitHubManager from "../github/GitHubManager";
@@ -21,7 +21,7 @@ import IGallery from "./IGallery";
 import axios from "axios";
 import Log from "../core/Log";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
-import CommandManager from "./CommandManager";
+import CommandRunner from "./CommandRunner";
 import ILocalUtilities from "../local/ILocalUtilities";
 import IMinecraft from "./IMinecraft";
 import RemoteMinecraft from "./RemoteMinecraft";
@@ -115,6 +115,7 @@ export default class Carto {
   private _onPropertyChanged = new EventDispatcher<Carto, string>();
   private _onLoaded = new EventDispatcher<Carto, Carto>();
   private _onStatusAdded = new EventDispatcher<Carto, Status>();
+  private _onStatusAddedAsync: ((carto: Carto, status: Status) => Promise<void>)[] = [];
   private _onGalleryLoaded = new EventDispatcher<Carto, IGallery | undefined>();
 
   public get isLoaded() {
@@ -465,6 +466,22 @@ export default class Carto {
     return this.#data.lastActiveMinecraftFlavor;
   }
 
+  public subscribeStatusAddedAsync(fn: (carto: Carto, status: Status) => Promise<void>) {
+    this._onStatusAddedAsync.push(fn);
+  }
+
+  public unsubscribeStatusAddedAsync(fn: (carto: Carto, status: Status) => Promise<void>) {
+    let newStatusAddedArr: ((carto: Carto, status: Status) => Promise<void>)[] = [];
+
+    for (let i = 0; i < this._onStatusAddedAsync.length; i++) {
+      if (this._onStatusAddedAsync[i] !== fn) {
+        newStatusAddedArr.push(this._onStatusAddedAsync[i]);
+      }
+    }
+
+    this._onStatusAddedAsync = newStatusAddedArr;
+  }
+
   public setMinecraftFlavor(newValue: MinecraftFlavor) {
     this.ensureMinecraft(newValue);
   }
@@ -556,7 +573,7 @@ export default class Carto {
         backupType: BackupType.every5Minutes,
         useCustomSettings: false,
         isEditor: false,
-        packReferences: [],
+        packReferenceSets: [],
       };
 
       this.ensureDefaultWorldName();
@@ -732,8 +749,20 @@ export default class Carto {
         if (data.startsWith("command")) {
           const commandIndex = parseInt(data.substring(7, data.length));
 
-          CommandManager.runStandardCommand(this, commandIndex);
+          CommandRunner.runCustomTool(this, commandIndex);
         }
+        break;
+
+      case "statusMessage":
+        const firstPipe = data.indexOf("|");
+        const content = data.substring(firstPipe + 1, data.length);
+
+        try {
+          const contentO = JSON.parse(content) as Status;
+
+          this.notifyExternalStatus(contentO);
+        } catch (e) {}
+
         break;
 
       case "mctSavedInAppService":
@@ -798,55 +827,115 @@ export default class Carto {
     }
   }
 
-  notifyStatusUpdate(message: string) {
-    const status = new Status();
+  async notifyStatusUpdate(message: string, topic?: StatusTopic) {
+    const messageCanon = message.trim().toLowerCase();
 
-    status.message = message;
+    if (messageCanon.length > 1) {
+      const status = new Status();
 
-    this.status.push(status);
+      status.message = message;
+      status.topic = topic;
 
-    this._onStatusAdded.dispatch(this, status);
+      this.status.push(status);
+      await this.callStatusAddedListeners(status);
+
+      this.ensureStatusArrayIsTrimmed();
+    }
   }
 
-  notifyOperationStarted(message: string): number {
+  private ensureStatusArrayIsTrimmed() {
+    if (this.status.length > 10000) {
+      const newStatusArr: Status[] = [];
+
+      for (let i = this.status.length - 9000; i < this.status.length; i++) {
+        newStatusArr.push(this.status[i]);
+      }
+
+      this.status = newStatusArr;
+    }
+  }
+
+  async callStatusAddedListeners(status: Status) {
+    this._onStatusAdded.dispatch(this, status);
+
+    if (this._onStatusAddedAsync.length > 0) {
+      let promises: Promise<void>[] = [];
+
+      for (let i = 0; i < this._onStatusAddedAsync.length; i++) {
+        promises.push(this._onStatusAddedAsync[i](this, status));
+      }
+
+      await Promise.all(promises);
+    }
+  }
+
+  notifyExternalStatus(status: Status) {
+    this.status.push(status);
+
+    if (status.type === StatusType.operationStarted) {
+      this.activeOperations.push(status);
+    } else if (
+      status.type === StatusType.operationEnded &&
+      status.operationId !== null &&
+      status.operationId !== undefined
+    ) {
+      this.removeOperation(status.operationId);
+    }
+
+    this.callStatusAddedListeners(status);
+
+    return status.operationId;
+  }
+
+  async notifyOperationStarted(message: string, topic?: StatusTopic): Promise<number> {
     const status = new Status();
 
     status.message = message;
-    status.type = StatusType.OperationStarted;
+    status.type = StatusType.operationStarted;
+    status.topic = topic;
 
     status.operationId = status.time.getTime();
 
     this.status.push(status);
     this.activeOperations.push(status);
 
-    this._onStatusAdded.dispatch(this, status);
+    this.ensureStatusArrayIsTrimmed();
+
+    await this.callStatusAddedListeners(status);
 
     return status.operationId;
   }
 
-  notifyOperationEnded(endedOperationId: number, message: string) {
+  async notifyOperationEnded(endedOperationId: number, message: string, topic?: StatusTopic) {
     const status = new Status();
 
     status.message = message;
     status.operationId = endedOperationId;
-    status.type = StatusType.OperationEnded;
+    status.type = StatusType.operationEnded;
+    status.topic = topic;
 
     this.status.push(status);
 
+    this.ensureStatusArrayIsTrimmed();
+
+    this.removeOperation(endedOperationId);
+
+    await this.callStatusAddedListeners(status);
+  }
+
+  removeOperation(id: number) {
     // remove operation from list of active operations.
     const newActiveOperations: Status[] = [];
 
     for (let i = 0; i < this.activeOperations.length; i++) {
       const oper = this.activeOperations[i];
 
-      if (oper.operationId !== endedOperationId) {
+      if (oper.operationId !== id) {
         newActiveOperations.push(oper);
       }
     }
 
     this.activeOperations = newActiveOperations;
-
-    this._onStatusAdded.dispatch(this, status);
   }
 
   async save() {
@@ -1373,6 +1462,10 @@ export default class Carto {
       this.gameMinecraft = new MinecraftGameProxyMinecraft(this);
     }
 
+    if (this.autoStartMinecraft && this.successfullyConnectedWebSocketToMinecraft) {
+      (this.gameMinecraft as MinecraftGameProxyMinecraft).start();
+    }
+
     return this.gameMinecraft;
   }
 
@@ -1425,6 +1518,7 @@ export default class Carto {
       }
 
       this.activeMinecraft = this.gameMinecraft;
+
       if (this.lastActiveMinecraftFlavor !== MinecraftFlavor.minecraftGameProxy) {
         this.lastActiveMinecraftFlavor = MinecraftFlavor.minecraftGameProxy;
         this.save();

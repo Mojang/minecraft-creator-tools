@@ -95,7 +95,8 @@ export default class BlockCube implements IDimension {
         location.y >= 0 &&
         location.x <= this.maxY &&
         location.z >= 0 &&
-        location.z <= this.maxZ
+        location.z <= this.maxZ,
+      "Block location not within bounds."
     );
 
     return this.x(location.x).y(location.y).z(location.z);

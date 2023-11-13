@@ -4,19 +4,21 @@ export enum BackupType {
   none,
   startStopOnly,
   every5Minutes,
+  every2Minutes,
 }
 
-export interface IPackReference {
+export interface IPackReferenceSet {
   name: string;
   hash?: string;
-  behaviorPackReferences: { uuid: string; version: number[] }[];
-  resourcePackReferences: { uuid: string; version: number[] }[];
+  behaviorPackReferences: { uuid: string; version: number[]; priority?: number }[];
+  resourcePackReferences: { uuid: string; version: number[]; priority?: number }[];
 }
 
 export interface IWorldSettings {
   gameType?: GameType;
   generator?: Generator;
   difficulty?: Difficulty;
+  maxPlayerCount?: number;
   cheatsEnabled?: boolean;
   randomSeed?: string;
   name?: string;
@@ -24,7 +26,9 @@ export interface IWorldSettings {
   backupType?: BackupType;
   useCustomSettings?: boolean;
   betaApisExperiment?: boolean;
+  lastPlayed?: bigint;
+  deferredTechnicalPreviewExperiment?: boolean;
   isEditor?: boolean;
-  worldTemplateReferences?: IPackReference[];
-  packReferences?: IPackReference[];
+  worldTemplateReferenceSets?: IPackReferenceSet[];
+  packReferenceSets?: IPackReferenceSet[];
 }

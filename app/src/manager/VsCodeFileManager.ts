@@ -9,6 +9,7 @@ import VsCodeTasksJson from "../devproject/VsCodeTasksJson";
 import { UpdateResultType } from "../updates/IUpdateResult";
 import VsCodeLaunchJson from "../devproject/VsCodeLaunchJson";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
+import ProjectInfoSet from "../info/ProjectInfoSet";
 
 export default class VsCodeFileManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "VSCODEFILE";
@@ -25,6 +26,8 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
       title: updateId.toString(),
     };
   }
+
+  summarize(info: any, infoSet: ProjectInfoSet) {}
 
   async generate(project: Project): Promise<ProjectInfoItem[]> {
     const infoItems: ProjectInfoItem[] = [];

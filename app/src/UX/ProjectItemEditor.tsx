@@ -4,16 +4,12 @@ import Project from "./../app/Project";
 import ProjectItem from "./../app/ProjectItem";
 import JavaScriptEditor, { ScriptEditorRole } from "./JavaScriptEditor";
 import JsonEditor from "./JsonEditor";
-import MCWorldEditor from "./MCWorldEditor";
-import StructureEditor from "./StructureEditor";
 import FunctionEditor from "./FunctionEditor";
 import Log from "./../core/Log";
 
 import IPersistable from "./IPersistable";
 import { ProjectItemType } from "../app/IProjectItemData";
 import EntityTypeEditor from "./EntityTypeEditor";
-import AutoScriptEditor from "./AutoScriptEditor";
-import WorldTestEditor from "./WorldTestEditor";
 import IGitHubInfo from "../app/IGitHubInfo";
 import GitHubReferenceEditor from "./GitHubReferenceEditor";
 
@@ -178,24 +174,7 @@ export default class ProjectItemEditor
       }
 
       if (this.props.activeProjectItem.itemType === ProjectItemType.worldFolder) {
-        Log.verbose("Showing MCWorld editor for '" + this.props.activeProjectItem.storagePath + "'");
-
-        const pf = this.props.project.projectFolder;
-
-        if (pf !== null && this.props.activeProjectItem.storagePath) {
-          const folder = pf.getFolderFromRelativePathLocal(this.props.activeProjectItem.storagePath);
-          interior = (
-            <MCWorldEditor
-              carto={this.props.carto}
-              project={this.props.project}
-              readOnly={this.props.readOnly}
-              heightOffset={heightOffset}
-              displayProps={true}
-              folder={folder}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        }
+    
       } else if (file !== null && file.isContentLoaded) {
         if (this.props.setActivePersistable !== undefined) {
           this.props.setActivePersistable(this);
@@ -323,45 +302,6 @@ export default class ProjectItemEditor
           );
         } else if (
           file.type === "json" &&
-          projItem.itemType === ProjectItemType.autoScriptJson &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          if (file.content == null) {
-            file.setContent("{}");
-          }
-
-          Log.verbose("Showing autoscript editor for '" + file.storageRelativePath + "'");
-          interior = (
-            <AutoScriptEditor
-              readOnly={this.props.readOnly}
-              heightOffset={this.props.heightOffset}
-              file={file}
-              carto={this.props.carto}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.worldTest &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          if (file.content == null) {
-            file.setContent("{}");
-          }
-
-          Log.verbose("Showing world test editor for '" + file.storageRelativePath + "'");
-          interior = (
-            <WorldTestEditor
-              carto={this.props.carto}
-              readOnly={this.props.readOnly}
-              heightOffset={this.props.heightOffset}
-              file={file}
-              project={this.props.project}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
           projItem.itemType === ProjectItemType.typesDefinitionJson &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
@@ -472,31 +412,6 @@ export default class ProjectItemEditor
               />
             );
           }
-        } else if (file.type === "mcproject" || file.type === "mcworld" || file.type === "mctemplate") {
-          Log.verbose("Showing MCWorld editor for '" + file.storageRelativePath + "'");
-          interior = (
-            <MCWorldEditor
-              carto={this.props.carto}
-              project={this.props.project}
-              readOnly={this.props.readOnly}
-              displayProps={true}
-              heightOffset={this.props.heightOffset}
-              file={file}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (file.type === "mcstructure" || file.type === "snbt") {
-          Log.verbose("Showing structure editor for '" + file.storageRelativePath + "'");
-          interior = (
-            <StructureEditor
-              project={this.props.project}
-              readOnly={this.props.readOnly}
-              heightOffset={this.props.heightOffset}
-              carto={this.props.carto}
-              setActivePersistable={this._handleNewChildPersistable}
-              file={file}
-            />
-          );
         }
       }
     }
