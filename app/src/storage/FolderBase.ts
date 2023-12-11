@@ -461,7 +461,7 @@ export default abstract class FolderBase implements IFolder {
     const nextSlash = path.indexOf("/", 1);
 
     if (nextSlash < 0) {
-      const file = await this.ensureFile(path.substring(1, path.length));
+      const file = this.ensureFile(path.substring(1, path.length));
 
       return file;
     } else {

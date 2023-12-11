@@ -35,6 +35,7 @@ import {
   faBoltLightning,
   faImage,
   faCow,
+  faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Labels.css";
 import { ThemeInput } from "@fluentui/react-northstar";
@@ -345,6 +346,15 @@ export const ComputerLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICo
   <span className="label label-toolbar">
     <FontAwesomeIcon icon={faComputer} className="fa-lg" />
     {!props.isCompact ? <span className="label-text">Open</span> : <></>}
+  </span>
+);
+
+export const DownloadLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
+  props: ICompactableLabelProps
+) => (
+  <span className="label label-toolbar">
+    <FontAwesomeIcon icon={faDownload} className="fa-lg" />
+    {!props.isCompact ? <span className="label-text">Download</span> : <></>}
   </span>
 );
 

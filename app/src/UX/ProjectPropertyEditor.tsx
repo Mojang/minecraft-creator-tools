@@ -37,6 +37,9 @@ interface IProjectPropertyEditorProps extends IAppProps {
 interface IProjectPropertyEditorState {
   name: string;
   title: string;
+  defaultNamespace?: string;
+  shortName?: string;
+  creator?: string;
 }
 
 export enum GitHubPropertyType {
@@ -76,6 +79,8 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     this._githubPushUpdated = this._githubPushUpdated.bind(this);
     this._handleTitleChanged = this._handleTitleChanged.bind(this);
     this._handleNameChanged = this._handleNameChanged.bind(this);
+    this._handleShortNameChanged = this._handleShortNameChanged.bind(this);
+    this._handleCreatorChanged = this._handleCreatorChanged.bind(this);
     this._handleCommitToGitHub = this._handleCommitToGitHub.bind(this);
     this._handleBehaviorPackUuidChanged = this._handleBehaviorPackUuidChanged.bind(this);
     this._handleResourcePackUuidChanged = this._handleResourcePackUuidChanged.bind(this);
@@ -102,6 +107,9 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     this.state = {
       name: this.props.project.name,
       title: this.props.project.title,
+      defaultNamespace: this.props.project.defaultNamespace,
+      shortName: this.props.project.shortName,
+      creator: this.props.project.creator,
     };
   }
 
@@ -151,6 +159,37 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     }
   }
 
+  _handleCreatorChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
+    if (data === undefined || this.props === undefined) {
+      return;
+    }
+
+    this.setState({
+      name: this.state.name,
+      title: this.state.title,
+      creator: data.value,
+      shortName: this.state.shortName,
+      defaultNamespace: this.state.defaultNamespace,
+    });
+
+    ProjectUtilities.applyCreator(this.props.project, data.value);
+  }
+
+  _handleShortNameChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
+    if (data === undefined || this.props === undefined) {
+      return;
+    }
+
+    this.setState({
+      name: this.state.name,
+      title: this.state.title,
+      creator: this.state.creator,
+      shortName: data.value,
+    });
+
+    ProjectUtilities.applyShortName(this.props.project, data.value);
+  }
+
   _handleTitleChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
     if (data === undefined || this.props === undefined) {
       return;
@@ -159,6 +198,9 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     this.setState({
       name: this.state.name,
       title: data.value,
+      creator: this.state.creator,
+      defaultNamespace: this.state.defaultNamespace,
+      shortName: this.state.shortName,
     });
 
     ProjectUtilities.applyTitle(this.props.project, data.value);
@@ -638,6 +680,16 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
             maxHeight: height,
           }}
         >
+          <div className="ppe-label ppe-creatorlabel">Creator</div>
+          <div className="ppe-creatorinput">
+            <Input
+              inline
+              clearable
+              placeholder={this.props.project.effectiveCreator}
+              value={this.state.creator}
+              onChange={this._handleCreatorChanged}
+            />
+          </div>
           <div className="ppe-label ppe-namelabel">Name</div>
           <div className="ppe-nameinput">
             <Input
@@ -646,6 +698,31 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               placeholder="project name"
               value={this.state.name}
               onChange={this._handleNameChanged}
+            />
+          </div>
+          <div className="ppe-label ppe-shortNamelabel">Short Name</div>
+          <div className="ppe-shortNameinput">
+            <Input
+              clearable
+              placeholder={
+                this.state.creator && this.state.creator.length > 0 && this.state.name && this.state.name.length > 0
+                  ? ProjectUtilities.getSuggestedProjectShortName(this.state.creator, this.state.name)
+                  : this.props.project.effectiveShortName
+              }
+              key="newProjectShortName"
+              value={this.state.shortName !== "" ? this.state.shortName : undefined}
+              onChange={this._handleShortNameChanged}
+            />
+          </div>
+          <div className="ppe-label ppe-namespacelabel">Namespace</div>
+          <div className="ppe-namespaceinput">
+            <Input
+              inline
+              clearable
+              placeholder={this.props.project.effectiveShortName}
+              defaultValue={this.props.project.defaultNamespace}
+              value={this.props.project.defaultNamespace !== "" ? this.state.defaultNamespace : undefined}
+              onChange={this._handleDefaultNamespaceChanged}
             />
           </div>
           <div className="ppe-label ppe-titlelabel">Title</div>
@@ -664,17 +741,6 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
               placeholder="description"
               value={this.props.project.description}
               onChange={this._handleDescriptionChanged}
-            />
-          </div>
-          <div className="ppe-label ppe-namespacelabel">Namespace</div>
-          <div className="ppe-namespaceinput">
-            <Input
-              inline
-              clearable
-              placeholder="namespace"
-              defaultValue={this.props.project.defaultNamespace}
-              value={this.props.project.defaultNamespace}
-              onChange={this._handleDefaultNamespaceChanged}
             />
           </div>
           <div className="ppe-label ppe-defaultEditlabel">Default Edit Experience</div>
@@ -772,7 +838,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
                   ),
                 },
                 {
-                  title: "Advanced stuff",
+                  title: "Advanced",
                   content: (
                     <div key="adv" className="ppe-advgrid">
                       <div className="ppe-label ppe-bpuniqueidlabel">Behavior Pack Unique Id</div>

@@ -11,7 +11,7 @@ import axios from "axios";
 import ProjectInfoSet from "./ProjectInfoSet";
 
 export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerator {
-  id = "SCHM";
+  id = "JSON";
   title = "JSON Schema Validation";
 
   _validatorsByPath: { [id: string]: ValidateFunction } = {};

@@ -1,10 +1,10 @@
 .pt-outer {
-  margin-left: 10px;
+  margin-right: 10px;
   margin-top: 12px;
   width: 360px;
   height: 200px;
   display: inline-block;
-  border: solid 1.5px black;
+  border: solid 1.5px #202020;
 }
 
 .pt-grid {
@@ -110,7 +110,6 @@
   width: 95px;
   height: 40px;
   padding-top: 11px;
-  vertical-align: middle;
 }
 
 .pt-mini-toolbar-interior {
@@ -144,11 +143,12 @@
 .pts-button {
   width: 305px;
   height: 100px;
-  border: solid 1.5px black;
+  border: solid 1.5px #202020;
 }
 
 .pts-outer {
-  padding: 10px;
+  padding-top: 10px;
+  padding-right: 12px;
   display: inline-block;
 }
 
@@ -213,7 +213,7 @@
 .pti-button {
   width: 245px;
   height: 85px;
-  border: solid 1.5px black;
+  border: solid 1.5px #202020;
 }
 
 .pti-outer {

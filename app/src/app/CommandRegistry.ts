@@ -19,12 +19,14 @@ export enum CommandScope {
 
 const MinecraftCommands = [
   "allowlist",
+  "alwaysday",
   "camera",
   "camerashake",
   "changesetting",
   "clear",
   "clearspawnpoint",
   "clone",
+  "connect",
   "damage",
   "daylock",
   "deop",
@@ -39,6 +41,7 @@ const MinecraftCommands = [
   "function",
   "gamemode",
   "gamerule",
+  "gametest",
   "give",
   "help",
   "inputpermission",
@@ -48,14 +51,18 @@ const MinecraftCommands = [
   "locate",
   "loot",
   "me",
+  "msg",
   "mobevent",
   "music",
   "op",
+  "ops",
   "particle",
   "permission",
   "playanimation",
   "playsound",
+  "project",
   "reload",
+  "reloadconfig",
   "replaceitem",
   "ride",
   "save",
@@ -63,9 +70,11 @@ const MinecraftCommands = [
   "schedule",
   "scoreboard",
   "script",
+  "scriptevent",
   "setblock",
   "setmaxplayers",
   "setworldspawn",
+  "simulationtype",
   "spawnpoint",
   "spreadplayers",
   "stop",
@@ -80,13 +89,54 @@ const MinecraftCommands = [
   "testforblock",
   "testforblocks",
   "tickingarea",
+  "tp",
   "time",
   "title",
   "titleraw",
   "toggledownfall",
+  "transfer",
+  "volumearea",
   "weather",
   "wsserver",
+  "whitelist",
+  "?",
+  "w",
   "xp",
+];
+
+const MinecraftAddOnBlockedCommands = [
+  "allowlist",
+  "alwaysday",
+  "changesetting",
+  "connect",
+  "daylock",
+  "deop",
+  "difficulty",
+  "gamemode",
+  "gamerule",
+  "gametest",
+  "help",
+  "kick",
+  "list",
+  "locate",
+  "op",
+  "ops",
+  "permission",
+  "project",
+  "reload",
+  "reloadconfig",
+  "save",
+  "script",
+  "setmaxplayers",
+  "setworldspawn",
+  "simulationtype",
+  "stop",
+  "tickingarea",
+  "time",
+  "transfer",
+  "wsserver",
+  "whitelist",
+  "?",
 ];
 
 export default class CommandRegistry {
@@ -152,6 +202,14 @@ export default class CommandRegistry {
     }
   }
 
+  static isMinecraftBuiltInCommand(name: string) {
+    return MinecraftCommands.includes(name) || name === "#";
+  }
+
+  static isAddOnBlockedCommand(name: string) {
+    return MinecraftAddOnBlockedCommands.includes(name);
+  }
+
   async runCommand(context: IContext, commandText: string): Promise<ICommandResult | undefined> {
     const command = CommandStructure.parse(commandText);
 
@@ -165,7 +223,7 @@ export default class CommandRegistry {
     if (command.name === "help") {
       this.logHelp();
       return { status: CommandStatus.completed };
-    } else if (MinecraftCommands.includes(command.name) && context.minecraft) {
+    } else if (CommandRegistry.isMinecraftBuiltInCommand(command.name) && context.minecraft) {
       Log.debug("Sending '" + commandText + "' to Minecraft.");
 
       let result = await context.minecraft.runCommand(commandText);

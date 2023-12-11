@@ -2,12 +2,13 @@ import { Component } from "react";
 import "./ProjectInfoDisplay.css";
 import IAppProps from "./IAppProps";
 import Project from "../app/Project";
-import ProjectInfoSet, { ProjectInfoSuite } from "../info/ProjectInfoSet";
+import ProjectInfoSet from "../info/ProjectInfoSet";
 import ProjectInfoItemDisplay from "./ProjectInfoItemDisplay";
 import ProjectInfoItem from "../info/ProjectInfoItem";
 import Utilities from "../core/Utilities";
 import { Dropdown, DropdownProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
 import {
+  DownloadLabel,
   ErrorFilterLabel,
   FailureFilterLabel,
   InfoFilterLabel,
@@ -22,6 +23,7 @@ import { InfoItemType } from "../info/IInfoItemData";
 import WebUtilities from "./WebUtilities";
 import Carto from "../app/Carto";
 import Status, { StatusTopic } from "../app/Status";
+import { ProjectInfoSuite } from "../info/IProjectInfoData";
 
 interface IProjectInfoDisplayProps extends IAppProps {
   project: Project;
@@ -49,7 +51,7 @@ export enum ProjectInfoDisplayMode {
   summary,
 }
 
-export const SuiteTitles = ["All", "Current Platform"];
+export const SuiteTitles = ["All", "Platform Versions", "Add-on Targeted"];
 
 export enum InfoItemCommand {
   itemSelect,
@@ -75,10 +77,11 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     this._handleInfoItemCommand = this._handleInfoItemCommand.bind(this);
     this._handleSuiteChange = this._handleSuiteChange.bind(this);
     this._handleStatusUpdates = this._handleStatusUpdates.bind(this);
+    this._downloadReport = this._downloadReport.bind(this);
 
     this.state = {
       infoSet: undefined,
-      activeSuite: ProjectInfoSuite.all,
+      activeSuite: ProjectInfoSuite.allExceptAddOn,
       viewMode: ProjectInfoDisplayMode.info,
       displayErrors: true,
       displaySuccess: true,
@@ -127,15 +130,15 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
     let newInfoSet = undefined;
 
-    if (this.state.activeSuite === ProjectInfoSuite.all) {
+    if (this.state.activeSuite === ProjectInfoSuite.allExceptAddOn) {
       newInfoSet = this.props.project.infoSet;
     } else {
-      newInfoSet = new ProjectInfoSet(this.props.project, ProjectInfoSuite.currentPlatform);
+      newInfoSet = new ProjectInfoSet(this.props.project, this.state.activeSuite);
     }
 
     await newInfoSet.generateForProject(force);
 
-    if (this._isMountedInternal) {
+    if (this._isMountedInternal && this.state.activeSuite === newInfoSet.suite) {
       this.setState({
         infoSet: newInfoSet,
         displayErrors: this.state.displayErrors,
@@ -280,33 +283,26 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
     data: DropdownProps
   ) {
-    if (data.value === "All") {
-      this.setState({
-        infoSet: this.state.infoSet,
-        viewMode: this.state.viewMode,
-        activeSuite: ProjectInfoSuite.all,
-        displayErrors: this.state.displayErrors,
-        displaySuccess: this.state.displaySuccess,
-        displayWarnings: this.state.displayWarnings,
-        displayRecommendation: this.state.displayRecommendation,
-        displayFailure: this.state.displayFailure,
-        displayInfo: this.state.displayInfo,
-        isLoading: true,
-      });
-    } else {
-      this.setState({
-        infoSet: this.state.infoSet,
-        viewMode: this.state.viewMode,
-        activeSuite: ProjectInfoSuite.currentPlatform,
-        displayErrors: this.state.displayErrors,
-        displaySuccess: this.state.displaySuccess,
-        displayWarnings: this.state.displayWarnings,
-        displayRecommendation: this.state.displayRecommendation,
-        displayFailure: this.state.displayFailure,
-        displayInfo: this.state.displayInfo,
-        isLoading: true,
-      });
+    let targetedSuite = ProjectInfoSuite.allExceptAddOn;
+
+    if (data.value === SuiteTitles[1]) {
+      targetedSuite = ProjectInfoSuite.currentPlatform;
+    } else if (data.value === SuiteTitles[2]) {
+      targetedSuite = ProjectInfoSuite.addOn;
     }
+
+    this.setState({
+      infoSet: this.state.infoSet,
+      viewMode: this.state.viewMode,
+      activeSuite: targetedSuite,
+      displayErrors: this.state.displayErrors,
+      displaySuccess: this.state.displaySuccess,
+      displayWarnings: this.state.displayWarnings,
+      displayRecommendation: this.state.displayRecommendation,
+      displayFailure: this.state.displayFailure,
+      displayInfo: this.state.displayInfo,
+      isLoading: true,
+    });
 
     window.setTimeout(this._generateInfoSet, 1);
   }
@@ -324,6 +320,19 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       displayInfo: this.state.displayInfo,
       isLoading: this.state.isLoading,
     });
+  }
+
+  private async _downloadReport() {
+    if (this.props.project === null || this.state.infoSet === undefined) {
+      return;
+    }
+
+    const date = new Date();
+    const projName = this.props.project.name;
+
+    const reportHtml = this.state.infoSet.getReportHtml(projName, projName, date.getTime().toString());
+
+    saveAs(new Blob([reportHtml]), projName + " " + SuiteTitles[this.state.activeSuite] + ".html");
   }
 
   private async _handleInfoItemCommand(command: InfoItemCommand, item: ProjectInfoItem) {
@@ -364,6 +373,15 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         kind: "toggle",
         onClick: this._setSummaryMode,
         title: "Toggle whether a summary view is shown",
+      },
+    ];
+
+    const actionToolbarItems = [
+      {
+        icon: <DownloadLabel isCompact={false} />,
+        key: "downloadReport",
+        onClick: this._downloadReport,
+        title: "Downloads a report",
       },
     ];
 
@@ -513,11 +531,16 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         <div
           className="pid-areaOuter"
           style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground4,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
           }}
         >
-          <div className="pid-validating">
+          <div
+            className="pid-validating"
+            style={{
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
+            }}
+          >
             Validating... {this.state.loadStatus ? "(" + this.state.loadStatus + ")" : ""}
           </div>
         </div>
@@ -542,7 +565,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       outer = (
         <div className="pid-areaOuter">
           <div>
-            <Toolbar aria-label="Actions  toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
           </div>
           <div
             className="pid-tableWrapper"
@@ -565,6 +588,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                 }}
               >
                 <div className="pid-headerCell pid-headerTypeCell">Type</div>
+                <div className="pid-headerCell">Area</div>
+                <div className="pid-headerCell">Test</div>
                 <div className="pid-headerCell">Actions</div>
                 <div className="pid-headerCell">Message</div>
                 <div className="pid-headerCell">File</div>
@@ -605,6 +630,9 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                 key="testSuiteDropdown"
                 onChange={this._handleSuiteChange}
               />
+            </div>
+            <div className="pid-actionToolbar">
+              <Toolbar aria-label="Actions toolbar overflow menu" items={actionToolbarItems} />
             </div>
           </div>
           {outer}

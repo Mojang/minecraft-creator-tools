@@ -23,6 +23,18 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
     };
 
     switch (topicId) {
+      case 2:
+        return {
+          title: "Entity Type Runtime Identifier",
+        };
+      case 3:
+        return {
+          title: "Entity Type Identifier",
+        };
+      case 4:
+        return {
+          title: "Entity Type Metadata",
+        };
       case 100:
         return {
           title: "Behavior Pack Entity Type Format Version defined",
@@ -115,6 +127,16 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
       return infoItems;
     }
 
+    const piiRuntimeIdentifier = new ProjectInfoItem(InfoItemType.info, this.id, 2, "Entity Type Runtime Identifier");
+    const piiIdentifier = new ProjectInfoItem(InfoItemType.info, this.id, 3, "Entity Type Identifier");
+    const piiMetadata = new ProjectInfoItem(InfoItemType.info, this.id, 4, "Entity Type Metadata");
+
+    infoItems.push(piiRuntimeIdentifier);
+
+    infoItems.push(piiIdentifier);
+
+    infoItems.push(piiMetadata);
+
     for (let i = 0; i < project.items.length; i++) {
       const pi = project.items[i];
 
@@ -128,8 +150,6 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
           if (bpEntityType) {
             await bpEntityType.load();
 
-            const pii = new ProjectInfoItem(InfoItemType.info, this.id, 2, "Entity Type Description");
-
             if (
               bpEntityType &&
               bpEntityType.behaviorPackEntityTypeDef &&
@@ -138,7 +158,9 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
               const desc = bpEntityType.behaviorPackEntityTypeDef.description;
 
               if (desc.identifier !== undefined && desc.identifier.toLowerCase().startsWith("minecraft:")) {
-                pii.incrementFeature(desc.identifier.toLowerCase());
+                piiIdentifier.incrementFeature(desc.identifier.toLowerCase());
+              } else {
+                piiIdentifier.incrementFeature("(no override identifier)");
               }
 
               if (
@@ -146,22 +168,24 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
                 desc.runtime_identifier.toLowerCase !== undefined &&
                 desc.runtime_identifier.toLowerCase().startsWith("minecraft:")
               ) {
-                pii.incrementFeature(desc.runtime_identifier.toLowerCase());
+                piiRuntimeIdentifier.incrementFeature(desc.runtime_identifier.toLowerCase());
+              } else {
+                piiRuntimeIdentifier.incrementFeature("(no runtime identifier)");
               }
 
               if (desc.is_experimental) {
-                pii.incrementFeature("Experimental Entity Type");
+                piiMetadata.incrementFeature("Experimental Entity Type");
               }
 
               if (desc.is_spawnable) {
-                pii.incrementFeature("Spawnable Entity Type");
+                piiMetadata.incrementFeature("Spawnable Entity Type");
               }
 
               if (desc.is_summonable) {
-                pii.incrementFeature("Summonable Entity Type");
+                piiMetadata.incrementFeature("Summonable Entity Type");
               }
             } else {
-              pii.incrementFeature("Entity Type without description");
+              piiMetadata.incrementFeature("Entity Type without description");
             }
 
             const fv = bpEntityType.getFormatVersion();

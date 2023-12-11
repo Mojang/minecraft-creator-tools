@@ -109,6 +109,14 @@ export default class ProjectUtilities {
     }
   }
 
+  static async applyCreator(project: Project, newCreator: string) {
+    project.creator = newCreator;
+  }
+
+  static async applyShortName(project: Project, newShortName: string) {
+    project.shortName = newShortName;
+  }
+
   static async applyTitle(project: Project, newTitle: string) {
     project.title = newTitle;
 
@@ -296,6 +304,61 @@ export default class ProjectUtilities {
     }
   }
 
+  static getSuggestedProjectShortName(creator: string, name: string) {
+    return this.getSuggestedShortName(creator) + "_" + this.getSuggestedShortName(name);
+  }
+
+  static getSuggestedShortName(caption: string) {
+    caption = caption.trim().replace(/-/g, "");
+    caption = caption.replace(/_/g, "");
+    caption = caption.replace(/ /g, "");
+    caption = caption.replace(/:/g, "");
+    caption = caption.replace(/;/g, "");
+    caption = caption.replace(/=/g, "");
+
+    let capitalStr = "";
+
+    for (let i = 0; i < caption.length; i++) {
+      if (caption[i] >= "A" && caption[i] <= "Z") {
+        capitalStr += caption[i].toLowerCase();
+      }
+    }
+
+    if (capitalStr.length > 1) {
+      return capitalStr;
+    }
+
+    if (caption.length <= 4) {
+      return caption.toLowerCase();
+    }
+
+    return caption.substring(0, 4).toLowerCase();
+  }
+
+  static getSuggestedProjectName(project: IGalleryProject) {
+    return this.getSuggestedProjectNameFromElements(project.id, project.gitHubFolder, project.gitHubRepoName);
+  }
+
+  static getSuggestedProjectNameFromElements(id?: string, gitHubFolder?: string, gitHubRepoName?: string) {
+    let projName = "my-";
+
+    if (id) {
+      projName += id;
+    } else if (gitHubFolder !== undefined) {
+      projName += gitHubFolder;
+      projName = projName.replace(" behavior_packs", "");
+    } else {
+      projName += gitHubRepoName;
+    }
+
+    projName = projName.replace(/_/gi, "");
+    projName = projName.replace(/\//gi, "");
+    projName = projName.replace(/\\/gi, "");
+    projName = projName.replace(/ /gi, "");
+
+    return projName;
+  }
+
   static async getBaseScriptsPath(project: Project) {
     const scriptsFolder = await project.ensureScriptsFolder();
 
@@ -313,6 +376,7 @@ export default class ProjectUtilities {
   static async randomizeAllUids(project: Project) {
     const uids: { [name: string]: string } = {};
     let setBehaviorPack = false;
+    let setResourcePack = false;
 
     uids["defaultResourcePack"] = project.defaultResourcePackUniqueId;
     uids["defaultBehaviorPack"] = project.defaultBehaviorPackUniqueId;
@@ -336,6 +400,16 @@ export default class ProjectUtilities {
               bpManifestJson.uuid = project.defaultBehaviorPackUniqueId;
               setBehaviorPack = true;
               await bpManifestJson.save();
+            }
+          }
+        } else if (pi.itemType === ProjectItemType.resourcePackManifestJson && !setResourcePack) {
+          const rpManifestJson = await ResourceManifestJson.ensureOnFile(pi.file);
+
+          if (rpManifestJson) {
+            if (rpManifestJson.uuid && Utilities.uuidEqual(rpManifestJson.uuid, uids["defaultResourcePack"])) {
+              rpManifestJson.uuid = project.defaultResourcePackUniqueId;
+              setResourcePack = true;
+              await rpManifestJson.save();
             }
           }
         }
@@ -490,7 +564,7 @@ export default class ProjectUtilities {
     content = Utilities.replaceAll(
       content,
       "minecraft:" + entityTypeProject.id,
-      project.defaultNamespace + ":" + newName
+      project.effectiveDefaultNamespace + ":" + newName
     );
     content = Utilities.replaceAll(content, entityTypeProject.id, newName);
 
@@ -655,7 +729,9 @@ export default class ProjectUtilities {
 
       if (et) {
         et.id =
-          nextBlockTypeName.indexOf(":") >= 0 ? nextBlockTypeName : project.defaultNamespace + ":" + nextBlockTypeName;
+          nextBlockTypeName.indexOf(":") >= 0
+            ? nextBlockTypeName
+            : project.effectiveDefaultNamespace + ":" + nextBlockTypeName;
 
         await et.persist();
       }

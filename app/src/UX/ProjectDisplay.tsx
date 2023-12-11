@@ -116,7 +116,7 @@ export default class ProjectDisplay extends Component<IProjectDisplayProps, IPro
               defaultActiveIndex={[-1]}
               panels={[
                 {
-                  title: "Advanced stuff",
+                  title: "Advanced",
                   content: (
                     <div key="adv" className="pdisp-advgrid">
                       <div className="pdisp-bpuniqueidlabel">Behavior Pack Unique Id</div>

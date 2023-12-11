@@ -236,6 +236,8 @@ export default class NbtBinary {
       if (tagStack.length === 0 || tagStack[tagStack.length - 1].type !== NbtTagType.list) {
         tagType = data[i++] as NbtTagType;
 
+        Log.assert(tagType < 13 || tagType === 99, "Unexpected tag type.");
+
         if (tagType !== NbtTagType.end) {
           let nameLength = 0;
 
@@ -407,6 +409,7 @@ export default class NbtBinary {
 
         activeTag.value = str;
         i += stringLength;
+        Log.assert(i <= data.length);
 
         /*
                 let valueString = "";

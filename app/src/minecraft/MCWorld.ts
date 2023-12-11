@@ -1447,6 +1447,21 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       } else if (keyname.startsWith("tickingarea_")) {
       } else if (keyname.startsWith("map_")) {
       } else if (keyname.startsWith("scoreboard")) {
+      } else if (keyname.startsWith("SavedEntity")) {
+      } else if (keyname.startsWith("ServerMapRuntime")) {
+      } else if (keyname.startsWith("VillageRuntime")) {
+      } else if (keyname.startsWith("WorldFeatureRuntime")) {
+      } else if (keyname.startsWith("WorldGenerationRuntime")) {
+      } else if (keyname.startsWith("WorldStreamRuntime")) {
+      } else if (keyname.startsWith("BSharpRuntime")) {
+      } else if (keyname.startsWith("BadgerSynced")) {
+      } else if (keyname.startsWith("CinematicsRuntime")) {
+      } else if (keyname.startsWith("CustomGameOptions")) {
+      } else if (keyname.startsWith("DeckRuntime")) {
+      } else if (keyname.startsWith("EntityFactorySetup")) {
+      } else if (keyname.startsWith("GeologyRuntime")) {
+      } else if (keyname.startsWith("InvasionRuntime")) {
+      } else if (keyname.startsWith("MapRevealRuntime")) {
       } else if (keyname.startsWith("~local_player")) {
       } else if (keyname.startsWith("mobevents")) {
       } else if (keyname.startsWith("game_flatworldlayers")) {
@@ -1466,6 +1481,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       } else if (keyname.startsWith("SST_WORD")) {
       } else if (keyname.startsWith("SST_NAME")) {
       } else if (keyname.startsWith("SST_")) {
+      } else if (keyname.startsWith("SUSP")) {
       } else if (keyname.startsWith("neteaseData")) {
       } else if (keyname.startsWith("scriptGid")) {
       } else if (keyname.startsWith("Nether")) {

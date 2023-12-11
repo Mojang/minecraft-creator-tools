@@ -200,6 +200,16 @@ export default class ProjectItem {
         return "Function";
       case ProjectItemType.tickJson:
         return "Tick";
+      case ProjectItemType.material:
+        return "Material";
+      case ProjectItemType.materialSetJson:
+        return "Material Set";
+      case ProjectItemType.geometry:
+        return "Geometry";
+      case ProjectItemType.fragment:
+        return "Fragment";
+      case ProjectItemType.vertex:
+        return "Vertex";
       case ProjectItemType.cameraJson:
         return "Camera";
       case ProjectItemType.catalogIndexJs:

@@ -1,8 +1,41 @@
-.pg-outer {
-  padding-bottom: 30px;
-  display: inline-block;
+@media only screen and (min-width: 1316px) {
+  .pg-outer {
+    padding-bottom: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .pg-projectWrap {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .pg-snippetWrap {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+@media only screen and (max-width: 1316px) {
+  .pg-outer {
+    padding-bottom: 30px;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  .pg-projectWrap {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .pg-snippetWrap {
+    grid-row: 2;
+    grid-column: 1;
+  }
 }
 
 .pg-divider {
-  margin-top: 60px;
+  margin-top: 5px;
+  margin-bottom: 4px;
+  font-size: large;
 }

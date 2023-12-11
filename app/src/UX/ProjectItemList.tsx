@@ -285,10 +285,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       }
     } else if (event.selectedIndex === 1) {
       if (this.props && this.props.onModeChangeRequested !== undefined) {
-        this.props.onModeChangeRequested(ProjectEditorMode.info);
+        this.props.onModeChangeRequested(ProjectEditorMode.inspector);
       }
     } else {
-      const newItem = this._items[event.selectedIndex - 3];
+      const newItem = this._items[event.selectedIndex - 2];
 
       if (newItem instanceof ProjectItem) {
         if (
@@ -545,7 +545,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         return "world";
 
       case ProjectItemType.MCProject:
-        return "editor project";
+        return "editor prj";
 
       case ProjectItemType.MCWorld:
         return "mcworld";
@@ -573,6 +573,21 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       case ProjectItemType.tickJson:
         return "tick";
+
+      case ProjectItemType.material:
+        return "material";
+
+      case ProjectItemType.materialSetJson:
+        return "mat set";
+
+      case ProjectItemType.vertex:
+        return "vertex";
+
+      case ProjectItemType.fragment:
+        return "fragment";
+
+      case ProjectItemType.geometry:
+        return "geometry";
 
       case ProjectItemType.cameraJson:
         return "camera";
@@ -623,7 +638,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         return "animation";
 
       case ProjectItemType.animationControllerResourceJson:
-        return "anim contrlr";
+        return "anim ctlr";
 
       case ProjectItemType.entityTypeResourceJson:
         return "ent type res";
@@ -638,7 +653,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         return "particle";
 
       case ProjectItemType.renderControllerJson:
-        return "render contrlr";
+        return "render ctlr";
 
       case ProjectItemType.itemTextureJson:
         return "texture";
@@ -686,7 +701,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         return "item type res";
 
       case ProjectItemType.materialsResourceJson:
-        return "material res";
+        return "material";
 
       case ProjectItemType.musicDefinitionJson:
         return "music";
@@ -698,7 +713,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         return "package";
 
       case ProjectItemType.packageLockJson:
-        return "package.lock";
+        return "pack lock";
 
       case ProjectItemType.docInfoJson:
         return "info";
@@ -710,7 +725,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         return "vsc launch";
 
       case ProjectItemType.vsCodeSettingsJson:
-        return "vsc stngs";
+        return "vsc config";
 
       case ProjectItemType.vsCodeTasksJson:
         return "vsc tasks";
@@ -748,6 +763,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     const tag = this._getTagNameFromItem(projectItem);
     let sourceImage = "";
 
+    /*
     if (
       projectItem.itemType !== ProjectItemType.js &&
       projectItem.itemType !== ProjectItemType.ts &&
@@ -763,7 +779,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       projectItem.itemType !== ProjectItemType.MCWorld
     ) {
       name = Utilities.humanifyMinecraftName(name);
-    }
+    }*/
 
     if (projectItem.imageUrl) {
       // image = <img alt="Preview of the world" src={projectItem.imageUrl} className="pil-previewImage" />;
@@ -964,6 +980,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         projectItem.itemType === ProjectItemType.autoScriptJson ||
         projectItem.itemType === ProjectItemType.animationBehaviorJson ||
         projectItem.itemType === ProjectItemType.animationControllerBehaviorJson ||
+        projectItem.itemType === ProjectItemType.tickJson ||
         projectItem.itemType === ProjectItemType.js ||
         projectItem.itemType === ProjectItemType.ts)
     ) {
@@ -977,8 +994,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         projectItem.itemType === ProjectItemType.soundsCatalogResourceJson ||
         projectItem.itemType === ProjectItemType.resourcePackManifestJson ||
         projectItem.itemType === ProjectItemType.resourcePackListJson ||
+        projectItem.itemType === ProjectItemType.renderControllerJson ||
         projectItem.itemType === ProjectItemType.modelJson ||
+        projectItem.itemType === ProjectItemType.material ||
+        projectItem.itemType === ProjectItemType.materialSetJson ||
+        projectItem.itemType === ProjectItemType.animationControllerResourceJson ||
+        projectItem.itemType === ProjectItemType.animationResourceJson ||
         projectItem.itemType === ProjectItemType.uiJson ||
+        projectItem.itemType === ProjectItemType.lang ||
+        projectItem.itemType === ProjectItemType.languagesCatalogResourceJson ||
         projectItem.itemType === ProjectItemType.itemTextureJson ||
         projectItem.itemType === ProjectItemType.attachableResourceJson)
     ) {
@@ -998,6 +1022,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         projectItem.itemType === ProjectItemType.tradingBehaviorJson ||
         projectItem.itemType === ProjectItemType.particleJson ||
         projectItem.itemType === ProjectItemType.structure ||
+        projectItem.itemType === ProjectItemType.recipeBehaviorJson ||
         projectItem.itemType === ProjectItemType.biomeBehaviorJson ||
         projectItem.itemType === ProjectItemType.biomeResourceJson ||
         projectItem.itemType === ProjectItemType.lootTableBehaviorJson ||
@@ -1021,6 +1046,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       projectItem.itemType === ProjectItemType.docfxJson ||
       projectItem.itemType === ProjectItemType.jsdocJson ||
       projectItem.itemType === ProjectItemType.zip ||
+      projectItem.itemType === ProjectItemType.MCAddon ||
+      projectItem.itemType === ProjectItemType.MCPack ||
       projectItem.itemType === ProjectItemType.lang || // should be handled by Text editor
       projectItem.itemType === ProjectItemType.languagesCatalogResourceJson || // should be handled by Text editor
       projectItem.itemType === ProjectItemType.vsCodeExtensionsJson ||
@@ -1085,7 +1112,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       headerMedia: " ",
       content: " ",
     });
-
+    /*
     this._projectListItems.push({
       header: (
         <div className="pil-fixedLine" key="text">
@@ -1094,7 +1121,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       ),
       headerMedia: " ",
       content: " ",
-    });
+    });*/
 
     const splitButtonMenuItems: any[] = [
       {

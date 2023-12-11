@@ -1,5 +1,4 @@
 import IFile from "../storage/IFile";
-import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import IAutoScriptData from "./../autoscript/IAutoScriptData";
 import AutoScript from "./../autoscript/AutoScript";

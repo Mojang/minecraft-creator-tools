@@ -53,6 +53,7 @@ export default interface ICartoData {
   autoStartMinecraft: boolean;
   showScreenOnConnect: boolean;
   useEditor?: boolean;
+  creator?: string;
   preferredTextSize?: number;
   editorViewMode?: CartoEditorViewMode;
   defaultFunction?: string;

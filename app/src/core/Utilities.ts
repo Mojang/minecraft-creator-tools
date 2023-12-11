@@ -901,7 +901,7 @@ export default class Utilities {
   static getString(view: DataView, byteOffset: number, byteLength: number, encoding?: string) {
     if (encoding === "UTF8" || encoding === undefined) {
       const result = Utilities.readStringUTF8(view, byteOffset, byteLength);
-
+      Log.assert(result.byteLength === byteLength);
       return result.str;
     } else if (encoding === "ASCII") {
       const result = Utilities.readStringASCII(view, byteOffset, byteLength);

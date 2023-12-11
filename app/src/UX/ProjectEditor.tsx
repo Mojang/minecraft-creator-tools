@@ -19,6 +19,7 @@ import {
   faSquareCaretRight,
   faTools,
   faLink,
+  faComputer,
 } from "@fortawesome/free-solid-svg-icons";
 import { Toolbar, Text, MenuItemProps, ThemeInput, Dialog } from "@fluentui/react-northstar";
 
@@ -65,6 +66,7 @@ import ShareProject from "./ShareProject";
 import CodeToolboxLanding from "./CodeToolboxLanding";
 import LocTokenBox from "./LocTokenBox";
 import { IProjectUpdaterReference } from "../info/IProjectInfoGeneratorBase";
+import FileSystemStorage from "../storage/FileSystemStorage";
 
 interface IProjectEditorProps extends IAppProps {
   onModeChangeRequested?: (mode: AppMode) => void;
@@ -115,7 +117,7 @@ export enum ProjectEditorTab {
 
 export enum ProjectEditorMode {
   properties,
-  info,
+  inspector,
   minecraftToolSettings,
   activeItem,
   cartoSettings,
@@ -147,6 +149,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this.getProjectTitle = this.getProjectTitle.bind(this);
 
     this._handleExportMCPackClick = this._handleExportMCPackClick.bind(this);
+    this._handleExportToLocalFolderClick = this._handleExportToLocalFolderClick.bind(this);
     this._handleGetShareableLinkClick = this._handleGetShareableLinkClick.bind(this);
     this._handleDownloadMCWorldWithPacks = this._handleDownloadMCWorldWithPacks.bind(this);
     this._handleExportMCWorldWithPackRefs = this._handleExportMCWorldWithPackRefs.bind(this);
@@ -238,7 +241,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         initialItem !== null &&
         projectItem &&
         projectItem.storagePath &&
-        projectItem.storagePath.toLowerCase().indexOf("scriptbox") >= 0
+        projectItem.storagePath.toLowerCase().indexOf("scriptbox") >= 0 &&
+        (projectItem.itemType === ProjectItemType.js ||
+          projectItem.itemType === ProjectItemType.testJs ||
+          projectItem.itemType === ProjectItemType.ts)
       ) {
         initialItem = projectItem;
         initialMode = ProjectEditorMode.activeItem;
@@ -258,13 +264,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             initialItem = projectItem;
             initialMode = ProjectEditorMode.activeItem;
           }
-        } else if (
-          projectItem.itemType === ProjectItemType.js ||
-          projectItem.itemType === ProjectItemType.testJs ||
-          projectItem.itemType === ProjectItemType.ts
-        ) {
-          initialItem = projectItem;
-          initialMode = ProjectEditorMode.activeItem;
         }
       }
     }
@@ -1057,6 +1056,44 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewExportKey((data.icon as any).key, this._handleExportMCPackClick, data);
+    }
+  }
+
+  private async _handleExportToLocalFolderClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
+    if (this.props.project === null || this.props.project.projectFolder === null) {
+      return;
+    }
+
+    await this._ensurePersisted();
+
+    const result = (await window.showDirectoryPicker({
+      mode: "readwrite",
+    })) as FileSystemDirectoryHandle | undefined;
+
+    if (result) {
+      const storage = new FileSystemStorage(result);
+
+      const operId = await this.props.carto.notifyOperationStarted("Exporting project to  '" + result.name + "'");
+
+      await StorageUtilities.syncFolderTo(
+        this.props.project.projectFolder,
+        storage.rootFolder,
+        true,
+        true,
+        false,
+        [],
+        async (message: string) => {
+          await this.props.carto.notifyStatusUpdate(message);
+        }
+      );
+
+      await storage.rootFolder.saveAll();
+
+      await this.props.carto.notifyOperationEnded(operId, "Export completed.");
+    }
+
+    if (data && data.icon && (data.icon as any).key) {
+      this._setNewExportKey((data.icon as any).key, this._handleExportToLocalFolderClick, data);
     }
   }
 
@@ -1872,6 +1909,23 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       };
       exportMenu.push(exportKeys[nextExportKey]);
 
+      if (!AppServiceProxy.hasAppService) {
+        exportMenu.push({
+          key: "dividerEXP",
+          kind: "divider",
+        });
+
+        nextExportKey = "exportFolder";
+        exportKeys[nextExportKey] = {
+          key: nextExportKey,
+          icon: <FontAwesomeIcon icon={faComputer} key={nextExportKey} className="fa-lg" />,
+          content: "Export to folder on this PC",
+          onClick: this._handleExportToLocalFolderClick,
+          title: "Exports this project to a folder on your PC.",
+        };
+        exportMenu.push(exportKeys[nextExportKey]);
+      }
+
       exportMenu.push({
         key: "divider",
         kind: "divider",
@@ -1942,10 +1996,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       ) {
         let world = undefined;
 
-        if (pi.file && pi.file.manager && pi.file.manager instanceof MCWorld) {
-          world = pi.file.manager as MCWorld;
-        } else if (pi.folder && pi.folder.manager && pi.folder.manager instanceof MCWorld) {
+        if (pi.folder && pi.folder.manager && pi.folder.manager instanceof MCWorld) {
           world = pi.folder.manager as MCWorld;
+        } else if (pi.file && pi.file.manager && pi.file.manager instanceof MCWorld) {
+          world = pi.file.manager as MCWorld;
         }
 
         let title = pi.name;
@@ -2145,21 +2199,23 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         title: "Toggle bold",
       });
 
-      if (this.props.readOnly) {
-        toolbarItems.push({
-          icon: <EditLabel />,
-          key: "editCopy",
-          onClick: this._handleEditCopyClick,
-          title: "Edit copy",
-        });
-      } else {
-        toolbarItems.push({
-          icon: <SaveLabel />,
-          key: "save",
-          content: <Text content="Save" />,
-          onClick: this._handleSaveClick,
-          title: "Save",
-        });
+      if (Utilities.isDebug) {
+        if (this.props.readOnly) {
+          toolbarItems.push({
+            icon: <EditLabel />,
+            key: "editCopy",
+            onClick: this._handleEditCopyClick,
+            title: "Edit copy",
+          });
+        } else {
+          toolbarItems.push({
+            icon: <SaveLabel />,
+            key: "save",
+            content: <Text content="Save" />,
+            onClick: this._handleSaveClick,
+            title: "Save",
+          });
+        }
       }
 
       if (CartoApp.hostType === HostType.electronWeb || CartoApp.hostType === HostType.vsCodeMainWeb)
@@ -2461,7 +2517,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           />
         );
       }
-    } else if (this.state.mode === ProjectEditorMode.info) {
+    } else if (this.state.mode === ProjectEditorMode.inspector) {
       interior = (
         <ProjectInfoDisplay
           theme={this.props.theme}

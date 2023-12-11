@@ -1,6 +1,6 @@
 import IGitHubInfo from "./IGitHubInfo";
 
-export const MaxItemTypes = 83;
+export const MaxItemTypes = 88;
 
 export enum ProjectItemType {
   unknown = 0,
@@ -86,6 +86,11 @@ export enum ProjectItemType {
   projectSummaryMetadata = 80,
   tickJson = 81,
   cameraJson = 82,
+  material = 83,
+  materialSetJson = 84,
+  vertex = 85,
+  fragment = 86,
+  geometry = 87,
 }
 
 export enum ProjectItemStorageType {

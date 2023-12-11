@@ -1,6 +1,6 @@
 export const constants = {
-  version: "0.1.59",
+  version: "0.1.63",
   name: "Minecraft Creator Tools",
-  disclaimer: "Alpha software. This software is provided 'as-is', without warranty of any kind.",
-  copyright: "Copyright 2023 Microsoft.",
+  disclaimer: "Alpha software. License at https://github.com/mojang/minecraft-creator-tools.",
+  copyright: "Copyright 2023 Mojang AB.  All rights reserved.",
 };

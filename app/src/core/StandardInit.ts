@@ -95,9 +95,9 @@ export const minecraftToolLightTheme = {
       brand: {
         background: "#3c8527", // accent background for things like buttons. complemented with fore*4
         background1: "#E6E4E2", // main outermost background. in a dark theme, this should be dark. complemented with fore*1
-        background2: "#e0d9d4", // complement background. in a dark theme, this should be dark, but slightly different vs back*1. complemented with fore*2
-        background3: "#d1cac5",
-        background4: "#c2bbb6",
+        background2: "#dbd9d7", // complement background. in a dark theme, this should be dark, but slightly different vs back*1. complemented with fore*2
+        background3: "#cccac7",
+        background4: "#bfbbb9",
         background5: "#999999",
         background6: "#B3B3B3", // subtle theme background.  complemented with fore*6
         foreground: "red",

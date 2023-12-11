@@ -15,7 +15,7 @@ import WorldItemInfoGenerator from "./WorldItemInfoGenerator";
 import IFolder from "../storage/IFolder";
 import IInfoItemData, { InfoItemType } from "./IInfoItemData";
 import IProjectInfoGeneratorBase, { IProjectInfoTopicData } from "./IProjectInfoGeneratorBase";
-import IProjectInfoData from "./IProjectInfoData";
+import IProjectInfoData, { ProjectInfoSuite } from "./IProjectInfoData";
 import JsonFileTagsInfoGenerator from "./JsonFileTagsInfoGenerator";
 import { constants } from "../core/Constants";
 import Utilities from "../core/Utilities";
@@ -28,11 +28,9 @@ import BehaviorPackEntityTypeManager from "../manager/BehaviorPackEntityTypeMana
 import WorldDataInfoGenerator from "./WorldDataInfoGenerator";
 import { StatusTopic } from "../app/Status";
 import PackMetaDataInformationGenerator from "./PackMetaDataInfoGenerator";
-
-export enum ProjectInfoSuite {
-  all,
-  currentPlatform,
-}
+import AddOnRequirementsGenerator from "./AddOnRequirementsGenerator";
+import StrictPlatformInfoGenerator from "./StrictPlatformInfoGenerator";
+import AddOnItemRequirementsGenerator from "./AddOnItemRequirementsGenerator";
 
 export default class ProjectInfoSet {
   project?: Project;
@@ -75,7 +73,7 @@ export default class ProjectInfoSet {
     if (suite) {
       this.suite = suite;
     } else {
-      this.suite = ProjectInfoSuite.all;
+      this.suite = ProjectInfoSuite.allExceptAddOn;
     }
 
     this._excludeTests = excludeTests;
@@ -91,6 +89,8 @@ export default class ProjectInfoSet {
     new MinEngineVersionManager(),
     new BaseGameVersionManager(),
     new BehaviorPackEntityTypeManager(),
+    new AddOnRequirementsGenerator(),
+    new StrictPlatformInfoGenerator(),
   ];
 
   static itemGenerators = [
@@ -99,6 +99,7 @@ export default class ProjectInfoSet {
     new SchemaItemInfoGenerator(),
     new WorldItemInfoGenerator(),
     new WorldDataInfoGenerator(),
+    new AddOnItemRequirementsGenerator(),
   ];
 
   static fileGenerators = [new UnknownFileGenerator()];
@@ -124,7 +125,7 @@ export default class ProjectInfoSet {
   matchesSuite(
     generator: IProjectFileInfoGenerator | IProjectInfoGenerator | IProjectItemInfoGenerator | IProjectInfoGeneratorBase
   ) {
-    if (this.suite === ProjectInfoSuite.all) {
+    if (this.suite === ProjectInfoSuite.allExceptAddOn && generator.id.indexOf("ADDON") < 0) {
       return true;
     }
 
@@ -134,7 +135,28 @@ export default class ProjectInfoSet {
       }
     }
 
+    if (this.suite === ProjectInfoSuite.addOn) {
+      if (
+        generator.id.indexOf("ADDON") >= 0 ||
+        generator.id === "STRICT" ||
+        generator.id === "MINENGINEVER" ||
+        generator.id === "WORLDDATA"
+      ) {
+        return true;
+      }
+    }
+
     return false;
+  }
+
+  configureForSuite(
+    generator: IProjectFileInfoGenerator | IProjectInfoGenerator | IProjectItemInfoGenerator | IProjectInfoGeneratorBase
+  ) {
+    if (generator.id === "WORLDDATA" && this.suite === ProjectInfoSuite.addOn) {
+      (generator as WorldDataInfoGenerator).performAddOnValidations = true;
+    } else if (generator.id === "WORLDDATA") {
+      (generator as WorldDataInfoGenerator).performAddOnValidations = false;
+    }
   }
 
   async generateForProject(force?: boolean) {
@@ -180,6 +202,8 @@ export default class ProjectInfoSet {
         const gen = projGenerators[i];
 
         if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && gen && this.matchesSuite(gen)) {
+          this.configureForSuite(gen);
+
           const results = await gen.generate(this.project);
 
           for (const item of results) {
@@ -197,6 +221,8 @@ export default class ProjectInfoSet {
           const gen = itemGenerators[j];
 
           if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && this.matchesSuite(gen)) {
+            this.configureForSuite(gen);
+
             const results = await gen.generate(pi);
 
             for (const item of results) {
@@ -313,6 +339,7 @@ export default class ProjectInfoSet {
       info: this.info,
       items: items,
       generatorName: constants.name,
+      suite: this.suite,
       generatorVersion: constants.version,
       sourceName: sourceName,
       sourcePath: sourcePath,
@@ -353,7 +380,7 @@ export default class ProjectInfoSet {
     }
 
     for (const featureName of featureNames) {
-      csvLine += featureName + ",";
+      csvLine += ProjectInfoSet.getDataSummary(featureName) + ",";
     }
 
     return csvLine;
@@ -433,7 +460,7 @@ function _addReportJson(data) {
         document.write("<h1>" + _reportObjects[i].sourceName + "</h1>");
         document.write("<h3>Summary</h3>");
     
-        document.write("<div class='summary-grid'>");
+        document.write("<table class='summary-table'>");
         const info = _reportObjects[i].info;
     
         if (info) {
@@ -441,8 +468,10 @@ function _addReportJson(data) {
             const val = info[key];
     
             if (key !== 'features') {
-              document.write("<div class='summary-key grid-cell'>" + getDataName(key) + "</div>");
-              document.write("<div class='summary-value grid-cell'>" + getDataSummary(val) + "</div>");
+              document.write("<tr>");
+              document.write("<td class='summary-key items-cell'>" + getDataName(key) + "</td>");
+              document.write("<td class='summary-value items-cell'>" + getDataSummary(val) + "</td>");
+              document.write("</tr>");
             }
           }
     
@@ -451,19 +480,21 @@ function _addReportJson(data) {
              const val = info.features[key];
     
              if (key !== 'features') {
-                document.write("<div class='summary-key grid-cell'>" + key + "</div>");
-                document.write("<div class='summary-value grid-cell'>" + getDataSummary(val) + "</div>");
+                document.write("<tr>");
+                document.write("<td class='summary-key items-cell'>" + key + "</td>");
+                document.write("<td class='summary-value items-cell'>" + getDataSummary(val) + "</td>");
+                document.write("</tr>");
               }
             }
           }
         }
-        document.write("</div>");
+        document.write("</table>");
       }
     
     
       for (const i=0; i<_reportObjects.length; i++) {
         document.write("<h3>Items</h3>");
-        document.write("<div class='items-grid'>");
+        document.write("<table class='items-table'>");
         const info = _reportObjects[i].info;
     
     
@@ -471,17 +502,46 @@ function _addReportJson(data) {
     
         if (items && items.length) {
           for (const item of items) {
-            document.write("<div class='items-type grid-cell'>" + item.itemType + "</div>");
-            document.write("<div class='items-generator grid-cell'>" + item.generatorId + "</div>");
-            document.write("<div class='items-generatorIndex grid-cell'>" + item.generatorIndex + "</div>");
-            document.write("<div class='items-message grid-cell'>" + getEmptySummary(item.message) + "</div>");
-            document.write("<div class='items-data grid-cell'>" + getEmptySummary(item.data) + "</div>");
-            document.write("<div class='items-path grid-cell'>" + getEmptySummary(item.itemStoragePath) + "</div>");
+            if (item.itemType !== 2) {
+              document.write("<tr>");
+              document.write("<td class='items-type items-cell'>" + getDescriptionForItemType(item.itemType) + "</td>");
+              document.write("<td class='items-generator items-cell'>" + item.generatorId + "</td>");
+              document.write("<td class='items-generatorIndex items-cell'>" + item.generatorIndex + "</td>");
+              document.write("<td class='items-message items-cell'>" + getEmptySummary(item.message) + "</td>");
+              document.write("<td class='items-data items-cell'>" + getEmptySummary(item.data) + "</td>");
+              document.write("<td class='items-path items-cell'>" + getEmptySummary(item.itemStoragePath) + "</td>");
+              document.write("</tr>");
+            }
           }
         }
-        document.write("</div>");
+        document.write("</table>");
       }
     } 
+
+    function getDescriptionForItemType(itemType) {
+      switch (itemType) {
+        case 0: 
+          return "SUCCESS";
+          break;
+        case 1: 
+          return "FAIL";
+          break;
+        case 3: 
+          return "ERROR";
+          break;
+        case 4: 
+          return "WARN";
+          break;
+        case 5: 
+          return "INTERNALERR";
+          break;
+        case 6: 
+          return "RECOMMEND";
+          break;          
+      }
+      return "INFO";
+    }
+
     </script>
     <style>
       body {
@@ -489,21 +549,19 @@ function _addReportJson(data) {
         padding: 8px;
       }
     
-      .items-grid {
+      .items-table {
         display: grid;
         border: solid 1px #606060;
         padding: 0px;
-        grid-template-columns: 80px 140px 80px 1fr 1fr 1fr;
       }
     
-      .grid-cell {
+      .items-cell {
         border: solid 1px #606060;
         padding: 4px;
         vertical-align: top;
       }
     
-      .summary-grid {
-        display: grid;
+      .summary-table {
         border: solid 1px #606060;
         padding: 0px;
         grid-template-columns: 520px 1fr;
@@ -551,7 +609,7 @@ function _addReportJson(data) {
     return lines.join("\n");
   }
 
-  getDataSummary(data: any | undefined) {
+  static getDataSummary(data: any | undefined) {
     if (typeof data === "number" || typeof data === "boolean") {
       return data.toString();
     } else if (data) {
@@ -864,9 +922,9 @@ function _addReportJson(data) {
     allFeatures: { [featureName: string]: number | undefined }
   ): string {
     let line =
-      this.getDataSummary(containerName) +
+      ProjectInfoSet.getDataSummary(containerName) +
       "," +
-      this.getDataSummary(title) +
+      ProjectInfoSet.getDataSummary(title) +
       "," +
       this.getRed() +
       "," +
@@ -891,7 +949,7 @@ function _addReportJson(data) {
 
     for (const str of fieldNames) {
       // @ts-ignore
-      line += this.getDataSummary(this.info[str]) + ",";
+      line += ProjectInfoSet.getDataSummary(this.info[str]) + ",";
     }
 
     for (const featureName of featureNames) {

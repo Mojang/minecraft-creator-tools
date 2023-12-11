@@ -228,6 +228,18 @@ export default class Carto {
     this.#data.windowSlot = newVal;
   }
 
+  get creator(): string | undefined {
+    return this.#data.creator;
+  }
+
+  set creator(newCreator: string | undefined) {
+    if (this.#data.creator !== newCreator) {
+      this.#data.creator = newCreator;
+
+      this._onPropertyChanged.dispatch(this, "creator");
+    }
+  }
+
   public get windowState() {
     if (this.#data.windowState === undefined) {
       return WindowState.regular;

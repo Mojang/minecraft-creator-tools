@@ -76,7 +76,8 @@
   grid-template-columns: 180px 80px;
 }
 
-.df-elementTitle {
+.df-elementTitleRed {
+  color: red;
 }
 
 .df-sliderTitle {

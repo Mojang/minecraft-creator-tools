@@ -359,7 +359,11 @@ export default class WorldChunk {
       if (keyValue.value && keyValue.value.length > 0) {
         const tag = new NbtBinary();
 
-        tag.fromBinary(keyValue.value, true, false, 0, true);
+        try {
+          tag.fromBinary(keyValue.value, true, false, 0, true);
+        } catch (e) {
+          Log.error("Could not parse a block actor.");
+        }
 
         if (tag.root) {
           const ba = new GenericBlockActor(tag.root);
@@ -1185,11 +1189,8 @@ export default class WorldChunk {
 
       // have observed empty subchunks with no actual data besides NBT records, where bitsPerBlock === 0
       if (bitsPerBlock === 0) {
-        let numPaletteEntries = 1;
-
-        const bp = new BlockPalette();
-
-        index = bp.parseFromBytes(bytes, index, numPaletteEntries);
+        // const bp = new BlockPalette();
+        //   index = bp.parseFromBytes(bytes, index, 1);
       } else {
         const blocksPerWord = Math.floor(32 / bitsPerBlock);
         const blockBytes = Math.ceil(4096 / blocksPerWord) * 4;

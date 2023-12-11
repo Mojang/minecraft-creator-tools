@@ -1,8 +1,35 @@
 {
   "projects": [
     {
-      "title": "Starter Behavior Pack with TypeScript",
-      "description": "Starter Project with Typescript.",
+      "title": "Add-on Starter",
+      "description": "Starter for add-on projects.",
+      "gitHubOwner": "microsoft",
+      "gitHubBranch": "mammerla-addons",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/addon_starter/start",
+      "localLogo": "ui/cartography_table_empty.png",
+      "fileList": [
+        "/package-lock.json",
+        "/package.json",
+        "/gulpfile.js",
+        "/.prettierrc.json",
+        "/.vscode/extensions.json",
+        "/.vscode/launch.json",
+        "/.vscode/settings.json",
+        "/.vscode/tasks.json",
+        "/behavior_packs/aop_mobsbp/manifest.json",
+        "/behavior_packs/aop_mobsbp/pack_icon.png",
+        "/resource_packs/aop_mobsrp/manifest.json",
+        "/resource_packs/aop_mobsrp/pack_icon.png",
+        "/resource_packs/aop_mobsrp/sounds.json",
+        "/scripts/main.ts"
+      ],
+      "id": "addonStarter",
+      "type": 0
+    },
+    {
+      "title": "Starter TypeScript Behavior Pack",
+      "description": "Starter Project focused on writing code with Typescript.",
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/ts-starter",
@@ -50,7 +77,7 @@
     },
     {
       "title": "Custom Mobs",
-      "description": "A simple example of crea for experimenting with script.",
+      "description": "A simple example of a set of custom mobs.",
       "gitHubOwner": "microsoft",
       "gitHubBranch": "mammerla-custom-mobs-sample",
       "gitHubRepoName": "minecraft-scripting-samples",

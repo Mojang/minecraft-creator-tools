@@ -3,6 +3,7 @@ import IFile from "./IFile";
 import FileBase from "./FileBase";
 import JSZip from "jszip";
 import StorageUtilities, { EncodingType } from "./StorageUtilities";
+import Log from "../core/Log";
 
 export default class ZipFile extends FileBase implements IFile {
   _name: string;
@@ -50,17 +51,21 @@ export default class ZipFile extends FileBase implements IFile {
 
   async loadContent(force: boolean): Promise<Date> {
     if (force || !this.lastLoadedOrSaved) {
-      this.lastLoadedOrSaved = new Date();
-
       if (this._jszipo !== null) {
         const type = StorageUtilities.getEncodingByFileName(this.name);
 
         if (type === EncodingType.ByteBuffer) {
-          this._content = await this._jszipo.async("uint8array");
+          this._content = await this._jszipo.async("uint8array"); /*, (metadata) => {
+            Log.verbose("Extracting " + this.storageRelativePath + " (" + metadata.percent.toFixed(2) + ")%");
+          });*/
+
+          Log.assert(this._content !== null, "Unexpectedly could not load content.");
         } else {
           this._content = await this._jszipo.async("string");
         }
       }
+
+      this.lastLoadedOrSaved = new Date();
     }
 
     return this.lastLoadedOrSaved;

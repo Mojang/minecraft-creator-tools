@@ -9,10 +9,16 @@ import CommandBlockActor from "../minecraft/blockActors/CommandBlockActor";
 import { StatusTopic } from "../app/Status";
 import CommandStructure from "../app/CommandStructure";
 import ProjectInfoSet from "./ProjectInfoSet";
+import CommandRegistry from "../app/CommandRegistry";
+import BehaviorAnimationController from "../minecraft/BehaviorAnimationController";
+import BehaviorAnimation from "../minecraft/BehaviorAnimation";
+import Dialogue from "../minecraft/Dialogue";
 
 export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator {
   id = "WORLDDATA";
   title = "World Data Validation";
+
+  performAddOnValidations = false;
 
   getTopicData(topicId: number) {
     switch (topicId) {
@@ -22,6 +28,10 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
         return { title: "Block Data" };
       case 3:
         return { title: "Command" };
+      case 101:
+        return { title: "Unexpected command in MCFunction" };
+      case 102:
+        return { title: "Unexpected command in Command Block" };
     }
 
     return {
@@ -33,8 +43,68 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     info.chunkCount = infoSet.getSummedNumberValue("WORLDDATA", 101);
   }
 
+  processListOfCommands(
+    commandList: string[],
+    items: ProjectInfoItem[],
+    projectItem: ProjectItem,
+    commandsPi: ProjectInfoItem,
+    checkForSlash: boolean
+  ) {
+    for (let i = 0; i < commandList.length; i++) {
+      if (commandList[i].trim().length > 2 && (!checkForSlash || commandList[i].startsWith("/"))) {
+        const command = CommandStructure.parse(commandList[i]);
+
+        if (CommandRegistry.isMinecraftBuiltInCommand(command.name)) {
+          if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.name)) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.warning,
+                this.id,
+                112,
+                "Contains command '" +
+                  command.name +
+                  "' which is impacts the state of the entire world, and generally shouldn't be used in an add-on",
+                projectItem,
+                command.name,
+                undefined,
+                commandList[i]
+              )
+            );
+          }
+          commandsPi.incrementFeature(command.name);
+        } else {
+          items.push(
+            new ProjectInfoItem(
+              InfoItemType.error,
+              this.id,
+              101,
+              "Unexpected command '" + command.name + "'",
+              projectItem,
+              command.name,
+              undefined,
+              commandList[i]
+            )
+          );
+        }
+      }
+    }
+  }
+
   async generate(projectItem: ProjectItem): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
+
+    if (
+      projectItem.itemType === ProjectItemType.MCAddon ||
+      projectItem.itemType === ProjectItemType.MCPack ||
+      projectItem.itemType === ProjectItemType.MCProject ||
+      projectItem.itemType === ProjectItemType.js ||
+      projectItem.itemType === ProjectItemType.ts ||
+      projectItem.itemType === ProjectItemType.testJs ||
+      projectItem.itemType === ProjectItemType.structure ||
+      projectItem.itemType === ProjectItemType.image
+    ) {
+      return items;
+    }
 
     const blocksPi = new ProjectInfoItem(InfoItemType.info, this.id, 1, "Blocks", projectItem);
     items.push(blocksPi);
@@ -45,19 +115,75 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     const commandsPi = new ProjectInfoItem(InfoItemType.info, this.id, 3, "Commands", projectItem);
     items.push(commandsPi);
 
-    if (projectItem.itemType === ProjectItemType.MCFunction) {
+    if (projectItem.itemType === ProjectItemType.dialogueBehaviorJson) {
+      await projectItem.ensureFileStorage();
+
+      if (projectItem.file) {
+        const diaManifest = await Dialogue.ensureOnFile(projectItem.file);
+
+        if (diaManifest && diaManifest.definition && diaManifest.definition["minecraft:npc_dialogue"]) {
+          let scenes = diaManifest.definition["minecraft:npc_dialogue"].scenes;
+
+          for (const scene of scenes) {
+            if (scene.on_open_commands) {
+              this.processListOfCommands(scene.on_open_commands, items, projectItem, commandsPi, true);
+            }
+            if (scene.on_close_commands) {
+              this.processListOfCommands(scene.on_close_commands, items, projectItem, commandsPi, true);
+            }
+          }
+          let buttons = diaManifest.getAllButtons();
+
+          for (const button of buttons) {
+            if (button.commands) {
+              this.processListOfCommands(button.commands, items, projectItem, commandsPi, true);
+            }
+          }
+        }
+      }
+    } else if (projectItem.itemType === ProjectItemType.animationControllerBehaviorJson) {
+      await projectItem.ensureFileStorage();
+
+      if (projectItem.file) {
+        const acManifest = await BehaviorAnimationController.ensureOnFile(projectItem.file);
+
+        if (acManifest && acManifest.definition && acManifest.definition.animation_controllers) {
+          let states = acManifest.getAllStates();
+
+          for (const state of states) {
+            if (state.state.on_entry) {
+              this.processListOfCommands(state.state.on_entry, items, projectItem, commandsPi, true);
+            }
+
+            if (state.state.on_exit) {
+              this.processListOfCommands(state.state.on_exit, items, projectItem, commandsPi, true);
+            }
+          }
+        }
+      }
+    } else if (projectItem.itemType === ProjectItemType.animationBehaviorJson) {
+      await projectItem.ensureFileStorage();
+
+      if (projectItem.file) {
+        const animManifest = await BehaviorAnimation.ensureOnFile(projectItem.file);
+
+        if (animManifest && animManifest.definition && animManifest.definition.animations) {
+          let timelines = animManifest.getAllTimeline();
+
+          for (const timeline of timelines) {
+            if (timeline.timeline) {
+              this.processListOfCommands(timeline.timeline, items, projectItem, commandsPi, true);
+            }
+          }
+        }
+      }
+    } else if (projectItem.itemType === ProjectItemType.MCFunction) {
       let content = await projectItem.getStringContent();
 
       if (content !== undefined) {
         let contentLines = content.split("\n");
 
-        for (let i = 0; i < contentLines.length; i++) {
-          if (contentLines[i].trim().length > 2) {
-            const command = CommandStructure.parse(contentLines[i]);
-
-            commandsPi.incrementFeature(command.name);
-          }
-        }
+        this.processListOfCommands(contentLines, items, projectItem, commandsPi, false);
       }
     }
 
@@ -114,7 +240,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                   );
                 }
 
-                await chunk.ensureBlockActors();
+                chunk.ensureBlockActors();
 
                 const blockActors = chunk.blockActors;
 
@@ -134,7 +260,38 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                     if (cba.command && cba.command.trim().length > 2) {
                       let command = CommandStructure.parse(cba.command);
 
-                      commandsPi.incrementFeature(command.name);
+                      if (CommandRegistry.isMinecraftBuiltInCommand(command.name)) {
+                        if (this.performAddOnValidations && CommandRegistry.isAddOnBlockedCommand(command.name)) {
+                          items.push(
+                            new ProjectInfoItem(
+                              InfoItemType.warning,
+                              this.id,
+                              112,
+                              "Contains command '" +
+                                command.name +
+                                "' which is impacts the state of the entire world, and generally shouldn't be used in an add-on",
+                              projectItem,
+                              command.name,
+                              undefined,
+                              cba.command
+                            )
+                          );
+                        }
+                        commandsPi.incrementFeature(command.name);
+                      } else {
+                        items.push(
+                          new ProjectInfoItem(
+                            InfoItemType.error,
+                            this.id,
+                            102,
+                            "Unexpected command '" + command.name + "'",
+                            projectItem,
+                            command.name,
+                            undefined,
+                            cba.command
+                          )
+                        );
+                      }
                     }
                   }
                 }

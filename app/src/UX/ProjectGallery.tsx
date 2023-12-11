@@ -154,17 +154,26 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
   }
 
   render() {
-    const galleries = [];
+    const snippetGalleries = [];
+    const projectGalleries = [];
 
     const gal = this.props.gallery;
 
-    if ((!this.props.search || this.props.search.length < 3) && this.props.filterOn === undefined) {
-      galleries.push(
-        <h3 key="codeSnipp" className="pg-divider">
+    if (this.props.filterOn === undefined) {
+      snippetGalleries.push(
+        <div key="codeSnipp" className="pg-divider">
           Code Snippets
-        </h3>
+        </div>
+      );
+      projectGalleries.push(
+        <div key="codeSamp" className="pg-divider">
+          New Project Starters
+        </div>
       );
     }
+
+    let didPushSnippet = false;
+    let didPushStarter = false;
 
     for (let i = 0; i < gal.projects.length; i++) {
       const galItem = gal.projects[i];
@@ -174,7 +183,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
         (this.props.filterOn === undefined || this.props.filterOn === galItem.type) &&
         galItem.type === GalleryProjectType.codeSample
       ) {
-        galleries.push(
+        snippetGalleries.push(
           <ProjectTile
             key={"csitem" + i}
             theme={this.props.theme}
@@ -187,15 +196,9 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
             project={galItem}
           />
         );
-      }
-    }
 
-    if ((!this.props.search || this.props.search.length < 3) && this.props.filterOn === undefined) {
-      galleries.push(
-        <h3 key="codeSamp" className="pg-divider">
-          New Project Starters
-        </h3>
-      );
+        didPushSnippet = true;
+      }
     }
 
     for (let i = 0; i < gal.projects.length; i++) {
@@ -210,7 +213,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
       ) {
         const displayOpen = this.state.loadedProjectHash.indexOf("[" + this.getGalleryHash(galItem) + "]") >= 0;
 
-        galleries.push(
+        projectGalleries.push(
           <ProjectTile
             key={"galitem" + i}
             theme={this.props.theme}
@@ -223,9 +226,24 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
             project={galItem}
           />
         );
+
+        didPushStarter = true;
       }
     }
 
-    return <div className="pg-outer">{galleries}</div>;
+    if (!didPushSnippet) {
+      snippetGalleries.push(<div>No snippets found.</div>);
+    }
+
+    if (!didPushStarter) {
+      projectGalleries.push(<div>No starters found.</div>);
+    }
+
+    return (
+      <div className="pg-outer">
+        <div className="pg-projectWrap">{projectGalleries}</div>
+        <div className="pg-snippetWrap">{snippetGalleries}</div>
+      </div>
+    );
   }
 }

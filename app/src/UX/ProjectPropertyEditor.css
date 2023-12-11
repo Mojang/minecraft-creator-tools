@@ -69,48 +69,69 @@
   padding-bottom: 10px;
   padding-top: 3px;
 }
-
-.ppe-namelabel {
+.ppe-creatorlabel {
   grid-row: 1;
   grid-column: 1;
 }
 
-.ppe-nameinput {
+.ppe-creatorinput {
   grid-row: 1;
+  grid-column: 2;
+  padding-bottom: 20px;
+}
+
+.ppe-namelabel {
+  grid-row: 2;
+  grid-column: 1;
+}
+
+.ppe-nameinput {
+  grid-row: 2;
+  grid-column: 2;
+  padding-bottom: 20px;
+}
+
+.ppe-shortNamelabel {
+  grid-row: 3;
+  grid-column: 1;
+}
+
+.ppe-shortNameinput {
+  grid-row: 3;
   grid-column: 2;
   padding-bottom: 20px;
 }
 
 .ppe-titlelabel {
-  grid-row: 2;
+  grid-row: 4;
   grid-column: 1;
 }
 
 .ppe-titleinput {
-  grid-row: 2;
+  grid-row: 4;
   grid-column: 2;
   padding-bottom: 20px;
 }
 
 .ppe-descriptionlabel {
-  grid-row: 3;
+  grid-row: 5;
   grid-column: 1;
 }
 
 .ppe-descriptioninput {
-  grid-row: 3;
+  grid-row: 5;
   grid-column-start: 2;
   grid-column-end: 3;
   padding-bottom: 20px;
 }
 
 .ppe-namespacelabel {
-  grid-row: 4;
+  grid-row: 6;
   grid-column: 1;
 }
 
 .ppe-namespaceinput {
-  grid-row: 4;
+  grid-row: 6;
   grid-column-start: 2;
   grid-column-end: 3;
   padding-bottom: 20px;
@@ -122,43 +143,43 @@
 }
 
 .ppe-defaultEditlabel {
-  grid-row: 5;
+  grid-row: 7;
   grid-column: 1;
 }
 
 .ppe-defaultEditinput {
-  grid-row: 5;
+  grid-row: 7;
   grid-column-start: 2;
   grid-column-end: 3;
   padding-bottom: 20px;
 }
 
 .ppe-scriptLanguagelabel {
-  grid-row: 6;
+  grid-row: 8;
   grid-column: 1;
 }
 
 .ppe-scriptLanguageinput {
-  grid-row: 6;
+  grid-row: 8;
   grid-column-start: 2;
   grid-column-end: 3;
   padding-bottom: 20px;
 }
 
 .ppe-scriptVersionlabel {
-  grid-row: 7;
+  grid-row: 9;
   grid-column: 1;
 }
 
 .ppe-scriptVersioninput {
-  grid-row: 7;
+  grid-row: 9;
   grid-column-start: 2;
   grid-column-end: 3;
   padding-bottom: 20px;
 }
 
 .ppe-versionlabel {
-  grid-row: 8;
+  grid-row: 10;
   grid-column-start: 1;
   grid-column-end: 3;
 }
@@ -177,7 +198,7 @@
 }
 
 .ppe-versioninput {
-  grid-row: 8;
+  grid-row: 10;
   grid-column: 2;
   padding-bottom: 20px;
 }
@@ -192,13 +213,13 @@
 }
 
 .ppe-ghlabel {
-  grid-row: 9;
+  grid-row: 11;
   grid-column: 1;
   padding-top: 27px;
 }
 
 .ppe-ghinput {
-  grid-row: 9;
+  grid-row: 11;
   grid-column: 2;
   padding-top: 26px;
   padding-bottom: 20px;
@@ -213,14 +234,14 @@
 
 .ppe-advancedArea {
   font-size: 14pt;
-  grid-row: 10;
+  grid-row: 12;
   grid-column-start: 1;
   grid-column-end: 5;
   padding-top: 30px;
 }
 
 .ppe-bedrock {
-  grid-row: 10;
+  grid-row: 12;
   font-size: 2;
   line-height: 0.5;
   min-height: 16px;

@@ -167,7 +167,8 @@ export default class ProjectInfoItemDisplay extends Component<
         <div
           className={"piid-cell piid-indicator " + indicatorCellBg}
           style={{
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
           }}
         >
           {typeElt}
@@ -175,7 +176,27 @@ export default class ProjectInfoItemDisplay extends Component<
         <div
           className="piid-cell"
           style={{
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+          }}
+        >
+          {this.props.item.generatorId}
+        </div>
+
+        <div
+          className="piid-cell"
+          style={{
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+          }}
+        >
+          {this.props.item.generatorIndex}
+        </div>
+        <div
+          className="piid-cell"
+          style={{
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
           }}
         >
           {actions}
@@ -183,7 +204,8 @@ export default class ProjectInfoItemDisplay extends Component<
         <div
           className="piid-cell"
           style={{
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
           }}
         >
           {message}
@@ -191,7 +213,8 @@ export default class ProjectInfoItemDisplay extends Component<
         <div
           className="piid-cell piid-link"
           style={{
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
           }}
           title={location}
           onClick={this._projectClick}

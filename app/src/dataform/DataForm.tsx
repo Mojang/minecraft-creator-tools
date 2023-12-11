@@ -1005,10 +1005,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               />
             );
 
+            const titleClass = (curVal as string)?.length > 0 ? undefined : "df-elementTitleRed";
             formInterior.push(
               <div className="df-fieldWrap" key={"fw" + field.id}>
                 <div key={seedId + field.id + "titleA"} className="df-fieldTitle">
-                  <div className="df-elementTitle">{title}</div>
+                  <div className={titleClass}>{title}</div>
                   {fieldInput}
                 </div>
                 {descriptionElement}

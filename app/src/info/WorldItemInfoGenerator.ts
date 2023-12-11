@@ -31,10 +31,10 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
     ) {
       let mcworld: MCWorld | undefined = undefined;
 
-      if (projectItem.file) {
-        mcworld = await MCWorld.ensureMCWorldOnFile(projectItem.file, projectItem.project);
-      } else if (projectItem.folder) {
+      if (projectItem.folder) {
         mcworld = await MCWorld.ensureMCWorldOnFolder(projectItem.folder, projectItem.project);
+      } else if (projectItem.file) {
+        mcworld = await MCWorld.ensureMCWorldOnFile(projectItem.file, projectItem.project);
       }
 
       if (!mcworld) {

@@ -750,7 +750,7 @@
     },
     {
       "id": 64,
-      "name": "oak_door",
+      "name": "wooden_door",
       "abstract": false,
       "mapColor": "#976D4D",
       "variants": [
@@ -761,8 +761,7 @@
         { "name": "iron_door", "shortId": "dri", "id": 71 },
         { "name": "jungle_door", "shortId": "drj", "id": 195 },
         { "name": "spruce_door", "shortId": "drr", "id": 193 },
-        { "name": "warped_door", "shortId": "drx", "id": 500 },
-        { "name": "wooden_door", "shortId": "drw", "id": 324 }
+        { "name": "warped_door", "shortId": "drx", "id": 500 }
       ],
       "properties": [
         {
@@ -953,12 +952,12 @@
     { "name": "blast_furnace", "shortId": "bfr", "id": 451 },
     { "name": "bookshelf", "shortId": "bsl", "id": 47 },
     { "name": "border_block", "shortId": "bob", "id": 212 },
-    { "name": "brewing_stand", "shortId": "bws", "id": 379 },
+    { "name": "brewing_stand", "shortId": "bws", "id": 117 },
     { "name": "brick_block", "shortId": "br_", "altShortId": "brk", "id": 45 },
     { "name": "brown_mushroom", "shortId": "msw", "id": 39 },
     { "name": "bubble_column", "shortId": "bbc", "id": 415 },
     { "name": "cactus", "shortId": "cct", "id": 81, "isOpaque": true, "shape": 1 },
-    { "name": "cake", "shortId": "cak", "id": 354 },
+    { "name": "cake", "shortId": "cak", "id": 92 },
     { "name": "camera", "shortId": "cam", "id": 242 },
     { "name": "campfire", "shortId": "ca_", "id": 464 },
     { "name": "carpet", "shortId": "cp_", "altShortId": "car", "id": 171 },
@@ -968,6 +967,7 @@
     { "name": "cauldron", "shortId": "cau", "id": 118 },
     { "name": "chain", "shortId": "cha", "id": 541 },
     { "name": "chain_command_block", "shortId": "cbc", "id": 189 },
+    { "name": "chalkboard", "shortId": "clk", "id": 230 },
     { "name": "chemical_heat", "shortId": "htc", "id": 192 },
     { "name": "chemistry_table", "shortId": "tbh", "id": 238 },
     { "name": "chest", "shortId": "ch_", "altShortId": "chs", "icon": "chest_front", "id": 54 },
@@ -1045,7 +1045,7 @@
     { "name": "frame", "shortId": "frm", "id": 199 },
     { "name": "furnace", "shortId": "fr_", "altShortId": "frn", "id": 61 },
     { "name": "glass_pane", "shortId": "gp_", "altShortId": "glp", "id": 102 },
-    { "name": "glowingobsidian", "shortId": "gob", "icon": "glowing_obsidian", "id": 256 },
+    { "name": "glowingobsidian", "shortId": "gob", "icon": "glowing_obsidian", "id": 246 },
     { "name": "gold_block", "shortId": "blg", "mapColor": "#FAEE4D", "id": 41 },
     { "name": "hard_glass", "shortId": "gsh", "id": 253 },
     { "name": "hard_glass_pane", "shortId": "gph", "id": 190 },
@@ -1096,7 +1096,7 @@
     { "name": "nether_brick", "shortId": "brn", "mapColor": "#700200", "id": 112 },
     { "name": "nether_brick_fence", "shortId": "fnn", "mapColor": "#700200", "id": 113 },
     { "name": "nether_sprouts", "shortId": "nsp", "mapColor": "#700200", "id": 493 },
-    { "name": "nether_wart", "shortId": "nwr", "mapColor": "#700200", "id": 372 },
+    { "name": "nether_wart", "shortId": "nwr", "mapColor": "#700200", "id": 115 },
     { "name": "netherrack", "shortId": "nrk", "mapColor": "#700200", "id": 87 },
     { "name": "netherreactor", "shortId": "nre", "mapColor": "#700200", "id": 247 },
     { "name": "noteblock", "shortId": "not", "id": 25 },
@@ -1130,6 +1130,7 @@
     { "name": "reeds", "shortId": "ree", "icon": "reeds", "id": 83 },
     { "name": "repeating_command_block", "shortId": "cbr", "id": 188 },
     { "name": "respawn_anchor", "shortId": "ran", "id": 527 },
+    { "name": "reserved", "shortId": "rsv", "id": 255 },
     { "name": "sapling", "shortId": "sap", "id": 6 },
     { "name": "scaffolding", "shortId": "scf", "id": 420 },
     { "name": "sea_pickle", "shortId": "pkl", "id": 411 },

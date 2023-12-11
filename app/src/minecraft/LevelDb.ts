@@ -282,21 +282,22 @@ export default class LevelDb {
       } else if (type === 2 /* Type 2 = FIRST */) {
         pendingBytes = new Uint8Array(content.buffer, index, length);
       } else if (type === 3 /* Type 3 = MIDDLE */ || type === 4 /* Type 4 = LAST*/) {
-        if (pendingBytes === undefined) {
-          throw new Error("Unexpected middle to a set of bytes found.");
-        }
+        if (pendingBytes !== undefined) {
+          const appendBytes = new Uint8Array(content.buffer, index, length);
 
-        const appendBytes = new Uint8Array(content.buffer, index, length);
+          const newBytes: Uint8Array = new Uint8Array(pendingBytes.byteLength + appendBytes.byteLength);
 
-        const newBytes: Uint8Array = new Uint8Array(pendingBytes.byteLength + appendBytes.byteLength);
+          newBytes.set(pendingBytes);
+          newBytes.set(appendBytes, pendingBytes.byteLength);
 
-        newBytes.set(pendingBytes);
-        newBytes.set(appendBytes, pendingBytes.byteLength);
+          pendingBytes = newBytes;
 
-        pendingBytes = newBytes;
-
-        if (type === 4 /* This is the last part of a record */) {
-          keysParsed += this.addValueFromLog(pendingBytes, 0, pendingBytes.length);
+          if (type === 4 /* This is the last part of a record */) {
+            keysParsed += this.addValueFromLog(pendingBytes, 0, pendingBytes.length);
+          }
+        } else {
+          Log.error("Unexpected middle to a set of bytes found within LevelDB content.");
+          return;
         }
       }
 

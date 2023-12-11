@@ -36,6 +36,8 @@ export default interface IProjectData {
   storageBasePath: string;
   name: string;
   title: string;
+  shortName?: string;
+  creator?: string;
   defaultNamespace?: string;
   scriptEntryPoint?: string;
   description: string;
