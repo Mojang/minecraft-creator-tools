@@ -51,7 +51,7 @@ export enum ProjectInfoDisplayMode {
   summary,
 }
 
-export const SuiteTitles = ["All", "Platform Versions", "Add-on Targeted"];
+export const SuiteTitles = ["All", "Platform Versions", "Add-on Best Practices"];
 
 export enum InfoItemCommand {
   itemSelect,
@@ -92,8 +92,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       isLoading: true,
       loadStatus: undefined,
     };
-
-    //    window.setTimeout(this._generateInfoSet, 1);
   }
 
   private async _generateInfoSet() {
@@ -338,7 +336,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private async _handleInfoItemCommand(command: InfoItemCommand, item: ProjectInfoItem) {
     await this.props.onInfoItemCommand(command, item);
 
-    await this._generateInfoSetInternal(true);
+    //    await this._generateInfoSetInternal(true);
   }
 
   render() {

@@ -1005,7 +1005,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       storage = this._zipStorage;
     }
 
-    await storage.loadFromUint8Array(content);
+    await storage.loadFromUint8Array(content, this._file?.name);
 
     const rootFolder = storage.rootFolder;
 

@@ -116,7 +116,7 @@ export default class ProjectItemManager {
           return undefined;
         }
 
-        await zipStorage.loadFromUint8Array(containerFile.content);
+        await zipStorage.loadFromUint8Array(containerFile.content, containerFile.name);
         containerFile.fileContainerStorage = zipStorage;
         containerFile.fileContainerStorage.storagePath = containerFilePath + "#";
       }

@@ -1,4 +1,4 @@
-import { Component, SyntheticEvent } from "react";
+import { Component, SyntheticEvent, UIEvent } from "react";
 import IAppProps from "./IAppProps";
 import Project from "./../app/Project";
 import { ProjectItemErrorStatus, ProjectItemType } from "./../app/IProjectItemData";
@@ -121,11 +121,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._handleNewEntityType = this._handleNewEntityType.bind(this);
     this._handleNewBlockType = this._handleNewBlockType.bind(this);
     this._doUpdate = this._doUpdate.bind(this);
+    this._handleListScroll = this._handleListScroll.bind(this);
 
     this.state = {
       activeItem: undefined,
       dialogMode: PIL_NO_DIALOG,
-      maxItemsToShow: 3000,
+      maxItemsToShow: 300,
     };
 
     this._projectUpdated();
@@ -144,6 +145,23 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   _newBlockTypeUpdated(baseTypeId: string | undefined, name: string | undefined) {
     this.tentativeNewBlockTypeBaseId = baseTypeId;
     this.tentativeNewBlockTypeName = name;
+  }
+
+  _handleListScroll(event: UIEvent<HTMLDivElement>) {
+    if (event.currentTarget && this.props.project) {
+      if (
+        event.currentTarget.scrollTop >
+          event.currentTarget.scrollHeight -
+            (event.currentTarget.offsetHeight + event.currentTarget.scrollHeight / 20) &&
+        this.state.maxItemsToShow < this.props.project.items.length
+      ) {
+        this.setState({
+          activeItem: this.state.activeItem,
+          dialogMode: this.state.dialogMode,
+          maxItemsToShow: this.state.maxItemsToShow + Math.min(this.state.maxItemsToShow, 1100),
+        });
+      }
+    }
   }
 
   _githubProjectUpdated(property: GitHubPropertyType, value?: string) {
@@ -829,7 +847,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       if (StorageUtilities.getTypeFromName(path) === "json") {
         itemMenu.push({
-          key: "viewAsJson",
+          key: "viewAsJson" + projectItem.storagePath,
           content: "View as JSON",
           tag: projectItem.storagePath,
         });
@@ -1434,6 +1452,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
               minHeight: listHeight,
             }}
             className="pil-list"
+            onScroll={this._handleListScroll}
           >
             <List
               selectable

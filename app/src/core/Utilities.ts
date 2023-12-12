@@ -19,31 +19,7 @@ export default class Utilities {
 
   static get isDebug(): boolean {
     if (Utilities._isDebug === undefined) {
-      if (AppServiceProxy.hasAppService) {
-        // @ts-ignore
-        if (typeof window !== "undefined") {
-          // @ts-ignore
-          if (window.location.href.indexOf("localhost") >= 0) {
-            Utilities._isDebug = true;
-          }
-        }
-
-        if (!Utilities._isDebug) {
-          Utilities._isDebug = false;
-        }
-        // @ts-ignore
-      } else if (typeof window !== "undefined") {
-        // @ts-ignore
-        const query = window.location.search.toLowerCase();
-
-        if (query.indexOf("debug=true") >= 0) {
-          Utilities._isDebug = true;
-        } else {
-          Utilities._isDebug = false;
-        }
-      } else {
-        Utilities._isDebug = false;
-      }
+	Utilities._isDebug = false;
     }
 
     return Utilities._isDebug;

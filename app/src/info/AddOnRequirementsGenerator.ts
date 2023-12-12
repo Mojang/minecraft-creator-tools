@@ -192,7 +192,9 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       }
 
       if (childFolder && !folder.errorStatus) {
-        if (
+        if (folderNameCanon === "structures") {
+          await this.generateFromFirstLevelFolderCreator_Game(project, childFolder, items);
+        } else if (
           folderNameCanon !== "texts" &&
           folderNameCanon !== "entities" &&
           folderNameCanon !== "particles" &&
@@ -207,7 +209,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
           folderNameCanon !== "render_controllers" &&
           folderNameCanon !== "blocks"
         ) {
-          await this.generateFromFirstLevelFolder(project, childFolder, items);
+          await this.generateFromFirstLevelFolderCreatorNameGameName(project, childFolder, items);
         }
       }
     }
@@ -245,7 +247,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
           folderNameCanon !== "animation_controllers" &&
           folderNameCanon !== "animations"
         ) {
-          await this.generateFromFirstLevelFolder(project, childFolder, items);
+          await this.generateFromFirstLevelFolderCreatorNameGameName(project, childFolder, items);
         }
       }
     }
@@ -276,8 +278,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
     return UniqueRegEx.test(name);
   }
-
-  async generateFromFirstLevelFolder(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
+  async generateFromFirstLevelFolderCreator_Game(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
     await folder.load(false);
 
     for (const fileName in folder.files) {
@@ -290,17 +291,85 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
             fileNameCanon !== "item_texture.json" &&
             fileNameCanon !== "terrain_texture.json")) &&
         (folder.name !== "sounds" || fileNameCanon !== "sound_definitions.json")
-      )
+      ) {
+        const file = folder.files[fileName];
+
+        const projectItem = file?.extendedPath ? project.getItemByExtendedOrStoragePath(file?.extendedPath) : undefined;
+
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.testCompleteFail,
+            this.id,
+            111,
+            `Found a loose file in the ${folder.name} folder. Should only see files in the folder ${folder.name}\\creatorshortname_gamename\\`,
+            projectItem,
+            fileName
+          )
+        );
+      }
+    }
+
+    let folderCount = 0;
+    for (const folderName in folder.folders) {
+      const folderNameCanon = StorageUtilities.canonicalizeName(folderName);
+      folderCount++;
+      if (AddOnRequirementsGenerator.isUniqueNamespaceOrShortName(folderNameCanon)) {
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.testCompleteFail,
+            this.id,
+            109,
+            `Found an add-on-blocked folder '${folderName}' in a parent folder pack\\${folder.name}. Should be named 'creatorshortname' and not a common term`,
+            undefined,
+            folderName
+          )
+        );
+      }
+    }
+
+    if (folderCount > 1) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.testCompleteFail,
+          this.id,
+          110,
+          `Folder '${folder.name}' has more than one subfolder, which is not supported. There should only be one folder in pack\\${folder.name}\\<studioname>_<mygamename>`,
+          undefined,
+          folder.name
+        )
+      );
+    }
+  }
+
+  async generateFromFirstLevelFolderCreatorNameGameName(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
+    await folder.load(false);
+
+    for (const fileName in folder.files) {
+      const fileNameCanon = StorageUtilities.canonicalizeName(fileName);
+
+      if (
+        (folder.name !== "functions" || fileNameCanon !== "tick.json") &&
+        (folder.name !== "textures" ||
+          (fileNameCanon !== "flipbook_textures.json" &&
+            fileNameCanon !== "item_texture.json" &&
+            fileNameCanon !== "terrain_texture.json")) &&
+        (folder.name !== "sounds" || fileNameCanon !== "sound_definitions.json")
+      ) {
+        const file = folder.files[fileName];
+
+        const projectItem = file?.extendedPath ? project.getItemByExtendedOrStoragePath(file?.extendedPath) : undefined;
+
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
             101,
             `Found a loose file in the ${folder.name} folder. Should only see files in the folder ${folder.name}\\creatorshortname\\gamename\\`,
-            undefined,
+            projectItem,
             fileName
           )
         );
+      }
     }
 
     for (const folderName in folder.folders) {
@@ -321,12 +390,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       const childFolder = folder.folders[folderName];
 
       if (childFolder) {
-        await this.generateFromSecondLevelFolder(project, folder.name, childFolder, items);
+        await this.generateFromSecondLevelFolderGameName(project, folder.name, childFolder, items);
       }
     }
   }
 
-  async generateFromSecondLevelFolder(
+  async generateFromSecondLevelFolderGameName(
     project: Project,
     parentFolderName: string,
     folder: IFolder,
@@ -335,13 +404,17 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     await folder.load(false);
 
     for (const fileName in folder.files) {
+      const file = folder.files[fileName];
+
+      const projectItem = file?.extendedPath ? project.getItemByExtendedOrStoragePath(file.extendedPath) : undefined;
+
       items.push(
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
           this.id,
           104,
           `Found a loose file '${fileName}' in ${parentFolderName}\\${folder.name}. Files should only be in the folder ${parentFolderName}\\${folder.name}\\<mygamename>`,
-          undefined,
+          projectItem,
           fileName
         )
       );

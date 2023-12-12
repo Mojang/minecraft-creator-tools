@@ -1847,6 +1847,31 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
+  getIsLinkShareable() {
+    const proj = this.props.project;
+
+    if (
+      !(
+        (proj.gitHubOwner && proj.gitHubRepoName) ||
+        (proj.originalGitHubOwner !== undefined && proj.originalGitHubRepoName !== undefined)
+      )
+    ) {
+      return false;
+    }
+
+    if (proj.projectCabinetFile) {
+      return false;
+    }
+
+    for (let projectItem of proj.items) {
+      if (projectItem.isFileContainerStorageItem) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   render() {
     const width = WebUtilities.getWidth();
     let isButtonCompact = false;
@@ -1890,15 +1915,16 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     let nextExportKey = "shareableLink";
 
     if (this.props.project.role !== ProjectRole.documentation) {
-      exportKeys[nextExportKey] = {
-        key: nextExportKey,
-        icon: <FontAwesomeIcon icon={faLink} key={nextExportKey} className="fa-lg" />,
-        content: "Shareable Link",
-        onClick: this._handleGetShareableLinkClick,
-        title: "Get a shareable link of this project.",
-      };
-      exportMenu.push(exportKeys[nextExportKey]);
-
+      if (this.getIsLinkShareable()) {
+        exportKeys[nextExportKey] = {
+          key: nextExportKey,
+          icon: <FontAwesomeIcon icon={faLink} key={nextExportKey} className="fa-lg" />,
+          content: "Shareable Link",
+          onClick: this._handleGetShareableLinkClick,
+          title: "Get a shareable link of this project.",
+        };
+        exportMenu.push(exportKeys[nextExportKey]);
+      }
       nextExportKey = "mcpackAddon";
       exportKeys[nextExportKey] = {
         key: nextExportKey,
@@ -2565,7 +2591,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           theme={this.props.theme}
           readOnly={this.props.readOnly}
           heightOffset={heightOffset}
-          forceRawView={this.state.forceRawView}
+          forceRawView={true} //this.state.forceRawView}
           project={this.props.project}
           setActivePersistable={this._setActiveEditorPersistable}
           carto={this.props.carto}

@@ -117,7 +117,7 @@ export default class Pack {
 
           zipStorage.storagePath = file.storageRelativePath + "#";
 
-          await zipStorage.loadFromUint8Array(file.content);
+          await zipStorage.loadFromUint8Array(file.content, file.name);
 
           file.fileContainerStorage = zipStorage;
         }

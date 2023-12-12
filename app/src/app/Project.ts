@@ -1304,6 +1304,10 @@ export default class Project {
     return false;
   }
 
+  get projectCabinetFile() {
+    return this.#projectCabinetFile;
+  }
+
   get defaultScriptModuleUniqueId(): string {
     return this.#data.defaultScriptModuleUniqueId;
   }
@@ -2525,6 +2529,23 @@ export default class Project {
 
   public getItemByStoragePath(storagePath: string): ProjectItem | undefined {
     return this.#itemsByStoragePath[ProjectUtilities.canonicalizeStoragePath(storagePath)];
+  }
+
+  public getItemByExtendedOrStoragePath(storagePath: string): ProjectItem | undefined {
+    let path = ProjectUtilities.canonicalizeStoragePath(storagePath);
+    let result = this.#itemsByStoragePath[path];
+
+    if (result) {
+      return result;
+    }
+
+    let nextSlash = path.indexOf("/", 1);
+
+    if (nextSlash > 1) {
+      return this.#itemsByStoragePath[path.substring(nextSlash)];
+    }
+
+    return undefined;
   }
 
   public ensureItemByStoragePath(

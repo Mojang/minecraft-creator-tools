@@ -94,7 +94,7 @@ export default class LocManager {
           if (lang) {
             await lang.load();
 
-            if (lang.language && lang.containerName) {
+            if (lang.language && lang.containerName !== undefined) {
               for (const tokenName in lang.tokens) {
                 if (this.tokens[tokenName] === undefined) {
                   this.tokens[tokenName] = {};

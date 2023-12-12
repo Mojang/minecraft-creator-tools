@@ -725,7 +725,7 @@ export default class ProjectItem {
 
                   zipStorage.storagePath = zipFile.storageRelativePath + "#";
 
-                  await zipStorage.loadFromUint8Array(zipFile.content);
+                  await zipStorage.loadFromUint8Array(zipFile.content, zipFile.name);
 
                   zipFile.fileContainerStorage = zipStorage;
                 }
@@ -825,7 +825,7 @@ export default class ProjectItem {
 
                 zipStorage.storagePath = zipFile.storageRelativePath + "#";
 
-                await zipStorage.loadFromUint8Array(zipFile.content);
+                await zipStorage.loadFromUint8Array(zipFile.content, zipFile.name);
 
                 zipFile.fileContainerStorage = zipStorage;
               }

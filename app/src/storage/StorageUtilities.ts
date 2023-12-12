@@ -208,7 +208,7 @@ export default class StorageUtilities {
 
       zipStorage = new ZipStorage();
 
-      await zipStorage.loadFromUint8Array(file.content);
+      await zipStorage.loadFromUint8Array(file.content, file.name);
 
       file.fileContainerStorage = zipStorage;
       file.fileContainerStorage.storagePath = file.storageRelativePath + "#";

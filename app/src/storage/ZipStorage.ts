@@ -8,6 +8,7 @@ import StorageUtilities from "./StorageUtilities";
 export default class ZipStorage extends StorageBase implements IStorage {
   private _jsz: JSZip;
 
+  name?: string;
   rootFolder: ZipFolder;
   modified: Date | null = null;
   lastLoadedOrSaved: Date | null = null;
@@ -36,7 +37,6 @@ export default class ZipStorage extends StorageBase implements IStorage {
 
   static zipFixup() {
     if (CartoApp.hostType === HostType.electronNodeJs || CartoApp.hostType === HostType.toolsNodejs) {
-      // console.log("ZIP FIXUP DONE");
       // eslint-disable-next-line
       eval("jszip_1.default = jszip_1");
     }
@@ -70,7 +70,7 @@ export default class ZipStorage extends StorageBase implements IStorage {
     this.lastLoadedOrSaved = new Date();
   }
 
-  async loadFromUint8Array(data: Uint8Array) {
+  async loadFromUint8Array(data: Uint8Array, name?: string) {
     try {
       await this._jsz.loadAsync(data, {
         base64: false,
@@ -82,6 +82,7 @@ export default class ZipStorage extends StorageBase implements IStorage {
 
     // Log.fail("Loading zip file from data " + data.length);
 
+    this.name = name;
     this.updateLastLoadedOrSaved();
 
     await this.rootFolder.load(true);

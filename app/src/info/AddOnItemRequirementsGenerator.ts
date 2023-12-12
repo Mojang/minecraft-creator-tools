@@ -44,7 +44,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                   this.id,
                   100,
                   `Behavior pack animation controller identifier is not in expected form of controller.animation.xyz`,
-                  undefined,
+                  projectItem,
                   bacName
                 )
               );
@@ -55,7 +55,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                   this.id,
                   101,
                   `Behavior pack animation controller name section is not in expected form of controller.animation.creatorshortname_projectshortname`,
-                  undefined,
+                  projectItem,
                   bacName
                 )
               );
@@ -80,7 +80,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                   this.id,
                   110,
                   `Behavior animation identifier is not in expected form of animation.xyz.animation_name`,
-                  undefined,
+                  projectItem,
                   aName
                 )
               );
@@ -91,7 +91,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                   this.id,
                   111,
                   `Behavior pack animation name section is not in expected form of animation.creatorshortname_projectshortname.animation_name`,
-                  undefined,
+                  projectItem,
                   aName
                 )
               );
@@ -116,7 +116,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                   this.id,
                   120,
                   `Resource pack animation controller identifier is not in expected form of controller.animation.xyz`,
-                  undefined,
+                  projectItem,
                   racName
                 )
               );
@@ -127,7 +127,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                   this.id,
                   121,
                   `Resource pack animation controller name section is not in expected form of controller.animation.creatorshortname_projectshortname`,
-                  undefined,
+                  projectItem,
                   racName
                 )
               );
@@ -152,7 +152,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                   this.id,
                   130,
                   `Resource animation identifier is not in expected form of animation.xyz.animation_name`,
-                  undefined,
+                  projectItem,
                   aName
                 )
               );
@@ -163,7 +163,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                   this.id,
                   131,
                   `Resource animation name section is not in expected form of animation.creatorshortname_projectshortname.animation_name`,
-                  undefined,
+                  projectItem,
                   aName
                 )
               );
@@ -188,7 +188,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                   this.id,
                   140,
                   `Resource pack animation controller identifier is not in expected form of controller.render.xyz`,
-                  undefined,
+                  projectItem,
                   rrcName
                 )
               );
@@ -199,7 +199,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                   this.id,
                   141,
                   `Resource pack animation controller name section is not in expected form of controller.render.creatorshortname_projectshortname`,
-                  undefined,
+                  projectItem,
                   rrcName
                 )
               );

@@ -3,6 +3,7 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 
 import LocToken from "./LocToken";
 import StorageUtilities from "../storage/StorageUtilities";
+import ZipStorage from "../storage/ZipStorage";
 
 export default class Lang {
   private _file?: IFile;
@@ -155,7 +156,11 @@ export default class Lang {
         dir = dir.parentFolder;
       }
 
-      this._containerName = dir.name;
+      if (dir.name === "" && !dir.parentFolder && (dir.storage as ZipStorage).name) {
+        this._containerName = (dir.storage as ZipStorage).name;
+      } else {
+        this._containerName = dir.name;
+      }
     }
 
     const lines = content.split("\n");

@@ -65,7 +65,7 @@ export default class JsEslintInfoGenerator implements IProjectInfoGenerator {
 
             zipStorage.storagePath = file.storageRelativePath + "#";
 
-            await zipStorage.loadFromUint8Array(file.content);
+            await zipStorage.loadFromUint8Array(file.content, file.name);
 
             file.fileContainerStorage = zipStorage;
           }
