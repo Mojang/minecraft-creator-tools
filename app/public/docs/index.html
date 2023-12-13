@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+
+    <meta name="description" content="Minecraft Creator Tools" />
+
+    <link rel="apple-touch-icon" href="/logo192.png" />
+
+    <link rel="manifest" href="/manifest.json" />
+
+    <title>Docs - Minecraft Creator Tools </title>
+
+    <style type="text/css">
+      body {
+        background-color: #101010;
+        color: #E0E0E0;
+        margin: 0px;
+        padding: 0px;
+        width: 100vw;
+        height: 100vh;
+        overflow-x: hidden;
+        font-size: medium;
+        font-family: "Noto Sans", "Segoe UI", "Helvetica Neue", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      a {
+        color: #D0D0D0;
+        text-decoration: none;
+      }
+
+      a:hover {
+        color: white;
+        text-decoration: underline;
+      }
+
+      .g-outer {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+      }
+
+      .g-overlay {
+        display: grid;
+        position: fixed;
+        background-color: black;;
+        width: 220px;
+        height: 100vh;
+        max-width: 220px;
+        max-height: 100vh;
+        grid-template-rows: 70px;
+      }
+
+      .g-leftRailSpacerCell {
+        grid-column: 1;
+      }
+      
+      .g-contentsCell {
+        grid-column: 2;
+        padding-left:20px;
+        padding-right:40px;
+        max-width: 800px;
+      }
+
+      .g-logoCell {
+        grid-column: 1;
+        grid-row:1;
+        background-color: black;
+        padding-left: 4px;
+      }
+
+      .g-logoArea {
+        display: grid;
+        grid-template-columns: 76px 1fr;
+      }
+
+      .g-logoImage {
+        grid-column: 1;
+      }
+
+      .g-logo {
+        width: 58px;
+        height: 58px;
+        padding: 11px;        
+      }
+      
+      .g-header {
+        grid-column: 2;
+        text-align: left;
+        padding-top: 8px;
+        font-weight: 700;
+        font-size: medium;
+      }
+
+      .g-bodyCell {
+        grid-row: 2;
+        padding: 12px;
+      }
+
+      h3 {
+        padding-top: 30px;
+        display: block;
+      }
+
+      h4 {
+        padding-top: 10px;
+        display: block;
+      }
+
+      .g-interior {
+        height: 100%;
+        font-size: small;
+        max-width: 600px;
+      }
+
+      .g-tocIndent {
+        padding-left: 20px;
+      }
+
+      ul { 
+        list-style-type: none; 
+        padding-left: 0px;
+      }
+
+      .g-tocHeader {
+        padding-top: 20px;
+        font-weight: bold;
+      }
+
+      .g-spacer {
+        height: 80px;
+      }
+
+      .g-code {
+        font-family: 'Consolas', 'Courier New', Courier, monospace;
+        background-color: #303030;
+        padding-left: 2px;
+        padding-right: 2px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+      }
+
+      .g-caboose {
+        height: 40px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="g-outer">
+      <div class="g-leftRailSpacerCell">&#160;</div>
+      <div class="g-contentsCell">
+        <h2>What it does</h2>
+        <h3 id="validationAnalytics">Validation and Analytics</h3>
+        <div>
+          Minecraft Creator Tools includes a suite of tests and analytics that can be used to build reports across 
+          projects. It can output reports as an HTML file, in addition to being displayed within the site.
+        </div>
+        <div class="g-spacer">&#160;</div>
+        <h2>Apps</h2>
+        <h3 id="toolsSite">https://mctools.dev website</h3>
+        <div>
+          The <a href="https://mctools.dev/" target="_blank">creator tools site</a> is the easiest way to get started - 
+          simply navigate to <a href="https://mctools.dev/" target="_blank">https://mctools.dev</a>. 
+        </div> 
+        <div class="g-caboose">&#160;</div>
+    </div>
+    <div class="g-overlay">
+      <div class="g-logoCell">
+        <div class="g-logoArea">
+          <div class="g-logoImage">
+            <img src="/logo512.png" class="g-logo" alt="Logo image"/>
+          </div>
+          <div class="g-header">
+            Minecraft<br/>Creator<br/>Tools
+          </div>
+        </div>
+      </div>
+      <div class="g-bodyCell">
+        <div class="g-interior">
+          <div class="g-tocHeader">What it does</div>
+          <ul>
+            <li><a href="#validationAnalytics">Validation and Analytics</a></li>
+          </ul>
+
+
+          <div class="g-tocHeader">Apps</div>
+          <ul>
+            <li><a href="#toolsSite">https://mctools.dev website</a></li>
+          </ul>
+
+          <div class="g-tocHeader">Links</div>
+          <ul>
+            <li><a href="license.html">License</a></li>
+            <li><a href="notice.html">Attribution</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -10,6 +10,7 @@ import ZipStorage from "../storage/ZipStorage";
 import Carto from "../app/Carto";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
+import { constants } from "../core/Constants";
 
 interface IShareProjectProps extends IAppProps {
   project: Project;
@@ -51,7 +52,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
   }
 
   async _ensureLoaded() {
-    let url = "https://aka.ms/mctools";
+    let url = constants.homeUrl;
     let baseProjectUrl = url;
     let title = "Project";
     let appendDiffList = false;

@@ -12,6 +12,7 @@ import ProjectItem from "../app/ProjectItem";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "../minecraft/Database";
 import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
+import { constants } from "../core/Constants";
 
 interface IJsonEditorProps extends IFileProps {
   heightOffset: number;
@@ -123,9 +124,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
               enableSchemaRequest: false,
               schemas: [
                 {
-                  uri:
-                    "https://silver-guide-3a7f4789.pages.github.io/res/latest/van/schemas/Minecraft-bedrock-json-schemas-main/" +
-                    schemaPath,
+                  uri: constants.homeUrl + "/res/latest/van/schemas/Minecraft-bedrock-json-schemas-main/" + schemaPath,
                   fileMatch: [modelUriToStr],
                   schema: schemaContent,
                 },

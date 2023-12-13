@@ -665,15 +665,24 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
     let gallery = [];
 
-    gallery.push(<div className="home-areaLoading">Loading...</div>);
+    gallery.push(
+      <div className="home-areaLoading" key="loadingLabel">
+        Loading...
+      </div>
+    );
 
     if (this.state !== null && this.state.gallery !== undefined) {
       gallery = [];
 
-      gallery.push(<div className="home-gallery-label">Tools</div>);
+      gallery.push(
+        <div className="home-gallery-label" key="toolsLabel">
+          Tools
+        </div>
+      );
       gallery.push(
         <div
           className="home-toolTile"
+          key="validateTool"
           style={{
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background,
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground4,
@@ -689,7 +698,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
       if (Utilities.isDebug) {
         gallery.push(
-          <div className="home-starterArea">
+          <div className="home-starterArea" key="starterArea">
             <div className="home-gallery-label">Start from a code snippet, template or starter</div>
             <div className="home-search-area">
               <FormInput
@@ -706,6 +715,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         gallery.push(
           <ProjectGallery
             theme={this.props.theme}
+            key="projGallery"
             search={this.state.search}
             view={ProjectTileDisplayMode.large}
             onGalleryItemCommand={this._handleProjectGalleryCommand}
@@ -717,15 +727,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
 
     if (AppServiceProxy.hasAppService) {
-      openButton = (
-        <span className="home-openButton">
-          <Button
-            onClick={this._handleOpenFolderClick}
-            key="openFolder"
-            content={<ComputerLabel isCompact={false} />}
-          />
-        </span>
-      );
     } else {
       openButton = (
         <span className="home-openLocal">
@@ -980,20 +981,11 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           <div className="home-header">
             <div className="home-header-image">&#160;</div>
             <div className="home-header-sublink">
-              <a
-                href="https://silver-guide-3a7f4789.pages.github.io/docs/"
-                className="home-header-docsLink"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
+              <a href={constants.homeUrl} className="home-header-docsLink" target="_blank" rel="noreferrer noopener">
                 Docs
               </a>
               &#160;&#160;/&#160;&#160;
-              <a
-                href="https://github.com/mojang/minecraft-creator-tools-internal"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
+              <a href="https://github.com/mojang/minecraft-creator-tools" target="_blank" rel="noreferrer noopener">
                 GitHub
               </a>
               {webOnlyLinks}
@@ -1035,7 +1027,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           {storageAction}
           &#160;&#160;
           <a
-            href="https://silver-guide-3a7f4789.pages.github.io/docs/"
+            href={constants.homeUrl + "/docs/"}
             className="home-header-docsLink"
             target="_blank"
             rel="noreferrer noopener"
@@ -1068,9 +1060,9 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground6,
           }}
         >
-          version {constants.version}.{" "}
+          version {constants.version}. very early preview/work in progress.{" "}
           <a
-            href="https://silver-guide-3a7f4789.pages.github.io/docs/license.html"
+            href={constants.homeUrl + "/docs/license.html"}
             className="home-header-docsLink"
             target="_blank"
             rel="noreferrer noopener"
@@ -1083,7 +1075,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           </a>{" "}
           and{" "}
           <a
-            href="https://silver-guide-3a7f4789.pages.github.io/docs/notice.html"
+            href={constants.homeUrl + "/docs/notice.html"}
             className="home-header-docsLink"
             target="_blank"
             rel="noreferrer noopener"

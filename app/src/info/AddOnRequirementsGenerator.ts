@@ -8,7 +8,7 @@ import ProjectInfoSet from "./ProjectInfoSet";
 
 const UniqueRegEx = new RegExp(/[a-zA-Z0-9]{2,}_[a-zA-Z0-9]{2,}:[\w]+/);
 
-const CommonList = [
+const GenericTermList = [
   "abilities",
   "actions",
   "adventure",
@@ -33,7 +33,6 @@ const CommonList = [
   "cloud",
   "collectables",
   "collectibles",
-  "common",
   "custom_ui",
   "cut_scene",
   "cutscene",
@@ -184,8 +183,20 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
-            100,
+            130,
             `Found feature or feature_rules in an add-on, which is not supported`,
+            undefined
+          )
+        );
+      }
+
+      if (folderNameCanon === "dimensions") {
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.testCompleteFail,
+            this.id,
+            131,
+            `Found dimensions in an add-on, which is not supported`,
             undefined
           )
         );
@@ -227,8 +238,20 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
-            100,
+            133,
             `Found ui elements in an add-on, which is not supported`,
+            undefined
+          )
+        );
+      }
+
+      if (folderNameCanon === "fogs") {
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.testCompleteFail,
+            this.id,
+            132,
+            `Found fogs in an add-on, which is not supported`,
             undefined
           )
         );
@@ -253,10 +276,10 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     }
   }
 
-  static isNameCommon(name: string) {
+  static isNameGenericTerm(name: string) {
     name = StorageUtilities.canonicalizeName(name);
 
-    return CommonList.includes(name);
+    return GenericTermList.includes(name);
   }
 
   static isNamespacedString(name: string) {
@@ -374,7 +397,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
     for (const folderName in folder.folders) {
       const folderNameCanon = StorageUtilities.canonicalizeName(folderName);
-      if (AddOnRequirementsGenerator.isNameCommon(folderNameCanon)) {
+      if (AddOnRequirementsGenerator.isNameGenericTerm(folderNameCanon)) {
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
@@ -424,14 +447,18 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
     for (const childFolderName in folder.folders) {
       const folderNameCanon = StorageUtilities.canonicalizeName(childFolderName);
-      folderCount++;
-      if (AddOnRequirementsGenerator.isNameCommon(folderNameCanon)) {
+
+      if (folderNameCanon !== "common") {
+        folderCount++;
+      }
+
+      if (AddOnRequirementsGenerator.isNameGenericTerm(folderNameCanon)) {
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
             107,
-            `Found an add-on-blocked folder '${childFolderName}' in pack\\${parentFolderName}\\${folder.name}. Should be 'mygamename' and not a common term`,
+            `Found an add-on-blocked folder '${childFolderName}' in pack\\${parentFolderName}\\${folder.name}. Should be 'mygamename' and not a general term`,
             undefined,
             childFolderName
           )
@@ -445,7 +472,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
           InfoItemType.testCompleteFail,
           this.id,
           108,
-          `Secondary folder '${folder.name}' in ${parentFolderName} has more than one subfolder, which is not supported. There should only be one folder in pack\\${parentFolderName}\\${folder.name}\\<mygamename>`,
+          `Secondary folder '${folder.name}' in ${parentFolderName} has more than one subfolder (besides 'common'), which is not supported. There should only be one folder (plus optionally 'common') in pack\\${parentFolderName}\\${folder.name}\\<mygamename>`,
           undefined,
           folder.name
         )

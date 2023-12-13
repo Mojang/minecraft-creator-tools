@@ -144,10 +144,10 @@ export default class ProjectItemEditor
 
   render() {
     let interior = (
-      <div>
-        {this.props.activeProjectItem?.storagePath} - {this.props.activeProjectItem?.itemType} -{" "}
-        {this.props.activeProjectItem?.isLoaded} -{this.props.activeProjectItem?.file?.storageRelativePath} -{" "}
-        {this.props.activeProjectItem?.file?.isContentLoaded ? "loaded" : "unloaded"}
+      <div className="pie-loadingLabel">
+        {this.props.activeProjectItem?.storagePath} -{" "}
+        {this.props.activeProjectItem ? ProjectItem.getDescriptionForType(this.props.activeProjectItem.itemType) : ""} -{" "}
+        {this.props.activeProjectItem?.file?.isContentLoaded ? "loaded." : "loading..."}
       </div>
     );
     let readOnly = this.props.readOnly;
@@ -238,7 +238,6 @@ export default class ProjectItemEditor
             file.setContent("");
           }
 
-          Log.verbose("Showing MCFunction editor for '" + file.storageRelativePath + "'");
           // because electron doesn't work in debug electron due to odd pathing reasons, use a text editor instead
           if (Utilities.isDebug && CartoApp.hostType === HostType.electronWeb) {
             interior = (
@@ -270,11 +269,7 @@ export default class ProjectItemEditor
               />
             );
           }
-        } else if (
-          (file.type === "png" || file.type === "jpg" || file.type === "jpeg" || file.type === "tga") &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          Log.verbose("Showing image editor for '" + file.storageRelativePath + "'");
+        } else if (file.type === "png" || file.type === "jpg" || file.type === "jpeg" || file.type === "tga") {
           interior = (
             <ImageEditor
               readOnly={this.props.readOnly}
@@ -290,7 +285,6 @@ export default class ProjectItemEditor
           projItem.itemType === ProjectItemType.entityTypeBehaviorJson &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
-          Log.verbose("Showing entity type editor for '" + file.storageRelativePath + "'");
           interior = (
             <EntityTypeEditor
               readOnly={this.props.readOnly}
@@ -383,7 +377,6 @@ export default class ProjectItemEditor
             file.setContent("");
           }
 
-          Log.verbose("Showing Json editor for '" + file.storageRelativePath + "'");
           // because electron doesn't work in debug electron due to odd pathing reasons, use a text editor instead
           if (Utilities.isDebug && CartoApp.hostType === HostType.electronWeb) {
             interior = (

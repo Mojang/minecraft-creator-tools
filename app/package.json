@@ -1,6 +1,6 @@
 {
   "name": "mctools",
-  "version": "0.1.59",
+  "version": "0.1.63",
   "productName": "Minecraft Creator Tools",
   "description": "Minecraft Creator Tools for building Bedrock Edition add-ons.",
   "private": true,
