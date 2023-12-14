@@ -1,14 +1,12 @@
 # Project Structure
 
-Most logic source is located under the /app folder. This application compiles to a web app (`npm run web` and/or `gulp webbuild`), as an Electron app (`npm run app`), as a command line tool (`gulp jsnbuild`), and as a VSCode extension (`gulp vscbuild`).  Also, there is a small suite of tests (`npm run test`).  There is also a special built version of Minecraft Creator Tools called "Minecraft Server Manager" that focuses more simply on just managing dedicated servers.
-
-A key feature of this project is that it attempts to have one codebase that can cross-compile to different form factors. In some cases, the target is a more simple monolithic web application. In other cases - like the VS Code Extension - the architecture is a bit more complicated; most of the logic basically runs like a NodeJS app with Panes and File Viewers being web apps that connect to the NodeJS app via message passing.
+Most logic source is located under the /app folder. This application compiles to a web app (`npm run web` and/or `gulp webbuild`) and as NodeJS-compatible libraries (`gulp jsncorebuild`).  Also, there is a small suite of tests (`npm run test`).  
 
 ## Core Types: Carto, Project, and ProjectItem
 
 ![Structure of Carto, Project, Project Item objects type diagram](./misc/code/cartoproject.png)
 
-#### Carto
+### Carto
 
 Carto is the main "global object" of the project. Carto should be generally insulated from the details of the platform/form factor it is loaded within.
 
@@ -18,16 +16,15 @@ It:
 * Has IStorage objects that represent where preferences are stored (`prefsStorage`), where new projects are stored (`projectsStorage`), deployment storage (in the app version, this is the Minecraft target folder), where worlds are stored (in the app version, this is the minecraftWorlds folder.)
 * has a `loadGallery` function which is where it loads the "gallery" (`IGallery`) of potential starter projects and project items.
 
-#### CartoApp
+### CartoApp
 
 CartoApp represents the application, and attempts to abstract the differences away between the different platforms. It has thunk functions to perform platform-specific operations.
 
 It:
 
 * has the CartoApp.hostType property (and derived methods like .isWeb or .isNodeJs), which is the source of a lot of per-platform special casing
-* has a lot of specific special casing for the Electron app. This should probably move out of CartoApp at some point.
 
-#### Project
+### Project
 
 The Project object is likely the biggest type by code volume in the project. It contains all of the logic for managing a "project". Over time, code has been trying to be moved out from Project into mostly-static-member classes like `ProjectUtilities`, `ProjectTools`, and `ProjectExporter`.
 
@@ -37,7 +34,7 @@ It:
 
 * has a list of project meta preferences (`IProjectData`) that are stored in a JSON file. Typically, Carto manages a folder per-project with this JSON file in an out-of-the-way directory.
 
-#### ProjectItem
+### ProjectItem
 
 The project item represents a single logical "atom" object of the project - e.g., a behavior pack entity type definition or a single .TS file. It uses IProjectItemData - which is typically saved in the parent project's JSON preferences file. Project Items are identified by their canonicalized `storagePath` which should be relative to the root of a Project.  
 
@@ -56,9 +53,6 @@ There are several implementations of the file system abstraction:
 * BrowserStorage: Implements local storage within browsers by wrapping localForage APIs which in-turn wrap browser-standard key-value pair storage APIs.
 * HttpStorage: Implements read-only storage based on files on the web.
 * NodeStorage: Implements storage on top of NodeJS `fs` API primitives.
-* MessageProxyStorage: Implements wrapper storage that uses message passing. For example, in the VSCode context, within a browser pane window, MessageProxyStorage passes messages to the "server" where more facilities for storage are available (e.g., nodeJS based APIs).
-* ElectronStorage: Uses message passing via Electron message-based protocols to pass messages from the Electron client (a web browser) over to the server (the Electron/nodeJS runtime)
-* MementoStorage: Uses VSCode Mementos to implement storage.
 * GitHubStorage: Provides read-only, non-authenticated access to GitHub repos via OctoKit APIs and raw HTTP downloads of binaries. Note that there is a writeable, authenticated implementation but that has atrophied and needs a server-side service element component for managing tokens.
 
 ## Validation & Project Updating
@@ -83,4 +77,4 @@ World code starts with a foundation of NBT parsing, which is needed for understa
 
 ## UX
 
-UX is all React-based for the web. By convention we use the older-style markup of TSX files vs. the alternate pattern of  functional style of React. We use the Monaco OSS engine for code editing, Leaflet for map rendering, and BabylonJS for some initial 3D rendering. OSS FluentUI-react northstar is used for the UX fundamentals.  The one bit of abstraction built into this project is DataForm, which provides Form-esque support for editing of JSON-based structures.
+UX is all React-based for the web. By convention we use the older-style markup of TSX files vs. the alternate functional style of React. We use the Monaco OSS engine for code editing. OSS FluentUI-react northstar is used for the UX fundamentals.  The one bit of abstraction built into this project is DataForm, which provides Form-esque support for editing of JSON-based structures.
