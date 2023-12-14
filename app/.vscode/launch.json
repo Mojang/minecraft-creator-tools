@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "Launch Chrome against localhost",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Mocha tests",
+      "program": "${workspaceFolder}/node_modules/ts-mocha/bin/ts-mocha",
+      "preLaunchTask": "gulp: jsncorebuild",
+      "args": [
+        "-p", "tsconfig.test.json",
+        "-delay",
+        "--no-timeouts",
+        "--colors",
+        "${workspaceFolder}/src/test/**/*.ts"
+      ],
+      "internalConsoleOptions": "openOnSessionStart"
+    }
+  ]
+}

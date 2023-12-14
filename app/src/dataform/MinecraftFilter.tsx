@@ -46,7 +46,7 @@ export default class MinecraftFilter extends Component<IMinecraftFilterProps, IM
       icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
       key: "add",
       onClick: this._addItem,
-      title: "Toggle whether recording actions",
+      title: "Add item",
     });
 
     return (

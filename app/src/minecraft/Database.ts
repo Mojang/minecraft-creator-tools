@@ -33,7 +33,7 @@ export default class Database {
   static latestVersion: string | undefined = undefined;
   static latestPreviewVersion: string | undefined = undefined;
 
-  static dataPath: string = "res/latest/van/";
+  static dataPath: string = "res/latest/";
 
   static minecraftModuleNames = [
     "@minecraft/server-gametest",

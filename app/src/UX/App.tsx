@@ -13,16 +13,13 @@ import Log from "../core/Log";
 import { ProjectFocus, ProjectScriptLanguage } from "../app/IProjectData";
 import CartoApp, { HostType } from "../app/CartoApp";
 import StorageUtilities from "../storage/StorageUtilities";
-import CodeToolbox from "./CodeToolbox";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { CartoEditorViewMode } from "../app/ICartoData";
 import MCWorld from "../minecraft/MCWorld";
-import CodeStartPage from "./CodeStartPage";
 import ProjectItem from "../app/ProjectItem";
 import Utilities from "../core/Utilities";
 import ZipStorage from "../storage/ZipStorage";
 import ProjectUtilities from "../app/ProjectUtilities";
-import CodeToolboxLanding from "./CodeToolboxLanding";
 import ProjectExporter from "../app/ProjectExporter";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
@@ -1148,7 +1145,6 @@ export default class App extends Component<AppProps, AppState> {
     let top = <></>;
     let borderStr = "";
     let height = "100vh";
-    let heightOffset = 0;
 
     if (this.state.mode === AppMode.loading) {
       let message = "loading...";
@@ -1175,48 +1171,6 @@ export default class App extends Component<AppProps, AppState> {
           carto={this.state.carto}
           onModeChangeRequested={this._handleModeChangeRequested}
           onProjectSelected={this._handleProjectSelected}
-        />
-      );
-    } else if (this.state.mode === AppMode.codeToolbox) {
-      interior = (
-        <CodeToolbox
-          theme={this.props.theme}
-          carto={this.state.carto}
-          project={this.state.activeProject}
-          onModeChangeRequested={this._handleModeChangeRequested}
-          onProjectSelected={this._handleProjectSelected}
-        />
-      );
-    } else if (this.state.mode === AppMode.codeStartPage) {
-      interior = (
-        <CodeStartPage
-          theme={this.props.theme}
-          carto={this.state.carto}
-          forceNewProject={false}
-          project={this.state.activeProject}
-          onModeChangeRequested={this._handleModeChangeRequested}
-          onProjectSelected={this._handleProjectSelected}
-        />
-      );
-    } else if (this.state.mode === AppMode.codeStartPageForceNewProject) {
-      interior = (
-        <CodeStartPage
-          theme={this.props.theme}
-          carto={this.state.carto}
-          forceNewProject={true}
-          project={this.state.activeProject}
-          onModeChangeRequested={this._handleModeChangeRequested}
-          onProjectSelected={this._handleProjectSelected}
-        />
-      );
-    } else if (this.state.mode === AppMode.codeLandingForceNewProject) {
-      interior = (
-        <CodeToolboxLanding
-          theme={this.props.theme}
-          carto={this.state.carto}
-          forceNewProject={true}
-          project={this.state.activeProject}
-          onModeChangeRequested={this._handleModeChangeRequested}
         />
       );
     } else if (this.state.mode === AppMode.home) {
@@ -1259,7 +1213,7 @@ export default class App extends Component<AppProps, AppState> {
           project={this.state.activeProject}
           mode={ProjectEditorMode.inspector}
           viewMode={CartoEditorViewMode.mainFocus}
-          readOnly={isReadOnly}
+          readOnly={true}
           onModeChangeRequested={this._handleModeChangeRequested}
         />
       );
@@ -1296,7 +1250,7 @@ export default class App extends Component<AppProps, AppState> {
             project={this.state.activeProject}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
             selectedItem={this.state.selectedItem}
-            readOnly={isReadOnly}
+            readOnly={true}
             onModeChangeRequested={this._handleModeChangeRequested}
           />
         );
@@ -1308,7 +1262,7 @@ export default class App extends Component<AppProps, AppState> {
             project={this.state.activeProject}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
             selectedItem={this.state.selectedItem}
-            readOnly={isReadOnly}
+            readOnly={true}
             onModeChangeRequested={this._handleModeChangeRequested}
           />
         );

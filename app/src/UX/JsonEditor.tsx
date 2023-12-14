@@ -124,7 +124,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
               enableSchemaRequest: false,
               schemas: [
                 {
-                  uri: constants.homeUrl + "/res/latest/van/schemas/Minecraft-bedrock-json-schemas-main/" + schemaPath,
+                  uri: constants.homeUrl + "/res/latest/schemas/Minecraft-bedrock-json-schemas-main/" + schemaPath,
                   fileMatch: [modelUriToStr],
                   schema: schemaContent,
                 },

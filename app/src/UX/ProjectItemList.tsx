@@ -1177,18 +1177,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           content: "New structure",
         },
         {
-          id: "autoscript",
-          key: "autoscript",
-          onClick: this._handleNewAutoScriptClick,
-          content: "New auto-script",
-        },
-        {
-          id: "worldtest",
-          key: "worldtest",
-          onClick: this._handleNewWorldTestClick,
-          content: "New world test",
-        },
-        {
           id: "doctype",
           key: "doctype",
           onClick: this._handleNewDocTypeClick,

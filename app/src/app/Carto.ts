@@ -24,11 +24,8 @@ import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProx
 import CommandRunner from "./CommandRunner";
 import ILocalUtilities from "../local/ILocalUtilities";
 import IMinecraft from "./IMinecraft";
-import RemoteMinecraft from "./RemoteMinecraft";
 import CartoApp, { HostType } from "./CartoApp";
 import MinecraftPush from "./MinecraftPush";
-import ProcessHostedMinecraft from "../clientapp/ProcessHostedProxyMinecraft";
-import MinecraftGameProxyMinecraft from "../clientapp/MinecraftGameProxyMinecraft";
 import { GameType, Generator } from "../minecraft/WorldLevelDat";
 import { BackupType } from "../minecraft/IWorldSettings";
 import Pack from "./Pack";
@@ -75,7 +72,7 @@ export default class Carto {
 
   processHostedMinecraft: IMinecraft | undefined;
   gameMinecraft: IMinecraft | undefined;
-  remoteMinecraft: RemoteMinecraft | undefined;
+  remoteMinecraft: IMinecraft | undefined;
   activeMinecraft: IMinecraft | undefined;
 
   prefsStorage: IStorage;
@@ -1454,31 +1451,15 @@ export default class Carto {
   }
 
   public ensureRemoteMinecraft() {
-    if (this.remoteMinecraft === undefined) {
-      this.remoteMinecraft = new RemoteMinecraft(this);
-    }
-
     return this.remoteMinecraft;
   }
 
   public ensureProcessHostedMinecraft() {
-    if (this.processHostedMinecraft === undefined) {
-      this.processHostedMinecraft = new ProcessHostedMinecraft(this);
-    }
-
     return this.processHostedMinecraft;
   }
 
   public ensureGameMinecraft() {
-    if (this.gameMinecraft === undefined) {
-      this.gameMinecraft = new MinecraftGameProxyMinecraft(this);
-    }
-
-    if (this.autoStartMinecraft && this.successfullyConnectedWebSocketToMinecraft) {
-      (this.gameMinecraft as MinecraftGameProxyMinecraft).start();
-    }
-
-    return this.gameMinecraft;
+   return this.gameMinecraft;
   }
 
   public ensureMinecraft(flavor: MinecraftFlavor) {

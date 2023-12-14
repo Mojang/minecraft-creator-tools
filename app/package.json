@@ -57,9 +57,8 @@
     "web": "react-scripts --max_old_space_size=16384 start",
     "start": "react-scripts --max_old_space_size=16384 start",
     "webbuild": "react-scripts --max_old_space_size=16384 build",
-    "jsnbuild": "gulp jsnbuild",
     "jsncorebuild": "gulp jsncorebuild",
-    "all": "npm install && npm run-script devenv && npm run-script webbuild",
+    "all": "npm install && npm run-script devenv && npm run-script webbuild && npm run-script jsncorebuild",
     "test": "ts-mocha -delay -p tsconfig.test.json src/test/**/*.ts",
     "test-ci": "ts-mocha -delay -p tsconfig.test.json src/test/**/*.ts --reporter json > test/test-results.json",
     "eject": "react-scripts eject"

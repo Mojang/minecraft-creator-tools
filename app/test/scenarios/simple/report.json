@@ -17,10 +17,10 @@
     "chunkCount": 0,
     "features": {
       "Behavior pack manifest content-size count": 1,
-      "Behavior pack manifest content-size total": 18,
-      "Behavior pack manifest content-size max": 18,
-      "Behavior pack manifest content-size min": 18,
-      "Behavior pack manifest content-size average": 18,
+      "Behavior pack manifest content-size total": 28,
+      "Behavior pack manifest content-size max": 28,
+      "Behavior pack manifest content-size min": 28,
+      "Behavior pack manifest content-size average": 28,
       "Image content-size count": 1,
       "Image content-size total": 8092,
       "Image content-size max": 8092,
@@ -100,10 +100,10 @@
       "itemStoragePath": "/behavior_packs/StarterTestsTutorial/manifest.json",
       "features": {
         "content-size count": 1,
-        "content-size total": 18,
-        "content-size max": 18,
-        "content-size min": 18,
-        "content-size average": 18
+        "content-size total": 28,
+        "content-size max": 28,
+        "content-size min": 28,
+        "content-size average": 28
       }
     },
     {
@@ -186,7 +186,20 @@
             10
           ]
         },
-        "modules": [],
+        "modules": [
+          {
+            "description": "Starter Hello World Tests script",
+            "language": "javascript",
+            "type": "script",
+            "uuid": "5784dba1-588a-4f44-9f0d-c55744708353",
+            "version": [
+              0,
+              0,
+              1
+            ],
+            "entry": "scripts/index.js"
+          }
+        ],
         "dependencies": []
       }
     },
@@ -261,6 +274,24 @@
       "message": "No world template was found; base game version check passes."
     },
     {
+      "itemType": 2,
+      "generatorId": "BPENTITYTYPE",
+      "generatorIndex": 2,
+      "message": "Entity Type Runtime Identifier"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "BPENTITYTYPE",
+      "generatorIndex": 3,
+      "message": "Entity Type Identifier"
+    },
+    {
+      "itemType": 2,
+      "generatorId": "BPENTITYTYPE",
+      "generatorIndex": 4,
+      "message": "Entity Type Metadata"
+    },
+    {
       "itemType": 0,
       "generatorId": "BPENTITYTYPE",
       "generatorIndex": 260,
@@ -280,18 +311,6 @@
     },
     {
       "itemType": 2,
-      "generatorId": "ESLINT",
-      "generatorIndex": 1,
-      "message": "JS file: /behavior_packs/StarterTestsTutorial/scripts/index.js"
-    },
-    {
-      "itemType": 2,
-      "generatorId": "ESLINT",
-      "generatorIndex": 1,
-      "message": "JS file: /behavior_packs/StarterTestsTutorial/scripts/starttests.js"
-    },
-    {
-      "itemType": 2,
       "generatorId": "WORLDDATA",
       "generatorIndex": 1,
       "message": "Blocks",
@@ -316,27 +335,6 @@
       "generatorId": "WORLDDATA",
       "generatorIndex": 1,
       "message": "Blocks",
-      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/pack_icon.png"
-    },
-    {
-      "itemType": 2,
-      "generatorId": "WORLDDATA",
-      "generatorIndex": 2,
-      "message": "Block Data",
-      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/pack_icon.png"
-    },
-    {
-      "itemType": 2,
-      "generatorId": "WORLDDATA",
-      "generatorIndex": 3,
-      "message": "Commands",
-      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/pack_icon.png"
-    },
-    {
-      "itemType": 2,
-      "generatorId": "WORLDDATA",
-      "generatorIndex": 1,
-      "message": "Blocks",
       "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
     },
     {
@@ -352,48 +350,6 @@
       "generatorIndex": 3,
       "message": "Commands",
       "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
-    },
-    {
-      "itemType": 2,
-      "generatorId": "WORLDDATA",
-      "generatorIndex": 1,
-      "message": "Blocks",
-      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/starttests.js"
-    },
-    {
-      "itemType": 2,
-      "generatorId": "WORLDDATA",
-      "generatorIndex": 2,
-      "message": "Block Data",
-      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/starttests.js"
-    },
-    {
-      "itemType": 2,
-      "generatorId": "WORLDDATA",
-      "generatorIndex": 3,
-      "message": "Commands",
-      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/starttests.js"
-    },
-    {
-      "itemType": 2,
-      "generatorId": "WORLDDATA",
-      "generatorIndex": 1,
-      "message": "Blocks",
-      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure"
-    },
-    {
-      "itemType": 2,
-      "generatorId": "WORLDDATA",
-      "generatorIndex": 2,
-      "message": "Block Data",
-      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure"
-    },
-    {
-      "itemType": 2,
-      "generatorId": "WORLDDATA",
-      "generatorIndex": 3,
-      "message": "Commands",
-      "itemStoragePath": "/behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure"
     },
     {
       "itemType": 0,
@@ -427,5 +383,6 @@
     }
   ],
   "generatorName": "Minecraft Creator Tools",
-  "generatorVersion": "0.1.58"
+  "suite": 0,
+  "generatorVersion": "0.1.63"
 }

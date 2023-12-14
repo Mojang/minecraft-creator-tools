@@ -85,7 +85,15 @@ class DownloadResources {
 
                               const extension = me.getTypeFromName(filenameCanon);
 
-                              if (extension === "" && filenameCanon.endsWith("/license")) {
+                              if (
+                                (extension === "" || extension === "md") &&
+                                (filenameCanon.endsWith("/notice") ||
+                                  filenameCanon.endsWith("/readme") ||
+                                  filenameCanon.endsWith("/readme.md") ||
+                                  filenameCanon.endsWith("/license") ||
+                                  filenameCanon.endsWith("/license.md") ||
+                                  filenameCanon.endsWith("/notice.md"))
+                              ) {
                                 addFile = true;
                               }
 

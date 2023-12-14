@@ -80,7 +80,8 @@ const mcbetatypedefsigs = [
   "node_modules/@minecraft/server-net/*.d.ts",
 ];
 
-const mcreslistsigs = ["reslist/*.resources.json"];
+const mcreslistsigs = ["reslist/schemas.resources.json"];
+const mcreslistvanillasigs = ["reslist/packs.resources.json"];
 
 function compileVscCoreExeBuild() {
   return gulp
@@ -351,7 +352,11 @@ function buildStableJsonTypeDefs() {
 }
 
 function runDownloadResources() {
-  return gulp.src(mcreslistsigs, { base: "" }).pipe(downloadResources("public/res/latest/van/"));
+  return gulp.src(mcreslistsigs, { base: "" }).pipe(downloadResources("public/res/latest/"));
+}
+
+function runDownloadVanillaResources() {
+  return gulp.src(mcreslistvanillasigs, { base: "" }).pipe(downloadResources("public/res/latest/van/"));
 }
 
 gulp.task("vscwebbuild", gulp.series("clean-vscwebbuild", compileVscWebBuild, "postclean-vscwebbuild"));
@@ -368,7 +373,7 @@ gulp.task("mcbuild", gulp.series(gulp.parallel("clean-mcbuild", "webbuild"), bui
 
 gulp.task("mctypes", gulp.parallel(buildBetaJsonTypeDefs, buildStableJsonTypeDefs));
 
-gulp.task("dlres", gulp.series(runDownloadResources, copyCheckedInRes));
+gulp.task("dlres", gulp.parallel(runDownloadResources, runDownloadVanillaResources, copyCheckedInRes));
 
 gulp.task("devenv", gulp.parallel("mctypes", "dlres", copyMonacoNpmDist));
 

@@ -63,7 +63,6 @@ import ProjectTools from "../app/ProjectTools";
 import { faWindowMaximize } from "@fortawesome/free-regular-svg-icons";
 import FileExplorer from "./FileExplorer";
 import ShareProject from "./ShareProject";
-import CodeToolboxLanding from "./CodeToolboxLanding";
 import LocTokenBox from "./LocTokenBox";
 import { IProjectUpdaterReference } from "../info/IProjectInfoGeneratorBase";
 import FileSystemStorage from "../storage/FileSystemStorage";
@@ -2721,18 +2720,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       }
     } else if (viewMode === CartoEditorViewMode.itemsFocus) {
       column2 = <div className="pe-itemlist pe-colAll">{itemList}</div>;
-    } else if (viewMode === CartoEditorViewMode.codeLanding) {
-      column2 = (
-        <div className="pe-itemlist pe-colAll">
-          <CodeToolboxLanding
-            theme={this.props.theme}
-            onModeChangeRequested={this.props.onModeChangeRequested}
-            carto={this.props.carto}
-            project={this.props.project}
-            forceNewProject={false}
-          />
-        </div>
-      );
     } else if (viewMode === CartoEditorViewMode.toolboxFocus) {
       column2 = (
         <div className="pe-colAll">

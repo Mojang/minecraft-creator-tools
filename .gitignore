@@ -35,7 +35,7 @@ dist/
 node_modules/
 app/public/data/typedefs.beta.json
 app/public/data/typedefs.stable.json
-app/public/res/latest/van/
+app/public/res/latest/
 /~$
 app/nod
 # misc
