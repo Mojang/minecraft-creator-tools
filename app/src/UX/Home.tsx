@@ -110,6 +110,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._handleNewProjectCreatorChange = this._handleNewProjectCreatorChange.bind(this);
     this._handleSelectFolderClick = this._handleSelectFolderClick.bind(this);
     this._handleExportToolClick = this._handleExportToolClick.bind(this);
+    this._handleExportAllKey = this._handleExportAllKey.bind(this);
     this._handleExportAllClick = this._handleExportAllClick.bind(this);
     this._handleNewSearch = this._handleNewSearch.bind(this);
     this._handleConnectClick = this._handleConnectClick.bind(this);
@@ -372,6 +373,12 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
 
     this.props.onModeChangeRequested(AppMode.exporterTool);
+  }
+
+  async _handleExportAllKey(event: React.KeyboardEvent) {
+    if (event.key === "Enter") {
+      await this._handleExportAllClick();
+    }
   }
 
   async _handleExportAllClick() {
@@ -919,7 +926,13 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       storageAction = (
         <span>
           &#160;&#160;
-          <span className="home-clickLink" onClick={this._handleExportAllClick}>
+          <span
+            className="home-clickLink"
+            tabIndex={0}
+            role="button"
+            onClick={this._handleExportAllClick}
+            onKeyDown={this._handleExportAllKey}
+          >
             Save backups
           </span>
           .
@@ -985,7 +998,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
                 Docs
               </a>
               &#160;&#160;/&#160;&#160;
-              <a href="https://github.com/mojang/minecraft-creator-tools" target="_blank" rel="noreferrer noopener">
+              <a href={constants.repositoryUrl} target="_blank" rel="noreferrer noopener">
                 GitHub
               </a>
               {webOnlyLinks}
@@ -1040,7 +1053,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           </a>{" "}
           and{" "}
           <a
-            href="https://github.com/mojang/minecraft-creator-tools-internal"
+            href={constants.repositoryUrl}
             className="home-header-docsLink"
             target="_blank"
             rel="noreferrer noopener"
