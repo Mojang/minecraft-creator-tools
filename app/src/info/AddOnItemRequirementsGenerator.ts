@@ -11,6 +11,8 @@ import BehaviorAnimation from "../minecraft/BehaviorAnimation";
 import ResourceAnimationController from "../minecraft/ResourceAnimationController";
 import ResourceAnimation from "../minecraft/ResourceAnimation";
 import ResourceRenderController from "../minecraft/ResourceRenderController";
+import ResourceManifestJson from "../minecraft/ResourceManifestJson";
+import BehaviorManifestJson from "../minecraft/BehaviorManifestJson";
 
 export default class AddOnItemRequirementsGenerator implements IProjectInfoItemGenerator {
   id = "ADDONIREQ";
@@ -27,7 +29,62 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
   async generate(projectItem: ProjectItem): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
-    if (projectItem.itemType === ProjectItemType.animationControllerBehaviorJson) {
+    if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
+      await projectItem.ensureFileStorage();
+
+      if (projectItem.file) {
+        const rpManifest = await ResourceManifestJson.ensureOnFile(projectItem.file);
+
+        if (rpManifest) {
+          await rpManifest.load();
+
+          if (!rpManifest.packScope) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.testCompleteFail,
+                this.id,
+                140,
+                `Resource pack manifest does not specify that header/pack_scope should be 'world'`,
+                projectItem
+              )
+            );
+          }
+          if (!rpManifest.productType) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.testCompleteFail,
+                this.id,
+                141,
+                `Resource pack manifest does not specify a metadata/product_type that should be 'addon'`,
+                projectItem
+              )
+            );
+          }
+        }
+      }
+    } else if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
+      await projectItem.ensureFileStorage();
+
+      if (projectItem.file) {
+        const bpManifest = await BehaviorManifestJson.ensureOnFile(projectItem.file);
+
+        if (bpManifest) {
+          await bpManifest.load();
+
+          if (!bpManifest.productType) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.testCompleteFail,
+                this.id,
+                142,
+                `Behavior pack manifest does not specify a metadata/product_type that should be 'addon'`,
+                projectItem
+              )
+            );
+          }
+        }
+      }
+    } else if (projectItem.itemType === ProjectItemType.animationControllerBehaviorJson) {
       await projectItem.ensureFileStorage();
 
       if (projectItem.file) {

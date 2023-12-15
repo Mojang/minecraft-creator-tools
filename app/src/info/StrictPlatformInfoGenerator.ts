@@ -59,7 +59,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
                     this.id,
                     100,
                     `Uses a minecraft: identifier override`,
-                    undefined,
+                    pi,
                     desc.identifier
                   )
                 );
@@ -76,7 +76,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
                     this.id,
                     100,
                     `Uses a runtime_identifier override`,
-                    undefined,
+                    pi,
                     desc.runtime_identifier
                   )
                 );

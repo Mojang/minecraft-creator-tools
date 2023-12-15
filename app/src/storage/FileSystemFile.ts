@@ -237,19 +237,7 @@ export default class FileSystemFile extends FileBase implements IFile {
 
   async saveContent(force?: boolean): Promise<Date> {
     if (this.needsSave || force) {
-      /*const contentDescript = "null";
-
-      if (this.content instanceof Uint8Array) {
-        contentDescript = this.content.length + " bytes";
-      } else if (typeof this.content === "string") {
-        contentDescript = this.content.length + " text";
-      }*/
-
       Log.assert(this.content !== null, "Null content found.");
-
-      // Log.debug("Saving file " + contentDescript + " to '" + this.fullPath + "'");
-
-      //await localforage.setItem(this.fullPath, this.content);
 
       if (this.content !== null) {
         const handle = await this.ensureWriteHandle();

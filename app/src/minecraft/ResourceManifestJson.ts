@@ -1,7 +1,7 @@
 import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
-import IAddonManifest, { IAddonManifestHeader } from "./IAddonManifest";
+import { IAddonManifestHeader, IResourcePackManifest } from "./IAddonManifest";
 import Utilities from "../core/Utilities";
 import Project from "../app/Project";
 
@@ -11,7 +11,7 @@ export default class ResourceManifestJson {
   private _version?: string;
   private _isLoaded: boolean = false;
 
-  public definition?: IAddonManifest;
+  public definition?: IResourcePackManifest;
 
   private _onLoaded = new EventDispatcher<ResourceManifestJson, ResourceManifestJson>();
 
@@ -43,6 +43,22 @@ export default class ResourceManifestJson {
     if (this.definition && this.definition.header && newDescription) {
       this.definition.header.description = newDescription;
     }
+  }
+
+  public get packScope() {
+    if (!this.definition || !this.definition.header) {
+      return undefined;
+    }
+
+    return this.definition.header.pack_scope;
+  }
+
+  public get productType() {
+    if (!this.definition || !this.definition.metadata) {
+      return undefined;
+    }
+
+    return this.definition.metadata.product_type;
   }
 
   public get name() {

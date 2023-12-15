@@ -1,9 +1,11 @@
 import BrowserFolder from "./BrowserFolder";
 import StorageBase from "./StorageBase";
 import IStorage from "./IStorage";
+import localforage from "localforage";
 
 export default class BrowserStorage extends StorageBase implements IStorage {
   rootFolder: BrowserFolder;
+  static isConfigured: boolean = false;
 
   static readonly folderDelimiter = "/";
 
@@ -14,6 +16,16 @@ export default class BrowserStorage extends StorageBase implements IStorage {
       name = "";
     } else {
       name = "." + name;
+    }
+
+    if (!BrowserStorage.isConfigured) {
+      localforage.config({
+        name: "Minecraft Creator Tools",
+        storeName: "minecraft_creator_tools",
+        version: 1.0,
+      });
+
+      BrowserStorage.isConfigured = true;
     }
 
     this.rootFolder = new BrowserFolder(this, null, "fs" + name, "root");

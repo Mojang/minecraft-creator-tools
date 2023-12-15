@@ -195,7 +195,7 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
       await this._parentFolder.save(true);
     }
 
-    throw new Error("Not implemented."); // need to add considerable localforage remapping, including remapping and removing source keys
+    throw new Error("Not implemented.");
 
     //return true;
   }
