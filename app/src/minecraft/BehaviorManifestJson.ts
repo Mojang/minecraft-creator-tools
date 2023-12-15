@@ -30,6 +30,14 @@ export default class BehaviorManifestJson {
     return this._onLoaded.asEvent();
   }
 
+  public get productType() {
+    if (!this.definition || !this.definition.metadata) {
+      return undefined;
+    }
+
+    return this.definition.metadata.product_type;
+  }
+
   public get description() {
     if (!this.definition || !this.definition.header) {
       return undefined;
@@ -72,6 +80,22 @@ export default class BehaviorManifestJson {
     }
 
     this._id = newId;
+  }
+
+  public getNonInternalDependencyCount() {
+    if (!this.definition || !this.definition.dependencies) {
+      return 0;
+    }
+
+    let count = 0;
+
+    for (let dependency of this.definition.dependencies) {
+      if (dependency.uuid) {
+        count++;
+      }
+    }
+
+    return count;
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<BehaviorManifestJson, BehaviorManifestJson>) {

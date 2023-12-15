@@ -1603,7 +1603,7 @@ export default class Project {
 
     if (
       folderContext === FolderContext.unknown &&
-      folder.files["manifest.json"] &&
+      (folder.files["manifest.json"] || folder.files["pack_manifest.json"]) &&
       !folder.files["level.dat"] &&
       !folder.files["levelname.txt"]
     ) {
@@ -1667,7 +1667,7 @@ export default class Project {
             const baseName = StorageUtilities.getBaseFromName(candidateFile.name);
             const folderPath = StorageUtilities.canonicalizePath(StorageUtilities.getPath(projectPath));
 
-            if (canonFileName === "manifest.json") {
+            if (canonFileName === "manifest.json" || canonFileName === "pack_manifest.json") {
               if (folderContext === FolderContext.resourcePack) {
                 this.#defaultResourcePackFolder = folder;
                 this.#resourcePacksContainer = parentFolder;
@@ -2467,7 +2467,11 @@ export default class Project {
   public async processProjectFolder(folder: IFolder) {
     await folder.load(false);
 
-    const manifest = folder.files["manifest.json"];
+    let manifest = folder.files["manifest.json"];
+
+    if (manifest === undefined) {
+      manifest = folder.files["pack_manifest.json"];
+    }
 
     if (!this.#projectFolder) {
       throw new Error("Unexpectedly could not find a project folder.");

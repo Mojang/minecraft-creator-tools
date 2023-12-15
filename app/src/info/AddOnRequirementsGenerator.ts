@@ -5,6 +5,11 @@ import { InfoItemType } from "./IInfoItemData";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import ProjectInfoSet from "./ProjectInfoSet";
+import BehaviorManifestJson from "../minecraft/BehaviorManifestJson";
+import { ProjectItemType } from "../app/IProjectItemData";
+import ProjectItem from "../app/ProjectItem";
+import Utilities from "../core/Utilities";
+import ResourceManifestJson from "../minecraft/ResourceManifestJson";
 
 const UniqueRegEx = new RegExp(/[a-zA-Z0-9]{2,}_[a-zA-Z0-9]{2,}:[\w]+/);
 
@@ -153,6 +158,139 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
   async generate(project: Project): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
+    let behaviorPackManifest: undefined | BehaviorManifestJson = undefined;
+    let behaviorPackItem: undefined | ProjectItem = undefined;
+    let resourcePackManifest: undefined | ResourceManifestJson = undefined;
+    let resourcePackItem: undefined | ProjectItem = undefined;
+
+    for (const projectItem of project.items) {
+      if (projectItem.file) {
+        if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
+          if (behaviorPackManifest) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.testCompleteFail,
+                this.id,
+                160,
+                `Found more than one behavior pack manifest, which is not supported`,
+                projectItem
+              )
+            );
+          }
+
+          behaviorPackManifest = await BehaviorManifestJson.ensureOnFile(projectItem.file);
+          behaviorPackItem = projectItem;
+
+          await behaviorPackManifest?.load();
+        } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
+          if (resourcePackManifest) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.testCompleteFail,
+                this.id,
+                161,
+                `Found more than one resource pack manifest, which is not supported`,
+                projectItem
+              )
+            );
+          }
+
+          resourcePackManifest = await ResourceManifestJson.ensureOnFile(projectItem.file);
+          resourcePackItem = projectItem;
+
+          await resourcePackManifest?.load();
+        }
+      }
+    }
+
+    if (!behaviorPackManifest || !behaviorPackManifest.definition) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.testCompleteFail,
+          this.id,
+          163,
+          `Did not find a valid behavior pack manifest.`,
+          undefined
+        )
+      );
+    }
+
+    if (!resourcePackManifest || !resourcePackManifest.definition) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.testCompleteFail,
+          this.id,
+          164,
+          `Did not find a valid resource pack manifest.`,
+          undefined
+        )
+      );
+    }
+
+    if (
+      behaviorPackManifest &&
+      resourcePackManifest &&
+      behaviorPackManifest.definition &&
+      resourcePackManifest.definition
+    ) {
+      if (!behaviorPackManifest.definition.dependencies || behaviorPackManifest.getNonInternalDependencyCount() !== 1) {
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.testCompleteFail,
+            this.id,
+            165,
+            `Did not find exactly one dependency on the corresponding resource pack in the behavior pack manifest.`,
+            behaviorPackItem,
+            behaviorPackManifest.getNonInternalDependencyCount()
+          )
+        );
+      } else if (
+        !behaviorPackManifest.definition.dependencies[0].uuid ||
+        !Utilities.uuidEqual(
+          behaviorPackManifest.definition.dependencies[0].uuid,
+          resourcePackManifest.definition.header.uuid
+        )
+      ) {
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.testCompleteFail,
+            this.id,
+            167,
+            `Behavior pack manifest does not have a proper dependency on the resource pack identifier.`,
+            behaviorPackItem
+          )
+        );
+      }
+
+      if (!resourcePackManifest.definition.dependencies || resourcePackManifest.definition.dependencies.length !== 1) {
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.testCompleteFail,
+            this.id,
+            168,
+            `Did not find exactly one dependency on the corresponding behavior pack in the resource pack manifest.`,
+            resourcePackItem
+          )
+        );
+      } else if (
+        !resourcePackManifest.definition.dependencies[0].uuid ||
+        !Utilities.uuidEqual(
+          resourcePackManifest.definition.dependencies[0].uuid,
+          behaviorPackManifest.definition.header.uuid
+        )
+      ) {
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.testCompleteFail,
+            this.id,
+            169,
+            `Resource pack manifest does not have a proper dependency on the behavior pack identifier.`,
+            behaviorPackItem
+          )
+        );
+      }
+    }
+
     const bpFolder = await project.getDefaultBehaviorPackFolder();
 
     if (bpFolder) {
@@ -266,6 +404,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
           folderNameCanon !== "materials" &&
           folderNameCanon !== "blocks" &&
           folderNameCanon !== "models" &&
+          folderNameCanon !== "attachables" &&
           folderNameCanon !== "render_controllers" &&
           folderNameCanon !== "animation_controllers" &&
           folderNameCanon !== "animations"
