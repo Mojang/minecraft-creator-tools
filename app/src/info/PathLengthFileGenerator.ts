@@ -20,7 +20,17 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
   async generate(project: Project, file: IFile): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
-    const path = file.storageRelativePath;
+    let path = file.storageRelativePath;
+
+    const packStarterFolderHints = ["bp", "rp", "resource pack", "resource packs", "behavior pack", "behavior packs"];
+
+    for (const hint of packStarterFolderHints) {
+      const hintIndex = path.toLowerCase().indexOf("/" + hint + "/");
+
+      if (hintIndex >= 0) {
+        path = path.substring(hintIndex + hint.length + 2);
+      }
+    }
 
     const fSlashSegments = path.split("/");
     const bSlashSegments = path.split("\\");
@@ -31,22 +41,22 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
           InfoItemType.testCompleteFail,
           this.id,
           2,
-          `File path contains more than 9 directory segments, and may not run on all devices`,
+          `File path contains 8 or more directory segments, and may not run on all devices`,
           project.getItemByExtendedOrStoragePath(file.extendedPath),
-          file.storageRelativePath
+          path
         )
       );
     }
 
-    if (path.length > 79) {
+    if (path.length > 80) {
       items.push(
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
           this.id,
           3,
-          `File path contains more than 79 characters, and may not run on all devices`,
+          `File path contains more than 80 characters, and may not run on all devices`,
           project.getItemByExtendedOrStoragePath(file.extendedPath),
-          file.storageRelativePath
+          path
         )
       );
     }
