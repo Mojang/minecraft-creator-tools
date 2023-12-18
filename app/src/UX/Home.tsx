@@ -1,8 +1,8 @@
-import { Component, SyntheticEvent } from "react";
+import { Component, MouseEvent, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
 import { AppMode } from "./App";
 import "./Home.css";
-import { List, Button, ListProps, Dialog, Input, InputProps, ThemeInput, FormInput } from "@fluentui/react-northstar";
+import { List, Button, Dialog, Input, InputProps, ThemeInput, FormInput, MenuButton } from "@fluentui/react-northstar";
 import { NewProjectTemplateType } from "./App";
 import Carto from "./../app/Carto";
 import Project from "./../app/Project";
@@ -27,16 +27,20 @@ import ProjectUtilities from "../app/ProjectUtilities";
 import { ProjectEditorMode } from "./ProjectEditor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import WebUtilities from "./WebUtilities";
 
 enum HomeDialogMode {
   none = 0,
   newProject = 1,
   errorMessage = 2,
+  confirmProjectDelete = 3,
 }
 
 interface IHomeProps extends IAppProps {
   theme: ThemeInput<any>;
   errorMessage: string | undefined;
+  isPersisted?: boolean;
+  onPersistenceUpgraded?: () => void;
   onModeChangeRequested?: (mode: AppMode) => void;
   onProjectSelected?: (project: Project) => void;
   onGalleryItemCommand: (command: GalleryProjectCommand, project: IGalleryProject, name?: string) => void;
@@ -63,6 +67,7 @@ interface IHomeState {
   gallery: IGallery | undefined;
   dialogMode: HomeDialogMode;
   effect: HomeEffect;
+  selectedProject?: string;
   search?: string;
   errorMessage?: string;
   newProjectName?: string;
@@ -74,7 +79,6 @@ interface IHomeState {
 
 export default class Home extends Component<IHomeProps, IHomeState> {
   _carto?: Carto;
-
   constructor(props: IHomeProps) {
     super(props);
 
@@ -100,16 +104,19 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._handleNewProjectSelectedClick = this._handleNewProjectSelectedClick.bind(this);
     this._handleOpenFolderClick = this._handleOpenFolderClick.bind(this);
     this._handleOpenLocalFolderClick = this._handleOpenLocalFolderClick.bind(this);
-    this._handleProjectSelected = this._handleProjectSelected.bind(this);
-    this._handleNewProjectCancel = this._handleNewProjectCancel.bind(this);
+    this._handleProjectClicked = this._handleProjectClicked.bind(this);
+    this._handleDialogCancel = this._handleDialogCancel.bind(this);
     this._handleNewProjectConfirm = this._handleNewProjectConfirm.bind(this);
     this._handleErrorMessageConfirm = this._handleErrorMessageConfirm.bind(this);
+    this._handleDeleteProjectConfirm = this._handleDeleteProjectConfirm.bind(this);
     this._handleNewProjectName = this._handleNewProjectName.bind(this);
     this._handleNewProjectNameChange = this._handleNewProjectNameChange.bind(this);
     this._handleNewProjectShortNameChange = this._handleNewProjectShortNameChange.bind(this);
     this._handleNewProjectCreatorChange = this._handleNewProjectCreatorChange.bind(this);
     this._handleSelectFolderClick = this._handleSelectFolderClick.bind(this);
     this._handleExportToolClick = this._handleExportToolClick.bind(this);
+    this._handleUpgradeStorageKey = this._handleUpgradeStorageKey.bind(this);
+    this._handleUpgradeStorageClick = this._handleUpgradeStorageClick.bind(this);
     this._handleExportAllKey = this._handleExportAllKey.bind(this);
     this._handleExportAllClick = this._handleExportAllClick.bind(this);
     this._handleNewSearch = this._handleNewSearch.bind(this);
@@ -123,6 +130,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._processInputtedEntry = this._processInputtedEntry.bind(this);
     this._processIncomingFile = this._processIncomingFile.bind(this);
     this._startDelayLoadItems = this._startDelayLoadItems.bind(this);
+    this._recentItemContextMenuClick = this._recentItemContextMenuClick.bind(this);
 
     if (typeof window !== "undefined") {
       window.setTimeout(this._startDelayLoadItems, 10);
@@ -253,12 +261,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
   }
 
-  private async _processIncomingFile(
-    path: string,
-    file: File,
-    editorStartMode?: ProjectEditorMode,
-    isReadOnly?: boolean
-  ) {
+  private _processIncomingFile(path: string, file: File, editorStartMode?: ProjectEditorMode, isReadOnly?: boolean) {
     if (file != null && this.props.onNewProjectSelected) {
       let fileName = "File";
 
@@ -375,6 +378,26 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this.props.onModeChangeRequested(AppMode.exporterTool);
   }
 
+  async _handleUpgradeStorageKey(event: React.KeyboardEvent) {
+    if (event.key === "Enter") {
+      await this._handleUpgradeStorageClick();
+    }
+  }
+
+  async _handleUpgradeStorageClick() {
+    const result = await WebUtilities.requestPersistence();
+
+    if (result && this.props.onPersistenceUpgraded) {
+      this.props.onPersistenceUpgraded();
+    } else {
+      this.setState({
+        errorMessage: "Could not change the browser's storage for this site from temporary to a more persistent state.",
+        dialogMode: HomeDialogMode.errorMessage,
+      });
+      return;
+    }
+  }
+
   async _handleExportAllKey(event: React.KeyboardEvent) {
     if (event.key === "Enter") {
       await this._handleExportAllClick();
@@ -467,7 +490,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     });
   }
 
-  private _handleNewProjectCancel() {
+  private _handleDialogCancel() {
     this.setState({
       gallery: this.state?.gallery,
       dialogMode: HomeDialogMode.none,
@@ -475,6 +498,17 @@ export default class Home extends Component<IHomeProps, IHomeState> {
   }
 
   private _handleErrorMessageConfirm() {
+    this.setState({
+      gallery: this.state?.gallery,
+      dialogMode: HomeDialogMode.none,
+    });
+  }
+
+  private async _handleDeleteProjectConfirm() {
+    if (this.state.selectedProject) {
+      await this.props.carto.deleteProjectByName(this.state.selectedProject);
+    }
+
     this.setState({
       gallery: this.state?.gallery,
       dialogMode: HomeDialogMode.none,
@@ -524,21 +558,25 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     if (result && this.props.onNewProjectFromFolderInstanceSelected) {
       const storage = new FileSystemStorage(result);
 
-      await this.props.onNewProjectFromFolderInstanceSelected(storage.rootFolder, result.name);
+      this.props.onNewProjectFromFolderInstanceSelected(storage.rootFolder, result.name);
     }
   }
 
-  private async _handleProjectSelected(elt: any, event: ListProps | undefined) {
+  private async _handleProjectClicked(event: MouseEvent) {
     if (
       event === undefined ||
-      event.selectedIndex === undefined ||
+      (event.currentTarget as HTMLDivElement)?.title === undefined ||
       this.carto === null ||
       this.props.onProjectSelected === undefined
     ) {
       return;
     }
 
-    const newProject = this.props.carto.projects[event.selectedIndex];
+    const newProject = this.props.carto.getProjectByName((event.currentTarget as HTMLDivElement)?.title);
+
+    if (!newProject) {
+      return;
+    }
 
     const folder = await newProject.ensureProjectFolder();
 
@@ -591,7 +629,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     return projectB.modified.getTime() - projectA.modified.getTime();
   }
 
-  private async _handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
+  private _handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
     if (!event.target || !event.target.files || event.target.files.length <= 0 || !this.props.carto.packStorage) {
       return;
     }
@@ -605,7 +643,29 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._processIncomingFile("/", file);
   }
 
-  private async _handleInspectFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
+  _recentItemContextMenuClick(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
+    if (data !== undefined && data.tag !== undefined && this.props.carto !== null) {
+      const project = this.props.carto.getProjectByName(data.tag);
+
+      if (project !== null) {
+        if (data.content === "Delete") {
+          this.setState({
+            gallery: this.state.gallery,
+            dialogMode: HomeDialogMode.confirmProjectDelete,
+            search: this.state.search,
+            effect: this.state.effect,
+            selectedProject: data.tag,
+          });
+        }
+      }
+    }
+
+    e.preventDefault();
+
+    e.bubbles = false;
+  }
+
+  private _handleInspectFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
     if (!event.target || !event.target.files || event.target.files.length <= 0 || !this.props.carto.packStorage) {
       return;
     }
@@ -655,7 +715,13 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
     for (let i = 0; i < sortedProjects.length; i++) {
       const project = sortedProjects[i];
-
+      const itemMenu = [
+        {
+          key: "delete",
+          content: "Delete",
+          tag: project.name,
+        },
+      ];
       let modifiedSummary = "";
 
       if (project.modified != null) {
@@ -664,9 +730,25 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
       projectListItems.push({
         key: "SP" + project.name + i,
-        header: project.name,
-        headerMedia: modifiedSummary,
-        content: " ",
+        content: (
+          <MenuButton
+            contextMenu={true}
+            trigger={
+              <div
+                className="home-recentItem"
+                key={"rei" + i}
+                style={{ minWidth: 282 }}
+                title={project.name}
+                onClick={this._handleProjectClicked}
+              >
+                <span className="home-recentItemLabel">{project.name}</span>
+                <span className="home-recentItemModified">{modifiedSummary}</span>
+              </div>
+            }
+            menu={itemMenu}
+            onMenuItemClick={this._recentItemContextMenuClick}
+          />
+        ),
       });
     }
 
@@ -850,18 +932,14 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           open={true}
           cancelButton="Cancel"
           confirmButton="OK"
-          onCancel={this._handleNewProjectCancel}
+          onCancel={this._handleDialogCancel}
           onConfirm={this._handleNewProjectConfirm}
           content={newDialogInnerContent}
           header={"New Minecraft Project"}
         />
       );
     } else if (this.state?.dialogMode === HomeDialogMode.errorMessage) {
-      const newDialogInnerContent = (
-        <div className="home-dialog">
-          <div className="home-newName">{this.state.errorMessage}</div>
-        </div>
-      );
+      const newDialogInnerContent = <div>{this.state.errorMessage}</div>;
 
       dialogArea = (
         <Dialog
@@ -871,7 +949,26 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           onCancel={this._handleErrorMessageConfirm}
           onConfirm={this._handleErrorMessageConfirm}
           content={newDialogInnerContent}
-          header={"New Minecraft Project"}
+          header={"Error"}
+        />
+      );
+    } else if (this.state?.dialogMode === HomeDialogMode.confirmProjectDelete) {
+      const newDialogInnerContent = (
+        <div>
+          Do you want to delete '{this.state.selectedProject}' from your browser's storage? This action cannot be
+          undone.
+        </div>
+      );
+
+      dialogArea = (
+        <Dialog
+          open={true}
+          cancelButton="Cancel"
+          confirmButton="Delete"
+          onCancel={this._handleDialogCancel}
+          onConfirm={this._handleDeleteProjectConfirm}
+          content={newDialogInnerContent}
+          header={"Delete Project"}
         />
       );
     }
@@ -900,28 +997,51 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     );
 
     if (projectListItems.length > 0) {
-      recentsArea.push(
-        <div key="recentlyOpenedLabel" className="home-projects">
-          Recently opened
-        </div>
-      );
+      if (AppServiceProxy.hasAppService) {
+        recentsArea.push(
+          <div key="recentlyOpenedLabel" className="home-projects">
+            Recently opened
+          </div>
+        );
+      } else {
+        recentsArea.push(
+          <div key="recentlyOpenedLabel" className="home-projects">
+            Projects
+          </div>
+        );
+        if (!this.props.isPersisted) {
+          recentsArea.push(
+            <div key="recentlyNote" className="home-projects-note">
+              (stored in temporary browser storage.){" "}
+              <span
+                className="home-clickLink"
+                tabIndex={0}
+                role="button"
+                onClick={this._handleUpgradeStorageClick}
+                onKeyDown={this._handleUpgradeStorageKey}
+              >
+                Make persistent
+              </span>
+            </div>
+          );
+        } else {
+          recentsArea.push(
+            <div key="recentlyNote" className="home-projects-note">
+              (stored in this device's browser storage.)
+            </div>
+          );
+        }
+      }
       recentsArea.push(
         <div key="homeProjectsList" className="home-projects-list" style={{ maxHeight: projectsListHeight }}>
-          <List
-            selectable
-            defaultSelectedIndex={0}
-            items={projectListItems}
-            onSelectedIndexChange={this._handleProjectSelected}
-          />
+          <List selectable defaultSelectedIndex={0} items={projectListItems} />
         </div>
       );
     }
     let storageAction = <></>;
     let storageMessage = undefined;
 
-    if (AppServiceProxy.hasAppService) {
-      storageMessage = "projects are saved in the mctools subfolder of your Documents library.";
-    } else {
+    if (!AppServiceProxy.hasAppService) {
       storageMessage = "take care: projects are saved locally in your browser's storage on your device.";
       storageAction = (
         <span>
@@ -939,6 +1059,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         </span>
       );
     }
+
     let effectArea = <></>;
 
     if (this.state.effect === HomeEffect.dragOver) {
@@ -980,7 +1101,15 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           </span>
           <div className="home-uploadButton">
             <div className="home-uploadLabel">Start from a zip/MCWorld/MCPack file</div>
-            <input type="file" title="uploadPack" onChange={this._handleFileUpload} />
+            <input
+              type="file"
+              title="uploadPack"
+              style={{
+                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+                color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+              }}
+              onChange={this._handleFileUpload}
+            />
           </div>
         </div>
       );
@@ -1098,6 +1227,19 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             }}
           >
             attribution
+          </a>
+          .{" "}
+          <a
+            href="https://go.microsoft.com/fwlink/?linkid=521839"
+            className="home-header-docsLink"
+            target="_blank"
+            rel="noreferrer noopener"
+            style={{
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground6,
+            }}
+          >
+            Privacy
           </a>
           . © 2023 Mojang AB.
         </div>

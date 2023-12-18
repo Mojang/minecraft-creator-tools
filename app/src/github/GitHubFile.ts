@@ -48,7 +48,7 @@ export default class GitHubFile extends FileBase implements IFile {
     this._name = folderName;
   }
 
-  async deleteFile(): Promise<boolean> {
+  async deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean> {
     throw new Error("Not implemented.");
   }
 

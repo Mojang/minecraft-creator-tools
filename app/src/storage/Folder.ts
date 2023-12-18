@@ -96,6 +96,10 @@ export default class Folder extends FolderBase implements IFolder {
     return candFolder;
   }
 
+  async deleteThisFolder(): Promise<boolean> {
+    throw new Error("Deletion of this folder " + this.fullPath + " is not supported.");
+  }
+
   _addExistingFolder(folder: Folder) {
     const nameCanon = StorageUtilities.canonicalizeName(folder.name);
 

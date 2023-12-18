@@ -533,6 +533,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         }
       }
     }
+
+    e.bubbles = false;
   }
 
   _getTagNameFromItem(item: ProjectItem) {
@@ -733,6 +735,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       case ProjectItemType.packageLockJson:
         return "pack lock";
 
+      case ProjectItemType.textureSetJson:
+        return "texture set";
+
+      case ProjectItemType.lightingJson:
+        return "lighting";
+
       case ProjectItemType.docInfoJson:
         return "info";
 
@@ -889,7 +897,13 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             />
             <MenuButton
               trigger={
-                <span className="pil-contextMenuButton">
+                <span
+                  className={
+                    projectItem === this.props.activeProjectItem
+                      ? "pil-contextMenuButton"
+                      : "pil-contextMenuButton pil-cmbUnfocused"
+                  }
+                >
                   <Button content="..." aria-label="Click button" />
                 </span>
               }
@@ -1013,6 +1027,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         projectItem.itemType === ProjectItemType.resourcePackManifestJson ||
         projectItem.itemType === ProjectItemType.resourcePackListJson ||
         projectItem.itemType === ProjectItemType.renderControllerJson ||
+        projectItem.itemType === ProjectItemType.lightingJson ||
+        projectItem.itemType === ProjectItemType.textureSetJson ||
         projectItem.itemType === ProjectItemType.modelJson ||
         projectItem.itemType === ProjectItemType.material ||
         projectItem.itemType === ProjectItemType.materialSetJson ||

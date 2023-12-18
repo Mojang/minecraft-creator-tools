@@ -41,7 +41,7 @@ export default class ZipFile extends FileBase implements IFile {
     this.lastLoadedOrSaved = null;
   }
 
-  async deleteFile(): Promise<boolean> {
+  async deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean> {
     throw new Error("Not implemented.");
   }
 

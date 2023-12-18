@@ -191,7 +191,7 @@
             "description": "Starter Hello World Tests script",
             "language": "javascript",
             "type": "script",
-            "uuid": "5784dba1-588a-4f44-9f0d-c55744708353",
+            "uuid": "ffcbb853-d468-4311-b7e6-1fb2c854d5d8",
             "version": [
               0,
               0,
@@ -350,6 +350,13 @@
       "generatorIndex": 3,
       "message": "Commands",
       "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
+    },
+    {
+      "itemType": 1,
+      "generatorId": "PATHLENGTH",
+      "generatorIndex": 3,
+      "message": "File path contains more than 79 characters, and may not run on all devices",
+      "data": "/behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure"
     },
     {
       "itemType": 0,

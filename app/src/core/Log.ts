@@ -1,3 +1,4 @@
+import CartoApp from "../app/CartoApp";
 import AppServiceProxy from "./AppServiceProxy";
 import Utilities from "./Utilities";
 import { EventDispatcher } from "ste-events";
@@ -195,7 +196,7 @@ export default class Log {
       LogItem.alertFunction(message + "\r\n\r\n" + stackTrim);
       // debugger;
       return;
-    } else if (AppServiceProxy.hasAppService) {
+    } else if (AppServiceProxy.hasAppService && CartoApp.isWeb) {
       // @ts-ignore
       alert(header + message + "\r\n\r\n" + stack);
       debugger;

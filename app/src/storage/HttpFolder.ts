@@ -112,6 +112,10 @@ export default class HttpFolder extends FolderBase implements IFolder {
     throw new Error("Deletion of file not supported");
   }
 
+  async deleteThisFolder(): Promise<boolean> {
+    throw new Error("Deletion of this folder " + this.fullPath + " is not supported.");
+  }
+
   async load(force: boolean): Promise<Date> {
     if (this.lastProcessed != null && !force) {
       return this.lastProcessed;

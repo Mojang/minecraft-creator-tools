@@ -147,7 +147,7 @@ export default abstract class FileBase implements IFile {
     return this._content !== null;
   }
 
-  abstract deleteFile(): Promise<boolean>;
+  abstract deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean>;
   abstract moveTo(newStorageRelativePath: string): Promise<boolean>;
   abstract loadContent(force?: boolean): Promise<Date>;
   abstract setContent(value: String | Uint8Array | null): void;

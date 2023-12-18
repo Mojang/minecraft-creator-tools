@@ -3,34 +3,18 @@ import Project from "./../app/Project";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
 import IProjectItemInfoGenerator from "./IProjectItemInfoGenerator";
 import IProjectFileInfoGenerator from "./IProjectFileInfoGenerator";
-import ItemCountsInfoGenerator from "./ItemCountsInfoGenerator";
-import PackInformationGenerator from "./PackInfoGenerator";
-import LineSizeInfoGenerator from "./LineSizeInfoGenerator";
 import IProjectInfo from "./IProjectInfo";
 import ProjectInfoItem from "./ProjectInfoItem";
-import SchemaItemInfoGenerator from "./SchemaItemInfoGenerator";
-import UnknownItemGenerator from "./UnknownItemGenerator";
-import UnknownFileGenerator from "./UnknownFileGenerator";
-import WorldItemInfoGenerator from "./WorldItemInfoGenerator";
 import IFolder from "../storage/IFolder";
 import IInfoItemData, { InfoItemType } from "./IInfoItemData";
 import IProjectInfoGeneratorBase, { IProjectInfoTopicData } from "./IProjectInfoGeneratorBase";
 import IProjectInfoData, { ProjectInfoSuite } from "./IProjectInfoData";
-import JsonFileTagsInfoGenerator from "./JsonFileTagsInfoGenerator";
 import { constants } from "../core/Constants";
 import Utilities from "../core/Utilities";
 import Log from "../core/Log";
-import ScriptModuleManager from "../manager/ScriptModuleManager";
-import VsCodeFileManager from "../manager/VsCodeFileManager";
-import MinEngineVersionManager from "../manager/MinEngineVersionManager";
-import BaseGameVersionManager from "../manager/BaseGameVersionManager";
-import BehaviorPackEntityTypeManager from "../manager/BehaviorPackEntityTypeManager";
-import WorldDataInfoGenerator from "./WorldDataInfoGenerator";
 import { StatusTopic } from "../app/Status";
-import PackMetaDataInformationGenerator from "./PackMetaDataInfoGenerator";
-import AddOnRequirementsGenerator from "./AddOnRequirementsGenerator";
-import StrictPlatformInfoGenerator from "./StrictPlatformInfoGenerator";
-import AddOnItemRequirementsGenerator from "./AddOnItemRequirementsGenerator";
+import GeneratorRegistrations from "./GeneratorRegistrations";
+import StorageUtilities from "../storage/StorageUtilities";
 
 export default class ProjectInfoSet {
   project?: Project;
@@ -79,31 +63,6 @@ export default class ProjectInfoSet {
     this._excludeTests = excludeTests;
   }
 
-  static projectGenerators = [
-    new ItemCountsInfoGenerator(),
-    new LineSizeInfoGenerator(),
-    new PackInformationGenerator(),
-    new JsonFileTagsInfoGenerator(),
-    new ScriptModuleManager(),
-    new VsCodeFileManager(),
-    new MinEngineVersionManager(),
-    new BaseGameVersionManager(),
-    new BehaviorPackEntityTypeManager(),
-    new AddOnRequirementsGenerator(),
-    new StrictPlatformInfoGenerator(),
-  ];
-
-  static itemGenerators = [
-    new UnknownItemGenerator(),
-    new PackMetaDataInformationGenerator(),
-    new SchemaItemInfoGenerator(),
-    new WorldItemInfoGenerator(),
-    new WorldDataInfoGenerator(),
-    new AddOnItemRequirementsGenerator(),
-  ];
-
-  static fileGenerators = [new UnknownFileGenerator()];
-
   static getTopicData(id: string, index: number): IProjectInfoTopicData | undefined {
     const gen = ProjectInfoSet._generatorsById[id];
 
@@ -111,7 +70,7 @@ export default class ProjectInfoSet {
       return gen.getTopicData(index);
     }
 
-    for (const gen of ProjectInfoSet.projectGenerators) {
+    for (const gen of GeneratorRegistrations.projectGenerators) {
       if (gen.id === id) {
         this._generatorsById[id] = gen;
 
@@ -149,16 +108,6 @@ export default class ProjectInfoSet {
     return false;
   }
 
-  configureForSuite(
-    generator: IProjectFileInfoGenerator | IProjectInfoGenerator | IProjectItemInfoGenerator | IProjectInfoGeneratorBase
-  ) {
-    if (generator.id === "WORLDDATA" && this.suite === ProjectInfoSuite.addOn) {
-      (generator as WorldDataInfoGenerator).performAddOnValidations = true;
-    } else if (generator.id === "WORLDDATA") {
-      (generator as WorldDataInfoGenerator).performAddOnValidations = false;
-    }
-  }
-
   async generateForProject(force?: boolean) {
     if (force === true && this._completedGeneration) {
       this._completedGeneration = false;
@@ -185,9 +134,9 @@ export default class ProjectInfoSet {
         StatusTopic.validation
       );
 
-      const projGenerators: IProjectInfoGenerator[] = ProjectInfoSet.projectGenerators;
-      const itemGenerators: IProjectItemInfoGenerator[] = ProjectInfoSet.itemGenerators;
-      const fileGenerators: IProjectFileInfoGenerator[] = ProjectInfoSet.fileGenerators;
+      const projGenerators: IProjectInfoGenerator[] = GeneratorRegistrations.projectGenerators;
+      const itemGenerators: IProjectItemInfoGenerator[] = GeneratorRegistrations.itemGenerators;
+      const fileGenerators: IProjectFileInfoGenerator[] = GeneratorRegistrations.fileGenerators;
 
       const genItems: ProjectInfoItem[] = [];
 
@@ -202,7 +151,7 @@ export default class ProjectInfoSet {
         const gen = projGenerators[i];
 
         if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && gen && this.matchesSuite(gen)) {
-          this.configureForSuite(gen);
+          GeneratorRegistrations.configureForSuite(gen, this.suite);
 
           const results = await gen.generate(this.project);
 
@@ -221,7 +170,7 @@ export default class ProjectInfoSet {
           const gen = itemGenerators[j];
 
           if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && this.matchesSuite(gen)) {
-            this.configureForSuite(gen);
+            GeneratorRegistrations.configureForSuite(gen, this.suite);
 
             const results = await gen.generate(pi);
 
@@ -232,7 +181,7 @@ export default class ProjectInfoSet {
         }
       }
 
-      await this.processFolder(await this.project.ensureProjectFolder(), genItems, fileGenerators, 0);
+      await this.processFolder(this.project, await this.project.ensureProjectFolder(), genItems, fileGenerators, 0);
 
       this.addSuccesses(genItems, fileGenerators, this._excludeTests);
       this.addSuccesses(genItems, itemGenerators, this._excludeTests);
@@ -1029,6 +978,7 @@ function _addReportJson(data) {
   }
 
   async processFolder(
+    project: Project,
     folder: IFolder,
     genItems: ProjectInfoItem[],
     fileGenerators: IProjectFileInfoGenerator[],
@@ -1044,17 +994,24 @@ function _addReportJson(data) {
 
         for (const fileGen of fileGenerators) {
           if (this.matchesSuite(fileGen)) {
-            const results = await fileGen.generate(file);
+            const results = await fileGen.generate(project, file);
 
             for (const item of results) {
               genItems.push(item);
             }
           }
         }
+        if (StorageUtilities.isContainerFile(file.storageRelativePath)) {
+          const zipFolder = await StorageUtilities.getFileStorageFolder(file);
+
+          if (zipFolder) {
+            await this.processFolder(project, zipFolder, genItems, fileGenerators, depth + 1);
+          }
+        }
       }
     }
 
-    if (depth < 10) {
+    if (depth < 15) {
       for (const folderName in folder.folders) {
         const childFolder = folder.folders[folderName];
 
@@ -1062,7 +1019,7 @@ function _addReportJson(data) {
           const name = childFolder.name.toLowerCase();
 
           if ((!name.startsWith(".") || name.startsWith(".vscode")) && !name.startsWith("node_modules")) {
-            await this.processFolder(childFolder, genItems, fileGenerators, depth + 1);
+            await this.processFolder(project, childFolder, genItems, fileGenerators, depth + 1);
           }
         }
       }
@@ -1072,9 +1029,9 @@ function _addReportJson(data) {
   generateProjectMetaInfo() {
     this.info = {};
 
-    const projGenerators: IProjectInfoGenerator[] = ProjectInfoSet.projectGenerators;
-    const itemGenerators: IProjectItemInfoGenerator[] = ProjectInfoSet.itemGenerators;
-    const fileGenerators: IProjectFileInfoGenerator[] = ProjectInfoSet.fileGenerators;
+    const projGenerators: IProjectInfoGenerator[] = GeneratorRegistrations.projectGenerators;
+    const itemGenerators: IProjectItemInfoGenerator[] = GeneratorRegistrations.itemGenerators;
+    const fileGenerators: IProjectFileInfoGenerator[] = GeneratorRegistrations.fileGenerators;
 
     for (let j = 0; j < projGenerators.length; j++) {
       projGenerators[j].summarize(this.info, this);
@@ -1114,7 +1071,7 @@ function _addReportJson(data) {
   }
 
   getGeneratorForItem(item: ProjectInfoItem): IProjectInfoGeneratorBase | undefined {
-    const itemGens = ProjectInfoSet.itemGenerators;
+    const itemGens = GeneratorRegistrations.itemGenerators;
 
     for (const itemGen of itemGens) {
       if (itemGen.id === item.generatorId) {
@@ -1122,14 +1079,14 @@ function _addReportJson(data) {
       }
     }
 
-    const fileGens = ProjectInfoSet.fileGenerators;
+    const fileGens = GeneratorRegistrations.fileGenerators;
     for (const fileGen of fileGens) {
       if (fileGen.id === item.generatorId) {
         return fileGen;
       }
     }
 
-    const projGens = ProjectInfoSet.projectGenerators;
+    const projGens = GeneratorRegistrations.projectGenerators;
 
     for (const projGen of projGens) {
       if (projGen.id === item.generatorId) {
@@ -1238,7 +1195,7 @@ function _addReportJson(data) {
   }
 
   async getInfoForItem(projectItem: ProjectItem) {
-    const itemGenerators: IProjectItemInfoGenerator[] = ProjectInfoSet.itemGenerators;
+    const itemGenerators: IProjectItemInfoGenerator[] = GeneratorRegistrations.itemGenerators;
     let genItems: ProjectInfoItem[] = [];
 
     await projectItem.load();

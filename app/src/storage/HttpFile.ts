@@ -99,7 +99,7 @@ export default class HttpFile extends FileBase implements IFile {
     return this.lastLoadedOrSaved;
   }
 
-  async deleteFile(): Promise<boolean> {
+  async deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean> {
     throw new Error("HttpFile is read-only.");
   }
 

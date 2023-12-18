@@ -42,10 +42,12 @@ export default class File extends FileBase implements IFile {
     return this.lastLoadedOrSaved;
   }
 
-  async deleteFile(): Promise<boolean> {
+  async deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean> {
     Log.verbose("Deleting file '" + this.storageRelativePath + "'");
 
-    this._parentFolder._removeFile(this);
+    if (skipRemoveFromParent !== true) {
+      this._parentFolder._removeFile(this);
+    }
 
     return true;
   }

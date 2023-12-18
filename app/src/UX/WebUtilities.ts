@@ -18,27 +18,20 @@ export default class WebUtilities {
       document.documentElement.clientHeight
     );
   }
-  /*
-  static getByteArrayFromFile(file : Blob) {
-    return new Promise((resolve, reject) => {
-      try {
-        const reader = new FileReader();
 
-        reader.readAsArrayBuffer(file);
+  static async requestPersistence() {
+    if (!navigator.storage || !navigator.storage.persist) {
+      return;
+    }
 
-        reader.onloadend = (evt) => {
-          if (evt.target && evt.target.readyState === FileReader.DONE) {
-            const arrayBuffer = evt.target.result;
-            if (arrayBuffer instanceof ArrayBuffer) {
-              const array = new Uint8Array(arrayBuffer);
+    return await navigator.storage.persist();
+  }
 
-              resolve(array);
-            }
-          }
-        };
-      } catch (e) {
-        reject(e);
-      }
-    });
-  }*/
+  static async getIsPersisted() {
+    if (!navigator.storage || !navigator.storage.persist) {
+      return;
+    }
+
+    return await navigator.storage.persisted();
+  }
 }

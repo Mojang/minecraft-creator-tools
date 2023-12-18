@@ -835,8 +835,8 @@ export default class StorageUtilities {
 
     try {
       jsonObject = JSON.parse(contents);
-    } catch (e) {
-      Log.fail("Could not parse JSON from '" + file.fullPath + "'");
+    } catch (e: any) {
+      Log.fail("Could not parse JSON from '" + file.fullPath + "': " + e.message);
     }
 
     return jsonObject;

@@ -1,6 +1,6 @@
 import IGitHubInfo from "./IGitHubInfo";
 
-export const MaxItemTypes = 88;
+export const MaxItemTypes = 90;
 
 export enum ProjectItemType {
   unknown = 0,
@@ -91,6 +91,8 @@ export enum ProjectItemType {
   vertex = 85,
   fragment = 86,
   geometry = 87,
+  lightingJson = 88,
+  textureSetJson = 89,
 }
 
 export enum ProjectItemStorageType {

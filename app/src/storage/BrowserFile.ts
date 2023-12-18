@@ -45,8 +45,12 @@ export default class BrowserFile extends FileBase implements IFile {
     return this.lastLoadedOrSaved != null || this.modified != null;
   }
 
-  async deleteFile(): Promise<boolean> {
-    this._parentFolder._removeFile(this);
+  async deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean> {
+    if (skipRemoveFromParent !== true) {
+      this._parentFolder._removeFile(this);
+
+      await this._parentFolder.save(false);
+    }
 
     await localforage.removeItem(this.fullPath);
 

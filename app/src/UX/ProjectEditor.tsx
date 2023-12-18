@@ -66,6 +66,7 @@ import ShareProject from "./ShareProject";
 import LocTokenBox from "./LocTokenBox";
 import { IProjectUpdaterReference } from "../info/IProjectInfoGeneratorBase";
 import FileSystemStorage from "../storage/FileSystemStorage";
+import { StatusTopic } from "../app/Status";
 
 interface IProjectEditorProps extends IAppProps {
   onModeChangeRequested?: (mode: AppMode) => void;
@@ -564,6 +565,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private async _handleSaveClick() {
     this.save();
   }
+
   private _setItemsOnLeft() {
     // the menu change to hide the dropdown will fire at the same time, and its state changes will overwrite this one.
     // so wait a beat and update state then.
@@ -869,6 +871,26 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     await this.props.project.save();
 
     await this.props.carto.notifyOperationEnded(operId, "Saved '" + projName + "'.");
+
+    await this.ensurePersistentBrowserStorage();
+  }
+
+  private async ensurePersistentBrowserStorage() {
+    if (!AppServiceProxy.hasAppService && !this.props.carto.hasAttemptedPersistentBrowserStorageSwitch) {
+      const isPersisted = WebUtilities.getIsPersisted();
+
+      if (!isPersisted) {
+        const couldPersist = await WebUtilities.requestPersistence();
+        this.props.carto.hasAttemptedPersistentBrowserStorageSwitch = true;
+
+        if (!couldPersist) {
+          this.props.carto.notifyStatusUpdate(
+            "Could not shift to persistent browser storage; project storage is still temporary. Download backups frequently.",
+            StatusTopic.general
+          );
+        }
+      }
+    }
   }
 
   private async _showMinecraftClick() {
@@ -1830,12 +1852,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
   _handleActionClick() {}
 
-  _handleEditCopyClick() {
+  async _handleEditCopyClick() {
     if (this.props === undefined || this.props.onModeChangeRequested === undefined) {
       return;
     }
 
     this.props.onModeChangeRequested(AppMode.project);
+
+    await this.ensurePersistentBrowserStorage();
   }
 
   getProjectTitle() {
@@ -2531,7 +2555,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     if (this.state.mode === ProjectEditorMode.properties) {
       if (this.props.readOnly) {
-        interior = <ProjectDisplay heightOffset={heightOffset} project={this.props.project} carto={this.props.carto} />;
+        interior = (
+          <ProjectDisplay
+            theme={this.props.theme}
+            heightOffset={heightOffset}
+            project={this.props.project}
+            carto={this.props.carto}
+          />
+        );
       } else {
         interior = (
           <ProjectPropertyEditor

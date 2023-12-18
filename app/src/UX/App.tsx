@@ -23,6 +23,7 @@ import ProjectUtilities from "../app/ProjectUtilities";
 import ProjectExporter from "../app/ProjectExporter";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
+import WebUtilities from "./WebUtilities";
 
 export enum NewProjectTemplateType {
   empty,
@@ -55,6 +56,7 @@ interface AppProps {
 interface AppState {
   carto?: Carto;
   mode: AppMode;
+  isPersisted?: boolean;
   errorMessage?: string;
   activeProject: Project | null;
   selectedItem?: string;
@@ -77,6 +79,7 @@ export default class App extends Component<AppProps, AppState> {
     this._handleNewProjectFromFolderInstance = this._handleNewProjectFromFolderInstance.bind(this);
     this._handleProjectSelected = this._handleProjectSelected.bind(this);
     this._handleCartoInit = this._handleCartoInit.bind(this);
+    this._handlePersistenceUpgraded = this._handlePersistenceUpgraded.bind(this);
     this._newProjectFromGallery = this._newProjectFromGallery.bind(this);
     this._handleProjectGalleryCommand = this._handleProjectGalleryCommand.bind(this);
     this._handleLocalGalleryCommand = this._handleLocalGalleryCommand.bind(this);
@@ -212,6 +215,7 @@ export default class App extends Component<AppProps, AppState> {
         const newState = {
           carto: carto,
           mode: mode,
+          isPersisted: this.state.isPersisted,
           activeProject: newProject,
           selectedItem: selValue,
         };
@@ -285,6 +289,7 @@ export default class App extends Component<AppProps, AppState> {
       this.setState({
         carto: this.state.carto,
         mode: result.mode,
+        isPersisted: this.state.isPersisted,
         loadingMessage: this.state.loadingMessage,
         additionalLoadingMessage: this.state.additionalLoadingMessage,
         activeProject: this.state.activeProject,
@@ -305,6 +310,8 @@ export default class App extends Component<AppProps, AppState> {
   private async loadCarto(instance: Carto) {
     await instance.load();
 
+    const isPersisted = await WebUtilities.getIsPersisted();
+
     const newState = this._getStateFromUrl();
     let nextMode = this.state.mode;
 
@@ -319,6 +326,7 @@ export default class App extends Component<AppProps, AppState> {
     const newComponentState = {
       carto: CartoApp.carto,
       mode: nextMode,
+      isPersisted: isPersisted,
       activeProject: this.state.activeProject,
     };
 
@@ -521,6 +529,7 @@ export default class App extends Component<AppProps, AppState> {
       carto: CartoApp.carto,
       mode: AppMode.home,
       activeProject: null,
+      isPersisted: this.state.isPersisted,
       errorMessage: errorMessage,
       initialProjectEditorMode: undefined,
     });
@@ -552,6 +561,7 @@ export default class App extends Component<AppProps, AppState> {
     if (additionalFile && additionalFilePath && this.state && this._isMountedInternal) {
       this.setState({
         carto: carto,
+        isPersisted: this.state.isPersisted,
         mode: AppMode.loading,
         loadingMessage:
           "Loading " + newProjectName + (additionalFilePath.length > 2 ? " from " + additionalFilePath : "") + "...",
@@ -610,6 +620,7 @@ export default class App extends Component<AppProps, AppState> {
       this.setState({
         carto: carto,
         mode: nextMode,
+        isPersisted: this.state.isPersisted,
         activeProject: newProject,
         selectedItem: this.state.selectedItem,
         initialProjectEditorMode: editorStartMode,
@@ -632,6 +643,7 @@ export default class App extends Component<AppProps, AppState> {
 
     this.setState({
       mode: AppMode.project,
+      isPersisted: this.state.isPersisted,
       activeProject: newProject,
     });
   }
@@ -655,6 +667,7 @@ export default class App extends Component<AppProps, AppState> {
 
     this.setState({
       mode: AppMode.project,
+      isPersisted: this.state.isPersisted,
       activeProject: newProject,
     });
   }
@@ -724,6 +737,7 @@ export default class App extends Component<AppProps, AppState> {
     this.setState({
       mode: AppMode.loading,
       activeProject: null,
+      isPersisted: this.state.isPersisted,
       loadingMessage: this._loadingMessage,
       additionalLoadingMessage: undefined,
     });
@@ -750,6 +764,7 @@ export default class App extends Component<AppProps, AppState> {
 
         this.setState({
           mode: newMode,
+          isPersisted: this.state.isPersisted,
           activeProject: proj,
         });
 
@@ -823,6 +838,7 @@ export default class App extends Component<AppProps, AppState> {
     this.setState({
       mode: AppMode.loading,
       activeProject: null,
+      isPersisted: this.state.isPersisted,
       loadingMessage: this._loadingMessage,
       additionalLoadingMessage: undefined,
     });
@@ -914,11 +930,24 @@ export default class App extends Component<AppProps, AppState> {
 
       this.setState({
         mode: newMode,
+        isPersisted: this.state.isPersisted,
         activeProject: newProject,
       });
     }
 
     await carto.notifyOperationEnded(operId, "New project '" + title + "' created.  Have fun!");
+  }
+
+  private async _handlePersistenceUpgraded() {
+    this.setState({
+      mode: this.state.mode,
+      carto: this.state.carto,
+      isPersisted: true,
+      activeProject: this.state.activeProject,
+      selectedItem: this.state.selectedItem,
+      loadingMessage: this.state.loadingMessage,
+      additionalLoadingMessage: this.state.additionalLoadingMessage,
+    });
   }
 
   private async _gitHubAddingMessageUpdater(additionalMessage: string) {
@@ -931,6 +960,7 @@ export default class App extends Component<AppProps, AppState> {
     this.setState({
       mode: this.state.mode,
       carto: this.state.carto,
+      isPersisted: this.state.isPersisted,
       activeProject: this.state.activeProject,
       selectedItem: this.state.selectedItem,
       loadingMessage: message,
@@ -960,6 +990,7 @@ export default class App extends Component<AppProps, AppState> {
 
     this.setState({
       mode: AppMode.project,
+      isPersisted: this.state.isPersisted,
       activeProject: newProject,
     });
   }
@@ -984,6 +1015,7 @@ export default class App extends Component<AppProps, AppState> {
     this.setState({
       mode: AppMode.loading,
       activeProject: null,
+      isPersisted: this.state.isPersisted,
       loadingMessage: this._loadingMessage,
     });
 
@@ -1003,6 +1035,7 @@ export default class App extends Component<AppProps, AppState> {
 
         this.setState({
           mode: newMode,
+          isPersisted: this.state.isPersisted,
           activeProject: proj,
         });
 
@@ -1045,6 +1078,7 @@ export default class App extends Component<AppProps, AppState> {
 
       this.setState({
         mode: newMode,
+        isPersisted: this.state.isPersisted,
         activeProject: newProject,
       });
     }
@@ -1117,6 +1151,7 @@ export default class App extends Component<AppProps, AppState> {
 
     this.setState({
       mode: AppMode.project,
+      isPersisted: this.state.isPersisted,
       activeProject: project,
     });
   }
@@ -1126,6 +1161,7 @@ export default class App extends Component<AppProps, AppState> {
 
     this.setState({
       mode: newMode,
+      isPersisted: this.state.isPersisted,
     });
   };
 
@@ -1134,12 +1170,6 @@ export default class App extends Component<AppProps, AppState> {
 
     if (this.state.carto === undefined) {
       return <div className="app-loading">Loading!</div>;
-    }
-
-    let isReadOnly = false;
-
-    if (this.state.mode === AppMode.projectReadOnly) {
-      isReadOnly = true;
     }
 
     let top = <></>;
@@ -1178,7 +1208,9 @@ export default class App extends Component<AppProps, AppState> {
         <Home
           theme={this.props.theme}
           carto={this.state.carto}
+          isPersisted={this.state.isPersisted}
           errorMessage={this.state.errorMessage}
+          onPersistenceUpgraded={this._handlePersistenceUpgraded}
           onGalleryItemCommand={this._handleProjectGalleryCommand}
           onLocalGalleryItemCommand={this._handleLocalGalleryCommand}
           onModeChangeRequested={this._handleModeChangeRequested}
@@ -1199,7 +1231,7 @@ export default class App extends Component<AppProps, AppState> {
           selectedItem={this.state.selectedItem}
           viewMode={CartoEditorViewMode.mainFocus}
           mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
-          readOnly={isReadOnly}
+          readOnly={true}
           onModeChangeRequested={this._handleModeChangeRequested}
         />
       );
