@@ -100,6 +100,10 @@ export default class NodeFolder extends FolderBase implements IFolder {
     this.files[nameCanon] = file;
   }
 
+  async deleteThisFolder(): Promise<boolean> {
+    throw new Error("Deletion of this folder " + this.fullPath + " is not supported.");
+  }
+
   ensureFolder(name: string): NodeFolder {
     const nameCanon = StorageUtilities.canonicalizeName(name);
 

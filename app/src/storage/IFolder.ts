@@ -36,7 +36,10 @@ export default interface IFolder extends IStorageObject {
 
   dispose(): void;
 
+  deleteThisFolder(): Promise<boolean>;
   deleteFileFromRelativePath(path: string): Promise<boolean>;
+
+  removeFolder(name: string): boolean;
 
   getFileFromRelativePath(serverRelativePath: string): Promise<IFile | undefined>;
   getFolderFromRelativePath(serverRelativePath: string): Promise<IFolder | undefined>;

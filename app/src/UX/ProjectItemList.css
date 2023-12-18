@@ -79,12 +79,24 @@
   grid-column: 2;
   line-height: 1;
   text-align: center;
-  padding: 0px;
-  margin: 2px 4px 0px 10px;
+  padding: 3px 4px 0px 3px;
+  margin: 2px 0px 0px 11px;
   min-height: 32px;
   max-height: 32px;
   padding-bottom: 12px;
   box-shadow: none;
+}
+
+.pil-cmbUnfocused button {
+  opacity: 0;
+}
+
+.pil-contextMenuButton button:hover {
+  opacity: 1;
+}
+
+.pil-contextMenuButton button:focus {
+  opacity: 1;
 }
 
 .pil-name {
@@ -92,11 +104,11 @@
   width: 100%;
   padding-top: 7px;
   padding-bottom: 6px;
-  max-width: 254px;
-  min-width: 254px;
+  max-width: 183px;
+  min-width: 183px;
   margin-right: 2px;
   padding-left: 10px;
-  text-overflow: ellipsis;
+  text-overflow: clip;
   z-index: 90;
   display: block;
   white-space: nowrap;
@@ -114,13 +126,13 @@
   white-space: nowrap;
   float: right;
   top: 9px;
-  left: 180px;
-  background-color: rgba(120, 120, 120, 0.7);
+  left: 186px;
+  background-color: rgba(120, 120, 120);
   position: absolute;
   text-align: center;
-  min-width: 70px;
+  min-width: 66px;
   margin-right: 4px;
-  padding: 3px;
+  padding: 3px 1px 3px 1px;
   z-index: 100;
   line-height: 1;
 }

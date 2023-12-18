@@ -141,6 +141,10 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
     this.storage.notifyFileRemoved(this.storageRelativePath + file.name);
   }
 
+  async deleteThisFolder(): Promise<boolean> {
+    throw new Error("Deletion of this folder " + this.fullPath + " is not supported.");
+  }
+
   async _removeFileExistence(fileName: string) {
     const handle = await this.getHandle();
 

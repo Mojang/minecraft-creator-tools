@@ -107,6 +107,8 @@ export default class Carto {
   _gallery?: IGallery;
   _galleryLoaded: boolean = false;
 
+  hasAttemptedPersistentBrowserStorageSwitch: boolean = false;
+
   private _onMinecraftStateChanged = new EventDispatcher<IMinecraft, CartoMinecraftState>();
   private _onMinecraftRefreshed = new EventDispatcher<IMinecraft, CartoMinecraftState>();
   private _onPropertyChanged = new EventDispatcher<Carto, string>();
@@ -1096,6 +1098,44 @@ export default class Carto {
     return newProject;
   }
 
+  async deleteProjectByName(projectName: string) {
+    let projectToDelete: Project | undefined = undefined;
+
+    for (let i = 0; i < this.projects.length; i++) {
+      const proj = this.projects[i];
+
+      if (proj.name === projectName) {
+        if (projectToDelete !== undefined) {
+          Log.fail("Encountered multiple projects with the same name.");
+          return;
+        }
+
+        projectToDelete = proj;
+      }
+    }
+
+    if (projectToDelete) {
+      await projectToDelete.deleteThisProject();
+
+      this.removeProject(projectToDelete);
+
+      projectToDelete.dispose();
+    }
+  }
+
+  removeProject(project: Project) {
+    const newProjects: Project[] = [];
+
+    for (let i = 0; i < this.projects.length; i++) {
+      const proj = this.projects[i];
+
+      if (proj !== project) {
+        newProjects.push(proj);
+      }
+    }
+    this.projects = newProjects;
+  }
+
   getProjectByName(projectName: string) {
     for (let i = 0; i < this.projects.length; i++) {
       const proj = this.projects[i];
@@ -1459,7 +1499,7 @@ export default class Carto {
   }
 
   public ensureGameMinecraft() {
-   return this.gameMinecraft;
+    return this.gameMinecraft;
   }
 
   public ensureMinecraft(flavor: MinecraftFlavor) {

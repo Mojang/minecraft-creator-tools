@@ -44,7 +44,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                 InfoItemType.testCompleteFail,
                 this.id,
                 140,
-                `Resource pack manifest does not specify that header/pack_scope should be 'world'`,
+                `Resource pack manifest does not specify that header/pack_scope that should be 'world'`,
                 projectItem
               )
             );

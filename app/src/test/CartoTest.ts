@@ -169,7 +169,7 @@ describe("deployJs", async () => {
   it("has expected structure", async () => {
     const project = await _loadProject("deployJs");
 
-    expect(project.items.length).to.equal(4);
+    expect(project.items.length).to.equal(3);
   });
 
   it("deploy outputs match", async () => {

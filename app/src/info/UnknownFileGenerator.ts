@@ -4,6 +4,7 @@ import { InfoItemType } from "./IInfoItemData";
 import IFile from "../storage/IFile";
 import StorageUtilities from "../storage/StorageUtilities";
 import ProjectInfoSet from "./ProjectInfoSet";
+import Project from "../app/Project";
 
 export default class UnknownFileGenerator implements IProjectFileInfoGenerator {
   id = "UNKFILE";
@@ -17,7 +18,7 @@ export default class UnknownFileGenerator implements IProjectFileInfoGenerator {
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
-  async generate(file: IFile): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, file: IFile): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
     if (!StorageUtilities.isUsableFile(file.storageRelativePath)) {
@@ -29,7 +30,8 @@ export default class UnknownFileGenerator implements IProjectFileInfoGenerator {
           this.id,
           2,
           `Unknown type ${ext} file ${file.storageRelativePath} found`,
-          undefined
+          project.getItemByExtendedOrStoragePath(file.extendedPath),
+          file.extendedPath
         )
       );
     }

@@ -81,6 +81,14 @@ export default class BrowserFolder extends FolderBase implements IFolder {
     return true;
   }
 
+  async deleteThisFolder(): Promise<boolean> {
+    let result = await this.recursiveDeleteThisFolder();
+
+    await localforage.removeItem(this.fullPath + BrowserStorage.folderDelimiter);
+
+    return result;
+  }
+
   ensureFolder(name: string): BrowserFolder {
     const nameCanon = StorageUtilities.canonicalizeName(name);
 

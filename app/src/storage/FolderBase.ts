@@ -208,7 +208,7 @@ export default abstract class FolderBase implements IFolder {
     const file = await this.getFileFromRelativePath(path);
 
     if (file !== undefined) {
-      return await file.deleteFile();
+      return await file.deleteThisFile();
     }
 
     return false;
@@ -481,10 +481,22 @@ export default abstract class FolderBase implements IFolder {
     const file = this.files[nameCanon];
 
     if (file !== undefined) {
-      return await file.deleteFile();
+      return await file.deleteThisFile();
     }
 
+    this.files[nameCanon] = undefined;
+
     return false;
+  }
+
+  removeFolder(name: string): boolean {
+    const nameCanon = StorageUtilities.canonicalizeName(name);
+
+    const exists = this.folders[nameCanon] !== undefined;
+
+    this.folders[nameCanon] = undefined;
+
+    return exists;
   }
 
   async rename(name: string): Promise<boolean> {
@@ -497,6 +509,43 @@ export default abstract class FolderBase implements IFolder {
     return await this.moveTo(targetPath);
   }
 
+  async recursiveDeleteThisFolder() {
+    let isAllDeletes = true;
+
+    await this.load(true);
+
+    for (const folderName in this.folders) {
+      const folder = this.folders[folderName];
+
+      if (folder) {
+        if (!(await folder.deleteThisFolder())) {
+          isAllDeletes = false;
+        }
+      }
+    }
+
+    for (const fileName in this.files) {
+      const file = this.files[fileName];
+
+      if (file) {
+        if (!(await file.deleteThisFile(true))) {
+          isAllDeletes = false;
+        }
+      }
+    }
+
+    this.removeMeFromParent();
+
+    return isAllDeletes;
+  }
+
+  removeMeFromParent() {
+    if (this.parentFolder) {
+      this.parentFolder.removeFolder(this.name);
+    }
+  }
+
+  abstract deleteThisFolder(): Promise<boolean>;
   abstract exists(): Promise<boolean>;
   abstract ensureExists(): Promise<boolean>;
 

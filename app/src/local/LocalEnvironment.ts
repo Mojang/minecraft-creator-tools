@@ -9,6 +9,7 @@ import * as crypto from "crypto";
 import Log, { LogItem, LogItemLevel } from "../core/Log";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import JsEslintInfoGenerator from "./JsEslintInfoGenerator";
+import GeneratorRegistrations from "../info/GeneratorRegistrations";
 
 export const consoleText_reset = "\x1b[0m";
 export const consoleText_bright = "\x1b[1m";
@@ -258,7 +259,7 @@ export default class LocalEnvironment {
 
     this.utilities = new LocalUtilities();
 
-    ProjectInfoSet.projectGenerators.push(new JsEslintInfoGenerator());
+    GeneratorRegistrations.projectGenerators.push(new JsEslintInfoGenerator());
 
     if (subscribeToLog) {
       Log.onItemAdded.subscribe(this.handleNewLogMessage);

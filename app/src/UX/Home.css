@@ -3,19 +3,19 @@
     grid-column: 2;
     padding-top: 20px;
     padding-bottom: 16px;
-  }  
+  }
   .home-starterArea {
     padding-top: 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-  }  
+  }
 }
 
 @media only screen and (max-width: 1316px) {
   .home-starterArea {
     padding-top: 20px;
     display: block;
-  }    
+  }
   .home-search-area {
     padding-top: 20px;
     padding-left: 32px;
@@ -57,7 +57,7 @@
   width: 100%;
   display: grid;
   grid-template-rows: 120px 1fr 30px 30px;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: 400px 1fr;
 }
 
 .home-error {
@@ -160,7 +160,7 @@
 
 .home-projects-bin {
   grid-row: 2;
-  min-width: 280px;
+  min-width: 320px;
   padding: 20px;
   grid-column-start: 1;
   grid-column-end: 2;
@@ -169,6 +169,34 @@
 .home-projects {
   font-size: large;
   margin-top: 1px;
+}
+
+.home-recentItem {
+  display: grid;
+  height: 2.8rem;
+  grid-template-columns: 244px 80px;
+}
+
+.home-recentItemLabel {
+  display: block;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  overflow: clip;
+  white-space: nowrap;
+  max-width: 240px;
+  font-size: small;
+  grid-column: 1;
+}
+
+.home-recentItemModified {
+  grid-column: 2;
+  padding-top: 12px;
+  font-size: small;
+  padding-bottom: 12px;
+}
+
+.home-projects-note {
+  font-size: x-small;
   margin-bottom: 10px;
 }
 
@@ -261,7 +289,7 @@
 }
 
 .home-projects-buttonbar {
-  padding-top: 5px;  
+  padding-top: 5px;
   margin-bottom: 20px;
 }
 

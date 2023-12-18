@@ -325,6 +325,10 @@ export default class ProjectItem {
         return "Language translations";
       case ProjectItemType.worldTemplateManifestJson:
         return "World template manifest";
+      case ProjectItemType.textureSetJson:
+        return "Texture Sets";
+      case ProjectItemType.lightingJson:
+        return "Lighting";
       default:
         return "Unknown";
     }
@@ -621,7 +625,7 @@ export default class ProjectItem {
     await this.load();
 
     if (this._file !== null) {
-      this._file.deleteFile();
+      this._file.deleteThisFile();
     }
 
     this._project.removeItem(this);

@@ -2,16 +2,13 @@ import { Component } from "react";
 import IAppProps from "./IAppProps";
 import Project from "../app/Project";
 import "./ProjectDisplay.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Accordion } from "@fluentui/react-northstar";
-
-import { faMap } from "@fortawesome/free-solid-svg-icons";
+import { Accordion, ThemeInput } from "@fluentui/react-northstar";
 
 import ProjectExporter from "../app/ProjectExporter";
-import AppServiceProxy from "../core/AppServiceProxy";
 
 interface IProjectDisplayProps extends IAppProps {
   project: Project;
+  theme: ThemeInput<any>;
   heightOffset: number;
 }
 
@@ -50,22 +47,8 @@ export default class ProjectDisplay extends Component<IProjectDisplayProps, IPro
   }
 
   render() {
-    const localTools = [];
-
     if (this.props === undefined) {
       return <></>;
-    }
-
-    if (this.props.carto.workingStorage !== null && AppServiceProxy.hasAppServiceOrDebug) {
-      localTools.push(
-        <Button
-          content="Open GameTest test world"
-          icon={<FontAwesomeIcon icon={faMap} className="fa-lg" />}
-          onClick={this._pushGameTestReferenceMap}
-          iconPosition="before"
-          primary
-        />
-      );
     }
 
     let versionMajor = this.props.project.versionMajor;
@@ -89,12 +72,25 @@ export default class ProjectDisplay extends Component<IProjectDisplayProps, IPro
     const height = "calc(100vh - " + (this.props.heightOffset + 120) + "px)";
 
     return (
-      <div className="pdisp-outer">
-        <div className="pdisp-header">{this.props.project.title}</div>
+      <div
+        className="pdisp-outer"
+        style={{
+          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+          color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+        }}
+      >
+        <div
+          className="pdisp-header"
+          style={{
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+          }}
+        >
+          {this.props.project.title}
+        </div>
         <div
           className="pdisp-grid"
           style={{
-            minHeight: height,
             maxHeight: height,
           }}
         >
