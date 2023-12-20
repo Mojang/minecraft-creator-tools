@@ -82,11 +82,19 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
 
           try {
             contentObj = JSON.parse(content);
-          } catch (e) {
-            items.push(new ProjectInfoItem(InfoItemType.error, this.id, 1, "Could not parse JSON - " + e, projectItem));
+          } catch (e: any) {
+            let errorMess: any = e;
+
+            if (e.message) {
+              errorMess = e.message;
+            }
+
+            items.push(
+              new ProjectInfoItem(InfoItemType.error, this.id, 1, "Could not parse JSON - " + errorMess, projectItem)
+            );
           }
 
-          const result = await val(contentObj);
+          const result = val(contentObj);
 
           if (!result && val.errors) {
             for (let i = 0; i < val.errors.length; i++) {
@@ -135,14 +143,44 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
       errorContent = serial;
     }
 
+    let data = undefined;
+
+    if (error.params) {
+      for (const key in error.params) {
+        let val = error.params[key];
+
+        if (
+          typeof val === "string" &&
+          key !== "type" &&
+          key !== "pattern" &&
+          key !== "missingProperty" &&
+          key !== "comparison" &&
+          key !== "failingKeyword"
+        ) {
+          // force line breaks in long strings
+          if (val.length > 80 && val.indexOf(" ") < 0) {
+            val = val.replace(/,/gi, ", ");
+          }
+
+          if (data === undefined) {
+            data = "";
+          } else {
+            data += " ";
+          }
+
+          data += "(" + key + ": " + val + ")";
+        }
+      }
+    }
+
     items.push(
       new ProjectInfoItem(
-        InfoItemType.error,
+        InfoItemType.warning,
         this.id,
         100 + projectItem.itemType,
         message,
         projectItem,
-        undefined,
+        data,
         undefined,
         errorContent
       )

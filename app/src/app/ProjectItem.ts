@@ -253,8 +253,8 @@ export default class ProjectItem {
         return "Particle";
       case ProjectItemType.renderControllerJson:
         return "Render controller";
-      case ProjectItemType.itemTextureJson:
-        return "Texture";
+      case ProjectItemType.uiTextureJson:
+        return "UI Texture";
       case ProjectItemType.uiJson:
         return "User interface";
       case ProjectItemType.languagesCatalogResourceJson:
@@ -329,6 +329,14 @@ export default class ProjectItem {
         return "Texture Sets";
       case ProjectItemType.lightingJson:
         return "Lighting";
+      case ProjectItemType.flipBookTexturesJson:
+        return "Flipbook Textures";
+      case ProjectItemType.itemTextureJson:
+        return "Item Texture";
+      case ProjectItemType.terrainTextureJson:
+        return "Terrain Texture";
+      case ProjectItemType.globalVariablesJson:
+        return "UI Global Variables";
       default:
         return "Unknown";
     }
@@ -351,8 +359,6 @@ export default class ProjectItem {
         return "behavior/animations/animations.json";
       case ProjectItemType.blockTypeBehaviorJson:
         return "behavior/blocks/blocks.json";
-      case ProjectItemType.blockMaterialsBehaviorJson:
-        return "behavior/blocks/blocks.json";
       case ProjectItemType.itemTypeBehaviorJson:
         return "behavior/items/items.json";
       case ProjectItemType.lootTableBehaviorJson:
@@ -361,6 +367,8 @@ export default class ProjectItem {
         return "behavior/blocks/blocks.json";
       case ProjectItemType.dialogueBehaviorJson:
         return "behavior/dialogue/dialogue.json";
+      case ProjectItemType.entityTypeBehaviorJson:
+        return "behavior/entities/entities.json";
       case ProjectItemType.blocksCatalogResourceJson:
         return "resource/blocks.json";
       case ProjectItemType.soundsCatalogResourceJson:
@@ -369,18 +377,22 @@ export default class ProjectItem {
         return "resource/animations/actor_animation.json";
       case ProjectItemType.animationControllerResourceJson:
         return "resource/animation_controllers/animation_controller.json";
+      case ProjectItemType.fogJson:
+        return "resource/fog/fog.json";
       case ProjectItemType.entityTypeResourceJson:
         return "resource/entity/entity.json";
       case ProjectItemType.fogResourceJson:
         return "resource/fog/fog.json";
       case ProjectItemType.modelJson:
         return "resource/models/entity/model_entity.json";
+      case ProjectItemType.biomeResourceJson:
+        return "resource/biomes_client.json";
       case ProjectItemType.particleJson:
         return "resource/particles/particles.json";
       case ProjectItemType.renderControllerJson:
         return "resource/render_controllers/render_controllers.json";
-      case ProjectItemType.itemTextureJson:
-        return "resource/textures/item_texture.json";
+      //     case ProjectItemType.uiTextureJson:
+      //        return "resource/textures/ui_texture_definition.json";
       case ProjectItemType.languagesCatalogResourceJson:
         return "language/languages.json";
       case ProjectItemType.featureBehaviorJson:
@@ -400,15 +412,25 @@ export default class ProjectItem {
       case ProjectItemType.itemTypeResourceJson:
         return "resource/items/items.json";
       case ProjectItemType.materialsResourceJson:
-        return "resource/items/materials.json";
+        return "resource/materials/materials.json";
       case ProjectItemType.musicDefinitionJson:
         return "resource/sounds/music_definitions.json";
       case ProjectItemType.soundDefinitionJson:
         return "resource/sounds/sound_definitions.json";
       case ProjectItemType.blockTypeResourceJson:
         return "resource/blocks.json";
-
-      //        uiJson = 36,
+      case ProjectItemType.uiJson:
+        return "resource/ui/ui.json";
+      case ProjectItemType.tickJson:
+        return "behavior/functions/tick.json";
+      case ProjectItemType.flipBookTexturesJson:
+        return "resource/textures/flipbook_textures.json";
+      case ProjectItemType.itemTextureJson:
+        return "resource/textures/item_texture.json";
+      case ProjectItemType.terrainTextureJson:
+        return "resource/textures/terrain_texture.json";
+      case ProjectItemType.globalVariablesJson:
+        return "resource/ui/_global_variables.json";
 
       default:
         return undefined;

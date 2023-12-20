@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.1.64]
+
+### Updated
+
+- Improved warning messages for schema errors with a bit more detail
+- Fixed doc link
+
 ## [0.1.63]
 
 ### Added

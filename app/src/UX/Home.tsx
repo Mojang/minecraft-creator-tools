@@ -1059,7 +1059,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         </span>
       );
     }
-
     let effectArea = <></>;
 
     if (this.state.effect === HomeEffect.dragOver) {
@@ -1123,7 +1122,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           <div className="home-header">
             <div className="home-header-image">&#160;</div>
             <div className="home-header-sublink">
-              <a href={constants.homeUrl} className="home-header-docsLink" target="_blank" rel="noreferrer noopener">
+              <a href={constants.homeUrl + "/docs/"} className="home-header-docsLink" target="_blank" rel="noreferrer noopener">
                 Docs
               </a>
               &#160;&#160;/&#160;&#160;
