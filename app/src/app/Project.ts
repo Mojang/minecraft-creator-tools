@@ -2063,6 +2063,26 @@ export default class Project {
                 folderPath.indexOf("/render_controllers/") >= 0
               ) {
                 newJsonType = ProjectItemType.renderControllerJson;
+              } else if (
+                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                projectPath.endsWith("terrain_texture.json")
+              ) {
+                newJsonType = ProjectItemType.terrainTextureJson;
+              } else if (
+                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                projectPath.endsWith("_global_variables.json")
+              ) {
+                newJsonType = ProjectItemType.globalVariablesJson;
+              } else if (
+                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                projectPath.endsWith("flipbook_textures.json")
+              ) {
+                newJsonType = ProjectItemType.flipBookTexturesJson;
+              } else if (
+                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                projectPath.endsWith("item_texture.json")
+              ) {
+                newJsonType = ProjectItemType.itemTextureJson;
               } else if (folderContext === FolderContext.resourcePack && folderPath.indexOf("/materials/") >= 0) {
                 newJsonType = ProjectItemType.materialSetJson;
               } else if (folderContext === FolderContext.resourcePack && folderPath.indexOf("/sounds/") >= 0) {
@@ -2070,12 +2090,12 @@ export default class Project {
               } else if (folderPath.indexOf("/texts/") >= 0 || baseName === "languages") {
                 newJsonType = ProjectItemType.languagesCatalogResourceJson;
               } else if (
-                (folderContext === FolderContext.resourcePack && folderPath.indexOf("/texture_sets/") >= 0) ||
-                ((folderContext === FolderContext.resourcePack ||
-                  folderContext === FolderContext.resourcePackSubPack) &&
-                  folderPath.indexOf("/textures/") >= 0)
+                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                folderPath.indexOf("/textures/ui/") >= 0
               ) {
-                newJsonType = ProjectItemType.itemTextureJson;
+                newJsonType = ProjectItemType.uiTextureJson;
+              } else if (folderContext === FolderContext.resourcePack && folderPath.indexOf("/texture_sets/") >= 0) {
+                newJsonType = ProjectItemType.textureSetJson;
               } else if (
                 (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
                 folderPath.indexOf("/lighting/") >= 0

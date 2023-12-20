@@ -675,8 +675,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       case ProjectItemType.renderControllerJson:
         return "render ctlr";
 
-      case ProjectItemType.itemTextureJson:
-        return "texture";
+      case ProjectItemType.uiTextureJson:
+        return "ui texture";
 
       case ProjectItemType.uiJson:
         return "ui";
@@ -776,6 +776,18 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       case ProjectItemType.worldTemplateManifestJson:
         return "wtmanifest";
+
+      case ProjectItemType.itemTextureJson:
+        return "item tx";
+
+      case ProjectItemType.terrainTextureJson:
+        return "terrain tx";
+
+      case ProjectItemType.flipBookTexturesJson:
+        return "flipbook";
+
+      case ProjectItemType.globalVariablesJson:
+        return "ui var";
 
       case ProjectItemType.json:
         return "json";
@@ -1037,7 +1049,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         projectItem.itemType === ProjectItemType.uiJson ||
         projectItem.itemType === ProjectItemType.lang ||
         projectItem.itemType === ProjectItemType.languagesCatalogResourceJson ||
-        projectItem.itemType === ProjectItemType.itemTextureJson ||
+        projectItem.itemType === ProjectItemType.uiTextureJson ||
         projectItem.itemType === ProjectItemType.attachableResourceJson)
     ) {
       return false;

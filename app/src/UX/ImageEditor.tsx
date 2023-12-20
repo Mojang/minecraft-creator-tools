@@ -272,13 +272,21 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
   async persist() {}
 
   render() {
-    return (
-      <div className="ie-outer">
+    let editToggle = <></>;
+
+    if (!this.props.readOnly || !this.state.isView) {
+      editToggle = (
         <div className="ie-float">
           <Button onClick={this._toggleEdit}>
             <FontAwesomeIcon icon={faEdit} className="fa-lg" />
           </Button>
         </div>
+      );
+    }
+
+    return (
+      <div className="ie-outer">
+        {editToggle}
         <div className="ie-contents" ref={this.rootElt}></div>
       </div>
     );

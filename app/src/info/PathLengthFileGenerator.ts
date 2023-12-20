@@ -22,7 +22,15 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
 
     let path = file.storageRelativePath;
 
-    const packStarterFolderHints = ["bp", "rp", "resource pack", "resource packs", "behavior pack", "behavior packs"];
+    const packStarterFolderHints = [
+      "bp",
+      "rp",
+      "resource pack",
+      "resource packs",
+      "behavior pack",
+      "behavior packs",
+      "world_template",
+    ];
 
     for (const hint of packStarterFolderHints) {
       const hintIndex = path.toLowerCase().indexOf("/" + hint + "/");
