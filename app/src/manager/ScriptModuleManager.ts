@@ -161,6 +161,14 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
     let foundManifest = false;
     let foundError = false;
 
+    let hasPackageJson = false;
+
+    for (const item of project.items) {
+      if (item.itemType === ProjectItemType.packageJson) {
+        hasPackageJson = true;
+      }
+    }
+
     for (const moduleName in this.modulesInUse) {
       const moduleInfo = this.modulesInUse[moduleName];
       foundManifest = true;
@@ -199,7 +207,7 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
 
           const packReg = this.packRegsInUse[moduleName];
 
-          if (!packReg) {
+          if (!packReg && hasPackageJson) {
             items.push(
               new ProjectInfoItem(
                 InfoItemType.error,
@@ -212,7 +220,7 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
             );
             foundError = true;
           }
-        } else {
+        } else if (hasPackageJson) {
           items.push(
             new ProjectInfoItem(
               InfoItemType.error,
@@ -236,10 +244,6 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
           260,
           "No script module was found; script module version check passes."
         )
-      );
-    } else if (foundError) {
-      items.push(
-        new ProjectInfoItem(InfoItemType.testCompleteFail, this.id, 261, "Script module version check fails.")
       );
     } else if (foundError) {
       items.push(

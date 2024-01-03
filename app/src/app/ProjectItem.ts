@@ -341,8 +341,27 @@ export default class ProjectItem {
         return "Unknown";
     }
   }
+
   get typeTitle() {
     return ProjectItem.getDescriptionForType(this._data.itemType);
+  }
+
+  getTypeSortOrder() {
+    switch (this._data.itemType) {
+      case ProjectItemType.resourcePackManifestJson: // sort next to .behaviorPackManifestJson
+        return 510;
+
+      // sort all the world-y and container-y stuff next to each other
+      case ProjectItemType.structure:
+      case ProjectItemType.MCWorld:
+      case ProjectItemType.MCTemplate:
+      case ProjectItemType.MCPack:
+      case ProjectItemType.MCProject:
+      case ProjectItemType.zip:
+        return 1600 + this._data.itemType;
+      default:
+        return this._data.itemType * 100;
+    }
   }
 
   getSchemaPath() {

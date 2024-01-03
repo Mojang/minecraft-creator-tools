@@ -9,6 +9,7 @@ import Ajv from "ajv";
 
 import axios from "axios";
 import ProjectInfoSet from "./ProjectInfoSet";
+import Utilities from "../core/Utilities";
 
 export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "JSON";
@@ -77,8 +78,10 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
         }
 
         if (val) {
-          const content = projectItem.file.content;
+          let content = projectItem.file.content;
           let contentObj = undefined;
+
+          content = Utilities.fixJsonContent(content);
 
           try {
             contentObj = JSON.parse(content);
@@ -94,13 +97,15 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
             );
           }
 
-          const result = val(contentObj);
+          if (contentObj) {
+            const result = val(contentObj);
 
-          if (!result && val.errors) {
-            for (let i = 0; i < val.errors.length; i++) {
-              const err = val.errors[i];
+            if (!result && val.errors) {
+              for (let i = 0; i < val.errors.length; i++) {
+                const err = val.errors[i];
 
-              this.addError(items, projectItem, err);
+                this.addError(items, projectItem, err);
+              }
             }
           }
         }
