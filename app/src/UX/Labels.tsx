@@ -51,6 +51,10 @@ export interface ISelectableLabelProps {
   isSelected: boolean;
 }
 
+export interface ISelectableLabelValueProps extends ISelectableLabelProps {
+  value?: string | number;
+}
+
 export interface ICustomLabelProps {
   text: string;
   icon: IconProp | JSX.Element;
@@ -690,8 +694,8 @@ export const SummaryTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
   </span>
 );
 
-export const WarningFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
-  props: ISelectableLabelProps
+export const WarningFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelValueProps> = (
+  props: ISelectableLabelValueProps
 ) => (
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
@@ -711,13 +715,17 @@ export const WarningFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
     }}
   >
     <FontAwesomeIcon icon={faCircleQuestion} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Warning</span> : <></>}
+    {!props.isCompact ? (
+      <span className="label-text">Warning{props.value ? " (" + props.value + ")" : ""}</span>
+    ) : (
+      <></>
+    )}
   </span>
 );
 
-export const RecommendationsFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
-  props: ISelectableLabelProps
-) => (
+export const RecommendationsFilterLabel: React.FC<
+  React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelValueProps
+> = (props: ISelectableLabelValueProps) => (
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
     style={{
@@ -736,12 +744,16 @@ export const RecommendationsFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanE
     }}
   >
     <FontAwesomeIcon icon={faCircleArrowUp} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Recommendations</span> : <></>}
+    {!props.isCompact ? (
+      <span className="label-text">Recommendations{props.value ? " (" + props.value + ")" : ""}</span>
+    ) : (
+      <></>
+    )}
   </span>
 );
 
-export const ErrorFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
-  props: ISelectableLabelProps
+export const ErrorFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelValueProps> = (
+  props: ISelectableLabelValueProps
 ) => (
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
@@ -761,12 +773,12 @@ export const ErrorFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & 
     }}
   >
     <FontAwesomeIcon icon={faCircleExclamation} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Errors</span> : <></>}
+    {!props.isCompact ? <span className="label-text">Errors{props.value ? " (" + props.value + ")" : ""}</span> : <></>}
   </span>
 );
 
-export const InfoFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
-  props: ISelectableLabelProps
+export const InfoFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelValueProps> = (
+  props: ISelectableLabelValueProps
 ) => (
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
@@ -786,12 +798,12 @@ export const InfoFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
     }}
   >
     <FontAwesomeIcon icon={faCircleInfo} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Info</span> : <></>}
+    {!props.isCompact ? <span className="label-text">Info{props.value ? " (" + props.value + ")" : ""}</span> : <></>}
   </span>
 );
 
-export const SuccessFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
-  props: ISelectableLabelProps
+export const SuccessFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelValueProps> = (
+  props: ISelectableLabelValueProps
 ) => (
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
@@ -811,12 +823,16 @@ export const SuccessFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
     }}
   >
     <FontAwesomeIcon icon={faCircleCheck} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Success</span> : <></>}
+    {!props.isCompact ? (
+      <span className="label-text">Success{props.value ? " (" + props.value + ")" : ""}</span>
+    ) : (
+      <></>
+    )}
   </span>
 );
 
-export const FailureFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
-  props: ISelectableLabelProps
+export const FailureFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelValueProps> = (
+  props: ISelectableLabelValueProps
 ) => (
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
@@ -836,6 +852,10 @@ export const FailureFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
     }}
   >
     <FontAwesomeIcon icon={faCircleXmark} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Failure</span> : <></>}
+    {!props.isCompact ? (
+      <span className="label-text">Failure{props.value ? " (" + props.value + ")" : ""}</span>
+    ) : (
+      <></>
+    )}
   </span>
 );

@@ -175,28 +175,16 @@
           "description": "Introductory tests for Minecraft GameTest Framework.",
           "name": "Starter Hello World Tests",
           "uuid": "afeeb2ab-0404-4518-822f-9837117e78e1",
-          "version": [
-            0,
-            0,
-            1
-          ],
-          "min_engine_version": [
-            1,
-            20,
-            10
-          ]
+          "version": [0, 0, 1],
+          "min_engine_version": [1, 20, 10]
         },
         "modules": [
           {
             "description": "Starter Hello World Tests script",
             "language": "javascript",
             "type": "script",
-            "uuid": "ffcbb853-d468-4311-b7e6-1fb2c854d5d8",
-            "version": [
-              0,
-              0,
-              1
-            ],
+            "uuid": "aec36267-a09a-4ffd-9897-8a6f7dbf2684",
+            "version": [0, 0, 1],
             "entry": "scripts/index.js"
           }
         ],
@@ -249,11 +237,7 @@
       "generatorIndex": 1,
       "message": "Behavior pack min_engine version",
       "itemStoragePath": "/behavior_packs/StarterTestsTutorial/manifest.json",
-      "data": [
-        1,
-        20,
-        10
-      ]
+      "data": [1, 20, 10]
     },
     {
       "itemType": 0,
@@ -355,7 +339,7 @@
       "itemType": 1,
       "generatorId": "PATHLENGTH",
       "generatorIndex": 3,
-      "message": "File path contains more than 79 characters, and may not run on all devices",
+      "message": "File path contains more than 80 characters, and may not run on all devices",
       "data": "/behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure"
     },
     {
@@ -391,5 +375,5 @@
   ],
   "generatorName": "Minecraft Creator Tools",
   "suite": 0,
-  "generatorVersion": "0.1.63"
+  "generatorVersion": "0.1.66"
 }

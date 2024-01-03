@@ -233,7 +233,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       behaviorPackManifest.definition &&
       resourcePackManifest.definition
     ) {
-      if (!behaviorPackManifest.definition.dependencies || behaviorPackManifest.getNonInternalDependencyCount() !== 1) {
+      const bpNonInternalDependency = behaviorPackManifest.getFirstNonScriptModuleDependency();
+
+      if (
+        !behaviorPackManifest.definition.dependencies ||
+        behaviorPackManifest.getNonScriptModuleDependencyCount() !== 1
+      ) {
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
@@ -241,15 +246,13 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
             165,
             `Did not find exactly one dependency on the corresponding resource pack in the behavior pack manifest.`,
             behaviorPackItem,
-            behaviorPackManifest.getNonInternalDependencyCount()
+            behaviorPackManifest.getNonScriptModuleDependencyCount()
           )
         );
       } else if (
-        !behaviorPackManifest.definition.dependencies[0].uuid ||
-        !Utilities.uuidEqual(
-          behaviorPackManifest.definition.dependencies[0].uuid,
-          resourcePackManifest.definition.header.uuid
-        )
+        !bpNonInternalDependency ||
+        !bpNonInternalDependency.uuid ||
+        !Utilities.uuidEqual(bpNonInternalDependency.uuid, resourcePackManifest.definition.header.uuid)
       ) {
         items.push(
           new ProjectInfoItem(

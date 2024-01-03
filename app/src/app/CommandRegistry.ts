@@ -61,6 +61,7 @@ const MinecraftCommands = [
   "playanimation",
   "playsound",
   "project",
+  "recipe",
   "reload",
   "reloadconfig",
   "replaceitem",

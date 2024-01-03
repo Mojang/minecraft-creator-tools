@@ -1,8 +1,8 @@
 import IFile from "../storage/IFile";
-import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import IDebugSettings from "./IDebugSettings";
 import IVsCodeLaunch, { IVsCodeConfiguration } from "./IVsCodeLaunch";
+import StorageUtilities from "../storage/StorageUtilities";
 
 export default class VsCodeLaunchJson {
   private _file?: IFile;
@@ -202,13 +202,7 @@ export default class VsCodeLaunchJson {
 
     this.id = this._file.name;
 
-    try {
-      const data: any = JSON.parse(this._file.content);
-
-      this.definition = data;
-    } catch (e) {
-      Log.fail("Could not parse vscode launch JSON " + e);
-    }
+    this.definition = StorageUtilities.getJsonObject(this._file);
 
     this._isLoaded = true;
   }

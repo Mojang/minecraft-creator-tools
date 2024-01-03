@@ -1,14 +1,13 @@
 import IFile from "../storage/IFile";
-import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import { IAddonManifestHeader, IResourcePackManifest } from "./IAddonManifest";
 import Utilities from "../core/Utilities";
 import Project from "../app/Project";
+import StorageUtilities from "../storage/StorageUtilities";
 
 export default class ResourceManifestJson {
   private _file?: IFile;
   private _id?: string;
-  private _version?: string;
   private _isLoaded: boolean = false;
 
   public definition?: IResourcePackManifest;
@@ -208,13 +207,7 @@ export default class ResourceManifestJson {
 
     this.uuid = this._file.name;
 
-    try {
-      const data: any = JSON.parse(this._file.content);
-
-      this.definition = data;
-    } catch (e) {
-      Log.fail("Could not parse resource manifest JSON: " + e);
-    }
+    this.definition = StorageUtilities.getJsonObject(this._file);
 
     this._isLoaded = true;
   }

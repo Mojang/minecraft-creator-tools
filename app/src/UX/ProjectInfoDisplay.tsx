@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, UIEvent } from "react";
 import "./ProjectInfoDisplay.css";
 import IAppProps from "./IAppProps";
 import Project from "../app/Project";
@@ -43,6 +43,7 @@ interface IProjectInfoDisplayState {
   displayFailure: boolean;
   displayInfo: boolean;
   isLoading: boolean;
+  maxItems: number;
   loadStatus?: string;
 }
 
@@ -78,6 +79,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     this._handleSuiteChange = this._handleSuiteChange.bind(this);
     this._handleStatusUpdates = this._handleStatusUpdates.bind(this);
     this._downloadReport = this._downloadReport.bind(this);
+    this._handleListScroll = this._handleListScroll.bind(this);
 
     this.state = {
       infoSet: undefined,
@@ -88,6 +90,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       displayWarnings: true,
       displayRecommendation: true,
       displayFailure: true,
+      maxItems: 5000,
       displayInfo: false,
       isLoading: true,
       loadStatus: undefined,
@@ -108,6 +111,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             displaySuccess: this.state.displaySuccess,
             displayFailure: this.state.displayFailure,
             displayWarnings: this.state.displayWarnings,
+            maxItems: this.state.maxItems,
             displayRecommendation: this.state.displayRecommendation,
             displayInfo: this.state.displayInfo,
             isLoading: this.state.isLoading,
@@ -141,6 +145,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         infoSet: newInfoSet,
         displayErrors: this.state.displayErrors,
         displaySuccess: this.state.displaySuccess,
+        maxItems: this.state.maxItems,
         displayFailure: this.state.displayFailure,
         displayWarnings: this.state.displayWarnings,
         displayRecommendation: this.state.displayRecommendation,
@@ -181,6 +186,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       viewMode: this.state.viewMode,
       displayErrors: !this.state.displayErrors,
       displaySuccess: this.state.displaySuccess,
+      maxItems: this.state.maxItems,
       displayWarnings: this.state.displayWarnings,
       displayRecommendation: this.state.displayRecommendation,
       displayFailure: this.state.displayFailure,
@@ -193,6 +199,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     this.setState({
       infoSet: this.state.infoSet,
       viewMode: this.state.viewMode,
+      maxItems: this.state.maxItems,
       displayErrors: this.state.displayErrors,
       displaySuccess: this.state.displaySuccess,
       displayWarnings: this.state.displayWarnings,
@@ -210,6 +217,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       displayErrors: this.state.displayErrors,
       displaySuccess: !this.state.displaySuccess,
       displayWarnings: this.state.displayWarnings,
+      maxItems: this.state.maxItems,
       displayRecommendation: this.state.displayRecommendation,
       displayFailure: this.state.displayFailure,
       displayInfo: this.state.displayInfo,
@@ -222,6 +230,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       infoSet: this.state.infoSet,
       viewMode: this.state.viewMode,
       activeSuite: this.state.activeSuite,
+      maxItems: this.state.maxItems,
       displayErrors: this.state.displayErrors,
       displaySuccess: this.state.displaySuccess,
       displayWarnings: this.state.displayWarnings,
@@ -241,6 +250,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       displaySuccess: this.state.displaySuccess,
       displayWarnings: !this.state.displayWarnings,
       displayRecommendation: this.state.displayRecommendation,
+      maxItems: this.state.maxItems,
       displayFailure: this.state.displayFailure,
       displayInfo: this.state.displayInfo,
       isLoading: false,
@@ -252,6 +262,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       infoSet: this.state.infoSet,
       viewMode: this.state.viewMode,
       activeSuite: this.state.activeSuite,
+      maxItems: this.state.maxItems,
       displayErrors: this.state.displayErrors,
       displaySuccess: this.state.displaySuccess,
       displayWarnings: this.state.displayWarnings,
@@ -269,6 +280,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       activeSuite: this.state.activeSuite,
       displayErrors: this.state.displayErrors,
       displaySuccess: this.state.displaySuccess,
+      maxItems: this.state.maxItems,
       displayWarnings: this.state.displayWarnings,
       displayRecommendation: this.state.displayRecommendation,
       displayFailure: this.state.displayFailure,
@@ -295,6 +307,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       activeSuite: targetedSuite,
       displayErrors: this.state.displayErrors,
       displaySuccess: this.state.displaySuccess,
+      maxItems: this.state.maxItems,
       displayWarnings: this.state.displayWarnings,
       displayRecommendation: this.state.displayRecommendation,
       displayFailure: this.state.displayFailure,
@@ -303,6 +316,32 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     });
 
     window.setTimeout(this._generateInfoSet, 1);
+  }
+
+  _handleListScroll(event: UIEvent<HTMLDivElement>) {
+    if (event.currentTarget && this.state && this.state.infoSet && this.state.infoSet.items) {
+      if (
+        event.currentTarget.scrollTop >
+          event.currentTarget.scrollHeight -
+            (event.currentTarget.offsetHeight + event.currentTarget.scrollHeight / 20) &&
+        this.state.maxItems < this.state.infoSet.items.length &&
+        this.state.maxItems < 25000
+      ) {
+        this.setState({
+          infoSet: this.state.infoSet,
+          viewMode: this.state.viewMode,
+          activeSuite: this.state.activeSuite,
+          displayErrors: this.state.displayErrors,
+          displaySuccess: this.state.displaySuccess,
+          maxItems: this.state.maxItems + 5000,
+          displayWarnings: this.state.displayWarnings,
+          displayRecommendation: this.state.displayRecommendation,
+          displayFailure: this.state.displayFailure,
+          displayInfo: this.state.displayInfo,
+          isLoading: this.state.isLoading,
+        });
+      }
+    }
   }
 
   private _setSummaryMode() {
@@ -383,10 +422,27 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       },
     ];
 
+    const countsByType: number[] = [];
+
+    if (this.state && this.state.infoSet) {
+      for (const item of this.state.infoSet.items) {
+        if (!countsByType[item.itemType]) {
+          countsByType[item.itemType] = 1;
+        } else {
+          countsByType[item.itemType]++;
+        }
+      }
+    }
+
     const toolbarItems = [
       {
         icon: (
-          <ErrorFilterLabel theme={this.props.theme} isSelected={this.state.displayErrors} isCompact={width < 1016} />
+          <ErrorFilterLabel
+            theme={this.props.theme}
+            isSelected={this.state.displayErrors}
+            value={countsByType[InfoItemType.error]}
+            isCompact={width < 1016}
+          />
         ),
         key: "errorFilter",
         kind: "toggle",
@@ -398,6 +454,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           <WarningFilterLabel
             theme={this.props.theme}
             isSelected={this.state.displayWarnings}
+            value={countsByType[InfoItemType.warning]}
             isCompact={width < 1016}
           />
         ),
@@ -410,6 +467,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         icon: (
           <RecommendationsFilterLabel
             theme={this.props.theme}
+            value={countsByType[InfoItemType.recommendation]}
             isSelected={this.state.displayRecommendation}
             isCompact={width < 1016}
           />
@@ -431,6 +489,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           <SuccessFilterLabel
             theme={this.props.theme}
             isSelected={this.state.displaySuccess}
+            value={countsByType[InfoItemType.testCompleteSuccess]}
             isCompact={width < 1016}
           />
         ),
@@ -444,6 +503,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           <FailureFilterLabel
             theme={this.props.theme}
             isSelected={this.state.displayFailure}
+            value={countsByType[InfoItemType.testCompleteFail]}
             isCompact={width < 1016}
           />
         ),
@@ -456,7 +516,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
     const itemTiles = [];
     if (this.state && this.state.infoSet) {
-      for (let i = 0; i < this.state.infoSet.items.length; i++) {
+      for (let i = 0; i < this.state.infoSet.items.length && i < this.state.maxItems; i++) {
         const item = this.state.infoSet.items[i];
 
         if (
@@ -570,6 +630,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             style={{
               maxHeight: contentAreaHeightSmall,
             }}
+            onScroll={this._handleListScroll}
           >
             <div
               className="pid-area"

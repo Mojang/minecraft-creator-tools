@@ -82,7 +82,7 @@ export default class BehaviorManifestJson {
     this._id = newId;
   }
 
-  public getNonInternalDependencyCount() {
+  public getNonScriptModuleDependencyCount() {
     if (!this.definition || !this.definition.dependencies) {
       return 0;
     }
@@ -96,6 +96,20 @@ export default class BehaviorManifestJson {
     }
 
     return count;
+  }
+
+  public getFirstNonScriptModuleDependency() {
+    if (!this.definition || !this.definition.dependencies) {
+      return undefined;
+    }
+
+    for (let dependency of this.definition.dependencies) {
+      if (dependency.uuid) {
+        return dependency;
+      }
+    }
+
+    return undefined;
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<BehaviorManifestJson, BehaviorManifestJson>) {

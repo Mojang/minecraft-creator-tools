@@ -230,6 +230,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
   private _doUpdate() {
     this._updatePending = false;
+
     if (this._isMountedInternal) {
       this.forceUpdate();
     }
@@ -1046,6 +1047,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         projectItem.itemType === ProjectItemType.materialSetJson ||
         projectItem.itemType === ProjectItemType.animationControllerResourceJson ||
         projectItem.itemType === ProjectItemType.animationResourceJson ||
+        projectItem.itemType === ProjectItemType.itemTextureJson ||
+        projectItem.itemType === ProjectItemType.flipBookTexturesJson ||
+        projectItem.itemType === ProjectItemType.terrainTextureJson ||
+        projectItem.itemType === ProjectItemType.globalVariablesJson ||
         projectItem.itemType === ProjectItemType.uiJson ||
         projectItem.itemType === ProjectItemType.lang ||
         projectItem.itemType === ProjectItemType.languagesCatalogResourceJson ||
@@ -1119,7 +1124,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     if (
       (projectItem.itemType === ProjectItemType.packageJson ||
-        projectItem.itemType === ProjectItemType.behaviorPackManifestJson) &&
+        projectItem.itemType === ProjectItemType.behaviorPackManifestJson ||
+        projectItem.itemType === ProjectItemType.resourcePackManifestJson ||
+        projectItem.itemType === ProjectItemType.skinPackManifestJson ||
+        projectItem.itemType === ProjectItemType.worldTemplateManifestJson) &&
       this.props.project.editPreference === ProjectEditPreference.summarized
     ) {
       perTypeShouldShow = false;
@@ -1133,6 +1141,17 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       (projectItem.itemType !== ProjectItemType.json || !fileName.startsWith("settings")) && // hide files like settings.json from view
       (projectItem.gitHubReference === undefined || projectItem.gitHubReference.owner === undefined)
     );
+  }
+
+  static sortItems(a: ProjectItem, b: ProjectItem) {
+    const aType = a.getTypeSortOrder();
+    const bType = b.getTypeSortOrder();
+
+    if (aType === bType) {
+      return a.name.localeCompare(b.name);
+    }
+
+    return aType - bType;
   }
 
   render() {
@@ -1227,7 +1246,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     let itemsShown = 0;
 
     if (this.props.project) {
-      const projectItems = this.props.project.items;
+      const projectItems = this.props.project.items.sort(ProjectItemList.sortItems);
 
       for (let i = 0; i < projectItems.length && itemsShown < this.state.maxItemsToShow; i++) {
         const projectItem = projectItems[i];

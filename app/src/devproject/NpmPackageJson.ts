@@ -1,7 +1,7 @@
 import IFile from "../storage/IFile";
-import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import { PackageJson } from "@npm/types";
+import StorageUtilities from "../storage/StorageUtilities";
 
 export default class NpmPackageJson {
   private _file?: IFile;
@@ -112,13 +112,7 @@ export default class NpmPackageJson {
 
     this.id = this._file.name;
 
-    try {
-      const data: any = JSON.parse(this._file.content);
-
-      this.definition = data;
-    } catch (e) {
-      Log.fail("Could not parse NPM package JSON: " + e);
-    }
+    this.definition = StorageUtilities.getJsonObject(this._file);
 
     this._isLoaded = true;
   }
