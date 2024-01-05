@@ -1,4 +1,4 @@
-# Minecraft Creator Tools v0.1.63
+# Minecraft Creator Tools
 
 This is project is a work in progress for a set of web-based tools for Minecraft Creators.
 
@@ -35,8 +35,6 @@ In the project directory, you can run:
 Runs the app in the development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-**_ IMPORTANT - note the extra URL params above. _**
-
 The page will reload if you make edits.
 
 You will also see any lint errors in the console.
@@ -49,6 +47,4 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 ### `npm run webbuild`
 
-Builds the web app for production to the `build` folder. It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.
+Builds the web app for production to the `build` folder. It correctly bundles React in production mode and optimizes the build for the best performance. The build is also minified.
