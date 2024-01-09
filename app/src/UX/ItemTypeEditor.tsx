@@ -5,7 +5,6 @@ import "./ItemTypeEditor.css";
 import IPersistable from "./IPersistable";
 import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import Database from "../minecraft/Database";
-import DataFormUtilities from "../dataform/DataFormUtilities";
 import ComponentSetEditor from "./ComponentSetEditor";
 import { ThemeInput } from "@fluentui/styles";
 
@@ -30,8 +29,6 @@ export default class ItemTypeEditor
     super(props);
 
     this._handleItemTypeLoaded = this._handleItemTypeLoaded.bind(this);
-    this._addComponentClick = this._addComponentClick.bind(this);
-    this._addComponent = this._addComponent.bind(this);
 
     this.state = {
       fileToEdit: props.file,
@@ -90,10 +87,6 @@ export default class ItemTypeEditor
   }
 
   async _doUpdate(setState: boolean) {
-    if (Database.uxCatalog === null) {
-      await Database.loadUx();
-    }
-
     if (setState) {
       this.setState({
         fileToEdit: this.state.fileToEdit,
@@ -116,32 +109,6 @@ export default class ItemTypeEditor
 
         et.persist();
       }
-    }
-  }
-
-  _addComponentClick() {
-    this._addComponent("minecraft:tameable");
-
-    this.forceUpdate();
-  }
-
-  _addComponent(name: string) {
-    if (Database.uxCatalog === null) {
-      return;
-    }
-
-    const form = Database.uxCatalog.componentForms[name];
-
-    if (form !== undefined) {
-      const newDataObject = DataFormUtilities.generateDefaultItem(form);
-
-      const et = this.state.fileToEdit.manager as ItemTypeDefinition;
-
-      if (et.behaviorPackDefinition === undefined) {
-        return;
-      }
-
-      et.behaviorPackDefinition.components[name] = newDataObject;
     }
   }
 

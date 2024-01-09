@@ -90,10 +90,6 @@ export default class BlockTypeEditor
   }
 
   async _doUpdate(setState: boolean) {
-    if (Database.uxCatalog === null) {
-      await Database.loadUx();
-    }
-
     if (setState) {
       this.setState({
         fileToEdit: this.state.fileToEdit,
@@ -119,18 +115,18 @@ export default class BlockTypeEditor
     }
   }
 
-  _addComponentClick() {
-    this._addComponent("minecraft:tameable");
+  async _addComponentClick() {
+    await this._addComponent("minecraft:tameable");
 
     this.forceUpdate();
   }
 
-  _addComponent(name: string) {
+  async _addComponent(name: string) {
     if (Database.uxCatalog === null) {
       return;
     }
 
-    const form = Database.uxCatalog.componentForms[name];
+    const form = await Database.ensureFormLoaded(name);
 
     if (form !== undefined) {
       const newDataObject = DataFormUtilities.generateDefaultItem(form);

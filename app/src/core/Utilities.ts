@@ -17,9 +17,13 @@ export default class Utilities {
     });
   }
 
+  static get isPreview(): boolean {
+    return false;
+  }
+
   static get isDebug(): boolean {
     if (Utilities._isDebug === undefined) {
-	Utilities._isDebug = false;
+      Utilities._isDebug = false;
     }
 
     return Utilities._isDebug;

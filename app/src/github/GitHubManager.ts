@@ -47,7 +47,7 @@ export default class GitHubManager {
     if (typeof window !== "undefined") {
       // @ts-ignore
       const result = window.prompt(
-        "This is really really preview.  You should not use any work or meaningful GitHub accounts with this - yet. Type yes to go ahead anyways."
+        "This is really really preview. You should not use any work or meaningful GitHub accounts with this - yet. Type yes to go ahead anyways."
       );
 
       if (result !== "yes") {

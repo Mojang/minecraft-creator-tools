@@ -23,10 +23,7 @@ interface ITemplateManagerState {
   packReferences: IPackReferenceSet[];
 }
 
-export default class TemplateManager
-  extends Component<ITemplateManagerProps, ITemplateManagerState>
-  implements IPersistable
-{
+export default class TemplateManager extends Component<ITemplateManagerProps, ITemplateManagerState> {
   #activeEditorPersistable?: IPersistable;
 
   constructor(props: ITemplateManagerProps) {

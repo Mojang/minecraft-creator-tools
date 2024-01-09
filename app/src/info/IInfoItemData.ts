@@ -6,6 +6,7 @@ export enum InfoItemType {
   warning = 4,
   internalProcessingError = 5,
   recommendation = 6,
+  featureAggregate = 7,
 }
 
 export default interface IInfoItemData {

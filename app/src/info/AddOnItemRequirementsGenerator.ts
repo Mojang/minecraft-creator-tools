@@ -29,7 +29,37 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
   async generate(projectItem: ProjectItem): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
-    if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
+    if (projectItem.itemType === ProjectItemType.dimensionJson) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.testCompleteFail,
+          this.id,
+          191,
+          `Dimension definition resources are not permitted in an add-on targeted behavior pack`,
+          projectItem
+        )
+      );
+    } else if (projectItem.itemType === ProjectItemType.featureBehaviorJson) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.testCompleteFail,
+          this.id,
+          192,
+          `Feature definition resources are not permitted in an add-on targeted behavior pack`,
+          projectItem
+        )
+      );
+    } else if (projectItem.itemType === ProjectItemType.featureRuleBehaviorJson) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.testCompleteFail,
+          this.id,
+          193,
+          `Feature rule definition resources are not permitted in an add-on targeted behavior pack`,
+          projectItem
+        )
+      );
+    } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
       await projectItem.ensureFileStorage();
 
       if (projectItem.file) {
@@ -166,7 +196,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
           for (let racName in racManifest.definition.animation_controllers) {
             let racNameBreak = racName.split(".");
 
-            if (racNameBreak.length < 3 || racNameBreak[0] !== "controller" || racNameBreak[1] !== "animation") {
+            if (racNameBreak.length < 4 || racNameBreak[0] !== "controller" || racNameBreak[1] !== "animation") {
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
@@ -238,13 +268,13 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
           for (let rrcName in racManifest.definition.render_controllers) {
             let racNameBreak = rrcName.split(".");
 
-            if (racNameBreak.length < 3 || racNameBreak[0] !== "controller" || racNameBreak[1] !== "render") {
+            if (racNameBreak.length < 4 || racNameBreak[0] !== "controller" || racNameBreak[1] !== "render") {
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
                   140,
-                  `Resource pack animation controller identifier is not in expected form of controller.render.xyz`,
+                  `Resource pack render controller identifier is not in expected form of controller.render.creatorshortname_projectshortname.other`,
                   projectItem,
                   rrcName
                 )
@@ -255,7 +285,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                   InfoItemType.testCompleteFail,
                   this.id,
                   141,
-                  `Resource pack animation controller name section is not in expected form of controller.render.creatorshortname_projectshortname`,
+                  `Resource pack render controller name section is not in expected form of controller.render.creatorshortname_projectshortname`,
                   projectItem,
                   rrcName
                 )

@@ -9,7 +9,6 @@
 
 .df-form TEXTAREA {
   min-width: 320px;
-  width: 500px;
   max-width: calc(100vw - 30px);
   min-height: 100px;
   line-height: normal;
@@ -20,6 +19,10 @@
 .df-outer {
   padding: 2px;
   vertical-align: top;
+}
+
+.df-wrapper {
+  margin: 6px 8px 0px 8px;
 }
 
 .df-headerOuter {
@@ -43,6 +46,9 @@
 
 .df-subHeaderTitle {
   font-size: 12pt;
+  font-weight: bold;
+  padding-top: 2px;
+  padding-bottom: 2px;
   grid-column: 1;
 }
 
@@ -54,8 +60,10 @@
 .df-fieldDescription {
   font-size: small;
   padding-bottom: 2px;
-  margin-left: 4px;
+  margin-left: 1px;
+  margin-top: 6px;
   margin-bottom: 2px;
+  padding-left: 90px;
 }
 
 .df-fieldTitle {
@@ -64,7 +72,31 @@
 }
 
 .df-fieldWrap {
-  padding-bottom: 20px;
+  padding-bottom: 8px;
+}
+
+.df-fieldWrap .ui-form__checkbox {
+  padding-left: 35px;
+}
+
+.df-fieldWrap .ui-form__label {
+  padding-bottom: 2px;
+  display: inline-block !important;
+  min-width: 90px;
+}
+.df-fieldWrap .ui-dropdown {
+  display: inline-block;
+}
+.df-fieldWrap .ui-dropdown__container {
+  width: 235px;
+}
+
+.df-cardWrapper {
+  padding: 5px 10px 10px 10px;
+  border: solid 1px black;
+  margin-bottom: 4px;
+  margin-top: 4px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.2rem 0.4rem -0.075rem;
 }
 
 .df-description {
@@ -76,7 +108,11 @@
   grid-template-columns: 180px 80px;
 }
 
-.df-elementTitleRed {
+.df-elementTitle {
+  padding-bottom: 3px;
+}
+
+.df-elementTitleInvalid {
   color: red;
 }
 

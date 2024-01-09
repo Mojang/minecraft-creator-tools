@@ -47,6 +47,8 @@ export default interface IProjectData {
 
   gitHubReferences?: IGitHubInfo[];
 
+  collapsedStoragePaths?: string[];
+
   preferredTools?: ITool[];
 
   preferredScriptLanguage?: ProjectScriptLanguage;

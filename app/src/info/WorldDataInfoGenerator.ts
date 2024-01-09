@@ -106,13 +106,13 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       return items;
     }
 
-    const blocksPi = new ProjectInfoItem(InfoItemType.info, this.id, 1, "Blocks", projectItem);
+    const blocksPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 1, "Blocks", projectItem);
     items.push(blocksPi);
 
-    const blockActorsPi = new ProjectInfoItem(InfoItemType.info, this.id, 2, "Block Data", projectItem);
+    const blockActorsPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 2, "Block Data", projectItem);
     items.push(blockActorsPi);
 
-    const commandsPi = new ProjectInfoItem(InfoItemType.info, this.id, 3, "Commands", projectItem);
+    const commandsPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 3, "Commands", projectItem);
     items.push(commandsPi);
 
     if (projectItem.itemType === ProjectItemType.dialogueBehaviorJson) {

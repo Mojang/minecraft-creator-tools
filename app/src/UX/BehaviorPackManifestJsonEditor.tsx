@@ -2,7 +2,6 @@ import { Component } from "react";
 import IFileProps from "./IFileProps";
 import IFile from "../storage/IFile";
 import "./BehaviorPackManifestJsonEditor.css";
-import IPersistable from "./IPersistable";
 import NpmPackageJson from "../devproject/NpmPackageJson";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
@@ -26,10 +25,10 @@ interface IBehaviorPackManifestJsonEditorState {
   selectedItem: NpmPackageJson | ManagedComponentGroup | undefined;
 }
 
-export default class BehaviorPackManifestJsonEditor
-  extends Component<IBehaviorPackManifestJsonEditorProps, IBehaviorPackManifestJsonEditorState>
-  implements IPersistable
-{
+export default class BehaviorPackManifestJsonEditor extends Component<
+  IBehaviorPackManifestJsonEditorProps,
+  IBehaviorPackManifestJsonEditorState
+> {
   private _lastFileEdited?: IFile;
 
   constructor(props: IBehaviorPackManifestJsonEditorProps) {
@@ -85,6 +84,9 @@ export default class BehaviorPackManifestJsonEditor
       }
     }
 
+    await Database.ensureFormLoaded("behavior_pack_header_json");
+    await Database.ensureFormLoaded("behavior_pack_rest_of_file");
+
     if (
       this.state.fileToEdit &&
       this.state.fileToEdit.manager !== undefined &&
@@ -101,9 +103,6 @@ export default class BehaviorPackManifestJsonEditor
   }
 
   async _doUpdate(setState: boolean) {
-    if (Database.uxCatalog === null) {
-      await Database.loadUx();
-    }
     let selItem = this.state.selectedItem;
 
     if (selItem === undefined && this.state && this.state.fileToEdit && this.state.fileToEdit.manager) {
@@ -236,8 +235,8 @@ export default class BehaviorPackManifestJsonEditor
       return <div>Loading definition...</div>;
     }
 
-    const headerForm = Database.uxCatalog.behaviorPackHeaderJson;
-    const restOfForm = Database.uxCatalog.behaviorPackRestOfFile;
+    const headerForm = Database.getForm("behavior_pack_header_json");
+    const restOfForm = Database.getForm("behavior_pack_rest_of_file");
 
     let behaviorPackTitle = "Behavior Pack";
 
@@ -272,6 +271,7 @@ export default class BehaviorPackManifestJsonEditor
               definition={headerForm}
               directObject={def.header}
               readOnly={false}
+              theme={this.props.theme}
               objectKey={this.props.file.storageRelativePath}
               onPropertyChanged={this._handleDataFormPropertyChange}
             ></DataForm>
@@ -279,6 +279,7 @@ export default class BehaviorPackManifestJsonEditor
               definition={restOfForm}
               directObject={def}
               readOnly={false}
+              theme={this.props.theme}
               objectKey={this.props.file.storageRelativePath}
               onPropertyChanged={this._handleDataFormPropertyChange}
             ></DataForm>

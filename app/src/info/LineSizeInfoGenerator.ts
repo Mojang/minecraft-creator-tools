@@ -42,7 +42,13 @@ export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
       if (itemsByType[pi.itemType] !== undefined) {
         projInfoItem = itemsByType[pi.itemType];
       } else {
-        projInfoItem = new ProjectInfoItem(InfoItemType.info, this.id, 100 + pi.itemType, "Linesize Complexity", pi);
+        projInfoItem = new ProjectInfoItem(
+          InfoItemType.featureAggregate,
+          this.id,
+          100 + pi.itemType,
+          "Linesize Complexity",
+          pi
+        );
         itemsByType[pi.itemType] = projInfoItem;
         items.push(projInfoItem);
       }

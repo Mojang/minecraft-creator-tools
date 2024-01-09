@@ -51,10 +51,7 @@ interface IJavaScriptEditorState {
   snippetSearch?: string;
 }
 
-export default class JavaScriptEditor
-  extends Component<IJavaScriptEditorProps, IJavaScriptEditorState>
-  implements IPersistable
-{
+export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, IJavaScriptEditorState> {
   editor?: monaco.editor.IStandaloneCodeEditor;
   _activeModel: any; // think of "model" as a file.
   _monaco: any;
@@ -654,16 +651,6 @@ export default class JavaScriptEditor
           }
         }
       }
-
-      /*    if (this.props.role === ScriptEditorRole.gameTest) {
-        snippetList = Database.uxCatalog.gameTestSnippets;
-      } else {
-        snippetList = Database.uxCatalog.scriptSnippets;
-      }
-      for (let i = 0; i < snippetList.length; i++) {
-        snippets.push(snippetList[i].title);
-      }
-*/
     }
 
     const writeableTools: any[] = [];

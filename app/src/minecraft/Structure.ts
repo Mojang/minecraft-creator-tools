@@ -271,10 +271,6 @@ export default class Structure {
   }
 
   async loadFromNbt(binary: NbtBinary) {
-    if (Database.uxCatalog === null) {
-      await Database.loadUx();
-    }
-
     const cube = new BlockCube();
 
     if (binary.root == null) {

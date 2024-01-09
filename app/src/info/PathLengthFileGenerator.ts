@@ -27,8 +27,10 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
       "rp",
       "resource pack",
       "resource packs",
+      "content/resource_packs",
       "behavior pack",
       "behavior packs",
+      "content/behavior_packs",
       "world_template",
     ];
 

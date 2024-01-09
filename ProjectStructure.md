@@ -1,6 +1,6 @@
 # Project Structure
 
-Most logic source is located under the /app folder. This application compiles to a web app (`npm run web` and/or `gulp webbuild`) and as NodeJS-compatible libraries (`gulp jsncorebuild`).  Also, there is a small suite of tests (`npm run test`).  
+Most logic source is located under the /app folder. This application compiles to a web app (`npm run web` and/or `gulp webbuild`) and as NodeJS-compatible libraries (`gulp jsncorebuild`). Also, there is a small suite of tests (`npm run test`).  
 
 ## Core Types: Carto, Project, and ProjectItem
 
@@ -77,4 +77,4 @@ World code starts with a foundation of NBT parsing, which is needed for understa
 
 ## UX
 
-UX is all React-based for the web. By convention we use the older-style markup of TSX files vs. the alternate functional style of React. We use the Monaco OSS engine for code editing. OSS FluentUI-react northstar is used for the UX fundamentals.  The one bit of abstraction built into this project is DataForm, which provides Form-esque support for editing of JSON-based structures.
+UX is all React-based for the web. By convention we use the older-style markup of TSX files vs. the alternate functional style of React. We use the Monaco OSS engine for code editing. OSS FluentUI-react northstar is used for the UX fundamentals. The one bit of abstraction built into this project is DataForm, which provides Form-esque support for editing of JSON-based structures.

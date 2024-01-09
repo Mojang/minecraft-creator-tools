@@ -128,7 +128,7 @@ export default class ProjectInfoItemDisplay extends Component<
           <FontAwesomeIcon icon={faCircleQuestion} className="fa-lg" />
         </span>
       );
-    } else if (item.itemType === InfoItemType.info) {
+    } else if (item.itemType === InfoItemType.info || item.itemType === InfoItemType.featureAggregate) {
       indicatorCellBg = "piid-infoIconCell";
 
       typeElt = (

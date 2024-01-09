@@ -32,6 +32,7 @@ interface IProjectPropertyEditorProps extends IAppProps {
   project: Project;
   theme: ThemeInput<any>;
   heightOffset: number;
+  onContentUpdated?: () => void;
 }
 
 interface IProjectPropertyEditorState {
@@ -252,9 +253,14 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
   }
 
   async _rescanFiles() {
+    this.props.project.resetProjectItems();
     await this.props.project.inferProjectItemsFromFilesRootFolder(true);
-    console.log("Rescanned " + this.props.project.projectFolder?.fullPath);
+    this.props.carto.notifyStatusUpdate("Rescanned " + this.props.project.projectFolder?.fullPath);
     this.forceUpdate();
+
+    if (this.props.onContentUpdated) {
+      this.props.onContentUpdated();
+    }
   }
 
   async _handleDescriptionChanged(e: SyntheticEvent<HTMLElement, Event>, data?: TextAreaProps | undefined) {
@@ -328,12 +334,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
   }
 
   _convertJavaToBedrock() {
-    if (!Utilities.isDebug) {
-      alert(
-        "This was part of some prototype code to convert Java snbts to MCStructures - most of the way there, but not available quite yet.  sorry."
-      );
-      return;
-    }
+
   }
 
   _createNewResourcePackUniqueId() {
@@ -653,7 +654,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       versionPatch = 1;
     }
 
-    const height = "calc(100vh - " + (this.props.heightOffset + 52) + "px)";
+    const height = "calc(100vh - " + (this.props.heightOffset + 54) + "px)";
 
     return (
       <div

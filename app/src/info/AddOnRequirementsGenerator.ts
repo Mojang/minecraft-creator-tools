@@ -319,7 +319,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
       const folderNameCanon = StorageUtilities.canonicalizeName(folderName);
 
-      if (folderNameCanon === "feature" || folderNameCanon === "feature_rules") {
+      if (folderNameCanon === "features" || folderNameCanon === "feature_rules") {
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
@@ -353,7 +353,6 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
           folderNameCanon !== "items" &&
           folderNameCanon !== "scripts" &&
           folderNameCanon !== "loot_tables" &&
-          folderNameCanon !== "trading" &&
           folderNameCanon !== "recipes" &&
           folderNameCanon !== "spawn_rules" &&
           folderNameCanon !== "animations" &&
@@ -381,18 +380,6 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
             this.id,
             133,
             `Found ui elements in an add-on, which is not supported`,
-            undefined
-          )
-        );
-      }
-
-      if (folderNameCanon === "fogs") {
-        items.push(
-          new ProjectInfoItem(
-            InfoItemType.testCompleteFail,
-            this.id,
-            132,
-            `Found fogs in an add-on, which is not supported`,
             undefined
           )
         );
@@ -431,7 +418,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       return false;
     }
 
-    return tokens[0].length > 2 && tokens[1].length > 2;
+    return tokens[0].length >= 2 && tokens[1].length >= 2;
   }
 
   static isUniqueNamespaceOrShortName(name: string) {
@@ -443,6 +430,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
     return UniqueRegEx.test(name);
   }
+
   async generateFromFirstLevelFolderCreator_Game(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
     await folder.load(false);
 
@@ -453,9 +441,18 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
         (folder.name !== "functions" || fileNameCanon !== "tick.json") &&
         (folder.name !== "textures" ||
           (fileNameCanon !== "flipbook_textures.json" &&
+            fileNameCanon !== "item_textures.json" &&
+            fileNameCanon !== "blocks.json" &&
+            fileNameCanon !== "block.json" &&
+            fileNameCanon !== "textures_list.json" &&
+            fileNameCanon !== "texture_list.json" &&
+            fileNameCanon !== "terrain_textures.json" &&
             fileNameCanon !== "item_texture.json" &&
             fileNameCanon !== "terrain_texture.json")) &&
-        (folder.name !== "sounds" || fileNameCanon !== "sound_definitions.json")
+        (folder.name !== "sounds" ||
+          (fileNameCanon !== "sound_definitions.json" &&
+            fileNameCanon !== "sounds.json" &&
+            fileNameCanon !== "music_definitions.json"))
       ) {
         const file = folder.files[fileName];
 
@@ -516,9 +513,19 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
         (folder.name !== "functions" || fileNameCanon !== "tick.json") &&
         (folder.name !== "textures" ||
           (fileNameCanon !== "flipbook_textures.json" &&
+            fileNameCanon !== "item_textures.json" &&
+            fileNameCanon !== "terrain_textures.json" &&
+            fileNameCanon !== "blocks.json" &&
+            fileNameCanon !== "block.json" &&
+            fileNameCanon !== "textures_list.json" &&
+            fileNameCanon !== "texture_list.json" &&
+            fileNameCanon !== "terrain_textures.json" &&
             fileNameCanon !== "item_texture.json" &&
             fileNameCanon !== "terrain_texture.json")) &&
-        (folder.name !== "sounds" || fileNameCanon !== "sound_definitions.json")
+        (folder.name !== "sounds" ||
+          (fileNameCanon !== "sound_definitions.json" &&
+            fileNameCanon !== "sounds.json" &&
+            fileNameCanon !== "music_definitions.json"))
       ) {
         const file = folder.files[fileName];
 

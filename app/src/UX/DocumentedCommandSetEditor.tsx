@@ -4,7 +4,6 @@ import IFile from "../storage/IFile";
 import "./DocumentedCommandSetEditor.css";
 import DocumentedCommand from "../minecraft/docs/DocumentedCommand";
 import DocumentedCommandSet from "../minecraft/docs/DocumentedCommandSet";
-import IPersistable from "./IPersistable";
 import DataForm from "../dataform/DataForm";
 import Database from "../minecraft/Database";
 import CartoApp from "../app/CartoApp";
@@ -27,10 +26,10 @@ interface IDocumentedCommandSetEditorState {
   isLoaded: boolean;
 }
 
-export default class DocumentedCommandSetEditor
-  extends Component<IDocumentedCommandSetEditorProps, IDocumentedCommandSetEditorState>
-  implements IPersistable
-{
+export default class DocumentedCommandSetEditor extends Component<
+  IDocumentedCommandSetEditorProps,
+  IDocumentedCommandSetEditorState
+> {
   constructor(props: IDocumentedCommandSetEditorProps) {
     super(props);
 
@@ -65,10 +64,6 @@ export default class DocumentedCommandSetEditor
   async _updateManager() {
     if (this.state !== undefined && this.state.fileToEdit !== undefined) {
       if (!this.state.isLoaded) {
-        if (Database.uxCatalog === null) {
-          await Database.loadUx();
-        }
-
         await this.props.project.inferProjectItemsFromFiles();
 
         const docsFolder = await this.props.project.ensureDocsFolder();
@@ -78,6 +73,8 @@ export default class DocumentedCommandSetEditor
           docsFolder,
           this._handleDocumentedCommandSetLoaded
         );
+
+        await Database.ensureFormLoaded("documented_command_set");
 
         this._handleDocumentedCommandSetLoaded();
       }
@@ -89,14 +86,6 @@ export default class DocumentedCommandSetEditor
       fileToEdit: this.state.fileToEdit,
       isLoaded: true,
     });
-  }
-
-  async _doUpdate() {
-    if (Database.uxCatalog === null) {
-      await Database.loadUx();
-
-      this.forceUpdate();
-    }
   }
 
   async persist() {
@@ -159,7 +148,7 @@ export default class DocumentedCommandSetEditor
 
   render() {
     const height = "calc(100vh - " + String(this.props.heightOffset) + "px)";
-    const classHeight = "calc(100vh - " + String(this.props.heightOffset + 102) + "px)";
+    const classHeight = "calc(100vh - " + String(this.props.heightOffset + 136) + "px)";
 
     if (
       this.state === null ||
@@ -181,7 +170,7 @@ export default class DocumentedCommandSetEditor
     }
 
     const dcs = this.state.fileToEdit.manager as DocumentedCommandSet;
-    const form = Database.uxCatalog.documentedCommandSet;
+    const form = Database.getForm("documented_command_set");
 
     const commandListing = this.getCommandListing();
 
@@ -218,6 +207,7 @@ export default class DocumentedCommandSetEditor
           <DataForm
             definition={form}
             directObject={dcs}
+            theme={this.props.theme}
             objectKey={dcs.id}
             readOnly={this.props.typesReadOnly}
           ></DataForm>

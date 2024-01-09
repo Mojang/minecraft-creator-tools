@@ -1,4 +1,4 @@
-import { Component, UIEvent } from "react";
+import { Component, SyntheticEvent, UIEvent } from "react";
 import "./ProjectInfoDisplay.css";
 import IAppProps from "./IAppProps";
 import Project from "../app/Project";
@@ -6,8 +6,10 @@ import ProjectInfoSet from "../info/ProjectInfoSet";
 import ProjectInfoItemDisplay from "./ProjectInfoItemDisplay";
 import ProjectInfoItem from "../info/ProjectInfoItem";
 import Utilities from "../core/Utilities";
-import { Dropdown, DropdownProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
+import { Dropdown, DropdownProps, MenuItemProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
 import {
+  CustomLabel,
+  DownArrowLabel,
   DownloadLabel,
   ErrorFilterLabel,
   FailureFilterLabel,
@@ -24,6 +26,8 @@ import WebUtilities from "./WebUtilities";
 import Carto from "../app/Carto";
 import Status, { StatusTopic } from "../app/Status";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileCsv, faFileInvoice } from "@fortawesome/free-solid-svg-icons";
 
 interface IProjectInfoDisplayProps extends IAppProps {
   project: Project;
@@ -36,6 +40,10 @@ interface IProjectInfoDisplayState {
   infoSet: ProjectInfoSet | undefined;
   viewMode: ProjectInfoDisplayMode;
   activeSuite: ProjectInfoSuite;
+  menuState: ProjectInfoDisplayMenuState;
+  lastExportKey?: string;
+  lastExportFunction: ((e: SyntheticEvent | undefined, data: MenuItemProps | undefined) => Promise<void>) | undefined;
+  lastExportData: MenuItemProps | undefined;
   displayErrors: boolean;
   displaySuccess: boolean;
   displayWarnings: boolean;
@@ -50,6 +58,11 @@ interface IProjectInfoDisplayState {
 export enum ProjectInfoDisplayMode {
   info,
   summary,
+}
+
+export enum ProjectInfoDisplayMenuState {
+  noMenu,
+  exportMenu,
 }
 
 export const SuiteTitles = ["All", "Platform Versions", "Add-on Best Practices"];
@@ -78,13 +91,25 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     this._handleInfoItemCommand = this._handleInfoItemCommand.bind(this);
     this._handleSuiteChange = this._handleSuiteChange.bind(this);
     this._handleStatusUpdates = this._handleStatusUpdates.bind(this);
-    this._downloadReport = this._downloadReport.bind(this);
+    this._downloadHtmlReport = this._downloadHtmlReport.bind(this);
+    this._downloadCsvReport = this._downloadCsvReport.bind(this);
     this._handleListScroll = this._handleListScroll.bind(this);
+    this._handleExportMenuOpen = this._handleExportMenuOpen.bind(this);
+
+    let suite = this.props.carto.preferredSuite;
+
+    if (suite === undefined) {
+      suite = ProjectInfoSuite.allExceptAddOn;
+    }
 
     this.state = {
       infoSet: undefined,
-      activeSuite: ProjectInfoSuite.allExceptAddOn,
+      activeSuite: suite,
       viewMode: ProjectInfoDisplayMode.info,
+      menuState: ProjectInfoDisplayMenuState.noMenu,
+      lastExportKey: undefined,
+      lastExportFunction: undefined,
+      lastExportData: undefined,
       displayErrors: true,
       displaySuccess: true,
       displayWarnings: true,
@@ -107,6 +132,10 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         this.setState(
           {
             infoSet: this.state.infoSet,
+            menuState: this.state.menuState,
+            lastExportKey: this.state.lastExportKey,
+            lastExportFunction: this.state.lastExportFunction,
+            lastExportData: this.state.lastExportData,
             displayErrors: this.state.displayErrors,
             displaySuccess: this.state.displaySuccess,
             displayFailure: this.state.displayFailure,
@@ -143,6 +172,10 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     if (this._isMountedInternal && this.state.activeSuite === newInfoSet.suite) {
       this.setState({
         infoSet: newInfoSet,
+        menuState: this.state.menuState,
+        lastExportKey: this.state.lastExportKey,
+        lastExportFunction: this.state.lastExportFunction,
+        lastExportData: this.state.lastExportData,
         displayErrors: this.state.displayErrors,
         displaySuccess: this.state.displaySuccess,
         maxItems: this.state.maxItems,
@@ -183,6 +216,10 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _toggleErrorFilter() {
     this.setState({
       infoSet: this.state.infoSet,
+      menuState: this.state.menuState,
+      lastExportKey: this.state.lastExportKey,
+      lastExportFunction: this.state.lastExportFunction,
+      lastExportData: this.state.lastExportData,
       viewMode: this.state.viewMode,
       displayErrors: !this.state.displayErrors,
       displaySuccess: this.state.displaySuccess,
@@ -198,6 +235,10 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _toggleInfoFilter() {
     this.setState({
       infoSet: this.state.infoSet,
+      menuState: this.state.menuState,
+      lastExportKey: this.state.lastExportKey,
+      lastExportFunction: this.state.lastExportFunction,
+      lastExportData: this.state.lastExportData,
       viewMode: this.state.viewMode,
       maxItems: this.state.maxItems,
       displayErrors: this.state.displayErrors,
@@ -213,6 +254,10 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _toggleSuccessFilter() {
     this.setState({
       infoSet: this.state.infoSet,
+      menuState: this.state.menuState,
+      lastExportKey: this.state.lastExportKey,
+      lastExportFunction: this.state.lastExportFunction,
+      lastExportData: this.state.lastExportData,
       viewMode: this.state.viewMode,
       displayErrors: this.state.displayErrors,
       displaySuccess: !this.state.displaySuccess,
@@ -228,6 +273,10 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _toggleFailureFilter() {
     this.setState({
       infoSet: this.state.infoSet,
+      menuState: this.state.menuState,
+      lastExportKey: this.state.lastExportKey,
+      lastExportFunction: this.state.lastExportFunction,
+      lastExportData: this.state.lastExportData,
       viewMode: this.state.viewMode,
       activeSuite: this.state.activeSuite,
       maxItems: this.state.maxItems,
@@ -244,6 +293,10 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _toggleWarningFilter() {
     this.setState({
       infoSet: this.state.infoSet,
+      menuState: this.state.menuState,
+      lastExportKey: this.state.lastExportKey,
+      lastExportFunction: this.state.lastExportFunction,
+      lastExportData: this.state.lastExportData,
       viewMode: this.state.viewMode,
       activeSuite: this.state.activeSuite,
       displayErrors: this.state.displayErrors,
@@ -260,6 +313,10 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _toggleRecommendationFilter() {
     this.setState({
       infoSet: this.state.infoSet,
+      menuState: this.state.menuState,
+      lastExportKey: this.state.lastExportKey,
+      lastExportFunction: this.state.lastExportFunction,
+      lastExportData: this.state.lastExportData,
       viewMode: this.state.viewMode,
       activeSuite: this.state.activeSuite,
       maxItems: this.state.maxItems,
@@ -277,6 +334,10 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     this.setState({
       infoSet: this.state.infoSet,
       viewMode: ProjectInfoDisplayMode.info,
+      menuState: this.state.menuState,
+      lastExportKey: this.state.lastExportKey,
+      lastExportFunction: this.state.lastExportFunction,
+      lastExportData: this.state.lastExportData,
       activeSuite: this.state.activeSuite,
       displayErrors: this.state.displayErrors,
       displaySuccess: this.state.displaySuccess,
@@ -301,9 +362,18 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       targetedSuite = ProjectInfoSuite.addOn;
     }
 
+    if (targetedSuite !== this.props.carto.preferredSuite) {
+      this.props.carto.preferredSuite = targetedSuite;
+      this.props.carto.save();
+    }
+
     this.setState({
       infoSet: this.state.infoSet,
       viewMode: this.state.viewMode,
+      menuState: this.state.menuState,
+      lastExportKey: this.state.lastExportKey,
+      lastExportFunction: this.state.lastExportFunction,
+      lastExportData: this.state.lastExportData,
       activeSuite: targetedSuite,
       displayErrors: this.state.displayErrors,
       displaySuccess: this.state.displaySuccess,
@@ -330,6 +400,10 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         this.setState({
           infoSet: this.state.infoSet,
           viewMode: this.state.viewMode,
+          menuState: this.state.menuState,
+          lastExportKey: this.state.lastExportKey,
+          lastExportFunction: this.state.lastExportFunction,
+          lastExportData: this.state.lastExportData,
           activeSuite: this.state.activeSuite,
           displayErrors: this.state.displayErrors,
           displaySuccess: this.state.displaySuccess,
@@ -348,6 +422,10 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     this.setState({
       infoSet: this.state.infoSet,
       viewMode: ProjectInfoDisplayMode.summary,
+      menuState: this.state.menuState,
+      lastExportKey: this.state.lastExportKey,
+      lastExportFunction: this.state.lastExportFunction,
+      lastExportData: this.state.lastExportData,
       activeSuite: this.state.activeSuite,
       displayErrors: this.state.displayErrors,
       displaySuccess: this.state.displaySuccess,
@@ -359,7 +437,57 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     });
   }
 
-  private async _downloadReport() {
+  private _handleExportMenuOpen() {
+    let menuVal = ProjectInfoDisplayMenuState.noMenu;
+
+    if (this.state.menuState === ProjectInfoDisplayMenuState.noMenu) {
+      menuVal = ProjectInfoDisplayMenuState.exportMenu;
+    }
+
+    this.setState({
+      infoSet: this.state.infoSet,
+      viewMode: this.state.viewMode,
+      menuState: menuVal,
+      lastExportKey: this.state.lastExportKey,
+      lastExportFunction: this.state.lastExportFunction,
+      lastExportData: this.state.lastExportData,
+      activeSuite: this.state.activeSuite,
+      displayErrors: this.state.displayErrors,
+      displaySuccess: this.state.displaySuccess,
+      displayWarnings: this.state.displayWarnings,
+      displayRecommendation: this.state.displayRecommendation,
+      displayFailure: this.state.displayFailure,
+      displayInfo: this.state.displayInfo,
+      isLoading: this.state.isLoading,
+    });
+  }
+
+  private _setNewExportKey(
+    exportKey: string,
+    exportFunction: ((e: SyntheticEvent | undefined, data: MenuItemProps | undefined) => Promise<void>) | undefined,
+    exportData: MenuItemProps | undefined
+  ) {
+    window.setTimeout(() => {
+      this.setState({
+        infoSet: this.state.infoSet,
+        viewMode: this.state.viewMode,
+        menuState: this.state.menuState,
+        lastExportKey: exportKey,
+        lastExportFunction: exportFunction,
+        lastExportData: exportData,
+        activeSuite: this.state.activeSuite,
+        displayErrors: this.state.displayErrors,
+        displaySuccess: this.state.displaySuccess,
+        displayWarnings: this.state.displayWarnings,
+        displayRecommendation: this.state.displayRecommendation,
+        displayFailure: this.state.displayFailure,
+        displayInfo: this.state.displayInfo,
+        isLoading: this.state.isLoading,
+      });
+    }, 2);
+  }
+
+  private async _downloadHtmlReport(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
     if (this.props.project === null || this.state.infoSet === undefined) {
       return;
     }
@@ -370,6 +498,27 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     const reportHtml = this.state.infoSet.getReportHtml(projName, projName, date.getTime().toString());
 
     saveAs(new Blob([reportHtml]), projName + " " + SuiteTitles[this.state.activeSuite] + ".html");
+
+    if (data && data.icon && (data.icon as any).key) {
+      this._setNewExportKey((data.icon as any).key, this._downloadHtmlReport, data);
+    }
+  }
+
+  private async _downloadCsvReport(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
+    if (this.props.project === null || this.state.infoSet === undefined) {
+      return;
+    }
+
+    const pisLines = this.state.infoSet.getItemCsvLines();
+
+    const projName = this.props.project.name;
+    const csvContent = ProjectInfoSet.CommonCsvHeader + "\r\n" + pisLines.join("\n");
+
+    saveAs(new Blob([csvContent]), projName + " " + SuiteTitles[this.state.activeSuite] + ".csv");
+
+    if (data && data.icon && (data.icon as any).key) {
+      this._setNewExportKey((data.icon as any).key, this._downloadCsvReport, data);
+    }
   }
 
   private async _handleInfoItemCommand(command: InfoItemCommand, item: ProjectInfoItem) {
@@ -413,14 +562,66 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       },
     ];
 
-    const actionToolbarItems = [
-      {
+    const actionToolbarItems: any[] = [];
+
+    let exportKeys: { [exportOptionKey: string]: any } = {};
+    const exportMenu: any = [];
+
+    let nextExportKey = "htmlReport";
+
+    exportKeys[nextExportKey] = {
+      key: nextExportKey,
+      icon: <FontAwesomeIcon icon={faFileInvoice} key={nextExportKey} className="fa-lg" />,
+      content: "HTML Report",
+      onClick: this._downloadHtmlReport,
+      title: "Get an HTML full report of this content.",
+    };
+
+    exportMenu.push(exportKeys[nextExportKey]);
+
+    nextExportKey = "csvFile";
+
+    exportKeys[nextExportKey] = {
+      key: nextExportKey,
+      icon: <FontAwesomeIcon icon={faFileCsv} key={nextExportKey} className="fa-lg" />,
+      content: "CSV File",
+      onClick: this._downloadCsvReport,
+      title: "Get an CSV file of errors and items.",
+    };
+
+    exportMenu.push(exportKeys[nextExportKey]);
+
+    if (!this.state.lastExportKey) {
+      actionToolbarItems.push({
         icon: <DownloadLabel isCompact={false} />,
-        key: "downloadReport",
-        onClick: this._downloadReport,
-        title: "Downloads a report",
-      },
-    ];
+        key: "downloadReportA",
+        onMenuOpenChange: this._handleExportMenuOpen,
+        menuOpen: this.state.menuState === ProjectInfoDisplayMenuState.exportMenu,
+        menu: exportMenu,
+        active: true,
+        title: "Deploy",
+      });
+    } else {
+      const exportItem = exportKeys[this.state.lastExportKey];
+
+      actionToolbarItems.push({
+        icon: <CustomLabel icon={exportItem.icon} text={exportItem.content} isCompact={false} />,
+        key: exportItem.key + "I",
+        onClick: exportItem.onClick,
+        active: true,
+        title: exportItem.title,
+      });
+
+      actionToolbarItems.push({
+        icon: <DownArrowLabel />,
+        key: "deploy",
+        onMenuOpenChange: this._handleExportMenuOpen,
+        menuOpen: this.state.menuState === ProjectInfoDisplayMenuState.exportMenu,
+        menu: exportMenu,
+        active: true,
+        title: "Export Options",
+      });
+    }
 
     const countsByType: number[] = [];
 
@@ -514,9 +715,10 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       },
     ];
 
+    let itemsShown = 0;
     const itemTiles = [];
     if (this.state && this.state.infoSet) {
-      for (let i = 0; i < this.state.infoSet.items.length && i < this.state.maxItems; i++) {
+      for (let i = 0; i < this.state.infoSet.items.length && itemsShown < this.state.maxItems; i++) {
         const item = this.state.infoSet.items[i];
 
         if (
@@ -536,6 +738,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
               onInfoItemCommand={this._handleInfoItemCommand}
             />
           );
+          itemsShown++;
         }
       }
 

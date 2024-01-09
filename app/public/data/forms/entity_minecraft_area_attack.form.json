@@ -1,0 +1,26 @@
+{
+  "description": "A component that does damage to entities that get within range.",
+  "fields": [
+    {
+      "id": "cause",
+      "description": "The type of damage that is applied to entities that enter the damage range.",
+      "dataType": 8,
+      "lookupId": "damageCause"
+    },
+    {
+      "id": "entity_filter",
+      "description": "The set of entities that are valid to apply the damage to when within range.",
+      "dataType": 20
+    },
+    {
+      "id": "damage_per_tick",
+      "description": "How much damage per tick is applied to entities that enter the damage range.",
+      "dataType": 0
+    },
+    {
+      "id": "damage_range",
+      "description": "How close a hostile entity must be to have the damage applied.",
+      "dataType": 0.2
+    }
+  ]
+}

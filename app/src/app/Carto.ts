@@ -31,6 +31,7 @@ import { BackupType } from "../minecraft/IWorldSettings";
 import Pack from "./Pack";
 import CommandRegistry from "./CommandRegistry";
 import ZipStorage from "../storage/ZipStorage";
+import { ProjectItemType } from "./IProjectItemData";
 
 export enum CartoMinecraftState {
   none = 0,
@@ -121,6 +122,18 @@ export default class Carto {
     return this._isLoaded;
   }
 
+  public get collapsedTypes() {
+    if (!this.#data.collapsedTypes) {
+      this.#data.collapsedTypes = [];
+    }
+
+    return this.#data.collapsedTypes;
+  }
+
+  public set collapsedTypes(newCollapsedTypes: number[]) {
+    this.#data.collapsedTypes = newCollapsedTypes;
+  }
+
   public get worldSettings() {
     return this.#data.worldSettings;
   }
@@ -147,6 +160,14 @@ export default class Carto {
 
   public set preferredTextSize(newValue: number) {
     this.#data.preferredTextSize = newValue;
+  }
+
+  public get preferredSuite() {
+    return this.#data.preferredSuite;
+  }
+
+  public set preferredSuite(newValue: number | undefined) {
+    this.#data.preferredSuite = newValue;
   }
 
   public get processHostedMinecraftTrack() {
@@ -684,6 +705,28 @@ export default class Carto {
         prom(undefined);
       }
     }
+  }
+
+  ensureTypeIsCollapsed(itemType: ProjectItemType) {
+    for (const itemTypeCollasped of this.collapsedTypes) {
+      if (itemTypeCollasped === itemType) {
+        return;
+      }
+    }
+
+    this.collapsedTypes.push(itemType);
+  }
+
+  ensureTypeIsNotCollapsed(itemType: ProjectItemType) {
+    const newCollapsedTypes: number[] = [];
+
+    for (const itemTypeCollasped of this.collapsedTypes) {
+      if (itemTypeCollasped !== itemType) {
+        newCollapsedTypes.push(itemTypeCollasped);
+      }
+    }
+
+    this.#data.collapsedTypes = newCollapsedTypes;
   }
 
   async loadPacksFromFolder(folder: IFolder) {

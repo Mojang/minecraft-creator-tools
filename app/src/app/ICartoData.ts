@@ -55,6 +55,7 @@ export default interface ICartoData {
   useEditor?: boolean;
   creator?: string;
   preferredTextSize?: number;
+  preferredSuite?: number;
   editorViewMode?: CartoEditorViewMode;
   defaultFunction?: string;
   customTools: ICustomTool[];
@@ -72,6 +73,7 @@ export default interface ICartoData {
   remoteServerAccessLevel?: RemoteServerAccessLevel;
   windowX?: number;
   windowY?: number;
+  collapsedTypes?: number[];
   windowHeight?: number;
   windowWidth?: number;
   windowSlot?: number;

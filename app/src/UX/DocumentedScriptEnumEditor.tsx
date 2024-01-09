@@ -3,7 +3,6 @@ import IFileProps from "./IFileProps";
 import IFile from "../storage/IFile";
 import "./DocumentedScriptEnumEditor.css";
 import DocumentedScriptEnum from "../minecraft/docs/DocumentedScriptEnum";
-import IPersistable from "./IPersistable";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import Database from "../minecraft/Database";
 import CartoApp from "../app/CartoApp";
@@ -31,10 +30,10 @@ interface IDocumentedScriptEnumEditorState {
   isLoaded: boolean;
 }
 
-export default class DocumentedScriptEnumEditor
-  extends Component<IDocumentedScriptEnumEditorProps, IDocumentedScriptEnumEditorState>
-  implements IPersistable
-{
+export default class DocumentedScriptEnumEditor extends Component<
+  IDocumentedScriptEnumEditorProps,
+  IDocumentedScriptEnumEditorState
+> {
   constructor(props: IDocumentedScriptEnumEditorProps) {
     super(props);
 
@@ -101,16 +100,18 @@ export default class DocumentedScriptEnumEditor
       this.props.setActivePersistable(this);
     }
 
-    if (Database.uxCatalog === null) {
+    if (this.state && !this.state.isLoaded) {
+      this.doLoad();
       return <div>Loading...</div>;
     }
 
-    if (this.state && !this.state.isLoaded) {
-      this.doLoad();
+    const form = Database.getForm("documented_script_enum");
+
+    if (!form) {
+      return <div>Loading...</div>;
     }
 
     const denum = this.props.docScriptEnum;
-    const form = Database.uxCatalog.documentedScriptEnum;
 
     const memberForms = [];
 
@@ -178,6 +179,7 @@ export default class DocumentedScriptEnumEditor
               displayTitle={true}
               title={title}
               subTitle={subTitle}
+              theme={this.props.theme}
               displaySubTitle={subTitle !== undefined}
               objectKey={infoJsonFile.storageRelativePath}
               indentLevel={indentLevel}
@@ -204,6 +206,7 @@ export default class DocumentedScriptEnumEditor
           <DataForm
             definition={form}
             directObject={denum}
+            theme={this.props.theme}
             readOnly={this.props.typesReadOnly}
             objectKey={denum.id}
           ></DataForm>

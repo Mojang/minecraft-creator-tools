@@ -2,7 +2,6 @@ import { Component } from "react";
 import IFileProps from "./IFileProps";
 import IFile from "../storage/IFile";
 import "./EntityTypeEditor.css";
-import IPersistable from "./IPersistable";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import Database from "../minecraft/Database";
 import ComponentSetEditor from "./ComponentSetEditor";
@@ -36,10 +35,7 @@ interface IEntityTypeEditorState {
   selectedItem: EntityTypeDefinition | ManagedComponentGroup | ManagedEvent | undefined;
 }
 
-export default class EntityTypeEditor
-  extends Component<IEntityTypeEditorProps, IEntityTypeEditorState>
-  implements IPersistable
-{
+export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEditorState> {
   constructor(props: IEntityTypeEditorProps) {
     super(props);
 

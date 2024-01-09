@@ -15,6 +15,7 @@ interface IComponentSetEditorProps {
 }
 
 interface IComponentSetEditorState {
+  loadedFormCount?: number;
   activeComponentId: string | undefined;
 }
 
@@ -36,6 +37,7 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
     }
 
     this.state = {
+      loadedFormCount: undefined,
       activeComponentId: id,
     };
   }
@@ -51,6 +53,7 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
       }
 
       this.setState({
+        loadedFormCount: Database.loadedFormCount,
         activeComponentId: id,
       });
     }
@@ -60,12 +63,12 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
     this.forceUpdate();
   }
 
-  _addComponent(name: string) {
+  async _addComponent(name: string) {
     if (Database.uxCatalog === null) {
       return;
     }
 
-    const form = Database.uxCatalog.componentForms[name];
+    const form = await Database.ensureFormLoaded(name);
 
     if (form !== undefined) {
       const newDataObject = DataFormUtilities.generateDefaultItem(form);
@@ -74,12 +77,30 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
     }
   }
 
-  async _updateManager() {
-    if (Database.uxCatalog === null) {
-      await Database.loadUx();
+  getFormIdFromComponentId(componentId: string) {
+    return "entity_" + componentId.replace(/:/gi, "_").replace(/_/gi, "_");
+  }
 
-      this.forceUpdate();
+  async _updateManager() {
+    if (!this.props.componentSetItem) {
+      return;
     }
+
+    const components = this.props.componentSetItem.getComponents();
+
+    for (let i = 0; i < components.length; i++) {
+      const component = components[i];
+
+      if (typeof component === "object" && component.id !== undefined) {
+        const formId = this.getFormIdFromComponentId(component.id);
+        await Database.ensureFormLoaded(formId);
+      }
+    }
+
+    this.setState({
+      loadedFormCount: Database.loadedFormCount,
+      activeComponentId: this.state.activeComponentId,
+    });
   }
 
   _handleComponentSelected(elt: any, event: ListProps | undefined) {
@@ -127,7 +148,7 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
   }
 
   render() {
-    if (Database.uxCatalog === null) {
+    if (this.state === undefined || this.state.loadedFormCount === undefined) {
       this._updateManager();
 
       return <div>Loading...</div>;
@@ -143,7 +164,9 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
       const component = components[i];
 
       if (typeof component === "object" && component.id !== undefined) {
-        const form = Database.uxCatalog.componentForms[component.id];
+        const formId = component.id.replace(/:/gi, "_").replace(/_/gi, "_");
+
+        const form = Database.getForm("entity_" + formId);
 
         componentList.push({
           key: component.id,
@@ -162,6 +185,7 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
                   displayDescription={true}
                   readOnly={false}
                   tag={component.id}
+                  theme={this.props.theme}
                   objectKey={component.id}
                   closeButton={false}
                   definition={form}
