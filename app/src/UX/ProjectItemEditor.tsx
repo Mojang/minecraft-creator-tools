@@ -47,10 +47,7 @@ interface IProjectItemEditorState {
   loadedItem: ProjectItem | null;
 }
 
-export default class ProjectItemEditor
-  extends Component<IProjectItemEditorProps, IProjectItemEditorState>
-  implements IPersistable
-{
+export default class ProjectItemEditor extends Component<IProjectItemEditorProps, IProjectItemEditorState> {
   private _dirtyState = ProjectItemEditorDirtyState.clean;
   private _activeEditorPersistable?: IPersistable;
   private _isMountedInternal = false;
@@ -174,7 +171,6 @@ export default class ProjectItemEditor
       }
 
       if (this.props.activeProjectItem.itemType === ProjectItemType.worldFolder) {
-    
       } else if (file !== null && file.isContentLoaded) {
         if (this.props.setActivePersistable !== undefined) {
           this.props.setActivePersistable(this);

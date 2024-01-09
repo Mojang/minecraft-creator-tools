@@ -1,6 +1,5 @@
 import { Component } from "react";
 import "./GitHubReferenceEditor.css";
-import IPersistable from "./IPersistable";
 import Carto from "../app/Carto";
 import Project from "../app/Project";
 import { Toolbar } from "@fluentui/react-northstar";
@@ -19,10 +18,7 @@ interface IGitHubReferenceEditorProps {
 
 interface IGitHubReferenceEditorState {}
 
-export default class GitHubReferenceEditor
-  extends Component<IGitHubReferenceEditorProps, IGitHubReferenceEditorState>
-  implements IPersistable
-{
+export default class GitHubReferenceEditor extends Component<IGitHubReferenceEditorProps, IGitHubReferenceEditorState> {
   constructor(props: IGitHubReferenceEditorProps) {
     super(props);
 

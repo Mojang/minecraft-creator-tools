@@ -3,7 +3,6 @@ import IFileProps from "./IFileProps";
 import IFile from "../storage/IFile";
 import "./DocumentedCommandEditor.css";
 import DocumentedCommand from "../minecraft/docs/DocumentedCommand";
-import IPersistable from "./IPersistable";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import Database from "../minecraft/Database";
 import CartoApp from "../app/CartoApp";
@@ -29,10 +28,10 @@ interface IDocumentedCommandEditorState {
   isLoaded: boolean;
 }
 
-export default class DocumentedCommandEditor
-  extends Component<IDocumentedCommandEditorProps, IDocumentedCommandEditorState>
-  implements IPersistable
-{
+export default class DocumentedCommandEditor extends Component<
+  IDocumentedCommandEditorProps,
+  IDocumentedCommandEditorState
+> {
   constructor(props: IDocumentedCommandEditorProps) {
     super(props);
 
@@ -72,6 +71,11 @@ export default class DocumentedCommandEditor
   async doLoad() {
     await this.props.docCommand.load();
 
+    await Database.ensureFormLoaded("documented_command");
+    await Database.ensureFormLoaded("command_overload");
+    await Database.ensureFormLoaded("command_argument");
+    await Database.ensureFormLoaded("command_value");
+
     this.setState({
       docCommandToEdit: this.state.docCommandToEdit,
       isLoaded: true,
@@ -102,7 +106,7 @@ export default class DocumentedCommandEditor
     }
 
     const dcommand = this.props.docCommand;
-    const form = Database.uxCatalog.documentedCommand;
+    const form = Database.getForm("documented_command");
 
     const coreForms: any[] = [];
     const localEnumForms: any[] = [];
@@ -183,7 +187,7 @@ export default class DocumentedCommandEditor
           infoForm.fields.push({
             id: "overloads",
             title: "Overloads",
-            subForm: Database.uxCatalog.commandOverload,
+            subForm: Database.getForm("command_overload"),
             subFields: overloadSubfields,
             objectArrayToSubFieldKey: "id",
             matchObjectArrayToSubFieldKey: true,
@@ -193,7 +197,7 @@ export default class DocumentedCommandEditor
           infoForm.fields.push({
             id: "arguments",
             title: "Arguments",
-            subForm: Database.uxCatalog.commandArgument,
+            subForm: Database.getForm("command_argument"),
             subFields: argumentSubfields,
             objectArrayToSubFieldKey: "name",
             matchObjectArrayToSubFieldKey: true,
@@ -227,7 +231,7 @@ export default class DocumentedCommandEditor
             infoForm.fields.push({
               id: "values",
               title: "Values",
-              subForm: Database.uxCatalog.commandValue,
+              subForm: Database.getForm("command_value"),
               subFields: valueSubfields,
               objectArrayToSubFieldKey: "name",
               matchObjectArrayToSubFieldKey: true,
@@ -251,6 +255,7 @@ export default class DocumentedCommandEditor
               title={title}
               indentLevel={indentLevel}
               definition={infoForm}
+              theme={this.props.theme}
               objectKey={infoJsonFile.storageRelativePath}
               directObject={jsonObject}
               readOnly={readOnly}
@@ -276,6 +281,7 @@ export default class DocumentedCommandEditor
             directObject={dcommand}
             readOnly={this.props.typesReadOnly}
             objectKey={dcommand.id}
+            theme={this.props.theme}
             onPropertyChanged={this._handleDataFormPropertyChange}
           ></DataForm>
         </div>

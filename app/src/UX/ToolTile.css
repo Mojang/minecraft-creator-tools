@@ -3,7 +3,6 @@
   margin-bottom: 20px;
   width: 360px;
   height: 240px;
-  background: #6b6562;
   display: inline-block;
 }
 
@@ -78,7 +77,6 @@
   margin-bottom: 8px;
   width: 128px;
   height: 72px;
-  background: #6b6562;
   grid-template-columns: 1fr;
   text-overflow: ellipsis;
   border: solid 3px black;

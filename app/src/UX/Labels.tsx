@@ -359,6 +359,7 @@ export const DownloadLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICo
   <span className="label label-toolbar">
     <FontAwesomeIcon icon={faDownload} className="fa-lg" />
     {!props.isCompact ? <span className="label-text">Download</span> : <></>}
+    <FontAwesomeIcon icon={faSortDown} className="fa-lg label-arrow" />
   </span>
 );
 

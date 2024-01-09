@@ -1,4 +1,5 @@
 import ISimpleReference from "../core/ISimpleReference";
+import ICondition from "./ICondition";
 import IFormDefinition from "./IFormDefinition";
 
 export enum FieldExperienceType {
@@ -53,11 +54,13 @@ export default interface IField {
   allowedKeys?: string[];
   subFields?: { [keyName: string]: IField };
   objectArrayToSubFieldKey?: string;
+  objectArrayTitleFieldKey?: string;
   matchObjectArrayLengthToSubFieldLength?: boolean;
   matchObjectArrayToSubFieldKey?: boolean;
   fixedLength?: number;
   lookupId?: string;
   maxLength?: number;
+  newItemPrototype?: any;
   allowCreateDelete?: boolean;
   readOnly?: boolean;
   forceString?: boolean;
@@ -65,6 +68,8 @@ export default interface IField {
   maxValue?: number;
   suggestedMinValue?: number;
   suggestedMaxValue?: number;
+  validity?: ICondition[];
+  visibility?: ICondition[];
   defaultValue?: string | number | boolean;
   additionalIndent?: number;
   visualExperience?: FieldVisualExperience;

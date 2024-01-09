@@ -1,0 +1,31 @@
+{
+  "title": "Rideable",
+  "description": "This entity can be ridden",
+  "fields": [
+    {
+      "id": "seat_count",
+      "title": "Number of seats",
+      "dataType": 0
+    },
+    {
+      "id": "crouching_skip_interact",
+      "title": "This entity can't be interacted with while crouching.",
+      "dataType": 1
+    },
+    {
+      "id": "controlling_seat",
+      "title": "The seat that controls how this entity moves",
+      "dataType": 0
+    },
+    {
+      "id": "pulls_in_entities",
+      "title": "This entity will pull in nearby entities.",
+      "dataType": 1
+    },
+    {
+      "id": "rider_can_interact",
+      "title": "Whether a rider can interact with this item.",
+      "dataType": 1
+    }
+  ]
+}

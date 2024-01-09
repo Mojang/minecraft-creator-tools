@@ -127,9 +127,14 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
       return infoItems;
     }
 
-    const piiRuntimeIdentifier = new ProjectInfoItem(InfoItemType.info, this.id, 2, "Entity Type Runtime Identifier");
-    const piiIdentifier = new ProjectInfoItem(InfoItemType.info, this.id, 3, "Entity Type Identifier");
-    const piiMetadata = new ProjectInfoItem(InfoItemType.info, this.id, 4, "Entity Type Metadata");
+    const piiRuntimeIdentifier = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      2,
+      "Entity Type Runtime Identifier"
+    );
+    const piiIdentifier = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 3, "Entity Type Identifier");
+    const piiMetadata = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 4, "Entity Type Metadata");
 
     infoItems.push(piiRuntimeIdentifier);
 

@@ -1,0 +1,161 @@
+{
+  "description": "Allows an entity to establish a way to get into the love state used for breeding.",
+  "fields": [
+    {
+      "id": "allow_sitting",
+      "description": "If true, entities can breed while sitting",
+      "dataType": 1,
+      "defaultValue": false
+    },
+    {
+      "id": "blend_attributes",
+      "description": "If true, the entities will blend their attributes in the offspring after they breed. For example, horses blend their health, movement, and jump_strength in their offspring.",
+      "dataType": 1,
+      "defaultValue": true
+    },
+    {
+      "id": "breed_cooldown",
+      "description": "Time in seconds before the Entity can breed again.",
+      "dataType": 3,
+      "defaultValue": 60
+    },
+    {
+      "id": "breed_items",
+      "description": "The list of items that can be used to get the entity into the 'love' state.",
+      "dataType": 17
+    },
+    {
+      "id": "breeds_with",
+      "description": "The list of entity definitions that this entity can breed with.",
+      "dataType": 15,
+      "subForm": {
+        "fields": [
+          {
+            "id": "baby_type",
+            "description": "The entity definition of this entity's babies.",
+            "dataType": 2
+          },
+          {
+            "id": "breed_event",
+            "description": "Event to run when this entity breeds.",
+            "dataType": 8,
+            "lookupId": "entityTypeEvents"
+          },
+          {
+            "id": "mate_type",
+            "description": "The inclusive minimum of the variant range.",
+            "dataType": 8,
+            "lookupId": "entityTypePlusVariants"
+          }
+        ]
+      }
+    },
+    {
+      "id": "causes_pregnancy",
+      "description": "If true, the entity will become pregnant instead of spawning a baby.",
+      "dataType": 1,
+      "defaultValue": false
+    },
+    {
+      "id": "deny_parents_variant",
+      "description": "Determines how likely the baby of parents with the same variant will deny that variant and take a random variant within the given range instead.",
+      "dataType": 16,
+      "subForm": {
+        "fields": [
+          {
+            "id": "chance",
+            "description": "The percentage chance of denying the parents' variant.",
+            "dataType": 3
+          },
+          {
+            "id": "max_variant",
+            "description": "The inclusive maximum of the variant range.",
+            "dataType": 2
+          },
+          {
+            "id": "min_variant",
+            "description": "The inclusive minimum of the variant range.",
+            "dataType": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "environment_requirements",
+      "description": "The list of nearby block requirements to get the entity into the 'love' state.",
+      "dataType": 15,
+      "subForm": {
+        "fields": [
+          {
+            "id": "block_types",
+            "description": "The block types required nearby for the entity to breed.",
+            "dataType": 17
+          },
+          {
+            "id": "count",
+            "description": "The number of the required block types nearby for the entity to breed.",
+            "dataType": 0
+          },
+          {
+            "id": "radius",
+            "description": "How many blocks radius from the mob's center to search in for the required blocks. Bounded between 0 and 16.",
+            "dataType": 3,
+            "minValue": 0,
+            "maxValue": 16
+          }
+        ]
+      }
+    },
+    {
+      "id": "extra_baby_chance",
+      "description": "Chance that up to 16 babies will spawn.",
+      "dataType": 21
+    },
+    {
+      "id": "inherit_tamed",
+      "description": "If true, the babies will be automatically tamed if its parents are.",
+      "dataType": 1
+    },
+    {
+      "id": "love_filters",
+      "description": "The filters to run when attempting to fall in love.",
+      "dataType": 20
+    },
+    {
+      "id": "mutation_factor",
+      "description": "Determines how likely the babies are to NOT inherit one of their parent's variances.",
+      "dataType": 16,
+      "subForm": {
+        "fields": [
+          {
+            "id": "color",
+            "description": "The percentage chance of denying the parents' variant.",
+            "dataType": 21
+          },
+          {
+            "id": "variant",
+            "description": "The percentage chance of a mutation on the entity's variant type.",
+            "dataType": 21
+          },
+          {
+            "id": "extra_variant",
+            "description": "The percentage chance of a mutation on the entity's extra variant type.",
+            "dataType": 21
+          }
+        ]
+      }
+    },
+    {
+      "id": "require_full_health",
+      "description": "If true, the entity needs to be at full health before it can breed.",
+      "dataType": 1,
+      "defaultValue": false
+    },
+    {
+      "id": "require_tame",
+      "description": "If true, the entities need to be tamed first before they can breed.",
+      "dataType": 1,
+      "defaultValue": true
+    }
+  ]
+}

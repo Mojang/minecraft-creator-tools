@@ -77,7 +77,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
     const srPath = file.storageRelativePath.toLowerCase();
 
     if (srPath.indexOf("/entities/") >= 0 && !srPath.endsWith(".entity.json")) {
-      const pi = new ProjectInfoItem(InfoItemType.info, this.id, 1, "Entity file: " + file.storageRelativePath);
+      const pi = new ProjectInfoItem(InfoItemType.info, this.id, 1, "Entity file", undefined, file.storageRelativePath);
 
       await file.loadContent(false);
 
@@ -103,7 +103,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
     }
 
     if (srPath.indexOf("/blocks/") >= 0) {
-      const pi = new ProjectInfoItem(InfoItemType.info, this.id, 2, "Block file: " + file.storageRelativePath);
+      const pi = new ProjectInfoItem(InfoItemType.info, this.id, 2, "Block file", undefined, file.storageRelativePath);
 
       await file.loadContent(false);
 

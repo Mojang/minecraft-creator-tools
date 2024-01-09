@@ -49,7 +49,7 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
           InfoItemType.info,
           this.id,
           101,
-          "Beta APIs experiment: " + mcworld.betaApisExperiment,
+          "Beta APIs experiment",
           projectItem,
           mcworld.betaApisExperiment,
           mcworld.name
@@ -61,7 +61,7 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
           InfoItemType.info,
           this.id,
           102,
-          "Data Driven Items experiment: " + mcworld.dataDrivenItemsExperiment,
+          "Data Driven Items experiment",
           projectItem,
           mcworld.dataDrivenItemsExperiment,
           mcworld.name
@@ -73,7 +73,7 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
           InfoItemType.info,
           this.id,
           103,
-          "Deferred Technical Preview experiment: " + mcworld.deferredTechnicalPreviewExperiment,
+          "Deferred Technical Preview experiment",
           projectItem,
           mcworld.deferredTechnicalPreviewExperiment,
           mcworld.name

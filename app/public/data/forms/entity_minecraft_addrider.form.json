@@ -1,0 +1,19 @@
+{
+  "title": "Add Rider",
+  "description": "Entity acquires riders. minecraft:addrider requires minecraft:rideable in order to work properly.",
+  "fields": [
+    {
+      "id": "entity_type",
+      "title": "Entity type to ride",
+      "description": "Type of entity to acquire as a rider",
+      "dataType": 8,
+      "lookupId": "entityType"
+    },
+    {
+      "id": "spawn_event",
+      "description": "Trigger event when a rider is acquired",
+      "dataType": 8,
+      "lookupId": "entityTypeEvents"
+    }
+  ]
+}

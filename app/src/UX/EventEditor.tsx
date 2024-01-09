@@ -18,7 +18,6 @@ export default class EventEditorEditor extends Component<IEventEditorEditorProps
     super(props);
 
     this._addComponentGroupClick = this._addComponentGroupClick.bind(this);
-    this._addComponent = this._addComponent.bind(this);
     this._handleCloseClick = this._handleCloseClick.bind(this);
   }
 
@@ -26,21 +25,7 @@ export default class EventEditorEditor extends Component<IEventEditorEditorProps
     this.forceUpdate();
   }
 
-  _addComponent(name: string) {
-    if (Database.uxCatalog === null) {
-      return;
-    }
-
-    //    const form = Database.uxCatalog.componentForms[name];
-  }
-
-  async _updateManager() {
-    if (Database.uxCatalog === null) {
-      await Database.loadUx();
-
-      this.forceUpdate();
-    }
-  }
+  async _updateManager() {}
 
   _handleCloseClick(props: IDataFormProps) {
     if (!props.tag) {

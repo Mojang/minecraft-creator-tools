@@ -36,10 +36,7 @@ interface IFunctionEditorState {
   content?: string;
 }
 
-export default class FunctionEditor
-  extends Component<IFunctionEditorProps, IFunctionEditorState>
-  implements IPersistable
-{
+export default class FunctionEditor extends Component<IFunctionEditorProps, IFunctionEditorState> {
   editor?: monaco.editor.IStandaloneCodeEditor;
   _decorationIds: string[] = [];
 
@@ -372,13 +369,13 @@ export default class FunctionEditor
         icon: <FontAwesomeIcon icon={faSearchPlus} className="fa-lg" />,
         key: "zoomIn",
         onClick: this._zoomIn,
-        title: "Toggle whether hidden items are shown",
+        title: "Toggle whether supporting files are shown",
       },
       {
         icon: <FontAwesomeIcon icon={faSearchMinus} className="fa-lg" />,
         key: "zoomOut",
         onClick: this._zoomOut,
-        title: "Toggle whether hidden items are shown",
+        title: "Toggle whether supporting files are shown",
       },
     ];
 

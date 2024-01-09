@@ -30,10 +30,10 @@ interface IDedicatedServerSettingsPanelState {
   iagree: boolean | undefined;
 }
 
-export default class DedicatedServerSettingsPanel
-  extends Component<IDedicatedServerSettingsPanelProps, IDedicatedServerSettingsPanelState>
-  implements IPersistable
-{
+export default class DedicatedServerSettingsPanel extends Component<
+  IDedicatedServerSettingsPanelProps,
+  IDedicatedServerSettingsPanelState
+> {
   private _activeEditorPersistable?: IPersistable;
   private modeOptions = ["Minecraft server download", "Dedicated server source from path", "Run directly at path"];
 

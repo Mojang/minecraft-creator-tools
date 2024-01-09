@@ -2,10 +2,7 @@ import { Component } from "react";
 import IFileProps from "./IFileProps";
 import IFile from "../storage/IFile";
 import "./EventActionDesign.css";
-import IPersistable from "./IPersistable";
 import BlockType from "../minecraft/BlockType";
-import Database from "../minecraft/Database";
-import DataFormUtilities from "../dataform/DataFormUtilities";
 import { ThemeInput } from "@fluentui/styles";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ManagedEvent from "../minecraft/ManagedEvent";
@@ -23,17 +20,11 @@ interface IEventActionDesignState {
   isLoaded: boolean;
 }
 
-export default class EventActionDesign
-  extends Component<IEventActionDesignProps, IEventActionDesignState>
-  implements IPersistable
-{
+export default class EventActionDesign extends Component<IEventActionDesignProps, IEventActionDesignState> {
   private _lastFileEdited?: IFile;
 
   constructor(props: IEventActionDesignProps) {
     super(props);
-
-    this._addComponentGroupAddClick = this._addComponentGroupAddClick.bind(this);
-    this._addComponentGroupAdd = this._addComponentGroupAdd.bind(this);
 
     this.state = {
       fileToEdit: props.file,
@@ -92,10 +83,6 @@ export default class EventActionDesign
   }
 
   async _doUpdate(setState: boolean) {
-    if (Database.uxCatalog === null) {
-      await Database.loadUx();
-    }
-
     if (setState) {
       this.setState({
         fileToEdit: this.state.fileToEdit,
@@ -121,41 +108,10 @@ export default class EventActionDesign
     }
   }
 
-  _addComponentGroupAddClick() {
-    this._addComponentGroupAdd("minecraft:tameable");
-
-    this.forceUpdate();
-  }
-
-  _addComponentGroupAdd(name: string) {
-    if (Database.uxCatalog === null) {
-      return;
-    }
-
-    const form = Database.uxCatalog.componentForms[name];
-
-    if (form !== undefined) {
-      const newDataObject = DataFormUtilities.generateDefaultItem(form);
-
-      const et = this.state.fileToEdit.manager as BlockType;
-
-      if (et.behaviorPackBlockTypeDef === undefined) {
-        return;
-      }
-
-      et.behaviorPackBlockTypeDef.components[name] = newDataObject;
-    }
-  }
-
   render() {
     const height = "calc(100vh - " + this.props.heightOffset + "px)";
 
-    if (
-      this.state === null ||
-      this.state.fileToEdit === null ||
-      this.state.fileToEdit.manager === undefined ||
-      Database.uxCatalog === null
-    ) {
+    if (this.state === null || this.state.fileToEdit === null || this.state.fileToEdit.manager === undefined) {
       if (this.state.fileToEdit !== null) {
         if (this.state.fileToEdit.manager === undefined) {
           this._updateManager(true);

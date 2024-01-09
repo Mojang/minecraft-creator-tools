@@ -31,10 +31,7 @@ interface IMinecraftToolEditorState {
   minecraftStatus: ProjectStatusAreaMode;
 }
 
-export default class MinecraftToolEditor
-  extends Component<IMinecraftToolEditorProps, IMinecraftToolEditorState>
-  implements IPersistable
-{
+export default class MinecraftToolEditor extends Component<IMinecraftToolEditorProps, IMinecraftToolEditorState> {
   private _activeEditorPersistable?: IPersistable;
   private _commandValues: string[] = [];
 

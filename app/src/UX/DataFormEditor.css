@@ -1,0 +1,24 @@
+.dfe-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  overflow-y: auto;
+}
+
+.dfe-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.dfe-header {
+  font-size: 16pt;
+  padding-top: 12px;
+  padding-left: 12px;
+  padding-bottom: 12px;
+}
+
+.dfe-form {
+  padding-left: 4px;
+  padding-top: 4px;
+}

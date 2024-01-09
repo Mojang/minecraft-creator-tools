@@ -74,6 +74,15 @@ export default class ProjectInfoItem {
       case InfoItemType.info:
         return "Info";
 
+      case InfoItemType.warning:
+        return "Warning";
+
+      case InfoItemType.recommendation:
+        return "Recommendation";
+
+      case InfoItemType.featureAggregate:
+        return "Feature aggregation";
+
       case InfoItemType.testCompleteFail:
         return "Test fail";
 

@@ -3,7 +3,6 @@ import IFileProps from "./IFileProps";
 import IFile from "../storage/IFile";
 import "./DocumentedClassEditor.css";
 import DocumentedClass from "../minecraft/docs/DocumentedClass";
-import IPersistable from "./IPersistable";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import Database from "../minecraft/Database";
 import CartoApp from "../app/CartoApp";
@@ -31,10 +30,7 @@ interface IDocumentedClassEditorState {
   isLoaded: boolean;
 }
 
-export default class DocumentedClassEditor
-  extends Component<IDocumentedClassEditorProps, IDocumentedClassEditorState>
-  implements IPersistable
-{
+export default class DocumentedClassEditor extends Component<IDocumentedClassEditorProps, IDocumentedClassEditorState> {
   constructor(props: IDocumentedClassEditorProps) {
     super(props);
 
@@ -74,6 +70,9 @@ export default class DocumentedClassEditor
   async doLoad() {
     await this.props.docClass.load();
 
+    await Database.ensureFormLoaded("documented_class");
+    await Database.ensureFormLoaded("simple_info_json");
+
     this.setState({
       docClassToEdit: this.state.docClassToEdit,
       isLoaded: true,
@@ -110,7 +109,7 @@ export default class DocumentedClassEditor
     }
 
     const dclass = this.props.docClass;
-    const form = Database.uxCatalog.documentedClass;
+    const form = Database.getForm("documented_class");
 
     const memberForms = [];
 
@@ -165,7 +164,7 @@ export default class DocumentedClassEditor
               const argsField: IField = {
                 id: "arguments",
                 title: "Arguments",
-                subForm: Database.uxCatalog.simpleInfoJson,
+                subForm: Database.getForm("simple_info_json"),
                 dataType: FieldDataType.keyedObjectCollection,
               };
               infoForm.fields.push(argsField);
@@ -192,7 +191,7 @@ export default class DocumentedClassEditor
                 const throwsField: IField = {
                   id: "throws",
                   title: "Throws",
-                  subForm: Database.uxCatalog.simpleInfoJson,
+                  subForm: Database.getForm("simple_info_json"),
                   visualExperience: FieldVisualExperience.deemphasized,
                   dataType: FieldDataType.object,
                   undefinedIfEmpty: true,
@@ -212,7 +211,7 @@ export default class DocumentedClassEditor
                   id: "returns",
                   title: "Returns (" + returnTypeName + ")",
                   undefinedIfEmpty: true,
-                  subForm: Database.uxCatalog.simpleInfoJson,
+                  subForm: Database.getForm("simple_info_json"),
                   visualExperience: FieldVisualExperience.deemphasized,
                   dataType: FieldDataType.object,
                 };
@@ -247,6 +246,7 @@ export default class DocumentedClassEditor
               displayTitle={true}
               title={title}
               displaySubTitle={subTitle !== undefined}
+              theme={this.props.theme}
               subTitle={subTitle}
               objectKey={infoJsonFile.storageRelativePath}
               indentLevel={indentLevel}
@@ -273,6 +273,7 @@ export default class DocumentedClassEditor
           <DataForm
             definition={form}
             directObject={dclass}
+            theme={this.props.theme}
             readOnly={this.props.typesReadOnly}
             objectKey={dclass.id}
           ></DataForm>

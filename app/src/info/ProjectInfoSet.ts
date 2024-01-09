@@ -27,6 +27,8 @@ export default class ProjectInfoSet {
   _excludeTests?: string[];
   private _pendingGenerateRequests: ((value: unknown) => void)[] = [];
 
+  static CommonCsvHeader = "Test,TestId,Type,Item,Message,Data,Path";
+
   constructor(
     project?: Project,
     suite?: ProjectInfoSuite,
@@ -927,39 +929,60 @@ function _addReportJson(data) {
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i];
 
-      let line =
-        item.generatorId +
-        "," +
-        item.generatorIndex +
-        "," +
-        item.typeSummary +
-        "," +
-        (item.projectItem ? item.projectItem.name : "") +
-        ',"' +
-        item.message +
-        '",';
+      if (item.itemType !== InfoItemType.featureAggregate) {
+        let sp = "";
 
-      if (item.data) {
-        if (typeof item.data === "string") {
-          line += '"' + item.data + '"';
-        } else {
-          line += item.data.toString();
+        if (item.projectItem && item.projectItem.storagePath) {
+          sp = item.projectItem.storagePath;
         }
-      }
 
-      if (item.features) {
-        for (const featName in item.features) {
-          const val = item.features[featName];
-
-          if (typeof val === "number") {
-            line += featName + "," + val + ",";
-          } else if (typeof val === "string") {
-            line += featName + ',"' + val + '",';
+        let data: string | number | boolean | object = "";
+        if (item.data) {
+          if (typeof item.data === "object") {
+            data = JSON.stringify(item.data);
+          } else {
+            data = item.data;
           }
         }
-      }
 
-      lines.push(line);
+        let line =
+          item.generatorId +
+          "," +
+          item.generatorIndex +
+          "," +
+          item.typeSummary +
+          "," +
+          (item.projectItem ? item.projectItem.name : "") +
+          ',"' +
+          item.message +
+          '","' +
+          data +
+          '",' +
+          sp +
+          ",";
+
+        if (item.data) {
+          if (typeof item.data === "string") {
+            line += '"' + item.data + '"';
+          } else {
+            line += item.data.toString();
+          }
+        }
+
+        if (item.features) {
+          for (const featName in item.features) {
+            const val = item.features[featName];
+
+            if (typeof val === "number") {
+              line += featName + "," + val + ",";
+            } else if (typeof val === "string") {
+              line += featName + ',"' + val + '",';
+            }
+          }
+        }
+
+        lines.push(line);
+      }
     }
 
     return lines;

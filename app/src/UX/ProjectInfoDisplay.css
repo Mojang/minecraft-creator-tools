@@ -12,7 +12,6 @@
   padding-top: 15px;
   padding-left: 10px;
   padding-bottom: 16px;
-  background: #242425;
   font-weight: bold;
 }
 
@@ -36,10 +35,6 @@
 
 .pis-itemData {
   grid-column: 2;
-}
-
-.pid-areaOuter {
-  padding-top: 10px;
 }
 
 .pid-tableWrapper {
@@ -78,6 +73,7 @@
 .pid-toolArea {
   display: grid;
   grid-template-columns: 200px 50px 230px 1fr;
+  margin-bottom: 2px;
 }
 
 .pid-topToolbar {
@@ -103,5 +99,5 @@
 
 .pid-validating {
   padding: 20px;
-  padding-top: 9px;
+  padding-top: 19px;
 }

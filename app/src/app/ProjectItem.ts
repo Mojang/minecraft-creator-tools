@@ -23,6 +23,7 @@ import MCWorld from "../minecraft/MCWorld";
 import ZipStorage from "../storage/ZipStorage";
 import Utilities from "../core/Utilities";
 import { StorageErrorStatus } from "../storage/IStorage";
+import IColor from "../core/IColor";
 
 export default class ProjectItem {
   private _data: IProjectItemData;
@@ -36,7 +37,7 @@ export default class ProjectItem {
   private _isLoading: boolean = false;
   private _folder: IFolder | null;
   private _isFileContentProcessed: boolean = false;
-  private _items: ProjectItem[] | undefined;
+  private _imageUrlBase64Cache: string | undefined = undefined;
 
   constructor(parent: Project, incomingData?: IProjectItemData) {
     this._project = parent;
@@ -166,7 +167,7 @@ export default class ProjectItem {
       case ProjectItemType.ts:
         return "TypeScript";
       case ProjectItemType.json:
-        return "Generic json file";
+        return "General json file";
       case ProjectItemType.behaviorPackManifestJson:
         return "Behavior pack manifest";
       case ProjectItemType.resourcePackManifestJson:
@@ -174,9 +175,9 @@ export default class ProjectItem {
       case ProjectItemType.testJs:
         return "Test JavaScript file";
       case ProjectItemType.entityTypeBaseJs:
-        return "Entity type JavaScript file";
+        return "Entity type JavaScript";
       case ProjectItemType.entityTypeBaseTs:
-        return "Entity type TypeScript file";
+        return "Entity type TypeScript";
       case ProjectItemType.entityTypeBehaviorJson:
         return "Entity type";
       case ProjectItemType.MCTemplate:
@@ -192,7 +193,7 @@ export default class ProjectItem {
       case ProjectItemType.zip:
         return "Minecraft zip";
       case ProjectItemType.worldFolder:
-        return "Minecraft world (f)";
+        return "Minecraft world";
       case ProjectItemType.structure:
         return "Structure";
       case ProjectItemType.MCFunction:
@@ -308,13 +309,13 @@ export default class ProjectItem {
       case ProjectItemType.skinPackManifestJson:
         return "Skin pack manifest";
       case ProjectItemType.blockTypeBaseJs:
-        return "Block type base javascript";
+        return "Block type base JavaScript";
       case ProjectItemType.blockTypeBaseTs:
-        return "Block type base typescript";
+        return "Block type base TypeScript";
       case ProjectItemType.image:
         return "Image";
       case ProjectItemType.vsCodeLaunchJson:
-        return "VS Code launch";
+        return "VS Code launch file";
       case ProjectItemType.vsCodeTasksJson:
         return "VS Code tasks";
       case ProjectItemType.vsCodeSettingsJson:
@@ -326,22 +327,230 @@ export default class ProjectItem {
       case ProjectItemType.worldTemplateManifestJson:
         return "World template manifest";
       case ProjectItemType.textureSetJson:
-        return "Texture Sets";
+        return "Texture set";
       case ProjectItemType.lightingJson:
         return "Lighting";
       case ProjectItemType.flipBookTexturesJson:
-        return "Flipbook Textures";
+        return "Flipbook texture set";
       case ProjectItemType.itemTextureJson:
-        return "Item Texture";
+        return "Item texture";
       case ProjectItemType.terrainTextureJson:
-        return "Terrain Texture";
+        return "Terrain texture";
       case ProjectItemType.globalVariablesJson:
-        return "UI Global Variables";
+        return "UI global variables";
+      case ProjectItemType.dataFormJson:
+        return "Form";
+      case ProjectItemType.dimensionJson:
+        return "Dimension";
+      case ProjectItemType.behaviorPackHistoryListJson:
+        return "Behavior pack history";
+      case ProjectItemType.resourcePackHistoryListJson:
+        return "Resource pack history";
       default:
         return "Unknown";
     }
   }
 
+  static getColorForType(type: ProjectItemType): IColor {
+    return {
+      red: (Math.floor(type / 4) % 4) * 24 + 128,
+      green: (type % 4) * 24 + 128,
+      blue: (Math.floor(type / 16) % 4) * 24 + 128,
+    };
+  }
+
+  static getPluralDescriptionForType(type: ProjectItemType) {
+    switch (type) {
+      case ProjectItemType.js:
+        return "JavaScript";
+      case ProjectItemType.buildProcessedJs:
+        return "Built JavaScript";
+      case ProjectItemType.ts:
+        return "TypeScript";
+      case ProjectItemType.json:
+        return "JSON files";
+      case ProjectItemType.behaviorPackManifestJson:
+        return "Behavior pack manifests";
+      case ProjectItemType.resourcePackManifestJson:
+        return "Resource pack manifests";
+      case ProjectItemType.testJs:
+        return "Test JavaScript";
+      case ProjectItemType.entityTypeBaseJs:
+        return "Entity type JavaScript";
+      case ProjectItemType.entityTypeBaseTs:
+        return "Entity type TypeScript";
+      case ProjectItemType.entityTypeBehaviorJson:
+        return "Entity types";
+      case ProjectItemType.MCTemplate:
+        return "World templates";
+      case ProjectItemType.MCWorld:
+        return "Minecraft worlds";
+      case ProjectItemType.MCProject:
+        return "Minecraft projects";
+      case ProjectItemType.MCAddon:
+        return "Minecraft addons";
+      case ProjectItemType.MCPack:
+        return "Minecraft packs";
+      case ProjectItemType.zip:
+        return "Minecraft zip";
+      case ProjectItemType.worldFolder:
+        return "Minecraft world folders";
+      case ProjectItemType.structure:
+        return "Structures";
+      case ProjectItemType.MCFunction:
+        return "Functions";
+      case ProjectItemType.tickJson:
+        return "Ticks";
+      case ProjectItemType.material:
+        return "Materials";
+      case ProjectItemType.materialSetJson:
+        return "Material sets";
+      case ProjectItemType.geometry:
+        return "Geometries";
+      case ProjectItemType.fragment:
+        return "Fragments";
+      case ProjectItemType.vertex:
+        return "Vertices";
+      case ProjectItemType.cameraJson:
+        return "Cameras";
+      case ProjectItemType.catalogIndexJs:
+        return "Catalog indexes";
+      case ProjectItemType.autoScriptJson:
+        return "Auto-scripts";
+      case ProjectItemType.worldTest:
+        return "World tests";
+      case ProjectItemType.behaviorPackListJson:
+        return "World behavior pack lists";
+      case ProjectItemType.resourcePackListJson:
+        return "World resource pack lists";
+      case ProjectItemType.animationBehaviorJson:
+        return "Behavior pack animations";
+      case ProjectItemType.animationControllerBehaviorJson:
+        return "Behavior pack animation controllers";
+      case ProjectItemType.blockTypeBehaviorJson:
+        return "Block types";
+      case ProjectItemType.blockMaterialsBehaviorJson:
+        return "Block type materials";
+      case ProjectItemType.itemTypeBehaviorJson:
+        return "Item types";
+      case ProjectItemType.lootTableBehaviorJson:
+        return "Loot tables";
+      case ProjectItemType.biomeResourceJson:
+        return "Biome resources";
+      case ProjectItemType.blocksCatalogResourceJson:
+        return "Block resource catalogs";
+      case ProjectItemType.soundsCatalogResourceJson:
+        return "Sound catalogs";
+      case ProjectItemType.animationResourceJson:
+        return "Animations";
+      case ProjectItemType.animationControllerResourceJson:
+        return "Animation controllers";
+      case ProjectItemType.entityTypeResourceJson:
+        return "Entity type resources";
+      case ProjectItemType.fogResourceJson:
+        return "Fogs";
+      case ProjectItemType.modelJson:
+        return "Models";
+      case ProjectItemType.particleJson:
+        return "Particles";
+      case ProjectItemType.renderControllerJson:
+        return "Render controllers";
+      case ProjectItemType.uiTextureJson:
+        return "UI Textures";
+      case ProjectItemType.uiJson:
+        return "User interfaces";
+      case ProjectItemType.languagesCatalogResourceJson:
+        return "Language catalogs";
+      case ProjectItemType.biomeBehaviorJson:
+        return "Biomes";
+      case ProjectItemType.dialogueBehaviorJson:
+        return "Entity dialogues";
+      case ProjectItemType.featureRuleBehaviorJson:
+        return "World feature rules";
+      case ProjectItemType.featureBehaviorJson:
+        return "Features";
+      case ProjectItemType.functionEventJson:
+        return "Function events";
+      case ProjectItemType.recipeBehaviorJson:
+        return "Recipes";
+      case ProjectItemType.spawnRuleBehaviorJson:
+        return "Spawn rules";
+      case ProjectItemType.tradingBehaviorJson:
+        return "Trading rules";
+      case ProjectItemType.volumeBehaviorJson:
+        return "Volumes";
+      case ProjectItemType.attachableResourceJson:
+        return "Attachable";
+      case ProjectItemType.itemTypeResourceJson:
+        return "Item type resources";
+      case ProjectItemType.materialsResourceJson:
+        return "Materials";
+      case ProjectItemType.musicDefinitionJson:
+        return "Music";
+      case ProjectItemType.soundDefinitionJson:
+        return "Sounds";
+      case ProjectItemType.tsconfigJson:
+        return "TypeScript configs";
+      case ProjectItemType.jsconfigJson:
+        return "JavaScript configs";
+      case ProjectItemType.docfxJson:
+        return "DocFX definitions";
+      case ProjectItemType.jsdocJson:
+        return "JSDoc definitions";
+      case ProjectItemType.packageJson:
+        return "NPM package definitions";
+      case ProjectItemType.packageLockJson:
+        return "NPM package lock definitions";
+      case ProjectItemType.docInfoJson:
+        return "Doc info files";
+      case ProjectItemType.typesDefinitionJson:
+        return "Type definitions";
+      case ProjectItemType.commandSetDefinitionJson:
+        return "Command definitions";
+      case ProjectItemType.skinPackManifestJson:
+        return "Skin pack manifest";
+      case ProjectItemType.blockTypeBaseJs:
+        return "Block type base JavaScript";
+      case ProjectItemType.blockTypeBaseTs:
+        return "Block type base TypeScript";
+      case ProjectItemType.image:
+        return "Images";
+      case ProjectItemType.vsCodeLaunchJson:
+        return "VS Code launch files";
+      case ProjectItemType.vsCodeTasksJson:
+        return "VS Code tasks";
+      case ProjectItemType.vsCodeSettingsJson:
+        return "VS Code settings";
+      case ProjectItemType.vsCodeExtensionsJson:
+        return "VS Code extensions";
+      case ProjectItemType.lang:
+        return "Language translations";
+      case ProjectItemType.worldTemplateManifestJson:
+        return "World template manifest";
+      case ProjectItemType.textureSetJson:
+        return "Texture sets";
+      case ProjectItemType.lightingJson:
+        return "Lighting files";
+      case ProjectItemType.flipBookTexturesJson:
+        return "Flipbook textures";
+      case ProjectItemType.itemTextureJson:
+        return "Item textures";
+      case ProjectItemType.terrainTextureJson:
+        return "Terrain textures";
+      case ProjectItemType.globalVariablesJson:
+        return "UI global variables";
+      case ProjectItemType.dataFormJson:
+        return "Forms";
+      case ProjectItemType.dimensionJson:
+        return "Dimensions";
+      case ProjectItemType.behaviorPackHistoryListJson:
+        return "Behavior pack histories";
+      case ProjectItemType.resourcePackHistoryListJson:
+        return "Resource pack histories";
+      default:
+        return this.getDescriptionForType(type);
+    }
+  }
   get typeTitle() {
     return ProjectItem.getDescriptionForType(this._data.itemType);
   }
@@ -350,6 +559,9 @@ export default class ProjectItem {
     switch (this._data.itemType) {
       case ProjectItemType.resourcePackManifestJson: // sort next to .behaviorPackManifestJson
         return 510;
+
+      case ProjectItemType.entityTypeBehaviorJson:
+        return 1851;
 
       // sort all the world-y and container-y stuff next to each other
       case ProjectItemType.structure:
@@ -362,6 +574,88 @@ export default class ProjectItem {
       default:
         return this._data.itemType * 100;
     }
+  }
+
+  getFolderGroupingPath() {
+    if (this.storagePath === undefined || this.storagePath === null) {
+      return undefined;
+    }
+
+    let folderStoragePath = StorageUtilities.getPath(this.storagePath);
+
+    if (folderStoragePath === undefined) {
+      return undefined;
+    }
+
+    let folderStoragePathLower = folderStoragePath.toLowerCase();
+
+    const folderTypeRoots = ProjectItem.getFolderRootsForType(this.itemType);
+
+    folderTypeRoots.push("zip");
+
+    for (const folderTypeRoot of folderTypeRoots) {
+      const start = folderStoragePathLower.indexOf("/" + folderTypeRoot + "/");
+
+      if (start >= 0) {
+        folderStoragePath = folderStoragePath.substring(start + 2 + folderTypeRoot.length);
+        folderStoragePathLower = folderStoragePath.toLowerCase();
+      }
+    }
+
+    folderStoragePath = folderStoragePath.replace(/#/gi, " ").trim();
+
+    return folderStoragePath;
+  }
+
+  static getFolderRootsForType(itemType: ProjectItemType) {
+    switch (itemType) {
+      case ProjectItemType.MCFunction:
+        return ["functions"];
+      case ProjectItemType.js:
+      case ProjectItemType.ts:
+        return ["scripts"];
+      case ProjectItemType.entityTypeBehaviorJson:
+        return ["entities"];
+      case ProjectItemType.itemTypeBehaviorJson:
+      case ProjectItemType.itemTypeResourceJson:
+        return ["items"];
+      case ProjectItemType.blockTypeBehaviorJson:
+        return ["blocks"];
+      case ProjectItemType.documentedType:
+        return ["script_modules"];
+      case ProjectItemType.commandSetDefinitionJson:
+        return ["command_modules"];
+      case ProjectItemType.lootTableBehaviorJson:
+        return ["loot_tables"];
+      case ProjectItemType.recipeBehaviorJson:
+        return ["recipes"];
+      case ProjectItemType.spawnRuleBehaviorJson:
+        return ["spawn_rules"];
+      case ProjectItemType.particleJson:
+        return ["particles"];
+      case ProjectItemType.structure:
+        return ["structures"];
+      case ProjectItemType.worldFolder:
+      case ProjectItemType.MCWorld:
+        return ["worlds"];
+      case ProjectItemType.cameraJson:
+        return ["cameras"];
+      case ProjectItemType.dimensionJson:
+        return ["dimensions"];
+      case ProjectItemType.fogJson:
+      case ProjectItemType.fogResourceJson:
+        return ["fogs"];
+      case ProjectItemType.dataFormJson:
+        return ["forms"];
+      case ProjectItemType.typesDefinitionJson:
+        return ["checkpoint_input"];
+      case ProjectItemType.materialSetJson:
+      case ProjectItemType.materialsResourceJson:
+      case ProjectItemType.material:
+        return ["materials"];
+    }
+
+    return [];
   }
 
   getSchemaPath() {
@@ -693,7 +987,18 @@ export default class ProjectItem {
           }
         }
       }
+    } else if (this.itemType === ProjectItemType.image) {
+      if (this._imageUrlBase64Cache) {
+        return this._imageUrlBase64Cache;
+      }
+
+      if (this._file && this._file.content && this._file.content instanceof Uint8Array) {
+        this._imageUrlBase64Cache = "data:image/jpg;base64, " + Utilities.uint8ArrayToBase64(this._file.content);
+
+        return this._imageUrlBase64Cache;
+      }
     }
+
     return undefined;
   }
 

@@ -16,27 +16,25 @@ import {
   Toolbar,
   Slider,
   SliderProps,
+  ThemeInput,
 } from "@fluentui/react-northstar";
-import IPropertyObject from "./IPropertyObject";
-import IGetSetPropertyObject from "./IGetSetPropertyObject";
 import Log from "./../core/Log";
 import Point3, { IPoint3Props } from "./Point3";
 import Version, { IVersionProps } from "./Version";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import StringArray, { IStringArrayProps } from "./StringArray";
 import Range, { IRangeProps } from "./Range";
 import MinecraftFilter, { IMinecraftFilterProps } from "./MinecraftFilter";
 import ISimpleReference from "../core/ISimpleReference";
 import Utilities from "../core/Utilities";
+import IDataContainer from "./IDataContainer";
+import FieldUtilities from "./FieldUtilities";
 
-export interface IDataFormProps {
+export interface IDataFormProps extends IDataContainer {
   definition: IFormDefinition;
-  dataPropertyObject?: IPropertyObject;
-  getsetPropertyObject?: IGetSetPropertyObject;
   lookupSets?: { [lookupId: string]: ISimpleReference[] };
   objectKey?: string;
-  directObject?: any;
   displayTitle?: boolean;
   displaySubTitle?: boolean;
   title?: string;
@@ -45,6 +43,7 @@ export interface IDataFormProps {
   tag?: any;
   parentField?: IField;
   formId?: string;
+  theme: ThemeInput<any>;
   closeButton?: boolean;
   defaultVisualExperience?: FieldVisualExperience;
   displayDescription?: boolean;
@@ -70,6 +69,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
   constructor(props: IDataFormProps) {
     super(props);
 
+    this._addObjectArrayItem = this._addObjectArrayItem.bind(this);
     this._handleCheckboxChange = this._handleCheckboxChange.bind(this);
     this._handleDropdownChange = this._handleDropdownChange.bind(this);
     this._handleBlockChanged = this._handleBlockChanged.bind(this);
@@ -103,84 +103,6 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
   _handleBlockChanged() {
     this.forceUpdate();
-  }
-
-  _propAsBoolean(name: string, defaultValue: boolean) {
-    let value = undefined;
-
-    if (this.props.dataPropertyObject !== undefined) {
-      const prop = this.props.dataPropertyObject.getProperty(name);
-
-      if (prop !== undefined) {
-        value = prop.value;
-      }
-    }
-
-    if (this.props.getsetPropertyObject !== undefined) {
-      value = this.props.getsetPropertyObject.getProperty(name);
-    }
-
-    if (this.props.directObject !== undefined) {
-      value = this.props.directObject[name];
-    }
-
-    if (value === undefined) {
-      return defaultValue;
-    }
-
-    if (typeof value === "boolean") {
-      return value;
-    } else if (typeof value === "number") {
-      if (value === 0) {
-        return false;
-      } else {
-        return true;
-      }
-    } else if (typeof value === "string") {
-      if (value === "false") {
-        return false;
-      } else {
-        return true;
-      }
-    }
-
-    return defaultValue;
-  }
-
-  getFieldValue(field: IField) {
-    let curVal = undefined;
-
-    const dataObj = this.props.dataPropertyObject;
-
-    if (dataObj !== undefined) {
-      let prop = dataObj.getProperty(field.id);
-
-      if (prop === undefined && field.altId !== undefined) {
-        prop = dataObj.getProperty(field.altId);
-      }
-
-      if (prop !== undefined) {
-        curVal = prop.value;
-      }
-    }
-
-    const gsObj = this.props.getsetPropertyObject;
-
-    if (gsObj !== undefined) {
-      curVal = gsObj.getProperty(field.id);
-
-      if (curVal === undefined && field.altId !== undefined) {
-        curVal = gsObj.getProperty(field.altId);
-      }
-    }
-
-    const dirObj = this.props.directObject;
-
-    if (dirObj !== undefined) {
-      curVal = dirObj[field.id];
-    }
-
-    return curVal;
   }
 
   _getObjectId() {
@@ -436,7 +358,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     const protoObj = this.props.dataPropertyObject;
     const id = event.currentTarget.id;
 
-    const val = this._propAsBoolean(id, false);
+    const val = FieldUtilities.getFieldValueAsBoolean(id, false, this.props);
 
     if (protoObj !== undefined) {
       const property = protoObj.ensureProperty(id);
@@ -726,18 +648,6 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
   }
 
-  getFieldTitle(field: IField) {
-    let title = field.id;
-
-    if (field.title !== undefined) {
-      title = field.title;
-    } else {
-      title = Utilities.humanifyMinecraftName(title);
-    }
-
-    return title;
-  }
-
   render() {
     const formInterior = [];
 
@@ -753,316 +663,323 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       for (const propIndex in this.props.definition.fields) {
         const field = this.props.definition.fields[propIndex];
 
-        const curVal = this.getFieldValue(field);
-        const defaultVal = curVal ? curVal : field.defaultValue;
+        if (!field.visibility || FieldUtilities.evaluate(this.props.definition, field.visibility, this.props)) {
+          const curVal = FieldUtilities.getFieldValue(field, this.props);
+          const defaultVal = curVal ? curVal : field.defaultValue;
 
-        let descriptionElement = <></>;
+          let isValid = true;
 
-        if (field.description) {
-          descriptionElement = (
-            <div key={seedId + field.id + "desc"} className="df-fieldDescription">
-              {field.description}
-            </div>
-          );
-        }
+          if (field.validity) {
+            isValid = FieldUtilities.evaluate(this.props.definition, field.validity, this.props, field);
+          }
 
-        const title = this.getFieldTitle(field);
+          let descriptionElement = <></>;
 
-        if (this.props.readOnly || field.readOnly) {
-          if (field.defaultValue === undefined || field.defaultValue !== curVal) {
-            formInterior.push(
-              <div className="df-ro-row" key={seedId + "row" + title}>
-                <div className="df-ro-title">{title}</div>
-                <div className="df-ro-value">{curVal}</div>
+          if (field.description) {
+            descriptionElement = (
+              <div key={seedId + field.id + "desc"} className="df-fieldDescription">
+                {field.description}
               </div>
             );
           }
-        } else {
-          if (
-            (field.dataType === FieldDataType.stringEnum ||
-              field.dataType === FieldDataType.intEnum ||
-              field.dataType === FieldDataType.boolean) &&
-            field.choices !== undefined
-          ) {
-            const items: DropdownItemProps[] = [];
 
-            let dropdownValue = curVal;
-            let lookupSet: ISimpleReference[] | undefined = undefined;
+          const title = FieldUtilities.getFieldTitle(field);
 
-            if (field.choices) {
-              lookupSet = field.choices;
-            } else if (field.lookupId && this.props.lookupSets) {
-              lookupSet = this.props.lookupSets[field.lookupId];
+          if (this.props.readOnly || field.readOnly) {
+            if (field.defaultValue === undefined || field.defaultValue !== curVal) {
+              formInterior.push(
+                <div className="df-ro-row" key={seedId + "row" + title}>
+                  <div className="df-ro-title">{title}</div>
+                  <div className="df-ro-value">{curVal}</div>
+                </div>
+              );
             }
+          } else {
+            if (
+              (field.dataType === FieldDataType.stringEnum ||
+                field.dataType === FieldDataType.intEnum ||
+                field.dataType === FieldDataType.boolean) &&
+              field.choices !== undefined
+            ) {
+              const items: DropdownItemProps[] = [];
 
-            if (lookupSet) {
-              for (let i = 0; i < lookupSet.length; i++) {
-                items.push({
-                  content: lookupSet[i].title,
-                  selected: lookupSet[i].id === curVal,
-                });
+              let dropdownValue = curVal;
+              let lookupSet: ISimpleReference[] | undefined = undefined;
 
-                if (curVal === lookupSet[i].id) {
-                  let title = lookupSet[i].title;
+              if (field.choices) {
+                lookupSet = field.choices;
+              } else if (field.lookupId && this.props.lookupSets) {
+                lookupSet = this.props.lookupSets[field.lookupId];
+              }
 
-                  if (!title) {
-                    title = Utilities.humanifyMinecraftName(lookupSet[i].id);
+              if (lookupSet) {
+                for (let i = 0; i < lookupSet.length; i++) {
+                  items.push({
+                    content: lookupSet[i].title,
+                    selected: lookupSet[i].id === curVal,
+                  });
+
+                  if (curVal === lookupSet[i].id) {
+                    let title = lookupSet[i].title;
+
+                    if (!title) {
+                      title = Utilities.humanifyMinecraftName(lookupSet[i].id);
+                    }
+
+                    dropdownValue = title;
                   }
-
-                  dropdownValue = title;
                 }
               }
-            }
 
-            const dropdown = (
-              <FormDropdown
-                label={title}
-                id={propIndex}
-                items={items}
-                key={seedId + title + propIndex}
-                fluid={true}
-                onChange={this._handleDropdownChange}
-                value={[dropdownValue]}
-              />
-            );
-
-            this.dropdownNames.push(field.id);
-            this.dropdownItems.push(items);
-            formInterior.push(
-              <div className="df-fieldWrap" key={"fw" + field.id}>
-                {dropdown}
-                {descriptionElement}
-              </div>
-            );
-          } else if (field.dataType === FieldDataType.point3) {
-            const val = this._getProperty(field.id, [0, 0, 0]);
-            let objKey = field.id;
-            if (this.props.objectKey) {
-              objKey += this.props.objectKey;
-            }
-
-            const point3 = (
-              <Point3
-                data={val}
-                objectKey={objKey}
-                key={seedId + field.id}
-                label={title}
-                ambientPoint={this.props.ambientSelectedPoint}
-                onChange={this._handlePoint3PropertyChange}
-                form={this.props.definition}
-                field={field}
-              />
-            );
-
-            this.formComponentNames.push(field.id);
-            this.formComponents.push(point3);
-            formInterior.push(
-              <div className="df-fieldWrap" key={"fw" + field.id}>
-                {point3}
-                {descriptionElement}
-              </div>
-            );
-          } else if (field.dataType === FieldDataType.version) {
-            const val = this._getProperty(field.id, [0, 0, 1]);
-            let objKey = field.id;
-            if (this.props.objectKey) {
-              objKey += this.props.objectKey;
-            }
-
-            const version = (
-              <Version
-                data={val}
-                objectKey={objKey}
-                key={seedId + field.id}
-                label={title}
-                onChange={this._handleVersionPropertyChange}
-                form={this.props.definition}
-                field={field}
-              />
-            );
-
-            this.formComponentNames.push(field.id);
-            this.formComponents.push(version);
-
-            formInterior.push(
-              <div className="df-fieldWrap" key={"fw" + field.id}>
-                {version}
-                {descriptionElement}
-              </div>
-            );
-          } else if (
-            field.dataType === FieldDataType.stringArray ||
-            field.dataType === FieldDataType.longFormStringArray
-          ) {
-            const val = this._getProperty(field.id, []);
-            let objKey = field.id;
-            if (this.props.objectKey) {
-              objKey += this.props.objectKey;
-            }
-
-            const sarrt = (
-              <StringArray
-                data={val}
-                objectKey={objKey}
-                key={seedId + field.id}
-                longForm={field.dataType === FieldDataType.longFormStringArray}
-                label={title}
-                onChange={this._handleStringArrayPropertyChange}
-                form={this.props.definition}
-                field={field}
-              />
-            );
-
-            this.formComponentNames.push(field.id);
-            this.formComponents.push(sarrt);
-
-            formInterior.push(
-              <div className="df-fieldWrap" key={"fw" + field.id}>
-                <div className="df-elementTitle">{title}</div>
-                {sarrt}
-                {descriptionElement}
-              </div>
-            );
-          } else if (field.dataType === FieldDataType.intRange || field.dataType === FieldDataType.floatRange) {
-            const val = this._getProperty(field.id, [0, 100]);
-
-            let objKey = field.id;
-
-            if (this.props.objectKey) {
-              objKey += this.props.objectKey;
-            }
-
-            const range = (
-              <Range
-                data={val}
-                objectKey={objKey}
-                key={seedId + field.id}
-                label={title}
-                isInt={field.dataType === FieldDataType.intRange}
-                onChange={this._handleRangePropertyChange}
-                form={this.props.definition}
-                field={field}
-              />
-            );
-
-            this.formComponentNames.push(field.id);
-            this.formComponents.push(range);
-
-            formInterior.push(
-              <div className="df-fieldWrap" key={"fw" + field.id}>
-                {range}
-                {descriptionElement}
-              </div>
-            );
-          } else if (field.dataType === FieldDataType.minecraftFilter) {
-            const val = this._getProperty(field.id, {});
-            let objKey = field.id;
-
-            if (this.props.objectKey) {
-              objKey += this.props.objectKey;
-            }
-
-            const sarr = (
-              <MinecraftFilter
-                data={val}
-                objectKey={objKey}
-                key={seedId + field.id}
-                onChange={this._handleMinecraftFilterPropertyChange}
-                form={this.props.definition}
-                field={field}
-              />
-            );
-
-            this.formComponentNames.push(field.id);
-            this.formComponents.push(sarr);
-
-            formInterior.push(
-              <div className="df-fieldWrap" key={"fw" + field.id}>
-                {sarr}
-                {descriptionElement}
-              </div>
-            );
-          } else if (field.dataType === FieldDataType.keyedObjectCollection) {
-            this.addKeyedObjectArrayComponent(field, formInterior, descriptionElement);
-          } else if (field.dataType === FieldDataType.keyedStringCollection) {
-            this.addKeyedStringArrayComponent(field, formInterior, descriptionElement);
-          } else if (field.dataType === FieldDataType.objectArray) {
-            this.addObjectArrayComponent(field, formInterior, descriptionElement);
-          } else if (field.dataType === FieldDataType.object) {
-            this.addObjectComponent(field, formInterior, descriptionElement);
-          } else if (field.dataType === FieldDataType.intBoolean || field.dataType === FieldDataType.boolean) {
-            this.addCheckboxComponent(field, formInterior, descriptionElement);
-          } else if (field.dataType === FieldDataType.longFormString) {
-            const fieldInput = (
-              <TextArea
-                fluid={true}
-                key={seedId + field.id}
-                id={field.id}
-                value={curVal as string}
-                defaultValue={defaultVal as string}
-                spellCheck={true}
-                onChange={this._handleTextAreaChange}
-              />
-            );
-
-            const titleClass = (curVal as string)?.length > 0 ? undefined : "df-elementTitleRed";
-            formInterior.push(
-              <div className="df-fieldWrap" key={"fw" + field.id}>
-                <div key={seedId + field.id + "titleA"} className="df-fieldTitle">
-                  <div className={titleClass}>{title}</div>
-                  {fieldInput}
-                </div>
-                {descriptionElement}
-              </div>
-            );
-          } else if (
-            field.dataType === FieldDataType.int &&
-            field.experienceType === FieldExperienceType.slider &&
-            (field.minValue !== undefined || field.suggestedMinValue !== undefined) &&
-            (field.maxValue !== undefined || field.suggestedMaxValue !== undefined)
-          ) {
-            formInterior.push(
-              <div className="df-fieldWrap" key={"fw" + field.id}>
-                <div className="df-sliderSet" key={seedId + field.id + "W"}>
-                  <div className="df-sliderTitle">{title}</div>
-                  <Slider
-                    key={seedId + field.id}
-                    id={field.id}
-                    fluid={true}
-                    className="df-slider"
-                    min={field.minValue ? field.minValue : field.suggestedMinValue}
-                    max={field.maxValue ? field.maxValue : field.suggestedMaxValue}
-                    value={curVal as string}
-                    defaultValue={defaultVal as string}
-                    onChange={this._handleSliderChange}
-                  />
-                  <FormInput
-                    className="df-sliderInput"
-                    key={seedId + field.id + "T"}
-                    id={field.id}
-                    fluid={true}
-                    value={curVal as string}
-                    defaultValue={defaultVal as string}
-                    onChange={this._handleTextboxChange}
-                  />
-                </div>
-                {descriptionElement}
-              </div>
-            );
-          } else {
-            formInterior.push(
-              <div className="df-fieldWrap" key={"fw" + field.id}>
-                <FormInput
+              const dropdown = (
+                <FormDropdown
                   label={title}
+                  id={propIndex}
+                  items={items}
+                  key={seedId + title + propIndex}
+                  fluid={true}
+                  onChange={this._handleDropdownChange}
+                  value={[dropdownValue]}
+                />
+              );
+
+              this.dropdownNames.push(field.id);
+              this.dropdownItems.push(items);
+              formInterior.push(
+                <div className="df-fieldWrap" key={"fw" + field.id}>
+                  {dropdown}
+                  {descriptionElement}
+                </div>
+              );
+            } else if (field.dataType === FieldDataType.point3) {
+              const val = this._getProperty(field.id, [0, 0, 0]);
+              let objKey = field.id;
+              if (this.props.objectKey) {
+                objKey += this.props.objectKey;
+              }
+
+              const point3 = (
+                <Point3
+                  data={val}
+                  objectKey={objKey}
+                  key={seedId + field.id}
+                  label={title}
+                  ambientPoint={this.props.ambientSelectedPoint}
+                  onChange={this._handlePoint3PropertyChange}
+                  form={this.props.definition}
+                  field={field}
+                />
+              );
+
+              this.formComponentNames.push(field.id);
+              this.formComponents.push(point3);
+              formInterior.push(
+                <div className="df-fieldWrap" key={"fw" + field.id}>
+                  {point3}
+                  {descriptionElement}
+                </div>
+              );
+            } else if (field.dataType === FieldDataType.version) {
+              const val = this._getProperty(field.id, [0, 0, 1]);
+              let objKey = field.id;
+              if (this.props.objectKey) {
+                objKey += this.props.objectKey;
+              }
+
+              const version = (
+                <Version
+                  data={val}
+                  objectKey={objKey}
+                  key={seedId + field.id}
+                  label={title}
+                  onChange={this._handleVersionPropertyChange}
+                  form={this.props.definition}
+                  field={field}
+                />
+              );
+
+              this.formComponentNames.push(field.id);
+              this.formComponents.push(version);
+
+              formInterior.push(
+                <div className="df-fieldWrap" key={"fw" + field.id}>
+                  {version}
+                  {descriptionElement}
+                </div>
+              );
+            } else if (
+              field.dataType === FieldDataType.stringArray ||
+              field.dataType === FieldDataType.longFormStringArray
+            ) {
+              const val = this._getProperty(field.id, []);
+              let objKey = field.id;
+              if (this.props.objectKey) {
+                objKey += this.props.objectKey;
+              }
+
+              const sarrt = (
+                <StringArray
+                  data={val}
+                  objectKey={objKey}
+                  key={seedId + field.id}
+                  longForm={field.dataType === FieldDataType.longFormStringArray}
+                  label={title}
+                  onChange={this._handleStringArrayPropertyChange}
+                  form={this.props.definition}
+                  field={field}
+                />
+              );
+
+              this.formComponentNames.push(field.id);
+              this.formComponents.push(sarrt);
+
+              formInterior.push(
+                <div className="df-fieldWrap" key={"fw" + field.id}>
+                  <div className={isValid ? "df-elementTitle" : "df-elementTitleInvalid"}>{title}</div>
+                  {sarrt}
+                  {descriptionElement}
+                </div>
+              );
+            } else if (field.dataType === FieldDataType.intRange || field.dataType === FieldDataType.floatRange) {
+              const val = this._getProperty(field.id, [0, 100]);
+
+              let objKey = field.id;
+
+              if (this.props.objectKey) {
+                objKey += this.props.objectKey;
+              }
+
+              const range = (
+                <Range
+                  data={val}
+                  objectKey={objKey}
+                  key={seedId + field.id}
+                  label={title}
+                  isInt={field.dataType === FieldDataType.intRange}
+                  onChange={this._handleRangePropertyChange}
+                  form={this.props.definition}
+                  field={field}
+                />
+              );
+
+              this.formComponentNames.push(field.id);
+              this.formComponents.push(range);
+
+              formInterior.push(
+                <div className="df-fieldWrap" key={"fw" + field.id}>
+                  {range}
+                  {descriptionElement}
+                </div>
+              );
+            } else if (field.dataType === FieldDataType.minecraftFilter) {
+              const val = this._getProperty(field.id, {});
+              let objKey = field.id;
+
+              if (this.props.objectKey) {
+                objKey += this.props.objectKey;
+              }
+
+              const sarr = (
+                <MinecraftFilter
+                  data={val}
+                  objectKey={objKey}
+                  key={seedId + field.id}
+                  onChange={this._handleMinecraftFilterPropertyChange}
+                  form={this.props.definition}
+                  field={field}
+                />
+              );
+
+              this.formComponentNames.push(field.id);
+              this.formComponents.push(sarr);
+
+              formInterior.push(
+                <div className="df-fieldWrap" key={"fw" + field.id}>
+                  {sarr}
+                  {descriptionElement}
+                </div>
+              );
+            } else if (field.dataType === FieldDataType.keyedObjectCollection) {
+              this.addKeyedObjectArrayComponent(field, formInterior, descriptionElement);
+            } else if (field.dataType === FieldDataType.keyedStringCollection) {
+              this.addKeyedStringArrayComponent(field, formInterior, descriptionElement);
+            } else if (field.dataType === FieldDataType.objectArray) {
+              this.addObjectArrayComponent(field, formInterior, descriptionElement);
+            } else if (field.dataType === FieldDataType.object) {
+              this.addObjectComponent(field, formInterior, descriptionElement);
+            } else if (field.dataType === FieldDataType.intBoolean || field.dataType === FieldDataType.boolean) {
+              this.addCheckboxComponent(field, formInterior, descriptionElement);
+            } else if (field.dataType === FieldDataType.longFormString) {
+              const fieldInput = (
+                <TextArea
+                  fluid={true}
                   key={seedId + field.id}
                   id={field.id}
                   value={curVal as string}
                   defaultValue={defaultVal as string}
-                  onChange={this._handleTextboxChange}
+                  spellCheck={true}
+                  onChange={this._handleTextAreaChange}
                 />
-                {descriptionElement}
-              </div>
-            );
+              );
+
+              formInterior.push(
+                <div className="df-fieldWrap" key={"fw" + field.id}>
+                  <div key={seedId + field.id + "titleA"} className="df-fieldTitle">
+                    <div className={isValid ? "df-elementTitle" : "df-elementTitleInvalid"}>{title}</div>
+                    {fieldInput}
+                  </div>
+                  {descriptionElement}
+                </div>
+              );
+            } else if (
+              field.dataType === FieldDataType.int &&
+              field.experienceType === FieldExperienceType.slider &&
+              (field.minValue !== undefined || field.suggestedMinValue !== undefined) &&
+              (field.maxValue !== undefined || field.suggestedMaxValue !== undefined)
+            ) {
+              formInterior.push(
+                <div className="df-fieldWrap" key={"fw" + field.id}>
+                  <div className="df-sliderSet" key={seedId + field.id + "W"}>
+                    <div className="df-sliderTitle">{title}</div>
+                    <Slider
+                      key={seedId + field.id}
+                      id={field.id}
+                      fluid={true}
+                      className="df-slider"
+                      min={field.minValue ? field.minValue : field.suggestedMinValue}
+                      max={field.maxValue ? field.maxValue : field.suggestedMaxValue}
+                      value={curVal as string}
+                      defaultValue={defaultVal as string}
+                      onChange={this._handleSliderChange}
+                    />
+                    <FormInput
+                      className="df-sliderInput"
+                      key={seedId + field.id + "T"}
+                      id={field.id}
+                      fluid={true}
+                      value={curVal as string}
+                      defaultValue={defaultVal as string}
+                      onChange={this._handleTextboxChange}
+                    />
+                  </div>
+                  {descriptionElement}
+                </div>
+              );
+            } else {
+              formInterior.push(
+                <div className="df-fieldWrap" key={"fw" + field.id}>
+                  <FormInput
+                    label={title}
+                    key={seedId + field.id}
+                    id={field.id}
+                    value={curVal as string}
+                    defaultValue={defaultVal as string}
+                    onChange={this._handleTextboxChange}
+                  />
+                  {descriptionElement}
+                </div>
+              );
+            }
           }
         }
       }
@@ -1179,18 +1096,34 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
 
     return (
-      <div className="df-outer" style={{ paddingLeft: paddingLevel * 40 }}>
-        {headerOuter}
-        {subheader}
-        <div className="df-formArea">{contents}</div>
+      <div className="df-outer" style={{ paddingLeft: paddingLevel * 20 }}>
+        <div
+          className={
+            this.props.indentLevel || this.props.defaultVisualExperience === FieldVisualExperience.deemphasized
+              ? "df-cardWrapper"
+              : "df-wrapper"
+          }
+          style={
+            this.props.indentLevel || this.props.defaultVisualExperience === FieldVisualExperience.deemphasized
+              ? {
+                  backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+                }
+              : {}
+          }
+        >
+          {headerOuter}
+          {subheader}
+          <div className="df-formArea">{contents}</div>
+        </div>
       </div>
     );
   }
 
   addCheckboxComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
-    const bool = this._propAsBoolean(field.id, false);
+    const bool = FieldUtilities.getFieldValueAsBoolean(field.id, false, this.props);
 
-    const title = this.getFieldTitle(field);
+    const title = FieldUtilities.getFieldTitle(field);
 
     const seedId = this._getObjectId();
 
@@ -1224,7 +1157,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     if (val && field.subForm && field.subFields) {
       const keys = [];
 
-      const headerElement = <div>{this.getFieldTitle(field)}</div>;
+      const headerElement = <div>{FieldUtilities.getFieldTitle(field)}</div>;
       this.formComponentNames.push(field.id);
       this.formComponents.push(headerElement);
       fieldInterior.push(headerElement);
@@ -1273,6 +1206,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             objectKey={objKey}
             key={propertyId}
             formId={propertyId}
+            theme={this.props.theme}
             title={title}
             defaultVisualExperience={field.visualExperience}
             displayTitle={true}
@@ -1305,7 +1239,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     if (val && field.subForm && field.subFields) {
       const keys = [];
 
-      const headerElement = <div>{this.getFieldTitle(field)}</div>;
+      const headerElement = <div>{FieldUtilities.getFieldTitle(field)}</div>;
       this.formComponentNames.push(field.id);
       this.formComponents.push(headerElement);
       fieldInterior.push(headerElement);
@@ -1390,17 +1324,57 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     return undefined;
   }
 
+  _addObjectArrayItem(event: React.SyntheticEvent<HTMLElement>, data?: any) {
+    if (data && data.tag) {
+      const field = this._getFieldById(data.tag);
+
+      if (field) {
+        const arrayOfDataVal = this._getProperty(field.id, []);
+
+        if (field.newItemPrototype) {
+          arrayOfDataVal.push(JSON.parse(JSON.stringify(field.newItemPrototype)));
+        } else {
+          arrayOfDataVal.push({});
+        }
+
+        this.forceUpdate();
+      }
+    }
+  }
+
   addObjectArrayComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
     const arrayOfDataVal = this._getProperty(field.id, []);
+    const fieldTopper = [];
     const fieldInterior = [];
 
     Log.assert(arrayOfDataVal);
 
     if (arrayOfDataVal !== undefined && field.subForm && arrayOfDataVal instanceof Array) {
-      const headerElement = <div>{this.getFieldTitle(field)}</div>;
+      const headerElement = <div>{FieldUtilities.getFieldTitle(field)}</div>;
       this.formComponentNames.push(field.id);
       this.formComponents.push(headerElement);
-      fieldInterior.push(headerElement);
+      fieldTopper.push(headerElement);
+
+      const toolbarItems = [];
+
+      toolbarItems.push({
+        icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
+        key: "add",
+        tag: field.id,
+        onClick: this._addObjectArrayItem,
+        title: "Add item",
+      });
+
+      if (!this.props.readOnly) {
+        const toolBarElement = (
+          <div>
+            <Toolbar aria-label="Actions  toolbar overflow menu" items={toolbarItems} />
+          </div>
+        );
+        this.formComponentNames.push(field.id + "toolbar");
+        this.formComponents.push(toolBarElement);
+        fieldTopper.push(toolBarElement);
+      }
 
       if (
         field.matchObjectArrayToSubFieldKey === true &&
@@ -1454,6 +1428,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               objectKey={objKey}
               key={fieldName}
               formId={propertyId}
+              theme={this.props.theme}
               title={field.subFields[fieldName]?.title}
               defaultVisualExperience={field.visualExperience}
               displayTitle={true}
@@ -1461,6 +1436,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               onPropertyChanged={this._handleKeyedObjectArraySubFormPropertyChange}
               definition={field.subForm}
               readOnly={this.props.readOnly}
+              closeButton={!this.props.readOnly}
             />
           );
 
@@ -1498,6 +1474,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             arrayOfDataVal[index] = obj;
           }
 
+          if (field.objectArrayTitleFieldKey) {
+            const val = obj[field.objectArrayTitleFieldKey];
+
+            if (val) {
+              title = val;
+            }
+          }
+
           if (field.objectArrayToSubFieldKey) {
             const val = obj[field.objectArrayToSubFieldKey];
 
@@ -1517,12 +1501,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               key={propertyId}
               formId={propertyId}
               title={title}
+              theme={this.props.theme}
               defaultVisualExperience={field.visualExperience}
               displayTitle={true}
               indentLevel={indentLevel}
               onPropertyChanged={this._handleIndexedArraySubFormPropertyChange}
               definition={field.subForm}
               readOnly={this.props.readOnly}
+              closeButton={!this.props.readOnly}
             />
           );
 
@@ -1535,8 +1521,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
     formInterior.push(
       <div className="df-fieldWrap" key={"fw" + field.id}>
-        {fieldInterior}
+        {fieldTopper}
         {descriptionElement}
+        {fieldInterior}
       </div>
     );
   }
@@ -1547,7 +1534,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     Log.assertDefined(val);
 
     if (val) {
-      const headerElement = <div key={"sarry" + field.id}>{this.getFieldTitle(field)}</div>;
+      const headerElement = <div key={"sarry" + field.id}>{FieldUtilities.getFieldTitle(field)}</div>;
 
       this.formComponentNames.push(field.id);
       this.formComponents.push(headerElement);
@@ -1601,6 +1588,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             key={propertyId}
             formId={propertyId}
             title={title}
+            theme={this.props.theme}
             defaultVisualExperience={field.visualExperience}
             displayTitle={true}
             indentLevel={indentLevel}
@@ -1650,7 +1638,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           key={propertyId}
           formId={propertyId}
           parentField={field}
-          title={this.getFieldTitle(field)}
+          theme={this.props.theme}
+          title={FieldUtilities.getFieldTitle(field)}
           defaultVisualExperience={field.visualExperience}
           displayTitle={true}
           indentLevel={indentLevel}

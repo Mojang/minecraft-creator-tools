@@ -8,7 +8,7 @@ export const minecraftToolDarkTheme = {
         background2: "#48494A",
         background3: "#545552",
         background4: "#656663",
-        background5: "#313233",
+        background5: "#749664", // subtle accent background
         background6: "#040404", // subtle theme background.  complemented with fore*6
         foreground: "red",
         foreground1: "#f2f2f2", // main foreground color.  in a dark theme, this should be light.
@@ -98,7 +98,7 @@ export const minecraftToolLightTheme = {
         background2: "#dbd9d7", // complement background. in a dark theme, this should be dark, but slightly different vs back*1. complemented with fore*2
         background3: "#cccac7",
         background4: "#bfbbb9",
-        background5: "#999999",
+        background5: "#649656", // subtle accent background
         background6: "#B3B3B3", // subtle theme background.  complemented with fore*6
         foreground: "red",
         foreground1: "#1a1a1a", // main foreground color.  in a dark theme, this should be light.

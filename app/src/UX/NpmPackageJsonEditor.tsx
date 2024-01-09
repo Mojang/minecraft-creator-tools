@@ -2,7 +2,6 @@ import { Component } from "react";
 import IFileProps from "./IFileProps";
 import IFile from "../storage/IFile";
 import "./NpmPackageJsonEditor.css";
-import IPersistable from "./IPersistable";
 import NpmPackageJson from "../devproject/NpmPackageJson";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
@@ -23,10 +22,7 @@ interface INpmPackageJsonEditorState {
   selectedItem: NpmPackageJson | ManagedComponentGroup | undefined;
 }
 
-export default class NpmPackageJsonEditor
-  extends Component<INpmPackageJsonEditorProps, INpmPackageJsonEditorState>
-  implements IPersistable
-{
+export default class NpmPackageJsonEditor extends Component<INpmPackageJsonEditorProps, INpmPackageJsonEditorState> {
   private _lastFileEdited?: IFile;
 
   constructor(props: INpmPackageJsonEditorProps) {
@@ -95,9 +91,7 @@ export default class NpmPackageJsonEditor
   }
 
   async _doUpdate(setState: boolean) {
-    if (Database.uxCatalog === null) {
-      await Database.loadUx();
-    }
+    await Database.ensureFormLoaded("package_json");
 
     let selItem = this.state.selectedItem;
 
@@ -231,7 +225,7 @@ export default class NpmPackageJsonEditor
       return <div>Loading definition...</div>;
     }
 
-    const form = Database.uxCatalog.packageJson;
+    const form = Database.getForm("package_json");
 
     return (
       <div
@@ -248,6 +242,7 @@ export default class NpmPackageJsonEditor
               definition={form}
               directObject={def}
               readOnly={false}
+              theme={this.props.theme}
               objectKey={this.props.file.storageRelativePath}
               onPropertyChanged={this._handleDataFormPropertyChange}
             ></DataForm>

@@ -18,10 +18,7 @@ interface ICartoSettingsPanelState {
   autoStartMinecraft: boolean | undefined;
 }
 
-export default class CartoSettingsPanel
-  extends Component<ICartoSettingsPanelProps, ICartoSettingsPanelState>
-  implements IPersistable
-{
+export default class CartoSettingsPanel extends Component<ICartoSettingsPanelProps, ICartoSettingsPanelState> {
   private _activeEditorPersistable?: IPersistable;
 
   constructor(props: ICartoSettingsPanelProps) {

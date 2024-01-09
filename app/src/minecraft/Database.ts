@@ -5,7 +5,6 @@ import BlockBaseType from "./BlockBaseType";
 import MinecraftUtilities from "./MinecraftUtilities";
 import IJavaBlockTypeData from "./IJavaBlockTypeData";
 import IBlockTypeData from "./IBlockTypeData";
-import IUXCatalog from "./IUXCatalog";
 import Log from "./../core/Log";
 import HttpStorage from "../storage/HttpStorage";
 import IFolder from "../storage/IFolder";
@@ -16,12 +15,14 @@ import CartoApp from "./../app/CartoApp";
 import Utilities from "../core/Utilities";
 import NpmModule from "../devproject/NpmModule";
 import IMainInfoVersions from "./IMainInfoVersions";
+import IFormDefinition from "../dataform/IFormDefinition";
 
 export default class Database {
   static isLoaded = false;
   static isScriptTypesLoaded = false;
   static catalog: Catalog | null = null;
-  static uxCatalog: IUXCatalog | null = null;
+  static loadedFormCount = 0;
+  static uxCatalog: { [formName: string]: IFormDefinition } = {};
   static betaTypeDefs: ITypeDefCatalog | null = null;
   static stableTypeDefs: ITypeDefCatalog | null = null;
   static contentFolder: IFolder | null = null;
@@ -65,6 +66,30 @@ export default class Database {
     }
 
     return Database._defaultBlockBaseType;
+  }
+
+  static async ensureFormLoaded(name: string) {
+    name = name.toLowerCase();
+
+    if (Database.uxCatalog[name] !== undefined) {
+      return Database.uxCatalog[name];
+    }
+
+    try {
+      const response = await axios.get(CartoApp.contentRoot + "data/forms/" + name + ".form.json");
+
+      Database.uxCatalog[name] = response.data;
+      Database.loadedFormCount++;
+      return response.data;
+    } catch {
+      Log.fail("Could not load UX file for '" + name + "'.");
+    }
+  }
+
+  static getForm(name: string) {
+    name = name.toLowerCase();
+
+    return Database.uxCatalog[name];
   }
 
   static getBlockType(name: string) {
@@ -429,35 +454,7 @@ export default class Database {
     return Database.defaultResourcePackFolder;
   }
 
-  static async loadUx() {
-    if (Database.uxCatalog !== null) {
-      return;
-    }
-
-    try {
-      const response = await axios.get(CartoApp.contentRoot + "data/uxcat.json");
-
-      Database.uxCatalog = response.data;
-
-      if (Database.uxCatalog !== null) {
-        const componentForms = Database.uxCatalog.componentForms;
-
-        for (const formName in componentForms) {
-          const form = componentForms[formName];
-
-          if (form === undefined) {
-            break;
-          }
-
-          componentForms[formName].id = formName;
-        }
-      } else {
-        Log.debugAlert("Could not load UX catalog (undef).");
-      }
-    } catch {
-      Log.fail("Could not load UX catalog.");
-    }
-  }
+  static async loadUx() {}
 
   static getComponentFormField(propertyName: string): IFormField | undefined {
     if (Database.uxCatalog === undefined || Database.uxCatalog === null) {
@@ -465,8 +462,9 @@ export default class Database {
 
       return undefined;
     }
-
-    const componentForms = Database.uxCatalog.componentForms;
+    throw new Error("Not implemented.");
+    /*
+    const componentForms = Database.uxCatalog.forms;
 
     for (const formName in componentForms) {
       const form = componentForms[formName];
@@ -486,8 +484,7 @@ export default class Database {
         }
       }
     }
-
-    return undefined;
+*/
   }
 
   static async getSchema(path: string) {
@@ -656,7 +653,7 @@ export default class Database {
     } catch {
       Log.fail("Could not load Minecraft types catalog.");
     }
-
+    /*
     try {
       // @ts-ignore
       if (typeof window !== "undefined") {
@@ -682,6 +679,6 @@ export default class Database {
       Database.isLoaded = true;
     } catch {
       Log.fail("Could not load java catalog.");
-    }
+    }*/
   }
 }

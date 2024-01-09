@@ -1,0 +1,16 @@
+{
+  "title": "Healable",
+  "description": "How entities heal",
+  "fields": [
+    {
+      "id": "force_use",
+      "title": "Whether an item can be used even if the entity is at full health",
+      "dataType": 1
+    },
+    {
+      "id": "filters",
+      "title": "Additional filters when healing happens",
+      "dataType": 20
+    }
+  ]
+}

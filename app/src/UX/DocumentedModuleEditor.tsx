@@ -4,7 +4,6 @@ import IFile from "../storage/IFile";
 import "./DocumentedModuleEditor.css";
 import DocumentedClass from "../minecraft/docs/DocumentedClass";
 import DocumentedModule from "../minecraft/docs/DocumentedModule";
-import IPersistable from "./IPersistable";
 import DataForm from "../dataform/DataForm";
 import Database from "../minecraft/Database";
 import Project from "../app/Project";
@@ -47,10 +46,10 @@ export enum ModuleEditorMode {
   unassociatedDocs = 2,
 }
 
-export default class DocumentedModuleEditor
-  extends Component<IDocumentedModuleEditorProps, IDocumentedModuleEditorState>
-  implements IPersistable
-{
+export default class DocumentedModuleEditor extends Component<
+  IDocumentedModuleEditorProps,
+  IDocumentedModuleEditorState
+> {
   constructor(props: IDocumentedModuleEditorProps) {
     super(props);
 
@@ -92,11 +91,9 @@ export default class DocumentedModuleEditor
   async _updateManager() {
     if (this.state !== undefined && this.state.fileToEdit !== undefined) {
       if (!this.state.isLoaded) {
-        if (Database.uxCatalog === null) {
-          await Database.loadUx();
-        }
-
         await this.props.project.inferProjectItemsFromFiles();
+
+        await Database.ensureFormLoaded("documented_module");
 
         const docsFolder = await this.props.project.ensureDocsFolder();
 
@@ -146,14 +143,6 @@ export default class DocumentedModuleEditor
       }
 
       await dm.loadUnassociatedDocumentation();
-    }
-  }
-
-  async _doUpdate() {
-    if (Database.uxCatalog === null) {
-      await Database.loadUx();
-
-      this.forceUpdate();
     }
   }
 
@@ -349,7 +338,7 @@ export default class DocumentedModuleEditor
 
   render() {
     const height = "calc(100vh - " + String(this.props.heightOffset) + "px)";
-    const classHeight = "calc(100vh - " + String(this.props.heightOffset + 180) + "px)";
+    const classHeight = "calc(100vh - " + String(this.props.heightOffset + 186) + "px)";
     const toolbarItems = [];
     let isButtonCompact = false;
     const width = WebUtilities.getWidth();
@@ -359,12 +348,7 @@ export default class DocumentedModuleEditor
       isButtonCompact = true;
     }
 
-    if (
-      this.state === null ||
-      this.state.fileToEdit === null ||
-      this.state.fileToEdit.manager === undefined ||
-      Database.uxCatalog === null
-    ) {
+    if (this.state === null || this.state.fileToEdit === null || this.state.fileToEdit.manager === undefined) {
       if (this.state.fileToEdit !== null) {
         if (this.state.fileToEdit.manager === undefined) {
           this._updateManager();
@@ -431,7 +415,7 @@ export default class DocumentedModuleEditor
     }
 
     const dm = this.state.fileToEdit.manager as DocumentedModule;
-    const form = Database.uxCatalog.documentedModule;
+    const form = Database.getForm("documented_module");
 
     let docItemEditor = <div>&#160;</div>;
 
@@ -531,6 +515,7 @@ export default class DocumentedModuleEditor
             definition={form}
             directObject={dm}
             objectKey={dm.id}
+            theme={this.props.theme}
             readOnly={this.props.typesReadOnly}
           ></DataForm>
           <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
