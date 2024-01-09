@@ -440,9 +440,14 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
         (folder.name !== "functions" || fileNameCanon !== "tick.json") &&
         (folder.name !== "textures" ||
           (fileNameCanon !== "flipbook_textures.json" &&
+            fileNameCanon !== "item_textures.json" &&
+            fileNameCanon !== "terrain_textures.json" &&
             fileNameCanon !== "item_texture.json" &&
             fileNameCanon !== "terrain_texture.json")) &&
-        (folder.name !== "sounds" || fileNameCanon !== "sound_definitions.json")
+        (folder.name !== "sounds" ||
+          (fileNameCanon !== "sound_definitions.json" &&
+            fileNameCanon !== "sounds.json" &&
+            fileNameCanon !== "music_definitions.json"))
       ) {
         const file = folder.files[fileName];
 
