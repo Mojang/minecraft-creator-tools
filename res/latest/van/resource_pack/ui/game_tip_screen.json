@@ -1,0 +1,244 @@
+{
+  "namespace": "game_tip",
+
+  "anim_game_tip_txt_wait": {
+    "anim_type": "wait",
+    "duration": "$game_tip_item_lifetime",
+    "next": "@game_tip.anim_game_tip_txt_alpha"
+  },
+
+  "anim_game_tip_txt_alpha": {
+    "anim_type": "alpha",
+    "easing": "in_quart",
+    "duration": 1,
+    "from": 1,
+    "to": 0
+  },
+
+  "game_tip_label": {
+    "type": "label",
+    "layer": 3,
+    "text_alignment": "left",
+    "color": "$body_text_color",
+    "$tip_min_size|default": [ "default", "default" ],
+    "size": [ "default", "default" ],
+    "min_size": "$tip_min_size",
+    "$tip_max_size|default": [ 165, 40 ],
+    "max_size": "$tip_max_size",
+    "line_padding": 1.5,
+    "$animation|default": [
+      "@game_tip.anim_game_tip_txt_wait"
+    ],
+    "anims": "$animation",
+    "$label_text|default": "#text",
+    "$label_text_binding_type|default": "global",
+    "text": "$label_text",
+    "bindings": [
+      {
+        "binding_name": "$label_text",
+        "binding_name_override": "$label_text",
+        "binding_type": "$label_text_binding_type"
+      }
+    ]
+  },
+
+  "game_tip_item_panel": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "size": [ "100%c", "100%cm" ],
+    "controls": [
+      {
+        "padding_1": {
+          "type": "panel",
+          "size": [ 2, 0 ]
+        }
+      },
+      {
+        "label_panel": {
+          "type": "stack_panel",
+          "orientation": "vertical",
+          "size": [ "100%c", "100%c" ],
+          "controls": [
+            {
+              "padding_vertical": {
+                "type": "panel",
+                "size": [ 0, 3 ]
+              }
+            },
+            { "label@game_tip.game_tip_label": {} },
+            {
+              "padding_vertical_1": {
+                "type": "panel",
+                "size": [ 0, 1 ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "game_tip_item_background": {
+    "type": "image",
+    "texture": "textures/ui/greyBorder",
+    "layer": 1,
+    "size": [ "100%c + 8px", "100%c" ],
+    "$tip_anchor_from|default": "bottom_middle",
+    "$is_inventory_tip|default": false,
+    "$fill_alpha|default": 0.6,
+    "variables": [
+      {
+        "requires": "($is_holographic or $is_inventory_tip)",
+        "$fill_alpha": 1.0
+      }
+    ],
+    "anchor_from": "$tip_anchor_from",
+    "anchor_to": "$tip_anchor_from",
+    "alpha": "$fill_alpha",
+    "controls": [
+      {
+        "padding_vertical": {
+          "type": "panel",
+          "size": [ 0, 4 ]
+        }
+      },
+      { "game_tip_text@game_tip.game_tip_item_panel": {} },
+      {
+        "padding_vertical_2": {
+          "type": "panel",
+          "size": [ 0, 4 ]
+        }
+      }
+    ]
+  },
+
+  //---------------------------------------------------------------------------
+  // In-game tips
+  //---------------------------------------------------------------------------
+
+
+  "game_tip_factory": {
+    "type": "panel",
+    "size": [ "default", "default" ],
+    "factory": {
+      "name": "game_tip_item_factory",
+      "max_children_size": 1,
+      "control_ids": {
+        "game_tip": "game_tip@game_tip.game_tip_item_background"
+      }
+    }
+  },
+
+  //---------------------------------------------------------------------------
+  // Hotbar Tips
+  //---------------------------------------------------------------------------
+
+  "hotbar_game_tip_factory": {
+    "type": "panel",
+    "size": [ "default", "default" ],
+    "factory": {
+      "name": "hotbar_game_tip_item_factory",
+      "max_children_size": 1,
+      "control_ids": {
+        "hotbar_game_tip": "game_tip@game_tip.hotbar_game_tip_panel"
+      }
+    }
+  },
+
+  "hotbar_game_tip_panel": {
+    "type": "panel",
+    "layer": 1000,
+    "bindings": [
+      {
+        "binding_name": "#hotbar_game_tip_offset",
+        "binding_name_override": "#offset",
+        "binding_type": "global"
+      }
+    ],
+    "controls": [
+      {
+        "hotbar_game_tip@game_tip.hotbar_game_tip_panel_content": {
+          "$is_hotbar_tip": true,
+          "$left_enabled": true,
+          "$up_enabled": true
+        }
+      }
+    ]
+  },
+
+  "hotbar_game_tip_panel_content": {
+    "type": "panel",
+    "layer": 100,
+    "$offset_value|default": [ 0, 25 ],
+    "$chevron_texture|default": "textures/ui/tip_Chevron",
+    "$chevron_offset|default": [ 0, -12 ],
+    "$ignore_chevron|default": false,
+    "$ignore_tip|default": false,
+    "$up_enabled|default": false,
+    "$is_hotbar_tip|default": false,
+    "variables": [
+      {
+        "requires": "$up_enabled",
+        "$chevron_texture": "textures/ui/down_tip_Chevron"
+      },
+      {
+        "requires": "($is_hotbar_tip)",
+        "$offset_value": [ 0, -32 ],
+        "$chevron_offset": [ 0, 28 ]
+      },
+      {
+        "requires": "(not ($mouse) and $is_hotbar_tip)",
+        "$offset_value": [ 0, -32 ],
+        "$chevron_offset": [ -10, 28 ]
+      }
+    ],
+    "offset": "$offset_value",
+    "controls": [
+      {
+        "horizontal_panel@game_tip.hotbar_tip_horizontal_panel": {
+          "ignored": "$ignore_tip"
+        }
+      },
+      {
+        "chevron": {
+          "alpha": 0.6,
+          "ignored": "$ignore_chevron",
+          "type": "image",
+          "layer": 101,
+          "size": [ 19, 13 ],
+          "offset": "$chevron_offset",
+          "texture": "$chevron_texture"
+        }
+      }
+    ]
+  },
+
+  "hotbar_tip_horizontal_panel": {
+    "type": "panel",
+    "$is_recipe_book_tip|default": false,
+    "layer": 13,
+    "$animation": [],
+    "controls": [
+      {
+        "hotbar_tip@game_tip.game_tip_item_background": {
+          "$left_enabled|default": false,
+          "$right_enabled|default": false,
+          "$tip_min_size": [ 110, "default" ],
+          "$offset|default": [ 0, 0 ],
+          "variables": [
+            {
+              "requires": "($left_enabled)",
+              "$offset": [ 50, 0 ]
+            },
+            {
+              "requires": "($right_enabled)",
+              "$offset": [ -50, 0 ]
+            }
+          ],
+          "offset": "$offset"
+        }
+      }
+    ]
+  }
+
+}

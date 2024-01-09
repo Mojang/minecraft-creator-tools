@@ -1,0 +1,12 @@
+{
+  "files": [
+    "empty.json"
+  ],
+  "folders": [
+    "blocks",
+    "chests",
+    "entities",
+    "equipment",
+    "gameplay"
+  ]
+}

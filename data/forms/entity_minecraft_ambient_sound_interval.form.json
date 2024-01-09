@@ -1,0 +1,21 @@
+{
+  "description": "Delay for an entity playing its sound",
+  "fields": [
+    {
+      "id": "min",
+      "title": "Minimum time",
+      "dataType": 0
+    },
+    {
+      "id": "max",
+      "title": "Maximum time",
+      "dataType": 0
+    },
+    {
+      "id": "event_name",
+      "title": "Sound event that is played",
+      "dataType": 7,
+      "lookupId": "entityTypeEvents"
+    }
+  ]
+}

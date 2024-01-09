@@ -1,0 +1,11 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "folders": [
+    "command_modules",
+    "engine_modules",
+    "script_modules",
+    "vanilladata_modules"
+  ]
+}

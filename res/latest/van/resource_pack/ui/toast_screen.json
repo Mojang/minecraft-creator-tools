@@ -1,0 +1,828 @@
+{
+  "namespace": "toast_screen",
+
+  "popup_anim": {
+    "anim_type": "offset",
+    "easing": "linear",
+    "from": "$popup_distance_from",
+    "to": "$popup_distance_to",
+    "duration": "$transition_time",
+    "$anim_event_name|default": "toast_animation_finished",
+    "end_event": "$anim_event_name"
+  },
+
+  "toast_image": {
+    "type": "image",
+    "size": [ 13, 13 ],
+    "anchor_from": "left_middle",
+    "anchor_to": "left_middle",
+    "texture": "$toast_texture",
+    "layer": 1
+  },
+
+  "toast_icon": {
+    "type": "panel",
+    "size": [ "100%c", "100%" ],
+    "controls": [
+      {
+        "toast_icon@toast_screen.toast_image": {}
+      }
+    ]
+  },
+
+  "xbox_icon@toast_screen.toast_icon": {
+    "$toast_texture": "textures/ui/xbox4"
+  },
+
+  "third_party_invite_icon@toast_screen.toast_icon": {
+    "$toast_texture": "textures/ui/invite_third_party"
+  },
+
+  "third_party_achievement_icon@toast_screen.toast_icon": {
+    "$toast_texture": "textures/ui/achievement_third_party"
+  },
+
+  "persona_icon@common.empty_panel": {
+    "$item_display_size": [ "100%y", "100% - 3px" ],
+    "size": "$item_display_size",
+    "$is_loading": false,
+    "$persona_piece_binding_type": "global",
+    "$persona_piece_collection_name": "",
+    "$ignore_background": true,
+    "$ignore_rarity_bar": true,
+    "controls": [
+      {
+        "item@persona_common.piece_item_display": {
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle"
+        }
+      }
+    ]
+  },
+
+  "resource_pack_icon": {
+    "type": "panel",
+    "size": [ "100%c", "100%" ],
+    "$icon_size|default": [ 13, 13 ],
+    "controls": [
+      {
+        "resource_pack_image": {
+          "type": "image",
+          "size": "$icon_size",
+          "anchor_from": "left_middle",
+          "anchor_to": "left_middle",
+          "layer": 1,
+          "texture": "#thumbnail_texture_path",
+          "zip_folder": "#icon_zip",
+          "texture_file_system": "#thumbnail_texture_file_system",
+          "bindings": [
+            {
+              "binding_name": "#thumbnail_texture_path",
+              "binding_name_override": "#texture"
+            },
+            {
+              "binding_name": "#icon_zip",
+              "binding_name_override": "#zip_folder"
+            },
+            {
+              "binding_name": "#thumbnail_texture_file_system",
+              "binding_name_override": "#texture_file_system"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "key_art_image@toast_screen.resource_pack_icon": {
+    "$icon_size": [ "177.78%y", 18 ]
+  },
+
+
+  "gamer_score_icon": {
+    "type": "image",
+    "texture": "textures/ui/gamerscore",
+    "size": [ 7, 7 ]
+  },
+
+  "toast_label": {
+    "$toast_font_type|default": "default",
+    "$toast_label_offset|default": [ 0, 5 ],
+    "type": "label",
+    "color": "$toast_text_color",
+    "layer": 1,
+    "shadow": false,
+    "font_size": "normal",
+    "offset": "$toast_label_offset",
+    "$toast_text_alignment|default": "left",
+    "text_alignment": "$toast_text_alignment",
+    "anims": "$alpha_anims",
+    "font_type": "$toast_font_type"
+  },
+
+  "popup@common.input_panel": {
+    "consume_hover_events": true,
+    "prevent_touch_input": true,
+    "$toast_anchor_from|default": "top_middle",
+    "$toast_anchor_to|default": "bottom_middle",
+    "$toast_offset|default": [ 0, 0 ],
+    "offset": "$toast_offset",
+    "anchor_from": "$toast_anchor_from",
+    "anchor_to": "$toast_anchor_to",
+    "size": "$popup_size",
+    "$alpha_anims|default": [],
+    "$offset_anims|default": [
+      "@toast_screen.popup_anim"
+    ],
+    "button_mappings": [
+      {
+        "from_button_id": "button.menu_select",
+        "to_button_id": "button.toast_interaction",
+        "mapping_type": "pressed",
+        "button_up_right_of_first_refusal": true
+      }
+    ],
+    "controls": [
+      {
+        "background": {
+          "type": "image",
+          "texture": "textures/ui/greyBorder",
+          "anims": "$alpha_anims"
+        }
+      },
+      {
+        "popup_content": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%", "100%" ],
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "offset": [ 6, 0 ],
+          "layer": 1,
+          "controls": [
+            {
+              "icon_padding": {
+                "layer": 1,
+                "type": "stack_panel",
+                "anchor_from": "top_left",
+                "anchor_to": "top_left",
+                "size": [ "100%c", "100%" ],
+                "factory": {
+                  "name": "toast_image_factory",
+                  "control_ids": {
+                    "xbox_icon": "@toast_screen.xbox_icon",
+                    "third_party_achievement_icon": "@toast_screen.third_party_achievement_icon",
+                    "third_party_invite_icon": "@toast_screen.third_party_invite_icon",
+                    "icon_resource_pack": "@toast_screen.resource_pack_icon",
+                    "key_art_image": "@toast_screen.key_art_image",
+                    "persona_icon": "@toast_screen.persona_icon"
+                  },
+                  "factory_variables": [
+                    "$hide_xbox_live_icon"
+                  ]
+                },
+                "bindings": [
+                  {
+                    "binding_type": "global",
+                    "binding_name": "#toast_icon_section_content",
+                    "binding_name_override": "#collection_length"
+                  }
+                ]
+              }
+            },
+            {
+              "text_padding": {
+                "type": "panel",
+                "size": [ 2, "100%" ],
+                "bindings": [
+                  {
+                    "binding_name": "#text_padding_visible",
+                    "binding_name_override": "#visible"
+                  }
+                ]
+              }
+            },
+            {
+              "text_panel": {
+                "type": "panel",
+                "size": [ "fill", "100%" ],
+                "controls": [
+                  {
+                    "text_stack_panel@toast_screen.text_stack_panel": {}
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "anims": "$offset_anims"
+  },
+
+  "item_renderer": {
+    "type": "custom",
+    "renderer": "inventory_item_renderer",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "size": [ 22, 22 ]
+  },
+
+  //---------------------------------------------------------------------------
+  // recipe popup
+  //---------------------------------------------------------------------------
+
+  "game_tip_label": {
+    "type": "label",
+    "layer": 3,
+    "text_alignment": "left",
+    "color": "$body_text_color",
+    "size": [ "default", "default" ],
+    "min_size": [ "default", "default" ],
+    "max_size": [ 165, 20 ],
+    "$label_text|default": "#toast_title",
+    "text": "$label_text",
+    "bindings": [
+      {
+        "binding_name": "#toast_title",
+        "binding_name_override": "#toast_title"
+      }
+    ]
+  },
+
+  "recipe_unlocked_icon": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "size": [ 18, 18 ],
+    "$icon_padding|default": [ 0, 5 ],
+    "controls": [
+      {
+        "padding_vertical": {
+          "type": "panel",
+          "size": "$icon_padding"
+        }
+      },
+      {
+        "item_renderer@toast_screen.item_renderer": {
+          "size": [ 18, 18 ],
+          "property_bag": {
+            "#item_id_aux": 3801088
+          },
+          "bindings": [
+            {
+              "binding_name": "#recipe_unlocked",
+              "binding_name_override": "#item_id_aux"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "recipe_unlocked_popup": {
+    "type": "image",
+    "texture": "textures/ui/greyBorder",
+    "layer": 20,
+    "size": [ "100%c", "100%c" ],
+    "anchor_from": "top_right",
+    "anchor_to": "bottom_right",
+    "$toast_offset|default": [ 0, 0 ],
+    "$alpha_anims|default": [],
+    "$offset_anims|default": [
+      "@toast_screen.popup_anim"
+    ],
+    "anims": "$offset_anims",
+    "controls": [
+      {
+        "input_panel": {
+          "type": "input_panel",
+          "size": [ "100%c", "100%c" ],
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "gesture_tracking_button": "button.toast_interaction",
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "button.toast_interaction",
+              "mapping_type": "pressed",
+              "button_up_right_of_first_refusal": true
+            }
+          ],
+          "controls": [
+            {
+              "label_panel": {
+                "type": "stack_panel",
+                "orientation": "horizontal",
+                "size": [ "100%c", "100%cm" ],
+                "controls": [
+                  {
+                    "horizontal_padding_1": {
+                      "type": "panel",
+                      "size": [ 9, 0 ]
+                    }
+                  },
+                  {
+                    "recipe_unlocked_icon@toast_screen.recipe_unlocked_icon": {
+                      "$icon_padding": [ 0, 7 ]
+                    }
+                  },
+                  {
+                    "horizontal_padding_2": {
+                      "type": "panel",
+                      "size": [ 6, 0 ]
+                    }
+                  },
+                  {
+                    "label_panel": {
+                      "type": "stack_panel",
+                      "orientation": "vertical",
+                      "size": [ "100%c", "100%c" ],
+                      "controls": [
+                        {
+                          "padding_vertical_1": {
+                            "type": "panel",
+                            "size": [ 0, 7 ]
+                          }
+                        },
+                        {
+                          "label@toast_screen.game_tip_label": {
+                            "line_padding": 1
+                          }
+                        },
+                        {
+                          "padding_vertical_2": {
+                            "type": "panel",
+                            "size": [ 0, 7 ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "horizontal_padding_3": {
+                      "type": "panel",
+                      "size": [ 9, 0 ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  // used when pocket-ui is enabled and is inside the inventory screen
+  "recipe_unlocked_pocket_popup": {
+    "type": "image",
+    "texture": "textures/ui/greyBorder",
+    "layer": 20,
+    "size": [ "100%c", "100%c" ],
+    "anchor_from": "bottom_middle",
+    "anchor_to": "center",
+    "$alpha_anims|default": [],
+    "$offset_anims|default": [
+      "@toast_screen.popup_anim"
+    ],
+    "anims": "$offset_anims",
+    "controls": [
+      {
+        "input_panel": {
+          "type": "input_panel",
+          "size": [ "100%c", "100%c" ],
+          "anchor_from": "center",
+          "anchor_to": "center",
+          "gesture_tracking_button": "button.toast_interaction",
+          "button_mappings": [
+            {
+              "from_button_id": "button.menu_select",
+              "to_button_id": "button.toast_interaction",
+              "mapping_type": "pressed",
+              "button_up_right_of_first_refusal": true
+            }
+          ],
+          "controls": [
+            {
+              "label_panel": {
+                "type": "stack_panel",
+                "orientation": "horizontal",
+                "size": [ "100%c", "100%cm" ],
+                "controls": [
+                  {
+                    "horizontal_padding_1": {
+                      "type": "panel",
+                      "size": [ 9, 0 ]
+                    }
+                  },
+                  {
+                    "recipe_unlocked_icon@toast_screen.recipe_unlocked_icon": {}
+                  },
+                  {
+                    "horizontal_padding_2": {
+                      "type": "panel",
+                      "size": [ 6, 0 ]
+                    }
+                  },
+                  {
+                    "label_panel": {
+                      "type": "stack_panel",
+                      "orientation": "vertical",
+                      "size": [ "100%c", "100%c" ],
+                      "controls": [
+                        {
+                          "padding_vertical": {
+                            "type": "panel",
+                            "size": [ 0, 10 ]
+                          }
+                        },
+                        { "label@toast_screen.game_tip_label": {} },
+                        {
+                          "padding_vertical_1": {
+                            "type": "panel",
+                            "size": [ 0, 7 ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "horizontal_padding_3": {
+                      "type": "panel",
+                      "size": [ 9, 0 ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  // end of pocket pocket recipe popup
+
+  "text_stack_panel": {
+    "type": "stack_panel",
+    "size": [ "100%", 20 ],
+    "$toast_text_offset|default": [ 0, 1 ],
+    "offset": "$toast_text_offset",
+    "controls": [
+      {
+        "title@toast_screen.toast_label": {
+          "text": "#toast_title",
+          "color": "$toast_text_color",
+          "size": [ "100%-10px", "fill" ],
+          "layer": 2,
+          "bindings": [
+            {
+              "binding_name": "#toast_title"
+            }
+          ]
+        }
+      },
+      {
+        "subtitle": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "size": [ "100%-10px", "100%cm" ],
+          "controls": [
+            {
+              "icon_padding": {
+                "type": "panel",
+                "size": [ 9, 7 ],
+                "bindings": [
+                  {
+                    "binding_name": "#is_achievement",
+                    "binding_name_override": "#visible"
+                  }
+                ],
+                "controls": [
+                  {
+                    "gamer_score_icon@toast_screen.gamer_score_icon": {
+                      "layer": 1,
+                      "anchor_from": "left_middle",
+                      "anchor_to": "left_middle"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "subtext_offset@common.empty_panel": {
+                "size": [ "fill", 10 ],
+                "bindings": [
+                  {
+                    "binding_name": "#toast_subtitle_visible",
+                    "binding_name_override": "#visible"
+                  }
+                ],
+                "controls": [
+                  {
+                    "subtext@toast_screen.toast_label": {
+                      "size": [ "100%", "100%" ],
+                      "offset": [ 0, -2 ],
+                      "text": "#toast_subtitle",
+                      "bindings": [
+                        {
+                          "binding_name": "#toast_subtitle"
+                        },
+                        {
+                          "binding_name": "#toast_font_type",
+                          "binding_name_override": "#font_type"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "join_button_icon": {
+    "type": "image",
+    "texture": "textures/ui/xbox_start_button",
+    "size": [ 26, 26 ],
+    "bindings": [
+      {
+        "binding_name": "#controller_start_icon",
+        "binding_name_override": "#texture"
+      }
+    ]
+  },
+
+  "chat_popup@toast_screen.popup": {
+    "size": [ "60%", 26 ]
+  },
+
+  "splitscreen_join_popup": {
+    "type": "stack_panel",
+    "orientation": "horizontal",
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+    "layer": 10,
+    "size": [ "100%c", 26 ],
+    "offset": [ 0, "55%" ],
+    "controls": [
+      {
+        "join_button_icon@toast_screen.join_button_icon": {}
+      },
+      {
+        "join_prompt_text_panel": {
+          "type": "panel",
+          "size": [ "100%c", "100%" ],
+          "controls": [
+            {
+              "join_prompt_text": {
+                "type": "label",
+                "text": "$player_join_text",
+                "color": "$toast_text_color",
+                "shadow": true
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "fade_anim_end": {
+    "anim_type": "alpha",
+    "easing": "linear",
+    "from": 1.0,
+    "to": 0.0,
+    "duration": "$transition_out_time",
+    "destroy_at_end": "$toast_control"
+  },
+
+  "fade_anim_wait": {
+    "anim_type": "wait",
+    "duration": "$display_time",
+    "next": "@toast_screen.fade_anim_end"
+  },
+
+  "formfitting_alpha_toast": {
+    "type": "panel",
+    "$display_time": 3.0,
+    "$transition_in_time": 0.15,
+    "$transition_out_time": 0.15,
+    "$toast_control": "formfitting_alpha_toast",
+    "$alpha_anims": [
+      "@toast_screen.fade_anim_wait"
+    ],
+
+    "controls": [
+      {
+        "bg": {
+          "type": "image",
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [ 0, 10 ],
+          "size": [ "100%c + 6px", "100%c + 13px" ], // form fitting
+          "texture": "textures/ui/greyBorder",
+          "anims": "$alpha_anims",
+          "controls": [
+            {
+              "label@toast_screen.toast_label": {
+                "type": "label",
+                "size": [ 200, "default" ],
+                "offset": [ 0, 0 ],
+                "color": "$toast_text_color",
+                "text": "#toast_title",
+                "text_alignment": "center",
+                "$toast_font_type": "smooth",
+                "bindings": [
+                  {
+                    "binding_name": "#toast_title"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "fade_anim_snackbar": {
+    "anim_type": "alpha",
+    "easing": "linear",
+    "from": "$popup_alpha_from",
+    "to": "$popup_alpha_to",
+    "duration": "$transition_time"
+  },
+
+  "fade_anim_snackbar_background": {
+    "anim_type": "alpha",
+    "easing": "linear",
+    "from": "$popup_background_alpha_from",
+    "to": "$popup_background_alpha_to",
+    "duration": "$transition_time"
+  },
+
+  // JSON UI implementation of the Ore UI snackbar
+  "snackbar": {
+    "type": "panel",
+    "anchor_from": "bottom_middle",
+    "anchor_to": "center",
+    "size": [ "100%c", "100%c" ],
+    "$snackbar_text_color": [ 1.0, 1.0, 1.0 ],
+    "$snackbar_background_color": [ 0.12, 0.12, 0.12 ],
+    "$snackbar_shadow_color": [ 0.0, 0.0, 0.0 ],
+    "$offset_anims|default": [
+      "@toast_screen.popup_anim"
+    ],
+    "$alpha_anims|default": [
+      "@toast_screen.fade_anim_snackbar"
+    ],
+    "$background_alpha_anims|default": [
+      "@toast_screen.fade_anim_snackbar_background"
+    ],
+    "controls": [
+      {
+        "body": {
+          "type": "image",
+          "size": [ "100%c", "2px" ],
+          "texture": "textures/ui/White",
+          "color": "$snackbar_shadow_color",
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle",
+          "offset": [ "0px", "12px" ],
+          "anims": "$background_alpha_anims",
+          "$title_font_type|default": "default",
+          "controls": [
+            {
+              "background": {
+                "type": "image",
+                "texture": "textures/ui/White",
+                "color": "$snackbar_background_color",
+                "size": [ "100%c", "12px" ],
+                "anchor_to": "bottom_middle",
+                "anchor_from": "top_middle",
+                "offset": [ "-2px", "0px" ],
+                "anims": "$alpha_anims",
+                "controls": [
+                  {
+                    "content": {
+                      "type": "stack_panel",
+                      "orientation": "horizontal",
+                      "anchor_from": "center",
+                      "anchor_to": "center",
+                      "controls": [
+                        {
+                          "left_padding": {
+                            "type": "panel",
+                            "size": [ "4px", "12px" ]
+                          }
+                        },
+                        {
+                          "vertically_central_text": {
+                            "type": "stack_panel",
+                            "orientation": "vertical",
+                            "anchor_from": "center",
+                            "anchor_to": "center",
+                            "size": [ "100%c", "12px" ],
+                            "controls": [
+                              {
+                                "top_padding": {
+                                  "type": "panel",
+                                  "size": [ "0px", "1px" ]
+                                }
+                              },
+                              {
+                                "text": {
+                                  "type": "label",
+                                  "size": [ "default", "100%" ],
+                                  "line_padding": 1,
+                                  "font_size": "normal",
+                                  "font_type": "smooth",
+                                  "font_scale_factor": 0.8,
+                                  "anchor_from": "top_middle",
+                                  "anchor_to": "bottom_middle",
+                                  "text": "#toast_title",
+                                  "text_alignment": "center",
+                                  "color": "$snackbar_text_color",
+                                  "shadow": false,
+                                  "anims": "$alpha_anims",
+                                  "bindings": [
+                                    {
+                                      "binding_name": "#toast_title"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "right_padding": {
+                            "type": "panel",
+                            "size": [ "3px", "12px" ] // seems necessary to add 1px in comparison to left padding to visually center the text
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "right_shadow": {
+                      "type": "image",
+                      "size": [ "2px", "100%-2px" ],
+                      "anchor_from": "top_right",
+                      "anchor_to": "top_left",
+                      "offset": [ "0px", "2px" ],
+                      "texture": "textures/ui/White",
+                      "color": "$snackbar_shadow_color",
+                      "anims": "$background_alpha_anims"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "anims": "$offset_anims"
+  },
+
+  "toast_screen@common.base_screen": {
+    "always_accepts_input": true,
+    "send_telemetry": false,
+    "screen_not_flushable": true,
+    "render_game_behind": true,
+    "is_showing_menu": false,
+    "is_modal": true,
+    "low_frequency_rendering": true,
+    "should_steal_mouse": false,
+    "render_only_when_topmost": false,
+    "screen_draws_last": true,
+    "$screen_content": "toast_screen.toast_screen_content",
+    "$screen_animations": [],
+    "$use_loading_bars": false
+  },
+
+  "toast_screen_content": {
+    "type": "panel",
+    "clips_children": true,
+    "factory": {
+      "name": "toast_factory",
+      "control_ids": {
+        "popup": "popup@toast_screen.popup",
+        "chat_popup": "chat_popup@toast_screen.chat_popup",
+        "recipe_unlocked": "recipe_unlocked@toast_screen.recipe_unlocked_popup",
+        "recipe_unlocked_pocket": "recipe_unlocked_pocket@toast_screen.recipe_unlocked_pocket_popup",
+        "splitscreen_join_popup": "splitscreen_join_popup@toast_screen.splitscreen_join_popup",
+        "formfitting_alpha_toast": "toast_screen.formfitting_alpha_toast",
+        "snackbar": "snackbar@toast_screen.snackbar"
+      }
+    },
+    "controls": [
+      { "content_log_panel@content_log.content_log_panel": {} },
+      { "perf_turtle_panel@perf_turtle.perf_turtle_panel": {} }
+    ]
+  }
+}

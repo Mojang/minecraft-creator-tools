@@ -1,0 +1,32 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:mossy_stone_brick_stairs"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "#  ",
+      "## ",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:stonebrick",
+        "data": 1
+      }
+    },
+	"unlock": [
+        {
+          "item": "minecraft:stonebrick",
+		  "data": 1
+        }
+    ],
+    "result": {
+      "item": "minecraft:mossy_stone_brick_stairs",
+      "count": 4
+    }
+  }
+}
