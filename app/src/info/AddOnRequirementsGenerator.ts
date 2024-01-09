@@ -430,6 +430,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
     return UniqueRegEx.test(name);
   }
+
   async generateFromFirstLevelFolderCreator_Game(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
     await folder.load(false);
 
@@ -441,6 +442,10 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
         (folder.name !== "textures" ||
           (fileNameCanon !== "flipbook_textures.json" &&
             fileNameCanon !== "item_textures.json" &&
+            fileNameCanon !== "blocks.json" &&
+            fileNameCanon !== "block.json" &&
+            fileNameCanon !== "textures_list.json" &&
+            fileNameCanon !== "texture_list.json" &&
             fileNameCanon !== "terrain_textures.json" &&
             fileNameCanon !== "item_texture.json" &&
             fileNameCanon !== "terrain_texture.json")) &&
@@ -509,6 +514,11 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
         (folder.name !== "textures" ||
           (fileNameCanon !== "flipbook_textures.json" &&
             fileNameCanon !== "item_textures.json" &&
+            fileNameCanon !== "terrain_textures.json" &&
+            fileNameCanon !== "blocks.json" &&
+            fileNameCanon !== "block.json" &&
+            fileNameCanon !== "textures_list.json" &&
+            fileNameCanon !== "texture_list.json" &&
             fileNameCanon !== "terrain_textures.json" &&
             fileNameCanon !== "item_texture.json" &&
             fileNameCanon !== "terrain_texture.json")) &&
