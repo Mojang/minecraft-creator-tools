@@ -20,6 +20,7 @@ const _allowedExtensions = [
   "ttf",
   "woff2",
   "jpg",
+  "gitignore",
   "jpeg",
   "lang",
   "fsb",
@@ -423,7 +424,7 @@ export default class StorageUtilities {
     folderA: IFolder | undefined,
     folderB: IFolder | undefined,
     excludingFiles?: string[],
-    makeJsonAgnostic?: boolean
+    whitespaceAgnostic?: boolean
   ): Promise<{ result: boolean; reason: string }> {
     if (folderA === undefined && folderB === undefined) {
       return { result: true, reason: "Both folders are undefined." };
@@ -469,7 +470,7 @@ export default class StorageUtilities {
       }
 
       if (!excludingFiles || !excludingFiles.includes(fileA.name)) {
-        const result = await StorageUtilities.fileContentsEqual(fileA, fileB, makeJsonAgnostic);
+        const result = await StorageUtilities.fileContentsEqual(fileA, fileB, whitespaceAgnostic);
 
         if (!result) {
           return {
@@ -496,7 +497,7 @@ export default class StorageUtilities {
         childFolderA,
         childFolderB,
         excludingFiles,
-        makeJsonAgnostic
+        whitespaceAgnostic
       );
 
       if (!result.result) {
@@ -510,7 +511,7 @@ export default class StorageUtilities {
   public static async fileContentsEqual(
     fileA: IFile | undefined,
     fileB: IFile | undefined,
-    makeJsonAgnostic?: boolean
+    whitespaceAgnostic?: boolean
   ) {
     if (fileA === undefined && fileB === undefined) {
       return true;
@@ -558,26 +559,34 @@ export default class StorageUtilities {
     }
 
     if (extA === "json" && extB === "json" && typeof contentA === "string" && typeof contentB === "string") {
-      return this.contentsAreEqualIgnoreWhitespace(contentA, contentB, makeJsonAgnostic);
+      return this.jsonContentsAreEqualIgnoreWhitespace(contentA, contentB, whitespaceAgnostic);
+    } else if (whitespaceAgnostic) {
+      return StorageUtilities.contentsAreEqualIgnoreWhitespace(contentA, contentB);
     }
 
     return StorageUtilities.contentsAreEqual(contentA, contentB);
   }
 
-  public static contentsAreEqualIgnoreWhitespace(contentA: string, contentB: string, makeJsonAgnostic?: boolean) {
-    contentA = contentA.replace(/ /gi, "");
-    contentA = contentA.replace(/\r/gi, "");
-    contentA = contentA.replace(/\n/gi, "");
-
-    contentB = contentB.replace(/ /gi, "");
-    contentB = contentB.replace(/\r/gi, "");
-    contentB = contentB.replace(/\n/gi, "");
+  public static jsonContentsAreEqualIgnoreWhitespace(contentA: string, contentB: string, makeJsonAgnostic?: boolean) {
+    contentA = this.stripWhitespace(contentA);
+    contentB = this.stripWhitespace(contentA);
 
     if (makeJsonAgnostic) {
       return Utilities.makeJsonVersionAgnostic(contentA) === Utilities.makeJsonVersionAgnostic(contentB);
     }
 
     return contentA === contentB;
+  }
+
+  public static stripWhitespace(content: string) {
+    content = content.trim();
+
+    content = content.replace(/ /gi, "");
+    content = content.replace(/\r/gi, "");
+    content = content.replace(/\n/gi, "");
+    content = content.replace(/\t/gi, "");
+
+    return content;
   }
 
   public static contentsAreEqual(contentA: string | Uint8Array | null, contentB: string | Uint8Array | null) {
@@ -587,6 +596,24 @@ export default class StorageUtilities {
 
     if (typeof contentA === "string" && typeof contentB === "string") {
       return contentA === contentB;
+    }
+
+    if (contentA instanceof Uint8Array && contentB instanceof Uint8Array) {
+      return Utilities.uint8ArraysAreEqual(contentA, contentB);
+    }
+
+    return false;
+  }
+  public static contentsAreEqualIgnoreWhitespace(
+    contentA: string | Uint8Array | null,
+    contentB: string | Uint8Array | null
+  ) {
+    if (contentA === null && contentB === null) {
+      return true;
+    }
+
+    if (typeof contentA === "string" && typeof contentB === "string") {
+      return this.stripWhitespace(contentA) === this.stripWhitespace(contentB);
     }
 
     if (contentA instanceof Uint8Array && contentB instanceof Uint8Array) {

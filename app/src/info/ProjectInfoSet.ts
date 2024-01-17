@@ -29,6 +29,20 @@ export default class ProjectInfoSet {
 
   static CommonCsvHeader = "Test,TestId,Type,Item,Message,Data,Path";
 
+  static getSuiteFromString(suiteName: string) {
+    switch (suiteName.toLowerCase()) {
+      case "addon":
+      case "addons":
+        return ProjectInfoSuite.addOn;
+
+      case "currentplatform":
+        return ProjectInfoSuite.currentPlatform;
+
+      default:
+        return ProjectInfoSuite.allExceptAddOn;
+    }
+  }
+
   constructor(
     project?: Project,
     suite?: ProjectInfoSuite,

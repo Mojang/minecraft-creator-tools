@@ -802,7 +802,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
             }}
           >
-            Validating... {this.state.loadStatus ? "(" + this.state.loadStatus + ")" : ""}
+            Please wait... {this.state.loadStatus ? "(" + this.state.loadStatus + ")" : ""}
           </div>
         </div>
       );

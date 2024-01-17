@@ -601,13 +601,13 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       case ProjectItemType.materialSetJson:
         return "mat set";
 
-      case ProjectItemType.vertex:
+      case ProjectItemType.materialVertex:
         return "vertex";
 
-      case ProjectItemType.fragment:
+      case ProjectItemType.materialFragment:
         return "fragment";
 
-      case ProjectItemType.geometry:
+      case ProjectItemType.materialGeometry:
         return "geometry";
 
       case ProjectItemType.cameraJson:
@@ -667,7 +667,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       case ProjectItemType.fogResourceJson:
         return "fog";
 
-      case ProjectItemType.modelJson:
+      case ProjectItemType.modelGeometryJson:
         return "model";
 
       case ProjectItemType.particleJson:
@@ -757,7 +757,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       case ProjectItemType.vsCodeTasksJson:
         return "vsc tasks";
 
-      case ProjectItemType.typesDefinitionJson:
+      case ProjectItemType.scriptTypesJson:
         return "types def";
 
       case ProjectItemType.commandSetDefinitionJson:
@@ -781,7 +781,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       case ProjectItemType.itemTextureJson:
         return "item tx";
 
-      case ProjectItemType.terrainTextureJson:
+      case ProjectItemType.terrainTextureCatalogResourceJson:
         return "terrain tx";
 
       case ProjectItemType.flipBookTexturesJson:
@@ -808,7 +808,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       projectItem.itemType !== ProjectItemType.ts &&
       projectItem.itemType !== ProjectItemType.image &&
       projectItem.itemType !== ProjectItemType.zip &&
-      projectItem.itemType !== ProjectItemType.typesDefinitionJson &&
+      projectItem.itemType !== ProjectItemType.scriptTypesJson &&
       projectItem.itemType !== ProjectItemType.commandSetDefinitionJson &&
       projectItem.itemType !== ProjectItemType.MCAddon &&
       projectItem.itemType !== ProjectItemType.MCFunction &&
@@ -1042,14 +1042,14 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         projectItem.itemType === ProjectItemType.renderControllerJson ||
         projectItem.itemType === ProjectItemType.lightingJson ||
         projectItem.itemType === ProjectItemType.textureSetJson ||
-        projectItem.itemType === ProjectItemType.modelJson ||
+        projectItem.itemType === ProjectItemType.modelGeometryJson ||
         projectItem.itemType === ProjectItemType.material ||
         projectItem.itemType === ProjectItemType.materialSetJson ||
         projectItem.itemType === ProjectItemType.animationControllerResourceJson ||
         projectItem.itemType === ProjectItemType.animationResourceJson ||
         projectItem.itemType === ProjectItemType.itemTextureJson ||
         projectItem.itemType === ProjectItemType.flipBookTexturesJson ||
-        projectItem.itemType === ProjectItemType.terrainTextureJson ||
+        projectItem.itemType === ProjectItemType.terrainTextureCatalogResourceJson ||
         projectItem.itemType === ProjectItemType.globalVariablesJson ||
         projectItem.itemType === ProjectItemType.uiJson ||
         projectItem.itemType === ProjectItemType.lang ||

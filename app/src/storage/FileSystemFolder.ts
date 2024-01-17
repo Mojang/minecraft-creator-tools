@@ -82,6 +82,46 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
     this.files = {};
   }
 
+  async getFirstUnsafeError(depth?: number, processedFolders?: number): Promise<string | undefined> {
+    if (depth && depth > 7) {
+      return "Folder hierarchy is too deep.";
+    }
+
+    await this.load(false);
+
+    for (const fileName in this.files) {
+      if (!StorageUtilities.isUsableFile(fileName)) {
+        return "Cannot work with '" + this.fullPath + fileName + "'";
+      }
+    }
+
+    const folderCount = this.folderCount;
+
+    processedFolders = processedFolders === undefined ? folderCount : processedFolders + this.folderCount;
+
+    if (folderCount > 1000) {
+      return "Folder hierarchy is too complex. (" + folderCount + " folders)";
+    }
+
+    if (processedFolders > 4000) {
+      return "Too many folders to process in this folder.";
+    }
+
+    for (const folderName in this.folders) {
+      const folder = this.folders[folderName];
+
+      if (folder) {
+        const result = await folder.getFirstUnsafeError(depth === undefined ? 1 : depth + 1, processedFolders);
+
+        if (result !== undefined) {
+          return result;
+        }
+      }
+    }
+
+    return undefined;
+  }
+
   ensureFile(name: string, file?: FileSystemFileHandle): FileSystemFile {
     const nameCanon = StorageUtilities.canonicalizeName(name);
 
@@ -271,7 +311,10 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
         if (value.kind === "file") {
           this.ensureFile(key, value as FileSystemFileHandle);
         } else if (value.kind === "directory") {
-          this.ensureFolder(key, value as FileSystemDirectoryHandle);
+          const keyLower = key.toLowerCase();
+          if (keyLower !== ".git" && keyLower !== "node_modules") {
+            this.ensureFolder(key, value as FileSystemDirectoryHandle);
+          }
         }
       }
     }

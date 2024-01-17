@@ -292,7 +292,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           );
         } else if (
           file.type === "json" &&
-          projItem.itemType === ProjectItemType.typesDefinitionJson &&
+          projItem.itemType === ProjectItemType.scriptTypesJson &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
           if (file.content == null) {

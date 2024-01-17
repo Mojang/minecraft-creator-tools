@@ -22,6 +22,7 @@ import IProjectFileInfoGenerator from "./IProjectFileInfoGenerator";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
 import IProjectItemInfoGenerator from "./IProjectItemInfoGenerator";
 import IProjectInfoGeneratorBase from "./IProjectInfoGeneratorBase";
+import TextureInfoGenerator from "./TextureInfoGenerator";
 
 export default class GeneratorRegistrations {
   static projectGenerators = [
@@ -36,6 +37,7 @@ export default class GeneratorRegistrations {
     new BehaviorPackEntityTypeManager(),
     new AddOnRequirementsGenerator(),
     new StrictPlatformInfoGenerator(),
+    new TextureInfoGenerator(),
   ];
 
   static itemGenerators = [

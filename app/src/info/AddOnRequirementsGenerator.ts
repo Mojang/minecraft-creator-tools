@@ -145,6 +145,41 @@ const GenericTermList = [
   "weapon",
   "weapons",
   "wrench",
+  "opaque",
+  "map",
+  "on",
+  "item",
+  "player",
+  "map",
+  "charged",
+  "beacon",
+  "conduit",
+  "moving",
+  "banner",
+  "bed",
+  "cow",
+  "chicken",
+  "dragon",
+  "ender",
+  "enderman",
+  "fang",
+  "fireball",
+  "mob",
+  "warden",
+  "village",
+  "pattern",
+  "wandering",
+  "trial",
+  "stray",
+  "spider",
+  "slime",
+  "chest",
+  "silverfish",
+  "polar",
+  "shield",
+  "husk",
+  "blaze",
+  "axolotl",
 ];
 
 export default class AddOnRequirementsGenerator implements IProjectInfoGenerator {
@@ -421,6 +456,16 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     return tokens[0].length >= 2 && tokens[1].length >= 2;
   }
 
+  static isCommonMaterialName(name: string) {
+    let tokens = name.split("_");
+
+    if (tokens.length < 3) {
+      return true;
+    }
+
+    return GenericTermList.includes(tokens[0]);
+  }
+
   static isUniqueNamespaceOrShortName(name: string) {
     name = StorageUtilities.canonicalizeName(name);
 
@@ -430,30 +475,11 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
     return UniqueRegEx.test(name);
   }
-
   async generateFromFirstLevelFolderCreator_Game(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
     await folder.load(false);
 
     for (const fileName in folder.files) {
-      const fileNameCanon = StorageUtilities.canonicalizeName(fileName);
-
-      if (
-        (folder.name !== "functions" || fileNameCanon !== "tick.json") &&
-        (folder.name !== "textures" ||
-          (fileNameCanon !== "flipbook_textures.json" &&
-            fileNameCanon !== "item_textures.json" &&
-            fileNameCanon !== "blocks.json" &&
-            fileNameCanon !== "block.json" &&
-            fileNameCanon !== "textures_list.json" &&
-            fileNameCanon !== "texture_list.json" &&
-            fileNameCanon !== "terrain_textures.json" &&
-            fileNameCanon !== "item_texture.json" &&
-            fileNameCanon !== "terrain_texture.json")) &&
-        (folder.name !== "sounds" ||
-          (fileNameCanon !== "sound_definitions.json" &&
-            fileNameCanon !== "sounds.json" &&
-            fileNameCanon !== "music_definitions.json"))
-      ) {
+      if (!this.isSpecialFile(folder.name, fileName)) {
         const file = folder.files[fileName];
 
         const projectItem = file?.extendedPath ? project.getItemByExtendedOrStoragePath(file?.extendedPath) : undefined;
@@ -503,30 +529,37 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     }
   }
 
+  isSpecialFile(folderName: string, fileName: string) {
+    const fileNameCanon = StorageUtilities.canonicalizeName(fileName);
+
+    if (
+      (folderName !== "functions" || fileNameCanon !== "tick.json") &&
+      (folderName !== "textures" ||
+        (fileNameCanon !== "flipbook_textures.json" &&
+          fileNameCanon !== "item_textures.json" &&
+          fileNameCanon !== "blocks.json" &&
+          fileNameCanon !== "block.json" &&
+          fileNameCanon !== "textures_list.json" &&
+          fileNameCanon !== "texture_list.json" &&
+          fileNameCanon !== "terrain_textures.json" &&
+          fileNameCanon !== "item_texture.json" &&
+          fileNameCanon !== "terrain_texture.json")) &&
+      (folderName !== "sounds" ||
+        (fileNameCanon !== "sound_definitions.json" &&
+          fileNameCanon !== "sounds.json" &&
+          fileNameCanon !== "music_definitions.json"))
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
   async generateFromFirstLevelFolderCreatorNameGameName(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
     await folder.load(false);
 
     for (const fileName in folder.files) {
-      const fileNameCanon = StorageUtilities.canonicalizeName(fileName);
-
-      if (
-        (folder.name !== "functions" || fileNameCanon !== "tick.json") &&
-        (folder.name !== "textures" ||
-          (fileNameCanon !== "flipbook_textures.json" &&
-            fileNameCanon !== "item_textures.json" &&
-            fileNameCanon !== "terrain_textures.json" &&
-            fileNameCanon !== "blocks.json" &&
-            fileNameCanon !== "block.json" &&
-            fileNameCanon !== "textures_list.json" &&
-            fileNameCanon !== "texture_list.json" &&
-            fileNameCanon !== "terrain_textures.json" &&
-            fileNameCanon !== "item_texture.json" &&
-            fileNameCanon !== "terrain_texture.json")) &&
-        (folder.name !== "sounds" ||
-          (fileNameCanon !== "sound_definitions.json" &&
-            fileNameCanon !== "sounds.json" &&
-            fileNameCanon !== "music_definitions.json"))
-      ) {
+      if (!this.isSpecialFile(folder.name, fileName)) {
         const file = folder.files[fileName];
 
         const projectItem = file?.extendedPath ? project.getItemByExtendedOrStoragePath(file?.extendedPath) : undefined;
