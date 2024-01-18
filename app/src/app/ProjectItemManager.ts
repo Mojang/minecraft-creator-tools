@@ -393,7 +393,7 @@ export default class ProjectItemManager {
       candidateFolderPath,
       ProjectItemStorageType.folder,
       candidateFolderPath,
-      ProjectItemType.documentedType,
+      ProjectItemType.documentedTypeFolder,
       false
     );
 

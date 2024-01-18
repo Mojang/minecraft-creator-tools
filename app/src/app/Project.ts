@@ -1907,7 +1907,7 @@ export default class Project {
                 projectPath,
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
-                ProjectItemType.vertex,
+                ProjectItemType.materialVertex,
                 false,
                 candidateFile
               );
@@ -1916,7 +1916,7 @@ export default class Project {
                 projectPath,
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
-                ProjectItemType.fragment,
+                ProjectItemType.materialFragment,
                 false,
                 candidateFile
               );
@@ -1925,7 +1925,7 @@ export default class Project {
                 projectPath,
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
-                ProjectItemType.geometry,
+                ProjectItemType.materialGeometry,
                 false,
                 candidateFile
               );
@@ -2078,7 +2078,7 @@ export default class Project {
                 folderContext === FolderContext.resourcePack &&
                 (folderPath.indexOf("/models/") >= 0 || baseName.endsWith(".geo"))
               ) {
-                newJsonType = ProjectItemType.modelJson;
+                newJsonType = ProjectItemType.modelGeometryJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/dimension/") >= 0) {
                 newJsonType = ProjectItemType.dimensionJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/features/") >= 0) {
@@ -2112,7 +2112,7 @@ export default class Project {
                 (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
                 projectPath.endsWith("terrain_texture.json")
               ) {
-                newJsonType = ProjectItemType.terrainTextureJson;
+                newJsonType = ProjectItemType.terrainTextureCatalogResourceJson;
               } else if (
                 (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
                 projectPath.endsWith("_global_variables.json")
@@ -2205,7 +2205,7 @@ export default class Project {
                 newJsonType = ProjectItemType.dataFormJson;
                 this.#role = ProjectRole.meta;
               } else if (folderContext === FolderContext.typeDefs) {
-                newJsonType = ProjectItemType.typesDefinitionJson;
+                newJsonType = ProjectItemType.scriptTypesJson;
                 this.#role = ProjectRole.documentation;
               } else {
                 // Log.debugAlert("General JSON file found: " + projectPath);

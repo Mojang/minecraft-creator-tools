@@ -27,6 +27,7 @@ export default class Database {
   static stableTypeDefs: ITypeDefCatalog | null = null;
   static contentFolder: IFolder | null = null;
   static snippetsFolder: IFolder | null = null;
+  static metadataFolder: IFolder | null = null;
   static defaultBehaviorPackFolder: IFolder | null = null;
   static defaultResourcePackFolder: IFolder | null = null;
   static local: ILocalUtilities | null = null;
@@ -404,6 +405,18 @@ export default class Database {
     }
 
     Database.snippetsFolder = folder;
+  }
+
+  static async loadMetadataFolder() {
+    if (!this.metadataFolder) {
+      const metadataStorage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/metadata/");
+
+      await metadataStorage.rootFolder.load(false);
+
+      this.metadataFolder = metadataStorage.rootFolder;
+    }
+
+    return this.metadataFolder;
   }
 
   static async loadDefaultBehaviorPack() {

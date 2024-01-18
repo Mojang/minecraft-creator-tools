@@ -204,11 +204,11 @@ export default class ProjectItem {
         return "Material";
       case ProjectItemType.materialSetJson:
         return "Material Set";
-      case ProjectItemType.geometry:
+      case ProjectItemType.materialGeometry:
         return "Geometry";
-      case ProjectItemType.fragment:
+      case ProjectItemType.materialFragment:
         return "Fragment";
-      case ProjectItemType.vertex:
+      case ProjectItemType.materialVertex:
         return "Vertex";
       case ProjectItemType.cameraJson:
         return "Camera";
@@ -248,7 +248,7 @@ export default class ProjectItem {
         return "Entity type resources";
       case ProjectItemType.fogResourceJson:
         return "Fog";
-      case ProjectItemType.modelJson:
+      case ProjectItemType.modelGeometryJson:
         return "Model";
       case ProjectItemType.particleJson:
         return "Particle";
@@ -302,7 +302,7 @@ export default class ProjectItem {
         return "NPM package lock definition";
       case ProjectItemType.docInfoJson:
         return "Doc info json";
-      case ProjectItemType.typesDefinitionJson:
+      case ProjectItemType.scriptTypesJson:
         return "Types definition";
       case ProjectItemType.commandSetDefinitionJson:
         return "Command definition";
@@ -334,7 +334,7 @@ export default class ProjectItem {
         return "Flipbook texture set";
       case ProjectItemType.itemTextureJson:
         return "Item texture";
-      case ProjectItemType.terrainTextureJson:
+      case ProjectItemType.terrainTextureCatalogResourceJson:
         return "Terrain texture";
       case ProjectItemType.globalVariablesJson:
         return "UI global variables";
@@ -405,11 +405,11 @@ export default class ProjectItem {
         return "Materials";
       case ProjectItemType.materialSetJson:
         return "Material sets";
-      case ProjectItemType.geometry:
+      case ProjectItemType.materialGeometry:
         return "Geometries";
-      case ProjectItemType.fragment:
+      case ProjectItemType.materialFragment:
         return "Fragments";
-      case ProjectItemType.vertex:
+      case ProjectItemType.materialVertex:
         return "Vertices";
       case ProjectItemType.cameraJson:
         return "Cameras";
@@ -449,7 +449,7 @@ export default class ProjectItem {
         return "Entity type resources";
       case ProjectItemType.fogResourceJson:
         return "Fogs";
-      case ProjectItemType.modelJson:
+      case ProjectItemType.modelGeometryJson:
         return "Models";
       case ProjectItemType.particleJson:
         return "Particles";
@@ -503,7 +503,7 @@ export default class ProjectItem {
         return "NPM package lock definitions";
       case ProjectItemType.docInfoJson:
         return "Doc info files";
-      case ProjectItemType.typesDefinitionJson:
+      case ProjectItemType.scriptTypesJson:
         return "Type definitions";
       case ProjectItemType.commandSetDefinitionJson:
         return "Command definitions";
@@ -535,7 +535,7 @@ export default class ProjectItem {
         return "Flipbook textures";
       case ProjectItemType.itemTextureJson:
         return "Item textures";
-      case ProjectItemType.terrainTextureJson:
+      case ProjectItemType.terrainTextureCatalogResourceJson:
         return "Terrain textures";
       case ProjectItemType.globalVariablesJson:
         return "UI global variables";
@@ -621,7 +621,7 @@ export default class ProjectItem {
         return ["items"];
       case ProjectItemType.blockTypeBehaviorJson:
         return ["blocks"];
-      case ProjectItemType.documentedType:
+      case ProjectItemType.documentedTypeFolder:
         return ["script_modules"];
       case ProjectItemType.commandSetDefinitionJson:
         return ["command_modules"];
@@ -647,7 +647,7 @@ export default class ProjectItem {
         return ["fogs"];
       case ProjectItemType.dataFormJson:
         return ["forms"];
-      case ProjectItemType.typesDefinitionJson:
+      case ProjectItemType.scriptTypesJson:
         return ["checkpoint_input"];
       case ProjectItemType.materialSetJson:
       case ProjectItemType.materialsResourceJson:
@@ -696,7 +696,7 @@ export default class ProjectItem {
         return "resource/entity/entity.json";
       case ProjectItemType.fogResourceJson:
         return "resource/fog/fog.json";
-      case ProjectItemType.modelJson:
+      case ProjectItemType.modelGeometryJson:
         return "resource/models/entity/model_entity.json";
       case ProjectItemType.biomeResourceJson:
         return "resource/biomes_client.json";
@@ -740,7 +740,7 @@ export default class ProjectItem {
         return "resource/textures/flipbook_textures.json";
       case ProjectItemType.itemTextureJson:
         return "resource/textures/item_texture.json";
-      case ProjectItemType.terrainTextureJson:
+      case ProjectItemType.terrainTextureCatalogResourceJson:
         return "resource/textures/terrain_texture.json";
       case ProjectItemType.globalVariablesJson:
         return "resource/ui/_global_variables.json";

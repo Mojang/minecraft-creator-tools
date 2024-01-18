@@ -13,6 +13,8 @@ import ResourceAnimation from "../minecraft/ResourceAnimation";
 import ResourceRenderController from "../minecraft/ResourceRenderController";
 import ResourceManifestJson from "../minecraft/ResourceManifestJson";
 import BehaviorManifestJson from "../minecraft/BehaviorManifestJson";
+import ModelGeometry from "../minecraft/ModelGeometry";
+import Material from "../minecraft/Material";
 
 export default class AddOnItemRequirementsGenerator implements IProjectInfoItemGenerator {
   id = "ADDONIREQ";
@@ -160,7 +162,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
           for (let aName in baManifest.definition.animations) {
             let baNameBreak = aName.split(".");
 
-            if (baNameBreak.length < 3 || baNameBreak[0] !== "animation") {
+            if (baNameBreak.length < 2 || baNameBreak[0] !== "animation") {
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
@@ -196,7 +198,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
           for (let racName in racManifest.definition.animation_controllers) {
             let racNameBreak = racName.split(".");
 
-            if (racNameBreak.length < 4 || racNameBreak[0] !== "controller" || racNameBreak[1] !== "animation") {
+            if (racNameBreak.length < 3 || racNameBreak[0] !== "controller" || racNameBreak[1] !== "animation") {
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
@@ -232,7 +234,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
           for (let aName in raManifest.definition.animations) {
             let raNameBreak = aName.split(".");
 
-            if (raNameBreak.length < 3 || raNameBreak[0] !== "animation") {
+            if (raNameBreak.length < 2 || raNameBreak[0] !== "animation") {
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
@@ -268,7 +270,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
           for (let rrcName in racManifest.definition.render_controllers) {
             let racNameBreak = rrcName.split(".");
 
-            if (racNameBreak.length < 4 || racNameBreak[0] !== "controller" || racNameBreak[1] !== "render") {
+            if (racNameBreak.length < 3 || racNameBreak[0] !== "controller" || racNameBreak[1] !== "render") {
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
@@ -288,6 +290,80 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                   `Resource pack render controller name section is not in expected form of controller.render.creatorshortname_projectshortname`,
                   projectItem,
                   rrcName
+                )
+              );
+            }
+          }
+        }
+      }
+    } else if (projectItem.itemType === ProjectItemType.modelGeometryJson) {
+      await projectItem.ensureFileStorage();
+
+      if (projectItem.file) {
+        const modGeo = await ModelGeometry.ensureOnFile(projectItem.file);
+
+        if (modGeo && modGeo.identifier) {
+          let modGeoBreaks = modGeo.identifier.split(".");
+
+          if (modGeoBreaks.length < 2 || modGeoBreaks[0] !== "geometry") {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.testCompleteFail,
+                this.id,
+                150,
+                `Geometry is not in expected form of geometry.creatorshortname_projectshortname.other`,
+                projectItem,
+                modGeo.identifier
+              )
+            );
+          } else if (!AddOnRequirementsGenerator.isNamespacedString(modGeoBreaks[1])) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.testCompleteFail,
+                this.id,
+                151,
+                `Geometry identifier section is not in expected form of geometry.creatorshortname_projectshortname`,
+                projectItem,
+                modGeo.identifier
+              )
+            );
+          }
+        }
+      }
+    } else if (projectItem.itemType === ProjectItemType.material) {
+      await projectItem.ensureFileStorage();
+
+      if (projectItem.file) {
+        const mat = await Material.ensureOnFile(projectItem.file);
+
+        if (mat && mat.definition && mat.definition.materials) {
+          for (const modId in mat.definition.materials) {
+            let modIdBreaks = modId.split(":");
+
+            if (modIdBreaks.length < 1) {
+              items.push(
+                new ProjectInfoItem(
+                  InfoItemType.testCompleteFail,
+                  this.id,
+                  160,
+                  `Materials section identifier is not in expected form of creatorshortname_projectshortname:other`,
+                  projectItem,
+                  modId
+                )
+              );
+            } else if (
+              modIdBreaks[0] !== "version" &&
+              (!AddOnRequirementsGenerator.isNamespacedString(modIdBreaks[0]) ||
+                AddOnRequirementsGenerator.isCommonMaterialName(modIdBreaks[0]))
+            ) {
+              items.push(
+                new ProjectInfoItem(
+                  InfoItemType.testCompleteFail,
+                  this.id,
+                  161,
+                  `First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem`,
+                  projectItem,
+                  modId
                 )
               );
             }
