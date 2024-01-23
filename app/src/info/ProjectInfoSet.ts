@@ -169,10 +169,14 @@ export default class ProjectInfoSet {
         if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && gen && this.matchesSuite(gen)) {
           GeneratorRegistrations.configureForSuite(gen, this.suite);
 
-          const results = await gen.generate(this.project);
+          try {
+            const results = await gen.generate(this.project);
 
-          for (const item of results) {
-            genItems.push(item);
+            for (const item of results) {
+              genItems.push(item);
+            }
+          } catch (e: any) {
+            genItems.push(new ProjectInfoItem(InfoItemType.internalProcessingError, gen.id, 500, e.toString()));
           }
         }
       }
@@ -187,11 +191,14 @@ export default class ProjectInfoSet {
 
           if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && this.matchesSuite(gen)) {
             GeneratorRegistrations.configureForSuite(gen, this.suite);
+            try {
+              const results = await gen.generate(pi);
 
-            const results = await gen.generate(pi);
-
-            for (const item of results) {
-              genItems.push(item);
+              for (const item of results) {
+                genItems.push(item);
+              }
+            } catch (e: any) {
+              genItems.push(new ProjectInfoItem(InfoItemType.internalProcessingError, gen.id, 501, e.toString()));
             }
           }
         }
@@ -1031,10 +1038,14 @@ function _addReportJson(data) {
 
         for (const fileGen of fileGenerators) {
           if (this.matchesSuite(fileGen)) {
-            const results = await fileGen.generate(project, file);
+            try {
+              const results = await fileGen.generate(project, file);
 
-            for (const item of results) {
-              genItems.push(item);
+              for (const item of results) {
+                genItems.push(item);
+              }
+            } catch (e: any) {
+              genItems.push(new ProjectInfoItem(InfoItemType.internalProcessingError, fileGen.id, 502, e.toString()));
             }
           }
         }
@@ -1238,7 +1249,13 @@ function _addReportJson(data) {
     await projectItem.load();
 
     for (let j = 0; j < itemGenerators.length; j++) {
-      genItems = genItems.concat(await itemGenerators[j].generate(projectItem));
+      try {
+        genItems = genItems.concat(await itemGenerators[j].generate(projectItem));
+      } catch (e: any) {
+        genItems.push(
+          new ProjectInfoItem(InfoItemType.internalProcessingError, itemGenerators[j].id, 504, e.toString())
+        );
+      }
     }
 
     return genItems;
