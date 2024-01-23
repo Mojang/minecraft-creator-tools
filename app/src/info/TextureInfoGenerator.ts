@@ -142,7 +142,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
                   if (!terrainTexturesLeaf.includes(terrainTexture.textures)) {
                     terrainTexturesLeaf.push(terrainTexture.textures);
                   }
-                } else {
+                } else if (terrainTexture.textures) {
                   for (let str of terrainTexture.textures) {
                     if (!allTexturesLeaf.includes(str)) {
                       allTexturesLeaf.push(str);
@@ -188,7 +188,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
                   if (!itemTexturesLeaf.includes(itemTexture.textures)) {
                     itemTexturesLeaf.push(itemTexture.textures);
                   }
-                } else {
+                } else if (itemTexture.textures) {
                   for (let str of itemTexture.textures) {
                     if (!allTexturesLeaf.includes(str)) {
                       allTexturesLeaf.push(str);
