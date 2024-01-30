@@ -424,7 +424,8 @@ export default class StorageUtilities {
     folderA: IFolder | undefined,
     folderB: IFolder | undefined,
     excludingFiles?: string[],
-    whitespaceAgnostic?: boolean
+    whitespaceAgnostic?: boolean,
+    ignoreLinesContaining?: string[]
   ): Promise<{ result: boolean; reason: string }> {
     if (folderA === undefined && folderB === undefined) {
       return { result: true, reason: "Both folders are undefined." };
@@ -470,7 +471,12 @@ export default class StorageUtilities {
       }
 
       if (!excludingFiles || !excludingFiles.includes(fileA.name)) {
-        const result = await StorageUtilities.fileContentsEqual(fileA, fileB, whitespaceAgnostic);
+        const result = await StorageUtilities.fileContentsEqual(
+          fileA,
+          fileB,
+          whitespaceAgnostic,
+          ignoreLinesContaining
+        );
 
         if (!result) {
           return {
@@ -497,7 +503,8 @@ export default class StorageUtilities {
         childFolderA,
         childFolderB,
         excludingFiles,
-        whitespaceAgnostic
+        whitespaceAgnostic,
+        ignoreLinesContaining
       );
 
       if (!result.result) {
@@ -511,7 +518,8 @@ export default class StorageUtilities {
   public static async fileContentsEqual(
     fileA: IFile | undefined,
     fileB: IFile | undefined,
-    whitespaceAgnostic?: boolean
+    whitespaceAgnostic?: boolean,
+    ignoreLinesContaining?: string[]
   ) {
     if (fileA === undefined && fileB === undefined) {
       return true;
@@ -547,8 +555,8 @@ export default class StorageUtilities {
     const extA = StorageUtilities.getTypeFromName(fileA.name);
     const extB = StorageUtilities.getTypeFromName(fileB.name);
 
-    const contentA = fileA.content;
-    const contentB = fileB.content;
+    let contentA = fileA.content;
+    let contentB = fileB.content;
 
     if (contentA === null && contentB === null) {
       return true;
@@ -558,8 +566,15 @@ export default class StorageUtilities {
       return false;
     }
 
+    if (ignoreLinesContaining && typeof contentA === "string" && typeof contentB === "string") {
+      for (const ignoreLine of ignoreLinesContaining) {
+        contentA = Utilities.stripLinesContaining(contentA, ignoreLine);
+        contentB = Utilities.stripLinesContaining(contentB, ignoreLine);
+      }
+    }
+
     if (extA === "json" && extB === "json" && typeof contentA === "string" && typeof contentB === "string") {
-      return this.jsonContentsAreEqualIgnoreWhitespace(contentA, contentB, whitespaceAgnostic);
+      return this.jsonContentsAreEqualIgnoreWhitespace(contentA, contentB);
     } else if (whitespaceAgnostic) {
       return StorageUtilities.contentsAreEqualIgnoreWhitespace(contentA, contentB);
     }
@@ -567,13 +582,9 @@ export default class StorageUtilities {
     return StorageUtilities.contentsAreEqual(contentA, contentB);
   }
 
-  public static jsonContentsAreEqualIgnoreWhitespace(contentA: string, contentB: string, makeJsonAgnostic?: boolean) {
+  public static jsonContentsAreEqualIgnoreWhitespace(contentA: string, contentB: string) {
     contentA = this.stripWhitespace(contentA);
-    contentB = this.stripWhitespace(contentA);
-
-    if (makeJsonAgnostic) {
-      return Utilities.makeJsonVersionAgnostic(contentA) === Utilities.makeJsonVersionAgnostic(contentB);
-    }
+    contentB = this.stripWhitespace(contentB);
 
     return contentA === contentB;
   }

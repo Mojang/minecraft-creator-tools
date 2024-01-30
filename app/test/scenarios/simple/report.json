@@ -14,18 +14,19 @@
     "defaultBehaviorPackMinEngineVersion": "1.20.10",
     "defaultBehaviorPackName": "Starter Hello World Tests",
     "defaultBehaviorPackDescription": "Introductory tests for Minecraft GameTest Framework.",
+    "textureCount": 0,
     "chunkCount": 0,
     "features": {
       "Behavior pack manifest content-size count": 1,
-      "Behavior pack manifest content-size total": 28,
-      "Behavior pack manifest content-size max": 28,
-      "Behavior pack manifest content-size min": 28,
-      "Behavior pack manifest content-size average": 28,
-      "Image content-size count": 1,
-      "Image content-size total": 8092,
-      "Image content-size max": 8092,
-      "Image content-size min": 8092,
-      "Image content-size average": 8092,
+      "Behavior pack manifest content-size total": 18,
+      "Behavior pack manifest content-size max": 18,
+      "Behavior pack manifest content-size min": 18,
+      "Behavior pack manifest content-size average": 18,
+      "Icon content-size count": 1,
+      "Icon content-size total": 8092,
+      "Icon content-size max": 8092,
+      "Icon content-size min": 8092,
+      "Icon content-size average": 8092,
       "Catalog index content-size count": 1,
       "Catalog index content-size total": 2,
       "Catalog index content-size max": 2,
@@ -40,7 +41,26 @@
       "Structure content-size total": 9872,
       "Structure content-size max": 9872,
       "Structure content-size min": 9872,
-      "Structure content-size average": 9872
+      "Structure content-size average": 9872,
+      "Textures Unique Texture Handles (estimated)": 0,
+      "Textures Unique Texture Paths": 0,
+      "Textures Unique Particle Texture References": 0,
+      "Textures Unique Particle Texture Paths": 0,
+      "Textures Unique Particle Texture Vanilla Paths": 0,
+      "Textures Unique JSON UI Texture References": 0,
+      "Textures Unique JSON UI Texture Paths": 0,
+      "Textures Unique JSON UI Texture Vanilla Paths": 0,
+      "Textures Unique Entity Texture Paths": 0,
+      "Textures Unique Entity Texture Vanilla Paths": 0,
+      "Textures Unique Attachable Texture References": 0,
+      "Textures Unique Terrain Texture References": 0,
+      "Textures Unique Terrain Texture Paths": 0,
+      "Textures Unique Item Texture Paths": 0,
+      "Textures Unique Flipbook Texture References": 0,
+      "Textures Unique Flipbook Texture Paths": 0,
+      "Textures Unique Block Texture References": 0,
+      "Textures Unique Block Texture Paths": 0,
+      "Textures Unique Entity Spawn Egg Texture References": 0
     }
   },
   "items": [
@@ -88,28 +108,28 @@
     {
       "itemType": 2,
       "generatorId": "ITEMS",
-      "generatorIndex": 174,
-      "message": "Image item count",
+      "generatorIndex": 203,
+      "message": "Icon item count",
       "data": 1
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "LINESIZE",
       "generatorIndex": 105,
       "message": "Linesize Complexity",
       "itemStoragePath": "/behavior_packs/StarterTestsTutorial/manifest.json",
       "features": {
         "content-size count": 1,
-        "content-size total": 28,
-        "content-size max": 28,
-        "content-size min": 28,
-        "content-size average": 28
+        "content-size total": 18,
+        "content-size max": 18,
+        "content-size min": 18,
+        "content-size average": 18
       }
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "LINESIZE",
-      "generatorIndex": 174,
+      "generatorIndex": 203,
       "message": "Linesize Complexity",
       "itemStoragePath": "/behavior_packs/StarterTestsTutorial/pack_icon.png",
       "features": {
@@ -121,7 +141,7 @@
       }
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "LINESIZE",
       "generatorIndex": 103,
       "message": "Linesize Complexity",
@@ -135,7 +155,7 @@
       }
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "LINESIZE",
       "generatorIndex": 102,
       "message": "Linesize Complexity",
@@ -149,7 +169,7 @@
       }
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "LINESIZE",
       "generatorIndex": 104,
       "message": "Linesize Complexity",
@@ -175,19 +195,18 @@
           "description": "Introductory tests for Minecraft GameTest Framework.",
           "name": "Starter Hello World Tests",
           "uuid": "afeeb2ab-0404-4518-822f-9837117e78e1",
-          "version": [0, 0, 1],
-          "min_engine_version": [1, 20, 10]
+          "version": [
+            0,
+            0,
+            1
+          ],
+          "min_engine_version": [
+            1,
+            20,
+            10
+          ]
         },
-        "modules": [
-          {
-            "description": "Starter Hello World Tests script",
-            "language": "javascript",
-            "type": "script",
-            "uuid": "aec36267-a09a-4ffd-9897-8a6f7dbf2684",
-            "version": [0, 0, 1],
-            "entry": "scripts/index.js"
-          }
-        ],
+        "modules": [],
         "dependencies": []
       }
     },
@@ -237,7 +256,11 @@
       "generatorIndex": 1,
       "message": "Behavior pack min_engine version",
       "itemStoragePath": "/behavior_packs/StarterTestsTutorial/manifest.json",
-      "data": [1, 20, 10]
+      "data": [
+        1,
+        20,
+        10
+      ]
     },
     {
       "itemType": 0,
@@ -258,19 +281,19 @@
       "message": "No world template was found; base game version check passes."
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "BPENTITYTYPE",
       "generatorIndex": 2,
       "message": "Entity Type Runtime Identifier"
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "BPENTITYTYPE",
       "generatorIndex": 3,
       "message": "Entity Type Identifier"
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "BPENTITYTYPE",
       "generatorIndex": 4,
       "message": "Entity Type Metadata"
@@ -280,6 +303,33 @@
       "generatorId": "BPENTITYTYPE",
       "generatorIndex": 260,
       "message": "No entity type behavior format version was found; base game version check passes."
+    },
+    {
+      "itemType": 7,
+      "generatorId": "TEXTURE",
+      "generatorIndex": 1,
+      "message": "Textures",
+      "features": {
+        "Unique Texture Handles (estimated)": 0,
+        "Unique Texture Paths": 0,
+        "Unique Particle Texture References": 0,
+        "Unique Particle Texture Paths": 0,
+        "Unique Particle Texture Vanilla Paths": 0,
+        "Unique JSON UI Texture References": 0,
+        "Unique JSON UI Texture Paths": 0,
+        "Unique JSON UI Texture Vanilla Paths": 0,
+        "Unique Entity Texture Paths": 0,
+        "Unique Entity Texture Vanilla Paths": 0,
+        "Unique Attachable Texture References": 0,
+        "Unique Terrain Texture References": 0,
+        "Unique Terrain Texture Paths": 0,
+        "Unique Item Texture Paths": 0,
+        "Unique Flipbook Texture References": 0,
+        "Unique Flipbook Texture Paths": 0,
+        "Unique Block Texture References": 0,
+        "Unique Block Texture Paths": 0,
+        "Unique Entity Spawn Egg Texture References": 0
+      }
     },
     {
       "itemType": 2,
@@ -294,42 +344,42 @@
       "message": "JS file: /behavior_packs/StarterTestsTutorial/scripts/starttests.js"
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "WORLDDATA",
       "generatorIndex": 1,
       "message": "Blocks",
       "itemStoragePath": "/behavior_packs/StarterTestsTutorial/manifest.json"
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "WORLDDATA",
       "generatorIndex": 2,
       "message": "Block Data",
       "itemStoragePath": "/behavior_packs/StarterTestsTutorial/manifest.json"
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "WORLDDATA",
       "generatorIndex": 3,
       "message": "Commands",
       "itemStoragePath": "/behavior_packs/StarterTestsTutorial/manifest.json"
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "WORLDDATA",
       "generatorIndex": 1,
       "message": "Blocks",
       "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "WORLDDATA",
       "generatorIndex": 2,
       "message": "Block Data",
       "itemStoragePath": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
     },
     {
-      "itemType": 2,
+      "itemType": 7,
       "generatorId": "WORLDDATA",
       "generatorIndex": 3,
       "message": "Commands",
@@ -375,5 +425,5 @@
   ],
   "generatorName": "Minecraft Creator Tools",
   "suite": 0,
-  "generatorVersion": "0.1.66"
+  "generatorVersion": "0.1.70"
 }

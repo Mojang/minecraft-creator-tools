@@ -114,6 +114,7 @@ export default class ProjectInfoSet {
       if (
         generator.id.indexOf("ADDON") >= 0 ||
         generator.id === "STRICT" ||
+        generator.id === "TEXTURE" ||
         generator.id === "MINENGINEVER" ||
         generator.id === "WORLDDATA"
       ) {

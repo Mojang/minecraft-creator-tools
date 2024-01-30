@@ -64,6 +64,9 @@ export enum CartoMinecraftErrorStatus {
   configuration = 6,
 }
 
+export const SidePaneMaxWidth = 880;
+export const SidePaneMinWidth = 280;
+
 export default class Carto {
   private _isLoaded: boolean;
   private _userGitHub: GitHubManager | undefined;
@@ -160,6 +163,26 @@ export default class Carto {
 
   public set preferredTextSize(newValue: number) {
     this.#data.preferredTextSize = newValue;
+  }
+
+  public get itemSidePaneWidth() {
+    if (this.#data.itemSidePaneWidth === undefined) {
+      return 300;
+    }
+
+    if (this.#data.itemSidePaneWidth < SidePaneMinWidth) {
+      return SidePaneMinWidth;
+    }
+
+    if (this.#data.itemSidePaneWidth > SidePaneMaxWidth) {
+      return SidePaneMaxWidth;
+    }
+
+    return this.#data.itemSidePaneWidth;
+  }
+
+  public set itemSidePaneWidth(newValue: number) {
+    this.#data.itemSidePaneWidth = newValue;
   }
 
   public get preferredSuite() {

@@ -73,7 +73,7 @@ export default class ParticleEffectResourceDefinition {
     return this.particleEffectWrapper.format_version;
   }
 
-  static async ensureParticleEffectResourceDefinitionOnFile(
+  static async ensureOnFile(
     file: IFile,
     loadHandler?: IEventHandler<ParticleEffectResourceDefinition, ParticleEffectResourceDefinition>
   ) {

@@ -3,9 +3,9 @@ import Project from "../app/Project";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
-import ProjectItem from "../app/ProjectItem";
 import { MaxItemTypes } from "../app/IProjectItemData";
 import ProjectInfoSet from "./ProjectInfoSet";
+import ProjectItemUtilities from "../app/ProjectItemUtilities";
 
 export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
   id = "ITEMS";
@@ -88,7 +88,7 @@ export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
             InfoItemType.info,
             this.id,
             100 + i,
-            ProjectItem.getDescriptionForType(i) + " item count",
+            ProjectItemUtilities.getDescriptionForType(i) + " item count",
             undefined,
             typeCounts[i]
           )

@@ -24,6 +24,8 @@ import TextEditor from "./TextEditor";
 import NpmPackageJsonEditor from "./NpmPackageJsonEditor";
 import BehaviorPackManifestJsonEditor from "./BehaviorPackManifestJsonEditor";
 import ImageEditor from "./ImageEditor";
+import DataFormEditor from "./DataFormEditor";
+import ProjectItemUtilities from "../app/ProjectItemUtilities";
 
 enum ProjectItemEditorDirtyState {
   clean = 0,
@@ -143,12 +145,14 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
     let interior = (
       <div className="pie-loadingLabel">
         {this.props.activeProjectItem?.storagePath} -{" "}
-        {this.props.activeProjectItem ? ProjectItem.getDescriptionForType(this.props.activeProjectItem.itemType) : ""} -{" "}
-        {this.props.activeProjectItem?.file?.isContentLoaded ? "loaded." : "loading..."}
+        {this.props.activeProjectItem
+          ? ProjectItemUtilities.getDescriptionForType(this.props.activeProjectItem.itemType)
+          : ""}{" "}
+        - {this.props.activeProjectItem?.file?.isContentLoaded ? "loaded." : "loading..."}
       </div>
     );
     let readOnly = this.props.readOnly;
-    const heightOffset = this.props.heightOffset - 4;
+    const heightOffset = this.props.heightOffset;
 
     if (this.props.activeReference !== null) {
       interior = (
@@ -170,8 +174,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         readOnly = true;
       }
 
-      if (this.props.activeProjectItem.itemType === ProjectItemType.worldFolder) {
-      } else if (file !== null && file.isContentLoaded) {
+      if (file !== null && file.isContentLoaded) {
         if (this.props.setActivePersistable !== undefined) {
           this.props.setActivePersistable(this);
         }
@@ -183,11 +186,6 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
 
           if (file.type === "ts") {
             pref = ProjectScriptLanguage.typeScript;
-          }
-
-          if (file.content == null) {
-            Log.verbose("Setting null content for file.");
-            file.setContent("");
           }
 
           // Log.verbose("Showing JavaScript editor for '" + file.fullPath + "' size: " + file.content?.length);
@@ -230,10 +228,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
             );
           }
         } else if (file.type === "mcfunction") {
-          if (file.content == null) {
-            file.setContent("");
-          }
-
+          Log.verbose("Showing MCFunction editor for '" + file.storageRelativePath + "'");
           // because electron doesn't work in debug electron due to odd pathing reasons, use a text editor instead
           if (Utilities.isDebug && CartoApp.hostType === HostType.electronWeb) {
             interior = (
@@ -281,6 +276,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           projItem.itemType === ProjectItemType.entityTypeBehaviorJson &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
+          Log.verbose("Showing entity type editor for '" + file.storageRelativePath + "'");
           interior = (
             <EntityTypeEditor
               readOnly={this.props.readOnly}
@@ -295,10 +291,6 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           projItem.itemType === ProjectItemType.scriptTypesJson &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
-          if (file.content == null) {
-            file.setContent("{}");
-          }
-
           interior = (
             <DocumentedModuleEditor
               carto={this.props.carto}
@@ -316,10 +308,6 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           projItem.itemType === ProjectItemType.packageJson &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
-          if (file.content == null) {
-            file.setContent("{}");
-          }
-
           interior = (
             <NpmPackageJsonEditor
               theme={this.props.theme}
@@ -334,10 +322,6 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           projItem.itemType === ProjectItemType.behaviorPackManifestJson &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
-          if (file.content == null) {
-            file.setContent("{}");
-          }
-
           interior = (
             <BehaviorPackManifestJsonEditor
               theme={this.props.theme}
@@ -352,10 +336,6 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           projItem.itemType === ProjectItemType.commandSetDefinitionJson &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
-          if (file.content == null) {
-            file.setContent("{}");
-          }
-
           interior = (
             <DocumentedCommandSetEditor
               carto={this.props.carto}
@@ -368,10 +348,36 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               setActivePersistable={this._handleNewChildPersistable}
             />
           );
-        } else if (file.type === "json") {
-          if (file.content == null) {
-            file.setContent("");
-          }
+        } else if (
+          file.type === "json" &&
+          projItem.itemType === ProjectItemType.dataFormJson &&
+          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
+        ) {
+          interior = (
+            <DataFormEditor
+              carto={this.props.carto}
+              theme={this.props.theme}
+              heightOffset={this.props.heightOffset}
+              file={file}
+              project={this.props.project}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
+        } else if (file.type === "geometry" || file.type === "vertex" || file.type === "fragment") {
+          interior = (
+            <TextEditor
+              theme={this.props.theme}
+              onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
+              preferredTextSize={this.props.carto.preferredTextSize}
+              readOnly={readOnly}
+              carto={this.props.carto}
+              heightOffset={heightOffset}
+              file={file}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
+        } else if (file.type === "json" || file.type === "material") {
+          // Log.verbose("Showing Json editor for '" + file.storageRelativePath + "'");
 
           // because electron doesn't work in debug electron due to odd pathing reasons, use a text editor instead
           if (Utilities.isDebug && CartoApp.hostType === HostType.electronWeb) {

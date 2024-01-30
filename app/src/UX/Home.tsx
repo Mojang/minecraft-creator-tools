@@ -2,7 +2,7 @@ import { Component, MouseEvent, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
 import { AppMode } from "./App";
 import "./Home.css";
-import { List, Button, Dialog, Input, InputProps, ThemeInput, FormInput, MenuButton } from "@fluentui/react-northstar";
+import { List, Button, Dialog, Input, InputProps, ThemeInput, MenuButton, Toolbar } from "@fluentui/react-northstar";
 import { NewProjectTemplateType } from "./App";
 import Carto from "./../app/Carto";
 import Project from "./../app/Project";
@@ -14,20 +14,18 @@ import IGalleryProject from "../app/IGalleryProject";
 import Database from "../minecraft/Database";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
-import ProjectGallery from "./ProjectGallery";
 import { constants } from "../core/Constants";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ComputerLabel, ConnectLabel, ExportBackupLabel } from "./Labels";
 import FileSystemStorage from "../storage/FileSystemStorage";
-import CartoApp, { CartoThemeStyle, HostType } from "../app/CartoApp";
+import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
 import UrlUtilities from "../core/UrlUtilities";
-import { ProjectTileDisplayMode } from "./ProjectTile";
-import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
 import ProjectUtilities from "../app/ProjectUtilities";
-import { ProjectEditorMode } from "./ProjectEditor";
+import { ProjectEditorMode } from "./ProjectEditorUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import WebUtilities from "./WebUtilities";
+import FileSystemFolder from "../storage/FileSystemFolder";
 
 enum HomeDialogMode {
   none = 0,
@@ -44,7 +42,6 @@ interface IHomeProps extends IAppProps {
   onModeChangeRequested?: (mode: AppMode) => void;
   onProjectSelected?: (project: Project) => void;
   onGalleryItemCommand: (command: GalleryProjectCommand, project: IGalleryProject, name?: string) => void;
-  onLocalGalleryItemCommand: (command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) => void;
   onNewProjectSelected?: (
     name: string,
     newProjectType: NewProjectTemplateType,
@@ -55,7 +52,7 @@ interface IHomeProps extends IAppProps {
     isReadOnly?: boolean
   ) => void;
   onNewProjectFromFolderSelected?: (folder: string) => void;
-  onNewProjectFromFolderInstanceSelected?: (folder: IFolder, name?: string) => void;
+  onNewProjectFromFolderInstanceSelected?: (folder: IFolder, name?: string, isDocumentationProject?: boolean) => void;
 }
 
 export enum HomeEffect {
@@ -83,7 +80,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     super(props);
 
     this._handleProjectGalleryCommand = this._handleProjectGalleryCommand.bind(this);
-    this._handleLocalGalleryCommand = this._handleLocalGalleryCommand.bind(this);
 
     if (this.props.errorMessage) {
       this.state = {
@@ -104,6 +100,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._handleNewProjectSelectedClick = this._handleNewProjectSelectedClick.bind(this);
     this._handleOpenFolderClick = this._handleOpenFolderClick.bind(this);
     this._handleOpenLocalFolderClick = this._handleOpenLocalFolderClick.bind(this);
+    this._handleOpenLocalFolderForDocumentationClick = this._handleOpenLocalFolderForDocumentationClick.bind(this);
     this._handleProjectClicked = this._handleProjectClicked.bind(this);
     this._handleDialogCancel = this._handleDialogCancel.bind(this);
     this._handleNewProjectConfirm = this._handleNewProjectConfirm.bind(this);
@@ -285,7 +282,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
   private _startDelayLoadItems() {
     // load things in the background while we're on the home screen.
-    Database.loadUx();
     //Database.loadContent();
     //Database.loadDefaultBehaviorPack();
   }
@@ -551,6 +547,14 @@ export default class Home extends Component<IHomeProps, IHomeState> {
   }
 
   private async _handleOpenLocalFolderClick() {
+    await this.openLocalFolder(false);
+  }
+
+  private async _handleOpenLocalFolderForDocumentationClick() {
+    await this.openLocalFolder(true);
+  }
+
+  private async openLocalFolder(isDocumentationProject?: boolean) {
     const result = (await window.showDirectoryPicker({
       mode: "readwrite",
     })) as FileSystemDirectoryHandle | undefined;
@@ -558,7 +562,18 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     if (result && this.props.onNewProjectFromFolderInstanceSelected) {
       const storage = new FileSystemStorage(result);
 
-      this.props.onNewProjectFromFolderInstanceSelected(storage.rootFolder, result.name);
+      const safeMessage = await (storage.rootFolder as FileSystemFolder).getFirstUnsafeError();
+
+      if (safeMessage !== undefined) {
+        this.setState({
+          errorMessage:
+            "Folder could not be read - please choose a folder on your device that only has Minecraft files in it (no .exes, .bat files, etc.)\r\n\r\nDetails: " +
+            safeMessage,
+          dialogMode: HomeDialogMode.errorMessage,
+        });
+      } else {
+        this.props.onNewProjectFromFolderInstanceSelected(storage.rootFolder, result.name, isDocumentationProject);
+      }
     }
   }
 
@@ -612,12 +627,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       if (this.props.onGalleryItemCommand !== undefined) {
         this.props.onGalleryItemCommand(command, project);
       }
-    }
-  }
-
-  private _handleLocalGalleryCommand(command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) {
-    if (this.props.onLocalGalleryItemCommand !== undefined) {
-      this.props.onLocalGalleryItemCommand(command, folderType, folder);
     }
   }
 
@@ -702,7 +711,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
   render() {
     const projectListItems = [];
 
-    let openButton = <></>;
     let dialogArea = <></>;
     let localGallery = <></>;
     const webOnlyLinks: any[] = [];
@@ -753,6 +761,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
 
     let gallery = [];
+    let toolBin: any[] = [];
 
     gallery.push(
       <div className="home-areaLoading" key="loadingLabel">
@@ -768,81 +777,61 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           Tools
         </div>
       );
-      gallery.push(
+
+      toolBin.push(
         <div
           className="home-toolTile"
-          key="validateTool"
+          key="home-validateTool"
           style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground4,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
           }}
         >
-          <div className="home-toolTile-label">
-            <FontAwesomeIcon icon={faMagnifyingGlass} className="fa-lg" />
-            &#160;&#160;Validate/Inspect Content
+          <div
+            className="home-toolTileInner"
+            style={{
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+            }}
+          >
+            <div className="home-toolTile-label">
+              <FontAwesomeIcon icon={faMagnifyingGlass} className="fa-lg" />
+              &#160;&#160;Validate/Inspect Content
+            </div>
+            <div className="home-toolTile-instruction">
+              Upload a zip/MCAddon/MCPack/MCWorld of Minecraft files to get an Inspector report.
+            </div>
+            <input
+              type="file"
+              title="uploadPack"
+              style={{
+                color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background5,
+              }}
+              onChange={this._handleInspectFileUpload}
+            />
           </div>
-          <input type="file" title="uploadPack" onChange={this._handleInspectFileUpload} />
         </div>
       );
 
-      if (Utilities.isDebug) {
-        gallery.push(
-          <div className="home-starterArea" key="starterArea">
-            <div className="home-gallery-label">Start from a code snippet, template or starter</div>
-            <div className="home-search-area">
-              <FormInput
-                id="projSearch"
-                className="home-search"
-                defaultValue={""}
-                placeholder="Search for starters"
-                value={this.state.search}
-                onChange={this._handleNewSearch}
-              />
-            </div>
-          </div>
-        );
-        gallery.push(
-          <ProjectGallery
-            theme={this.props.theme}
-            key="projGallery"
-            search={this.state.search}
-            view={ProjectTileDisplayMode.large}
-            onGalleryItemCommand={this._handleProjectGalleryCommand}
-            carto={this.props.carto}
-            gallery={this.state.gallery}
-          />
-        );
-      }
+      gallery.push(<div>{toolBin}</div>);
     }
 
-    if (AppServiceProxy.hasAppService) {
-    } else {
-      openButton = (
-        <span className="home-openLocal">
-          <Button
-            onClick={this._handleOpenLocalFolderClick}
-            content={<ComputerLabel isCompact={false} />}
-            key="openFolderA"
-          />
-        </span>
+    if (CartoApp.theme !== CartoThemeStyle.dark) {
+      webOnlyLinks.push(<span key="darksp">&#160;&#160;/&#160;&#160;</span>);
+      webOnlyLinks.push(
+        <a key="darkLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "dark")}>
+          Dark Theme
+        </a>
       );
-
-      if (CartoApp.theme !== CartoThemeStyle.dark) {
-        webOnlyLinks.push(<span key="darksp">&#160;&#160;/&#160;&#160;</span>);
-        webOnlyLinks.push(
-          <a key="darkLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "dark")}>
-            Dark Theme
-          </a>
-        );
-      }
-      if (CartoApp.theme !== CartoThemeStyle.light) {
-        webOnlyLinks.push(<span key="lightsp">&#160;&#160;/&#160;&#160;</span>);
-        webOnlyLinks.push(
-          <a key="lightLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "light")}>
-            Light Theme
-          </a>
-        );
-      }
+    }
+    if (CartoApp.theme !== CartoThemeStyle.light) {
+      webOnlyLinks.push(<span key="lightsp">&#160;&#160;/&#160;&#160;</span>);
+      webOnlyLinks.push(
+        <a key="lightLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "light")}>
+          Light Theme
+        </a>
+      );
     }
 
     if (this.state?.dialogMode === HomeDialogMode.newProject) {
@@ -973,44 +962,24 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       );
     }
 
-    let areaHeight = "100vh";
-    let projectsListHeight = "calc(100vh - 512px)";
-    let galleryHeight = "calc(100vh - 199px)";
-
-    if (!Utilities.isDebug) {
-      projectsListHeight = "calc(100vh - 392px)";
-    }
-
-    if (CartoApp.hostType === HostType.electronWeb) {
-      areaHeight = "calc(100vh - 41px)";
-      projectsListHeight = "calc(100vh - 556px)";
-      galleryHeight = "calc(100vh - 306px)";
-    }
-
-    const extensionsArea = [];
+    const introArea = [];
     const recentsArea = [];
-
-    extensionsArea.push(
-      <span className="home-tools-connectWrap" key="toolsWrapper">
-        <Button onClick={this._handleConnectClick} content={<ConnectLabel isCompact={false} />} key="connect" />
-      </span>
-    );
 
     if (projectListItems.length > 0) {
       if (AppServiceProxy.hasAppService) {
-        recentsArea.push(
+        introArea.push(
           <div key="recentlyOpenedLabel" className="home-projects">
             Recently opened
           </div>
         );
       } else {
-        recentsArea.push(
+        introArea.push(
           <div key="recentlyOpenedLabel" className="home-projects">
             Projects
           </div>
         );
         if (!this.props.isPersisted) {
-          recentsArea.push(
+          introArea.push(
             <div key="recentlyNote" className="home-projects-note">
               (stored in temporary browser storage.){" "}
               <span
@@ -1025,7 +994,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             </div>
           );
         } else {
-          recentsArea.push(
+          introArea.push(
             <div key="recentlyNote" className="home-projects-note">
               (stored in this device's browser storage.)
             </div>
@@ -1033,7 +1002,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         }
       }
       recentsArea.push(
-        <div key="homeProjectsList" className="home-projects-list" style={{ maxHeight: projectsListHeight }}>
+        <div key="homeProjectsList" className="home-projects-list">
           <List selectable defaultSelectedIndex={0} items={projectListItems} />
         </div>
       );
@@ -1041,7 +1010,9 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     let storageAction = <></>;
     let storageMessage = undefined;
 
-    if (!AppServiceProxy.hasAppService) {
+    if (AppServiceProxy.hasAppService) {
+      storageMessage = "projects are saved in the mctools subfolder of your Documents library.";
+    } else {
       storageMessage = "take care: projects are saved locally in your browser's storage on your device.";
       storageAction = (
         <span>
@@ -1072,57 +1043,32 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
 
     let toolsArea = <></>;
-
-    if (Utilities.isDebug) {
-      toolsArea = (
-        <div key="toolsWindow" className="home-tools">
-          Actions
-          <div className="home-tools-bin" key="toolsButtons">
-            {extensionsArea}
-          </div>
-        </div>
-      );
-    }
-
     let openArea = <></>;
 
-    if (Utilities.isDebug) {
-      openArea = (
-        <div className="home-projects-buttonbar">
-          {openButton}
-          <span className="home-tools-export" key="exportButton">
-            <Button
-              onClick={this._handleExportAllClick}
-              key="export"
-              content={<ExportBackupLabel isCompact={false} />}
-              iconPosition="before"
-            />
-          </span>
-          <div className="home-uploadButton">
-            <div className="home-uploadLabel">Start from a zip/MCWorld/MCPack file</div>
-            <input
-              type="file"
-              title="uploadPack"
-              style={{
-                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-                color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-              }}
-              onChange={this._handleFileUpload}
-            />
-          </div>
-        </div>
-      );
-    }
-
     return (
-      <div className="home-layout" style={{ minHeight: areaHeight, height: areaHeight }} draggable={true}>
+      <div className="home-layout" draggable={true}>
         {effectArea}
         {dialogArea}
-        <div className="home-header-area">
-          <div className="home-header">
+        <div
+          className="home-header-area"
+          style={{
+            borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+          }}
+        >
+          <div
+            className="home-header"
+            style={{
+              borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+            }}
+          >
             <div className="home-header-image">&#160;</div>
             <div className="home-header-sublink">
-              <a href={constants.homeUrl + "/docs/"} className="home-header-docsLink" target="_blank" rel="noreferrer noopener">
+              <a
+                href={constants.homeUrl + "/docs/"}
+                className="home-header-docsLink"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
                 Docs
               </a>
               &#160;&#160;/&#160;&#160;
@@ -1136,10 +1082,11 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         <div
           className="home-projects-bin"
           style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
           }}
         >
+          {introArea}
           {toolsArea}
           {openArea}
           {recentsArea}
@@ -1152,7 +1099,12 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           }}
         >
           {errorMessageContainer}
-          <div className="home-gallery-interior" style={{ minHeight: galleryHeight, maxHeight: galleryHeight }}>
+          <div
+            className="home-gallery-interior"
+            style={{
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            }}
+          >
             {localGallery}
             {gallery}
           </div>
@@ -1160,45 +1112,51 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         <div
           className="home-usage"
           style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground6,
+            borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
           }}
         >
-          {storageMessage}
-          {storageAction}
-          &#160;&#160;
-          <a
-            href={constants.homeUrl + "/docs/"}
-            className="home-header-docsLink"
-            target="_blank"
-            rel="noreferrer noopener"
+          <div
+            className="home-usage-interior"
             style={{
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground6,
+              borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
             }}
           >
-            Docs
-          </a>{" "}
-          and{" "}
-          <a
-            href={constants.repositoryUrl}
-            className="home-header-docsLink"
-            target="_blank"
-            rel="noreferrer noopener"
-            style={{
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground6,
-            }}
-          >
-            more info
-          </a>
-          .
+            {storageMessage}
+            {storageAction}
+            &#160;&#160;
+            <a
+              href={constants.homeUrl + "/docs/"}
+              className="home-header-docsLink"
+              target="_blank"
+              rel="noreferrer noopener"
+              style={{
+                color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+              }}
+            >
+              Docs
+            </a>{" "}
+            and{" "}
+            <a
+              href={constants.repositoryUrl}
+              className="home-header-docsLink"
+              target="_blank"
+              rel="noreferrer noopener"
+              style={{
+                color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+              }}
+            >
+              more info
+            </a>
+            .
+          </div>
         </div>
         <div
           className="home-legal"
           style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground6,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
           }}
         >
           version {constants.version}. very early preview/work in progress.{" "}
@@ -1208,8 +1166,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             target="_blank"
             rel="noreferrer noopener"
             style={{
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground6,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
             }}
           >
             License
@@ -1221,8 +1178,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             target="_blank"
             rel="noreferrer noopener"
             style={{
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground6,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
             }}
           >
             attribution
@@ -1234,13 +1190,12 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             target="_blank"
             rel="noreferrer noopener"
             style={{
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground6,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
             }}
           >
             Privacy
           </a>
-          . © 2023 Mojang AB.
+          . © 2024 Mojang AB.
         </div>
       </div>
     );

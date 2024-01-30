@@ -40,7 +40,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const bpEntityType = await EntityTypeDefinition.ensureEntityTypeOnFile(pi.file);
+          const bpEntityType = await EntityTypeDefinition.ensureOnFile(pi.file);
 
           if (bpEntityType) {
             await bpEntityType.load();

@@ -1,6 +1,17 @@
 import IGitHubInfo from "./IGitHubInfo";
 
-export const MaxItemTypes = 108;
+export const MaxItemTypes = 109;
+
+export enum ProjectItemCategory {
+  assets,
+  logic,
+  types,
+  build,
+  documentation,
+  meta,
+  package,
+  unknown,
+}
 
 export enum ProjectItemType {
   unknown = 0,
@@ -94,7 +105,7 @@ export enum ProjectItemType {
   lightingJson = 88,
   textureSetJson = 89,
   fogJson = 90,
-  flipBookTexturesJson = 91,
+  flipbookTexturesJson = 91,
   itemTextureJson = 92,
   terrainTextureCatalogResourceJson = 93,
   globalVariablesJson = 94,
@@ -111,6 +122,7 @@ export enum ProjectItemType {
   fileListJson = 105,
   vanillaDataJson = 106,
   engineOrderingJson = 107,
+  audio = 108,
 }
 
 export enum ProjectItemStorageType {

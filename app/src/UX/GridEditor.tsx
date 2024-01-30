@@ -128,7 +128,7 @@ export default class GridEditor extends Component<IGridEditorProps, IGridEditorS
   }
 
   _addGrid() {
-    const heightOffset = this.props.heightOffset ? this.props.heightOffset - 11 : 150;
+    const heightOffset = this.props.heightOffset ? this.props.heightOffset : 150;
 
     if (this.rootElt !== null && this.rootElt.current !== null) {
       if (this.grid) {

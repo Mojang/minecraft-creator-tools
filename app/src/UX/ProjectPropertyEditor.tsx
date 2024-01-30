@@ -333,9 +333,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     this.forceUpdate();
   }
 
-  _convertJavaToBedrock() {
-
-  }
+  _convertJavaToBedrock() {}
 
   _createNewResourcePackUniqueId() {
     this.props.project.defaultResourcePackUniqueId = Utilities.createUuid();
@@ -654,7 +652,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       versionPatch = 1;
     }
 
-    const height = "calc(100vh - " + (this.props.heightOffset + 54) + "px)";
+    const height = "calc(100vh - " + (this.props.heightOffset + 62) + "px)";
 
     return (
       <div

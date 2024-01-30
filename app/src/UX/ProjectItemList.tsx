@@ -1,9 +1,9 @@
 import { Component, SyntheticEvent, UIEvent } from "react";
 import IAppProps from "./IAppProps";
-import Project from "./../app/Project";
-import { ProjectItemErrorStatus, ProjectItemType } from "./../app/IProjectItemData";
+import Project, { ProjectRole } from "./../app/Project";
+import { MaxItemTypes, ProjectItemCategory, ProjectItemErrorStatus, ProjectItemType } from "./../app/IProjectItemData";
 import ProjectItem from "./../app/ProjectItem";
-import { ProjectEditorMode } from "./ProjectEditor";
+import { ProjectEditorMode } from "./ProjectEditorUtilities";
 import StorageUtilities from "./../storage/StorageUtilities";
 
 import {
@@ -34,6 +34,11 @@ import Utilities from "../core/Utilities";
 import NewBlockType from "./NewBlockType";
 import { ProjectEditPreference } from "../app/IProjectData";
 import IGalleryProject from "../app/IGalleryProject";
+import ColorUtilities from "../core/ColorUtilities";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFolder } from "@fortawesome/free-regular-svg-icons";
+import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import ProjectItemUtilities from "../app/ProjectItemUtilities";
 
 export enum EntityTypeCommand {
   select,
@@ -43,12 +48,20 @@ export enum BlockTypeCommand {
   select,
 }
 
+export enum ListItemType {
+  item,
+  typeSpacer,
+  pathSpacer,
+  references,
+}
+
 interface IProjectItemListProps extends IAppProps {
   theme: ThemeInput<any>;
   onActiveProjectItemChangeRequested?: (projectItem: ProjectItem, forceRawView: boolean) => void;
   onActiveReferenceChangeRequested?: (reference: IGitHubInfo) => void;
   onModeChangeRequested?: (mode: ProjectEditorMode) => void;
   project: Project | null;
+  editorMode: ProjectEditorMode;
   activeProjectItem: ProjectItem | null;
   heightOffset: number;
   readOnly: boolean;
@@ -58,6 +71,8 @@ interface IProjectItemListState {
   activeItem: ProjectItem | undefined;
   dialogMode: number;
   maxItemsToShow: number;
+  collapsedItemTypes: number[];
+  collapsedStoragePaths: string[];
 }
 
 const PIL_NO_DIALOG = 1;
@@ -70,7 +85,8 @@ const PIL_NEW_BLOCK_TYPE_DIALOG = 5;
 export default class ProjectItemList extends Component<IProjectItemListProps, IProjectItemListState> {
   private _activeProject: Project | null = null;
   private _projectListItems: ListItemProps[] = [];
-  private _items: any[] = [];
+  private _itemIndices: any[] = [];
+  private _itemTypes: any[] = [];
   private _newItemName?: string;
   private _updatePending: boolean = false;
   private _isMountedInternal: boolean = false;
@@ -105,11 +121,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._handleNewAutoScriptClick = this._handleNewAutoScriptClick.bind(this);
     this._handleNewWorldTestClick = this._handleNewWorldTestClick.bind(this);
     this._handleNewStructureClick = this._handleNewStructureClick.bind(this);
+    this._handleNewDocTypeClick = this._handleNewDocTypeClick.bind(this);
+    this._handleNewFormClick = this._handleNewFormClick.bind(this);
     this._contextMenuClick = this._contextMenuClick.bind(this);
     this._handleNewProjectItemName = this._handleNewProjectItemName.bind(this);
     this._handleConfirmRename = this._handleConfirmRename.bind(this);
     this._handleConfirmDelete = this._handleConfirmDelete.bind(this);
     this._handleCancel = this._handleCancel.bind(this);
+    this._handleItemTypeToggle = this._handleItemTypeToggle.bind(this);
+    this._handleStoragePathToggle = this._handleStoragePathToggle.bind(this);
     this._handleNewFunctionClick = this._handleNewFunctionClick.bind(this);
     this._addGitHubReferenceClick = this._addGitHubReferenceClick.bind(this);
     this._handleNewEntityTypeClick = this._handleNewEntityTypeClick.bind(this);
@@ -127,6 +147,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       activeItem: undefined,
       dialogMode: PIL_NO_DIALOG,
       maxItemsToShow: 300,
+      collapsedItemTypes: this.props.carto.collapsedTypes,
+      collapsedStoragePaths: this.props.project ? this.props.project.collapsedStoragePaths : [],
     };
 
     this._projectUpdated();
@@ -159,7 +181,11 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           activeItem: this.state.activeItem,
           dialogMode: this.state.dialogMode,
           maxItemsToShow: this.state.maxItemsToShow + Math.min(this.state.maxItemsToShow, 1100),
+          collapsedItemTypes: this.state.collapsedItemTypes,
+          collapsedStoragePaths: this.state.collapsedStoragePaths,
         });
+
+        this._loadItems();
       }
     }
   }
@@ -254,6 +280,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     } else {
       this.props.project.showHiddenItems = true;
     }
+    this._loadItems();
   }
 
   private _showFunctionsClick() {
@@ -262,6 +289,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
 
     this.props.project.showFunctions = !this.props.project.showFunctions;
+    this._loadItems();
   }
 
   private _showAssetsClick() {
@@ -270,6 +298,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
 
     this.props.project.showAssets = !this.props.project.showAssets;
+    this._loadItems();
   }
 
   private _showTypesClick() {
@@ -278,6 +307,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
 
     this.props.project.showTypes = !this.props.project.showTypes;
+    this._loadItems();
   }
 
   private _handleNewProjectItemName(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
@@ -306,10 +336,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       if (this.props && this.props.onModeChangeRequested !== undefined) {
         this.props.onModeChangeRequested(ProjectEditorMode.inspector);
       }
-    } else {
-      const newItem = this._items[event.selectedIndex - 2];
+    } else if (this._itemTypes[event.selectedIndex] === ListItemType.item) {
+      const newItem = this.props.project.items[this._itemIndices[event.selectedIndex]];
 
-      if (newItem instanceof ProjectItem) {
+      if (newItem) {
         if (
           this.props &&
           this.props.onActiveProjectItemChangeRequested !== undefined &&
@@ -319,10 +349,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         } else {
           this._lastSelectedAsMenuItem--;
         }
-      } else if (newItem.owner !== undefined) {
-        if (this.props && this.props.onActiveReferenceChangeRequested !== undefined) {
-          this.props.onActiveReferenceChangeRequested(newItem as IGitHubInfo);
-        }
+      }
+    } else if (this._itemTypes[event.selectedIndex] === ListItemType.references) {
+      const newRef = this.props.project.gitHubReferences[this._itemIndices[event.selectedIndex]];
+
+      if (this.props && this.props.onActiveReferenceChangeRequested !== undefined) {
+        this.props.onActiveReferenceChangeRequested(newRef as IGitHubInfo);
       }
     }
   }
@@ -357,6 +389,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
   }
 
+  _handleNewFormClick() {
+    if (this.props.project !== null) {
+      ProjectItemManager.createNewForm(this.props.project);
+    }
+  }
+
   _handleNewFunctionClick() {
     if (this.props.project !== null) {
       ProjectItemManager.createNewFunction(this.props.project);
@@ -373,6 +411,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this.setState({
       activeItem: this.state.activeItem,
       dialogMode: PIL_NEW_ENTITY_TYPE_DIALOG,
+      maxItemsToShow: this.state.maxItemsToShow,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
   }
 
@@ -384,6 +425,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this.setState({
       activeItem: this.state.activeItem,
       dialogMode: PIL_NEW_BLOCK_TYPE_DIALOG,
+      maxItemsToShow: this.state.maxItemsToShow,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
   }
 
@@ -395,6 +439,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this.setState({
       activeItem: this.state.activeItem,
       dialogMode: PIL_ADD_GITHUB_REFERENCE_DIALOG,
+      maxItemsToShow: this.state.maxItemsToShow,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
   }
 
@@ -408,6 +455,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this.setState({
       activeItem: undefined,
       dialogMode: PIL_NO_DIALOG,
+      maxItemsToShow: this.state.maxItemsToShow,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
   }
 
@@ -431,6 +481,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this.setState({
       activeItem: undefined,
       dialogMode: PIL_NO_DIALOG,
+      maxItemsToShow: this.state.maxItemsToShow,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
   }
 
@@ -455,6 +508,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this.setState({
       activeItem: undefined,
       dialogMode: PIL_NO_DIALOG,
+      maxItemsToShow: this.state.maxItemsToShow,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
   }
 
@@ -482,6 +538,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this.setState({
       activeItem: undefined,
       dialogMode: PIL_NO_DIALOG,
+      maxItemsToShow: this.state.maxItemsToShow,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
   }
 
@@ -499,6 +558,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this.setState({
       activeItem: undefined,
       dialogMode: PIL_NO_DIALOG,
+      maxItemsToShow: this.state.maxItemsToShow,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
   }
 
@@ -510,7 +572,69 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this.setState({
       activeItem: undefined,
       dialogMode: PIL_NO_DIALOG,
+      maxItemsToShow: this.state.maxItemsToShow,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
+  }
+
+  _handleItemTypeToggle(e: SyntheticEvent<HTMLDivElement, Event>, data?: any | undefined) {
+    if (e && e.currentTarget && e.currentTarget.title) {
+      for (let i = 0; i < MaxItemTypes; i++) {
+        const name = "Toggle " + ProjectItemUtilities.getPluralDescriptionForType(i) + " visibility";
+
+        if (name === e.currentTarget.title) {
+          if (this.props.carto.collapsedTypes.includes(i)) {
+            this.props.carto.ensureTypeIsNotCollapsed(i);
+            this._loadItems();
+          } else {
+            this.props.carto.ensureTypeIsCollapsed(i);
+          }
+
+          this.props.carto.save();
+
+          this.setState({
+            activeItem: this.state.activeItem,
+            dialogMode: this.state.dialogMode,
+            maxItemsToShow: this.state.maxItemsToShow,
+            collapsedItemTypes: this.props.carto.collapsedTypes,
+            collapsedStoragePaths: this.state.collapsedStoragePaths,
+          });
+          return;
+        }
+      }
+    }
+  }
+
+  _handleStoragePathToggle(e: SyntheticEvent<HTMLDivElement, Event>, data?: any | undefined) {
+    if (e && e.currentTarget && e.currentTarget.title && this.props.project) {
+      for (let i = 0; i < this.props.project.items.length; i++) {
+        const groupingPath = this.props.project.items[i].getFolderGroupingPath();
+
+        if (groupingPath !== undefined && groupingPath !== null) {
+          const name = "Toggle " + groupingPath + " visibility";
+
+          if (name === e.currentTarget.title) {
+            if (this.props.project.collapsedStoragePaths.includes(groupingPath)) {
+              this.props.project.ensureStoragePathIsNotCollapsed(groupingPath);
+              this._loadItems();
+            } else {
+              this.props.project.ensureStoragePathIsCollapsed(groupingPath);
+            }
+
+            this.setState({
+              activeItem: this.state.activeItem,
+              dialogMode: this.state.dialogMode,
+              maxItemsToShow: this.state.maxItemsToShow,
+              collapsedItemTypes: this.props.carto.collapsedTypes,
+              collapsedStoragePaths: this.props.project.collapsedStoragePaths,
+            });
+
+            return;
+          }
+        }
+      }
+    }
   }
 
   _contextMenuClick(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
@@ -522,11 +646,17 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           this.setState({
             activeItem: projectItem,
             dialogMode: PIL_RENAME_DIALOG,
+            maxItemsToShow: this.state.maxItemsToShow,
+            collapsedItemTypes: this.state.collapsedItemTypes,
+            collapsedStoragePaths: this.state.collapsedStoragePaths,
           });
         } else if (data.content === "Delete") {
           this.setState({
             activeItem: projectItem,
             dialogMode: PIL_DELETE_CONFIRM_DIALOG,
+            maxItemsToShow: this.state.maxItemsToShow,
+            collapsedItemTypes: this.state.collapsedItemTypes,
+            collapsedStoragePaths: this.state.collapsedStoragePaths,
           });
         } else if (data.content === "View as JSON" && this.props.onActiveProjectItemChangeRequested) {
           this._lastSelectedAsMenuItem = 1;
@@ -538,293 +668,112 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     e.bubbles = false;
   }
 
-  _getTagNameFromItem(item: ProjectItem) {
-    switch (item.itemType) {
-      case ProjectItemType.structure:
-        return "structure";
-
-      case ProjectItemType.behaviorPackManifestJson:
-        return "behaviors";
-
-      case ProjectItemType.resourcePackManifestJson:
-        return "resources";
-
-      case ProjectItemType.image:
-        return "image";
-
-      case ProjectItemType.testJs:
-        return "gametest";
-
-      case ProjectItemType.entityTypeBaseJs:
-      case ProjectItemType.entityTypeBaseTs:
-        return "ent. script";
-
-      case ProjectItemType.entityTypeBehaviorJson:
-        return "entity type";
-
-      case ProjectItemType.worldFolder:
-        return "world";
-
-      case ProjectItemType.MCProject:
-        return "editor prj";
-
-      case ProjectItemType.MCWorld:
-        return "mcworld";
-
-      case ProjectItemType.MCTemplate:
-        return "template";
-
-      case ProjectItemType.MCAddon:
-        return "add-on";
-
-      case ProjectItemType.MCPack:
-        return "pack";
-
-      case ProjectItemType.zip:
-        return "zip";
-
-      case ProjectItemType.js:
-        return "script";
-
-      case ProjectItemType.ts:
-        return "typescript";
-
-      case ProjectItemType.MCFunction:
-        return "function";
-
-      case ProjectItemType.tickJson:
-        return "tick";
-
-      case ProjectItemType.material:
-        return "material";
-
-      case ProjectItemType.materialSetJson:
-        return "mat set";
-
-      case ProjectItemType.materialVertex:
-        return "vertex";
-
-      case ProjectItemType.materialFragment:
-        return "fragment";
-
-      case ProjectItemType.materialGeometry:
-        return "geometry";
-
-      case ProjectItemType.cameraJson:
-        return "camera";
-
-      case ProjectItemType.autoScriptJson:
-        return "actions";
-
-      case ProjectItemType.worldTest:
-        return "world test";
-
-      case ProjectItemType.catalogIndexJs:
-        return "script list";
-
-      case ProjectItemType.behaviorPackListJson:
-        return "world bps";
-
-      case ProjectItemType.resourcePackListJson:
-        return "world rps";
-
-      case ProjectItemType.animationBehaviorJson:
-        return "beh anim";
-
-      case ProjectItemType.animationControllerBehaviorJson:
-        return "beh ac";
-
-      case ProjectItemType.blockTypeBehaviorJson:
-        return "block type";
-
-      case ProjectItemType.blockMaterialsBehaviorJson:
-        return "block mat";
-
-      case ProjectItemType.itemTypeBehaviorJson:
-        return "item type";
-
-      case ProjectItemType.lootTableBehaviorJson:
-        return "loot table";
-
-      case ProjectItemType.biomeResourceJson:
-        return "biome";
-
-      case ProjectItemType.blocksCatalogResourceJson:
-        return "block cat";
-
-      case ProjectItemType.soundsCatalogResourceJson:
-        return "sound mat";
-
-      case ProjectItemType.animationResourceJson:
-        return "animation";
-
-      case ProjectItemType.animationControllerResourceJson:
-        return "anim ctlr";
-
-      case ProjectItemType.entityTypeResourceJson:
-        return "ent type res";
-
-      case ProjectItemType.fogResourceJson:
-        return "fog";
-
-      case ProjectItemType.modelGeometryJson:
-        return "model";
-
-      case ProjectItemType.particleJson:
-        return "particle";
-
-      case ProjectItemType.renderControllerJson:
-        return "render ctlr";
-
-      case ProjectItemType.uiTextureJson:
-        return "ui texture";
-
-      case ProjectItemType.uiJson:
-        return "ui";
-
-      case ProjectItemType.languagesCatalogResourceJson:
-        return "lang cat";
-
-      case ProjectItemType.lang:
-        return "lang";
-
-      case ProjectItemType.biomeBehaviorJson:
-        return "biome";
-
-      case ProjectItemType.dialogueBehaviorJson:
-        return "dialogue";
-
-      case ProjectItemType.featureRuleBehaviorJson:
-        return "feat rule";
-
-      case ProjectItemType.featureBehaviorJson:
-        return "feature";
-
-      case ProjectItemType.functionEventJson:
-        return "func evt";
-
-      case ProjectItemType.recipeBehaviorJson:
-        return "recipe";
-
-      case ProjectItemType.spawnRuleBehaviorJson:
-        return "spawn rule";
-
-      case ProjectItemType.tradingBehaviorJson:
-        return "trading";
-
-      case ProjectItemType.volumeBehaviorJson:
-        return "volume";
-
-      case ProjectItemType.attachableResourceJson:
-        return "attachable";
-
-      case ProjectItemType.itemTypeResourceJson:
-        return "item type res";
-
-      case ProjectItemType.materialsResourceJson:
-        return "material";
-
-      case ProjectItemType.musicDefinitionJson:
-        return "music";
-
-      case ProjectItemType.soundDefinitionJson:
-        return "sound";
-
-      case ProjectItemType.packageJson:
-        return "package";
-
-      case ProjectItemType.packageLockJson:
-        return "pack lock";
-
-      case ProjectItemType.textureSetJson:
-        return "texture set";
-
-      case ProjectItemType.lightingJson:
-        return "lighting";
-
-      case ProjectItemType.docInfoJson:
-        return "info";
-
-      case ProjectItemType.vsCodeExtensionsJson:
-        return "vsc ext";
-
-      case ProjectItemType.vsCodeLaunchJson:
-        return "vsc launch";
-
-      case ProjectItemType.vsCodeSettingsJson:
-        return "vsc config";
-
-      case ProjectItemType.vsCodeTasksJson:
-        return "vsc tasks";
-
-      case ProjectItemType.scriptTypesJson:
-        return "types def";
-
-      case ProjectItemType.commandSetDefinitionJson:
-        return "cmd def";
-
-      case ProjectItemType.tsconfigJson:
-        return "ts config";
-
-      case ProjectItemType.jsconfigJson:
-        return "js config";
-
-      case ProjectItemType.docfxJson:
-        return "docfx";
-
-      case ProjectItemType.jsdocJson:
-        return "jsdoc";
-
-      case ProjectItemType.worldTemplateManifestJson:
-        return "wtmanifest";
-
-      case ProjectItemType.itemTextureJson:
-        return "item tx";
-
-      case ProjectItemType.terrainTextureCatalogResourceJson:
-        return "terrain tx";
-
-      case ProjectItemType.flipBookTexturesJson:
-        return "flipbook";
-
-      case ProjectItemType.globalVariablesJson:
-        return "ui var";
-
-      case ProjectItemType.json:
-        return "json";
-    }
-
-    return "item";
+  _addTypeSpacer(itemType: ProjectItemType) {
+    const name = ProjectItemUtilities.getPluralDescriptionForType(itemType);
+    const color = ProjectItemUtilities.getColorForType(itemType);
+
+    color.alpha = 0.3;
+
+    this._projectListItems.push({
+      header: (
+        <div
+          className="pil-itemTypeHeader"
+          key={"eit" + itemType}
+          style={{
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+            backgroundColor: ColorUtilities.toCss(color),
+          }}
+        >
+          <div
+            className="pil-itemTypeCollapsedToggle"
+            onClick={this._handleItemTypeToggle}
+            title={"Toggle " + name + " visibility"}
+          >
+            <FontAwesomeIcon
+              icon={this.props.carto.collapsedTypes.includes(itemType) ? faCaretUp : faCaretDown}
+              className="fa-md"
+            />
+          </div>
+          <MenuButton
+            contextMenu={true}
+            trigger={
+              <span className="pil-headerLabel">
+                <span className="pil-name">{name}</span>
+              </span>
+            }
+            onMenuItemClick={this._contextMenuClick}
+          />
+        </div>
+      ),
+    });
+  }
+
+  _addStoragePathSpacer(storagePathFolder: string, itemType: ProjectItemType) {
+    const name = storagePathFolder;
+    const typeColor = ProjectItemUtilities.getColorForType(itemType);
+
+    typeColor.alpha = 0.3;
+
+    this._projectListItems.push({
+      header: (
+        <div
+          className="pil-pathHeader"
+          key={"eit" + itemType}
+          style={{
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+          }}
+        >
+          <div className="pil-itemTypeTag" style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}>
+            &#160;
+          </div>
+          <div
+            className="pil-storagePathCollapsedToggle"
+            style={{
+              backgroundColor: ColorUtilities.toCss(ColorUtilities.darker(typeColor, 0.1)),
+            }}
+            onClick={this._handleStoragePathToggle}
+            title={"Toggle " + name + " visibility"}
+          >
+            <FontAwesomeIcon
+              icon={this.props.project?.collapsedStoragePaths.includes(storagePathFolder) ? faCaretUp : faCaretDown}
+              className="fa-md"
+            />
+          </div>
+          <div
+            className="pil-storagePathIcon"
+            style={{
+              backgroundColor: ColorUtilities.toCss(ColorUtilities.darker(typeColor, 0.1)),
+            }}
+          >
+            <FontAwesomeIcon icon={faFolder} className="fa-md" />
+          </div>
+          <MenuButton
+            contextMenu={true}
+            trigger={
+              <span
+                className="pil-storagePathLabel"
+                style={{
+                  backgroundColor: ColorUtilities.toCss(ColorUtilities.darker(typeColor, 0.1)),
+                }}
+                title={name}
+              >
+                <span className="pil-name">{name}</span>
+              </span>
+            }
+            onMenuItemClick={this._contextMenuClick}
+          />
+        </div>
+      ),
+    });
   }
 
   _addProjectItem(projectItem: ProjectItem, isGitHubRef: boolean) {
     let name = StorageUtilities.getBaseFromName(projectItem.name);
-    const tag = this._getTagNameFromItem(projectItem);
     let sourceImage = "";
-
-    /*
-    if (
-      projectItem.itemType !== ProjectItemType.js &&
-      projectItem.itemType !== ProjectItemType.ts &&
-      projectItem.itemType !== ProjectItemType.image &&
-      projectItem.itemType !== ProjectItemType.zip &&
-      projectItem.itemType !== ProjectItemType.scriptTypesJson &&
-      projectItem.itemType !== ProjectItemType.commandSetDefinitionJson &&
-      projectItem.itemType !== ProjectItemType.MCAddon &&
-      projectItem.itemType !== ProjectItemType.MCFunction &&
-      projectItem.itemType !== ProjectItemType.MCPack &&
-      projectItem.itemType !== ProjectItemType.MCProject &&
-      projectItem.itemType !== ProjectItemType.lootTableBehaviorJson &&
-      projectItem.itemType !== ProjectItemType.MCWorld
-    ) {
-      name = Utilities.humanifyMinecraftName(name);
-    }*/
 
     if (projectItem.imageUrl) {
       // image = <img alt="Preview of the world" src={projectItem.imageUrl} className="pil-previewImage" />;
       sourceImage = "url('" + projectItem.imageUrl + "')";
-    } else {
-      sourceImage = "color:red";
     }
 
     if (
@@ -835,13 +784,19 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       name += "*";
     }
 
+    const typeColor = ProjectItemUtilities.getColorForType(projectItem.itemType);
+
+    typeColor.alpha = 0.3;
+
     if (this.props.readOnly) {
       this._projectListItems.push({
         content: (
           <div className="pil-item" key={"ro" + projectItem.storagePath}>
-            <span className="pil-typetag">{tag}</span>
-            <span className="pil-name" style={{ backgroundImage: sourceImage }}>
-              {name}
+            <div className="pil-itemTypeTag" style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}>
+              &#160;
+            </div>
+            <span className="pil-itemLabel">
+              <span className="pil-name">{name}</span>
             </span>
           </div>
         ),
@@ -893,14 +848,16 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       //title += " " + projectItem.itemType;
 
       this._projectListItems.push({
-        header: (
-          <div className="pil-item" key={"eo" + projectItem.storagePath} style={{ minWidth: 282 }}>
+        content: (
+          <div className="pil-item" key={"eo" + projectItem.storagePath}>
+            <div className="pil-itemTypeTag" style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}>
+              &#160;
+            </div>
             <MenuButton
               contextMenu={true}
               trigger={
                 <span className="pil-itemLabel">
-                  <span className="pil-typetag">{tag}</span>
-                  <span className={nameCss} title={title} style={{ backgroundImage: sourceImage }}>
+                  <span className={nameCss} title={title}>
                     {name}
                   </span>
                 </span>
@@ -921,14 +878,13 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
                 </span>
               }
               menu={itemMenu}
+              style={{ backgroundImage: sourceImage, backgroundSize: "cover" }}
               onMenuItemClick={this._contextMenuClick}
             />
           </div>
         ),
       });
     }
-
-    this._items.push(projectItem);
   }
 
   _addReference(reference: IGitHubInfo) {
@@ -937,9 +893,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     if (this.props.readOnly) {
       this._projectListItems.push({
-        header: (
+        content: (
           <div className="pil-item" key={"ghitem" + sig}>
-            <span className="pil-typetag">GitHub</span>
             <span className="pil-name">{name}</span>
           </div>
         ),
@@ -955,13 +910,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       const nameCss = "pil-name";
 
       this._projectListItems.push({
-        header: (
+        content: (
           <div className="pil-item" key={"ghitema" + sig} style={{ minWidth: 310 }}>
             <MenuButton
               contextMenu={true}
               trigger={
                 <span className="pil-itemLabel">
-                  <span className="pil-typetag">GitHub</span>
                   <span className={nameCss}>{name}</span>
                 </span>
               }
@@ -981,8 +935,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         ),
       });
     }
-
-    this._items.push(reference);
   }
 
   async _loadItems() {
@@ -990,17 +942,25 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       return;
     }
 
-    const projectItems = this.props.project.items;
+    const projectItems = this.props.project.items.sort(ProjectItemList.sortItems);
     let needsUpdate = false;
     let itemsShown = 0;
 
     for (let i = 0; i < projectItems.length && itemsShown < this.state.maxItemsToShow; i++) {
       const projectItem = projectItems[i];
 
-      if (this.shouldShowProjectItem(projectItem) && !projectItem.isLoaded) {
-        await projectItem.load();
-        itemsShown++;
-        needsUpdate = true;
+      if (
+        !this.state.collapsedItemTypes.includes(projectItem.itemType) &&
+        this.shouldShowProjectItem(projectItem) &&
+        !projectItem.isLoaded
+      ) {
+        const projectFolderGrouping = projectItem.getFolderGroupingPath();
+
+        if (projectFolderGrouping === undefined || !this.state.collapsedStoragePaths.includes(projectFolderGrouping)) {
+          await projectItem.load();
+          itemsShown++;
+          needsUpdate = true;
+        }
       }
     }
 
@@ -1018,71 +978,17 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       return false;
     }
 
-    if (
-      !this.props.project.showFunctions &&
-      (projectItem.itemType === ProjectItemType.MCFunction ||
-        projectItem.itemType === ProjectItemType.testJs ||
-        projectItem.itemType === ProjectItemType.autoScriptJson ||
-        projectItem.itemType === ProjectItemType.animationBehaviorJson ||
-        projectItem.itemType === ProjectItemType.animationControllerBehaviorJson ||
-        projectItem.itemType === ProjectItemType.tickJson ||
-        projectItem.itemType === ProjectItemType.js ||
-        projectItem.itemType === ProjectItemType.ts)
-    ) {
+    const cat = ProjectItemUtilities.getCategory(projectItem.itemType);
+
+    if (!this.props.project.showFunctions && cat === ProjectItemCategory.logic) {
       return false;
     }
 
-    if (
-      !this.props.project.showAssets &&
-      (projectItem.itemType === ProjectItemType.image ||
-        projectItem.itemType === ProjectItemType.soundDefinitionJson ||
-        projectItem.itemType === ProjectItemType.soundsCatalogResourceJson ||
-        projectItem.itemType === ProjectItemType.resourcePackManifestJson ||
-        projectItem.itemType === ProjectItemType.resourcePackListJson ||
-        projectItem.itemType === ProjectItemType.renderControllerJson ||
-        projectItem.itemType === ProjectItemType.lightingJson ||
-        projectItem.itemType === ProjectItemType.textureSetJson ||
-        projectItem.itemType === ProjectItemType.modelGeometryJson ||
-        projectItem.itemType === ProjectItemType.material ||
-        projectItem.itemType === ProjectItemType.materialSetJson ||
-        projectItem.itemType === ProjectItemType.animationControllerResourceJson ||
-        projectItem.itemType === ProjectItemType.animationResourceJson ||
-        projectItem.itemType === ProjectItemType.itemTextureJson ||
-        projectItem.itemType === ProjectItemType.flipBookTexturesJson ||
-        projectItem.itemType === ProjectItemType.terrainTextureCatalogResourceJson ||
-        projectItem.itemType === ProjectItemType.globalVariablesJson ||
-        projectItem.itemType === ProjectItemType.uiJson ||
-        projectItem.itemType === ProjectItemType.lang ||
-        projectItem.itemType === ProjectItemType.languagesCatalogResourceJson ||
-        projectItem.itemType === ProjectItemType.uiTextureJson ||
-        projectItem.itemType === ProjectItemType.attachableResourceJson)
-    ) {
+    if (!this.props.project.showAssets && cat === ProjectItemCategory.assets) {
       return false;
     }
 
-    if (
-      !this.props.project.showTypes &&
-      (projectItem.itemType === ProjectItemType.entityTypeBehaviorJson ||
-        projectItem.itemType === ProjectItemType.entityTypeResourceJson ||
-        projectItem.itemType === ProjectItemType.entityTypeBaseJs ||
-        projectItem.itemType === ProjectItemType.entityTypeBaseTs ||
-        projectItem.itemType === ProjectItemType.blockTypeBehaviorJson ||
-        projectItem.itemType === ProjectItemType.blockTypeResourceJson ||
-        projectItem.itemType === ProjectItemType.itemTypeBehaviorJson ||
-        projectItem.itemType === ProjectItemType.fogResourceJson ||
-        projectItem.itemType === ProjectItemType.tradingBehaviorJson ||
-        projectItem.itemType === ProjectItemType.particleJson ||
-        projectItem.itemType === ProjectItemType.structure ||
-        projectItem.itemType === ProjectItemType.recipeBehaviorJson ||
-        projectItem.itemType === ProjectItemType.biomeBehaviorJson ||
-        projectItem.itemType === ProjectItemType.biomeResourceJson ||
-        projectItem.itemType === ProjectItemType.lootTableBehaviorJson ||
-        projectItem.itemType === ProjectItemType.spawnRuleBehaviorJson ||
-        projectItem.itemType === ProjectItemType.dialogueBehaviorJson ||
-        projectItem.itemType === ProjectItemType.MCWorld ||
-        projectItem.itemType === ProjectItemType.worldTemplateManifestJson ||
-        projectItem.itemType === ProjectItemType.itemTypeResourceJson)
-    ) {
+    if (!this.props.project.showTypes && cat === ProjectItemCategory.types) {
       return false;
     }
 
@@ -1091,20 +997,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
 
     if (
-      projectItem.itemType === ProjectItemType.packageLockJson ||
-      projectItem.itemType === ProjectItemType.jsconfigJson ||
-      projectItem.itemType === ProjectItemType.tsconfigJson ||
-      projectItem.itemType === ProjectItemType.docfxJson ||
-      projectItem.itemType === ProjectItemType.jsdocJson ||
-      projectItem.itemType === ProjectItemType.zip ||
-      projectItem.itemType === ProjectItemType.MCAddon ||
-      projectItem.itemType === ProjectItemType.MCPack ||
+      cat === ProjectItemCategory.build ||
+      cat === ProjectItemCategory.package ||
       projectItem.itemType === ProjectItemType.lang || // should be handled by Text editor
       projectItem.itemType === ProjectItemType.languagesCatalogResourceJson || // should be handled by Text editor
-      projectItem.itemType === ProjectItemType.vsCodeExtensionsJson ||
-      projectItem.itemType === ProjectItemType.vsCodeLaunchJson ||
-      projectItem.itemType === ProjectItemType.vsCodeSettingsJson ||
-      projectItem.itemType === ProjectItemType.vsCodeTasksJson ||
+      projectItem.itemType === ProjectItemType.fileListJson ||
+      projectItem.itemType === ProjectItemType.blocksCatalogResourceJson || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.blockTypeResourceJson || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.entityTypeResourceJson || // this should be handled by entity type editor for bp entity type
       projectItem.itemType === ProjectItemType.behaviorPackListJson || // this should be handled by world editor
@@ -1144,10 +1042,14 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   }
 
   static sortItems(a: ProjectItem, b: ProjectItem) {
-    const aType = a.getTypeSortOrder();
-    const bType = b.getTypeSortOrder();
+    const aType = ProjectItemUtilities.getSortOrder(a.itemType);
+    const bType = ProjectItemUtilities.getSortOrder(b.itemType);
 
     if (aType === bType) {
+      if (a.storagePath && b.storagePath) {
+        return a.storagePath.localeCompare(b.storagePath);
+      }
+
       return a.name.localeCompare(b.name);
     }
 
@@ -1156,11 +1058,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
   render() {
     this._projectListItems = [];
-    this._items = [];
 
     this._projectListItems.push({
       header: (
-        <div className="pil-fixedLine" key="fixpropj">
+        <div className="pil-fixedLine" key="pil-fixpropj">
           {this.props.readOnly ? "Add-On" : "Project"}
         </div>
       ),
@@ -1170,23 +1071,13 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     this._projectListItems.push({
       header: (
-        <div className="pil-fixedLine" key="info">
+        <div className="pil-fixedLine" key="pil-info">
           Inspector
         </div>
       ),
       headerMedia: " ",
       content: " ",
     });
-    /*
-    this._projectListItems.push({
-      header: (
-        <div className="pil-fixedLine" key="text">
-          Text
-        </div>
-      ),
-      headerMedia: " ",
-      content: " ",
-    });*/
 
     const splitButtonMenuItems: any[] = [
       {
@@ -1219,45 +1110,107 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       splitButtonMenuItems.push(
         {
           id: "structure",
-          key: "structure",
+          key: "pil-structure",
           onClick: this._handleNewStructureClick,
           content: "New structure",
         },
         {
-          id: "doctype",
-          key: "doctype",
-          onClick: this._handleNewDocTypeClick,
-          content: "New documented type",
+          id: "autoscript",
+          key: "pil-autoscript",
+          onClick: this._handleNewAutoScriptClick,
+          content: "New auto-script",
         },
         {
-          key: "divider1",
+          id: "worldtest",
+          key: "pil-worldtest",
+          onClick: this._handleNewWorldTestClick,
+          content: "New world test",
+        },
+        {
+          key: "pil-divider1",
           kind: "divider",
         },
         {
           id: "entityType",
-          key: "addReference",
+          key: "pil-addReference",
           onClick: this._addGitHubReferenceClick,
           content: "Add GitHub reference",
         }
       );
+
+      if (this.props.project && this.props.project.role === ProjectRole.documentation) {
+        splitButtonMenuItems.push({
+          id: "doctype",
+          key: "pil-doctype",
+          onClick: this._handleNewDocTypeClick,
+          content: "New documented type",
+        });
+      }
+
+      if (this.props.project && this.props.project.role === ProjectRole.meta) {
+        splitButtonMenuItems.push({
+          id: "form",
+          key: "pil-form",
+          onClick: this._handleNewFormClick,
+          content: "New form",
+        });
+      }
     }
 
     let selectedItemIndex = 0;
-    let itemsShown = 0;
+
+    if (this.props.editorMode === ProjectEditorMode.inspector) {
+      selectedItemIndex = 1;
+    }
+
+    let lastItemType = -1;
+    let lastStorageRoot: string | undefined = undefined;
+
+    this._itemIndices = [];
+    this._itemTypes = [];
+
+    let itemsAdded = 2;
 
     if (this.props.project) {
       const projectItems = this.props.project.items.sort(ProjectItemList.sortItems);
 
-      for (let i = 0; i < projectItems.length && itemsShown < this.state.maxItemsToShow; i++) {
+      for (let i = 0; i < projectItems.length && itemsAdded < this.state.maxItemsToShow; i++) {
         const projectItem = projectItems[i];
 
         if (projectItem !== undefined && projectItem.storagePath !== null && projectItem.storagePath !== undefined) {
           if (this.shouldShowProjectItem(projectItem)) {
-            if (projectItem === this.props.activeProjectItem) {
-              selectedItemIndex = this._projectListItems.length;
+            if (projectItem.itemType !== lastItemType) {
+              this._addTypeSpacer(projectItem.itemType);
+              this._itemTypes[itemsAdded] = ListItemType.typeSpacer;
+              this._itemIndices[itemsAdded] = projectItem.itemType;
+              itemsAdded++;
+              lastItemType = projectItem.itemType;
             }
-            itemsShown++;
-            this._addProjectItem(projectItem, false);
+
+            if (!this.state.collapsedItemTypes.includes(projectItem.itemType)) {
+              const folderStoragePath = projectItem.getFolderGroupingPath();
+
+              if (folderStoragePath !== lastStorageRoot) {
+                const folderGroupingPath = projectItem.getFolderGroupingPath();
+                if (folderGroupingPath !== undefined && folderGroupingPath.length > 1) {
+                  this._addStoragePathSpacer(folderGroupingPath, projectItem.itemType);
+                  this._itemTypes[itemsAdded] = ListItemType.pathSpacer;
+                  itemsAdded++;
+                }
+                lastStorageRoot = folderStoragePath;
+              }
+
+              if (!folderStoragePath || !this.state.collapsedStoragePaths.includes(folderStoragePath)) {
+                if (projectItem === this.props.activeProjectItem) {
+                  selectedItemIndex = this._projectListItems.length;
+                }
+
+                this._addProjectItem(projectItem, false);
+                this._itemIndices[itemsAdded] = i;
+                this._itemTypes[itemsAdded] = ListItemType.item;
+                itemsAdded++;
+              }
+            }
           }
         }
       }
@@ -1269,6 +1222,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
         this._addReference(ref);
 
+        this._itemTypes[itemsAdded] = ListItemType.references;
+        this._itemIndices[itemsAdded] = i;
+        itemsAdded++;
+
         for (let j = 0; j < projectItems.length; j++) {
           const projectItem = projectItems[j];
 
@@ -1276,8 +1233,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             projectItem.gitHubReference !== undefined &&
             ProjectItem.gitHubReferencesEqual(ref, projectItem.gitHubReference)
           ) {
-            itemsShown++;
             this._addProjectItem(projectItem, true);
+            this._itemIndices[itemsAdded] = j;
+            this._itemTypes[itemsAdded] = ListItemType.item;
+            itemsAdded++;
           }
         }
       }
@@ -1290,24 +1249,16 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         icon: (
           <FunctionsLabel theme={this.props.theme} isSelected={this.props.project?.showFunctions} isCompact={true} />
         ),
-        key: "hideShowFunctions",
+        key: "pil-hideShowFunctions",
         kind: "toggle",
         active: this.props.project?.showFunctions,
         onClick: this._showFunctionsClick,
         title: "Toggle whether functions and scripts are shown",
       });
-      toolbarItems.push({
-        icon: <AssetsLabel theme={this.props.theme} isSelected={this.props.project?.showAssets} isCompact={true} />,
-        key: "hideShowAssets",
-        kind: "toggle",
-        active: this.props.project?.showAssets,
-        onClick: this._showAssetsClick,
-        title: "Toggle whether assets (models, images, UI and sound) are shown",
-      });
 
       toolbarItems.push({
         icon: <TypesLabel theme={this.props.theme} isSelected={this.props.project?.showTypes} isCompact={true} />,
-        key: "hideShowTypes",
+        key: "pil-hideShowTypes",
         kind: "toggle",
         active: this.props.project?.showTypes,
         onClick: this._showTypesClick,
@@ -1315,10 +1266,19 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       });
 
       toolbarItems.push({
+        icon: <AssetsLabel theme={this.props.theme} isSelected={this.props.project?.showAssets} isCompact={true} />,
+        key: "pil-hideShowAssets",
+        kind: "toggle",
+        active: this.props.project?.showAssets,
+        onClick: this._showAssetsClick,
+        title: "Toggle whether assets (models, images, UI and sound) are shown",
+      });
+
+      toolbarItems.push({
         icon: (
           <EyeSlashLabel theme={this.props.theme} isSelected={this.props.project?.showHiddenItems} isCompact={true} />
         ),
-        key: "hideShowSlash",
+        key: "pil-hideShowSlash",
         kind: "toggle",
         active: this.props.project?.showHiddenItems,
         onClick: this._showAllClick,
@@ -1334,10 +1294,11 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           open={true}
           cancelButton="Cancel"
           confirmButton="Rename"
+          key="pil-renameOuter"
           onCancel={this._handleCancel}
           onConfirm={this._handleConfirmRename}
           content={
-            <div className="pil-dialog">
+            <div className="pil-dialog" key="pil-renameDia">
               <Input clearable placeholder="new name" onChange={this._handleNewProjectItemName} />
               <span className="pil-extension">.{StorageUtilities.getTypeFromName(this.state.activeItem.name)}</span>
             </div>
@@ -1355,10 +1316,13 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           open={true}
           cancelButton="Cancel"
           confirmButton="OK"
+          key="pil-deleteOuter"
           onCancel={this._handleCancel}
           onConfirm={this._handleConfirmDelete}
           content={
-            <div className="pil-dialog">Are you sure you wish to delete '{this.state.activeItem.storagePath}'?</div>
+            <div className="pil-dialog" key="pil-deleteConfirmDia">
+              Are you sure you wish to delete '{this.state.activeItem.storagePath}'?
+            </div>
           }
           header={"Delete " + this.state.activeItem.name}
         />
@@ -1373,11 +1337,13 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           open={true}
           cancelButton="Cancel"
           confirmButton="Add"
+          key="pil-newEntityOuter"
           onCancel={this._handleCancel}
           onConfirm={this._handleNewEntityType}
           content={
             <NewEntityType
               theme={this.props.theme}
+              key="pil-newEntityDia"
               onNewEntityTypeUpdated={this._newEntityTypeUpdated}
               project={this.props.project}
               carto={this.props.carto}
@@ -1396,10 +1362,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           open={true}
           cancelButton="Cancel"
           confirmButton="Add"
+          key="pil-newBlockTypeOuter"
           onCancel={this._handleCancel}
           onConfirm={this._handleNewBlockType}
           content={
             <NewBlockType
+              key="pil-newBlockTypeDia"
               onNewBlockTypeUpdated={this._newBlockTypeUpdated}
               project={this.props.project}
               carto={this.props.carto}
@@ -1418,11 +1386,13 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           open={true}
           cancelButton="Cancel"
           confirmButton="Add"
+          key="pil-addghouter"
           onCancel={this._handleCancel}
           onConfirm={this._handleAddReference}
           content={
             <AddGitHubReference
               theme={this.props.theme}
+              key="pil-addghdia"
               onGitHubProjectUpdated={this._githubProjectUpdated}
               project={this.props.project}
               carto={this.props.carto}
@@ -1437,7 +1407,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     if (!this.props.readOnly) {
       splitButton = (
-        <div className="pil-newarea">
+        <div className="pil-newarea" key="pil-newSplit">
           <SplitButton
             menu={splitButtonMenuItems}
             button={{
@@ -1455,11 +1425,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       );
     }
 
-    const listHeight = "calc(100vh - " + (this.props.heightOffset + 36) + "px)";
+    const listHeight = "calc(100vh - " + (this.props.heightOffset + 44) + "px)";
 
     return (
       <div
         className="pil-outer"
+        key="pil-outer"
         style={{
           borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
         }}
@@ -1492,6 +1463,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             <List
               selectable
               defaultSelectedIndex={selectedItemIndex}
+              selectedIndex={selectedItemIndex}
               items={this._projectListItems}
               onSelectedIndexChange={this._handleItemSelected}
             />

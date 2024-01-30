@@ -5,8 +5,8 @@ import { ProjectItemStorageType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
 import { MaxItemTypes } from "../app/IProjectItemData";
 import Utilities from "../core/Utilities";
-import ProjectItem from "../app/ProjectItem";
 import ProjectInfoSet from "./ProjectInfoSet";
+import ProjectItemUtilities from "../app/ProjectItemUtilities";
 
 export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
   id = "LINESIZE";
@@ -15,7 +15,7 @@ export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
   getTopicData(topicId: number) {
     if (topicId >= 100) {
       return {
-        title: ProjectItem.getDescriptionForType(topicId - 100),
+        title: ProjectItemUtilities.getDescriptionForType(topicId - 100),
       };
     }
 

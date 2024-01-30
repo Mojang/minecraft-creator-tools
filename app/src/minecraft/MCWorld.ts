@@ -176,6 +176,12 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     return this._zipStorage;
   }
 
+  public ensureZipStorage() {
+    if (this._zipStorage === undefined) {
+      this._zipStorage = new ZipStorage();
+    }
+  }
+
   public get onPropertyChanged() {
     return this._onPropertyChanged.asEvent();
   }
@@ -410,7 +416,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     return undefined;
   }
 
-  static async ensureMCWorldOnFile(file: IFile, project?: Project, handler?: IEventHandler<MCWorld, MCWorld>) {
+  static async ensureOnFile(file: IFile, project?: Project, handler?: IEventHandler<MCWorld, MCWorld>) {
     if (file.manager === undefined) {
       const world = new MCWorld();
       world.project = project;
@@ -1647,6 +1653,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
           ProjectItemStorageType.singleFile,
           this._autogenJsFile.name,
           ProjectItemType.js,
+          undefined,
           true
         );
       }

@@ -54,6 +54,7 @@ export default interface ICartoData {
   showScreenOnConnect: boolean;
   useEditor?: boolean;
   creator?: string;
+  itemSidePaneWidth?: number;
   preferredTextSize?: number;
   preferredSuite?: number;
   editorViewMode?: CartoEditorViewMode;

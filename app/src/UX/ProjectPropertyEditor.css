@@ -19,6 +19,10 @@
   font-size: 12pt;
 }
 
+.ppe-outer {
+  user-select: none;
+}
+
 .ppe-grid {
   padding: 20px;
   padding-top: 50px;

@@ -34,7 +34,7 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
       if (projectItem.folder) {
         mcworld = await MCWorld.ensureMCWorldOnFolder(projectItem.folder, projectItem.project);
       } else if (projectItem.file) {
-        mcworld = await MCWorld.ensureMCWorldOnFile(projectItem.file, projectItem.project);
+        mcworld = await MCWorld.ensureOnFile(projectItem.file, projectItem.project);
       }
 
       if (!mcworld) {

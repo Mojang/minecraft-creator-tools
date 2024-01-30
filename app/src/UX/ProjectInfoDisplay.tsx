@@ -37,7 +37,8 @@ interface IProjectInfoDisplayProps extends IAppProps {
 }
 
 interface IProjectInfoDisplayState {
-  infoSet: ProjectInfoSet | undefined;
+  selectedInfoSet: ProjectInfoSet | undefined;
+  allInfoSet: ProjectInfoSet | undefined;
   viewMode: ProjectInfoDisplayMode;
   activeSuite: ProjectInfoSuite;
   menuState: ProjectInfoDisplayMenuState;
@@ -103,7 +104,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     }
 
     this.state = {
-      infoSet: undefined,
+      selectedInfoSet: undefined,
+      allInfoSet: undefined,
       activeSuite: suite,
       viewMode: ProjectInfoDisplayMode.info,
       menuState: ProjectInfoDisplayMenuState.noMenu,
@@ -131,7 +133,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       return new Promise((resolve: () => void, reject: () => void) => {
         this.setState(
           {
-            infoSet: this.state.infoSet,
+            selectedInfoSet: this.state.selectedInfoSet,
+            allInfoSet: this.state.allInfoSet,
             menuState: this.state.menuState,
             lastExportKey: this.state.lastExportKey,
             lastExportFunction: this.state.lastExportFunction,
@@ -165,13 +168,16 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       newInfoSet = this.props.project.infoSet;
     } else {
       newInfoSet = new ProjectInfoSet(this.props.project, this.state.activeSuite);
+
+      await this.props.project.infoSet.generateForProject(force);
     }
 
     await newInfoSet.generateForProject(force);
 
     if (this._isMountedInternal && this.state.activeSuite === newInfoSet.suite) {
       this.setState({
-        infoSet: newInfoSet,
+        selectedInfoSet: newInfoSet,
+        allInfoSet: this.props.project.infoSet,
         menuState: this.state.menuState,
         lastExportKey: this.state.lastExportKey,
         lastExportFunction: this.state.lastExportFunction,
@@ -215,7 +221,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
   private _toggleErrorFilter() {
     this.setState({
-      infoSet: this.state.infoSet,
+      selectedInfoSet: this.state.selectedInfoSet,
+      allInfoSet: this.state.allInfoSet,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
       lastExportFunction: this.state.lastExportFunction,
@@ -234,7 +241,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
   private _toggleInfoFilter() {
     this.setState({
-      infoSet: this.state.infoSet,
+      selectedInfoSet: this.state.selectedInfoSet,
+      allInfoSet: this.state.allInfoSet,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
       lastExportFunction: this.state.lastExportFunction,
@@ -253,7 +261,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
   private _toggleSuccessFilter() {
     this.setState({
-      infoSet: this.state.infoSet,
+      selectedInfoSet: this.state.selectedInfoSet,
+      allInfoSet: this.state.allInfoSet,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
       lastExportFunction: this.state.lastExportFunction,
@@ -272,7 +281,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
   private _toggleFailureFilter() {
     this.setState({
-      infoSet: this.state.infoSet,
+      selectedInfoSet: this.state.selectedInfoSet,
+      allInfoSet: this.state.allInfoSet,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
       lastExportFunction: this.state.lastExportFunction,
@@ -292,7 +302,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
   private _toggleWarningFilter() {
     this.setState({
-      infoSet: this.state.infoSet,
+      selectedInfoSet: this.state.selectedInfoSet,
+      allInfoSet: this.state.allInfoSet,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
       lastExportFunction: this.state.lastExportFunction,
@@ -312,7 +323,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
   private _toggleRecommendationFilter() {
     this.setState({
-      infoSet: this.state.infoSet,
+      selectedInfoSet: this.state.selectedInfoSet,
+      allInfoSet: this.state.allInfoSet,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
       lastExportFunction: this.state.lastExportFunction,
@@ -332,7 +344,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
   private _setInfoMode() {
     this.setState({
-      infoSet: this.state.infoSet,
+      selectedInfoSet: this.state.selectedInfoSet,
+      allInfoSet: this.state.allInfoSet,
       viewMode: ProjectInfoDisplayMode.info,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
@@ -368,7 +381,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     }
 
     this.setState({
-      infoSet: this.state.infoSet,
+      selectedInfoSet: this.state.selectedInfoSet,
+      allInfoSet: this.state.allInfoSet,
       viewMode: this.state.viewMode,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
@@ -389,16 +403,17 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   _handleListScroll(event: UIEvent<HTMLDivElement>) {
-    if (event.currentTarget && this.state && this.state.infoSet && this.state.infoSet.items) {
+    if (event.currentTarget && this.state && this.state.selectedInfoSet && this.state.selectedInfoSet.items) {
       if (
         event.currentTarget.scrollTop >
           event.currentTarget.scrollHeight -
             (event.currentTarget.offsetHeight + event.currentTarget.scrollHeight / 20) &&
-        this.state.maxItems < this.state.infoSet.items.length &&
+        this.state.maxItems < this.state.selectedInfoSet.items.length &&
         this.state.maxItems < 25000
       ) {
         this.setState({
-          infoSet: this.state.infoSet,
+          selectedInfoSet: this.state.selectedInfoSet,
+          allInfoSet: this.state.allInfoSet,
           viewMode: this.state.viewMode,
           menuState: this.state.menuState,
           lastExportKey: this.state.lastExportKey,
@@ -420,7 +435,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
   private _setSummaryMode() {
     this.setState({
-      infoSet: this.state.infoSet,
+      selectedInfoSet: this.state.selectedInfoSet,
+      allInfoSet: this.state.allInfoSet,
       viewMode: ProjectInfoDisplayMode.summary,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
@@ -445,7 +461,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     }
 
     this.setState({
-      infoSet: this.state.infoSet,
+      selectedInfoSet: this.state.selectedInfoSet,
+      allInfoSet: this.state.allInfoSet,
       viewMode: this.state.viewMode,
       menuState: menuVal,
       lastExportKey: this.state.lastExportKey,
@@ -469,7 +486,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   ) {
     window.setTimeout(() => {
       this.setState({
-        infoSet: this.state.infoSet,
+        selectedInfoSet: this.state.selectedInfoSet,
+        allInfoSet: this.state.allInfoSet,
         viewMode: this.state.viewMode,
         menuState: this.state.menuState,
         lastExportKey: exportKey,
@@ -488,14 +506,14 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   private async _downloadHtmlReport(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
-    if (this.props.project === null || this.state.infoSet === undefined) {
+    if (this.props.project === null || this.state.selectedInfoSet === undefined) {
       return;
     }
 
     const date = new Date();
     const projName = this.props.project.name;
 
-    const reportHtml = this.state.infoSet.getReportHtml(projName, projName, date.getTime().toString());
+    const reportHtml = this.state.selectedInfoSet.getReportHtml(projName, projName, date.getTime().toString());
 
     saveAs(new Blob([reportHtml]), projName + " " + SuiteTitles[this.state.activeSuite] + ".html");
 
@@ -505,11 +523,11 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   private async _downloadCsvReport(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
-    if (this.props.project === null || this.state.infoSet === undefined) {
+    if (this.props.project === null || this.state.selectedInfoSet === undefined) {
       return;
     }
 
-    const pisLines = this.state.infoSet.getItemCsvLines();
+    const pisLines = this.state.selectedInfoSet.getItemCsvLines();
 
     const projName = this.props.project.name;
     const csvContent = ProjectInfoSet.CommonCsvHeader + "\r\n" + pisLines.join("\n");
@@ -536,19 +554,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     const topToolbarItems = [
       {
         icon: (
-          <InfoTabLabel
-            theme={this.props.theme}
-            isSelected={this.state.viewMode === ProjectInfoDisplayMode.info}
-            isCompact={false}
-          />
-        ),
-        key: "errorFilter",
-        kind: "toggle",
-        onClick: this._setInfoMode,
-        title: "Toggle whether an info view is shown",
-      },
-      {
-        icon: (
           <SummaryTabLabel
             theme={this.props.theme}
             isSelected={this.state.viewMode === ProjectInfoDisplayMode.summary}
@@ -559,6 +564,19 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         kind: "toggle",
         onClick: this._setSummaryMode,
         title: "Toggle whether a summary view is shown",
+      },
+      {
+        icon: (
+          <InfoTabLabel
+            theme={this.props.theme}
+            isSelected={this.state.viewMode === ProjectInfoDisplayMode.info}
+            isCompact={false}
+          />
+        ),
+        key: "errorFilter",
+        kind: "toggle",
+        onClick: this._setInfoMode,
+        title: "Toggle whether an info view is shown",
       },
     ];
 
@@ -593,7 +611,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
     if (!this.state.lastExportKey) {
       actionToolbarItems.push({
-        icon: <DownloadLabel isCompact={false} />,
+        icon: <DownloadLabel isCompact={width < 1116} />,
         key: "downloadReportA",
         onMenuOpenChange: this._handleExportMenuOpen,
         menuOpen: this.state.menuState === ProjectInfoDisplayMenuState.exportMenu,
@@ -625,8 +643,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
     const countsByType: number[] = [];
 
-    if (this.state && this.state.infoSet) {
-      for (const item of this.state.infoSet.items) {
+    if (this.state && this.state.selectedInfoSet) {
+      for (const item of this.state.selectedInfoSet.items) {
         if (!countsByType[item.itemType]) {
           countsByType[item.itemType] = 1;
         } else {
@@ -642,7 +660,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             theme={this.props.theme}
             isSelected={this.state.displayErrors}
             value={countsByType[InfoItemType.error]}
-            isCompact={width < 1016}
+            isCompact={width < 1116}
           />
         ),
         key: "errorFilter",
@@ -656,7 +674,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             theme={this.props.theme}
             isSelected={this.state.displayWarnings}
             value={countsByType[InfoItemType.warning]}
-            isCompact={width < 1016}
+            isCompact={width < 1116}
           />
         ),
         key: "warningFilter",
@@ -670,7 +688,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             theme={this.props.theme}
             value={countsByType[InfoItemType.recommendation]}
             isSelected={this.state.displayRecommendation}
-            isCompact={width < 1016}
+            isCompact={width < 1116}
           />
         ),
         key: "recoFilter",
@@ -679,7 +697,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         title: "Toggle whether error items show",
       },
       {
-        icon: <InfoFilterLabel theme={this.props.theme} isSelected={this.state.displayInfo} isCompact={width < 1016} />,
+        icon: <InfoFilterLabel theme={this.props.theme} isSelected={this.state.displayInfo} isCompact={width < 1116} />,
         key: "infoFilter",
         kind: "toggle",
         onClick: this._toggleInfoFilter,
@@ -691,7 +709,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             theme={this.props.theme}
             isSelected={this.state.displaySuccess}
             value={countsByType[InfoItemType.testCompleteSuccess]}
-            isCompact={width < 1016}
+            isCompact={width < 1116}
           />
         ),
         key: "successFilter",
@@ -705,7 +723,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             theme={this.props.theme}
             isSelected={this.state.displayFailure}
             value={countsByType[InfoItemType.testCompleteFail]}
-            isCompact={width < 1016}
+            isCompact={width < 1116}
           />
         ),
         key: "failureFilter",
@@ -714,74 +732,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         title: "Toggle whether success items show",
       },
     ];
-
-    let itemsShown = 0;
-    const itemTiles = [];
-    if (this.state && this.state.infoSet) {
-      for (let i = 0; i < this.state.infoSet.items.length && itemsShown < this.state.maxItems; i++) {
-        const item = this.state.infoSet.items[i];
-
-        if (
-          (this.state.displayWarnings && item.itemType === InfoItemType.warning) ||
-          (this.state.displayRecommendation && item.itemType === InfoItemType.recommendation) ||
-          (this.state.displayErrors && item.itemType === InfoItemType.error) ||
-          (this.state.displaySuccess && item.itemType === InfoItemType.testCompleteSuccess) ||
-          (this.state.displayFailure && item.itemType === InfoItemType.testCompleteFail) ||
-          (this.state.displayInfo && item.itemType === InfoItemType.info)
-        ) {
-          itemTiles.push(
-            <ProjectInfoItemDisplay
-              item={item}
-              theme={this.props.theme}
-              key={"pid" + i}
-              carto={this.props.carto}
-              onInfoItemCommand={this._handleInfoItemCommand}
-            />
-          );
-          itemsShown++;
-        }
-      }
-
-      const keyVals = this.state.infoSet.info as { [index: string]: any };
-
-      for (const key in keyVals) {
-        if (key !== "features") {
-          const val = keyVals[key];
-
-          lines.push(
-            <div className="pis-itemHeader" key={key + "headerA"}>
-              {Utilities.humanifyJsName(key)}
-            </div>
-          );
-          lines.push(
-            <div className="pis-itemData" key={key + "dataA"}>
-              {this.getDataSummary(val)}
-            </div>
-          );
-        }
-      }
-
-      if (this.state.infoSet.info.features) {
-        for (const featName in this.state.infoSet.info.features) {
-          const featVal = this.state.infoSet.info.features[featName];
-
-          if (typeof featVal === "number") {
-            const featSummaryName = featName; //.replace(/|/gi, " ");
-
-            lines.push(
-              <div className="pis-itemHeader" key={featName + "headerB"}>
-                {featSummaryName}
-              </div>
-            );
-            lines.push(
-              <div className="pis-itemData" key={featName + "dataB"}>
-                {featVal}
-              </div>
-            );
-          }
-        }
-      }
-    }
 
     const title = this.props.project.loc.getTokenValueOrDefault(this.props.project.title);
 
@@ -807,6 +757,45 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         </div>
       );
     } else if (this.state.viewMode === ProjectInfoDisplayMode.summary) {
+      if (this.state.allInfoSet && this.state.allInfoSet.info.features) {
+        const keyVals = this.state.allInfoSet.info as { [index: string]: any };
+
+        for (const key in keyVals) {
+          if (key !== "features") {
+            const val = keyVals[key];
+
+            lines.push(
+              <div className="pis-itemHeader" key={key + "headerA"}>
+                {Utilities.humanifyJsName(key)}
+              </div>
+            );
+            lines.push(
+              <div className="pis-itemData" key={key + "dataA"}>
+                {this.getDataSummary(val)}
+              </div>
+            );
+          }
+        }
+        for (const featName in this.state.allInfoSet.info.features) {
+          const featVal = this.state.allInfoSet.info.features[featName];
+
+          if (typeof featVal === "number") {
+            const featSummaryName = featName; //.replace(/|/gi, " ");
+
+            lines.push(
+              <div className="pis-itemHeader" key={featName + "headerB"}>
+                {featSummaryName}
+              </div>
+            );
+            lines.push(
+              <div className="pis-itemData" key={featName + "dataB"}>
+                {featVal}
+              </div>
+            );
+          }
+        }
+      }
+
       outer = (
         <div className="pid-areaOuter">
           <div
@@ -823,6 +812,34 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         </div>
       );
     } else {
+      let itemsShown = 0;
+      const itemTiles = [];
+      if (this.state && this.state.selectedInfoSet && this.state.allInfoSet) {
+        for (let i = 0; i < this.state.selectedInfoSet.items.length && itemsShown < this.state.maxItems; i++) {
+          const item = this.state.selectedInfoSet.items[i];
+
+          if (
+            item.itemType === InfoItemType.internalProcessingError ||
+            (this.state.displayWarnings && item.itemType === InfoItemType.warning) ||
+            (this.state.displayRecommendation && item.itemType === InfoItemType.recommendation) ||
+            (this.state.displayErrors && item.itemType === InfoItemType.error) ||
+            (this.state.displaySuccess && item.itemType === InfoItemType.testCompleteSuccess) ||
+            (this.state.displayFailure && item.itemType === InfoItemType.testCompleteFail) ||
+            (this.state.displayInfo && item.itemType === InfoItemType.info)
+          ) {
+            itemTiles.push(
+              <ProjectInfoItemDisplay
+                item={item}
+                theme={this.props.theme}
+                key={"pid" + i}
+                carto={this.props.carto}
+                onInfoItemCommand={this._handleInfoItemCommand}
+              />
+            );
+            itemsShown++;
+          }
+        }
+      }
       outer = (
         <div className="pid-areaOuter">
           <div>

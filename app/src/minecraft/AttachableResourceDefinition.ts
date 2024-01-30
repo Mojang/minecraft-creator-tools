@@ -2,14 +2,14 @@ import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import { IClientEntityTypeWrapper } from "./IClientEntityType";
+import { IClientAttachableWrapper } from "./IClientAttachable";
 
-export default class EntityTypeResourceDefinition {
-  public clientEntityTypeWrapper?: IClientEntityTypeWrapper;
+export default class AttachableResourceDefinition {
+  public attachableWrapper?: IClientAttachableWrapper;
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
-  private _onLoaded = new EventDispatcher<EntityTypeResourceDefinition, EntityTypeResourceDefinition>();
+  private _onLoaded = new EventDispatcher<AttachableResourceDefinition, AttachableResourceDefinition>();
 
   public get isLoaded() {
     return this._isLoaded;
@@ -28,29 +28,29 @@ export default class EntityTypeResourceDefinition {
 
   public get id() {
     if (
-      !this.clientEntityTypeWrapper ||
-      !this.clientEntityTypeWrapper["minecraft:client_entity"] ||
-      !this.clientEntityTypeWrapper["minecraft:client_entity"].description
+      !this.attachableWrapper ||
+      !this.attachableWrapper["minecraft:attachable"] ||
+      !this.attachableWrapper["minecraft:attachable"].description
     ) {
       return undefined;
     }
 
-    return this.clientEntityTypeWrapper["minecraft:client_entity"].description.identifier;
+    return this.attachableWrapper["minecraft:attachable"].description.identifier;
   }
 
   public getFormatVersion(): number[] | undefined {
-    if (!this.clientEntityTypeWrapper) {
+    if (!this.attachableWrapper) {
       return undefined;
     }
 
-    const fv = this.clientEntityTypeWrapper.format_version;
+    const fv = this.attachableWrapper.format_version;
 
     if (typeof fv === "number") {
       return [fv];
     }
 
     if (typeof fv === "string") {
-      let fvarr = this.clientEntityTypeWrapper.format_version.split(".");
+      let fvarr = this.attachableWrapper.format_version.split(".");
 
       let fvarrInt: number[] = [];
       for (let i = 0; i < fvarr.length; i++) {
@@ -66,38 +66,38 @@ export default class EntityTypeResourceDefinition {
   }
 
   get formatVersion() {
-    if (!this.clientEntityTypeWrapper || !this.clientEntityTypeWrapper.format_version) {
+    if (!this.attachableWrapper || !this.attachableWrapper.format_version) {
       return undefined;
     }
 
-    return this.clientEntityTypeWrapper.format_version;
+    return this.attachableWrapper.format_version;
   }
 
-  static async ensureOnFile(
+  static async ensureAttachableDefinitionOnFile(
     file: IFile,
-    loadHandler?: IEventHandler<EntityTypeResourceDefinition, EntityTypeResourceDefinition>
+    loadHandler?: IEventHandler<AttachableResourceDefinition, AttachableResourceDefinition>
   ) {
-    let et: EntityTypeResourceDefinition | undefined = undefined;
+    let attachable: AttachableResourceDefinition | undefined = undefined;
 
     if (file.manager === undefined) {
-      et = new EntityTypeResourceDefinition();
+      attachable = new AttachableResourceDefinition();
 
-      et.file = file;
+      attachable.file = file;
 
-      file.manager = et;
+      file.manager = attachable;
     }
 
-    if (file.manager !== undefined && file.manager instanceof EntityTypeResourceDefinition) {
-      et = file.manager as EntityTypeResourceDefinition;
+    if (file.manager !== undefined && file.manager instanceof AttachableResourceDefinition) {
+      attachable = file.manager as AttachableResourceDefinition;
 
-      if (!et.isLoaded && loadHandler) {
-        et.onLoaded.subscribe(loadHandler);
+      if (!attachable.isLoaded && loadHandler) {
+        attachable.onLoaded.subscribe(loadHandler);
       }
 
-      await et.load();
+      await attachable.load();
     }
 
-    return et;
+    return attachable;
   }
 
   persist() {
@@ -105,7 +105,7 @@ export default class EntityTypeResourceDefinition {
       return;
     }
 
-    const defString = JSON.stringify(this.clientEntityTypeWrapper, null, 2);
+    const defString = JSON.stringify(this.attachableWrapper, null, 2);
 
     this._file.setContent(defString);
   }
@@ -116,7 +116,7 @@ export default class EntityTypeResourceDefinition {
     }
 
     if (this._file === undefined) {
-      Log.unexpectedUndefined("ETRPF");
+      Log.unexpectedUndefined("ATTRPF");
       return;
     }
 
@@ -134,7 +134,7 @@ export default class EntityTypeResourceDefinition {
       data = result;
     }
 
-    this.clientEntityTypeWrapper = data;
+    this.attachableWrapper = data;
 
     this._isLoaded = true;
 

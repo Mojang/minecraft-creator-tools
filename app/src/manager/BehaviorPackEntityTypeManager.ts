@@ -150,7 +150,7 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
 
         if (pi.file) {
           foundWorldTemplate = true;
-          const bpEntityType = await EntityTypeDefinition.ensureEntityTypeOnFile(pi.file);
+          const bpEntityType = await EntityTypeDefinition.ensureOnFile(pi.file);
 
           if (bpEntityType) {
             await bpEntityType.load();
@@ -394,7 +394,7 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const wtManifest = await EntityTypeDefinition.ensureEntityTypeOnFile(pi.file);
+          const wtManifest = await EntityTypeDefinition.ensureOnFile(pi.file);
 
           if (wtManifest) {
             const mev = wtManifest.behaviorPackWrapper?.format_version;

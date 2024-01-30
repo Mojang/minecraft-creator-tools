@@ -25,7 +25,7 @@ export default class ProjectUpdateRunner {
     ];
   }
 
-  async updateProject(excludeUpdaters?: string[]) {
+  async updateProject(includeUpdaters?: string[], excludeUpdaters?: string[]) {
     const updaters: IProjectUpdater[] = this.createUpdaters();
 
     const results: ProjectUpdateResult[] = [];
@@ -41,7 +41,10 @@ export default class ProjectUpdateRunner {
       const updaterIds = updater.getUpdateIds();
 
       for (let j = 0; j < updaterIds.length; j++) {
-        if (!excludeUpdaters || !excludeUpdaters.includes(updater.id)) {
+        if (
+          (!includeUpdaters || includeUpdaters.includes(updater.id)) &&
+          (!excludeUpdaters || !excludeUpdaters.includes(updater.id))
+        ) {
           const localResults = await updater.update(this.project, updaterIds[j]);
 
           results.push(...localResults);

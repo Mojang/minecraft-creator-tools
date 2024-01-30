@@ -59,7 +59,7 @@ export default class CartoSettings extends Component<ICartoSettingsProps, ICarto
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
           }}
         >
-          settings
+          App Settings
         </div>
         <div
           className="cs-panelArea"

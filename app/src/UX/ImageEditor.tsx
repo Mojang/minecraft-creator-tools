@@ -133,7 +133,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
   }
 
   _addImageInterior() {
-    const heightOffset = this.props.heightOffset ? this.props.heightOffset - 11 : 150;
+    const heightOffset = this.props.heightOffset ? this.props.heightOffset - 1 : 150;
 
     if (this.rootElt !== null && this.rootElt.current !== null) {
       if (this.imageEditor) {
