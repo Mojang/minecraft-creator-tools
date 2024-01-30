@@ -23,7 +23,7 @@ import MCWorld from "../minecraft/MCWorld";
 import ZipStorage from "../storage/ZipStorage";
 import Utilities from "../core/Utilities";
 import { StorageErrorStatus } from "../storage/IStorage";
-import IColor from "../core/IColor";
+import ProjectItemUtilities from "./ProjectItemUtilities";
 
 export default class ProjectItem {
   private _data: IProjectItemData;
@@ -158,422 +158,8 @@ export default class ProjectItem {
     this._project.notifyProjectItemChanged(this);
   }
 
-  static getDescriptionForType(type: ProjectItemType) {
-    switch (type) {
-      case ProjectItemType.js:
-        return "JavaScript";
-      case ProjectItemType.buildProcessedJs:
-        return "Built JavaScript";
-      case ProjectItemType.ts:
-        return "TypeScript";
-      case ProjectItemType.json:
-        return "General json file";
-      case ProjectItemType.behaviorPackManifestJson:
-        return "Behavior pack manifest";
-      case ProjectItemType.resourcePackManifestJson:
-        return "Resource pack manifest";
-      case ProjectItemType.testJs:
-        return "Test JavaScript file";
-      case ProjectItemType.entityTypeBaseJs:
-        return "Entity type JavaScript";
-      case ProjectItemType.entityTypeBaseTs:
-        return "Entity type TypeScript";
-      case ProjectItemType.entityTypeBehaviorJson:
-        return "Entity type";
-      case ProjectItemType.MCTemplate:
-        return "Minecraft template";
-      case ProjectItemType.MCWorld:
-        return "Minecraft world";
-      case ProjectItemType.MCProject:
-        return "Minecraft project";
-      case ProjectItemType.MCAddon:
-        return "Minecraft addon";
-      case ProjectItemType.MCPack:
-        return "Minecraft pack";
-      case ProjectItemType.zip:
-        return "Minecraft zip";
-      case ProjectItemType.worldFolder:
-        return "Minecraft world";
-      case ProjectItemType.structure:
-        return "Structure";
-      case ProjectItemType.MCFunction:
-        return "Function";
-      case ProjectItemType.tickJson:
-        return "Tick";
-      case ProjectItemType.material:
-        return "Material";
-      case ProjectItemType.materialSetJson:
-        return "Material Set";
-      case ProjectItemType.materialGeometry:
-        return "Geometry";
-      case ProjectItemType.materialFragment:
-        return "Fragment";
-      case ProjectItemType.materialVertex:
-        return "Vertex";
-      case ProjectItemType.cameraJson:
-        return "Camera";
-      case ProjectItemType.catalogIndexJs:
-        return "Catalog index";
-      case ProjectItemType.autoScriptJson:
-        return "Auto-script";
-      case ProjectItemType.worldTest:
-        return "World test";
-      case ProjectItemType.behaviorPackListJson:
-        return "World behavior pack list";
-      case ProjectItemType.resourcePackListJson:
-        return "World resource pack list";
-      case ProjectItemType.animationBehaviorJson:
-        return "Behavior pack animation";
-      case ProjectItemType.animationControllerBehaviorJson:
-        return "Behavior pack animation controller";
-      case ProjectItemType.blockTypeBehaviorJson:
-        return "Block type";
-      case ProjectItemType.blockMaterialsBehaviorJson:
-        return "Block type materials";
-      case ProjectItemType.itemTypeBehaviorJson:
-        return "Item type";
-      case ProjectItemType.lootTableBehaviorJson:
-        return "Loot table";
-      case ProjectItemType.biomeResourceJson:
-        return "Biome resources";
-      case ProjectItemType.blocksCatalogResourceJson:
-        return "Block resource catalog";
-      case ProjectItemType.soundsCatalogResourceJson:
-        return "Sound catalog";
-      case ProjectItemType.animationResourceJson:
-        return "Animation";
-      case ProjectItemType.animationControllerResourceJson:
-        return "Animation controller";
-      case ProjectItemType.entityTypeResourceJson:
-        return "Entity type resources";
-      case ProjectItemType.fogResourceJson:
-        return "Fog";
-      case ProjectItemType.modelGeometryJson:
-        return "Model";
-      case ProjectItemType.particleJson:
-        return "Particle";
-      case ProjectItemType.renderControllerJson:
-        return "Render controller";
-      case ProjectItemType.uiTextureJson:
-        return "UI Texture";
-      case ProjectItemType.uiJson:
-        return "User interface";
-      case ProjectItemType.languagesCatalogResourceJson:
-        return "Language catalog";
-      case ProjectItemType.biomeBehaviorJson:
-        return "Biome";
-      case ProjectItemType.dialogueBehaviorJson:
-        return "Entity dialogue";
-      case ProjectItemType.featureRuleBehaviorJson:
-        return "World feature rule";
-      case ProjectItemType.featureBehaviorJson:
-        return "Feature";
-      case ProjectItemType.functionEventJson:
-        return "Function event";
-      case ProjectItemType.recipeBehaviorJson:
-        return "Recipe";
-      case ProjectItemType.spawnRuleBehaviorJson:
-        return "Spawn rule";
-      case ProjectItemType.tradingBehaviorJson:
-        return "Trading";
-      case ProjectItemType.volumeBehaviorJson:
-        return "Volume";
-      case ProjectItemType.attachableResourceJson:
-        return "Attachable";
-      case ProjectItemType.itemTypeResourceJson:
-        return "Item type resources";
-      case ProjectItemType.materialsResourceJson:
-        return "Materials";
-      case ProjectItemType.musicDefinitionJson:
-        return "Music";
-      case ProjectItemType.soundDefinitionJson:
-        return "Sound";
-      case ProjectItemType.tsconfigJson:
-        return "TypeScript config";
-      case ProjectItemType.jsconfigJson:
-        return "JavaScript config";
-      case ProjectItemType.docfxJson:
-        return "DocFX definition";
-      case ProjectItemType.jsdocJson:
-        return "JSDoc definition";
-      case ProjectItemType.packageJson:
-        return "NPM package definition";
-      case ProjectItemType.packageLockJson:
-        return "NPM package lock definition";
-      case ProjectItemType.docInfoJson:
-        return "Doc info json";
-      case ProjectItemType.scriptTypesJson:
-        return "Types definition";
-      case ProjectItemType.commandSetDefinitionJson:
-        return "Command definition";
-      case ProjectItemType.skinPackManifestJson:
-        return "Skin pack manifest";
-      case ProjectItemType.blockTypeBaseJs:
-        return "Block type base JavaScript";
-      case ProjectItemType.blockTypeBaseTs:
-        return "Block type base TypeScript";
-      case ProjectItemType.image:
-        return "Image";
-      case ProjectItemType.vsCodeLaunchJson:
-        return "VS Code launch file";
-      case ProjectItemType.vsCodeTasksJson:
-        return "VS Code tasks";
-      case ProjectItemType.vsCodeSettingsJson:
-        return "VS Code settings";
-      case ProjectItemType.vsCodeExtensionsJson:
-        return "VS Code extensions";
-      case ProjectItemType.lang:
-        return "Language translations";
-      case ProjectItemType.worldTemplateManifestJson:
-        return "World template manifest";
-      case ProjectItemType.textureSetJson:
-        return "Texture set";
-      case ProjectItemType.lightingJson:
-        return "Lighting";
-      case ProjectItemType.flipBookTexturesJson:
-        return "Flipbook texture set";
-      case ProjectItemType.itemTextureJson:
-        return "Item texture";
-      case ProjectItemType.terrainTextureCatalogResourceJson:
-        return "Terrain texture";
-      case ProjectItemType.globalVariablesJson:
-        return "UI global variables";
-      case ProjectItemType.dataFormJson:
-        return "Form";
-      case ProjectItemType.dimensionJson:
-        return "Dimension";
-      case ProjectItemType.behaviorPackHistoryListJson:
-        return "Behavior pack history";
-      case ProjectItemType.resourcePackHistoryListJson:
-        return "Resource pack history";
-      default:
-        return "Unknown";
-    }
-  }
-
-  static getColorForType(type: ProjectItemType): IColor {
-    return {
-      red: (Math.floor(type / 4) % 4) * 24 + 128,
-      green: (type % 4) * 24 + 128,
-      blue: (Math.floor(type / 16) % 4) * 24 + 128,
-    };
-  }
-
-  static getPluralDescriptionForType(type: ProjectItemType) {
-    switch (type) {
-      case ProjectItemType.js:
-        return "JavaScript";
-      case ProjectItemType.buildProcessedJs:
-        return "Built JavaScript";
-      case ProjectItemType.ts:
-        return "TypeScript";
-      case ProjectItemType.json:
-        return "JSON files";
-      case ProjectItemType.behaviorPackManifestJson:
-        return "Behavior pack manifests";
-      case ProjectItemType.resourcePackManifestJson:
-        return "Resource pack manifests";
-      case ProjectItemType.testJs:
-        return "Test JavaScript";
-      case ProjectItemType.entityTypeBaseJs:
-        return "Entity type JavaScript";
-      case ProjectItemType.entityTypeBaseTs:
-        return "Entity type TypeScript";
-      case ProjectItemType.entityTypeBehaviorJson:
-        return "Entity types";
-      case ProjectItemType.MCTemplate:
-        return "World templates";
-      case ProjectItemType.MCWorld:
-        return "Minecraft worlds";
-      case ProjectItemType.MCProject:
-        return "Minecraft projects";
-      case ProjectItemType.MCAddon:
-        return "Minecraft addons";
-      case ProjectItemType.MCPack:
-        return "Minecraft packs";
-      case ProjectItemType.zip:
-        return "Minecraft zip";
-      case ProjectItemType.worldFolder:
-        return "Minecraft world folders";
-      case ProjectItemType.structure:
-        return "Structures";
-      case ProjectItemType.MCFunction:
-        return "Functions";
-      case ProjectItemType.tickJson:
-        return "Ticks";
-      case ProjectItemType.material:
-        return "Materials";
-      case ProjectItemType.materialSetJson:
-        return "Material sets";
-      case ProjectItemType.materialGeometry:
-        return "Geometries";
-      case ProjectItemType.materialFragment:
-        return "Fragments";
-      case ProjectItemType.materialVertex:
-        return "Vertices";
-      case ProjectItemType.cameraJson:
-        return "Cameras";
-      case ProjectItemType.catalogIndexJs:
-        return "Catalog indexes";
-      case ProjectItemType.autoScriptJson:
-        return "Auto-scripts";
-      case ProjectItemType.worldTest:
-        return "World tests";
-      case ProjectItemType.behaviorPackListJson:
-        return "World behavior pack lists";
-      case ProjectItemType.resourcePackListJson:
-        return "World resource pack lists";
-      case ProjectItemType.animationBehaviorJson:
-        return "Behavior pack animations";
-      case ProjectItemType.animationControllerBehaviorJson:
-        return "Behavior pack animation controllers";
-      case ProjectItemType.blockTypeBehaviorJson:
-        return "Block types";
-      case ProjectItemType.blockMaterialsBehaviorJson:
-        return "Block type materials";
-      case ProjectItemType.itemTypeBehaviorJson:
-        return "Item types";
-      case ProjectItemType.lootTableBehaviorJson:
-        return "Loot tables";
-      case ProjectItemType.biomeResourceJson:
-        return "Biome resources";
-      case ProjectItemType.blocksCatalogResourceJson:
-        return "Block resource catalogs";
-      case ProjectItemType.soundsCatalogResourceJson:
-        return "Sound catalogs";
-      case ProjectItemType.animationResourceJson:
-        return "Animations";
-      case ProjectItemType.animationControllerResourceJson:
-        return "Animation controllers";
-      case ProjectItemType.entityTypeResourceJson:
-        return "Entity type resources";
-      case ProjectItemType.fogResourceJson:
-        return "Fogs";
-      case ProjectItemType.modelGeometryJson:
-        return "Models";
-      case ProjectItemType.particleJson:
-        return "Particles";
-      case ProjectItemType.renderControllerJson:
-        return "Render controllers";
-      case ProjectItemType.uiTextureJson:
-        return "UI Textures";
-      case ProjectItemType.uiJson:
-        return "User interfaces";
-      case ProjectItemType.languagesCatalogResourceJson:
-        return "Language catalogs";
-      case ProjectItemType.biomeBehaviorJson:
-        return "Biomes";
-      case ProjectItemType.dialogueBehaviorJson:
-        return "Entity dialogues";
-      case ProjectItemType.featureRuleBehaviorJson:
-        return "World feature rules";
-      case ProjectItemType.featureBehaviorJson:
-        return "Features";
-      case ProjectItemType.functionEventJson:
-        return "Function events";
-      case ProjectItemType.recipeBehaviorJson:
-        return "Recipes";
-      case ProjectItemType.spawnRuleBehaviorJson:
-        return "Spawn rules";
-      case ProjectItemType.tradingBehaviorJson:
-        return "Trading rules";
-      case ProjectItemType.volumeBehaviorJson:
-        return "Volumes";
-      case ProjectItemType.attachableResourceJson:
-        return "Attachable";
-      case ProjectItemType.itemTypeResourceJson:
-        return "Item type resources";
-      case ProjectItemType.materialsResourceJson:
-        return "Materials";
-      case ProjectItemType.musicDefinitionJson:
-        return "Music";
-      case ProjectItemType.soundDefinitionJson:
-        return "Sounds";
-      case ProjectItemType.tsconfigJson:
-        return "TypeScript configs";
-      case ProjectItemType.jsconfigJson:
-        return "JavaScript configs";
-      case ProjectItemType.docfxJson:
-        return "DocFX definitions";
-      case ProjectItemType.jsdocJson:
-        return "JSDoc definitions";
-      case ProjectItemType.packageJson:
-        return "NPM package definitions";
-      case ProjectItemType.packageLockJson:
-        return "NPM package lock definitions";
-      case ProjectItemType.docInfoJson:
-        return "Doc info files";
-      case ProjectItemType.scriptTypesJson:
-        return "Type definitions";
-      case ProjectItemType.commandSetDefinitionJson:
-        return "Command definitions";
-      case ProjectItemType.skinPackManifestJson:
-        return "Skin pack manifest";
-      case ProjectItemType.blockTypeBaseJs:
-        return "Block type base JavaScript";
-      case ProjectItemType.blockTypeBaseTs:
-        return "Block type base TypeScript";
-      case ProjectItemType.image:
-        return "Images";
-      case ProjectItemType.vsCodeLaunchJson:
-        return "VS Code launch files";
-      case ProjectItemType.vsCodeTasksJson:
-        return "VS Code tasks";
-      case ProjectItemType.vsCodeSettingsJson:
-        return "VS Code settings";
-      case ProjectItemType.vsCodeExtensionsJson:
-        return "VS Code extensions";
-      case ProjectItemType.lang:
-        return "Language translations";
-      case ProjectItemType.worldTemplateManifestJson:
-        return "World template manifest";
-      case ProjectItemType.textureSetJson:
-        return "Texture sets";
-      case ProjectItemType.lightingJson:
-        return "Lighting files";
-      case ProjectItemType.flipBookTexturesJson:
-        return "Flipbook textures";
-      case ProjectItemType.itemTextureJson:
-        return "Item textures";
-      case ProjectItemType.terrainTextureCatalogResourceJson:
-        return "Terrain textures";
-      case ProjectItemType.globalVariablesJson:
-        return "UI global variables";
-      case ProjectItemType.dataFormJson:
-        return "Forms";
-      case ProjectItemType.dimensionJson:
-        return "Dimensions";
-      case ProjectItemType.behaviorPackHistoryListJson:
-        return "Behavior pack histories";
-      case ProjectItemType.resourcePackHistoryListJson:
-        return "Resource pack histories";
-      default:
-        return this.getDescriptionForType(type);
-    }
-  }
   get typeTitle() {
-    return ProjectItem.getDescriptionForType(this._data.itemType);
-  }
-
-  getTypeSortOrder() {
-    switch (this._data.itemType) {
-      case ProjectItemType.resourcePackManifestJson: // sort next to .behaviorPackManifestJson
-        return 510;
-
-      case ProjectItemType.entityTypeBehaviorJson:
-        return 1851;
-
-      // sort all the world-y and container-y stuff next to each other
-      case ProjectItemType.structure:
-      case ProjectItemType.MCWorld:
-      case ProjectItemType.MCTemplate:
-      case ProjectItemType.MCPack:
-      case ProjectItemType.MCProject:
-      case ProjectItemType.zip:
-        return 1600 + this._data.itemType;
-      default:
-        return this._data.itemType * 100;
-    }
+    return ProjectItemUtilities.getDescriptionForType(this._data.itemType);
   }
 
   getFolderGroupingPath() {
@@ -589,7 +175,7 @@ export default class ProjectItem {
 
     let folderStoragePathLower = folderStoragePath.toLowerCase();
 
-    const folderTypeRoots = ProjectItem.getFolderRootsForType(this.itemType);
+    const folderTypeRoots = ProjectItemUtilities.getFolderRootsForType(this.itemType);
 
     folderTypeRoots.push("zip");
 
@@ -605,57 +191,6 @@ export default class ProjectItem {
     folderStoragePath = folderStoragePath.replace(/#/gi, " ").trim();
 
     return folderStoragePath;
-  }
-
-  static getFolderRootsForType(itemType: ProjectItemType) {
-    switch (itemType) {
-      case ProjectItemType.MCFunction:
-        return ["functions"];
-      case ProjectItemType.js:
-      case ProjectItemType.ts:
-        return ["scripts"];
-      case ProjectItemType.entityTypeBehaviorJson:
-        return ["entities"];
-      case ProjectItemType.itemTypeBehaviorJson:
-      case ProjectItemType.itemTypeResourceJson:
-        return ["items"];
-      case ProjectItemType.blockTypeBehaviorJson:
-        return ["blocks"];
-      case ProjectItemType.documentedTypeFolder:
-        return ["script_modules"];
-      case ProjectItemType.commandSetDefinitionJson:
-        return ["command_modules"];
-      case ProjectItemType.lootTableBehaviorJson:
-        return ["loot_tables"];
-      case ProjectItemType.recipeBehaviorJson:
-        return ["recipes"];
-      case ProjectItemType.spawnRuleBehaviorJson:
-        return ["spawn_rules"];
-      case ProjectItemType.particleJson:
-        return ["particles"];
-      case ProjectItemType.structure:
-        return ["structures"];
-      case ProjectItemType.worldFolder:
-      case ProjectItemType.MCWorld:
-        return ["worlds"];
-      case ProjectItemType.cameraJson:
-        return ["cameras"];
-      case ProjectItemType.dimensionJson:
-        return ["dimensions"];
-      case ProjectItemType.fogJson:
-      case ProjectItemType.fogResourceJson:
-        return ["fogs"];
-      case ProjectItemType.dataFormJson:
-        return ["forms"];
-      case ProjectItemType.scriptTypesJson:
-        return ["checkpoint_input"];
-      case ProjectItemType.materialSetJson:
-      case ProjectItemType.materialsResourceJson:
-      case ProjectItemType.material:
-        return ["materials"];
-    }
-
-    return [];
   }
 
   getSchemaPath() {
@@ -736,7 +271,7 @@ export default class ProjectItem {
         return "resource/ui/ui.json";
       case ProjectItemType.tickJson:
         return "behavior/functions/tick.json";
-      case ProjectItemType.flipBookTexturesJson:
+      case ProjectItemType.flipbookTexturesJson:
         return "resource/textures/flipbook_textures.json";
       case ProjectItemType.itemTextureJson:
         return "resource/textures/item_texture.json";
@@ -756,6 +291,14 @@ export default class ProjectItem {
 
   set errorStatus(newErrorStatus: ProjectItemErrorStatus | undefined) {
     this._data.errorStatus = newErrorStatus;
+  }
+
+  get source() {
+    return this._data.source;
+  }
+
+  set source(newSource: string | undefined) {
+    this._data.source = newSource;
   }
 
   get errorMessage() {
@@ -1201,7 +744,7 @@ export default class ProjectItem {
 
     if (!this._isFileContentProcessed && this._file) {
       if (this._data.isAutogenerated === true) {
-        await this.updateAutogenerated();
+        await this.updateAutogenerated(true);
       } else {
         await this._file.loadContent();
       }
@@ -1213,7 +756,7 @@ export default class ProjectItem {
       this._onFileRetrieved.dispatch(this, this._file);
 
       if (this.itemType === ProjectItemType.MCWorld || this.itemType === ProjectItemType.MCTemplate) {
-        const mcworld = await MCWorld.ensureMCWorldOnFile(this._file, this._project, this._handleMCWorldLoaded);
+        const mcworld = await MCWorld.ensureOnFile(this._file, this._project, this._handleMCWorldLoaded);
 
         if (mcworld) {
           this.errorMessage = mcworld.storageErrorMessage;
@@ -1225,7 +768,7 @@ export default class ProjectItem {
           }
         }
       } else if (this.itemType === ProjectItemType.entityTypeBehaviorJson) {
-        await EntityTypeDefinition.ensureEntityTypeOnFile(this._file);
+        await EntityTypeDefinition.ensureOnFile(this._file);
 
         this._fireLoadedEvent();
       } else {
@@ -1307,7 +850,7 @@ export default class ProjectItem {
     }
   }
 
-  async updateAutogenerated() {
+  async updateAutogenerated(contentOnlyUpdate?: boolean) {
     if (!this._isLoading) {
       await this.load();
     }
@@ -1321,7 +864,7 @@ export default class ProjectItem {
 
       this._updateAutogeneratedContent(await this.getCatalogJsContent());
     } else if (this.itemType === ProjectItemType.behaviorPackManifestJson) {
-      this._file.setContent(await this.getBehaviorPackManifestJsonContent());
+      this._file.setContent(await this.getBehaviorPackManifestJsonContent(contentOnlyUpdate));
     } else if (this.itemType === ProjectItemType.entityTypeBaseJs) {
       const content = await this.getGeneratedTypeJavaScript();
 
@@ -1547,7 +1090,7 @@ export default class ProjectItem {
 
           if (jsonFile !== undefined && jsonFile !== null) {
             if (jsonFile.manager === undefined) {
-              await EntityTypeDefinition.ensureEntityTypeOnFile(jsonFile);
+              await EntityTypeDefinition.ensureOnFile(jsonFile);
             }
 
             if (jsonFile.manager) {
@@ -1570,7 +1113,7 @@ export default class ProjectItem {
     return { javaScript: "", typeScript: undefined };
   }
 
-  async getBehaviorPackManifestJsonContent() {
+  async getBehaviorPackManifestJsonContent(contentOnlyUpdate?: boolean) {
     let versionMajor = 0;
     let versionMinor = 0;
     let versionPatch = 1;
@@ -1596,7 +1139,7 @@ export default class ProjectItem {
       scriptFile = pi.file;
     }
 
-    const behaviorPackRootFolder = await this._project.ensureDefaultBehaviorPackFolder();
+    const behaviorPackRootFolder = await this._project.getDefaultBehaviorPackFolder(false, contentOnlyUpdate);
 
     if (scriptFile === undefined) {
       pi = this._project.getFirstItemByType(ProjectItemType.js);
@@ -1613,7 +1156,7 @@ export default class ProjectItem {
       }
     }
 
-    const scriptState = this._project.getScriptState();
+    const scriptState = await this._project.getScriptState();
 
     if (scriptState.hasScript && scriptFile !== null && scriptFile !== undefined && behaviorPackRootFolder !== null) {
       let path = scriptFile.getFolderRelativePath(behaviorPackRootFolder);

@@ -41,6 +41,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.js,
+      undefined,
       false
     );
 
@@ -230,6 +231,7 @@ export default class ProjectItemManager {
 
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.testJs,
+      undefined,
       false
     );
 
@@ -280,6 +282,7 @@ export default class ProjectItemManager {
 
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.MCFunction,
+      undefined,
       false
     );
 
@@ -317,6 +320,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.structure,
+      undefined,
       false
     );
 
@@ -356,6 +360,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.autoScriptJson,
+      undefined,
       false
     );
 
@@ -394,6 +399,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.folder,
       candidateFolderPath,
       ProjectItemType.documentedTypeFolder,
+      undefined,
       false
     );
 
@@ -427,6 +433,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.worldTest,
+      undefined,
       false
     );
 
@@ -466,6 +473,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.worldTest,
+      undefined,
       false
     );
 

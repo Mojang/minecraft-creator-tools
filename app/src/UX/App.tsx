@@ -1,5 +1,5 @@
 import { Component } from "react";
-import ProjectEditor, { ProjectEditorMode, ProjectStatusAreaMode } from "./ProjectEditor";
+import ProjectEditor, { ProjectStatusAreaMode } from "./ProjectEditor";
 import ExporterTool from "./ExporterTool";
 import Home from "./Home";
 import "./App.css";
@@ -15,15 +15,14 @@ import CartoApp, { HostType } from "../app/CartoApp";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { CartoEditorViewMode } from "../app/ICartoData";
-import MCWorld from "../minecraft/MCWorld";
 import ProjectItem from "../app/ProjectItem";
 import Utilities from "../core/Utilities";
 import ZipStorage from "../storage/ZipStorage";
 import ProjectUtilities from "../app/ProjectUtilities";
 import ProjectExporter from "../app/ProjectExporter";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
-import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
 import WebUtilities from "./WebUtilities";
+import { ProjectEditorMode } from "./ProjectEditorUtilities";
 
 export enum NewProjectTemplateType {
   empty,
@@ -82,7 +81,6 @@ export default class App extends Component<AppProps, AppState> {
     this._handlePersistenceUpgraded = this._handlePersistenceUpgraded.bind(this);
     this._newProjectFromGallery = this._newProjectFromGallery.bind(this);
     this._handleProjectGalleryCommand = this._handleProjectGalleryCommand.bind(this);
-    this._handleLocalGalleryCommand = this._handleLocalGalleryCommand.bind(this);
     this._handleHashChange = this._handleHashChange.bind(this);
     this._gitHubAddingMessageUpdater = this._gitHubAddingMessageUpdater.bind(this);
     this._getFileContent = this._getFileContent.bind(this);
@@ -97,8 +95,6 @@ export default class App extends Component<AppProps, AppState> {
     if (this.props.saveAllRetriever) {
       this.props.saveAllRetriever(this._saveAll);
     }
-
-    window.addEventListener("hashchange", this._handleHashChange, false);
 
     if (CartoApp.carto === undefined) {
       this.state = {
@@ -536,7 +532,19 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   componentDidMount() {
+    if (typeof window !== "undefined") {
+      window.addEventListener("hashchange", this._handleHashChange, false);
+    }
+
     this._isMountedInternal = true;
+  }
+
+  componentWillUnmount() {
+    if (typeof window !== "undefined") {
+      window.removeEventListener("hashchange", this._handleHashChange, false);
+    }
+
+    this._isMountedInternal = false;
   }
 
   private async _handleNewProject(
@@ -648,7 +656,7 @@ export default class App extends Component<AppProps, AppState> {
     });
   }
 
-  private async _handleNewProjectFromFolderInstance(folder: IFolder, name?: string) {
+  private async _handleNewProjectFromFolderInstance(folder: IFolder, name?: string, isDocumentationProject?: boolean) {
     if (this.state.carto === undefined) {
       return;
     }
@@ -656,6 +664,10 @@ export default class App extends Component<AppProps, AppState> {
     const newProject = new Project(this.state.carto, name ? name : folder.name, null);
 
     newProject.setProjectFolder(folder);
+
+    if (isDocumentationProject) {
+      await ProjectUtilities.prepareProjectForDocumentation(newProject);
+    }
 
     await newProject.inferProjectItemsFromFiles();
 
@@ -968,124 +980,6 @@ export default class App extends Component<AppProps, AppState> {
     });
   }
 
-  private async _newProjectFromMinecraftFolder(folderType: LocalFolderType, folder: IFolder) {
-    if (this.state === null || this.state.carto === undefined) {
-      return;
-    }
-
-    let proposedProjectName = StorageUtilities.getBaseFromName(folder.fullPath);
-    const mcw = await MCWorld.ensureMCWorldOnFolder(folder);
-
-    if (mcw && mcw.name) {
-      proposedProjectName = mcw.name;
-    }
-
-    const newProject = await this.state.carto.ensureProjectFromFolder(folder.fullPath, proposedProjectName);
-
-    newProject.save();
-    this.state.carto.save();
-
-    this._updateWindowTitle(AppMode.project, newProject);
-    this.initProject(newProject);
-
-    this.setState({
-      mode: AppMode.project,
-      isPersisted: this.state.isPersisted,
-      activeProject: newProject,
-    });
-  }
-
-  private async _ensureProjectFromMinecraftFolder(folderType: LocalFolderType, folder: IFolder, isReadOnly: boolean) {
-    const carto = CartoApp.carto;
-
-    if (this.state === null || carto === undefined) {
-      return;
-    }
-
-    this._loadingMessage = "opening folder " + folder.fullPath + "...";
-
-    let newMode = AppMode.project;
-
-    if (isReadOnly) {
-      newMode = AppMode.projectReadOnly;
-    }
-
-    this._updateWindowTitle(AppMode.loading, null);
-
-    this.setState({
-      mode: AppMode.loading,
-      activeProject: null,
-      isPersisted: this.state.isPersisted,
-      loadingMessage: this._loadingMessage,
-    });
-
-    await carto.load();
-
-    const projects = carto.projects;
-    const canonPath = StorageUtilities.canonicalizePath(folder.fullPath);
-
-    for (let i = 0; i < projects.length; i++) {
-      const proj = projects[i];
-
-      await proj.loadFromFile();
-
-      if (proj.originalFullPath === canonPath) {
-        this._updateWindowTitle(newMode, proj);
-        this.initProject(proj);
-
-        this.setState({
-          mode: newMode,
-          isPersisted: this.state.isPersisted,
-          activeProject: proj,
-        });
-
-        return;
-      }
-    }
-
-    const folderName = StorageUtilities.getLeafName(canonPath);
-
-    const operId = await carto.notifyOperationStarted("Creating new project from '" + canonPath + "'");
-
-    if (folderName !== undefined) {
-      let projName = "my-" + folderName;
-
-      const newProjectName = await carto.getNewProjectName(projName);
-
-      let newFocus = ProjectFocus.singleBehaviorPack;
-
-      if (folderType === LocalFolderType.world) {
-        newFocus = ProjectFocus.world;
-      }
-
-      projName = projName.replace(/_/gi, "");
-      projName = projName.replace(/\//gi, "");
-      projName = projName.replace(/\\/gi, "");
-      projName = projName.replace(/ /gi, "");
-
-      const newProject = await carto.createNewProject(newProjectName, folder.fullPath, newFocus, false);
-
-      await newProject.ensureProjectFolder();
-
-      await newProject.inferProjectItemsFromFiles();
-
-      newProject.save();
-
-      carto.save();
-
-      this._updateWindowTitle(newMode, newProject);
-      this.initProject(newProject);
-
-      this.setState({
-        mode: newMode,
-        isPersisted: this.state.isPersisted,
-        activeProject: newProject,
-      });
-    }
-
-    await carto.notifyOperationEnded(operId, "New project '" + folderName + "' created. Have fun!");
-  }
-
   private initProject(newProject: Project) {
     newProject.onItemChanged.subscribe(this._handleItemChanged);
     newProject.onSaved.subscribe(this._handleSaved);
@@ -1130,14 +1024,6 @@ export default class App extends Component<AppProps, AppState> {
         break;
       case GalleryProjectCommand.forkProject:
         alert("Forking projects is not implemented... yet.");
-        break;
-    }
-  }
-
-  private _handleLocalGalleryCommand(command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) {
-    switch (command) {
-      case LocalGalleryCommand.openProjectDirect:
-        this._newProjectFromMinecraftFolder(folderType, folder);
         break;
     }
   }
@@ -1195,14 +1081,6 @@ export default class App extends Component<AppProps, AppState> {
           <div className="app-subloading">{additionalLoadingMessage}</div>
         </div>
       );
-    } else if (this.state.mode === AppMode.exporterTool) {
-      interior = (
-        <ExporterTool
-          carto={this.state.carto}
-          onModeChangeRequested={this._handleModeChangeRequested}
-          onProjectSelected={this._handleProjectSelected}
-        />
-      );
     } else if (this.state.mode === AppMode.home) {
       interior = (
         <Home
@@ -1212,11 +1090,18 @@ export default class App extends Component<AppProps, AppState> {
           errorMessage={this.state.errorMessage}
           onPersistenceUpgraded={this._handlePersistenceUpgraded}
           onGalleryItemCommand={this._handleProjectGalleryCommand}
-          onLocalGalleryItemCommand={this._handleLocalGalleryCommand}
           onModeChangeRequested={this._handleModeChangeRequested}
           onNewProjectSelected={this._handleNewProject}
           onNewProjectFromFolderSelected={this._handleNewProjectFromFolder}
           onNewProjectFromFolderInstanceSelected={this._handleNewProjectFromFolderInstance}
+          onProjectSelected={this._handleProjectSelected}
+        />
+      );
+    } else if (this.state.mode === AppMode.exporterTool) {
+      interior = (
+        <ExporterTool
+          carto={this.state.carto}
+          onModeChangeRequested={this._handleModeChangeRequested}
           onProjectSelected={this._handleProjectSelected}
         />
       );
@@ -1265,7 +1150,6 @@ export default class App extends Component<AppProps, AppState> {
             carto={this.state.carto}
             errorMessage={error}
             onGalleryItemCommand={this._handleProjectGalleryCommand}
-            onLocalGalleryItemCommand={this._handleLocalGalleryCommand}
             onModeChangeRequested={this._handleModeChangeRequested}
             onNewProjectSelected={this._handleNewProject}
             onNewProjectFromFolderSelected={this._handleNewProjectFromFolder}

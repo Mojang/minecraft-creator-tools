@@ -28,7 +28,8 @@
   grid-column: 2;
   grid-row: 1;
   text-align: right;
-  padding-top: 8px;
+  max-width: 140px;
+  padding-top: 7px;
   padding-bottom: 6px;
   padding-left: 8px;
 }
@@ -38,38 +39,90 @@
   grid-column-end: 3;
   overflow-y: auto;
   overflow-x: hidden;
-  max-width: 301px;
-}
-
-.pil-list LI {
-  max-width: 300px;
 }
 
 .pil-fixedLine {
-  padding-left: 10px;
+  padding-left: 17px;
   height: 32px;
   padding-top: 6px;
+}
+
+.pil-list .fr {
+  margin-right: 0px;
 }
 
 .pil-list UL LI {
   padding-left: 0px;
   min-height: auto;
+  padding-right: 0px;
+}
+
+.pil-list .hl {
+  margin-right: 0px;
 }
 
 .pil-item {
   display: grid;
-  min-width: 282px;
-  max-width: 282px;
   height: 36px;
   padding-bottom: 0px;
   margin-bottom: 0px;
-  grid-template-columns: 244px 38px;
+  grid-template-columns: 10px 1fr 38px;
   font-size: 0.875rem;
 }
 
-.pil-itemLabel {
+.pil-itemTypeHeader {
+  display: grid;
+  height: 36px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  grid-template-columns: 24px 1fr 38px;
+  font-size: 0.875rem;
+}
+
+.pil-pathHeader {
+  display: grid;
+  height: 36px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  grid-template-columns: 10px 20px 25px 1fr;
+  font-size: 0.875rem;
+}
+
+.pil-itemTypeCollapsedToggle {
   grid-column: 1;
+  padding: 8px;
+}
+
+.pil-headerLabel {
+  grid-column: 2;
   text-overflow: ellipsis;
+}
+
+.pil-storagePathCollapsedToggle {
+  grid-column: 2;
+  padding: 8px;
+}
+
+.pil-storagePathIcon {
+  grid-column: 3;
+  padding-top: 8px;
+  padding-left: 6px;
+}
+
+.pil-storagePathLabel {
+  grid-column: 4;
+  text-overflow: ellipsis;
+}
+
+.pil-itemTypeTag {
+  grid-column: 1;
+}
+
+.pil-itemLabel {
+  grid-column: 2;
+  text-overflow: ellipsis;
+  padding-left: 6px;
+  padding-top: 1px;
 }
 
 .pil-contextMenuButton button {
@@ -102,12 +155,9 @@
 .pil-name {
   overflow-x: hidden;
   width: 100%;
-  padding-top: 7px;
-  padding-bottom: 6px;
-  max-width: 183px;
-  min-width: 183px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   margin-right: 2px;
-  padding-left: 10px;
   text-overflow: clip;
   z-index: 90;
   display: block;

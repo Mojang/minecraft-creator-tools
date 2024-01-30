@@ -104,7 +104,6 @@ export default class Project {
   public differencesFromGitHub?: DifferenceSet;
 
   #projectFolder: IFolder | null;
-  #accessoryFolders: IFolder[] | null = null;
   #projectCabinetFile: IFile | null = null;
 
   #buildFolder: IFolder | null = null;
@@ -135,7 +134,10 @@ export default class Project {
   #isProjectFolderEnsured = false;
   #useProjectNameInProjectStorage = false;
 
-  #accessoryFiles: string[] | undefined;
+  #accessoryFilePaths: string[] | undefined;
+  #accessoryFoldersForFilePaths: IFolder[] | null = null;
+
+  #accessoryFolders: IFolder[] | null = null;
 
   private _onPropertyChanged = new EventDispatcher<Project, string>();
   private _onLoaded = new EventDispatcher<Project, Project>();
@@ -162,12 +164,20 @@ export default class Project {
     return this.#file;
   }
 
-  public get accessoryFiles() {
-    return this.#accessoryFiles;
+  public get accessoryFolders() {
+    return this.#accessoryFolders;
   }
 
-  public set accessoryFiles(files: string[] | undefined) {
-    this.#accessoryFiles = files;
+  public set accessoryFolders(folders: IFolder[] | null) {
+    this.#accessoryFolders = folders;
+  }
+
+  public get accessoryFilePaths() {
+    return this.#accessoryFilePaths;
+  }
+
+  public set accessoryFilePaths(files: string[] | undefined) {
+    this.#accessoryFilePaths = files;
   }
 
   public get infoSet() {
@@ -316,6 +326,22 @@ export default class Project {
     return this.#data.worldSettings;
   }
 
+  public ensureWorldSettings() {
+    if (this.#data.worldSettings === undefined) {
+      if (this.carto.worldSettings) {
+        this.#data.worldSettings = this.carto.worldSettings;
+      } else {
+        this.initializeWorldSettings();
+
+        if (this.#data.worldSettings === undefined) {
+          throw new Error();
+        }
+      }
+    }
+
+    return this.#data.worldSettings;
+  }
+
   public get usesCustomWorldSettings() {
     return this.#data.usesCustomWorldSettings;
   }
@@ -384,8 +410,8 @@ export default class Project {
     return this.#projectFolder;
   }
 
-  get accessoryFolders(): IFolder[] | null {
-    return this.#accessoryFolders;
+  get accessoryFoldersForFilePaths(): IFolder[] | null {
+    return this.#accessoryFoldersForFilePaths;
   }
 
   get localFolderPath(): string | undefined {
@@ -549,6 +575,7 @@ export default class Project {
           ProjectItemStorageType.folder,
           folder.name,
           ProjectItemType.worldFolder,
+          undefined,
           false
         );
       }
@@ -579,6 +606,7 @@ export default class Project {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.structure,
+          undefined,
           false
         );
       }
@@ -605,6 +633,7 @@ export default class Project {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.MCWorld,
+          undefined,
           false
         );
 
@@ -633,6 +662,7 @@ export default class Project {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.MCProject,
+          undefined,
           false
         );
 
@@ -661,6 +691,7 @@ export default class Project {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.MCTemplate,
+          undefined,
           false
         );
 
@@ -689,6 +720,7 @@ export default class Project {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.MCAddon,
+          undefined,
           false
         );
 
@@ -712,7 +744,14 @@ export default class Project {
       const relPath = contentFile.getFolderRelativePath(this.projectFolder as IFolder);
 
       if (relPath !== undefined) {
-        this.ensureItemByStoragePath(relPath, ProjectItemStorageType.singleFile, file.name, ProjectItemType.zip, false);
+        this.ensureItemByStoragePath(
+          relPath,
+          ProjectItemStorageType.singleFile,
+          file.name,
+          ProjectItemType.zip,
+          undefined,
+          false
+        );
 
         await this._inferProjectItemsFromZipFile(relPath, contentFile, false);
       }
@@ -739,6 +778,7 @@ export default class Project {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.MCPack,
+          undefined,
           false
         );
 
@@ -765,6 +805,7 @@ export default class Project {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.structure,
+          undefined,
           false
         );
       }
@@ -1228,6 +1269,25 @@ export default class Project {
       this._onPropertyChanged.dispatch(this, "defaultResourcePackUniqueId");
     }
   }
+  get defaultResourcePackVersion(): number[] {
+    if (this.#data.defaultResourcePackVersion === undefined) {
+      const vMajor = this.versionMajor ? this.versionMajor : 0;
+      const vMinor = this.versionMinor ? this.versionMinor : 0;
+      const vPatch = this.versionPatch ? this.versionPatch : 1;
+
+      return [vMajor, vMinor, vPatch];
+    }
+
+    return this.#data.defaultResourcePackVersion;
+  }
+
+  set defaultResourcePackVersion(newVersion: number[]) {
+    if (this.#data.defaultResourcePackVersion !== newVersion) {
+      this.#data.defaultResourcePackVersion = newVersion;
+
+      this._onPropertyChanged.dispatch(this, "defaultResourcePackVersion");
+    }
+  }
 
   get defaultBehaviorPackUniqueId(): string {
     return this.#data.defaultBehaviorPackUniqueId;
@@ -1238,6 +1298,26 @@ export default class Project {
       this.#data.defaultBehaviorPackUniqueId = newId;
 
       this._onPropertyChanged.dispatch(this, "defaultBehaviorPackUniqueId");
+    }
+  }
+
+  get defaultBehaviorPackVersion(): number[] {
+    if (this.#data.defaultBehaviorPackVersion === undefined) {
+      const vMajor = this.versionMajor ? this.versionMajor : 0;
+      const vMinor = this.versionMinor ? this.versionMinor : 0;
+      const vPatch = this.versionPatch ? this.versionPatch : 1;
+
+      return [vMajor, vMinor, vPatch];
+    }
+
+    return this.#data.defaultBehaviorPackVersion;
+  }
+
+  set defaultBehaviorPackVersion(newVersion: number[]) {
+    if (this.#data.defaultBehaviorPackVersion !== newVersion) {
+      this.#data.defaultBehaviorPackVersion = newVersion;
+
+      this._onPropertyChanged.dispatch(this, "defaultBehaviorPackVersion");
     }
   }
 
@@ -1280,6 +1360,7 @@ export default class Project {
               ProjectItemStorageType.singleFile,
               StorageUtilities.getLeafName(spath),
               ProjectItemType.buildProcessedJs,
+              undefined,
               false
             );
 
@@ -1413,7 +1494,15 @@ export default class Project {
         );*/
 
         if (this.#projectFolder) {
-          await this._inferProjectItemsFromFolder(this.#projectFolder, "", FolderContext.unknown, 0, force);
+          await this._inferProjectItemsFromFolder(
+            this.#projectFolder,
+            "",
+            FolderContext.unknown,
+            this.#projectFolder,
+            0,
+            undefined,
+            force
+          );
         }
 
         await this.carto.notifyOperationEnded(
@@ -1426,6 +1515,20 @@ export default class Project {
       } else {
         await this.inferProjectItemsFromFilesRootFolder();
       }
+
+      if (this.#accessoryFolders) {
+        for (let i = 0; i < this.#accessoryFolders.length; i++) {
+          await this._inferProjectItemsFromFolder(
+            this.#accessoryFolders[i],
+            "",
+            FolderContext.unknown,
+            this.#accessoryFolders[i],
+            0,
+            "o." + this.#accessoryFolders[i].name,
+            force
+          );
+        }
+      }
     }
   }
 
@@ -1437,8 +1540,17 @@ export default class Project {
       StatusTopic.projectLoad
     );
 
-    await this._inferProjectItemsFromFolder(rootFolder, "", FolderContext.unknown, 0, force);
-
+    if (this.#projectFolder) {
+      await this._inferProjectItemsFromFolder(
+        rootFolder,
+        "",
+        FolderContext.unknown,
+        this.#projectFolder,
+        0,
+        undefined,
+        force
+      );
+    }
     await this.carto.notifyOperationEnded(
       operId,
       "Done loading project files for '" + this.name + "' from folder '" + rootFolder.fullPath + "'",
@@ -1609,7 +1721,9 @@ export default class Project {
     folder: IFolder,
     fileSystemPrefix: string,
     folderContext: FolderContext,
+    rootFolder: IFolder,
     depth: number,
+    source?: string,
     force?: boolean
   ) {
     if (this.projectFolder === null || (folder.name.startsWith(".") && !folder.name.startsWith(".vscode"))) {
@@ -1631,7 +1745,11 @@ export default class Project {
       folderPathA.indexOf("/checkpoint_input") >= 0 ||
       folderPathA.indexOf("/metadata") >= 0 ||
       folderPathA.indexOf("/type_definitions") >= 0 ||
-      folderPathA.indexOf("/typedefs") >= 0
+      folderPathA.indexOf("/typedefs") >= 0 ||
+      folderPathA.indexOf("/script_modules/") >= 0 ||
+      folderPathA.indexOf("/vanilladata_modules/") >= 0 ||
+      folderPathA.indexOf("/engine_modules/") >= 0 ||
+      folderPathA.indexOf("/command_modules/") >= 0
     ) {
       folderContext = FolderContext.typeDefs;
     } else if (folderPathA.indexOf("/data/") >= 0 || folderPathA.indexOf("/forms/") >= 0) {
@@ -1648,10 +1766,15 @@ export default class Project {
       folderContext = FolderContext.skinPack;
     } else if (folderPathA.indexOf("/world") >= 0 && folderContext === FolderContext.unknown) {
       folderContext = FolderContext.worldOrWorldTemplate;
-    } else if (folderPathA.indexOf("/docs") >= 0) {
+    } else if (
+      folderPathA.indexOf("/docs/") >= 0 ||
+      (folderPathA.indexOf("/@minecraft/") >= 0 &&
+        folderPathA.indexOf("/mojang-commands/") >= 0 &&
+        folderContext === FolderContext.unknown)
+    ) {
       folderContext = FolderContext.docs;
 
-      if (folderPathA === "/docs/") {
+      if (folderPathA === "/docs/" || this.#docsContainer === null) {
         this.#docsContainer = folder;
       }
     }
@@ -1708,7 +1831,7 @@ export default class Project {
             projectPath = fileSystemPrefix + candidateFile.fullPath;
             pi = this.getItemByStoragePath(projectPath);
           } else {
-            const frPath = candidateFile.getFolderRelativePath(this.projectFolder);
+            const frPath = candidateFile.getFolderRelativePath(rootFolder);
 
             if (frPath !== undefined) {
               projectPath = StorageUtilities.canonicalizePath(frPath);
@@ -1721,6 +1844,7 @@ export default class Project {
             const fileExtension = candidateFile.type;
             const baseName = StorageUtilities.getBaseFromName(candidateFile.name);
             const folderPath = StorageUtilities.canonicalizePath(StorageUtilities.getPath(projectPath));
+            const folderPathLower = folderPath.toLowerCase();
 
             if (canonFileName === "manifest.json" || canonFileName === "pack_manifest.json") {
               if (folderContext === FolderContext.worldOrWorldTemplate) {
@@ -1803,6 +1927,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 newPiType,
+                source,
                 false,
                 candidateFile,
                 tag
@@ -1836,6 +1961,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.vsCodeTasksJson,
+                source,
                 false,
                 candidateFile
               );
@@ -1845,6 +1971,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.vsCodeLaunchJson,
+                source,
                 false,
                 candidateFile
               );
@@ -1854,6 +1981,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.vsCodeSettingsJson,
+                source,
                 false,
                 candidateFile
               );
@@ -1863,6 +1991,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.vsCodeExtensionsJson,
+                source,
                 false,
                 candidateFile
               );
@@ -1872,6 +2001,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.tickJson,
+                source,
                 false,
                 candidateFile
               );
@@ -1881,6 +2011,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.structure,
+                source,
                 false,
                 candidateFile
               );
@@ -1890,6 +2021,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.MCFunction,
+                source,
                 false,
                 candidateFile
               );
@@ -1899,6 +2031,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.material,
+                source,
                 false,
                 candidateFile
               );
@@ -1908,6 +2041,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.materialVertex,
+                source,
                 false,
                 candidateFile
               );
@@ -1917,6 +2051,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.materialFragment,
+                source,
                 false,
                 candidateFile
               );
@@ -1926,6 +2061,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.materialGeometry,
+                source,
                 false,
                 candidateFile
               );
@@ -1940,6 +2076,7 @@ export default class Project {
                 ProjectItemStorageType.folder,
                 candidateFile.name,
                 ProjectItemType.worldFolder,
+                source,
                 false,
                 candidateFile
               );
@@ -1949,6 +2086,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.js,
+                source,
                 false,
                 candidateFile
               );
@@ -1958,6 +2096,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.ts,
+                source,
                 false,
                 candidateFile
               );
@@ -1967,6 +2106,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.MCWorld,
+                source,
                 false,
                 candidateFile
               );
@@ -1978,6 +2118,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.MCProject,
+                source,
                 false,
                 candidateFile
               );
@@ -1989,6 +2130,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.MCTemplate,
+                source,
                 false,
                 candidateFile
               );
@@ -2000,6 +2142,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.MCAddon,
+                source,
                 false,
                 candidateFile
               );
@@ -2011,6 +2154,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.MCPack,
+                source,
                 false,
                 candidateFile
               );
@@ -2022,6 +2166,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.zip,
+                source,
                 false,
                 candidateFile
               );
@@ -2034,11 +2179,36 @@ export default class Project {
               fileExtension === "jpeg" ||
               fileExtension === "tga"
             ) {
+              let imageType = ProjectItemType.image;
+
+              if (folderPathLower.indexOf("/marketing art/") >= 0) {
+                imageType = ProjectItemType.marketingAssetImage;
+              } else if (folderPathLower.indexOf("/store art/") >= 0) {
+                imageType = ProjectItemType.storeAssetImage;
+              } else if (folderPathLower.indexOf("/textures/ui/") >= 0) {
+                imageType = ProjectItemType.uiTexture;
+              } else if (baseName === "pack_icon") {
+                imageType = ProjectItemType.iconImage;
+              } else if (folderPathLower.indexOf("/textures/") >= 0) {
+                imageType = ProjectItemType.texture;
+              }
+
               this.ensureItemByStoragePath(
                 projectPath,
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
-                ProjectItemType.image,
+                imageType,
+                source,
+                false,
+                candidateFile
+              );
+            } else if (fileExtension === "ogg" || fileExtension === "mp3" || fileExtension === "wav") {
+              this.ensureItemByStoragePath(
+                projectPath,
+                ProjectItemStorageType.singleFile,
+                candidateFile.name,
+                ProjectItemType.audio,
+                source,
                 false,
                 candidateFile
               );
@@ -2048,6 +2218,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.lang,
+                source,
                 false,
                 candidateFile
               );
@@ -2055,62 +2226,73 @@ export default class Project {
               let newJsonType = ProjectItemType.json;
               let itemName = candidateFile.name;
 
-              if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/loot_tables/") >= 0) {
+              if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/loot_tables/") >= 0) {
                 newJsonType = ProjectItemType.lootTableBehaviorJson;
-              } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/dialogue/") >= 0) {
+              } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/dialogue/") >= 0) {
                 newJsonType = ProjectItemType.dialogueBehaviorJson;
-              } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/recipes/") >= 0) {
+              } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/recipes/") >= 0) {
                 newJsonType = ProjectItemType.recipeBehaviorJson;
-              } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/spawn_rules/") >= 0) {
+              } else if (
+                folderContext === FolderContext.behaviorPack &&
+                folderPathLower.indexOf("/spawn_rules/") >= 0
+              ) {
                 newJsonType = ProjectItemType.spawnRuleBehaviorJson;
-              } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/cameras/") >= 0) {
+              } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/cameras/") >= 0) {
                 newJsonType = ProjectItemType.cameraJson;
-              } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/trading/") >= 0) {
+              } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/trading/") >= 0) {
                 newJsonType = ProjectItemType.tradingBehaviorJson;
               } else if (
                 folderContext === FolderContext.behaviorPack &&
-                folderPath.indexOf("/animation_controllers/") >= 0
+                folderPathLower.indexOf("/animation_controllers/") >= 0
               ) {
                 newJsonType = ProjectItemType.animationControllerBehaviorJson;
-              } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/animations/") >= 0) {
+              } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/animations/") >= 0) {
                 newJsonType = ProjectItemType.animationBehaviorJson;
               } else if (
                 folderContext === FolderContext.resourcePack &&
-                (folderPath.indexOf("/models/") >= 0 || baseName.endsWith(".geo"))
+                (folderPathLower.indexOf("/models/") >= 0 ||
+                  baseName.endsWith(".geo") ||
+                  baseName.endsWith(".geometry"))
               ) {
                 newJsonType = ProjectItemType.modelGeometryJson;
-              } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/dimension/") >= 0) {
+              } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/dimension/") >= 0) {
                 newJsonType = ProjectItemType.dimensionJson;
-              } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/features/") >= 0) {
+              } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/features/") >= 0) {
                 newJsonType = ProjectItemType.featureBehaviorJson;
-              } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/feature_rules/") >= 0) {
+              } else if (
+                folderContext === FolderContext.behaviorPack &&
+                folderPathLower.indexOf("/feature_rules/") >= 0
+              ) {
                 newJsonType = ProjectItemType.featureRuleBehaviorJson;
               } else if (
                 folderContext === FolderContext.resourcePack &&
-                folderPath.indexOf("/animation_controllers/") >= 0
+                folderPathLower.indexOf("/animation_controllers/") >= 0
               ) {
                 newJsonType = ProjectItemType.animationControllerResourceJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPath.indexOf("/animations/") >= 0) {
+              } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/animations/") >= 0) {
                 newJsonType = ProjectItemType.animationResourceJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPath.indexOf("/attachables/") >= 0) {
+              } else if (
+                folderContext === FolderContext.resourcePack &&
+                folderPathLower.indexOf("/attachables/") >= 0
+              ) {
                 newJsonType = ProjectItemType.attachableResourceJson;
               } else if (
                 folderContext === FolderContext.resourcePack &&
-                (folderPath.indexOf("/entities/") >= 0 || folderPath.indexOf("/entity/") >= 0)
+                (folderPathLower.indexOf("/entities/") >= 0 || folderPathLower.indexOf("/entity/") >= 0)
               ) {
                 newJsonType = ProjectItemType.entityTypeResourceJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPath.indexOf("/fogs/") >= 0) {
+              } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/fogs/") >= 0) {
                 newJsonType = ProjectItemType.fogResourceJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPath.indexOf("/particles/") >= 0) {
+              } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/particles/") >= 0) {
                 newJsonType = ProjectItemType.particleJson;
               } else if (
                 folderContext === FolderContext.resourcePack &&
-                folderPath.indexOf("/render_controllers/") >= 0
+                folderPathLower.indexOf("/render_controllers/") >= 0
               ) {
                 newJsonType = ProjectItemType.renderControllerJson;
               } else if (
                 (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                projectPath.endsWith("terrain_texture.json")
+                (projectPath.endsWith("terrain_texture.json") || projectPath.endsWith("terrain_textures.json"))
               ) {
                 newJsonType = ProjectItemType.terrainTextureCatalogResourceJson;
               } else if (
@@ -2122,45 +2304,65 @@ export default class Project {
                 (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
                 projectPath.endsWith("flipbook_textures.json")
               ) {
-                newJsonType = ProjectItemType.flipBookTexturesJson;
+                newJsonType = ProjectItemType.flipbookTexturesJson;
               } else if (
                 (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                projectPath.endsWith("item_texture.json")
+                (projectPath.endsWith("item_texture.json") || projectPath.endsWith("item_textures.json"))
               ) {
                 newJsonType = ProjectItemType.itemTextureJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPath.indexOf("/materials/") >= 0) {
+              } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/materials/") >= 0) {
                 newJsonType = ProjectItemType.materialSetJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPath.indexOf("/sounds/") >= 0) {
+              } else if (
+                folderContext === FolderContext.resourcePack &&
+                folderPathLower.indexOf("/sounds/") >= 0 &&
+                baseName === "sound_definitions"
+              ) {
                 newJsonType = ProjectItemType.soundDefinitionJson;
-              } else if (folderPath.indexOf("/texts/") >= 0 || baseName === "languages") {
+              } else if (
+                folderContext === FolderContext.resourcePack &&
+                folderPathLower.indexOf("/sounds/") >= 0 &&
+                baseName === "music_definitions"
+              ) {
+                newJsonType = ProjectItemType.musicDefinitionJson;
+              } else if (folderPathLower.indexOf("/texts/") >= 0 || baseName === "languages") {
                 newJsonType = ProjectItemType.languagesCatalogResourceJson;
               } else if (
                 (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                folderPath.indexOf("/textures/ui/") >= 0
+                folderPathLower.indexOf("/textures/ui/") >= 0
               ) {
                 newJsonType = ProjectItemType.uiTextureJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPath.indexOf("/texture_sets/") >= 0) {
+              } else if (
+                folderContext === FolderContext.resourcePack &&
+                folderPathLower.indexOf("/texture_sets/") >= 0
+              ) {
                 newJsonType = ProjectItemType.textureSetJson;
               } else if (
                 (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                folderPath.indexOf("/lighting/") >= 0
+                folderPathLower.indexOf("/lighting/") >= 0
               ) {
                 newJsonType = ProjectItemType.lightingJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPath.indexOf("/ui/") >= 0) {
+              } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/ui/") >= 0) {
                 newJsonType = ProjectItemType.uiJson;
+              } else if (folderContext === FolderContext.docs && baseName === "example_files") {
+                newJsonType = ProjectItemType.fileListJson;
               } else if (folderContext === FolderContext.resourcePack && baseName === "biomes_client") {
                 newJsonType = ProjectItemType.biomeResourceJson;
               } else if (
                 (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
                 baseName === "blocks"
               ) {
-                newJsonType = ProjectItemType.blockTypeResourceJson;
+                newJsonType = ProjectItemType.blocksCatalogResourceJson;
+              } else if (
+                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                (projectPath.endsWith("texture_list.json") || projectPath.endsWith("textures_list.json"))
+              ) {
+                newJsonType = ProjectItemType.textureListJson;
               } else if (
                 (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
                 projectPath.endsWith("texture_set.json")
               ) {
                 newJsonType = ProjectItemType.textureSetJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPath.indexOf("/items/") >= 0) {
+              } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/items/") >= 0) {
                 newJsonType = ProjectItemType.itemTypeResourceJson;
               } else if (folderContext === FolderContext.resourcePack && baseName === "sounds") {
                 newJsonType = ProjectItemType.soundsCatalogResourceJson;
@@ -2186,26 +2388,35 @@ export default class Project {
                 newJsonType = ProjectItemType.packageLockJson;
               } else if (
                 folderContext === FolderContext.behaviorPack &&
-                (folderPath.indexOf("/entities/") >= 0 || folderPath.indexOf("/entity/") >= 0)
+                (folderPathLower.indexOf("/entities/") >= 0 || folderPathLower.indexOf("/entity/") >= 0)
               ) {
                 newJsonType = ProjectItemType.entityTypeBehaviorJson;
-              } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/items/") >= 0) {
+              } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/items/") >= 0) {
                 newJsonType = ProjectItemType.itemTypeBehaviorJson;
-              } else if (folderContext === FolderContext.behaviorPack && folderPath.indexOf("/blocks/") >= 0) {
+              } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/blocks/") >= 0) {
                 newJsonType = ProjectItemType.blockTypeBehaviorJson;
               } else if (folderContext === FolderContext.docs && baseName === "info") {
                 newJsonType = ProjectItemType.docInfoJson;
                 this.#role = ProjectRole.documentation;
 
                 itemName = StorageUtilities.getLeafName(folderPath);
-              } else if (folderContext === FolderContext.typeDefs && folderPath.indexOf("/command") >= 0) {
+              } else if (folderContext === FolderContext.typeDefs && folderPathLower.indexOf("/command_modules") >= 0) {
                 newJsonType = ProjectItemType.commandSetDefinitionJson;
                 this.#role = ProjectRole.documentation;
-              } else if (folderContext === FolderContext.metaData && folderPath.indexOf("/forms") >= 0) {
+              } else if (folderContext === FolderContext.metaData && folderPathLower.indexOf("/forms") >= 0) {
                 newJsonType = ProjectItemType.dataFormJson;
                 this.#role = ProjectRole.meta;
-              } else if (folderContext === FolderContext.typeDefs) {
+              } else if (folderContext === FolderContext.typeDefs && folderPathLower.indexOf("/script_modules") >= 0) {
                 newJsonType = ProjectItemType.scriptTypesJson;
+                this.#role = ProjectRole.documentation;
+              } else if (
+                folderContext === FolderContext.typeDefs &&
+                folderPathLower.indexOf("/vanilladata_modules") >= 0
+              ) {
+                newJsonType = ProjectItemType.vanillaDataJson;
+                this.#role = ProjectRole.documentation;
+              } else if (folderContext === FolderContext.typeDefs && folderPathLower.indexOf("/engine_modules") >= 0) {
+                newJsonType = ProjectItemType.engineOrderingJson;
                 this.#role = ProjectRole.documentation;
               } else {
                 // Log.debugAlert("General JSON file found: " + projectPath);
@@ -2216,6 +2427,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 itemName,
                 newJsonType,
+                source,
                 false,
                 candidateFile
               );
@@ -2252,7 +2464,15 @@ export default class Project {
           depth < 10
         ) {
           if (childFolder !== undefined) {
-            await this._inferProjectItemsFromFolder(childFolder, fileSystemPrefix, folderContext, depth + 1, force);
+            await this._inferProjectItemsFromFolder(
+              childFolder,
+              fileSystemPrefix,
+              folderContext,
+              rootFolder,
+              depth + 1,
+              source,
+              force
+            );
           }
         }
       }
@@ -2283,7 +2503,15 @@ export default class Project {
     const rootFolder = await StorageUtilities.getFileStorageFolder(file);
 
     if (rootFolder) {
-      await this._inferProjectItemsFromFolder(rootFolder, projectPath + "#", FolderContext.unknown, 0, force);
+      await this._inferProjectItemsFromFolder(
+        rootFolder,
+        projectPath + "#",
+        FolderContext.unknown,
+        rootFolder,
+        0,
+        undefined,
+        force
+      );
     }
 
     await this.carto.notifyOperationEnded(operId, "Done loading package file " + file.name);
@@ -2378,6 +2606,7 @@ export default class Project {
                   ProjectItemStorageType.singleFile,
                   targetFileName,
                   ProjectItemType.structure,
+                  undefined,
                   false
                 );
 
@@ -2481,7 +2710,7 @@ export default class Project {
     return await pur.update(updaterId, updaterIndex);
   }
 
-  getScriptState() {
+  async getScriptState() {
     const state: IProjectScriptState = {
       hasScript: false,
       hasModule: {},
@@ -2506,6 +2735,7 @@ export default class Project {
             pi.itemType === ProjectItemType.ts) &&
           pi.file
         ) {
+          await pi.file.loadContent();
           const content = pi.file.content;
 
           if (content && typeof content === "string") {
@@ -2641,6 +2871,7 @@ export default class Project {
     storageType: ProjectItemStorageType,
     name: string,
     itemType: ProjectItemType,
+    source?: string,
     isAutogenerated?: boolean,
     file?: IFile,
     tag?: string
@@ -2665,6 +2896,7 @@ export default class Project {
       storagePath: storagePath,
       storageType: storageType,
       isAutogenerated: isAutogenerated,
+      source: source,
       tags: tags,
       name: name,
     });
@@ -2934,24 +3166,24 @@ export default class Project {
           "Could not create a project folder from " + this.#data.localFilePath
         );
 
-        if (this.#accessoryFiles && this.#projectFolder) {
-          for (let i = 0; i < this.#accessoryFiles.length; i++) {
-            const addFile = containingFolder.ensureFile(this.#accessoryFiles[i]);
+        if (this.#accessoryFilePaths && this.#projectFolder) {
+          for (let i = 0; i < this.#accessoryFilePaths.length; i++) {
+            const addFile = containingFolder.ensureFile(this.#accessoryFilePaths[i]);
 
             const additionalFileExists = await addFile.exists();
             if (additionalFileExists) {
               let isChildOfExistingFolder = false;
 
-              if (this.#accessoryFolders === null) {
-                this.#accessoryFolders = [];
+              if (this.#accessoryFoldersForFilePaths === null) {
+                this.#accessoryFoldersForFilePaths = [];
               }
 
-              for (let j = 0; j < this.#accessoryFolders.length; j++) {
-                let addFileStoragePath = addFile.getFolderRelativePath(this.#accessoryFolders[j]);
+              for (let j = 0; j < this.#accessoryFoldersForFilePaths.length; j++) {
+                let addFileStoragePath = addFile.getFolderRelativePath(this.#accessoryFoldersForFilePaths[j]);
 
                 if (addFileStoragePath) {
                   isChildOfExistingFolder = true;
-                  this._inferProjectItemFromFile(addFile, this.#accessoryFolders[j], addFileStoragePath);
+                  this._inferProjectItemFromFile(addFile, this.#accessoryFoldersForFilePaths[j], addFileStoragePath);
                 }
               }
 
@@ -2959,7 +3191,7 @@ export default class Project {
                 if (addFile.parentFolder) {
                   let addFileStoragePath = addFile.getFolderRelativePath(addFile.parentFolder);
                   if (addFileStoragePath) {
-                    this.#accessoryFolders.push(addFile.parentFolder);
+                    this.#accessoryFoldersForFilePaths.push(addFile.parentFolder);
                     this._inferProjectItemFromFile(addFile, addFile.parentFolder, addFileStoragePath);
                   }
                 }
@@ -3002,6 +3234,7 @@ export default class Project {
       ProjectItemStorageType.singleFile,
       file.name,
       ProjectItemType.projectSummaryMetadata,
+      undefined,
       false,
       file
     );
@@ -3123,7 +3356,7 @@ export default class Project {
     return this.#defaultScriptsFolder;
   }
 
-  async getDefaultBehaviorPackFolder(force?: boolean): Promise<IFolder | null> {
+  async getDefaultBehaviorPackFolder(force?: boolean, preventEnsureFileStorage?: boolean): Promise<IFolder | null> {
     if (this.#defaultBehaviorPackFolder !== null && !force) {
       return this.#defaultBehaviorPackFolder;
     }
@@ -3136,7 +3369,10 @@ export default class Project {
       const pi = this.items[i];
 
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
-        await pi.ensureFileStorage();
+        if (!preventEnsureFileStorage) {
+          // this is an option to avoid stack overflows of ensureFileStorage -> updateAutogenerated -> ensureFileStorage
+          await pi.ensureFileStorage();
+        }
 
         if (pi.file) {
           this.#defaultBehaviorPackFolder = pi.file.parentFolder;

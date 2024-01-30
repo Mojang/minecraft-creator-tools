@@ -17,9 +17,7 @@ import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 
 export default class ProjectExporter {
-  static async getFlatGameTestWorldWithPacksZip(carto: Carto, project: Project, name: string) {
-    carto.notifyStatusUpdate("Loading DB content ");
-
+  static async getFlatBetaApisWorldWithPacksZip(carto: Carto, project: Project, name: string) {
     await Database.loadContent();
 
     if (Database.contentFolder === null) {
@@ -27,7 +25,7 @@ export default class ProjectExporter {
       return undefined;
     }
 
-    const mcworld = await this.getGameTestWorldWithPacks(project, name);
+    const mcworld = await this.getBetaApisWorldWithPacks(project, name);
 
     const newBytes = await mcworld.getBytes();
 
@@ -308,7 +306,7 @@ export default class ProjectExporter {
     if (worldProjectItem.folder) {
       mcworld = await MCWorld.ensureMCWorldOnFolder(worldProjectItem.folder, project);
     } else if (worldProjectItem.file) {
-      mcworld = await MCWorld.ensureMCWorldOnFile(worldProjectItem.file, project);
+      mcworld = await MCWorld.ensureOnFile(worldProjectItem.file, project);
     }
 
     if (!mcworld) {
@@ -317,6 +315,7 @@ export default class ProjectExporter {
     }
 
     await project.autoCompleteProject();
+    await ProjectExporter.updateProjects(project);
 
     await project.save();
 
@@ -386,13 +385,9 @@ export default class ProjectExporter {
       return;
     }
     if (project.defaultBehaviorPackFolder) {
-      const vMajor = project.versionMajor ? project.versionMajor : 0;
-      const vMinor = project.versionMinor ? project.versionMinor : 0;
-      const vPatch = project.versionPatch ? project.versionPatch : 1;
-
       newMcWorld.ensureBehaviorPack(
         project.defaultBehaviorPackUniqueId,
-        [vMajor, vMinor, vPatch],
+        project.defaultBehaviorPackVersion,
         project.defaultBehaviorPackFolder.name
       );
     }
@@ -414,55 +409,42 @@ export default class ProjectExporter {
     return undefined;
   }
 
-  static async generateAndDeployProjectToWorld(
+  static async updateProjects(project: Project) {
+    const pur = new ProjectUpdateRunner(project);
+
+    await pur.updateProject(["SCRIPTMODULE"]);
+  }
+
+  static async generateProjectWorld(
     carto: Carto,
     project: Project,
     worldSettings: IWorldSettings,
-    returnZipBytes?: boolean,
-    deployFolder?: IFolder
+    targetFolder?: IFolder
   ) {
     const operId = await carto.notifyOperationStarted(
-      "Deploying project '" + project.name + "' plus world and test assets."
+      "Generating project '" + project.name + "' plus world and packs."
     );
 
     await project.autoCompleteProject();
+    await ProjectExporter.updateProjects(project);
 
     await project.save();
+    let mcworld = undefined;
 
-    const title = project.name + " Test World";
+    if (targetFolder === undefined) {
+      mcworld = new MCWorld();
 
-    let targetFolder: IFolder | undefined = undefined;
-    let zipStorage: ZipStorage | undefined = undefined;
+      mcworld.ensureZipStorage();
 
-    if (deployFolder) {
-      const worldsFolder = await ProjectExporter.ensureWorldsFolder(deployFolder);
+      targetFolder = mcworld.effectiveRootFolder;
 
-      if (!worldsFolder) {
-        Log.unexpectedUndefined("DAWATAD");
+      if (targetFolder === undefined) {
+        Log.throwUnexpectedUndefined("PEPW");
         return;
       }
-
-      targetFolder = worldsFolder.ensureFolder(title);
-
-      await targetFolder.ensureExists();
-    } else if (returnZipBytes) {
-      zipStorage = new ZipStorage();
-
-      targetFolder = zipStorage.rootFolder;
     } else {
-      const worldsFolder = await ProjectExporter.ensureMinecraftWorldsFolder(carto);
-
-      if (!worldsFolder) {
-        Log.unexpectedUndefined("DAWATAE");
-        return;
-      }
-
-      targetFolder = worldsFolder.ensureFolder(title);
-
-      await targetFolder.ensureExists();
+      mcworld = await MCWorld.ensureMCWorldOnFolder(targetFolder);
     }
-
-    const mcworld = await MCWorld.ensureMCWorldOnFolder(targetFolder);
 
     if (!mcworld) {
       Log.debugAlert("Could not find respective world.");
@@ -473,11 +455,11 @@ export default class ProjectExporter {
 
     await mcworld.applyWorldSettings(worldSettings);
 
-    const bpGroupFolder = targetFolder.ensureFolder("behavior_packs");
-
-    await bpGroupFolder.ensureExists();
-
     if (project.defaultBehaviorPackFolder) {
+      const bpGroupFolder = targetFolder.ensureFolder("behavior_packs");
+
+      await bpGroupFolder.ensureExists();
+
       const bpTargetFolder = bpGroupFolder.ensureFolder("test1");
 
       await bpTargetFolder.ensureExists();
@@ -491,19 +473,37 @@ export default class ProjectExporter {
         "behavior_packs",
         "resource_packs",
       ]);
-    }
-
-    await targetFolder.saveAll();
-
-    if (project.defaultBehaviorPackFolder) {
-      const vMajor = project.versionMajor ? project.versionMajor : 0;
-      const vMinor = project.versionMinor ? project.versionMinor : 0;
-      const vPatch = project.versionPatch ? project.versionPatch : 1;
 
       mcworld.ensureBehaviorPack(
         project.defaultBehaviorPackUniqueId,
-        [vMajor, vMinor, vPatch],
+        project.defaultBehaviorPackVersion,
         project.defaultBehaviorPackFolder.name
+      );
+    }
+
+    if (project.defaultResourcePackFolder) {
+      const rpGroupFolder = targetFolder.ensureFolder("resource_packs");
+
+      await rpGroupFolder.ensureExists();
+
+      const rpTargetFolder = rpGroupFolder.ensureFolder("test1");
+
+      await rpTargetFolder.ensureExists();
+
+      await StorageUtilities.syncFolderTo(project.defaultResourcePackFolder, rpTargetFolder, true, true, false, [
+        "mcworlds",
+        "db",
+        "level.dat",
+        "level.dat_old",
+        "levelname.txt",
+        "behavior_packs",
+        "resource_packs",
+      ]);
+
+      mcworld.ensureResourcePack(
+        project.defaultResourcePackUniqueId,
+        project.defaultResourcePackVersion,
+        project.defaultResourcePackFolder.name
       );
     }
 
@@ -516,20 +516,70 @@ export default class ProjectExporter {
 
     await carto.notifyOperationEnded(
       operId,
-      "World + local assets deploy to '" + targetFolder.fullPath + "' completed."
+      "World + local assets generation for '" + targetFolder.fullPath + "' completed."
     );
 
-    if (zipStorage) {
-      const zipBytes = await zipStorage.generateUint8ArrayAsync();
+    return mcworld;
+  }
 
-      return zipBytes;
+  static async generateAndDeployProjectToWorld(
+    carto: Carto,
+    project: Project,
+    worldSettings: IWorldSettings,
+    deployFolder?: IFolder
+  ) {
+    const operId = await carto.notifyOperationStarted(
+      "Deploying project '" + project.name + "' plus world and test assets."
+    );
+
+    const title = project.name + " Test World";
+
+    let targetFolder: IFolder | undefined = undefined;
+
+    if (deployFolder) {
+      const worldsFolder = await ProjectExporter.ensureWorldsFolder(deployFolder);
+
+      if (!worldsFolder) {
+        Log.unexpectedUndefined("DAWATAD");
+        return;
+      }
+
+      targetFolder = worldsFolder.ensureFolder(title);
+
+      await targetFolder.ensureExists();
+    } else {
+      const worldsFolder = await ProjectExporter.ensureMinecraftWorldsFolder(carto);
+
+      if (!worldsFolder) {
+        Log.unexpectedUndefined("DAWATAE");
+        return;
+      }
+
+      targetFolder = worldsFolder.ensureFolder(title);
+
+      await targetFolder.ensureExists();
     }
+
+    const mcworld = await ProjectExporter.generateProjectWorld(carto, project, worldSettings, targetFolder);
+
+    if (mcworld) {
+      await targetFolder.saveAll();
+
+      await mcworld.save();
+    }
+
+    await carto.notifyOperationEnded(
+      operId,
+      "World + local assets deploy to '" + targetFolder.fullPath + "' completed."
+    );
 
     return title;
   }
 
   static async deployAsFlatPackRefWorld(carto: Carto, project: Project) {
     carto.notifyStatusUpdate("Saving...");
+    await ProjectExporter.updateProjects(project);
+
     await project.save();
     carto.notifyStatusUpdate("Saved");
 
@@ -616,7 +666,7 @@ export default class ProjectExporter {
     await file.loadContent();
 
     if (file.content instanceof Uint8Array) {
-      const mcworld = await this.getGameTestWorldWithPackRefs(project, worldName, file.content);
+      const mcworld = await this.getBetaApisWorldWithPackRefs(project, worldName, file.content);
 
       return mcworld;
     }
@@ -650,7 +700,7 @@ export default class ProjectExporter {
         !scriptsFolder.storageRelativePath.startsWith(bpFolder.storageRelativePath) &&
         scriptsFolder.storageRelativePath !== "/"
       ) {
-        await StorageUtilities.syncFolderTo(scriptsFolder, childFolder.ensureFolder("scripts"), true, false, true, [
+        await StorageUtilities.syncFolderTo(scriptsFolder, childFolder.ensureFolder("scripts"), true, false, false, [
           ".ts",
         ]);
       }
@@ -716,7 +766,7 @@ export default class ProjectExporter {
     carto.notifyStatusUpdate("Upload complete");
   }*/
 
-  static async getGameTestWorldWithPacks(
+  static async getBetaApisWorldWithPacks(
     project: Project,
     worldName: string,
     worldContent?: Uint8Array
@@ -731,10 +781,9 @@ export default class ProjectExporter {
     }
 
     mcworld.project = project;
+    await ProjectExporter.updateProjects(project);
 
     await project.save();
-
-    mcworld.ensureBehaviorPack(project.defaultBehaviorPackUniqueId, project.version, project.name);
 
     mcworld.betaApisExperiment = true;
     mcworld.name = worldName;
@@ -749,8 +798,9 @@ export default class ProjectExporter {
 
     if (sourceBpf !== null) {
       await bpf.ensureExists();
+      mcworld.ensureBehaviorPack(project.defaultBehaviorPackUniqueId, project.defaultBehaviorPackVersion, project.name);
 
-      await StorageUtilities.syncFolderTo(sourceBpf, bpf, true, false, true, ["/mcworlds", "/minecraftWorlds", ".ts"]);
+      await StorageUtilities.syncFolderTo(sourceBpf, bpf, true, false, false, ["/mcworlds", "/minecraftWorlds", ".ts"]);
 
       const scriptsFolder = await project.ensureScriptsFolder();
 
@@ -758,7 +808,7 @@ export default class ProjectExporter {
         !scriptsFolder.storageRelativePath.startsWith(sourceBpf.storageRelativePath) &&
         scriptsFolder.storageRelativePath !== "/"
       ) {
-        await StorageUtilities.syncFolderTo(scriptsFolder, bpf.ensureFolder("scripts"), true, false, true, [".ts"]);
+        await StorageUtilities.syncFolderTo(scriptsFolder, bpf.ensureFolder("scripts"), true, false, false, [".ts"]);
       }
 
       await bpf.saveAll();
@@ -772,8 +822,9 @@ export default class ProjectExporter {
 
     if (sourceRpf !== null) {
       await rpf.ensureExists();
+      mcworld.ensureResourcePack(project.defaultResourcePackUniqueId, project.defaultResourcePackVersion, project.name);
 
-      await StorageUtilities.syncFolderTo(sourceRpf, rpf, true, false, true, ["/mcworlds", "/minecraftWorlds", ".ts"]);
+      await StorageUtilities.syncFolderTo(sourceRpf, rpf, true, false, false, ["/mcworlds", "/minecraftWorlds", ".ts"]);
 
       await rpf.saveAll();
     }
@@ -781,7 +832,7 @@ export default class ProjectExporter {
     return mcworld;
   }
 
-  static async getGameTestWorldWithPackRefs(
+  static async getBetaApisWorldWithPackRefs(
     project: Project,
     worldName: string,
     worldContent: Uint8Array
@@ -791,7 +842,13 @@ export default class ProjectExporter {
 
     await mcworld.loadFromBytes(worldContent);
 
-    mcworld.ensureBehaviorPack(project.defaultBehaviorPackUniqueId, project.version, project.name);
+    if (project.defaultBehaviorPackFolder !== null) {
+      mcworld.ensureBehaviorPack(project.defaultBehaviorPackUniqueId, project.defaultBehaviorPackVersion, project.name);
+    }
+
+    if (project.defaultResourcePackFolder !== null) {
+      mcworld.ensureResourcePack(project.defaultResourcePackUniqueId, project.defaultResourcePackVersion, project.name);
+    }
 
     mcworld.betaApisExperiment = true;
     mcworld.name = worldName;

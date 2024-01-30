@@ -59,10 +59,18 @@ export default class GeneratorRegistrations {
       | IProjectInfoGeneratorBase,
     suite: ProjectInfoSuite
   ) {
-    if (generator.id === "WORLDDATA" && suite === ProjectInfoSuite.addOn) {
-      (generator as WorldDataInfoGenerator).performAddOnValidations = true;
-    } else if (generator.id === "WORLDDATA") {
-      (generator as WorldDataInfoGenerator).performAddOnValidations = false;
+    if (suite === ProjectInfoSuite.addOn) {
+      if (generator.id === "WORLDDATA") {
+        (generator as WorldDataInfoGenerator).performAddOnValidations = true;
+      } else if (generator.id === "TEXTURE") {
+        (generator as TextureInfoGenerator).performAddOnValidations = true;
+      }
+    } else {
+      if (generator.id === "WORLDDATA") {
+        (generator as WorldDataInfoGenerator).performAddOnValidations = false;
+      } else if (generator.id === "TEXTURE") {
+        (generator as TextureInfoGenerator).performAddOnValidations = false;
+      }
     }
   }
 }

@@ -188,9 +188,9 @@ describe("deployJs", async () => {
     const resultsOutFolder = resultsFolder.ensureFolder("deployJs");
     await resultsOutFolder.ensureExists();
 
-    await ProjectExporter.generateAndDeployProjectToWorld(carto, project, worldSettings, false, resultsOutFolder);
+    await ProjectExporter.generateAndDeployProjectToWorld(carto, project, worldSettings, resultsOutFolder);
 
-    await folderMatches("deployJs", ["manifest.json", "world_behavior_packs.json", "world_behavior_pack_history.json"]); // exclude manifest.json from consideration since their uuids will be randomly generated and therefore always different
+    await folderMatches("deployJs");
   });
 });
 
@@ -204,7 +204,12 @@ async function folderMatches(scenarioName: string, excludeList?: string[]) {
 
   const scenarioFolder = scenariosFolder.ensureFolder(scenarioName);
 
-  const isEqual = await StorageUtilities.folderContentsEqual(scenarioFolder, scenarioOutFolder, excludeList, true);
+  const isEqual = await StorageUtilities.folderContentsEqual(scenarioFolder, scenarioOutFolder, excludeList, true, [
+    '"uuid":',
+    '"pack_id":',
+    '"version":',
+    "generator_version",
+  ]);
 
   assert(
     isEqual.result,

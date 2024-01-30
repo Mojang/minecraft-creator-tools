@@ -148,6 +148,29 @@ export default class Utilities {
     return lineCount;
   }
 
+  static stripLinesContaining(content: string, lineContains: string) {
+    let i = content.indexOf(lineContains);
+
+    while (i >= 0) {
+      let prevNewLine = content.lastIndexOf("\n", i);
+      if (prevNewLine < 0) {
+        prevNewLine = 0;
+      }
+
+      let nextNewLine = content.indexOf("\n", i);
+
+      if (nextNewLine < 0) {
+        nextNewLine = content.length;
+      }
+
+      content = content.substring(0, prevNewLine) + content.substring(nextNewLine, content.length);
+
+      i = content.indexOf(lineContains);
+    }
+
+    return content;
+  }
+
   static stripWithoutWhitespace = () => "";
   static stripWithWhitespace = (str: string, start: number | undefined, end: number | undefined) =>
     str.slice(start, end).replace(/\S/g, " ");

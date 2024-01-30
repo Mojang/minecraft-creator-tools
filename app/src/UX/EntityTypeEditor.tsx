@@ -96,7 +96,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     }
 
     if (this.state !== undefined && this.state.fileToEdit !== undefined) {
-      await EntityTypeDefinition.ensureEntityTypeOnFile(this.state.fileToEdit, this._handleEntityTypeLoaded);
+      await EntityTypeDefinition.ensureOnFile(this.state.fileToEdit, this._handleEntityTypeLoaded);
     }
 
     if (
@@ -272,7 +272,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
   }
 
   render() {
-    const height = "calc(100vh - " + (this.props.heightOffset - 10) + "px)";
+    const height = "calc(100vh - " + this.props.heightOffset + "px)";
     const toolbarItems = [];
     const width = WebUtilities.getWidth();
     let isButtonCompact = false;

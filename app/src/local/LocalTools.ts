@@ -14,7 +14,7 @@ export default class LocalTools {
     const fileName = project.name + ".mcworld";
 
     carto.notifyStatusUpdate("Packing " + fileName);
-    const newBytes = await ProjectExporter.getFlatGameTestWorldWithPacksZip(carto, project, name);
+    const newBytes = await ProjectExporter.getFlatBetaApisWorldWithPacksZip(carto, project, name);
 
     carto.notifyStatusUpdate("Now saving " + fileName);
 

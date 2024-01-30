@@ -39,6 +39,7 @@
 .csp-namelabel {
   grid-row: 2;
   grid-column: 1;
+  padding-top: 9px;
 }
 
 .csp-nameinput {

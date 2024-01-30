@@ -13,6 +13,7 @@ import CommandRegistry from "../app/CommandRegistry";
 import BehaviorAnimationController from "../minecraft/BehaviorAnimationController";
 import BehaviorAnimation from "../minecraft/BehaviorAnimation";
 import Dialogue from "../minecraft/Dialogue";
+import ProjectItemUtilities from "../app/ProjectItemUtilities";
 
 export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator {
   id = "WORLDDATA";
@@ -101,7 +102,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       projectItem.itemType === ProjectItemType.ts ||
       projectItem.itemType === ProjectItemType.testJs ||
       projectItem.itemType === ProjectItemType.structure ||
-      projectItem.itemType === ProjectItemType.image
+      ProjectItemUtilities.isImageType(projectItem.itemType)
     ) {
       return items;
     }
@@ -197,7 +198,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       if (projectItem.folder) {
         mcworld = await MCWorld.ensureMCWorldOnFolder(projectItem.folder, projectItem.project);
       } else if (projectItem.file) {
-        mcworld = await MCWorld.ensureMCWorldOnFile(projectItem.file, projectItem.project);
+        mcworld = await MCWorld.ensureOnFile(projectItem.file, projectItem.project);
       }
 
       if (!mcworld) {

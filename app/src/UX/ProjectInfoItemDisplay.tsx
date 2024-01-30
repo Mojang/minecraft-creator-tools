@@ -106,7 +106,14 @@ export default class ProjectInfoItemDisplay extends Component<
 
     let indicatorCellBg = "";
 
-    if (item.itemType === InfoItemType.error) {
+    if (item.itemType === InfoItemType.internalProcessingError) {
+      indicatorCellBg = "piid-failIconCell";
+      typeElt = (
+        <span className="piid-icon piid-errorIcon">
+          <FontAwesomeIcon icon={faCircleExclamation} className="fa-lg" />
+        </span>
+      );
+    } else if (item.itemType === InfoItemType.error) {
       indicatorCellBg = "piid-errorIconCell";
       typeElt = (
         <span className="piid-icon piid-errorIcon">

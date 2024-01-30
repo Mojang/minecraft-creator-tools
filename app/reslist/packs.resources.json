@@ -1,5 +1,5 @@
 {
   "url": "https://github.com/Mojang/bedrock-samples/archive/refs/heads/preview.zip",
-  "ignoreSubfolder": "bedrock-samples-main",
+  "ignoreSubfolder": "bedrock-samples-preview",
   "exclude": ["documentation/", "scripts/", "trading/", "pack_icon.png", ".github", "manifest.json"]
 }

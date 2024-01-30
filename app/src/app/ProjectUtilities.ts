@@ -12,12 +12,54 @@ import NpmPackageJson from "../devproject/NpmPackageJson";
 import ResourceManifestJson from "../minecraft/ResourceManifestJson";
 import ISnippet from "./ISnippet";
 import IGalleryProject from "./IGalleryProject";
+import IFolder from "../storage/IFolder";
 
 export enum NewEntityTypeAddMode {
   baseId,
 }
 
 export default class ProjectUtilities {
+  static async hasDocumentationMetadata(folder: IFolder, depth?: number) {
+    await folder.load(false);
+
+    for (const folderName in folder.folders) {
+      if (
+        folderName === "checkpoint_input" ||
+        folderName === "metadata" ||
+        folderName === "type_definitions" ||
+        folderName === "typedefs"
+      ) {
+        return true;
+      }
+
+      if (depth === undefined || depth < 5) {
+        const isMetatadata = await ProjectUtilities.hasDocumentationMetadata(folder, depth ? depth + 1 : 1);
+
+        if (isMetatadata) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  static async prepareProjectForDocumentation(project: Project) {
+    await project.ensureProjectFolder();
+
+    if (!project.projectFolder) {
+      return;
+    }
+
+    const hasMetadata = await ProjectUtilities.hasDocumentationMetadata(project.projectFolder);
+
+    if (hasMetadata) {
+      return;
+    }
+
+    project.accessoryFolders = [await Database.loadMetadataFolder()];
+  }
+
   static async getBaseBehaviorPackPath(project: Project) {
     const bpFolder = await project.ensureDefaultBehaviorPackFolder();
 
@@ -524,6 +566,7 @@ export default class ProjectUtilities {
           ProjectItemStorageType.singleFile,
           StorageUtilities.getLeafName(candidateJsFilePath),
           ProjectItemType.entityTypeBaseJs,
+          undefined,
           true
         );
 
@@ -544,6 +587,7 @@ export default class ProjectUtilities {
           ProjectItemStorageType.singleFile,
           StorageUtilities.getLeafName(candidateJsFilePath),
           ProjectItemType.entityTypeBaseTs,
+          undefined,
           true
         );
 
@@ -715,6 +759,7 @@ export default class ProjectUtilities {
       ProjectItemStorageType.singleFile,
       nextBlockTypeName,
       ProjectItemType.blockTypeBehaviorJson,
+      undefined,
       false
     );
 
@@ -754,6 +799,7 @@ export default class ProjectUtilities {
           ProjectItemStorageType.singleFile,
           StorageUtilities.getLeafName(candidateJsFilePath),
           ProjectItemType.blockTypeBaseJs,
+          undefined,
           true
         );
 
@@ -774,6 +820,7 @@ export default class ProjectUtilities {
           ProjectItemStorageType.singleFile,
           StorageUtilities.getLeafName(candidateJsFilePath),
           ProjectItemType.blockTypeBaseTs,
+          undefined,
           true
         );
 

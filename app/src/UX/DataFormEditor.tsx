@@ -102,7 +102,7 @@ export default class DataFormEditor extends Component<IDataFormEditorProps, IDat
       return <div>Loading...</div>;
     }
 
-    const formHeight = "calc(100vh - " + String(this.props.heightOffset - 8) + "px)";
+    const formHeight = "calc(100vh - " + this.props.heightOffset + "px)";
 
     const dform = this.state.fileToEdit.manager as DataFormFile;
     const form = Database.getForm("dataform");

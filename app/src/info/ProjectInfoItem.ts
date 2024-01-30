@@ -202,7 +202,9 @@ export default class ProjectInfoItem {
       this.#data.features = {};
     }
 
-    if (!incrementalValue) {
+    if (incrementalValue === 0) {
+      incrementalValue = 0;
+    } else if (incrementalValue === undefined) {
       incrementalValue = 1;
     }
 

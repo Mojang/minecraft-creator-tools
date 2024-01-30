@@ -573,9 +573,7 @@ export const FunctionsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & IS
       borderRightColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
-      color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+      color: "#EEBBBB",
       backgroundColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background2
         : props.theme.siteVariables?.colorScheme.brand.background1,
@@ -598,9 +596,7 @@ export const AssetsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISele
       borderRightColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
-      color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+      color: "#BBEEBB",
       backgroundColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background2
         : props.theme.siteVariables?.colorScheme.brand.background1,
@@ -617,15 +613,14 @@ export const TypesLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelec
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
     style={{
+      paddingLeft: "4px",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
       borderRightColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
-      color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+      color: "#BBBBEE",
       backgroundColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background2
         : props.theme.siteVariables?.colorScheme.brand.background1,

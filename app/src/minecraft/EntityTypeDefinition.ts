@@ -309,7 +309,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem {
     }
   }
 
-  static async ensureEntityTypeOnFile(
+  static async ensureOnFile(
     behaviorPackFile: IFile,
     loadHandler?: IEventHandler<EntityTypeDefinition, EntityTypeDefinition>
   ) {

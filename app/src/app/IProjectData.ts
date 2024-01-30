@@ -84,7 +84,9 @@ export default interface IProjectData {
   originalGitHubFolder?: string;
 
   defaultBehaviorPackUniqueId: string;
+  defaultBehaviorPackVersion?: number[];
   defaultResourcePackUniqueId: string;
+  defaultResourcePackVersion?: number[];
   defaultDataUniqueId: string;
   defaultScriptModuleUniqueId: string;
   contentsModified: Date | null;

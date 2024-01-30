@@ -2,14 +2,14 @@ import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import { IItemTexture } from "./IItemTexture";
+import { IJsonUIScreen } from "./IJsonUIScreen";
 
-export default class ItemTextureCatalogDefinition {
-  public itemTexture?: IItemTexture;
+export default class JsonUIResourceDefinition {
+  public jsonUIScreen?: IJsonUIScreen;
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
-  private _onLoaded = new EventDispatcher<ItemTextureCatalogDefinition, ItemTextureCatalogDefinition>();
+  private _onLoaded = new EventDispatcher<JsonUIResourceDefinition, JsonUIResourceDefinition>();
 
   public get isLoaded() {
     return this._isLoaded;
@@ -26,22 +26,30 @@ export default class ItemTextureCatalogDefinition {
     this._file = newFile;
   }
 
+  public get namespaceId() {
+    if (!this.jsonUIScreen || !this.jsonUIScreen["namespace"]) {
+      return undefined;
+    }
+
+    return this.jsonUIScreen["namespace"];
+  }
+
   static async ensureOnFile(
     file: IFile,
-    loadHandler?: IEventHandler<ItemTextureCatalogDefinition, ItemTextureCatalogDefinition>
+    loadHandler?: IEventHandler<JsonUIResourceDefinition, JsonUIResourceDefinition>
   ) {
-    let et: ItemTextureCatalogDefinition | undefined = undefined;
+    let et: JsonUIResourceDefinition | undefined = undefined;
 
     if (file.manager === undefined) {
-      et = new ItemTextureCatalogDefinition();
+      et = new JsonUIResourceDefinition();
 
       et.file = file;
 
       file.manager = et;
     }
 
-    if (file.manager !== undefined && file.manager instanceof ItemTextureCatalogDefinition) {
-      et = file.manager as ItemTextureCatalogDefinition;
+    if (file.manager !== undefined && file.manager instanceof JsonUIResourceDefinition) {
+      et = file.manager as JsonUIResourceDefinition;
 
       if (!et.isLoaded && loadHandler) {
         et.onLoaded.subscribe(loadHandler);
@@ -58,7 +66,7 @@ export default class ItemTextureCatalogDefinition {
       return;
     }
 
-    const defString = JSON.stringify(this.itemTexture, null, 2);
+    const defString = JSON.stringify(this.jsonUIScreen, null, 2);
 
     this._file.setContent(defString);
   }
@@ -69,7 +77,7 @@ export default class ItemTextureCatalogDefinition {
     }
 
     if (this._file === undefined) {
-      Log.unexpectedUndefined("ITCDF");
+      Log.unexpectedUndefined("PERPF");
       return;
     }
 
@@ -87,7 +95,7 @@ export default class ItemTextureCatalogDefinition {
       data = result;
     }
 
-    this.itemTexture = data;
+    this.jsonUIScreen = data;
 
     this._isLoaded = true;
 

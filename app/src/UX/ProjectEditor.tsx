@@ -1,4 +1,4 @@
-import { Component, SyntheticEvent } from "react";
+import React, { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
 import Project, { ProjectErrorState, ProjectRole } from "./../app/Project";
 import ProjectItem from "./../app/ProjectItem";
@@ -20,6 +20,8 @@ import {
   faTools,
   faLink,
   faComputer,
+  faFolderTree,
+  faList,
 } from "@fortawesome/free-solid-svg-icons";
 import { Toolbar, Text, MenuItemProps, ThemeInput, Dialog } from "@fluentui/react-northstar";
 
@@ -60,13 +62,18 @@ import ProjectInfoItem from "../info/ProjectInfoItem";
 import { MinecraftPushWorldType } from "../app/MinecraftPush";
 import CartoApp, { HostType, CartoThemeStyle } from "../app/CartoApp";
 import ProjectTools from "../app/ProjectTools";
-import { faWindowMaximize } from "@fortawesome/free-regular-svg-icons";
+import { faEdit, faWindowMaximize } from "@fortawesome/free-regular-svg-icons";
 import FileExplorer from "./FileExplorer";
 import ShareProject from "./ShareProject";
 import LocTokenBox from "./LocTokenBox";
 import { IProjectUpdaterReference } from "../info/IProjectInfoGeneratorBase";
 import FileSystemStorage from "../storage/FileSystemStorage";
 import { StatusTopic } from "../app/Status";
+import FileSystemFolder from "../storage/FileSystemFolder";
+import { SidePaneMaxWidth, SidePaneMinWidth } from "../app/Carto";
+import ProjectEditorUtilities, { ProjectEditorMode } from "./ProjectEditorUtilities";
+import { IWorldSettings } from "../minecraft/IWorldSettings";
+import WorldSettingsArea from "../UX/WorldSettingsArea";
 
 interface IProjectEditorProps extends IAppProps {
   onModeChangeRequested?: (mode: AppMode) => void;
@@ -115,15 +122,6 @@ export enum ProjectEditorTab {
   main = 2,
 }
 
-export enum ProjectEditorMode {
-  properties,
-  inspector,
-  minecraftToolSettings,
-  activeItem,
-  cartoSettings,
-  minecraft,
-}
-
 export enum ProjectEditorEffect {
   dragOver = 1,
 }
@@ -131,6 +129,7 @@ export enum ProjectEditorEffect {
 export enum ProjectEditorDialog {
   noDialog = 0,
   shareableLink = 1,
+  worldSettings = 2,
 }
 
 export enum ProjectStatusAreaMode {
@@ -142,21 +141,31 @@ export enum ProjectStatusAreaMode {
 export default class ProjectEditor extends Component<IProjectEditorProps, IProjectEditorState> {
   private _authWindow: Window | null = null;
   private _activeEditorPersistable?: IPersistable;
+  private _isMountedInternal = false;
+  private _lastHashProcessed: string | undefined = undefined;
+  private gridElt: React.RefObject<HTMLDivElement>;
+  private _splitterDrag: number | undefined = undefined;
 
   constructor(props: IProjectEditorProps) {
     super(props);
+
+    this.gridElt = React.createRef();
 
     this.getProjectTitle = this.getProjectTitle.bind(this);
 
     this._handleExportMCPackClick = this._handleExportMCPackClick.bind(this);
     this._handleExportToLocalFolderClick = this._handleExportToLocalFolderClick.bind(this);
     this._handleGetShareableLinkClick = this._handleGetShareableLinkClick.bind(this);
+    this._handleChangeWorldSettingsClick = this._handleChangeWorldSettingsClick.bind(this);
     this._handleDownloadMCWorldWithPacks = this._handleDownloadMCWorldWithPacks.bind(this);
+    this._handleDeployDownloadProjectWorldWithPacks = this._handleDeployDownloadProjectWorldWithPacks.bind(this);
     this._handleExportMCWorldWithPackRefs = this._handleExportMCWorldWithPackRefs.bind(this);
     this._handleDownloadFlatWorldWithPacks = this._handleDownloadFlatWorldWithPacks.bind(this);
+    this._handleProjectWorldSettingsChanged = this._handleProjectWorldSettingsChanged.bind(this);
     this._handleExportFlatWorldWithPackRefs = this._handleExportFlatWorldWithPackRefs.bind(this);
+    this._handleHashChange = this._handleHashChange.bind(this);
     this._setProjectStatusMode = this._setProjectStatusMode.bind(this);
-    this._handleResize = this._handleResize.bind(this);
+    this._doUpdate = this._doUpdate.bind(this);
     this._handleInfoItemCommand = this._handleInfoItemCommand.bind(this);
     this._handleDialogDone = this._handleDialogDone.bind(this);
 
@@ -171,6 +180,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._viewAsItems = this._viewAsItems.bind(this);
     this._viewAsItemsImpl = this._viewAsItemsImpl.bind(this);
 
+    this._handleOuterMouseMove = this._handleOuterMouseMove.bind(this);
+    this._handleOuterMouseOutOrUp = this._handleOuterMouseOutOrUp.bind(this);
+
+    this._handleSplitterDrag = this._handleSplitterDrag.bind(this);
     this._openInExplorerClick = this._openInExplorerClick.bind(this);
     this._handleExportMenuOpen = this._handleExportMenuOpen.bind(this);
     this._handleDeployMenuOpen = this._handleDeployMenuOpen.bind(this);
@@ -225,6 +238,28 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this.save = this.save.bind(this);
 
+    if (window.location.hash && window.location.hash.length > 0) {
+      const state = this._getStateFromUrl();
+
+      if (state) {
+        this.state = state;
+      }
+    }
+
+    if (!this.state) {
+      this.state = this._getDefaultState();
+    }
+
+    this._connectToProps();
+  }
+
+  _getDefaultState(): IProjectEditorState {
+    let sam = this.props.statusAreaMode;
+
+    if (!sam) {
+      sam = ProjectStatusAreaMode.minimized;
+    }
+
     let initialMode = ProjectEditorMode.properties;
     let initialItem: ProjectItem | null = null;
 
@@ -268,17 +303,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       }
     }
 
-    let sam = this.props.statusAreaMode;
-
-    if (!sam) {
-      sam = ProjectStatusAreaMode.minimized;
-    }
-
     if (this.props.mode) {
       initialMode = this.props.mode;
     }
 
-    this.state = {
+    return {
       activeProjectItem: initialItem,
       activeReference: null,
       mode: initialMode,
@@ -295,8 +324,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       lastDeployData: undefined,
       lastExportData: undefined,
     };
-
-    this._connectToProps();
   }
 
   _handleKeyDown(event: KeyboardEvent) {
@@ -319,6 +346,104 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   _handleKeyUp(event: KeyboardEvent) {}
+
+  private _handleHashChange() {
+    const result = this._getStateFromUrl();
+
+    if (result && this._isMountedInternal) {
+      this.setState(result);
+    }
+  }
+
+  private _getStateFromUrl(): IProjectEditorState | undefined {
+    const hash = window.location.hash;
+
+    if (hash === "" && !this._lastHashProcessed) {
+      this._lastHashProcessed = hash;
+      return;
+    }
+
+    if (hash !== this._lastHashProcessed) {
+      this._lastHashProcessed = hash;
+
+      if (hash === "") {
+        const defaultState = this._getDefaultState();
+
+        if (defaultState) {
+          defaultState.lastDeployData = this.state.lastDeployData;
+          defaultState.lastDeployFunction = this.state.lastDeployFunction;
+          defaultState.lastDeployKey = this.state.lastDeployKey;
+          defaultState.lastExportData = this.state.lastExportData;
+          defaultState.lastExportFunction = this.state.lastExportFunction;
+          defaultState.lastExportKey = this.state.lastExportKey;
+          defaultState.statusAreaMode = this.state.statusAreaMode;
+
+          this.setState(defaultState);
+        }
+      }
+      const firstProjectEditor = hash.indexOf("#");
+
+      if (firstProjectEditor >= 0 && firstProjectEditor < 4) {
+        const commandToken = hash.substring(firstProjectEditor + 1);
+
+        // const commandData = hash.substring(firstSlash + 1, hash.length);
+        let state = this.state;
+
+        if (state === undefined) {
+          state = this._getDefaultState();
+        }
+
+        if (commandToken.startsWith("/")) {
+          const path = ProjectEditorUtilities.convertStoragePathFromBrowserSafe(commandToken);
+          const projectItem = this.props.project.getItemByStoragePath(path);
+
+          if (projectItem) {
+            return {
+              activeProjectItem: projectItem,
+              activeReference: null,
+              mode: ProjectEditorMode.activeItem,
+              viewMode: state.viewMode,
+              menuState: state.menuState,
+              tab: state.tab,
+              forceRawView: state.forceRawView,
+              statusAreaMode: state.statusAreaMode,
+              displayFileView: state.displayFileView,
+              lastDeployKey: state.lastDeployKey,
+              lastExportKey: state.lastExportKey,
+              lastDeployFunction: state.lastDeployFunction,
+              lastExportFunction: state.lastExportFunction,
+              lastDeployData: state.lastDeployData,
+              lastExportData: state.lastExportData,
+            };
+          }
+        } else {
+          for (let i = 0; i < 5; i++) {
+            if (commandToken === ProjectEditorUtilities.getProjectEditorModeString(i)) {
+              return {
+                activeProjectItem: null,
+                activeReference: null,
+                mode: i,
+                viewMode: state.viewMode,
+                menuState: state.menuState,
+                tab: state.tab,
+                forceRawView: state.forceRawView,
+                statusAreaMode: state.statusAreaMode,
+                displayFileView: state.displayFileView,
+                lastDeployKey: state.lastDeployKey,
+                lastExportKey: state.lastExportKey,
+                lastDeployFunction: state.lastDeployFunction,
+                lastExportFunction: state.lastExportFunction,
+                lastDeployData: state.lastDeployData,
+                lastExportData: state.lastExportData,
+              };
+            }
+          }
+        }
+      }
+    }
+
+    return undefined;
+  }
 
   _doDeploy() {
     if (!this.state || !this.state.lastDeployKey || !this.state.lastDeployFunction) {
@@ -459,11 +584,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       window.document.addEventListener("dragleave", this._handleFileDragOut);
       window.document.body.addEventListener("dragover", this._handleFileDragOver);
       window.document.body.addEventListener("drop", this._handleFileDrop);
+      window.addEventListener("hashchange", this._handleHashChange, false);
 
-      window.addEventListener("resize", this._handleResize);
+      window.addEventListener("resize", this._doUpdate);
       window.addEventListener("keydown", this._handleKeyDown);
       window.addEventListener("keyup", this._handleKeyUp);
     }
+    this._isMountedInternal = true;
   }
 
   componentWillUnmount() {
@@ -471,10 +598,70 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       window.document.removeEventListener("dragleave", this._handleFileDragOut);
       window.document.body.removeEventListener("dragover", this._handleFileDragOver);
       window.document.body.removeEventListener("drop", this._handleFileDrop);
+      window.removeEventListener("hashchange", this._handleHashChange, false);
 
-      window.removeEventListener("resize", this._handleResize);
+      window.removeEventListener("resize", this._doUpdate);
       window.removeEventListener("keydown", this._handleKeyDown);
       window.removeEventListener("keyup", this._handleKeyUp);
+    }
+    this._isMountedInternal = false;
+  }
+
+  private _handleOuterMouseMove(ev: React.MouseEvent<HTMLDivElement>) {
+    if (
+      (this.state && this._splitterDrag === undefined) ||
+      this.gridElt === undefined ||
+      this.gridElt.current === undefined ||
+      this.gridElt.current === null
+    ) {
+      return;
+    }
+
+    let width = this.getAdjustedWidth(ev);
+    this.props.carto.itemSidePaneWidth = width;
+
+    this.gridElt.current.style.gridTemplateColumns = this.getGridColumnWidths();
+  }
+
+  private getAdjustedWidth(ev: React.MouseEvent<HTMLDivElement>) {
+    let width = ev.pageX;
+
+    if (
+      this.state.viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox ||
+      this.state.viewMode === CartoEditorViewMode.itemsOnRight
+    ) {
+      const browserWidth = WebUtilities.getWidth();
+
+      width = browserWidth - width;
+    }
+
+    if (width < SidePaneMinWidth) {
+      return SidePaneMinWidth;
+    }
+    if (width > SidePaneMaxWidth) {
+      return SidePaneMaxWidth;
+    }
+
+    return width;
+  }
+
+  private _handleOuterMouseOutOrUp(ev: React.MouseEvent<HTMLDivElement>) {
+    if (this._splitterDrag === undefined) {
+      return;
+    }
+
+    const width = this.getAdjustedWidth(ev);
+
+    this.props.carto.itemSidePaneWidth = width;
+    this.props.carto.save();
+
+    this._splitterDrag = undefined;
+  }
+
+  private _handleSplitterDrag(ev: React.MouseEvent<HTMLDivElement>) {
+    this._splitterDrag = ev.pageX;
+    if (this.gridElt && this.gridElt.current) {
+      this.gridElt.current.style.gridTemplateColumns = this.getGridColumnWidths();
     }
   }
 
@@ -1058,6 +1245,33 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }, 2);
   }
 
+  private async _handleChangeWorldSettingsClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
+    if (this.props.project == null || !data || !data.icon) {
+      return;
+    }
+
+    window.setTimeout(() => {
+      this.setState({
+        activeProjectItem: this.state.activeProjectItem,
+        activeReference: this.state.activeReference,
+        menuState: this.state.menuState,
+        mode: this.state.mode,
+        viewMode: this.state.viewMode,
+        displayFileView: this.state.displayFileView,
+        forceRawView: this.state.forceRawView,
+        effectMode: this.state.effectMode,
+        dialog: ProjectEditorDialog.worldSettings,
+        statusAreaMode: this.state.statusAreaMode,
+        lastDeployKey: this.state.lastDeployKey,
+        lastExportKey: this.state.lastExportKey,
+        lastDeployFunction: this.state.lastDeployFunction,
+        lastExportFunction: this.state.lastExportFunction,
+        lastDeployData: this.state.lastDeployData,
+        lastExportData: this.state.lastExportData,
+      });
+    }, 2);
+  }
+
   private async _handleExportMCPackClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
     if (this.props.project == null) {
       return;
@@ -1096,21 +1310,29 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
       const operId = await this.props.carto.notifyOperationStarted("Exporting project to  '" + result.name + "'");
 
-      await StorageUtilities.syncFolderTo(
-        this.props.project.projectFolder,
-        storage.rootFolder,
-        true,
-        true,
-        false,
-        [],
-        async (message: string) => {
-          await this.props.carto.notifyStatusUpdate(message);
-        }
-      );
+      const safeMessage = await (storage.rootFolder as FileSystemFolder).getFirstUnsafeError();
 
-      await storage.rootFolder.saveAll();
+      if (safeMessage) {
+        await this.props.carto.notifyOperationEnded(
+          operId,
+          "Could not export to a folder on your device: " + safeMessage
+        );
+      } else {
+        await StorageUtilities.syncFolderTo(
+          this.props.project.projectFolder,
+          storage.rootFolder,
+          true,
+          true,
+          false,
+          [],
+          async (message: string) => {
+            await this.props.carto.notifyStatusUpdate(message);
+          }
+        );
 
-      await this.props.carto.notifyOperationEnded(operId, "Export completed.");
+        await storage.rootFolder.saveAll();
+        await this.props.carto.notifyOperationEnded(operId, "Export completed.");
+      }
     }
 
     if (data && data.icon && (data.icon as any).key) {
@@ -1316,6 +1538,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
+  _handleProjectWorldSettingsChanged(worldSettings: IWorldSettings) {
+    if (!this.props.project) {
+      return;
+    }
+
+    this.props.project.save();
+  }
+
   private async _handleDeployAsZipClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
     if (this.props.carto.deploymentStorage == null) {
       return;
@@ -1348,7 +1578,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     zipStorage = new ZipStorage();
 
-    const deployFolder = await this.props.carto.deploymentStorage.rootFolder;
+    const deployFolder = this.props.carto.deploymentStorage.rootFolder;
 
     await StorageUtilities.syncFolderTo(deployFolder, zipStorage.rootFolder, true, true, false, [
       "/mcworlds",
@@ -1515,6 +1745,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     await this._ensurePersisted();
 
     this._activeEditorPersistable = undefined;
+
+    this._setHash(ProjectEditorUtilities.getProjectEditorModeString(newMode));
+
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
       menuState: this.state.menuState,
@@ -1599,13 +1832,32 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const content = projectItem.file.content;
 
     if (content instanceof Uint8Array) {
-      await this.saveAsWorldWithPacks(projectItem.file.name, content);
+      await this.saveAsBetaApisWorldWithPacks(projectItem.file.name, content);
     }
 
     this.props.carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + projectItem.file.name + "'.");
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewDeployKey((data.icon as any).key, this._handleDownloadMCWorldWithPacks, data);
+    }
+  }
+
+  private async _handleDeployDownloadProjectWorldWithPacks(
+    e: SyntheticEvent | undefined,
+    data: MenuItemProps | undefined
+  ) {
+    if (data === undefined) {
+      return;
+    }
+
+    await this._ensurePersisted();
+
+    await this.launchDownloadProjectWorldWithPacks();
+
+    this.props.carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + this.props.project.name + "'.");
+
+    if (data && data.icon && (data.icon as any).key) {
+      this._setNewDeployKey((data.icon as any).key, this._handleDeployDownloadProjectWorldWithPacks, data);
     }
   }
 
@@ -1644,10 +1896,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
-  private async saveAsWorldWithPacks(name: string, content: Uint8Array) {
+  private async saveAsBetaApisWorldWithPacks(name: string, content: Uint8Array) {
     await this._ensurePersisted();
 
-    const mcworld = await ProjectExporter.getGameTestWorldWithPacks(this.props.project, name, content);
+    const mcworld = await ProjectExporter.getBetaApisWorldWithPacks(this.props.project, name, content);
 
     const newBytes = await mcworld.getBytes();
 
@@ -1658,10 +1910,36 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     Log.message("Done with save " + name, this.props.project.name, this.props.project.name);
   }
 
+  private async launchDownloadProjectWorldWithPacks() {
+    await this._ensurePersisted();
+
+    const name = Utilities.getFileFriendlySummarySeconds(new Date()) + "-" + this.props.project.name;
+
+    const fileName = name + "-project.mcworld";
+
+    const mcworld = await ProjectExporter.generateProjectWorld(
+      this.props.carto,
+      this.props.project,
+      this.props.project.ensureWorldSettings()
+    );
+
+    if (mcworld === undefined) {
+      return;
+    }
+
+    const newBytes = await mcworld.getBytes();
+
+    Log.message("About to save " + name, this.props.project.name);
+    if (newBytes !== undefined) {
+      saveAs(new Blob([newBytes], { type: "application/octet-stream" }), fileName);
+    }
+    Log.message("Done with save " + name, this.props.project.name, this.props.project.name);
+  }
+
   private async saveAsWorldWithPackRefs(name: string, content: Uint8Array) {
     await this._ensurePersisted();
 
-    const mcworld = await ProjectExporter.getGameTestWorldWithPackRefs(this.props.project, name, content);
+    const mcworld = await ProjectExporter.getBetaApisWorldWithPackRefs(this.props.project, name, content);
 
     const newBytes = await mcworld.getBytes();
 
@@ -1706,7 +1984,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this.props.carto.notifyStatusUpdate("Packing " + fileName);
 
-    const newBytes = await ProjectExporter.getFlatGameTestWorldWithPacksZip(this.props.carto, this.props.project, name);
+    const newBytes = await ProjectExporter.getFlatBetaApisWorldWithPacksZip(this.props.carto, this.props.project, name);
 
     this.props.carto.notifyStatusUpdate("Now downloading " + fileName);
 
@@ -1807,7 +2085,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     });
   }
 
-  private _handleResize() {
+  private _doUpdate() {
     this.forceUpdate();
   }
 
@@ -1832,6 +2110,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         this._activeEditorPersistable = undefined;
       }
 
+      if (newProjectItem.storagePath) {
+        this._setHash(ProjectEditorUtilities.convertStoragePathToBrowserSafe(newProjectItem.storagePath));
+      }
+
       this.setState({
         activeProjectItem: newProjectItem,
         activeReference: null,
@@ -1852,6 +2134,16 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
   _handleActionClick() {}
 
+  _setHash(newHash: string) {
+    this._lastHashProcessed = newHash;
+
+    if (window.history.pushState) {
+      window.history.pushState(null, "", "#" + newHash);
+    } else {
+      window.location.hash = "#" + newHash;
+    }
+  }
+
   async _handleEditCopyClick() {
     if (this.props === undefined || this.props.onModeChangeRequested === undefined) {
       return;
@@ -1870,37 +2162,50 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
-  getIsLinkShareable() {
-    const proj = this.props.project;
+  getGridColumnWidths() {
+    const width = WebUtilities.getWidth();
+    let isFullyCompact = false;
+    const viewMode = this.state.viewMode;
 
-    if (
-      !(
-        (proj.gitHubOwner && proj.gitHubRepoName) ||
-        (proj.originalGitHubOwner !== undefined && proj.originalGitHubRepoName !== undefined)
-      )
-    ) {
-      return false;
+    if (width < 744) {
+      isFullyCompact = true;
     }
 
-    if (proj.projectCabinetFile) {
-      return false;
-    }
+    let gridTemplateColumns = this.props.carto.itemSidePaneWidth + "px 4px 1fr 300px";
 
-    for (let projectItem of proj.items) {
-      if (projectItem.isFileContainerStorageItem) {
-        return false;
+    if (isFullyCompact) {
+      gridTemplateColumns = "30px 4px 1fr 30px";
+
+      if (viewMode === CartoEditorViewMode.mainFocus) {
+        gridTemplateColumns = "1fr 1fr 1fr 1fr ";
+      } else if (viewMode === CartoEditorViewMode.itemsFocus) {
+      } else if (viewMode === CartoEditorViewMode.codeLanding) {
+      } else if (viewMode === CartoEditorViewMode.toolboxFocus) {
+        gridTemplateColumns = "1fr 1fr 1fr 1fr ";
+      } else if (viewMode === CartoEditorViewMode.itemsOnLeft) {
+        gridTemplateColumns = "300px 1fr 1fr 1fr";
+      } else if (viewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox) {
+      } else if (viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox) {
+      } else {
+        gridTemplateColumns = "1fr 1fr 300px";
+      }
+    } else {
+      if (viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox) {
+        gridTemplateColumns = "300px 1fr 4px " + this.props.carto.itemSidePaneWidth + "px";
+      } else if (viewMode === CartoEditorViewMode.itemsOnRight) {
+        gridTemplateColumns = "300px 1fr 4px " + this.props.carto.itemSidePaneWidth + "px";
       }
     }
 
-    return true;
+    return gridTemplateColumns;
   }
 
   render() {
     const width = WebUtilities.getWidth();
-    let isButtonCompact = false;
+    let isButtonCompact = false; // toolbar button compact, that is
     let isFullyCompact = false;
 
-    if (width < 1016) {
+    if (width < 616) {
       isButtonCompact = true;
     }
 
@@ -1937,8 +2242,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     let nextExportKey = "shareableLink";
 
-    if (this.props.project.role !== ProjectRole.documentation) {
-      if (this.getIsLinkShareable()) {
+    if (this.props.project.role !== ProjectRole.documentation && this.props.project.role !== ProjectRole.meta) {
+      if (ProjectEditorUtilities.getIsLinkShareable(this.props.project)) {
         exportKeys[nextExportKey] = {
           key: nextExportKey,
           icon: <FontAwesomeIcon icon={faLink} key={nextExportKey} className="fa-lg" />,
@@ -2019,7 +2324,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     };
     exportMenu.push(exportKeys[nextExportKey]);
 
-    if (this.props.project.role !== ProjectRole.documentation) {
+    if (this.props.project.role !== ProjectRole.documentation && this.props.project.role !== ProjectRole.meta) {
       nextExportKey = "downloadDeployment";
       exportKeys[nextExportKey] = {
         key: nextExportKey,
@@ -2248,7 +2553,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         title: "Toggle bold",
       });
 
-      if (Utilities.isDebug) {
+      if (Utilities.isPreview) {
         if (this.props.readOnly) {
           toolbarItems.push({
             icon: <EditLabel />,
@@ -2281,39 +2586,18 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       if (!isFullyCompact) {
         viewMenuItems.push({
           key: "itemsOnLeft",
-          content: "Item list on the left",
+          content: "Main and item list on the left",
           icon: <FontAwesomeIcon icon={faSquareCaretLeft} className="fa-lg" />,
-          title: "Item list on the left",
+          title: "Editor/view and item list on the left",
           onClick: this._setItemsOnLeft,
         });
 
         viewMenuItems.push({
           key: "itemsOnRight",
-          content: "Item list on the right",
+          content: "Main and item list on the right",
           icon: <FontAwesomeIcon icon={faSquareCaretRight} className="fa-lg" />,
-          title: "Item list on the right",
+          title: "Editor/view and item list on the right",
           onClick: this._setItemsOnRight,
-        });
-
-        viewMenuItems.push({
-          key: "worldToolsDivider",
-          kind: "divider",
-        });
-
-        viewMenuItems.push({
-          key: "viewAsItems",
-          content: "View as items",
-          icon: <FontAwesomeIcon icon={faSquareCaretLeft} className="fa-lg" />,
-          title: "Item list on the left",
-          onClick: this._viewAsItems,
-        });
-
-        viewMenuItems.push({
-          key: "viewAsFiles",
-          content: "View as files",
-          icon: <FontAwesomeIcon icon={faSquareCaretRight} className="fa-lg" />,
-          title: "Item list on the right",
-          onClick: this._viewAsFiles,
         });
 
         viewMenuItems.push({
@@ -2324,9 +2608,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
       viewMenuItems.push({
         key: "mainFocus",
-        content: "Main",
+        content: "Editor/view",
         icon: <FontAwesomeIcon icon={faWindowMaximize} className="fa-lg" />,
-        title: "Main",
+        title: "Editor",
         onClick: this._setMainFocus,
       });
       viewMenuItems.push({
@@ -2337,7 +2621,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         onClick: this._setItemsFocus,
       });
 
-      if (Utilities.isDebug) {
+      if (Utilities.isPreview) {
         viewMenuItems.push({
           key: "toolboxFocus",
           content: "Toolbox",
@@ -2346,6 +2630,27 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           onClick: this._setToolboxFocus,
         });
       }
+
+      viewMenuItems.push({
+        key: "worldToolsDivider",
+        kind: "divider",
+      });
+
+      viewMenuItems.push({
+        key: "viewAsItems",
+        content: "View as items",
+        icon: <FontAwesomeIcon icon={faList} className="fa-lg" />,
+        title: "Item list on the left",
+        onClick: this._viewAsItems,
+      });
+
+      viewMenuItems.push({
+        key: "viewAsFiles",
+        content: "View as files",
+        icon: <FontAwesomeIcon icon={faFolderTree} className="fa-lg" />,
+        title: "Item list on the right",
+        onClick: this._viewAsFiles,
+      });
 
       if (AppServiceProxy.hasAppService && !isFullyCompact) {
         viewMenuItems.push({
@@ -2420,7 +2725,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       });*/
     }
 
-    if (Utilities.isDebug) {
+    if (Utilities.isPreview) {
       toolbarItems.push({
         icon: <SettingsLabel isCompact={isButtonCompact} />,
         key: "settings",
@@ -2428,7 +2733,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         title: "Settings",
       });
 
-      if (this.props.project.role !== ProjectRole.documentation && Utilities.isDebug) {
+      if (
+        this.props.project.role !== ProjectRole.documentation &&
+        this.props.project.role !== ProjectRole.meta &&
+        Utilities.isPreview
+      ) {
         toolbarItems.push({
           icon: <MinecraftLabel isCompact={isButtonCompact} />,
           key: "connect",
@@ -2485,7 +2794,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       });
     }
 
-    if (this.props.carto.deploymentStorage != null && this.props.project.role !== ProjectRole.documentation) {
+    if (
+      this.props.carto.deploymentStorage != null &&
+      this.props.project.role !== ProjectRole.documentation &&
+      this.props.project.role !== ProjectRole.meta
+    ) {
       if (!this.state.lastDeployKey) {
         toolbarItems.push({
           icon: <DeployLabel isCompact={isButtonCompact} />,
@@ -2522,14 +2835,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     let interior = <></>;
 
     let gridStyle = "pe-gridOuter ";
-    let gridTemplateColumns = "300px 1fr 300px";
-    let heightOffset = 104;
+    let heightOffset = 96;
 
-    if (isFullyCompact) {
-      gridTemplateColumns = "30px 1fr 30px";
-    }
-
-    let areaHeight = "calc(100vh - 4px)";
+    let areaHeight = "calc(100vh)";
 
     if (CartoApp.hostType === HostType.vsCodeMainWeb || CartoApp.hostType === HostType.vsCodeWebWeb) {
       areaHeight = "calc(100vh)";
@@ -2567,6 +2875,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         interior = (
           <ProjectPropertyEditor
             theme={this.props.theme}
+            onContentUpdated={this._doUpdate}
             heightOffset={heightOffset}
             project={this.props.project}
             carto={this.props.carto}
@@ -2621,7 +2930,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           theme={this.props.theme}
           readOnly={this.props.readOnly}
           heightOffset={heightOffset}
-          forceRawView={true} //this.state.forceRawView}
+          forceRawView={this.state.forceRawView}
           project={this.props.project}
           setActivePersistable={this._setActiveEditorPersistable}
           carto={this.props.carto}
@@ -2681,11 +2990,35 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           header={"Share Link to this Project"}
         />
       );
+    } else if (this.state.dialog === ProjectEditorDialog.worldSettings) {
+      const dialogContent = (
+        <WorldSettingsArea
+          carto={this.props.carto}
+          worldSettings={this.props.project.ensureWorldSettings()}
+          displayName={false}
+          isAdditive={true}
+          displayGameTypeProperties={true}
+          displayGameAdminProperties={false}
+          onWorldSettingsChanged={this._handleProjectWorldSettingsChanged}
+        />
+      );
+      effectArea = (
+        <Dialog
+          open={true}
+          cancelButton="Cancel"
+          confirmButton="OK"
+          onCancel={this._handleDialogDone}
+          onConfirm={this._handleDialogDone}
+          content={dialogContent}
+          header={"World settings"}
+        />
+      );
     }
 
     let column1 = <></>;
     let column2 = <></>;
     let column3 = <></>;
+    let column4 = <></>;
 
     let itemList = <></>;
 
@@ -2707,6 +3040,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           theme={this.props.theme}
           project={this.props.project}
           carto={this.props.carto}
+          editorMode={this.state.mode}
           heightOffset={heightOffset}
           onModeChangeRequested={this._handleModeChangeRequested}
           onActiveProjectItemChangeRequested={this._handleProjectItemSelected}
@@ -2722,9 +3056,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     let border = "";
 
     if (CartoApp.theme === CartoThemeStyle.dark) {
-      border = "4px inset #6b6562";
+      border = "inset 4px #6b6562";
     } else {
-      border = "4px inset #f1f1f1";
+      border = "inset 4px #f1f1f1";
     }
 
     if (
@@ -2741,14 +3075,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       column2 = (
         <div
           className="pe-colAll"
-          style={{ border: border, backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2 }}
+          style={{
+            border: border,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+          }}
         >
           {interior}
         </div>
       );
-      if (isFullyCompact) {
-        gridTemplateColumns = "1fr 1fr 1fr";
-      }
     } else if (viewMode === CartoEditorViewMode.itemsFocus) {
       column2 = <div className="pe-itemlist pe-colAll">{itemList}</div>;
     } else if (viewMode === CartoEditorViewMode.toolboxFocus) {
@@ -2765,34 +3099,49 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           />
         </div>
       );
-      if (isFullyCompact) {
-        gridTemplateColumns = "1fr 1fr 1fr";
-      }
     } else if (viewMode === CartoEditorViewMode.itemsOnLeft) {
       column1 = <div className="pe-itemlist pe-col1">{itemList}</div>;
       column2 = (
         <div
-          className="pe-col2and3"
-          style={{ border: border, backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2 }}
+          className="pe-col2 pe-itemSplitter"
+          style={{
+            borderLeft: border,
+            borderTop: border,
+            borderBottom: border,
+          }}
+          onMouseDown={this._handleSplitterDrag}
+        >
+          &#160;
+        </div>
+      );
+      column3 = (
+        <div
+          className="pe-col3and4"
+          style={{
+            borderRight: border,
+            borderTop: border,
+            borderBottom: border,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+          }}
         >
           {interior}
         </div>
       );
-      if (isFullyCompact) {
-        gridTemplateColumns = "300px 1fr 1fr";
-      }
     } else if (viewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox) {
       column1 = <div className="pe-itemlist pe-col1">{itemList}</div>;
       column2 = (
         <div
           className="pe-col2"
-          style={{ border: border, backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2 }}
+          style={{
+            border: border,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+          }}
         >
           {interior}
         </div>
       );
       column3 = (
-        <div className="pe-col3">
+        <div className="pe-col4">
           <MinecraftDisplay
             forceCompact={true}
             theme={this.props.theme}
@@ -2821,33 +3170,49 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       column2 = (
         <div
           className="pe-col2"
-          style={{ border: border, backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2 }}
+          style={{
+            border: border,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+          }}
         >
           {interior}
         </div>
       );
-      column3 = <div className="pe-itemlist pe-col3">{itemList}</div>;
+      column3 = <div className="pe-itemlist pe-col4">{itemList}</div>;
     } else {
+      // items on right
       column1 = (
         <div
           className="pe-col1and2"
-          style={{ border: border, backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2 }}
+          style={{
+            borderLeft: border,
+            borderTop: border,
+            borderBottom: border,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+          }}
         >
           {interior}
         </div>
       );
-      if (isFullyCompact) {
-        gridTemplateColumns = "1fr 1fr 300px";
-      }
 
-      column2 = <div className="pe-itemlist pe-col3">{itemList}</div>;
+      column2 = (
+        <div
+          className="pe-col3 pe-itemSplitter"
+          style={{
+            borderRight: border,
+            borderTop: border,
+            borderBottom: border,
+          }}
+          onMouseDown={this._handleSplitterDrag}
+        >
+          &#160;
+        </div>
+      );
+
+      column3 = <div className="pe-itemlist pe-col4">{itemList}</div>;
     }
 
-    let toolbarStyle = "pe-toolbar";
-
-    if (isFullyCompact) {
-      toolbarStyle = "pe-toolbar-full";
-    }
+    const toolbarStyle = isFullyCompact ? "pe-toolbar-compact" : "pe-toolbar";
 
     let toolbarArea = <></>;
 
@@ -2894,14 +3259,19 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       <div>
         {effectArea}
         <div
+          ref={this.gridElt}
           className={gridStyle}
-          style={{ minHeight: areaHeight, maxHeight: areaHeight, gridTemplateColumns: gridTemplateColumns }}
+          onMouseMove={this._handleOuterMouseMove}
+          onMouseUp={this._handleOuterMouseOutOrUp}
+          onMouseLeave={this._handleOuterMouseOutOrUp}
+          style={{ minHeight: areaHeight, maxHeight: areaHeight, gridTemplateColumns: this.getGridColumnWidths() }}
         >
           {toolbarArea}
           {metaArea}
           {column1}
           {column2}
           {column3}
+          {column4}
           {statusArea}
         </div>
       </div>

@@ -108,9 +108,12 @@
 .label-button {
   padding-left: 7px;
   padding-right: 7px;
-  padding-top: 6px;
+  padding-top: 7px;
   padding-bottom: 6px;
   vertical-align: top;
+  display: inline-block;
+  min-width: 32px;
+  height: 32px;
   background-color: #000000;
   color: #c0c0c0;
 }

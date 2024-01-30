@@ -2,14 +2,14 @@ import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import { IItemTexture } from "./IItemTexture";
+import { IFlipbookTexture } from "./IFlipbookTexture";
 
-export default class ItemTextureCatalogDefinition {
-  public itemTexture?: IItemTexture;
+export default class FlipbookTextureCatalogDefinition {
+  public flipbookTextures?: IFlipbookTexture[];
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
-  private _onLoaded = new EventDispatcher<ItemTextureCatalogDefinition, ItemTextureCatalogDefinition>();
+  private _onLoaded = new EventDispatcher<FlipbookTextureCatalogDefinition, FlipbookTextureCatalogDefinition>();
 
   public get isLoaded() {
     return this._isLoaded;
@@ -26,22 +26,22 @@ export default class ItemTextureCatalogDefinition {
     this._file = newFile;
   }
 
-  static async ensureOnFile(
+  static async ensureFlipbookTextureCatalogDefinitionOnFile(
     file: IFile,
-    loadHandler?: IEventHandler<ItemTextureCatalogDefinition, ItemTextureCatalogDefinition>
+    loadHandler?: IEventHandler<FlipbookTextureCatalogDefinition, FlipbookTextureCatalogDefinition>
   ) {
-    let et: ItemTextureCatalogDefinition | undefined = undefined;
+    let et: FlipbookTextureCatalogDefinition | undefined = undefined;
 
     if (file.manager === undefined) {
-      et = new ItemTextureCatalogDefinition();
+      et = new FlipbookTextureCatalogDefinition();
 
       et.file = file;
 
       file.manager = et;
     }
 
-    if (file.manager !== undefined && file.manager instanceof ItemTextureCatalogDefinition) {
-      et = file.manager as ItemTextureCatalogDefinition;
+    if (file.manager !== undefined && file.manager instanceof FlipbookTextureCatalogDefinition) {
+      et = file.manager as FlipbookTextureCatalogDefinition;
 
       if (!et.isLoaded && loadHandler) {
         et.onLoaded.subscribe(loadHandler);
@@ -58,7 +58,7 @@ export default class ItemTextureCatalogDefinition {
       return;
     }
 
-    const defString = JSON.stringify(this.itemTexture, null, 2);
+    const defString = JSON.stringify(this.flipbookTextures, null, 2);
 
     this._file.setContent(defString);
   }
@@ -69,7 +69,7 @@ export default class ItemTextureCatalogDefinition {
     }
 
     if (this._file === undefined) {
-      Log.unexpectedUndefined("ITCDF");
+      Log.unexpectedUndefined("FBTCDF");
       return;
     }
 
@@ -79,7 +79,7 @@ export default class ItemTextureCatalogDefinition {
       return;
     }
 
-    let data: any = {};
+    let data: any = [];
 
     let result = StorageUtilities.getJsonObject(this._file);
 
@@ -87,7 +87,7 @@ export default class ItemTextureCatalogDefinition {
       data = result;
     }
 
-    this.itemTexture = data;
+    this.flipbookTextures = data;
 
     this._isLoaded = true;
 
