@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Catalog from "./ICatalog";
 import axios from "axios";
 import BlockType from "./BlockType";

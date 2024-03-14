@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import BlockAreaSize from "./BlockAreaSize";
 import EntityQueryScoreOptions from "./EntityQueryScoreOptions";
 import { GameMode } from "./GameMode";

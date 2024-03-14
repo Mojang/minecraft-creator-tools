@@ -11,6 +11,7 @@ import Carto from "../app/Carto";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { constants } from "../core/Constants";
+import Log from "../core/Log";
 
 interface IShareProjectProps extends IAppProps {
   project: Project;
@@ -47,7 +48,9 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
       contentUrl: undefined,
       title: undefined,
     };
+  }
 
+  componentDidMount() {
     window.setTimeout(this._ensureLoaded, 1);
   }
 
@@ -141,6 +144,20 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
         ghRepoBranch = gp.gitHubBranch;
         ghRepoFolder = gp.gitHubFolder;
         ghFiles = gp.fileList;
+
+        if (ghFiles === undefined) {
+          const gpA = await carto.getGalleryProjectByGitHub(
+            gp.gitHubRepoName,
+            gp.gitHubOwner,
+            gp.gitHubBranch,
+            gp.gitHubFolder,
+            true
+          );
+
+          if (gpA && gpA.fileList) {
+            ghFiles = gpA.fileList;
+          }
+        }
       }
     }
 
@@ -156,15 +173,20 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
       await gh.rootFolder.load(false);
     }
 
-    const differenceSet = await StorageUtilities.getDifferences(gh.rootFolder, project.projectFolder, true);
+    try {
+      const differenceSet = await StorageUtilities.getDifferences(gh.rootFolder, project.projectFolder, true);
 
-    if (differenceSet.fileDifferences.length > 0) {
-      const zs = differenceSet.getZip();
-      const zipBytes = await zs.generateCompressedUint8ArrayAsync();
+      if (differenceSet.fileDifferences.length > 0) {
+        const zs = differenceSet.getZip();
+        const zipBytes = await zs.generateCompressedUint8ArrayAsync();
 
-      const diff64 = Utilities.arrayBufferToBase64(zipBytes.buffer);
+        const diff64 = Utilities.arrayBufferToBase64(zipBytes.buffer);
 
-      return diff64;
+        return diff64;
+      }
+    } catch (e) {
+      // potentially a web limit or network issue
+      Log.verbose("Error retrieving file differences: " + e);
     }
 
     return undefined;

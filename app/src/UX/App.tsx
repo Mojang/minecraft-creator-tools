@@ -1,6 +1,5 @@
 import { Component } from "react";
 import ProjectEditor, { ProjectStatusAreaMode } from "./ProjectEditor";
-import ExporterTool from "./ExporterTool";
 import Home from "./Home";
 import "./App.css";
 import Carto from "./../app/Carto";
@@ -44,6 +43,7 @@ export enum AppMode {
   codeStartPageForceNewProject = 12,
   codeLandingForceNewProject = 13,
   codeMinecraftView = 14,
+  search = 15,
 }
 
 interface AppProps {
@@ -248,30 +248,6 @@ export default class App extends Component<AppProps, AppState> {
 
       case "info":
         return AppMode.project;
-
-      case "codetoolbox":
-        return AppMode.codeToolbox;
-
-      case "codestartpage":
-        return AppMode.codeStartPage;
-
-      case "codeminecraftview":
-        return AppMode.codeMinecraftView;
-
-      case "codestartpageforcenewproject":
-        return AppMode.codeStartPageForceNewProject;
-
-      case "codelandingforcenewproject":
-        return AppMode.codeLandingForceNewProject;
-
-      case "remoteservermanager":
-        return AppMode.remoteServerManager;
-
-      case "companion":
-        return AppMode.companion;
-
-      case "companionht":
-        return AppMode.companionMinusTitlebar;
 
       default:
         return undefined;
@@ -878,15 +854,29 @@ export default class App extends Component<AppProps, AppState> {
 
       const rootFolder = await newProject.ensureProjectFolder();
 
-      await StorageUtilities.syncFolderTo(
-        gh.rootFolder,
-        rootFolder,
-        false,
-        false,
-        false,
-        ["build", "node_modules", "dist", "/.git", "out"],
-        this._gitHubAddingMessageUpdater
-      );
+      try {
+        await StorageUtilities.syncFolderTo(
+          gh.rootFolder,
+          rootFolder,
+          false,
+          false,
+          false,
+          ["build", "node_modules", "dist", "/.git", "out"],
+          this._gitHubAddingMessageUpdater
+        );
+      } catch (e: any) {
+        this.setState({
+          carto: this.state.carto,
+          mode: AppMode.home,
+          activeProject: this.state.activeProject,
+          selectedItem: this.state.selectedItem,
+          initialProjectEditorMode: this.state.initialProjectEditorMode,
+          isPersisted: this.state.isPersisted,
+          errorMessage: "Could not create a new project. " + e.toString(),
+        });
+
+        return;
+      }
 
       newProject.originalGitHubOwner = gitHubOwner;
       newProject.originalFileList = fileList;
@@ -1076,8 +1066,8 @@ export default class App extends Component<AppProps, AppState> {
       }
 
       interior = (
-        <div className="app-loading">
-          <div>{message}</div>
+        <div className="app-loadingArea">
+          <div className="app-loading">{message}</div>
           <div className="app-subloading">{additionalLoadingMessage}</div>
         </div>
       );
@@ -1094,14 +1084,6 @@ export default class App extends Component<AppProps, AppState> {
           onNewProjectSelected={this._handleNewProject}
           onNewProjectFromFolderSelected={this._handleNewProjectFromFolder}
           onNewProjectFromFolderInstanceSelected={this._handleNewProjectFromFolderInstance}
-          onProjectSelected={this._handleProjectSelected}
-        />
-      );
-    } else if (this.state.mode === AppMode.exporterTool) {
-      interior = (
-        <ExporterTool
-          carto={this.state.carto}
-          onModeChangeRequested={this._handleModeChangeRequested}
           onProjectSelected={this._handleProjectSelected}
         />
       );

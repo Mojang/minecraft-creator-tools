@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export default class UrlUtilities {
   static ensureProtocol(sourceUrl: string, protocolFrom: string, protocolValue: string) {
     if (sourceUrl.indexOf("?") <= 0) {

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import BlockActor from "./BlockActor";
 
 export default class HopperBlockActor extends BlockActor {

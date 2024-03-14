@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Folder from "./Folder";
 import StorageBase from "./StorageBase";
 import IStorage from "./IStorage";

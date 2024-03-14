@@ -1347,7 +1347,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     const fieldTopper = [];
     const fieldInterior = [];
 
-    Log.assert(arrayOfDataVal);
+    Log.assert(arrayOfDataVal, "DFAOAC");
 
     if (arrayOfDataVal !== undefined && field.subForm && arrayOfDataVal instanceof Array) {
       const headerElement = <div>{FieldUtilities.getFieldTitle(field)}</div>;
@@ -1531,7 +1531,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
   addStringArrayComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
     const val = this._getProperty(field.id, []);
     const fieldInterior = [];
-    Log.assertDefined(val);
+    Log.assertDefined(val, "DFASAC");
 
     if (val) {
       const headerElement = <div key={"sarry" + field.id}>{FieldUtilities.getFieldTitle(field)}</div>;

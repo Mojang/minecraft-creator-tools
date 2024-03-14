@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFileDifference, { FileDifferenceType } from "./IFileDifference";
 import IFolderDifference, { FolderDifferenceType } from "./IFolderDifference";
 import IStorage from "./IStorage";

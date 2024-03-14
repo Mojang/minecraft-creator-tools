@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectItem from "../app/ProjectItem";
 import Project from "./../app/Project";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
@@ -15,12 +18,16 @@ import Log from "../core/Log";
 import { StatusTopic } from "../app/Status";
 import GeneratorRegistrations from "./GeneratorRegistrations";
 import StorageUtilities from "../storage/StorageUtilities";
+import ContentIndex from "../core/ContentIndex";
 
 export default class ProjectInfoSet {
   project?: Project;
   suite: ProjectInfoSuite;
   info: IProjectInfo;
   items: ProjectInfoItem[] = [];
+  itemsByStoragePath: { [storagePath: string]: ProjectInfoItem[] | undefined } = {};
+  contentIndex: ContentIndex;
+
   static _generatorsById: { [name: string]: IProjectInfoGenerator } = {};
   _isGenerating: boolean = false;
   _completedGeneration: boolean = false;
@@ -43,30 +50,53 @@ export default class ProjectInfoSet {
     }
   }
 
+  get completedGeneration() {
+    return this._completedGeneration;
+  }
+
   constructor(
     project?: Project,
     suite?: ProjectInfoSuite,
     excludeTests?: string[],
     info?: IProjectInfo,
-    items?: IInfoItemData[]
+    items?: IInfoItemData[],
+    index?: ContentIndex
   ) {
     this.project = project;
     this.info = info ? info : {};
+    this.contentIndex = index ? index : new ContentIndex();
 
     if (items) {
       for (const item of items) {
-        this.items.push(
-          new ProjectInfoItem(
-            item.itemType,
-            item.generatorId,
-            item.generatorIndex,
-            item.message,
-            undefined,
-            item.data,
-            item.itemId,
-            item.content
-          )
-        );
+        let projectItem = undefined;
+
+        if (item.p) {
+          if (project) {
+            projectItem = project.getItemByStoragePath(item.p);
+          }
+
+          if (!this.itemsByStoragePath[item.p]) {
+            this.itemsByStoragePath[item.p] = [];
+          }
+
+          let projectInfoItem = new ProjectInfoItem(
+            item.iTp,
+            item.gId,
+            item.gIx,
+            item.m,
+            projectItem,
+            item.d,
+            item.iId,
+            item.c
+          );
+
+          this.itemsByStoragePath[item.p]?.push(projectInfoItem);
+          this.items.push(projectInfoItem);
+        } else {
+          this.items.push(
+            new ProjectInfoItem(item.iTp, item.gId, item.gIx, item.m, projectItem, item.d, item.iId, item.c)
+          );
+        }
       }
     }
 
@@ -74,6 +104,20 @@ export default class ProjectInfoSet {
       this.suite = suite;
     } else {
       this.suite = ProjectInfoSuite.allExceptAddOn;
+    }
+
+    if (index) {
+      if (info) {
+        for (const key in info) {
+          const val = (info as any)[key];
+
+          if (val && typeof val === "string") {
+            if (ProjectInfoSet.isAggregableFieldName(key)) {
+              index.parseTextContent("inspector", val);
+            }
+          }
+        }
+      }
     }
 
     this._excludeTests = excludeTests;
@@ -151,11 +195,15 @@ export default class ProjectInfoSet {
         StatusTopic.validation
       );
 
+      this.info.summary = undefined;
+
       const projGenerators: IProjectInfoGenerator[] = GeneratorRegistrations.projectGenerators;
       const itemGenerators: IProjectItemInfoGenerator[] = GeneratorRegistrations.itemGenerators;
       const fileGenerators: IProjectFileInfoGenerator[] = GeneratorRegistrations.fileGenerators;
 
       const genItems: ProjectInfoItem[] = [];
+      const genItemsByStoragePath: { [storagePath: string]: ProjectInfoItem[] | undefined } = {};
+      const genContentIndex = new ContentIndex();
 
       if (!this.project) {
         Log.throwUnexpectedUndefined("PISGFP");
@@ -171,10 +219,10 @@ export default class ProjectInfoSet {
           GeneratorRegistrations.configureForSuite(gen, this.suite);
 
           try {
-            const results = await gen.generate(this.project);
+            const results = await gen.generate(this.project, genContentIndex);
 
             for (const item of results) {
-              genItems.push(item);
+              this.pushItem(genItems, genItemsByStoragePath, item);
             }
           } catch (e: any) {
             genItems.push(new ProjectInfoItem(InfoItemType.internalProcessingError, gen.id, 500, e.toString()));
@@ -193,10 +241,10 @@ export default class ProjectInfoSet {
           if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && this.matchesSuite(gen)) {
             GeneratorRegistrations.configureForSuite(gen, this.suite);
             try {
-              const results = await gen.generate(pi);
+              const results = await gen.generate(pi, genContentIndex);
 
               for (const item of results) {
-                genItems.push(item);
+                this.pushItem(genItems, genItemsByStoragePath, item);
               }
             } catch (e: any) {
               genItems.push(new ProjectInfoItem(InfoItemType.internalProcessingError, gen.id, 501, e.toString()));
@@ -205,12 +253,24 @@ export default class ProjectInfoSet {
         }
       }
 
-      await this.processFolder(this.project, await this.project.ensureProjectFolder(), genItems, fileGenerators, 0);
+      await this.processFolder(
+        this.project,
+        await this.project.ensureProjectFolder(),
+        genItems,
+        genItemsByStoragePath,
+        genContentIndex,
+        fileGenerators,
+        0
+      );
 
-      this.addSuccesses(genItems, fileGenerators, this._excludeTests);
-      this.addSuccesses(genItems, itemGenerators, this._excludeTests);
+      this.addSuccesses(genItems, genItemsByStoragePath, fileGenerators, this._excludeTests);
+      this.addSuccesses(genItems, genItemsByStoragePath, itemGenerators, this._excludeTests);
 
       this.items = genItems;
+
+      this.itemsByStoragePath = genItemsByStoragePath;
+      this.contentIndex = genContentIndex;
+
       this._completedGeneration = true;
 
       this.generateProjectMetaInfo();
@@ -241,13 +301,20 @@ export default class ProjectInfoSet {
     }
   }
 
-  addSuccesses(genItems: ProjectInfoItem[], fileGenerators: IProjectInfoGeneratorBase[], excludeTests?: string[]) {
+  addSuccesses(
+    genItems: ProjectInfoItem[],
+    genItemsByStoragePath: { [storagePath: string]: ProjectInfoItem[] | undefined },
+    fileGenerators: IProjectInfoGeneratorBase[],
+    excludeTests?: string[]
+  ) {
     for (const fileGen of fileGenerators) {
       if ((!excludeTests || !excludeTests.includes(fileGen.id)) && this.matchesSuite(fileGen)) {
-        const results = this.getItems(genItems, fileGen.id, InfoItemType.testCompleteFail);
+        const results = ProjectInfoSet.getItemsInCollectionByType(genItems, fileGen.id, InfoItemType.testCompleteFail);
 
         if (results.length === 0) {
-          genItems.push(
+          this.pushItem(
+            genItems,
+            genItemsByStoragePath,
             new ProjectInfoItem(
               InfoItemType.testCompleteSuccess,
               fileGen.id,
@@ -260,11 +327,32 @@ export default class ProjectInfoSet {
     }
   }
 
-  public mergeInFeatures(
-    allFeatures: { [featureName: string]: number | undefined },
+  pushItem(
+    itemSet: ProjectInfoItem[],
+    itemsByStoragePath: { [storagePath: string]: ProjectInfoItem[] | undefined },
+    item: ProjectInfoItem
+  ) {
+    if (
+      item.projectItem &&
+      item.projectItem.storagePath &&
+      item.itemType !== InfoItemType.info &&
+      item.itemType !== InfoItemType.featureAggregate
+    ) {
+      if (!itemsByStoragePath[item.projectItem.storagePath]) {
+        itemsByStoragePath[item.projectItem.storagePath] = [];
+      }
+
+      itemsByStoragePath[item.projectItem.storagePath]?.push(item);
+    }
+
+    itemSet.push(item);
+  }
+
+  public mergeFeatureSetsAndFieldsTo(
+    allFeatureSets: { [setName: string]: { [measureName: string]: number | undefined } | undefined },
     allFields: { [featureName: string]: boolean | undefined }
   ) {
-    if (!this.info || !this.info.features) {
+    if (!this.info || !this.info.featureSets) {
       return;
     }
 
@@ -277,40 +365,165 @@ export default class ProjectInfoSet {
     for (const str in allFields) {
       let inf = this.info as any;
 
-      if (str !== "features") {
+      if (ProjectInfoSet.isAggregableFieldName(str)) {
         if (inf[str] === undefined) {
           inf[str] = "";
         }
       }
     }
 
-    for (const featureName in this.info.features) {
-      const val = this.info.features[featureName];
+    for (const featureName in this.info.featureSets) {
+      const myFeature = this.info.featureSets[featureName];
 
-      if (val !== undefined) {
-        let allfValue = allFeatures[featureName];
+      if (myFeature !== undefined) {
+        let allFeature = allFeatureSets[featureName];
 
-        if (allfValue === undefined) {
-          allfValue = val;
-        } else {
-          allfValue += val;
+        if (allFeature === undefined) {
+          allFeature = {};
+          allFeatureSets[featureName] = allFeature;
         }
 
-        allFeatures[featureName] = allfValue;
+        for (const measureName in myFeature) {
+          const measureVal = myFeature[measureName];
+
+          if (measureVal !== undefined) {
+            let allMeasureVal = allFeature[measureName];
+
+            if (allMeasureVal === undefined) {
+              allMeasureVal = measureVal;
+            } else {
+              allMeasureVal += measureVal;
+            }
+
+            allFeature[measureName] = allMeasureVal;
+          }
+        }
       }
     }
   }
 
-  getDataObject(sourceName?: string, sourcePath?: string, sourceHash?: string): IProjectInfoData {
-    const items: IInfoItemData[] = [];
+  ensureGenerators() {
+    if (!this.info) {
+      return;
+    }
+
+    if (this.info.summary !== undefined) {
+      return;
+    }
+
+    this.info.summary = {};
 
     for (let i = 0; i < this.items.length; i++) {
-      items.push(this.items[i].dataObject);
+      const gId = this.items[i].generatorId;
+      const gIndex = this.items[i].generatorIndex;
+
+      let gen = this.info.summary[gId];
+
+      if (gen === undefined) {
+        gen = {};
+
+        this.info.summary[gId] = gen;
+      }
+
+      let genI = gen[gIndex];
+
+      if (genI === undefined) {
+        genI = {};
+
+        gen[gIndex] = genI;
+      }
+
+      const topicInfo = ProjectInfoSet.getTopicData(gId, gIndex);
+
+      if (topicInfo) {
+        genI.title = topicInfo.title;
+      }
+
+      if (genI.defaultMessage === undefined && this.items[i].message !== genI.title) {
+        genI.defaultMessage = this.items[i].message;
+      }
+    }
+
+    for (let i = 0; i < this.items.length; i++) {
+      const item = this.items[i];
+      const gId = item.generatorId;
+      const gIndex = item.generatorIndex;
+
+      let gen = this.info.summary[gId];
+
+      if (gen === undefined) {
+        gen = {};
+
+        this.info.summary[gId] = gen;
+      }
+
+      let genI = gen[gIndex];
+
+      if (genI === undefined) {
+        genI = {};
+
+        gen[gIndex] = genI;
+      }
+
+      if (item.itemType !== InfoItemType.featureAggregate) {
+        switch (item.itemType) {
+          case InfoItemType.error:
+            genI.errors = genI.errors ? genI.errors + 1 : 1;
+            break;
+          case InfoItemType.testCompleteFail:
+            genI.testCompleteFails = genI.testCompleteFails ? genI.testCompleteFails + 1 : 1;
+            break;
+          case InfoItemType.testCompleteSuccess:
+            genI.testCompleteSuccesses = genI.testCompleteSuccesses ? genI.testCompleteSuccesses + 1 : 1;
+            break;
+          case InfoItemType.warning:
+            genI.warnings = genI.warnings ? genI.warnings + 1 : 1;
+            break;
+          case InfoItemType.recommendation:
+            genI.recommendations = genI.recommendations ? genI.recommendations + 1 : 1;
+            break;
+          case InfoItemType.internalProcessingError:
+            genI.internalProcessingErrors = genI.internalProcessingErrors ? genI.internalProcessingErrors + 1 : 1;
+            break;
+        }
+      }
+
+      if (this.items[i].message === genI.defaultMessage || this.items[i].message === genI.title) {
+        this.items[i].message = undefined;
+      }
+    }
+  }
+
+  shouldIncludeInIndex(data: IInfoItemData) {
+    if (data.gId === "JSON" || data.gId === "ESLINT") {
+      return false;
+    }
+
+    return true;
+  }
+
+  getDataObject(
+    sourceName?: string,
+    sourcePath?: string,
+    sourceHash?: string,
+    isIndexOnly?: boolean
+  ): IProjectInfoData {
+    const items: IInfoItemData[] = [];
+
+    this.ensureGenerators();
+
+    for (let i = 0; i < this.items.length; i++) {
+      const dataObj = this.items[i].dataObject;
+
+      if (!isIndexOnly || this.shouldIncludeInIndex(dataObj)) {
+        items.push(dataObj);
+      }
     }
 
     return {
       info: this.info,
       items: items,
+      index: this.contentIndex.data,
       generatorName: constants.name,
       suite: this.suite,
       generatorVersion: constants.version,
@@ -320,43 +533,69 @@ export default class ProjectInfoSet {
     };
   }
 
+  static isAggregableFieldName(name: string) {
+    if (name !== "features" && name !== "summary" && name !== "featureSets" && name !== "defaultIcon") {
+      return true;
+    }
+
+    return false;
+  }
+
+  static isAggregableFeatureMeasureName(name: string) {
+    if (!name.startsWith("#")) {
+      return true;
+    }
+
+    return false;
+  }
+
   static getSummaryCsvHeaderLine(
     projectInfo: IProjectInfo,
-    allFeatures: { [featureName: string]: number | undefined }
+    allFeatures: { [setName: string]: { [measureName: string]: number | undefined } | undefined }
   ): string {
     let csvLine = "Name,Title,Reds,Area,";
 
     let fieldNames = [];
-    let featureNames = [];
 
     for (const str in projectInfo) {
-      if (str !== "features") {
+      if (ProjectInfoSet.isAggregableFieldName(str)) {
         fieldNames.push(str);
       }
     }
 
-    for (const str in allFeatures) {
-      featureNames.push(str);
-    }
-
     fieldNames = fieldNames.sort(ProjectInfoSet.sortMinecraftFeatures);
-    featureNames = featureNames.sort(ProjectInfoSet.sortMinecraftFeatures);
 
     for (const str of fieldNames) {
       csvLine += Utilities.humanifyJsName(str) + ",";
     }
 
     for (const str in projectInfo) {
-      if (str !== "features") {
+      if (ProjectInfoSet.isAggregableFieldName(str)) {
         fieldNames.push(str);
       }
     }
 
-    for (const featureName of featureNames) {
-      csvLine += ProjectInfoSet.getDataSummary(featureName) + ",";
+    for (const featureName in allFeatures) {
+      const feature = allFeatures[featureName];
+
+      if (feature) {
+        for (const measureName in feature) {
+          if (ProjectInfoSet.isAggregableFeatureMeasureName(measureName)) {
+            const measure = feature[measureName];
+
+            if (measure !== undefined) {
+              csvLine += ProjectInfoSet.getDataSummary(featureName + " " + measureName) + ",";
+            }
+          }
+        }
+      }
     }
 
     return csvLine;
+  }
+
+  getIndexJson(sourceName?: string, sourcePath?: string, sourceHash?: string) {
+    return JSON.stringify(this.getDataObject(sourceName, sourcePath, sourceHash, true));
   }
 
   getReportHtml(sourceName?: string, sourcePath?: string, sourceHash?: string): string {
@@ -370,9 +609,10 @@ function _addReportJson(data) {
   _reportObjects.push(data);
 }
 `);
-    lines.push(
-      "_addReportJson(" + JSON.stringify(this.getDataObject(sourceName, sourcePath, sourceHash), null, 2) + ");"
-    );
+    const dataObject = this.getDataObject(sourceName, sourcePath, sourceHash);
+
+    dataObject.index = undefined;
+    lines.push("_addReportJson(" + JSON.stringify(dataObject, null, 2) + ");");
     lines.push("</script><script>");
     lines.push(`
     function getDataName(name) {
@@ -440,7 +680,7 @@ function _addReportJson(data) {
           for (const key in info) {
             const val = info[key];
     
-            if (key !== 'features') {
+            if (key !== 'featureSets' && key !== 'defaultIcon' && key !== 'summary') {
               document.write("<tr>");
               document.write("<td class='summary-key items-cell'>" + getDataName(key) + "</td>");
               document.write("<td class='summary-value items-cell'>" + getDataSummary(val) + "</td>");
@@ -448,13 +688,15 @@ function _addReportJson(data) {
             }
           }
     
-          if (info["features"]) {
-            for (const key in info.features) {
-             const val = info.features[key];
+          if (info["featureSets"]) {
+            for (const featureName in info.featureSets) {
+              const feature = info.featureSets[featureName];
     
-             if (key !== 'features') {
-                document.write("<tr>");
-                document.write("<td class='summary-key items-cell'>" + key + "</td>");
+              for (const measureName in feature) {
+                const val = feature[measureName];
+
+                 document.write("<tr>");
+                document.write("<td class='summary-key items-cell'>" + featureName + " " + measureName + "</td>");
                 document.write("<td class='summary-value items-cell'>" + getDataSummary(val) + "</td>");
                 document.write("</tr>");
               }
@@ -477,12 +719,12 @@ function _addReportJson(data) {
           for (const item of items) {
             if (item.itemType !== 2) {
               document.write("<tr>");
-              document.write("<td class='items-type items-cell'>" + getDescriptionForItemType(item.itemType) + "</td>");
-              document.write("<td class='items-generator items-cell'>" + item.generatorId + "</td>");
-              document.write("<td class='items-generatorIndex items-cell'>" + item.generatorIndex + "</td>");
-              document.write("<td class='items-message items-cell'>" + getEmptySummary(item.message) + "</td>");
-              document.write("<td class='items-data items-cell'>" + getEmptySummary(item.data) + "</td>");
-              document.write("<td class='items-path items-cell'>" + getEmptySummary(item.itemStoragePath) + "</td>");
+              document.write("<td class='items-type items-cell'>" + getDescriptionForItemType(item.iTp) + "</td>");
+              document.write("<td class='items-generator items-cell'>" + item.gId + "</td>");
+              document.write("<td class='items-generatorIndex items-cell'>" + item.gIx + "</td>");
+              document.write("<td class='items-message items-cell'>" + getEmptySummary(item.m) + "</td>");
+              document.write("<td class='items-data items-cell'>" + getEmptySummary(item.d) + "</td>");
+              document.write("<td class='items-path items-cell'>" + getEmptySummary(item.p) + "</td>");
               document.write("</tr>");
             }
           }
@@ -523,53 +765,24 @@ function _addReportJson(data) {
       }
     
       .items-table {
-        display: grid;
         border: solid 1px #606060;
         padding: 0px;
+        max-width: 100vw;
       }
     
       .items-cell {
         border: solid 1px #606060;
         padding: 4px;
         vertical-align: top;
+        font-size: x-small;
+        overflow-wrap: anywhere;
+        max-width: 25vw;
       }
     
       .summary-table {
         border: solid 1px #606060;
         padding: 0px;
-        grid-template-columns: 520px 1fr;
-      }
-    
-      .summary-key {
-        grid-column: 1;
-      }
-    
-      .summary-value {
-        grid-column: 2;
-      }
-      
-      .items-type {
-        grid-column: 1;
-      }
-    
-      .items-generator {
-        grid-column: 2;
-      }
-      
-      .items-generatorIndex {
-        grid-column: 3;
-      }
-      
-      .items-message {
-        grid-column: 4;
-      }
-    
-      .items-data {
-        grid-column: 5;
-      }
-    
-      .items-path {
-        grid-column: 6;
+        max-width: 100vw;
       }
     </style>
     </head><body> 
@@ -692,199 +905,199 @@ function _addReportJson(data) {
   getRed() {
     let red = 0;
 
-    if (!this.info || !this.info.features) {
+    if (!this.info || !this.info.featureSets) {
       return 0;
     }
-
-    let val = this.info.features["Animation content-size total"];
+    /*
+    let val = this.info.featureSets["Animation content-size total"];
     if (val) {
       red += val * 0.2;
     }
 
-    val = this.info.features["Animation controller content-size total"];
+    val = this.info.featureSets["Animation controller content-size total"];
     if (val) {
       red += val * 0.5;
     }
 
-    val = this.info.features["Attachable content-size total"];
+    val = this.info.featureSets["Attachable content-size total"];
     if (val) {
       red += val * 0.1;
     }
 
-    val = this.info.features["Function content-size total"];
+    val = this.info.featureSets["Function content-size total"];
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.features["Tick content-size total"];
+    val = this.info.featureSets["Tick content-size total"];
     if (val) {
       red += val * 20;
     }
 
-    val = this.info.features["Command execute"];
+    val = this.info.featureSets["Command execute"];
     if (val) {
       red += val * 4;
     }
 
-    val = this.info.features["Behavior pack animation content-size total"];
+    val = this.info.featureSets["Behavior pack animation content-size total"];
     if (val) {
       red += val * 0.8;
     }
 
-    val = this.info.features["Behavior pack animation controller content-size total"];
+    val = this.info.featureSets["Behavior pack animation controller content-size total"];
     if (val) {
       red += val * 1.2;
     }
 
-    val = this.info.features["Biome resources content-size total"];
+    val = this.info.featureSets["Biome resources content-size total"];
     if (val) {
       red += val * 1.2;
     }
 
-    val = this.info.features["Block minecraft:chain_command_block"];
+    val = this.info.featureSets["Block minecraft:chain_command_block"];
     if (val) {
       red += val * 8;
     }
 
-    val = this.info.features["Block minecraft:command_block"];
+    val = this.info.featureSets["Block minecraft:command_block"];
     if (val) {
       red += val * 8;
     }
 
-    val = this.info.features["Block minecraft:repeating_command_block"];
+    val = this.info.featureSets["Block minecraft:repeating_command_block"];
     if (val) {
       red += val * 8;
     }
 
-    val = this.info.features["Block minecraft:structure_block"];
+    val = this.info.featureSets["Block minecraft:structure_block"];
     if (val) {
       red += val * 8;
     }
 
-    val = this.info.features["Block minecraft:observer"];
+    val = this.info.featureSets["Block minecraft:observer"];
     if (val) {
       red += val * 4;
     }
 
-    val = this.info.features["Block minecraft:comparator"];
+    val = this.info.featureSets["Block minecraft:comparator"];
     if (val) {
       red += val * 4;
     }
 
-    val = this.info.features["Block minecraft:dropper"];
+    val = this.info.featureSets["Block minecraft:dropper"];
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.features["Block minecraft:hopper"];
+    val = this.info.featureSets["Block minecraft:hopper"];
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.features["Block minecraft:pressure_plate"];
+    val = this.info.featureSets["Block minecraft:pressure_plate"];
     if (val) {
       red += val * 1;
     }
 
-    val = this.info.features["Block minecraft:lever"];
+    val = this.info.featureSets["Block minecraft:lever"];
     if (val) {
       red += val * 4;
     }
 
-    val = this.info.features["Block minecraft:lit_redstone_lamp"];
+    val = this.info.featureSets["Block minecraft:lit_redstone_lamp"];
     if (val) {
       red += val;
     }
 
-    val = this.info.features["Block minecraft:redstone_block"];
+    val = this.info.featureSets["Block minecraft:redstone_block"];
     if (val) {
       red += val;
     }
 
-    val = this.info.features["Block minecraft:redstone_torch"];
+    val = this.info.featureSets["Block minecraft:redstone_torch"];
     if (val) {
       red += val;
     }
 
-    val = this.info.features["Block minecraft:redstone_wire"];
+    val = this.info.featureSets["Block minecraft:redstone_wire"];
     if (val) {
       red += val;
     }
 
-    val = this.info.features["Block type content-size total"];
+    val = this.info.featureSets["Block type content-size total"];
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.features["Entity dialogue content-size total"];
+    val = this.info.featureSets["Entity dialogue content-size total"];
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.features["Entity type content-size total"];
+    val = this.info.featureSets["Entity type content-size total"];
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.features["Entity type resources content-size total"];
+    val = this.info.featureSets["Entity type resources content-size total"];
     if (val) {
       red += val * 1;
     }
 
-    val = this.info.features["Item type content-size total"];
+    val = this.info.featureSets["Item type content-size total"];
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.features["Item type resources content-size total"];
+    val = this.info.featureSets["Item type resources content-size total"];
     if (val) {
       red += val * 1;
     }
 
-    val = this.info.features["JavaScript content-size total"];
+    val = this.info.featureSets["JavaScript content-size total"];
     if (val) {
       red += val * 2;
     }
 
-    val = this.info.features["Loot table content-size total"];
+    val = this.info.featureSets["Loot table content-size total"];
     if (val) {
       red += val;
     }
 
-    val = this.info.features["Model content-size total"];
+    val = this.info.featureSets["Model content-size total"];
     if (val) {
       red += val * 0.1;
     }
 
-    val = this.info.features["Particle content-size total"];
+    val = this.info.featureSets["Particle content-size total"];
     if (val) {
       red += val * 0.4;
     }
 
-    val = this.info.features["Recipe content-size total"];
+    val = this.info.featureSets["Recipe content-size total"];
     if (val) {
       red += val * 0.4;
     }
 
-    val = this.info.features["Render controller content-size total"];
+    val = this.info.featureSets["Render controller content-size total"];
     if (val) {
       red += val * 0.5;
     }
 
-    val = this.info.features["Spawn rule content-size total"];
+    val = this.info.featureSets["Spawn rule content-size total"];
     if (val) {
       red += val * 1;
     }
 
-    val = this.info.features["Trading content-size total"];
+    val = this.info.featureSets["Trading content-size total"];
     if (val) {
       red += val * 1;
     }
 
-    val = this.info.features["User interface content-size total"];
+    val = this.info.featureSets["User interface content-size total"];
     if (val) {
       red += val * 2;
-    }
+    }*/
 
     return red;
   }
@@ -892,7 +1105,7 @@ function _addReportJson(data) {
   getSummaryCsvLine(
     containerName: string,
     title: string,
-    allFeatures: { [featureName: string]: number | undefined }
+    allFeatures: { [setName: string]: { [measureName: string]: number | undefined } | undefined } | undefined
   ): string {
     let line =
       ProjectInfoSet.getDataSummary(containerName) +
@@ -905,40 +1118,41 @@ function _addReportJson(data) {
       ",";
 
     let fieldNames = [];
-    let featureNames = [];
 
     for (const str in this.info) {
-      if (str !== "features") {
+      if (ProjectInfoSet.isAggregableFieldName(str)) {
         fieldNames.push(str);
       }
     }
 
-    for (const str in allFeatures) {
-      featureNames.push(str);
-    }
-
     fieldNames = fieldNames.sort(ProjectInfoSet.sortMinecraftFeatures);
-    featureNames = featureNames.sort(ProjectInfoSet.sortMinecraftFeatures);
 
     for (const str of fieldNames) {
       // @ts-ignore
       line += ProjectInfoSet.getDataSummary(this.info[str]) + ",";
     }
 
-    for (const featureName of featureNames) {
-      let foundItem = false;
+    if (this.info.featureSets) {
+      for (const featureName in allFeatures) {
+        const allFeature = allFeatures[featureName];
+        const thisFeature = this.info.featureSets[featureName];
 
-      if (this.info && this.info.features) {
-        const thisVal = this.info.features[featureName];
+        if (allFeature) {
+          for (const measureName in allFeature) {
+            if (ProjectInfoSet.isAggregableFeatureMeasureName(measureName)) {
+              if (thisFeature) {
+                const measure = thisFeature[measureName];
 
-        if (typeof thisVal === "number") {
-          line += thisVal + ",";
-          foundItem = true;
+                if (measure !== undefined) {
+                  if (typeof measure === "number") {
+                    line += measure;
+                  }
+                }
+              }
+              line += ",";
+            }
+          }
         }
-      }
-
-      if (!foundItem) {
-        line += ",";
       }
     }
 
@@ -991,14 +1205,24 @@ function _addReportJson(data) {
           }
         }
 
-        if (item.features) {
-          for (const featName in item.features) {
-            const val = item.features[featName];
+        if (item.featureSets) {
+          for (const featName in item.featureSets) {
+            const feature = item.featureSets[featName];
 
-            if (typeof val === "number") {
-              line += featName + "," + val + ",";
-            } else if (typeof val === "string") {
-              line += featName + ',"' + val + '",';
+            if (feature) {
+              for (const measureName in feature) {
+                if (ProjectInfoSet.isAggregableFeatureMeasureName(measureName)) {
+                  const measure = feature[measureName];
+
+                  if (measure !== undefined) {
+                    if (typeof measure === "number") {
+                      line += featName + " " + measureName + "," + measure + ",";
+                    } else if (typeof measure === "string") {
+                      line += featName + " " + measureName + ',"' + measure + '",';
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -1010,7 +1234,30 @@ function _addReportJson(data) {
     return lines;
   }
 
-  getItems(genItems: ProjectInfoItem[], generatorId: string, itemType: InfoItemType) {
+  getItems(generatorId: string, itemIndex: number) {
+    const resultItems: ProjectInfoItem[] = [];
+
+    for (const genItem of this.items) {
+      if (genItem.generatorId === generatorId && genItem.generatorIndex === itemIndex) {
+        resultItems.push(genItem);
+      }
+    }
+
+    return resultItems;
+  }
+
+  getItemsByType(generatorId: string, itemType: InfoItemType) {
+    return ProjectInfoSet.getItemsInCollectionByType(this.items, generatorId, itemType);
+  }
+
+  getItemsByStoragePath(path: string) {
+    if (!this.itemsByStoragePath) {
+      return;
+    }
+
+    return this.itemsByStoragePath[path];
+  }
+  static getItemsInCollectionByType(genItems: ProjectInfoItem[], generatorId: string, itemType: InfoItemType) {
     const resultItems: ProjectInfoItem[] = [];
 
     for (const genItem of genItems) {
@@ -1026,6 +1273,8 @@ function _addReportJson(data) {
     project: Project,
     folder: IFolder,
     genItems: ProjectInfoItem[],
+    genItemsByStoragePath: { [storagePath: string]: ProjectInfoItem[] | undefined },
+    genContentIndex: ContentIndex,
     fileGenerators: IProjectFileInfoGenerator[],
     depth: number
   ) {
@@ -1035,26 +1284,56 @@ function _addReportJson(data) {
       const file = folder.files[fileName];
 
       if (file) {
-        await file.loadContent();
+        const projectItem = project.getItemByFile(file);
+        if (projectItem && projectItem.storagePath) {
+          genContentIndex.insert(StorageUtilities.getBaseFromName(fileName), projectItem.storagePath);
+          genContentIndex.insert(folder.storageRelativePath, projectItem.storagePath);
 
-        for (const fileGen of fileGenerators) {
-          if (this.matchesSuite(fileGen)) {
-            try {
-              const results = await fileGen.generate(project, file);
+          await file.loadContent();
 
-              for (const item of results) {
-                genItems.push(item);
+          if (file.content && typeof file.content === "string") {
+            const fileExtension = StorageUtilities.getTypeFromName(fileName);
+
+            if (projectItem && projectItem.storagePath) {
+              switch (fileExtension) {
+                case "json":
+                  genContentIndex.parseJsonContent(projectItem.storagePath, file.content);
+                  break;
+                case "ts":
+                case "js":
+                  genContentIndex.parseJsContent(projectItem.storagePath, file.content);
+                  break;
               }
-            } catch (e: any) {
-              genItems.push(new ProjectInfoItem(InfoItemType.internalProcessingError, fileGen.id, 502, e.toString()));
             }
           }
-        }
-        if (StorageUtilities.isContainerFile(file.storageRelativePath)) {
-          const zipFolder = await StorageUtilities.getFileStorageFolder(file);
 
-          if (zipFolder) {
-            await this.processFolder(project, zipFolder, genItems, fileGenerators, depth + 1);
+          for (const fileGen of fileGenerators) {
+            if (this.matchesSuite(fileGen)) {
+              try {
+                const results = await fileGen.generate(project, file, genContentIndex);
+
+                for (const item of results) {
+                  this.pushItem(genItems, genItemsByStoragePath, item);
+                }
+              } catch (e: any) {
+                genItems.push(new ProjectInfoItem(InfoItemType.internalProcessingError, fileGen.id, 502, e.toString()));
+              }
+            }
+          }
+          if (StorageUtilities.isContainerFile(file.storageRelativePath)) {
+            const zipFolder = await StorageUtilities.getFileStorageFolder(file);
+
+            if (zipFolder) {
+              await this.processFolder(
+                project,
+                zipFolder,
+                genItems,
+                genItemsByStoragePath,
+                genContentIndex,
+                fileGenerators,
+                depth + 1
+              );
+            }
           }
         }
       }
@@ -1068,7 +1347,15 @@ function _addReportJson(data) {
           const name = childFolder.name.toLowerCase();
 
           if ((!name.startsWith(".") || name.startsWith(".vscode")) && !name.startsWith("node_modules")) {
-            await this.processFolder(project, childFolder, genItems, fileGenerators, depth + 1);
+            await this.processFolder(
+              project,
+              childFolder,
+              genItems,
+              genItemsByStoragePath,
+              genContentIndex,
+              fileGenerators,
+              depth + 1
+            );
           }
         }
       }
@@ -1119,6 +1406,17 @@ function _addReportJson(data) {
     return undefined;
   }
 
+  removeItems(validatorName: string, validatorIds: number[]) {
+    const itemsNext = [];
+    for (const item of this.items) {
+      if (item.generatorId !== validatorName || !validatorIds.includes(item.generatorIndex)) {
+        itemsNext.push(item);
+      }
+    }
+
+    this.items = itemsNext;
+  }
+
   getGeneratorForItem(item: ProjectInfoItem): IProjectInfoGeneratorBase | undefined {
     const itemGens = GeneratorRegistrations.itemGenerators;
 
@@ -1165,30 +1463,40 @@ function _addReportJson(data) {
       return;
     }
 
-    this.info.features = {};
+    this.info.featureSets = {};
 
     for (const item of this.items) {
-      if (item.features) {
-        for (const featureName in item.features) {
-          const val = item.features[featureName];
+      if (item.featureSets) {
+        for (const featureSetName in item.featureSets) {
+          const featureSet = item.featureSets[featureSetName];
 
-          if (typeof val === "number") {
-            const summary = this.getItemSummary(item);
-            const aggName = summary + " " + featureName;
+          const aggFeatureSetName = this.getItemSummary(item) + " " + featureSetName;
 
-            let aggVal = this.info.features[aggName];
+          for (const measureName in featureSet) {
+            const measure = featureSet[measureName];
 
-            if (aggVal === undefined) {
-              aggVal = val;
-            } else if (featureName.startsWith("max ")) {
-              aggVal = Math.max(aggVal, val);
-            } else if (featureName.startsWith("min ")) {
-              aggVal = Math.min(aggVal, val);
-            } else {
-              aggVal += val;
+            if (typeof measure === "number") {
+              let feature = this.info.featureSets[aggFeatureSetName];
+
+              if (feature === undefined) {
+                feature = {};
+                this.info.featureSets[aggFeatureSetName] = feature;
+              }
+
+              let aggVal = feature[measureName];
+
+              if (aggVal === undefined) {
+                aggVal = measure;
+              } else if (measureName.startsWith("Max ")) {
+                aggVal = Math.max(aggVal, measure);
+              } else if (featureSetName.startsWith("Min ")) {
+                aggVal = Math.min(aggVal, measure);
+              } else {
+                aggVal += measure;
+              }
+
+              feature[measureName] = aggVal;
             }
-
-            this.info.features[aggName] = aggVal;
           }
         }
       }
@@ -1243,7 +1551,7 @@ function _addReportJson(data) {
     return undefined;
   }
 
-  async getInfoForItem(projectItem: ProjectItem) {
+  async getInfoForItem(projectItem: ProjectItem, contentIndex: ContentIndex) {
     const itemGenerators: IProjectItemInfoGenerator[] = GeneratorRegistrations.itemGenerators;
     let genItems: ProjectInfoItem[] = [];
 
@@ -1251,7 +1559,11 @@ function _addReportJson(data) {
 
     for (let j = 0; j < itemGenerators.length; j++) {
       try {
-        genItems = genItems.concat(await itemGenerators[j].generate(projectItem));
+        const infoItems = await itemGenerators[j].generate(projectItem, contentIndex);
+
+        for (const infoItem of infoItems) {
+          genItems.push(infoItem);
+        }
       } catch (e: any) {
         genItems.push(
           new ProjectInfoItem(InfoItemType.internalProcessingError, itemGenerators[j].id, 504, e.toString())

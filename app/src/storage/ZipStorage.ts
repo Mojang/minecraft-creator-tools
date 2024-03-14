@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import JSZip from "jszip";
 import IStorage, { StorageErrorStatus } from "./IStorage";
 import ZipFolder from "./ZipFolder";

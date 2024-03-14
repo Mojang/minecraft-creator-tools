@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import DifferenceSet from "../storage/DifferenceSet";
 import Utilities from "../core/Utilities";
 import Log from "../core/Log";

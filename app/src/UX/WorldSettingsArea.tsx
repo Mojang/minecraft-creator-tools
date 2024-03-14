@@ -4,9 +4,9 @@ import "./WorldSettingsArea.css";
 import { Input, InputProps, Dropdown, DropdownProps, Checkbox, CheckboxProps } from "@fluentui/react-northstar";
 import IPersistable from "./IPersistable";
 import WebUtilities from "./WebUtilities";
-import { BackupType, IPackReferenceSet, IWorldSettings } from "../minecraft/IWorldSettings";
+import { BackupType, IPackageReference, IWorldSettings } from "../minecraft/IWorldSettings";
 import { Difficulty, GameType, Generator } from "../minecraft/WorldLevelDat";
-import PackManager from "./PackManager";
+import PackManager from "./PackageManager";
 import TemplateManager from "./TemplateManager";
 
 interface IWorldSettingsAreaProps extends IAppProps {
@@ -211,14 +211,14 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
     }
   }
 
-  _handlePackSetChanged(packReferences: IPackReferenceSet[]) {
-    this.props.worldSettings.packReferenceSets = packReferences;
+  _handlePackSetChanged(packReferences: IPackageReference[]) {
+    this.props.worldSettings.packageReferences = packReferences;
 
     this._notifyUpdated();
   }
 
-  _handleTemplateSetChanged(packReferences: IPackReferenceSet[]) {
-    this.props.worldSettings.worldTemplateReferenceSets = packReferences;
+  _handleTemplateSetChanged(packReferences: IPackageReference[]) {
+    this.props.worldSettings.worldTemplateReferences = packReferences;
 
     this._notifyUpdated();
     this.forceUpdate();
@@ -307,8 +307,8 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
     let enableCustomWorldOptions = true;
 
     if (
-      this.props.worldSettings.worldTemplateReferenceSets &&
-      this.props.worldSettings.worldTemplateReferenceSets.length > 0
+      this.props.worldSettings.worldTemplateReferences &&
+      this.props.worldSettings.worldTemplateReferences.length > 0
     ) {
       enableCustomWorldOptions = false;
     }
@@ -392,7 +392,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
         </div>
       );
 
-      let packRefs = this.props.worldSettings?.packReferenceSets;
+      let packRefs = this.props.worldSettings?.packageReferences;
 
       if (packRefs === undefined) {
         packRefs = [];
@@ -423,7 +423,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
         </div>
       );
 
-      let templateRefs = this.props.worldSettings?.worldTemplateReferenceSets;
+      let templateRefs = this.props.worldSettings?.worldTemplateReferences;
 
       if (templateRefs === undefined) {
         templateRefs = [];

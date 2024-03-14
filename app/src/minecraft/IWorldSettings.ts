@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { Difficulty, GameType, Generator } from "./WorldLevelDat";
 
 export enum BackupType {
@@ -7,7 +10,7 @@ export enum BackupType {
   every2Minutes,
 }
 
-export interface IPackReferenceSet {
+export interface IPackageReference {
   name: string;
   hash?: string;
   behaviorPackReferences: { uuid: string; version: number[]; priority?: number }[];
@@ -29,6 +32,6 @@ export interface IWorldSettings {
   lastPlayed?: bigint;
   deferredTechnicalPreviewExperiment?: boolean;
   isEditor?: boolean;
-  worldTemplateReferenceSets?: IPackReferenceSet[];
-  packReferenceSets?: IPackReferenceSet[];
+  worldTemplateReferences?: IPackageReference[];
+  packageReferences?: IPackageReference[];
 }

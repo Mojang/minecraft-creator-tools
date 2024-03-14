@@ -1,7 +1,12 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import * as os from "os";
+import * as crypto from "crypto";
 import NodeStorage from "./NodeStorage";
 import IStorage from "./../storage/IStorage";
 import ILocalUtilities from "./ILocalUtilities";
+import Log from "../core/Log";
 
 export default class LocalUtilities implements ILocalUtilities {
   #productNameSeed = "mctools";
@@ -136,6 +141,14 @@ export default class LocalUtilities implements ILocalUtilities {
     path = NodeStorage.ensureEndsWithDelimiter(path) + "envprefs" + NodeStorage.folderDelimiter;
 
     return path;
+  }
+
+  generateCryptoRandomNumber(toVal: number) {
+    Log.assert(
+      toVal === 2 || toVal === 4 || toVal === 8 || toVal === 16 || toVal === 32 || toVal === 64 || toVal === 256
+    );
+
+    return new Uint32Array(crypto.randomBytes(1))[0] % toVal;
   }
 
   validateFolderPath(path: string) {

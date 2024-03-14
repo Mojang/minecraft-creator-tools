@@ -5,13 +5,17 @@ import FileExplorerFolder from "./FileExplorerFolder";
 import { ThemeInput } from "@fluentui/react-northstar";
 import Carto from "../app/Carto";
 import ItemAnnotationCollection from "./ItemAnnotationCollection";
+import IFile from "../storage/IFile";
 
 interface IFileExplorerProps {
   rootFolder: IFolder;
   theme: ThemeInput<any>;
   heightOffset: number;
 
+  selectedItem: IFile | IFolder | null | undefined;
   itemAnnotations?: ItemAnnotationCollection;
+
+  onFileSelected?: (file: IFile) => void;
 
   carto: Carto;
   readOnly: boolean;
@@ -53,7 +57,7 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
   }
 
   render() {
-    const explorerHeight = "calc(100vh - " + (this.props.heightOffset - 15) + "px)";
+    const explorerHeight = "calc(100vh - " + (this.props.heightOffset - 10) + "px)";
 
     return (
       <div
@@ -68,6 +72,9 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
           startExpanded={true}
           itemAnnotations={this.getAnnotationsForFolder(this.props.rootFolder)}
           fileExplorer={this}
+          theme={this.props.theme}
+          selectedItem={this.props.selectedItem}
+          onFileSelected={this.props.onFileSelected}
           displayFolderDetail={false}
           depth={0}
         />

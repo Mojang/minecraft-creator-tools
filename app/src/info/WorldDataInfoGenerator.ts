@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "./ProjectInfoItem";
 import ProjectItem from "../app/ProjectItem";
 import IProjectInfoItemGenerator from "./IProjectItemInfoGenerator";
@@ -14,6 +17,8 @@ import BehaviorAnimationController from "../minecraft/BehaviorAnimationControlle
 import BehaviorAnimation from "../minecraft/BehaviorAnimation";
 import Dialogue from "../minecraft/Dialogue";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
+import ContentIndex, { AnnotationCategories } from "../core/ContentIndex";
+import { NbtTagType } from "../minecraft/NbtBinaryTag";
 
 export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator {
   id = "WORLDDATA";
@@ -91,7 +96,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     }
   }
 
-  async generate(projectItem: ProjectItem): Promise<ProjectInfoItem[]> {
+  async generate(projectItem: ProjectItem, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
     if (
@@ -210,6 +215,44 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
 
       await mcworld.loadData(false);
 
+      if (
+        projectItem.storagePath &&
+        contentIndex &&
+        mcworld.levelData &&
+        mcworld.levelData.nbt &&
+        mcworld.levelData.nbt.root
+      ) {
+        const children = mcworld.levelData.nbt.root.getTagChildren();
+
+        for (const child of children) {
+          if (child.name === "experiments") {
+            for (const experimentChild of child.getTagChildren()) {
+              if (
+                experimentChild.type === NbtTagType.int ||
+                experimentChild.type === NbtTagType.byte ||
+                experimentChild.type === NbtTagType.string
+              ) {
+                contentIndex.insert(
+                  experimentChild.name + "==" + experimentChild.valueAsString,
+                  projectItem.storagePath,
+                  AnnotationCategories.experiment
+                );
+              }
+            }
+          } else if (
+            child.type === NbtTagType.int ||
+            child.type === NbtTagType.byte ||
+            child.type === NbtTagType.string
+          ) {
+            contentIndex.insert(
+              child.name + "==" + child.valueAsString,
+              projectItem.storagePath,
+              AnnotationCategories.worldProperty
+            );
+          }
+        }
+      }
+
       items.push(
         new ProjectInfoItem(InfoItemType.info, this.id, 101, "Chunks", projectItem, mcworld.chunkCount, mcworld.name)
       );
@@ -249,7 +292,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                   const blockActor = blockActors[i];
 
                   if (blockActor.id) {
-                    blockActorsPi.incrementFeature(blockActor.id, 1);
+                    blockActorsPi.incrementFeature(blockActor.id);
                   }
 
                   if (blockActor instanceof CommandBlockActor) {
@@ -311,7 +354,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                         type = "(custom)";
                       }
 
-                      blocksPi.incrementFeature(type, 1);
+                      blocksPi.incrementFeature(type);
                     }
                   }
                 }

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ScriptModuleManager from "../manager/ScriptModuleManager";
 import VsCodeFileManager from "../manager/VsCodeFileManager";
 import MinEngineVersionManager from "../manager/MinEngineVersionManager";

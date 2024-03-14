@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import BlockCube from "./BlockCube";
 import Block from "./Block";
 import BlockCubePlane from "./BlockCubePlane";

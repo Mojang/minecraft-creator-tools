@@ -1,15 +1,19 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export enum ComparisonType {
-  equals = 0,
-  lessThan = 1,
-  lessThanOrEqualTo = 2,
-  greaterThan = 3,
-  greaterThanOrEqualTo = 4,
-  isDefined = 5,
+  equals = "=",
+  lessThan = "<",
+  lessThanOrEqualTo = "<=",
+  greaterThan = ">",
+  greaterThanOrEqualTo = ">=",
+  isDefined = "defined",
+  isNonEmpty = "nonempty",
 }
 
 export default interface ICondition {
   field?: string;
-  comparison: ComparisonType;
+  comparison: ComparisonType | string;
   value?: number | string;
   anyValues?: number[] | string[];
 }

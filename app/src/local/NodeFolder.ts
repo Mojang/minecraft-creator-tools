@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFolder, { FolderErrorStatus } from "../storage/IFolder";
 import IFile from "../storage/IFile";
 import NodeFile from "./NodeFile";
@@ -468,8 +471,8 @@ export default class NodeFolder extends FolderBase implements IFolder {
   }
 
   async load(force: boolean): Promise<Date> {
-    if (this.lastProcessed != null && !force) {
-      return this.lastProcessed;
+    if (this.lastLoadedOrSaved != null && !force) {
+      return this.lastLoadedOrSaved;
     }
 
     // Log.debug("Reading details on folder '" + this.fullPath + "'");
@@ -504,8 +507,8 @@ export default class NodeFolder extends FolderBase implements IFolder {
       });
     }
 
-    this.updateLastProcessed();
+    this.updateLastLoadedOrSaved();
 
-    return this.lastProcessed as Date;
+    return this.lastLoadedOrSaved as Date;
   }
 }

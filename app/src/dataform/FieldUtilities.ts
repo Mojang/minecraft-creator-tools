@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
 import ICondition, { ComparisonType } from "./ICondition";
@@ -128,8 +131,9 @@ export default class FieldUtilities {
       }
 
       const actualVal = FieldUtilities.getFieldValue(field, container);
+      const comp = condition.comparison.toLowerCase();
 
-      if (condition.comparison === ComparisonType.equals) {
+      if (comp === ComparisonType.equals) {
         if (condition.value !== undefined && actualVal !== condition.value) {
           return false;
         }
@@ -147,9 +151,12 @@ export default class FieldUtilities {
             return false;
           }
         }
-      }
-
-      if (condition.comparison === ComparisonType.isDefined && (actualVal === undefined || actualVal === null)) {
+      } else if (comp === ComparisonType.isDefined && (actualVal === undefined || actualVal === null)) {
+        return false;
+      } else if (
+        comp === ComparisonType.isNonEmpty &&
+        (actualVal === undefined || actualVal === null || (typeof actualVal === "string" && actualVal.length <= 0))
+      ) {
         return false;
       }
     }

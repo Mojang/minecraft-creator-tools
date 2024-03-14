@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import CartoApp from "../app/CartoApp";
 import AppServiceProxy from "./AppServiceProxy";
 import Utilities from "./Utilities";
@@ -113,9 +116,9 @@ export default class Log {
     this.log(message, LogItemLevel.debug, context);
   }
 
-  static assertIsInt(number: number) {
+  static assertIsInt(number: number, message?: string) {
     if (number !== Math.round(number)) {
-      Log.debugAlert("Unexpectedly found number " + number + " is not an integer.");
+      Log.debugAlert("Unexpectedly found number " + number + " is not an integer. " + (message ? message : ""));
     }
   }
 
@@ -129,9 +132,9 @@ export default class Log {
     }
   }
 
-  static assertDefined(obj: any) {
+  static assertDefined(obj: any, message?: string) {
     if (!obj) {
-      Log.unexpectedUndefined("LAD");
+      Log.unexpectedUndefined("LAD" + (message ? message : ""));
     }
   }
 

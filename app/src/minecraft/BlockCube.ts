@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import BlockCubePlane from "./BlockCubePlane";
 import Block from "./Block";
 import { EventDispatcher } from "ste-events";

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFolder from "../storage/IFolder";
 import IFile from "../storage/IFile";
 import GitHubFile from "./GitHubFile";
@@ -110,8 +113,8 @@ export default class GitHubFolder extends FolderBase implements IFolder {
   }
 
   async load(force: boolean): Promise<Date> {
-    if (this.lastProcessed != null && !force) {
-      return this.lastProcessed;
+    if (this.lastLoadedOrSaved != null && !force) {
+      return this.lastLoadedOrSaved;
     }
 
     const repos = this.storage.manager.octokit.rest.repos;
@@ -146,9 +149,9 @@ export default class GitHubFolder extends FolderBase implements IFolder {
     if (contentListing === undefined) {
       Log.debug("No data retrieved from repo: " + this.storage.ownerName + " " + this.storage.repoName);
 
-      this.updateLastProcessed();
+      this.updateLastLoadedOrSaved();
 
-      return this.lastProcessed as Date;
+      return this.lastLoadedOrSaved as Date;
     }
 
     const response: getContentReposResponse = contentListing;
@@ -181,8 +184,8 @@ export default class GitHubFolder extends FolderBase implements IFolder {
       }
     }
 
-    this.updateLastProcessed();
+    this.updateLastLoadedOrSaved();
 
-    return this.lastProcessed as Date;
+    return this.lastLoadedOrSaved as Date;
   }
 }

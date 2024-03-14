@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Location from "./Location";
 import Log from "./../core/Log";
 import ComponentizedBase from "./ComponentizedBase";

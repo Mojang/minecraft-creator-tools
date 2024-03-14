@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFile from "../storage/IFile";
 import IFolder from "../storage/IFolder";
 import IStorage from "../storage/IStorage";
@@ -28,10 +31,10 @@ import CartoApp, { HostType } from "./CartoApp";
 import MinecraftPush from "./MinecraftPush";
 import { GameType, Generator } from "../minecraft/WorldLevelDat";
 import { BackupType } from "../minecraft/IWorldSettings";
-import Pack from "./Pack";
+import Package from "./Package";
 import CommandRegistry from "./CommandRegistry";
 import ZipStorage from "../storage/ZipStorage";
-import { ProjectItemType } from "./IProjectItemData";
+import { MaxItemTypes, ProjectItemType } from "./IProjectItemData";
 
 export enum CartoMinecraftState {
   none = 0,
@@ -104,7 +107,7 @@ export default class Carto {
   status: Status[];
   activeOperations: Status[];
 
-  packs?: Pack[];
+  packs?: Package[];
 
   mcLogs: { [name: string]: string[] | undefined } = {};
 
@@ -628,7 +631,7 @@ export default class Carto {
         backupType: BackupType.every5Minutes,
         useCustomSettings: false,
         isEditor: false,
-        packReferenceSets: [],
+        packageReferences: [],
       };
 
       this.ensureDefaultWorldName();
@@ -730,9 +733,21 @@ export default class Carto {
     }
   }
 
+  ensureAllTypesCollapsedExcept(itemType: ProjectItemType) {
+    const newCollapsedTypes: number[] = [];
+
+    for (let i = 0; i < MaxItemTypes; i++) {
+      if (i !== itemType) {
+        newCollapsedTypes.push(i);
+      }
+    }
+
+    this.collapsedTypes = newCollapsedTypes;
+  }
+
   ensureTypeIsCollapsed(itemType: ProjectItemType) {
-    for (const itemTypeCollasped of this.collapsedTypes) {
-      if (itemTypeCollasped === itemType) {
+    for (const itemTypeCollapsed of this.collapsedTypes) {
+      if (itemTypeCollapsed === itemType) {
         return;
       }
     }
@@ -743,9 +758,9 @@ export default class Carto {
   ensureTypeIsNotCollapsed(itemType: ProjectItemType) {
     const newCollapsedTypes: number[] = [];
 
-    for (const itemTypeCollasped of this.collapsedTypes) {
-      if (itemTypeCollasped !== itemType) {
-        newCollapsedTypes.push(itemTypeCollasped);
+    for (const itemTypeCollapsed of this.collapsedTypes) {
+      if (itemTypeCollapsed !== itemType) {
+        newCollapsedTypes.push(itemTypeCollapsed);
       }
     }
 
@@ -779,7 +794,7 @@ export default class Carto {
     return undefined;
   }
 
-  getPackByNameAndHash(packName: string, hash?: string) {
+  getPackageByNameAndHash(packName: string, hash?: string) {
     if (!this.packs) {
       Log.unexpectedUndefined("GPNH");
       return;
@@ -813,7 +828,7 @@ export default class Carto {
       }
     }
 
-    const pack = new Pack(StorageUtilities.getLeafName(storagePath), storagePath);
+    const pack = new Package(StorageUtilities.getLeafName(storagePath), storagePath);
 
     this.packs.push(pack);
 
@@ -1060,6 +1075,39 @@ export default class Carto {
     this._onGalleryLoaded.dispatch(this, this._gallery);
 
     return this._gallery;
+  }
+
+  async getGalleryProjectByGitHub(
+    repoName: string,
+    owner: string,
+    branch?: string,
+    folder?: string,
+    withFiles?: boolean
+  ) {
+    if (!this._galleryLoaded) {
+      await this.loadGallery();
+    }
+
+    if (this._galleryLoaded === false || this._gallery === undefined || this._gallery.projects === undefined) {
+      return undefined;
+    }
+
+    repoName = repoName.toLowerCase();
+    owner = owner.toLowerCase();
+
+    for (const galProj of this._gallery.projects) {
+      if (
+        galProj.gitHubRepoName.toLowerCase() === repoName &&
+        galProj.gitHubOwner.toLowerCase() === owner &&
+        branch === galProj.gitHubBranch &&
+        folder === galProj.gitHubFolder &&
+        (!withFiles || galProj.fileList)
+      ) {
+        return galProj;
+      }
+    }
+
+    return undefined;
   }
 
   async getGalleryProjectById(galleryProjectId: string) {

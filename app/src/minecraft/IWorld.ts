@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Entity from "./Entity";
 import EntityQueryOptions from "./EntityQueryOptions";
 import IDimension from "./IDimension";

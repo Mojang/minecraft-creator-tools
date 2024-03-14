@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import CommandArgument, { CoordinateLocation, CommandArgumentType, CoordinateType } from "./CommandArgument";
 
 export default class Command {

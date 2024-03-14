@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export interface ITerrainTexture {
   num_mip_levels: number;
   padding: number;

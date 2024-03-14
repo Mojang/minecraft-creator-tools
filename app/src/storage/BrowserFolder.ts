@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFolder from "./IFolder";
 import IFile from "./IFile";
 import BrowserFile from "./BrowserFile";
@@ -169,8 +172,8 @@ export default class BrowserFolder extends FolderBase implements IFolder {
   }
 
   async load(force: boolean): Promise<Date> {
-    if (this.lastProcessed != null && !force) {
-      return this.lastProcessed;
+    if (this.lastLoadedOrSaved != null && !force) {
+      return this.lastLoadedOrSaved;
     }
 
     const listingContent = await localforage.getItem<string>(this.fullPath + BrowserStorage.folderDelimiter);
@@ -178,9 +181,15 @@ export default class BrowserFolder extends FolderBase implements IFolder {
     if (listingContent != null) {
       this._lastSavedContent = listingContent;
 
-      try {
-        const folderState: IFolderState = JSON.parse(listingContent);
+      let folderState: IFolderState | undefined = undefined;
 
+      try {
+        folderState = JSON.parse(listingContent);
+      } catch (e: any) {
+        Log.debugAlert("Failure to parse browser folder content JSON:" + e.toString());
+      }
+
+      if (folderState) {
         for (var i = 0; i < folderState.files.length; i++) {
           const fileMeta = folderState.files[i];
 
@@ -192,7 +201,10 @@ export default class BrowserFolder extends FolderBase implements IFolder {
           const newFile = this.ensureFile(fileMeta.name);
 
           newFile.modifiedAtLoad = fileMeta.modified == null ? null : fileMeta.modified;
-          newFile.lastSavedSize = fileMeta.size;
+
+          if (newFile.sizeAtLoad === undefined) {
+            newFile.sizeAtLoad = fileMeta.size;
+          }
         }
 
         for (var j = 0; j < folderState.folders.length; j++) {
@@ -208,19 +220,25 @@ export default class BrowserFolder extends FolderBase implements IFolder {
           newFolder.modifiedAtLoad = folderMeta.modified;
           newFolder.lastSavedFileCount = folderMeta.fileCount;
         }
-      } catch (e) {}
+      }
     }
 
-    this.updateLastProcessed();
+    this.updateLastLoadedOrSaved();
 
-    return this.lastProcessed as Date;
+    return this.lastLoadedOrSaved as Date;
   }
 
   async save(force: boolean): Promise<Date> {
-    this.updateLastProcessed();
+    // we need to load before we save if the only thing this folder has seen is a bunch of
+    // /ensures/
+    if (!this.isLoaded) {
+      await this.load(false);
+    }
+
+    this.updateLastLoadedOrSaved();
 
     const folderState: IFolderState = {
-      updated: this.lastProcessed as Date,
+      updated: this.lastLoadedOrSaved as Date,
       files: [],
       folders: [],
     };
@@ -260,7 +278,7 @@ export default class BrowserFolder extends FolderBase implements IFolder {
       await localforage.setItem<string>(this.fullPath + BrowserStorage.folderDelimiter, saveContent);
     }
 
-    return this.lastProcessed as Date;
+    return this.lastLoadedOrSaved as Date;
   }
 
   override async saveAll(): Promise<boolean> {

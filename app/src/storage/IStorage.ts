@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFolder from "./IFolder";
 import IFile from "./IFile";
 import { IEvent } from "ste-events";

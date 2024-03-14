@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Block, { BlockFacingDirection } from "./Block";
 import BlockCube from "./BlockCube";
 import Log from "../core/Log";

@@ -425,6 +425,7 @@ export default class DocumentedModuleEditor extends Component<
           rootFolder={dm.docFolder}
           theme={this.props.theme}
           carto={this.props.carto}
+          selectedItem={undefined}
           itemAnnotations={this.state.fileAnnotations}
           heightOffset={this.props.heightOffset + 225}
           readOnly={false}

@@ -1,9 +1,11 @@
-import IFileState from './IFileState';
-import IFolderSummaryState from './IFolderSummaryState';
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
-export default interface IFolderState
-{
-    updated : Date
-    files : IFileState[];
-    folders : IFolderSummaryState[];    
+import IFileState from "./IFileState";
+import IFolderSummaryState from "./IFolderSummaryState";
+
+export default interface IFolderState {
+  updated: Date;
+  files: IFileState[];
+  folders: IFolderSummaryState[];
 }

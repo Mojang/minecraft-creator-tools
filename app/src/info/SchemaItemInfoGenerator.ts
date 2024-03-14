@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "./ProjectInfoItem";
 import ProjectItem from "../app/ProjectItem";
 import IProjectInfoItemGenerator from "./IProjectItemInfoGenerator";
@@ -10,6 +13,7 @@ import Ajv from "ajv";
 import axios from "axios";
 import ProjectInfoSet from "./ProjectInfoSet";
 import Utilities from "../core/Utilities";
+import ContentIndex from "../core/ContentIndex";
 
 export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "JSON";
@@ -19,9 +23,6 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
   _schemaContentByPath: { [id: string]: object } = {};
 
   uuidRegex = new RegExp("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
-  uriRegex = new RegExp(
-    /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i
-  );
 
   constructor() {
     this.loadSchema = this.loadSchema.bind(this);
@@ -44,7 +45,7 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
     return res.data;
   }
 
-  async generate(projectItem: ProjectItem): Promise<ProjectInfoItem[]> {
+  async generate(projectItem: ProjectItem, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
     if (projectItem.file && projectItem.file.content && typeof projectItem.file.content === "string") {
@@ -201,6 +202,6 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
   }
 
   testUri(uriString: string) {
-    return this.uriRegex.test(uriString);
+    return true;
   }
 }

@@ -36,7 +36,7 @@ interface ITextEditorState {
   initialContent?: string;
 }
 
-export default class TextEditor extends Component<ITextEditorProps, ITextEditorState> implements IPersistable {
+export default class TextEditor extends Component<ITextEditorProps, ITextEditorState> {
   constructor(props: ITextEditorProps) {
     super(props);
 

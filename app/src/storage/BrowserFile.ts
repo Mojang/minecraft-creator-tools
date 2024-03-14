@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import FileBase from "./FileBase";
 import BrowserFolder from "./BrowserFolder";
 import IFile from "./IFile";
@@ -10,7 +13,7 @@ export default class BrowserFile extends FileBase implements IFile {
   private _name: string;
   private _parentFolder: BrowserFolder;
 
-  lastSavedSize: number;
+  sizeAtLoad?: number;
 
   get name(): string {
     return this._name;
@@ -35,7 +38,7 @@ export default class BrowserFile extends FileBase implements IFile {
   constructor(parentFolder: BrowserFolder, fileName: string) {
     super();
 
-    this.lastSavedSize = -1;
+    this.sizeAtLoad = undefined;
 
     this._parentFolder = parentFolder;
     this._name = fileName;

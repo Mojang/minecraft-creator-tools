@@ -4,21 +4,14 @@
     padding-top: 20px;
     padding-bottom: 16px;
   }
-  .home-starterArea {
-    padding-top: 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  .home-projects-note {
+    margin-bottom: 13px;
   }
 }
 
 @media only screen and (max-width: 1316px) and (min-width: 800px) {
-  .home-starterArea {
-    padding-top: 20px;
-    display: block;
-  }
-  .home-search-area {
-    padding-top: 20px;
-    padding-left: 32px;
+  .home-projects-note {
+    margin-bottom: 13px;
   }
 }
 
@@ -31,9 +24,21 @@
     height: 100vh;
   }
 
+  .home-toolTile {
+    height: 120px;
+    display: inline-flex;
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 330px;
+    text-align: left;
+    opacity: 0.8;
+    border: solid 1.5px black;
+  }
+
   .home-header-area {
     border-bottom: inset 2px;
   }
+
   .home-header {
     border-bottom: outset 2px;
   }
@@ -41,9 +46,11 @@
   .home-usage {
     border-top: inset 2px;
   }
+
   .home-usage-interior {
     border-top: outset 2px;
   }
+
   .home-gallery {
     grid-row-start: 2;
     grid-row-end: 3;
@@ -70,38 +77,46 @@
   .home-projects-list {
     overflow-y: scroll;
     margin-top: 8px;
-    height: calc(100vh - 380px);
+    height: calc(100vh - 300px);
   }
 }
 
 @media only screen and (max-width: 800px) {
-  .home-starterArea {
-    padding-top: 20px;
-    display: block;
-  }
   .home-search-area {
-    padding-top: 20px;
+    padding-top: 4px;
     padding-left: 32px;
+    padding-bottom: 14px;
+  }
+
+  .home-toolTile {
+    height: 120px;
+    display: inline-flex;
+    margin-top: 10px;
+    width: 320px;
+    text-align: left;
+    opacity: 0.8;
+    border: solid 1.5px black;
   }
 
   .home-layout {
     width: 100%;
     display: grid;
-    grid-template-rows: 120px 266px 1fr 50px 50px;
     grid-template-columns: 1fr;
+    height: 100vh;
+    overflow-y: auto;
+    grid-template-rows: 200px 1fr 220px 50px 50px;
+  }
+
+  .home-toolTile-bin {
+    text-align: center;
+    min-height: 160px;
   }
 
   .home-projects-bin {
     grid-row: 2;
     min-width: 320px;
     grid-column: 1;
-    height: 266px;
-  }
-
-  .home-projects-list {
-    overflow-y: scroll;
-    margin-top: 8px;
-    height: 98px;
+    vertical-align: middle;
   }
 
   .home-gallery {
@@ -109,12 +124,44 @@
     grid-column: 1;
   }
 
-  .home-gallery-interior {
-    overflow-y: auto;
-    height: calc(100vh - 486px);
-
-    border: inset 4px;
+  .home-projects-note {
+    margin-bottom: 16px;
   }
+
+  .home-projects {
+    padding-top: 10px;
+  }
+
+  .home-projects-list {
+    padding-bottom: 14px;
+  }
+}
+
+.home-starterArea {
+  padding-top: 10px;
+  display: block;
+}
+
+.home-search-area {
+  padding-top: 20px;
+  padding-left: 32px;
+  display: inline-block;
+}
+
+.home-gallery-label {
+  display: inline-block;
+}
+
+.home-uploadFile {
+  display: inline-block;
+  border: 0px !important;
+  grid-column: 2;
+  box-shadow: none !important;
+}
+
+.home-projects-note {
+  padding-left: 10px;
+  font-size: x-small;
 }
 
 .home-dragOver {
@@ -138,9 +185,6 @@
   padding-left: 10px;
 }
 
-.home-projects-note {
-  padding-left: 10px;
-}
 .home-header-sublink {
   font-size: small;
   color: white;
@@ -163,7 +207,7 @@
   background-color: #b07a14;
   padding: 10px;
   margin: 20px;
-  word-break: break-all;
+  word-break: normal;
   text-overflow: ellipsis;
 }
 
@@ -272,19 +316,19 @@
   padding-bottom: 8px;
 }
 
-.home-projects-note {
-  font-size: x-small;
-  margin-bottom: 13px;
-}
-
 .home-tools {
   font-size: large;
-  margin-bottom: 3px;
 }
 
 .home-tools-bin-inner {
-  padding-top: 2px;
+  padding-top: 1px;
   font-size: small;
+  display: grid;
+  grid-template-columns: 1fr 196px;
+}
+
+.home-tools-bin-inner BUTTON DIV SPAN {
+  padding-right: 0px !important;
 }
 
 .home-tools-wrap {
@@ -314,21 +358,15 @@
   font-size: small;
 }
 
-.home-toolTile {
-  height: 120px;
-  display: inline-flex;
-  margin-top: 10px;
-  margin-left: 10px;
-  width: 320px;
-  opacity: 0.8;
-  border: solid 1.5px black;
-}
-
 .home-toolTileInner {
   height: 100%;
   width: 100%;
   padding: 8px 10px 8px 10px;
   border: outset 3px;
+}
+
+.home-tileDown {
+  border: inset 3px !important;
 }
 
 .home-toolTile input[type="file"] {
@@ -354,6 +392,14 @@
   height: 35px !important;
   border: solid 1px rgb(72, 73, 74) !important;
   box-shadow: none !important;
+  text-align: center;
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+  max-width: 350px !important;
+}
+
+.home-toolTile-button SPAN {
+  max-width: 350px !important;
 }
 
 .home-clickLink {

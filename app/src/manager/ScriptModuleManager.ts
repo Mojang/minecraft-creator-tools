@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "../info/ProjectInfoItem";
 import Project from "../app/Project";
 import IProjectInfoGenerator from "../info/IProjectInfoGenerator";
@@ -12,6 +15,7 @@ import ProjectUpdateResult from "../updates/ProjectUpdateResult";
 import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
+import ContentIndex from "../core/ContentIndex";
 
 export default class ScriptModuleManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "SCRIPTMODULE";
@@ -156,7 +160,7 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
     return items;
   }
 
-  async generate(project: Project): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = await this.generateProjectState(project);
     let foundManifest = false;
     let foundError = false;

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export interface IClientEntityTypeWrapper {
   format_version: string;
   "minecraft:client_entity": IClientEntityType;

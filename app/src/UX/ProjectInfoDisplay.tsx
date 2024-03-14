@@ -25,20 +25,27 @@ import { InfoItemType } from "../info/IInfoItemData";
 import WebUtilities from "./WebUtilities";
 import Carto from "../app/Carto";
 import Status, { StatusTopic } from "../app/Status";
-import { ProjectInfoSuite } from "../info/IProjectInfoData";
+import IProjectInfoData, { ProjectInfoSuite } from "../info/IProjectInfoData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileCsv, faFileInvoice } from "@fortawesome/free-solid-svg-icons";
+import IFile from "../storage/IFile";
+import StorageUtilities from "../storage/StorageUtilities";
+import ContentIndex from "../core/ContentIndex";
 
 interface IProjectInfoDisplayProps extends IAppProps {
-  project: Project;
+  project?: Project;
   heightOffset: number;
   theme: ThemeInput<any>;
-  onInfoItemCommand: (command: InfoItemCommand, item: ProjectInfoItem) => Promise<void>;
+  file?: IFile;
+  data?: IProjectInfoData;
+  allInfoSet?: ProjectInfoSet;
+  allInfoSetGenerated?: boolean;
+  onNotifyInfoSetLoaded?: (infoSet: ProjectInfoSet) => void;
+  onInfoItemCommand?: (command: InfoItemCommand, item: ProjectInfoItem) => Promise<void>;
 }
 
 interface IProjectInfoDisplayState {
   selectedInfoSet: ProjectInfoSet | undefined;
-  allInfoSet: ProjectInfoSet | undefined;
   viewMode: ProjectInfoDisplayMode;
   activeSuite: ProjectInfoSuite;
   menuState: ProjectInfoDisplayMenuState;
@@ -105,7 +112,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
     this.state = {
       selectedInfoSet: undefined,
-      allInfoSet: undefined,
       activeSuite: suite,
       viewMode: ProjectInfoDisplayMode.info,
       menuState: ProjectInfoDisplayMenuState.noMenu,
@@ -131,30 +137,31 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private async _handleStatusUpdates(carto: Carto, status: Status): Promise<void> {
     if (status.topic === StatusTopic.projectLoad || status.topic === StatusTopic.validation) {
       return new Promise((resolve: () => void, reject: () => void) => {
-        this.setState(
-          {
-            selectedInfoSet: this.state.selectedInfoSet,
-            allInfoSet: this.state.allInfoSet,
-            menuState: this.state.menuState,
-            lastExportKey: this.state.lastExportKey,
-            lastExportFunction: this.state.lastExportFunction,
-            lastExportData: this.state.lastExportData,
-            displayErrors: this.state.displayErrors,
-            displaySuccess: this.state.displaySuccess,
-            displayFailure: this.state.displayFailure,
-            displayWarnings: this.state.displayWarnings,
-            maxItems: this.state.maxItems,
-            displayRecommendation: this.state.displayRecommendation,
-            displayInfo: this.state.displayInfo,
-            isLoading: this.state.isLoading,
-            loadStatus: status.message,
-          },
-          () => {
-            window.setTimeout(() => {
-              resolve();
-            }, 1);
-          }
-        );
+        if (this._isMountedInternal) {
+          this.setState(
+            {
+              selectedInfoSet: this.state.selectedInfoSet,
+              menuState: this.state.menuState,
+              lastExportKey: this.state.lastExportKey,
+              lastExportFunction: this.state.lastExportFunction,
+              lastExportData: this.state.lastExportData,
+              displayErrors: this.state.displayErrors,
+              displaySuccess: this.state.displaySuccess,
+              displayFailure: this.state.displayFailure,
+              displayWarnings: this.state.displayWarnings,
+              maxItems: this.state.maxItems,
+              displayRecommendation: this.state.displayRecommendation,
+              displayInfo: this.state.displayInfo,
+              isLoading: this.state.isLoading,
+              loadStatus: status.message,
+            },
+            () => {
+              window.setTimeout(() => {
+                resolve();
+              }, 1);
+            }
+          );
+        }
       });
     }
   }
@@ -164,20 +171,70 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
     let newInfoSet = undefined;
 
-    if (this.state.activeSuite === ProjectInfoSuite.allExceptAddOn) {
+    if (this.props.data) {
+      let contentIndex = undefined;
+
+      if (this.props.data.index) {
+        contentIndex = new ContentIndex();
+        contentIndex.loadFromData(this.props.data.index);
+      }
+
+      newInfoSet = new ProjectInfoSet(
+        this.props.project,
+        undefined,
+        undefined,
+        this.props.data.info,
+        this.props.data.items,
+        contentIndex
+      );
+    } else if (this.props.file) {
+      await this.props.file.loadContent(false);
+
+      const jsonO = StorageUtilities.getJsonObject(this.props.file) as IProjectInfoData | undefined;
+
+      if (jsonO) {
+        let contentIndex = undefined;
+
+        if (jsonO.index) {
+          contentIndex = new ContentIndex();
+          contentIndex.loadFromData(jsonO.index);
+        }
+        newInfoSet = new ProjectInfoSet(
+          this.props.project,
+          undefined,
+          undefined,
+          jsonO.info,
+          jsonO.items,
+          contentIndex
+        );
+      }
+    } else if (this.props.project && this.state.activeSuite === ProjectInfoSuite.allExceptAddOn) {
       newInfoSet = this.props.project.infoSet;
-    } else {
+    } else if (this.props.project) {
       newInfoSet = new ProjectInfoSet(this.props.project, this.state.activeSuite);
 
       await this.props.project.infoSet.generateForProject(force);
     }
 
-    await newInfoSet.generateForProject(force);
+    if (newInfoSet === undefined) {
+      return;
+    }
 
-    if (this._isMountedInternal && this.state.activeSuite === newInfoSet.suite) {
+    if (!this.props.file && !this.props.data) {
+      await newInfoSet.generateForProject(force);
+
+      if (this.state.activeSuite === ProjectInfoSuite.allExceptAddOn && this.props.onNotifyInfoSetLoaded) {
+        this.props.onNotifyInfoSetLoaded(newInfoSet);
+      }
+    }
+
+    if (
+      this._isMountedInternal &&
+      (this.state.activeSuite !== newInfoSet.suite || this.state.selectedInfoSet !== newInfoSet)
+    ) {
       this.setState({
+        activeSuite: newInfoSet.suite,
         selectedInfoSet: newInfoSet,
-        allInfoSet: this.props.project.infoSet,
         menuState: this.state.menuState,
         lastExportKey: this.state.lastExportKey,
         lastExportFunction: this.state.lastExportFunction,
@@ -209,6 +266,10 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
   getDataSummary(data: string | number | boolean | undefined) {
     if (data) {
+      if (typeof data === "object") {
+        return "(object)";
+      }
+
       return data;
     }
 
@@ -222,7 +283,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _toggleErrorFilter() {
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
-      allInfoSet: this.state.allInfoSet,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
       lastExportFunction: this.state.lastExportFunction,
@@ -242,7 +302,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _toggleInfoFilter() {
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
-      allInfoSet: this.state.allInfoSet,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
       lastExportFunction: this.state.lastExportFunction,
@@ -262,7 +321,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _toggleSuccessFilter() {
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
-      allInfoSet: this.state.allInfoSet,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
       lastExportFunction: this.state.lastExportFunction,
@@ -282,7 +340,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _toggleFailureFilter() {
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
-      allInfoSet: this.state.allInfoSet,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
       lastExportFunction: this.state.lastExportFunction,
@@ -303,7 +360,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _toggleWarningFilter() {
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
-      allInfoSet: this.state.allInfoSet,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
       lastExportFunction: this.state.lastExportFunction,
@@ -324,7 +380,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _toggleRecommendationFilter() {
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
-      allInfoSet: this.state.allInfoSet,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
       lastExportFunction: this.state.lastExportFunction,
@@ -345,7 +400,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _setInfoMode() {
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
-      allInfoSet: this.state.allInfoSet,
       viewMode: ProjectInfoDisplayMode.info,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
@@ -382,7 +436,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
-      allInfoSet: this.state.allInfoSet,
       viewMode: this.state.viewMode,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
@@ -413,7 +466,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       ) {
         this.setState({
           selectedInfoSet: this.state.selectedInfoSet,
-          allInfoSet: this.state.allInfoSet,
           viewMode: this.state.viewMode,
           menuState: this.state.menuState,
           lastExportKey: this.state.lastExportKey,
@@ -436,7 +488,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   private _setSummaryMode() {
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
-      allInfoSet: this.state.allInfoSet,
       viewMode: ProjectInfoDisplayMode.summary,
       menuState: this.state.menuState,
       lastExportKey: this.state.lastExportKey,
@@ -462,7 +513,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
     this.setState({
       selectedInfoSet: this.state.selectedInfoSet,
-      allInfoSet: this.state.allInfoSet,
       viewMode: this.state.viewMode,
       menuState: menuVal,
       lastExportKey: this.state.lastExportKey,
@@ -487,7 +537,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     window.setTimeout(() => {
       this.setState({
         selectedInfoSet: this.state.selectedInfoSet,
-        allInfoSet: this.state.allInfoSet,
         viewMode: this.state.viewMode,
         menuState: this.state.menuState,
         lastExportKey: exportKey,
@@ -511,7 +560,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     }
 
     const date = new Date();
-    const projName = this.props.project.name;
+    const projName = this.props.project ? this.props.project.name : "report";
 
     const reportHtml = this.state.selectedInfoSet.getReportHtml(projName, projName, date.getTime().toString());
 
@@ -529,7 +578,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
     const pisLines = this.state.selectedInfoSet.getItemCsvLines();
 
-    const projName = this.props.project.name;
+    const projName = this.props.project ? this.props.project.name : "report";
     const csvContent = ProjectInfoSet.CommonCsvHeader + "\r\n" + pisLines.join("\n");
 
     saveAs(new Blob([csvContent]), projName + " " + SuiteTitles[this.state.activeSuite] + ".csv");
@@ -540,14 +589,15 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   private async _handleInfoItemCommand(command: InfoItemCommand, item: ProjectInfoItem) {
-    await this.props.onInfoItemCommand(command, item);
-
+    if (this.props.onInfoItemCommand) {
+      await this.props.onInfoItemCommand(command, item);
+    }
     //    await this._generateInfoSetInternal(true);
   }
 
   render() {
-    let contentAreaHeightSmall = "calc(100vh - " + (this.props.heightOffset + 126) + "px)";
-    let contentAreaHeightLarge = "calc(100vh - " + (this.props.heightOffset + 95) + "px)";
+    let contentAreaHeightSmall = "calc(100vh - " + (this.props.heightOffset + 120) + "px)";
+    let contentAreaHeightLarge = "calc(100vh - " + (this.props.heightOffset + 89) + "px)";
     const width = WebUtilities.getWidth();
 
     const lines = [];
@@ -557,7 +607,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           <SummaryTabLabel
             theme={this.props.theme}
             isSelected={this.state.viewMode === ProjectInfoDisplayMode.summary}
-            isCompact={false}
+            isCompact={width < 800}
           />
         ),
         key: "infoFilter",
@@ -570,7 +620,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           <InfoTabLabel
             theme={this.props.theme}
             isSelected={this.state.viewMode === ProjectInfoDisplayMode.info}
-            isCompact={false}
+            isCompact={width < 800}
           />
         ),
         key: "errorFilter",
@@ -733,7 +783,14 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       },
     ];
 
-    const title = this.props.project.loc.getTokenValueOrDefault(this.props.project.title);
+    let title = undefined;
+
+    if (this.props.file && this.state.selectedInfoSet) {
+      const info = this.state.selectedInfoSet.info as any;
+      title = info["cardTitle"] ? info["cardTitle"] : info.defaultResourcePackName;
+    } else {
+      title = this.props.project ? this.props.project.loc.getTokenValueOrDefault(this.props.project.title) : "Report";
+    }
 
     let outer = <></>;
 
@@ -757,11 +814,17 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         </div>
       );
     } else if (this.state.viewMode === ProjectInfoDisplayMode.summary) {
-      if (this.state.allInfoSet && this.state.allInfoSet.info.features) {
-        const keyVals = this.state.allInfoSet.info as { [index: string]: any };
+      let keyVals = undefined;
 
+      if ((this.props.file || this.props.data) && this.state.selectedInfoSet) {
+        keyVals = this.state.selectedInfoSet.info as { [index: string]: any };
+      } else if (this.props.allInfoSet && this.props.allInfoSet.info.featureSets) {
+        keyVals = this.props.allInfoSet.info as { [index: string]: any };
+      }
+
+      if (keyVals) {
         for (const key in keyVals) {
-          if (key !== "features") {
+          if (key !== "featureSets" && key !== "summary" && key !== "features") {
             const val = keyVals[key];
 
             lines.push(
@@ -769,29 +832,56 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                 {Utilities.humanifyJsName(key)}
               </div>
             );
-            lines.push(
-              <div className="pis-itemData" key={key + "dataA"}>
-                {this.getDataSummary(val)}
-              </div>
-            );
+            if (key === "defaultIcon" && val && val.length > 100) {
+              lines.push(
+                <div
+                  className="pis-itemData pis-image"
+                  key={key + "dataC"}
+                  style={{
+                    backgroundImage: "url('data:image/png;base64, " + val + "')",
+                  }}
+                >
+                  &#160;
+                </div>
+              );
+            } else {
+              lines.push(
+                <div className="pis-itemData" key={key + "dataA"}>
+                  {this.getDataSummary(val)}
+                </div>
+              );
+            }
           }
         }
-        for (const featName in this.state.allInfoSet.info.features) {
-          const featVal = this.state.allInfoSet.info.features[featName];
 
-          if (typeof featVal === "number") {
-            const featSummaryName = featName; //.replace(/|/gi, " ");
+        let infoSet = this.props.allInfoSet;
 
-            lines.push(
-              <div className="pis-itemHeader" key={featName + "headerB"}>
-                {featSummaryName}
-              </div>
-            );
-            lines.push(
-              <div className="pis-itemData" key={featName + "dataB"}>
-                {featVal}
-              </div>
-            );
+        if (infoSet === undefined) {
+          infoSet = this.state.selectedInfoSet;
+        }
+
+        if (infoSet) {
+          for (const featName in infoSet.info.featureSets) {
+            const feature = infoSet.info.featureSets[featName];
+
+            if (feature) {
+              for (const measureName in feature) {
+                const measureVal = feature[measureName];
+
+                if (typeof measureVal === "number") {
+                  lines.push(
+                    <div className="pis-itemHeader" key={featName + measureName + "headerB"}>
+                      {Utilities.humanifyJsName(featName + " " + measureName)}
+                    </div>
+                  );
+                  lines.push(
+                    <div className="pis-itemData" key={featName + measureName + "dataB"}>
+                      {this.getDataSummary(measureVal)}
+                    </div>
+                  );
+                }
+              }
+            }
           }
         }
       }
@@ -814,7 +904,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     } else {
       let itemsShown = 0;
       const itemTiles = [];
-      if (this.state && this.state.selectedInfoSet && this.state.allInfoSet) {
+      if (this.state && this.state.selectedInfoSet && this.props.allInfoSet) {
         for (let i = 0; i < this.state.selectedInfoSet.items.length && itemsShown < this.state.maxItems; i++) {
           const item = this.state.selectedInfoSet.items[i];
 
@@ -899,7 +989,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           </div>
           <div className="pid-toolArea">
             <div className="pid-topToolbar">
-              <Toolbar aria-label="Actions  toolbar overflow menu" items={topToolbarItems} />
+              <Toolbar aria-label="Actions toolbar overflow menu" items={topToolbarItems} />
             </div>
             <div className="pid-suiteTitle">Suite:</div>
             <div className="pid-suiteDropdown">

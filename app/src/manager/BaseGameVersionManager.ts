@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "../info/ProjectInfoItem";
 import Project from "../app/Project";
 import IProjectInfoGenerator from "../info/IProjectInfoGenerator";
@@ -10,6 +13,7 @@ import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import WorldTemplateManifestJson from "../minecraft/WorldTemplateManifestJson";
 import ProjectInfoSet from "../info/ProjectInfoSet";
+import ContentIndex from "../core/ContentIndex";
 
 export default class BaseGameVersionManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "BASEGAMEVER";
@@ -86,7 +90,7 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
-  async generate(project: Project): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, content: ContentIndex): Promise<ProjectInfoItem[]> {
     const infoItems: ProjectInfoItem[] = [];
 
     const ver = await Database.getLatestVersionInfo(false);

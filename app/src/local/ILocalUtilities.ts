@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IStorage from "../storage/IStorage";
 
 export default interface ILocalUtilities {
@@ -10,6 +13,8 @@ export default interface ILocalUtilities {
   readonly minecraftPath: string;
 
   readonly minecraftPreviewPath: string;
+
+  generateCryptoRandomNumber(toVal: number): number;
 
   validateFolderPath(path: string): void;
 

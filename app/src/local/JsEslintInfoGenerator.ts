@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Project from "../app/Project";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
@@ -8,6 +11,7 @@ import ProjectInfoItem from "../info/ProjectInfoItem";
 import IProjectInfoGenerator from "../info/IProjectInfoGenerator";
 import { InfoItemType } from "../info/IInfoItemData";
 import ProjectInfoSet from "../info/ProjectInfoSet";
+import ContentIndex from "../core/ContentIndex";
 
 export default class JsEslintInfoGenerator implements IProjectInfoGenerator {
   id = "ESLINT";
@@ -15,10 +19,8 @@ export default class JsEslintInfoGenerator implements IProjectInfoGenerator {
 
   getTopicData(topicId: number) {
     switch (topicId) {
-      case 1:
-        return { title: "Entity Type" };
-      case 2:
-        return { title: "Block Type" };
+      case 100:
+        return { title: "ESLint Error" };
     }
     return {
       title: topicId.toString(),
@@ -27,7 +29,7 @@ export default class JsEslintInfoGenerator implements IProjectInfoGenerator {
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
-  async generate(project: Project): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
     var foundError = false;
 

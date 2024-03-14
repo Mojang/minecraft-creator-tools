@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export const minecraftToolDarkTheme = {
   siteVariables: {
     bodyFontFamily: '"Noto Sans", "Segoe UI", system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif',

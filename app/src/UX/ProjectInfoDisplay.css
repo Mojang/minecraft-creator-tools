@@ -1,5 +1,30 @@
+@media only screen and (min-width: 800px) {
+  .pid-toolArea {
+    display: grid;
+    grid-template-columns: 200px 50px 230px 1fr;
+    margin-bottom: 1px;
+  }
+
+  .pid-suiteDropdown .ui-dropdown__container {
+    width: 210px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .pid-toolArea {
+    display: grid;
+    grid-template-columns: 80px 50px 185px 1fr;
+    margin-bottom: 1px;
+  }
+
+  .pid-suiteDropdown .ui-dropdown__container {
+    width: 165px;
+  }
+}
+
 .pid-outer {
   height: 100%;
+  text-align: left;
 }
 
 .pid-header {
@@ -9,7 +34,7 @@
 
 .pid-title {
   font-size: 16pt;
-  padding-top: 15px;
+  padding-top: 10px;
   padding-left: 10px;
   padding-bottom: 16px;
   font-weight: bold;
@@ -26,6 +51,12 @@
   margin-top: 10px;
   font-size: small;
   grid-template-columns: 500px 1fr;
+}
+
+.pis-image {
+  background-size: cover;
+  width: 64px;
+  height: 64px;
 }
 
 .pis-itemHeader {
@@ -70,12 +101,6 @@
   width: 37px;
 }
 
-.pid-toolArea {
-  display: grid;
-  grid-template-columns: 200px 50px 230px 1fr;
-  margin-bottom: 2px;
-}
-
 .pid-topToolbar {
   grid-column: 1;
 }
@@ -91,10 +116,6 @@
 
 .pid-actionToolbar {
   grid-column: 4;
-}
-
-.pid-suiteDropdown .ui-dropdown__container {
-  width: 210px;
 }
 
 .pid-validating {

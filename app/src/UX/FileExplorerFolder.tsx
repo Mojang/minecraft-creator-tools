@@ -8,14 +8,19 @@ import ItemAnnotationCollection from "./ItemAnnotationCollection";
 import IStorageObject from "../storage/IStorageObject";
 import StorageUtilities from "../storage/StorageUtilities";
 import FileExplorerContainerFile from "./FileExplorerContainerFile";
+import IFile from "../storage/IFile";
+import { ThemeInput } from "@fluentui/react-northstar";
 
 interface IFileExplorerFolderProps {
   folder: IFolder;
   fileExplorer: FileExplorer;
+  theme: ThemeInput<any>;
   displayFolderDetail: boolean;
   depth: number;
   startExpanded: boolean;
   itemAnnotations?: ItemAnnotationCollection;
+  selectedItem: IFile | IFolder | null | undefined;
+  onFileSelected?: (file: IFile) => void;
 }
 
 interface IFileExplorerFolderState {
@@ -104,7 +109,10 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
               displayFileDetail={true}
               depth={this.props.depth + 1}
               startExpanded={false}
+              theme={this.props.theme}
               itemAnnotations={this.getAnnotationsForStorageObject(file)}
+              onFileSelected={this.props.onFileSelected}
+              selectedItem={this.props.selectedItem}
               fileExplorer={this.props.fileExplorer}
             />
           );
@@ -113,6 +121,9 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
             <FileExplorerFileDetail
               file={file}
               key={"fd" + fileName}
+              theme={this.props.theme}
+              selectedItem={this.props.selectedItem}
+              onFileSelected={this.props.onFileSelected}
               itemAnnotations={this.getAnnotationsForStorageObject(file)}
               fileExplorer={this.props.fileExplorer}
             />
@@ -133,7 +144,10 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
             <FileExplorerFolder
               folder={childFolder}
               startExpanded={false}
+              theme={this.props.theme}
               key={"fo" + childFolder.name}
+              selectedItem={this.props.selectedItem}
+              onFileSelected={this.props.onFileSelected}
               itemAnnotations={this.getAnnotationsForStorageObject(childFolder)}
               fileExplorer={this.props.fileExplorer}
               displayFolderDetail={true}

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export enum InfoItemType {
   testCompleteSuccess = 0,
   testCompleteFail = 1,
@@ -10,13 +13,13 @@ export enum InfoItemType {
 }
 
 export default interface IInfoItemData {
-  itemType: InfoItemType;
-  generatorId: string;
-  generatorIndex: number;
-  message: string;
-  itemStoragePath: string | null | undefined;
-  data: string | boolean | number | object | number[] | undefined;
-  itemId: string | undefined;
-  content: string | undefined;
-  features: { [featureName: string]: number | undefined } | undefined;
+  iTp: InfoItemType;
+  gId: string;
+  gIx: number;
+  m: string | undefined;
+  p: string | null | undefined;
+  d: string | boolean | number | object | number[] | undefined;
+  iId: string | undefined;
+  c: string | undefined;
+  fs: { [setName: string]: { [measureName: string]: number | undefined } | undefined } | undefined;
 }

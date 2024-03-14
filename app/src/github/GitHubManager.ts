@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 //import { GitCreateBlobResponse, GitCreateTreeParamsTree } from '@octokit/git';
 
 import { Octokit } from "@octokit/rest";
@@ -230,7 +233,7 @@ export default class GitHubManager {
 
     const newCommit = await this.createNewCommit(owner, repo, commitMessage, newTree.sha, currentCommit.commitSha);
 
-    await this.setBranchToCommit(owner, repo, branch, newCommit.sha);
+    this.setBranchToCommit(owner, repo, branch, newCommit.sha);
   }
 
   async createBlobForFile(owner: string, repo: string, content: Uint8Array | string) {

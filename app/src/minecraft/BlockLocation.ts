@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Log from "../core/Log";
 import Location from "./Location";
 
@@ -11,7 +14,7 @@ export default class BlockLocation {
   }
 
   public set x(newX: number) {
-    Log.assertIsInt(newX);
+    Log.assertIsInt(newX, "BLX");
     this._x = newX;
   }
 
@@ -20,7 +23,7 @@ export default class BlockLocation {
   }
 
   public set y(newY: number) {
-    Log.assertIsInt(newY);
+    Log.assertIsInt(newY, "BLY");
     this._y = newY;
   }
 
@@ -29,7 +32,7 @@ export default class BlockLocation {
   }
 
   public set z(newZ: number) {
-    Log.assertIsInt(newZ);
+    Log.assertIsInt(newZ, "BLZ");
     this._z = newZ;
   }
 
@@ -54,9 +57,9 @@ export default class BlockLocation {
     this._y = y == null ? 0 : y;
     this._z = z == null ? 0 : z;
 
-    Log.assertIsInt(this._x);
-    Log.assertIsInt(this._y);
-    Log.assertIsInt(this._z);
+    Log.assertIsInt(this._x, "BLCX");
+    Log.assertIsInt(this._y, "BLCY");
+    Log.assertIsInt(this._z, "BLCZ");
   }
 
   static from(value: any): BlockLocation {

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export default class CommandStructure {
   public name: string;
   public commandArguments: string[];

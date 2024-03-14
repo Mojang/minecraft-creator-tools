@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "./ProjectInfoItem";
 import ProjectItem from "../app/ProjectItem";
 import IProjectInfoItemGenerator from "./IProjectItemInfoGenerator";
@@ -15,6 +18,7 @@ import ResourceManifestJson from "../minecraft/ResourceManifestJson";
 import BehaviorManifestJson from "../minecraft/BehaviorManifestJson";
 import ModelGeometry from "../minecraft/ModelGeometry";
 import Material from "../minecraft/Material";
+import ContentIndex from "../core/ContentIndex";
 
 export default class AddOnItemRequirementsGenerator implements IProjectInfoItemGenerator {
   id = "ADDONIREQ";
@@ -28,7 +32,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
-  async generate(projectItem: ProjectItem): Promise<ProjectInfoItem[]> {
+  async generate(projectItem: ProjectItem, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
     if (projectItem.itemType === ProjectItemType.dimensionJson) {

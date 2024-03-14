@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "./ProjectInfoItem";
 import ProjectItem from "../app/ProjectItem";
 import IProjectItemInfoGenerator from "./IProjectItemInfoGenerator";
@@ -13,8 +16,7 @@ export default class PackMetaDataInformationGenerator implements IProjectItemInf
     };
   }
 
-  summarize(info: any, infoSet: ProjectInfoSet) {
-  }
+  summarize(info: any, infoSet: ProjectInfoSet) {}
 
   async generate(projectItem: ProjectItem): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];

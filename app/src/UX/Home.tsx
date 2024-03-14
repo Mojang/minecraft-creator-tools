@@ -2,7 +2,7 @@ import { Component, MouseEvent, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
 import { AppMode } from "./App";
 import "./Home.css";
-import { List, Button, Dialog, Input, InputProps, ThemeInput, MenuButton, Toolbar } from "@fluentui/react-northstar";
+import { List, Button, Dialog, Input, InputProps, ThemeInput, MenuButton } from "@fluentui/react-northstar";
 import { NewProjectTemplateType } from "./App";
 import Carto from "./../app/Carto";
 import Project from "./../app/Project";
@@ -16,7 +16,7 @@ import { GalleryProjectCommand } from "./ProjectGallery";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import { constants } from "../core/Constants";
 import StorageUtilities from "../storage/StorageUtilities";
-import { ComputerLabel, ConnectLabel, ExportBackupLabel } from "./Labels";
+import { LocalFolderLabel } from "./Labels";
 import FileSystemStorage from "../storage/FileSystemStorage";
 import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
 import UrlUtilities from "../core/UrlUtilities";
@@ -610,6 +610,18 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
   }
 
+  private _handleToolTileMouseDown(event: MouseEvent) {
+    if (event.currentTarget && event.currentTarget.className.indexOf("tileDown") < 0) {
+      event.currentTarget.className = event.currentTarget.className + " home-tileDown";
+    }
+  }
+
+  private _handleToolTileMouseUp(event: MouseEvent) {
+    if (event.currentTarget && event.currentTarget.className.indexOf("tileDown") >= 0) {
+      event.currentTarget.className = event.currentTarget.className.replace(" home-tileDown", "");
+    }
+  }
+
   private _handleProjectGalleryCommand(command: GalleryProjectCommand, project: IGalleryProject) {
     if (command === GalleryProjectCommand.newProject) {
       this.setState({
@@ -803,7 +815,8 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             </div>
             <input
               type="file"
-              title="uploadPack"
+              accept=".mcaddon, .mcpack, .mcworld, .mcproject, .mctemplate, .zip"
+              title="Upload a .mcpack, .mcaddon, or ZIP file to validate"
               style={{
                 color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
                 backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background5,
@@ -814,24 +827,30 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         </div>
       );
 
-      gallery.push(<div>{toolBin}</div>);
+      gallery.push(
+        <div key="toolBinAreaA" className="home-toolTile-bin">
+          {toolBin}
+        </div>
+      );
     }
 
-    if (CartoApp.theme !== CartoThemeStyle.dark) {
-      webOnlyLinks.push(<span key="darksp">&#160;&#160;/&#160;&#160;</span>);
-      webOnlyLinks.push(
-        <a key="darkLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "dark")}>
-          Dark Theme
-        </a>
-      );
-    }
-    if (CartoApp.theme !== CartoThemeStyle.light) {
-      webOnlyLinks.push(<span key="lightsp">&#160;&#160;/&#160;&#160;</span>);
-      webOnlyLinks.push(
-        <a key="lightLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "light")}>
-          Light Theme
-        </a>
-      );
+    if (!AppServiceProxy.hasAppService) {
+      if (CartoApp.theme !== CartoThemeStyle.dark) {
+        webOnlyLinks.push(<span key="darksp">&#160;&#160;/&#160;&#160;</span>);
+        webOnlyLinks.push(
+          <a key="darkLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "dark")}>
+            Dark Theme
+          </a>
+        );
+      }
+      if (CartoApp.theme !== CartoThemeStyle.light) {
+        webOnlyLinks.push(<span key="lightsp">&#160;&#160;/&#160;&#160;</span>);
+        webOnlyLinks.push(
+          <a key="lightLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "light")}>
+            Light Theme
+          </a>
+        );
+      }
     }
 
     if (this.state?.dialogMode === HomeDialogMode.newProject) {
@@ -863,7 +882,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               onClick={this._handleSelectFolderClick}
               content="Select Folder"
               key="selectFolder"
-              icon={<ComputerLabel isCompact={true} />}
+              icon={<LocalFolderLabel isCompact={true} />}
               iconPosition="before"
             />
           </div>
@@ -974,7 +993,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         );
       } else {
         introArea.push(
-          <div key="recentlyOpenedLabel" className="home-projects">
+          <div key="recentlyOpenedLabelA" className="home-projects">
             Projects
           </div>
         );
@@ -995,7 +1014,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           );
         } else {
           introArea.push(
-            <div key="recentlyNote" className="home-projects-note">
+            <div key="recentlyNoteA" className="home-projects-note">
               (stored in this device's browser storage.)
             </div>
           );
@@ -1043,7 +1062,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
 
     let toolsArea = <></>;
-    let openArea = <></>;
 
     return (
       <div className="home-layout" draggable={true}>
@@ -1075,6 +1093,10 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               <a href={constants.repositoryUrl} target="_blank" rel="noreferrer noopener">
                 GitHub
               </a>
+              &#160;&#160;/&#160;&#160;
+              <a href={constants.homeUrl + "/docs/license.html"} target="_blank" rel="noreferrer noopener">
+                License
+              </a>
               {webOnlyLinks}
             </div>
           </div>
@@ -1088,7 +1110,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         >
           {introArea}
           {toolsArea}
-          {openArea}
           {recentsArea}
         </div>
         <div

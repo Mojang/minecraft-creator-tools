@@ -42,7 +42,7 @@ export default class CartoSettings extends Component<ICartoSettingsProps, ICarto
       return <></>;
     }
 
-    const height = "calc(100vh - " + (this.props.heightOffset + 55) + "px)";
+    const height = "calc(100vh - " + (this.props.heightOffset + 58) + "px)";
 
     return (
       <div

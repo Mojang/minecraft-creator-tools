@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IBlockEvent from "./IBlockEvent";
 import IBlockTypeDescription from "./IBlockTypeDescription";
 import IComponentDataItem from "./IComponentDataItem";

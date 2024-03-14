@@ -1,24 +1,13 @@
-.tui-image-editor-header {
-  display: none;
+.tui-grid-container {
+  font-family: "Noto Sans", "Segoe UI", "Helvetica Neue", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", sans-serif !important;
 }
 
-.tui-image-editor-container .tui-image-editor-main {
-  top: 0;
-}
-
-.tui-image-editor-container .tui-image-editor-help-menu {
-  border-radius: 0px !important;
-}
-
-.tui-image-editor-container .tui-image-editor-controls-buttons div {
-  border-radius: 0px !important;
-}
-
-.ie-outer {
+.ge-outer {
   image-rendering: pixelated;
 }
 
-.ie-image {
+.ge-image {
   padding: 6px;
   width: 100%;
   height: 100%;
@@ -27,13 +16,13 @@
   background-size: contain;
 }
 
-.ie-float {
+.ge-float {
   position: absolute;
   margin: 8px;
   z-index: 100;
 }
 
-.ie-float BUTTON {
+.ge-float BUTTON {
   padding-left: 0px;
   padding-right: 0px;
   width: 36px;

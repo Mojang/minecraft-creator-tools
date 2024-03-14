@@ -1,11 +1,5 @@
-/*
-{
-    "error": {
-      "name": "minecraft:info_update",
-      "id": 248,
-      "data": 0
-    },
-*/
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 export default interface IJavaBlockTypeData {
   source: string | undefined;

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IColor from "./IColor";
 
 export default class ColorUtilities {

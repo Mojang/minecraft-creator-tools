@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ISimpleReference from "../core/ISimpleReference";
 import ICondition from "./ICondition";
 import IFormDefinition from "./IFormDefinition";

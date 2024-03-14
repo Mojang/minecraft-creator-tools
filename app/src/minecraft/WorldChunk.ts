@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Log from "../core/Log";
 import LevelKeyValue from "./LevelKeyValue";
 import BlockPalette from "./BlockPalette";
@@ -519,7 +522,7 @@ export default class WorldChunk {
     const zHeight = maxCubeY - cubeY;
     const initialChunkId = this.getSubChunkIndexFromY(internalOffsetY);
     const finalChunkId = this.getSubChunkIndexFromY(internalOffsetY + zHeight);
-    Log.assert(initialChunkId >= 0 && finalChunkId >= initialChunkId);
+    Log.assert(initialChunkId >= 0 && finalChunkId >= initialChunkId, "WCFC");
 
     for (let i = 0; i <= finalChunkId - initialChunkId; i++) {
       const subChunkId = initialChunkId + i;
@@ -596,7 +599,7 @@ export default class WorldChunk {
               ) {
                 const inSubChunkY = (Math.abs(this.absoluteZeroY) + (iY - cubeY + internalOffsetY)) % 16;
 
-                Log.assert(inSubChunkY >= 0);
+                Log.assert(inSubChunkY >= 0, "WCFCA");
 
                 const blockLine = plane.y(iY);
 
@@ -940,7 +943,7 @@ export default class WorldChunk {
             const blockPals = this.blockPalettes[subChunkId];
 
             if (blockPals) {
-              Log.assert(blockPals.blocks !== undefined);
+              Log.assert(blockPals.blocks !== undefined, "WCDBTA");
 
               for (let iPal = 0; iPal < blockPals.blocks.length; iPal++) {
                 const block = blockPals.blocks[iPal];

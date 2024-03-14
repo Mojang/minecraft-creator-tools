@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IAnchorData from "./IAnchorData";
 import IVector3 from "./IVector3";
 

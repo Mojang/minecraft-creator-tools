@@ -8,15 +8,15 @@ import Log, { LogItem } from "./../core/Log";
 import { ProjectStatusAreaMode } from "./ProjectEditor";
 import { Toolbar, List, ThemeInput, Button } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretSquareDown, faCaretSquareUp, faXmark } from "@fortawesome/free-solid-svg-icons";
-import TextEditor from "./TextEditor";
-import CartoApp, { HostType } from "../app/CartoApp";
-import IPersistable from "./IPersistable";
-import FunctionEditor from "./FunctionEditor";
+import { faCaretSquareDown, faCaretSquareUp, faSearch, faXmark } from "@fortawesome/free-solid-svg-icons";
 import Project from "../app/Project";
+import SearchCommandEditor from "./SearchCommandEditor";
+import { ProjectEditorAction } from "./ProjectEditorUtilities";
 
 interface IStatusAreaProps extends IAppProps {
   onSetExpandedSize: (newMode: ProjectStatusAreaMode) => void;
+  onFilterTextChanged: (newFilterText: string | undefined) => void;
+  onActionRequested: (action: ProjectEditorAction) => void;
   statusAreaMode: ProjectStatusAreaMode;
   project?: Project;
   theme: ThemeInput<any>;
@@ -32,7 +32,6 @@ const MESSAGE_FADEOUT_TIME = 20000;
 
 export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaState> {
   scrollArea: React.RefObject<HTMLDivElement>;
-  private _activeEditorPersistable?: IPersistable;
   private _isMountedInternal: boolean = false;
 
   constructor(props: IStatusAreaProps) {
@@ -40,17 +39,15 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
     this.scrollArea = React.createRef();
 
+    this._handleKeyPress = this._handleKeyPress.bind(this);
     this._handleStatusAdded = this._handleStatusAdded.bind(this);
     this._handleLogItemAdded = this._handleLogItemAdded.bind(this);
     this._checkForTimeOut = this._checkForTimeOut.bind(this);
     this._toggleExpandedSize = this._toggleExpandedSize.bind(this);
-    this._onUpdatePreferredTextSize = this._onUpdatePreferredTextSize.bind(this);
     this._toggleToEditor = this._toggleToEditor.bind(this);
     this._toggleToMessage = this._toggleToMessage.bind(this);
     this._update = this._update.bind(this);
-    this._handleNewChildPersistable = this._handleNewChildPersistable.bind(this);
     this.scrollToListBottom = this.scrollToListBottom.bind(this);
-    this._commitCommand = this._commitCommand.bind(this);
     this._prepareForFadeout = this._prepareForFadeout.bind(this);
 
     this.state = {
@@ -142,6 +139,10 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
   }
 
   _toggleToMessage() {
+    if (this.props.onFilterTextChanged) {
+      this.props.onFilterTextChanged(undefined);
+    }
+
     this.setState({
       displayEditor: false,
       activeOperations: this.state.activeOperations,
@@ -152,6 +153,10 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     this.scrollToListBottom();
     this._isMountedInternal = true;
 
+    if (typeof window !== "undefined") {
+      window.addEventListener("keydown", this._handleKeyPress);
+    }
+
     if (Utilities.isDebug) {
       Log.onItemAdded.subscribe(this._handleLogItemAdded);
     }
@@ -161,6 +166,10 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
   componentWillUnmount(): void {
     this._isMountedInternal = false;
+
+    if (typeof window !== "undefined") {
+      window.removeEventListener("keypress", this._handleKeyPress);
+    }
 
     if (Utilities.isDebug) {
       Log.onItemAdded.unsubscribe(this._handleLogItemAdded);
@@ -175,19 +184,18 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     }
   }
 
-  _onUpdatePreferredTextSize(newTextSize: number) {
-    this.props.carto.preferredTextSize = newTextSize;
-  }
+  _handleKeyPress(event: KeyboardEvent) {
+    if (event.key === "Escape" && this.state.displayEditor) {
+      this._toggleToMessage();
+    } else if (event.ctrlKey === true && event.key === "e") {
+      if (this.state.displayEditor) {
+        this._toggleToMessage();
+      } else {
+        this._toggleToEditor();
+      }
 
-  _handleNewChildPersistable(newPersistable: IPersistable) {
-    this._activeEditorPersistable = newPersistable;
-  }
-
-  async _commitCommand(command: string) {
-    if (command.length > 0) {
-      this.props.carto.notifyStatusUpdate(command);
-
-      await this.props.carto.runCommand(command, this.props.project);
+      event.stopPropagation();
+      event.preventDefault();
     }
   }
 
@@ -198,60 +206,29 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     const heightOffset = this.props.heightOffset;
     const toolbarItems = [];
     if (this.state && this.state.displayEditor) {
-      if (Utilities.isDebug && CartoApp.hostType === HostType.electronWeb) {
-        editor = (
-          <div className="sa-inputArea">
-            <div className="sa-inputButton">
-              <Button
-                onClick={this._toggleToMessage}
-                icon={<FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />}
-              />
-            </div>
-            <div className="sa-inputEditor">
-              <TextEditor
-                theme={this.props.theme}
-                onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
-                preferredTextSize={this.props.carto.preferredTextSize}
-                readOnly={false}
-                onUpdateContent={this._commitCommand}
-                singleLineMode={true}
-                carto={this.props.carto}
-                heightOffset={heightOffset}
-                initialContent={""}
-                setActivePersistable={this._handleNewChildPersistable}
-              />
-            </div>
+      editor = (
+        <div className="sa-inputArea">
+          <div className="sa-inputButton">
+            <Button
+              onClick={this._toggleToMessage}
+              icon={<FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />}
+            />
           </div>
-        );
-      } else {
-        editor = (
-          <div className="sa-inputArea">
-            <div className="sa-inputButton">
-              <Button
-                onClick={this._toggleToMessage}
-                icon={<FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />}
-              />
-            </div>
-            <div className="sa-inputEditor">
-              <FunctionEditor
-                theme={this.props.theme}
-                carto={this.props.carto}
-                project={this.props.project}
-                isCommandEditor={true}
-                // onUpdateContent={this._commitCommand}  /* function editor will call run system command itself.
-                onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
-                preferredTextSize={this.props.carto.preferredTextSize}
-                readOnly={false}
-                singleCommandMode={true}
-                roleId={"statusAreaEditor"}
-                heightOffset={this.props.heightOffset}
-                initialContent={""}
-                setActivePersistable={this._handleNewChildPersistable}
-              />
-            </div>
+          <div className="sa-inputEditor">
+            <SearchCommandEditor
+              isLarge={false}
+              displayAbove={true}
+              theme={this.props.theme}
+              onActionRequested={this.props.onActionRequested}
+              contentIndex={this.props.project?.infoSet.contentIndex}
+              onFilterTextChanged={this.props.onFilterTextChanged}
+              carto={this.props.carto}
+              heightOffset={heightOffset}
+              initialContent={""}
+            />
           </div>
-        );
-      }
+        </div>
+      );
     }
     if (this.props.statusAreaMode === ProjectStatusAreaMode.minimized) {
       toolbarItems.push({
@@ -263,8 +240,10 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         title: "Show more information in the status area",
       });
 
+      let setInterior = false;
       if (this.state && this.state.displayEditor) {
         interior = editor;
+        setInterior = true;
       } else {
         if (this.props.carto.status.length > 0) {
           const lastStatus = this.props.carto.status[this.props.carto.status.length - 1];
@@ -273,13 +252,15 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
           if (lastStatusUpdate < MESSAGE_FADEOUT_TIME || this.state.activeOperations > 0) {
             if (this.state.activeOperations > 0) {
+              setInterior = true;
               interior = (
-                <span className="sa-singleline" title={lastStatus.message}>
-                  <img src="/loading.gif" alt="Waiting spinner" className="sa-loading" />
-                  <span className="sa-message">{lastStatus.message}</span>
+                <span className="sa-placeHolder" title={lastStatus.message}>
+                  <img className="sa-placeHolderIcon sa-loading" src="/loading.gif" alt="Waiting spinner" />
+                  <span className="sa-placeHolderText">{lastStatus.message}</span>
                 </span>
               );
             } else {
+              setInterior = true;
               interior = (
                 <span className="sa-singleline" title={lastStatus.message}>
                   <span className="sa-message">{lastStatus.message}</span>
@@ -293,6 +274,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
               const message = lastLog.message ? lastLog.message.toString() : "(no message)";
 
               if (lastLogUpdate < MESSAGE_FADEOUT_TIME || this.state.activeOperations > 0) {
+                setInterior = true;
                 interior = (
                   <span className="sa-singleline" title={message}>
                     <span className="sa-message">log: {message}</span>
@@ -316,6 +298,29 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
               );
             }
           }
+        }
+
+        if (!setInterior) {
+          interior = (
+            <div
+              className="sa-placeHolder"
+              style={{
+                color: this.props.theme.siteVariables?.colorScheme.brand.foreground6,
+              }}
+            >
+              <span className="sa-placeHolderIcon">
+                <FontAwesomeIcon
+                  key="searchPlaceHolder"
+                  icon={faSearch}
+                  className="fa-lg"
+                  style={{
+                    paddingTop: "2px",
+                  }}
+                />
+              </span>
+              <span className="sa-placeHolderText">Click or Ctrl-E to search</span>
+            </div>
+          );
         }
       }
     } else {
@@ -375,7 +380,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
     return (
       <div className="sa-outer">
-        <div className="sa-message" onClick={this.state.displayEditor ? undefined : this._toggleToEditor}>
+        <div className="sa-messageOuter" onClick={this.state.displayEditor ? undefined : this._toggleToEditor}>
           {interior}
         </div>
         <div className="sa-tools">

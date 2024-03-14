@@ -9,12 +9,12 @@
 .net-gallery {
   overflow-y: auto;
   min-height: 280px;
-  background-color: #202020;
   max-height: calc(100vh - 280px);
 }
 
 .net-projectGallery {
   height: 360px;
+  padding-top: 20px;
 }
 
 .net-galleryHeader {

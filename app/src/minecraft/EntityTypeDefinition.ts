@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IEntityTypeBehaviorPack from "./IEntityTypeBehaviorPack";
 import IEntityTypeWrapper from "./IEntityTypeWrapper";
 import IFile from "../storage/IFile";

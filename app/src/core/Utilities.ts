@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import CartoApp, { HostType } from "../app/CartoApp";
 import AppServiceProxy from "./AppServiceProxy";
 import Log from "./Log";
@@ -45,6 +48,26 @@ export default class Utilities {
     hash = hash.replace(/,/gi, "-C");
 
     return hash;
+  }
+
+  static getSimpleNumeric(num: number | undefined) {
+    if (num === undefined) {
+      return "";
+    }
+
+    if (num < 1000) {
+      return num.toString();
+    }
+
+    if (num < 1000) {
+      return Math.floor(num / 100) / 10 + "k";
+    }
+
+    if (num > 1000000) {
+      return Math.floor(num / 100000) / 10 + "m";
+    }
+
+    return Math.floor(num / 1000) + "k";
   }
 
   static humanifyJsName(name: string | boolean | number) {
@@ -434,7 +457,8 @@ export default class Utilities {
   }
 
   static makeSafeForJson(content: string) {
-    content = content.replace('"', "'"); // this isn't the full way to do it, but for now...
+    content = content.replace(/\\/g, "/");
+    content = content.replace(/"/gi, "'"); // this isn't the full way to do it, but for now...
 
     return content;
   }
@@ -456,11 +480,56 @@ export default class Utilities {
 
     return true;
   }
+
+  public static getJsonObject(contents: string): any | undefined {
+    let jsonObject = undefined;
+
+    contents = Utilities.fixJsonContent(contents);
+
+    try {
+      jsonObject = JSON.parse(contents);
+    } catch (e: any) {
+      Log.fail("Could not parse JSON: " + e.message);
+    }
+
+    return jsonObject;
+  }
+
   static isNumeric(candidate: string) {
     for (let i = 0; i < candidate.length; i++) {
       const charCode = candidate[i];
 
-      if (!(charCode >= "0" && charCode <= "9")) {
+      if ((charCode < "0" || charCode > "9") && charCode !== "." && (i > 0 || charCode !== "-")) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  static isNumericIsh(candidate: string) {
+    for (let i = 0; i < candidate.length; i++) {
+      const charCode = candidate[i];
+
+      if (
+        (charCode < "0" || charCode > "9") &&
+        charCode !== "e" &&
+        charCode !== "+" &&
+        charCode !== "," &&
+        charCode !== "." &&
+        charCode !== "-"
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+  static isAlpha(candidate: string) {
+    for (let i = 0; i < candidate.length; i++) {
+      const charCode = candidate[i];
+
+      if (!((charCode >= "a" && charCode <= "z") || (charCode >= "A" && charCode <= "Z"))) {
         return false;
       }
     }
@@ -868,8 +937,9 @@ export default class Utilities {
 
   static createUuid() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-      // eslint-disable-next-line
-      const r = (Math.random() * 16) | 0,
+      let val = CartoApp.generateCryptoRandomNumber(16);
+
+      const r = val | 0,
         v = c === "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
@@ -904,7 +974,7 @@ export default class Utilities {
   static getString(view: DataView, byteOffset: number, byteLength: number, encoding?: string) {
     if (encoding === "UTF8" || encoding === undefined) {
       const result = Utilities.readStringUTF8(view, byteOffset, byteLength);
-      Log.assert(result.byteLength === byteLength);
+      Log.assert(result.byteLength === byteLength, "UTGS");
       return result.str;
     } else if (encoding === "ASCII") {
       const result = Utilities.readStringASCII(view, byteOffset, byteLength);

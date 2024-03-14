@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IBlockTypePropertyValueData from "./IBlockTypePropertyValueData";
 
 export enum BlockPropertyType {

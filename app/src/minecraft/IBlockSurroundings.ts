@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Block from "./Block";
 
 export default interface IBlockSurroundings {

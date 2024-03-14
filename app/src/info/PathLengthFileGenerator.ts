@@ -1,9 +1,13 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "./ProjectInfoItem";
 import IProjectFileInfoGenerator from "./IProjectFileInfoGenerator";
 import { InfoItemType } from "./IInfoItemData";
 import IFile from "../storage/IFile";
 import ProjectInfoSet from "./ProjectInfoSet";
 import Project from "../app/Project";
+import ContentIndex from "../core/ContentIndex";
 
 export default class PathLengthFileGenerator implements IProjectFileInfoGenerator {
   id = "PATHLENGTH";
@@ -17,7 +21,7 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
-  async generate(project: Project, file: IFile): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, file: IFile, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
     let path = file.storageRelativePath;

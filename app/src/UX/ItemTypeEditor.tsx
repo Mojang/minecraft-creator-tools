@@ -19,10 +19,7 @@ interface IItemTypeEditorState {
   isLoaded: boolean;
 }
 
-export default class ItemTypeEditor
-  extends Component<IItemTypeEditorProps, IItemTypeEditorState>
-  implements IPersistable
-{
+export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IItemTypeEditorState> {
   private _lastFileEdited?: IFile;
 
   constructor(props: IItemTypeEditorProps) {

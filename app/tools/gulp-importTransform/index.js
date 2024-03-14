@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 const ImportTransform = require("./ImportTransform");
 const through2 = require("through2");
 

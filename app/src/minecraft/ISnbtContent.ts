@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ISnbtBlock from "./ISnbtBlock";
 import ISnbtEntity from "./ISnbtEntity";
 

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { IEntityTrigger } from "./IEntityTrigger";
 import { IFilter } from "./IFilter";
 

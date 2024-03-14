@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export default interface IAddonManifest {
   format_version: number;
   __comment__?: string;

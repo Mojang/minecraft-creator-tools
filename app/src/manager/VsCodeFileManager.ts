@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "../info/ProjectInfoItem";
 import Project from "../app/Project";
 import IProjectInfoGenerator from "../info/IProjectInfoGenerator";
@@ -10,6 +13,7 @@ import { UpdateResultType } from "../updates/IUpdateResult";
 import VsCodeLaunchJson from "../devproject/VsCodeLaunchJson";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
+import ContentIndex from "../core/ContentIndex";
 
 export default class VsCodeFileManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "VSCODEFILE";
@@ -29,7 +33,7 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
-  async generate(project: Project): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const infoItems: ProjectInfoItem[] = [];
 
     for (const pi of project.items) {

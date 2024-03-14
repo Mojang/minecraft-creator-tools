@@ -63,7 +63,7 @@ export default class ProjectInfoItemDisplay extends Component<
     let actions = <></>;
 
     if (item.data) {
-      if (message.length > 0) {
+      if (message && message.length > 0) {
         message += ": ";
       }
 

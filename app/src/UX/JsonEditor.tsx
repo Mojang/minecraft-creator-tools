@@ -4,7 +4,6 @@ import IFile from "./../storage/IFile";
 import Editor from "@monaco-editor/react";
 import "./JsonEditor.css";
 import * as monaco from "monaco-editor";
-import IPersistable from "./IPersistable";
 import { ThemeInput, Toolbar } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearchPlus, faSearchMinus } from "@fortawesome/free-solid-svg-icons";
@@ -29,7 +28,7 @@ interface IJsonEditorState {
   isLoaded: boolean;
 }
 
-export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> implements IPersistable {
+export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> {
   editor?: monaco.editor.IStandaloneCodeEditor;
   _needsPersistence: boolean = false;
   _monaco: any;

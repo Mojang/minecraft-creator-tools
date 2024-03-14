@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import FileBase from "./FileBase";
 import HttpFolder from "./HttpFolder";
 import IFile from "./IFile";
@@ -35,7 +38,7 @@ export default class HttpFile extends FileBase implements IFile {
   async exists() {
     await this.loadContent(false);
 
-    return this._content === null;
+    return this._content !== null;
   }
 
   async loadContent(force?: boolean): Promise<Date> {
@@ -80,16 +83,17 @@ export default class HttpFile extends FileBase implements IFile {
           }
 
           if (response.status !== 200) {
-            Log.fail("Could retrieve file from '" + path + "' - response code is " + response.status);
-            Log.verbose("Could retrieve file from '" + path + "' - response code is " + response.status);
+            // Log.fail("Could not retrieve file from '" + path + "' - response code is " + response.status);
+            Log.verbose("Could not retrieve file from '" + path + "' - response code is " + response.status);
           }
 
           if (result === null || result === "null") {
-            Log.fail("Could retrieve file from '" + path + "' - result is null.");
-            Log.verbose("Could retrieve file from '" + path + "' - result is null.");
+            // Log.fail("Could not retrieve file from '" + path + "' - result is null.");
+            Log.verbose("Could not retrieve file from '" + path + "' - result is null.");
           }
         } catch (e) {
-          Log.fail("Could retrieve file from '" + path + "' - " + e);
+          // Log.fail("Could not retrieve file from '" + path + "' - " + e);
+          Log.verbose("Could not retrieve file from '" + path + "' - " + e);
         }
 
         this._content = result;

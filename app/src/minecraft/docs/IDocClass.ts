@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IDocProperty from "./IDocProperty";
 import IDocClassType from "./IDocClassType";
 import IDocFunction from "./IDocFunction";

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Project from "./Project";
 import ITool, { ToolType, ToolScope } from "./ITool";
 import { ProjectItemType } from "./IProjectItemData";
@@ -9,12 +12,6 @@ import Log from "../core/Log";
 import CommandRunner from "./CommandRunner";
 
 export default class ProjectTools {
-  /*  static async getFlatGameTestWorldWithPacks(carto: Carto, project: Project, name: string) {
-    carto.notifyStatusUpdate("Loading DB content ");
-
-    return undefined;
-  }
-*/
   static async addGlobalTools(tools: ITool[]) {
     tools.push({
       title: "Reload",
@@ -119,7 +116,7 @@ export default class ProjectTools {
 
     await StorageUtilities.syncFolderTo(bpi, deployProjectFolder, true, true, true, ["/mcworlds", "/minecraftWorlds"]);
 
-    const scriptsFolder = await project.ensureScriptsFolder();
+    const scriptsFolder = await project.ensureDefaultScriptsFolder();
 
     if (
       !scriptsFolder.storageRelativePath.startsWith(bpi.storageRelativePath) &&

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { CartoMinecraftErrorStatus, CartoMinecraftState } from "./Carto";
 import { IEvent } from "ste-events";
 import Project from "./Project";

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export enum Direction {
   /**
    * Represents an object located or facing in the down (z - 1)

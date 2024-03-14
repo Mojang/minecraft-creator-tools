@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { ProjectItemType } from "../app/IProjectItemData";
 import Project from "../app/Project";
 import Lang from "./Lang";

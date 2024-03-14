@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { EventDispatcher } from "ste-events";
 import { ManagedComponent } from "./ManagedComponent";
 import IComponentGroup from "./IComponentGroup";

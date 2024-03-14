@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IDocScriptEnum from "./IDocScriptEnum";
 import DocumentedModule from "./DocumentedModule";
 import IFolder from "../../storage/IFolder";

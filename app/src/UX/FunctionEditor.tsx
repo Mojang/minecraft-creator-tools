@@ -27,6 +27,7 @@ interface IFunctionEditorProps {
   readOnly: boolean;
   preferredTextSize: number;
   carto: Carto;
+  onFilterTextChanged?: (newFilterText: string) => void;
   onUpdatePreferredTextSize: (newSize: number) => void;
   onUpdateContent?: (newContent: string) => void;
 }
@@ -168,7 +169,19 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
     }
   }
 
-  _handleContentUpdated(newValue: string | undefined, event: any) {}
+  _handleContentUpdated(newValue: string | undefined, event: any) {
+    if (!newValue) {
+      return;
+    }
+
+    newValue = newValue.trim();
+
+    if (this.props.onFilterTextChanged) {
+      if (!newValue.startsWith("/")) {
+        this.props.onFilterTextChanged(newValue);
+      }
+    }
+  }
 
   async persist() {
     if (this.editor !== undefined) {
@@ -306,7 +319,6 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
         };
 
         commands.push(currentIndicator);
-        this._decorationIds = this.editor.deltaDecorations(this._decorationIds, commands);
 
         this._decorationIds = this.editor.deltaDecorations(this._decorationIds, commands);
 
@@ -490,7 +502,10 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
             style={{
               minHeight: editorHeight,
               maxHeight: editorHeight,
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+              backgroundColor:
+                CartoApp.theme === CartoThemeStyle.dark
+                  ? "#000000"
+                  : this.props.theme.siteVariables?.colorScheme.brand.background1,
             }}
           >
             {interior}

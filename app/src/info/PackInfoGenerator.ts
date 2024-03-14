@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "./ProjectInfoItem";
 import Project from "../app/Project";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
@@ -5,6 +8,9 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
 import IAddonManifest from "../minecraft/IAddonManifest";
 import ProjectInfoSet from "./ProjectInfoSet";
+import ContentIndex from "../core/ContentIndex";
+import StorageUtilities from "../storage/StorageUtilities";
+import Utilities from "../core/Utilities";
 
 export default class PackInformationGenerator implements IProjectInfoGenerator {
   id = "PACK";
@@ -18,6 +24,16 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.defaultBehaviorPackUuid = infoSet.getFirstStringValue("PACK", 2);
+    info.defaultIcon = infoSet.getFirstStringValue("PACK", 21);
+
+    if (info.defaultIcon === undefined) {
+      info.defaultIcon = infoSet.getFirstStringValue("PACK", 22);
+    }
+
+    // because it's heavy, remove pack icon from this list of issues. Though the summarize op is probably
+    // the wrong place to do this.
+    infoSet.removeItems("PACK", [21, 22]);
+
     info.defaultBehaviorPackMinEngineVersion = infoSet.getFirstNumberArrayValue("PACK", 1);
     info.defaultBehaviorPackName = infoSet.getFirstNumberArrayValue("PACK", 4);
     info.defaultBehaviorPackDescription = infoSet.getFirstNumberArrayValue("PACK", 5);
@@ -27,13 +43,46 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
     info.defaultResourcePackDescription = infoSet.getFirstNumberArrayValue("PACK", 15);
   }
 
-  async generate(project: Project): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
     for (let i = 0; i < project.items.length; i++) {
       const pi = project.items[i];
 
-      if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
+      if (pi.itemType === ProjectItemType.iconImage) {
+        if (pi.file) {
+          if (
+            StorageUtilities.getBaseFromName(pi.file.name) === "pack_icon" &&
+            StorageUtilities.getTypeFromName(pi.file.name) === "png"
+          ) {
+            await pi.file.loadContent(false);
+
+            if (pi.file.content && typeof pi.file.content !== "string") {
+              let index = 21;
+              let description = "Resource pack icon";
+
+              if (
+                pi.file.storageRelativePath.indexOf("behavior") >= 0 ||
+                pi.file.storageRelativePath.indexOf("bp") >= 0
+              ) {
+                index = 22;
+                description = "Behavior pack icon";
+              }
+
+              items.push(
+                new ProjectInfoItem(
+                  InfoItemType.info,
+                  this.id,
+                  index,
+                  description,
+                  pi,
+                  Utilities.uint8ArrayToBase64(pi.file.content)
+                )
+              );
+            }
+          }
+        }
+      } else if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
         const obj = (await pi.getJsonObject()) as IAddonManifest;
 
         if (obj) {

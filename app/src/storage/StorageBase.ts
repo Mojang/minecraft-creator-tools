@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IStorage, { StorageErrorStatus } from "./IStorage";
 import IFolder from "./IFolder";
 import IFile from "./IFile";

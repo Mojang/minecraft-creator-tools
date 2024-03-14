@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFolder from "./IFolder";
 import IFile from "./IFile";
 import FileSystemFile from "./FileSystemFile";
@@ -300,8 +303,8 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
   }
 
   async load(force: boolean): Promise<Date> {
-    if (this.lastProcessed != null && !force) {
-      return this.lastProcessed;
+    if (this.lastLoadedOrSaved != null && !force) {
+      return this.lastLoadedOrSaved;
     }
 
     const handle = await this.getHandle();
@@ -319,16 +322,16 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
       }
     }
 
-    this.updateLastProcessed();
+    this.updateLastLoadedOrSaved();
 
-    return this.lastProcessed as Date;
+    return this.lastLoadedOrSaved as Date;
   }
 
   async save(force: boolean): Promise<Date> {
-    this.updateLastProcessed();
+    this.updateLastLoadedOrSaved();
 
     const folderState: IFolderState = {
-      updated: this.lastProcessed as Date,
+      updated: this.lastLoadedOrSaved as Date,
       files: [],
       folders: [],
     };
@@ -367,6 +370,6 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
       //  await localforage.setItem<string>(this.fullPath + FileSystemStorage.folderDelimiter, saveContent);
     }
 
-    return this.lastProcessed as Date;
+    return this.lastLoadedOrSaved as Date;
   }
 }

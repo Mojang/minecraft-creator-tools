@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import BlockCube from "./BlockCube";
 import NbtBinary from "./NbtBinary";
 import NbtBinaryTag, { NbtTagType } from "./NbtBinaryTag";

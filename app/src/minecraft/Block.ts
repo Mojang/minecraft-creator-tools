@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import BlockCubeLine from "./BlockCubeLine";
 import BlockProperty from "./BlockProperty";
 import IBlockData from "./IBlockData";

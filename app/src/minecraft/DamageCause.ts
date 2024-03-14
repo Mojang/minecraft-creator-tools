@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ISimpleReference from "../core/ISimpleReference";
 
 export const DamageCause: ISimpleReference[] = [

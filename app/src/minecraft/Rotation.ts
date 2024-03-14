@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export default class Rotation {
   private _yaw: number;
   private _pitch: number;

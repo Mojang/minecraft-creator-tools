@@ -70,8 +70,8 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
       nextNameIsManuallySet = false;
     }
 
-    if (this.state.selectedEntity && this.state.name) {
-      this.props.onNewEntityTypeUpdated(NewEntityTypeAddMode.baseId, this.state.selectedEntity, this.state.name);
+    if (this.state.selectedEntity && data.value) {
+      this.props.onNewEntityTypeUpdated(NewEntityTypeAddMode.baseId, this.state.selectedEntity, data.value);
     }
 
     this.setState({

@@ -1,6 +1,9 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { constants } from "../core/Constants";
 import IProjectInfoData from "../info/IProjectInfoData";
-import { IPackReferenceSet } from "../minecraft/IWorldSettings";
+import { IPackageReference } from "../minecraft/IWorldSettings";
 import IFile from "../storage/IFile";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
@@ -8,7 +11,7 @@ import ZipStorage from "../storage/ZipStorage";
 import Carto from "./Carto";
 import Project from "./Project";
 
-export enum PackType {
+export enum PackageType {
   packSet = 0,
   world = 1,
   worldTemplate = 2,
@@ -16,18 +19,18 @@ export enum PackType {
   project = 4,
 }
 
-export default class Pack {
+export default class Package {
   storagePath: string;
   name: string;
   baseName: string;
-  type: PackType;
+  type: PackageType;
   file?: IFile;
   reportFile?: IFile;
   cacheFolder?: IFolder;
   data?: IProjectInfoData;
 
   get isWorldType() {
-    return this.type === PackType.world || this.type === PackType.worldTemplate;
+    return this.type === PackageType.world || this.type === PackageType.worldTemplate;
   }
 
   constructor(name: string, path: string) {
@@ -42,17 +45,17 @@ export default class Pack {
 
     switch (type) {
       case "mcworld":
-        return PackType.world;
+        return PackageType.world;
       case "mcproject":
-        return PackType.project;
+        return PackageType.project;
       case "mctemplate":
-        return PackType.worldTemplate;
+        return PackageType.worldTemplate;
       case "mcaddon":
       case "mcpack":
-        return PackType.packSet;
+        return PackageType.packSet;
 
       default:
-        return PackType.generic;
+        return PackageType.generic;
     }
   }
 
@@ -151,7 +154,7 @@ export default class Pack {
     }
   }
 
-  createReference(): IPackReferenceSet {
+  createReference(): IPackageReference {
     const bpRefs: { uuid: string; version: number[] }[] = [];
     const rpRefs: { uuid: string; version: number[] }[] = [];
 
@@ -159,19 +162,14 @@ export default class Pack {
       for (let i = 0; i < this.data.items.length; i++) {
         const item = this.data.items[i];
 
-        if (item.generatorId === "PACK" && item.generatorIndex === 6 && item.data && typeof item.data === "string") {
-          const ref = this.getRefFromString(item.data);
+        if (item.gId === "PACK" && item.gIx === 6 && item.d && typeof item.d === "string") {
+          const ref = this.getRefFromString(item.d);
 
           if (ref) {
             bpRefs.push(ref);
           }
-        } else if (
-          item.generatorId === "PACK" &&
-          item.generatorIndex === 16 &&
-          item.data &&
-          typeof item.data === "string"
-        ) {
-          const ref = this.getRefFromString(item.data);
+        } else if (item.gId === "PACK" && item.gIx === 16 && item.d && typeof item.d === "string") {
+          const ref = this.getRefFromString(item.d);
 
           if (ref) {
             rpRefs.push(ref);
@@ -180,7 +178,7 @@ export default class Pack {
       }
     }
 
-    const packRef: IPackReferenceSet = {
+    const packRef: IPackageReference = {
       name: this.name,
       hash: this.data?.sourceHash,
       behaviorPackReferences: bpRefs,
@@ -226,8 +224,8 @@ export default class Pack {
     if (
       (packBaseName.toLowerCase() === packName &&
         (isWorldFocused === undefined ||
-          (isWorldFocused === true && (this.type === PackType.world || this.type === PackType.worldTemplate)) ||
-          (isWorldFocused === false && this.type !== PackType.world && this.type !== PackType.worldTemplate))) ||
+          (isWorldFocused === true && (this.type === PackageType.world || this.type === PackageType.worldTemplate)) ||
+          (isWorldFocused === false && this.type !== PackageType.world && this.type !== PackageType.worldTemplate))) ||
       packCoreName === packName
     ) {
       return true;

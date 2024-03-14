@@ -1,3 +1,7 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+import IContextIndexData from "../core/IContentIndexData";
 import IInfoItemData from "./IInfoItemData";
 import IProjectInfo from "./IProjectInfo";
 
@@ -14,6 +18,7 @@ export default interface IProjectInfoData {
   sourceHash?: string;
   sourceName?: string;
   suite?: number;
+  index?: IContextIndexData;
   generatorName?: string;
   generatorVersion?: string;
 }

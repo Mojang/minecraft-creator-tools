@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Carto from "../app/Carto";
 import IPlayerTravelledEvent from "./IPlayerTravelledEvent";
 import Location from "./Location";

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "./ProjectInfoItem";
 import Project from "../app/Project";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
@@ -6,12 +9,18 @@ import { InfoItemType } from "./IInfoItemData";
 import { MaxItemTypes } from "../app/IProjectItemData";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
+import ContentIndex from "../core/ContentIndex";
 
 export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
   id = "ITEMS";
   title = "Minimum Definition of a Pack";
 
   getTopicData(topicId: number) {
+    if (topicId > 100 && topicId < 100 + MaxItemTypes) {
+      return {
+        title: ProjectItemUtilities.getDescriptionForType(topicId - 100) + " count",
+      };
+    }
     return {
       title: topicId.toString(),
     };
@@ -45,7 +54,7 @@ export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
     );
   }
 
-  async generate(project: Project): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
     const typeCounts: number[] = [];
 

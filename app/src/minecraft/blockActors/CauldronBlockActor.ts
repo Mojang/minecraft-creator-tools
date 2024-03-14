@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import BlockActor from "./BlockActor";
 import { InventoryItem } from "../Items";
 
