@@ -14,6 +14,8 @@ import axios from "axios";
 import ProjectInfoSet from "./ProjectInfoSet";
 import Utilities from "../core/Utilities";
 import ContentIndex from "../core/ContentIndex";
+import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
+import ProjectItemUtilities from "../app/ProjectItemUtilities";
 
 export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "JSON";
@@ -41,6 +43,7 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
   async loadSchema(uri: string) {
     console.log("Retrieving " + uri);
     const res = await axios.get(CartoApp.contentRoot + uri);
+
     console.log("Loading error: " + JSON.stringify(res.data));
     return res.data;
   }
@@ -54,61 +57,86 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
       if (schemaPath) {
         let val = this._validatorsByPath[schemaPath];
 
-        if (!val) {
-          const schemaContents = await Database.getSchema(schemaPath);
-          if (schemaContents) {
-            const ajv = new Ajv({
-              allErrors: true,
-              loadSchema: this.loadSchema,
-              strict: false,
-              unicodeRegExp: false,
-              verbose: true,
-            });
+        let verIsCurrent = await MinecraftDefinitions.formatVersionIsCurrent(projectItem);
 
-            ajv.addFormat("uuid", this.testUuid);
-            ajv.addFormat("uri", this.testUri);
-            ajv.addFormat("color-hex", this.testUnknownFormat);
-            ajv.addFormat("colox-hex", this.testUnknownFormat);
-            ajv.addFormat("molang", this.testUnknownFormat);
+        if (verIsCurrent) {
+          if (!val) {
+            const schemaContents = await Database.getSchema(schemaPath);
 
-            val = ajv.compile(schemaContents);
+            if (schemaContents) {
+              const ajv = new Ajv({
+                allErrors: true,
+                loadSchema: this.loadSchema,
+                strict: false,
+                unicodeRegExp: false,
+                verbose: true,
+              });
 
-            this._validatorsByPath[schemaPath] = val;
-            this._schemaContentByPath[schemaPath] = schemaContents;
+              ajv.addFormat("uuid", this.testUuid);
+              ajv.addFormat("uri", this.testUri);
+              ajv.addFormat("color-hex", this.testUnknownFormat);
+              ajv.addFormat("colox-hex", this.testUnknownFormat);
+              ajv.addFormat("molang", this.testUnknownFormat);
+
+              val = ajv.compile(schemaContents);
+
+              this._validatorsByPath[schemaPath] = val;
+              this._schemaContentByPath[schemaPath] = schemaContents;
+            }
           }
-        }
 
-        if (val) {
-          let content = projectItem.file.content;
-          let contentObj = undefined;
+          if (val) {
+            let content = projectItem.file.content;
+            let contentObj = undefined;
 
-          content = Utilities.fixJsonContent(content);
+            content = Utilities.fixJsonContent(content);
 
-          try {
-            contentObj = JSON.parse(content);
-          } catch (e: any) {
-            let errorMess: any = e;
+            try {
+              contentObj = JSON.parse(content);
+            } catch (e: any) {
+              let errorMess: any = e;
 
-            if (e.message) {
-              errorMess = e.message;
+              if (e.message) {
+                errorMess = e.message;
+              }
+
+              items.push(
+                new ProjectInfoItem(InfoItemType.error, this.id, 1, "Could not parse JSON - " + errorMess, projectItem)
+              );
             }
 
-            items.push(
-              new ProjectInfoItem(InfoItemType.error, this.id, 1, "Could not parse JSON - " + errorMess, projectItem)
-            );
-          }
+            if (contentObj) {
+              const result = val(contentObj);
 
-          if (contentObj) {
-            const result = val(contentObj);
+              if (!result && val.errors) {
+                for (let i = 0; i < val.errors.length; i++) {
+                  const err = val.errors[i];
 
-            if (!result && val.errors) {
-              for (let i = 0; i < val.errors.length; i++) {
-                const err = val.errors[i];
-
-                this.addError(items, projectItem, err);
+                  this.addError(items, projectItem, err);
+                }
               }
             }
           }
+        } else {
+          let fvStr = "";
+
+          const fv = await MinecraftDefinitions.getFormatVersion(projectItem);
+
+          if (fv) {
+            fvStr = " (is at " + fv.join(".") + ")";
+          }
+
+          items.push(
+            new ProjectInfoItem(
+              InfoItemType.info,
+              this.id,
+              1100 + projectItem.itemType,
+              ProjectItemUtilities.getDescriptionForType(projectItem.itemType) +
+                " is not at a current format version" +
+                fvStr,
+              projectItem
+            )
+          );
         }
       }
     }
@@ -202,6 +230,7 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
   }
 
   testUri(uriString: string) {
-    return true;
+    // could get much more sophisticated here...
+    return uriString.indexOf("://") >= 0;
   }
 }

@@ -8,6 +8,7 @@ import Database from "../minecraft/Database";
 import DataFormUtilities from "../dataform/DataFormUtilities";
 import ComponentSetEditor from "./ComponentSetEditor";
 import { ThemeInput } from "@fluentui/styles";
+import BlockTypeBehaviorDefinition from "../minecraft/BlockTypeBehaviorDefinition";
 
 interface IBlockTypeEditorProps extends IFileProps {
   heightOffset: number;
@@ -70,7 +71,7 @@ export default class BlockTypeEditor
       if (this.state.fileToEdit !== this._lastFileEdited) {
         this._lastFileEdited = this.state.fileToEdit;
 
-        await BlockType.ensureBlockTypeOnFile(this.state.fileToEdit, this._handleBlockTypeLoaded);
+        await BlockTypeBehaviorDefinition.ensureOnFile(this.state.fileToEdit, this._handleBlockTypeLoaded);
       }
     }
 
@@ -85,7 +86,7 @@ export default class BlockTypeEditor
     }
   }
 
-  _handleBlockTypeLoaded(blockType: BlockType, typeA: BlockType) {
+  _handleBlockTypeLoaded(blockType: BlockTypeBehaviorDefinition, typeA: BlockTypeBehaviorDefinition) {
     this._doUpdate(true);
   }
 

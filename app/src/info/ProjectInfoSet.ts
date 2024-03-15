@@ -707,7 +707,7 @@ function _addReportJson(data) {
       }
     
     
-      for (const i=0; i<_reportObjects.length; i++) {
+      for (let i=0; i<_reportObjects.length; i++) {
         document.write("<h3>Items</h3>");
         document.write("<table class='items-table'>");
         const info = _reportObjects[i].info;

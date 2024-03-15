@@ -4,16 +4,17 @@
 import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import IBehaviorAnimationControllerDefinition, {
+import IBehaviorAnimationControllerWrapper, {
   IBehaviorAnimationControllerStateWrapper,
 } from "./IBehaviorAnimationController";
+import MinecraftUtilities from "./MinecraftUtilities";
 
 export default class BehaviorAnimationController {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
 
-  public definition?: IBehaviorAnimationControllerDefinition;
+  public wrapper?: IBehaviorAnimationControllerWrapper;
 
   private _onLoaded = new EventDispatcher<BehaviorAnimationController, BehaviorAnimationController>();
 
@@ -31,6 +32,24 @@ export default class BehaviorAnimationController {
 
   public get onLoaded() {
     return this._onLoaded.asEvent();
+  }
+
+  public async getFormatVersionIsCurrent() {
+    const fv = this.getFormatVersion();
+
+    if (fv === undefined || fv.length !== 3) {
+      return false;
+    }
+
+    return fv[0] > 1 || fv[1] >= 10;
+  }
+
+  public getFormatVersion(): number[] | undefined {
+    if (!this.wrapper) {
+      return undefined;
+    }
+
+    return MinecraftUtilities.getVersionArrayFrom(this.wrapper.format_version);
   }
 
   static async ensureOnFile(
@@ -63,9 +82,9 @@ export default class BehaviorAnimationController {
   getAllStates() {
     const states: IBehaviorAnimationControllerStateWrapper[] = [];
 
-    if (this.definition && this.definition.animation_controllers) {
-      for (const acName in this.definition.animation_controllers) {
-        const ac = this.definition.animation_controllers[acName];
+    if (this.wrapper && this.wrapper.animation_controllers) {
+      for (const acName in this.wrapper.animation_controllers) {
+        const ac = this.wrapper.animation_controllers[acName];
 
         if (ac && ac.states) {
           for (const stateName in ac.states) {
@@ -91,14 +110,14 @@ export default class BehaviorAnimationController {
       return;
     }
 
-    const pjString = JSON.stringify(this.definition, null, 2);
+    const pjString = JSON.stringify(this.wrapper, null, 2);
 
     this._file.setContent(pjString);
   }
 
   public ensureDefinition(name: string, description: string) {
-    if (!this.definition) {
-      this.definition = {
+    if (!this.wrapper) {
+      this.wrapper = {
         format_version: "1.12.0",
         animation_controllers: {},
       };
@@ -126,7 +145,7 @@ export default class BehaviorAnimationController {
       return;
     }
 
-    this.definition = StorageUtilities.getJsonObject(this._file);
+    this.wrapper = StorageUtilities.getJsonObject(this._file);
 
     this._isLoaded = true;
   }

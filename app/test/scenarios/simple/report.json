@@ -249,6 +249,9 @@
         },
         "3": {
           "defaultMessage": "Commands"
+        },
+        "4": {
+          "defaultMessage": "Execute Sub Commands"
         }
       },
       "PATHLENGTH": {
@@ -605,6 +608,12 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/behavior_packs/StarterTestsTutorial/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
       "gIx": 1,
       "p": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
     },
@@ -618,6 +627,12 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 3,
+      "p": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
       "p": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
     },
     {

@@ -29,7 +29,7 @@ export default class FlipbookTextureCatalogDefinition {
     this._file = newFile;
   }
 
-  static async ensureFlipbookTextureCatalogDefinitionOnFile(
+  static async ensureOnFile(
     file: IFile,
     loadHandler?: IEventHandler<FlipbookTextureCatalogDefinition, FlipbookTextureCatalogDefinition>
   ) {

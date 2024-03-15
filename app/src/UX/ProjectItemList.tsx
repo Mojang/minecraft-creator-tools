@@ -922,15 +922,69 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     typeColor.alpha = 0.3;
 
     if (this.props.readOnly) {
+      const itemItems = [];
+
+      let issues: ProjectInfoItem[] | undefined = undefined;
+
+      if (this.props.allInfoSet && this.props.allInfoSetGenerated && projectItem.storagePath) {
+        issues = this.props.allInfoSet.getItemsByStoragePath(projectItem.storagePath);
+        if (issues?.length === 0) {
+          issues = undefined;
+        }
+      }
+
+      if (sourceImage !== "") {
+        itemItems.push(
+          <span
+            style={{
+              gridColumn: issues ? 3 : 4,
+              backgroundImage: sourceImage,
+              backgroundSize: "cover",
+            }}
+          >
+            &#160;
+          </span>
+        );
+      }
+
+      let nameSpan = 1;
+
+      if (issues) {
+        let errorMessage = "";
+
+        for (const issue of issues) {
+          errorMessage += issue.message + "\r\n";
+        }
+
+        itemItems.push(
+          <span className="pil-itemIndicatorRO" title={errorMessage} key={"pil-ii" + projectItem.storagePath}>
+            {issues.length}
+          </span>
+        );
+      } else {
+        nameSpan++;
+      }
+
+      if (sourceImage === "") {
+        nameSpan++;
+      }
+
       this._projectListItems.push({
         content: (
           <div className="pil-item" key={"ro" + projectItem.storagePath}>
             <div className="pil-itemTypeTag" style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}>
               &#160;
             </div>
-            <span className="pil-itemLabel">
+            <span
+              className="pil-itemLabel"
+              style={{
+                gridColumnStart: 2,
+                gridColumnEnd: 2 + nameSpan,
+              }}
+            >
               <span className="pil-name">{name}</span>
             </span>
+            {itemItems}
           </div>
         ),
       });

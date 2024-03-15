@@ -762,6 +762,9 @@ export default class ProjectItemUtilities {
       case ProjectItemType.lightingJson:
         return ["lighting"];
 
+      case ProjectItemType.tickJson:
+        return ["functions"];
+
       case ProjectItemType.uiTexture:
         return ["textures", "ui"];
       case ProjectItemType.texture:

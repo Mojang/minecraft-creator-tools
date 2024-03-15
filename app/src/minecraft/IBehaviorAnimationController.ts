@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-export default interface IBehaviorAnimationControllerDefinition {
+export default interface IBehaviorAnimationControllerWrapper {
   format_version: string;
   __comment__?: string;
   animation_controllers: IBehaviorAnimationControllerSet;

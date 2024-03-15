@@ -5,6 +5,7 @@ import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import IResourceAnimationControllerDefinition from "./IResourceAnimationController";
+import MinecraftUtilities from "./MinecraftUtilities";
 
 export default class ResourceAnimationController {
   private _file?: IFile;
@@ -28,6 +29,24 @@ export default class ResourceAnimationController {
 
   public get onLoaded() {
     return this._onLoaded.asEvent();
+  }
+
+  public async getFormatVersionIsCurrent() {
+    const fv = this.getFormatVersion();
+
+    if (fv === undefined || fv.length !== 3) {
+      return false;
+    }
+
+    return fv[0] > 1 || fv[1] >= 10;
+  }
+
+  public getFormatVersion(): number[] | undefined {
+    if (!this.definition) {
+      return undefined;
+    }
+
+    return MinecraftUtilities.getVersionArrayFrom(this.definition.format_version);
   }
 
   static async ensureOnFile(

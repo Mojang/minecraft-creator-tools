@@ -121,6 +121,15 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     const commandsPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 3, "Commands", projectItem);
     items.push(commandsPi);
 
+    const subCommandsPi = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      4,
+      "Execute Sub Commands",
+      projectItem
+    );
+    items.push(subCommandsPi);
+
     if (projectItem.itemType === ProjectItemType.dialogueBehaviorJson) {
       await projectItem.ensureFileStorage();
 
@@ -153,7 +162,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       if (projectItem.file) {
         const acManifest = await BehaviorAnimationController.ensureOnFile(projectItem.file);
 
-        if (acManifest && acManifest.definition && acManifest.definition.animation_controllers) {
+        if (acManifest && acManifest.wrapper && acManifest.wrapper.animation_controllers) {
           let states = acManifest.getAllStates();
 
           for (const state of states) {
@@ -173,7 +182,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       if (projectItem.file) {
         const animManifest = await BehaviorAnimation.ensureOnFile(projectItem.file);
 
-        if (animManifest && animManifest.definition && animManifest.definition.animations) {
+        if (animManifest && animManifest.wrapper && animManifest.wrapper.animations) {
           let timelines = animManifest.getAllTimeline();
 
           for (const timeline of timelines) {
@@ -321,7 +330,20 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                             )
                           );
                         }
+
                         commandsPi.incrementFeature(command.name);
+
+                        if (command.name === "execute") {
+                          let foundRun = false;
+                          for (const arg in command.commandArguments) {
+                            if (arg === "run") {
+                              foundRun = true;
+                            } else if (foundRun && CommandRegistry.isMinecraftBuiltInCommand(arg)) {
+                              subCommandsPi.incrementFeature(arg);
+                              break;
+                            }
+                          }
+                        }
                       } else {
                         items.push(
                           new ProjectInfoItem(

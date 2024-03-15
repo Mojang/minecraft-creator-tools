@@ -145,7 +145,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         if (projectItem.file) {
           const particleEffect = await ParticleEffectResourceDefinition.ensureOnFile(projectItem.file);
 
-          const desc = particleEffect?.particleEffectWrapper?.particle_effect.description;
+          const desc = particleEffect?.wrapper?.particle_effect.description;
 
           if (desc) {
             if (desc.identifier && desc.basic_render_parameters?.texture) {
@@ -251,8 +251,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         await projectItem.ensureFileStorage();
 
         if (projectItem.file) {
-          const flipbookTexturesCat =
-            await FlipbookTextureCatalogDefinition.ensureFlipbookTextureCatalogDefinitionOnFile(projectItem.file);
+          const flipbookTexturesCat = await FlipbookTextureCatalogDefinition.ensureOnFile(projectItem.file);
 
           if (flipbookTexturesCat && flipbookTexturesCat && flipbookTexturesCat.flipbookTextures) {
             const pathId = projectItem.file.storageRelativePath + "_flipbooktextures";

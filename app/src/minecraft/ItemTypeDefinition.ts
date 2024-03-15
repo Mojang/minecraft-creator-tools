@@ -11,15 +11,17 @@ import IItemTypeWrapper from "./IItemTypeWrapper";
 import { ManagedComponent } from "./ManagedComponent";
 import IManagedComponent from "./IManagedComponent";
 import StorageUtilities from "../storage/StorageUtilities";
+import Database from "./Database";
+import MinecraftUtilities from "./MinecraftUtilities";
 
 export default class ItemTypeDefinition implements IManagedComponentSetItem {
-  private _behaviorPackData: IItemTypeWrapper | null = null;
+  private wrapper: IItemTypeWrapper | null = null;
   private _behaviorPackFile?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
   private _managed: { [id: string]: IManagedComponent | undefined } = {};
 
-  public behaviorPackDefinition?: IItemTypeBehaviorPack;
+  public data?: IItemTypeBehaviorPack;
 
   private _onLoaded = new EventDispatcher<ItemTypeDefinition, ItemTypeDefinition>();
 
@@ -75,13 +77,31 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
     return undefined;
   }
 
+  public async getFormatVersionIsCurrent() {
+    const fv = this.getFormatVersion();
+
+    if (fv === undefined || fv.length !== 3) {
+      return false;
+    }
+
+    return await Database.isRecentVersionFromVersionArray(fv);
+  }
+
+  public getFormatVersion(): number[] | undefined {
+    if (!this.wrapper) {
+      return undefined;
+    }
+
+    return MinecraftUtilities.getVersionArrayFrom(this.wrapper.format_version);
+  }
+
   getComponent(id: string) {
-    if (this.behaviorPackDefinition === undefined) {
+    if (this.data === undefined) {
       return undefined;
     }
 
     if (!this._managed[id]) {
-      const comp = this.behaviorPackDefinition.components[id];
+      const comp = this.data.components[id];
       if (comp) {
         this._managed[id] = new ManagedComponent(id, comp);
       }
@@ -103,8 +123,8 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
   getComponents(): IManagedComponent[] {
     const componentSet: IManagedComponent[] = [];
 
-    if (this.behaviorPackDefinition !== undefined) {
-      for (const componentName in this.behaviorPackDefinition.components) {
+    if (this.data !== undefined) {
+      for (const componentName in this.data.components) {
         const component = this.getComponent(componentName);
 
         if (component !== undefined) {
@@ -119,7 +139,7 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
   addComponent(id: string, component: IManagedComponent) {
     this._ensureBehaviorPackDataInitialized();
 
-    const bpData = this.behaviorPackDefinition as IItemTypeBehaviorPack;
+    const bpData = this.data as IItemTypeBehaviorPack;
 
     bpData.components[id] = component.getData();
     this._managed[id] = component;
@@ -128,16 +148,16 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
   }
 
   removeComponent(id: string) {
-    if (this.behaviorPackDefinition === undefined) {
+    if (this.data === undefined) {
       return;
     }
 
     const newBehaviorPacks: { [name: string]: IComponent | string | number | undefined } = {};
     const newManagedComponents: { [name: string]: IManagedComponent | undefined } = {};
 
-    for (const name in this.behaviorPackDefinition.components) {
+    for (const name in this.data.components) {
       if (name !== id) {
-        const component = this.behaviorPackDefinition.components[name];
+        const component = this.data.components[name];
 
         newBehaviorPacks[name] = component;
       }
@@ -149,13 +169,13 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
       }
     }
 
-    this.behaviorPackDefinition.components = newBehaviorPacks;
+    this.data.components = newBehaviorPacks;
     this._managed = newManagedComponents;
   }
 
   _ensureBehaviorPackDataInitialized() {
-    if (this.behaviorPackDefinition === undefined) {
-      this.behaviorPackDefinition = {
+    if (this.data === undefined) {
+      this.data = {
         description: {
           identifier: "unknown",
         },
@@ -165,7 +185,7 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
     }
   }
 
-  static async ensureItemTypeOnFile(file: IFile, loadHandler?: IEventHandler<ItemTypeDefinition, ItemTypeDefinition>) {
+  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<ItemTypeDefinition, ItemTypeDefinition>) {
     let itt: ItemTypeDefinition | undefined = undefined;
 
     if (file.manager === undefined) {
@@ -194,7 +214,7 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
       return;
     }
 
-    const bpString = JSON.stringify(this._behaviorPackData, null, 2);
+    const bpString = JSON.stringify(this.wrapper, null, 2);
 
     this._behaviorPackFile.setContent(bpString);
   }
@@ -210,14 +230,14 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
       return;
     }
 
-    this._behaviorPackData = StorageUtilities.getJsonObject(this._behaviorPackFile);
+    this.wrapper = StorageUtilities.getJsonObject(this._behaviorPackFile);
 
-    if (this._behaviorPackData) {
-      const entity = (this._behaviorPackData as any)["minecraft:entity"];
+    if (this.wrapper) {
+      const item = (this.wrapper as any)["minecraft:item"];
 
-      this.id = entity.description.identifier;
+      this.id = item.description.identifier;
 
-      this.behaviorPackDefinition = entity;
+      this.data = item;
     }
 
     this._isLoaded = true;

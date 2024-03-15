@@ -64,7 +64,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
       if (this.state.fileToEdit !== this._lastFileEdited) {
         this._lastFileEdited = this.state.fileToEdit;
 
-        await ItemTypeDefinition.ensureItemTypeOnFile(this.state.fileToEdit, this._handleItemTypeLoaded);
+        await ItemTypeDefinition.ensureOnFile(this.state.fileToEdit, this._handleItemTypeLoaded);
       }
     }
 
@@ -133,7 +133,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
 
     const et = this.state.fileToEdit.manager as ItemTypeDefinition;
 
-    if (et.behaviorPackDefinition === undefined) {
+    if (et.data === undefined) {
       return <div>Loading behavior pack...</div>;
     }
 

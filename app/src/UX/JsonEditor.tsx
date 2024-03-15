@@ -17,7 +17,6 @@ interface IJsonEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
   theme: ThemeInput<any>;
-
   preferredTextSize: number;
   item: ProjectItem;
   onUpdatePreferredTextSize: (newSize: number) => void;
@@ -158,7 +157,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
   }
 
   async persist() {
-    if (this.editor !== undefined && this.state.fileToEdit) {
+    if (this.editor !== undefined && this.state.fileToEdit && !this.props.readOnly) {
       this._needsPersistence = false;
 
       const value = this.editor.getValue();
@@ -238,6 +237,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
             options={{
               fontSize: this.props.preferredTextSize,
               readOnly: this.props.readOnly,
+              renderValidationDecorations: "on",
             }}
             path={coreUri}
             beforeMount={this._handleEditorWillMount}

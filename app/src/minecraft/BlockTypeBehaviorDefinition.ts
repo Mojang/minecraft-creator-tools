@@ -4,11 +4,10 @@
 import BlockBaseType from "./BlockBaseType";
 import { BlockRenderType } from "./BlockRenderType";
 import IBlockTypeData from "./IBlockTypeData";
-import IJavaBlockTypeData from "./IJavaBlockTypeData";
 import MinecraftUtilities from "./MinecraftUtilities";
 import Database from "./Database";
 import Utilities from "../core/Utilities";
-import { EventDispatcher } from "ste-events";
+import { EventDispatcher, IEventHandler } from "ste-events";
 import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import IComponent from "./IComponent";
@@ -19,74 +18,10 @@ import IManagedComponent from "./IManagedComponent";
 import { ManagedComponent } from "./ManagedComponent";
 import StorageUtilities from "../storage/StorageUtilities";
 
-const BLOCK_TYPE_MATERIALS = [
-  "bone",
-  "cobblestone",
-  "stone",
-  "andesite",
-  "bedrock",
-  "blackstone",
-  "basalt",
-  "acacia",
-  "oak",
-  "gold",
-  "jungle",
-  "birch",
-  "big_oak",
-  "spruce",
-  "bamboo",
-  "chiseled_nether_bricks",
-  "chiseled_polished_blackstone_brick",
-  "cracked_netherbricks",
-  "cracked_polishedblackstone_bricks",
-  "end_brick",
-  "wood",
-  "purpur",
-  "brick",
-  "blue",
-  "black",
-  "brown",
-  "cyan",
-  "gray",
-  "light_blue",
-  "lime",
-  "magenta",
-  "orange",
-  "pink",
-  "purple",
-  "red",
-  "silver",
-  "white",
-  "yellow",
-  "fern",
-  "grass",
-  "paeonia",
-  "rose",
-  "rose_blue",
-  "sunflower",
-  "syringa",
-  "allium",
-  "blue_orchid",
-  "cornflower",
-  "dandelion",
-  "houstonia",
-  "lily_of_the_valley",
-  "oxeye_daisy",
-  "orange_tulip",
-  "pink_tulip",
-  "red_tulip",
-  "white_tulip",
-  "dark_oak",
-  "blue_ice",
-  "frosted_ice",
-  "ice",
-];
-
-export default class BlockType implements IManagedComponentSetItem {
+export default class BlockTypeBehaviorDefinition implements IManagedComponentSetItem {
   private _typeId = "";
 
   public data: IBlockTypeData;
-  public javaData: IJavaBlockTypeData | null;
 
   private _baseType?: BlockBaseType;
   private _baseTypeId = "";
@@ -100,11 +35,11 @@ export default class BlockType implements IManagedComponentSetItem {
 
   public behaviorPackBlockTypeDef?: IBlockTypeBehaviorPack;
   private _managed: { [id: string]: IManagedComponent | undefined } = {};
-  private _onLoaded = new EventDispatcher<BlockType, BlockType>();
+  private _onLoaded = new EventDispatcher<BlockTypeBehaviorDefinition, BlockTypeBehaviorDefinition>();
 
-  private _onComponentAdded = new EventDispatcher<BlockType, IManagedComponent>();
-  private _onComponentRemoved = new EventDispatcher<BlockType, string>();
-  private _onComponentChanged = new EventDispatcher<BlockType, IManagedComponent>();
+  private _onComponentAdded = new EventDispatcher<BlockTypeBehaviorDefinition, IManagedComponent>();
+  private _onComponentRemoved = new EventDispatcher<BlockTypeBehaviorDefinition, string>();
+  private _onComponentChanged = new EventDispatcher<BlockTypeBehaviorDefinition, IManagedComponent>();
 
   public get numericId() {
     return this.data.id;
@@ -128,6 +63,24 @@ export default class BlockType implements IManagedComponentSetItem {
     }
 
     return Database.defaultBlockBaseType;
+  }
+
+  public async getFormatVersionIsCurrent() {
+    const fv = this.getFormatVersion();
+
+    if (fv === undefined || fv.length !== 3) {
+      return false;
+    }
+
+    return await Database.isRecentVersionFromVersionArray(fv);
+  }
+
+  public getFormatVersion(): number[] | undefined {
+    if (!this._behaviorPackData) {
+      return undefined;
+    }
+
+    return MinecraftUtilities.getVersionArrayFrom(this._behaviorPackData.format_version);
   }
 
   public set baseType(baseType: BlockBaseType) {
@@ -175,7 +128,6 @@ export default class BlockType implements IManagedComponentSetItem {
 
   constructor(name: string) {
     this._typeId = name;
-    this.javaData = null;
 
     this.data = {
       name: name,
@@ -184,162 +136,6 @@ export default class BlockType implements IManagedComponentSetItem {
     if (name.indexOf(":") >= 0 && !name.startsWith("minecraft:")) {
       this._isCustom = true;
     }
-
-    const baseTypeShort = MinecraftUtilities.canonicalizeName(name);
-
-    for (const material of BLOCK_TYPE_MATERIALS) {
-      if (baseTypeShort.indexOf(material) >= 0) {
-        this._material = material;
-        break;
-      }
-    }
-  }
-
-  getIcon(): string {
-    const icon = this.icon;
-
-    if (icon === undefined) {
-      return this.shortTypeName;
-    }
-
-    const typeName = MinecraftUtilities.canonicalizeName(this.shortTypeName);
-
-    const lastUnder = typeName.lastIndexOf("_");
-
-    let allButLast = typeName;
-
-    if (lastUnder >= 0) {
-      allButLast = allButLast.substring(0, lastUnder);
-    }
-
-    switch (icon) {
-      case "st_":
-        return "stone_" + allButLast;
-
-      case "le_":
-        return "leaves_acacia_carried";
-
-      case "pl_":
-        return "planks_" + allButLast;
-
-      case "_car":
-        return allButLast + "_carried";
-
-      case "plant_":
-        return typeName + "_fern_carried";
-      case "_":
-        return typeName;
-      case "_t":
-        return allButLast + "_top";
-
-      case "_br":
-        return allButLast + "_bricks";
-
-      case "_carr":
-        return typeName + "_carried";
-
-      case "_bl":
-        return allButLast + "_block";
-
-      case "_n":
-        return allButLast + "_normal";
-
-      case "_blt":
-        return allButLast + "_block_top";
-
-      case "mshblk":
-        const lastmb = allButLast.split("_");
-
-        return "mushroom_block_skin_" + lastmb[0];
-
-      case "ml_sm":
-        const lastml = allButLast.split("_");
-
-        return lastml[lastml.length - 2] + "_" + lastml[lastml.length - 1] + "_smooth";
-
-      case "l_blt":
-        const lastbt = allButLast.split("_");
-
-        return lastbt[lastbt.length - 1] + "_block_top";
-
-      case "|":
-        return allButLast;
-
-      case "|s":
-        return allButLast + "s";
-
-      case "l":
-        const last = allButLast.split("_");
-
-        return last[last.length - 1];
-
-      case "sb_":
-        const fu = allButLast.split("_");
-
-        return "stonebricks_" + fu[0];
-
-      case "st_l_sm":
-        const lasta = allButLast.split("_");
-
-        return "stone_" + lasta[lasta.length - 1] + "_smooth";
-
-      case "|rv":
-        // dark_prismarine_stairs => prismarine_dark_stairs
-        let result = "";
-
-        const rv = allButLast.split("_");
-
-        for (let i = rv.length - 1; i > 0; i--) {
-          if (result.length > 0) {
-            result += "_";
-          }
-
-          result += rv[i];
-        }
-
-        return result;
-
-      case "2rv":
-        // yellow_glazed_terracotta => glazed_terracotta_yellow
-        // dark_blue_glazed_terracotta => glazed_terracotta_dark_blue
-        let resultF = "";
-
-        const rvF = typeName.split("_");
-
-        if (rvF.length >= 2) {
-          resultF = rvF[rvF.length - 2] + "_" + rvF[rvF.length - 1];
-
-          for (let i = 0; i < rvF.length - 2; i++) {
-            resultF += "_" + rvF[i];
-          }
-        } else {
-          resultF = typeName;
-        }
-
-        return resultF;
-
-      case "rv":
-        // dark_prismarine => prismarine_dark
-        let resultA = "";
-
-        const rvA = typeName.split("_");
-
-        for (let i = rvA.length - 1; i >= 0; i--) {
-          if (resultA.length > 0) {
-            resultA += "_";
-          }
-
-          resultA += rvA[i];
-        }
-
-        return resultA;
-    }
-
-    if (this.icon !== undefined) {
-      return this.icon;
-    }
-
-    return this.shortTypeName;
   }
 
   public set id(newId: string | undefined) {
@@ -474,6 +270,33 @@ export default class BlockType implements IManagedComponentSetItem {
         events: {},
       };
     }
+  }
+
+  static async ensureOnFile(
+    file: IFile,
+    loadHandler?: IEventHandler<BlockTypeBehaviorDefinition, BlockTypeBehaviorDefinition>
+  ) {
+    let bt: BlockTypeBehaviorDefinition | undefined = undefined;
+
+    if (file.manager === undefined) {
+      bt = new BlockTypeBehaviorDefinition("custom:" + file.name);
+
+      bt.behaviorPackFile = file;
+
+      file.manager = bt;
+    }
+
+    if (file.manager !== undefined && file.manager instanceof BlockTypeBehaviorDefinition) {
+      bt = file.manager as BlockTypeBehaviorDefinition;
+
+      if (!bt.isLoaded && loadHandler) {
+        bt.onLoaded.subscribe(loadHandler);
+      }
+
+      await bt.load();
+    }
+
+    return bt;
   }
 
   persist() {

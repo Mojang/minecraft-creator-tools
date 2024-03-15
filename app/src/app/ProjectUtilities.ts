@@ -9,7 +9,6 @@ import Database from "../minecraft/Database";
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
 import { ProjectEditPreference, ProjectScriptLanguage } from "./IProjectData";
-import BlockType from "../minecraft/BlockType";
 import BehaviorManifestJson from "../minecraft/BehaviorManifestJson";
 import NpmPackageJson from "../devproject/NpmPackageJson";
 import ResourceManifestJson from "../minecraft/ResourceManifestJson";
@@ -18,6 +17,7 @@ import IGalleryProject from "./IGalleryProject";
 import IFolder from "../storage/IFolder";
 import ProjectItemUtilities from "./ProjectItemUtilities";
 import { PackType } from "../minecraft/Pack";
+import BlockTypeBehaviorDefinition from "../minecraft/BlockTypeBehaviorDefinition";
 
 export enum NewEntityTypeAddMode {
   baseId,
@@ -843,15 +843,15 @@ export default class ProjectUtilities {
 
       file.setContent(content);
 
-      const et = await BlockType.ensureBlockTypeOnFile(file, undefined);
+      const bt = await BlockTypeBehaviorDefinition.ensureOnFile(file, undefined);
 
-      if (et) {
-        et.id =
+      if (bt) {
+        bt.id =
           nextBlockTypeName.indexOf(":") >= 0
             ? nextBlockTypeName
             : project.effectiveDefaultNamespace + ":" + nextBlockTypeName;
 
-        await et.persist();
+        bt.persist();
       }
 
       await file.saveContent(true);

@@ -20,6 +20,33 @@ export default class MinecraftUtilities {
     return tokenName;
   }
 
+  static getVersionArrayFrom(ver: string | number | number[] | undefined) {
+    if (typeof ver === "number") {
+      return [ver];
+    }
+
+    if (typeof ver === "string") {
+      let fvArr = ver.split(".");
+
+      let fvArrInt: number[] = [];
+      for (let i = 0; i < fvArr.length; i++) {
+        try {
+          const num = parseInt(fvArr[i]);
+
+          if (isNaN(num)) {
+            return undefined;
+          }
+
+          fvArrInt.push(num);
+        } catch (e) {}
+      }
+
+      return fvArrInt;
+    }
+
+    return ver;
+  }
+
   static cleanUpScriptDescription(scriptDescription: string) {
     scriptDescription = Utilities.replaceAll(scriptDescription, "/*", "");
     scriptDescription = Utilities.replaceAll(scriptDescription, "*/\n", "");

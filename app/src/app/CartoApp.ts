@@ -163,6 +163,7 @@ export default class CartoApp {
     };
 
     if (CartoApp.projectsStorage !== null && CartoApp.prefsStorage !== null) {
+      // @ts-ignore
     } else if (typeof window !== "undefined") {
       CartoApp.prefsStorage = new BrowserStorage("mctprefs");
       CartoApp.projectsStorage = new BrowserStorage("mctprojects");
@@ -173,6 +174,7 @@ export default class CartoApp {
       CartoApp.packStorage = new BrowserStorage("mctpacks");
 
       CartoApp.generateCryptoRandomNumber = (toVal) => {
+        // @ts-ignore
         return window.crypto.getRandomValues(new Uint32Array(1))[0] % 16;
       };
     }
