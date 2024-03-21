@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Catalog from "./ICatalog";
 import axios from "axios";
 import BlockType from "./BlockType";
@@ -141,6 +144,36 @@ export default class Database {
     }
 
     return moduleDescriptor.latestRetailVersion;
+  }
+
+  static async isRecentVersionFromVersionArray(version: number[] | undefined) {
+    if (version === undefined || version.length !== 3) {
+      return false;
+    }
+
+    const ver = await this.getLatestVersionInfo(false);
+
+    if (!ver) {
+      return false;
+    }
+
+    const verArr = MinecraftUtilities.getVersionArrayFrom(ver);
+    if (!verArr || verArr.length < 3) {
+      return false;
+    }
+
+    const majorVersion = verArr[0];
+    const minorVersion = verArr[1];
+
+    if (version[0] < majorVersion) {
+      return false;
+    }
+
+    if (majorVersion === version[0] && minorVersion - version[1] > 1) {
+      return false;
+    }
+
+    return true;
   }
 
   static async getLatestVersionInfo(preview: boolean, force?: boolean) {

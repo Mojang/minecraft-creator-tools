@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IEntityTypeBehaviorPack from "./IEntityTypeBehaviorPack";
 import IEntityTypeWrapper from "./IEntityTypeWrapper";
 import IFile from "../storage/IFile";
@@ -11,6 +14,8 @@ import IManagedComponent from "./IManagedComponent";
 import { ManagedComponent } from "./ManagedComponent";
 import ManagedEvent from "./ManagedEvent";
 import StorageUtilities from "../storage/StorageUtilities";
+import Database from "./Database";
+import MinecraftUtilities from "./MinecraftUtilities";
 
 export default class EntityTypeDefinition implements IManagedComponentSetItem {
   public behaviorPackWrapper?: IEntityTypeWrapper;
@@ -66,31 +71,22 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem {
     this._id = newId;
   }
 
+  public async getFormatVersionIsCurrent() {
+    const fv = this.getFormatVersion();
+
+    if (fv === undefined || fv.length !== 3) {
+      return false;
+    }
+
+    return await Database.isRecentVersionFromVersionArray(fv);
+  }
+
   public getFormatVersion(): number[] | undefined {
     if (!this.behaviorPackWrapper) {
       return undefined;
     }
 
-    const fv = this.behaviorPackWrapper.format_version;
-
-    if (typeof fv === "number") {
-      return [fv];
-    }
-
-    if (typeof fv === "string") {
-      let fvarr = this.behaviorPackWrapper.format_version.split(".");
-
-      let fvarrInt: number[] = [];
-      for (let i = 0; i < fvarr.length; i++) {
-        try {
-          fvarrInt.push(parseInt(fvarr[i]));
-        } catch (e) {}
-      }
-
-      return fvarrInt;
-    }
-
-    return undefined;
+    return MinecraftUtilities.getVersionArrayFrom(this.behaviorPackWrapper.format_version);
   }
 
   public get shortId() {

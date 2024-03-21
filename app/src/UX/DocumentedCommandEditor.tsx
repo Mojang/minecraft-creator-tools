@@ -168,6 +168,7 @@ export default class DocumentedCommandEditor extends Component<
               id: "description",
               title: "Description",
               dataType: FieldDataType.longFormString,
+              validity: [{ comparison: "nonempty" }],
             },
           ],
         };

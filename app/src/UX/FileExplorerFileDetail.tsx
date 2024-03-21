@@ -7,12 +7,19 @@ import { faFile } from "@fortawesome/free-regular-svg-icons";
 import ItemAnnotationCollection from "./ItemAnnotationCollection";
 import { ItemAnnotationType } from "./ItemAnnotation";
 import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import IFolder from "../storage/IFolder";
+import { ThemeInput } from "@fluentui/react-northstar";
 
 interface IFileExplorerFileDetailProps {
   file: IFile;
   fileExplorer: FileExplorer;
   isExpandable?: boolean;
   isExpanded?: boolean;
+
+  onFileSelected?: (file: IFile) => void;
+  theme: ThemeInput<any>;
+
+  selectedItem: IFile | IFolder | undefined | null;
 
   itemAnnotations?: ItemAnnotationCollection;
   onExpandedSet?: (newExpandedValue: boolean) => void;
@@ -31,6 +38,13 @@ export default class FileExplorerFileDetail extends Component<
 
     this._handleCloseClick = this._handleCloseClick.bind(this);
     this._handleExpanderClick = this._handleExpanderClick.bind(this);
+    this._handleFileClick = this._handleFileClick.bind(this);
+  }
+
+  _handleFileClick() {
+    if (this.props.onFileSelected) {
+      this.props.onFileSelected(this.props.file);
+    }
   }
 
   _handleCloseClick() {
@@ -48,6 +62,12 @@ export default class FileExplorerFileDetail extends Component<
   render() {
     let outerCss = "fexfid-area";
     let title = "";
+
+    let backgroundColor = undefined;
+
+    if (this.props.selectedItem && this.props.selectedItem === this.props.file) {
+      backgroundColor = this.props.theme.siteVariables?.colorScheme.brand.background3;
+    }
 
     if (this.props.itemAnnotations) {
       for (const storageName in this.props.itemAnnotations) {
@@ -81,12 +101,14 @@ export default class FileExplorerFileDetail extends Component<
     }
 
     return (
-      <div className={outerCss} title={title}>
+      <div className={outerCss} title={title} style={{ backgroundColor: backgroundColor }}>
         {expandable}
-        <div className="fexfid-icon">
+        <div className="fexfid-icon" onClick={this._handleFileClick}>
           <FontAwesomeIcon icon={faFile} className="fa-lg" />
         </div>
-        <div className="fexfid-label">{this.props.file.name}</div>
+        <div className="fexfid-label" onClick={this._handleFileClick}>
+          {this.props.file.name}
+        </div>
       </div>
     );
   }

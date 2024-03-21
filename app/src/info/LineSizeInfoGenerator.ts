@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "./ProjectInfoItem";
 import Project from "../app/Project";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
@@ -7,10 +10,11 @@ import { MaxItemTypes } from "../app/IProjectItemData";
 import Utilities from "../core/Utilities";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
+import ContentIndex from "../core/ContentIndex";
 
 export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
   id = "LINESIZE";
-  title = "Line/Size Information";
+  title = "File Line/Size Information";
 
   getTopicData(topicId: number) {
     if (topicId >= 100) {
@@ -26,7 +30,7 @@ export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
-  async generate(project: Project): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
     const itemsByType: { [index: number]: ProjectInfoItem } = {};
     const lineSizeCounts: number[] = [];
@@ -42,13 +46,12 @@ export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
       if (itemsByType[pi.itemType] !== undefined) {
         projInfoItem = itemsByType[pi.itemType];
       } else {
-        projInfoItem = new ProjectInfoItem(
-          InfoItemType.featureAggregate,
-          this.id,
-          100 + pi.itemType,
-          "Linesize Complexity",
-          pi
-        );
+        const name =
+          ProjectItemUtilities.getDescriptionForType(pi.itemType) +
+          " file " +
+          (ProjectItemUtilities.isBinaryType(pi.itemType) ? "size" : "lines");
+
+        projInfoItem = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 100 + pi.itemType, name, pi);
         itemsByType[pi.itemType] = projInfoItem;
         items.push(projInfoItem);
       }
@@ -62,9 +65,9 @@ export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
           const content = file.content;
 
           if (content && content instanceof Uint8Array) {
-            projInfoItem.spectrumIntFeature("content-size", content.length);
+            projInfoItem.spectrumIntFeature("Size", content.length);
           } else if (content && typeof content === "string") {
-            projInfoItem.spectrumIntFeature("content-size", Utilities.countSignificantLines(content));
+            projInfoItem.spectrumIntFeature("Lines", Utilities.countSignificantLines(content));
           }
         }
       }

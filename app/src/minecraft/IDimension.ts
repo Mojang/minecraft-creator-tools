@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Block from "./Block";
 import BlockLocation from "./BlockLocation";
 import Entity from "./Entity";

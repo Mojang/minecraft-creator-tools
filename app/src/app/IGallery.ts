@@ -1,6 +1,8 @@
-import IGalleryProject from './IGalleryProject';
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
-export default interface IGallery
-{
-    projects: IGalleryProject[];
+import IGalleryProject from "./IGalleryProject";
+
+export default interface IGallery {
+  projects: IGalleryProject[];
 }

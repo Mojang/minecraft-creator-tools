@@ -14,6 +14,8 @@ interface ILocTokenBoxState {
 }
 
 export default class LocTokenBox extends Component<ILocTokenBoxProps, ILocTokenBoxState> {
+  _isMountedInternal = false;
+
   constructor(props: ILocTokenBoxProps) {
     super(props);
 
@@ -24,16 +26,30 @@ export default class LocTokenBox extends Component<ILocTokenBoxProps, ILocTokenB
       token: undefined,
     };
 
-    window.setTimeout(this._load, 1);
+    this._load();
   }
 
   async _load() {
     await this.props.project.loc.load();
     const tok = this.props.project.loc.getToken(this.props.value);
 
-    this.setState({
-      token: tok,
-    });
+    if (this._isMountedInternal) {
+      this.setState({
+        token: tok,
+      });
+    } else {
+      this.state = {
+        token: tok,
+      };
+    }
+  }
+
+  componentDidMount() {
+    this._isMountedInternal = true;
+  }
+
+  componentWillUnmount() {
+    this._isMountedInternal = false;
   }
 
   _handleClick() {}

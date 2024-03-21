@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Project from "./Project";
 import ProjectItem from "./ProjectItem";
 import MCWorld from "./../minecraft/MCWorld";
@@ -17,7 +20,7 @@ import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 
 export default class ProjectExporter {
-  static async getFlatBetaApisWorldWithPacksZip(carto: Carto, project: Project, name: string) {
+  static async generateFlatBetaApisWorldWithPacksZipBytes(carto: Carto, project: Project, name: string) {
     await Database.loadContent();
 
     if (Database.contentFolder === null) {
@@ -25,7 +28,7 @@ export default class ProjectExporter {
       return undefined;
     }
 
-    const mcworld = await this.getBetaApisWorldWithPacks(project, name);
+    const mcworld = await this.generateBetaApisWorldWithPacks(project, name);
 
     const newBytes = await mcworld.getBytes();
 
@@ -105,26 +108,22 @@ export default class ProjectExporter {
   }
 
   static async renameDefaultFolders(project: Project, newTokenName: string) {
-    await project.ensureDefaultBehaviorPackFolder(true);
-    const rp = await project.getDefaultResourcePackFolder(true);
+    const bpFolder = await project.getDefaultBehaviorPackFolder(true);
+    const rpFolder = await project.getDefaultResourcePackFolder(true);
 
     newTokenName = MinecraftUtilities.makeNameFolderSafe(newTokenName);
 
-    if (!project.defaultBehaviorPackFolder || !newTokenName) {
-      Log.error("Not configured correctly to create a project.");
-      return;
-    }
-    /*
-    temporarily refrain from renaming defaultbehaviorpackfolder until we auto-fix the gulpfile.
-    try {
-      await project.defaultBehaviorPackFolder.rename(newTokenName);
-    } catch (e) {
-      // perhaps folder could not be renamed because a folder exists; continue in this case.
-    }
-*/
-    if (rp) {
+    if (bpFolder) {
       try {
-        await rp.rename(newTokenName);
+        await bpFolder.rename(newTokenName);
+      } catch (e) {
+        // perhaps folder could not be renamed because a folder exists; continue in this case.
+      }
+    }
+
+    if (rpFolder) {
+      try {
+        await rpFolder.rename(newTokenName);
       } catch (e) {
         // perhaps folder could not be renamed because a folder exists; continue in this case.
       }
@@ -314,7 +313,6 @@ export default class ProjectExporter {
       return;
     }
 
-    await project.autoCompleteProject();
     await ProjectExporter.updateProjects(project);
 
     await project.save();
@@ -360,12 +358,14 @@ export default class ProjectExporter {
 
     await bpGroupFolder.ensureExists();
 
-    if (project.defaultBehaviorPackFolder) {
-      const bpTargetFolder = bpGroupFolder.ensureFolder("test1");
+    const bpFolder = await project.getDefaultBehaviorPackFolder();
+
+    if (bpFolder) {
+      const bpTargetFolder = bpGroupFolder.ensureFolder(bpFolder.name);
 
       await bpTargetFolder.ensureExists();
 
-      await StorageUtilities.syncFolderTo(project.defaultBehaviorPackFolder, bpTargetFolder, true, true, false, [
+      await StorageUtilities.syncFolderTo(bpFolder, bpTargetFolder, true, true, false, [
         "mcworlds",
         "db",
         "level.dat",
@@ -384,11 +384,12 @@ export default class ProjectExporter {
       Log.debugAlert("Could not build new world.");
       return;
     }
-    if (project.defaultBehaviorPackFolder) {
+
+    if (bpFolder) {
       newMcWorld.ensureBehaviorPack(
         project.defaultBehaviorPackUniqueId,
         project.defaultBehaviorPackVersion,
-        project.defaultBehaviorPackFolder.name
+        bpFolder.name
       );
     }
 
@@ -413,6 +414,8 @@ export default class ProjectExporter {
     const pur = new ProjectUpdateRunner(project);
 
     await pur.updateProject(["SCRIPTMODULE"]);
+
+    //project.autoCompleteProject();
   }
 
   static async generateProjectWorld(
@@ -425,7 +428,6 @@ export default class ProjectExporter {
       "Generating project '" + project.name + "' plus world and packs."
     );
 
-    await project.autoCompleteProject();
     await ProjectExporter.updateProjects(project);
 
     await project.save();
@@ -455,16 +457,18 @@ export default class ProjectExporter {
 
     await mcworld.applyWorldSettings(worldSettings);
 
-    if (project.defaultBehaviorPackFolder) {
+    const behaviorPackFolder = await project.getDefaultBehaviorPackFolder();
+
+    if (behaviorPackFolder) {
       const bpGroupFolder = targetFolder.ensureFolder("behavior_packs");
 
       await bpGroupFolder.ensureExists();
 
-      const bpTargetFolder = bpGroupFolder.ensureFolder("test1");
+      const bpTargetFolder = bpGroupFolder.ensureFolder(behaviorPackFolder.name);
 
       await bpTargetFolder.ensureExists();
 
-      await StorageUtilities.syncFolderTo(project.defaultBehaviorPackFolder, bpTargetFolder, true, true, false, [
+      await StorageUtilities.syncFolderTo(behaviorPackFolder, bpTargetFolder, true, true, false, [
         "mcworlds",
         "db",
         "level.dat",
@@ -477,20 +481,22 @@ export default class ProjectExporter {
       mcworld.ensureBehaviorPack(
         project.defaultBehaviorPackUniqueId,
         project.defaultBehaviorPackVersion,
-        project.defaultBehaviorPackFolder.name
+        behaviorPackFolder.name
       );
     }
 
-    if (project.defaultResourcePackFolder) {
+    const resourcePackFolder = await project.getDefaultResourcePackFolder();
+
+    if (resourcePackFolder) {
       const rpGroupFolder = targetFolder.ensureFolder("resource_packs");
 
       await rpGroupFolder.ensureExists();
 
-      const rpTargetFolder = rpGroupFolder.ensureFolder("test1");
+      const rpTargetFolder = rpGroupFolder.ensureFolder(resourcePackFolder.name);
 
       await rpTargetFolder.ensureExists();
 
-      await StorageUtilities.syncFolderTo(project.defaultResourcePackFolder, rpTargetFolder, true, true, false, [
+      await StorageUtilities.syncFolderTo(resourcePackFolder, rpTargetFolder, true, true, false, [
         "mcworlds",
         "db",
         "level.dat",
@@ -503,7 +509,7 @@ export default class ProjectExporter {
       mcworld.ensureResourcePack(
         project.defaultResourcePackUniqueId,
         project.defaultResourcePackVersion,
-        project.defaultResourcePackFolder.name
+        resourcePackFolder.name
       );
     }
 
@@ -522,15 +528,17 @@ export default class ProjectExporter {
     return mcworld;
   }
 
-  static async generateAndDeployProjectToWorld(
+  static async deployProjectAndGeneratedWorldTo(
     carto: Carto,
     project: Project,
     worldSettings: IWorldSettings,
-    deployFolder?: IFolder
+    deployFolder: IFolder
   ) {
     const operId = await carto.notifyOperationStarted(
       "Deploying project '" + project.name + "' plus world and test assets."
     );
+
+    await project.ensureLoadedProjectFolder();
 
     const title = project.name + " Test World";
 
@@ -614,7 +622,7 @@ export default class ProjectExporter {
       return;
     }
 
-    const mcworld = await ProjectExporter.getFlatGameTestWorldWithPackRefs(project, name);
+    const mcworld = await ProjectExporter.generateFlatGameTestWorldWithPackRefs(project, name);
 
     if (mcworld !== undefined) {
       // Log.debugAlert("Synchronizing '" + worldFolder.name + "' with '" + worldFolder.files.length + "' files");
@@ -634,7 +642,7 @@ export default class ProjectExporter {
     const fileName = project.name + " flatpack.mcworld";
     const name = project.name + " Flat GameTest";
 
-    const mcworld = await ProjectExporter.getFlatGameTestWorldWithPackRefs(project, name);
+    const mcworld = await ProjectExporter.generateFlatGameTestWorldWithPackRefs(project, name);
 
     if (mcworld !== undefined) {
       const newBytes = await mcworld.getBytes();
@@ -653,7 +661,7 @@ export default class ProjectExporter {
     }
   }
 
-  static async getFlatGameTestWorldWithPackRefs(project: Project, worldName: string) {
+  static async generateFlatGameTestWorldWithPackRefs(project: Project, worldName: string) {
     await Database.loadContent();
 
     if (Database.contentFolder === null) {
@@ -666,7 +674,7 @@ export default class ProjectExporter {
     await file.loadContent();
 
     if (file.content instanceof Uint8Array) {
-      const mcworld = await this.getBetaApisWorldWithPackRefs(project, worldName, file.content);
+      const mcworld = await this.generateBetaApisWorldWithPackRefs(project, worldName, file.content);
 
       return mcworld;
     }
@@ -676,14 +684,12 @@ export default class ProjectExporter {
     return undefined;
   }
 
-  static async exportPackAsZip(carto: Carto, project: Project, returnAsBlob: boolean): Promise<Blob | Uint8Array> {
+  static async generatePackAsZip(carto: Carto, project: Project, returnAsBlob: boolean): Promise<Blob | Uint8Array> {
     const operId = await carto.notifyOperationStarted("Exporting '" + project.name + "' as MCPack");
 
     const zipStorage = new ZipStorage();
 
-    await project.loadFolderStructure();
-
-    const bpFolder = project.defaultBehaviorPackFolder;
+    const bpFolder = await project.getDefaultBehaviorPackFolder();
 
     if (bpFolder) {
       const childFolder = zipStorage.rootFolder.ensureFolder(bpFolder.name);
@@ -694,7 +700,7 @@ export default class ProjectExporter {
         "*.ts*",
       ]);
 
-      const scriptsFolder = await project.ensureScriptsFolder();
+      const scriptsFolder = await project.ensureDefaultScriptsFolder();
 
       if (
         !scriptsFolder.storageRelativePath.startsWith(bpFolder.storageRelativePath) &&
@@ -706,7 +712,7 @@ export default class ProjectExporter {
       }
     }
 
-    const rpFolder = project.defaultResourcePackFolder;
+    const rpFolder = await project.getDefaultResourcePackFolder();
 
     if (rpFolder) {
       let rpFolderName = rpFolder.name;
@@ -734,43 +740,14 @@ export default class ProjectExporter {
       return zipBytes;
     }
   }
-  /*
-  static async deployToRemoteServer(carto: Carto, project: Project) {
-    if (!carto.remoteServerUrl) {
-      return;
-    }
 
-    const zipStorage = new ZipStorage();
-
-    //await StorageUtilities.syncFolderTo(carto.deploymentStorage.rootFolder, zipStorage.rootFolder, true, true, false);
-
-    const zipBehaviorPackFolder = await zipStorage.rootFolder.ensureFolder("development_behavior_packs");
-    await project.deployToBehaviorPackFolder(zipBehaviorPackFolder);
-
-    await zipStorage.rootFolder.saveAll();
-
-    carto.notifyStatusUpdate("Files created in zip. Packaging");
-
-    const zipBinary = await zipStorage.generateBlobAsync();
-
-    carto.notifyStatusUpdate("Uploading to " + carto.remoteServerUrl);
-
-    await axios({
-      method: "put",
-      url: StorageUtilities.ensureEndsWithDelimiter(carto.remoteServerUrl) + "api/upload/", //API url
-      data: zipBinary, // Buffer
-      maxContentLength: Infinity,
-      maxBodyLength: Infinity,
-    });
-
-    carto.notifyStatusUpdate("Upload complete");
-  }*/
-
-  static async getBetaApisWorldWithPacks(
+  static async generateBetaApisWorldWithPacks(
     project: Project,
     worldName: string,
     worldContent?: Uint8Array
   ): Promise<MCWorld> {
+    await project.ensureLoadedProjectFolder();
+
     const mcworld = new MCWorld();
 
     if (worldContent) {
@@ -802,7 +779,7 @@ export default class ProjectExporter {
 
       await StorageUtilities.syncFolderTo(sourceBpf, bpf, true, false, false, ["/mcworlds", "/minecraftWorlds", ".ts"]);
 
-      const scriptsFolder = await project.ensureScriptsFolder();
+      const scriptsFolder = await project.ensureDefaultScriptsFolder();
 
       if (
         !scriptsFolder.storageRelativePath.startsWith(sourceBpf.storageRelativePath) &&
@@ -832,7 +809,7 @@ export default class ProjectExporter {
     return mcworld;
   }
 
-  static async getBetaApisWorldWithPackRefs(
+  static async generateBetaApisWorldWithPackRefs(
     project: Project,
     worldName: string,
     worldContent: Uint8Array
@@ -842,11 +819,14 @@ export default class ProjectExporter {
 
     await mcworld.loadFromBytes(worldContent);
 
-    if (project.defaultBehaviorPackFolder !== null) {
+    const behaviorPackFolder = await project.getDefaultBehaviorPackFolder();
+
+    if (behaviorPackFolder !== null) {
       mcworld.ensureBehaviorPack(project.defaultBehaviorPackUniqueId, project.defaultBehaviorPackVersion, project.name);
     }
 
-    if (project.defaultResourcePackFolder !== null) {
+    const resourcePackFolder = await project.getDefaultResourcePackFolder();
+    if (resourcePackFolder !== null) {
       mcworld.ensureResourcePack(project.defaultResourcePackUniqueId, project.defaultResourcePackVersion, project.name);
     }
 

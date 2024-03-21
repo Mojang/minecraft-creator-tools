@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IBlockTypeData from "./IBlockTypeData";
 import IBlockTypePropertyData from "./IBlockTypePropertyData";
 

@@ -1,14 +1,21 @@
-.app-loading {
+.app-loadingArea {
   width: 100vw;
   max-height: 100vh;
   min-height: 100vh;
-  font-size: 20pt;
   vertical-align: middle;
-  text-align: center;
-  padding-top: calc(50vh - 30px);
+  text-align: left;
+  padding-top: calc(50vh - 50px);
+}
+
+.app-loading {
+  padding-left: 10vw;
+  max-width: 70vw;
+  font-size: 14pt;
 }
 
 .app-subloading {
+  padding-left: 10vw;
+  max-width: 70vw;
   font-size: 10pt;
 }
 

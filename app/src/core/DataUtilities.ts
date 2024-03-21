@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export default class DataUtilities {
   static getUnsignedInteger(num1: number, num2: number, num3: number, num4: number, littleEndian: boolean) {
     const buffer = new ArrayBuffer(4);

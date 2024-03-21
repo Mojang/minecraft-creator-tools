@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectItem from "../app/ProjectItem";
 import Utilities from "../core/Utilities";
 import IInfoItemData from "./IInfoItemData";
@@ -12,23 +15,23 @@ export default class ProjectInfoItem {
   }
 
   get itemType() {
-    return this.#data.itemType;
+    return this.#data.iTp;
   }
 
   get message() {
-    return this.#data.message;
+    return this.#data.m;
   }
 
-  set message(newMessage: string) {
-    this.#data.message = newMessage;
+  set message(newMessage: string | undefined) {
+    this.#data.m = newMessage;
   }
 
   get generatorId() {
-    return this.#data.generatorId;
+    return this.#data.gId;
   }
 
   get generatorIndex() {
-    return this.#data.generatorIndex;
+    return this.#data.gIx;
   }
 
   get projectItem() {
@@ -36,23 +39,23 @@ export default class ProjectInfoItem {
   }
 
   get data() {
-    return this.#data.data;
+    return this.#data.d;
   }
 
   set data(data: string | boolean | number | object | number[] | undefined) {
-    this.#data.data = data;
+    this.#data.d = data;
   }
 
   get content() {
-    return this.#data.content;
+    return this.#data.c;
   }
 
-  get features() {
-    return this.#data.features;
+  get featureSets() {
+    return this.#data.fs;
   }
 
   get contentSummary() {
-    let errorContent = this.#data.content;
+    let errorContent = this.#data.c;
     if (errorContent) {
       errorContent = errorContent.replace(/\n/gi, " ");
       errorContent = errorContent.replace(/\r/gi, " ");
@@ -70,7 +73,7 @@ export default class ProjectInfoItem {
   }
 
   get typeSummary() {
-    switch (this.#data.itemType) {
+    switch (this.#data.iTp) {
       case InfoItemType.info:
         return "Info";
 
@@ -129,12 +132,20 @@ export default class ProjectInfoItem {
     return summaryString;
   }
 
-  minFeature(name: string, newValue: number) {
-    if (this.#data.features === undefined) {
-      this.#data.features = {};
+  minFeature(setName: string, measureName: string, newValue: number) {
+    if (this.#data.fs === undefined) {
+      this.#data.fs = {};
     }
 
-    let curVal = this.#data.features[name];
+    let setVal = this.#data.fs[setName];
+
+    if (setVal === undefined) {
+      setVal = {};
+
+      this.#data.fs[setName] = setVal;
+    }
+
+    let curVal = setVal[measureName];
 
     if (curVal === undefined) {
       curVal = newValue;
@@ -142,15 +153,23 @@ export default class ProjectInfoItem {
       curVal = Math.min(curVal, newValue);
     }
 
-    this.#data.features[name] = curVal;
+    setVal[measureName] = curVal;
   }
 
-  maxFeature(name: string, newValue: number) {
-    if (this.#data.features === undefined) {
-      this.#data.features = {};
+  maxFeature(setName: string, measureName: string, newValue: number) {
+    if (this.#data.fs === undefined) {
+      this.#data.fs = {};
     }
 
-    let curVal = this.#data.features[name];
+    let setVal = this.#data.fs[setName];
+
+    if (setVal === undefined) {
+      setVal = {};
+
+      this.#data.fs[setName] = setVal;
+    }
+
+    let curVal = setVal[measureName];
 
     if (curVal === undefined) {
       curVal = newValue;
@@ -158,48 +177,87 @@ export default class ProjectInfoItem {
       curVal = Math.max(curVal, newValue);
     }
 
-    this.#data.features[name] = curVal;
+    setVal[measureName] = curVal;
   }
 
-  spectrumFeature(name: string, newValue: number) {
-    if (this.#data.features === undefined) {
-      this.#data.features = {};
+  getFeatureContaining(token: string) {
+    token = token.toLowerCase();
+
+    for (const setName in this.#data.fs) {
+      const featureSet = this.#data.fs[setName];
+
+      if (featureSet) {
+        for (const measureName in featureSet) {
+          if (measureName.toLowerCase().indexOf(token) >= 0) {
+            return featureSet[measureName];
+          }
+        }
+      }
     }
 
-    this.incrementFeature(name + " count", 1);
-    this.incrementFeature(name + " total", newValue);
-    this.maxFeature(name + " max", newValue);
-    this.minFeature(name + " min", newValue);
+    return undefined;
+  }
 
-    const curTotal = this.#data.features[name + " total"];
-    const curCount = this.#data.features[name + " count"];
+  spectrumFeature(setName: string, newValue: number) {
+    if (this.#data.fs === undefined) {
+      this.#data.fs = {};
+    }
+
+    this.incrementFeature(setName, "Instance Count", 1);
+    this.incrementFeature(setName, "Total", newValue);
+    this.maxFeature(setName, "Max", newValue);
+    this.minFeature(setName, "Min", newValue);
+
+    let setVal = this.#data.fs[setName];
+
+    if (setVal === undefined) {
+      setVal = {};
+
+      this.#data.fs[setName] = setVal;
+    }
+
+    const curTotal = setVal["Total"];
+    const curCount = setVal["Instance Count"];
 
     if (curCount && curTotal !== undefined) {
-      this.#data.features[name + " average"] = curTotal / curCount;
+      setVal["Average"] = curTotal / curCount;
     }
   }
 
-  spectrumIntFeature(name: string, newValue: number) {
-    if (this.#data.features === undefined) {
-      this.#data.features = {};
+  spectrumIntFeature(setName: string, newValue: number) {
+    if (this.#data.fs === undefined) {
+      this.#data.fs = {};
     }
 
-    this.incrementFeature(name + " count", 1);
-    this.incrementFeature(name + " total", newValue);
-    this.maxFeature(name + " max", newValue);
-    this.minFeature(name + " min", newValue);
+    let setVal = this.#data.fs[setName];
 
-    const curTotal = this.#data.features[name + " total"];
-    const curCount = this.#data.features[name + " count"];
+    if (setVal === undefined) {
+      setVal = {};
+
+      this.#data.fs[setName] = setVal;
+    }
+
+    this.incrementFeature(setName, "Instance Count", 1);
+    this.incrementFeature(setName, "Total", newValue);
+
+    this.maxFeature(setName, "Max", newValue);
+    this.minFeature(setName, "Min", newValue);
+
+    const curTotal = setVal["Total"];
+    const curCount = setVal["Instance Count"];
 
     if (curCount && curTotal !== undefined) {
-      this.#data.features[name + " average"] = Math.round(curTotal / curCount);
+      setVal["Average"] = Math.round(curTotal / curCount);
     }
   }
 
-  incrementFeature(name: string, incrementalValue?: number) {
-    if (this.#data.features === undefined) {
-      this.#data.features = {};
+  incrementFeature(setName: string, measureName?: string, incrementalValue?: number) {
+    if (this.#data.fs === undefined) {
+      this.#data.fs = {};
+    }
+
+    if (measureName === undefined) {
+      measureName = "Count";
     }
 
     if (incrementalValue === 0) {
@@ -208,7 +266,15 @@ export default class ProjectInfoItem {
       incrementalValue = 1;
     }
 
-    let curVal = this.#data.features[name];
+    let setVal = this.#data.fs[setName];
+
+    if (setVal === undefined) {
+      setVal = {};
+
+      this.#data.fs[setName] = setVal;
+    }
+
+    let curVal = setVal[measureName];
 
     if (!curVal) {
       curVal = incrementalValue;
@@ -216,29 +282,29 @@ export default class ProjectInfoItem {
       curVal += incrementalValue;
     }
 
-    this.#data.features[name] = curVal;
+    setVal[measureName] = curVal;
   }
 
   constructor(
     itemType: InfoItemType,
     generatorId: string,
     generatorIndex: number,
-    message: string,
+    message?: string,
     projectItem?: ProjectItem,
     data?: string | boolean | number | object | number[],
     itemId?: string,
     content?: string
   ) {
     this.#data = {
-      itemType: itemType,
-      generatorId: generatorId,
-      generatorIndex: generatorIndex,
-      message: message,
-      itemStoragePath: projectItem ? projectItem.storagePath : undefined,
-      data: data,
-      itemId: itemId,
-      content: content,
-      features: undefined,
+      iTp: itemType,
+      gId: generatorId,
+      gIx: generatorIndex,
+      m: message,
+      p: projectItem ? projectItem.storagePath : undefined,
+      d: data,
+      iId: itemId,
+      c: content,
+      fs: undefined,
     };
 
     this.#projectItem = projectItem;

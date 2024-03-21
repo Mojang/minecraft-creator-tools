@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import FileBase from "../storage/FileBase";
 import GitHubFolder from "./GitHubFolder";
 import IFile from "../storage/IFile";
@@ -73,37 +76,49 @@ export default class GitHubFile extends FileBase implements IFile {
           fullPathMinusSlash = fullPathMinusSlash.substring(1, fullPathMinusSlash.length);
         }
 
-        const file = await octo.rest.repos.getContent({
-          owner: storage.ownerName,
-          repo: storage.repoName,
-          ref: storage.branch,
-          path: fullPathMinusSlash,
-        });
+        let file = undefined;
 
-        const fileData = file.data as {
-          encoding?: string;
-          content?: string;
-        };
-
-        if (fileData.content !== undefined && fileData.encoding !== undefined) {
-          if (fileData.encoding === "base64") {
-            let contentA = fileData.content;
-
-            if (contentA && typeof contentA === "string") {
-              contentA = contentA.replace(/\n/gi, "");
-            }
-
-            this._content = new Uint8Array(Utilities.base64ToArrayBuffer(contentA));
-
-            const preferredEncoding = StorageUtilities.getEncodingByFileName(this.name);
-
-            if (preferredEncoding === EncodingType.Utf8String) {
-              const result = Utilities.readStringUTF8(new DataView(this._content.buffer), 0, this._content.length);
-
-              this._content = result.str;
-            }
+        try {
+          file = await octo.rest.repos.getContent({
+            owner: storage.ownerName,
+            repo: storage.repoName,
+            ref: storage.branch,
+            path: fullPathMinusSlash,
+          });
+        } catch (e: any) {
+          if (e.name && e.name === "HttpError" && e.message.indexOf("rate limit") >= 0) {
+            throw new Error(e.message);
           } else {
-            this._content = fileData.content;
+            Log.debugAlert("Could not get content for GitHub file: '" + e.toString() + "'");
+          }
+        }
+
+        if (file) {
+          const fileData = file.data as {
+            encoding?: string;
+            content?: string;
+          };
+
+          if (fileData.content !== undefined && fileData.encoding !== undefined) {
+            if (fileData.encoding === "base64") {
+              let contentA = fileData.content;
+
+              if (contentA && typeof contentA === "string") {
+                contentA = contentA.replace(/\n/gi, "");
+              }
+
+              this._content = new Uint8Array(Utilities.base64ToArrayBuffer(contentA));
+
+              const preferredEncoding = StorageUtilities.getEncodingByFileName(this.name);
+
+              if (preferredEncoding === EncodingType.Utf8String) {
+                const result = Utilities.readStringUTF8(new DataView(this._content.buffer), 0, this._content.length);
+
+                this._content = result.str;
+              }
+            } else {
+              this._content = fileData.content;
+            }
           }
         }
       } else {
@@ -164,13 +179,13 @@ export default class GitHubFile extends FileBase implements IFile {
           }
 
           if (response.status !== 200) {
-            Log.fail("Could retrieve file from '" + path + "' - response code is " + response.status);
-            Log.verbose("Could retrieve file from '" + path + "' - response code is " + response.status);
+            Log.fail("Could not retrieve file from '" + path + "' - response code is " + response.status);
+            Log.verbose("Could not retrieve file from '" + path + "' - response code is " + response.status);
           }
 
           if (result === null || result === "null") {
-            Log.fail("Could retrieve file from '" + path + "' - result is null.");
-            Log.verbose("Could retrieve file from '" + path + "' - result is null.");
+            Log.fail("Could not retrieve file from '" + path + "' - result is null.");
+            Log.verbose("Could not retrieve file from '" + path + "' - result is null.");
           }
 
           this._content = result;

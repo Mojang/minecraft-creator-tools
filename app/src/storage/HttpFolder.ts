@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFolder from "./IFolder";
 import IFile from "./IFile";
 import HttpFile from "./HttpFile";
@@ -117,8 +120,8 @@ export default class HttpFolder extends FolderBase implements IFolder {
   }
 
   async load(force: boolean): Promise<Date> {
-    if (this.lastProcessed != null && !force) {
-      return this.lastProcessed;
+    if (this.lastLoadedOrSaved != null && !force) {
+      return this.lastLoadedOrSaved;
     }
 
     let response = undefined;
@@ -149,8 +152,8 @@ export default class HttpFolder extends FolderBase implements IFolder {
       }
     }
 
-    this.updateLastProcessed();
+    this.updateLastLoadedOrSaved();
 
-    return this.lastProcessed as Date;
+    return this.lastLoadedOrSaved as Date;
   }
 }

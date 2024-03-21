@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFile from "../storage/IFile";
 import * as pako from "pako";
 import Log from "../core/Log";
@@ -61,18 +64,19 @@ export default class LevelDb {
     let keysParsed = 0;
 
     //  Ends with magic:            fixed64;     // == 0xdb4775248b80fb57 (little-endian)
-    Log.assert(
-      magicA === 87 &&
-        magicB === 251 &&
-        magicC === 128 &&
-        magicE === 36 &&
-        magicD === 139 &&
-        magicF === 117 &&
-        magicG === 71 &&
-        magicH === 219,
-      "Unexpected no-magic end to Level DB stream. DB file could be corrupt.",
-      this.context
-    );
+    if (
+      magicA !== 87 ||
+      magicB !== 251 ||
+      magicC !== 128 ||
+      magicE !== 36 ||
+      magicD !== 139 ||
+      magicF !== 117 ||
+      magicG !== 71 ||
+      magicH !== 219
+    ) {
+      Log.verbose("Unexpected no-magic end to Level DB stream. DB file could be corrupt.");
+      return;
+    }
 
     // https://github.com/google/leveldb/blob/main/doc/table_format.md
 
@@ -116,7 +120,7 @@ export default class LevelDb {
       try {
         indexContent = pako.inflate(indexContentCompressed);
       } catch (e) {
-        Log.fail("Error inflating index content: " + e + ". Further content may fail to load.", this.context);
+        // Log.verbose("Error inflating index content: " + e + ". Further content may fail to load.", this.context);
       }
     }
 
@@ -142,8 +146,8 @@ export default class LevelDb {
           const blockSize = new Varint(indexBytes, indexByteIndex);
           indexByteIndex += blockSize.byteLength;
 
-          Log.assert(blockOffset.value >= 0 && blockOffset.value + blockSize.value < content.length);
-          Log.assert(indexByteIndex === indexBytes.length);
+          Log.assert(blockOffset.value >= 0 && blockOffset.value + blockSize.value < content.length, "LDBPLDB");
+          Log.assert(indexByteIndex === indexBytes.length, "LDBPLDBA");
 
           const blockContentCompressed = content.subarray(blockOffset.value, blockOffset.value + blockSize.value);
 

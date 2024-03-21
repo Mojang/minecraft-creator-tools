@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Command from "../minecraft/Command";
 import { ICommandResponseBody } from "../minecraft/ICommandResponse";
 import Carto, { CartoMinecraftState } from "./Carto";

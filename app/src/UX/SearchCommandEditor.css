@@ -1,0 +1,65 @@
+.sceed-interior {
+  min-height: 47px;
+  height: 100%;
+  width: 100%;
+  border: solid 1px #999999;
+}
+
+.sceed-area {
+  min-width: 100%;
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+}
+
+.sceed-input-area {
+  display: grid;
+}
+
+.sceed-input {
+  grid-column: 1;
+}
+
+.sceed-accessoryToolBar {
+  grid-column: 2;
+}
+
+.sceed-toolBarArea {
+  padding: 2px;
+  display: grid;
+  grid-template-columns: 1fr 117px;
+}
+
+.sceed-text-large {
+  font-size: 16pt !important;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace !important;
+}
+
+.sceed-text {
+  font-size: 11pt !important;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace !important;
+}
+
+.sceed-text INPUT {
+  border-radius: 0px !important;
+  padding: 5px !important;
+}
+
+.sceed-title {
+  grid-column: 1;
+  padding-top: 5px;
+}
+
+.sceed-toolBar {
+  grid-column: 2;
+}
+
+.sceed-floatBox {
+  position: fixed;
+  width: 300px;
+  max-height: 180px;
+  overflow-y: auto;
+  top: 100px;
+  left: 10px;
+  z-index: 1000;
+}

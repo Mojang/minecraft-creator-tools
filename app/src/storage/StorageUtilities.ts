@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFolder from "./IFolder";
 import IFile from "./IFile";
 import DifferenceSet from "./DifferenceSet";
@@ -396,6 +399,15 @@ export default class StorageUtilities {
     return undefined;
   }
 
+  public static removeContainerExtension(name: string): string {
+    let nameW = name.trim();
+
+    if (nameW.endsWith(".zip")) {
+      nameW = nameW.substring(0, nameW.length - 4);
+    }
+    return nameW;
+  }
+
   public static getBaseFromName(name: string): string {
     const nameW = name.trim();
 
@@ -642,6 +654,24 @@ export default class StorageUtilities {
     return data;
   }
 
+  public static shouldProcessFile(fileName: string) {
+    fileName = fileName.toLowerCase();
+
+    if (fileName.startsWith(".") || (fileName.startsWith("package") && fileName.endsWith("json"))) {
+      return false;
+    }
+
+    return true;
+  }
+
+  public static shouldProcessFolder(folderName: string) {
+    if (folderName.startsWith(".")) {
+      return false;
+    }
+
+    return true;
+  }
+
   public static async addDifferences(
     differences: DifferenceSet,
     original: IFolder,
@@ -659,77 +689,85 @@ export default class StorageUtilities {
     const updatedFoldersToConsider: { [id: string]: boolean } = {};
 
     for (const updatedFileName in updated.files) {
-      updatedFilesToConsider[updatedFileName] = true;
+      if (StorageUtilities.shouldProcessFile(updatedFileName)) {
+        updatedFilesToConsider[updatedFileName] = true;
+      }
     }
 
     for (const updatedFolderName in updated.folders) {
-      updatedFoldersToConsider[updatedFolderName] = true;
+      if (StorageUtilities.shouldProcessFolder(updatedFolderName)) {
+        updatedFoldersToConsider[updatedFolderName] = true;
+      }
     }
 
     for (const originalFileName in original.files) {
-      const originalFile = original.files[originalFileName];
+      if (StorageUtilities.shouldProcessFile(originalFileName)) {
+        const originalFile = original.files[originalFileName];
 
-      if (originalFile !== undefined) {
-        updatedFilesToConsider[originalFileName] = false;
+        if (originalFile !== undefined) {
+          updatedFilesToConsider[originalFileName] = false;
 
-        if (updated.fileExists(originalFileName)) {
-          const updatedFile = updated.files[originalFileName];
+          if (updated.fileExists(originalFileName)) {
+            const updatedFile = updated.files[originalFileName];
 
-          const areEqual = await StorageUtilities.fileContentsEqual(originalFile, updatedFile);
+            const areEqual = await StorageUtilities.fileContentsEqual(originalFile, updatedFile);
 
-          if (!areEqual) {
-            if ((result & FolderDifferenceType.fileContentsDifferent) === 0) {
-              result += FolderDifferenceType.fileContentsDifferent;
+            if (!areEqual) {
+              if ((result & FolderDifferenceType.fileContentsDifferent) === 0) {
+                result += FolderDifferenceType.fileContentsDifferent;
+              }
+
+              differences.fileDifferences.push({
+                type: FileDifferenceType.contentsDifferent,
+                path: originalFile.storageRelativePath,
+                original: originalFile,
+                updated: updatedFile,
+              });
+            }
+          } else if (includeDeletions) {
+            if ((result & FolderDifferenceType.fileListDifferent) === 0) {
+              result += FolderDifferenceType.fileListDifferent;
             }
 
             differences.fileDifferences.push({
-              type: FileDifferenceType.contentsDifferent,
+              type: FileDifferenceType.fileDeleted,
               path: originalFile.storageRelativePath,
               original: originalFile,
-              updated: updatedFile,
             });
           }
-        } else if (includeDeletions) {
-          if ((result & FolderDifferenceType.fileListDifferent) === 0) {
-            result += FolderDifferenceType.fileListDifferent;
-          }
-
-          differences.fileDifferences.push({
-            type: FileDifferenceType.fileDeleted,
-            path: originalFile.storageRelativePath,
-            original: originalFile,
-          });
         }
       }
     }
 
     for (const originalFolderName in original.folders) {
-      const originalChildFolder = original.folders[originalFolderName];
+      if (StorageUtilities.shouldProcessFolder(originalFolderName)) {
+        const originalChildFolder = original.folders[originalFolderName];
 
-      if (originalChildFolder !== undefined) {
-        updatedFoldersToConsider[originalFolderName] = false;
+        if (originalChildFolder !== undefined) {
+          updatedFoldersToConsider[originalFolderName] = false;
 
-        if (updated.folderExists(originalFolderName)) {
-          const updatedChildFolder = updated.folders[originalFolderName];
+          if (updated.folderExists(originalFolderName)) {
+            const updatedChildFolder = updated.folders[originalFolderName];
 
-          if (updatedChildFolder !== undefined) {
-            const childResult = await StorageUtilities.addDifferences(
-              differences,
-              originalChildFolder,
-              updatedChildFolder,
-              includeDeletions
-            );
+            if (updatedChildFolder !== undefined) {
+              const childResult = await StorageUtilities.addDifferences(
+                differences,
+                originalChildFolder,
+                updatedChildFolder,
+                includeDeletions
+              );
 
-            if (childResult !== FolderDifferenceType.none) {
-              result = result | childResult;
+              if (childResult !== FolderDifferenceType.none) {
+                result = result | childResult;
+              }
             }
-          }
-        } else if (includeDeletions) {
-          if ((result & FolderDifferenceType.folderDeleted) === 0) {
-            result += FolderDifferenceType.folderDeleted;
-          }
+          } else if (includeDeletions) {
+            if ((result & FolderDifferenceType.folderDeleted) === 0) {
+              result += FolderDifferenceType.folderDeleted;
+            }
 
-          this.addDifferencesAsFolderDelete(differences, originalChildFolder);
+            this.addDifferencesAsFolderDelete(differences, originalChildFolder);
+          }
         }
       }
     }
@@ -1037,6 +1075,18 @@ export default class StorageUtilities {
     return false;
   }
 
+  public static sanitizePath(path: string) {
+    if (Utilities.isAlphaNumeric(path)) {
+      return path;
+    }
+
+    let utf8Encode = new TextEncoder();
+
+    const base64 = Utilities.arrayBufferToBase64(utf8Encode.encode(path)).replace(/\//gi, " ").replace(/=/gi, "_");
+
+    return base64;
+  }
+
   public static async syncFileTo(
     source: IFile,
     target: IFile,
@@ -1063,7 +1113,11 @@ export default class StorageUtilities {
     }
 
     if (messageUpdater) {
-      let mess = "Updating file: " + target.fullPath;
+      let targetPath = target.fullPath;
+
+      targetPath = targetPath.replace("fs.mctprojects/root/", "");
+
+      let mess = "Updating file: " + targetPath;
 
       if (source.content) {
         mess += " (size: " + source.content.length + ")";

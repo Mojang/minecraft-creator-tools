@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IProperty from "../dataform/IProperty";
 import ComponentizedBase from "./ComponentizedBase";
 import Database from "./../minecraft/Database";

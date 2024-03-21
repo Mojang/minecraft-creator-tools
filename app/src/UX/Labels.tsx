@@ -344,12 +344,12 @@ export const ExportBackupLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> &
   </span>
 );
 
-export const ComputerLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
+export const LocalFolderLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
 ) => (
   <span className="label label-toolbar">
     <FontAwesomeIcon icon={faComputer} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Open</span> : <></>}
+    {!props.isCompact ? <span className="label-text">Folder</span> : <></>}
   </span>
 );
 
@@ -684,6 +684,7 @@ export const SummaryTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
         ? props.theme.siteVariables?.colorScheme.brand.background2
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
+    title="Summary"
   >
     <FontAwesomeIcon icon={faCircleInfo} className="fa-lg" />
     {!props.isCompact ? <span className="label-text">Summary</span> : <></>}

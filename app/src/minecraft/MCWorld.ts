@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFile from "../storage/IFile";
 import ZipStorage from "../storage/ZipStorage";
 import { EventDispatcher, IEventHandler } from "ste-events";
@@ -18,7 +21,7 @@ import BlockCube from "./BlockCube";
 import IDimension from "./IDimension";
 import Block from "./Block";
 import Entity from "./Entity";
-import { IPackReferenceSet, IWorldSettings } from "./IWorldSettings";
+import { IPackageReference, IWorldSettings } from "./IWorldSettings";
 import { StorageErrorStatus } from "../storage/IStorage";
 import MinecraftUtilities from "./MinecraftUtilities";
 import NbtBinary from "./NbtBinary";
@@ -565,7 +568,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     }
   }
 
-  ensurePackReferenceSet(packRefSet: IPackReferenceSet) {
+  ensurePackReferenceSet(packRefSet: IPackageReference) {
     if (this.worldBehaviorPacks === undefined) {
       this.worldBehaviorPacks = [];
     }
@@ -1196,9 +1199,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
 
     this.levelDb = new LevelDb(ldbFileArr, logFileArr, this.name);
 
-    await this.levelDb.init(async (message: string): Promise<void> => {
+    await this.levelDb.init(/*async (message: string): Promise<void> => {
       await this._project?.carto.notifyStatusUpdate(message, StatusTopic.worldLoad);
-    });
+    }*/);
 
     if (loadOper !== undefined) {
       await this._project?.carto.notifyOperationEnded(
@@ -1641,7 +1644,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     if (this._autogenJsFile === undefined) {
       const newFileName = "LocalWorld.js";
 
-      const scriptFolder = await this._project.ensureScriptsFolder();
+      const scriptFolder = await this._project.ensureDefaultScriptsFolder();
 
       const genFolder = scriptFolder.ensureFolder("generated");
 
@@ -1670,7 +1673,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
   private getAutoGenScript() {
     const content: string[] = [];
 
-    content.push("export default const " + this.name + " = {");
+    content.push("export const " + this.name + " = {");
     if (this.anchors) {
       const anchorKeys = this.anchors.getKeys();
 

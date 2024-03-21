@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export default class ScriptGen {
   static getClassName(name: string) {
     if (name.length < 2) {

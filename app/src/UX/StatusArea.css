@@ -10,13 +10,30 @@
 }
 
 .sa-singleline {
-  padding-top: 4px;
+  padding-top: 3px;
   padding-bottom: 4px;
   overflow-x: hidden;
   overflow-y: hidden;
   text-overflow: clip;
   max-width: calc(100vw - 42px);
   display: inline-block;
+}
+
+.sa-placeHolder {
+  padding-top: 5px;
+  padding-left: 2px;
+  display: grid;
+  grid-template-columns: 16px 1fr;
+}
+
+.sa-placeHolderIcon {
+  padding-top: 1px;
+  grid-column: 1;
+}
+
+.sa-placeHolderText {
+  padding-left: 7px;
+  grid-column: 2;
 }
 
 .sa-inputArea {
@@ -32,13 +49,13 @@
 }
 
 .sa-message {
-  vertical-align: top;
   position: relative;
-  top: 1px;
+  top: 6px;
 }
 
 .sa-inputButton {
   grid-column: 1;
+  padding-top: 1px;
 }
 
 .sa-inputButton BUTTON {
@@ -52,7 +69,7 @@
   grid-column: 2;
 }
 
-.sa-message {
+.sa-messageOuter {
   grid-column: 1;
   vertical-align: top;
   cursor: pointer;

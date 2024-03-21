@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 const Vinyl = require("vinyl");
 const fs = require("fs");
 
@@ -35,7 +38,7 @@ class JsonTypeDefsBuilder {
 
           if (secondFolderSlash >= 0) {
             moduleName = moduleName.substring(secondFolderSlash + 1, dirToFileSlash);
-            moduleName = moduleName.replace("\\", "/");
+            moduleName = moduleName.replace(/\\/g, "/");
 
             const typeDef = new TypeDef();
             typeDef.name = moduleName;
@@ -75,9 +78,20 @@ class JsonTypeDefsBuilder {
   }
 
   getQuoteSafeContent(content) {
-    content = content.replace(/"/g, '\\"');
+    var newContent = "";
+
+    for (const chr of content) {
+      if (chr === "\\") {
+        newContent += "/";
+      } else if (chr === '"') {
+        newContent += "'";
+      } else {
+        newContent += chr;
+      }
+    }
+
     // eslint-disable-next-line no-control-regex
-    content = content.replace(/[\r\n\x0B\x0C\u0085\u2028\u2029]+/g, '",\n"');
+    content = newContent.replace(/[\r\n\x0B\x0C\u0085\u2028\u2029]+/g, '",\n"');
     return content;
   }
 

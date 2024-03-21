@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import NbtBinaryTag from "../NbtBinaryTag";
 
 export default abstract class BlockActor {

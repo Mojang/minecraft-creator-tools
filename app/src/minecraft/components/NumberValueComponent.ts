@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { ManagedComponent } from "../ManagedComponent";
 
 export default class NumberValueComponent extends ManagedComponent {

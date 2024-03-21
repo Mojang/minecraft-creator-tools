@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Project from "../app/Project";
 import IProjectUpdater from "./IProjectUpdater";
 import Log from "../core/Log";

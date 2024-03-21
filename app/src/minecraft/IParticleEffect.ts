@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export interface IParticleEffectWrapper {
   format_version: string;
   particle_effect: IParticleEffect;

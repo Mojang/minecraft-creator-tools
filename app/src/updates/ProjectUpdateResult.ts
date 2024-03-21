@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectItem from "../app/ProjectItem";
 import Utilities from "../core/Utilities";
 import IUpdateResult, { UpdateResultType } from "./IUpdateResult";

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import StorageUtilities from "../storage/StorageUtilities";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import Project from "./Project";
@@ -6,19 +9,89 @@ import Database from "../minecraft/Database";
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
 import { ProjectEditPreference, ProjectScriptLanguage } from "./IProjectData";
-import BlockType from "../minecraft/BlockType";
 import BehaviorManifestJson from "../minecraft/BehaviorManifestJson";
 import NpmPackageJson from "../devproject/NpmPackageJson";
 import ResourceManifestJson from "../minecraft/ResourceManifestJson";
 import ISnippet from "./ISnippet";
 import IGalleryProject from "./IGalleryProject";
 import IFolder from "../storage/IFolder";
+import ProjectItemUtilities from "./ProjectItemUtilities";
+import { PackType } from "../minecraft/Pack";
+import BlockTypeBehaviorDefinition from "../minecraft/BlockTypeBehaviorDefinition";
 
 export enum NewEntityTypeAddMode {
   baseId,
 }
 
 export default class ProjectUtilities {
+  static async getDefaultFolderForPack(project: Project, packType: PackType) {
+    if (packType === PackType.behavior) {
+      return await project.getDefaultBehaviorPackFolder();
+    } else if (packType === PackType.resource) {
+      return await project.getDefaultResourcePackFolder();
+    } else if (packType === PackType.skin) {
+      return await project.getDefaultSkinPackFolder();
+    }
+
+    throw new Error();
+  }
+
+  static async ensureJsonItem(project: Project, jsonContent: string, fileName: string) {
+    if (!project.projectFolder) {
+      return;
+    }
+
+    const typeInfo = ProjectItemUtilities.inferTypeFromJsonContent(jsonContent, fileName);
+
+    let packType = typeInfo.packType;
+
+    if (packType === undefined) {
+      packType = PackType.behavior;
+    }
+
+    const baseFolder = await this.getDefaultFolderForPack(project, packType);
+
+    if (!baseFolder) {
+      return;
+    }
+
+    let folderPath = typeInfo.path;
+
+    if (folderPath === undefined) {
+      const roots = ProjectItemUtilities.getFolderRootsForType(typeInfo.itemType).join("/");
+      if (roots.length > 0 && roots[0].startsWith("resource_")) {
+        folderPath = "/" + roots[0];
+      } else {
+        folderPath = "/";
+
+        if (roots) {
+          for (const fold of roots) {
+            folderPath += fold + "/";
+          }
+        }
+      }
+    }
+
+    const folder = await baseFolder.ensureFolderFromRelativePath(folderPath);
+
+    const contentFile = folder.ensureFile(fileName);
+    contentFile.setContent(jsonContent);
+    contentFile.saveContent();
+
+    const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
+
+    if (relPath !== undefined) {
+      project.ensureItemByStoragePath(
+        relPath,
+        ProjectItemStorageType.singleFile,
+        fileName,
+        typeInfo.itemType,
+        undefined,
+        false
+      );
+    }
+  }
+
   static async hasDocumentationMetadata(folder: IFolder, depth?: number) {
     await folder.load(false);
 
@@ -402,7 +475,7 @@ export default class ProjectUtilities {
   }
 
   static async getBaseScriptsPath(project: Project) {
-    const scriptsFolder = await project.ensureScriptsFolder();
+    const scriptsFolder = await project.ensureDefaultScriptsFolder();
 
     if (project.projectFolder === null) {
       return undefined;
@@ -549,7 +622,7 @@ export default class ProjectUtilities {
       }
     }
 
-    await project.inferProjectItemsFromFiles();
+    await project.inferProjectItemsFromFiles(true);
 
     if (project.preferredScriptLanguage === ProjectScriptLanguage.javaScript) {
       const candidateJsFilePath = await ProjectUtilities.getFileName(
@@ -654,7 +727,7 @@ export default class ProjectUtilities {
   static async injectSnippet(project: Project, snippet: ISnippet) {
     const replaceContent = "\r\n" + snippet.body.join("\n") + "\r\n";
 
-    const folder = await project.ensureScriptsFolder();
+    const folder = await project.ensureDefaultScriptsFolder();
 
     await folder.load(false);
 
@@ -770,15 +843,15 @@ export default class ProjectUtilities {
 
       file.setContent(content);
 
-      const et = await BlockType.ensureBlockTypeOnFile(file, undefined);
+      const bt = await BlockTypeBehaviorDefinition.ensureOnFile(file, undefined);
 
-      if (et) {
-        et.id =
+      if (bt) {
+        bt.id =
           nextBlockTypeName.indexOf(":") >= 0
             ? nextBlockTypeName
             : project.effectiveDefaultNamespace + ":" + nextBlockTypeName;
 
-        await et.persist();
+        bt.persist();
       }
 
       await file.saveContent(true);

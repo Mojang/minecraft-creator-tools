@@ -4,6 +4,7 @@ import IProjectInfoItemGenerator from "./IProjectItemInfoGenerator";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
 import ProjectInfoSet from "./ProjectInfoSet";
+import ContentIndex from "../core/ContentIndex";
 
 export default class UnknownFileGenerator implements IProjectInfoItemGenerator {
   id = "UNKJSON";
@@ -17,7 +18,7 @@ export default class UnknownFileGenerator implements IProjectInfoItemGenerator {
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
-  async generate(projectItem: ProjectItem): Promise<ProjectInfoItem[]> {
+  async generate(projectItem: ProjectItem, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
     if (projectItem.itemType === ProjectItemType.json) {

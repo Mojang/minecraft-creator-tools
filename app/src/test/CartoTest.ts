@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { expect, assert } from "chai";
 import Carto from "../app/Carto";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project";
@@ -121,7 +124,6 @@ async function _loadProject(name: string) {
   project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
   project.localFolderPath = __dirname + "/../../../tests/" + name + "/";
 
-  await project.loadFolderStructure();
   await project.inferProjectItemsFromFiles();
 
   return project;
@@ -188,7 +190,7 @@ describe("deployJs", async () => {
     const resultsOutFolder = resultsFolder.ensureFolder("deployJs");
     await resultsOutFolder.ensureExists();
 
-    await ProjectExporter.generateAndDeployProjectToWorld(carto, project, worldSettings, resultsOutFolder);
+    await ProjectExporter.deployProjectAndGeneratedWorldTo(carto, project, worldSettings, resultsOutFolder);
 
     await folderMatches("deployJs");
   });
@@ -209,6 +211,7 @@ async function folderMatches(scenarioName: string, excludeList?: string[]) {
     '"pack_id":',
     '"version":',
     "generator_version",
+    "generatorVersion",
   ]);
 
   assert(
@@ -237,7 +240,7 @@ async function ensureJsonMatchesScenario(obj: object, scenarioName: string) {
 
   assert(exists, "report.json file for scenario '" + scenarioName + "' does not exist.");
 
-  const isEqual = await StorageUtilities.fileContentsEqual(scenarioFile, outFile, true);
+  const isEqual = await StorageUtilities.fileContentsEqual(scenarioFile, outFile, true, ["generatorVersion"]);
 
   assert(
     isEqual,

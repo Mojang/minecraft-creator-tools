@@ -13,6 +13,7 @@ import IField, { FieldVisualExperience, FieldDataType } from "../dataform/IField
 import IProperty from "../dataform/IProperty";
 import Log from "../core/Log";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
+import IFormDefinition from "../dataform/IFormDefinition";
 
 interface IDocumentedClassEditorProps extends IFileProps {
   heightOffset: number;
@@ -109,6 +110,7 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
     }
 
     const dclass = this.props.docClass;
+
     const form = Database.getForm("documented_class");
 
     const memberForms = [];
@@ -125,13 +127,14 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
           jsonObject = {};
         }
 
-        const infoForm = {
+        const infoForm: IFormDefinition = {
           id: "field",
           fields: [
             {
               id: "description",
               title: "Description",
               dataType: FieldDataType.longFormString,
+              validity: [{ comparison: "nonempty" }],
             },
           ],
         };

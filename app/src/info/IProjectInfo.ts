@@ -1,8 +1,14 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+import IGeneratorSummary from "./IGeneratorSummary";
+
 export default interface IProjectInfo {
   defaultBehaviorPackUuid?: string;
   defaultBehaviorPackMinEngineVersion?: string;
   defaultBehaviorPackName?: string;
   defaultBehaviorPackDescription?: string;
+  defaultIcon?: string;
   behaviorPackManifestCount?: number;
   defaultResourcePackUuid?: string;
   defaultResourcePackMinEngineVersion?: string;
@@ -14,8 +20,10 @@ export default interface IProjectInfo {
   blockTypeManifestCount?: number;
   itemTypeManifestCount?: number;
   worldCount?: number;
+  summaryImageBase64?: number;
   entityTypeResourceCount?: number;
   behaviorPackAnimationCount?: number;
   behaviorPackAnimationControllerCount?: number;
-  features?: { [featureName: string]: number | undefined };
+  summary?: { [name: string]: { [index: number]: IGeneratorSummary | undefined } | undefined };
+  featureSets?: { [setName: string]: { [measureName: string]: number | undefined } | undefined } | undefined;
 }

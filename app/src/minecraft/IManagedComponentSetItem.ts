@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { IEvent } from "ste-events";
 import IManagedComponent from "./IManagedComponent";
 

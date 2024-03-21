@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import DifferenceSet from "./DifferenceSet";
 import { FileDifferenceType } from "./IFileDifference";
 import IFolder from "./IFolder";

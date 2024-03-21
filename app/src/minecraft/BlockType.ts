@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import BlockBaseType from "./BlockBaseType";
 import { BlockRenderType } from "./BlockRenderType";
 import IBlockTypeData from "./IBlockTypeData";
@@ -5,7 +8,7 @@ import IJavaBlockTypeData from "./IJavaBlockTypeData";
 import MinecraftUtilities from "./MinecraftUtilities";
 import Database from "./Database";
 import Utilities from "../core/Utilities";
-import { EventDispatcher, IEventHandler } from "ste-events";
+import { EventDispatcher } from "ste-events";
 import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import IComponent from "./IComponent";
@@ -473,30 +476,6 @@ export default class BlockType implements IManagedComponentSetItem {
     }
   }
 
-  static async ensureBlockTypeOnFile(file: IFile, loadHandler?: IEventHandler<BlockType, BlockType>) {
-    let bt: BlockType | undefined = undefined;
-
-    if (file.manager === undefined) {
-      bt = new BlockType("custom:" + file.name);
-
-      bt.behaviorPackFile = file;
-
-      file.manager = bt;
-    }
-
-    if (file.manager !== undefined && file.manager instanceof BlockType) {
-      bt = file.manager as BlockType;
-
-      if (!bt.isLoaded && loadHandler) {
-        bt.onLoaded.subscribe(loadHandler);
-      }
-
-      await bt.load();
-    }
-
-    return bt;
-  }
-
   persist() {
     if (this._behaviorPackFile === undefined) {
       return;
@@ -528,13 +507,13 @@ export default class BlockType implements IManagedComponentSetItem {
 
     this._behaviorPackData = data;
 
-    const entity = data["minecraft:entity"];
+    const block = data["minecraft:block"];
 
-    if (entity.description) {
-      this.id = entity.description.identifier;
+    if (block.description) {
+      this.id = block.description.identifier;
     }
 
-    this.behaviorPackBlockTypeDef = entity;
+    this.behaviorPackBlockTypeDef = block;
 
     this._onLoaded.dispatch(this, this);
 

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import BlockCube from "../minecraft/BlockCube";
 import Structure from "../minecraft/Structure";
 

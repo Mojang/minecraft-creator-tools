@@ -6,6 +6,7 @@ import BlockType from "../minecraft/BlockType";
 import { ThemeInput } from "@fluentui/styles";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ManagedEvent from "../minecraft/ManagedEvent";
+import BlockTypeBehaviorDefinition from "../minecraft/BlockTypeBehaviorDefinition";
 
 interface IEventActionDesignProps extends IFileProps {
   heightOffset: number;
@@ -63,7 +64,7 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
       if (this.state.fileToEdit !== this._lastFileEdited) {
         this._lastFileEdited = this.state.fileToEdit;
 
-        await BlockType.ensureBlockTypeOnFile(this.state.fileToEdit, this._handleBlockTypeLoaded);
+        await BlockTypeBehaviorDefinition.ensureOnFile(this.state.fileToEdit, this._handleBlockTypeLoaded);
       }
     }
 
@@ -78,7 +79,7 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
     }
   }
 
-  _handleBlockTypeLoaded(blockType: BlockType, typeA: BlockType) {
+  _handleBlockTypeLoaded(blockType: BlockTypeBehaviorDefinition, typeA: BlockTypeBehaviorDefinition) {
     this._doUpdate(true);
   }
 

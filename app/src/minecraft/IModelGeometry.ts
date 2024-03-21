@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export default interface IModelGeometry {
   format_version: string;
   __comment__?: string;

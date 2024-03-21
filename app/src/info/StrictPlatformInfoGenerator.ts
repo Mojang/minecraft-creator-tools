@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "./ProjectInfoItem";
 import Project from "../app/Project";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
@@ -6,6 +9,7 @@ import { InfoItemType } from "./IInfoItemData";
 import { IProjectInfoTopicData } from "./IProjectInfoGeneratorBase";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ProjectInfoSet from "./ProjectInfoSet";
+import ContentIndex from "../core/ContentIndex";
 
 export default class StrictPlatformInfoGenerator implements IProjectInfoGenerator {
   id = "STRICT";
@@ -30,7 +34,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
-  async generate(project: Project): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const infoItems: ProjectInfoItem[] = [];
 
     for (let i = 0; i < project.items.length; i++) {

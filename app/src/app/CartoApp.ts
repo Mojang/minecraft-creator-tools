@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Carto from "./Carto";
 import { MinecraftFlavor } from "./ICartoData";
 import Database from "./../minecraft/Database";
@@ -57,6 +60,7 @@ export default class CartoApp {
   public static packStorage: IStorage | null = null;
   public static workingStorage: IStorage | null = null;
 
+  public static generateCryptoRandomNumber: (toVal: number) => number;
   public static localFolderExists: ((path: string) => Promise<boolean>) | undefined;
   public static localFileExists: ((path: string) => Promise<boolean>) | undefined;
   public static ensureLocalFolder: ((path: string) => IFolder) | undefined;
@@ -150,7 +154,16 @@ export default class CartoApp {
 
     CartoCommands.registerCommonCommands();
 
+    CartoApp.generateCryptoRandomNumber = (toVal) => {
+      if (!CartoApp.carto || !CartoApp.carto.local) {
+        throw new Error("Could not generate key.");
+      }
+
+      return CartoApp.carto.local.generateCryptoRandomNumber(toVal);
+    };
+
     if (CartoApp.projectsStorage !== null && CartoApp.prefsStorage !== null) {
+      // @ts-ignore
     } else if (typeof window !== "undefined") {
       CartoApp.prefsStorage = new BrowserStorage("mctprefs");
       CartoApp.projectsStorage = new BrowserStorage("mctprojects");
@@ -159,6 +172,11 @@ export default class CartoApp {
       CartoApp.workingStorage = new BrowserStorage("mctworking");
       CartoApp.worldStorage = new BrowserStorage("mctworlds");
       CartoApp.packStorage = new BrowserStorage("mctpacks");
+
+      CartoApp.generateCryptoRandomNumber = (toVal) => {
+        // @ts-ignore
+        return window.crypto.getRandomValues(new Uint32Array(1))[0] % 16;
+      };
     }
 
     if (CartoApp.prefsStorage === null || CartoApp.projectsStorage === null) {

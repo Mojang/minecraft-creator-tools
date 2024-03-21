@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "../info/ProjectInfoItem";
 import Project from "../app/Project";
 import IProjectInfoGenerator from "../info/IProjectInfoGenerator";
@@ -11,6 +14,7 @@ import ResourceManifestJson from "../minecraft/ResourceManifestJson";
 import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
+import ContentIndex from "../core/ContentIndex";
 
 export default class MinEngineVersionManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "MINENGINEVER";
@@ -128,7 +132,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
-  async generate(project: Project): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const infoItems: ProjectInfoItem[] = [];
 
     const ver = await Database.getLatestVersionInfo(false);

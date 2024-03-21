@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ComponentizedBase from "./ComponentizedBase";
 import IPropertyObject from "../dataform/IPropertyObject";
 import IProperty from "./../dataform/IProperty";

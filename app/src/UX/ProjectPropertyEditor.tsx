@@ -17,12 +17,11 @@ import {
   ThemeInput,
 } from "@fluentui/react-northstar";
 
-import { faDice, faMap, faBinoculars } from "@fortawesome/free-solid-svg-icons";
+import { faDice, faBinoculars } from "@fortawesome/free-solid-svg-icons";
 import ConnectToGitHub from "./ConnectToGitHub";
 import Utilities from "../core/Utilities";
 import Log from "../core/Log";
 import GitHubManager from "../github/GitHubManager";
-import ProjectExporter from "../app/ProjectExporter";
 import AppServiceProxy from "../core/AppServiceProxy";
 import { ProjectEditPreference, ProjectScriptLanguage, ProjectScriptVersion } from "../app/IProjectData";
 import CartoApp, { HostType } from "../app/CartoApp";
@@ -89,7 +88,6 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     this._handleDataUuidChanged = this._handleDataUuidChanged.bind(this);
     this._handleConnectToGitHub = this._handleConnectToGitHub.bind(this);
     this._handleDescriptionChanged = this._handleDescriptionChanged.bind(this);
-    this._pushGameTestReferenceMap = this._pushGameTestReferenceMap.bind(this);
     this._rescanFiles = this._rescanFiles.bind(this);
     this._handleVersionMajorChanged = this._handleVersionMajorChanged.bind(this);
     this._handleVersionMinorChanged = this._handleVersionMinorChanged.bind(this);
@@ -429,10 +427,6 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     GitHubManager.signIn();
   }
 
-  _pushGameTestReferenceMap() {
-    ProjectExporter.generateAndInvokeFlatPackRefMCWorld(this.props.carto, this.props.project);
-  }
-
   render() {
     const gitHubInner = [];
     // const gitHubCommands = [];
@@ -599,17 +593,6 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     }
 
     if (this.props.carto.workingStorage !== null && AppServiceProxy.hasAppServiceOrDebug) {
-      localTools.push(
-        <Button
-          key="openGtWorld"
-          content="Open GameTest test world"
-          icon={<FontAwesomeIcon icon={faMap} className="fa-lg" />}
-          onClick={this._pushGameTestReferenceMap}
-          iconPosition="before"
-          primary
-        />
-      );
-
       let rescanStr = "Re-scan files";
 
       const projFolder = this.props.project.projectFolder;

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
 import IFile from "./IFile";
@@ -210,7 +213,7 @@ export default class StorageProxy {
   }
 
   async readUtf8File(sender: any, command: string, data: any) {
-    Log.assert(typeof data === "string");
+    Log.assert(typeof data === "string", "SPRUF");
 
     const ensureFile = await this._storage.rootFolder.getFileFromRelativePath(data as string);
 
@@ -234,7 +237,7 @@ export default class StorageProxy {
   }
 
   async readFile(sender: any, command: string, data: any) {
-    Log.assert(typeof data === "string");
+    Log.assert(typeof data === "string", "SPXRF");
 
     const ensureFile = await this._storage.rootFolder.getFileFromRelativePath(data as string);
 
@@ -269,7 +272,7 @@ export default class StorageProxy {
   }
 
   async createDirectory(sender: any, command: string, data: any) {
-    Log.assert(typeof data === "string");
+    Log.assert(typeof data === "string", "SPXCD");
 
     const ensureFolder = await this._storage.rootFolder.ensureFolderFromRelativePath(data as string);
 
@@ -284,7 +287,7 @@ export default class StorageProxy {
   }
 
   async folderExists(sender: any, command: string, data: any) {
-    Log.assert(typeof data === "string");
+    Log.assert(typeof data === "string", "SPXFOE");
 
     const folder = await this._storage.rootFolder.getFolderFromRelativePath(data as string);
 
@@ -299,7 +302,7 @@ export default class StorageProxy {
   }
 
   async readDir(sender: any, command: string, data: any) {
-    Log.assert(typeof data === "string");
+    Log.assert(typeof data === "string", "SPXRD");
 
     const folder = await this._storage.rootFolder.getFolderFromRelativePath(data as string);
 
@@ -323,7 +326,7 @@ export default class StorageProxy {
   }
 
   async stat(sender: any, command: string, data: any) {
-    Log.assert(typeof data === "string");
+    Log.assert(typeof data === "string", "SPXST");
 
     const folder = await this._storage.rootFolder.getFolderFromRelativePath(data as string);
 
@@ -345,7 +348,7 @@ export default class StorageProxy {
   }
 
   async fileExists(sender: any, command: string, data: any) {
-    Log.assert(typeof data === "string");
+    Log.assert(typeof data === "string", "SPXFE");
 
     const file = await this._storage.rootFolder.getFileFromRelativePath(data as string);
 

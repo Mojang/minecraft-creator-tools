@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IProperty from "./IProperty";
 import { IEvent } from "ste-events";
 

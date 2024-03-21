@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectExporter from "../app/ProjectExporter";
 import Carto from "../app/Carto";
 import Project from "../app/Project";
@@ -14,7 +17,7 @@ export default class LocalTools {
     const fileName = project.name + ".mcworld";
 
     carto.notifyStatusUpdate("Packing " + fileName);
-    const newBytes = await ProjectExporter.getFlatBetaApisWorldWithPacksZip(carto, project, name);
+    const newBytes = await ProjectExporter.generateFlatBetaApisWorldWithPacksZipBytes(carto, project, name);
 
     carto.notifyStatusUpdate("Now saving " + fileName);
 

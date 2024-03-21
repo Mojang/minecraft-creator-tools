@@ -32,13 +32,18 @@ import ProjectItemManager from "../app/ProjectItemManager";
 import "./ProjectItemList.css";
 import Utilities from "../core/Utilities";
 import NewBlockType from "./NewBlockType";
-import { ProjectEditPreference } from "../app/IProjectData";
+import { ProjectEditPreference, ProjectScriptLanguage } from "../app/IProjectData";
 import IGalleryProject from "../app/IGalleryProject";
 import ColorUtilities from "../core/ColorUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolder } from "@fortawesome/free-regular-svg-icons";
-import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
+import ProjectInfoSet from "../info/ProjectInfoSet";
+import IProjectItemSeed from "../app/IProjectItemSeed";
+import NewItem from "./NewItem";
+import ProjectInfoItem from "../info/ProjectInfoItem";
+import { AnnotatedValueSet, IAnnotatedValue } from "../core/AnnotatedValue";
 
 export enum EntityTypeCommand {
   select,
@@ -60,8 +65,11 @@ interface IProjectItemListProps extends IAppProps {
   onActiveProjectItemChangeRequested?: (projectItem: ProjectItem, forceRawView: boolean) => void;
   onActiveReferenceChangeRequested?: (reference: IGitHubInfo) => void;
   onModeChangeRequested?: (mode: ProjectEditorMode) => void;
+  filteredItems?: IAnnotatedValue[];
   project: Project | null;
   editorMode: ProjectEditorMode;
+  allInfoSet: ProjectInfoSet;
+  allInfoSetGenerated: boolean;
   activeProjectItem: ProjectItem | null;
   heightOffset: number;
   readOnly: boolean;
@@ -69,18 +77,23 @@ interface IProjectItemListProps extends IAppProps {
 
 interface IProjectItemListState {
   activeItem: ProjectItem | undefined;
-  dialogMode: number;
+  dialogMode: ProjectItemListDialogType;
   maxItemsToShow: number;
+  newItemType?: ProjectItemType;
+  activeProjectInfoSet?: ProjectInfoSet | undefined;
   collapsedItemTypes: number[];
   collapsedStoragePaths: string[];
 }
 
-const PIL_NO_DIALOG = 1;
-const PIL_RENAME_DIALOG = 1;
-const PIL_DELETE_CONFIRM_DIALOG = 2;
-const PIL_NEW_ENTITY_TYPE_DIALOG = 3;
-const PIL_ADD_GITHUB_REFERENCE_DIALOG = 4;
-const PIL_NEW_BLOCK_TYPE_DIALOG = 5;
+export enum ProjectItemListDialogType {
+  noDialog = 0,
+  renameDialog = 1,
+  deleteConfirmDialog = 2,
+  newEntityTypeDialog = 3,
+  addGitHubReferenceDialog = 4,
+  newBlockTypeDialog = 5,
+  newItemDialog = 6,
+}
 
 export default class ProjectItemList extends Component<IProjectItemListProps, IProjectItemListState> {
   private _activeProject: Project | null = null;
@@ -91,6 +104,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   private _updatePending: boolean = false;
   private _isMountedInternal: boolean = false;
   private _lastSelectedAsMenuItem: number = 0;
+
+  private _tentativeNewItem: IProjectItemSeed | undefined;
 
   tentativeGitHubMode: string = "existing";
   tentativeGitHubRepoName?: string;
@@ -109,6 +124,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   constructor(props: IProjectItemListProps) {
     super(props);
 
+    this._updateNewItemSeed = this._updateNewItemSeed.bind(this);
+
+    this._handleNewItem = this._handleNewItem.bind(this);
     this._handleItemSelected = this._handleItemSelected.bind(this);
     this._handleProjectChanged = this._handleProjectChanged.bind(this);
     this._projectUpdated = this._projectUpdated.bind(this);
@@ -129,6 +147,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._handleConfirmDelete = this._handleConfirmDelete.bind(this);
     this._handleCancel = this._handleCancel.bind(this);
     this._handleItemTypeToggle = this._handleItemTypeToggle.bind(this);
+    this._handleItemTypeDoubleClick = this._handleItemTypeDoubleClick.bind(this);
     this._handleStoragePathToggle = this._handleStoragePathToggle.bind(this);
     this._handleNewFunctionClick = this._handleNewFunctionClick.bind(this);
     this._addGitHubReferenceClick = this._addGitHubReferenceClick.bind(this);
@@ -145,7 +164,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     this.state = {
       activeItem: undefined,
-      dialogMode: PIL_NO_DIALOG,
+      dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: 300,
       collapsedItemTypes: this.props.carto.collapsedTypes,
       collapsedStoragePaths: this.props.project ? this.props.project.collapsedStoragePaths : [],
@@ -328,11 +347,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       return;
     }
 
-    if (event.selectedIndex === 0) {
+    if (this.props.filteredItems === undefined && event.selectedIndex === 0) {
+      if (this.props && this.props.onModeChangeRequested !== undefined) {
+        this.props.onModeChangeRequested(ProjectEditorMode.actions);
+      }
+    } else if (this.props.filteredItems === undefined && event.selectedIndex === 1) {
       if (this.props && this.props.onModeChangeRequested !== undefined) {
         this.props.onModeChangeRequested(ProjectEditorMode.properties);
       }
-    } else if (event.selectedIndex === 1) {
+    } else if (this.props.filteredItems === undefined && event.selectedIndex === 2) {
       if (this.props && this.props.onModeChangeRequested !== undefined) {
         this.props.onModeChangeRequested(ProjectEditorMode.inspector);
       }
@@ -367,7 +390,11 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
   _handleNewScriptClick() {
     if (this.props.project !== null) {
-      ProjectItemManager.createNewScript(this.props.project);
+      this.launchNewItemType(
+        this.props.project.preferredScriptLanguage === ProjectScriptLanguage.javaScript
+          ? ProjectItemType.js
+          : ProjectItemType.ts
+      );
     }
   }
 
@@ -403,6 +430,22 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
   async _handleNewStructureClick() {}
 
+  launchNewItemType(itemType: ProjectItemType) {
+    this._tentativeNewItem = {
+      name: undefined,
+      itemType: itemType,
+    };
+
+    this.setState({
+      activeItem: this.state.activeItem,
+      dialogMode: ProjectItemListDialogType.newItemDialog,
+      newItemType: itemType,
+      maxItemsToShow: this.state.maxItemsToShow,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
+    });
+  }
+
   async _handleNewEntityTypeClick() {
     if (this.state === null || !this._isMountedInternal) {
       return;
@@ -410,7 +453,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     this.setState({
       activeItem: this.state.activeItem,
-      dialogMode: PIL_NEW_ENTITY_TYPE_DIALOG,
+      dialogMode: ProjectItemListDialogType.newEntityTypeDialog,
       maxItemsToShow: this.state.maxItemsToShow,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -424,7 +467,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     this.setState({
       activeItem: this.state.activeItem,
-      dialogMode: PIL_NEW_BLOCK_TYPE_DIALOG,
+      dialogMode: ProjectItemListDialogType.newBlockTypeDialog,
       maxItemsToShow: this.state.maxItemsToShow,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -438,7 +481,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     this.setState({
       activeItem: this.state.activeItem,
-      dialogMode: PIL_ADD_GITHUB_REFERENCE_DIALOG,
+      dialogMode: ProjectItemListDialogType.addGitHubReferenceDialog,
       maxItemsToShow: this.state.maxItemsToShow,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -454,7 +497,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     this.setState({
       activeItem: undefined,
-      dialogMode: PIL_NO_DIALOG,
+      dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: this.state.maxItemsToShow,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -480,7 +523,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     this.setState({
       activeItem: undefined,
-      dialogMode: PIL_NO_DIALOG,
+      dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: this.state.maxItemsToShow,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -507,11 +550,39 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     this.setState({
       activeItem: undefined,
-      dialogMode: PIL_NO_DIALOG,
+      dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: this.state.maxItemsToShow,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
+  }
+
+  async _handleNewItem() {
+    if (this.state === null) {
+      return;
+    }
+
+    let projectItem = undefined;
+
+    if (this._tentativeNewItem !== undefined && this.props.project !== null) {
+      projectItem = await ProjectItemManager.createNewItem(this.props.project, this._tentativeNewItem);
+    }
+
+    if (this.props.project) {
+      await this.props.project.save();
+    }
+
+    this.setState({
+      activeItem: projectItem,
+      dialogMode: ProjectItemListDialogType.noDialog,
+      maxItemsToShow: this.state.maxItemsToShow,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
+    });
+
+    if (projectItem && this.props.onActiveProjectItemChangeRequested) {
+      this.props.onActiveProjectItemChangeRequested(projectItem, false);
+    }
   }
 
   _handleAddReference() {
@@ -537,7 +608,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     this.setState({
       activeItem: undefined,
-      dialogMode: PIL_NO_DIALOG,
+      dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: this.state.maxItemsToShow,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -557,7 +628,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     this.setState({
       activeItem: undefined,
-      dialogMode: PIL_NO_DIALOG,
+      dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: this.state.maxItemsToShow,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -571,7 +642,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     this.setState({
       activeItem: undefined,
-      dialogMode: PIL_NO_DIALOG,
+      dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: this.state.maxItemsToShow,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -590,6 +661,29 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           } else {
             this.props.carto.ensureTypeIsCollapsed(i);
           }
+
+          this.props.carto.save();
+
+          this.setState({
+            activeItem: this.state.activeItem,
+            dialogMode: this.state.dialogMode,
+            maxItemsToShow: this.state.maxItemsToShow,
+            collapsedItemTypes: this.props.carto.collapsedTypes,
+            collapsedStoragePaths: this.state.collapsedStoragePaths,
+          });
+          return;
+        }
+      }
+    }
+  }
+
+  _handleItemTypeDoubleClick(e: SyntheticEvent<HTMLDivElement, Event>, data?: any | undefined) {
+    if (e && e.currentTarget && e.currentTarget.title) {
+      for (let i = 0; i < MaxItemTypes; i++) {
+        const name = "Toggle " + ProjectItemUtilities.getPluralDescriptionForType(i) + " visibility";
+
+        if (name === e.currentTarget.title) {
+          this.props.carto.ensureAllTypesCollapsedExcept(i);
 
           this.props.carto.save();
 
@@ -645,7 +739,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         if (data.content === "Rename") {
           this.setState({
             activeItem: projectItem,
-            dialogMode: PIL_RENAME_DIALOG,
+            dialogMode: ProjectItemListDialogType.renameDialog,
             maxItemsToShow: this.state.maxItemsToShow,
             collapsedItemTypes: this.state.collapsedItemTypes,
             collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -653,7 +747,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         } else if (data.content === "Delete") {
           this.setState({
             activeItem: projectItem,
-            dialogMode: PIL_DELETE_CONFIRM_DIALOG,
+            dialogMode: ProjectItemListDialogType.deleteConfirmDialog,
             maxItemsToShow: this.state.maxItemsToShow,
             collapsedItemTypes: this.state.collapsedItemTypes,
             collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -668,37 +762,67 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     e.bubbles = false;
   }
 
-  _addTypeSpacer(itemType: ProjectItemType) {
+  _addTypeSpacer(itemType: ProjectItemType, isToggleable: boolean) {
     const name = ProjectItemUtilities.getPluralDescriptionForType(itemType);
     const color = ProjectItemUtilities.getColorForType(itemType);
 
-    color.alpha = 0.3;
+    color.alpha = 0.2;
+
+    let additionalData = <></>;
+
+    if (this.props.allInfoSet && this.props.allInfoSet.completedGeneration) {
+      const items = this.props.allInfoSet.getItems("LINESIZE", itemType + 100);
+
+      if (items.length === 1) {
+        const countVal = items[0].getFeatureContaining("count");
+        const totalVal = Utilities.getSimpleNumeric(items[0].getFeatureContaining("total"));
+
+        if (countVal !== undefined && totalVal !== undefined) {
+          const isBinary = ProjectItemUtilities.isBinaryType(itemType);
+          const statSummary = countVal + " files, " + totalVal + " " + (isBinary ? "bytes" : "lines");
+
+          additionalData = (
+            <span className="pil-stats" title={statSummary}>
+              {countVal} - {totalVal}
+            </span>
+          );
+        }
+      }
+    }
+
+    let toggle = <></>;
+
+    if (isToggleable) {
+      toggle = (
+        <div className="pil-itemTypeCollapsedToggle">
+          <FontAwesomeIcon
+            icon={this.props.carto.collapsedTypes.includes(itemType) ? faCaretRight : faCaretDown}
+            className="fa-md"
+          />
+        </div>
+      );
+    }
 
     this._projectListItems.push({
       header: (
         <div
           className="pil-itemTypeHeader"
           key={"eit" + itemType}
+          onClick={this._handleItemTypeToggle}
+          onDoubleClick={this._handleItemTypeDoubleClick}
+          title={"Toggle " + name + " visibility"}
           style={{
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
             backgroundColor: ColorUtilities.toCss(color),
           }}
         >
-          <div
-            className="pil-itemTypeCollapsedToggle"
-            onClick={this._handleItemTypeToggle}
-            title={"Toggle " + name + " visibility"}
-          >
-            <FontAwesomeIcon
-              icon={this.props.carto.collapsedTypes.includes(itemType) ? faCaretUp : faCaretDown}
-              className="fa-md"
-            />
-          </div>
+          {toggle}
           <MenuButton
             contextMenu={true}
             trigger={
               <span className="pil-headerLabel">
                 <span className="pil-name">{name}</span>
+                {additionalData}
               </span>
             }
             onMenuItemClick={this._contextMenuClick}
@@ -708,17 +832,37 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     });
   }
 
-  _addStoragePathSpacer(storagePathFolder: string, itemType: ProjectItemType) {
+  _addStoragePathSpacer(storagePathFolder: string, itemType: ProjectItemType, isToggleable: boolean) {
     const name = storagePathFolder;
     const typeColor = ProjectItemUtilities.getColorForType(itemType);
 
-    typeColor.alpha = 0.3;
+    typeColor.alpha = 0.2;
+
+    let toggle = <></>;
+
+    if (isToggleable) {
+      toggle = (
+        <div
+          className="pil-storagePathCollapsedToggle"
+          style={{
+            backgroundColor: ColorUtilities.toCss(ColorUtilities.darker(typeColor, 0.1)),
+          }}
+        >
+          <FontAwesomeIcon
+            icon={this.props.project?.collapsedStoragePaths.includes(storagePathFolder) ? faCaretRight : faCaretDown}
+            className="fa-md"
+          />
+        </div>
+      );
+    }
 
     this._projectListItems.push({
       header: (
         <div
           className="pil-pathHeader"
           key={"eit" + itemType}
+          onClick={this._handleStoragePathToggle}
+          title={"Toggle " + name + " visibility"}
           style={{
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
           }}
@@ -726,19 +870,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           <div className="pil-itemTypeTag" style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}>
             &#160;
           </div>
-          <div
-            className="pil-storagePathCollapsedToggle"
-            style={{
-              backgroundColor: ColorUtilities.toCss(ColorUtilities.darker(typeColor, 0.1)),
-            }}
-            onClick={this._handleStoragePathToggle}
-            title={"Toggle " + name + " visibility"}
-          >
-            <FontAwesomeIcon
-              icon={this.props.project?.collapsedStoragePaths.includes(storagePathFolder) ? faCaretUp : faCaretDown}
-              className="fa-md"
-            />
-          </div>
+          {toggle}
+
           <div
             className="pil-storagePathIcon"
             style={{
@@ -789,15 +922,69 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     typeColor.alpha = 0.3;
 
     if (this.props.readOnly) {
+      const itemItems = [];
+
+      let issues: ProjectInfoItem[] | undefined = undefined;
+
+      if (this.props.allInfoSet && this.props.allInfoSetGenerated && projectItem.storagePath) {
+        issues = this.props.allInfoSet.getItemsByStoragePath(projectItem.storagePath);
+        if (issues?.length === 0) {
+          issues = undefined;
+        }
+      }
+
+      if (sourceImage !== "") {
+        itemItems.push(
+          <span
+            style={{
+              gridColumn: issues ? 3 : 4,
+              backgroundImage: sourceImage,
+              backgroundSize: "cover",
+            }}
+          >
+            &#160;
+          </span>
+        );
+      }
+
+      let nameSpan = 1;
+
+      if (issues) {
+        let errorMessage = "";
+
+        for (const issue of issues) {
+          errorMessage += issue.message + "\r\n";
+        }
+
+        itemItems.push(
+          <span className="pil-itemIndicatorRO" title={errorMessage} key={"pil-ii" + projectItem.storagePath}>
+            {issues.length}
+          </span>
+        );
+      } else {
+        nameSpan++;
+      }
+
+      if (sourceImage === "") {
+        nameSpan++;
+      }
+
       this._projectListItems.push({
         content: (
           <div className="pil-item" key={"ro" + projectItem.storagePath}>
             <div className="pil-itemTypeTag" style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}>
               &#160;
             </div>
-            <span className="pil-itemLabel">
+            <span
+              className="pil-itemLabel"
+              style={{
+                gridColumnStart: 2,
+                gridColumnEnd: 2 + nameSpan,
+              }}
+            >
               <span className="pil-name">{name}</span>
             </span>
+            {itemItems}
           </div>
         ),
       });
@@ -845,46 +1032,113 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         name = "(error) " + name;
       }
 
-      //title += " " + projectItem.itemType;
+      const itemItems = [];
+
+      let issues: ProjectInfoItem[] | undefined = undefined;
+
+      if (this.props.allInfoSet && this.props.allInfoSetGenerated && projectItem.storagePath) {
+        issues = this.props.allInfoSet.getItemsByStoragePath(projectItem.storagePath);
+        if (issues?.length === 0) {
+          issues = undefined;
+        }
+      }
+
+      itemItems.push(
+        <div className="pil-itemTypeTag" style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}>
+          &#160;
+        </div>
+      );
+
+      let nameSpan = 1;
+      if (projectItem !== this.props.activeProjectItem && sourceImage === "") {
+        nameSpan++;
+      }
+
+      if (issues === undefined) {
+        nameSpan++;
+      }
+
+      itemItems.push(
+        <MenuButton
+          contextMenu={true}
+          trigger={
+            <span
+              className="pil-itemLabel"
+              style={{
+                gridColumnStart: 2,
+                gridColumnEnd: 2 + nameSpan,
+              }}
+            >
+              <span className={nameCss} title={title}>
+                {name}
+              </span>
+            </span>
+          }
+          menu={itemMenu}
+          onMenuItemClick={this._contextMenuClick}
+        />
+      );
+
+      if (projectItem === this.props.activeProjectItem || sourceImage !== "") {
+        itemItems.push(
+          <MenuButton
+            style={{
+              gridColumn: issues ? 3 : 4,
+              backgroundImage: sourceImage,
+              backgroundSize: "cover",
+            }}
+            trigger={
+              <span
+                className={
+                  projectItem === this.props.activeProjectItem
+                    ? "pil-contextMenuButton"
+                    : "pil-contextMenuButton pil-cmbUnfocused"
+                }
+              >
+                <Button content="..." aria-label="Click button" />
+              </span>
+            }
+            menu={itemMenu}
+            onMenuItemClick={this._contextMenuClick}
+          />
+        );
+      }
+
+      if (issues) {
+        let errorMessage = "";
+
+        for (const issue of issues) {
+          errorMessage += issue.message + "\r\n";
+        }
+        itemItems.push(
+          <MenuButton
+            style={{
+              gridColumn: 4,
+            }}
+            title={errorMessage}
+            trigger={
+              <span className="pil-itemIndicator">
+                <Button content={issues.length} aria-label="Click button" />
+              </span>
+            }
+            menu={itemMenu}
+            onMenuItemClick={this._contextMenuClick}
+          />
+        );
+      }
 
       this._projectListItems.push({
         content: (
-          <div className="pil-item" key={"eo" + projectItem.storagePath}>
-            <div className="pil-itemTypeTag" style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}>
-              &#160;
-            </div>
-            <MenuButton
-              contextMenu={true}
-              trigger={
-                <span className="pil-itemLabel">
-                  <span className={nameCss} title={title}>
-                    {name}
-                  </span>
-                </span>
-              }
-              menu={itemMenu}
-              onMenuItemClick={this._contextMenuClick}
-            />
-            <MenuButton
-              trigger={
-                <span
-                  className={
-                    projectItem === this.props.activeProjectItem
-                      ? "pil-contextMenuButton"
-                      : "pil-contextMenuButton pil-cmbUnfocused"
-                  }
-                >
-                  <Button content="..." aria-label="Click button" />
-                </span>
-              }
-              menu={itemMenu}
-              style={{ backgroundImage: sourceImage, backgroundSize: "cover" }}
-              onMenuItemClick={this._contextMenuClick}
-            />
+          <div className="pil-item" key={"eoa" + projectItem.storagePath}>
+            {itemItems}
           </div>
         ),
       });
     }
+  }
+
+  _updateNewItemSeed(newSeed: IProjectItemSeed) {
+    this._tentativeNewItem = newSeed;
   }
 
   _addReference(reference: IGitHubInfo) {
@@ -978,6 +1232,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       return false;
     }
 
+    if (this.props.filteredItems) {
+      return AnnotatedValueSet.includes(this.props.filteredItems, projectItem.storagePath);
+    }
+
     const cat = ProjectItemUtilities.getCategory(projectItem.itemType);
 
     if (!this.props.project.showFunctions && cat === ProjectItemCategory.logic) {
@@ -1001,7 +1259,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       cat === ProjectItemCategory.package ||
       projectItem.itemType === ProjectItemType.lang || // should be handled by Text editor
       projectItem.itemType === ProjectItemType.languagesCatalogResourceJson || // should be handled by Text editor
-      projectItem.itemType === ProjectItemType.fileListJson ||
+      projectItem.itemType === ProjectItemType.fileListArrayJson ||
+      projectItem.itemType === ProjectItemType.buildProcessedJs ||
+      projectItem.itemType === ProjectItemType.catalogIndexJs ||
+      projectItem.itemType === ProjectItemType.behaviorPackFolder || // some day we may explicitly show pack folders
+      projectItem.itemType === ProjectItemType.resourcePackFolder ||
+      projectItem.itemType === ProjectItemType.skinPackFolder ||
       projectItem.itemType === ProjectItemType.blocksCatalogResourceJson || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.blockTypeResourceJson || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.entityTypeResourceJson || // this should be handled by entity type editor for bp entity type
@@ -1059,32 +1322,65 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   render() {
     this._projectListItems = [];
 
-    this._projectListItems.push({
-      header: (
-        <div className="pil-fixedLine" key="pil-fixpropj">
-          {this.props.readOnly ? "Add-On" : "Project"}
-        </div>
-      ),
-      headerMedia: " ",
-      content: " ",
-    });
+    if (this.props.filteredItems === undefined) {
+      this._projectListItems.push({
+        header: (
+          <div className="pil-fixedLine" key="pil-info">
+            Actions
+          </div>
+        ),
+        headerMedia: " ",
+        content: " ",
+      });
 
-    this._projectListItems.push({
-      header: (
-        <div className="pil-fixedLine" key="pil-info">
-          Inspector
-        </div>
-      ),
-      headerMedia: " ",
-      content: " ",
-    });
+      let projectContent = <></>;
+
+      if (this.props.allInfoSet.info.defaultIcon && this.props.allInfoSet.info.defaultIcon) {
+        projectContent = (
+          <div className="pil-fixedLineRow" key="pil-fixpropjRowA">
+            <div className="pil-projectName">{this.props.readOnly ? "Add-On" : "Project"}</div>
+            <div
+              className="pil-projectIcon"
+              style={{
+                backgroundImage: "url('data:image/png;base64, " + this.props.allInfoSet.info.defaultIcon + "')",
+              }}
+            ></div>
+          </div>
+        );
+      } else {
+        projectContent = (
+          <div className="pil-fixedLine" key="pil-fixpropj">
+            {this.props.readOnly ? "Add-On" : "Project"}
+          </div>
+        );
+      }
+
+      this._projectListItems.push({
+        header: projectContent,
+        headerMedia: " ",
+        content: " ",
+      });
+
+      this._projectListItems.push({
+        header: (
+          <div className="pil-fixedLine" key="pil-info">
+            Inspector
+          </div>
+        ),
+        headerMedia: " ",
+        content: " ",
+      });
+    }
 
     const splitButtonMenuItems: any[] = [
       {
         id: "gpscript",
         key: "gpscript",
         onClick: this._handleNewScriptClick,
-        content: "New script",
+        content:
+          this.props.project?.preferredScriptLanguage === ProjectScriptLanguage.typeScript
+            ? "New TypeScript"
+            : "New JavaScript",
       },
       {
         id: "function",
@@ -1158,9 +1454,16 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
 
     let selectedItemIndex = 0;
+    let itemsAdded = 0;
 
-    if (this.props.editorMode === ProjectEditorMode.inspector) {
-      selectedItemIndex = 1;
+    if (this.props.filteredItems === undefined) {
+      if (this.props.editorMode === ProjectEditorMode.properties) {
+        selectedItemIndex = 1;
+      } else if (this.props.editorMode === ProjectEditorMode.inspector) {
+        selectedItemIndex = 2;
+      }
+
+      itemsAdded = 3;
     }
 
     let lastItemType = -1;
@@ -1168,8 +1471,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     this._itemIndices = [];
     this._itemTypes = [];
-
-    let itemsAdded = 2;
 
     if (this.props.project) {
       const projectItems = this.props.project.items.sort(ProjectItemList.sortItems);
@@ -1180,27 +1481,41 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         if (projectItem !== undefined && projectItem.storagePath !== null && projectItem.storagePath !== undefined) {
           if (this.shouldShowProjectItem(projectItem)) {
             if (projectItem.itemType !== lastItemType) {
-              this._addTypeSpacer(projectItem.itemType);
+              this._addTypeSpacer(projectItem.itemType, this.props.filteredItems === undefined);
               this._itemTypes[itemsAdded] = ListItemType.typeSpacer;
               this._itemIndices[itemsAdded] = projectItem.itemType;
               itemsAdded++;
               lastItemType = projectItem.itemType;
             }
 
-            if (!this.state.collapsedItemTypes.includes(projectItem.itemType)) {
-              const folderStoragePath = projectItem.getFolderGroupingPath();
+            if (
+              this.props.filteredItems !== undefined ||
+              !this.state.collapsedItemTypes.includes(projectItem.itemType)
+            ) {
+              const folderGroupingPath = projectItem.getFolderGroupingPath();
 
-              if (folderStoragePath !== lastStorageRoot) {
-                const folderGroupingPath = projectItem.getFolderGroupingPath();
-                if (folderGroupingPath !== undefined && folderGroupingPath.length > 1) {
-                  this._addStoragePathSpacer(folderGroupingPath, projectItem.itemType);
+              if (folderGroupingPath !== lastStorageRoot) {
+                if (
+                  folderGroupingPath !== undefined &&
+                  folderGroupingPath.length > 1 &&
+                  projectItem.itemType !== ProjectItemType.soundsCatalogResourceJson
+                ) {
+                  this._addStoragePathSpacer(
+                    folderGroupingPath,
+                    projectItem.itemType,
+                    this.props.filteredItems === undefined
+                  );
                   this._itemTypes[itemsAdded] = ListItemType.pathSpacer;
                   itemsAdded++;
                 }
-                lastStorageRoot = folderStoragePath;
+                lastStorageRoot = folderGroupingPath;
               }
 
-              if (!folderStoragePath || !this.state.collapsedStoragePaths.includes(folderStoragePath)) {
+              if (
+                this.props.filteredItems !== undefined ||
+                !folderGroupingPath ||
+                !this.state.collapsedStoragePaths.includes(folderGroupingPath)
+              ) {
                 if (projectItem === this.props.activeProjectItem) {
                   selectedItemIndex = this._projectListItems.length;
                 }
@@ -1288,7 +1603,11 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     let dialogArea = <></>;
 
-    if (this.state !== null && this.state.dialogMode === PIL_RENAME_DIALOG && this.state.activeItem !== undefined) {
+    if (
+      this.state !== null &&
+      this.state.dialogMode === ProjectItemListDialogType.renameDialog &&
+      this.state.activeItem !== undefined
+    ) {
       dialogArea = (
         <Dialog
           open={true}
@@ -1308,7 +1627,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       );
     } else if (
       this.state !== null &&
-      this.state.dialogMode === PIL_DELETE_CONFIRM_DIALOG &&
+      this.state.dialogMode === ProjectItemListDialogType.deleteConfirmDialog &&
       this.state.activeItem !== undefined
     ) {
       dialogArea = (
@@ -1330,7 +1649,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     } else if (
       this.state !== null &&
       this.props.project !== null &&
-      this.state.dialogMode === PIL_NEW_ENTITY_TYPE_DIALOG
+      this.state.dialogMode === ProjectItemListDialogType.newEntityTypeDialog
     ) {
       dialogArea = (
         <Dialog
@@ -1355,7 +1674,59 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     } else if (
       this.state !== null &&
       this.props.project !== null &&
-      this.state.dialogMode === PIL_NEW_BLOCK_TYPE_DIALOG
+      this.state.dialogMode === ProjectItemListDialogType.newEntityTypeDialog
+    ) {
+      dialogArea = (
+        <Dialog
+          open={true}
+          cancelButton="Cancel"
+          confirmButton="Add"
+          key="pil-newEntityOuter"
+          onCancel={this._handleCancel}
+          onConfirm={this._handleNewEntityType}
+          content={
+            <NewEntityType
+              theme={this.props.theme}
+              key="pil-newEntityDia"
+              onNewEntityTypeUpdated={this._newEntityTypeUpdated}
+              project={this.props.project}
+              carto={this.props.carto}
+            />
+          }
+          header={"New mob"}
+        />
+      );
+    } else if (
+      this.state !== null &&
+      this.props.project !== null &&
+      this.state.newItemType !== undefined &&
+      this.state.dialogMode === ProjectItemListDialogType.newItemDialog
+    ) {
+      dialogArea = (
+        <Dialog
+          open={true}
+          cancelButton="Cancel"
+          confirmButton="Add"
+          key="pil-newItemOuter"
+          onCancel={this._handleCancel}
+          onConfirm={this._handleNewItem}
+          content={
+            <NewItem
+              theme={this.props.theme}
+              key="pil-newItemDia"
+              itemType={this.state.newItemType}
+              onNewItemSeedUpdated={this._updateNewItemSeed}
+              project={this.props.project}
+              carto={this.props.carto}
+            />
+          }
+          header={"New " + ProjectItemUtilities.getDescriptionForType(this.state.newItemType)}
+        />
+      );
+    } else if (
+      this.state !== null &&
+      this.props.project !== null &&
+      this.state.dialogMode === ProjectItemListDialogType.newBlockTypeDialog
     ) {
       dialogArea = (
         <Dialog
@@ -1379,7 +1750,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     } else if (
       this.state !== null &&
       this.props.project !== null &&
-      this.state.dialogMode === PIL_ADD_GITHUB_REFERENCE_DIALOG
+      this.state.dialogMode === ProjectItemListDialogType.addGitHubReferenceDialog
     ) {
       dialogArea = (
         <Dialog

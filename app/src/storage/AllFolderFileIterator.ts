@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFile from "./IFile";
 import IFolder from "./IFolder";
 

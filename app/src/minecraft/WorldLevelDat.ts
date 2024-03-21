@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import NbtBinary from "./NbtBinary";
 import { NbtTagType } from "./NbtBinaryTag";
 import Log from "../core/Log";
@@ -314,7 +317,7 @@ export default class WorldLevelDat implements IWorldSettings {
     }
 
     if (this.generator === undefined) {
-      this.generator = Generator.flat;
+      this.generator = Generator.infinite;
     }
 
     if (this.inventoryVersion === undefined) {

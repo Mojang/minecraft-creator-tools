@@ -1,0 +1,162 @@
+import { Component, MouseEvent, SyntheticEvent } from "react";
+import IAppProps from "./IAppProps";
+import Project from "../app/Project";
+import "./ProjectActions.css";
+import { ThemeInput } from "@fluentui/react-northstar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import ProjectEditorUtilities, { ProjectEditorAction, ProjectEditorMode } from "./ProjectEditorUtilities";
+import { faFileZipper } from "@fortawesome/free-regular-svg-icons";
+
+interface IProjectActionsProps extends IAppProps {
+  project: Project;
+  theme: ThemeInput<any>;
+  heightOffset: number;
+  onActionRequested?: (action: ProjectEditorAction) => void;
+  onModeChangeRequested?: (mode: ProjectEditorMode) => void;
+}
+
+interface IProjectActionsState {}
+
+export default class ProjectActions extends Component<IProjectActionsProps, IProjectActionsState> {
+  constructor(props: IProjectActionsProps) {
+    super(props);
+
+    this._downloadFlatWorld = this._downloadFlatWorld.bind(this);
+    this._downloadProjectWorld = this._downloadProjectWorld.bind(this);
+    this._exportLocal = this._exportLocal.bind(this);
+    this._exportZip = this._exportZip.bind(this);
+    this._inspectProject = this._inspectProject.bind(this);
+    this._showProjectSettings = this._showProjectSettings.bind(this);
+
+    this.state = {};
+  }
+
+  private _inspectProject() {
+    if (this.props.onModeChangeRequested) {
+      this.props.onModeChangeRequested(ProjectEditorMode.inspector);
+    }
+  }
+  private _cancelBubble(event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null) {
+    event?.stopPropagation();
+  }
+
+  private _showProjectSettings(event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null) {
+    if (this.props.onActionRequested) {
+      this.props.onActionRequested(ProjectEditorAction.worldPropertiesDialog);
+    }
+    event?.stopPropagation();
+  }
+
+  private _downloadFlatWorld() {
+    ProjectEditorUtilities.launchFlatWorldWithPacksDownload(this.props.carto, this.props.project);
+  }
+
+  private _downloadProjectWorld() {
+    ProjectEditorUtilities.launchProjectWorldWithPacksDownload(this.props.carto, this.props.project);
+  }
+
+  private _exportLocal() {
+    ProjectEditorUtilities.launchLocalExport(this.props.carto, this.props.project);
+  }
+
+  private _exportZip() {
+    ProjectEditorUtilities.launchZipExport(this.props.carto, this.props.project);
+  }
+
+  private _handleToolTileMouseDown(event: MouseEvent) {
+    if (event.currentTarget && event.currentTarget.className.indexOf("tileDown") < 0) {
+      event.currentTarget.className = event.currentTarget.className + " pact-tileDown";
+    }
+  }
+
+  private _handleToolTileMouseUp(event: MouseEvent) {
+    if (event.currentTarget && event.currentTarget.className.indexOf("tileDown") >= 0) {
+      event.currentTarget.className = event.currentTarget.className.replace(" pact-tileDown", "");
+    }
+  }
+
+  render() {
+    const exportBin = [];
+    const inspectBin = [];
+
+    inspectBin.push(
+      <div
+        className="pact-toolTile"
+        key="pact-inspectProject"
+        style={{
+          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+        }}
+        onClick={this._inspectProject}
+        onMouseDown={this._handleToolTileMouseDown}
+        onMouseUp={this._handleToolTileMouseUp}
+      >
+        <div
+          className="pact-toolTileInner"
+          style={{
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+          }}
+        >
+          <div className="pact-toolTile-label">
+            <div className="pact-faIconWrap">
+              <FontAwesomeIcon icon={faMagnifyingGlass} className="fa-xl" />
+            </div>
+            <div className="pact-label">Inspect this project</div>
+          </div>
+          <div className="pact-toolTile-instruction">
+            Use a variety of different test suites to identify any issues with this project.
+          </div>
+        </div>
+      </div>
+    );
+
+    exportBin.push(
+      <div
+        className="pact-toolTile"
+        key="pact-exportZip"
+        style={{
+          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+        }}
+        onClick={this._exportZip}
+        onMouseDown={this._handleToolTileMouseDown}
+        onMouseUp={this._handleToolTileMouseUp}
+      >
+        <div
+          className="pact-toolTileInner"
+          style={{
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+          }}
+        >
+          <div className="pact-toolTile-label">
+            <div className="pact-faIconWrapIn">
+              <FontAwesomeIcon icon={faFileZipper} className="fa-xl" />
+            </div>
+            <div className="pact-label">Export as a zip file</div>
+          </div>
+          <div className="pact-toolTile-instruction">Exports this project as a zip file</div>
+        </div>
+      </div>
+    );
+
+    const height = "calc(100vh - " + this.props.heightOffset + "px)";
+
+    return (
+      <div
+        className="pact-outer"
+        style={{
+          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+          color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+          minHeight: height,
+          maxHeight: height,
+        }}
+      >
+        <div className="pact-binHeader">Inspect and optimize this project</div>
+        <div className="pact-tileBin">{inspectBin}</div>
+      </div>
+    );
+  }
+}

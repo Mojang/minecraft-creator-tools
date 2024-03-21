@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IProjectItemData from "./IProjectItemData";
 import IGitHubInfo from "./IGitHubInfo";
 import ITool from "./ITool";

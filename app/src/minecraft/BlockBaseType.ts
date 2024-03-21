@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IBlockBaseTypeData from "./IBlockBaseTypeData";
 
 export default class BlockBaseType {

@@ -1,3 +1,32 @@
+@media only screen and (min-width: 860px) {
+  .pe-meta {
+    padding: 10px 4px 8px 11px;
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
+    grid-row: 1;
+    grid-column: 4;
+  }
+}
+@media only screen and (max-width: 860px) {
+  .pe-meta {
+    display: none;
+  }
+}
+
+.pe-menuIcon {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  position: relative;
+  left: -2px;
+  top: -1px;
+  image-rendering: pixelated;
+  max-width: 20px;
+  min-height: 20px;
+  max-height: 20px;
+}
+
 .pe-dragOver {
   position: fixed;
   width: calc(100vw - 20px);
@@ -29,25 +58,10 @@
   grid-template-rows: 0px 1fr 0px;
 }
 
-.pe-meta {
-  padding: 10px 4px 8px 11px;
-  cursor: default;
-  user-select: none;
-  -webkit-user-select: none;
-  grid-column-start: 3;
-  grid-column-end: 4;
-}
-
-.pe-metaArea {
-  display: grid;
-  grid-template-columns: 245px 40px;
-}
-
 .pe-title {
-  max-width: 245px;
-  width: 245px;
-  padding-top: 6px;
-  grid-column: 1;
+  max-width: 275px;
+  width: 275px;
+  padding-top: 4px;
   overflow-y: hidden;
   overflow-x: hidden;
   text-overflow: ellipsis;
@@ -71,6 +85,7 @@
 .pe-toolbar {
   grid-column-start: 1;
   grid-column-end: 5;
+  grid-row: 1;
   padding-left: 4px;
   padding-right: 4px;
   padding-top: 2px;

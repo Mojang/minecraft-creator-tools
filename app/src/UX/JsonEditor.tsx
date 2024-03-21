@@ -4,7 +4,6 @@ import IFile from "./../storage/IFile";
 import Editor from "@monaco-editor/react";
 import "./JsonEditor.css";
 import * as monaco from "monaco-editor";
-import IPersistable from "./IPersistable";
 import { ThemeInput, Toolbar } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearchPlus, faSearchMinus } from "@fortawesome/free-solid-svg-icons";
@@ -18,7 +17,6 @@ interface IJsonEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
   theme: ThemeInput<any>;
-
   preferredTextSize: number;
   item: ProjectItem;
   onUpdatePreferredTextSize: (newSize: number) => void;
@@ -29,7 +27,7 @@ interface IJsonEditorState {
   isLoaded: boolean;
 }
 
-export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> implements IPersistable {
+export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> {
   editor?: monaco.editor.IStandaloneCodeEditor;
   _needsPersistence: boolean = false;
   _monaco: any;
@@ -159,7 +157,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
   }
 
   async persist() {
-    if (this.editor !== undefined && this.state.fileToEdit) {
+    if (this.editor !== undefined && this.state.fileToEdit && !this.props.readOnly) {
       this._needsPersistence = false;
 
       const value = this.editor.getValue();
@@ -239,6 +237,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
             options={{
               fontSize: this.props.preferredTextSize,
               readOnly: this.props.readOnly,
+              renderValidationDecorations: "on",
             }}
             path={coreUri}
             beforeMount={this._handleEditorWillMount}

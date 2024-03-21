@@ -1,8 +1,11 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "./ProjectInfoItem";
 import ProjectItem from "./../app/ProjectItem";
 import IProjectInfoGeneratorBase from "./IProjectInfoGeneratorBase";
-import ProjectInfoSet from "./ProjectInfoSet";
+import ContentIndex from "../core/ContentIndex";
 
 export default interface IProjectItemInfoGenerator extends IProjectInfoGeneratorBase {
-  generate(projectItem: ProjectItem): Promise<ProjectInfoItem[]>;
+  generate(projectItem: ProjectItem, contentIndex: ContentIndex): Promise<ProjectInfoItem[]>;
 }

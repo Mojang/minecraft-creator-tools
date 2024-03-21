@@ -1,11 +1,15 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IParticleEffectWrapper } from "./IParticleEffect";
+import MinecraftUtilities from "./MinecraftUtilities";
 
 export default class ParticleEffectResourceDefinition {
-  public particleEffectWrapper?: IParticleEffectWrapper;
+  public wrapper?: IParticleEffectWrapper;
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
@@ -27,50 +31,37 @@ export default class ParticleEffectResourceDefinition {
   }
 
   public get id() {
-    if (
-      !this.particleEffectWrapper ||
-      !this.particleEffectWrapper.particle_effect ||
-      !this.particleEffectWrapper.particle_effect.description
-    ) {
+    if (!this.wrapper || !this.wrapper.particle_effect || !this.wrapper.particle_effect.description) {
       return undefined;
     }
 
-    return this.particleEffectWrapper.particle_effect.description.identifier;
+    return this.wrapper.particle_effect.description.identifier;
+  }
+
+  public async getFormatVersionIsCurrent() {
+    const fv = this.getFormatVersion();
+
+    if (fv === undefined || fv.length !== 3) {
+      return false;
+    }
+
+    return fv[0] > 1 || fv[1] >= 10;
   }
 
   public getFormatVersion(): number[] | undefined {
-    if (!this.particleEffectWrapper) {
+    if (!this.wrapper) {
       return undefined;
     }
 
-    const fv = this.particleEffectWrapper.format_version;
-
-    if (typeof fv === "number") {
-      return [fv];
-    }
-
-    if (typeof fv === "string") {
-      let fvarr = this.particleEffectWrapper.format_version.split(".");
-
-      let fvarrInt: number[] = [];
-      for (let i = 0; i < fvarr.length; i++) {
-        try {
-          fvarrInt.push(parseInt(fvarr[i]));
-        } catch (e) {}
-      }
-
-      return fvarrInt;
-    }
-
-    return undefined;
+    return MinecraftUtilities.getVersionArrayFrom(this.wrapper.format_version);
   }
 
   get formatVersion() {
-    if (!this.particleEffectWrapper || !this.particleEffectWrapper.format_version) {
+    if (!this.wrapper || !this.wrapper.format_version) {
       return undefined;
     }
 
-    return this.particleEffectWrapper.format_version;
+    return this.wrapper.format_version;
   }
 
   static async ensureOnFile(
@@ -105,7 +96,7 @@ export default class ParticleEffectResourceDefinition {
       return;
     }
 
-    const defString = JSON.stringify(this.particleEffectWrapper, null, 2);
+    const defString = JSON.stringify(this.wrapper, null, 2);
 
     this._file.setContent(defString);
   }
@@ -134,7 +125,7 @@ export default class ParticleEffectResourceDefinition {
       data = result;
     }
 
-    this.particleEffectWrapper = data;
+    this.wrapper = data;
 
     this._isLoaded = true;
 

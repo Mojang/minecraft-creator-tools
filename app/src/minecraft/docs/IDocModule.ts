@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IDocClass from "./IDocClass";
 import IDocScriptEnum from "./IDocScriptEnum";
 

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 class TextReplace {
   _fromRegx;
   _toStr;

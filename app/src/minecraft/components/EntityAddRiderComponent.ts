@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ComponentBase from "../ComponentBase";
 import IEntityComponent from "../IEntityComponent";
 

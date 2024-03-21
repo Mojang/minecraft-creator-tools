@@ -1,4 +1,7 @@
-export default interface IResourceAnimationDefinition {
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+export default interface IResourceAnimationWrapper {
   format_version: string;
   __comment__?: string;
   animations: IResourceAnimationSet;

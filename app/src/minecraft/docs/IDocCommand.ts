@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IDocCommandAlias from "./IDocCommandAlias";
 import IDocCommandOverload from "./IDocCommandOverload";
 

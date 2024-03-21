@@ -220,10 +220,9 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
 
     if (this.props.file.content instanceof Uint8Array) {
       let str = "data:image/";
-
-      const ext = StorageUtilities.getTypeFromName(this.props.file.name);
-      str += ext;
+      str += StorageUtilities.getTypeFromName(this.props.file.name);
       str += ";base64,";
+
       const base64 = Utilities.uint8ArrayToBase64(this.props.file.content);
       str += base64;
 

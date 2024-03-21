@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { Packument } from "@npm/types";
 
 export default class NpmModule {

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 //        {blockPos: [1, 1, 1], pos: [1.5823922759590232d, 1.0d, 1.4471155527810424d], nbt: {
 //Air: 300s, Dimension: 0, FallDistance: 0.0f, Fire: -1s, Invulnerable: 0b,
 //Motion: [0.0d, 0.0d, 0.0d],

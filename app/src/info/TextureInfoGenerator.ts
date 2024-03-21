@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "./ProjectInfoItem";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
@@ -17,6 +20,7 @@ import IFolder from "../storage/IFolder";
 import Utilities from "../core/Utilities";
 import JsonUIResourceDefinition from "../minecraft/JsonUIResourceDefinition";
 import { IJsonUIControl } from "../minecraft/IJsonUIScreen";
+import ContentIndex from "../core/ContentIndex";
 
 export default class TextureInfoGenerator implements IProjectInfoGenerator {
   id = "TEXTURE";
@@ -66,7 +70,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
     return false;
   }
 
-  async generate(project: Project): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
     const textureHandles: string[] = [];
     const allTexturePaths: string[] = [];
@@ -141,7 +145,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         if (projectItem.file) {
           const particleEffect = await ParticleEffectResourceDefinition.ensureOnFile(projectItem.file);
 
-          const desc = particleEffect?.particleEffectWrapper?.particle_effect.description;
+          const desc = particleEffect?.wrapper?.particle_effect.description;
 
           if (desc) {
             if (desc.identifier && desc.basic_render_parameters?.texture) {
@@ -247,8 +251,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         await projectItem.ensureFileStorage();
 
         if (projectItem.file) {
-          const flipbookTexturesCat =
-            await FlipbookTextureCatalogDefinition.ensureFlipbookTextureCatalogDefinitionOnFile(projectItem.file);
+          const flipbookTexturesCat = await FlipbookTextureCatalogDefinition.ensureOnFile(projectItem.file);
 
           if (flipbookTexturesCat && flipbookTexturesCat && flipbookTexturesCat.flipbookTextures) {
             const pathId = projectItem.file.storageRelativePath + "_flipbooktextures";
@@ -368,8 +371,8 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
                 textureCount++;
               }
 
-              textureCountPi.incrementFeature("Texture References", textureCount);
-              textureCountPi.incrementFeature("Entity References", textureCount);
+              textureCountPi.incrementFeature("Texture References", "Count", textureCount);
+              textureCountPi.incrementFeature("Entity References", "Count", textureCount);
             }
           }
         }
@@ -411,8 +414,8 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
                 textureCount++;
               }
 
-              textureCountPi.incrementFeature("Texture References", textureCount);
-              textureCountPi.incrementFeature("Attachable References", textureCount);
+              textureCountPi.incrementFeature("Texture References", "Count", textureCount);
+              textureCountPi.incrementFeature("Attachable References", "Count", textureCount);
             }
           }
         }
@@ -427,25 +430,33 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
       }
     }
 
-    textureCountPi.incrementFeature("Unique Texture Handles (estimated)", textureHandles.length);
-    textureCountPi.incrementFeature("Unique Texture Paths", allTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Particle Texture References", particleTextureRefs.length);
-    textureCountPi.incrementFeature("Unique Particle Texture Paths", particleTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Particle Texture Vanilla Paths", particleVanillaTexturePaths.length);
-    textureCountPi.incrementFeature("Unique JSON UI Texture References", jsonUITextureRefs.length);
-    textureCountPi.incrementFeature("Unique JSON UI Texture Paths", jsonUITexturePaths.length);
-    textureCountPi.incrementFeature("Unique JSON UI Texture Vanilla Paths", jsonUIVanillaTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Entity Texture Paths", entityTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Entity Texture Vanilla Paths", entityVanillaTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Attachable Texture References", attachableTextureRefs.length);
-    textureCountPi.incrementFeature("Unique Terrain Texture References", terrainTextureRefs.length);
-    textureCountPi.incrementFeature("Unique Terrain Texture Paths", terrainTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Item Texture Paths", itemTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Flipbook Texture References", flipbookTextureRefs.length);
-    textureCountPi.incrementFeature("Unique Flipbook Texture Paths", flipbookTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Block Texture References", blockTextureRefs.length);
-    textureCountPi.incrementFeature("Unique Block Texture Paths", blockTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Entity Spawn Egg Texture References", entitySpawnEggTextures.length);
+    textureCountPi.incrementFeature("Unique Texture Handles (estimated)", "Count", textureHandles.length);
+    textureCountPi.incrementFeature("Unique Texture Paths", "Count", allTexturePaths.length);
+    textureCountPi.incrementFeature("Unique Particle Texture References", "Count", particleTextureRefs.length);
+    textureCountPi.incrementFeature("Unique Particle Texture Paths", "Count", particleTexturePaths.length);
+    textureCountPi.incrementFeature(
+      "Unique Particle Texture Vanilla Paths",
+      "Count",
+      particleVanillaTexturePaths.length
+    );
+    textureCountPi.incrementFeature("Unique JSON UI Texture References", "Count", jsonUITextureRefs.length);
+    textureCountPi.incrementFeature("Unique JSON UI Texture Paths", "Count", jsonUITexturePaths.length);
+    textureCountPi.incrementFeature("Unique JSON UI Texture Vanilla Paths", "Count", jsonUIVanillaTexturePaths.length);
+    textureCountPi.incrementFeature("Unique Entity Texture Paths", "Count", entityTexturePaths.length);
+    textureCountPi.incrementFeature("Unique Entity Texture Vanilla Paths", "Count", entityVanillaTexturePaths.length);
+    textureCountPi.incrementFeature("Unique Attachable Texture References", "Count", attachableTextureRefs.length);
+    textureCountPi.incrementFeature("Unique Terrain Texture References", "Count", terrainTextureRefs.length);
+    textureCountPi.incrementFeature("Unique Terrain Texture Paths", "Count", terrainTexturePaths.length);
+    textureCountPi.incrementFeature("Unique Item Texture Paths", "Count", itemTexturePaths.length);
+    textureCountPi.incrementFeature("Unique Flipbook Texture References", "Count", flipbookTextureRefs.length);
+    textureCountPi.incrementFeature("Unique Flipbook Texture Paths", "Count", flipbookTexturePaths.length);
+    textureCountPi.incrementFeature("Unique Block Texture References", "Count", blockTextureRefs.length);
+    textureCountPi.incrementFeature("Unique Block Texture Paths", "Count", blockTexturePaths.length);
+    textureCountPi.incrementFeature(
+      "Unique Entity Spawn Egg Texture References",
+      "Count",
+      entitySpawnEggTextures.length
+    );
 
     if (this.performAddOnValidations && textureHandles.length > 800) {
       items.push(

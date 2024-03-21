@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFile from "./IFile";
 import IStorage from "./IStorage";
 import IStorageObject from "./IStorageObject";
@@ -8,7 +11,7 @@ export enum FolderErrorStatus {
 }
 
 export default interface IFolder extends IStorageObject {
-  lastProcessed: Date | null;
+  lastLoadedOrSaved: Date | null;
   parentFolder: IFolder | null;
   storage: IStorage;
 

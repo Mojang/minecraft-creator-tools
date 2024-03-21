@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Log from "../core/Log";
 import FileBase from "./FileBase";
 import Folder from "./Folder";

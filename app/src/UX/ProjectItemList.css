@@ -47,7 +47,13 @@
   padding-top: 6px;
 }
 
-.pil-list .fr {
+.pil-fixedLineRow {
+  height: 32px;
+  display: grid;
+  grid-template-columns: 1fr 32px;
+}
+
+.pil-list LI * {
   margin-right: 0px;
 }
 
@@ -57,16 +63,12 @@
   padding-right: 0px;
 }
 
-.pil-list .hl {
-  margin-right: 0px;
-}
-
 .pil-item {
   display: grid;
   height: 36px;
   padding-bottom: 0px;
   margin-bottom: 0px;
-  grid-template-columns: 10px 1fr 38px;
+  grid-template-columns: 10px 1fr 30px 30px;
   font-size: 0.875rem;
 }
 
@@ -94,8 +96,11 @@
 }
 
 .pil-headerLabel {
-  grid-column: 2;
+  grid-column-start: 2;
+  grid-column-end: 4;
+  grid-template-columns: 1fr 80px;
   text-overflow: ellipsis;
+  display: grid;
 }
 
 .pil-storagePathCollapsedToggle {
@@ -119,23 +124,58 @@
 }
 
 .pil-itemLabel {
-  grid-column: 2;
   text-overflow: ellipsis;
   padding-left: 6px;
   padding-top: 1px;
 }
 
-.pil-contextMenuButton button {
+.pil-itemIndicatorRO {
   border: solid 0px;
   max-width: 28px;
   min-width: 28px;
-  grid-column: 2;
+  grid-column: 4;
   line-height: 1;
   text-align: center;
-  padding: 3px 4px 0px 3px;
-  margin: 2px 0px 0px 11px;
-  min-height: 32px;
-  max-height: 32px;
+  padding: 8px 2px 0px 1px;
+  margin: 3px 0px 0px 1px;
+  min-height: 30px;
+  max-height: 30px;
+  padding-bottom: 12px;
+  box-shadow: none;
+  vertical-align: middle;
+  background-color: green;
+  text-align: center;
+}
+
+.pil-itemIndicator button {
+  border: solid 0px;
+  max-width: 28px;
+  min-width: 28px;
+  grid-column: 4;
+  line-height: 1;
+  text-align: center;
+  padding: 8px 2px 0px 1px;
+  margin: 3px 0px 0px 1px;
+  min-height: 30px;
+  max-height: 30px;
+  padding-bottom: 12px;
+  box-shadow: none;
+  vertical-align: middle;
+  background-color: green;
+  text-align: center;
+}
+
+.pil-contextMenuButton button {
+  border: solid 0px;
+  max-width: 26px;
+  min-width: 26px;
+  grid-column: 3;
+  line-height: 1;
+  text-align: center;
+  padding: 4px 2px 0px 1px;
+  margin: 3px 0px 0px 2px;
+  min-height: 30px;
+  max-height: 30px;
   padding-bottom: 12px;
   box-shadow: none;
 }
@@ -152,6 +192,38 @@
   opacity: 1;
 }
 
+.pil-stats {
+  grid-column: 2;
+  text-align: right;
+  padding-right: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  text-wrap: nowrap;
+}
+
+.pil-projectName {
+  overflow-x: hidden;
+  width: 100%;
+  padding-left: 16px;
+  padding-top: 6px;
+  padding-bottom: 6x;
+  margin-right: 2px;
+  text-overflow: clip;
+  grid-column: 1;
+  z-index: 90;
+  display: block;
+  white-space: nowrap;
+}
+
+.pil-projectIcon {
+  min-height: 32px;
+  max-height: 32px;
+  min-width: 32px;
+  max-width: 32px;
+  grid-column: 2;
+  background-size: cover;
+}
+
 .pil-name {
   overflow-x: hidden;
   width: 100%;
@@ -159,6 +231,7 @@
   padding-bottom: 8px;
   margin-right: 2px;
   text-overflow: clip;
+  grid-column: 1;
   z-index: 90;
   display: block;
   white-space: nowrap;

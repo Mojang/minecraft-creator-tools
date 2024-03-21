@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IDocClassType from "./IDocClassType";
 
 export default interface IDocScriptEnumConstant {

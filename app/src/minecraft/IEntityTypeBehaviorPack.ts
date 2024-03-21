@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IComponentDataItem from "./IComponentDataItem";
 import IComponentGroup from "./IComponentGroup";
 import IEntityEvent from "./IEntityEvent";

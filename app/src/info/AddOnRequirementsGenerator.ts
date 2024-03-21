@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ProjectInfoItem from "./ProjectInfoItem";
 import Project from "../app/Project";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
@@ -10,6 +13,7 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import ProjectItem from "../app/ProjectItem";
 import Utilities from "../core/Utilities";
 import ResourceManifestJson from "../minecraft/ResourceManifestJson";
+import ContentIndex from "../core/ContentIndex";
 
 const UniqueRegEx = new RegExp(/[a-zA-Z0-9]{2,}_[a-zA-Z0-9]{2,}:[\w]+/);
 
@@ -190,7 +194,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     return { title: topicId.toString() };
   }
 
-  async generate(project: Project): Promise<ProjectInfoItem[]> {
+  async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
     let behaviorPackManifest: undefined | BehaviorManifestJson = undefined;
@@ -632,19 +636,6 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
       if (folderNameCanon !== "common") {
         folderCount++;
-      }
-
-      if (AddOnRequirementsGenerator.isNameGenericTerm(folderNameCanon)) {
-        items.push(
-          new ProjectInfoItem(
-            InfoItemType.testCompleteFail,
-            this.id,
-            107,
-            `Found an add-on-blocked folder '${childFolderName}' in pack\\${parentFolderName}\\${folder.name}. Should be 'mygamename' and not a general term`,
-            undefined,
-            childFolderName
-          )
-        );
       }
     }
 

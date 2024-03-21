@@ -63,7 +63,7 @@ export default class ProjectInfoItemDisplay extends Component<
     let actions = <></>;
 
     if (item.data) {
-      if (message.length > 0) {
+      if (message && message.length > 0) {
         message += ": ";
       }
 
@@ -109,21 +109,21 @@ export default class ProjectInfoItemDisplay extends Component<
     if (item.itemType === InfoItemType.internalProcessingError) {
       indicatorCellBg = "piid-failIconCell";
       typeElt = (
-        <span className="piid-icon piid-errorIcon">
+        <span className="piid-icon piid-errorIcon" title="Internal Error">
           <FontAwesomeIcon icon={faCircleExclamation} className="fa-lg" />
         </span>
       );
     } else if (item.itemType === InfoItemType.error) {
       indicatorCellBg = "piid-errorIconCell";
       typeElt = (
-        <span className="piid-icon piid-errorIcon">
+        <span className="piid-icon piid-errorIcon" title="Error">
           <FontAwesomeIcon icon={faCircleExclamation} className="fa-lg" />
         </span>
       );
     } else if (item.itemType === InfoItemType.recommendation) {
       indicatorCellBg = "piid-infoIconCell";
       typeElt = (
-        <span className="piid-icon piid-infoIcon">
+        <span className="piid-icon piid-infoIcon" title="Recommendation">
           <FontAwesomeIcon icon={faCircleArrowUp} className="fa-lg" />
         </span>
       );
@@ -131,7 +131,7 @@ export default class ProjectInfoItemDisplay extends Component<
       indicatorCellBg = "piid-errorIconCell";
 
       typeElt = (
-        <span className="piid-icon piid-errorIcon">
+        <span className="piid-icon piid-errorIcon" title="Warning">
           <FontAwesomeIcon icon={faCircleQuestion} className="fa-lg" />
         </span>
       );
@@ -139,7 +139,7 @@ export default class ProjectInfoItemDisplay extends Component<
       indicatorCellBg = "piid-infoIconCell";
 
       typeElt = (
-        <span className="piid-icon piid-infoIcon">
+        <span className="piid-icon piid-infoIcon" title="Information">
           <FontAwesomeIcon icon={faCircleInfo} className="fa-lg" />
         </span>
       );
@@ -147,7 +147,7 @@ export default class ProjectInfoItemDisplay extends Component<
       indicatorCellBg = "piid-successIconCell";
 
       typeElt = (
-        <span className="piid-icon piid-successIcon">
+        <span className="piid-icon piid-successIcon" title="Test Success">
           <FontAwesomeIcon icon={faCircleCheck} className="fa-lg" />
         </span>
       );
@@ -155,16 +155,8 @@ export default class ProjectInfoItemDisplay extends Component<
       indicatorCellBg = "piid-failIconCell";
 
       typeElt = (
-        <span className="piid-icon piid-failIcon">
+        <span className="piid-icon piid-failIcon" title="Test Failure">
           <FontAwesomeIcon icon={faCircleXmark} className="fa-lg" />
-        </span>
-      );
-    } else if (item.itemType === InfoItemType.internalProcessingError) {
-      indicatorCellBg = "piid-errorIconCell";
-
-      typeElt = (
-        <span className="piid-icon piid-errorIcon">
-          <FontAwesomeIcon icon={faCircleExclamation} className="fa-lg" />
         </span>
       );
     }

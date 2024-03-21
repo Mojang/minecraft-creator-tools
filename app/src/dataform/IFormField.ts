@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IField from "./IField";
 import IFormDefinition from "./IFormDefinition";
 

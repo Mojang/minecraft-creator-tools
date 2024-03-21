@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Utilities from "../core/Utilities";
 
 export enum CommandArgumentType {

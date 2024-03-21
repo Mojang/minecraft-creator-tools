@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export interface IClientAttachableWrapper {
   format_version: string;
   "minecraft:attachable": IClientAttachable;

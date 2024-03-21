@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export enum UpdateResultType {
   updatedFile = 1,
   noChange = 0,

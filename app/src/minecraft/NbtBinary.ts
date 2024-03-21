@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import NbtBinaryTag, { NbtTagType } from "./NbtBinaryTag";
 import Utilities from "./../core/Utilities";
 import INbtTag from "./INbtTag";
@@ -409,7 +412,7 @@ export default class NbtBinary {
 
         activeTag.value = str;
         i += stringLength;
-        Log.assert(i <= data.length);
+        Log.assert(i <= data.length, "NBTFB");
 
         /*
                 let valueString = "";

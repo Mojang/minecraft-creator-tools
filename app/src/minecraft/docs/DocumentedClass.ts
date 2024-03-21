@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IDocClass from "./IDocClass";
 import DocumentedModule from "./DocumentedModule";
 import IFolder from "../../storage/IFolder";

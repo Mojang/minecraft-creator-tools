@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Log from "../core/Log";
 import CommandRegistry, { CommandScope } from "./CommandRegistry";
 import { CommandStatus } from "./ICommand";

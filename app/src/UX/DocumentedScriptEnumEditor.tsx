@@ -73,6 +73,8 @@ export default class DocumentedScriptEnumEditor extends Component<
   async doLoad() {
     await this.props.docScriptEnum.load();
 
+    await Database.ensureFormLoaded("documented_script_enum");
+
     this.setState({
       docScriptEnumToEdit: this.state.docScriptEnumToEdit,
       isLoaded: true,
@@ -134,6 +136,7 @@ export default class DocumentedScriptEnumEditor extends Component<
               id: "description",
               title: "Description",
               dataType: FieldDataType.longFormString,
+              validity: [{ comparison: "nonempty" }],
             },
           ],
         };

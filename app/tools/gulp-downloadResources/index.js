@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 const DownloadResources = require("./DownloadResources");
 const through2 = require("through2");
 

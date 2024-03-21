@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IAppServiceChannel from "./IAppServiceChannel";
 import Utilities from "./../core/Utilities";
 import Log, { LogItem } from "./../core/Log";

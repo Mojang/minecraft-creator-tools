@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import { NbtTagType } from "./NbtBinaryTag";
 import { BlockPropertyType } from "./IBlockTypePropertyData";
 import Block from "./Block";

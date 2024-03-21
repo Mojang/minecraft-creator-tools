@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 export enum ServerPermissionLevel {
   none = 0,
   displayReadOnly = 1,

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import IFolder, { FolderErrorStatus } from "./IFolder";
 import IFile from "./IFile";
 import IStorage from "./IStorage";
@@ -10,7 +13,7 @@ export default abstract class FolderBase implements IFolder {
   abstract get name(): string;
 
   isDisposed: boolean = false;
-  #lastProcessed: Date | null;
+  #lastLoadedOrSaved: Date | null;
 
   abstract get parentFolder(): IFolder | null;
   abstract get storage(): IStorage;
@@ -19,7 +22,7 @@ export default abstract class FolderBase implements IFolder {
   errorStatus?: FolderErrorStatus;
 
   get isLoaded() {
-    return this.#lastProcessed !== null;
+    return this.#lastLoadedOrSaved !== null;
   }
 
   get allFiles(): AsyncIterable<IFile> {
@@ -62,8 +65,8 @@ export default abstract class FolderBase implements IFolder {
     }
   }
 
-  get lastProcessed() {
-    return this.#lastProcessed;
+  get lastLoadedOrSaved() {
+    return this.#lastLoadedOrSaved;
   }
 
   get fullPath(): string {
@@ -81,11 +84,11 @@ export default abstract class FolderBase implements IFolder {
   }
 
   constructor() {
-    this.#lastProcessed = null;
+    this.#lastLoadedOrSaved = null;
   }
 
-  updateLastProcessed() {
-    this.#lastProcessed = new Date();
+  updateLastLoadedOrSaved() {
+    this.#lastLoadedOrSaved = new Date();
   }
 
   getFolderRelativePath(toFolder: IFolder): string | undefined {
@@ -133,7 +136,7 @@ export default abstract class FolderBase implements IFolder {
   }
 
   async setStructureFromFileList(fileList: string[]) {
-    this.updateLastProcessed();
+    this.updateLastLoadedOrSaved();
 
     for (const file of fileList) {
       let folderPath = StorageUtilities.getPath(file);
@@ -144,11 +147,11 @@ export default abstract class FolderBase implements IFolder {
         if (folderPath.length > 2) {
           const folder = (await this.ensureFolderFromRelativePath(folderPath, true)) as FolderBase;
 
-          folder.updateLastProcessed();
+          folder.updateLastLoadedOrSaved();
           let parentFolder = folder.parentFolder as FolderBase;
 
           while (parentFolder && parentFolder !== this) {
-            parentFolder.updateLastProcessed();
+            parentFolder.updateLastLoadedOrSaved();
 
             parentFolder = parentFolder.parentFolder as FolderBase;
           }

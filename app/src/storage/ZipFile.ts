@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import ZipFolder from "./ZipFolder";
 import IFile from "./IFile";
 import FileBase from "./FileBase";

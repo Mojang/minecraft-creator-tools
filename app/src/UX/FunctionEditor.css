@@ -10,9 +10,10 @@
 }
 
 .mcfe-interiorSingle {
-  min-height: 47px;
-  height: 47px;
+  min-height: 32px;
+  height: 32px;
   padding-right: 24px;
+  padding-top: 5px;
   grid-column: 1;
 }
 

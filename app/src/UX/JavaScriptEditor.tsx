@@ -576,8 +576,8 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     let interior = <></>;
     let overlay = <></>;
 
-    const height = "calc(100vh - " + this.props.heightOffset + "px)";
-    const editorHeight = "calc(100vh - " + (this.props.heightOffset + 32) + "px)";
+    const height = "calc(100vh - " + this.props.heightOffset + 4 + "px)";
+    const editorHeight = "calc(100vh - " + (this.props.heightOffset + 36) + "px)";
 
     const toolbarItems = [
       {
