@@ -1,0 +1,36 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:green_banner"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "banner",
+    "pattern": [
+      "###",
+      "###",
+      " | "
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:wool",
+        "data": 13
+      },
+      "|": {
+        "item": "minecraft:stick"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:wool",
+        "data": 13
+      }
+    ],
+    "result": {
+      "item": "minecraft:banner",
+      "data": 2
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:brown_stained_hardened_clay_from_cocoa_beans"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "stained_hardened_clay",
+    "priority": 1,
+    "pattern": [
+      "###",
+      "#X#",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:hardened_clay"
+      },
+      "X": {
+        "item": "minecraft:dye",
+        "data": 3
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:hardened_clay"
+      }
+    ],
+    "result": {
+      "item": "minecraft:stained_hardened_clay",
+      "data": 12,
+      "count": 8
+    }
+  }
+}

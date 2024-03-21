@@ -1,0 +1,18 @@
+{
+  "title": "Tameable",
+  "description": "This entity can be tamed",
+  "fields": [
+    {
+      "id": "probability",
+      "title": "Probability of being tamed"
+    },
+    {
+      "id": "tameItems",
+      "title": "List of items that can be fed to an entity to tame them"
+    },
+    {
+      "id": "tame_event",
+      "title": "Event to fire when the entity is tamed"
+    }
+  ]
+}

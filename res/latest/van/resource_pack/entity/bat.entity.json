@@ -1,0 +1,20 @@
+{
+  "format_version": "1.8.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "minecraft:bat",
+      "materials": {
+        "default": "bat_v2"
+      },
+      "textures": {
+        "default": "textures/entity/bat_v2"
+      },
+      "geometry": {
+        "default": "geometry.bat_v2"
+      },
+      "scripts": {
+        "scale": "1.0"
+      }
+    }
+  }
+}
