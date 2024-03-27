@@ -1225,15 +1225,7 @@ export default class ProjectItem {
     for (let i = 0; i < this._project.items.length; i++) {
       const projectItem = this._project.items[i];
 
-      if (projectItem.itemType === ProjectItemType.worldTest) {
-        const file = await projectItem.ensureFileStorage();
-
-        if (file) {
-          const newFileName = StorageUtilities.getBaseFromName(file.name) + ".gen.js";
-
-          content.push('import "scripts/' + newFileName + '";');
-        }
-      } else if (
+      if (
         projectItem.itemType === ProjectItemType.js ||
         projectItem.itemType === ProjectItemType.buildProcessedJs ||
         projectItem.itemType === ProjectItemType.entityTypeBaseJs ||

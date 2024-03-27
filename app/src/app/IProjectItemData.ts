@@ -3,7 +3,7 @@
 
 import IGitHubInfo from "./IGitHubInfo";
 
-export const MaxItemTypes = 114;
+export const MaxItemTypes = 119;
 
 export enum ProjectItemCategory {
   assets,
@@ -131,6 +131,11 @@ export enum ProjectItemType {
   skinPackFolder = 111,
   contentIndexJson = 112,
   contentReportJson = 113,
+  levelDbLdb = 114,
+  levelDbLog = 115,
+  levelDbCurrent = 116,
+  levelDbManifest = 117,
+  levelDat = 118,
 }
 
 export enum ProjectItemStorageType {

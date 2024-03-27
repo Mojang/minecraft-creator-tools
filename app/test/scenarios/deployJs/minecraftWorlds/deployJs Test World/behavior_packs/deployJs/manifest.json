@@ -4,7 +4,7 @@
   "header": {
     "description": "deployJs description",
     "name": "deployJs",
-    "uuid": "8c62abc9-ce71-4a93-9102-3324809116da",
+    "uuid": "0917e16e-8044-4f14-a26c-03116760ed3d",
     "version": [
       0,
       0,
@@ -21,7 +21,7 @@
       "description": "deployJs script",
       "language": "javascript",
       "type": "script",
-      "uuid": "6c7f0d8d-4485-4379-8581-4c7a16344c41",
+      "uuid": "bae79ded-3acc-4d22-ae8f-9a7a91b34d12",
       "version": [
         0,
         0,
@@ -33,7 +33,7 @@
   "dependencies": [
     {
       "module_name": "@minecraft/server",
-      "version": "1.1.0-beta"
+      "version": "1.11.0-beta"
     },
     {
       "module_name": "@minecraft/server-gametest",

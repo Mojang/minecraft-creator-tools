@@ -79,8 +79,15 @@
   padding-top: 20px;
 }
 
-.pdisp-advancedArea {
+.pdisp-statusArea {
   grid-row: 3;
+  grid-column-start: 1;
+  grid-column-end: 5;
+  padding-top: 30px;
+}
+
+.pdisp-advancedArea {
+  grid-row: 4;
   grid-column-start: 1;
   grid-column-end: 5;
   padding-top: 30px;

@@ -362,6 +362,8 @@ export default class WorldChunk {
       if (keyValue.value && keyValue.value.length > 0) {
         const tag = new NbtBinary();
 
+        tag.context = this.world.name + " chunk at x:" + this.x * 16 + " z:" + this.z * 16;
+
         try {
           tag.fromBinary(keyValue.value, true, false, 0, true);
         } catch (e) {

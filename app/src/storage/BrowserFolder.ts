@@ -85,6 +85,10 @@ export default class BrowserFolder extends FolderBase implements IFolder {
   }
 
   async deleteThisFolder(): Promise<boolean> {
+    if (this.storage.readOnly) {
+      throw new Error("Can't save read-only file.");
+    }
+
     let result = await this.recursiveDeleteThisFolder();
 
     await localforage.removeItem(this.fullPath + BrowserStorage.folderDelimiter);

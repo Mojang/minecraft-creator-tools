@@ -410,6 +410,86 @@ export default class ProjectExporter {
     return undefined;
   }
 
+  static async deployAsWorld(
+    carto: Carto,
+    project: Project,
+    worldProjectItem: ProjectItem,
+    returnZipBytes: boolean,
+    deployFolder?: IFolder
+  ) {
+    let mcworld: MCWorld | undefined = undefined;
+    const operId = await carto.notifyOperationStarted("Deploying world '" + worldProjectItem.name + "'");
+    await worldProjectItem.load();
+
+    if (!worldProjectItem.file && !worldProjectItem.folder) {
+      Log.unexpectedUndefined("DAWATA");
+      return;
+    }
+
+    if (worldProjectItem.folder) {
+      mcworld = await MCWorld.ensureMCWorldOnFolder(worldProjectItem.folder, project);
+    } else if (worldProjectItem.file) {
+      mcworld = await MCWorld.ensureOnFile(worldProjectItem.file, project);
+    }
+
+    if (!mcworld) {
+      Log.debugAlert("Could not find respective world.");
+      return;
+    }
+
+    await ProjectExporter.updateProjects(project);
+
+    await project.save();
+
+    const dateNow = new Date();
+
+    const title = mcworld.name + " - " + Utilities.getFriendlySummary(dateNow);
+
+    let targetFolder: IFolder | undefined = undefined;
+    let zipStorage: ZipStorage | undefined = undefined;
+
+    if (deployFolder) {
+      const worldsFolder = await ProjectExporter.ensureWorldsFolder(deployFolder);
+
+      if (!worldsFolder) {
+        Log.unexpectedUndefined("DAWATAB");
+        return;
+      }
+
+      targetFolder = worldsFolder.ensureFolder(title);
+
+      await targetFolder.ensureExists();
+    } else if (returnZipBytes) {
+      zipStorage = new ZipStorage();
+
+      targetFolder = zipStorage.rootFolder;
+    } else {
+      const worldsFolder = await ProjectExporter.ensureMinecraftWorldsFolder(carto);
+
+      if (!worldsFolder) {
+        Log.unexpectedUndefined("DAWATAC");
+        return;
+      }
+
+      targetFolder = worldsFolder.ensureFolder(title);
+
+      await targetFolder.ensureExists();
+    }
+
+    await mcworld.syncFolderTo(targetFolder);
+
+    await targetFolder.saveAll();
+
+    await carto.notifyOperationEnded(operId, "World + local assets deploy completed.");
+
+    if (zipStorage) {
+      const zipBytes = await zipStorage.generateUint8ArrayAsync();
+
+      return zipBytes;
+    }
+
+    return undefined;
+  }
   static async updateProjects(project: Project) {
     const pur = new ProjectUpdateRunner(project);
 

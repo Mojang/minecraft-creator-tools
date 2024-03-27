@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Carto from "./../app/Carto";
 import "./StatusArea.css";
 import IAppProps from "./IAppProps";
-import Status, { StatusType } from "../app/Status";
+import IStatus, { StatusType } from "../app/Status";
 import Utilities from "./../core/Utilities";
 import Log, { LogItem } from "./../core/Log";
 import { ProjectStatusAreaMode } from "./ProjectEditor";
@@ -60,7 +60,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     this._update();
   }
 
-  async _handleStatusAdded(carto: Carto, status: Status): Promise<void> {
+  async _handleStatusAdded(carto: Carto, status: IStatus): Promise<void> {
     if (status.type === StatusType.operationStarted) {
       return new Promise((resolve: () => void, reject: () => void) => {
         this.setState(
@@ -116,7 +116,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     window.setTimeout(this._checkForTimeOut, MESSAGE_FADEOUT_TIME + 100);
   }
 
-  _checkForTimeOut(carto: Carto, status: Status) {
+  _checkForTimeOut(carto: Carto, status: IStatus) {
     if (this._isMountedInternal) {
       this.forceUpdate();
     }

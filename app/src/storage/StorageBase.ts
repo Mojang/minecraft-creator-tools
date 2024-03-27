@@ -9,6 +9,8 @@ import { EventDispatcher } from "ste-events";
 export default abstract class StorageBase implements IStorage {
   abstract rootFolder: IFolder;
   isContentUpdated: boolean = false;
+  readOnly: boolean = false;
+
   #onFileAdded = new EventDispatcher<StorageBase, IFile>();
   #onFileRemoved = new EventDispatcher<StorageBase, string>();
   #onFileContentsUpdated = new EventDispatcher<StorageBase, IFile>();

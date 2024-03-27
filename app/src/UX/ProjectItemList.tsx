@@ -1,6 +1,6 @@
 import { Component, SyntheticEvent, UIEvent } from "react";
 import IAppProps from "./IAppProps";
-import Project, { ProjectRole } from "./../app/Project";
+import Project from "./../app/Project";
 import { MaxItemTypes, ProjectItemCategory, ProjectItemErrorStatus, ProjectItemType } from "./../app/IProjectItemData";
 import ProjectItem from "./../app/ProjectItem";
 import { ProjectEditorMode } from "./ProjectEditorUtilities";
@@ -32,7 +32,7 @@ import ProjectItemManager from "../app/ProjectItemManager";
 import "./ProjectItemList.css";
 import Utilities from "../core/Utilities";
 import NewBlockType from "./NewBlockType";
-import { ProjectEditPreference, ProjectScriptLanguage } from "../app/IProjectData";
+import { ProjectEditPreference, ProjectRole, ProjectScriptLanguage } from "../app/IProjectData";
 import IGalleryProject from "../app/IGalleryProject";
 import ColorUtilities from "../core/ColorUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -953,7 +953,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         let errorMessage = "";
 
         for (const issue of issues) {
-          errorMessage += issue.message + "\r\n";
+          errorMessage += this.props.allInfoSet.getEffectiveMessage(issue) + "\r\n";
         }
 
         itemItems.push(
@@ -1108,7 +1108,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         let errorMessage = "";
 
         for (const issue of issues) {
-          errorMessage += issue.message + "\r\n";
+          errorMessage += this.props.allInfoSet.getEffectiveMessage(issue) + "\r\n";
         }
         itemItems.push(
           <MenuButton
@@ -1334,11 +1334,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       });
 
       let projectContent = <></>;
+      let whatIsThis = this.props.readOnly || this.props.project?.role === ProjectRole.explorer ? "Content" : "Project";
 
       if (this.props.allInfoSet.info.defaultIcon && this.props.allInfoSet.info.defaultIcon) {
         projectContent = (
           <div className="pil-fixedLineRow" key="pil-fixpropjRowA">
-            <div className="pil-projectName">{this.props.readOnly ? "Add-On" : "Project"}</div>
+            <div className="pil-projectName">{whatIsThis}</div>
             <div
               className="pil-projectIcon"
               style={{
@@ -1350,7 +1351,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       } else {
         projectContent = (
           <div className="pil-fixedLine" key="pil-fixpropj">
-            {this.props.readOnly ? "Add-On" : "Project"}
+            {whatIsThis}
           </div>
         );
       }
@@ -1776,7 +1777,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     let splitButton = <></>;
 
-    if (!this.props.readOnly) {
+    if (this.props.project && !this.props.readOnly && this.props.project.role !== ProjectRole.explorer) {
       splitButton = (
         <div className="pil-newarea" key="pil-newSplit">
           <SplitButton

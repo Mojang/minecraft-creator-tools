@@ -14,10 +14,12 @@ export enum StatusTopic {
   worldLoad = 3,
 }
 
-export default class Status {
-  type: StatusType = StatusType.message;
-  topic?: StatusTopic = StatusTopic.general;
-  time: Date = new Date();
-  operationId: number | null = null;
-  message: string = "";
+export default interface IStatus {
+  type: StatusType;
+  topic?: StatusTopic;
+  time: Date;
+  operationId?: number;
+  message: string;
+  context?: string;
+  operation?: string;
 }

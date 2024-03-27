@@ -24,7 +24,7 @@ import {
 import { InfoItemType } from "../info/IInfoItemData";
 import WebUtilities from "./WebUtilities";
 import Carto from "../app/Carto";
-import Status, { StatusTopic } from "../app/Status";
+import IStatus, { StatusTopic } from "../app/Status";
 import IProjectInfoData, { ProjectInfoSuite } from "../info/IProjectInfoData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileCsv, faFileInvoice } from "@fortawesome/free-solid-svg-icons";
@@ -134,7 +134,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     await this._generateInfoSetInternal(false);
   }
 
-  private async _handleStatusUpdates(carto: Carto, status: Status): Promise<void> {
+  private async _handleStatusUpdates(carto: Carto, status: IStatus): Promise<void> {
     if (status.topic === StatusTopic.projectLoad || status.topic === StatusTopic.validation) {
       return new Promise((resolve: () => void, reject: () => void) => {
         if (this._isMountedInternal) {
@@ -601,6 +601,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     const width = WebUtilities.getWidth();
 
     const lines = [];
+    const contentSummaryLines = [];
+
     const topToolbarItems = [
       {
         icon: (
@@ -827,12 +829,12 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           if (key !== "featureSets" && key !== "summary" && key !== "features") {
             const val = keyVals[key];
 
-            lines.push(
-              <div className="pis-itemHeader" key={key + "headerA"}>
-                {Utilities.humanifyJsName(key)}
-              </div>
-            );
             if (key === "defaultIcon" && val && val.length > 100) {
+              lines.push(
+                <div className="pis-itemHeader" key={key + "headerA"}>
+                  {Utilities.humanifyJsName(key)}
+                </div>
+              );
               lines.push(
                 <div
                   className="pis-itemData pis-image"
@@ -844,7 +846,13 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                   &#160;
                 </div>
               );
-            } else {
+            } else if (val) {
+              lines.push(
+                <div className="pis-itemHeader" key={key + "headerA"}>
+                  {Utilities.humanifyJsName(key)}
+                </div>
+              );
+
               lines.push(
                 <div className="pis-itemData" key={key + "dataA"}>
                   {this.getDataSummary(val)}
@@ -861,24 +869,110 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
         }
 
         if (infoSet) {
+          let rowCount = 2;
+
           for (const featName in infoSet.info.featureSets) {
-            const feature = infoSet.info.featureSets[featName];
+            const featureSet = infoSet.info.featureSets[featName];
 
-            if (feature) {
-              for (const measureName in feature) {
-                const measureVal = feature[measureName];
+            if (featureSet) {
+              if (
+                featureSet["Total"] &&
+                featureSet["Average"] &&
+                featureSet["Instance Count"] &&
+                featureSet["Max"] &&
+                featureSet["Min"]
+              ) {
+                let featNameAdj = featName;
+                if (featName.endsWith(" Lines")) {
+                  featNameAdj = featName.substring(0, featName.length - 6);
+                } else if (featName.endsWith(" Size")) {
+                  featNameAdj = featName.substring(0, featName.length - 5);
+                }
 
-                if (typeof measureVal === "number") {
-                  lines.push(
-                    <div className="pis-itemHeader" key={featName + measureName + "headerB"}>
-                      {Utilities.humanifyJsName(featName + " " + measureName)}
-                    </div>
-                  );
-                  lines.push(
-                    <div className="pis-itemData" key={featName + measureName + "dataB"}>
-                      {this.getDataSummary(measureVal)}
-                    </div>
-                  );
+                contentSummaryLines.push(
+                  <div
+                    className="pis-itemSummName"
+                    key={featName + "NameheaderB"}
+                    style={{
+                      gridRow: rowCount,
+                    }}
+                  >
+                    {Utilities.humanifyJsName(featNameAdj)}
+                  </div>
+                );
+                contentSummaryLines.push(
+                  <div
+                    className="pis-itemSummCt"
+                    key={featName + "CtDataB"}
+                    style={{
+                      gridRow: rowCount,
+                    }}
+                  >
+                    {this.getDataSummary(featureSet["Instance Count"])}
+                  </div>
+                );
+                contentSummaryLines.push(
+                  <div
+                    className="pis-itemDataSummTotal"
+                    key={featName + "TotalDataB"}
+                    style={{
+                      gridRow: rowCount,
+                    }}
+                  >
+                    {this.getDataSummary(featureSet["Total"])}
+                  </div>
+                );
+                contentSummaryLines.push(
+                  <div
+                    className="pis-itemSummMax"
+                    key={featName + "MaxDataB"}
+                    style={{
+                      gridRow: rowCount,
+                    }}
+                  >
+                    {this.getDataSummary(featureSet["Max"])}
+                  </div>
+                );
+                contentSummaryLines.push(
+                  <div
+                    className="pis-itemSummAvg"
+                    key={featName + "AvgDataB"}
+                    style={{
+                      gridRow: rowCount,
+                    }}
+                  >
+                    {this.getDataSummary(featureSet["Average"])}
+                  </div>
+                );
+
+                contentSummaryLines.push(
+                  <div
+                    className="pis-itemSummMin"
+                    key={featName + "MinDataB"}
+                    style={{
+                      gridRow: rowCount,
+                    }}
+                  >
+                    {this.getDataSummary(featureSet["Min"])}
+                  </div>
+                );
+                rowCount++;
+              } else {
+                for (const measureName in featureSet) {
+                  const measureVal = featureSet[measureName];
+
+                  if (typeof measureVal === "number") {
+                    lines.push(
+                      <div className="pis-itemHeader" key={featName + measureName + "headerB"}>
+                        {Utilities.humanifyJsName(featName + " " + measureName)}
+                      </div>
+                    );
+                    lines.push(
+                      <div className="pis-itemData" key={featName + measureName + "dataB"}>
+                        {this.getDataSummary(measureVal)}
+                      </div>
+                    );
+                  }
                 }
               }
             }
@@ -897,6 +991,16 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             <div className="pid-header">Summary</div>
             <div className="pid-summary">
               <div className="pis-summaryArea">{lines}</div>
+              <div className="pis-contentSummaryHeader">Content Summary</div>
+              <div className="pis-contentSummaryArea">
+                <div className="pis-itemSummName pis-itemHeadCell">Item</div>
+                <div className="pis-itemSummCount pis-itemHeadCell">Count</div>
+                <div className="pis-itemSummTotal pis-itemHeadCell"> (Lines/Size) Total</div>
+                <div className="pis-itemSummMax pis-itemHeadCell">Max</div>
+                <div className="pis-itemSummAvg pis-itemHeadCell">Average</div>
+                <div className="pis-itemSummMin pis-itemHeadCell">Min</div>
+                {contentSummaryLines}
+              </div>
             </div>
           </div>
         </div>
@@ -919,6 +1023,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           ) {
             itemTiles.push(
               <ProjectInfoItemDisplay
+                itemSet={this.state.selectedInfoSet}
                 item={item}
                 theme={this.props.theme}
                 key={"pid" + i}

@@ -17,6 +17,7 @@
     "defaultBehaviorPackDescription": "Introductory tests for Minecraft GameTest Framework.",
     "textureCount": 0,
     "chunkCount": 0,
+    "worldLoadErrors": 0,
     "featureSets": {
       "Behavior pack manifest Lines": {
         "Instance Count": 1,
@@ -52,63 +53,6 @@
         "Max": 9872,
         "Min": 9872,
         "Average": 9872
-      },
-      "Textures Unique Texture Handles (estimated)": {
-        "Count": 0
-      },
-      "Textures Unique Texture Paths": {
-        "Count": 0
-      },
-      "Textures Unique Particle Texture References": {
-        "Count": 0
-      },
-      "Textures Unique Particle Texture Paths": {
-        "Count": 0
-      },
-      "Textures Unique Particle Texture Vanilla Paths": {
-        "Count": 0
-      },
-      "Textures Unique JSON UI Texture References": {
-        "Count": 0
-      },
-      "Textures Unique JSON UI Texture Paths": {
-        "Count": 0
-      },
-      "Textures Unique JSON UI Texture Vanilla Paths": {
-        "Count": 0
-      },
-      "Textures Unique Entity Texture Paths": {
-        "Count": 0
-      },
-      "Textures Unique Entity Texture Vanilla Paths": {
-        "Count": 0
-      },
-      "Textures Unique Attachable Texture References": {
-        "Count": 0
-      },
-      "Textures Unique Terrain Texture References": {
-        "Count": 0
-      },
-      "Textures Unique Terrain Texture Paths": {
-        "Count": 0
-      },
-      "Textures Unique Item Texture Paths": {
-        "Count": 0
-      },
-      "Textures Unique Flipbook Texture References": {
-        "Count": 0
-      },
-      "Textures Unique Flipbook Texture Paths": {
-        "Count": 0
-      },
-      "Textures Unique Block Texture References": {
-        "Count": 0
-      },
-      "Textures Unique Block Texture Paths": {
-        "Count": 0
-      },
-      "Textures Unique Entity Spawn Egg Texture References": {
-        "Count": 0
       }
     },
     "summary": {
@@ -515,66 +459,18 @@
     {
       "iTp": 7,
       "gId": "TEXTURE",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ESLINT",
+      "gIx": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ESLINT",
       "gIx": 1,
-      "fs": {
-        "Unique Texture Handles (estimated)": {
-          "Count": 0
-        },
-        "Unique Texture Paths": {
-          "Count": 0
-        },
-        "Unique Particle Texture References": {
-          "Count": 0
-        },
-        "Unique Particle Texture Paths": {
-          "Count": 0
-        },
-        "Unique Particle Texture Vanilla Paths": {
-          "Count": 0
-        },
-        "Unique JSON UI Texture References": {
-          "Count": 0
-        },
-        "Unique JSON UI Texture Paths": {
-          "Count": 0
-        },
-        "Unique JSON UI Texture Vanilla Paths": {
-          "Count": 0
-        },
-        "Unique Entity Texture Paths": {
-          "Count": 0
-        },
-        "Unique Entity Texture Vanilla Paths": {
-          "Count": 0
-        },
-        "Unique Attachable Texture References": {
-          "Count": 0
-        },
-        "Unique Terrain Texture References": {
-          "Count": 0
-        },
-        "Unique Terrain Texture Paths": {
-          "Count": 0
-        },
-        "Unique Item Texture Paths": {
-          "Count": 0
-        },
-        "Unique Flipbook Texture References": {
-          "Count": 0
-        },
-        "Unique Flipbook Texture Paths": {
-          "Count": 0
-        },
-        "Unique Block Texture References": {
-          "Count": 0
-        },
-        "Unique Block Texture Paths": {
-          "Count": 0
-        },
-        "Unique Entity Spawn Egg Texture References": {
-          "Count": 0
-        }
-      }
+      "m": "JS file: /behavior_packs/StarterTestsTutorial/scripts/starttests.js"
     },
     {
       "iTp": 2,
@@ -887,5 +783,5 @@
   },
   "generatorName": "Minecraft Creator Tools",
   "suite": 0,
-  "generatorVersion": "0.1.78"
+  "generatorVersion": "0.1.80"
 }

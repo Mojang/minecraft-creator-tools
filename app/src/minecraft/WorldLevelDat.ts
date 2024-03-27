@@ -7,6 +7,8 @@ import Log from "../core/Log";
 import DataUtilities from "../core/DataUtilities";
 import IFlatWorldLayerSet from "./IFlatWorldLayerSet";
 import { BackupType, IWorldSettings } from "./IWorldSettings";
+import { IErrorMessage, IErrorable } from "../core/IErrorable";
+import Utilities from "../core/Utilities";
 
 export enum GameType {
   survival = 0,
@@ -37,7 +39,7 @@ export enum PlayerPermissionsLevel {
 export const TOPMOST_BLOCK = 32767;
 export const DEFAULT_SPAWN_COORD = -2147483648;
 
-export default class WorldLevelDat implements IWorldSettings {
+export default class WorldLevelDat implements IWorldSettings, IErrorable {
   public nbt: NbtBinary | undefined;
 
   public levelName?: string;
@@ -165,6 +167,11 @@ export default class WorldLevelDat implements IWorldSettings {
   public worldStartCount?: bigint;
   public worldPolicies?: number;
 
+  isInErrorState?: boolean;
+  errorMessages?: IErrorMessage[];
+
+  context?: string;
+
   // inert in this class, but added for compatibility w/ IWorldSettings
   backupType?: BackupType;
   useCustomSettings?: boolean;
@@ -172,36 +179,56 @@ export default class WorldLevelDat implements IWorldSettings {
   createNbt() {
     const nbt = new NbtBinary();
 
+    nbt.context = this.context;
+
     return nbt;
   }
 
-  loadFromNbtBytes(bytes: Uint8Array) {
+  private _pushError(message: string, contextIn?: string) {
+    this.isInErrorState = true;
+
+    if (this.errorMessages === undefined) {
+      this.errorMessages = [];
+    }
+
+    Log.error(message + (contextIn ? " " + contextIn : ""));
+
+    this.errorMessages.push({
+      message: message,
+      context: contextIn,
+    });
+  }
+
+  loadFromNbtBytes(bytes: Uint8Array, context?: string) {
+    this.isInErrorState = false;
+    this.errorMessages = undefined;
+
     const tag = new NbtBinary();
+
+    tag.context = this.context;
 
     const fileType = DataUtilities.getUnsignedInteger(bytes[0], bytes[1], bytes[2], bytes[3], true);
     const restOfLength = DataUtilities.getUnsignedInteger(bytes[4], bytes[5], bytes[6], bytes[7], true);
 
-    Log.assert(
-      fileType === 4 ||
-        fileType === 5 ||
-        fileType === 6 ||
-        fileType === 8 ||
-        fileType === 9 ||
-        fileType === 10 /* 10 has been recently observed? */,
-      "Unexpected world level dat type (" + fileType + ")"
-    );
+    if (fileType < 4 || fileType === 7 || fileType > 10) {
+      /* 10 has been recently observed? */
+      this._pushError("Unexpected world level dat type (" + fileType + ")", context);
+      return;
+    }
 
     // some type 8 maps have restOfLength === bytes.length - 16 (?)
-    Log.assert(
-      restOfLength === bytes.length - 8 || restOfLength === bytes.length - 16,
-      "Unexpected world level dat length."
-    );
+    if (restOfLength !== bytes.length - 8 && restOfLength !== bytes.length - 16) {
+      this._pushError("Unexpected world level dat length.", context);
+      return;
+    }
 
     tag.fromBinary(bytes, true, false, 8);
 
     this.nbt = tag;
 
     this.loadFromNbt(tag);
+
+    Utilities.appendErrors(this, tag, context);
   }
 
   ensureNbt() {
@@ -210,6 +237,8 @@ export default class WorldLevelDat implements IWorldSettings {
     }
 
     const tag = new NbtBinary();
+
+    tag.context = this.context;
 
     tag.ensureRoot();
 
