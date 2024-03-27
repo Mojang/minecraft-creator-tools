@@ -26,6 +26,7 @@ import AppServiceProxy from "../core/AppServiceProxy";
 import { ProjectEditPreference, ProjectScriptLanguage, ProjectScriptVersion } from "../app/IProjectData";
 import CartoApp, { HostType } from "../app/CartoApp";
 import ProjectUtilities from "../app/ProjectUtilities";
+import StatusList from "./StatusList";
 
 interface IProjectPropertyEditorProps extends IAppProps {
   project: Project;
@@ -433,6 +434,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
 
     const baseUrl = window.location.href;
     const localTools = [];
+    let statusArea = <></>;
 
     if (this.props === undefined) {
       return <></>;
@@ -450,6 +452,14 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
             iconPosition="before"
             primary
           />
+        </div>
+      );
+    }
+
+    if (this.props.project.messages) {
+      statusArea = (
+        <div className="ppe-statusArea">
+          <StatusList theme={this.props.theme} carto={this.props.carto} status={this.props.project.messages} />
         </div>
       );
     }
@@ -807,6 +817,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           </div>
           <div className="ppe-ghinput">{gitHubInner}</div>
           <div className="ppe-ghbutton">{gitHubConnect}</div>
+          {statusArea}
           <div className="ppe-advancedArea">
             <Accordion
               defaultActiveIndex={[0]}

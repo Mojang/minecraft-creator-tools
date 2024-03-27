@@ -3,6 +3,7 @@
 
 import CartoApp, { HostType } from "../app/CartoApp";
 import AppServiceProxy from "./AppServiceProxy";
+import { IErrorable } from "./IErrorable";
 import Log from "./Log";
 
 const singleComment = Symbol("singleComment");
@@ -495,6 +496,35 @@ export default class Utilities {
     return jsonObject;
   }
 
+  static appendErrors(source: IErrorable, add: IErrorable, context?: string) {
+    if (!add.isInErrorState) {
+      return;
+    }
+
+    source.isInErrorState = true;
+
+    if (add.errorMessages) {
+      if (source.errorMessages === undefined) {
+        source.errorMessages = [];
+      }
+
+      for (const err of add.errorMessages) {
+        let newContext = undefined;
+
+        if (context) {
+          newContext = err.context ? context + ": " + err.context : context;
+        } else {
+          newContext = err.context;
+        }
+
+        source.errorMessages.push({
+          message: err.message,
+          context: newContext,
+        });
+      }
+    }
+  }
+
   static isNumeric(candidate: string) {
     for (let i = 0; i < candidate.length; i++) {
       const charCode = candidate[i];
@@ -525,6 +555,7 @@ export default class Utilities {
 
     return true;
   }
+
   static isAlpha(candidate: string) {
     for (let i = 0; i < candidate.length; i++) {
       const charCode = candidate[i];

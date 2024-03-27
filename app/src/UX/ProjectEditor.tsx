@@ -1,6 +1,6 @@
 import React, { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
-import Project, { ProjectErrorState, ProjectRole } from "./../app/Project";
+import Project, { ProjectErrorState } from "./../app/Project";
 import ProjectItem from "./../app/ProjectItem";
 import { ProjectItemType } from "./../app/IProjectItemData";
 import ProjectItemList from "./ProjectItemList";
@@ -78,6 +78,7 @@ import IFile from "../storage/IFile";
 import ProjectActions from "./ProjectActions";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { IAnnotatedValue } from "../core/AnnotatedValue";
+import { ProjectRole } from "../app/IProjectData";
 
 interface IProjectEditorProps extends IAppProps {
   onModeChangeRequested?: (mode: AppMode) => void;
@@ -200,6 +201,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleViewMenuOpen = this._handleViewMenuOpen.bind(this);
     this._handleDeployWorldAndTestAssetsPackClick = this._handleDeployWorldAndTestAssetsPackClick.bind(this);
     this._handleDeployWorldAndTestAssetsLocalClick = this._handleDeployWorldAndTestAssetsLocalClick.bind(this);
+    this._handleDeployWorldPackClick = this._handleDeployWorldPackClick.bind(this);
     this._handleExportFlatWorldWithPacks = this._handleExportFlatWorldWithPacks.bind(this);
     this._handleDeployToRemoteServerClick = this._handleDeployToRemoteServerClick.bind(this);
     this._handleDeployPacksToMinecraftGameClick = this._handleDeployPacksToMinecraftGameClick.bind(this);
@@ -326,7 +328,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       statusAreaMode: sam,
       displayFileView: false,
       viewMode: viewMode,
-      forceRawView: true,
+      forceRawView: false,
       tab: ProjectEditorTab.itemList,
       lastDeployKey: undefined,
       lastExportKey: undefined,
@@ -1735,6 +1737,51 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
+  private async _handleDeployWorldPackClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
+    if (data === undefined || typeof data.content !== "string") {
+      return;
+    }
+
+    const projectItem = this._getProjectItemFromName(data.content, "mcworld", [
+      ProjectItemType.MCProject,
+      ProjectItemType.MCWorld,
+      ProjectItemType.MCTemplate,
+      ProjectItemType.worldFolder,
+    ]);
+
+    if (!projectItem) {
+      Log.debugAlert("Could not find respective project item.");
+      return;
+    }
+
+    if (this.props.carto.deploymentStorage == null) {
+      return;
+    }
+
+    await this._ensurePersisted();
+
+    this.props.carto.notifyStatusUpdate("Saving...");
+    await this.props.project.save();
+    this.props.carto.notifyStatusUpdate("Saved");
+
+    const zipBytes = await ProjectExporter.deployAsWorld(this.props.carto, this.props.project, projectItem, true);
+
+    const date = new Date();
+    const downloadTitle = projectItem.name + " deployment - " + Utilities.getFriendlySummarySeconds(date);
+
+    if (zipBytes instanceof Uint8Array) {
+      saveAs(new Blob([zipBytes], { type: "application/octet-stream" }), downloadTitle + ".mcworld");
+    }
+
+    Log.message("Done saving " + projectItem.name, this.props.project.name);
+
+    this.props.carto.notifyStatusUpdate("Downloading deployment zip '" + downloadTitle + ".mcworld'.");
+
+    if (data && data.icon && (data.icon as any).key) {
+      this._setNewDeployKey((data.icon as any).key, this._handleDeployWorldAndTestAssetsPackClick, data);
+    }
+  }
+
   private async _handleExportWorld(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
     if (data === undefined || typeof data.content !== "string") {
       return;
@@ -1789,6 +1836,18 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         break;
     }
   }
+
+  /*
+  private moveFilteredItemUp() {
+    if (this.state.filteredItems === undefined) {
+      return;
+    }
+
+    let newProjectItem = undefined;
+    if (this.state.activeProjectItem === undefined) {
+      newProjectItem = this.state.filteredItems[0];
+    }
+  }*/
 
   private async _handleModeChangeRequested(newMode: ProjectEditorMode) {
     await this._ensurePersisted();
@@ -2326,7 +2385,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     let nextExportKey = "shareableLink";
 
-    if (this.props.project.role !== ProjectRole.documentation && this.props.project.role !== ProjectRole.meta) {
+    if (
+      this.props.project.role !== ProjectRole.explorer &&
+      this.props.project.role !== ProjectRole.documentation &&
+      this.props.project.role !== ProjectRole.meta
+    ) {
       if (ProjectEditorUtilities.getIsLinkShareable(this.props.project)) {
         exportKeys[nextExportKey] = {
           key: nextExportKey,
@@ -2341,11 +2404,28 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       exportKeys[nextExportKey] = {
         key: nextExportKey,
         icon: <FontAwesomeIcon icon={faBox} key={nextExportKey} className="fa-lg" />,
-        content: "MCPack add-on",
+        content: "MCPack Add-On",
         onClick: this._handleExportMCPackClick,
-        title: "Exports this set of project files as an MCPack add-on, for use in Minecraft",
+        title: "Exports this set of project files as an MCPack Add-On, for use in Minecraft",
       };
       exportMenu.push(exportKeys[nextExportKey]);
+
+      if (!AppServiceProxy.hasAppService) {
+        exportMenu.push({
+          key: "dividerEXP",
+          kind: "divider",
+        });
+
+        nextExportKey = "exportFolder";
+        exportKeys[nextExportKey] = {
+          key: nextExportKey,
+          icon: <FontAwesomeIcon icon={faComputer} key={nextExportKey} className="fa-lg" />,
+          content: "Export to folder on this PC",
+          onClick: this._handleExportToLocalFolderClick,
+          title: "Exports this project to a folder on your PC.",
+        };
+        exportMenu.push(exportKeys[nextExportKey]);
+      }
 
       exportMenu.push({
         key: "divider",
@@ -2369,7 +2449,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         icon: <FontAwesomeIcon icon={faGlobe} key={nextExportKey} className="fa-lg" />,
         onClick: this._handleExportFlatWorldWithPackRefs,
         content: "Flat world with pack references",
-        title: "Get this pack in a sample .mcworld file with references to this add-on packs",
+        title: "Get this pack in a sample .mcworld file with references to this Add-On packs",
       };
       exportMenu.push(exportKeys[nextExportKey]);
 
@@ -2398,7 +2478,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         icon: <FontAwesomeIcon icon={faFileArchive} key={nextExportKey} className="fa-lg" />,
         onClick: this._handleExportDeploymentZipClick,
         content: "Deployment folder zip",
-        title: "Download Deployment",
+        title: "Download folder for incorporating into Minecraft",
       };
       exportMenu.push(exportKeys[nextExportKey]);
     }
@@ -2442,6 +2522,15 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
           exportMenu.push(exportKeys[nextExportKey]);
         }
+        const dlsKey = "deploySpecificWorldPack|" + pi.name;
+        deployKeys[dlsKey] = {
+          key: dlsKey + "A",
+          icon: <FontAwesomeIcon icon={faBox} key={dlsKey} className="fa-lg" />,
+          content: title + " mcworld",
+          onClick: this._handleDeployWorldPackClick,
+          title: "Downloads " + title + " in a MCWorld",
+        };
+        deployMenu.push(deployKeys[dlsKey]);
 
         const miKey = "deployWorldTestAssetsPack|" + pi.name;
         deployKeys[miKey] = {
@@ -2601,6 +2690,30 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       content: "Project world",
       title: "Get this pack in a sample .mcworld file, using the sample pack configuration",
     };
+    deployMenu.push({
+      key: defaultProjectWorld + "AA",
+      icon: (
+        <img
+          className="pe-menuIcon"
+          alt=""
+          key={defaultProjectWorld}
+          src={CartoApp.contentRoot + "res/latest/van/resource_pack/textures/blocks/grass_side_carried.png"}
+        />
+      ),
+      onClick: this._handleDeployDownloadProjectWorldWithPacks,
+      content: "Download project world",
+      title: "Get this pack in a sample .mcworld file, using the sample pack configuration",
+    });
+
+    const configureProjectWorld = "configProjectWorld|";
+    deployKeys[configureProjectWorld] = {
+      key: defaultProjectWorld + "A",
+      icon: <FontAwesomeIcon icon={faEdit} key={configureProjectWorld} className="fa-lg" />,
+      onClick: this._handleChangeWorldSettingsClick,
+      content: "Change project world preferences",
+      title: "Change your preferred project world preferences",
+    };
+    deployMenu.push(deployKeys[configureProjectWorld]);
 
     let addedItems = 0;
 
@@ -2643,7 +2756,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           icon: <FontAwesomeIcon icon={faGlobe} className="fa-lg" />,
           onClick: this._handleExportMCWorldWithPackRefs,
           content: name + " World with pack references",
-          title: "Get the " + name + " .mcworld file with references to this add-on packs",
+          title: "Get the " + name + " .mcworld file with references to this Add-On packs",
         };
         exportMenu.push(exportKeys[nextExportKey]);
       }
@@ -2968,7 +3081,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
 
     if (this.state.mode === ProjectEditorMode.properties) {
-      if (this.props.readOnly) {
+      if (this.props.readOnly || this.props.project.role === ProjectRole.explorer) {
         interior = (
           <ProjectDisplay
             theme={this.props.theme}

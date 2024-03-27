@@ -10,7 +10,6 @@ import * as fs from "fs";
 import Utilities from "../core/Utilities";
 import * as crypto from "crypto";
 import Log, { LogItem, LogItemLevel } from "../core/Log";
-import ProjectInfoSet from "../info/ProjectInfoSet";
 import JsEslintInfoGenerator from "./JsEslintInfoGenerator";
 import GeneratorRegistrations from "../info/GeneratorRegistrations";
 
@@ -42,6 +41,8 @@ export const consoleText_bgCyan = "\x1b[46m";
 export const consoleText_bgWhite = "\x1b[47m";
 export const consoleText_bgGray = "\x1b[100m";
 
+export const OperationColors = [consoleText_fgGreen, consoleText_fgCyan, consoleText_fgBlue, consoleText_fgMagenta];
+
 export default class LocalEnvironment {
   #data: ILocalEnvironmentData;
   public utilities: LocalUtilities;
@@ -51,7 +52,16 @@ export default class LocalEnvironment {
   #configFile: IFile;
   #worldContainerStorage: NodeStorage;
 
+  #displayInfo: boolean = false;
   #displayVerbose: boolean = false;
+
+  public get displayInfo() {
+    return this.#displayInfo;
+  }
+
+  public set displayInfo(newInfoValue: boolean) {
+    this.#displayInfo = newInfoValue;
+  }
 
   public get displayVerbose() {
     return this.#displayVerbose;
@@ -264,6 +274,8 @@ export default class LocalEnvironment {
 
     GeneratorRegistrations.projectGenerators.push(new JsEslintInfoGenerator());
 
+    this.handleNewLogMessage = this.handleNewLogMessage.bind(this);
+
     if (subscribeToLog) {
       Log.onItemAdded.subscribe(this.handleNewLogMessage);
     }
@@ -314,18 +326,22 @@ export default class LocalEnvironment {
   }
 
   handleNewLogMessage(log: Log, item: LogItem) {
+    if (item.level === LogItemLevel.verbose && !this.displayVerbose) {
+      return;
+    }
+
     let context = "";
 
-    if (item.context) {
+    if (item.context && item.context.length > 0) {
       context = item.context + " ";
     }
 
     if (item.level === LogItemLevel.verbose) {
       console.log(consoleText_fgGray, context + item.message, consoleText_reset);
     } else if (item.level === LogItemLevel.error) {
-      console.log(consoleText_fgRed, context + "Error: " + item.message, consoleText_reset);
+      console.error(consoleText_fgRed, context + "Error: " + item.message, consoleText_reset);
     } else if (item.level === LogItemLevel.important) {
-      console.log(consoleText_fgYellow, context + "Important: " + item.message, consoleText_reset);
+      console.warn(consoleText_fgYellow, context + "Important: " + item.message, consoleText_reset);
     } else {
       console.log(context + "Log: " + item.message);
     }

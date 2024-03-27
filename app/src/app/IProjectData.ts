@@ -5,6 +5,7 @@ import IProjectItemData from "./IProjectItemData";
 import IGitHubInfo from "./IGitHubInfo";
 import ITool from "./ITool";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
+import IStatus from "./Status";
 
 export enum ProjectDataType {
   localStorage = 0,
@@ -34,6 +35,13 @@ export enum ProjectEditPreference {
   raw = 2,
 }
 
+export enum ProjectRole {
+  general = 0,
+  documentation = 1,
+  meta = 2,
+  explorer = 3,
+}
+
 export default interface IProjectData {
   dataType: ProjectDataType;
   storageBasePath: string;
@@ -45,6 +53,7 @@ export default interface IProjectData {
   scriptEntryPoint?: string;
   description: string;
   focus: ProjectFocus;
+  role?: ProjectRole;
 
   editPreference: ProjectEditPreference;
 
@@ -97,6 +106,7 @@ export default interface IProjectData {
   localFolderPath?: string;
   localFilePath?: string;
   dataStorageRelativePath: string;
+  messages?: IStatus[];
 
   items: IProjectItemData[];
 }

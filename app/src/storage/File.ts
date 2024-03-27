@@ -46,6 +46,10 @@ export default class File extends FileBase implements IFile {
   }
 
   async deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean> {
+    if (this.parentFolder.storage.readOnly) {
+      throw new Error("Can't save read-only file.");
+    }
+
     Log.verbose("Deleting file '" + this.storageRelativePath + "'");
 
     if (skipRemoveFromParent !== true) {
@@ -93,6 +97,10 @@ export default class File extends FileBase implements IFile {
   }
 
   async saveContent(): Promise<Date> {
+    if (this.parentFolder.storage.readOnly) {
+      throw new Error("Can't save read-only file.");
+    }
+
     this.lastLoadedOrSaved = new Date();
 
     return this.lastLoadedOrSaved;

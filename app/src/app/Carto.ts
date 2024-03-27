@@ -16,7 +16,7 @@ import ICartoData, {
 import Project from "./Project";
 import { EventDispatcher } from "ste-events";
 import { ProjectFocus, ProjectScriptLanguage } from "./IProjectData";
-import Status, { StatusTopic, StatusType } from "./Status";
+import IStatus, { StatusTopic, StatusType } from "./Status";
 import StorageUtilities from "../storage/StorageUtilities";
 import Utilities from "../core/Utilities";
 import GitHubManager from "../github/GitHubManager";
@@ -104,8 +104,8 @@ export default class Carto {
   local: ILocalUtilities | undefined;
   #data: ICartoData;
   projects: Project[];
-  status: Status[];
-  activeOperations: Status[];
+  status: IStatus[];
+  activeOperations: IStatus[];
 
   packs?: Package[];
 
@@ -120,8 +120,8 @@ export default class Carto {
   private _onMinecraftRefreshed = new EventDispatcher<IMinecraft, CartoMinecraftState>();
   private _onPropertyChanged = new EventDispatcher<Carto, string>();
   private _onLoaded = new EventDispatcher<Carto, Carto>();
-  private _onStatusAdded = new EventDispatcher<Carto, Status>();
-  private _onStatusAddedAsync: ((carto: Carto, status: Status) => Promise<void>)[] = [];
+  private _onStatusAdded = new EventDispatcher<Carto, IStatus>();
+  private _onStatusAddedAsync: ((carto: Carto, status: IStatus) => Promise<void>)[] = [];
   private _onGalleryLoaded = new EventDispatcher<Carto, IGallery | undefined>();
 
   public get isLoaded() {
@@ -524,12 +524,12 @@ export default class Carto {
     return this.#data.lastActiveMinecraftFlavor;
   }
 
-  public subscribeStatusAddedAsync(fn: (carto: Carto, status: Status) => Promise<void>) {
+  public subscribeStatusAddedAsync(fn: (carto: Carto, status: IStatus) => Promise<void>) {
     this._onStatusAddedAsync.push(fn);
   }
 
-  public unsubscribeStatusAddedAsync(fn: (carto: Carto, status: Status) => Promise<void>) {
-    let newStatusAddedArr: ((carto: Carto, status: Status) => Promise<void>)[] = [];
+  public unsubscribeStatusAddedAsync(fn: (carto: Carto, status: IStatus) => Promise<void>) {
+    let newStatusAddedArr: ((carto: Carto, status: IStatus) => Promise<void>)[] = [];
 
     for (let i = 0; i < this._onStatusAddedAsync.length; i++) {
       if (this._onStatusAddedAsync[i] !== fn) {
@@ -850,7 +850,7 @@ export default class Carto {
         const content = data.substring(firstPipe + 1, data.length);
 
         try {
-          const contentO = JSON.parse(content) as Status;
+          const contentO = JSON.parse(content) as IStatus;
 
           this.notifyExternalStatus(contentO);
         } catch (e) {}
@@ -923,10 +923,12 @@ export default class Carto {
     const messageCanon = message.trim().toLowerCase();
 
     if (messageCanon.length > 1) {
-      const status = new Status();
-
-      status.message = message;
-      status.topic = topic;
+      const status = {
+        time: new Date(),
+        message: message,
+        topic: topic,
+        type: StatusType.message,
+      };
 
       this.status.push(status);
       await this.callStatusAddedListeners(status);
@@ -937,7 +939,7 @@ export default class Carto {
 
   private ensureStatusArrayIsTrimmed() {
     if (this.status.length > 10000) {
-      const newStatusArr: Status[] = [];
+      const newStatusArr: IStatus[] = [];
 
       for (let i = this.status.length - 9000; i < this.status.length; i++) {
         newStatusArr.push(this.status[i]);
@@ -947,7 +949,7 @@ export default class Carto {
     }
   }
 
-  async callStatusAddedListeners(status: Status) {
+  async callStatusAddedListeners(status: IStatus) {
     this._onStatusAdded.dispatch(this, status);
 
     if (this._onStatusAddedAsync.length > 0) {
@@ -961,7 +963,7 @@ export default class Carto {
     }
   }
 
-  notifyExternalStatus(status: Status) {
+  notifyExternalStatus(status: IStatus) {
     this.status.push(status);
 
     if (status.type === StatusType.operationStarted) {
@@ -980,11 +982,12 @@ export default class Carto {
   }
 
   async notifyOperationStarted(message: string, topic?: StatusTopic): Promise<number> {
-    const status = new Status();
-
-    status.message = message;
-    status.type = StatusType.operationStarted;
-    status.topic = topic;
+    const status: IStatus = {
+      time: new Date(),
+      message: message,
+      type: StatusType.operationStarted,
+      topic: topic,
+    };
 
     status.operationId = status.time.getTime();
 
@@ -999,12 +1002,13 @@ export default class Carto {
   }
 
   async notifyOperationEnded(endedOperationId: number, message: string, topic?: StatusTopic) {
-    const status = new Status();
-
-    status.message = message;
-    status.operationId = endedOperationId;
-    status.type = StatusType.operationEnded;
-    status.topic = topic;
+    const status = {
+      message: message,
+      operationId: endedOperationId,
+      type: StatusType.operationEnded,
+      time: new Date(),
+      topic: topic,
+    };
 
     this.status.push(status);
 
@@ -1017,7 +1021,7 @@ export default class Carto {
 
   removeOperation(id: number) {
     // remove operation from list of active operations.
-    const newActiveOperations: Status[] = [];
+    const newActiveOperations: IStatus[] = [];
 
     for (let i = 0; i < this.activeOperations.length; i++) {
       const oper = this.activeOperations[i];

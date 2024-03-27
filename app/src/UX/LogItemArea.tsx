@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Carto from "./../app/Carto";
 import "./LogItemArea.css";
 import IAppProps from "./IAppProps";
-import Status from "../app/Status";
+import IStatus from "../app/Status";
 import { LogItem, LogItemLevel } from "./../core/Log";
 import { ProjectStatusAreaMode } from "./ProjectEditor";
 import { Toolbar, List } from "@fluentui/react-northstar";
@@ -38,7 +38,7 @@ export default class LogItemArea extends Component<ILogItemAreaProps, ILogItemAr
     this.props.carto.onStatusAdded.subscribe(this._handleStatusAdded);
   }
 
-  _handleStatusAdded(carto: Carto, status: Status) {
+  _handleStatusAdded(carto: Carto, status: IStatus) {
     this._update();
   }
 
@@ -50,7 +50,7 @@ export default class LogItemArea extends Component<ILogItemAreaProps, ILogItemAr
     window.setTimeout(this._checkForTimeOut, MESSAGE_FADEOUT_TIME + 100);
   }
 
-  _checkForTimeOut(carto: Carto, status: Status) {
+  _checkForTimeOut(carto: Carto, status: IStatus) {
     this.forceUpdate();
   }
 

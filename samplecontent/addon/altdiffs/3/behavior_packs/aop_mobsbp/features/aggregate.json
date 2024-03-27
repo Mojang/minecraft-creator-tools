@@ -1,0 +1,13 @@
+{
+    "format_version": "1.13.0",
+    "minecraft:aggregate_feature": {
+      "description": {
+        "identifier": "example:monument_with_flowers_feature"
+      },
+      "features": [
+        "monument_feature",
+        "scatter_white_flowers_feature",
+        "scatter_yellow_flower_feature"
+      ]
+    }
+  }

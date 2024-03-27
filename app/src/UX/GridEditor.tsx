@@ -16,6 +16,7 @@ interface IGridEditorProps {
   placeholder?: string;
   setActivePersistable?: (persistObject: IPersistable) => void;
   heightOffset?: number;
+  height?: number;
   readOnly: boolean;
   columns?: OptColumn[];
   data?: any[];
@@ -82,10 +83,10 @@ export default class GridEditor extends Component<IGridEditorProps, IGridEditorS
         },
         scrollbar: {
           background: this.props.theme.siteVariables?.colorScheme.brand.background1,
-          thumb: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          thumb: this.props.theme.siteVariables?.colorScheme.brand.background3,
           emptySpace: this.props.theme.siteVariables?.colorScheme.brand.background2,
           border: this.props.theme.siteVariables?.colorScheme.brand.background3,
-          active: this.props.theme.siteVariables?.colorScheme.brand.background3,
+          active: this.props.theme.siteVariables?.colorScheme.brand.background4,
         },
         row: {
           even: {
@@ -220,14 +221,20 @@ export default class GridEditor extends Component<IGridEditorProps, IGridEditorS
   async persist() {}
 
   render() {
-    const heightOffset = this.props.heightOffset ? this.props.heightOffset : 150;
+    let height = "500px";
+
+    if (this.props.heightOffset) {
+      height = "calc(100vh - " + this.props.heightOffset + ")";
+    } else if (this.props.height) {
+      height = this.props.height + "px";
+    }
 
     return (
       <div className="ge-outer">
         <div
           className="ge-contents"
           style={{
-            height: "calc(100vh - " + heightOffset + "px)",
+            height: height,
           }}
           ref={this.rootElt}
         ></div>

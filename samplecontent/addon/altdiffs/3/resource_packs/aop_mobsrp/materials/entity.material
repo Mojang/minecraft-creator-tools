@@ -1,0 +1,72 @@
+{
+  "materials": {
+    "version": "1.0.0",
+
+    "entity_static": {
+      "vertexShader": "shaders/entity.vertex",
+      "vrGeometryShader": "shaders/entity.geometry",
+      "fragmentShader": "shaders/entity.fragment",
+      "vertexFields": [
+        { "field": "Position" },
+        { "field": "Normal" },
+        { "field": "UV0" }
+      ],
+      "variants": [
+        {
+          "skinning": {
+            "+defines": [ "USE_SKINNING" ],
+            "vertexFields": [
+              { "field": "Position" },
+              { "field": "BoneId0" },
+              { "field": "Normal" },
+              { "field": "UV0" }
+            ]
+          }
+        },
+        {
+          "skinning_color": {
+            "+defines": [ "USE_SKINNING", "USE_OVERLAY" ],
+            "+states": [ "Blending" ],
+            "vertexFields": [
+              { "field": "Position" },
+              { "field": "BoneId0" },
+              { "field": "Color" },
+              { "field": "Normal" },
+              { "field": "UV0" }
+            ]
+          }
+        },
+        {
+          "skinning_alphatest": {
+            "+defines": [ "USE_SKINNING", "ALPHA_TEST" ],
+            "+states": [ "DisableCulling" ],
+            "vertexFields": [
+              { "field": "Position" },
+              { "field": "BoneId0" },
+              { "field": "Normal" },
+              { "field": "UV0" }
+            ]
+          }
+        }
+      ],
+      "msaaSupport": "Both",
+      "+samplerStates": [
+        {
+          "samplerIndex": 0,
+          "textureFilter": "Point"
+        }
+      ]
+    },
+    "aopthisisnotagoodname:entity_flat_color_line": {
+      "vertexShader": "shaders/position.vertex",
+      "vrGeometryShader": "shaders/position.geometry",
+      "fragmentShader": "shaders/current_color.fragment",
+      "msaaSupport": "Both",
+      "+defines": [ "LINE_STRIP" ],
+      "primitiveMode": "Line",
+      "vertexFields": [
+        { "field": "Position" }
+      ]
+    }
+  }
+}

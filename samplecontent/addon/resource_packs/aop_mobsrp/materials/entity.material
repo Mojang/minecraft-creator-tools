@@ -1,0 +1,16 @@
+{
+  "materials": {
+    "version": "1.0.0",
+    "aop_mobsrp_otherstuff:entity_flat_color_line": {
+      "vertexShader": "shaders/position.vertex",
+      "vrGeometryShader": "shaders/position.geometry",
+      "fragmentShader": "shaders/current_color.fragment",
+      "msaaSupport": "Both",
+      "+defines": [ "LINE_STRIP" ],
+      "primitiveMode": "Line",
+      "vertexFields": [
+        { "field": "Position" }
+      ]
+    }
+  }
+}

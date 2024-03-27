@@ -571,7 +571,7 @@ export default class Database {
       }
     } catch (e: any) {
       Log.fail(
-        "Could not load Minecraft schema catalog: " + CartoApp.contentRoot + "|" + schemaPath + " " + e.toString()
+        "Could not load Minecraft schema catalog: " + CartoApp.contentRoot + " - " + schemaPath + " " + e.toString()
       );
       return undefined;
     }

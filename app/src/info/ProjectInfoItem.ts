@@ -117,7 +117,9 @@ export default class ProjectInfoItem {
       summaryString += "(" + this.projectItem.storagePath + ") ";
     }
 
-    summaryString += this.message;
+    if (this.message) {
+      summaryString += this.message;
+    }
 
     if (this.data) {
       summaryString += ": " + this.data;

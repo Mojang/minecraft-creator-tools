@@ -9,6 +9,20 @@
       "webRoot": "${workspaceFolder}"
     },
     {
+      "name": "cli (val addon)",
+      "cwd": "${workspaceRoot}/../samplecontent/addon/build/content3/",
+      "args": ["validate", "--log-verbose", "addon"],
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/src/cli/index.ts",
+      "preLaunchTask": "gulp: jsncorebuild",
+      "sourceMaps":true,
+      "runtimeExecutable": null,
+      "localRoot": "${workspaceRoot}/src",
+      "runtimeArgs": ["--nolazy", "--max-old-space-size=32768"],
+      "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "Mocha tests",

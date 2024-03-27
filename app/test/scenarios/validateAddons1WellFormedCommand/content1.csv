@@ -1,0 +1,3 @@
+Test,TestId,Type,Item,Message,Data,Path
+WORLDDATA,1,Test success,,"Test World Data Validation completed successfully.",,,
+ADDONIREQ,1,Test success,,"Test Addon Item Requirements Generator completed successfully.",,,

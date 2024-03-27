@@ -31,6 +31,7 @@ import Project from "../app/Project";
 import { ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 import ActorItem from "./ActorItem";
 import { StatusTopic } from "../app/Status";
+import { IErrorMessage, IErrorable } from "../core/IErrorable";
 
 const BEHAVIOR_PACKS_RELPATH = "/world_behavior_packs.json";
 const BEHAVIOR_PACK_HISTORY_RELPATH = "/world_behavior_pack_history.json";
@@ -47,7 +48,14 @@ const SUBCHUNK_Y_SIZE = 16;
 
 const CREATOR_TOOLS_EDITOR_BPUUID = "5d2f0b91-ca29-49da-a275-e6c6262ea3de";
 
-export default class MCWorld implements IGetSetPropertyObject, IDimension {
+export interface IRegion {
+  minX: number;
+  minZ: number;
+  maxX: number;
+  maxZ: number;
+}
+
+export default class MCWorld implements IGetSetPropertyObject, IDimension, IErrorable {
   // Where possible, if _file is defined we'd prefer to use
   // _file.fileContentStorage for zip manip. _zipStorage is only used from
   // a pure "zip bytes in memory" scenario (for generating downloads.)
@@ -76,6 +84,14 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
 
   private _onPropertyChanged = new EventDispatcher<MCWorld, string>();
 
+  private _biomeData: NbtBinary | undefined;
+  private _overworldData: NbtBinary | undefined;
+  private _levelChunkMetaData: NbtBinary | undefined;
+  private _generationSeed: string | undefined;
+
+  isInErrorState?: boolean;
+  errorMessages?: IErrorMessage[];
+
   worldBehaviorPacks?: IPackRegistration[];
   worldResourcePacks?: IPackRegistration[];
   worldBehaviorPackHistory?: IPackHistory;
@@ -95,6 +111,8 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
   private _maxX: number | undefined;
   private _minZ: number | undefined;
   private _maxZ: number | undefined;
+
+  regionsByDimension: { [dim: number]: IRegion[] } = {};
 
   chunks: { [dim: number]: { [x: number]: { [z: number]: WorldChunk } } } = {};
 
@@ -160,6 +178,17 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
 
   public get maxZ() {
     return this._maxZ;
+  }
+
+  public get generationSeed() {
+    if (this._generationSeed === undefined && this._levelChunkMetaData && this._levelChunkMetaData.root) {
+      const tag = this._levelChunkMetaData.root.find("GenerationSeed");
+      if (tag !== null) {
+        this._generationSeed = tag.valueAsBigInt.toString();
+      }
+    }
+
+    return this._generationSeed;
   }
 
   public get storage() {
@@ -457,6 +486,133 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
         this.saveAutoGenItems();
       }
     }
+  }
+
+  public _updateMeta() {
+    this.regionsByDimension = {};
+
+    for (const dimNum in this.chunks) {
+      const dim = this.chunks[dimNum];
+
+      let regions: IRegion[] = [];
+
+      for (const xNumStr in dim) {
+        const xNum = parseInt(xNumStr);
+        const xPlane = dim[xNum];
+
+        for (const zNumStr in xPlane) {
+          const zNum = parseInt(zNumStr);
+
+          let addedToRegion = false;
+
+          for (const region of regions) {
+            if (xNum >= region.minX && xNum <= region.maxX && zNum >= region.minZ && zNum <= region.maxZ) {
+              region.minX = Math.min(region.minX, xNum - 1);
+              region.minZ = Math.min(region.minZ, zNum - 1);
+              region.maxX = Math.max(region.maxX, xNum + 1);
+              region.maxZ = Math.max(region.maxZ, zNum + 1);
+              addedToRegion = true;
+            }
+          }
+
+          if (!addedToRegion) {
+            regions.push({
+              minX: xNum - 1,
+              minZ: zNum - 1,
+              maxX: xNum + 1,
+              maxZ: zNum + 1,
+            });
+          }
+        }
+      }
+
+      this.regionsByDimension[dimNum] = this._coalesceRegions(regions);
+    }
+  }
+
+  private _coalesceRegions(regions: IRegion[]) {
+    const newRegions: IRegion[] = [];
+
+    for (const region of regions) {
+      let addedToRegion = false;
+
+      for (const newRegion of newRegions) {
+        if (
+          region.minX >= newRegion.minX &&
+          region.minX <= newRegion.maxX &&
+          region.minZ >= newRegion.minZ &&
+          region.minZ <= newRegion.maxZ
+        ) {
+          newRegion.minX = Math.min(newRegion.minX, region.minX - 1);
+          newRegion.minZ = Math.min(newRegion.minZ, region.minZ - 1);
+          newRegion.maxX = Math.max(newRegion.maxX, region.minX + 1);
+          newRegion.maxZ = Math.max(newRegion.maxZ, region.minZ + 1);
+          addedToRegion = true;
+          break;
+        }
+        if (
+          region.maxX >= newRegion.minX &&
+          region.maxX <= newRegion.maxX &&
+          region.minZ >= newRegion.minZ &&
+          region.minZ <= newRegion.maxZ
+        ) {
+          newRegion.minX = Math.min(newRegion.minX, region.maxX - 1);
+          newRegion.minZ = Math.min(newRegion.minZ, region.minZ - 1);
+          newRegion.maxX = Math.max(newRegion.maxX, region.maxX + 1);
+          newRegion.maxZ = Math.max(newRegion.maxZ, region.minZ + 1);
+          addedToRegion = true;
+          break;
+        }
+        if (
+          region.minX >= newRegion.minX &&
+          region.minX <= newRegion.maxX &&
+          region.maxZ >= newRegion.minZ &&
+          region.maxZ <= newRegion.maxZ
+        ) {
+          newRegion.minX = Math.min(newRegion.minX, region.minX - 1);
+          newRegion.minZ = Math.min(newRegion.minZ, region.maxZ - 1);
+          newRegion.maxX = Math.max(newRegion.maxX, region.minX + 1);
+          newRegion.maxZ = Math.max(newRegion.maxZ, region.maxZ + 1);
+          addedToRegion = true;
+          break;
+        }
+
+        if (
+          region.maxX >= newRegion.minX &&
+          region.maxX <= newRegion.maxX &&
+          region.maxZ >= newRegion.minZ &&
+          region.maxZ <= newRegion.maxZ
+        ) {
+          newRegion.minX = Math.min(newRegion.minX, region.maxX - 1);
+          newRegion.minZ = Math.min(newRegion.minZ, region.maxZ - 1);
+          newRegion.maxX = Math.max(newRegion.maxX, region.maxX + 1);
+          newRegion.maxZ = Math.max(newRegion.maxZ, region.maxZ + 1);
+          addedToRegion = true;
+          break;
+        }
+      }
+
+      if (!addedToRegion) {
+        newRegions.push(region);
+      }
+    }
+
+    return newRegions;
+  }
+
+  private _pushError(message: string, contextIn?: string) {
+    this.isInErrorState = true;
+
+    if (this.errorMessages === undefined) {
+      this.errorMessages = [];
+    }
+
+    Log.error(message + (contextIn ? " " + contextIn : ""));
+
+    this.errorMessages.push({
+      message: message,
+      context: contextIn,
+    });
   }
 
   async save() {
@@ -1026,7 +1182,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       await this.load(false);
     }
 
-    await this.ensureLevelData();
+    this.ensureLevelData();
 
     if (this.levelData) {
       this.levelData.ensureDefaults();
@@ -1054,6 +1210,8 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
         this.levelData = new WorldLevelDat();
 
         this.levelData.loadFromNbtBytes(rootDataFile.content);
+
+        Utilities.appendErrors(this, this.levelData);
 
         this._loadFromNbt();
       }
@@ -1088,7 +1246,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
         try {
           this.worldBehaviorPacks = JSON.parse(packsFile.content);
         } catch {
-          Log.fail("Could not parse behavior pack file content");
+          this._pushError("Could not parse behavior pack file content");
           this.worldBehaviorPacks = undefined;
         }
       }
@@ -1103,7 +1261,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
         try {
           this.worldResourcePacks = JSON.parse(packsFile.content);
         } catch {
-          Log.fail("Could not parse resource pack file content");
+          this._pushError("Could not parse resource pack file content");
           this.worldResourcePacks = undefined;
         }
       }
@@ -1118,7 +1276,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
         try {
           this.worldBehaviorPackHistory = JSON.parse(packHistoryFile.content);
         } catch {
-          Log.fail("Could not parse behavior pack history file content");
+          this._pushError("Could not parse behavior pack history file content");
           this.worldBehaviorPackHistory = undefined;
         }
       }
@@ -1133,7 +1291,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
         try {
           this.worldResourcePackHistory = JSON.parse(packHistoryFile.content);
         } catch {
-          Log.fail("Could not parse resource pack history file content");
+          this._pushError("Could not parse resource pack history file content");
           this.worldResourcePackHistory = undefined;
         }
       }
@@ -1176,6 +1334,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
 
     const ldbFileArr: IFile[] = [];
     const logFileArr: IFile[] = [];
+    const manifestFileArr: IFile[] = [];
 
     if (dbFolder) {
       await dbFolder.load(false);
@@ -1186,7 +1345,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
         if (file) {
           const extension = StorageUtilities.getTypeFromName(file.name);
 
-          if (extension === "ldb") {
+          if (fileName.startsWith("MANIFEST")) {
+            manifestFileArr.push(file);
+          } else if (extension === "ldb") {
             // console.log("Adding map file " + file.name + "|" + ldbFileArr.length);
             ldbFileArr.push(file);
           } else if (extension === "log") {
@@ -1197,11 +1358,13 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       }
     }
 
-    this.levelDb = new LevelDb(ldbFileArr, logFileArr, this.name);
+    this.levelDb = new LevelDb(ldbFileArr, logFileArr, manifestFileArr, this.name);
 
     await this.levelDb.init(/*async (message: string): Promise<void> => {
       await this._project?.carto.notifyStatusUpdate(message, StatusTopic.worldLoad);
     }*/);
+
+    Utilities.appendErrors(this, this.levelDb);
 
     if (loadOper !== undefined) {
       await this._project?.carto.notifyOperationEnded(
@@ -1210,7 +1373,16 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
         StatusTopic.worldLoad
       );
     }
+
+    await this.loadFromLevelDb(this.levelDb);
+  }
+
+  async loadFromLevelDb(levelDb: LevelDb) {
+    this.levelDb = levelDb;
+
     await this.processWorldData();
+
+    this._updateMeta();
 
     this._onDataLoaded.dispatch(this, this);
 
@@ -1298,6 +1470,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
     }
 
     this.chunks = [];
+    this.chunkCount = 0;
 
     const processOper = await this._project?.carto.notifyOperationStarted(
       "Starting second-pass load of '" + this.name + "' world",
@@ -1309,16 +1482,40 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
 
       if (keyname.startsWith("AutonomousEntities")) {
       } else if (keyname.startsWith("schedulerWT")) {
-      } else if (keyname.startsWith("Overworld")) {
-      } else if (keyname.startsWith("BiomeData")) {
+      } else if (keyname.startsWith("Overworld") && keyValue) {
+        const overworldBytes = keyValue.value;
+
+        if (overworldBytes) {
+          const overworld = new NbtBinary();
+
+          overworld.context = this.name + " overworld";
+
+          overworld.fromBinary(overworldBytes, true, false, 0, true);
+
+          this._overworldData = overworld;
+        }
+      } else if (keyname.startsWith("BiomeData") && keyValue) {
+        const biomeDataBytes = keyValue.value;
+
+        if (biomeDataBytes) {
+          const biomeData = new NbtBinary();
+
+          biomeData.context = this.name + " biome data";
+
+          biomeData.fromBinary(biomeDataBytes, true, false, 0, true);
+
+          this._biomeData = biomeData;
+        }
       } else if (keyname.startsWith("CustomProperties")) {
         this._hasCustomProps = true;
-      } else if (keyname.startsWith("DynamicProperties") && keyValue !== undefined) {
+      } else if (keyname.startsWith("DynamicProperties") && keyValue) {
         this._hasDynamicProps = true;
         const dynamicPropertyBytes = keyValue.value;
 
         if (dynamicPropertyBytes) {
           const dynamicProps = new NbtBinary();
+
+          dynamicProps.context = this.name + " dynamic props";
 
           dynamicProps.fromBinary(dynamicPropertyBytes, true, false, 0, true);
 
@@ -1345,9 +1542,19 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
             }
           }
         }
-      } else if (keyname.startsWith("LevelChunkMetaDataDictionary")) {
+      } else if (keyname.startsWith("LevelChunkMetaDataDictionary") && keyValue) {
+        const levelChunkMetaBytes = keyValue.value;
+        if (levelChunkMetaBytes) {
+          const levelChunkMeta = new NbtBinary();
+
+          levelChunkMeta.context = this.name + " level chunk metadata";
+
+          levelChunkMeta.fromBinary(levelChunkMetaBytes, true, false, 12, true);
+
+          this._levelChunkMetaData = levelChunkMeta;
+        }
       } else if (keyname.startsWith("structuretemplate_")) {
-      } else if (keyname.startsWith("digp") && keyValue !== undefined) {
+      } else if (keyname.startsWith("digp") && keyValue) {
         const keyBytes = keyValue.keyBytes;
 
         if (keyBytes) {
@@ -1406,7 +1613,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
             }
           }
         }
-      } else if (keyname.startsWith("actorprefix") && keyValue !== undefined) {
+      } else if (keyname.startsWith("actorprefix") && keyValue) {
         const keyBytes = keyValue.keyBytes;
 
         if (keyBytes && keyBytes.length === 19 && keyValue.value) {
@@ -1495,7 +1702,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
       } else if (keyname.startsWith("scriptGid")) {
       } else if (keyname.startsWith("Nether")) {
       } else if (
-        keyValue !== undefined &&
+        keyValue &&
         (keyname.length === 9 ||
           keyname.length === 10 ||
           keyname.length === 17 ||
@@ -1565,7 +1772,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
           }
         }
       } else if (
-        keyValue === undefined &&
+        keyValue === false &&
         (keyname.length === 9 ||
           keyname.length === 10 ||
           keyname.length === 17 ||
@@ -1612,18 +1819,16 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension {
         ) {
           this.chunks[dim][x][z].clearKeyValue(keyname);
         }
-      } else if (keyValue === undefined) {
+      } else if (keyValue === false) {
         // console.log("Nulling record '" + keyname + "'");
       } else if (keyValue !== undefined) {
-        Log.error("Unknown record type: '" + keyname + "'", this.name);
+        this._pushError("Unknown record type: '" + keyname + "'", this.name);
       } else {
-        Log.error("Unknown record.", this.name);
+        this._pushError("Unknown record.", this.name);
       }
     }
 
     await this.notifyLoadEnded(processOper);
-
-    // let block = this.getBlock(new BlockLocation(344, 58, 4));
   }
 
   private async notifyLoadEnded(processOper?: number) {

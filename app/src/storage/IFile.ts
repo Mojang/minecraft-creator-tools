@@ -4,6 +4,7 @@
 import IFolder from "./IFolder";
 import IStorage from "./IStorage";
 import IStorageObject from "./IStorageObject";
+import { EncodingType } from "./StorageUtilities";
 
 export default interface IFile extends IStorageObject {
   modified: Date | null;
@@ -15,6 +16,9 @@ export default interface IFile extends IStorageObject {
   needsSave: boolean;
   fileContainerStorage: IStorage | null;
   extendedPath: string;
+
+  isBinary: boolean;
+  isString: boolean;
 
   parentFolder: IFolder;
 
@@ -29,7 +33,7 @@ export default interface IFile extends IStorageObject {
   exists(): Promise<boolean>;
   getRootRelativePath(): string | undefined;
   getFolderRelativePath(toFolder: IFolder): string | undefined;
-  loadContent(force?: boolean): Promise<Date>;
+  loadContent(force?: boolean, forceEncoding?: EncodingType): Promise<Date>;
   setContent(content: string | Uint8Array): void;
   saveContent(force?: boolean): Promise<Date>;
 }

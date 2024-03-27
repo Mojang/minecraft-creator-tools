@@ -181,16 +181,12 @@ function copyVscDist() {
   return gulp.src(["public/dist/**/*"]).pipe(gulp.dest("toolbuild/vsc/dist/"));
 }
 
-function copyJsNodeRes() {
-  return gulp.src(["public/res/**/*"]).pipe(gulp.dest("toolbuild/jsn/res/"));
+function copyJsNodeResSchemas() {
+  return gulp.src(["public/res/latest/schemas/**/*"]).pipe(gulp.dest("toolbuild/jsn/res/latest/schemas/"));
 }
 
 function copyJsNodeMc() {
   return gulp.src(["../mc/toolsAddon/**/*"]).pipe(gulp.dest("toolbuild/jsn/mc/"));
-}
-
-function copyJsNodeDist() {
-  return gulp.src(["public/dist/**/*"]).pipe(gulp.dest("toolbuild/jsn/dist/"));
 }
 
 function copyToolsJson() {
@@ -253,16 +249,7 @@ gulp.task(
   gulp.series(
     "clean-jsnbuild",
     copyCheckedInRes,
-    gulp.parallel(
-      compileJsNodeBuild,
-      copyToolsJson,
-      copyJsNodeData,
-      copyJsNodeDocs,
-      copyJsNodeRes,
-      copyJsNodeMc,
-      gulp.series(compileJsnWebBuild, "postclean-jsnwebbuild"),
-      copyJsNodeDist
-    )
+    gulp.parallel(compileJsNodeBuild, copyToolsJson, copyJsNodeData, copyJsNodeDocs, copyJsNodeResSchemas, copyJsNodeMc)
   )
 );
 

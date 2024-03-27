@@ -209,6 +209,10 @@ export default class GitHubFile extends FileBase implements IFile {
   }
 
   async saveContent(): Promise<Date> {
+    if (this.parentFolder.storage.readOnly) {
+      throw new Error("Can't save read-only file.");
+    }
+
     this.lastLoadedOrSaved = new Date();
 
     return this.lastLoadedOrSaved;
