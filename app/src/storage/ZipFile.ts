@@ -55,7 +55,7 @@ export default class ZipFile extends FileBase implements IFile {
   async loadContent(force?: boolean, forceEncoding?: EncodingType): Promise<Date> {
     if (force || !this.lastLoadedOrSaved) {
       if (this._jszipo !== null) {
-        const type = forceEncoding !== undefined ? forceEncoding : StorageUtilities.getEncodingByFileName(this.name);
+        const type = forceEncoding ?? StorageUtilities.getEncodingByFileName(this.name);
 
         if (type === EncodingType.ByteBuffer) {
           this._content = await this._jszipo.async("uint8array"); /*, (metadata) => {
