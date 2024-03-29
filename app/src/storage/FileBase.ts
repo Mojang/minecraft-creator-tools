@@ -28,15 +28,7 @@ export default abstract class FileBase implements IFile {
   }
 
   get isString() {
-    if (this._content === undefined) {
-      return false;
-    }
-
-    if (typeof this._content === "string") {
-      return true;
-    }
-
-    return false;
+    return this._content && typeof this._content === "string";
   }
 
   get isBinary() {
