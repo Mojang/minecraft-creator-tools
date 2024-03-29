@@ -241,7 +241,7 @@ async function collectLines(readable: Readable, data: string[]) {
       let lineUp = line.replace(/\\n/g, "");
       lineUp = lineUp.replace(/\\r/g, "");
 
-      if (lineUp.indexOf("ebugger") <= 0) {
+      if (lineUp.indexOf("ebugger") === -1) {
         // ignore any lines about the debugger.
         console.log(lineUp);
         data.push(lineUp);
