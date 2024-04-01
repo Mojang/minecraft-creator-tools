@@ -56,7 +56,7 @@ export default class DataFormFile {
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<DataFormFile, DataFormFile>) {
-    let dff: DataFormFile | undefined = undefined;
+    let dff: DataFormFile | undefined;
 
     if (file.manager === undefined) {
       dff = new DataFormFile();

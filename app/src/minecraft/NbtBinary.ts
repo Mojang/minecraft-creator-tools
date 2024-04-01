@@ -427,7 +427,7 @@ export default class NbtBinary implements IErrorable {
         }
 
         const view = new DataView(data.buffer);
-        let str: string | undefined = undefined;
+        let str: string | undefined;
 
         if (stringsAreASCII) {
           str = Utilities.readStringASCIIBuffer(data, i, stringLength);

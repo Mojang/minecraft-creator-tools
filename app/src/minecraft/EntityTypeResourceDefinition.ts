@@ -80,7 +80,7 @@ export default class EntityTypeResourceDefinition {
     file: IFile,
     loadHandler?: IEventHandler<EntityTypeResourceDefinition, EntityTypeResourceDefinition>
   ) {
-    let et: EntityTypeResourceDefinition | undefined = undefined;
+    let et: EntityTypeResourceDefinition | undefined;
 
     if (file.manager === undefined) {
       et = new EntityTypeResourceDefinition();

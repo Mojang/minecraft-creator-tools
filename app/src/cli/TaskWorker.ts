@@ -1,7 +1,7 @@
 import ITask from "./ITask";
 import IProjectStartInfo from "./IProjectStartInfo";
 import Log from "../core/Log";
-import ClUtils, { TaskType } from "./ClUtils";
+import ClUtils, { OutputType, TaskType } from "./ClUtils";
 import Carto from "../app/Carto";
 import NodeFile from "../local/NodeFile";
 import StorageUtilities from "../storage/StorageUtilities";
@@ -15,12 +15,12 @@ import ProjectInfoSet from "../info/ProjectInfoSet";
 import { InfoItemType } from "../info/IInfoItemData";
 import LocalEnvironment from "../local/LocalEnvironment";
 
-let carto: Carto | undefined = undefined;
-let localEnv: LocalEnvironment | undefined = undefined;
-let outputStorage: NodeStorage | undefined = undefined;
-let outputStoragePath: string | undefined = undefined;
+let carto: Carto | undefined;
+let localEnv: LocalEnvironment | undefined;
+let outputStorage: NodeStorage | undefined;
+let outputStoragePath: string | undefined;
 
-let activeContext: string | undefined = undefined;
+let activeContext: string | undefined;
 
 async function executeTask(task: ITask) {
   if (!task.project) {
@@ -65,8 +65,9 @@ async function executeTask(task: ITask) {
         return validate(
           carto,
           task.project,
-          task.arguments["suite"],
+          task.arguments["suite"] as string | undefined,
           task.arguments["outputMci"] === "true",
+          task.arguments["outputType"] as number | undefined,
           task.displayInfo,
           task.force
         );
@@ -85,6 +86,7 @@ async function validate(
   projectStart: IProjectStartInfo,
   suite?: string,
   outputMci?: boolean,
+  outputType?: OutputType,
   displayInfo?: boolean,
   force?: boolean
 ) {
@@ -92,10 +94,10 @@ async function validate(
 
   project.readOnlySafety = true;
 
-  let jsonFile: NodeFile | undefined = undefined;
+  let jsonFile: NodeFile | undefined;
   let jsonFileExists = false;
 
-  if (outputStorage) {
+  if (outputStorage && outputType !== OutputType.noReports) {
     jsonFile = outputStorage.rootFolder.ensureFile(
       StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(project.containerName)) + ".mcr.json"
     );
@@ -125,8 +127,8 @@ async function validate(
     }
   }
 
-  if (!jsonFileExists || force || displayInfo) {
-    return await validateAndDisposeProject(project, outputStorage, jsonFile, suite, outputMci);
+  if (!jsonFileExists || force || displayInfo || outputType === OutputType.noReports) {
+    return await validateAndDisposeProject(project, outputStorage, jsonFile, suite, outputMci, outputType);
   } else {
     Log.message("'" + project.name + "' has already been validated; skipping. Use --force to re-validate.");
   }
@@ -137,9 +139,10 @@ async function validate(
 async function validateAndDisposeProject(
   project: Project,
   outputStorage: NodeStorage | undefined,
-  jsonFile: NodeFile | undefined,
+  mcrJsonFile: NodeFile | undefined,
   suite?: string,
-  outputMci?: boolean
+  outputMci?: boolean,
+  outputType?: OutputType
 ): Promise<IProjectMetaState> {
   Log.verbose("Validating '" + project.name + "'" + (suite ? " with suite '" + suite + "'" : "") + ".");
 
@@ -147,7 +150,7 @@ async function validateAndDisposeProject(
 
   await project.inferProjectItemsFromFiles();
 
-  let pis: ProjectInfoSet | undefined = undefined;
+  let pis: ProjectInfoSet | undefined;
 
   if (!suite) {
     pis = project.infoSet;
@@ -158,7 +161,7 @@ async function validateAndDisposeProject(
   await pis.generateForProject();
 
   const pisData = pis.getDataObject();
-  const content = JSON.stringify(pisData, null, 2);
+  const content = JSON.stringify(pisData);
 
   const projectSet = {
     projectContainerName: project.containerName,
@@ -191,16 +194,18 @@ async function validateAndDisposeProject(
   }
 
   if (outputStorage) {
-    const reportHtmlFile = outputStorage.rootFolder.ensureFile(
-      StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(projectSet.projectContainerName)) +
-        ".report.html"
-    );
+    if (outputType !== OutputType.noReports) {
+      const reportHtmlFile = outputStorage.rootFolder.ensureFile(
+        StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(projectSet.projectContainerName)) +
+          ".report.html"
+      );
 
-    const reportContent = pis.getReportHtml(projectSet.projectName, projectSet.projectPath, undefined);
+      const reportContent = pis.getReportHtml(projectSet.projectName, projectSet.projectPath, undefined);
 
-    reportHtmlFile.setContent(reportContent);
+      reportHtmlFile.setContent(reportContent);
 
-    reportHtmlFile.saveContent();
+      reportHtmlFile.saveContent();
+    }
 
     if (outputMci) {
       const indexFolder = outputStorage.rootFolder.ensureFolder("mci");
@@ -212,29 +217,34 @@ async function validateAndDisposeProject(
           ".mci.json"
       );
 
-      const mciContent = pis.getIndexJson(projectSet.projectName, projectSet.projectPath, undefined);
-
-      mciContentFile.setContent(mciContent);
+      if (outputType === OutputType.noReports) {
+        mciContentFile.setContent(pis.getStrictIndexJson(projectSet.projectName, projectSet.projectPath, undefined));
+      } else {
+        mciContentFile.setContent(pis.getIndexJson(projectSet.projectName, projectSet.projectPath, undefined));
+      }
 
       mciContentFile.saveContent();
     }
 
-    const csvFile = outputStorage.rootFolder.ensureFile(
-      StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(projectSet.projectContainerName)) + ".csv"
-    );
+    if (outputType !== OutputType.noReports) {
+      const csvFile = outputStorage.rootFolder.ensureFile(
+        StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(projectSet.projectContainerName)) +
+          ".csv"
+      );
 
-    const pisLines = pis.getItemCsvLines();
+      const pisLines = pis.getItemCsvLines();
 
-    const csvContent = csvHeader + "\r\n" + pisLines.join("\n");
+      const csvContent = csvHeader + "\r\n" + pisLines.join("\n");
 
-    csvFile.setContent(csvContent);
+      csvFile.setContent(csvContent);
 
-    csvFile.saveContent();
+      csvFile.saveContent();
+    }
 
-    if (jsonFile) {
-      jsonFile.setContent(content);
+    if (mcrJsonFile) {
+      mcrJsonFile.setContent(content);
 
-      jsonFile.saveContent();
+      mcrJsonFile.saveContent();
     }
   }
 

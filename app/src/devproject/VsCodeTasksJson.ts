@@ -42,7 +42,7 @@ export default class VsCodeTasksJson {
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<VsCodeTasksJson, VsCodeTasksJson>) {
-    let dt: VsCodeTasksJson | undefined = undefined;
+    let dt: VsCodeTasksJson | undefined;
 
     if (file.manager === undefined) {
       dt = new VsCodeTasksJson();

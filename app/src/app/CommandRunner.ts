@@ -43,9 +43,9 @@ export default class CommandRunner {
     let lastStoredBlockY = -1;
     let lastStoredBlockZ = -1;
 
-    let firstRelativeX: number | undefined = undefined;
-    let firstRelativeY: number | undefined = undefined;
-    let firstRelativeZ: number | undefined = undefined;
+    let firstRelativeX: number | undefined;
+    let firstRelativeY: number | undefined;
+    let firstRelativeZ: number | undefined;
 
     let setFirstPosition = false;
 
@@ -83,7 +83,7 @@ export default class CommandRunner {
         const commandResult = await carto.runCommand(commandText);
         const result = commandResult?.data;
 
-        let resultData: ICommandResponseBody | undefined = undefined;
+        let resultData: ICommandResponseBody | undefined;
 
         if (result !== undefined && result !== null && result.indexOf("{") >= 0) {
           try {

@@ -9,9 +9,23 @@
       "webRoot": "${workspaceFolder}"
     },
     {
-      "name": "cli (val addon)",
+      "name": "cli (val content3 addon)",
       "cwd": "${workspaceRoot}/../samplecontent/addon/build/content3/",
       "args": ["validate", "--log-verbose", "addon"],
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/src/cli/index.ts",
+      "preLaunchTask": "gulp: jsncorebuild",
+      "sourceMaps":true,
+      "runtimeExecutable": null,
+      "localRoot": "${workspaceRoot}/src",
+      "runtimeArgs": ["--nolazy", "--max-old-space-size=32768"],
+      "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
+    },
+    {
+      "name": "cli (val content2)",
+      "cwd": "${workspaceRoot}/../samplecontent/addon/build/content2/",
+      "args": ["validate", "--log-verbose"],
       "type": "node",
       "request": "launch",
       "program": "${workspaceRoot}/src/cli/index.ts",

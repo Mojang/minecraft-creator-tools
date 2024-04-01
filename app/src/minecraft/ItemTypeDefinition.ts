@@ -186,7 +186,7 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<ItemTypeDefinition, ItemTypeDefinition>) {
-    let itt: ItemTypeDefinition | undefined = undefined;
+    let itt: ItemTypeDefinition | undefined;
 
     if (file.manager === undefined) {
       itt = new ItemTypeDefinition();

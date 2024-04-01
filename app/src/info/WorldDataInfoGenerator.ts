@@ -225,7 +225,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       projectItem.itemType === ProjectItemType.MCTemplate ||
       projectItem.itemType === ProjectItemType.worldFolder
     ) {
-      let mcworld: MCWorld | undefined = undefined;
+      let mcworld: MCWorld | undefined;
 
       if (projectItem.folder) {
         mcworld = await MCWorld.ensureMCWorldOnFolder(projectItem.folder, projectItem.project);

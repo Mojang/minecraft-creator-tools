@@ -55,7 +55,8 @@
     "webbuild": "react-scripts --max_old_space_size=16384 build",
     "jsncorebuild": "gulp jsncorebuild",
     "jsnbuild": "gulp jsnbuild",
-    "all": "npm install && npm run-script devenv && npm run-script webbuild && npm run-script jsnbuild",
+    "process": "npx ./toolbuild/jsn/ validate --force -ot noreports -i ./public/res/latest/van/ -o ./public/data && gulp copyjsnodedata",
+    "all": "npm install && npm run-script devenv && npm run-script webbuild && npm run-script jsnbuild && npm run-script process",
     "test": "ts-mocha -delay -p tsconfig.test.json src/test/**/*.ts",
     "test-ci": "ts-mocha -delay -p tsconfig.test.json src/test/**/*.ts --reporter json > test/test-results.json",
     "eject": "react-scripts eject"

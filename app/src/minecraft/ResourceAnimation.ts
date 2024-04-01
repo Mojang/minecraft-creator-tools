@@ -50,7 +50,7 @@ export default class ResourceAnimation {
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<ResourceAnimation, ResourceAnimation>) {
-    let ac: ResourceAnimation | undefined = undefined;
+    let ac: ResourceAnimation | undefined;
 
     if (file.manager === undefined) {
       ac = new ResourceAnimation();

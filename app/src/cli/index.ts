@@ -16,7 +16,7 @@ import ProjectItem from "../app/ProjectItem.js";
 import Log from "../core/Log.js";
 import IProjectMetaState from "./IProjectMetaState.js";
 import IProjectStartInfo from "./IProjectStartInfo.js";
-import ClUtils, { TaskType } from "./ClUtils.js";
+import ClUtils, { OutputType, TaskType } from "./ClUtils.js";
 import { spawn, Pool, Worker } from "threads";
 import ContentIndex from "../core/ContentIndex.js";
 import IIndexJson from "../storage/IIndexJson.js";
@@ -41,11 +41,12 @@ const MAX_LINES_PER_CSV_FILE = 500000;
 
 const program = new Command();
 
-let carto: Carto | undefined = undefined;
+let carto: Carto | undefined;
 const projectStarts: (IProjectStartInfo | undefined)[] = [];
-let localEnv: LocalEnvironment | undefined = undefined;
-let mode: string | undefined = undefined;
-let suite: string | undefined = undefined;
+let localEnv: LocalEnvironment | undefined;
+let mode: string | undefined;
+let suite: string | undefined;
+let outputType: OutputType | undefined;
 let aggregateReportsAfterValidation: boolean | undefined = false;
 let threads: number = 8;
 
@@ -69,6 +70,7 @@ program
     "out"
   )
   .option("-of, --output-file [path to file]", "Path to the export file, if applicable for the command you are using.")
+  .option("-ot, --output-type [outputtype", "Type of output, if applicable for the command you are using.")
   .option("-f, --force", "Force any updates.")
   .option("--threads [thread count]", "Targeted number of threads to use.")
   .option("-lv, --log-verbose", "Whether to show verbose log messages.");
@@ -134,6 +136,13 @@ if (options.threads) {
     }
   } catch (e) {
     Log.error("Could not process the threads parameter: " + e);
+  }
+}
+
+if (options.outputType) {
+  switch (options.outputType.toLowerCase().trim()) {
+    case "noreports":
+      outputType = OutputType.noReports;
   }
 }
 
@@ -447,7 +456,7 @@ async function displayInfo() {
 
 async function setAndDisplayAllWorlds() {
   const isEnsure = mode === "set";
-  let ofName: string | undefined = undefined;
+  let ofName: string | undefined;
 
   if (options.outputFolder) {
     ofName = StorageUtilities.getLeafName(options.outputFolder);
@@ -609,7 +618,11 @@ async function validate() {
       const result = await doTask({
         task: TaskType.validate,
         project: ps,
-        arguments: { suite: suiteConst, outputMci: aggregateReportsAfterValidationConst ? "true" : "false" },
+        arguments: {
+          suite: suiteConst,
+          outputMci: aggregateReportsAfterValidationConst || outputType === OutputType.noReports ? "true" : "false",
+          outputType: outputType,
+        },
         outputFolder: options.outputFolder,
         inputFolder: options.inputFolder,
         displayInfo: !options.inputFolder,
@@ -715,10 +728,10 @@ async function aggregateReports() {
 }
 
 async function saveAggregatedReports(projectList: IProjectMetaState[]) {
-  let outputStorage: NodeStorage | undefined = undefined;
+  let outputStorage: NodeStorage | undefined;
   const csvHeader = ProjectInfoSet.CommonCsvHeader;
 
-  let samplePis: ProjectInfoSet | undefined = undefined;
+  let samplePis: ProjectInfoSet | undefined;
   const allFeatureSets: { [setName: string]: { [measureName: string]: number | undefined } | undefined } = {};
   const allFields: { [featureName: string]: boolean | undefined } = {};
 

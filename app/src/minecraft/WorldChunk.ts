@@ -28,7 +28,7 @@ export enum SubChunkFormatType {
 export default class WorldChunk {
   checksumKey: LevelKeyValue | undefined;
   subChunks: LevelKeyValue[];
-  subChunkVersions: number[] | undefined = undefined;
+  subChunkVersions: number[] | undefined;
   chunkVersion: LevelKeyValue | undefined;
   biomesAndElevation: LevelKeyValue | undefined;
   finalizedState: LevelKeyValue | undefined;
@@ -38,13 +38,13 @@ export default class WorldChunk {
   blockActors: BlockActor[] = [];
   pendingTicks: LevelKeyValue | undefined;
   biomeState: LevelKeyValue | undefined;
-  blockTops: number[][] | undefined = undefined;
+  blockTops: number[][] | undefined;
 
   blockActorsEnsured = false;
   absoluteZeroY = -512;
   chunkMinY: number = 0;
   world: MCWorld;
-  legacyTerrainBytes: Uint8Array | undefined = undefined;
+  legacyTerrainBytes: Uint8Array | undefined;
 
   bitsPerBlock: number[];
   blockDataStart: number[];

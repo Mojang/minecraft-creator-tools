@@ -42,28 +42,39 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
     info.textureCount = infoSet.getSummedNumberValue("TEXTURE", 1);
   }
 
-  async matchesVanillaPath(path: string, resourcePackFolder: IFolder) {
-    path = Utilities.ensureStartsWithSlash(path);
+  async matchesVanillaPath(path: string, resourcePackFolder: IFolder | null) {
+    if (resourcePackFolder && resourcePackFolder.folderCount > 0) {
+      path = Utilities.ensureStartsWithSlash(path);
 
-    const folder = await resourcePackFolder.getFolderFromRelativePath(StorageUtilities.getPath(path));
+      const folder = await resourcePackFolder.getFolderFromRelativePath(StorageUtilities.getPath(path));
 
-    if (!folder) {
-      return false;
-    }
+      if (!folder) {
+        return false;
+      }
 
-    const exists = await folder.exists();
+      const exists = await folder.exists();
 
-    if (!exists) {
-      return false;
-    }
+      if (!exists) {
+        return false;
+      }
 
-    const itemName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(path)).toLowerCase();
+      const itemName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(path)).toLowerCase();
 
-    await folder.load(false);
+      await folder.load(false);
 
-    for (let fileName in folder.files) {
-      if (fileName && StorageUtilities.getBaseFromName(fileName).toLowerCase() === itemName) {
-        return true;
+      for (let fileName in folder.files) {
+        if (fileName && StorageUtilities.getBaseFromName(fileName).toLowerCase() === itemName) {
+          return true;
+        }
+      }
+    } else {
+      await Database.loadVanillaInfoData();
+
+      if (Database.vanillaContentIndex) {
+        const matches = await Database.vanillaContentIndex.getMatches(path);
+        if (matches && matches.length > 0) {
+          return true;
+        }
       }
     }
 
@@ -97,19 +108,6 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
     items.push(textureCountPi);
 
     const rpFolder = await Database.loadDefaultResourcePack();
-
-    if (!rpFolder) {
-      items.push(
-        new ProjectInfoItem(
-          InfoItemType.internalProcessingError,
-          this.id,
-          510,
-          "Could not find a standard resource pack to compare against."
-        )
-      );
-
-      return items;
-    }
 
     for (const projectItem of project.items) {
       if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {

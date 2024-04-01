@@ -17,6 +17,11 @@ export enum TaskType {
   aggregateReports = 3,
 }
 
+export enum OutputType {
+  normal = 0,
+  noReports = 1,
+}
+
 export default class ClUtils {
   static createProject(carto: Carto, startInfo: IProjectStartInfo) {
     const proj = new Project(carto, startInfo.ctorProjectName, null);
@@ -92,7 +97,7 @@ export default class ClUtils {
 
   static async getMainWorkFolder(taskType: TaskType, inputFolder?: string, outputFolder?: string) {
     // console.log("Using local path: '" + inputFolder + "' from '" + __dirname + "'");
-    let workFolder: IFolder | undefined = undefined;
+    let workFolder: IFolder | undefined;
 
     if (!inputFolder && outputFolder && ClUtils.getIsWriteCommand(taskType)) {
       const outputStorage = new NodeStorage(outputFolder, "");

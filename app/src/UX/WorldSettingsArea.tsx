@@ -235,7 +235,7 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
       return;
     }
 
-    let bigintVal: bigint | undefined = undefined;
+    let bigintVal: bigint | undefined;
 
     try {
       bigintVal = BigInt(data.value);

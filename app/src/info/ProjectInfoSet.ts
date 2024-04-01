@@ -645,6 +645,17 @@ export default class ProjectInfoSet {
     return JSON.stringify(this.getDataObject(sourceName, sourcePath, sourceHash, true));
   }
 
+  getStrictIndexJson(sourceName?: string, sourcePath?: string, sourceHash?: string) {
+    const jsonO = this.getDataObject(sourceName, sourcePath, sourceHash, true);
+
+    if (jsonO) {
+      jsonO.info = undefined;
+      jsonO.items = undefined;
+    }
+
+    return JSON.stringify(jsonO);
+  }
+
   getReportHtml(sourceName?: string, sourcePath?: string, sourceHash?: string): string {
     const lines = [];
 
@@ -659,7 +670,7 @@ function _addReportJson(data) {
     const dataObject = this.getDataObject(sourceName, sourcePath, sourceHash);
 
     dataObject.index = undefined;
-    lines.push("_addReportJson(" + JSON.stringify(dataObject, null, 2) + ");");
+    lines.push("_addReportJson(" + JSON.stringify(dataObject) + ");");
     lines.push("</script><script>");
     lines.push(`
     function getDataName(name) {

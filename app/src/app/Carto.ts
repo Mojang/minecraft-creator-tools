@@ -1217,7 +1217,7 @@ export default class Carto {
   }
 
   async deleteProjectByName(projectName: string) {
-    let projectToDelete: Project | undefined = undefined;
+    let projectToDelete: Project | undefined;
 
     for (let i = 0; i < this.projects.length; i++) {
       const proj = this.projects[i];

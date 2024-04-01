@@ -185,7 +185,7 @@ export default class BrowserFolder extends FolderBase implements IFolder {
     if (listingContent != null) {
       this._lastSavedContent = listingContent;
 
-      let folderState: IFolderState | undefined = undefined;
+      let folderState: IFolderState | undefined;
 
       try {
         folderState = JSON.parse(listingContent);

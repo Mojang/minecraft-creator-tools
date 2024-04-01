@@ -291,7 +291,7 @@ export default class ProjectExporter {
     returnZipBytes: boolean,
     deployFolder?: IFolder
   ) {
-    let mcworld: MCWorld | undefined = undefined;
+    let mcworld: MCWorld | undefined;
     const operId = await carto.notifyOperationStarted(
       "Deploying world '" + worldProjectItem.name + "' and test assets."
     );
@@ -321,8 +321,8 @@ export default class ProjectExporter {
 
     const title = mcworld.name + " - " + Utilities.getFriendlySummary(dateNow);
 
-    let targetFolder: IFolder | undefined = undefined;
-    let zipStorage: ZipStorage | undefined = undefined;
+    let targetFolder: IFolder | undefined;
+    let zipStorage: ZipStorage | undefined;
 
     if (deployFolder) {
       const worldsFolder = await ProjectExporter.ensureWorldsFolder(deployFolder);
@@ -417,7 +417,7 @@ export default class ProjectExporter {
     returnZipBytes: boolean,
     deployFolder?: IFolder
   ) {
-    let mcworld: MCWorld | undefined = undefined;
+    let mcworld: MCWorld | undefined;
     const operId = await carto.notifyOperationStarted("Deploying world '" + worldProjectItem.name + "'");
     await worldProjectItem.load();
 
@@ -445,8 +445,8 @@ export default class ProjectExporter {
 
     const title = mcworld.name + " - " + Utilities.getFriendlySummary(dateNow);
 
-    let targetFolder: IFolder | undefined = undefined;
-    let zipStorage: ZipStorage | undefined = undefined;
+    let targetFolder: IFolder | undefined;
+    let zipStorage: ZipStorage | undefined;
 
     if (deployFolder) {
       const worldsFolder = await ProjectExporter.ensureWorldsFolder(deployFolder);
@@ -622,7 +622,7 @@ export default class ProjectExporter {
 
     const title = project.name + " Test World";
 
-    let targetFolder: IFolder | undefined = undefined;
+    let targetFolder: IFolder | undefined;
 
     if (deployFolder) {
       const worldsFolder = await ProjectExporter.ensureWorldsFolder(deployFolder);

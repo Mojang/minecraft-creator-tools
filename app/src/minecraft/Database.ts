@@ -19,6 +19,8 @@ import Utilities from "../core/Utilities";
 import NpmModule from "../devproject/NpmModule";
 import IMainInfoVersions from "./IMainInfoVersions";
 import IFormDefinition from "../dataform/IFormDefinition";
+import ContentIndex from "../core/ContentIndex";
+import IProjectInfoData from "../info/IProjectInfoData";
 
 export default class Database {
   static isLoaded = false;
@@ -34,9 +36,11 @@ export default class Database {
   static defaultBehaviorPackFolder: IFolder | null = null;
   static defaultResourcePackFolder: IFolder | null = null;
   static local: ILocalUtilities | null = null;
+  static vanillaInfoData: IProjectInfoData | null = null;
+  static vanillaContentIndex: ContentIndex | null = null;
 
-  static latestVersion: string | undefined = undefined;
-  static latestPreviewVersion: string | undefined = undefined;
+  static latestVersion: string | undefined;
+  static latestPreviewVersion: string | undefined;
 
   static dataPath: string = "res/latest/";
 
@@ -409,7 +413,7 @@ export default class Database {
       return;
     }
 
-    let folder: IFolder | undefined = undefined;
+    let folder: IFolder | undefined;
 
     if (Database.local) {
       const storage = await Database.local.createStorage("data/snippets/");
@@ -618,6 +622,33 @@ export default class Database {
       }
     } catch {
       Log.fail("Could not load stable Minecraft types catalog.");
+    }
+  }
+
+  static async loadVanillaInfoData() {
+    if (Database.vanillaInfoData) {
+      return;
+    }
+
+    try {
+      // @ts-ignore
+      if (typeof window !== "undefined") {
+        const response = await axios.get(CartoApp.contentRoot + "data/mci/van.mci.json");
+
+        Database.vanillaInfoData = response.data;
+      } else if (Database.local) {
+        const result = await Database.local.readJsonFile("data/mci/van.mci.json");
+        if (result !== null) {
+          Database.vanillaInfoData = result as IProjectInfoData;
+        }
+      }
+
+      if (Database.vanillaInfoData && Database.vanillaInfoData.index && !Database.vanillaContentIndex) {
+        Database.vanillaContentIndex = new ContentIndex();
+        Database.vanillaContentIndex.loadFromData(Database.vanillaInfoData.index);
+      }
+    } catch {
+      Log.fail("Could not load vanilla metadata.");
     }
   }
 

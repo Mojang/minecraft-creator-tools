@@ -102,7 +102,7 @@ export default class ContentIndex implements IContentIndex {
     for (const fullKey in all) {
       const annVals = all[fullKey];
 
-      let annVal: string | undefined = undefined;
+      let annVal: string | undefined;
 
       for (const subVal of annVals) {
         if (subVal.annotation) {
@@ -149,7 +149,7 @@ export default class ContentIndex implements IContentIndex {
     const terms = searchString.split(" ");
     let termWasSearched = false;
 
-    let andResults: number[] | undefined = undefined;
+    let andResults: number[] | undefined;
 
     for (const term of terms) {
       if (term.length > 3) {
@@ -323,7 +323,7 @@ export default class ContentIndex implements IContentIndex {
     let keyIndex = 0;
     let curNode: any = this.#data.trie;
     let parentNode: any = curNode;
-    let curNodeIndex: string | undefined = undefined;
+    let curNodeIndex: string | undefined;
     let dataIndex = -1;
     let curIndex = 0;
 

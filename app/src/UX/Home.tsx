@@ -218,7 +218,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       for (var i = 0; i < ev.dataTransfer.items.length; i++) {
         const dtitem = ev.dataTransfer.items[i];
 
-        let entry: any | undefined = undefined;
+        let entry: any | undefined;
 
         if (dtitem.webkitGetAsEntry) {
           entry = dtitem.webkitGetAsEntry();

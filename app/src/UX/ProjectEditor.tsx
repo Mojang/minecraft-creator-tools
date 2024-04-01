@@ -150,9 +150,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private _authWindow: Window | null = null;
   private _activeEditorPersistable?: IPersistable;
   private _isMountedInternal = false;
-  private _lastHashProcessed: string | undefined = undefined;
+  private _lastHashProcessed: string | undefined;
   private gridElt: React.RefObject<HTMLDivElement>;
-  private _splitterDrag: number | undefined = undefined;
+  private _splitterDrag: number | undefined;
   private _asyncLoadAttempts: number = 0;
 
   constructor(props: IProjectEditorProps) {
@@ -758,7 +758,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       for (var i = 0; i < ev.dataTransfer.items.length; i++) {
         const dtitem = ev.dataTransfer.items[i];
 
-        let entry: any | undefined = undefined;
+        let entry: any | undefined;
 
         if (dtitem.webkitGetAsEntry) {
           entry = dtitem.webkitGetAsEntry();
@@ -1616,7 +1616,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     //    await ProjectExporter.deployAsWorldAndTestAssets(this.props.carto, this.props.project, );
 
-    let zipStorage: ZipStorage | undefined = undefined;
+    let zipStorage: ZipStorage | undefined;
 
     zipStorage = new ZipStorage();
 
@@ -1836,18 +1836,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         break;
     }
   }
-
-  /*
-  private moveFilteredItemUp() {
-    if (this.state.filteredItems === undefined) {
-      return;
-    }
-
-    let newProjectItem = undefined;
-    if (this.state.activeProjectItem === undefined) {
-      newProjectItem = this.state.filteredItems[0];
-    }
-  }*/
 
   private async _handleModeChangeRequested(newMode: ProjectEditorMode) {
     await this._ensurePersisted();

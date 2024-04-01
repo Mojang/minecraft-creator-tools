@@ -116,7 +116,7 @@ export default class BehaviorManifestJson {
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<BehaviorManifestJson, BehaviorManifestJson>) {
-    let bmj: BehaviorManifestJson | undefined = undefined;
+    let bmj: BehaviorManifestJson | undefined;
 
     if (file.manager === undefined) {
       bmj = new BehaviorManifestJson();

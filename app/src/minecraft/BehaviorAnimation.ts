@@ -51,7 +51,7 @@ export default class BehaviorAnimation {
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<BehaviorAnimation, BehaviorAnimation>) {
-    let ac: BehaviorAnimation | undefined = undefined;
+    let ac: BehaviorAnimation | undefined;
 
     if (file.manager === undefined) {
       ac = new BehaviorAnimation();

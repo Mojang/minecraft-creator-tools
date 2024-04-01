@@ -417,7 +417,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             return;
           }
 
-          let lookupSet: ISimpleReference[] | undefined = undefined;
+          let lookupSet: ISimpleReference[] | undefined;
 
           if (propDef.choices) {
             lookupSet = propDef.choices;
@@ -704,7 +704,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               const items: DropdownItemProps[] = [];
 
               let dropdownValue = curVal;
-              let lookupSet: ISimpleReference[] | undefined = undefined;
+              let lookupSet: ISimpleReference[] | undefined;
 
               if (field.choices) {
                 lookupSet = field.choices;
@@ -1303,7 +1303,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
   getObjectWithFieldIndex(objArr: any[], fieldToMap: string, val: number | string) {
     if (typeof val === "string") {
-      let fieldNum: number | undefined = undefined;
+      let fieldNum: number | undefined;
 
       try {
         fieldNum = parseInt(val);
@@ -1385,7 +1385,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         for (const fieldName in field.subFields) {
           let dataVal = this.getObjectWithFieldIndex(arrayOfDataVal, field.objectArrayToSubFieldKey, fieldName);
           let objKey = field.id;
-          let fieldNum: number | undefined = undefined;
+          let fieldNum: number | undefined;
           let fieldBroad: number | string | undefined = fieldName;
 
           try {

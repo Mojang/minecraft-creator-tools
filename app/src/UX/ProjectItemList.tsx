@@ -924,7 +924,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     if (this.props.readOnly) {
       const itemItems = [];
 
-      let issues: ProjectInfoItem[] | undefined = undefined;
+      let issues: ProjectInfoItem[] | undefined;
 
       if (this.props.allInfoSet && this.props.allInfoSetGenerated && projectItem.storagePath) {
         issues = this.props.allInfoSet.getItemsByStoragePath(projectItem.storagePath);
@@ -1034,7 +1034,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       const itemItems = [];
 
-      let issues: ProjectInfoItem[] | undefined = undefined;
+      let issues: ProjectInfoItem[] | undefined;
 
       if (this.props.allInfoSet && this.props.allInfoSetGenerated && projectItem.storagePath) {
         issues = this.props.allInfoSet.getItemsByStoragePath(projectItem.storagePath);
@@ -1468,7 +1468,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
 
     let lastItemType = -1;
-    let lastStorageRoot: string | undefined = undefined;
+    let lastStorageRoot: string | undefined;
 
     this._itemIndices = [];
     this._itemTypes = [];

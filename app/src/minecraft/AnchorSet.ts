@@ -59,7 +59,7 @@ export default class AnchorSet {
   }
 
   ensure(name: string, from: IVector3, to?: IVector3) {
-    let anchor: Anchor | undefined = undefined;
+    let anchor: Anchor | undefined;
 
     if (this.anchors[name]) {
       anchor = this.anchors[name];

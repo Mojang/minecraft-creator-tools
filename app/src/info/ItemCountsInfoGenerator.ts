@@ -80,6 +80,7 @@ export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
       }
     }
 
+    /*
     if (!foundBehaviorPackManifest) {
       items.push(
         new ProjectInfoItem(InfoItemType.testCompleteFail, this.id, 0, "A behavior pack manifest wasn't found.")
@@ -88,7 +89,7 @@ export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
       items.push(
         new ProjectInfoItem(InfoItemType.testCompleteSuccess, this.id, 1, "A behavior pack manifest was found.")
       );
-    }
+    }*/
 
     for (let i = 0; i < MaxItemTypes; i++) {
       if (typeCounts[i] > 0) {

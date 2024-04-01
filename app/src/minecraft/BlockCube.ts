@@ -19,7 +19,7 @@ export default class BlockCube implements IDimension {
   private _onBlockTypeChanged = new EventDispatcher<BlockCube, Block>();
   private _onBlockPropertyChanged = new EventDispatcher<BlockCube, Block>();
 
-  private _columns: IBlockCubeColumn[][] | undefined = undefined;
+  private _columns: IBlockCubeColumn[][] | undefined;
 
   public get onMaxDimensionsChanged() {
     return this._onMaxDimensionsChanged.asEvent();

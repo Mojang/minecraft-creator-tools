@@ -34,7 +34,7 @@ export default class ResourceRenderController {
     file: IFile,
     loadHandler?: IEventHandler<ResourceRenderController, ResourceRenderController>
   ) {
-    let rc: ResourceRenderController | undefined = undefined;
+    let rc: ResourceRenderController | undefined;
 
     if (file.manager === undefined) {
       rc = new ResourceRenderController();

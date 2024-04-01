@@ -39,7 +39,7 @@ export default class Material {
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<Material, Material>) {
-    let rc: Material | undefined = undefined;
+    let rc: Material | undefined;
 
     if (file.manager === undefined) {
       rc = new Material();

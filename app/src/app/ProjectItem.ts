@@ -40,7 +40,7 @@ export default class ProjectItem {
   private _isLoading: boolean = false;
   private _folder: IFolder | null;
   private _isFileContentProcessed: boolean = false;
-  private _imageUrlBase64Cache: string | undefined = undefined;
+  private _imageUrlBase64Cache: string | undefined;
 
   constructor(parent: Project, incomingData?: IProjectItemData) {
     this._project = parent;

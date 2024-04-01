@@ -66,7 +66,7 @@ export default class Package {
 
     const summaryFileExists = await summaryFile.exists();
 
-    let summaryObject: IProjectInfoData | undefined = undefined;
+    let summaryObject: IProjectInfoData | undefined;
 
     if (summaryFileExists) {
       await summaryFile.loadContent();

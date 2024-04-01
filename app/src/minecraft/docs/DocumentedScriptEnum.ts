@@ -11,12 +11,12 @@ export default class DocumentedScriptEnum {
   private _id?: string;
   private _isLoaded: boolean = false;
   private _undocumentedCount: number = 0;
-  private _effectiveConstants: IDocScriptEnumConstant[] | undefined = undefined;
+  private _effectiveConstants: IDocScriptEnumConstant[] | undefined;
 
   public isInterface: boolean = false;
 
   private module: DocumentedModule;
-  public infoJsonFiles: { [memberName: string]: IFile } | undefined = undefined;
+  public infoJsonFiles: { [memberName: string]: IFile } | undefined;
   public enumDefinition: IDocScriptEnum;
 
   public get isLoaded() {

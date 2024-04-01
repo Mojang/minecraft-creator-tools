@@ -5,7 +5,7 @@ export default interface ITask {
   project?: IProjectStartInfo;
   outputFolder?: string;
   inputFolder?: string;
-  arguments: { [argumentname: string]: string | undefined };
+  arguments: { [argumentname: string]: number | string | undefined };
   task: TaskType;
   displayInfo: boolean;
   displayVerbose: boolean;

@@ -33,7 +33,7 @@ export default class FlipbookTextureCatalogDefinition {
     file: IFile,
     loadHandler?: IEventHandler<FlipbookTextureCatalogDefinition, FlipbookTextureCatalogDefinition>
   ) {
-    let et: FlipbookTextureCatalogDefinition | undefined = undefined;
+    let et: FlipbookTextureCatalogDefinition | undefined;
 
     if (file.manager === undefined) {
       et = new FlipbookTextureCatalogDefinition();

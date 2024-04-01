@@ -24,10 +24,10 @@ interface IShareProjectState {
 }
 
 export default class ShareProject extends Component<IShareProjectProps, IShareProjectState> {
-  _fullLinkElt: HTMLDivElement | undefined = undefined;
-  _fullUrlLinkElt: HTMLDivElement | undefined = undefined;
-  _projectLinkElt: HTMLDivElement | undefined = undefined;
-  _projectUrlLinkElt: HTMLDivElement | undefined = undefined;
+  _fullLinkElt: HTMLDivElement | undefined;
+  _fullUrlLinkElt: HTMLDivElement | undefined;
+  _projectLinkElt: HTMLDivElement | undefined;
+  _projectUrlLinkElt: HTMLDivElement | undefined;
 
   constructor(props: IShareProjectProps) {
     super(props);

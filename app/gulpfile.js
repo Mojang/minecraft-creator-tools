@@ -255,6 +255,8 @@ gulp.task(
 
 gulp.task("jsncorebuild", gulp.series(compileJsNodeBuild));
 
+gulp.task("copyjsnodedata", gulp.series(copyJsNodeData));
+
 gulp.task(
   "vsccorebuild",
   gulp.series("clean-vsccorebuild", gulp.parallel(compileVscCoreExeBuild, compileVscCoreWebBuild))
