@@ -93,7 +93,7 @@ program
     suite = suiteIn;
     executionTaskType = TaskType.validate;
 
-    if (aggregateReportsIn === "true" || aggregateReportsIn === "1" || aggregateReportsIn === "t") {
+    if (aggregateReportsIn === "aggregate" || aggregateReportsIn === "true" || aggregateReportsIn === "1" || aggregateReportsIn === "t") {
       aggregateReportsAfterValidation = true;
     } else {
       aggregateReportsAfterValidation = false;
