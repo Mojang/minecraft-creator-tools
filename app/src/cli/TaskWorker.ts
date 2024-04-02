@@ -161,7 +161,7 @@ async function validateAndDisposeProject(
   await pis.generateForProject();
 
   const pisData = pis.getDataObject();
-  const content = JSON.stringify(pisData);
+  const content = JSON.stringify(pisData, null, 2);
 
   const projectSet = {
     projectContainerName: project.containerName,

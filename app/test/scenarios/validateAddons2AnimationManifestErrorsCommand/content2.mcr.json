@@ -27,13 +27,16 @@
         "Count": 7
       },
       "Textures Unique Texture Handles (estimated)": {
-        "Count": 7
+        "Count": 6
       },
       "Textures Unique Texture Paths": {
-        "Count": 7
+        "Count": 6
       },
-      "Textures Unique Particle Texture References": {
-        "Count": 2
+      "Textures Unique Particle Texture Paths": {
+        "Count": 0
+      },
+      "Textures Unique Particle Texture Vanilla Paths": {
+        "Count": 1
       },
       "Textures Unique Entity Texture Paths": {
         "Count": 6
@@ -186,13 +189,16 @@
           "Count": 7
         },
         "Unique Texture Handles (estimated)": {
-          "Count": 7
+          "Count": 6
         },
         "Unique Texture Paths": {
-          "Count": 7
+          "Count": 6
         },
-        "Unique Particle Texture References": {
-          "Count": 2
+        "Unique Particle Texture Paths": {
+          "Count": 0
+        },
+        "Unique Particle Texture Vanilla Paths": {
+          "Count": 1
         },
         "Unique Entity Texture Paths": {
           "Count": 6
@@ -5894,5 +5900,5 @@
   },
   "generatorName": "Minecraft Creator Tools",
   "suite": 2,
-  "generatorVersion": "0.1.78"
+  "generatorVersion": "0.1.80"
 }

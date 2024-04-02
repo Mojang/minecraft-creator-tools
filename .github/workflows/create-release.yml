@@ -10,13 +10,46 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Get Package Version
+        id: get-package-version
+        with:
+          path: app
+        uses: stevenbenitez/get-package-version-action@v1
+
       - name: Build
         env:
           CI: ""
         run: |
           pushd app
           npm run all
+          pushd toolbuild
+          pushd jsn
+          npm pack  --max_old_space_size=16384
           popd
+          popd
+          popd
+
+      - name: Create draft Minecraft Creator Tools release
+        id: create_mctools_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.get-package-version.outputs.version }}-alpha
+          release_name: Minecraft Creator Tools
+          draft: true
+          prerelease: true
+
+      - name: Upload mctools-v.tgz to node_module release
+        id: upload_mctools-v_tgz
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_mctools_release.outputs.upload_url }}
+          asset_path: ./app/toolbuild/jsn/mctools-${{ steps.get-package-version.outputs.version }}.tgz
+          asset_name: mctools-${{ steps.get-package-version.outputs.version }}.tgz
+          asset_content_type: application/tar+gzip
 
       - name: Deploy to GitHub Pages
         if: success()

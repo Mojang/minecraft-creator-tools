@@ -1,6 +1,6 @@
 ## Minecraft Creator Tools
 
-Copyright 2023 Mojang AB
+Copyright 2024 Mojang AB
 
 This repository incorporates material as listed below or described in the code.
 

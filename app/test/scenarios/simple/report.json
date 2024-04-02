@@ -57,11 +57,6 @@
     },
     "summary": {
       "ITEMS": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "A behavior pack manifest was found.",
-          "testCompleteSuccesses": 1
-        },
         "2": {
           "title": "2",
           "defaultMessage": "Behavior pack manifest found"
@@ -236,11 +231,6 @@
       "gId": "ITEMS",
       "gIx": 2,
       "p": "/behavior_packs/StarterTestsTutorial/manifest.json"
-    },
-    {
-      "iTp": 0,
-      "gId": "ITEMS",
-      "gIx": 1
     },
     {
       "iTp": 2,

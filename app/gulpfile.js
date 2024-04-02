@@ -164,9 +164,7 @@ function copyMonacoNpmDist() {
 }
 
 function copyJsNodeDocs() {
-  return gulp
-    .src(["../**/CHANGELOG.md", "../**/NOTICE.md", "../**/LICENSE.md", "jsnode/**/README.md"])
-    .pipe(gulp.dest("toolbuild/jsn/"));
+  return gulp.src(["../CHANGELOG.md", "../NOTICE.md", "jsnode/README.md"]).pipe(gulp.dest("toolbuild/jsn/"));
 }
 
 function copyVscRes() {
@@ -185,12 +183,8 @@ function copyJsNodeResSchemas() {
   return gulp.src(["public/res/latest/schemas/**/*"]).pipe(gulp.dest("toolbuild/jsn/res/latest/schemas/"));
 }
 
-function copyJsNodeMc() {
-  return gulp.src(["../mc/toolsAddon/**/*"]).pipe(gulp.dest("toolbuild/jsn/mc/"));
-}
-
-function copyToolsJson() {
-  return gulp.src(["tools/cli-tools/**/*.json"]).pipe(gulp.dest("toolbuild/jsn/"));
+function copyJsNodeAssets() {
+  return gulp.src(["jsnode/**/*"]).pipe(gulp.dest("toolbuild/jsn/"));
 }
 
 function copyVscAssets() {
@@ -249,7 +243,7 @@ gulp.task(
   gulp.series(
     "clean-jsnbuild",
     copyCheckedInRes,
-    gulp.parallel(compileJsNodeBuild, copyToolsJson, copyJsNodeData, copyJsNodeDocs, copyJsNodeResSchemas, copyJsNodeMc)
+    gulp.parallel(compileJsNodeBuild, copyJsNodeAssets, copyJsNodeData, copyJsNodeDocs, copyJsNodeResSchemas)
   )
 );
 
