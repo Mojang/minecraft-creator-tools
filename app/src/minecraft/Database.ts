@@ -647,9 +647,7 @@ export default class Database {
         Database.vanillaContentIndex = new ContentIndex();
         Database.vanillaContentIndex.loadFromData(Database.vanillaInfoData.index);
       }
-    } catch {
-      Log.fail("Could not load vanilla metadata.");
-    }
+    } catch {}
   }
 
   static async load() {
