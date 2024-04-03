@@ -1,0 +1,30 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": {
+    "identifier": "minecraft:stonecutter_polished_diorite_slab"
+    },
+
+    
+    "tags": [ "stonecutter" ],
+    "priority": 4,
+    "ingredients": [
+      {
+        "item": "minecraft:stone",
+        "data": 3
+      }
+    ],
+    "unlock": [
+      {
+        "item": "minecraft:stone",
+        "data": 3
+      }
+    ],
+    "result": {
+      "item": "minecraft:double_stone_slab3",
+      "data": 5,
+      "count": 2
+    }
+  }
+  
+}

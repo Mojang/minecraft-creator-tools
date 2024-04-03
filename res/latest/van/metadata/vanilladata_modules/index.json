@@ -1,0 +1,15 @@
+{
+  "files": [
+    "mojang-biomes.json",
+    "mojang-blocks.json",
+    "mojang-camera-presets.json",
+    "mojang-cooldown-category.json",
+    "mojang-dimensions.json",
+    "mojang-effects.json",
+    "mojang-enchantments.json",
+    "mojang-entities.json",
+    "mojang-features.json",
+    "mojang-items.json"
+  ],
+  "folders": []
+}

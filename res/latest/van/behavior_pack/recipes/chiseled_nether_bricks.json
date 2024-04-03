@@ -1,0 +1,28 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "minecraft:chiseled_nether_bricks"
+    },
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "#",
+      "#"
+    ],
+    "key": {
+      "#": {
+          "item": "minecraft:stone_slab",
+          "data": 7
+      }
+    },
+	"unlock": [
+          {
+             "item": "minecraft:stone_slab",
+			 "data": 7
+          }
+        ],
+    "result": {
+      "item": "minecraft:chiseled_nether_bricks"
+    }
+  }
+}
