@@ -494,6 +494,53 @@ export default class ProjectInfoSet {
     }
   }
 
+  itemToString(item: ProjectInfoItem) {
+    let summaryString = item.typeSummaryShort + ": ";
+
+    summaryString += "[" + item.generatorId + Utilities.frontPadToLength(item.generatorIndex, 3, "0") + "] ";
+
+    if (item.projectItem) {
+      summaryString += "(" + item.projectItem.storagePath + ") ";
+    }
+    summaryString += this.getEffectiveMessage(item);
+
+    if (item.data) {
+      summaryString += ": " + item.data;
+    }
+
+    const errorContent = item.contentSummary;
+
+    if (errorContent) {
+      summaryString += " [in " + errorContent + "]";
+    }
+
+    return summaryString;
+  }
+
+  getEffectiveMessage(item: ProjectInfoItem) {
+    if (item.message !== undefined) {
+      return item.message;
+    }
+
+    if (this.info === undefined || this.info.summary === undefined) {
+      return undefined;
+    }
+
+    let gen = this.info.summary[item.generatorId];
+
+    if (gen === undefined) {
+      return undefined;
+    }
+
+    let genI = gen[item.generatorIndex];
+
+    if (genI === undefined) {
+      return undefined;
+    }
+
+    return genI.defaultMessage;
+  }
+
   shouldIncludeInIndex(data: IInfoItemData) {
     if (data.gId === "JSON" || data.gId === "ESLINT") {
       return false;
@@ -598,6 +645,17 @@ export default class ProjectInfoSet {
     return JSON.stringify(this.getDataObject(sourceName, sourcePath, sourceHash, true));
   }
 
+  getStrictIndexJson(sourceName?: string, sourcePath?: string, sourceHash?: string) {
+    const jsonO = this.getDataObject(sourceName, sourcePath, sourceHash, true);
+
+    if (jsonO) {
+      jsonO.info = undefined;
+      jsonO.items = undefined;
+    }
+
+    return JSON.stringify(jsonO);
+  }
+
   getReportHtml(sourceName?: string, sourcePath?: string, sourceHash?: string): string {
     const lines = [];
 
@@ -612,7 +670,7 @@ function _addReportJson(data) {
     const dataObject = this.getDataObject(sourceName, sourcePath, sourceHash);
 
     dataObject.index = undefined;
-    lines.push("_addReportJson(" + JSON.stringify(dataObject, null, 2) + ");");
+    lines.push("_addReportJson(" + JSON.stringify(dataObject) + ");");
     lines.push("</script><script>");
     lines.push(`
     function getDataName(name) {
@@ -667,6 +725,30 @@ function _addReportJson(data) {
       
       return "";
     }  
+
+    function getEffectiveMessage(reportObj, item) {
+      if (item.m !== undefined) {
+        return item.m;
+      }
+
+      if (reportObj.info === undefined || reportObj.info.summary === undefined) {
+        return undefined;
+      }
+
+      let gen = reportObj.info.summary[item.gId];
+
+      if (gen === undefined) {
+        return undefined;
+      }
+
+      let genI = gen[item.gIx];
+ 
+      if (genI === undefined) {
+        return undefined;
+      }
+
+      return genI.defaultMessage;
+    }	    
     
     function generateReports() {
       for (let i=0; i<_reportObjects.length; i++) {
@@ -706,13 +788,11 @@ function _addReportJson(data) {
         document.write("</table>");
       }
     
-    
       for (let i=0; i<_reportObjects.length; i++) {
         document.write("<h3>Items</h3>");
         document.write("<table class='items-table'>");
         const info = _reportObjects[i].info;
-    
-    
+        
         const items = _reportObjects[i].items;
     
         if (items && items.length) {
@@ -722,7 +802,7 @@ function _addReportJson(data) {
               document.write("<td class='items-type items-cell'>" + getDescriptionForItemType(item.iTp) + "</td>");
               document.write("<td class='items-generator items-cell'>" + item.gId + "</td>");
               document.write("<td class='items-generatorIndex items-cell'>" + item.gIx + "</td>");
-              document.write("<td class='items-message items-cell'>" + getEmptySummary(item.m) + "</td>");
+              document.write("<td class='items-message items-cell'>" + getEmptySummary(getEffectiveMessage(_reportObjects[i], item)) + "</td>");
               document.write("<td class='items-data items-cell'>" + getEmptySummary(item.d) + "</td>");
               document.write("<td class='items-path items-cell'>" + getEmptySummary(item.p) + "</td>");
               document.write("</tr>");
@@ -1172,15 +1252,6 @@ function _addReportJson(data) {
           sp = item.projectItem.storagePath;
         }
 
-        let data: string | number | boolean | object = "";
-        if (item.data) {
-          if (typeof item.data === "object") {
-            data = JSON.stringify(item.data);
-          } else {
-            data = item.data;
-          }
-        }
-
         let line =
           item.generatorId +
           "," +
@@ -1190,12 +1261,8 @@ function _addReportJson(data) {
           "," +
           (item.projectItem ? item.projectItem.name : "") +
           ',"' +
-          item.message +
-          '","' +
-          data +
-          '",' +
-          sp +
-          ",";
+          this.getEffectiveMessage(item) +
+          '",';
 
         if (item.data) {
           if (typeof item.data === "string") {
@@ -1204,6 +1271,8 @@ function _addReportJson(data) {
             line += item.data.toString();
           }
         }
+
+        line += "," + sp + ",";
 
         if (item.featureSets) {
           for (const featName in item.featureSets) {
@@ -1527,6 +1596,18 @@ function _addReportJson(data) {
 
     return sum;
   }
+
+  getCount(validatorName: string, validatorId: number) {
+    let sum = 0;
+    for (const item of this.items) {
+      if (item.generatorId === validatorName && item.generatorIndex === validatorId && item.data) {
+        sum++;
+      }
+    }
+
+    return sum;
+  }
+
   getFirstNumberArrayValue(validatorName: string, validatorId: number) {
     for (const item of this.items) {
       if (item.generatorId === validatorName && item.generatorIndex === validatorId && item.data) {

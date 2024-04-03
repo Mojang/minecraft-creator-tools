@@ -12,13 +12,13 @@ export default class DocumentedClass {
   private _id?: string;
   private _isLoaded: boolean = false;
   private _undocumentedCount: number = 0;
-  private _effectiveFuncs: IDocFunction[] | undefined = undefined;
-  private _effectiveProps: IDocProperty[] | undefined = undefined;
+  private _effectiveFuncs: IDocFunction[] | undefined;
+  private _effectiveProps: IDocProperty[] | undefined;
 
   public isInterface: boolean = false;
 
   private module: DocumentedModule;
-  public infoJsonFiles: { [memberName: string]: IFile } | undefined = undefined;
+  public infoJsonFiles: { [memberName: string]: IFile } | undefined;
   public classDefinition: IDocClass;
 
   public parentClasses: DocumentedClass[];

@@ -106,6 +106,10 @@ export default class NodeFile extends FileBase implements IFile {
   }
 
   async saveContent(): Promise<Date> {
+    if (this.parentFolder.storage.readOnly) {
+      throw new Error("Can't save read-only file.");
+    }
+
     if (this.needsSave) {
       this.lastLoadedOrSaved = new Date();
 
@@ -134,6 +138,10 @@ export default class NodeFile extends FileBase implements IFile {
   }
 
   async deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean> {
+    if (this.parentFolder.storage.readOnly) {
+      throw new Error("Can't save read-only file.");
+    }
+
     if (skipRemoveFromParent !== true) {
       this._parentFolder._removeFile(this);
     }
@@ -144,7 +152,7 @@ export default class NodeFile extends FileBase implements IFile {
   }
 
   async moveTo(newStorageRelativePath: string): Promise<boolean> {
-    const newFolderPath = StorageUtilities.getPath(newStorageRelativePath);
+    const newFolderPath = StorageUtilities.getFolderPath(newStorageRelativePath);
     const newFileName = StorageUtilities.getLeafName(newStorageRelativePath);
 
     if (newFileName.length < 2) {

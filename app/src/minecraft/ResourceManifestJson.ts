@@ -112,7 +112,7 @@ export default class ResourceManifestJson {
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<ResourceManifestJson, ResourceManifestJson>) {
-    let rmj: ResourceManifestJson | undefined = undefined;
+    let rmj: ResourceManifestJson | undefined;
 
     if (file.manager === undefined) {
       rmj = new ResourceManifestJson();

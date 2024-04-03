@@ -85,6 +85,10 @@ export default class BrowserFolder extends FolderBase implements IFolder {
   }
 
   async deleteThisFolder(): Promise<boolean> {
+    if (this.storage.readOnly) {
+      throw new Error("Can't save read-only file.");
+    }
+
     let result = await this.recursiveDeleteThisFolder();
 
     await localforage.removeItem(this.fullPath + BrowserStorage.folderDelimiter);
@@ -125,7 +129,7 @@ export default class BrowserFolder extends FolderBase implements IFolder {
   }
 
   async moveTo(newStorageRelativePath: string): Promise<boolean> {
-    const newFolderPath = StorageUtilities.getPath(newStorageRelativePath);
+    const newFolderPath = StorageUtilities.getFolderPath(newStorageRelativePath);
     const newFolderName = StorageUtilities.getLeafName(newStorageRelativePath);
 
     if (newFolderName.length < 2) {
@@ -181,7 +185,7 @@ export default class BrowserFolder extends FolderBase implements IFolder {
     if (listingContent != null) {
       this._lastSavedContent = listingContent;
 
-      let folderState: IFolderState | undefined = undefined;
+      let folderState: IFolderState | undefined;
 
       try {
         folderState = JSON.parse(listingContent);

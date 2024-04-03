@@ -33,7 +33,7 @@ export default class BlocksCatalogDefinition {
     file: IFile,
     loadHandler?: IEventHandler<BlocksCatalogDefinition, BlocksCatalogDefinition>
   ) {
-    let et: BlocksCatalogDefinition | undefined = undefined;
+    let et: BlocksCatalogDefinition | undefined;
 
     if (file.manager === undefined) {
       et = new BlocksCatalogDefinition();

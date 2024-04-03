@@ -80,7 +80,7 @@ export default class AttachableResourceDefinition {
     file: IFile,
     loadHandler?: IEventHandler<AttachableResourceDefinition, AttachableResourceDefinition>
   ) {
-    let attachable: AttachableResourceDefinition | undefined = undefined;
+    let attachable: AttachableResourceDefinition | undefined;
 
     if (file.manager === undefined) {
       attachable = new AttachableResourceDefinition();

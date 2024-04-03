@@ -12,7 +12,7 @@ export default class DocumentedCommand {
   private _isLoaded: boolean = false;
 
   public commandSet: DocumentedCommandSet;
-  public infoJsonFiles: { [memberName: string]: IFile } | undefined = undefined;
+  public infoJsonFiles: { [memberName: string]: IFile } | undefined;
   public commandDefinition: IDocCommand;
 
   public get isLoaded() {

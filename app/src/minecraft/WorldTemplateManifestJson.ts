@@ -81,7 +81,7 @@ export default class WorldTemplateManifestJson {
     file: IFile,
     loadHandler?: IEventHandler<WorldTemplateManifestJson, WorldTemplateManifestJson>
   ) {
-    let bmj: WorldTemplateManifestJson | undefined = undefined;
+    let bmj: WorldTemplateManifestJson | undefined;
 
     if (file.manager === undefined) {
       bmj = new WorldTemplateManifestJson();

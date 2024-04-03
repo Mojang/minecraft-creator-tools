@@ -56,7 +56,7 @@ export default class BehaviorAnimationController {
     file: IFile,
     loadHandler?: IEventHandler<BehaviorAnimationController, BehaviorAnimationController>
   ) {
-    let ac: BehaviorAnimationController | undefined = undefined;
+    let ac: BehaviorAnimationController | undefined;
 
     if (file.manager === undefined) {
       ac = new BehaviorAnimationController();

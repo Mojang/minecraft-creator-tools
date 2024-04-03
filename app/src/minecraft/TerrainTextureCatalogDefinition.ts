@@ -33,7 +33,7 @@ export default class TerrainTextureCatalogDefinition {
     file: IFile,
     loadHandler?: IEventHandler<TerrainTextureCatalogDefinition, TerrainTextureCatalogDefinition>
   ) {
-    let et: TerrainTextureCatalogDefinition | undefined = undefined;
+    let et: TerrainTextureCatalogDefinition | undefined;
 
     if (file.manager === undefined) {
       et = new TerrainTextureCatalogDefinition();

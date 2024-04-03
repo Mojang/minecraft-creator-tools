@@ -42,28 +42,39 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
     info.textureCount = infoSet.getSummedNumberValue("TEXTURE", 1);
   }
 
-  async matchesVanillaPath(path: string, resourcePackFolder: IFolder) {
-    path = Utilities.ensureStartsWithSlash(path);
+  async matchesVanillaPath(path: string, resourcePackFolder: IFolder | null) {
+    if (resourcePackFolder && resourcePackFolder.folderCount > 0) {
+      path = Utilities.ensureStartsWithSlash(path);
 
-    const folder = await resourcePackFolder.getFolderFromRelativePath(StorageUtilities.getPath(path));
+      const folder = await resourcePackFolder.getFolderFromRelativePath(StorageUtilities.getFolderPath(path));
 
-    if (!folder) {
-      return false;
-    }
+      if (!folder) {
+        return false;
+      }
 
-    const exists = await folder.exists();
+      const exists = await folder.exists();
 
-    if (!exists) {
-      return false;
-    }
+      if (!exists) {
+        return false;
+      }
 
-    const itemName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(path)).toLowerCase();
+      const itemName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(path)).toLowerCase();
 
-    await folder.load(false);
+      await folder.load(false);
 
-    for (let fileName in folder.files) {
-      if (fileName && StorageUtilities.getBaseFromName(fileName).toLowerCase() === itemName) {
-        return true;
+      for (let fileName in folder.files) {
+        if (fileName && StorageUtilities.getBaseFromName(fileName).toLowerCase() === itemName) {
+          return true;
+        }
+      }
+    } else {
+      await Database.loadVanillaInfoData();
+
+      if (Database.vanillaContentIndex) {
+        const matches = await Database.vanillaContentIndex.getMatches(path);
+        if (matches && matches.length > 0) {
+          return true;
+        }
       }
     }
 
@@ -97,19 +108,6 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
     items.push(textureCountPi);
 
     const rpFolder = await Database.loadDefaultResourcePack();
-
-    if (!rpFolder) {
-      items.push(
-        new ProjectInfoItem(
-          InfoItemType.internalProcessingError,
-          this.id,
-          510,
-          "Could not find a standard resource pack to compare against."
-        )
-      );
-
-      return items;
-    }
 
     for (const projectItem of project.items) {
       if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
@@ -430,33 +428,90 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
       }
     }
 
-    textureCountPi.incrementFeature("Unique Texture Handles (estimated)", "Count", textureHandles.length);
-    textureCountPi.incrementFeature("Unique Texture Paths", "Count", allTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Particle Texture References", "Count", particleTextureRefs.length);
-    textureCountPi.incrementFeature("Unique Particle Texture Paths", "Count", particleTexturePaths.length);
-    textureCountPi.incrementFeature(
-      "Unique Particle Texture Vanilla Paths",
-      "Count",
-      particleVanillaTexturePaths.length
-    );
-    textureCountPi.incrementFeature("Unique JSON UI Texture References", "Count", jsonUITextureRefs.length);
-    textureCountPi.incrementFeature("Unique JSON UI Texture Paths", "Count", jsonUITexturePaths.length);
-    textureCountPi.incrementFeature("Unique JSON UI Texture Vanilla Paths", "Count", jsonUIVanillaTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Entity Texture Paths", "Count", entityTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Entity Texture Vanilla Paths", "Count", entityVanillaTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Attachable Texture References", "Count", attachableTextureRefs.length);
-    textureCountPi.incrementFeature("Unique Terrain Texture References", "Count", terrainTextureRefs.length);
-    textureCountPi.incrementFeature("Unique Terrain Texture Paths", "Count", terrainTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Item Texture Paths", "Count", itemTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Flipbook Texture References", "Count", flipbookTextureRefs.length);
-    textureCountPi.incrementFeature("Unique Flipbook Texture Paths", "Count", flipbookTexturePaths.length);
-    textureCountPi.incrementFeature("Unique Block Texture References", "Count", blockTextureRefs.length);
-    textureCountPi.incrementFeature("Unique Block Texture Paths", "Count", blockTexturePaths.length);
-    textureCountPi.incrementFeature(
-      "Unique Entity Spawn Egg Texture References",
-      "Count",
-      entitySpawnEggTextures.length
-    );
+    if (textureHandles.length > 0) {
+      textureCountPi.incrementFeature("Unique Texture Handles (estimated)", "Count", textureHandles.length);
+    }
+    if (allTexturePaths.length > 0) {
+      textureCountPi.incrementFeature("Unique Texture Paths", "Count", allTexturePaths.length);
+    }
+
+    if (particleTextureRefs.length > 0) {
+      textureCountPi.incrementFeature("Unique Particle Texture References", "Count", particleTextureRefs.length);
+    }
+    if (particleVanillaTexturePaths.length > 0) {
+      textureCountPi.incrementFeature("Unique Particle Texture Paths", "Count", particleTexturePaths.length);
+    }
+
+    if (particleVanillaTexturePaths.length > 0) {
+      textureCountPi.incrementFeature(
+        "Unique Particle Texture Vanilla Paths",
+        "Count",
+        particleVanillaTexturePaths.length
+      );
+    }
+
+    if (jsonUITextureRefs.length > 0) {
+      textureCountPi.incrementFeature("Unique JSON UI Texture References", "Count", jsonUITextureRefs.length);
+    }
+
+    if (jsonUITexturePaths.length > 0) {
+      textureCountPi.incrementFeature("Unique JSON UI Texture Paths", "Count", jsonUITexturePaths.length);
+    }
+    if (jsonUIVanillaTexturePaths.length > 0) {
+      textureCountPi.incrementFeature(
+        "Unique JSON UI Texture Vanilla Paths",
+        "Count",
+        jsonUIVanillaTexturePaths.length
+      );
+    }
+
+    if (entityTexturePaths.length > 0) {
+      textureCountPi.incrementFeature("Unique Entity Texture Paths", "Count", entityTexturePaths.length);
+    }
+
+    if (entityVanillaTexturePaths.length > 0) {
+      textureCountPi.incrementFeature("Unique Entity Texture Vanilla Paths", "Count", entityVanillaTexturePaths.length);
+    }
+
+    if (attachableTextureRefs.length > 0) {
+      textureCountPi.incrementFeature("Unique Attachable Texture References", "Count", attachableTextureRefs.length);
+    }
+
+    if (terrainTextureRefs.length > 0) {
+      textureCountPi.incrementFeature("Unique Terrain Texture References", "Count", terrainTextureRefs.length);
+    }
+
+    if (terrainTexturePaths.length > 0) {
+      textureCountPi.incrementFeature("Unique Terrain Texture Paths", "Count", terrainTexturePaths.length);
+    }
+
+    if (itemTexturePaths.length > 0) {
+      textureCountPi.incrementFeature("Unique Item Texture Paths", "Count", itemTexturePaths.length);
+    }
+
+    if (flipbookTextureRefs.length > 0) {
+      textureCountPi.incrementFeature("Unique Flipbook Texture References", "Count", flipbookTextureRefs.length);
+    }
+
+    if (flipbookTexturePaths.length > 0) {
+      textureCountPi.incrementFeature("Unique Flipbook Texture Paths", "Count", flipbookTexturePaths.length);
+    }
+
+    if (blockTextureRefs.length > 0) {
+      textureCountPi.incrementFeature("Unique Block Texture References", "Count", blockTextureRefs.length);
+    }
+
+    if (blockTexturePaths.length > 0) {
+      textureCountPi.incrementFeature("Unique Block Texture Paths", "Count", blockTexturePaths.length);
+    }
+
+    if (entitySpawnEggTextures.length > 0) {
+      textureCountPi.incrementFeature(
+        "Unique Entity Spawn Egg Texture References",
+        "Count",
+        entitySpawnEggTextures.length
+      );
+    }
 
     if (this.performAddOnValidations && textureHandles.length > 800) {
       items.push(

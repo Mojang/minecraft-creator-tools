@@ -447,14 +447,14 @@ export const EditLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => 
 );
 
 export const OpenInMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => (
-  <span className="label">
+  <span className="label label-toolbar3">
     <FontAwesomeIcon icon={faPlay} className="fa-lg" />
     <span className="label-text">Open in Minecraft</span>
   </span>
 );
 
 export const TeleportInMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => (
-  <span className="label">
+  <span className="label label-toolbar3">
     <FontAwesomeIcon icon={faMagic} className="fa-lg" />
     <span className="label-text">Teleport</span>
   </span>

@@ -101,7 +101,7 @@ export default class DocumentedCommandSet {
     docFolder: IFolder,
     loadHandler?: IEventHandler<DocumentedCommandSet, DocumentedCommandSet>
   ) {
-    let dt: DocumentedCommandSet | undefined = undefined;
+    let dt: DocumentedCommandSet | undefined;
 
     if (file.manager === undefined) {
       dt = new DocumentedCommandSet(docFolder);

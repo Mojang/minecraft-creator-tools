@@ -34,10 +34,14 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
         return { title: "Block Data" };
       case 3:
         return { title: "Command" };
+      case 4:
+        return { title: "Execute Sub Command" };
       case 101:
         return { title: "Unexpected command in MCFunction" };
       case 102:
         return { title: "Unexpected command in Command Block" };
+      case 400:
+        return { title: "Error processing world" };
     }
 
     return {
@@ -47,6 +51,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.chunkCount = infoSet.getSummedNumberValue("WORLDDATA", 101);
+    info.worldLoadErrors = infoSet.getCount("WORLDDATA", 400);
   }
 
   processListOfCommands(
@@ -54,6 +59,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     items: ProjectInfoItem[],
     projectItem: ProjectItem,
     commandsPi: ProjectInfoItem,
+    subCommandsPi: ProjectInfoItem,
     checkForSlash: boolean
   ) {
     for (let i = 0; i < commandList.length; i++) {
@@ -78,12 +84,24 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
             );
           }
           commandsPi.incrementFeature(command.name);
+
+          if (command.name === "execute") {
+            let foundRun = false;
+            for (const arg of command.commandArguments) {
+              if (arg === "run") {
+                foundRun = true;
+              } else if (foundRun && CommandRegistry.isMinecraftBuiltInCommand(arg)) {
+                subCommandsPi.incrementFeature(arg);
+                break;
+              }
+            }
+          }
         } else {
           items.push(
             new ProjectInfoItem(
               InfoItemType.error,
               this.id,
-              101,
+              401,
               "Unexpected command '" + command.name + "'",
               projectItem,
               command.name,
@@ -141,17 +159,17 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
 
           for (const scene of scenes) {
             if (scene.on_open_commands) {
-              this.processListOfCommands(scene.on_open_commands, items, projectItem, commandsPi, true);
+              this.processListOfCommands(scene.on_open_commands, items, projectItem, commandsPi, subCommandsPi, true);
             }
             if (scene.on_close_commands) {
-              this.processListOfCommands(scene.on_close_commands, items, projectItem, commandsPi, true);
+              this.processListOfCommands(scene.on_close_commands, items, projectItem, commandsPi, subCommandsPi, true);
             }
           }
           let buttons = diaManifest.getAllButtons();
 
           for (const button of buttons) {
             if (button.commands) {
-              this.processListOfCommands(button.commands, items, projectItem, commandsPi, true);
+              this.processListOfCommands(button.commands, items, projectItem, commandsPi, subCommandsPi, true);
             }
           }
         }
@@ -167,11 +185,11 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
 
           for (const state of states) {
             if (state.state.on_entry) {
-              this.processListOfCommands(state.state.on_entry, items, projectItem, commandsPi, true);
+              this.processListOfCommands(state.state.on_entry, items, projectItem, commandsPi, subCommandsPi, true);
             }
 
             if (state.state.on_exit) {
-              this.processListOfCommands(state.state.on_exit, items, projectItem, commandsPi, true);
+              this.processListOfCommands(state.state.on_exit, items, projectItem, commandsPi, subCommandsPi, true);
             }
           }
         }
@@ -187,7 +205,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
 
           for (const timeline of timelines) {
             if (timeline.timeline) {
-              this.processListOfCommands(timeline.timeline, items, projectItem, commandsPi, true);
+              this.processListOfCommands(timeline.timeline, items, projectItem, commandsPi, subCommandsPi, true);
             }
           }
         }
@@ -198,7 +216,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       if (content !== undefined) {
         let contentLines = content.split("\n");
 
-        this.processListOfCommands(contentLines, items, projectItem, commandsPi, false);
+        this.processListOfCommands(contentLines, items, projectItem, commandsPi, subCommandsPi, false);
       }
     }
 
@@ -207,7 +225,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       projectItem.itemType === ProjectItemType.MCTemplate ||
       projectItem.itemType === ProjectItemType.worldFolder
     ) {
-      let mcworld: MCWorld | undefined = undefined;
+      let mcworld: MCWorld | undefined;
 
       if (projectItem.folder) {
         mcworld = await MCWorld.ensureMCWorldOnFolder(projectItem.folder, projectItem.project);
@@ -223,6 +241,22 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       await mcworld.load(false);
 
       await mcworld.loadData(false);
+
+      if (mcworld.isInErrorState && mcworld.errorMessages) {
+        for (const err of mcworld.errorMessages) {
+          items.push(
+            new ProjectInfoItem(
+              InfoItemType.error,
+              this.id,
+              400,
+              "World processing error",
+              projectItem,
+              err.message + (err.context ? " - " + err.context : ""),
+              mcworld.name
+            )
+          );
+        }
+      }
 
       if (
         projectItem.storagePath &&
@@ -335,7 +369,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
 
                         if (command.name === "execute") {
                           let foundRun = false;
-                          for (const arg in command.commandArguments) {
+                          for (const arg of command.commandArguments) {
                             if (arg === "run") {
                               foundRun = true;
                             } else if (foundRun && CommandRegistry.isMinecraftBuiltInCommand(arg)) {

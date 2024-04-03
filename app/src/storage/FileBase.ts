@@ -27,6 +27,22 @@ export default abstract class FileBase implements IFile {
     this.#fileContainerStorage = newStorage;
   }
 
+  get isString() {
+    return this._content !== null && typeof this._content === "string";
+  }
+
+  get isBinary() {
+    if (this._content === undefined) {
+      return false;
+    }
+
+    if (this._content instanceof Uint8Array) {
+      return true;
+    }
+
+    return false;
+  }
+
   get content() {
     return this._content;
   }

@@ -5,9 +5,36 @@ import NbtBinaryTag, { NbtTagType } from "./NbtBinaryTag";
 import Utilities from "./../core/Utilities";
 import INbtTag from "./INbtTag";
 import Log from "../core/Log";
+import { IErrorMessage, IErrorable } from "../core/IErrorable";
 
-export default class NbtBinary {
+export default class NbtBinary implements IErrorable {
   root: NbtBinaryTag | null = null;
+  context?: string;
+  isInErrorState?: boolean;
+  errorMessages?: IErrorMessage[];
+
+  private _pushError(message: string, contextIn?: string) {
+    this.isInErrorState = true;
+
+    if (this.errorMessages === undefined) {
+      this.errorMessages = [];
+    }
+
+    let contextOut = undefined;
+
+    if (contextIn) {
+      contextOut = this.context ? this.context + "-" + contextIn : contextIn;
+    } else {
+      contextOut = this.context;
+    }
+
+    Log.error(message + (contextOut ? " " + contextOut : ""));
+
+    this.errorMessages.push({
+      message: message,
+      context: contextOut,
+    });
+  }
 
   private _getSignedByte(num: number) {
     const buffer = new ArrayBuffer(1);
@@ -239,7 +266,9 @@ export default class NbtBinary {
       if (tagStack.length === 0 || tagStack[tagStack.length - 1].type !== NbtTagType.list) {
         tagType = data[i++] as NbtTagType;
 
-        Log.assert(tagType < 13 || tagType === 99, "Unexpected tag type.");
+        if (tagType > 13 && tagType !== 99) {
+          this._pushError("Unexpected NBT tag type: " + tagType);
+        }
 
         if (tagType !== NbtTagType.end) {
           let nameLength = 0;
@@ -398,7 +427,7 @@ export default class NbtBinary {
         }
 
         const view = new DataView(data.buffer);
-        let str: string | undefined = undefined;
+        let str: string | undefined;
 
         if (stringsAreASCII) {
           str = Utilities.readStringASCIIBuffer(data, i, stringLength);

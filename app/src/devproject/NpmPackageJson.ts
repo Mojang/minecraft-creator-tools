@@ -57,7 +57,7 @@ export default class NpmPackageJson {
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<NpmPackageJson, NpmPackageJson>) {
-    let dt: NpmPackageJson | undefined = undefined;
+    let dt: NpmPackageJson | undefined;
 
     if (file.manager === undefined) {
       dt = new NpmPackageJson();

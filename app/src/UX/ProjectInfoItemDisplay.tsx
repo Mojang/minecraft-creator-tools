@@ -21,6 +21,7 @@ export const PT_TILE_SMALL = 1;
 
 interface IProjectInfoItemDisplayProps extends IAppProps {
   item: ProjectInfoItem;
+  itemSet: ProjectInfoSet;
   theme: ThemeInput<any>;
   onInfoItemCommand: (command: InfoItemCommand, item: ProjectInfoItem) => Promise<void>;
 }
@@ -58,7 +59,7 @@ export default class ProjectInfoItemDisplay extends Component<
 
     let typeElt = <></>;
 
-    let message = item.message;
+    let message = this.props.itemSet.getEffectiveMessage(item);
     let location = "";
     let actions = <></>;
 

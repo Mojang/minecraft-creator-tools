@@ -53,7 +53,7 @@ export default class ResourceAnimationController {
     file: IFile,
     loadHandler?: IEventHandler<ResourceAnimationController, ResourceAnimationController>
   ) {
-    let ac: ResourceAnimationController | undefined = undefined;
+    let ac: ResourceAnimationController | undefined;
 
     if (file.manager === undefined) {
       ac = new ResourceAnimationController();

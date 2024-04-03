@@ -235,7 +235,7 @@
   padding-bottom: 20px;
 }
 
-.ppe-advancedArea {
+.ppe-statusArea {
   font-size: 14pt;
   grid-row: 12;
   grid-column-start: 1;
@@ -243,8 +243,16 @@
   padding-top: 30px;
 }
 
+.ppe-advancedArea {
+  font-size: 14pt;
+  grid-row: 13;
+  grid-column-start: 1;
+  grid-column-end: 5;
+  padding-top: 30px;
+}
+
 .ppe-bedrock {
-  grid-row: 12;
+  grid-row: 13;
   font-size: 2;
   line-height: 0.5;
   min-height: 16px;

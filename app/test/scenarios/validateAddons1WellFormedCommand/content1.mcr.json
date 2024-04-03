@@ -1,0 +1,5701 @@
+{
+  "info": {
+    "behaviorPackManifestCount": 0,
+    "unknownJsonCount": 0,
+    "entityTypeManifestCount": 0,
+    "itemTypeManifestCount": 0,
+    "blockTypeManifestCount": 0,
+    "resourcePackManifestCount": 0,
+    "worldCount": 0,
+    "entityTypeResourceCount": 0,
+    "behaviorPackAnimationCount": 0,
+    "behaviorPackAnimationControllerCount": 0,
+    "textureCount": 0,
+    "chunkCount": 0,
+    "worldLoadErrors": 0,
+    "featureSets": {
+      "Textures Entity Resource Count": {
+        "Count": 6
+      },
+      "Textures Texture References": {
+        "Count": 6
+      },
+      "Textures Entity References": {
+        "Count": 6
+      },
+      "Textures File Count": {
+        "Count": 7
+      },
+      "Textures Unique Texture Handles (estimated)": {
+        "Count": 6
+      },
+      "Textures Unique Texture Paths": {
+        "Count": 6
+      },
+      "Textures Unique Particle Texture Paths": {
+        "Count": 0
+      },
+      "Textures Unique Particle Texture Vanilla Paths": {
+        "Count": 1
+      },
+      "Textures Unique Entity Texture Paths": {
+        "Count": 6
+      },
+      "Command say": {
+        "Count": 1
+      },
+      "Command summon": {
+        "Count": 1
+      }
+    },
+    "summary": {
+      "TEXTURE": {
+        "1": {
+          "title": "Textures"
+        }
+      },
+      "WORLDDATA": {
+        "1": {
+          "defaultMessage": "Blocks",
+          "testCompleteSuccesses": 1
+        },
+        "2": {
+          "defaultMessage": "Block Data"
+        },
+        "3": {
+          "defaultMessage": "Commands"
+        },
+        "4": {
+          "defaultMessage": "Execute Sub Commands"
+        }
+      },
+      "ADDONIREQ": {
+        "1": {
+          "defaultMessage": "Test Addon Item Requirements Generator completed successfully.",
+          "testCompleteSuccesses": 1
+        }
+      }
+    }
+  },
+  "items": [
+    {
+      "iTp": 7,
+      "gId": "TEXTURE",
+      "gIx": 1,
+      "fs": {
+        "Entity Resource Count": {
+          "Count": 6
+        },
+        "Texture References": {
+          "Count": 6
+        },
+        "Entity References": {
+          "Count": 6
+        },
+        "File Count": {
+          "Count": 7
+        },
+        "Unique Texture Handles (estimated)": {
+          "Count": 6
+        },
+        "Unique Texture Paths": {
+          "Count": 6
+        },
+        "Unique Particle Texture Paths": {
+          "Count": 0
+        },
+        "Unique Particle Texture Vanilla Paths": {
+          "Count": 1
+        },
+        "Unique Entity Texture Paths": {
+          "Count": 6
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
+      "fs": {
+        "say": {
+          "Count": 1
+        },
+        "summon": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
+    },
+    {
+      "iTp": 0,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "m": "Test World Data Validation completed successfully."
+    },
+    {
+      "iTp": 0,
+      "gId": "ADDONIREQ",
+      "gIx": 1
+    }
+  ],
+  "index": {
+    "items": [
+      "/Content/behavior_packs/aop_mobsbp/manifest.json",
+      "/Content/behavior_packs/aop_mobsbp/pack_icon.png",
+      "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
+      "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json",
+      "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json",
+      "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json",
+      "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json",
+      "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json",
+      "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json",
+      "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json",
+      "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json",
+      "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json",
+      "/Content/behavior_packs/aop_mobsbp/scripts/main.js",
+      "/Content/behavior_packs/aop_mobsbp/scripts/Utilities.js",
+      "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json",
+      "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json",
+      "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json",
+      "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json",
+      "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json",
+      "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang",
+      "/Content/behavior_packs/aop_mobsbp/texts/languages.json",
+      "/Content/resource_packs/aop_mobsrp/manifest.json",
+      "/Content/resource_packs/aop_mobsrp/pack_icon.png",
+      "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json",
+      "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json",
+      "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json",
+      "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json",
+      "/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json",
+      "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json",
+      "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json",
+      "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
+      "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json",
+      "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json",
+      "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json",
+      "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
+      "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json",
+      "/Content/resource_packs/aop_mobsrp/materials/entity.material",
+      "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json",
+      "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json",
+      "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json",
+      "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
+      "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json",
+      "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json",
+      "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
+      "/Content/resource_packs/aop_mobsrp/texts/en_US.lang",
+      "/Content/resource_packs/aop_mobsrp/texts/languages.json",
+      "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png",
+      "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/black_bear.png",
+      "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/boomfly.png",
+      "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle.png",
+      "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/raccoon.png",
+      "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/sheepomelon.png",
+      "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/wraith.png"
+    ],
+    "trie": {
+      "9": {
+        "ec8af93-4b38-429f-a4bd-7e277a50d238": [
+          0,
+          21
+        ],
+        "d6dad89-6e29-46ba-83d5-490a4901caef": [
+          0,
+          21
+        ]
+      },
+      "m": {
+        "e": {
+          "tadata": [
+            0,
+            21
+          ],
+          "lon": {
+            "±": [
+              2,
+              10,
+              11
+            ],
+            "_": {
+              "slice": [
+                8
+              ],
+              "block": [
+                8
+              ]
+            }
+          }
+        },
+        "a": {
+          "t": {
+            "ches": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ],
+            "h.": {
+              "random": [
+                4,
+                5,
+                7,
+                8,
+                {
+                  "n": 12,
+                  "a": "S"
+                },
+                {
+                  "n": 13,
+                  "a": "S"
+                },
+                44,
+                45
+              ],
+              "cos": [
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30
+              ],
+              "sin": [
+                29
+              ]
+            },
+            "e": {
+              "_type": [
+                7,
+                8
+              ],
+              "rials": [
+                31,
+                32,
+                33,
+                34,
+                35,
+                36,
+                44,
+                45
+              ]
+            }
+          },
+          "x_": {
+            "dist": {
+              "±": [
+                4,
+                5,
+                6,
+                8,
+                9
+              ],
+              "ance": [
+                4,
+                5,
+                8
+              ]
+            },
+            "turn": [
+              7
+            ],
+            "activation_range": [
+              9
+            ],
+            "size": [
+              14,
+              15,
+              16,
+              17
+            ],
+            "lifetime": [
+              44,
+              45
+            ],
+            "frame": [
+              44,
+              45
+            ]
+          },
+          "ss": [
+            8
+          ],
+          "in": {
+            "±": [
+              12
+            ],
+            "tick": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ]
+          },
+          "n": {
+            "ifest": [
+              0,
+              21
+            ],
+            "grove_swamp": [
+              16
+            ]
+          }
+        },
+        "o": {
+          "dule": {
+            "s": [
+              0,
+              21
+            ],
+            "_name": [
+              0
+            ]
+          },
+          "vement": {
+            "±": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36
+            ],
+            ".": {
+              "basic": [
+                4,
+                5,
+                6,
+                8,
+                9
+              ],
+              "amphibious": [
+                7
+              ]
+            }
+          },
+          "nster": [
+            6,
+            9,
+            18
+          ],
+          "b": {
+            "loc": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ],
+            ".": {
+              "warning": [
+                23
+              ],
+              "evocation_illager.": {
+                "ambient": [
+                  23
+                ],
+                "c": {
+                  "ast_spell": [
+                    23
+                  ],
+                  "elebrate": [
+                    23
+                  ]
+                },
+                "death": [
+                  23
+                ],
+                "hurt": [
+                  23
+                ],
+                "prepare_": {
+                  "attack": [
+                    23
+                  ],
+                  "summon": [
+                    23
+                  ],
+                  "wololo": [
+                    23
+                  ]
+                }
+              },
+              "dolphin.": {
+                "idle": {
+                  "±": [
+                    23
+                  ],
+                  "_water": [
+                    23
+                  ]
+                },
+                "attack": [
+                  23
+                ],
+                "blowhole": [
+                  23
+                ],
+                "death": [
+                  23
+                ],
+                "eat": [
+                  23
+                ],
+                "hurt": [
+                  23
+                ],
+                "jump": [
+                  23
+                ],
+                "s": {
+                  "plash": [
+                    23
+                  ],
+                  "wim": [
+                    23
+                  ]
+                }
+              },
+              "p": {
+                "olarbear": {
+                  "_baby.idle": [
+                    23
+                  ],
+                  ".": {
+                    "idle": [
+                      23
+                    ],
+                    "death": [
+                      23
+                    ],
+                    "hurt": [
+                      23
+                    ],
+                    "warning": [
+                      23
+                    ],
+                    "step": [
+                      23
+                    ]
+                  }
+                },
+                "hantom.": {
+                  "idle": [
+                    23
+                  ],
+                  "bite": [
+                    23
+                  ],
+                  "death": [
+                    23
+                  ],
+                  "flap": [
+                    23,
+                    33
+                  ],
+                  "hurt": [
+                    23
+                  ],
+                  "swoop": [
+                    23
+                  ]
+                }
+              },
+              "sheep.s": {
+                "ay": [
+                  23
+                ],
+                "tep": [
+                  23
+                ]
+              },
+              "zombie.": {
+                "death": [
+                  23
+                ],
+                "hurt": [
+                  23
+                ],
+                "s": {
+                  "ay": [
+                    23
+                  ],
+                  "tep": [
+                    23
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "u": {
+          "st_see": {
+            "±": [
+              4,
+              5,
+              6,
+              8,
+              9
+            ],
+            "_forget_duration": [
+              6
+            ]
+          },
+          "ttonraw": [
+            10
+          ]
+        },
+        "i": {
+          "n": {
+            "ecraft": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              14,
+              15,
+              16,
+              17,
+              18,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              38,
+              39,
+              42,
+              44,
+              45
+            ],
+            "_": {
+              "engine_version": [
+                0,
+                21,
+                35,
+                36
+              ],
+              "activation_range": [
+                9
+              ],
+              "size": [
+                14,
+                15,
+                16,
+                17
+              ]
+            }
+          },
+          "rror": [
+            38,
+            39,
+            40,
+            43
+          ]
+        }
+      },
+      "p": {
+        "r": {
+          "iority": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "o": {
+            "duct_type": [
+              0,
+              21
+            ],
+            "bability": [
+              4,
+              5,
+              7,
+              8,
+              9
+            ],
+            "perties": [
+              10
+            ]
+          },
+          "e": {
+            "gnant": [
+              7
+            ],
+            "fer_water": [
+              7
+            ],
+            "pare.": {
+              "attack": [
+                9,
+                23
+              ],
+              "summon": [
+                9,
+                23
+              ],
+              "wololo": [
+                9,
+                23
+              ]
+            }
+          }
+        },
+        "ushable": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "o": {
+          "wer": [
+            6
+          ],
+          "ols": [
+            10,
+            11
+          ],
+          "pulation_control": [
+            14,
+            15,
+            16,
+            17,
+            18
+          ],
+          "s": {
+            "ition": [
+              8,
+              24,
+              25,
+              26,
+              29,
+              30
+            ],
+            "t": [
+              29
+            ]
+          },
+          "lar": {
+            "bear": [
+              4,
+              5
+            ],
+            "_bear": [
+              31,
+              32
+            ]
+          }
+        },
+        "a": {
+          "ck": {
+            ".": {
+              "name": [
+                0,
+                21
+              ],
+              "description": [
+                0,
+                21
+              ]
+            },
+            "_": {
+              "icon": [
+                1,
+                22
+              ],
+              "scope": [
+                21
+              ]
+            },
+            "±": [
+              21
+            ]
+          },
+          "r": {
+            "ent": [
+              38,
+              39,
+              40,
+              41,
+              42,
+              43
+            ],
+            "ticle": {
+              "_": {
+                "color": [
+                  9
+                ],
+                "effects": [
+                  33,
+                  36,
+                  44,
+                  45
+                ],
+                "with_velocity": [
+                  44
+                ],
+                "initial_sp": {
+                  "eed": [
+                    44,
+                    45
+                  ],
+                  "in": [
+                    44,
+                    45
+                  ]
+                },
+                "lifetime_e": {
+                  "xpression": [
+                    44,
+                    45
+                  ],
+                  "vents": [
+                    44
+                  ]
+                },
+                "motion_dynamic": [
+                  44,
+                  45
+                ],
+                "appearance_": {
+                  "billboard": [
+                    44,
+                    45
+                  ],
+                  "tinting": [
+                    44,
+                    45
+                  ],
+                  "lighting": [
+                    45
+                  ]
+                }
+              },
+              "s_alpha": [
+                44,
+                45
+              ]
+            }
+          }
+        },
+        "er": {
+          "sistent": [
+            9
+          ],
+          "mutation": [
+            {
+              "n": 12,
+              "a": "S"
+            },
+            {
+              "n": 13,
+              "a": "S"
+            }
+          ]
+        },
+        "la": {
+          "y": {
+            "er": {
+              "±": [
+                4,
+                5,
+                6,
+                8,
+                9
+              ],
+              "s": [
+                {
+                  "n": 12,
+                  "a": "S"
+                }
+              ]
+            },
+            "_sounds": [
+              6,
+              8
+            ]
+          },
+          "ins": [
+            14,
+            15,
+            17
+          ]
+        },
+        "h": {
+          "ysics": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "antom": {
+            "±": [
+              33
+            ],
+            "_": {
+              "invisible": [
+                33
+              ],
+              "base_pose": [
+                33
+              ],
+              "trail_particle": [
+                33
+              ]
+            }
+          }
+        },
+        "i": {
+          "tch": [
+            23
+          ],
+          "vot": [
+            38,
+            39,
+            40,
+            41,
+            42,
+            43
+          ]
+        }
+      },
+      "2d59a3f6-d348-496d-a0c7-6d59ddb05c5e": [
+        0
+      ],
+      "d": {
+        "e": {
+          "pendencies": [
+            0,
+            21
+          ],
+          "fault": [
+            3,
+            14,
+            15,
+            16,
+            17,
+            18,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36
+          ],
+          "s": {
+            "cription": [
+              0,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              14,
+              15,
+              16,
+              17,
+              18,
+              21,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              38,
+              39,
+              42,
+              44,
+              45
+            ],
+            "pawn": {
+              "±": [
+                4,
+                5,
+                6,
+                7,
+                8
+              ],
+              "_from_distance": [
+                4,
+                5,
+                6,
+                7,
+                8
+              ]
+            },
+            "troy_affected_by_griefing": [
+              6
+            ]
+          },
+          "lay_per_summon": [
+            9
+          ],
+          "nsity_limit": [
+            16,
+            18
+          ],
+          "a": {
+            "ls_damage": [
+              6,
+              7
+            ],
+            "th": {
+              "±": [
+                23
+              ],
+              ".in.water": [
+                23
+              ]
+            }
+          }
+        },
+        "uration": [
+          4,
+          5,
+          7,
+          8,
+          9
+        ],
+        "a": {
+          "ta": [
+            0
+          ],
+          "mage": {
+            "±": [
+              4,
+              5,
+              6,
+              8
+            ],
+            "_": {
+              "conditions": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ],
+              "per_tick": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ],
+              "sensor": [
+                6,
+                7
+              ],
+              "multiplier": [
+                7
+              ]
+            }
+          }
+        },
+        "r": {
+          "ag_factor": [
+            4,
+            5,
+            7
+          ],
+          "op_items": [
+            7
+          ]
+        },
+        "well": {
+          "er": {
+            "±": [
+              9
+            ],
+            "_role": [
+              9
+            ]
+          },
+          "ing_type": [
+            9
+          ]
+        },
+        "i": {
+          "stance_filter": [
+            16
+          ],
+          "fficulty_filter": [
+            18
+          ],
+          "rection": [
+            44,
+            45
+          ]
+        },
+        "o": {
+          "main": [
+            6,
+            8
+          ],
+          "lphin": [
+            34
+          ]
+        }
+      },
+      "f": {
+        "43bb32a-c814-45e4-a428-3f4f1f59b2a3": [
+          0
+        ],
+        "a": {
+          "lse,": [
+            2,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            14,
+            15,
+            17,
+            38,
+            39,
+            44,
+            45
+          ],
+          "mily": {
+            "±": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "_types": [
+              8
+            ]
+          },
+          "cing_": {
+            "direction": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ],
+            "camera_mode": [
+              44,
+              45
+            ]
+          }
+        },
+        "o": {
+          "llow_range": [
+            4,
+            5,
+            7,
+            9
+          ],
+          "r": {
+            "mat_version": [
+              0,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              14,
+              15,
+              16,
+              17,
+              18,
+              21,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45
+            ],
+            "ced_": {
+              "exploding": [
+                6
+              ],
+              "charged_exploding": [
+                6
+              ]
+            }
+          },
+          "urwalls": [
+            {
+              "n": 12,
+              "a": "S"
+            },
+            {
+              "n": 13,
+              "a": "S"
+            }
+          ]
+        },
+        "eed_items": [
+          7,
+          8
+        ],
+        "i": {
+          "ndtopmostblockusingplayer": [
+            {
+              "n": 12,
+              "a": "S"
+            }
+          ],
+          "l": {
+            "ters": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "lblock": [
+              {
+                "n": 13,
+                "a": "S"
+              }
+            ]
+          },
+          "r": {
+            "st_founding_reward": [
+              9
+            ],
+            "eworks_": {
+              "pop": [
+                44
+              ],
+              "twinkles": [
+                44
+              ]
+            }
+          }
+        },
+        "u": {
+          "se_l": {
+            "ength": [
+              6
+            ],
+            "it": [
+              6
+            ]
+          },
+          "nctions": [
+            10,
+            11
+          ],
+          "rnace_smelt": [
+            10
+          ]
+        },
+        "l": {
+          "ap": [
+            23,
+            26,
+            33
+          ],
+          "i": {
+            "nt_and_steel": [
+              6
+            ],
+            "pbook": [
+              44,
+              45
+            ]
+          }
+        },
+        "rames_per_second": [
+          44,
+          45
+        ]
+      },
+      "@minecraft/server": {
+        "±": [
+          0
+        ],
+        "-ui": [
+          0
+        ]
+      },
+      "s": {
+        "c": {
+          "ript": {
+            "±": [
+              0
+            ],
+            "s/main.js": [
+              0,
+              8,
+              31,
+              32,
+              33,
+              35,
+              36
+            ]
+          },
+          "ale": [
+            4,
+            5,
+            7,
+            8,
+            24,
+            25,
+            29,
+            30,
+            31,
+            32,
+            36
+          ]
+        },
+        "p": {
+          "awn": {
+            "±": [
+              3,
+              8
+            ],
+            "_": {
+              "items": [
+                8
+              ],
+              "adult": [
+                8
+              ],
+              "baby": [
+                8
+              ],
+              "for_raid": [
+                9
+              ],
+              "rules": [
+                14,
+                15,
+                16,
+                17,
+                18
+              ],
+              "egg": [
+                31,
+                32,
+                33,
+                34,
+                35,
+                36
+              ]
+            },
+            "loc": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ],
+            "zoo": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ],
+            "entity": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ],
+            "s_": {
+              "on_": {
+                "surface": [
+                  14,
+                  15,
+                  16,
+                  17,
+                  18
+                ],
+                "block_filter": [
+                  14,
+                  15,
+                  17
+                ]
+              },
+              "under": {
+                "water": [
+                  16
+                ],
+                "ground": [
+                  16
+                ]
+              }
+            }
+          },
+          "rint_speed_multiplier": [
+            6,
+            9
+          ],
+          "lash": [
+            23
+          ],
+          "e": {
+            "ed_multiplier": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "ll": [
+              36
+            ]
+          }
+        },
+        "t": {
+          "a": {
+            "rt_": {
+              "exploding": {
+                "±": [
+                  6
+                ],
+                "_forced": [
+                  6
+                ]
+              },
+              "sound_event": [
+                9
+              ],
+              "celebrating": [
+                9
+              ]
+            },
+            "t": {
+              "es": [
+                3
+              ],
+              "ic": [
+                {
+                  "n": 13,
+                  "a": "S"
+                }
+              ]
+            }
+          },
+          "o": {
+            "mp_range_multiplier": [
+              4,
+              5
+            ],
+            "p_": {
+              "exploding": [
+                6
+              ],
+              "celebrating": [
+                9
+              ]
+            }
+          },
+          "ep": {
+            "±": [
+              23
+            ],
+            "_uv": [
+              44,
+              45
+            ]
+          },
+          "retch_to_lifetime": [
+            44,
+            45
+          ]
+        },
+        "u": {
+          "ffocate_time": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "ccess_chance": [
+            8
+          ],
+          "mmon_c": {
+            "hoices": [
+              9
+            ],
+            "ap": {
+              "±": [
+                9
+              ],
+              "_radius": [
+                9
+              ]
+            }
+          },
+          "b": {
+            "ject": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "scribe": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ]
+          },
+          "rface": [
+            16,
+            18
+          ]
+        },
+        "e": {
+          "lf": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "quence": [
+            6,
+            8,
+            9
+          ],
+          "a": {
+            "rch_": {
+              "range": [
+                7
+              ],
+              "height": [
+                7
+              ]
+            },
+            "grass": [
+              7
+            ],
+            "t": {
+              "_count": [
+                8
+              ],
+              "s": [
+                8
+              ]
+            }
+          },
+          "ndmessage": [
+            {
+              "n": 12,
+              "a": "S"
+            }
+          ],
+          "t": {
+            "_count": [
+              10,
+              11
+            ],
+            "permutation": [
+              {
+                "n": 12,
+                "a": "S"
+              },
+              {
+                "n": 13,
+                "a": "S"
+              }
+            ],
+            "up": [
+              35
+            ]
+          }
+        },
+        "o": {
+          "ft_distance": [
+            4,
+            5,
+            8
+          ],
+          "und": {
+            "_": {
+              "interval": [
+                9
+              ],
+              "e": {
+                "vent": [
+                  9
+                ],
+                "ffects": [
+                  26,
+                  33
+                ]
+              }
+            },
+            "s": [
+              23
+            ],
+            "±": [
+              23
+            ]
+          }
+        },
+        "h": {
+          "e": {
+            "ep": {
+              "_": {
+                "baby": [
+                  8
+                ],
+                "adult": [
+                  8
+                ],
+                "sheared": [
+                  8
+                ]
+              },
+              "±": [
+                8,
+                9,
+                35
+              ],
+              "omelon": {
+                "_shear": [
+                  11
+                ],
+                "±": [
+                  17,
+                  23,
+                  35,
+                  53
+                ],
+                ".": {
+                  "b": {
+                    "p_a": {
+                      "nims": [
+                        2
+                      ],
+                      "c": [
+                        3
+                      ]
+                    },
+                    "ehavior": [
+                      8
+                    ],
+                    "±": [
+                      8,
+                      10
+                    ]
+                  },
+                  "animation": [
+                    29
+                  ],
+                  "entity": [
+                    35
+                  ],
+                  "geometry": [
+                    42
+                  ]
+                }
+              }
+            },
+            "ar": {
+              "ed": [
+                3,
+                8,
+                35
+              ],
+              "s": [
+                8
+              ]
+            }
+          },
+          "ape": [
+            9
+          ]
+        },
+        "ize": {
+          "±": [
+            9,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45
+          ],
+          "_uv": [
+            44,
+            45
+          ]
+        },
+        "nowgolem": [
+          9
+        ],
+        "ystem": [
+          {
+            "n": 12,
+            "a": "S"
+          }
+        ],
+        "a": {
+          "lmon": [
+            2
+          ],
+          "vanna": [
+            14,
+            15,
+            17
+          ]
+        },
+        "w": {
+          "i": {
+            "ng": [
+              6
+            ],
+            "m": [
+              23
+            ]
+          },
+          "oop": [
+            23
+          ]
+        },
+        "moke_puff": [
+          45
+        ]
+      },
+      "a": {
+        "op_mobs": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          14,
+          15,
+          16,
+          17,
+          18,
+          23,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          44,
+          45
+        ],
+        "geable": {
+          "±": [
+            4,
+            5,
+            7,
+            8
+          ],
+          "_grow_up": [
+            4,
+            5,
+            7,
+            8
+          ]
+        },
+        "n": {
+          "gry": [
+            4,
+            5
+          ],
+          "y_of": [
+            6,
+            9,
+            16
+          ],
+          "jelika": [
+            7
+          ],
+          "im": {
+            "a": {
+              "t": {
+                "ion": {
+                  "s": [
+                    2,
+                    3,
+                    8,
+                    24,
+                    25,
+                    26,
+                    27,
+                    28,
+                    29,
+                    30,
+                    31,
+                    32,
+                    33,
+                    34,
+                    35,
+                    36
+                  ],
+                  "_": {
+                    "length": [
+                      2,
+                      26,
+                      29
+                    ],
+                    "controllers": [
+                      3,
+                      31,
+                      32,
+                      34
+                    ]
+                  },
+                  ".": {
+                    "aop_moremobs.": {
+                      "b": {
+                        "iceson.": {
+                          "move": [
+                            24,
+                            31
+                          ],
+                          "walk": [
+                            24,
+                            31
+                          ]
+                        },
+                        "lack_bear.": {
+                          "move": [
+                            25,
+                            32
+                          ],
+                          "walk": [
+                            25,
+                            32
+                          ]
+                        },
+                        "oomfly.": {
+                          "base_pose": [
+                            26,
+                            33
+                          ],
+                          "move": [
+                            26,
+                            33
+                          ]
+                        }
+                      },
+                      "nar": {
+                        "dolphle.move": [
+                          27,
+                          34
+                        ],
+                        "whal.move": [
+                          28
+                        ]
+                      },
+                      "sheepomelon.": {
+                        "walk": [
+                          29,
+                          35
+                        ],
+                        "s": {
+                          "pawn": [
+                            2,
+                            8
+                          ],
+                          "etup": [
+                            29,
+                            35
+                          ]
+                        }
+                      },
+                      "wraith.": {
+                        "casting": [
+                          30,
+                          36
+                        ],
+                        "general": [
+                          30,
+                          36
+                        ],
+                        "move": [
+                          30,
+                          36
+                        ]
+                      }
+                    },
+                    "common.look_at_target": [
+                      31,
+                      32,
+                      35,
+                      36
+                    ],
+                    "humanoid.celebrating": [
+                      36
+                    ]
+                  }
+                },
+                "e": [
+                  8,
+                  33,
+                  35,
+                  36
+                ]
+              },
+              "l": [
+                14,
+                15,
+                17
+              ]
+            },
+            "_time_update": [
+              24,
+              25,
+              29,
+              30
+            ]
+          }
+        },
+        "d": {
+          "ult": {
+            "±": [
+              4,
+              5,
+              7
+            ],
+            "_": {
+              "wild": [
+                4,
+                5
+              ],
+              "hostile": [
+                4,
+                5
+              ]
+            }
+          },
+          "just_for_weather": [
+            14,
+            15,
+            17,
+            18
+          ],
+          "d": {
+            "on": [
+              0,
+              21
+            ],
+            "-on": [
+              21
+            ]
+          }
+        },
+        "ttack": [
+          4,
+          5,
+          6,
+          8,
+          23
+        ],
+        "ll_of": [
+          6,
+          8,
+          9
+        ],
+        "void_": {
+          "damage_blocks": [
+            4,
+            5,
+            7
+          ],
+          "water": [
+            8,
+            9
+          ]
+        },
+        "mbient": {
+          "_sound_interval": [
+            9
+          ],
+          "±": [
+            23
+          ],
+          ".": {
+            "baby": [
+              23
+            ],
+            "in.": {
+              "raid": [
+                9,
+                23
+              ],
+              "water": [
+                23
+              ]
+            }
+          }
+        },
+        "fterevents": [
+          {
+            "n": 12,
+            "a": "S"
+          }
+        ],
+        "rms": [
+          30,
+          43
+        ],
+        "cti": {
+          "on.interact.": {
+            "creeper": [
+              6
+            ],
+            "shear": [
+              8
+            ]
+          },
+          "ve_time": [
+            44,
+            45
+          ]
+        }
+      },
+      "l": {
+        "a": {
+          "nguage": {
+            "±": [
+              0
+            ],
+            "s": [
+              20,
+              47
+            ]
+          },
+          "va": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "id_egg": [
+            7
+          ]
+        },
+        "i": {
+          "ghtning": [
+            6,
+            7
+          ],
+          "ne": {
+            "±": [
+              9
+            ],
+            "ar_": {
+              "acceleration": [
+                44,
+                45
+              ],
+              "drag_coefficient": [
+                44,
+                45
+              ]
+            }
+          }
+        },
+        "e": {
+          "ngth": [
+            {
+              "n": 12,
+              "a": "S"
+            }
+          ],
+          "g": {
+            "0": [
+              24,
+              25,
+              29,
+              30,
+              38,
+              39,
+              42,
+              43
+            ],
+            "1": [
+              24,
+              25,
+              29,
+              30,
+              38,
+              39,
+              42,
+              43
+            ],
+            "2": [
+              24,
+              25,
+              29,
+              38,
+              39,
+              42
+            ],
+            "3": [
+              24,
+              25,
+              29,
+              38,
+              39,
+              42
+            ]
+          },
+          "ft": {
+            "arm": [
+              30,
+              43
+            ],
+            "_": {
+              "fin": [
+                27,
+                28,
+                41
+              ],
+              "wing": [
+                40
+              ],
+              "hand": [
+                43
+              ]
+            }
+          },
+          "a": {
+            "shable": [
+              4,
+              5,
+              8
+            ],
+            "d": [
+              38,
+              39,
+              41,
+              42
+            ]
+          }
+        },
+        "o": {
+          "o": {
+            "p": [
+              2,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              44,
+              45
+            ],
+            "t": {
+              "±": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ],
+              "_": {
+                "tables/entities/": {
+                  "polar_bear.json": [
+                    4,
+                    5
+                  ],
+                  "creeper.json": [
+                    6
+                  ],
+                  "s": {
+                    "ea_turtle.json": [
+                      7
+                    ],
+                    "heep": {
+                      "_sheared.json": [
+                        8
+                      ],
+                      "omelon.json": [
+                        8
+                      ]
+                    }
+                  }
+                },
+                "sheared": [
+                  8
+                ],
+                "wooly": [
+                  8
+                ]
+              },
+              "ing_enchant": [
+                10
+              ]
+            },
+            "k": {
+              "_": {
+                "distance": [
+                  6,
+                  8,
+                  9
+                ],
+                "at_target": [
+                  31,
+                  32,
+                  35,
+                  36
+                ]
+              },
+              "at_xyz": [
+                44,
+                45
+              ]
+            }
+          },
+          "cat": {
+            "ion": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ],
+            "ors": [
+              38,
+              39,
+              40,
+              41,
+              42,
+              43
+            ]
+          }
+        },
+        "u": {
+          "kewarm": [
+            16
+          ],
+          "sh_caves": [
+            16
+          ]
+        }
+      },
+      "t": {
+        "ype": {
+          "±": [
+            0,
+            10,
+            11,
+            21,
+            44
+          ],
+          "_family": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ]
+        },
+        "r": {
+          "ue,": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            18,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            38,
+            39,
+            40,
+            43,
+            44,
+            45
+          ],
+          "a": {
+            "nsitions": [
+              3
+            ],
+            "ck_target": [
+              4,
+              5,
+              6,
+              8
+            ]
+          },
+          "igger": {
+            "s": [
+              6,
+              7,
+              8
+            ],
+            "loc": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ]
+          }
+        },
+        "a": {
+          "rget": {
+            "±": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "_": {
+              "distance": [
+                4,
+                5,
+                7,
+                8
+              ],
+              "nearby_sensor": [
+                6
+              ]
+            }
+          },
+          "ble": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "il": {
+            "±": [
+              26,
+              27,
+              28,
+              40,
+              41
+            ],
+            "tip": [
+              26,
+              40
+            ],
+            "_fin": [
+              27,
+              28,
+              41
+            ]
+          }
+        },
+        "otal_supply": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "urtle": {
+          "±": [
+            7
+          ],
+          "_shell_piece": [
+            7
+          ]
+        },
+        "his": [
+          10,
+          24,
+          25,
+          29,
+          30
+        ],
+        "i": {
+          "me": {
+            "line": [
+              2
+            ],
+            "_until_eat": [
+              8
+            ]
+          },
+          "ckssinceload": [
+            {
+              "n": 12,
+              "a": "S"
+            }
+          ]
+        },
+        "e": {
+          "st": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            14,
+            15,
+            16,
+            17,
+            18
+          ],
+          "xture": {
+            "s": {
+              "±": [
+                31,
+                32,
+                33,
+                34,
+                35,
+                36
+              ],
+              "/": {
+                "aop/moremobs/": {
+                  "b": {
+                    "iceson": [
+                      31
+                    ],
+                    "lack_bear": [
+                      32
+                    ],
+                    "oomfly": [
+                      33
+                    ]
+                  },
+                  "nardolphle": [
+                    34
+                  ],
+                  "sheepomelon": [
+                    35
+                  ],
+                  "wraith": [
+                    36
+                  ]
+                },
+                "particle/particles": [
+                  44,
+                  45
+                ]
+              }
+            },
+            "_": {
+              "width": [
+                38,
+                39,
+                42,
+                44,
+                45
+              ],
+              "height": [
+                38,
+                39,
+                42,
+                44,
+                45
+              ]
+            },
+            "width": [
+              40,
+              41,
+              43
+            ],
+            "height": [
+              40,
+              41,
+              43
+            ],
+            "±": [
+              44,
+              45
+            ]
+          }
+        },
+        "winkle": [
+          44
+        ]
+      },
+      "/": {
+        "s": {
+          "ay": [
+            2
+          ],
+          "ummon": [
+            2
+          ]
+        },
+        "content/": {
+          "behavior_packs/aop_mobsbp/": [
+            0,
+            1
+          ],
+          "resource_packs/aop_mobsrp/": [
+            21,
+            22,
+            23
+          ]
+        }
+      },
+      "b": {
+        "a": {
+          "hhhh": [
+            2
+          ],
+          "by": {
+            "±": [
+              4,
+              5,
+              7,
+              31,
+              32
+            ],
+            "_": {
+              "wild": [
+                4,
+                5
+              ],
+              "scared": [
+                4,
+                5
+              ],
+              "on_calm": [
+                4,
+                5
+              ],
+              "t": {
+                "urtle": [
+                  7
+                ],
+                "ype": [
+                  7,
+                  8
+                ],
+                "ransform": [
+                  31,
+                  32,
+                  35
+                ]
+              }
+            }
+          },
+          "lloonable": [
+            8
+          ],
+          "ck_fin": [
+            41
+          ],
+          "s": {
+            "e_": {
+              "delay": [
+                9
+              ],
+              "color": [
+                31,
+                32,
+                33,
+                34,
+                35,
+                36
+              ],
+              "uv": [
+                44,
+                45
+              ]
+            },
+            "ic_render_parameters": [
+              44,
+              45
+            ]
+          }
+        },
+        "r": {
+          "oadcast_": {
+            "anger": [
+              4,
+              5
+            ],
+            "range": [
+              4,
+              5
+            ]
+          },
+          "e": {
+            "ed": {
+              "able": [
+                7,
+                8
+              ],
+              "s_with": [
+                7,
+                8
+              ],
+              "_": {
+                "event": [
+                  7
+                ],
+                "items": [
+                  7,
+                  8
+                ]
+              }
+            },
+            "ath": {
+              "able": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ],
+              "es_": {
+                "water": [
+                  7
+                ],
+                "air": [
+                  7
+                ],
+                "±": [
+                  23
+                ]
+              }
+            }
+          },
+          "ightness_filter": [
+            14,
+            15,
+            17,
+            18
+          ]
+        },
+        "e": {
+          "havior": {
+            "±": [
+              0
+            ],
+            ".": {
+              "nearest_attackable_target": [
+                4,
+                5,
+                6,
+                8,
+                9
+              ],
+              "f": {
+                "ollow_parent": [
+                  4,
+                  5,
+                  8
+                ],
+                "loat": [
+                  4,
+                  5,
+                  6,
+                  8,
+                  9
+                ]
+              },
+              "hurt_by_target": [
+                4,
+                5,
+                6,
+                7,
+                9
+              ],
+              "random_": {
+                "look_around": [
+                  4,
+                  5,
+                  6,
+                  8
+                ],
+                "s": {
+                  "troll": [
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9
+                  ],
+                  "wim": [
+                    7
+                  ]
+                }
+              },
+              "panic": [
+                4,
+                5,
+                7,
+                8
+              ],
+              "avoid_mob_type": [
+                6,
+                9
+              ],
+              "m": {
+                "elee_attack": [
+                  6,
+                  8
+                ],
+                "o": {
+                  "ve_to_": {
+                    "water": [
+                      7
+                    ],
+                    "land": [
+                      7
+                    ],
+                    "village": [
+                      9
+                    ]
+                  },
+                  "unt_pathing": [
+                    8
+                  ]
+                }
+              },
+              "breed": [
+                7,
+                8
+              ],
+              "go_home": [
+                7
+              ],
+              "l": {
+                "ay_egg": [
+                  7
+                ],
+                "ook_at_": {
+                  "player": [
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9
+                  ],
+                  "entity": [
+                    9
+                  ]
+                }
+              },
+              "tempt": [
+                7,
+                8
+              ],
+              "eat_block": [
+                8
+              ],
+              "celebrate": [
+                9
+              ],
+              "s": {
+                "tomp_attack": [
+                  4,
+                  5
+                ],
+                "ummon_entity": [
+                  9
+                ],
+                "end_event": [
+                  9
+                ]
+              }
+            }
+          },
+          "come_": {
+            "charged": [
+              6
+            ],
+            "pregnant": [
+              7
+            ]
+          }
+        },
+        "l": {
+          "ue": [
+            9
+          ],
+          "ockpermutation": [
+            {
+              "n": 12,
+              "a": "S"
+            },
+            {
+              "n": 13,
+              "a": "S"
+            }
+          ],
+          "ack_bear.": {
+            "behavior": [
+              5,
+              15,
+              23
+            ],
+            "animation": [
+              25
+            ],
+            "entity": [
+              32
+            ],
+            "±": [
+              32,
+              49
+            ],
+            "geometry": [
+              39
+            ]
+          }
+        },
+        "utton": {
+          "±": [
+            {
+              "n": 12,
+              "a": "S"
+            }
+          ],
+          "push": [
+            {
+              "n": 12,
+              "a": "S"
+            }
+          ]
+        },
+        "i": {
+          "ome_filter": [
+            14,
+            15,
+            16,
+            17,
+            18
+          ],
+          "ceson.": {
+            "behavior": [
+              4,
+              14,
+              23
+            ],
+            "animation": [
+              24
+            ],
+            "entity": [
+              31
+            ],
+            "±": [
+              31,
+              48
+            ],
+            "geometry": [
+              38
+            ]
+          }
+        },
+        "o": {
+          "nes": [
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43
+          ],
+          "dy": [
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43
+          ],
+          "omfly.": {
+            "behavior": [
+              6,
+              23
+            ],
+            "animation": [
+              26
+            ],
+            "entity": [
+              33
+            ],
+            "±": [
+              33,
+              50
+            ],
+            "geometry": [
+              40
+            ]
+          }
+        }
+      },
+      "!query.is_sheared": [
+        3
+      ],
+      "i": {
+        "dentifier": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          14,
+          15,
+          16,
+          17,
+          18,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          38,
+          39,
+          42,
+          44,
+          45
+        ],
+        "s_": {
+          "s": {
+            "pawnable": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "ummonable": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "heared": [
+              8
+            ]
+          },
+          "experimental": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "baby": [
+            4,
+            5,
+            7,
+            8,
+            9
+          ],
+          "family": [
+            4,
+            5,
+            6,
+            8,
+            9
+          ],
+          "pushable": {
+            "±": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "_by_piston": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          "amphibious": [
+            7
+          ],
+          "c": {
+            "harged": [
+              6
+            ],
+            "olor": [
+              9
+            ]
+          }
+        },
+        "n": {
+          "_lava": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "side_range": [
+            6
+          ],
+          "ter": {
+            "act": {
+              "±": [
+                6,
+                8
+              ],
+              "ions": [
+                6,
+                8
+              ],
+              "_text": [
+                6,
+                8
+              ]
+            },
+            "val": [
+              7
+            ],
+            "polant": [
+              44
+            ]
+          },
+          "itialize": [
+            {
+              "n": 12,
+              "a": "S"
+            },
+            33
+          ],
+          "visible": [
+            33
+          ],
+          "flate": [
+            42,
+            43
+          ]
+        },
+        "gnite": [
+          6
+        ],
+        "tems": [
+          7,
+          8,
+          10,
+          11
+        ],
+        "llager": [
+          9
+        ],
+        "rongolem": [
+          9
+        ]
+      },
+      "v": {
+        "ersion": [
+          0,
+          21
+        ],
+        "olume": [
+          23
+        ],
+        "a": {
+          "lue": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            14,
+            15,
+            16,
+            17,
+            18
+          ],
+          "riable.": {
+            "runtimeid": [
+              33
+            ],
+            "tailrotx": [
+              33
+            ],
+            "wingrotz": [
+              33
+            ],
+            "particle_": {
+              "random_1": {
+                "±": [
+                  44
+                ],
+                "*0.5": [
+                  45
+                ]
+              },
+              "age": [
+                44,
+                45
+              ]
+            }
+          }
+        },
+        "i": {
+          "llage": {
+            "±": [
+              9
+            ],
+            "r": [
+              9
+            ]
+          },
+          "sible_bounds_": {
+            "width": [
+              38,
+              39,
+              40,
+              41,
+              42,
+              43
+            ],
+            "height": [
+              38,
+              39,
+              40,
+              41,
+              42,
+              43
+            ],
+            "offset": [
+              38,
+              39,
+              40,
+              41,
+              42,
+              43
+            ]
+          }
+        }
+      },
+      "e": {
+        "xp": {
+          "erience_reward": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "lod": {
+            "ing": [
+              6
+            ],
+            "e": [
+              6
+            ]
+          },
+          "iration_event": [
+            44
+          ]
+        },
+        "v": {
+          "ent": {
+            "±": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "s": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              23,
+              44
+            ],
+            "_": {
+              "name": [
+                9
+              ],
+              "choices": [
+                9
+              ]
+            }
+          },
+          "o": {
+            "cation_": {
+              "illager": [
+                9
+              ],
+              "fang": [
+                9
+              ]
+            },
+            "ker": {
+              "±": [
+                36
+              ],
+              "_spell": [
+                36
+              ]
+            }
+          }
+        },
+        "a": {
+          "t_": {
+            "and_replace_block_pairs": [
+              8
+            ],
+            "block": [
+              8
+            ]
+          },
+          "sy": [
+            18
+          ]
+        },
+        "n": {
+          "t": {
+            "r": {
+              "y": [
+                0
+              ],
+              "ies": [
+                10,
+                11
+              ]
+            },
+            "it": {
+              "y": {
+                "±": [
+                  4,
+                  5,
+                  6,
+                  7,
+                  8,
+                  9,
+                  10,
+                  37
+                ],
+                "_": {
+                  "types": [
+                    4,
+                    5,
+                    6,
+                    8,
+                    9
+                  ],
+                  "born": [
+                    4,
+                    5,
+                    7,
+                    8
+                  ],
+                  "lifespan": [
+                    9
+                  ],
+                  "properties": [
+                    10
+                  ],
+                  "s": {
+                    "pawned": [
+                      4,
+                      5,
+                      7,
+                      8
+                    ],
+                    "ounds": [
+                      23
+                    ]
+                  }
+                }
+              },
+              "ies": [
+                23
+              ]
+            }
+          },
+          "_us": [
+            19,
+            20,
+            46,
+            47
+          ]
+        },
+        "ffect": [
+          26,
+          44
+        ],
+        "mitter_": {
+          "rate_instant": [
+            44,
+            45
+          ],
+          "lifetime_once": [
+            44,
+            45
+          ],
+          "shape_sphere": [
+            44,
+            45
+          ]
+        }
+      },
+      "o": {
+        "n_": {
+          "anger": [
+            4,
+            5
+          ],
+          "target_": {
+            "acquired": [
+              4,
+              5
+            ],
+            "escape": [
+              6
+            ]
+          },
+          "d": {
+            "eath": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "amage": [
+              6
+            ]
+          },
+          "outside_range": [
+            6
+          ],
+          "vision_lost_inside_range": [
+            6
+          ],
+          "in": {
+            "side_range": [
+              6
+            ],
+            "teract": [
+              6,
+              8
+            ]
+          },
+          "bred": [
+            7,
+            8
+          ],
+          "home": [
+            7
+          ],
+          "lay": [
+            7
+          ],
+          "s": {
+            "cared": [
+              4,
+              5
+            ],
+            "heared": [
+              8
+            ]
+          },
+          "eat": {
+            "±": [
+              8
+            ],
+            "_block": [
+              8
+            ]
+          },
+          "c": {
+            "alm": [
+              4,
+              5
+            ],
+            "elebration_end_event": [
+              9
+            ]
+          },
+          "f": {
+            "riendly_anger": [
+              4,
+              5
+            ],
+            "ire": [
+              10
+            ]
+          }
+        },
+        "ther": [
+          4,
+          5,
+          6,
+          8,
+          9
+        ],
+        "perator": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          14,
+          15,
+          16,
+          17,
+          18
+        ],
+        "ce": {
+          "lot": [
+            6
+          ],
+          "an": [
+            16
+          ]
+        },
+        "ver": {
+          "world": [
+            {
+              "n": 12,
+              "a": "S"
+            },
+            {
+              "n": 13,
+              "a": "S"
+            }
+          ],
+          "lay_color": [
+            31,
+            32,
+            33,
+            34,
+            35,
+            36
+          ]
+        },
+        "rigin": [
+          38,
+          39,
+          40,
+          41,
+          42,
+          43
+        ],
+        "ut": {
+          "side_range": [
+            6
+          ],
+          "wards": [
+            44,
+            45
+          ]
+        }
+      },
+      "c": {
+        "a": {
+          "lm_event": [
+            4,
+            5
+          ],
+          "use": {
+            "±": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "s_": {
+              "fire": [
+                6
+              ],
+              "pregnancy": [
+                7
+              ]
+            }
+          },
+          "n_": {
+            "climb": [
+              4,
+              5,
+              6,
+              8,
+              9
+            ],
+            "walk": [
+              7
+            ],
+            "s": {
+              "wim": [
+                7
+              ],
+              "ink": [
+                7
+              ]
+            },
+            "find_poi": [
+              9
+            ],
+            "migrate": [
+              9
+            ],
+            "pa": {
+              "th_over_water": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ],
+              "ss_doors": [
+                9
+              ]
+            },
+            "open_doors": [
+              9
+            ]
+          },
+          "st": {
+            "_duration": [
+              9
+            ],
+            ".spell": [
+              9,
+              23
+            ],
+            "ing": [
+              36
+            ]
+          }
+        },
+        "o": {
+          "m": {
+            "ponent": {
+              "_groups": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ],
+              "s": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                44,
+                45
+              ]
+            },
+            "mand_controller": [
+              8
+            ]
+          },
+          "oldown": {
+            "±": [
+              8
+            ],
+            "_time": [
+              9
+            ]
+          },
+          "unt": [
+            10,
+            11
+          ],
+          "bblestone": [
+            {
+              "n": 12,
+              "a": "S"
+            }
+          ],
+          "n": {
+            "dition": {
+              "al_bandwidth_optimization": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ],
+              "s": [
+                10,
+                14,
+                15,
+                16,
+                17,
+                18
+              ],
+              "±": [
+                10
+              ]
+            },
+            "sole": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ],
+            "troller": {
+              ".": {
+                "animation.": {
+                  "polarbear.": {
+                    "move": [
+                      31,
+                      32
+                    ],
+                    "baby": [
+                      31,
+                      32
+                    ]
+                  },
+                  "dolphin.general": [
+                    34
+                  ],
+                  "sheep.move": [
+                    35
+                  ],
+                  "villager.": {
+                    "general": [
+                      36
+                    ],
+                    "move": [
+                      36
+                    ]
+                  }
+                },
+                "render.": {
+                  "p": {
+                    "olarbear": [
+                      31,
+                      32
+                    ],
+                    "hantom": [
+                      33
+                    ]
+                  },
+                  "default": [
+                    34
+                  ],
+                  "sheep": [
+                    35
+                  ],
+                  "evoker": [
+                    36
+                  ]
+                }
+              },
+              "_": {
+                "general": [
+                  36
+                ],
+                "move": [
+                  36
+                ]
+              }
+            }
+          },
+          "l": {
+            "lision_box": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "or": [
+              44,
+              45
+            ]
+          }
+        },
+        "harged_": {
+          "boomfly": [
+            6
+          ],
+          "exploding": [
+            6
+          ]
+        },
+        "reeper": [
+          6
+        ],
+        "elebrat": {
+          "e": [
+            9,
+            23
+          ],
+          "i": {
+            "on_sound": [
+              9
+            ],
+            "ng": [
+              36
+            ]
+          }
+        },
+        "ircle": [
+          9
+        ],
+        "lient_entity": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36
+        ],
+        "ubes": [
+          38,
+          39,
+          40,
+          41,
+          42,
+          43
+        ]
+      },
+      "query.": {
+        "is_": {
+          "sheared": [
+            3
+          ],
+          "baby": [
+            8,
+            35
+          ]
+        },
+        "standing_scale": [
+          24,
+          25
+        ],
+        "modified_distance_moved": [
+          24,
+          25,
+          29,
+          30
+        ],
+        "anim_time": [
+          24,
+          25,
+          26,
+          29,
+          30
+        ],
+        "l": {
+          "ast_hit_by_player": [
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "ife_time": [
+            27,
+            28,
+            30
+          ]
+        },
+        "target_": {
+          "x_rotation": [
+            27,
+            28
+          ],
+          "y_rotation": [
+            27,
+            28
+          ]
+        },
+        "key_frame_lerp_time": [
+          29
+        ]
+      },
+      "n": {
+        "a": {
+          "me": {
+            "±": [
+              0,
+              10,
+              11,
+              21,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43
+            ],
+            "able": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          "vigation.": {
+            "walk": [
+              4,
+              5,
+              6,
+              8,
+              9
+            ],
+            "generic": [
+              7
+            ]
+          },
+          "r": {
+            "dolphle.": {
+              "behavior": [
+                7,
+                16,
+                23
+              ],
+              "animation": [
+                27
+              ],
+              "entity": [
+                34
+              ],
+              "±": [
+                34,
+                51
+              ],
+              "geometry": [
+                41
+              ]
+            },
+            "whal.animation": [
+              28
+            ]
+          }
+        },
+        "o": {
+          "_damage_range_multiplier": [
+            4,
+            5
+          ],
+          "se": [
+            41,
+            43
+          ]
+        },
+        "um_": {
+          "entities_spawned": [
+            9
+          ],
+          "particles": [
+            44,
+            45
+          ]
+        }
+      },
+      "h": {
+        "e": {
+          "a": {
+            "der": [
+              0,
+              21,
+              24,
+              25,
+              29,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43
+            ],
+            "lth": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          "ight": {
+            "±": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "_filter": [
+              16
+            ]
+          },
+          "rd": [
+            14,
+            15,
+            16,
+            17
+          ]
+        },
+        "a": {
+          "rd_distance": [
+            4,
+            5,
+            8,
+            18
+          ],
+          "nd": [
+            6,
+            8
+          ],
+          "s_": {
+            "equipment": [
+              6,
+              8
+            ],
+            "component": [
+              6,
+              8,
+              9
+            ],
+            "biome_tag": [
+              14,
+              15,
+              16,
+              17,
+              18
+            ]
+          }
+        },
+        "o": {
+          "me": [
+            7
+          ],
+          "stile": [
+            9
+          ]
+        },
+        "urt": {
+          "_": {
+            "on_condition": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "item": [
+              6,
+              8
+            ],
+            "±": [
+              23
+            ]
+          },
+          ".in.water": [
+            23
+          ]
+        }
+      },
+      "w": {
+        "eight": [
+          4,
+          5,
+          7,
+          8,
+          9,
+          10,
+          11,
+          14,
+          15,
+          16,
+          17,
+          18
+        ],
+        "a": {
+          "lk_speed_multiplier": [
+            9,
+            31,
+            32,
+            35
+          ],
+          "n": {
+            "ts_to_lay_egg": [
+              7
+            ],
+            "dering_trader": [
+              9
+            ]
+          },
+          "ter_": {
+            "movement": [
+              4,
+              5,
+              7
+            ],
+            "animal": [
+              16
+            ]
+          },
+          "r": {
+            "n": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ],
+            "m": [
+              16
+            ]
+          }
+        },
+        "i": {
+          "dth": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "thin_radius": [
+            8
+          ],
+          "ng": {
+            "0": [
+              26,
+              40
+            ],
+            "1": [
+              26,
+              40
+            ],
+            "tip": {
+              "0": [
+                26,
+                40
+              ],
+              "1": [
+                26,
+                40
+              ]
+            },
+            "_dust": [
+              33
+            ]
+          }
+        },
+        "o": {
+          "lolo": [
+            9
+          ],
+          "rld": [
+            {
+              "n": 12,
+              "a": "S"
+            },
+            {
+              "n": 13,
+              "a": "S"
+            },
+            21
+          ]
+        },
+        "raith.": {
+          "behavior": [
+            9,
+            18,
+            23
+          ],
+          "animation": [
+            30
+          ],
+          "entity": [
+            36
+          ],
+          "±": [
+            36,
+            54
+          ],
+          "geometry": [
+            43
+          ]
+        }
+      },
+      "j": {
+        "avascript": [
+          0
+        ],
+        "ump": {
+          ".static": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "_interval": [
+            9
+          ],
+          "±": [
+            23
+          ]
+        }
+      },
+      "r": {
+        "e": {
+          "move": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "ach_multiplier": [
+            6
+          ],
+          "quire_": {
+            "complete_path": [
+              4,
+              5
+            ],
+            "tame": [
+              7,
+              8
+            ]
+          },
+          "s": {
+            "elect_targets": [
+              8
+            ],
+            "o": {
+              "urces": [
+                0,
+                21
+              ],
+              "lve": [
+                {
+                  "n": 12,
+                  "a": "S"
+                }
+              ]
+            }
+          },
+          "place_block": [
+            8
+          ],
+          "nder_controllers": [
+            31,
+            32,
+            33,
+            34,
+            35,
+            36
+          ]
+        },
+        "a": {
+          "n": {
+            "domize": [
+              4,
+              5,
+              7,
+              8
+            ],
+            "ge_m": {
+              "in": [
+                9
+              ],
+              "ax": [
+                9
+              ],
+              "±": [
+                9
+              ]
+            }
+          },
+          "id_configuration": [
+            9
+          ],
+          "dius": [
+            44,
+            45
+          ],
+          "ccoon": [
+            52
+          ]
+        },
+        "o": {
+          "lls": [
+            10,
+            11
+          ],
+          "bot": [
+            23
+          ],
+          "tation": {
+            "±": [
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              38,
+              39,
+              40,
+              41,
+              42,
+              44,
+              45
+            ],
+            "_": {
+              "rate": [
+                44,
+                45
+              ],
+              "drag_coefficient": [
+                44,
+                45
+              ]
+            }
+          }
+        },
+        "i": {
+          "deable_": {
+            "sheared": [
+              8
+            ],
+            "wooly": [
+              8
+            ]
+          },
+          "ght": {
+            "arm": [
+              30,
+              43
+            ],
+            "_": {
+              "fin": [
+                27,
+                28,
+                41
+              ],
+              "wing": [
+                40
+              ],
+              "hand": [
+                43
+              ]
+            },
+            "item": [
+              43
+            ]
+          }
+        }
+      },
+      "u": {
+        "uid": [
+          0,
+          21
+        ],
+        "se_item": [
+          8
+        ],
+        "pdate_interval_": {
+          "base": [
+            9
+          ],
+          "variant": [
+            9
+          ]
+        },
+        "tilities": [
+          {
+            "n": 12,
+            "a": "S"
+          },
+          {
+            "n": 13,
+            "a": "S"
+          }
+        ],
+        "nde": {
+          "fined": [
+            {
+              "n": 12,
+              "a": "S"
+            }
+          ],
+          "r": {
+            "water_movement": [
+              7
+            ],
+            "ground": [
+              16
+            ]
+          }
+        }
+      },
+      "g": {
+        "o": {
+          "al_radius": [
+            7
+          ],
+          "_lay_egg": [
+            7
+          ]
+        },
+        "e": {
+          "t": {
+            "triggerloc": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ],
+            "zooloc": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ],
+            "d": {
+              "efaultspawnlocation": [
+                {
+                  "n": 12,
+                  "a": "S"
+                }
+              ],
+              "imension": [
+                {
+                  "n": 12,
+                  "a": "S"
+                },
+                {
+                  "n": 13,
+                  "a": "S"
+                }
+              ]
+            },
+            "players": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ],
+            "block": [
+              {
+                "n": 12,
+                "a": "S"
+              },
+              {
+                "n": 13,
+                "a": "S"
+              }
+            ]
+          },
+          "ometry": {
+            "±": [
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              38,
+              39,
+              42
+            ],
+            ".": {
+              "aop_mobs.": {
+                "b": {
+                  "iceson": [
+                    31,
+                    38
+                  ],
+                  "lack_bear": [
+                    32,
+                    39
+                  ],
+                  "oomfly": [
+                    33,
+                    40
+                  ]
+                },
+                "nardolphle": [
+                  34,
+                  41
+                ],
+                "sheepomelon": [
+                  35,
+                  42
+                ],
+                "wraith": [
+                  36,
+                  43
+                ]
+              },
+              "sheep.sheared.v1.8": [
+                35
+              ]
+            }
+          },
+          "nera": {
+            "tes_bubbles": [
+              7
+            ],
+            "l": [
+              34,
+              36
+            ]
+          }
+        },
+        "r": {
+          "ow_up": [
+            4,
+            5,
+            7,
+            8
+          ],
+          "a": {
+            "ss": [
+              14,
+              15,
+              17
+            ],
+            "zing": [
+              35
+            ],
+            "dient": [
+              44
+            ]
+          }
+        }
+      },
+      "x": {
+        "z_dist": [
+          7
+        ],
+        "from": {
+          "±": [
+            {
+              "n": 13,
+              "a": "S"
+            }
+          ],
+          "p": [
+            {
+              "n": 13,
+              "a": "S"
+            }
+          ]
+        },
+        "top": [
+          {
+            "n": 13,
+            "a": "S"
+          }
+        ]
+      },
+      "y": {
+        "_dist": [
+          7
+        ],
+        "from": {
+          "±": [
+            {
+              "n": 13,
+              "a": "S"
+            }
+          ],
+          "p": [
+            {
+              "n": 13,
+              "a": "S"
+            }
+          ]
+        },
+        "top": [
+          {
+            "n": 13,
+            "a": "S"
+          }
+        ]
+      },
+      "z": {
+        "o": {
+          "mbie": [
+            8
+          ],
+          "o": {
+            "moblist": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ],
+            "loc": [
+              {
+                "n": 12,
+                "a": "S"
+              }
+            ]
+          }
+        },
+        "from": {
+          "±": [
+            {
+              "n": 13,
+              "a": "S"
+            }
+          ],
+          "p": [
+            {
+              "n": 13,
+              "a": "S"
+            }
+          ]
+        },
+        "top": [
+          {
+            "n": 13,
+            "a": "S"
+          }
+        ]
+      },
+      "523d72d2-3ba9-498a-bc63-8beb5fe268cb": [
+        21
+      ],
+      "-": {
+        "query.target_x_rotation": [
+          26
+        ],
+        "this": [
+          29,
+          30
+        ],
+        "5.0;": [
+          33
+        ]
+      },
+      "#": {
+        "5": {
+          "ad100": [
+            33
+          ],
+          "e9e13": [
+            35
+          ]
+        },
+        "4b95c6": [
+          31
+        ],
+        "00": {
+          "a4ff": [
+            31
+          ],
+          "0000": [
+            32,
+            36
+          ]
+        },
+        "b": {
+          "e1616": [
+            33
+          ],
+          "421d1": [
+            34
+          ]
+        },
+        "f": {
+          "f": {
+            "6": {
+              "500": [
+                32
+              ],
+              "64d59": [
+                9
+              ]
+            },
+            "b3": {
+              "8033": [
+                9
+              ],
+              "b3cc": [
+                9
+              ]
+            },
+            "0000": [
+              36
+            ]
+          },
+          "407b1": [
+            34
+          ]
+        },
+        "e06b77": [
+          35
+        ]
+      },
+      "0.": {
+        "0;": [
+          33
+        ],
+        "3f": [
+          44,
+          45
+        ]
+      }
+    }
+  },
+  "generatorName": "Minecraft Creator Tools",
+  "suite": 2,
+  "generatorVersion": "0.1.80"
+}

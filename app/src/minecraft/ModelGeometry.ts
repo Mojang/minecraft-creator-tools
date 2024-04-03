@@ -44,7 +44,7 @@ export default class ModelGeometry {
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<ModelGeometry, ModelGeometry>) {
-    let rc: ModelGeometry | undefined = undefined;
+    let rc: ModelGeometry | undefined;
 
     if (file.manager === undefined) {
       rc = new ModelGeometry();

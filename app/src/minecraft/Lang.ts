@@ -43,7 +43,7 @@ export default class Lang {
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<Lang, Lang>) {
-    let lang: Lang | undefined = undefined;
+    let lang: Lang | undefined;
 
     if (file.manager === undefined) {
       lang = new Lang();

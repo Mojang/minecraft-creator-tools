@@ -41,7 +41,7 @@ export default class VsCodeLaunchJson {
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<VsCodeLaunchJson, VsCodeLaunchJson>) {
-    let dt: VsCodeLaunchJson | undefined = undefined;
+    let dt: VsCodeLaunchJson | undefined;
 
     if (file.manager === undefined) {
       dt = new VsCodeLaunchJson();

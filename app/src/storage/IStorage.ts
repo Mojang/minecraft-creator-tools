@@ -25,6 +25,7 @@ export default interface IStorage {
   channelId?: string;
 
   isContentUpdated: boolean;
+  readOnly: boolean;
 
   resetContentUpdated(): void;
 

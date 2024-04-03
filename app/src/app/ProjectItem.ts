@@ -40,7 +40,7 @@ export default class ProjectItem {
   private _isLoading: boolean = false;
   private _folder: IFolder | null;
   private _isFileContentProcessed: boolean = false;
-  private _imageUrlBase64Cache: string | undefined = undefined;
+  private _imageUrlBase64Cache: string | undefined;
 
   constructor(parent: Project, incomingData?: IProjectItemData) {
     this._project = parent;
@@ -178,7 +178,7 @@ export default class ProjectItem {
       return undefined;
     }
 
-    let folderStoragePath = StorageUtilities.getPath(this.storagePath);
+    let folderStoragePath = StorageUtilities.getFolderPath(this.storagePath);
 
     if (folderStoragePath === undefined) {
       return undefined;
@@ -1225,15 +1225,7 @@ export default class ProjectItem {
     for (let i = 0; i < this._project.items.length; i++) {
       const projectItem = this._project.items[i];
 
-      if (projectItem.itemType === ProjectItemType.worldTest) {
-        const file = await projectItem.ensureFileStorage();
-
-        if (file) {
-          const newFileName = StorageUtilities.getBaseFromName(file.name) + ".gen.js";
-
-          content.push('import "scripts/' + newFileName + '";');
-        }
-      } else if (
+      if (
         projectItem.itemType === ProjectItemType.js ||
         projectItem.itemType === ProjectItemType.buildProcessedJs ||
         projectItem.itemType === ProjectItemType.entityTypeBaseJs ||

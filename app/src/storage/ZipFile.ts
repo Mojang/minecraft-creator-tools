@@ -52,10 +52,10 @@ export default class ZipFile extends FileBase implements IFile {
     throw new Error("Not implemented.");
   }
 
-  async loadContent(force: boolean): Promise<Date> {
+  async loadContent(force?: boolean, forceEncoding?: EncodingType): Promise<Date> {
     if (force || !this.lastLoadedOrSaved) {
       if (this._jszipo !== null) {
-        const type = StorageUtilities.getEncodingByFileName(this.name);
+        const type = forceEncoding ?? StorageUtilities.getEncodingByFileName(this.name);
 
         if (type === EncodingType.ByteBuffer) {
           this._content = await this._jszipo.async("uint8array"); /*, (metadata) => {
@@ -94,6 +94,10 @@ export default class ZipFile extends FileBase implements IFile {
   }
 
   async saveContent(force?: boolean): Promise<Date> {
+    if (this.parentFolder.storage.readOnly) {
+      throw new Error("Can't save read-only file.");
+    }
+
     if (this.needsSave || force === true) {
       this.lastLoadedOrSaved = new Date();
 

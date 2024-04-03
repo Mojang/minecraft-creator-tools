@@ -241,7 +241,6 @@ export default class LocalUtilities implements ILocalUtilities {
 
     const fullPath = this.getFullPath(path);
 
-    // console.log("Reading file '" + fullPath + "'");
     const rawData = fs.readFileSync(fullPath);
 
     if (!rawData) {

@@ -41,7 +41,7 @@ export default class JsonUIResourceDefinition {
     file: IFile,
     loadHandler?: IEventHandler<JsonUIResourceDefinition, JsonUIResourceDefinition>
   ) {
-    let et: JsonUIResourceDefinition | undefined = undefined;
+    let et: JsonUIResourceDefinition | undefined;
 
     if (file.manager === undefined) {
       et = new JsonUIResourceDefinition();

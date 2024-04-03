@@ -62,8 +62,6 @@ export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
       typeCounts[i] = 0;
     }
 
-    let foundBehaviorPackManifest = false;
-
     for (let i = 0; i < project.items.length; i++) {
       const pi = project.items[i];
 
@@ -71,23 +69,9 @@ export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
 
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
         items.push(new ProjectInfoItem(InfoItemType.info, this.id, 2, "Behavior pack manifest found", pi));
-
-        foundBehaviorPackManifest = true;
       } else if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
         items.push(new ProjectInfoItem(InfoItemType.info, this.id, 3, "Resource pack manifest found", pi));
-
-        foundBehaviorPackManifest = true;
       }
-    }
-
-    if (!foundBehaviorPackManifest) {
-      items.push(
-        new ProjectInfoItem(InfoItemType.testCompleteFail, this.id, 0, "A behavior pack manifest wasn't found.")
-      );
-    } else {
-      items.push(
-        new ProjectInfoItem(InfoItemType.testCompleteSuccess, this.id, 1, "A behavior pack manifest was found.")
-      );
     }
 
     for (let i = 0; i < MaxItemTypes; i++) {

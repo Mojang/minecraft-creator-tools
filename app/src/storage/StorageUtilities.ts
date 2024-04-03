@@ -363,7 +363,7 @@ export default class StorageUtilities {
     return name;
   }
 
-  public static getPath(path: string): string {
+  public static getFolderPath(path: string): string {
     let lastSlash = path.lastIndexOf("/", path.length - 1);
 
     if (lastSlash >= 0 && lastSlash < path.length - 1) {
@@ -379,7 +379,7 @@ export default class StorageUtilities {
     return path;
   }
 
-  public static getParentFolderFromPath(path: string): string | undefined {
+  public static getParentFolderNameFromPath(path: string): string | undefined {
     let lastSlash = path.lastIndexOf("/", path.length - 1);
 
     if (lastSlash >= 0 && lastSlash < path.length - 1) {

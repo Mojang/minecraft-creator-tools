@@ -1,0 +1,43 @@
+.sl-outer {
+  padding: 2px;
+  padding-top: 0px;
+  vertical-align: middle;
+  padding-left: 10px;
+  display: grid;
+  grid-template-columns: 1fr 30px;
+  height: 100%;
+  max-width: calc(100vw);
+}
+
+.sl-placeHolderText {
+  padding-left: 7px;
+  grid-column: 2;
+}
+
+.sl-inputArea {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 40px 1fr;
+}
+
+.sl-messageOuter {
+  grid-column: 1;
+  vertical-align: top;
+  cursor: pointer;
+  padding-top: 2px;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+  max-width: calc(100vw - 42px);
+}
+
+.sl-gridOuter {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row: 2;
+}
+
+.sl-grid {
+  border: solid 1px;
+}

@@ -122,7 +122,7 @@ async function _loadProject(name: string) {
   const project = new Project(carto, name, null);
 
   project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
-  project.localFolderPath = __dirname + "/../../../tests/" + name + "/";
+  project.localFolderPath = __dirname + "/../../../samplecontent/" + name + "/";
 
   await project.inferProjectItemsFromFiles();
 

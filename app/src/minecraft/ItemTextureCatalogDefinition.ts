@@ -33,7 +33,7 @@ export default class ItemTextureCatalogDefinition {
     file: IFile,
     loadHandler?: IEventHandler<ItemTextureCatalogDefinition, ItemTextureCatalogDefinition>
   ) {
-    let et: ItemTextureCatalogDefinition | undefined = undefined;
+    let et: ItemTextureCatalogDefinition | undefined;
 
     if (file.manager === undefined) {
       et = new ItemTextureCatalogDefinition();

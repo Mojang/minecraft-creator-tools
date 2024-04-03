@@ -5,6 +5,7 @@ import "./ProjectDisplay.css";
 import { Accordion, ThemeInput } from "@fluentui/react-northstar";
 
 import ProjectExporter from "../app/ProjectExporter";
+import StatusList from "./StatusList";
 
 interface IProjectDisplayProps extends IAppProps {
   project: Project;
@@ -51,6 +52,8 @@ export default class ProjectDisplay extends Component<IProjectDisplayProps, IPro
       return <></>;
     }
 
+    let statusArea = <></>;
+
     let versionMajor = this.props.project.versionMajor;
 
     if (versionMajor === undefined) {
@@ -70,6 +73,14 @@ export default class ProjectDisplay extends Component<IProjectDisplayProps, IPro
     }
 
     const height = "calc(100vh - " + (this.props.heightOffset + 120) + "px)";
+
+    if (this.props.project.messages) {
+      statusArea = (
+        <div className="pdisp-statusArea">
+          <StatusList theme={this.props.theme} carto={this.props.carto} status={this.props.project.messages} />
+        </div>
+      );
+    }
 
     return (
       <div
@@ -98,6 +109,7 @@ export default class ProjectDisplay extends Component<IProjectDisplayProps, IPro
           <div className="pdisp-descriptioninput">
             <div>{this.props.project.description}</div>
           </div>
+          {statusArea}
           <div className="pdisp-versionlabel">Version</div>
           <div className="pdisp-versioninput">
             <div className="pdisp-versioninputline">

@@ -276,7 +276,7 @@ export default class BlockTypeBehaviorDefinition implements IManagedComponentSet
     file: IFile,
     loadHandler?: IEventHandler<BlockTypeBehaviorDefinition, BlockTypeBehaviorDefinition>
   ) {
-    let bt: BlockTypeBehaviorDefinition | undefined = undefined;
+    let bt: BlockTypeBehaviorDefinition | undefined;
 
     if (file.manager === undefined) {
       bt = new BlockTypeBehaviorDefinition("custom:" + file.name);

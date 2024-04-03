@@ -32,7 +32,7 @@ export default class Dialogue {
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<Dialogue, Dialogue>) {
-    let dia: Dialogue | undefined = undefined;
+    let dia: Dialogue | undefined;
 
     if (file.manager === undefined) {
       dia = new Dialogue();

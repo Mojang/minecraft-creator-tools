@@ -68,7 +68,7 @@ export default class ParticleEffectResourceDefinition {
     file: IFile,
     loadHandler?: IEventHandler<ParticleEffectResourceDefinition, ParticleEffectResourceDefinition>
   ) {
-    let et: ParticleEffectResourceDefinition | undefined = undefined;
+    let et: ParticleEffectResourceDefinition | undefined;
 
     if (file.manager === undefined) {
       et = new ParticleEffectResourceDefinition();

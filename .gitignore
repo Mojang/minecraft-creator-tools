@@ -33,6 +33,7 @@ dist/
 /app/forge.config.js
 .vscode-test-web/
 node_modules/
+mci/
 app/public/data/typedefs.beta.json
 app/public/data/typedefs.stable.json
 app/public/res/latest/

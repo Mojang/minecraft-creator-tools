@@ -130,7 +130,7 @@ export default class NodeFolder extends FolderBase implements IFolder {
   async moveTo(newStorageRelativePath: string): Promise<boolean> {
     const oldFullPath = this.fullPath;
 
-    const newFolderPath = StorageUtilities.getPath(newStorageRelativePath);
+    const newFolderPath = StorageUtilities.getFolderPath(newStorageRelativePath);
     const newFolderName = StorageUtilities.getLeafName(newStorageRelativePath);
 
     if (newFolderName.length < 2) {
@@ -275,7 +275,7 @@ export default class NodeFolder extends FolderBase implements IFolder {
 
       filePath = StorageUtilities.canonicalizePath(filePath);
 
-      let targetFileSize: IFilePathAndSize | undefined = undefined;
+      let targetFileSize: IFilePathAndSize | undefined;
 
       if (fileInclusionList) {
         for (const filePathAndSize of fileInclusionList) {
@@ -430,7 +430,7 @@ export default class NodeFolder extends FolderBase implements IFolder {
       if (obj && obj.files) {
         for (const fileInfo of obj.files) {
           if (fileInfo.hash && fileInfo.size && fileInfo.path) {
-            let file: IFile | undefined = undefined;
+            let file: IFile | undefined;
 
             if (fileInfo.sourcePath) {
               file = await this.storage.rootFolder.getFileFromRelativePath(

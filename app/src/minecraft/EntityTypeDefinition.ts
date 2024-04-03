@@ -309,7 +309,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem {
     behaviorPackFile: IFile,
     loadHandler?: IEventHandler<EntityTypeDefinition, EntityTypeDefinition>
   ) {
-    let et: EntityTypeDefinition | undefined = undefined;
+    let et: EntityTypeDefinition | undefined;
 
     if (behaviorPackFile.manager === undefined) {
       et = new EntityTypeDefinition();

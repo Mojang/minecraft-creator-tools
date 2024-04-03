@@ -24,9 +24,9 @@ In the `app\` folder, run
 npm run all
 ```
 
-to install dependencies and resources.
+to install dependencies and resources, and compile projects.
 
-## Available Scripts
+## Build Scripts
 
 In the project directory, you can run:
 
@@ -45,6 +45,38 @@ Launches the test runner in the interactive watch mode.
 
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+### `npm run jsnbuild`
+
+Builds the command line application into `toolbuild/jsn` folder. You can then run the command line tool from `npx toolbuild\jsn`.
+
+You can package the command-line by running `npm pack` in `toolbuild/jsn`.
+
 ### `npm run webbuild`
 
 Builds the web app for production to the `build` folder. It correctly bundles React in production mode and optimizes the build for the best performance. The build is also minified.
+
+## Sample Command Lines
+
+Once packaged, you can install the command line locally via `npx mctools-<version>.tgz`. Some sample command lines:
+
+`npx mct`
+
+Displays default information for the Minecraft Creator Tools command line tool.
+
+### Validation
+
+`npx mct validate -i d:\mycontent\myprojectfolder`
+
+Loads the project folder `d:\mycontent\myprojectfolder` and outputs result files into the default output folder `out`.
+
+`npx mct validate -i d:\mycontent\myprojectfolder -show`
+
+Loads the project folder `d:\mycontent\myprojectfolder` and shows validation results on the command line.
+
+`npx mct validate addon -i d:\mycontent\myprojectfolder -show --log-verbose`
+
+Loads the project folder `d:\mycontent\myprojectfolder`, validates using the 'addon' suite of strict tests and shows validation results on the command line. Also displays verbose logging messages.
+
+`npx mct validate addon -if d:\mycontent\packages\myaddon.mcaddon -show --log-verbose`
+
+Loads the project file `d:\mycontent\packages\myaddon.mcaddon`, validates using the 'addon' suite of strict tests and shows validation results on the command line. Also displays verbose logging messages.

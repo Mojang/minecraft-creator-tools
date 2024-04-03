@@ -93,6 +93,8 @@ export default class ActorItem {
 
     const actorStorage = new NbtBinary();
 
+    actorStorage.context = identifier;
+
     actorStorage.fromBinary(keyData, true, false, 0, true);
 
     if (actorStorage.root) {

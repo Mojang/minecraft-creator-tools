@@ -2,7 +2,7 @@ import { Component } from "react";
 import Carto from "./../app/Carto";
 import "./ProjectGallery.css";
 import IAppProps from "./IAppProps";
-import Status from "../app/Status";
+import IStatus from "../app/Status";
 import IGallery from "../app/IGallery";
 import ProjectTile, { ProjectTileDisplayMode } from "./ProjectTile";
 import IGalleryProject, { GalleryProjectType } from "../app/IGalleryProject";
@@ -57,7 +57,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
     };
   }
 
-  _handleStatusAdded(carto: Carto, status: Status) {}
+  _handleStatusAdded(carto: Carto, status: IStatus) {}
 
   componentDidMount() {
     this.loadProjects();

@@ -1,0 +1,209 @@
+<html><head>
+<script>
+const _reportObjects = [];
+
+function _addReportJson(data) {
+  _reportObjects.push(data);
+}
+
+_addReportJson({"info":{"behaviorPackManifestCount":0,"unknownJsonCount":0,"entityTypeManifestCount":0,"itemTypeManifestCount":0,"blockTypeManifestCount":0,"resourcePackManifestCount":0,"worldCount":0,"entityTypeResourceCount":0,"behaviorPackAnimationCount":0,"behaviorPackAnimationControllerCount":0,"textureCount":0,"chunkCount":0,"worldLoadErrors":0,"featureSets":{"Textures Entity Resource Count":{"Count":7},"Textures Texture References":{"Count":8},"Textures Entity References":{"Count":8},"Textures File Count":{"Count":8},"Textures Unique Texture Handles (estimated)":{"Count":7},"Textures Unique Texture Paths":{"Count":7},"Textures Unique Particle Texture Paths":{"Count":0},"Textures Unique Particle Texture Vanilla Paths":{"Count":1},"Textures Unique Entity Texture Paths":{"Count":7},"Textures Unique Entity Texture Vanilla Paths":{"Count":1},"Command say":{"Count":1},"Command summon":{"Count":1}},"summary":{"MINENGINEVER":{"100":{"title":"Behavior Pack Min Engine Version Defined","defaultMessage":"Behavior pack manifest does not define a header/min_engine_version.","errors":2},"261":{"title":"261","defaultMessage":"Errors found with minimum engine version check.","testCompleteFails":1}},"ADDONREQ":{"101":{"title":"101","defaultMessage":"Found a loose file in the features folder. Should only see files in the folder features\\creatorshortname\\gamename\\","testCompleteFails":2},"130":{"title":"130","defaultMessage":"Found feature or feature_rules in an add-on, which is not supported","testCompleteFails":1},"160":{"title":"160","defaultMessage":"Found more than one behavior pack manifest, which is not supported","testCompleteFails":1},"169":{"title":"169","defaultMessage":"Resource pack manifest does not have a proper dependency on the behavior pack identifier.","testCompleteFails":1}},"STRICT":{"100":{"title":"Uses a minecraft identifier","defaultMessage":"Uses a minecraft: identifier override","testCompleteFails":1}},"TEXTURE":{"1":{"title":"Textures"}},"WORLDDATA":{"1":{"defaultMessage":"Blocks","testCompleteSuccesses":1},"2":{"defaultMessage":"Block Data"},"3":{"defaultMessage":"Commands"},"4":{"defaultMessage":"Execute Sub Commands"}},"ADDONIREQ":{"161":{"defaultMessage":"First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem","testCompleteFails":2},"192":{"defaultMessage":"Feature definition resources are not permitted in an add-on targeted behavior pack","testCompleteFails":2}}}},"items":[{"iTp":3,"gId":"MINENGINEVER","gIx":100,"p":"/Content/behavior_packs/aop_mobsbp/manifest.json"},{"iTp":3,"gId":"MINENGINEVER","gIx":100,"p":"/Content/behavior_packs/aop_mobsbp_2/manifest.json"},{"iTp":1,"gId":"MINENGINEVER","gIx":261},{"iTp":1,"gId":"ADDONREQ","gIx":160,"p":"/Content/behavior_packs/aop_mobsbp_2/manifest.json"},{"iTp":1,"gId":"ADDONREQ","gIx":169,"p":"/Content/behavior_packs/aop_mobsbp_2/manifest.json"},{"iTp":1,"gId":"ADDONREQ","gIx":130},{"iTp":1,"gId":"ADDONREQ","gIx":101,"d":"aggregate2.json"},{"iTp":1,"gId":"ADDONREQ","gIx":101,"m":"Found a loose file in the font folder. Should only see files in the folder font\\creatorshortname\\gamename\\","d":"glyph_E0.png"},{"iTp":1,"gId":"STRICT","gIx":100,"p":"/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json","d":"minecraft:polar_bear"},{"iTp":7,"gId":"TEXTURE","gIx":1,"fs":{"Entity Resource Count":{"Count":7},"Texture References":{"Count":8},"Entity References":{"Count":8},"File Count":{"Count":8},"Unique Texture Handles (estimated)":{"Count":7},"Unique Texture Paths":{"Count":7},"Unique Particle Texture Paths":{"Count":0},"Unique Particle Texture Vanilla Paths":{"Count":1},"Unique Entity Texture Paths":{"Count":7},"Unique Entity Texture Vanilla Paths":{"Count":1}}},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/manifest.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/manifest.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/manifest.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/manifest.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json","fs":{"say":{"Count":1},"summon":{"Count":1}}},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/entities/ghost.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/entities/ghost.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/entities/ghost.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/entities/ghost.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/features/aggregate.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/features/aggregate.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/features/aggregate.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/features/aggregate.json"},{"iTp":1,"gId":"ADDONIREQ","gIx":192,"p":"/Content/behavior_packs/aop_mobsbp/features/aggregate.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/ghost.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/ghost.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/ghost.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/ghost.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp/texts/languages.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp/texts/languages.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp/texts/languages.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp/texts/languages.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp_2/manifest.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp_2/manifest.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp_2/manifest.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp_2/manifest.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp_2/features/aggregate2.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp_2/features/aggregate2.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp_2/features/aggregate2.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp_2/features/aggregate2.json"},{"iTp":1,"gId":"ADDONIREQ","gIx":192,"p":"/Content/behavior_packs/aop_mobsbp_2/features/aggregate2.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp_2/texts/en_US.lang"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp_2/texts/en_US.lang"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp_2/texts/en_US.lang"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp_2/texts/en_US.lang"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/behavior_packs/aop_mobsbp_2/texts/languages.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/behavior_packs/aop_mobsbp_2/texts/languages.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/behavior_packs/aop_mobsbp_2/texts/languages.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/behavior_packs/aop_mobsbp_2/texts/languages.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/manifest.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/manifest.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/manifest.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/manifest.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/sounds.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/sounds.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/sounds.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/sounds.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/animations/ghost.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/animations/ghost.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/animations/ghost.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/animations/ghost.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/entity/ghost.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/entity/ghost.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/entity/ghost.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/entity/ghost.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/materials/entity.material"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/materials/entity.material"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/materials/entity.material"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/materials/entity.material"},{"iTp":1,"gId":"ADDONIREQ","gIx":161,"p":"/Content/resource_packs/aop_mobsrp/materials/entity.material","d":"entity_static"},{"iTp":1,"gId":"ADDONIREQ","gIx":161,"p":"/Content/resource_packs/aop_mobsrp/materials/entity.material","d":"aopthisisnotagoodname:entity_flat_color_line"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/models/entity/ghost.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/models/entity/ghost.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/models/entity/ghost.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/models/entity/ghost.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/texts/en_US.lang"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/texts/en_US.lang"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/texts/en_US.lang"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/texts/en_US.lang"},{"iTp":7,"gId":"WORLDDATA","gIx":1,"p":"/Content/resource_packs/aop_mobsrp/texts/languages.json"},{"iTp":7,"gId":"WORLDDATA","gIx":2,"p":"/Content/resource_packs/aop_mobsrp/texts/languages.json"},{"iTp":7,"gId":"WORLDDATA","gIx":3,"p":"/Content/resource_packs/aop_mobsrp/texts/languages.json"},{"iTp":7,"gId":"WORLDDATA","gIx":4,"p":"/Content/resource_packs/aop_mobsrp/texts/languages.json"},{"iTp":0,"gId":"WORLDDATA","gIx":1,"m":"Test World Data Validation completed successfully."}],"generatorName":"Minecraft Creator Tools","suite":2,"generatorVersion":"0.1.80","sourceName":"content3","sourcePath":"/"});
+</script><script>
+
+    function getDataName(name) {
+      if (typeof name === "boolean" || typeof name === "number") {
+        return name.toString();
+      }
+    
+      let retVal = "";
+    
+      for (let i = 0; i < name.length; i++) {
+        if (i === 0) {
+          retVal += name[i].toUpperCase();
+        } else {
+          if (name[i] >= "A" && name[i] <= "Z") {
+            retVal += " ";
+          }
+          retVal += name[i];
+        }
+      }
+      return retVal;
+    }
+    
+    function getDataSummary(data) {
+      if (data) {
+        return data;
+      }
+      
+      if (typeof data === "number" || typeof data === "boolean") {
+        return data.toString();
+      }
+      
+      if (typeof data === "object") {
+        return JSON.stringify(data);
+      }
+    
+      return "(not defined)";
+    }  
+    
+    function getEmptySummary(data) {
+    
+      if (typeof data === "object") {
+        return JSON.stringify(data);
+      }
+      
+      if (typeof data === "number" || typeof data === "boolean") {
+        return data.toString();
+      }
+    
+      if (data) {
+        return data;
+      }
+      
+      return "";
+    }  
+
+    function getEffectiveMessage(reportObj, item) {
+      if (item.m !== undefined) {
+        return item.m;
+      }
+
+      if (reportObj.info === undefined || reportObj.info.summary === undefined) {
+        return undefined;
+      }
+
+      let gen = reportObj.info.summary[item.gId];
+
+      if (gen === undefined) {
+        return undefined;
+      }
+
+      let genI = gen[item.gIx];
+ 
+      if (genI === undefined) {
+        return undefined;
+      }
+
+      return genI.defaultMessage;
+    }	    
+    
+    function generateReports() {
+      for (let i=0; i<_reportObjects.length; i++) {
+        document.write("<h1>" + _reportObjects[i].sourceName + "</h1>");
+        document.write("<h3>Summary</h3>");
+    
+        document.write("<table class='summary-table'>");
+        const info = _reportObjects[i].info;
+    
+        if (info) {
+          for (const key in info) {
+            const val = info[key];
+    
+            if (key !== 'featureSets' && key !== 'defaultIcon' && key !== 'summary') {
+              document.write("<tr>");
+              document.write("<td class='summary-key items-cell'>" + getDataName(key) + "</td>");
+              document.write("<td class='summary-value items-cell'>" + getDataSummary(val) + "</td>");
+              document.write("</tr>");
+            }
+          }
+    
+          if (info["featureSets"]) {
+            for (const featureName in info.featureSets) {
+              const feature = info.featureSets[featureName];
+    
+              for (const measureName in feature) {
+                const val = feature[measureName];
+
+                 document.write("<tr>");
+                document.write("<td class='summary-key items-cell'>" + featureName + " " + measureName + "</td>");
+                document.write("<td class='summary-value items-cell'>" + getDataSummary(val) + "</td>");
+                document.write("</tr>");
+              }
+            }
+          }
+        }
+        document.write("</table>");
+      }
+    
+      for (let i=0; i<_reportObjects.length; i++) {
+        document.write("<h3>Items</h3>");
+        document.write("<table class='items-table'>");
+        const info = _reportObjects[i].info;
+        
+        const items = _reportObjects[i].items;
+    
+        if (items && items.length) {
+          for (const item of items) {
+            if (item.itemType !== 2) {
+              document.write("<tr>");
+              document.write("<td class='items-type items-cell'>" + getDescriptionForItemType(item.iTp) + "</td>");
+              document.write("<td class='items-generator items-cell'>" + item.gId + "</td>");
+              document.write("<td class='items-generatorIndex items-cell'>" + item.gIx + "</td>");
+              document.write("<td class='items-message items-cell'>" + getEmptySummary(getEffectiveMessage(_reportObjects[i], item)) + "</td>");
+              document.write("<td class='items-data items-cell'>" + getEmptySummary(item.d) + "</td>");
+              document.write("<td class='items-path items-cell'>" + getEmptySummary(item.p) + "</td>");
+              document.write("</tr>");
+            }
+          }
+        }
+        document.write("</table>");
+      }
+    } 
+
+    function getDescriptionForItemType(itemType) {
+      switch (itemType) {
+        case 0: 
+          return "SUCCESS";
+          break;
+        case 1: 
+          return "FAIL";
+          break;
+        case 3: 
+          return "ERROR";
+          break;
+        case 4: 
+          return "WARN";
+          break;
+        case 5: 
+          return "INTERNALERR";
+          break;
+        case 6: 
+          return "RECOMMEND";
+          break;          
+      }
+      return "INFO";
+    }
+
+    </script>
+    <style>
+      body {
+        font-family: Noto Sans, Arial, Helvetica, sans-serif;
+        padding: 8px;
+      }
+    
+      .items-table {
+        border: solid 1px #606060;
+        padding: 0px;
+        max-width: 100vw;
+      }
+    
+      .items-cell {
+        border: solid 1px #606060;
+        padding: 4px;
+        vertical-align: top;
+        font-size: x-small;
+        overflow-wrap: anywhere;
+        max-width: 25vw;
+      }
+    
+      .summary-table {
+        border: solid 1px #606060;
+        padding: 0px;
+        max-width: 100vw;
+      }
+    </style>
+    </head><body> 
+
+<script>
+generateReports();
+</script>
+</body></html>

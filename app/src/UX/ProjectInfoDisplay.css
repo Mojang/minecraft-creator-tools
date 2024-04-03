@@ -40,6 +40,43 @@
   font-weight: bold;
 }
 
+.pis-contentSummaryHeader {
+  padding: 10px;
+}
+
+.pis-contentSummaryArea {
+  display: grid;
+  padding: 10px;
+}
+
+.pis-itemHeadCell {
+  grid-row: 1;
+  font-weight: bold;
+}
+
+.pis-itemSummName {
+  grid-column: 1;
+}
+
+.pis-itemSummCt {
+  grid-column: 2;
+}
+
+.pis-itemDataSummTotal {
+  grid-column: 3;
+}
+
+.pis-itemDataSummMax {
+  grid-column: 4;
+}
+
+.pis-itemDataSummAvg {
+  grid-column: 5;
+}
+
+.pis-itemDataSummMin {
+  grid-column: 6;
+}
 .pid-summaryArea {
   overflow-y: auto;
 }

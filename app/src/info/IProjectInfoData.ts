@@ -12,8 +12,8 @@ export enum ProjectInfoSuite {
 }
 
 export default interface IProjectInfoData {
-  info: IProjectInfo;
-  items: IInfoItemData[];
+  info?: IProjectInfo;
+  items?: IInfoItemData[];
   sourcePath?: string;
   sourceHash?: string;
   sourceName?: string;

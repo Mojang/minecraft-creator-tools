@@ -115,7 +115,7 @@ export default class FieldUtilities {
 
   static evaluate(form: IFormDefinition, conditions: ICondition[], container: IDataContainer, defaultField?: IField) {
     for (let condition of conditions) {
-      let field: IField | undefined = undefined;
+      let field: IField | undefined;
 
       if (condition.field) {
         field = FieldUtilities.getFieldById(condition.field, form);
