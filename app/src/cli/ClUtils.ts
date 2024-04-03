@@ -71,7 +71,7 @@ export default class ClUtils {
   }
 
   static async localFileExists(path: string) {
-    const folderPath = StorageUtilities.getParentFolderFromPath(path);
+    const folderPath = StorageUtilities.getFolderPath(path);
     const fileName = StorageUtilities.getLeafName(path);
 
     if (!fileName || fileName.length < 2 || !folderPath || folderPath.length < 2) {

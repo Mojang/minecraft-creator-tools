@@ -65,7 +65,7 @@ export default class BrowserFile extends FileBase implements IFile {
   }
 
   async moveTo(newStorageRelativePath: string): Promise<boolean> {
-    const newFolderPath = StorageUtilities.getPath(newStorageRelativePath);
+    const newFolderPath = StorageUtilities.getFolderPath(newStorageRelativePath);
     const newFileName = StorageUtilities.getLeafName(newStorageRelativePath);
 
     if (newFileName.length < 2) {

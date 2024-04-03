@@ -1810,7 +1810,7 @@ export default class Project {
       parentFolder = null;
     }
 
-    const folderPathA = StorageUtilities.canonicalizePath(StorageUtilities.getPath(folder.storageRelativePath));
+    const folderPathA = StorageUtilities.canonicalizePath(StorageUtilities.getFolderPath(folder.storageRelativePath));
 
     if (
       folderPathA.indexOf("/checkpoint_input") >= 0 ||
@@ -1915,7 +1915,7 @@ export default class Project {
           if ((pi === undefined || pi === null) && projectPath !== undefined) {
             const fileExtension = candidateFile.type;
             const baseName = StorageUtilities.getBaseFromName(candidateFile.name);
-            const folderPath = StorageUtilities.canonicalizePath(StorageUtilities.getPath(projectPath));
+            const folderPath = StorageUtilities.canonicalizePath(StorageUtilities.getFolderPath(projectPath));
             const folderPathLower = folderPath.toLowerCase();
 
             if (canonFileName === "manifest.json" || canonFileName === "pack_manifest.json") {
@@ -3339,7 +3339,7 @@ export default class Project {
       this.#carto.localFileExists !== undefined &&
       this.#carto.localFolderExists !== undefined
     ) {
-      const folderPath = StorageUtilities.getParentFolderFromPath(this.#data.localFilePath);
+      const folderPath = StorageUtilities.getFolderPath(this.#data.localFilePath);
       const fileName = StorageUtilities.getLeafName(this.#data.localFilePath);
 
       if (!fileName || fileName.length < 2 || !folderPath || folderPath.length < 2) {

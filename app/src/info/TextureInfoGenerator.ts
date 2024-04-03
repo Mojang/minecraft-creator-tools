@@ -46,7 +46,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
     if (resourcePackFolder && resourcePackFolder.folderCount > 0) {
       path = Utilities.ensureStartsWithSlash(path);
 
-      const folder = await resourcePackFolder.getFolderFromRelativePath(StorageUtilities.getPath(path));
+      const folder = await resourcePackFolder.getFolderFromRelativePath(StorageUtilities.getFolderPath(path));
 
       if (!folder) {
         return false;

@@ -178,7 +178,7 @@ export default class ProjectItem {
       return undefined;
     }
 
-    let folderStoragePath = StorageUtilities.getPath(this.storagePath);
+    let folderStoragePath = StorageUtilities.getFolderPath(this.storagePath);
 
     if (folderStoragePath === undefined) {
       return undefined;

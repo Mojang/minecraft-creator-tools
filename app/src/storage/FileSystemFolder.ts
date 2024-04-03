@@ -209,7 +209,7 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
   }
 
   async moveTo(newStorageRelativePath: string): Promise<boolean> {
-    const newFolderPath = StorageUtilities.getPath(newStorageRelativePath);
+    const newFolderPath = StorageUtilities.getFolderPath(newStorageRelativePath);
     const newFolderName = StorageUtilities.getLeafName(newStorageRelativePath);
 
     if (newFolderName.length < 2) {

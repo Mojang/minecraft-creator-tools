@@ -139,7 +139,7 @@ export default abstract class FolderBase implements IFolder {
     this.updateLastLoadedOrSaved();
 
     for (const file of fileList) {
-      let folderPath = StorageUtilities.getPath(file);
+      let folderPath = StorageUtilities.getFolderPath(file);
 
       if (folderPath) {
         folderPath = StorageUtilities.ensureEndsDelimited(folderPath);

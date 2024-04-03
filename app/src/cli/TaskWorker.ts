@@ -20,15 +20,11 @@ let localEnv: LocalEnvironment | undefined;
 let outputStorage: NodeStorage | undefined;
 let outputStoragePath: string | undefined;
 
-let activeContext: string | undefined;
-
 async function executeTask(task: ITask) {
   if (!task.project) {
     Log.error("Could not find an associated project for the associated task.");
     return undefined;
   }
-
-  activeContext = task.project?.ctorProjectName;
 
   if (localEnv === undefined) {
     localEnv = new LocalEnvironment(true);

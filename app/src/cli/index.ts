@@ -70,9 +70,10 @@ program
     "out"
   )
   .option("-of, --output-file [path to file]", "Path to the export file, if applicable for the command you are using.")
-  .option("-ot, --output-type [outputtype", "Type of output, if applicable for the command you are using.")
+  .option("-ot, --output-type [output type]", "Type of output, if applicable for the command you are using.")
   .option("-f, --force", "Force any updates.")
   .option("--threads [thread count]", "Targeted number of threads to use.")
+  .option("-show, --display-only", "Whether to only show messages, vs. output report files.")
   .option("-lv, --log-verbose", "Whether to show verbose log messages.");
 
 program.addHelpText("before", "\x1b[32m┌─────┐\x1b[0m");
@@ -93,7 +94,12 @@ program
     suite = suiteIn;
     executionTaskType = TaskType.validate;
 
-    if (aggregateReportsIn === "aggregate" || aggregateReportsIn === "true" || aggregateReportsIn === "1" || aggregateReportsIn === "t") {
+    if (
+      aggregateReportsIn === "aggregate" ||
+      aggregateReportsIn === "true" ||
+      aggregateReportsIn === "1" ||
+      aggregateReportsIn === "t"
+    ) {
       aggregateReportsAfterValidation = true;
     } else {
       aggregateReportsAfterValidation = false;
@@ -146,6 +152,14 @@ if (options.outputType) {
   }
 }
 
+if (options.displayOnly) {
+  localEnv.displayInfo = true;
+
+  if (options.outputFolder === "out") {
+    options.outputFolder = undefined;
+  }
+}
+
 if (options.logVerbose) {
   localEnv.displayVerbose = true;
 }
@@ -179,8 +193,39 @@ if (options.logVerbose) {
 })();
 
 async function loadProjects() {
-  if (!carto) {
+  if (!carto || !carto.ensureLocalFolder) {
     throw new Error("Not properly configured.");
+  }
+
+  if (options.inputFile && options.inputFolder) {
+    throw new Error("Cannot specify both an input file and an input folder.");
+  }
+
+  if (options.inputFile) {
+    const inputFolderPath = StorageUtilities.getFolderPath(options.inputFile);
+    const inputFileName = StorageUtilities.getLeafName(options.inputFile);
+
+    if (!inputFileName || inputFileName.length < 2 || !inputFolderPath || inputFolderPath.length < 2) {
+      throw new Error("Could not process file with path: `" + options.inputFile + "`");
+    }
+
+    const containingFolder = carto.ensureLocalFolder(inputFolderPath);
+
+    const file = containingFolder.ensureFile(inputFileName);
+
+    const fileExists = await file.exists();
+
+    if (!fileExists) {
+      throw new Error("Could not find file with path: `" + options.inputFile + "`.");
+    }
+
+    const fileName = StorageUtilities.getLeafName(options.inputFile);
+
+    const mainProject: IProjectStartInfo = { ctorProjectName: fileName, localFilePath: options.inputFile };
+
+    projectStarts.push(mainProject);
+
+    return;
   }
 
   const workFolder = await ClUtils.getMainWorkFolder(executionTaskType, options.inputFolder, options.outputFolder);
@@ -625,7 +670,7 @@ async function validate() {
         },
         outputFolder: options.outputFolder,
         inputFolder: options.inputFolder,
-        displayInfo: !options.inputFolder,
+        displayInfo: !options.outputFolder,
         displayVerbose: localEnvConst.displayVerbose,
         force: force,
       });
@@ -813,7 +858,7 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
       }
     }
 
-    if (projectSet.infoSetData.info.featureSets) {
+    if (projectSet.infoSetData.info && projectSet.infoSetData.info.featureSets) {
       for (const featureSetName in allFeatureSets) {
         const featureSet = projectSet.infoSetData.info.featureSets[featureSetName];
 
