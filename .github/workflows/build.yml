@@ -10,7 +10,9 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on:
+      - self-hosted
+      - 1ES.Pool=MC-Runner-1ES-Windows
 
     strategy:
       matrix:
