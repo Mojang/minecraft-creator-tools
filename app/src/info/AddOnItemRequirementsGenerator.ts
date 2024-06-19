@@ -14,8 +14,8 @@ import BehaviorAnimation from "../minecraft/BehaviorAnimation";
 import ResourceAnimationController from "../minecraft/ResourceAnimationController";
 import ResourceAnimation from "../minecraft/ResourceAnimation";
 import ResourceRenderController from "../minecraft/ResourceRenderController";
-import ResourceManifestJson from "../minecraft/ResourceManifestJson";
-import BehaviorManifestJson from "../minecraft/BehaviorManifestJson";
+import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
+import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 import ModelGeometry from "../minecraft/ModelGeometry";
 import Material from "../minecraft/Material";
 import ContentIndex from "../core/ContentIndex";
@@ -69,7 +69,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
       await projectItem.ensureFileStorage();
 
       if (projectItem.file) {
-        const rpManifest = await ResourceManifestJson.ensureOnFile(projectItem.file);
+        const rpManifest = await ResourceManifestDefinition.ensureOnFile(projectItem.file);
 
         if (rpManifest) {
           await rpManifest.load();
@@ -102,7 +102,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
       await projectItem.ensureFileStorage();
 
       if (projectItem.file) {
-        const bpManifest = await BehaviorManifestJson.ensureOnFile(projectItem.file);
+        const bpManifest = await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
 
         if (bpManifest) {
           await bpManifest.load();

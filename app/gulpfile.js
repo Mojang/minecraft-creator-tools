@@ -6,6 +6,7 @@ const importTransform = require("./tools/gulp-importTransform");
 const nodeifyScript = require("./tools/gulp-nodeifyScript");
 const jsonifyTypes = require("./tools/gulp-jsonifyTypes");
 const downloadResources = require("./tools/gulp-downloadResources");
+const textReplaceStream = require("./tools/gulp-textReplaceStream");
 const gulpWebpack = require("webpack-stream");
 
 const jsnbuildfilesigs = [
@@ -16,6 +17,9 @@ const jsnbuildfilesigs = [
   "!out/**/*",
   "!build/**/*",
   "!toolbuild/**/*",
+  "!scriptlibs/**/*",
+  "!dist/**/*",
+  "!res/**/*",
   "!src/monaco/*.ts",
   "!src/setupTests.ts",
   "!src/worldux/*.ts",
@@ -32,6 +36,9 @@ const vsccorebuildfilesigs = [
   "!out/**/*",
   "!build/**/*",
   "!toolbuild/**/*",
+  "!scriptlibs/**/*",
+  "!dist/**/*",
+  "!res/**/*",
   "!src/vscodeweb/*.ts",
   "!src/monaco/*.ts",
   "!src/setupTests.ts",
@@ -49,6 +56,9 @@ const vscwebbuildfilesigs = [
   "!out/**/*",
   "!build/**/*",
   "!toolbuild/**/*",
+  "!scriptlibs/**/*",
+  "!dist/**/*",
+  "!res/**/*",
   "!src/setupTests.ts",
   "!src/local/*.ts",
   "!node_modules/@types/leaflet/*.ts",
@@ -62,13 +72,16 @@ const jsnwebbuildfilesigs = [
   "!out/**/*",
   "!build/**/*",
   "!toolbuild/**/*",
+  "!scriptlibs/**/*",
+  "!dist/**/*",
+  "!res/**/*",
   "!src/setupTests.ts",
   "!src/local/*.ts",
   "!node_modules/@types/leaflet/*.ts",
   "!node_modules/babylonjs/*.ts",
 ];
 
-const mcbuildsigs = ["web/autoscript/*.js", "web/tools/*.js"];
+const mcbuildsigs = ["app/actionset/*.js", "app/tools/*.js"];
 
 const mcstabletypedefsigs = ["node_modules_archive/@minecraft/server/1.0.0/*.d.ts"];
 
@@ -78,10 +91,19 @@ const mcbetatypedefsigs = [
   "node_modules/@minecraft/server-ui/*.d.ts",
   "node_modules/@minecraft/server-admin/*.d.ts",
   "node_modules/@minecraft/server-net/*.d.ts",
+  "node_modules/@minecraft/server-editor/*.d.ts",
+];
+
+const mclibsigs = [
+  "scriptlibs/@minecraft/math/minecraft-math.js",
+  "scriptlibs/@minecraft/vanilla-data/minecraft-vanilla-data.ts",
 ];
 
 const mcreslistsigs = ["reslist/schemas.resources.json"];
 const mcreslistvanillasigs = ["reslist/packs.resources.json"];
+const mcreslistsamplesigs = ["reslist/samples.resources.json"];
+const mcreslistscriptsamplesigs = ["reslist/scriptsamples.resources.json"];
+const mcreslistgametestsigs = ["reslist/gametestsamples.resources.json"];
 
 function compileVscCoreExeBuild() {
   return gulp
@@ -147,6 +169,14 @@ function compileJsNodeBuild() {
     .on("error", function () {});
 }
 
+function customizeSiteHead() {
+  return gulp.src(["site/index.head.html"], { base: "" }).pipe(textReplaceStream("build/index.html", /<\/head>/gi));
+}
+
+function customizeSiteBody() {
+  return gulp.src(["site/index.body.html"], { base: "" }).pipe(textReplaceStream("build/index.html", /<\/body>/gi));
+}
+
 function copyCheckedInRes() {
   return gulp.src(["public_ci/**/*"]).pipe(gulp.dest("public/"));
 }
@@ -163,6 +193,14 @@ function copyMonacoNpmDist() {
   return gulp.src(["node_modules/monaco-editor/min/vs/**/*"]).pipe(gulp.dest("public/dist/vs/"));
 }
 
+function copyMonacoMapsNpmDist() {
+  return gulp.src(["node_modules/monaco-editor/min-maps/**/*"]).pipe(gulp.dest("public/min-maps/"));
+}
+
+function copyEsbuildWasmDist() {
+  return gulp.src(["node_modules/esbuild-wasm/esbuild.wasm"]).pipe(gulp.dest("public/dist/esbuild-wasm/"));
+}
+
 function copyJsNodeDocs() {
   return gulp.src(["../CHANGELOG.md", "../NOTICE.md", "jsnode/README.md"]).pipe(gulp.dest("toolbuild/jsn/"));
 }
@@ -172,15 +210,15 @@ function copyVscRes() {
 }
 
 function copyVscMc() {
-  return gulp.src(["../mc/toolsAddon/**/*"]).pipe(gulp.dest("toolbuild/vsc/mc/"));
-}
-
-function copyVscDist() {
-  return gulp.src(["public/dist/**/*"]).pipe(gulp.dest("toolbuild/vsc/dist/"));
+  return gulp.src(["../mc/dist/**/*"]).pipe(gulp.dest("toolbuild/vsc/mc/"));
 }
 
 function copyJsNodeResSchemas() {
   return gulp.src(["public/res/latest/schemas/**/*"]).pipe(gulp.dest("toolbuild/jsn/res/latest/schemas/"));
+}
+
+function copyJsNodeMc() {
+  return gulp.src(["../mc/dist/**/*"]).pipe(gulp.dest("toolbuild/jsn/mc/"));
 }
 
 function copyJsNodeAssets() {
@@ -192,9 +230,7 @@ function copyVscAssets() {
 }
 
 function copyVscDocs() {
-  return gulp
-    .src(["../**/CHANGELOG.md", "../**/LICENSE.md", "../**/LICENSE.md", "vscode/**/README.md"])
-    .pipe(gulp.dest("toolbuild/vsc/"));
+  return gulp.src(["../CHANGELOG.md", "../LICENSE.md", "vscode/README.md"]).pipe(gulp.dest("toolbuild/vsc/"));
 }
 
 gulp.task("clean-jsnbuild", function () {
@@ -243,7 +279,14 @@ gulp.task(
   gulp.series(
     "clean-jsnbuild",
     copyCheckedInRes,
-    gulp.parallel(compileJsNodeBuild, copyJsNodeAssets, copyJsNodeData, copyJsNodeDocs, copyJsNodeResSchemas)
+    gulp.parallel(
+      compileJsNodeBuild,
+      copyJsNodeAssets,
+      copyJsNodeData,
+      copyJsNodeDocs,
+      copyJsNodeResSchemas,
+      copyJsNodeMc
+    )
   )
 );
 
@@ -289,8 +332,7 @@ gulp.task(
       copyVscDocs,
       copyVscData,
       copyVscRes,
-      copyVscMc,
-      copyVscDist
+      copyVscMc
     )
   )
 );
@@ -323,19 +365,35 @@ function compileWebJsBuild() {
 }
 
 function buildMinecraftJs() {
-  return gulp.src(mcbuildsigs, { base: "" }).pipe(importTransform("foo", {})).pipe(gulp.dest("out/mc"));
+  return gulp.src(mcbuildsigs, { base: "" }).pipe(importTransform()).pipe(gulp.dest("out/mc"));
+}
+
+function buildIncludes() {
+  return gulp.src(mclibsigs, { base: "" }).pipe(jsonifyTypes("public/data/libs.json", false));
 }
 
 function buildBetaJsonTypeDefs() {
-  return gulp.src(mcbetatypedefsigs, { base: "" }).pipe(jsonifyTypes("public/data/typedefs.beta.json"));
+  return gulp.src(mcbetatypedefsigs, { base: "" }).pipe(jsonifyTypes("public/data/typedefs.beta.json", false));
 }
 
 function buildStableJsonTypeDefs() {
-  return gulp.src(mcstabletypedefsigs, { base: "" }).pipe(jsonifyTypes("public/data/typedefs.stable.json"));
+  return gulp.src(mcstabletypedefsigs, { base: "" }).pipe(jsonifyTypes("public/data/typedefs.stable.json", false));
 }
 
 function runDownloadResources() {
   return gulp.src(mcreslistsigs, { base: "" }).pipe(downloadResources("public/res/latest/"));
+}
+
+function runDownloadSamples() {
+  return gulp.src(mcreslistsamplesigs, { base: "" }).pipe(downloadResources("public/res/samples/microsoft/"));
+}
+
+function runDownloadScriptSamples() {
+  return gulp.src(mcreslistscriptsamplesigs, { base: "" }).pipe(downloadResources("public/res/samples/microsoft/"));
+}
+
+function runDownloadGameTests() {
+  return gulp.src(mcreslistgametestsigs, { base: "" }).pipe(downloadResources("public/res/samples/microsoft/"));
 }
 
 function runDownloadVanillaResources() {
@@ -350,17 +408,36 @@ gulp.task("clean-webbuild", function () {
   return del(["web"]);
 });
 
+gulp.task("clean-res", function () {
+  return del(["public/res/latest", "public/res/samples"]);
+});
+
+gulp.task("customizesite", gulp.series(customizeSiteHead, customizeSiteBody));
+
 gulp.task("webbuild", gulp.series("clean-webbuild", compileWebJsBuild));
 
 gulp.task("mcbuild", gulp.series(gulp.parallel("clean-mcbuild", "webbuild"), buildMinecraftJs));
 
-gulp.task("mctypes", gulp.parallel(buildBetaJsonTypeDefs, buildStableJsonTypeDefs));
+gulp.task("mctypes", gulp.parallel(buildBetaJsonTypeDefs, buildStableJsonTypeDefs, buildIncludes));
 
-gulp.task("dlres", gulp.parallel(runDownloadResources, runDownloadVanillaResources, copyCheckedInRes));
+gulp.task(
+  "dlres",
+  gulp.series(
+    "clean-res",
+    gulp.parallel(
+      runDownloadResources,
+      runDownloadSamples,
+      runDownloadScriptSamples,
+      runDownloadGameTests,
+      runDownloadVanillaResources,
+      copyCheckedInRes
+    )
+  )
+);
 
-gulp.task("devenv", gulp.parallel("mctypes", "dlres", copyMonacoNpmDist));
+gulp.task("devenv", gulp.parallel("mctypes", "dlres", copyMonacoNpmDist, copyMonacoMapsNpmDist, copyEsbuildWasmDist));
 
-gulp.task("npmdepends", gulp.parallel(copyMonacoNpmDist));
+gulp.task("npmdepends", gulp.parallel(copyMonacoNpmDist, copyMonacoMapsNpmDist, copyEsbuildWasmDist));
 
 gulp.task("default", gulp.parallel("jsnbuild", "vscbuild"));
 

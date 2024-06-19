@@ -6,6 +6,8 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import IDebugSettings from "./IDebugSettings";
 import IVsCodeLaunch, { IVsCodeConfiguration } from "./IVsCodeLaunch";
 import StorageUtilities from "../storage/StorageUtilities";
+import Project from "../app/Project";
+import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 
 export default class VsCodeLaunchJson {
   private _file?: IFile;
@@ -15,6 +17,8 @@ export default class VsCodeLaunchJson {
   public definition?: IVsCodeLaunch;
 
   private _onLoaded = new EventDispatcher<VsCodeLaunchJson, VsCodeLaunchJson>();
+
+  public project: Project | undefined = undefined;
 
   public get isLoaded() {
     return this._isLoaded;
@@ -116,7 +120,7 @@ export default class VsCodeLaunchJson {
     let hasMinecraftConfig = false;
     for (const config of this.definition.configurations) {
       if (config.type === "minecraft-js") {
-        this.applyDebugSettingsToConfig(config, debugSettings);
+        await this.applyDebugSettingsToConfig(config, debugSettings);
         hasMinecraftConfig = true;
       }
     }
@@ -127,7 +131,7 @@ export default class VsCodeLaunchJson {
         port: debugSettings.port ? debugSettings.port : 19144,
       };
 
-      this.applyDebugSettingsToConfig(minecraftConfig, debugSettings);
+      await this.applyDebugSettingsToConfig(minecraftConfig, debugSettings);
 
       this.definition.configurations.push(minecraftConfig);
 
@@ -137,7 +141,7 @@ export default class VsCodeLaunchJson {
     return hasMinecraftConfig;
   }
 
-  private applyDebugSettingsToConfig(config: IVsCodeConfiguration, debugSettings: IDebugSettings) {
+  private async applyDebugSettingsToConfig(config: IVsCodeConfiguration, debugSettings: IDebugSettings) {
     if (debugSettings.isServer) {
       config.mode = undefined;
     } else {
@@ -157,14 +161,28 @@ export default class VsCodeLaunchJson {
     if (bpName === undefined) {
       bpName = "starterbp";
     }
-    if (config.sourceMapRoot === undefined) {
-      // eslint-disable-next-line no-template-curly-in-string
-      config.sourceMapRoot = "${workspaceFolder}/build/behavior_packs/_" + bpName + "Debug/";
+
+    if (!config.targetedModuleUuid && this.project) {
+      const pack = await this.project.getDefaultBehaviorPack();
+      if (pack) {
+        if (pack.manifest instanceof BehaviorManifestDefinition) {
+          const module = pack.manifest.getScriptModule();
+
+          if (module) {
+            config.targetedModuleUuid = module.uuid;
+          }
+        }
+      }
     }
 
-    if (config.generatedSourceRoot === undefined) {
+    if (!config.sourceMapRoot) {
       // eslint-disable-next-line no-template-curly-in-string
-      config.generatedSourceRoot = "${workspaceFolder}/build/behavior_packs/" + bpName + "/scripts/";
+      config.sourceMapRoot = "${workspaceFolder}/dist/debug/";
+    }
+
+    if (!config.generatedSourceRoot) {
+      // eslint-disable-next-line no-template-curly-in-string
+      config.generatedSourceRoot = "${workspaceFolder}/dist/scripts/";
     }
 
     if (debugSettings.port) {

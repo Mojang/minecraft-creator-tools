@@ -4,3 +4,24 @@
   overflow: auto;
   padding: 2px;
 }
+
+.fex-newFolderArea {
+  display: grid;
+  margin-top: 10px;
+  grid-template-columns: 220px 220px 100px;
+}
+
+.fex-newFolderLabel {
+  grid-column: 1;
+  overflow-x: hidden;
+  white-space: nowrap;
+  padding-top: 5px;
+}
+
+.fex-newFolderName {
+  grid-column: 2;
+}
+
+.fex-newFolderGo {
+  grid-column: 3;
+}

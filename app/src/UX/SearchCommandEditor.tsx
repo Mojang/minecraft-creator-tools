@@ -1,7 +1,15 @@
 import React, { Component, SyntheticEvent } from "react";
 import "./SearchCommandEditor.css";
 import Carto from "../app/Carto";
-import { FormInput, InputProps, List, ListProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
+import {
+  FormInput,
+  InputProps,
+  List,
+  ListProps,
+  ThemeInput,
+  Toolbar,
+  selectableListBehavior,
+} from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import Project from "../app/Project";
@@ -38,7 +46,7 @@ interface ISearchCommandEditorState {
 
 export default class SearchCommandEditor extends Component<ISearchCommandEditorProps, ISearchCommandEditorState> {
   inputArea: React.RefObject<HTMLDivElement>;
-  #isRetrieiving = false;
+  #isRetrieving = false;
 
   constructor(props: ISearchCommandEditorProps) {
     super(props);
@@ -55,6 +63,7 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
 
     this._handleTextInputChange = this._handleTextInputChange.bind(this);
     this._handleInputKey = this._handleInputKey.bind(this);
+    this._handleInputDown = this._handleInputDown.bind(this);
 
     this._commitContent = this._commitContent.bind(this);
 
@@ -90,6 +99,20 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
     }
 
     await CommandRunner.runCommandText(this.props.carto, this.state.content);
+  }
+
+  _handleInputDown(event: React.KeyboardEvent<Element>) {
+    if (this.props.onActionRequested) {
+      if (event.key === "ArrowUp") {
+        this.props.onActionRequested(ProjectEditorAction.projectListUp);
+        event.preventDefault();
+      }
+
+      if (event.key === "ArrowDown") {
+        this.props.onActionRequested(ProjectEditorAction.projectListDown);
+        event.preventDefault();
+      }
+    }
   }
 
   _handleInputKey(event: React.KeyboardEvent<Element>) {
@@ -150,15 +173,15 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
       !clearAutoComplete &&
       this.props.contentIndex &&
       dataStr.length >= this.props.contentIndex.startLength &&
-      !this.#isRetrieiving
+      !this.#isRetrieving
     ) {
-      this.#isRetrieiving = true;
+      this.#isRetrieving = true;
       window.setTimeout(this._retrieveSuggestions, 200);
     }
   }
 
   private async _retrieveSuggestions() {
-    this.#isRetrieiving = false;
+    this.#isRetrieving = false;
 
     if (this.props.contentIndex === undefined || this.state.content === undefined) {
       return;
@@ -270,15 +293,15 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
 
   componentDidMount() {
     if (typeof window !== "undefined") {
-      window.addEventListener("keydown", this._handleKeyDown);
-      window.addEventListener("keyup", this._handleKeyUp);
+      //      window.addEventListener("keydown", this._handleKeyDown);
+      //    window.addEventListener("keyup", this._handleKeyUp);
     }
   }
 
   componentWillUnmount() {
     if (typeof window !== "undefined") {
-      window.removeEventListener("keydown", this._handleKeyDown);
-      window.removeEventListener("keyup", this._handleKeyUp);
+      //  window.removeEventListener("keydown", this._handleKeyDown);
+      //      window.removeEventListener("keyup", this._handleKeyUp);
     }
   }
 
@@ -325,7 +348,7 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
 
       accessoryToolbar = (
         <div className="sceed-bottomToolBarArea">
-          <Toolbar aria-label="Editor toolbar overflow menu" items={accessoryToolbarItems} />
+          <Toolbar aria-label="Search command editor toolbar" items={accessoryToolbarItems} />
         </div>
       );
     }
@@ -397,6 +420,8 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
                 <List
                   selectable
                   items={listItems}
+                  aria-label="List of suggestions"
+                  accessibility={selectableListBehavior}
                   onSelectedIndexChange={this._handleAutoCompleteSelected}
                   selectedIndex={this.state.selectedAutoComplete}
                   defaultSelectedIndex={this.state.selectedAutoComplete}
@@ -423,6 +448,7 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
           defaultValue={content as string}
           value={content as string}
           onKeyPress={this._handleInputKey}
+          onKeyDown={this._handleInputDown}
           onChange={this._handleTextInputChange}
         />
       );

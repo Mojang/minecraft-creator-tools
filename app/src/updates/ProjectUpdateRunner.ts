@@ -10,6 +10,7 @@ import VsCodeFileManager from "../manager/VsCodeFileManager";
 import MinEngineVersionManager from "../manager/MinEngineVersionManager";
 import BaseGameVersionManager from "../manager/BaseGameVersionManager";
 import BehaviorPackEntityTypeManager from "../manager/BehaviorPackEntityTypeManager";
+import BehaviorPackItemTypeManager from "../manager/BehaviorPackItemTypeManager";
 
 export default class ProjectUpdateRunner {
   project?: Project;
@@ -25,6 +26,7 @@ export default class ProjectUpdateRunner {
       new MinEngineVersionManager(),
       new BaseGameVersionManager(),
       new BehaviorPackEntityTypeManager(),
+      new BehaviorPackItemTypeManager(),
     ];
   }
 

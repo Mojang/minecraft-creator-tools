@@ -1,11 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { EventDispatcher, IEventHandler } from "ste-events";
 import Project from "../app/Project";
 import IFile from "../storage/IFile";
 import IFolder from "../storage/IFolder";
 import ProjectItem from "../app/ProjectItem";
+import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
+import ResourceManifestDefinition from "./ResourceManifestDefinition";
+import SkinManifestDefinition from "./SkinManifestDefinition";
 
 export enum PackType {
   resource = 0,
@@ -14,57 +16,54 @@ export enum PackType {
 }
 
 export default class Pack {
-  type?: PackType;
+  type: PackType;
   manifestFile?: IFile;
-  folder?: IFolder;
+  folder: IFolder;
   project?: Project;
   projectItem?: ProjectItem;
-  #isLoaded: boolean = false;
-  #onLoaded = new EventDispatcher<Pack, Pack>();
+  manifest?: BehaviorManifestDefinition | ResourceManifestDefinition | SkinManifestDefinition | undefined;
 
-  public get onLoaded() {
-    return this.#onLoaded.asEvent();
+  constructor(folderIn: IFolder, packTypeIn: PackType) {
+    this.folder = folderIn;
+    this.type = packTypeIn;
   }
 
-  get isLoaded() {
-    return this.#isLoaded;
-  }
-
-  async load(force: boolean) {
-    if ((this.#isLoaded && !force) || this.folder === undefined) {
-      return;
+  ensureManifestFile() {
+    if (this.manifestFile === undefined) {
+      this.manifestFile = this.folder.ensureFile("manifest.json");
     }
+
+    return this.manifestFile;
   }
 
-  static async ensureOnFolder(
-    folder: IFolder,
-    manifestFile: IFile,
-    project: Project,
-    handler?: IEventHandler<Pack, Pack>
-  ) {
+  async ensureManifest() {
+    if (this.manifest) {
+      return this.manifest;
+    }
+
+    this.manifestFile = this.ensureManifestFile();
+
+    if (this.type === PackType.behavior) {
+      this.manifest = await BehaviorManifestDefinition.ensureOnFile(this.manifestFile);
+    } else if (this.type === PackType.skin) {
+      this.manifest = await SkinManifestDefinition.ensureOnFile(this.manifestFile);
+    } else {
+      this.manifest = await ResourceManifestDefinition.ensureOnFile(this.manifestFile);
+    }
+
+    return this.manifest;
+  }
+
+  static ensureOnFolder(folder: IFolder, packType: PackType, project: Project) {
     if (folder.manager === undefined) {
-      const pack = new Pack();
+      const pack = new Pack(folder, packType);
+
       pack.project = project;
-      pack.manifestFile = manifestFile;
-
-      pack.folder = folder;
-    }
-
-    if (folder.manager !== undefined && folder.manager instanceof Pack) {
-      const pack = folder.manager as Pack;
-
-      if (!pack.isLoaded) {
-        if (handler) {
-          pack.onLoaded.subscribe(handler);
-        }
-        await pack.load(false);
-      } else if (handler) {
-        handler(pack, pack, { unsub: () => {}, stopPropagation: () => {} });
-      }
+      pack.type = packType;
 
       return pack;
+    } else {
+      return folder.manager as Pack;
     }
-
-    return undefined;
   }
 }

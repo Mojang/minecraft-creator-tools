@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import IStorage, { StorageErrorStatus } from "./IStorage";
+import IStorage, { IFolderMove, StorageErrorStatus } from "./IStorage";
 import IFolder from "./IFolder";
 import IFile from "./IFile";
 import { EventDispatcher } from "ste-events";
@@ -14,6 +14,7 @@ export default abstract class StorageBase implements IStorage {
   #onFileAdded = new EventDispatcher<StorageBase, IFile>();
   #onFileRemoved = new EventDispatcher<StorageBase, string>();
   #onFileContentsUpdated = new EventDispatcher<StorageBase, IFile>();
+  #onFolderMoved = new EventDispatcher<StorageBase, IFolderMove>();
 
   #storagePath: string | undefined;
 
@@ -48,6 +49,10 @@ export default abstract class StorageBase implements IStorage {
     return this.#onFileContentsUpdated.asEvent();
   }
 
+  public get onFolderMoved() {
+    return this.#onFolderMoved.asEvent();
+  }
+
   async ensureFolderFromStorageRelativePath(path: string) {
     return this.rootFolder.ensureFolderFromRelativePath(path);
   }
@@ -59,6 +64,11 @@ export default abstract class StorageBase implements IStorage {
   notifyFileContentsUpdated(file: IFile) {
     this.isContentUpdated = true;
     this.#onFileContentsUpdated.dispatch(this, file);
+  }
+
+  notifyFolderMoved(folderMove: IFolderMove) {
+    this.isContentUpdated = true;
+    this.#onFolderMoved.dispatch(this, folderMove);
   }
 
   notifyFileRemoved(fileName: string) {

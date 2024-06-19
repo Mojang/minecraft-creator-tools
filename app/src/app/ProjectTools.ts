@@ -10,6 +10,7 @@ import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import Log from "../core/Log";
 import CommandRunner from "./CommandRunner";
+import ProjectBuild from "./ProjectBuild";
 
 export default class ProjectTools {
   static async addGlobalTools(tools: ITool[]) {
@@ -54,7 +55,7 @@ export default class ProjectTools {
       for (let i = 0; i < project.items.length; i++) {
         const pi = project.items[i];
 
-        if (pi.itemType === ProjectItemType.structure && pi.storagePath !== null) {
+        if (pi.itemType === ProjectItemType.structure && pi.projectPath !== null) {
           let structureName = pi.name;
 
           structureName = structureName.replace(".mcstructure", "");
@@ -63,7 +64,7 @@ export default class ProjectTools {
             title: "Push " + structureName + " to Minecraft",
             type: ToolType.pushStructure,
             scope: ToolScope.project,
-            parameter1: pi.storagePath,
+            parameter1: pi.projectPath,
           };
 
           tools.push(tool);
@@ -92,50 +93,86 @@ export default class ProjectTools {
     }
   }
 
-  static async deployProject(
-    carto: Carto,
-    project: Project,
-    deploymentStorage: IStorage,
-    deployBehaviorPacksFolder: IFolder
-  ) {
-    const deployFolderExists = await deployBehaviorPacksFolder.exists();
+  static async deployProject(carto: Carto, project: Project, deploymentStorage: IStorage, deployTargetFolder: IFolder) {
+    const operId = await carto.notifyOperationStarted("Deploying '" + project.name + "'.");
 
-    if (deployFolderExists) {
-      await ProjectTools.deployToBehaviorPackFolder(project, deployBehaviorPacksFolder);
+    const targetBehaviorPacksFolder = deployTargetFolder.ensureFolder("development_behavior_packs");
+
+    const bpDeployFolderExists = await targetBehaviorPacksFolder.exists();
+
+    if (bpDeployFolderExists) {
+      await project.ensureProjectFolder();
+
+      const bpi = await project.ensureDefaultBehaviorPackFolder();
+
+      const deployProjectFolder = targetBehaviorPacksFolder.ensureFolder(project.name);
+
+      await deployProjectFolder.ensureExists();
+
+      await StorageUtilities.syncFolderTo(bpi, deployProjectFolder, true, true, true, [
+        "/mcworlds",
+        "/minecraftWorlds",
+      ]);
+
+      const projectBuild = new ProjectBuild(project);
+
+      await projectBuild.build();
+
+      if (projectBuild.isInErrorState) {
+        project.appendErrors(projectBuild);
+
+        await project.carto.notifyOperationEnded(
+          operId,
+          "Deploying this project could not be completed.",
+          undefined,
+          true
+        );
+        return;
+      }
+
+      const scriptsFolder = project.getDistBuildScriptsFolder();
+
+      if (
+        scriptsFolder &&
+        !scriptsFolder.storageRelativePath.startsWith(bpi.storageRelativePath) &&
+        scriptsFolder.storageRelativePath !== "/"
+      ) {
+        await StorageUtilities.syncFolderTo(
+          scriptsFolder,
+          deployProjectFolder.ensureFolder("scripts"),
+          true,
+          true,
+          true,
+          [".ts"],
+          undefined,
+          async (message: string) => {
+            Log.verbose(message);
+          }
+        );
+      }
+
+      await deployProjectFolder.saveAll();
     }
-  }
 
-  static async deployToBehaviorPackFolder(project: Project, deployBP: IFolder) {
-    await project.ensureProjectFolder();
+    const targetResourcePacksFolder = deployTargetFolder.ensureFolder("development_resource_packs");
+    const rpDeployFolderExists = await targetResourcePacksFolder.exists();
 
-    const bpi = await project.ensureDefaultBehaviorPackFolder();
+    if (rpDeployFolderExists) {
+      await project.ensureProjectFolder();
 
-    const deployProjectFolder = deployBP.ensureFolder(project.name);
+      const rpi = await project.getDefaultResourcePackFolder();
 
-    await deployProjectFolder.ensureExists();
+      if (rpi) {
+        const deployProjectFolder = targetResourcePacksFolder.ensureFolder(project.name);
 
-    await StorageUtilities.syncFolderTo(bpi, deployProjectFolder, true, true, true, ["/mcworlds", "/minecraftWorlds"]);
+        await deployProjectFolder.ensureExists();
 
-    const scriptsFolder = await project.ensureDefaultScriptsFolder();
-
-    if (
-      !scriptsFolder.storageRelativePath.startsWith(bpi.storageRelativePath) &&
-      scriptsFolder.storageRelativePath !== "/"
-    ) {
-      await StorageUtilities.syncFolderTo(
-        scriptsFolder,
-        deployProjectFolder.ensureFolder("scripts"),
-        true,
-        true,
-        true,
-        [".ts"],
-        async (message: string) => {
-          Log.verbose(message);
-        }
-      );
+        await StorageUtilities.syncFolderTo(rpi, deployProjectFolder, true, true, true, [
+          "/mcworlds",
+          "/minecraftWorlds",
+        ]);
+      }
     }
-
-    await deployProjectFolder.saveAll();
   }
 
   static async reload(carto: Carto) {

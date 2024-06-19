@@ -457,7 +457,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
     const result = await AppServiceProxy.sendAsync(AppServiceProxyCommands.openFolder, "");
 
-    if (result.length > 0) {
+    if (result && result.length > 0) {
       this.setState({
         gallery: this.state.gallery,
         dialogMode: this.state.dialogMode,
@@ -539,7 +539,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
   private async _handleOpenFolderClick() {
     const result = await AppServiceProxy.sendAsync(AppServiceProxyCommands.openFolder, "");
 
-    if (result.length > 0) {
+    if (result && result.length > 0) {
       if (this.props.onNewProjectFromFolderSelected !== undefined) {
         this.props.onNewProjectFromFolderSelected(result);
       }

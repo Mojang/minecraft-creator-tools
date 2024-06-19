@@ -9,6 +9,7 @@ import IFolder from "./../storage/IFolder";
 import * as fs from "fs";
 import Utilities from "../core/Utilities";
 import * as crypto from "crypto";
+import { threadId } from "worker_threads";
 import Log, { LogItem, LogItemLevel } from "../core/Log";
 import JsEslintInfoGenerator from "./JsEslintInfoGenerator";
 import GeneratorRegistrations from "../info/GeneratorRegistrations";
@@ -332,16 +333,20 @@ export default class LocalEnvironment {
 
     let context = "";
 
+    if (this.displayVerbose) {
+      context = threadId + ": ";
+    }
+
     if (item.context && item.context.length > 0) {
       context = item.context + " ";
     }
 
     if (item.level === LogItemLevel.verbose) {
-      console.log(consoleText_fgGray, context + item.message, consoleText_reset);
+      console.log(consoleText_fgGray + context + item.message + consoleText_reset);
     } else if (item.level === LogItemLevel.error) {
-      console.error(consoleText_fgRed, context + "Error: " + item.message, consoleText_reset);
+      console.error(consoleText_fgRed + context + "Error: " + item.message + consoleText_reset);
     } else if (item.level === LogItemLevel.important) {
-      console.warn(consoleText_fgYellow, context + "Important: " + item.message, consoleText_reset);
+      console.warn(consoleText_fgYellow + context + "Important: " + item.message + consoleText_reset);
     } else {
       console.log(context + "Log: " + item.message);
     }

@@ -11,6 +11,7 @@ const multiComment = Symbol("multiComment");
 
 export default class Utilities {
   static _isDebug?: boolean;
+  static _isAppSim?: boolean;
   static _isInternal?: boolean;
   static defaultEncoding = "UTF-8";
   static replacementChar = 0xfffd;
@@ -22,6 +23,10 @@ export default class Utilities {
   }
 
   static get isPreview(): boolean {
+    return false;
+  }
+
+  static get isAppSim(): boolean {
     return false;
   }
 
@@ -89,6 +94,8 @@ export default class Utilities {
         retVal += name[i];
       }
     }
+
+    retVal = retVal.replace("Java Script", "JavaScript");
 
     return retVal;
   }
@@ -936,6 +943,39 @@ export default class Utilities {
     return content;
   }
 
+  static replaceAllExceptInLines(content: string, fromToken: string, toToken: string, exceptInLinesWith: string[]) {
+    let nextIndex = content.indexOf(fromToken);
+
+    while (nextIndex >= 0) {
+      let doReplace = true;
+
+      let previousNewLine = content.lastIndexOf("\n", nextIndex);
+      if (previousNewLine >= 0) {
+        const previousPreviousNewLine = content.lastIndexOf("\n", previousNewLine - 1);
+
+        if (previousPreviousNewLine >= 0) {
+          previousNewLine = previousPreviousNewLine;
+        }
+
+        const lineSegment = content.substring(previousNewLine, nextIndex);
+        for (const exceptIn of exceptInLinesWith) {
+          if (lineSegment.indexOf(exceptIn) > 0) {
+            doReplace = false;
+          }
+        }
+      }
+
+      if (doReplace) {
+        content = content.substring(0, nextIndex) + toToken + content.substring(nextIndex + fromToken.length);
+
+        nextIndex = content.indexOf(fromToken, nextIndex + toToken.length);
+      } else {
+        nextIndex = content.indexOf(fromToken, nextIndex + 1);
+      }
+    }
+
+    return content;
+  }
   static createRandomId(length: number) {
     let id = "";
 
@@ -972,6 +1012,7 @@ export default class Utilities {
 
       const r = val | 0,
         v = c === "x" ? r : (r & 0x3) | 0x8;
+
       return v.toString(16);
     });
   }

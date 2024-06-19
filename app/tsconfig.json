@@ -28,6 +28,7 @@
   "exclude": [
     "node_modules",
     "out",
+    "public/**/*",		
     "src/cli/**/*.ts",
     "src/cli/*.ts",
     "src/test/**/*",

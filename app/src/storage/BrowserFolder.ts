@@ -21,6 +21,7 @@ export default class BrowserFolder extends FolderBase implements IFolder {
   private _lastSavedContent: string;
   private _storage: BrowserStorage;
   private _parentFolder: BrowserFolder | null;
+  private _lastLoadedPath?: string;
 
   get storage(): BrowserStorage {
     return this._storage;
@@ -128,7 +129,7 @@ export default class BrowserFolder extends FolderBase implements IFolder {
     this.files[nameCanon] = file;
   }
 
-  async moveTo(newStorageRelativePath: string): Promise<boolean> {
+  async moveTo(newStorageRelativePath: string, ignoreParentSave?: boolean): Promise<boolean> {
     const newFolderPath = StorageUtilities.getFolderPath(newStorageRelativePath);
     const newFolderName = StorageUtilities.getLeafName(newStorageRelativePath);
 
@@ -139,6 +140,10 @@ export default class BrowserFolder extends FolderBase implements IFolder {
     if (this.isSameFolder(newStorageRelativePath)) {
       return false;
     }
+
+    await this.load();
+
+    const oldPath = this._lastLoadedPath;
 
     if (this._parentFolder !== null) {
       const newParentFolder = await this._parentFolder.storage.ensureFolderFromStorageRelativePath(newFolderPath);
@@ -158,11 +163,35 @@ export default class BrowserFolder extends FolderBase implements IFolder {
 
     this._name = newFolderName;
 
-    if (this._parentFolder !== null) {
+    for (const fileName in this.files) {
+      const file = this.files[fileName];
+
+      if (file) {
+        await (file as BrowserFile).resaveAfterMove();
+      }
+    }
+
+    for (const folderName in this.folders) {
+      const folder = this.folders[folderName];
+
+      if (folder) {
+        await folder.resaveAfterMove(this.fullPath);
+      }
+    }
+
+    await this.save(true);
+
+    if (oldPath) {
+      await localforage.removeItem(oldPath);
+    }
+
+    if (this._parentFolder !== null && !ignoreParentSave) {
       await this._parentFolder.save(true);
     }
 
-    // throw new Error("Not implemented."); // need to add considerable localforage remapping, including remapping and removing source keys
+    if (!ignoreParentSave) {
+      this.notifyFolderMoved({ previousStoragePath: oldPath, newStoragePath: this.fullPath, folder: this });
+    }
 
     return true;
   }
@@ -175,11 +204,12 @@ export default class BrowserFolder extends FolderBase implements IFolder {
     return file;
   }
 
-  async load(force: boolean): Promise<Date> {
+  async load(force?: boolean): Promise<Date> {
     if (this.lastLoadedOrSaved != null && !force) {
       return this.lastLoadedOrSaved;
     }
 
+    this._lastLoadedPath = this.fullPath + BrowserStorage.folderDelimiter;
     const listingContent = await localforage.getItem<string>(this.fullPath + BrowserStorage.folderDelimiter);
 
     if (listingContent != null) {
@@ -232,7 +262,37 @@ export default class BrowserFolder extends FolderBase implements IFolder {
     return this.lastLoadedOrSaved as Date;
   }
 
-  async save(force: boolean): Promise<Date> {
+  async resaveAfterMove(newParentPath: string) {
+    this._parentPath = newParentPath;
+
+    for (const fileName in this.files) {
+      const file = this.files[fileName];
+
+      if (file) {
+        await (file as BrowserFile).resaveAfterMove();
+      }
+    }
+
+    for (const folderName in this.folders) {
+      const folder = this.folders[folderName];
+
+      if (folder) {
+        await folder.resaveAfterMove(this.fullPath);
+      }
+    }
+
+    if (this._lastLoadedPath === undefined) {
+      return;
+    }
+
+    if (this._lastLoadedPath !== StorageUtilities.ensureEndsWithDelimiter(this.fullPath)) {
+      const oldPath = this._lastLoadedPath;
+      await this.save(true);
+      await localforage.removeItem(oldPath);
+    }
+  }
+
+  async save(force?: boolean): Promise<Date> {
     // we need to load before we save if the only thing this folder has seen is a bunch of
     // /ensures/
     if (!this.isLoaded) {
@@ -279,13 +339,14 @@ export default class BrowserFolder extends FolderBase implements IFolder {
 
     if (this._lastSavedContent !== saveContent || force) {
       this._lastSavedContent = saveContent;
+      this._lastLoadedPath = this.fullPath + BrowserStorage.folderDelimiter;
       await localforage.setItem<string>(this.fullPath + BrowserStorage.folderDelimiter, saveContent);
     }
 
     return this.lastLoadedOrSaved as Date;
   }
 
-  override async saveAll(): Promise<boolean> {
+  override async saveAll(force?: boolean): Promise<boolean> {
     // Log.verbose("Saving all at " + this.storageRelativePath);
     if (this.isDisposed) {
       Log.throwIsDisposed();
@@ -297,8 +358,8 @@ export default class BrowserFolder extends FolderBase implements IFolder {
     for (const fileName in this.files) {
       const file = this.files[fileName];
 
-      if (file !== undefined && file.needsSave) {
-        let newContentSaveDate = await file.saveContent(false, true);
+      if (file !== undefined && (file.needsSave || force)) {
+        let newContentSaveDate = await file.saveContent(force, true);
 
         if (newContentSaveDate.getTime() > initialDateTime) {
           needsContentSave = true;
@@ -311,12 +372,12 @@ export default class BrowserFolder extends FolderBase implements IFolder {
 
       if (folder !== undefined && !folder.errorStatus) {
         needsContentSave = true;
-        await folder.saveAll();
+        await folder.saveAll(force);
       }
     }
 
-    if (needsContentSave || this._lastSavedContent === undefined) {
-      await this.save(false);
+    if (needsContentSave || this._lastSavedContent === undefined || force === true) {
+      await this.save(force);
     }
 
     return true;

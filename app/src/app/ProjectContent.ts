@@ -42,7 +42,7 @@ function myFunction()
 }
 `;
 
-  static emptyAutoScript = `{
+  static emptyActionSet = `{
 }
 `;
 
@@ -109,14 +109,14 @@ function myFunction()
     return content.replace('"MyProject"', '"' + ProjectContent.getItemName(projectName) + '"');
   }
 
-  static getEmptyAutoScript(projectName: string, testName: string) {
-    const content = ProjectContent.emptyAutoScript;
+  static getEmptyActionSet(projectName: string, testName: string) {
+    const content = ProjectContent.emptyActionSet;
 
     return content;
   }
 
   static getEmptyWorldTest(projectName: string, testName: string) {
-    const content = ProjectContent.emptyAutoScript;
+    const content = ProjectContent.emptyActionSet;
 
     return content;
   }

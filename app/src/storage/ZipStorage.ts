@@ -73,6 +73,25 @@ export default class ZipStorage extends StorageBase implements IStorage {
     this.lastLoadedOrSaved = new Date();
   }
 
+  async loadFromBase64(data: string, name?: string) {
+    try {
+      await this._jsz.loadAsync(data, {
+        base64: true,
+        checkCRC32: true,
+      });
+    } catch (e: any) {
+      this.errorMessage = e.toString();
+      this.errorStatus = StorageErrorStatus.unprocessable;
+    }
+
+    // Log.fail("Loading zip file from data " + data.length);
+
+    this.name = name;
+    this.updateLastLoadedOrSaved();
+
+    await this.rootFolder.load(true);
+  }
+
   async loadFromUint8Array(data: Uint8Array, name?: string) {
     try {
       await this._jsz.loadAsync(data, {
@@ -110,7 +129,17 @@ export default class ZipStorage extends StorageBase implements IStorage {
 
     return result;
   }
+  async generateCompressedBase64Async(): Promise<string> {
+    const result = await this._jsz.generateAsync({
+      type: "base64",
+      compression: "DEFLATE",
+      compressionOptions: {
+        level: 9,
+      },
+    });
 
+    return result;
+  }
   async generateCompressedUint8ArrayAsync(): Promise<Uint8Array> {
     const result = await this._jsz.generateAsync({
       type: "uint8array",

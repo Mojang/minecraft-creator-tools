@@ -7,6 +7,8 @@ export enum GalleryProjectType {
   blockType = 2,
   codeSample = 3,
   entityType = 4,
+  editorCodeSample = 5,
+  editorProject = 6,
 }
 
 export interface LogoLocation {
@@ -14,6 +16,7 @@ export interface LogoLocation {
   y: number;
   width: number;
   height: number;
+  imageWidth: number;
 }
 
 export default interface IGalleryProject {
@@ -30,7 +33,9 @@ export default interface IGalleryProject {
   containsStructures?: boolean;
   containsGameTests?: boolean;
   itemImages?: string[];
+  codeLineStart?: number;
   fileList?: string[];
+  tags?: string[];
   type: GalleryProjectType;
   id: string;
 }

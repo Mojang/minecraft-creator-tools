@@ -21,7 +21,7 @@ import ProjectUtilities from "../app/ProjectUtilities";
 import ProjectExporter from "../app/ProjectExporter";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 import WebUtilities from "./WebUtilities";
-import { ProjectEditorMode } from "./ProjectEditorUtilities";
+import ProjectEditorUtilities, { ProjectEditorMode } from "./ProjectEditorUtilities";
 
 export enum NewProjectTemplateType {
   empty,
@@ -580,7 +580,7 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     if (additionalFile && additionalFilePath) {
-      await newProject.addBrowserFile(additionalFilePath, additionalFile);
+      await ProjectEditorUtilities.addBrowserFile(newProject, additionalFilePath, additionalFile);
     }
 
     await newProject.save(true);
@@ -855,15 +855,13 @@ export default class App extends Component<AppProps, AppState> {
       const rootFolder = await newProject.ensureProjectFolder();
 
       try {
-        await StorageUtilities.syncFolderTo(
-          gh.rootFolder,
-          rootFolder,
-          false,
-          false,
-          false,
-          ["build", "node_modules", "dist", "/.git", "out"],
-          this._gitHubAddingMessageUpdater
-        );
+        await StorageUtilities.syncFolderTo(gh.rootFolder, rootFolder, false, false, false, [
+          "build",
+          "node_modules",
+          "dist",
+          "/.git",
+          "out",
+        ]);
       } catch (e: any) {
         this.setState({
           carto: this.state.carto,
@@ -885,14 +883,6 @@ export default class App extends Component<AppProps, AppState> {
       newProject.originalGitHubFolder = gitHubFolder;
       newProject.originalGalleryId = galleryId;
       newProject.originalSampleId = sampleId;
-
-      if (sampleId !== undefined) {
-        const snippet = ProjectUtilities.getSnippet(sampleId);
-
-        if (snippet) {
-          await ProjectUtilities.injectSnippet(newProject, snippet);
-        }
-      }
 
       if (updateContent !== undefined && newProject.projectFolder !== null) {
         try {

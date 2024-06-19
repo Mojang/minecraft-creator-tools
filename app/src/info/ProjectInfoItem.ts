@@ -114,7 +114,7 @@ export default class ProjectInfoItem {
     summaryString += "[" + this.generatorId + Utilities.frontPadToLength(this.generatorIndex, 3, "0") + "] ";
 
     if (this.projectItem) {
-      summaryString += "(" + this.projectItem.storagePath + ") ";
+      summaryString += "(" + this.projectItem.projectPath + ") ";
     }
 
     if (this.message) {
@@ -302,7 +302,7 @@ export default class ProjectInfoItem {
       gId: generatorId,
       gIx: generatorIndex,
       m: message,
-      p: projectItem ? projectItem.storagePath : undefined,
+      p: projectItem ? projectItem.projectPath : undefined,
       d: data,
       iId: itemId,
       c: content,

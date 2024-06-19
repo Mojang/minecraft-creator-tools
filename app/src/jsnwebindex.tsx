@@ -26,7 +26,7 @@ loader.config({
 });
 
 async function initAsync() {
-  await CartoApp.init();
+  CartoApp.init();
 
   const theme = mergeThemes(teamsDarkTheme, minecraftToolDarkTheme);
 

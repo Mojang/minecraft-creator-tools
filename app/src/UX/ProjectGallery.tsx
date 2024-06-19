@@ -28,7 +28,7 @@ interface IProjectGalleryProps extends IAppProps {
   search?: string;
   view: ProjectTileDisplayMode;
   isSelectable?: boolean;
-  filterOn?: GalleryProjectType;
+  filterOn?: GalleryProjectType[];
   onGalleryItemCommand: (command: GalleryProjectCommand, project: IGalleryProject) => void;
 }
 
@@ -263,14 +263,20 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
 
         if (
           this.projectMatchesSearch(galItem) &&
-          (this.props.filterOn === undefined || this.props.filterOn === galItem.type) &&
-          galItem.type === GalleryProjectType.codeSample
+          (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
+          (galItem.type === GalleryProjectType.codeSample || galItem.type === GalleryProjectType.editorCodeSample)
         ) {
+          let view = this.props.view;
+
+          if (this.state.mode === ProjectGalleryMode.codeSnippets) {
+            view = ProjectTileDisplayMode.smallCodeSample;
+          }
+
           snippetGalleries.push(
             <ProjectTile
               key={"csitem" + i}
               theme={this.props.theme}
-              displayMode={ProjectTileDisplayMode.smallCodeSample}
+              displayMode={view}
               isSelectable={this.props.isSelectable}
               onGalleryItemCommand={this._handleCommand}
               isSelected={this.state.selectedItem === galItem}
@@ -284,14 +290,15 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
         }
       }
 
-      if (!didPushSnippet) {
-        snippetGalleries.push(<div className="pg-notFound">No snippets found.</div>);
-      }
-
       let binClassName = "pg-binWrap";
 
       if (this.props.view === ProjectTileDisplayMode.smallImage) {
         binClassName += " pg-binWrap-small";
+      }
+
+      if (!didPushSnippet && !didPushStarter) {
+        snippetGalleries.push(<div className="pg-notFound">No snippets or starters found.</div>);
+        binClassName += " pg-binWrap-empty";
       }
 
       snippetGalleriesElt = (
@@ -313,8 +320,9 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
 
         if (
           this.projectMatchesSearch(galItem) &&
-          (this.props.filterOn === undefined || this.props.filterOn === galItem.type) &&
+          (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
           (galItem.type === GalleryProjectType.project ||
+            galItem.type === GalleryProjectType.editorProject ||
             galItem.type === GalleryProjectType.blockType ||
             galItem.type === GalleryProjectType.entityType)
         ) {
@@ -338,20 +346,19 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
         }
       }
 
-      if (!didPushStarter) {
-        projectGalleries.push(<div className="pg-notFound">No starters found.</div>);
+      if (projectGalleries.length > 0) {
+        projectGalleriesElt = (
+          <div
+            className="pg-binWrap"
+            style={{
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            }}
+          >
+            {projectGalleries}
+          </div>
+        );
       }
-      projectGalleriesElt = (
-        <div
-          className="pg-binWrap"
-          style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-          }}
-        >
-          {projectGalleries}
-        </div>
-      );
     }
 
     return (

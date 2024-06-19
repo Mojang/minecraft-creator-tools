@@ -10,6 +10,12 @@
     "entityTypeResourceCount": 0,
     "behaviorPackAnimationCount": 0,
     "behaviorPackAnimationControllerCount": 0,
+    "overallSize": 127150,
+    "fileCounts": 55,
+    "folderCounts": 23,
+    "contentSize": 127150,
+    "contentFileCounts": 55,
+    "contentFolderCounts": 18,
     "textureCount": 0,
     "chunkCount": 0,
     "worldLoadErrors": 0,
@@ -49,6 +55,42 @@
       }
     },
     "summary": {
+      "PACKSIZE": {
+        "1": {
+          "title": "Overall Size"
+        },
+        "2": {
+          "title": "Overall File Count",
+          "defaultMessage": "File Counts"
+        },
+        "3": {
+          "title": "Overall Folder Count",
+          "defaultMessage": "Folder Counts"
+        },
+        "4": {
+          "title": "Content Size"
+        },
+        "5": {
+          "title": "Content File Count",
+          "defaultMessage": "Content File Counts"
+        },
+        "6": {
+          "title": "Content Folder Count",
+          "defaultMessage": "Content Folder Counts"
+        }
+      },
+      "ADDONREQ": {
+        "102": {
+          "title": "102",
+          "defaultMessage": "Found an add-on-blocked folder 'entities' in a parent folder pack\\loot_tables. Should be named 'creatorshortname' and not a common term",
+          "testCompleteFails": 1
+        },
+        "104": {
+          "title": "104",
+          "defaultMessage": "Found a loose file 'sheepomelon.json' in loot_tables\\entities. Files should only be in the folder loot_tables\\entities\\<mygamename>",
+          "testCompleteFails": 2
+        }
+      },
       "TEXTURE": {
         "1": {
           "title": "Textures"
@@ -67,6 +109,12 @@
         },
         "4": {
           "defaultMessage": "Execute Sub Commands"
+        },
+        "5": {
+          "defaultMessage": "NBT Tags"
+        },
+        "6": {
+          "defaultMessage": "NBT Experiment Tags"
         }
       },
       "ADDONIREQ": {
@@ -78,6 +126,61 @@
     }
   },
   "items": [
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 1,
+      "d": 127150
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 2,
+      "d": 55
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 3,
+      "d": 23
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 4,
+      "d": 127150
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 5,
+      "d": 55
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 6,
+      "d": 18
+    },
+    {
+      "iTp": 1,
+      "gId": "ADDONREQ",
+      "gIx": 102,
+      "d": "entities"
+    },
+    {
+      "iTp": 1,
+      "gId": "ADDONREQ",
+      "gIx": 104,
+      "d": "sheepomelon.json"
+    },
+    {
+      "iTp": 1,
+      "gId": "ADDONREQ",
+      "gIx": 104,
+      "m": "Found a loose file 'sheepomelon_shear.json' in loot_tables\\entities. Files should only be in the folder loot_tables\\entities\\<mygamename>",
+      "d": "sheepomelon_shear.json"
+    },
     {
       "iTp": 7,
       "gId": "TEXTURE",
@@ -116,6 +219,42 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 1,
+      "p": "/Content/behavior_packs/aop_mobsbp/"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/behavior_packs/aop_mobsbp/"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/behavior_packs/aop_mobsbp/"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
+      "p": "/Content/behavior_packs/aop_mobsbp/"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
     },
     {
@@ -134,6 +273,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
     },
     {
@@ -171,6 +322,18 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
       "gIx": 1,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
@@ -190,6 +353,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
@@ -219,6 +394,18 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
       "gIx": 1,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
     },
@@ -238,6 +425,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
     },
     {
@@ -267,6 +466,18 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
       "gIx": 1,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
     },
@@ -286,6 +497,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
     },
     {
@@ -315,6 +538,18 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
       "gIx": 1,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
     },
@@ -334,6 +569,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
     },
     {
@@ -363,6 +610,18 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
       "gIx": 1,
       "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
     },
@@ -382,6 +641,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
     },
     {
@@ -411,6 +682,18 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
       "gIx": 1,
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
     },
@@ -430,6 +713,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
     },
     {
@@ -459,6 +754,18 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
       "gIx": 1,
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
     },
@@ -478,6 +785,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
     },
     {
@@ -507,6 +826,18 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
       "gIx": 1,
       "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
     },
@@ -531,6 +862,18 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
+      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
       "gIx": 1,
       "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
     },
@@ -551,6 +894,54 @@
       "gId": "WORLDDATA",
       "gIx": 4,
       "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
+      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 1,
+      "p": "/Content/resource_packs/aop_mobsrp/"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 2,
+      "p": "/Content/resource_packs/aop_mobsrp/"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 3,
+      "p": "/Content/resource_packs/aop_mobsrp/"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
+      "p": "/Content/resource_packs/aop_mobsrp/"
     },
     {
       "iTp": 7,
@@ -574,6 +965,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
     },
     {
@@ -598,6 +1001,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
     },
     {
@@ -622,6 +1037,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
     },
     {
@@ -646,6 +1073,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"
     },
     {
@@ -670,6 +1109,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"
     },
     {
@@ -694,6 +1145,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
     },
     {
@@ -718,6 +1181,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json"
     },
     {
@@ -742,6 +1217,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
     },
     {
@@ -766,6 +1253,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"
     },
     {
@@ -790,6 +1289,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
     },
     {
@@ -814,6 +1325,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"
     },
     {
@@ -838,6 +1361,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"
     },
     {
@@ -862,6 +1397,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
     },
     {
@@ -886,6 +1433,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -910,6 +1469,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"
     },
     {
@@ -934,6 +1505,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
     },
     {
@@ -958,6 +1541,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
     },
     {
@@ -982,6 +1577,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"
     },
     {
@@ -1006,6 +1613,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"
     },
     {
@@ -1030,6 +1649,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
     },
     {
@@ -1054,6 +1685,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
     },
     {
@@ -1078,6 +1721,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"
     },
     {
@@ -1102,6 +1757,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
     },
     {
@@ -1126,6 +1793,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
     },
     {
@@ -1150,6 +1829,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
     },
     {
@@ -1174,6 +1865,18 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 4,
+      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 5,
+      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
     },
     {
@@ -5697,5 +6400,5 @@
   },
   "generatorName": "Minecraft Creator Tools",
   "suite": 2,
-  "generatorVersion": "0.1.80"
+  "generatorVersion": "0.2.3"
 }

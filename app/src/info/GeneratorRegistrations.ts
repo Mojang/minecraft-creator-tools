@@ -26,11 +26,15 @@ import IProjectInfoGenerator from "./IProjectInfoGenerator";
 import IProjectItemInfoGenerator from "./IProjectItemInfoGenerator";
 import IProjectInfoGeneratorBase from "./IProjectInfoGeneratorBase";
 import TextureInfoGenerator from "./TextureInfoGenerator";
+import PackSizeInfoGenerator from "./PackSizeInfoGenerator";
+import BehaviorPackItemTypeManager from "../manager/BehaviorPackItemTypeManager";
+import TextureImageInfoGenerator from "./TextureImageInfoGenerator";
 
 export default class GeneratorRegistrations {
   static projectGenerators = [
     new ItemCountsInfoGenerator(),
     new LineSizeInfoGenerator(),
+    new PackSizeInfoGenerator(),
     new PackInformationGenerator(),
     new JsonFileTagsInfoGenerator(),
     new ScriptModuleManager(),
@@ -38,9 +42,11 @@ export default class GeneratorRegistrations {
     new MinEngineVersionManager(),
     new BaseGameVersionManager(),
     new BehaviorPackEntityTypeManager(),
+    new BehaviorPackItemTypeManager(),
     new AddOnRequirementsGenerator(),
     new StrictPlatformInfoGenerator(),
     new TextureInfoGenerator(),
+    new TextureImageInfoGenerator(),
   ];
 
   static itemGenerators = [
@@ -67,12 +73,16 @@ export default class GeneratorRegistrations {
         (generator as WorldDataInfoGenerator).performAddOnValidations = true;
       } else if (generator.id === "TEXTURE") {
         (generator as TextureInfoGenerator).performAddOnValidations = true;
+      } else if (generator.id === "PACKSIZE") {
+        (generator as PackSizeInfoGenerator).performAddOnValidations = true;
       }
     } else {
       if (generator.id === "WORLDDATA") {
         (generator as WorldDataInfoGenerator).performAddOnValidations = false;
       } else if (generator.id === "TEXTURE") {
         (generator as TextureInfoGenerator).performAddOnValidations = false;
+      } else if (generator.id === "PACKSIZE") {
+        (generator as PackSizeInfoGenerator).performAddOnValidations = false;
       }
     }
   }

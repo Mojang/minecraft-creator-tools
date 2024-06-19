@@ -11,7 +11,7 @@ export default class DifferenceSet {
   fileDifferences: IFileDifference[] = [];
   folderDifferences: IFolderDifference[] = [];
 
-  getZip() {
+  async getZip() {
     const zipStorage = new ZipStorage();
 
     for (let i = 0; i < this.fileDifferences.length; i++) {
@@ -19,9 +19,11 @@ export default class DifferenceSet {
 
       if (fileDiff.type === FileDifferenceType.fileAdded || fileDiff.type === FileDifferenceType.contentsDifferent) {
         if (fileDiff.updated) {
-          const zipFile = zipStorage.rootFolder.ensureFile(fileDiff.path);
+          const zipFile = await zipStorage.rootFolder.ensureFileFromRelativePath(fileDiff.path);
 
-          zipFile.setContent(fileDiff.updated.content);
+          if (fileDiff.updated.content) {
+            zipFile.setContent(fileDiff.updated.content);
+          }
         }
       }
     }

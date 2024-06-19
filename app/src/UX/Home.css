@@ -1,7 +1,7 @@
 @media only screen and (min-width: 1316px) {
   .home-search-area {
     grid-column: 2;
-    padding-top: 20px;
+    padding-top: 14px;
     padding-bottom: 16px;
   }
   .home-projects-note {
@@ -21,7 +21,13 @@
     display: grid;
     grid-template-rows: 120px 0.5fr 0.5fr 30px 30px;
     grid-template-columns: 400px 1fr;
-    height: 100vh;
+  }
+
+  .home-header {
+    font-size: 30pt;
+    margin-top: 19px;
+    height: 100%;
+    border-bottom: outset 2px;
   }
 
   .home-toolTile {
@@ -31,16 +37,11 @@
     margin-left: 10px;
     width: 330px;
     text-align: left;
-    opacity: 0.8;
     border: solid 1.5px black;
   }
 
   .home-header-area {
     border-bottom: inset 2px;
-  }
-
-  .home-header {
-    border-bottom: outset 2px;
   }
 
   .home-usage {
@@ -71,13 +72,11 @@
   .home-gallery-interior {
     overflow-y: auto;
     border-left: solid 1px white;
-    height: calc(100vh - 180px);
   }
 
   .home-projects-list {
     overflow-y: scroll;
     margin-top: 8px;
-    height: calc(100vh - 300px);
   }
 }
 
@@ -92,6 +91,8 @@
     height: 120px;
     display: inline-flex;
     margin-top: 10px;
+    margin-left: 6px;
+    margin-right: 6px;
     width: 320px;
     text-align: left;
     opacity: 0.8;
@@ -100,11 +101,14 @@
 
   .home-layout {
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr;
     height: 100vh;
     overflow-y: auto;
-    grid-template-rows: 200px 1fr 220px 50px 50px;
+  }
+
+  .home-header {
+    height: 120px;
+    padding-top: 20px;
+    padding-bottom: 20px;
   }
 
   .home-toolTile-bin {
@@ -113,15 +117,8 @@
   }
 
   .home-projects-bin {
-    grid-row: 2;
     min-width: 320px;
-    grid-column: 1;
     vertical-align: middle;
-  }
-
-  .home-gallery {
-    grid-row: 3;
-    grid-column: 1;
   }
 
   .home-projects-note {
@@ -135,6 +132,10 @@
   .home-projects-list {
     padding-bottom: 14px;
   }
+
+  .home-legal {
+    padding-bottom: 30px;
+  }
 }
 
 .home-starterArea {
@@ -143,7 +144,7 @@
 }
 
 .home-search-area {
-  padding-top: 20px;
+  padding-top: 12px;
   padding-left: 32px;
   display: inline-block;
 }
@@ -156,7 +157,12 @@
   display: inline-block;
   border: 0px !important;
   grid-column: 2;
+  max-width: calc(100vw - 40px);
   box-shadow: none !important;
+}
+
+.home-inspectFileUpload {
+  max-width: calc(100vw - 100px);
 }
 
 .home-projects-note {
@@ -199,8 +205,20 @@
   padding: 20px;
 }
 
+.home-inlineMessage {
+  padding: 20px;
+}
+
+.home-loadingIcon {
+  width: 16px;
+  position: relative;
+  top: 2px;
+  margin-right: 6px;
+}
+
 .home-header-docsLink {
   color: white;
+  padding-left: 7px;
 }
 
 .home-error {
@@ -224,14 +242,8 @@
   background-image: url(../images/mctoolsbanner.png);
   display: inline-block;
   background-size: cover;
-  width: 297px;
-  height: 78px;
-}
-
-.home-header {
-  font-size: 30pt;
-  margin-top: 11px;
-  height: 100%;
+  width: 266px;
+  height: 60px;
 }
 
 .home-dialog {
@@ -314,6 +326,7 @@
   padding-top: 10px;
   font-size: small;
   padding-bottom: 8px;
+  white-space: nowrap;
 }
 
 .home-tools {
@@ -395,7 +408,7 @@
   text-align: center;
   padding-left: 5px !important;
   padding-right: 5px !important;
-  max-width: 350px !important;
+  max-width: calc(100vw - 100px) !important;
 }
 
 .home-toolTile-button SPAN {
@@ -442,5 +455,6 @@
   grid-column: 1;
   padding-top: 21px;
   padding-left: 10px;
+  padding-bottom: 6px;
   user-select: none;
 }

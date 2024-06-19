@@ -3,7 +3,7 @@ import IAppProps from "./IAppProps";
 import Project from "../app/Project";
 import "./ConnectToGitHub.css";
 import GitHubManager from "../github/GitHubManager";
-import { List, ListProps, Accordion, InputProps, Input } from "@fluentui/react-northstar";
+import { List, ListProps, Accordion, InputProps, Input, selectableListBehavior } from "@fluentui/react-northstar";
 import { GitHubPropertyType } from "./ProjectPropertyEditor";
 
 interface IConnectToGitHubProps extends IAppProps {
@@ -118,6 +118,8 @@ export default class ConnectToGitHub extends Component<IConnectToGitHubProps, IC
                   Select a repository:
                   <List
                     selectable
+                    aria-label="List of repositories"
+                    accessibility={selectableListBehavior}
                     defaultSelectedIndex={0}
                     items={repoListItems}
                     onSelectedIndexChange={this._handleProjectSelected}

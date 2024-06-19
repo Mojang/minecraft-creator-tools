@@ -9,15 +9,21 @@ import Database from "../minecraft/Database";
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
 import { ProjectEditPreference, ProjectScriptLanguage } from "./IProjectData";
-import BehaviorManifestJson from "../minecraft/BehaviorManifestJson";
+import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 import NpmPackageJson from "../devproject/NpmPackageJson";
-import ResourceManifestJson from "../minecraft/ResourceManifestJson";
+import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import ISnippet from "./ISnippet";
 import IGalleryProject from "./IGalleryProject";
 import IFolder from "../storage/IFolder";
 import ProjectItemUtilities from "./ProjectItemUtilities";
 import { PackType } from "../minecraft/Pack";
 import BlockTypeBehaviorDefinition from "../minecraft/BlockTypeBehaviorDefinition";
+import { IAnnotatedValue } from "../core/AnnotatedValue";
+import ProjectItem from "./ProjectItem";
+import HttpStorage from "../storage/HttpStorage";
+import CartoApp from "./CartoApp";
+import ProjectExporter from "./ProjectExporter";
+import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 
 export enum NewEntityTypeAddMode {
   baseId,
@@ -38,7 +44,7 @@ export default class ProjectUtilities {
 
   static async ensureJsonItem(project: Project, jsonContent: string, fileName: string) {
     if (!project.projectFolder) {
-      return;
+      return undefined;
     }
 
     const typeInfo = ProjectItemUtilities.inferTypeFromJsonContent(jsonContent, fileName);
@@ -49,39 +55,28 @@ export default class ProjectUtilities {
       packType = PackType.behavior;
     }
 
-    const baseFolder = await this.getDefaultFolderForPack(project, packType);
+    const baseFolder = await ProjectItemUtilities.getDefaultFolderForType(project, typeInfo.itemType);
 
     if (!baseFolder) {
-      return;
+      return undefined;
     }
 
-    let folderPath = typeInfo.path;
+    let folderPath = baseFolder.getFolderRelativePath(project.projectFolder);
 
     if (folderPath === undefined) {
-      const roots = ProjectItemUtilities.getFolderRootsForType(typeInfo.itemType).join("/");
-      if (roots.length > 0 && roots[0].startsWith("resource_")) {
-        folderPath = "/" + roots[0];
-      } else {
-        folderPath = "/";
-
-        if (roots) {
-          for (const fold of roots) {
-            folderPath += fold + "/";
-          }
-        }
-      }
+      return undefined;
     }
 
-    const folder = await baseFolder.ensureFolderFromRelativePath(folderPath);
+    fileName = StorageUtilities.getUniqueChildFolderName(fileName, baseFolder);
 
-    const contentFile = folder.ensureFile(fileName);
+    const contentFile = baseFolder.ensureFile(fileName);
     contentFile.setContent(jsonContent);
     contentFile.saveContent();
 
     const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
 
     if (relPath !== undefined) {
-      project.ensureItemByStoragePath(
+      return project.ensureItemByProjectPath(
         relPath,
         ProjectItemStorageType.singleFile,
         fileName,
@@ -90,10 +85,40 @@ export default class ProjectUtilities {
         false
       );
     }
+
+    return undefined;
+  }
+
+  static getItemsFromSearch(project: Project, searchResults: IAnnotatedValue[] | undefined) {
+    if (searchResults === undefined) {
+      return [];
+    }
+
+    const searchItems: ProjectItem[] = [];
+
+    for (const val of searchResults) {
+      for (const item of project.items) {
+        if (item.projectPath && val.value === item.projectPath) {
+          searchItems.push(item);
+        }
+      }
+    }
+
+    return searchItems;
+  }
+
+  static getItemFromAnnotatedValue(project: Project, value: IAnnotatedValue) {
+    for (const item of project.items) {
+      if (item.projectPath === value.value) {
+        return item;
+      }
+    }
+
+    return undefined;
   }
 
   static async hasDocumentationMetadata(folder: IFolder, depth?: number) {
-    await folder.load(false);
+    await folder.load();
 
     for (const folderName in folder.folders) {
       if (
@@ -106,9 +131,9 @@ export default class ProjectUtilities {
       }
 
       if (depth === undefined || depth < 5) {
-        const isMetatadata = await ProjectUtilities.hasDocumentationMetadata(folder, depth ? depth + 1 : 1);
+        const isMetadata = await ProjectUtilities.hasDocumentationMetadata(folder, depth ? depth + 1 : 1);
 
-        if (isMetatadata) {
+        if (isMetadata) {
           return true;
         }
       }
@@ -166,7 +191,7 @@ export default class ProjectUtilities {
           await projectItem.ensureFileStorage();
 
           if (projectItem.file) {
-            const manifestJson = await BehaviorManifestJson.ensureOnFile(projectItem.file);
+            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
 
             if (
               manifestJson &&
@@ -205,7 +230,7 @@ export default class ProjectUtilities {
           await projectItem.ensureFileStorage();
 
           if (projectItem.file) {
-            const manifestJson = await BehaviorManifestJson.ensureOnFile(projectItem.file);
+            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
 
             if (
               manifestJson &&
@@ -249,7 +274,7 @@ export default class ProjectUtilities {
           await projectItem.ensureFileStorage();
 
           if (projectItem.file) {
-            const manifestJson = await BehaviorManifestJson.ensureOnFile(projectItem.file);
+            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
 
             if (
               manifestJson &&
@@ -266,6 +291,19 @@ export default class ProjectUtilities {
         }
       }
     }
+  }
+  static async ensureStandardFiles(project: Project) {
+    project.ensureItemByProjectPath(
+      "/.env",
+      ProjectItemStorageType.singleFile,
+      ".env",
+      ProjectItemType.env,
+      undefined,
+      false,
+      undefined,
+      undefined,
+      false
+    );
   }
 
   static async applyBehaviorPackUniqueId(project: Project, newBehaviorPackId: string) {
@@ -287,7 +325,7 @@ export default class ProjectUtilities {
           await projectItem.ensureFileStorage();
 
           if (projectItem.file) {
-            const manifestJson = await BehaviorManifestJson.ensureOnFile(projectItem.file);
+            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
 
             if (
               manifestJson &&
@@ -327,7 +365,7 @@ export default class ProjectUtilities {
           await projectItem.ensureFileStorage();
 
           if (projectItem.file) {
-            const manifestJson = await ResourceManifestJson.ensureOnFile(projectItem.file);
+            const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.file);
 
             if (
               manifestJson &&
@@ -373,10 +411,10 @@ export default class ProjectUtilities {
             if (isPackFolderManaged) {
               const manifestParentFolder = projectItem.file.parentFolder;
 
-              await manifestParentFolder.rename(newName + "_bp");
+              await manifestParentFolder.rename(newName);
             }
 
-            const manifestJson = await BehaviorManifestJson.ensureOnFile(projectItem.file);
+            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
 
             if (
               manifestJson &&
@@ -397,10 +435,10 @@ export default class ProjectUtilities {
             if (isPackFolderManaged) {
               const manifestParentFolder = projectItem.file.parentFolder;
 
-              await manifestParentFolder.rename(newName + "_rp");
+              await manifestParentFolder.rename(newName);
             }
 
-            const manifestJson = await ResourceManifestJson.ensureOnFile(projectItem.file);
+            const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.file);
 
             if (
               manifestJson &&
@@ -488,6 +526,23 @@ export default class ProjectUtilities {
     await ProjectUtilities.applyTitle(project, title);
   }
 
+  static async processNewProject(project: Project, suggestedShortName?: string) {
+    await project.inferProjectItemsFromFiles();
+
+    if (suggestedShortName) {
+      await ProjectExporter.renameDefaultFolders(project, suggestedShortName);
+    }
+
+    await this.ensureStandardFiles(project);
+    await ProjectUtilities.randomizeAllUids(project);
+
+    const pur = new ProjectUpdateRunner(project);
+
+    await pur.updateProject();
+
+    await project.save(true);
+  }
+
   static async randomizeAllUids(project: Project) {
     const uids: { [name: string]: string } = {};
     let setBehaviorPack = false;
@@ -508,9 +563,11 @@ export default class ProjectUtilities {
 
       if (pi.file) {
         if (pi.itemType === ProjectItemType.behaviorPackManifestJson && !setBehaviorPack) {
-          const bpManifestJson = await BehaviorManifestJson.ensureOnFile(pi.file);
+          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.file);
 
           if (bpManifestJson) {
+            bpManifestJson.randomizeModuleUuids();
+
             if (bpManifestJson.uuid && Utilities.uuidEqual(bpManifestJson.uuid, uids["defaultBehaviorPack"])) {
               bpManifestJson.uuid = project.defaultBehaviorPackUniqueId;
               setBehaviorPack = true;
@@ -518,7 +575,7 @@ export default class ProjectUtilities {
             }
           }
         } else if (pi.itemType === ProjectItemType.resourcePackManifestJson && !setResourcePack) {
-          const rpManifestJson = await ResourceManifestJson.ensureOnFile(pi.file);
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.file);
 
           if (rpManifestJson) {
             if (rpManifestJson.uuid && Utilities.uuidEqual(rpManifestJson.uuid, uids["defaultResourcePack"])) {
@@ -534,95 +591,17 @@ export default class ProjectUtilities {
     await project.save();
   }
 
-  static async addEntityType(
+  static async addEntityTypeFromGallery(
     project: Project,
     entityTypeProject: IGalleryProject,
     entityTypeName?: string,
     addMode?: NewEntityTypeAddMode
   ) {
-    const files = entityTypeProject.fileList;
-    const defaultScriptsPath = await ProjectUtilities.getBaseScriptsPath(project);
-
-    if (files === undefined) {
-      Log.unexpectedUndefined("AETFLS");
-      return;
-    }
-
-    if (entityTypeName === undefined) {
-      entityTypeName = entityTypeProject.id;
-    }
-
-    const vanillaBpFolder = await Database.loadDefaultBehaviorPack();
-    const vanillaRpFolder = await Database.loadDefaultResourcePack();
-
-    const targetBpFolder = await project.ensureDefaultBehaviorPackFolder();
-    const targetRpFolder = await project.ensureDefaultResourcePackFolder();
-
-    if (
-      !vanillaBpFolder ||
-      !vanillaRpFolder ||
-      !vanillaBpFolder ||
-      !vanillaRpFolder ||
-      !targetBpFolder ||
-      !targetRpFolder
-    ) {
-      Log.unexpectedUndefined("AETVA");
-      return;
-    }
-
-    for (const filePath of files) {
-      const filePathCanon = filePath.toLowerCase();
-
-      if (filePathCanon.startsWith("/behavior_pack/")) {
-        const subPath = filePathCanon.substring(14);
-        const targetPath = ProjectUtilities.replaceNamesInPath(subPath, project, entityTypeProject, entityTypeName);
-
-        const sourceFile = await vanillaBpFolder.getFileFromRelativePath(subPath);
-
-        if (!sourceFile) {
-          Log.debugAlert("Could not find file '" + subPath + "'");
-        } else {
-          const targetFile = await targetBpFolder.ensureFileFromRelativePath(targetPath);
-
-          await sourceFile.loadContent();
-
-          let content = sourceFile.content;
-
-          if (typeof content === "string") {
-            content = ProjectUtilities.replaceNamesInContent(content, project, entityTypeProject, entityTypeName);
-          }
-
-          if (content !== null) {
-            targetFile.setContent(content);
-          }
-        }
-      } else if (filePathCanon.startsWith("/resource_pack/")) {
-        const subPath = filePathCanon.substring(14);
-        const targetPath = ProjectUtilities.replaceNamesInPath(subPath, project, entityTypeProject, entityTypeName);
-
-        const sourceFile = await vanillaRpFolder.getFileFromRelativePath(subPath);
-
-        if (!sourceFile) {
-          Log.debugAlert("Could not find file '" + subPath + "'");
-        } else {
-          const targetFile = await targetRpFolder.ensureFileFromRelativePath(targetPath);
-
-          await sourceFile.loadContent();
-
-          let content = sourceFile.content;
-
-          if (typeof content === "string") {
-            content = ProjectUtilities.replaceNamesInContent(content, project, entityTypeProject, entityTypeName);
-          }
-
-          if (content !== null) {
-            targetFile.setContent(content);
-          }
-        }
-      }
-    }
+    await ProjectUtilities.copyGalleryPackFiles(project, entityTypeProject, entityTypeName);
 
     await project.inferProjectItemsFromFiles(true);
+
+    const defaultScriptsPath = await ProjectUtilities.getBaseScriptsPath(project);
 
     if (project.preferredScriptLanguage === ProjectScriptLanguage.javaScript) {
       const candidateJsFilePath = await ProjectUtilities.getFileName(
@@ -634,7 +613,7 @@ export default class ProjectUtilities {
       );
 
       if (candidateJsFilePath) {
-        const piGenJs = project.ensureItemByStoragePath(
+        const piGenJs = project.ensureItemByProjectPath(
           candidateJsFilePath,
           ProjectItemStorageType.singleFile,
           StorageUtilities.getLeafName(candidateJsFilePath),
@@ -655,7 +634,7 @@ export default class ProjectUtilities {
       );
 
       if (candidateJsFilePath) {
-        const piGenJs = project.ensureItemByStoragePath(
+        const piGenJs = project.ensureItemByProjectPath(
           candidateJsFilePath,
           ProjectItemStorageType.singleFile,
           StorageUtilities.getLeafName(candidateJsFilePath),
@@ -671,6 +650,165 @@ export default class ProjectUtilities {
     await project.save();
   }
 
+  static async addBlockTypeFromGallery(
+    project: Project,
+    blockTypeProject: IGalleryProject,
+    blockTypeName?: string,
+    addMode?: NewEntityTypeAddMode
+  ) {
+    await ProjectUtilities.copyGalleryPackFiles(project, blockTypeProject, blockTypeName);
+
+    await project.inferProjectItemsFromFiles(true);
+
+    await project.save();
+  }
+
+  static async copyGalleryPackFiles(project: Project, galleryProject: IGalleryProject, newTypeName?: string) {
+    const files = galleryProject.fileList;
+
+    if (files === undefined) {
+      Log.unexpectedUndefined("AETFLS");
+      return;
+    }
+
+    if (newTypeName === undefined) {
+      newTypeName = galleryProject.id;
+    }
+    let sourceBpFolder = undefined;
+    let sourceRpFolder = undefined;
+
+    if (galleryProject.gitHubRepoName === "bedrock-samples") {
+      sourceBpFolder = await Database.loadDefaultBehaviorPack();
+      sourceRpFolder = await Database.loadDefaultResourcePack();
+    } else {
+      const gh = new HttpStorage(
+        CartoApp.contentRoot +
+          "res/samples/" +
+          galleryProject.gitHubOwner +
+          "/" +
+          galleryProject.gitHubRepoName +
+          "-" +
+          (galleryProject.gitHubBranch ? galleryProject.gitHubBranch : "main") +
+          "/" +
+          galleryProject.gitHubFolder
+      ); //new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
+
+      await gh.rootFolder.load();
+
+      const bps = gh.rootFolder.folders["behavior_packs"];
+      const rps = gh.rootFolder.folders["resource_packs"];
+
+      if (!bps || !rps) {
+        Log.unexpectedUndefined("AETFLT");
+        return;
+      }
+
+      await rps.load();
+      await bps.load();
+
+      if (rps.folderCount < 1 || bps.folderCount < 1) {
+        Log.unexpectedUndefined("AETFLY");
+        return;
+      }
+
+      sourceBpFolder = bps.getFolderByIndex(0);
+      sourceRpFolder = rps.getFolderByIndex(0);
+    }
+
+    const targetBpFolder = await project.ensureDefaultBehaviorPackFolder();
+    const targetRpFolder = await project.ensureDefaultResourcePackFolder();
+
+    if (
+      !sourceBpFolder ||
+      !sourceRpFolder ||
+      !sourceBpFolder ||
+      !sourceRpFolder ||
+      !targetBpFolder ||
+      !targetRpFolder
+    ) {
+      Log.unexpectedUndefined("AETVA");
+      return;
+    }
+
+    for (const filePath of files) {
+      if (filePath.startsWith("/behavior_pack")) {
+        let subPath = undefined;
+
+        if (filePath.startsWith("/behavior_pack/")) {
+          subPath = filePath.substring(14);
+        } else {
+          const nextSlash = filePath.indexOf("/", 16);
+
+          if (nextSlash < 0) {
+            Log.unexpectedUndefined("AETVB");
+            return;
+          }
+
+          subPath = filePath.substring(nextSlash);
+        }
+
+        const targetPath = ProjectUtilities.replaceNamesInPath(subPath, project, galleryProject, newTypeName);
+
+        const sourceFile = await sourceBpFolder.getFileFromRelativePath(subPath);
+
+        if (!sourceFile) {
+          Log.debugAlert("Could not find file '" + subPath + "'");
+        } else {
+          const targetFile = await targetBpFolder.ensureFileFromRelativePath(targetPath);
+
+          await sourceFile.loadContent();
+
+          let content = sourceFile.content;
+
+          if (typeof content === "string") {
+            content = ProjectUtilities.replaceNamesInContent(content, project, galleryProject, newTypeName);
+          }
+
+          if (content !== null) {
+            targetFile.setContent(content);
+          }
+        }
+      } else if (filePath.startsWith("/resource_pack")) {
+        let subPath = undefined;
+
+        if (filePath.startsWith("/resource_pack/")) {
+          subPath = filePath.substring(14);
+        } else {
+          const nextSlash = filePath.indexOf("/", 16);
+
+          if (nextSlash < 0) {
+            Log.unexpectedUndefined("AETVC");
+            return;
+          }
+
+          subPath = filePath.substring(nextSlash);
+        }
+
+        const targetPath = ProjectUtilities.replaceNamesInPath(subPath, project, galleryProject, newTypeName);
+
+        const sourceFile = await sourceRpFolder.getFileFromRelativePath(subPath);
+
+        if (!sourceFile) {
+          Log.debugAlert("Could not find file '" + subPath + "'");
+        } else {
+          const targetFile = await targetRpFolder.ensureFileFromRelativePath(targetPath);
+
+          await sourceFile.loadContent();
+
+          let content = sourceFile.content;
+
+          if (typeof content === "string") {
+            content = ProjectUtilities.replaceNamesInContent(content, project, galleryProject, newTypeName);
+          }
+
+          if (content !== null) {
+            targetFile.setContent(content);
+          }
+        }
+      }
+    }
+  }
+
   static replaceNamesInPath(path: string, project: Project, entityTypeProject: IGalleryProject, newName: string) {
     path = Utilities.replaceAll(path, entityTypeProject.id, newName);
 
@@ -683,7 +821,11 @@ export default class ProjectUtilities {
       "minecraft:" + entityTypeProject.id,
       project.effectiveDefaultNamespace + ":" + newName
     );
-    content = Utilities.replaceAll(content, entityTypeProject.id, newName);
+    content = Utilities.replaceAllExceptInLines(content, entityTypeProject.id, newName, [
+      "controller.",
+      "animation.",
+      '"materials"',
+    ]);
 
     return content;
   }
@@ -724,55 +866,108 @@ export default class ProjectUtilities {
     return result;
   }
 
-  static async injectSnippet(project: Project, snippet: ISnippet) {
+  static async injectSnippet(project: Project, snippet: ISnippet, fullScriptBoxReplace: boolean) {
     const replaceContent = "\r\n" + snippet.body.join("\n") + "\r\n";
 
     const folder = await project.ensureDefaultScriptsFolder();
 
-    await folder.load(false);
+    await folder.load();
 
     // Log.debugAlert("Inject snippet considering folder: " + folder.storageRelativePath + "|" + replaceContent);
     for (const fileName in folder.files) {
       const file = folder.files[fileName];
 
       if (file !== undefined) {
-        const type = StorageUtilities.getTypeFromName(file.name);
+        if (fullScriptBoxReplace && fileName === "ScriptBox.ts") {
+          file.setContent(replaceContent);
+        } else {
+          const type = StorageUtilities.getTypeFromName(file.name);
 
-        if (type === "ts" || type === "js") {
-          await file.loadContent();
+          if (type === "ts" || type === "js") {
+            await file.loadContent();
 
-          // Log.debugAlert("Inject snippet considering file: " + file.storageRelativePath + "|" + file.content?.length);
-          if (file.content && typeof file.content === "string") {
-            let content = file.content;
+            // Log.debugAlert("Inject snippet considering file: " + file.storageRelativePath + "|" + file.content?.length);
+            if (file.content && typeof file.content === "string") {
+              let content = file.content;
 
-            for (let i = 0; i < this.CodeReplaceTokens.length; i++) {
-              const token = content.indexOf(this.CodeReplaceTokens[i]);
+              for (let i = 0; i < this.CodeReplaceTokens.length; i++) {
+                const token = content.indexOf(this.CodeReplaceTokens[i]);
 
-              if (token >= 0) {
-                const previousNewLine = content.lastIndexOf("\n", token);
-                const nextNewLine = content.indexOf("\n", token);
-                if (previousNewLine >= 0 && nextNewLine > previousNewLine) {
-                  const replacer = ProjectUtilities.adaptSample(replaceContent, content);
+                if (token >= 0) {
+                  const previousNewLine = content.lastIndexOf("\n", token);
+                  const nextNewLine = content.indexOf("\n", token);
+                  if (previousNewLine >= 0 && nextNewLine > previousNewLine) {
+                    const replacer = ProjectUtilities.adaptSample(replaceContent, content);
 
-                  content =
-                    replacer.newIntroLines +
-                    content.substring(0, previousNewLine) +
-                    replacer.sampleContent +
-                    content.substring(nextNewLine + 1);
+                    content =
+                      replacer.newIntroLines +
+                      content.substring(0, previousNewLine) +
+                      replacer.sampleContent +
+                      content.substring(nextNewLine + 1);
 
-                  if (
-                    replacer.sampleContent.indexOf("overworld") >= 0 &&
-                    replacer.sampleContent.indexOf("const overworld") <= 0
-                  ) {
-                    let firstComment = content.indexOf("//");
-                    if (firstComment >= 0) {
-                      content =
-                        content.substring(0, firstComment) +
-                        '  const overworld = mc.world.getDimension("overworld");\r\n' +
-                        content.substring(firstComment, content.length);
+                    if (content.indexOf("mcui.") >= 0) {
+                      content = content.replace(
+                        'from "@minecraft/server";',
+                        'from "@minecraft/server";\r\nimport * as mcui from "@minecraft/server-ui";'
+                      );
                     }
+
+                    if (content.indexOf("MinecraftEntityTypes") >= 0) {
+                      content = content.replace(
+                        'from "@minecraft/server";',
+                        'from "@minecraft/server";\r\nimport { MinecraftEntityTypes } from "@minecraft/vanilla-data";'
+                      );
+                    }
+
+                    if (content.indexOf("MinecraftBlockTypes") >= 0) {
+                      content = content.replace(
+                        'from "@minecraft/server";',
+                        'from "@minecraft/server";\r\nimport { MinecraftBlockTypes } from "@minecraft/vanilla-data";'
+                      );
+                    }
+
+                    if (content.indexOf("MinecraftItemTypes") >= 0) {
+                      content = content.replace(
+                        'from "@minecraft/server";',
+                        'from "@minecraft/server";\r\nimport { MinecraftItemTypes } from "@minecraft/vanilla-data";'
+                      );
+                    }
+
+                    if (content.indexOf("MinecraftEffectTypes") >= 0) {
+                      content = content.replace(
+                        'from "@minecraft/server";',
+                        'from "@minecraft/server";\r\nimport { MinecraftEffectTypes } from "@minecraft/vanilla-data";'
+                      );
+                    }
+
+                    if (content.indexOf("MinecraftDimensionTypes") >= 0) {
+                      content = content.replace(
+                        'from "@minecraft/server";',
+                        'from "@minecraft/server";\r\nimport { MinecraftDimensionTypes } from "@minecraft/vanilla-data";'
+                      );
+                    }
+
+                    if (content.indexOf("Vector3Utils") >= 0) {
+                      content = content.replace(
+                        'from "@minecraft/server";',
+                        'from "@minecraft/server";\r\nimport { Vector3Utils } from "@minecraft/math";'
+                      );
+                    }
+
+                    if (
+                      replacer.sampleContent.indexOf("overworld") >= 0 &&
+                      replacer.sampleContent.indexOf("const overworld") <= 0
+                    ) {
+                      let firstComment = content.indexOf("//");
+                      if (firstComment >= 0) {
+                        content =
+                          content.substring(0, firstComment) +
+                          '  const overworld = mc.world.getDimension("overworld");\r\n' +
+                          content.substring(firstComment, content.length);
+                      }
+                    }
+                    file.setContent(content);
                   }
-                  file.setContent(content);
                 }
               }
             }
@@ -827,7 +1022,7 @@ export default class ProjectUtilities {
       return;
     }
 
-    const pi = project.ensureItemByStoragePath(
+    const pi = project.ensureItemByProjectPath(
       candidateFilePath,
       ProjectItemStorageType.singleFile,
       nextBlockTypeName,
@@ -867,7 +1062,7 @@ export default class ProjectUtilities {
       );
 
       if (candidateJsFilePath) {
-        const piGenJs = project.ensureItemByStoragePath(
+        const piGenJs = project.ensureItemByProjectPath(
           candidateJsFilePath,
           ProjectItemStorageType.singleFile,
           StorageUtilities.getLeafName(candidateJsFilePath),
@@ -888,7 +1083,7 @@ export default class ProjectUtilities {
       );
 
       if (candidateJsFilePath) {
-        const piGenJs = project.ensureItemByStoragePath(
+        const piGenJs = project.ensureItemByProjectPath(
           candidateJsFilePath,
           ProjectItemStorageType.singleFile,
           StorageUtilities.getLeafName(candidateJsFilePath),

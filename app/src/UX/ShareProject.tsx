@@ -4,14 +4,14 @@ import Project from "../app/Project";
 import "./ShareProject.css";
 import { Button, InputProps } from "@fluentui/react-northstar";
 import Utilities from "../core/Utilities";
-import GitHubStorage from "../github/GitHubStorage";
 import StorageUtilities from "../storage/StorageUtilities";
-import ZipStorage from "../storage/ZipStorage";
 import Carto from "../app/Carto";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { constants } from "../core/Constants";
 import Log from "../core/Log";
+import HttpStorage from "../storage/HttpStorage";
+import CartoApp from "../app/CartoApp";
 
 interface IShareProjectProps extends IAppProps {
   project: Project;
@@ -99,15 +99,6 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
         }
       }
 
-      if (this.props.project.originalFileList) {
-        const fileStorage = ZipStorage.fromJsObject(this.props.project.originalFileList);
-        const zipBytes = await fileStorage.generateCompressedUint8ArrayAsync();
-
-        const fileListDiff64 = Utilities.arrayBufferToBase64(zipBytes.buffer);
-
-        url += "&files=" + fileListDiff64;
-      }
-
       appendDiffList = true;
     }
 
@@ -165,22 +156,26 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
       return undefined;
     }
 
-    const gh = new GitHubStorage(this.props.carto.anonGitHub, ghRepoName, ghRepoOwner, ghRepoBranch, ghRepoFolder);
+    const gh = new HttpStorage(
+      CartoApp.contentRoot +
+        "res/samples/" +
+        ghRepoOwner +
+        "/" +
+        ghRepoName +
+        "-" +
+        (ghRepoBranch ? ghRepoBranch : "main") +
+        "/" +
+        ghRepoFolder
+    );
 
-    if (ghFiles) {
-      await gh.rootFolder.setStructureFromFileList(ghFiles);
-    } else {
-      await gh.rootFolder.load(false);
-    }
+    //const gh = new GitHubStorage(this.props.carto.anonGitHub, ghRepoName, ghRepoOwner, ghRepoBranch, ghRepoFolder);
 
     try {
       const differenceSet = await StorageUtilities.getDifferences(gh.rootFolder, project.projectFolder, true);
 
       if (differenceSet.fileDifferences.length > 0) {
-        const zs = differenceSet.getZip();
-        const zipBytes = await zs.generateCompressedUint8ArrayAsync();
-
-        const diff64 = Utilities.arrayBufferToBase64(zipBytes.buffer);
+        const zs = await differenceSet.getZip();
+        const diff64 = await zs.generateCompressedBase64Async();
 
         return diff64;
       }

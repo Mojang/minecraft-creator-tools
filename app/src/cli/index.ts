@@ -477,7 +477,7 @@ async function displayInfo() {
       for (let i = 0; i < project.items.length; i++) {
         const item = project.items[i];
 
-        console.log("=== " + item.typeTitle + ": " + item.storagePath);
+        console.log("=== " + item.typeTitle + ": " + item.projectPath);
 
         if (item.isWorld) {
           await setAndDisplayWorld(item, false);
@@ -521,9 +521,9 @@ async function setAndDisplayAllWorlds() {
         if (item.isWorld) {
           let shouldProcess = true;
 
-          if (item.storagePath && ofName) {
+          if (item.projectPath && ofName) {
             const name = StorageUtilities.canonicalizeName(
-              StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(item.storagePath))
+              StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(item.projectPath))
             );
 
             shouldProcess = ofName === name;
@@ -557,7 +557,7 @@ async function setAndDisplayAllWorlds() {
             if (path) {
               path = StorageUtilities.ensureEndsWithDelimiter(StorageUtilities.absolutize(path));
 
-              const pi = project.ensureItemByStoragePath(
+              const pi = project.ensureItemByProjectPath(
                 path,
                 ProjectItemStorageType.folder,
                 targetName,
@@ -623,7 +623,7 @@ async function setAndDisplayWorld(item: ProjectItem, isSettable: boolean) {
       }
 
       console.log("World name: " + mcworld.name);
-      console.log("World path: " + item.storagePath);
+      console.log("World path: " + item.projectPath);
 
       if (mcworld.betaApisExperiment !== undefined) {
         console.log("Beta APIs: " + mcworld.betaApisExperiment);

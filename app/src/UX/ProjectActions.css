@@ -11,12 +11,13 @@
 }
 
 .pact-toolTile {
-  height: 130px;
-  display: inline-flex;
+  height: 110px !important;
+  display: inline-flex !important;
   margin-top: 10px;
   margin-left: 10px;
+  padding: 0px !important;
+  text-align: left;
   width: 320px;
-  opacity: 0.8;
   border: solid 1.5px black;
 }
 

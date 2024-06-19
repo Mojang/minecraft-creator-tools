@@ -133,7 +133,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
     if (this.props.activeProjectItem === null || this.props.activeProjectItem === undefined) {
       return "(no project item selected)";
     } else {
-      return this.props.activeProjectItem.storagePath;
+      return this.props.activeProjectItem.projectPath;
     }
   }
 
@@ -144,7 +144,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
   render() {
     let interior = (
       <div className="pie-loadingLabel">
-        {this.props.activeProjectItem?.storagePath} -{" "}
+        {this.props.activeProjectItem?.projectPath} -{" "}
         {this.props.activeProjectItem
           ? ProjectItemUtilities.getDescriptionForType(this.props.activeProjectItem.itemType)
           : ""}{" "}
@@ -396,6 +396,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           } else {
             interior = (
               <JsonEditor
+                project={this.props.project}
                 theme={this.props.theme}
                 onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
                 preferredTextSize={this.props.carto.preferredTextSize}

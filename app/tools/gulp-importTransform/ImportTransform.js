@@ -14,17 +14,12 @@ const mojangMinecraftTypeEquivs = [
 const mojangGameTestTypeEquivs = ["SimulatedPlayer", "Test"];
 
 class ImportTransform {
-  root = "";
-  aliases = {};
   rule = /(?:import)[^'"]*(?:'|")([^'"]*)(?:'|")/gi;
 
-  constructor(root, aliases = {}) {
-    this.root = root;
-    this.aliases = aliases;
-  }
+  constructor() {}
 
-  static create(root, aliases = {}) {
-    return new ImportTransform(root, aliases);
+  static create() {
+    return new ImportTransform();
   }
 
   resolve(filePath, content) {

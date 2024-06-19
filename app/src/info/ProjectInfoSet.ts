@@ -72,7 +72,7 @@ export default class ProjectInfoSet {
 
         if (item.p) {
           if (project) {
-            projectItem = project.getItemByStoragePath(item.p);
+            projectItem = project.getItemByProjectPath(item.p);
           }
 
           if (!this.itemsByStoragePath[item.p]) {
@@ -157,6 +157,7 @@ export default class ProjectInfoSet {
     if (this.suite === ProjectInfoSuite.addOn) {
       if (
         generator.id.indexOf("ADDON") >= 0 ||
+        generator.id === "PACKSIZE" ||
         generator.id === "STRICT" ||
         generator.id === "TEXTURE" ||
         generator.id === "MINENGINEVER" ||
@@ -334,15 +335,15 @@ export default class ProjectInfoSet {
   ) {
     if (
       item.projectItem &&
-      item.projectItem.storagePath &&
+      item.projectItem.projectPath &&
       item.itemType !== InfoItemType.info &&
       item.itemType !== InfoItemType.featureAggregate
     ) {
-      if (!itemsByStoragePath[item.projectItem.storagePath]) {
-        itemsByStoragePath[item.projectItem.storagePath] = [];
+      if (!itemsByStoragePath[item.projectItem.projectPath]) {
+        itemsByStoragePath[item.projectItem.projectPath] = [];
       }
 
-      itemsByStoragePath[item.projectItem.storagePath]?.push(item);
+      itemsByStoragePath[item.projectItem.projectPath]?.push(item);
     }
 
     itemSet.push(item);
@@ -500,7 +501,7 @@ export default class ProjectInfoSet {
     summaryString += "[" + item.generatorId + Utilities.frontPadToLength(item.generatorIndex, 3, "0") + "] ";
 
     if (item.projectItem) {
-      summaryString += "(" + item.projectItem.storagePath + ") ";
+      summaryString += "(" + item.projectItem.projectPath + ") ";
     }
     summaryString += this.getEffectiveMessage(item);
 
@@ -756,6 +757,7 @@ function _addReportJson(data) {
         document.write("<h3>Summary</h3>");
     
         document.write("<table class='summary-table'>");
+        document.write("<tr><th>Measure</th><th>Value</th></tr>");
         const info = _reportObjects[i].info;
     
         if (info) {
@@ -791,6 +793,7 @@ function _addReportJson(data) {
       for (let i=0; i<_reportObjects.length; i++) {
         document.write("<h3>Items</h3>");
         document.write("<table class='items-table'>");
+        document.write("<tr><th>Type</th><th>Test Category</th><th>Category Id</th><th>Message</th><th>Data</th><th>Path</th></tr>");
         const info = _reportObjects[i].info;
         
         const items = _reportObjects[i].items;
@@ -1248,8 +1251,8 @@ function _addReportJson(data) {
       if (item.itemType !== InfoItemType.featureAggregate) {
         let sp = "";
 
-        if (item.projectItem && item.projectItem.storagePath) {
-          sp = item.projectItem.storagePath;
+        if (item.projectItem && item.projectItem.projectPath) {
+          sp = item.projectItem.projectPath;
         }
 
         let line =
@@ -1347,30 +1350,31 @@ function _addReportJson(data) {
     fileGenerators: IProjectFileInfoGenerator[],
     depth: number
   ) {
-    await folder.load(false);
+    await folder.load();
 
     for (const fileName in folder.files) {
       const file = folder.files[fileName];
 
       if (file) {
         const projectItem = project.getItemByFile(file);
-        if (projectItem && projectItem.storagePath) {
-          genContentIndex.insert(StorageUtilities.getBaseFromName(fileName), projectItem.storagePath);
-          genContentIndex.insert(folder.storageRelativePath, projectItem.storagePath);
+        if (projectItem && projectItem.projectPath) {
+          genContentIndex.insert(StorageUtilities.getBaseFromName(fileName), projectItem.projectPath);
+          genContentIndex.insert(folder.storageRelativePath, projectItem.projectPath);
 
           await file.loadContent();
 
           if (file.content && typeof file.content === "string") {
             const fileExtension = StorageUtilities.getTypeFromName(fileName);
 
-            if (projectItem && projectItem.storagePath) {
+            if (projectItem && projectItem.projectPath) {
               switch (fileExtension) {
                 case "json":
-                  genContentIndex.parseJsonContent(projectItem.storagePath, file.content);
+                  genContentIndex.parseJsonContent(projectItem.projectPath, file.content);
                   break;
                 case "ts":
                 case "js":
-                  genContentIndex.parseJsContent(projectItem.storagePath, file.content);
+                case "mjs":
+                  genContentIndex.parseJsContent(projectItem.projectPath, file.content);
                   break;
               }
             }

@@ -1,6 +1,5 @@
 import { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
-import Log from "./../core/Log";
 import Carto from "./../app/Carto";
 import "./CartoSettingsPanel.css";
 import { Input, InputProps, Button, ThemeInput, CheckboxProps, Checkbox } from "@fluentui/react-northstar";
@@ -16,6 +15,7 @@ interface ICartoSettingsPanelProps extends IAppProps {
 interface ICartoSettingsPanelState {
   serverFolderPath: string | undefined;
   autoStartMinecraft: boolean | undefined;
+  formatBeforeSave: boolean;
 }
 
 export default class CartoSettingsPanel extends Component<ICartoSettingsPanelProps, ICartoSettingsPanelState> {
@@ -29,11 +29,13 @@ export default class CartoSettingsPanel extends Component<ICartoSettingsPanelPro
     this._handleServerPathChanged = this._handleServerPathChanged.bind(this);
     this._handleAutoStartChanged = this._handleAutoStartChanged.bind(this);
     this._handleSelectFolderClick = this._handleSelectFolderClick.bind(this);
+    this._handleFormatBeforeSaveChanged = this._handleFormatBeforeSaveChanged.bind(this);
     this._onCartoLoaded = this._onCartoLoaded.bind(this);
 
     this.state = {
       serverFolderPath: this.props.carto.dedicatedServerPath,
       autoStartMinecraft: this.props.carto.autoStartMinecraft,
+      formatBeforeSave: this.props.carto.formatBeforeSave,
     };
 
     this.props.carto.onLoaded.subscribe(this._onCartoLoaded);
@@ -59,6 +61,21 @@ export default class CartoSettingsPanel extends Component<ICartoSettingsPanelPro
 
   _updatePreferredTextSize(newTextSize: number) {
     this.props.carto.preferredTextSize = newTextSize;
+  }
+
+  _handleFormatBeforeSaveChanged(e: SyntheticEvent, data: (CheckboxProps & { checked: boolean }) | undefined) {
+    if (data === undefined || this.props.carto === null || this.state == null) {
+      return;
+    }
+
+    this.props.carto.formatBeforeSave = data.checked;
+    this.props.carto.save();
+
+    this.setState({
+      serverFolderPath: this.state.serverFolderPath,
+      autoStartMinecraft: this.state.autoStartMinecraft,
+      formatBeforeSave: this.state.formatBeforeSave,
+    });
   }
 
   _handleAutoStartChanged(e: SyntheticEvent, data: (CheckboxProps & { checked: boolean }) | undefined) {
@@ -89,11 +106,9 @@ export default class CartoSettingsPanel extends Component<ICartoSettingsPanelPro
   }
 
   private async _handleSelectFolderClick() {
-    Log.debug("Opening folder via services.");
-
     const result = await AppServiceProxy.sendAsync(AppServiceProxyCommands.openFolder, "");
 
-    if (result.length > 0) {
+    if (result && result.length > 0) {
       this.props.carto.dedicatedServerPath = result;
       this.setState({
         serverFolderPath: result,
@@ -107,33 +122,67 @@ export default class CartoSettingsPanel extends Component<ICartoSettingsPanelPro
     }
 
     const serverProps = [];
+    const coreProps = [];
 
-    let openFolderCtrl = <></>;
-    serverProps.push(<div className="csp-label csp-autostartlabel">Start Minecraft services when app opens</div>);
-
-    serverProps.push(
-      <div className="csp-autostart">
-        <Checkbox checked={this.props.carto.autoStartMinecraft} toggle={true} onClick={this._handleAutoStartChanged} />
+    coreProps.push(
+      <div className="csp-label csp-formatbeforesavelabel" key="csp-formatbeforesavelabel">
+        Format JSON and script on open and save
       </div>
     );
+
+    coreProps.push(
+      <div className="csp-formatbeforesave" key="csp-formatbeforesave">
+        <Checkbox
+          checked={this.props.carto.formatBeforeSave}
+          toggle={true}
+          onClick={this._handleFormatBeforeSaveChanged}
+        />
+      </div>
+    );
+
     if (
       AppServiceProxy.hasAppServiceOrDebug ||
       CartoApp.hostType === HostType.vsCodeWebWeb ||
       CartoApp.hostType === HostType.vsCodeMainWeb
     ) {
+      let openFolderCtrl = <></>;
+      serverProps.push(
+        <div className="csp-label csp-autostartlabel" key="csp-autostartlabel">
+          Start Minecraft services when app opens
+        </div>
+      );
+
+      serverProps.push(
+        <div className="csp-autostart" key="csp-as">
+          <Checkbox
+            checked={this.props.carto.autoStartMinecraft}
+            toggle={true}
+            onClick={this._handleAutoStartChanged}
+          />
+        </div>
+      );
       if (AppServiceProxy.hasAppService) {
         openFolderCtrl = <Button onClick={this._handleSelectFolderClick} content="Open folder" />;
       }
-      serverProps.push(<div className="csp-label csp-namelabel">Dedicated Server Path</div>);
+      serverProps.push(
+        <div className="csp-label csp-namelabel" key="csp-nl">
+          Dedicated Server Path
+        </div>
+      );
 
       serverProps.push(
-        <div className="csp-nameinput">
+        <div className="csp-nameinput" key="csp-ni">
           <Input value={this.state.serverFolderPath} onChange={this._handleServerPathChanged} />
           {openFolderCtrl}
         </div>
       );
     }
 
-    return <div className="csp-grid"> {serverProps} </div>;
+    return (
+      <div className="csp-grid">
+        {coreProps}
+        {serverProps}
+      </div>
+    );
   }
 }

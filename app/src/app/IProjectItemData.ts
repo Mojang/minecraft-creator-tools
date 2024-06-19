@@ -3,7 +3,7 @@
 
 import IGitHubInfo from "./IGitHubInfo";
 
-export const MaxItemTypes = 119;
+export const MaxItemTypes = 122;
 
 export enum ProjectItemCategory {
   assets,
@@ -29,7 +29,7 @@ export enum ProjectItemType {
   MCFunction = 9,
   entityTypeBehaviorJson = 10,
   entityTypeBaseJs = 11,
-  autoScriptJson = 12,
+  actionSetJson = 12,
   ts = 13,
   resourcePackManifestJson = 14,
   worldTest = 15,
@@ -136,6 +136,9 @@ export enum ProjectItemType {
   levelDbCurrent = 116,
   levelDbManifest = 117,
   levelDat = 118,
+  justConfigTs = 119,
+  esLintMjs = 120,
+  env = 121,
 }
 
 export enum ProjectItemStorageType {
@@ -156,7 +159,8 @@ export enum ProjectItemErrorStatus {
 
 export default interface IProjectItemData {
   itemType: ProjectItemType;
-  storagePath: string | null | undefined;
+  projectPath: string | null | undefined;
+  storagePath?: string | null | undefined; // legacy name for projectPath.
   tags: string[];
   name: string;
   source?: string;

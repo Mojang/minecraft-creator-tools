@@ -21,12 +21,13 @@ import StorageUtilities from "../storage/StorageUtilities";
 import IAddonManifest, { IAddonDependency, IAddonModule } from "../minecraft/IAddonManifest";
 import IGitHubInfo from "./IGitHubInfo";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
-import { ProjectEditPreference, ProjectScriptLanguage } from "./IProjectData";
+import { ProjectEditPreference, ProjectFocus, ProjectScriptLanguage } from "./IProjectData";
 import MCWorld from "../minecraft/MCWorld";
 import ZipStorage from "../storage/ZipStorage";
 import Utilities from "../core/Utilities";
 import { StorageErrorStatus } from "../storage/IStorage";
 import ProjectItemUtilities from "./ProjectItemUtilities";
+import Pack from "../minecraft/Pack";
 
 export default class ProjectItem {
   private _data: IProjectItemData;
@@ -41,6 +42,7 @@ export default class ProjectItem {
   private _folder: IFolder | null;
   private _isFileContentProcessed: boolean = false;
   private _imageUrlBase64Cache: string | undefined;
+  private _pack: Pack | undefined;
 
   constructor(parent: Project, incomingData?: IProjectItemData) {
     this._project = parent;
@@ -54,7 +56,7 @@ export default class ProjectItem {
     } else {
       this._data = {
         itemType: ProjectItemType.unknown,
-        storagePath: null,
+        projectPath: null,
         storageType: ProjectItemStorageType.singleFile,
         tags: [],
         name: "",
@@ -95,11 +97,11 @@ export default class ProjectItem {
   }
 
   public get isInFileContainer() {
-    if (!this.storagePath) {
+    if (!this.projectPath) {
       return false;
     }
 
-    return this.storagePath.indexOf("#") >= 0;
+    return this.projectPath.indexOf("#") >= 0;
   }
 
   public get isFileContainerStorageItem() {
@@ -134,6 +136,55 @@ export default class ProjectItem {
     }
 
     return sig;
+  }
+
+  getPack() {
+    if (this._pack) {
+      return this._pack;
+    }
+
+    let thisPath = undefined;
+
+    if (this._file) {
+      thisPath = this._file.storageRelativePath;
+    } else if (this._folder) {
+      thisPath = this._folder.storageRelativePath;
+    }
+
+    if (thisPath === undefined) {
+      return undefined;
+    }
+
+    this.project.ensurePacks();
+
+    for (const pack of this.project.packs) {
+      if (thisPath.startsWith(pack.folder.storageRelativePath)) {
+        this._pack = pack;
+        return this._pack;
+      }
+    }
+
+    return undefined;
+  }
+
+  toString() {
+    return this.itemType + ": " + this.projectPath;
+  }
+
+  getPackRelativePath() {
+    const pack = this.getPack();
+
+    if (!pack) {
+      return undefined;
+    }
+
+    if (this._file) {
+      return this._file.getFolderRelativePath(pack.folder);
+    } else if (this._folder) {
+      return this._folder.getFolderRelativePath(pack.folder);
+    }
+
+    return undefined;
   }
 
   static gitHubReferencesEqual(refA: IGitHubInfo | undefined, refB: IGitHubInfo | undefined) {
@@ -174,11 +225,11 @@ export default class ProjectItem {
   }
 
   getFolderGroupingPath() {
-    if (this.storagePath === undefined || this.storagePath === null) {
+    if (this.projectPath === undefined || this.projectPath === null) {
       return undefined;
     }
 
-    let folderStoragePath = StorageUtilities.getFolderPath(this.storagePath);
+    let folderStoragePath = StorageUtilities.getFolderPath(this.projectPath);
 
     if (folderStoragePath === undefined) {
       return undefined;
@@ -320,12 +371,18 @@ export default class ProjectItem {
     this._data.errorMessage = newErrorMessage;
   }
 
-  get storagePath() {
-    return this._data.storagePath;
+  get projectPath() {
+    if (this._data.projectPath === undefined && this._data.storagePath) {
+      this._data.projectPath = this._data.storagePath;
+
+      return this._data.storagePath;
+    }
+
+    return this._data.projectPath;
   }
 
-  set storagePath(newBasePath: string | undefined | null) {
-    this._data.storagePath = newBasePath;
+  set projectPath(newBasePath: string | undefined | null) {
+    this._data.projectPath = newBasePath;
   }
 
   get effectiveEditPreference() {
@@ -468,13 +525,7 @@ export default class ProjectItem {
       }
 
       if (!val) {
-        const tsFile = this.getTypeScriptTwin();
-
-        if (tsFile !== undefined) {
-          val = tsFile.needsSave;
-        }
-
-        const jsFile = this.getJavaScriptTwin();
+        const jsFile = this.getJavaScriptLibTwin();
 
         if (jsFile !== undefined) {
           val = jsFile.needsSave;
@@ -483,6 +534,16 @@ export default class ProjectItem {
     }
 
     return val;
+  }
+
+  updateProjectPath() {
+    if (this._project && this._project.projectFolder) {
+      if (this._file) {
+        this.projectPath = this._file.getFolderRelativePath(this._project.projectFolder);
+      } else if (this._folder) {
+        this.projectPath = this._folder.getFolderRelativePath(this._project.projectFolder);
+      }
+    }
   }
 
   async rename(newFileBaseName: string) {
@@ -499,7 +560,7 @@ export default class ProjectItem {
 
       this._data.name = newFileBaseName + "." + this._file.type;
 
-      this.storagePath = this._file.getFolderRelativePath(this._project.projectFolder);
+      this.projectPath = this._file.getFolderRelativePath(this._project.projectFolder);
       this.storageType = ProjectItemStorageType.singleFile;
     } else {
       this._data.name = newFileBaseName;
@@ -581,21 +642,21 @@ export default class ProjectItem {
 
     // for certain types of project items, the name of the file is critical
     if (
-      this.storagePath &&
+      this.projectPath &&
       (this.itemType === ProjectItemType.js ||
         this.itemType === ProjectItemType.ts ||
         this.itemType === ProjectItemType.testJs ||
         this.itemType === ProjectItemType.structure)
     ) {
-      return StorageUtilities.getLeafName(this.storagePath);
+      return StorageUtilities.getLeafName(this.projectPath);
     }
 
     if (this._data.name !== undefined) {
       return this._data.name;
     }
 
-    if (this.storagePath) {
-      return StorageUtilities.getLeafName(this.storagePath);
+    if (this.projectPath) {
+      return StorageUtilities.getLeafName(this.projectPath);
     }
 
     return "untitled";
@@ -605,13 +666,13 @@ export default class ProjectItem {
     if (this.storageType === ProjectItemStorageType.folder) {
       if (
         this._folder === null &&
-        this.storagePath !== null &&
-        this.storagePath !== undefined &&
-        this.storagePath.startsWith("/") &&
+        this.projectPath !== null &&
+        this.projectPath !== undefined &&
+        this.projectPath.startsWith("/") &&
         this._project.projectFolder !== null &&
         this._project.projectFolder !== undefined
       ) {
-        const prefixPaths = this.storagePath.split("#");
+        const prefixPaths = this.projectPath.split("#");
 
         if (prefixPaths.length > 1) {
           let folderToLoadFrom: IFolder | undefined = this._project.projectFolder;
@@ -647,10 +708,10 @@ export default class ProjectItem {
             return null;
           }
         } else {
-          this._folder = await this._project.projectFolder.ensureFolderFromRelativePath(this.storagePath);
+          this._folder = await this._project.projectFolder.ensureFolderFromRelativePath(this.projectPath);
         }
 
-        await this._folder.load(false);
+        await this._folder.load();
 
         this._onFolderRetrieved.dispatch(this, this._folder);
 
@@ -705,13 +766,13 @@ export default class ProjectItem {
     if (
       this.storageType === ProjectItemStorageType.singleFile &&
       this._file === null &&
-      this.storagePath !== null &&
-      this.storagePath !== undefined &&
-      this.storagePath.startsWith("/") &&
+      this.projectPath !== null &&
+      this.projectPath !== undefined &&
+      this.projectPath.startsWith("/") &&
       this._project.projectFolder !== null &&
       this._project.projectFolder !== undefined
     ) {
-      const prefixPaths = this.storagePath.split("#");
+      const prefixPaths = this.projectPath.split("#");
 
       if (prefixPaths.length > 1) {
         let folderToLoadFrom: IFolder | undefined = this._project.projectFolder;
@@ -744,11 +805,11 @@ export default class ProjectItem {
           this._file = await folderToLoadFrom.ensureFileFromRelativePath(prefixPaths[prefixPaths.length - 1]);
           this._isFileContentProcessed = false;
         } else {
-          Log.debugAlert("Unable to parse a containerized file path of '" + this.storagePath + "'");
+          Log.debugAlert("Unable to parse a containerized file path of '" + this.projectPath + "'");
           return null;
         }
       } else {
-        this._file = await this._project.projectFolder.ensureFileFromRelativePath(this.storagePath);
+        this._file = await this._project.projectFolder.ensureFileFromRelativePath(this.projectPath);
         this._isFileContentProcessed = false;
       }
     }
@@ -979,35 +1040,21 @@ export default class ProjectItem {
     }
   }
 
-  getTypeScriptTwin() {
+  getJavaScriptLibTwin() {
     if (!this._file) {
       return undefined;
     }
 
-    // consider saving a JS file's TS twin, if it exists.
-    const extension = StorageUtilities.getTypeFromName(this._file.name);
+    if (this.itemType === ProjectItemType.ts) {
+      const libScriptsFolder = this.project.getLibScriptsFolder();
 
-    if (extension === "js") {
-      const tsTwinName = StorageUtilities.canonicalizeName(StorageUtilities.getBaseFromName(this._file.name) + ".ts");
+      if (!libScriptsFolder) {
+        return undefined;
+      }
 
-      return this._file.parentFolder.files[tsTwinName];
-    }
-
-    return undefined;
-  }
-
-  getJavaScriptTwin() {
-    if (!this._file) {
-      return undefined;
-    }
-
-    // consider saving a JS file's TS twin, if it exists.
-    const extension = StorageUtilities.getTypeFromName(this._file.name);
-
-    if (extension === "json") {
       const jsTwinName = StorageUtilities.canonicalizeName(StorageUtilities.getBaseFromName(this._file.name) + ".js");
 
-      return this._file.parentFolder.files[jsTwinName];
+      return libScriptsFolder.ensureFile(jsTwinName);
     }
 
     return undefined;
@@ -1018,10 +1065,7 @@ export default class ProjectItem {
       return undefined;
     }
 
-    // consider saving a JS file's TS twin, if it exists.
-    const extension = StorageUtilities.getTypeFromName(this._file.name);
-
-    if (extension === "json") {
+    if (this.itemType === ProjectItemType.actionSetJson) {
       const functionTwinName = StorageUtilities.canonicalizeName(
         StorageUtilities.getBaseFromName(this._file.name) + ".mcfunction"
       );
@@ -1042,14 +1086,8 @@ export default class ProjectItem {
     if (this._file) {
       await this._file.saveContent();
 
-      const tsFile = this.getTypeScriptTwin();
-
-      if (tsFile !== undefined && tsFile.needsSave) {
-        await tsFile.saveContent();
-      }
-
-      // these next two are associated with autoscripting
-      const jsFile = this.getJavaScriptTwin();
+      // these next two are associated with action set
+      const jsFile = this.getJavaScriptLibTwin();
 
       if (jsFile !== undefined && jsFile.needsSave) {
         await jsFile.saveContent();
@@ -1076,11 +1114,11 @@ export default class ProjectItem {
   }
 
   async getGeneratedTypeJavaScript() {
-    if (this.storagePath === null || this.storagePath === undefined) {
+    if (this.projectPath === null || this.projectPath === undefined) {
       return { javaScript: "", typeScript: undefined };
     }
 
-    let typeName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(this.storagePath));
+    let typeName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(this.projectPath));
 
     if (typeName.endsWith(".base")) {
       typeName = typeName.substring(0, typeName.length - 5);
@@ -1091,10 +1129,10 @@ export default class ProjectItem {
 
       if (
         item.itemType === ProjectItemType.entityTypeBehaviorJson &&
-        item.storagePath !== null &&
-        item.storagePath !== undefined
+        item.projectPath !== null &&
+        item.projectPath !== undefined
       ) {
-        const jsonName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(item.storagePath));
+        const jsonName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(item.projectPath));
 
         if (jsonName === typeName) {
           const jsonFile = await item.ensureFileStorage();
@@ -1214,6 +1252,10 @@ export default class ProjectItem {
       dependencies: dependenciesList,
     };
 
+    if (this.project.focus === ProjectFocus.editorExtension) {
+      manifest.capabilities = ["editorExtension"];
+    }
+
     return JSON.stringify(manifest, null, 2);
   }
 
@@ -1225,7 +1267,15 @@ export default class ProjectItem {
     for (let i = 0; i < this._project.items.length; i++) {
       const projectItem = this._project.items[i];
 
-      if (
+      if (projectItem.itemType === ProjectItemType.worldTest) {
+        const file = await projectItem.ensureFileStorage();
+
+        if (file) {
+          const newFileName = StorageUtilities.getBaseFromName(file.name) + ".gen.js";
+
+          content.push('import "scripts/' + newFileName + '";');
+        }
+      } else if (
         projectItem.itemType === ProjectItemType.js ||
         projectItem.itemType === ProjectItemType.buildProcessedJs ||
         projectItem.itemType === ProjectItemType.entityTypeBaseJs ||

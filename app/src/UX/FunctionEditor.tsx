@@ -205,15 +205,27 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
   }
 
   _zoomIn() {
-    this.editor?.getAction("editor.action.fontZoomIn").run();
+    if (this.editor) {
+      let action = this.editor.getAction("editor.action.fontZoomIn");
 
-    this._updateZoom();
+      if (action) {
+        action.run();
+
+        this._updateZoom();
+      }
+    }
   }
 
   _zoomOut() {
-    this.editor?.getAction("editor.action.fontZoomOut").run();
+    if (this.editor) {
+      let action = this.editor.getAction("editor.action.fontZoomOut");
 
-    this._updateZoom();
+      if (action) {
+        action.run();
+
+        this._updateZoom();
+      }
+    }
   }
 
   _updateZoom() {
@@ -468,7 +480,7 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
             <span>{this.props.isCommandEditor ? "Commands" : "Function"}</span>
           </div>
           <div className="mcfe-toolbar">
-            <Toolbar aria-label="Editor toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="Function editor toolbar" items={toolbarItems} />
           </div>
         </div>
       );
@@ -481,7 +493,7 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
     accessoryToolbar = (
       <div className={accessoryClass}>
         <div className="mcfe-accessoryToolBar">
-          <Toolbar aria-label="Editor toolbar overflow menu" items={bottomToolbarItems} />
+          <Toolbar aria-label="Function editor additional tools" items={bottomToolbarItems} />
         </div>
       </div>
     );

@@ -224,7 +224,7 @@ export default class GridEditor extends Component<IGridEditorProps, IGridEditorS
     let height = "500px";
 
     if (this.props.heightOffset) {
-      height = "calc(100vh - " + this.props.heightOffset + ")";
+      height = "calc(100vh - " + this.props.heightOffset + "px)";
     } else if (this.props.height) {
       height = this.props.height + "px";
     }

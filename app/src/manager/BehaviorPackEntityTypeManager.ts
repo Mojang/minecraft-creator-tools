@@ -159,12 +159,8 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
           if (bpEntityType) {
             await bpEntityType.load();
 
-            if (
-              bpEntityType &&
-              bpEntityType.behaviorPackEntityTypeDef &&
-              bpEntityType.behaviorPackEntityTypeDef.description
-            ) {
-              const desc = bpEntityType.behaviorPackEntityTypeDef.description;
+            if (bpEntityType && bpEntityType.data && bpEntityType.data.description) {
+              const desc = bpEntityType.data.description;
 
               if (desc.identifier !== undefined && desc.identifier.toLowerCase().startsWith("minecraft:")) {
                 piiIdentifier.incrementFeature(desc.identifier.toLowerCase());
@@ -180,6 +176,20 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
                 piiRuntimeIdentifier.incrementFeature(desc.runtime_identifier.toLowerCase());
               } else {
                 piiRuntimeIdentifier.incrementFeature("(no runtime identifier)");
+              }
+
+              if (desc.aliases) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                for (const aliasName in desc.aliases) {
+                  piiMetadata.incrementFeature("Entity Type Alias");
+                }
+              }
+
+              if (desc.properties) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                for (const propName in desc.properties) {
+                  piiMetadata.incrementFeature("Entity Type Property");
+                }
               }
 
               if (desc.is_experimental) {

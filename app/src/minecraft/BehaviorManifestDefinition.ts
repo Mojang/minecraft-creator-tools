@@ -8,14 +8,14 @@ import Utilities from "../core/Utilities";
 import Project from "../app/Project";
 import StorageUtilities from "../storage/StorageUtilities";
 
-export default class BehaviorManifestJson {
+export default class BehaviorManifestDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
 
   public definition?: IAddonManifest;
 
-  private _onLoaded = new EventDispatcher<BehaviorManifestJson, BehaviorManifestJson>();
+  private _onLoaded = new EventDispatcher<BehaviorManifestDefinition, BehaviorManifestDefinition>();
 
   public get isLoaded() {
     return this._isLoaded;
@@ -85,6 +85,20 @@ export default class BehaviorManifestJson {
     this._id = newId;
   }
 
+  public randomizeModuleUuids() {
+    if (!this.definition) {
+      return;
+    }
+
+    for (let i = 0; i < this.definition.modules.length; i++) {
+      const mod = this.definition.modules[i];
+
+      if (mod.uuid) {
+        mod.uuid = Utilities.createUuid();
+      }
+    }
+  }
+
   public getNonScriptModuleDependencyCount() {
     if (!this.definition || !this.definition.dependencies) {
       return 0;
@@ -115,19 +129,22 @@ export default class BehaviorManifestJson {
     return undefined;
   }
 
-  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<BehaviorManifestJson, BehaviorManifestJson>) {
-    let bmj: BehaviorManifestJson | undefined;
+  static async ensureOnFile(
+    file: IFile,
+    loadHandler?: IEventHandler<BehaviorManifestDefinition, BehaviorManifestDefinition>
+  ) {
+    let bmj: BehaviorManifestDefinition | undefined;
 
     if (file.manager === undefined) {
-      bmj = new BehaviorManifestJson();
+      bmj = new BehaviorManifestDefinition();
 
       bmj.file = file;
 
       file.manager = bmj;
     }
 
-    if (file.manager !== undefined && file.manager instanceof BehaviorManifestJson) {
-      bmj = file.manager as BehaviorManifestJson;
+    if (file.manager !== undefined && file.manager instanceof BehaviorManifestDefinition) {
+      bmj = file.manager as BehaviorManifestDefinition;
 
       if (!bmj.isLoaded && loadHandler) {
         bmj.onLoaded.subscribe(loadHandler);
@@ -248,6 +265,22 @@ export default class BehaviorManifestJson {
       min_engine_version: [1, 20, 10],
       uuid: Utilities.createUuid(),
     };
+  }
+
+  public getScriptModule(): IAddonModule | undefined {
+    if (!this.definition) {
+      return undefined;
+    }
+
+    for (let i = 0; i < this.definition.modules.length; i++) {
+      const mod = this.definition.modules[i];
+
+      if (mod.type && mod.type.toLowerCase() === "script") {
+        return mod;
+      }
+    }
+
+    return undefined;
   }
 
   public ensureScriptModule(name: string, description: string): IAddonModule {

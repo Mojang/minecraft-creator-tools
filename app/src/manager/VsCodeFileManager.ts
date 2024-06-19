@@ -14,6 +14,7 @@ import VsCodeLaunchJson from "../devproject/VsCodeLaunchJson";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
+import IDebugSettings from "../devproject/IDebugSettings";
 
 export default class VsCodeFileManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "VSCODEFILE";
@@ -71,6 +72,7 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
           const vscodeLaunchJson = await VsCodeLaunchJson.ensureOnFile(pi.file);
 
           if (vscodeLaunchJson) {
+            vscodeLaunchJson.project = project;
             const hasMinecraftDebugConfig = await vscodeLaunchJson.hasMinecraftDebugLaunch({ isServer: true });
 
             if (!hasMinecraftDebugConfig) {
@@ -154,11 +156,19 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
         if (pi.file) {
           const vscodeLaunchJson = await VsCodeLaunchJson.ensureOnFile(pi.file);
 
+          const pack = await project.getDefaultBehaviorPack();
+
+          const debugSettings: IDebugSettings = { isServer: true };
+
+          if (pack && pack.folder) {
+            debugSettings.behaviorPackFolderName = pack.folder.name;
+          }
+
           if (vscodeLaunchJson) {
-            const hasConfig = await vscodeLaunchJson.hasMinecraftDebugLaunch({ isServer: true });
+            const hasConfig = await vscodeLaunchJson.hasMinecraftDebugLaunch(debugSettings);
 
             if (!hasConfig) {
-              const result = await vscodeLaunchJson.ensureMinecraftDebugLaunch({ isServer: true });
+              const result = await vscodeLaunchJson.ensureMinecraftDebugLaunch(debugSettings);
 
               if (result) {
                 await vscodeLaunchJson.save();

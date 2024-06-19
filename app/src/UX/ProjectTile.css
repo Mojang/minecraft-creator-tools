@@ -3,10 +3,10 @@
     margin-left: 10px;
     margin-top: 12px;
     width: 340px;
-    height: 200px;
+    height: 191px;
     max-width: calc(100vw - 60px);
     display: inline-block;
-    border: solid 1.5px #202020;
+    border: solid 2px #202020;
     text-align: left;
   }
 
@@ -21,10 +21,12 @@
   .pt-outer {
     margin-top: 12px;
     width: 340px;
-    height: 200px;
+    margin-left: 6px;
+    margin-right: 6px;
+    height: 191px;
     max-width: calc(100vw - 60px);
     display: inline-block;
-    border: solid 1.5px #202020;
+    border: solid 2px #202020;
     text-align: left;
   }
 
@@ -36,10 +38,9 @@
 
 .pt-grid {
   display: grid;
-  border: outset 4px #848586;
   height: 100%;
   grid-template-columns: 56px 1fr;
-  grid-template-rows: 62px 80px 48px;
+  grid-template-rows: 62px 80px 45px;
 }
 
 .pt-mainArea {
@@ -60,11 +61,11 @@
 }
 
 .pt-iconBorder {
-  border: inset 2px #848586;
-  min-height: 52px;
-  max-height: 52px;
-  min-width: 52px;
-  max-width: 52px;
+  border: inset 1px #848586;
+  min-height: 50px;
+  max-height: 50px;
+  min-width: 50px;
+  max-width: 50px;
   overflow: hidden;
   vertical-align: middle;
   text-align: center;
@@ -80,6 +81,7 @@
   image-rendering: optimizeSpeed;
   image-rendering: -moz-crisp-edges;
   image-rendering: -o-crisp-edges;
+  image-rendering: crisp-edges;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: pixelated;
   image-rendering: optimize-contrast;
@@ -105,8 +107,8 @@
   grid-column-start: 1;
   grid-column-end: 3;
   min-height: 50px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 .pt-mini-toolbar {
@@ -115,7 +117,7 @@
   grid-column-end: 3;
   vertical-align: middle;
   text-align: right;
-  border-top: inset 2px #848586;
+  border-top: inset 1px #848586;
   vertical-align: top;
   padding: 0px;
 }
@@ -123,10 +125,10 @@
 .pt-mini-toolbar button {
   border: 0px;
   background-color: transparent;
-  border-left: inset 2px #848586;
+  border-left: inset 1.5px #848586;
   box-shadow: none;
   width: 60px;
-  height: 43px;
+  height: 42px;
   padding: 0px;
   margin: 0px;
 }
@@ -169,9 +171,9 @@
 }
 
 .pts-button {
-  width: 305px;
-  height: 100px;
-  border: solid 1.5px #202020;
+  width: 425px;
+  height: 138px;
+  border: solid 2px #202020;
 }
 
 .pts-outer-selected {
@@ -180,25 +182,35 @@
 
 .pts-grid {
   display: grid;
-  border: outset 4px #848586;
   height: 100%;
   cursor: pointer;
+  grid-template-rows: 20px 68px 50px;
+}
 
-  grid-template-columns: 39px 254px;
-  grid-template-rows: 39px 49px;
+.pts-tag {
+  text-transform: uppercase;
+  font-size: x-small;
+  margin-right: 7px;
+  border: solid 1px;
+  position: relative;
+  top: -1px;
+  padding: 2px 6px 3px 4px;
 }
 
 .pts-mainArea {
   grid-row: 1;
-  grid-column: 2;
-  padding: 4px;
-  padding-top: 0px;
+  grid-column: 1;
+  padding: 3px;
+  padding-top: 1px;
   vertical-align: middle;
   word-wrap: break-word;
 }
 
-.pt-code {
+.pts-code-line {
+  white-space: nowrap;
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+  overflow-x: hidden;
+  font-size: small;
 }
 
 .pts-title {
@@ -206,25 +218,26 @@
   vertical-align: middle;
   text-overflow: ellipsis;
   overflow-x: hidden;
-  width: 220px;
+  width: 320px;
   padding-left: 3px;
-  max-width: 220px;
+  padding-top: 3px;
+  max-width: 320px;
 }
 
 .pts-iconArea {
   grid-column: 1;
   margin-top: 3px;
   margin-left: 3px;
-  border-left: inset 2px #848586;
-  border-top: inset 2px #848586;
-  border-right: inset 2px #848586;
-  border-bottom: inset 2px #848586;
+  border-left: inset 1px #848586;
+  border-top: inset 1px #848586;
+  border-right: inset 1px #848586;
+  border-bottom: inset 1px #848586;
 }
 
 .pts-descriptionArea {
   grid-column-start: 1;
   grid-column-end: 3;
-  padding: 2px;
+  padding: 3px;
   margin-top: 4px;
   padding-left: 8px;
   padding-right: 8px;
@@ -234,12 +247,12 @@
 
 .pti-button {
   width: 245px;
-  height: 85px;
+  height: 80px;
   border: solid 1.5px #202020;
 }
 
 .pti-outer {
-  padding: 10px;
+  padding: 6px;
   display: inline-block;
 }
 
@@ -247,13 +260,16 @@
   background-color: green;
 }
 
+.pti-grid:active {
+  border: inset 4px #848586;
+}
+
 .pti-grid {
   display: grid;
   border: outset 4px #848586;
   height: 100%;
   cursor: pointer;
-
-  grid-template-columns: 73px 254px;
+  grid-template-columns: 63px 164px;
 }
 
 .pti-mainArea {
@@ -270,16 +286,12 @@
   vertical-align: middle;
   text-overflow: ellipsis;
   overflow-x: hidden;
-  width: 220px;
+  width: 150px;
   padding-left: 3px;
-  max-width: 220px;
+  max-width: 150px;
 }
 
 .pti-iconArea {
   grid-column: 1;
   margin: 3px;
-  border-left: inset 2px #848586;
-  border-top: inset 2px #848586;
-  border-right: inset 2px #848586;
-  border-bottom: inset 2px #848586;
 }

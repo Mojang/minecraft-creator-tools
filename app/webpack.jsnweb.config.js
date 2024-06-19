@@ -48,20 +48,52 @@ const webExtensionConfig = {
     rules: [
       {
         test: /\.js$/,
-        exclude: [/node_modules/, /toolbuild/, /out/, /build/, /ux/, /uxex/, /worldux/, /CHANGELOG/],
+        exclude: [
+          /node_modules/,
+          /toolbuild/,
+          /out/,
+          /build/,
+          /scriptlibs/,
+          /res/,
+          /ux/,
+          /uxex/,
+          /worldux/,
+          /CHANGELOG/,
+        ],
       },
       {
         test: /\.ts$/,
-        exclude: [/node_modules/, /toolbuild/, /out/, /build/, /ux/, /uxex/, /worldux/, /CHANGELOG/],
+        exclude: [
+          /node_modules/,
+          /toolbuild/,
+          /out/,
+          /build/,
+          /scriptlibs/,
+          /res/,
+          /ux/,
+          /uxex/,
+          /worldux/,
+          /CHANGELOG/,
+        ],
       },
       {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader"],
-        exclude: [/out/, /build/, /toolbuild/, /webpack/, /config-overrides/, /CHANGELOG/],
+        exclude: [/out/, /build/, /toolbuild/, /webpack/, /res/, /scriptlibs/, /config-overrides/, /CHANGELOG/],
       },
       {
         test: /\.tsx?$/,
-        exclude: [/node_modules/, /out/, /toolbuild/, /build/, /webpack/, /config-overrides/, /CHANGELOG/],
+        exclude: [
+          /node_modules/,
+          /out/,
+          /toolbuild/,
+          /build/,
+          /scriptlibs/,
+          /res/,
+          /webpack/,
+          /config-overrides/,
+          /CHANGELOG/,
+        ],
         use: [
           {
             loader: "ts-loader",

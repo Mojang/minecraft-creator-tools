@@ -12,19 +12,21 @@ class TypeDef {
 class JsonTypeDefsBuilder {
   _targetFilePath;
   _typedefs = [];
+  _wrapDeclare;
 
-  constructor(targetFilePath) {
+  constructor(targetFilePath, wrapDeclare) {
     this._targetFilePath = targetFilePath;
+    this._wrapDeclare = wrapDeclare;
   }
 
-  static create(targetFilePath) {
-    return new JsonTypeDefsBuilder(targetFilePath);
+  static create(targetFilePath, wrapDeclare) {
+    return new JsonTypeDefsBuilder(targetFilePath, wrapDeclare);
   }
 
   resolve(filePath, content) {
     let moduleName = filePath.toLowerCase();
 
-    if (moduleName.toLowerCase().endsWith(".d.ts")) {
+    if (moduleName.endsWith(".ts") || moduleName.endsWith(".js")) {
       let dirToFileSlash = moduleName.lastIndexOf("/");
       dirToFileSlash = Math.max(dirToFileSlash, moduleName.lastIndexOf("\\"));
 
@@ -64,7 +66,11 @@ class JsonTypeDefsBuilder {
         content += ",";
       }
 
-      const modcontent = 'declare module "' + td.name + '" {\n' + td.content + "\n}";
+      let modcontent = td.content;
+
+      if (this._wrapDeclare) {
+        modcontent = modcontent.replace(/declare /gi, "");
+      }
 
       content += "{";
       content += '"name":"' + td.name + '",';

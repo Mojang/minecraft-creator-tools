@@ -10,6 +10,7 @@ import { IProjectInfoTopicData } from "./IProjectInfoGeneratorBase";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
+import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 
 export default class StrictPlatformInfoGenerator implements IProjectInfoGenerator {
   id = "STRICT";
@@ -49,12 +50,8 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
           if (bpEntityType) {
             await bpEntityType.load();
 
-            if (
-              bpEntityType &&
-              bpEntityType.behaviorPackEntityTypeDef &&
-              bpEntityType.behaviorPackEntityTypeDef.description
-            ) {
-              const desc = bpEntityType.behaviorPackEntityTypeDef.description;
+            if (bpEntityType && bpEntityType.data && bpEntityType.data.description) {
+              const desc = bpEntityType.data.description;
 
               if (desc.identifier !== undefined && desc.identifier.toLowerCase().startsWith("minecraft:")) {
                 infoItems.push(
@@ -78,10 +75,37 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
                   new ProjectInfoItem(
                     InfoItemType.testCompleteFail,
                     this.id,
-                    100,
+                    101,
                     `Uses a runtime_identifier override`,
                     pi,
                     desc.runtime_identifier
+                  )
+                );
+              }
+            }
+          }
+        }
+      } else if (pi.itemType === ProjectItemType.itemTypeBehaviorJson) {
+        await pi.ensureFileStorage();
+
+        if (pi.file) {
+          const bpItemType = await ItemTypeDefinition.ensureOnFile(pi.file);
+
+          if (bpItemType) {
+            await bpItemType.load();
+
+            if (bpItemType && bpItemType.data && bpItemType.data.description) {
+              const desc = bpItemType.data.description;
+
+              if (desc.identifier !== undefined && desc.identifier.toLowerCase().startsWith("minecraft:")) {
+                infoItems.push(
+                  new ProjectInfoItem(
+                    InfoItemType.testCompleteFail,
+                    this.id,
+                    104,
+                    `Uses a minecraft: identifier override`,
+                    pi,
+                    desc.identifier
                   )
                 );
               }

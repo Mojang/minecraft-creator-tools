@@ -47,7 +47,7 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
 
     const entitiesFolder = await Database.defaultBehaviorPackFolder.ensureFolder("entities");
 
-    await entitiesFolder.load(false);
+    await entitiesFolder.load();
 
     this.setState({
       entitiesFolder: entitiesFolder,
@@ -148,7 +148,7 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
             view={ProjectTileDisplayMode.smallImage}
             isSelectable={true}
             gallery={this.props.carto.gallery}
-            filterOn={GalleryProjectType.entityType}
+            filterOn={[GalleryProjectType.entityType]}
             onGalleryItemCommand={this._handleTypeGalleryCommand}
           />
         </div>

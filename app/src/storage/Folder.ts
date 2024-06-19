@@ -137,7 +137,7 @@ export default class Folder extends FolderBase implements IFolder {
     return this.ensureFile(name);
   }
 
-  async load(force: boolean): Promise<Date> {
+  async load(force?: boolean): Promise<Date> {
     if (this.lastLoadedOrSaved != null && !force) {
       return this.lastLoadedOrSaved;
     }

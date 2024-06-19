@@ -160,7 +160,7 @@ export default class DedicatedServerSettingsPanel extends Component<
 
     const result = await AppServiceProxy.sendAsync(AppServiceProxyCommands.openFolder, "");
 
-    if (result.length > 0) {
+    if (result && result.length > 0) {
       this.props.carto.dedicatedServerPath = result;
       this.props.carto.save();
 

@@ -43,7 +43,7 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
 
     const blocksFolder = Database.defaultBehaviorPackFolder.ensureFolder("blocks");
 
-    await blocksFolder.load(false);
+    await blocksFolder.load();
 
     this.setState({
       blockTypesFolder: blocksFolder,

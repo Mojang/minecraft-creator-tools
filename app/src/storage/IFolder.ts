@@ -1,8 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { IEvent } from "ste-events";
 import IFile from "./IFile";
-import IStorage from "./IStorage";
+import IStorage, { IFolderMove } from "./IStorage";
 import IStorageObject from "./IStorageObject";
 
 export enum FolderErrorStatus {
@@ -29,10 +30,13 @@ export default interface IFolder extends IStorageObject {
 
   errorStatus?: FolderErrorStatus;
 
+  onFolderMoved: IEvent<IFolder, IFolderMove>;
+  onChildFolderMoved: IEvent<IFolder, IFolderMove>;
+
   rename(name: string): Promise<boolean>;
   moveTo(newStorageRelativePath: string): Promise<boolean>;
 
-  load(force: boolean): Promise<Date>;
+  load(force?: boolean): Promise<Date>;
 
   exists(): Promise<boolean>;
   ensureExists(): Promise<boolean>;
@@ -47,12 +51,15 @@ export default interface IFolder extends IStorageObject {
   getFileFromRelativePath(serverRelativePath: string): Promise<IFile | undefined>;
   getFolderFromRelativePath(serverRelativePath: string): Promise<IFolder | undefined>;
   getFolderFromRelativePathLocal(serverRelativePath: string): IFolder | undefined;
+  getFolderByIndex(index: number): IFolder | undefined;
 
   ensureFolderFromRelativePath(serverRelativePath: string): Promise<IFolder>;
   ensureFileFromRelativePath(serverRelativePath: string): Promise<IFile>;
   setStructureFromFileList(fileList: string[]): Promise<void>;
 
-  saveAll(): Promise<boolean>;
+  saveAll(force?: boolean): Promise<boolean>;
+
+  clearAllManagers(): void;
 
   getFolderRelativePath(toFolder: IFolder): string | undefined;
 

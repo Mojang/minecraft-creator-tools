@@ -60,7 +60,7 @@ export default class GitHubReferenceEditor extends Component<IGitHubReferenceEdi
         }}
       >
         <div className="ghre-toolBar">
-          <Toolbar aria-label="Editor toolbar overflow menu" items={toolbarItems} />
+          <Toolbar aria-label="GitHub reference editor toolbar" items={toolbarItems} />
         </div>
         {interior}
       </div>

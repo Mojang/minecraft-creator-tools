@@ -4,8 +4,8 @@
 const jsonTypeDefsBuilder = require("./JsonTypeDefsBuilder");
 const through2 = require("through2");
 
-module.exports = (targetFile = "./public/data/typedefs.beta.json") => {
-  const typeDefsObj = jsonTypeDefsBuilder.create(targetFile);
+module.exports = (targetFile = "./public/data/typedefs.beta.json", wrapDeclare = true) => {
+  const typeDefsObj = jsonTypeDefsBuilder.create(targetFile, wrapDeclare);
 
   return through2.obj((chunk, encoding, callback) => {
     try {

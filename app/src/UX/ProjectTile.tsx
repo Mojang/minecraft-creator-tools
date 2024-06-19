@@ -65,6 +65,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
     let imageElement = <></>;
     const additionalButtons = [];
     let summary = undefined;
+    let tags = undefined;
 
     const ghurl = "https://github.com/" + proj.gitHubOwner + "/" + proj.gitHubRepoName;
 
@@ -74,6 +75,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
           <span
             style={{
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
+              borderLeftColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
             }}
           >
             Open
@@ -82,9 +84,12 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
       );
     }
 
-    let description = proj.description;
+    let description = [];
 
-    if (this.props.project.type === GalleryProjectType.codeSample) {
+    if (
+      this.props.project.type === GalleryProjectType.codeSample ||
+      this.props.project.type === GalleryProjectType.editorCodeSample
+    ) {
       const snippet = ProjectUtilities.getSnippet(this.props.project.id);
 
       if (snippet) {
@@ -92,31 +97,53 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
 
         summary = lines.join("\r\n");
 
-        if (lines.length >= 2) {
-          const middleLine = Math.ceil(lines.length / 2) - 1;
+        if (lines.length >= 1) {
+          let curLine = this.props.project.codeLineStart;
 
-          if (description === undefined) {
-            description = "";
-          } else {
-            description += "\n";
+          if (curLine === undefined) {
+            curLine = Math.ceil(lines.length / 2) - 1;
           }
 
-          let i = middleLine;
           let addedLines = 0;
 
-          while (i < lines.length && addedLines < 4) {
-            if (lines[i] && lines[i].indexOf("const overworld") <= 0 && lines[i].length > 3) {
-              description += lines[i] + "\n";
+          while (curLine < lines.length && addedLines < 4) {
+            if (lines[curLine] && lines[curLine].indexOf("const overworld") <= 0 && lines[curLine].trim().length > 0) {
+              description.push(<div className="pts-code-line">{lines[curLine]}</div>);
               addedLines++;
             }
 
-            i++;
+            curLine++;
           }
         }
       }
     }
 
-    if (proj.logoImage !== undefined || proj.localLogo !== undefined) {
+    if (this.props.project.tags) {
+      for (const tag of this.props.project.tags) {
+        description.push(
+          <span
+            className="pts-tag"
+            style={{
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+            }}
+          >
+            {tag}
+          </span>
+        );
+      }
+    }
+
+    if (this.props.project.description) {
+      description.push(this.props.project.description);
+    }
+
+    if (
+      (proj.logoImage !== undefined || proj.localLogo !== undefined) &&
+      (this.props.displayMode === ProjectTileDisplayMode.large ||
+        this.props.displayMode === ProjectTileDisplayMode.smallImage)
+    ) {
       // <Button icon={<FontAwesomeIcon icon={faCodeBranch} className="fa-lg" />} onClick={this._handleBranchProject} iconPosition="before" primary />
       let imagePath = proj.logoImage;
 
@@ -125,56 +152,57 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
       }
 
       if (proj.logoImage !== undefined) {
-        imagePath = Utilities.ensureEndsWithSlash(
-          "https://raw.githubusercontent.com/" + proj.gitHubOwner + "/" + proj.gitHubRepoName
-        );
-
-        if (proj.gitHubBranch !== undefined) {
-          imagePath += Utilities.ensureEndsWithSlash(proj.gitHubBranch);
+        if (proj.gitHubRepoName === "bedrock-samples") {
+          imagePath = CartoApp.contentRoot + Utilities.ensureEndsWithSlash("res/latest/van/");
         } else {
-          imagePath += "main/";
+          imagePath = CartoApp.contentRoot + "res/samples/" + proj.gitHubOwner + "/" + proj.gitHubRepoName + "-";
+
+          if (proj.gitHubBranch !== undefined) {
+            imagePath += Utilities.ensureEndsWithSlash(proj.gitHubBranch);
+          } else {
+            imagePath += "main/";
+          }
         }
 
         if (proj.gitHubFolder !== undefined) {
-          imagePath += Utilities.ensureEndsWithSlash(proj.gitHubFolder);
+          imagePath += Utilities.ensureNotStartsWithSlash(Utilities.ensureEndsWithSlash(proj.gitHubFolder));
         }
 
         imagePath += proj.logoImage;
       }
 
       if (proj.logoLocation) {
-        let imageWidth = 64;
-        let multFactor = 64 / proj.logoLocation.width;
-
-        if (this.props.displayMode === ProjectTileDisplayMode.smallCodeSample) {
-          imageWidth = 32;
-          multFactor = 56 / proj.logoLocation.width;
-        }
+        let imageWidth = 48;
+        let multFactor = 48 / proj.logoLocation.width;
 
         imageElement = (
-          <div
-            className={this.props.displayMode === ProjectTileDisplayMode.large ? "pt-imageTile" : "pts-imageTile"}
-            key="imageTile"
-            style={{
-              backgroundImage: "url(" + imagePath + ")",
-              backgroundPositionX: "-" + proj.logoLocation.x * multFactor + "px",
-              backgroundPositionY: "-" + proj.logoLocation.y * multFactor + "px",
-              backgroundSize: proj.logoLocation.width * multFactor * multFactor + "px",
-              width: imageWidth + "px",
-              height: imageWidth + "px",
-            }}
-          >
-            &#160;
+          <div className="pt-iconArea">
+            <div className="pt-iconBorder">
+              <div
+                className={"pt-imageTile"}
+                key="imageTile"
+                style={{
+                  backgroundImage: "url(" + imagePath + ")",
+                  backgroundPositionX: "-" + proj.logoLocation.x * multFactor + "px",
+                  backgroundPositionY: "-" + proj.logoLocation.y * multFactor + "px",
+                  backgroundSize: proj.logoLocation.imageWidth * multFactor + "px",
+                  width: imageWidth + "px",
+                  height: imageWidth + "px",
+                }}
+              >
+                &#160;
+              </div>
+            </div>
           </div>
         );
       } else {
         imageElement = (
-          <div
-            className={this.props.displayMode === ProjectTileDisplayMode.large ? "pt-imageTile" : "pts-imageTile"}
-            key="imageTile"
-            style={{ backgroundImage: "url(" + imagePath + ")" }}
-          >
-            &#160;
+          <div className="pt-iconArea">
+            <div className="pt-iconBorder">
+              <div className={"pt-imageTile"} key="imageTile" style={{ backgroundImage: "url(" + imagePath + ")" }}>
+                &#160;
+              </div>
+            </div>
           </div>
         );
       }
@@ -205,14 +233,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
               <div className="pts-mainArea">
                 <div className="pts-title">{proj.title}</div>
               </div>
-              <div className="pts-iconArea">{imageElement}</div>
-              <div
-                className="pts-descriptionArea"
-                style={{
-                  backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-                }}
-              >
+              <div className="pts-descriptionArea">
                 <div
                   title={summary}
                   className={
@@ -222,6 +243,32 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
                   }
                 >
                   {description}
+                  {tags}
+                </div>
+              </div>
+              <div
+                className="pt-mini-toolbar"
+                style={{
+                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+                }}
+              >
+                <div
+                  className="pt-mini-toolbar-interior"
+                  style={{
+                    borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+                  }}
+                >
+                  {additionalButtons}
+                  <Button primary onClick={this._handleNewProject}>
+                    <span
+                      style={{
+                        color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
+                        borderLeftColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+                      }}
+                    >
+                      New
+                    </span>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -250,10 +297,10 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
                 borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
               }}
             >
+              <div className="pti-iconArea"> {imageElement}</div>
               <div className="pti-mainArea">
                 <div className="pti-title">{proj.title}</div>
               </div>
-              <div className="pti-iconArea">{imageElement}</div>
             </div>
           </div>
         </div>
@@ -274,12 +321,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
             }}
           >
-            <div
-              className="pt-grid"
-              style={{
-                borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-              }}
-            >
+            <div className="pt-grid">
               <div className="pt-mainArea">
                 <div className="pt-title">{proj.title}</div>
                 <div className="pt-ghpath">
@@ -295,9 +337,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
                   </a>
                 </div>
               </div>
-              <div className="pt-iconArea">
-                <div className="pt-iconBorder">{imageElement}</div>
-              </div>
+              {imageElement}
               <div className="pt-descriptionArea">
                 <div className="pt-description">{description}</div>
               </div>
@@ -307,12 +347,18 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
                   color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
                 }}
               >
-                <div className="pt-mini-toolbar-interior">
+                <div
+                  className="pt-mini-toolbar-interior"
+                  style={{
+                    borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+                  }}
+                >
                   {additionalButtons}
                   <Button primary onClick={this._handleNewProject}>
                     <span
                       style={{
                         color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
+                        borderLeftColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
                       }}
                     >
                       New

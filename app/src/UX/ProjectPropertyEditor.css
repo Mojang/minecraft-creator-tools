@@ -169,20 +169,32 @@
   padding-bottom: 20px;
 }
 
-.ppe-scriptVersionlabel {
+.ppe-focuslabel {
   grid-row: 9;
   grid-column: 1;
 }
 
-.ppe-scriptVersioninput {
+.ppe-focusinput {
   grid-row: 9;
   grid-column-start: 2;
   grid-column-end: 3;
   padding-bottom: 20px;
 }
 
-.ppe-versionlabel {
+.ppe-scriptVersionlabel {
   grid-row: 10;
+  grid-column: 1;
+}
+
+.ppe-scriptVersioninput {
+  grid-row: 10;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding-bottom: 20px;
+}
+
+.ppe-versionlabel {
+  grid-row: 11;
   grid-column-start: 1;
   grid-column-end: 3;
 }
@@ -201,7 +213,7 @@
 }
 
 .ppe-versioninput {
-  grid-row: 10;
+  grid-row: 11;
   grid-column: 2;
   padding-bottom: 20px;
 }
@@ -216,20 +228,20 @@
 }
 
 .ppe-ghlabel {
-  grid-row: 11;
+  grid-row: 12;
   grid-column: 1;
   padding-top: 27px;
 }
 
 .ppe-ghinput {
-  grid-row: 11;
+  grid-row: 12;
   grid-column: 2;
   padding-top: 26px;
   padding-bottom: 20px;
 }
 
 .ppe-ghbutton {
-  grid-row: 10;
+  grid-row: 11;
   grid-column: 3;
   padding-top: 30px;
   padding-bottom: 20px;
@@ -237,7 +249,7 @@
 
 .ppe-statusArea {
   font-size: 14pt;
-  grid-row: 12;
+  grid-row: 13;
   grid-column-start: 1;
   grid-column-end: 5;
   padding-top: 30px;
@@ -245,14 +257,14 @@
 
 .ppe-advancedArea {
   font-size: 14pt;
-  grid-row: 13;
+  grid-row: 14;
   grid-column-start: 1;
   grid-column-end: 5;
   padding-top: 30px;
 }
 
 .ppe-bedrock {
-  grid-row: 13;
+  grid-row: 14;
   font-size: 2;
   line-height: 0.5;
   min-height: 16px;

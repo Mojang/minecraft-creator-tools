@@ -36,6 +36,10 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
         return { title: "Command" };
       case 4:
         return { title: "Execute Sub Command" };
+      case 5:
+        return { title: "Level.dat" };
+      case 6:
+        return { title: "Level.dat Experiments" };
       case 101:
         return { title: "Unexpected command in MCFunction" };
       case 102:
@@ -148,6 +152,18 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     );
     items.push(subCommandsPi);
 
+    const nbtPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 5, "NBT Tags", projectItem);
+    items.push(nbtPi);
+
+    const nbtExperimentsPi = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      6,
+      "NBT Experiment Tags",
+      projectItem
+    );
+    items.push(nbtExperimentsPi);
+
     if (projectItem.itemType === ProjectItemType.dialogueBehaviorJson) {
       await projectItem.ensureFileStorage();
 
@@ -259,7 +275,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       }
 
       if (
-        projectItem.storagePath &&
+        projectItem.projectPath &&
         contentIndex &&
         mcworld.levelData &&
         mcworld.levelData.nbt &&
@@ -275,9 +291,11 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                 experimentChild.type === NbtTagType.byte ||
                 experimentChild.type === NbtTagType.string
               ) {
+                nbtExperimentsPi.incrementFeature(experimentChild.name, experimentChild.valueAsString);
+
                 contentIndex.insert(
                   experimentChild.name + "==" + experimentChild.valueAsString,
-                  projectItem.storagePath,
+                  projectItem.projectPath,
                   AnnotationCategories.experiment
                 );
               }
@@ -287,11 +305,31 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
             child.type === NbtTagType.byte ||
             child.type === NbtTagType.string
           ) {
-            contentIndex.insert(
-              child.name + "==" + child.valueAsString,
-              projectItem.storagePath,
-              AnnotationCategories.worldProperty
-            );
+            if (
+              child.name !== "LevelName" &&
+              child.name !== "FlatWorldLayers" &&
+              child.name !== "lightningTime" &&
+              child.name !== "EducationOid" &&
+              child.name !== "EducationProductId" &&
+              child.name !== "rainTime" &&
+              child.name !== "worldTemplateUUID" &&
+              !child.name.startsWith("LimitedWorld") &&
+              !child.name.startsWith("SpawnX") &&
+              !child.name.startsWith("SpawnY") &&
+              !child.name.startsWith("SpawnZ")
+            ) {
+              if (child.name.indexOf("ersion") >= 0 && !child.valueAsString.startsWith("1.")) {
+                nbtPi.incrementFeature(child.name, "(unknown version)");
+              } else {
+                nbtPi.incrementFeature(child.name, child.valueAsString);
+              }
+
+              contentIndex.insert(
+                child.name + "==" + child.valueAsString,
+                projectItem.projectPath,
+                AnnotationCategories.worldProperty
+              );
+            }
           }
         }
       }

@@ -66,7 +66,7 @@ export default class Thumbprint {
   }
 
   private async _createInternal(folder: IFolder, fileInfos: { [path: string]: { size: number } | undefined }) {
-    await folder.load(false);
+    await folder.load();
 
     for (const fileName in folder.files) {
       const file = folder.files[fileName];

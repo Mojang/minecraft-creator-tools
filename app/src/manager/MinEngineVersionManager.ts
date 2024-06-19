@@ -6,11 +6,11 @@ import Project from "../app/Project";
 import IProjectInfoGenerator from "../info/IProjectInfoGenerator";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "../info/IInfoItemData";
-import BehaviorManifestJson from "../minecraft/BehaviorManifestJson";
+import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 import Database from "../minecraft/Database";
 import IProjectUpdater from "../updates/IProjectUpdater";
 import ProjectUpdateResult from "../updates/ProjectUpdateResult";
-import ResourceManifestJson from "../minecraft/ResourceManifestJson";
+import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
@@ -170,7 +170,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
 
         if (pi.file) {
           foundBpManifest = true;
-          const bpManifest = await BehaviorManifestJson.ensureOnFile(pi.file);
+          const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.file);
 
           if (bpManifest) {
             if (
@@ -289,7 +289,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const rpManifest = await ResourceManifestJson.ensureOnFile(pi.file);
+          const rpManifest = await ResourceManifestDefinition.ensureOnFile(pi.file);
           if (rpManifest) {
             foundRpManifest = true;
             if (
@@ -497,7 +497,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const bpManifest = await BehaviorManifestJson.ensureOnFile(pi.file);
+          const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.file);
 
           if (bpManifest) {
             const mev = bpManifest.minEngineVersion;
@@ -525,7 +525,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const rpManifest = await ResourceManifestJson.ensureOnFile(pi.file);
+          const rpManifest = await ResourceManifestDefinition.ensureOnFile(pi.file);
 
           if (rpManifest) {
             const mev = rpManifest.minEngineVersion;

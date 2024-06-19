@@ -73,7 +73,7 @@ export enum ProjectInfoDisplayMenuState {
   exportMenu,
 }
 
-export const SuiteTitles = ["All", "Platform Versions", "Add-on Best Practices"];
+export const SuiteTitles = ["All", "Platform Versions", "Add-On Best Practices"];
 
 export enum InfoItemCommand {
   itemSelect,
@@ -883,11 +883,6 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
                 featureSet["Min"]
               ) {
                 let featNameAdj = featName;
-                if (featName.endsWith(" Lines")) {
-                  featNameAdj = featName.substring(0, featName.length - 6);
-                } else if (featName.endsWith(" Size")) {
-                  featNameAdj = featName.substring(0, featName.length - 5);
-                }
 
                 contentSummaryLines.push(
                   <div

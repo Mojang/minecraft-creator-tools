@@ -178,7 +178,7 @@ export default class DocumentedModule {
   }
 
   async loadUnassociatedDocumentationFolder(folder: IFolder) {
-    await folder.load(false);
+    await folder.load();
 
     for (const fileName in folder.files) {
       const file = folder.files[fileName];

@@ -137,7 +137,7 @@ export default class LogItemArea extends Component<ILogItemAreaProps, ILogItemAr
 
       interior = (
         <div className="lia-list" ref={this.scrollArea} style={{ maxWidth: width }}>
-          <List selectable items={li} />
+          <List selectable aria-label="List of status items" items={li} />
         </div>
       );
     }
@@ -148,7 +148,7 @@ export default class LogItemArea extends Component<ILogItemAreaProps, ILogItemAr
           {interior}
         </div>
         <div className="lia-tools">
-          <Toolbar aria-label="Editor toolbar overflow menu" items={toolbarItems} />
+          <Toolbar aria-label="Log actions" items={toolbarItems} />
         </div>
       </div>
     );

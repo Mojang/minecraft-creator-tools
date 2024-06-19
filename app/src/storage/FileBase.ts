@@ -151,6 +151,7 @@ export default abstract class FileBase implements IFile {
   }
 
   dispose() {
+    this.manager = undefined;
     this._content = null;
 
     this.isDisposed = true;

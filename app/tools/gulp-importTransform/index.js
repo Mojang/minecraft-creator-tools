@@ -4,8 +4,8 @@
 const ImportTransform = require("./ImportTransform");
 const through2 = require("through2");
 
-module.exports = (root = ".", aliases = {}) => {
-  const importTransform = ImportTransform.create(root, aliases);
+module.exports = () => {
+  const importTransform = ImportTransform.create();
 
   return through2.obj((chunk, encoding, callback) => {
     try {

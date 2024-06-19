@@ -22,13 +22,13 @@
   user-select: none;
 }
 
-.csp-autostartlabel {
+.csp-formatbeforesavelabel {
   grid-row: 1;
   grid-column: 2;
   padding-top: 2px;
 }
 
-.csp-autostart {
+.csp-formatbeforesave {
   grid-row: 1;
   grid-column: 1;
   text-align: right;
@@ -36,14 +36,28 @@
   padding-bottom: 20px;
 }
 
-.csp-namelabel {
+.csp-autostartlabel {
   grid-row: 2;
+  grid-column: 2;
+  padding-top: 2px;
+}
+
+.csp-autostart {
+  grid-row: 2;
+  grid-column: 1;
+  text-align: right;
+  padding-right: 0px;
+  padding-bottom: 20px;
+}
+
+.csp-namelabel {
+  grid-row: 3;
   grid-column: 1;
   padding-top: 9px;
 }
 
 .csp-nameinput {
-  grid-row: 2;
+  grid-row: 3;
   grid-column: 2;
   padding-bottom: 20px;
   margin-right: 4px;

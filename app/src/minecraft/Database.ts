@@ -29,6 +29,7 @@ export default class Database {
   static loadedFormCount = 0;
   static uxCatalog: { [formName: string]: IFormDefinition } = {};
   static betaTypeDefs: ITypeDefCatalog | null = null;
+  static libs: ITypeDefCatalog | null = null;
   static stableTypeDefs: ITypeDefCatalog | null = null;
   static contentFolder: IFolder | null = null;
   static snippetsFolder: IFolder | null = null;
@@ -50,11 +51,13 @@ export default class Database {
     "@minecraft/server-ui",
     "@minecraft/server-net",
     "@minecraft/server-admin",
+    "@minecraft/server-editor",
   ];
 
   static maxMinecraftPatchVersions = {
     "1.19": "80",
     "1.20": "80",
+    "1.21": "0",
   };
 
   static moduleDescriptors: { [id: string]: NpmModule } = {};
@@ -395,14 +398,14 @@ export default class Database {
       const storage = await Database.local.createStorage("data/content/");
 
       if (storage) {
-        await storage.rootFolder.load(false);
+        await storage.rootFolder.load();
 
         Database.contentFolder = storage.rootFolder;
       }
     } else {
       const storage = new HttpStorage(CartoApp.contentRoot + "data/content/");
 
-      await storage.rootFolder.load(false);
+      await storage.rootFolder.load();
 
       Database.contentFolder = storage.rootFolder;
     }
@@ -431,7 +434,7 @@ export default class Database {
       return;
     }
 
-    await folder.load(false);
+    await folder.load();
 
     for (const fileName in folder.files) {
       const file = folder.files[fileName];
@@ -448,7 +451,7 @@ export default class Database {
     if (!this.metadataFolder) {
       const metadataStorage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/metadata/");
 
-      await metadataStorage.rootFolder.load(false);
+      await metadataStorage.rootFolder.load();
 
       this.metadataFolder = metadataStorage.rootFolder;
     }
@@ -474,7 +477,7 @@ export default class Database {
     }
 
     if (Database.defaultBehaviorPackFolder) {
-      await Database.defaultBehaviorPackFolder.load(false);
+      await Database.defaultBehaviorPackFolder.load();
     }
 
     return Database.defaultBehaviorPackFolder;
@@ -498,7 +501,7 @@ export default class Database {
     }
 
     if (Database.defaultResourcePackFolder) {
-      await Database.defaultResourcePackFolder.load(false);
+      await Database.defaultResourcePackFolder.load();
     }
 
     return Database.defaultResourcePackFolder;
@@ -625,6 +628,30 @@ export default class Database {
     }
   }
 
+  static async getLibs() {
+    if (Database.libs) {
+      return Database.libs;
+    }
+
+    try {
+      // @ts-ignore
+      if (typeof window !== "undefined") {
+        const response = await axios.get(CartoApp.contentRoot + "data/libs.json");
+
+        Database.libs = response.data;
+      } else if (Database.local) {
+        const result = await Database.local.readJsonFile("data/libs.json");
+        if (result !== null) {
+          Database.libs = result as ITypeDefCatalog;
+        }
+      }
+    } catch {
+      Log.fail("Could not load libraries catalog.");
+    }
+
+    return Database.libs;
+  }
+
   static async loadVanillaInfoData() {
     if (Database.vanillaInfoData) {
       return;
@@ -647,7 +674,9 @@ export default class Database {
         Database.vanillaContentIndex = new ContentIndex();
         Database.vanillaContentIndex.loadFromData(Database.vanillaInfoData.index);
       }
-    } catch {}
+    } catch {
+      // Log.fail("Could not load vanilla metadata.");
+    }
   }
 
   static async load() {

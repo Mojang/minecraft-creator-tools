@@ -57,7 +57,6 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
   _monaco: any;
   _trackingUpdates: boolean = false;
   _scriptsFolder?: IFolder;
-  _needsPersistence: boolean = false;
   _modelReloadPending: boolean = false;
 
   constructor(props: IJavaScriptEditorProps) {
@@ -74,9 +73,10 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     this._updateModels = this._updateModels.bind(this);
     this._doUpdate = this._doUpdate.bind(this);
     this.persist = this.persist.bind(this);
+    this._considerFormat = this._considerFormat.bind(this);
 
-    this.zoomIn = this.zoomIn.bind(this);
-    this.zoomOut = this.zoomOut.bind(this);
+    this._zoomIn = this._zoomIn.bind(this);
+    this._zoomOut = this._zoomOut.bind(this);
 
     let curPath = "";
 
@@ -88,8 +88,6 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       pathToEdit: curPath,
       isLoaded: false,
     };
-
-    this._doUpdate();
   }
 
   _handleNewSearch(
@@ -132,59 +130,106 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
   }
 
   _handleEditorWillMount(monacoInstance: any) {
-    const models = monacoInstance.editor.getModels();
-
-    let hasModel = false;
-
-    for (let i = 0; i < models.length; i++) {
-      const model = models[i];
-
-      if (model.uri.toString() === "ts:filename/@minecraft/server.d.ts") {
-        hasModel = true;
-      }
-    }
-
-    if (!hasModel) {
-      const tslang = monacoInstance.languages.typescript;
+    if (this._monaco !== monacoInstance) {
+      this._monaco = monacoInstance;
+      const tslang = this._monaco.languages.typescript;
 
       tslang.javascriptDefaults.setDiagnosticsOptions({
-        noSemanticValidation: true,
+        noSemanticValidation: false,
         noSyntaxValidation: false,
       });
 
       tslang.javascriptDefaults.setCompilerOptions({
         target: tslang.ScriptTarget.ESNext,
         module: tslang.ModuleKind.ESNext,
+        lib: ["es2020"],
         allowNonTsExtensions: true,
       });
 
-      let typeDefs: ITypeDefCatalog | null = null;
+      tslang.typescriptDefaults.setCompilerOptions({
+        lib: ["es2020"],
+        allowJs: true,
+        target: 99,
+        allowNonTsExtensions: true,
+        noImplicitAny: true,
+      });
+    }
 
-      if (this.props.project && this.props.project.scriptVersion === ProjectScriptVersion.stable10) {
-        typeDefs = Database.stableTypeDefs;
-      } else {
-        typeDefs = Database.betaTypeDefs;
+    this._injectLibModels();
+
+    this._ensureModels(monacoInstance);
+  }
+
+  _injectLibModels() {
+    if (!this._monaco) {
+      return;
+    }
+
+    const tslang = this._monaco.languages.typescript;
+
+    if (tslang && tslang.typescriptDefaults) {
+      const extraLibs = tslang.typescriptDefaults.getExtraLibs();
+      let hasBuiltInModels = false;
+      let hasLibraries = false;
+
+      for (const libName in extraLibs) {
+        if (libName === "@minecraft/server.d.ts") {
+          hasBuiltInModels = true;
+        }
+
+        if (libName === "@minecraft/math.d.ts") {
+          hasLibraries = true;
+        }
       }
 
-      if (typeDefs) {
-        for (let i = 0; i < typeDefs.typeDefs.length; i++) {
-          const td = typeDefs.typeDefs[i];
+      if (!hasBuiltInModels) {
+        let typeDefs: ITypeDefCatalog | null = null;
 
-          const uri = "ts:filename/" + td.name + ".d.ts";
+        if (this.props.project && this.props.project.scriptVersion === ProjectScriptVersion.stable10) {
+          typeDefs = Database.stableTypeDefs;
+        } else {
+          typeDefs = Database.betaTypeDefs;
+        }
 
-          const content = td.content.join("\n");
+        if (typeDefs) {
+          for (let i = 0; i < typeDefs.typeDefs.length; i++) {
+            const td = typeDefs.typeDefs[i];
 
-          // Log.debugAlert("Adding JS module content uri " + uri + "|" + content);
+            const uri = td.name + ".d.ts";
 
-          tslang.javascriptDefaults.addExtraLib(content, uri);
-          tslang.typescriptDefaults.addExtraLib(content, uri);
+            let content = td.content.join("\n");
+
+            content = "declare module '" + td.name + "' {" + content + "}";
+
+            tslang.javascriptDefaults.addExtraLib(content, uri);
+            tslang.typescriptDefaults.addExtraLib(content, uri);
+          }
+        }
+      }
+
+      if (!hasLibraries) {
+        const tslang = this._monaco.languages.typescript;
+        const libs = Database.libs;
+
+        if (libs) {
+          for (let i = 0; i < libs.typeDefs.length; i++) {
+            const td = libs.typeDefs[i];
+
+            const namespaceName = td.name;
+
+            if (namespaceName.length > 0) {
+              let content = td.content.join("\n");
+              const uri = namespaceName + ".d.ts";
+
+              content = "declare module '" + namespaceName + "' {" + content + "}";
+
+              tslang.javascriptDefaults.addExtraLib(content, uri);
+              tslang.typescriptDefaults.addExtraLib(content, uri);
+            }
+          }
         }
       }
     }
-
-    this._ensureModels(monacoInstance);
-
-    this._monaco = monacoInstance;
   }
 
   componentWillUnmount() {
@@ -207,7 +252,10 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       typeDefs = Database.betaTypeDefs;
     }
 
-    if (!typeDefs) {
+    await this._doUpdate();
+    const libs = await Database.getLibs();
+
+    if (!typeDefs || !libs) {
       return;
     }
 
@@ -245,6 +293,8 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       }
     }
 
+    this._injectLibModels();
+
     if (this.state !== undefined && !this.state.isLoaded) {
       this.setState({
         pathToEdit: this.state.pathToEdit,
@@ -268,7 +318,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
 
     const fileType = StorageUtilities.getTypeFromName(path);
 
-    if (fileType !== "js" && fileType !== "ts") {
+    if (fileType !== "js" && fileType !== "mjs" && fileType !== "ts") {
       return;
     }
 
@@ -288,7 +338,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
   }
 
   async _loadModelsFromFolder(monacoInstance: any, folder: IFolder) {
-    await folder.load(false);
+    await folder.load();
 
     for (const fileName in folder.files) {
       const childFile = folder.files[fileName];
@@ -301,15 +351,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
           // if we come across a TS file and we haven't yet compiled it into JS, compile it.
           if (type === "ts") {
             if (this.props.file) {
-              const jsFile = await childFile.parentFolder.ensureFile(
-                StorageUtilities.getBaseFromName(childFile.name) + ".js"
-              );
-
-              const jsFileExists = await jsFile.exists();
-
-              if (!jsFileExists) {
-                this.compileTsToJs(childFile, true);
-              }
+              this.compileTsToJs(childFile, true);
             }
           }
         } else if (StorageUtilities.isFileStorageItem(childFile)) {
@@ -391,20 +433,44 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
   }
 
   _handleContentUpdated(newValue: string | undefined, event: any) {
-    this._needsPersistence = true;
+    if (this.editor && this.props.file && !this.props.readOnly && newValue) {
+      this.props.file.setContent(newValue);
+    }
+  }
 
-    window.setTimeout(this.persist, 400);
+  componentDidMount(): void {
+    this._doUpdate();
+  }
+
+  componentDidUpdate(prevProps: IJavaScriptEditorProps, prevState: IJavaScriptEditorState) {
+    this._considerFormat();
+  }
+
+  async _considerFormat() {
+    if (this.editor && this.props.project && this.props.project.carto.formatBeforeSave) {
+      const action = this.editor.getAction("editor.action.formatDocument");
+
+      if (action) {
+        await action.run();
+      }
+    }
   }
 
   async persist() {
-    if (this.editor !== undefined && this._needsPersistence && this.props.file) {
-      this._needsPersistence = false;
+    if (this.editor && this.props.file && !this.props.readOnly) {
       const file = this.props.file;
+
+      if (this.props.project && this.props.project.carto.formatBeforeSave) {
+        const action = this.editor.getAction("editor.action.formatDocument");
+
+        if (action) {
+          await action.run();
+        }
+      }
 
       const uri = this.editor.getModel()?.uri;
 
       if (uri === undefined) {
-        Log.unexpectedUndefined("JSEP");
         return;
       }
 
@@ -416,16 +482,32 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
 
       const value = this.editor.getValue();
 
-      Log.assert(value != null && value !== "", "Set an empty value for an editor, which is probably unexpected?");
+      if (value) {
+        this.props.file.setContent(value);
 
-      /*
-      if (
-        StorageUtilities.getTypeFromName(file.name) === "js" ||
-        this.props.project.preferredScriptLanguage === ProjectScriptLanguage.typeScript
-      ) {
-        const tsFile = await this.props.file.parentFolder.ensureFile(StorageUtilities.getBaseFromName(file.name) + ".ts");
+        if (StorageUtilities.getTypeFromName(file.name) === "ts") {
+          await this.compileTsToJs(file, true);
+        }
+      }
+    }
+  }
 
-        tsFile.setContent(value);
+  async compileTsToJs(file: IFile, doSave?: boolean) {
+    if (StorageUtilities.getTypeFromName(file.name) === "ts" && this.props.project) {
+      const uri = JavaScriptEditor.getUriForFile(file, ProjectScriptLanguage.typeScript);
+
+      const scriptsFolder = await this.props.project.ensureDefaultScriptsFolder();
+
+      let relativePath = file.getFolderRelativePath(scriptsFolder);
+
+      if (relativePath) {
+        if (relativePath.toLowerCase().endsWith(".ts")) {
+          relativePath = relativePath.substring(0, relativePath.length - 3) + ".js";
+        }
+
+        const libScriptsFolder = await this.props.project.ensureLibScriptsFolder();
+
+        const jsFile = await libScriptsFolder.ensureFileFromRelativePath(relativePath);
 
         const worker = await this._monaco.languages.typescript.getTypeScriptWorker();
 
@@ -436,51 +518,38 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
         if (result.outputFiles.length > 0) {
           const jsContent = result.outputFiles[0].text;
 
-          this.props.file.setContent(jsContent);
-        }
-      } else {*/
-      if (StorageUtilities.getTypeFromName(file.name) === "ts") {
-        await this.compileTsToJs(file, true);
-      }
+          jsFile.setContent(jsContent);
 
-      this.props.file.setContent(value);
-      // }
-    }
-  }
-
-  async compileTsToJs(file: IFile, doSave?: boolean) {
-    if (StorageUtilities.getTypeFromName(file.name) === "ts" && this.props.file) {
-      const uri = JavaScriptEditor.getUriForFile(file, ProjectScriptLanguage.typeScript);
-      const jsFile = this.props.file.parentFolder.ensureFile(StorageUtilities.getBaseFromName(file.name) + ".js");
-
-      const worker = await this._monaco.languages.typescript.getTypeScriptWorker();
-
-      const client = await worker(uri);
-
-      const result = await client.getEmitOutput(uri.toString());
-
-      if (result.outputFiles.length > 0) {
-        const jsContent = result.outputFiles[0].text;
-
-        jsFile.setContent(jsContent);
-
-        if (doSave) {
-          jsFile.saveContent();
+          if (doSave) {
+            jsFile.saveContent();
+          }
         }
       }
     }
   }
 
-  zoomIn() {
-    this.editor?.getAction("editor.action.fontZoomIn").run();
+  _zoomIn() {
+    if (this.editor) {
+      let action = this.editor.getAction("editor.action.fontZoomIn");
 
-    this._updateZoom();
+      if (action) {
+        action.run();
+
+        this._updateZoom();
+      }
+    }
   }
 
-  zoomOut() {
-    this.editor?.getAction("editor.action.fontZoomOut").run();
+  _zoomOut() {
+    if (this.editor) {
+      let action = this.editor.getAction("editor.action.fontZoomOut");
 
-    this._updateZoom();
+      if (action) {
+        action.run();
+
+        this._updateZoom();
+      }
+    }
   }
 
   _updateZoom() {
@@ -530,18 +599,14 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
   async _doUpdate() {
     if (Database.snippetsFolder === null) {
       await Database.loadSnippets();
-
-      this.forceUpdate();
     }
 
     if (this.props.project && this.props.project.scriptVersion === ProjectScriptVersion.stable10) {
       if (!Database.stableTypeDefs) {
         await Database.loadStableScriptTypes();
-        this.forceUpdate();
       }
     } else if (!Database.betaTypeDefs) {
       await Database.loadBetaScriptTypes();
-      this.forceUpdate();
     }
   }
 
@@ -583,13 +648,13 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       {
         icon: <FontAwesomeIcon icon={faSearchPlus} className="fa-lg" />,
         key: "zoomIn",
-        onClick: this.zoomIn,
+        onClick: this._zoomIn,
         title: "Toggle whether hidden items are shown",
       },
       {
         icon: <FontAwesomeIcon icon={faSearchMinus} className="fa-lg" />,
         key: "zoomOut",
-        onClick: this.zoomOut,
+        onClick: this._zoomOut,
         title: "Toggle whether hidden items are shown",
       },
     ];
@@ -622,6 +687,10 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
             options={{
               fontSize: this.props.preferredTextSize,
               readOnly: this.props.readOnly,
+              formatOnPaste: true,
+              formatOnType: true,
+              quickSuggestions: true,
+              autoIndent: "full",
             }}
             beforeMount={this._handleEditorWillMount}
             onMount={this._handleEditorDidMount}
@@ -689,10 +758,10 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
           <ProjectGallery
             carto={this.props.carto}
             theme={this.props.theme}
-            view={ProjectTileDisplayMode.smallCodeSample}
+            view={ProjectTileDisplayMode.smallImage}
             gallery={this.props.carto.gallery}
             search={this.state.snippetSearch}
-            filterOn={GalleryProjectType.codeSample}
+            filterOn={[GalleryProjectType.codeSample, GalleryProjectType.editorCodeSample]}
             onGalleryItemCommand={this._handleSnippetGalleryCommand}
           />
         </div>
@@ -709,7 +778,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       >
         <div className="jse-commands">
           <div className="jse-toolBarArea">
-            <Toolbar aria-label="Editor toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="Javascript Editor toolbar" items={toolbarItems} />
           </div>
           <div className="jse-extraArea">{writeableTools}</div>
         </div>

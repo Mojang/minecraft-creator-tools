@@ -131,7 +131,7 @@ export default class ZipFolder extends FolderBase implements IFolder {
     return this.ensureFile(name);
   }
 
-  async load(force: boolean): Promise<Date> {
+  async load(force?: boolean): Promise<Date> {
     if (this.lastLoadedOrSaved != null && !force) {
       return this.lastLoadedOrSaved;
     }
@@ -139,6 +139,9 @@ export default class ZipFolder extends FolderBase implements IFolder {
     this.updateLastLoadedOrSaved();
 
     this._jsz.forEach((relativePath: string, file: JSZip.JSZipObject) => {
+      // some zip files use \ as a delimiter (??)
+      relativePath = relativePath.replace(/\\/gi, ZipStorage.folderDelimiter);
+
       const countDelim = Utilities.countChar(relativePath, ZipStorage.folderDelimiter);
 
       if (countDelim === 0) {

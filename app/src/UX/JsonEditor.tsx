@@ -11,11 +11,13 @@ import ProjectItem from "../app/ProjectItem";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "../minecraft/Database";
 import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
+import Project from "../app/Project";
 import { constants } from "../core/Constants";
 
 interface IJsonEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
+  project: Project;
   theme: ThemeInput<any>;
   preferredTextSize: number;
   item: ProjectItem;
@@ -38,8 +40,9 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     this._handleContentUpdated = this._handleContentUpdated.bind(this);
     this._handleEditorWillMount = this._handleEditorWillMount.bind(this);
     this._handleEditorDidMount = this._handleEditorDidMount.bind(this);
-    this.zoomIn = this.zoomIn.bind(this);
-    this.zoomOut = this.zoomOut.bind(this);
+    this._considerFormat = this._considerFormat.bind(this);
+    this._zoomIn = this._zoomIn.bind(this);
+    this._zoomOut = this._zoomOut.bind(this);
     this.persist = this.persist.bind(this);
 
     this.state = {
@@ -88,6 +91,8 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
       });
     }
 
+    window.setTimeout(this._considerFormat, 5);
+
     this._monaco = monacoInstance;
   }
 
@@ -106,32 +111,32 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
       if (model === null || model === undefined) {
         content = file.content as string;
 
-        const schemaPath = this.props.item.getSchemaPath();
-
-        if (schemaPath !== undefined) {
-          const schemaContent = await Database.getSchema(schemaPath);
-
-          const modelUriToStr = modelUri.toString();
-
-          if (schemaContent) {
-            const jsonlang = monacoInstance.languages.json;
-
-            jsonlang.jsonDefaults.setDiagnosticsOptions({
-              validate: true,
-              schemaValidation: "warning",
-              enableSchemaRequest: false,
-              schemas: [
-                {
-                  uri: constants.homeUrl + "/res/latest/schemas/" + schemaPath,
-                  fileMatch: [modelUriToStr],
-                  schema: schemaContent,
-                },
-              ],
-            });
-          }
-        }
-
         model = monacoInstance.editor.createModel(content, lang, modelUri);
+      }
+
+      const schemaPath = this.props.item.getSchemaPath();
+
+      if (schemaPath !== undefined) {
+        const schemaContent = await Database.getSchema(schemaPath);
+
+        const modelUriToStr = modelUri.toString();
+
+        if (schemaContent) {
+          const jsonlang = monacoInstance.languages.json;
+          const schemaUri = constants.homeUrl + "/res/latest/schemas/" + schemaPath;
+
+          jsonlang.jsonDefaults.setDiagnosticsOptions({
+            validate: true,
+            enableSchemaRequest: false,
+            schemas: [
+              {
+                uri: schemaUri,
+                fileMatch: [modelUriToStr],
+                schema: schemaContent,
+              },
+            ],
+          });
+        }
       }
     }
   }
@@ -150,32 +155,60 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     }
   }
 
-  _handleContentUpdated(newValue: string | undefined, event: any) {
-    this._needsPersistence = true;
+  async _considerFormat() {
+    if (this.editor && this.props.project && this.props.project.carto.formatBeforeSave) {
+      const action = this.editor.getAction("editor.action.formatDocument");
 
-    window.setTimeout(this.persist, 400);
-  }
-
-  async persist() {
-    if (this.editor !== undefined && this.state.fileToEdit && !this.props.readOnly) {
-      this._needsPersistence = false;
-
-      const value = this.editor.getValue();
-
-      this.state.fileToEdit.setContent(value);
+      if (action) {
+        await action.run();
+      }
     }
   }
 
-  zoomIn() {
-    this.editor?.getAction("editor.action.fontZoomIn").run();
+  _handleContentUpdated(newValue: string | undefined, event: any) {
+    this._needsPersistence = true;
 
-    this._updateZoom();
+    if (this.editor !== undefined && this.state.fileToEdit && !this.props.readOnly && newValue) {
+      this.state.fileToEdit.setContent(newValue);
+    }
   }
 
-  zoomOut() {
-    this.editor?.getAction("editor.action.fontZoomOut").run();
+  async persist() {
+    if (this.editor !== undefined && this.state.fileToEdit && !this.props.readOnly && this._needsPersistence) {
+      this._needsPersistence = false;
 
-    this._updateZoom();
+      await this._considerFormat();
+
+      const value = this.editor.getValue();
+
+      if (value.length > 0 || !this.state.fileToEdit.content || this.state.fileToEdit.content.length < 1) {
+        this.state.fileToEdit.setContent(value);
+      }
+    }
+  }
+
+  _zoomIn() {
+    if (this.editor) {
+      let action = this.editor.getAction("editor.action.fontZoomIn");
+
+      if (action) {
+        action.run();
+
+        this._updateZoom();
+      }
+    }
+  }
+
+  _zoomOut() {
+    if (this.editor) {
+      let action = this.editor.getAction("editor.action.fontZoomOut");
+
+      if (action) {
+        action.run();
+
+        this._updateZoom();
+      }
+    }
   }
 
   _updateZoom() {
@@ -200,13 +233,13 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
       {
         icon: <FontAwesomeIcon icon={faSearchPlus} className="fa-lg" />,
         key: "zoomIn",
-        onClick: this.zoomIn,
+        onClick: this._zoomIn,
         title: "Toggle whether hidden items are shown",
       },
       {
         icon: <FontAwesomeIcon icon={faSearchMinus} className="fa-lg" />,
         key: "zoomOut",
-        onClick: this.zoomOut,
+        onClick: this._zoomOut,
         title: "Toggle whether hidden items are shown",
       },
     ];
@@ -237,7 +270,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
             options={{
               fontSize: this.props.preferredTextSize,
               readOnly: this.props.readOnly,
-              renderValidationDecorations: "on",
+              renderValidationDecorations: this.props.readOnly ? "on" : "editable",
             }}
             path={coreUri}
             beforeMount={this._handleEditorWillMount}
@@ -257,7 +290,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
         }}
       >
         <div className="jse-toolBar">
-          <Toolbar aria-label="Editor toolbar overflow menu" items={toolbarItems} />
+          <Toolbar aria-label="JSON editor toolbar" items={toolbarItems} />
         </div>
         {interior}
       </div>

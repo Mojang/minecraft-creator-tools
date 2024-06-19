@@ -3,19 +3,19 @@
 
 import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
-import { IAddonManifestHeader, IResourcePackManifest } from "./IAddonManifest";
+import { IAddonManifestHeader, ISkinPackManifest } from "./IAddonManifest";
 import Utilities from "../core/Utilities";
 import Project from "../app/Project";
 import StorageUtilities from "../storage/StorageUtilities";
 
-export default class ResourceManifestJson {
+export default class SkinManifestDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
 
-  public definition?: IResourcePackManifest;
+  public definition?: ISkinPackManifest;
 
-  private _onLoaded = new EventDispatcher<ResourceManifestJson, ResourceManifestJson>();
+  private _onLoaded = new EventDispatcher<SkinManifestDefinition, SkinManifestDefinition>();
 
   public get isLoaded() {
     return this._isLoaded;
@@ -111,19 +111,19 @@ export default class ResourceManifestJson {
     header.min_engine_version = versionArray;
   }
 
-  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<ResourceManifestJson, ResourceManifestJson>) {
-    let rmj: ResourceManifestJson | undefined;
+  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<SkinManifestDefinition, SkinManifestDefinition>) {
+    let rmj: SkinManifestDefinition | undefined;
 
     if (file.manager === undefined) {
-      rmj = new ResourceManifestJson();
+      rmj = new SkinManifestDefinition();
 
       rmj.file = file;
 
       file.manager = rmj;
     }
 
-    if (file.manager !== undefined && file.manager instanceof ResourceManifestJson) {
-      rmj = file.manager as ResourceManifestJson;
+    if (file.manager !== undefined && file.manager instanceof SkinManifestDefinition) {
+      rmj = file.manager as SkinManifestDefinition;
 
       if (!rmj.isLoaded && loadHandler) {
         rmj.onLoaded.subscribe(loadHandler);

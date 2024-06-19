@@ -26,7 +26,7 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
 
     let path = file.storageRelativePath;
 
-    const packStarterFolderHints = [
+    const packContentFolderHints = [
       "bp",
       "rp",
       "resource pack",
@@ -35,14 +35,25 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
       "behavior pack",
       "behavior packs",
       "content/behavior_packs",
+      "skin pack",
+      "skin packs",
+      "content/skin_packs",
       "world_template",
     ];
 
-    for (const hint of packStarterFolderHints) {
+    for (const hint of packContentFolderHints) {
       const hintIndex = path.toLowerCase().indexOf("/" + hint + "/");
 
       if (hintIndex >= 0) {
         path = path.substring(hintIndex + hint.length + 2);
+      }
+    }
+
+    const packStarterFolderHints = ["resource_packs", "behavior_packs", "world_templates", "skin_packs"];
+
+    for (const hint of packStarterFolderHints) {
+      if (path.toLowerCase().startsWith(hint + "/")) {
+        path = path.substring(hint.length + 1);
       }
     }
 
@@ -56,7 +67,7 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
           this.id,
           2,
           `File path contains 8 or more directory segments, and may not run on all devices`,
-          project.getItemByExtendedOrStoragePath(file.extendedPath),
+          project.getItemByExtendedOrProjectPath(file.extendedPath),
           path
         )
       );
@@ -69,7 +80,7 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
           this.id,
           3,
           `File path contains more than 80 characters, and may not run on all devices`,
-          project.getItemByExtendedOrStoragePath(file.extendedPath),
+          project.getItemByExtendedOrProjectPath(file.extendedPath),
           path
         )
       );

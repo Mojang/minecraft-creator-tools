@@ -15,7 +15,7 @@ import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 
 export default class ItemTypeDefinition implements IManagedComponentSetItem {
-  private wrapper: IItemTypeWrapper | null = null;
+  public wrapper: IItemTypeWrapper | null = null;
   private _behaviorPackFile?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
@@ -134,6 +134,14 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
     }
 
     return componentSet;
+  }
+
+  setBehaviorPackFormatVersion(versionStr: string) {
+    this._ensureBehaviorPackDataInitialized();
+
+    if (this.wrapper) {
+      this.wrapper.format_version = versionStr;
+    }
   }
 
   addComponent(id: string, component: IManagedComponent) {

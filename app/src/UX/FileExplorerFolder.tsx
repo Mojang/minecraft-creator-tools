@@ -3,7 +3,7 @@ import "./FileExplorerFolder.css";
 import IFolder from "../storage/IFolder";
 import FileExplorerFolderDetail from "./FileExplorerFolderDetail";
 import FileExplorerFileDetail from "./FileExplorerFileDetail";
-import FileExplorer from "./FileExplorer";
+import FileExplorer, { FileExplorerMode } from "./FileExplorer";
 import ItemAnnotationCollection from "./ItemAnnotationCollection";
 import IStorageObject from "../storage/IStorageObject";
 import StorageUtilities from "../storage/StorageUtilities";
@@ -17,10 +17,12 @@ interface IFileExplorerFolderProps {
   theme: ThemeInput<any>;
   displayFolderDetail: boolean;
   depth: number;
+  mode: FileExplorerMode;
   startExpanded: boolean;
   itemAnnotations?: ItemAnnotationCollection;
   selectedItem: IFile | IFolder | null | undefined;
   onFileSelected?: (file: IFile) => void;
+  onFolderSelected?: (folder: IFolder) => void;
 }
 
 interface IFileExplorerFolderState {
@@ -42,7 +44,7 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
   }
 
   async loadFolder() {
-    await this.props.folder.load(false);
+    await this.props.folder.load();
 
     this.setState({
       isLoaded: true,
@@ -83,13 +85,17 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
     let header = <></>;
     let binHeader = "fexfo-bin";
 
-    if (this.props.displayFolderDetail) {
+    if (this.props.displayFolderDetail || this.props.mode === FileExplorerMode.folderPicker) {
       binHeader = "fexfo-binIndent";
       header = (
         <FileExplorerFolderDetail
           key={"rootDetail"}
           folder={this.props.folder}
+          theme={this.props.theme}
+          selectedItem={this.props.selectedItem}
+          mode={this.props.mode}
           isExpanded={this.state.isExpanded}
+          onFolderSelected={this.props.onFolderSelected}
           itemAnnotations={this.props.itemAnnotations}
           fileExplorer={this.props.fileExplorer}
           onExpandedSet={this._folderExpandToggle}
@@ -97,37 +103,41 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
       );
     }
 
-    for (const fileName in this.props.folder.files) {
-      const file = this.props.folder.files[fileName];
+    if (this.props.mode !== FileExplorerMode.folderPicker) {
+      for (const fileName in this.props.folder.files) {
+        const file = this.props.folder.files[fileName];
 
-      if (file) {
-        if (StorageUtilities.isContainerFile(fileName)) {
-          items.push(
-            <FileExplorerContainerFile
-              file={file}
-              key={"fd" + fileName}
-              displayFileDetail={true}
-              depth={this.props.depth + 1}
-              startExpanded={false}
-              theme={this.props.theme}
-              itemAnnotations={this.getAnnotationsForStorageObject(file)}
-              onFileSelected={this.props.onFileSelected}
-              selectedItem={this.props.selectedItem}
-              fileExplorer={this.props.fileExplorer}
-            />
-          );
-        } else {
-          items.push(
-            <FileExplorerFileDetail
-              file={file}
-              key={"fd" + fileName}
-              theme={this.props.theme}
-              selectedItem={this.props.selectedItem}
-              onFileSelected={this.props.onFileSelected}
-              itemAnnotations={this.getAnnotationsForStorageObject(file)}
-              fileExplorer={this.props.fileExplorer}
-            />
-          );
+        if (file) {
+          if (StorageUtilities.isContainerFile(fileName)) {
+            items.push(
+              <FileExplorerContainerFile
+                file={file}
+                key={"fd" + fileName}
+                mode={this.props.mode}
+                displayFileDetail={true}
+                depth={this.props.depth + 1}
+                startExpanded={false}
+                theme={this.props.theme}
+                itemAnnotations={this.getAnnotationsForStorageObject(file)}
+                onFileSelected={this.props.onFileSelected}
+                onFolderSelected={this.props.onFolderSelected}
+                selectedItem={this.props.selectedItem}
+                fileExplorer={this.props.fileExplorer}
+              />
+            );
+          } else {
+            items.push(
+              <FileExplorerFileDetail
+                file={file}
+                key={"fd" + fileName}
+                theme={this.props.theme}
+                selectedItem={this.props.selectedItem}
+                onFileSelected={this.props.onFileSelected}
+                itemAnnotations={this.getAnnotationsForStorageObject(file)}
+                fileExplorer={this.props.fileExplorer}
+              />
+            );
+          }
         }
       }
     }
@@ -143,11 +153,13 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
           items.push(
             <FileExplorerFolder
               folder={childFolder}
-              startExpanded={false}
+              startExpanded={false || this.props.mode === FileExplorerMode.folderPicker}
               theme={this.props.theme}
               key={"fo" + childFolder.name}
+              mode={this.props.mode}
               selectedItem={this.props.selectedItem}
               onFileSelected={this.props.onFileSelected}
+              onFolderSelected={this.props.onFolderSelected}
               itemAnnotations={this.getAnnotationsForStorageObject(childFolder)}
               fileExplorer={this.props.fileExplorer}
               displayFolderDetail={true}

@@ -14,7 +14,7 @@ class DownloadResources {
 
   // as an additional security defense, enforce an explicit allow list of file extensions (never extract .exes, say.)
   // note that LICENSE (no extension) is also allowed through special case code.
-  fileExtensionAllowList = ["json", "png", "tga", "jpg", "lang"];
+  fileExtensionAllowList = ["json", "js", "ts", "png", "tga", "jpg", "lang"];
 
   constructor(targetFilePath, excludeIfContents) {
     this._targetFilePath = targetFilePath;
@@ -76,10 +76,8 @@ class DownloadResources {
 
                         JSZip.loadAsync(content)
                           .then(function (zip) {
-                            let fileWriteCount = 0;
-                            let fileActuallyWroteCount = 0;
-
                             const fileNamesToProcess = [];
+                            const fileNamesWritten = [];
 
                             for (const filename in zip.files) {
                               let addFile = false;
@@ -120,7 +118,6 @@ class DownloadResources {
 
                               if (addFile) {
                                 fileNamesToProcess.push(filename);
-                                fileWriteCount++;
                               }
                             }
 
@@ -173,9 +170,9 @@ class DownloadResources {
                               }
 
                               if (content.dir) {
-                                fileWriteCount--;
+                                fileNamesWritten.push(filename);
 
-                                if (fileWriteCount <= 0) {
+                                if (fileNamesWritten.length >= fileNamesToProcess.length) {
                                   callback(null, null);
                                   return;
                                 }
@@ -194,14 +191,13 @@ class DownloadResources {
 
                                   fs.writeFileSync(fileDest, contentBytes);
 
-                                  fileWriteCount--;
-                                  fileActuallyWroteCount++;
+                                  fileNamesWritten.push(filename);
 
-                                  if (fileWriteCount <= 0) {
+                                  if (fileNamesWritten.length >= fileNamesToProcess.length) {
                                     console.log(
                                       "Wrote " +
-                                        fileActuallyWroteCount +
-                                        " files to '" +
+                                        fileNamesWritten.length +
+                                        " files and folders to '" +
                                         path.join(me._targetFilePath, subfolder) +
                                         "'"
                                     );
@@ -218,7 +214,7 @@ class DownloadResources {
                               }
                             }
 
-                            if (fileWriteCount <= 0) {
+                            if (fileNamesWritten.length >= fileNamesToProcess.length) {
                               callback(null, null);
                             }
                           })

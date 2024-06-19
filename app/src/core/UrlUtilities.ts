@@ -3,8 +3,16 @@
 
 export default class UrlUtilities {
   static ensureProtocol(sourceUrl: string, protocolFrom: string, protocolValue: string) {
+    let sourceUrlHash = "";
+
+    const hashIndex = sourceUrl.indexOf("#");
+    if (hashIndex >= 0) {
+      sourceUrlHash = sourceUrl.substring(hashIndex);
+      sourceUrl = sourceUrl.substring(0, hashIndex);
+    }
+
     if (sourceUrl.indexOf("?") <= 0) {
-      return sourceUrl + "?" + protocolFrom + "=" + protocolValue;
+      return sourceUrl + "?" + protocolFrom + "=" + protocolValue + sourceUrlHash;
     }
 
     let clauseStart = sourceUrl.indexOf(protocolFrom + "=");
@@ -26,7 +34,8 @@ export default class UrlUtilities {
     if (!sourceUrl.endsWith("?")) {
       sourceUrl += "&";
     }
-    sourceUrl += protocolFrom + "=" + protocolValue;
+
+    sourceUrl += protocolFrom + "=" + protocolValue + sourceUrlHash;
 
     return sourceUrl;
   }

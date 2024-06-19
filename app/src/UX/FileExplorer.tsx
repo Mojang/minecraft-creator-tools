@@ -1,21 +1,28 @@
-import { Component } from "react";
+import { Component, SyntheticEvent } from "react";
 import "./FileExplorer.css";
 import IFolder from "../storage/IFolder";
 import FileExplorerFolder from "./FileExplorerFolder";
-import { ThemeInput } from "@fluentui/react-northstar";
+import { Button, Input, InputProps, ThemeInput } from "@fluentui/react-northstar";
 import Carto from "../app/Carto";
 import ItemAnnotationCollection from "./ItemAnnotationCollection";
 import IFile from "../storage/IFile";
+import StorageUtilities from "../storage/StorageUtilities";
+
+export enum FileExplorerMode {
+  explorer = 0,
+  folderPicker = 1,
+}
 
 interface IFileExplorerProps {
   rootFolder: IFolder;
   theme: ThemeInput<any>;
   heightOffset: number;
-
+  mode: FileExplorerMode;
   selectedItem: IFile | IFolder | null | undefined;
   itemAnnotations?: ItemAnnotationCollection;
 
   onFileSelected?: (file: IFile) => void;
+  onFolderSelected?: (folder: IFolder) => void;
 
   carto: Carto;
   readOnly: boolean;
@@ -23,13 +30,26 @@ interface IFileExplorerProps {
   onRemove?: () => void;
 }
 
-interface IFileExplorerState {}
+interface IFileExplorerState {
+  newFolderName: string | undefined;
+  selectedItem: IFile | IFolder | null | undefined;
+}
 
 export default class FileExplorer extends Component<IFileExplorerProps, IFileExplorerState> {
   constructor(props: IFileExplorerProps) {
     super(props);
 
     this._handleCloseClick = this._handleCloseClick.bind(this);
+    this._handleNewFolderChanged = this._handleNewFolderChanged.bind(this);
+    this._handleNewFolderGo = this._handleNewFolderGo.bind(this);
+
+    this._handleNewFileSelected = this._handleNewFileSelected.bind(this);
+    this._handleNewFolderSelected = this._handleNewFolderSelected.bind(this);
+
+    this.state = {
+      newFolderName: undefined,
+      selectedItem: this.props.selectedItem,
+    };
   }
 
   _handleCloseClick() {
@@ -56,8 +76,78 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
     return annotations;
   }
 
+  _handleNewFolderChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
+    if (data === undefined || this.props.carto === null || this.state == null) {
+      return;
+    }
+
+    this.setState({
+      newFolderName: data.value,
+    });
+  }
+
+  _handleNewFolderSelected(folder: IFolder) {
+    this.setState({
+      newFolderName: this.state.newFolderName,
+      selectedItem: folder,
+    });
+
+    if (this.props.onFolderSelected) {
+      this.props.onFolderSelected(folder);
+    }
+  }
+
+  _handleNewFileSelected(file: IFile) {
+    this.setState({
+      newFolderName: this.state.newFolderName,
+      selectedItem: file,
+    });
+
+    if (this.props.onFileSelected) {
+      this.props.onFileSelected(file);
+    }
+  }
+
+  _handleNewFolderGo() {
+    if (!this.state.selectedItem) {
+      return;
+    }
+
+    let name = this.state.newFolderName ? this.state.newFolderName : "New Folder";
+
+    const parentFolder = this.state.selectedItem as IFolder;
+
+    name = StorageUtilities.getUniqueChildFolderName(name, parentFolder);
+
+    const fo = parentFolder.ensureFolder(name);
+
+    this.setState({
+      newFolderName: this.state.newFolderName,
+      selectedItem: fo,
+    });
+  }
+
   render() {
     const explorerHeight = "calc(100vh - " + (this.props.heightOffset - 10) + "px)";
+
+    let accessoryArea = <></>;
+
+    if (this.props.mode === FileExplorerMode.folderPicker && this.state.selectedItem) {
+      const label = "Create a new folder at " + this.state.selectedItem.name + ":";
+      accessoryArea = (
+        <div className="fex-newFolderArea">
+          <div className="fex-newFolderLabel" title={label}>
+            {label}
+          </div>
+          <div className="fex-newFolderName">
+            <Input value={this.state.newFolderName} placeholder="New Folder" onChange={this._handleNewFolderChanged} />
+          </div>
+          <div className="fex-newFolderGo">
+            <Button onClick={this._handleNewFolderGo} content="Create" />
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div
@@ -73,11 +163,14 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
           itemAnnotations={this.getAnnotationsForFolder(this.props.rootFolder)}
           fileExplorer={this}
           theme={this.props.theme}
-          selectedItem={this.props.selectedItem}
-          onFileSelected={this.props.onFileSelected}
+          mode={this.props.mode}
+          selectedItem={this.state.selectedItem}
+          onFileSelected={this._handleNewFileSelected}
+          onFolderSelected={this._handleNewFolderSelected}
           displayFolderDetail={false}
           depth={0}
         />
+        {accessoryArea}
       </div>
     );
   }

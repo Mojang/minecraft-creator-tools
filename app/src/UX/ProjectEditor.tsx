@@ -61,7 +61,7 @@ import { MinecraftPushWorldType } from "../app/MinecraftPush";
 import CartoApp, { HostType, CartoThemeStyle } from "../app/CartoApp";
 import ProjectTools from "../app/ProjectTools";
 import { faEdit, faWindowMaximize } from "@fortawesome/free-regular-svg-icons";
-import FileExplorer from "./FileExplorer";
+import FileExplorer, { FileExplorerMode } from "./FileExplorer";
 import ShareProject from "./ShareProject";
 import LocTokenBox from "./LocTokenBox";
 import { IProjectUpdaterReference } from "../info/IProjectInfoGeneratorBase";
@@ -79,6 +79,7 @@ import ProjectActions from "./ProjectActions";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { IAnnotatedValue } from "../core/AnnotatedValue";
 import { ProjectRole } from "../app/IProjectData";
+import ProjectUtilities from "../app/ProjectUtilities";
 
 interface IProjectEditorProps extends IAppProps {
   onModeChangeRequested?: (mode: AppMode) => void;
@@ -96,10 +97,12 @@ interface IProjectEditorProps extends IAppProps {
 
 interface IProjectEditorState {
   activeProjectItem: ProjectItem | null;
+  tentativeProjectItem: ProjectItem | null;
   activeReference: IGitHubInfo | null;
   mode: ProjectEditorMode;
   forceRawView: boolean;
   filteredItems?: IAnnotatedValue[];
+  searchFilter?: string;
   displayFileView: boolean;
   viewMode: CartoEditorViewMode;
   menuState: ProjectEditorMenuState;
@@ -138,6 +141,7 @@ export enum ProjectEditorDialog {
   noDialog = 0,
   shareableLink = 1,
   worldSettings = 2,
+  webLocalDeploy = 3,
 }
 
 export enum ProjectStatusAreaMode {
@@ -165,9 +169,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleExportMCPackClick = this._handleExportMCPackClick.bind(this);
     this._handleExportToLocalFolderClick = this._handleExportToLocalFolderClick.bind(this);
     this._handleGetShareableLinkClick = this._handleGetShareableLinkClick.bind(this);
+    this._handleWebLocalDeployClick = this._handleWebLocalDeployClick.bind(this);
     this._handleChangeWorldSettingsClick = this._handleChangeWorldSettingsClick.bind(this);
     this._handleDownloadMCWorldWithPacks = this._handleDownloadMCWorldWithPacks.bind(this);
-    this._handleDeployDownloadProjectWorldWithPacks = this._handleDeployDownloadProjectWorldWithPacks.bind(this);
+    this._handleDeployDownloadWorldWithPacks = this._handleDeployDownloadWorldWithPacks.bind(this);
+    this._handleDeployDownloadEditorWorldWithPacks = this._handleDeployDownloadEditorWorldWithPacks.bind(this);
     this._handleExportMCWorldWithPackRefs = this._handleExportMCWorldWithPackRefs.bind(this);
     this._handleDownloadFlatWorldWithPacks = this._handleDownloadFlatWorldWithPacks.bind(this);
     this._handleProjectWorldSettingsChanged = this._handleProjectWorldSettingsChanged.bind(this);
@@ -199,6 +205,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleExportMenuOpen = this._handleExportMenuOpen.bind(this);
     this._handleDeployMenuOpen = this._handleDeployMenuOpen.bind(this);
     this._handleViewMenuOpen = this._handleViewMenuOpen.bind(this);
+    this._handleWebLocalDeployOK = this._handleWebLocalDeployOK.bind(this);
     this._handleDeployWorldAndTestAssetsPackClick = this._handleDeployWorldAndTestAssetsPackClick.bind(this);
     this._handleDeployWorldAndTestAssetsLocalClick = this._handleDeployWorldAndTestAssetsLocalClick.bind(this);
     this._handleDeployWorldPackClick = this._handleDeployWorldPackClick.bind(this);
@@ -285,27 +292,17 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     for (let i = 0; i < this.props.project.items.length; i++) {
       const projectItem = this.props.project.items[i];
 
-      if (
-        initialItem === null &&
-        projectItem &&
-        projectItem.storagePath &&
-        projectItem.storagePath.toLowerCase().indexOf("scriptbox") >= 0 &&
-        (projectItem.itemType === ProjectItemType.js ||
-          projectItem.itemType === ProjectItemType.testJs ||
-          projectItem.itemType === ProjectItemType.ts)
-      ) {
+      if (projectItem.itemType === ProjectItemType.ts && projectItem.name === "ScriptBox.ts") {
         initialItem = projectItem;
         initialMode = ProjectEditorMode.activeItem;
-      }
-
-      if (initialItem === null) {
-        if (this.props.selectedItem && projectItem.storagePath) {
+      } else if (initialItem === null) {
+        if (this.props.selectedItem && projectItem.projectPath) {
           const canonSelectedItem = StorageUtilities.canonicalizePathAsFileName(this.props.selectedItem);
-          const canonCompare = StorageUtilities.canonicalizePathAsFileName(projectItem.storagePath);
+          const canonCompare = StorageUtilities.canonicalizePathAsFileName(projectItem.projectPath);
 
           if (
-            projectItem.storagePath === this.props.selectedItem ||
-            (projectItem.storagePath && canonCompare === canonSelectedItem)
+            projectItem.projectPath === this.props.selectedItem ||
+            (projectItem.projectPath && canonCompare === canonSelectedItem)
           ) {
             initialItem = projectItem;
             initialMode = ProjectEditorMode.activeItem;
@@ -320,6 +317,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     return {
       activeProjectItem: initialItem,
+      tentativeProjectItem: null,
       activeReference: null,
       mode: initialMode,
       allInfoSet: this.props.project.infoSet,
@@ -408,7 +406,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
         if (commandToken.startsWith("/")) {
           const path = ProjectEditorUtilities.convertStoragePathFromBrowserSafe(commandToken);
-          const projectItem = this.props.project.getItemByStoragePath(path);
+          const projectItem = this.props.project.getItemByProjectPath(path);
 
           if (projectItem) {
             let viewMode = state.viewMode;
@@ -419,6 +417,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
             return {
               activeProjectItem: projectItem,
+              tentativeProjectItem: state.tentativeProjectItem,
               activeReference: null,
               mode: ProjectEditorMode.activeItem,
               viewMode: viewMode,
@@ -428,6 +427,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               tab: state.tab,
               forceRawView: state.forceRawView,
               filteredItems: state.filteredItems,
+              searchFilter: state.searchFilter,
               statusAreaMode: state.statusAreaMode,
               displayFileView: state.displayFileView,
               lastDeployKey: state.lastDeployKey,
@@ -443,6 +443,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             if (commandToken === ProjectEditorUtilities.getProjectEditorModeString(i)) {
               return {
                 activeProjectItem: null,
+                tentativeProjectItem: state.tentativeProjectItem,
                 activeReference: null,
                 mode: i,
                 viewMode: state.viewMode,
@@ -452,6 +453,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
                 tab: state.tab,
                 forceRawView: state.forceRawView,
                 filteredItems: state.filteredItems,
+                searchFilter: state.searchFilter,
                 statusAreaMode: state.statusAreaMode,
                 displayFileView: state.displayFileView,
                 lastDeployKey: state.lastDeployKey,
@@ -536,6 +538,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       if (this.state.effectMode === ProjectEditorEffect.dragOver) {
         this.setState({
           activeProjectItem: this.state.activeProjectItem,
+          tentativeProjectItem: this.state.tentativeProjectItem,
           activeReference: this.state.activeReference,
           mode: this.state.mode,
           effectMode: undefined,
@@ -546,6 +549,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           menuState: this.state.menuState,
           forceRawView: this.state.forceRawView,
           filteredItems: this.state.filteredItems,
+          searchFilter: this.state.searchFilter,
           statusAreaMode: this.state.statusAreaMode,
           lastDeployKey: this.state.lastDeployKey,
           lastExportKey: this.state.lastExportKey,
@@ -566,6 +570,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       ) {
         this.setState({
           activeProjectItem: this.state.activeProjectItem,
+          tentativeProjectItem: this.state.tentativeProjectItem,
           activeReference: this.state.activeReference,
           mode: this.state.mode,
           effectMode: this.state.effectMode,
@@ -576,6 +581,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           menuState: this.state.menuState,
           forceRawView: this.state.forceRawView,
           filteredItems: this.state.filteredItems,
+          searchFilter: this.state.searchFilter,
           statusAreaMode: this.state.statusAreaMode,
           lastDeployKey: this.state.lastDeployKey,
           lastExportKey: this.state.lastExportKey,
@@ -592,6 +598,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     if (this.state !== undefined) {
       this.setState({
         activeProjectItem: this.state.activeProjectItem,
+        tentativeProjectItem: this.state.tentativeProjectItem,
         activeReference: this.state.activeReference,
         mode: this.state.mode,
         effectMode: undefined,
@@ -603,6 +610,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         menuState: this.state.menuState,
         forceRawView: this.state.forceRawView,
         filteredItems: this.state.filteredItems,
+        searchFilter: this.state.searchFilter,
         statusAreaMode: this.state.statusAreaMode,
         lastDeployKey: this.state.lastDeployKey,
         lastExportKey: this.state.lastExportKey,
@@ -611,6 +619,20 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         lastDeployData: this.state.lastDeployData,
         lastExportData: this.state.lastExportData,
       });
+    }
+  }
+
+  private async _handleWebLocalDeployOK() {
+    this._handleDialogDone();
+
+    if (this.props.carto.activeMinecraft) {
+      const operId = await this.props.carto.notifyOperationStarted(
+        "Deploying project '" + this.props.project.name + "'..."
+      );
+
+      await this.props.carto.activeMinecraft.deploy();
+
+      await this.props.carto.notifyOperationEnded(operId, "Deployed '" + this.props.project.name + "'.");
     }
   }
 
@@ -625,6 +647,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         if (top > 10 && right > 10 && bottom > 10 && left > 10) {
           this.setState({
             activeProjectItem: this.state.activeProjectItem,
+            tentativeProjectItem: this.state.tentativeProjectItem,
             activeReference: this.state.activeReference,
             menuState: this.state.menuState,
             mode: this.state.mode,
@@ -634,6 +657,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             displayFileView: this.state.displayFileView,
             forceRawView: this.state.forceRawView,
             filteredItems: this.state.filteredItems,
+            searchFilter: this.state.searchFilter,
             effectMode: ProjectEditorEffect.dragOver,
             statusAreaMode: this.state.statusAreaMode,
             lastDeployKey: this.state.lastDeployKey,
@@ -754,7 +778,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
 
     if (ev.dataTransfer.items) {
-      // Use DataTransferItemList interface to access the file(s)
       for (var i = 0; i < ev.dataTransfer.items.length; i++) {
         const dtitem = ev.dataTransfer.items[i];
 
@@ -780,11 +803,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           }
         }
       }
-    } else {
-      // Use DataTransfer interface to access the file(s)
-      for (var j = 0; j < ev.dataTransfer.files.length; j++) {
-        console.log("... file[" + j + "].name = " + ev.dataTransfer.files[j].name);
-      }
     }
 
     this._stopDragEffect();
@@ -800,7 +818,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
   private async _processIncomingFile(path: string, file: File) {
     if (file != null && this.props.project != null && this.props.project.projectFolder != null) {
-      await this.props.project.addBrowserFile(path, file);
+      await ProjectEditorUtilities.addBrowserFile(this.props.project, path, file);
+
+      this.forceUpdate();
     }
   }
 
@@ -859,6 +879,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: newViewMode,
       menuState: ProjectEditorMenuState.noMenu,
@@ -868,6 +889,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       dialog: this.state.dialog,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
       lastExportFunction: this.state.lastExportFunction,
@@ -883,6 +905,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   ) {
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: this.state.menuState,
@@ -891,6 +914,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       dialog: this.state.dialog,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: deployFunction,
@@ -907,6 +931,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   ) {
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: this.state.menuState,
@@ -914,6 +939,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       lastDeployKey: this.state.lastDeployKey,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       dialog: this.state.dialog,
       displayFileView: this.state.displayFileView,
       lastExportKey: exportKey,
@@ -949,6 +975,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: newViewMode,
       menuState: ProjectEditorMenuState.noMenu,
@@ -958,6 +985,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       dialog: this.state.dialog,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
       lastExportFunction: this.state.lastExportFunction,
@@ -973,6 +1001,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private _viewAsItemsImpl() {
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: ProjectEditorMenuState.noMenu,
@@ -981,6 +1010,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       displayFileView: false,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       dialog: this.state.dialog,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
@@ -997,6 +1027,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private _viewAsFilesImpl() {
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: ProjectEditorMenuState.noMenu,
@@ -1005,6 +1036,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       displayFileView: true,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       dialog: this.state.dialog,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
@@ -1068,12 +1100,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: newViewMode,
       menuState: ProjectEditorMenuState.noMenu,
       statusAreaMode: this.state.statusAreaMode,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
       lastDeployKey: this.state.lastDeployKey,
       dialog: this.state.dialog,
@@ -1112,6 +1146,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: newViewMode,
       menuState: ProjectEditorMenuState.noMenu,
@@ -1119,6 +1154,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       displayFileView: this.state.displayFileView,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       lastDeployKey: this.state.lastDeployKey,
       dialog: this.state.dialog,
       lastExportKey: this.state.lastExportKey,
@@ -1183,6 +1219,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: ProjectEditorMode.minecraft,
       viewMode: nextViewMode,
       menuState: ProjectEditorMenuState.noMenu,
@@ -1193,6 +1230,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       dialog: this.state.dialog,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       lastDeployFunction: this.state.lastDeployFunction,
       lastExportFunction: this.state.lastExportFunction,
       lastDeployData: this.state.lastDeployData,
@@ -1215,6 +1253,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: ProjectEditorMode.cartoSettings,
       viewMode: newViewMode,
       menuState: ProjectEditorMenuState.noMenu,
@@ -1223,6 +1262,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       lastDeployKey: this.state.lastDeployKey,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       dialog: this.state.dialog,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
@@ -1241,11 +1281,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: menuVal,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
@@ -1267,11 +1309,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: menuVal,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
@@ -1293,11 +1337,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: menuVal,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
@@ -1318,6 +1364,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     window.setTimeout(() => {
       this.setState({
         activeProjectItem: this.state.activeProjectItem,
+        tentativeProjectItem: this.state.tentativeProjectItem,
         activeReference: this.state.activeReference,
         menuState: this.state.menuState,
         mode: this.state.mode,
@@ -1327,6 +1374,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         displayFileView: this.state.displayFileView,
         forceRawView: this.state.forceRawView,
         filteredItems: this.state.filteredItems,
+        searchFilter: this.state.searchFilter,
         effectMode: this.state.effectMode,
         dialog: ProjectEditorDialog.shareableLink,
         statusAreaMode: this.state.statusAreaMode,
@@ -1336,6 +1384,38 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         lastExportFunction: this._handleGetShareableLinkClick,
         lastDeployData: this.state.lastDeployData,
         lastExportData: data,
+      });
+    }, 2);
+  }
+
+  private async _handleWebLocalDeployClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
+    if (this.props.project == null || !data || !data.icon) {
+      return;
+    }
+
+    window.setTimeout(() => {
+      this.setState({
+        activeProjectItem: this.state.activeProjectItem,
+        tentativeProjectItem: this.state.tentativeProjectItem,
+        activeReference: this.state.activeReference,
+        menuState: this.state.menuState,
+        mode: this.state.mode,
+        viewMode: this.state.viewMode,
+        allInfoSet: this.props.project.infoSet,
+        allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+        displayFileView: this.state.displayFileView,
+        forceRawView: this.state.forceRawView,
+        filteredItems: this.state.filteredItems,
+        searchFilter: this.state.searchFilter,
+        effectMode: this.state.effectMode,
+        dialog: ProjectEditorDialog.webLocalDeploy,
+        statusAreaMode: this.state.statusAreaMode,
+        lastDeployKey: (data.icon as any).key,
+        lastExportKey: this.state.lastExportKey,
+        lastDeployFunction: this._handleWebLocalDeployClick,
+        lastExportFunction: this.state.lastExportFunction,
+        lastDeployData: data,
+        lastExportData: this.state.lastExportData,
       });
     }, 2);
   }
@@ -1352,6 +1432,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     window.setTimeout(() => {
       this.setState({
         activeProjectItem: this.state.activeProjectItem,
+        tentativeProjectItem: this.state.tentativeProjectItem,
         activeReference: this.state.activeReference,
         menuState: this.state.menuState,
         mode: this.state.mode,
@@ -1361,6 +1442,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         displayFileView: this.state.displayFileView,
         forceRawView: this.state.forceRawView,
         filteredItems: this.state.filteredItems,
+        searchFilter: this.state.searchFilter,
         effectMode: this.state.effectMode,
         dialog: ProjectEditorDialog.worldSettings,
         statusAreaMode: this.state.statusAreaMode,
@@ -1520,7 +1602,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const operId = await this.props.carto.notifyOperationStarted("Deploying to " + productPhrase);
 
-    await this.props.carto.ensureGameMinecraft();
+    this.props.carto.ensureGameMinecraft();
 
     if (!this.props.carto.gameMinecraft) {
       Log.assertDefined(this.props.carto.gameMinecraft);
@@ -1833,6 +1915,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         this.showWorldProjectSettingsDialog();
         break;
       case ProjectEditorAction.projectListUp:
+        this.moveTentativeItem(-1);
+        break;
+      case ProjectEditorAction.projectListDown:
+        this.moveTentativeItem(1);
+        break;
+      case ProjectEditorAction.projectListCommit:
+        this.commitTentativeItem();
         break;
     }
   }
@@ -1851,11 +1940,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       menuState: this.state.menuState,
       viewMode: newStateViewMode,
       mode: newMode,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
@@ -1944,7 +2035,21 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
-  private async _handleDeployDownloadProjectWorldWithPacks(
+  private async _handleDeployDownloadWorldWithPacks(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
+    if (data === undefined) {
+      return;
+    }
+
+    await this._ensurePersisted();
+
+    await ProjectEditorUtilities.launchWorldWithPacksDownload(this.props.carto, this.props.project);
+
+    if (data && data.icon && (data.icon as any).key) {
+      this._setNewDeployKey((data.icon as any).key, this._handleDeployDownloadWorldWithPacks, data);
+    }
+  }
+
+  private async _handleDeployDownloadEditorWorldWithPacks(
     e: SyntheticEvent | undefined,
     data: MenuItemProps | undefined
   ) {
@@ -1954,10 +2059,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await this._ensurePersisted();
 
-    await ProjectEditorUtilities.launchProjectWorldWithPacksDownload(this.props.carto, this.props.project);
+    await ProjectEditorUtilities.launchEditorWorldWithPacksDownload(this.props.carto, this.props.project);
 
     if (data && data.icon && (data.icon as any).key) {
-      this._setNewDeployKey((data.icon as any).key, this._handleDeployDownloadProjectWorldWithPacks, data);
+      this._setNewDeployKey((data.icon as any).key, this._handleDeployDownloadEditorWorldWithPacks, data);
     }
   }
 
@@ -2001,6 +2106,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const mcworld = await ProjectExporter.generateBetaApisWorldWithPacks(this.props.project, name, content);
 
+    if (mcworld === undefined) {
+      return;
+    }
+
     const newBytes = await mcworld.getBytes();
 
     Log.message("About to save " + name, this.props.project.name);
@@ -2043,7 +2152,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _handleFileSelected(file: IFile) {
-    const pi = this.props.project.getItemByExtendedOrStoragePath(file.extendedPath);
+    const pi = this.props.project.getItemByExtendedOrProjectPath(file.extendedPath);
 
     if (pi) {
       let newMode = this.state.mode;
@@ -2061,6 +2170,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       this.setState({
         activeReference: this.state.activeReference,
         activeProjectItem: pi,
+        tentativeProjectItem: this.state.tentativeProjectItem,
         mode: newMode,
         viewMode: newStateViewMode,
         allInfoSet: this.props.project.infoSet,
@@ -2069,6 +2179,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         lastDeployKey: this.state.lastDeployKey,
         forceRawView: this.state.forceRawView,
         filteredItems: this.state.filteredItems,
+        searchFilter: this.state.searchFilter,
         displayFileView: this.state.displayFileView,
         lastExportKey: this.state.lastExportKey,
         lastDeployFunction: this.state.lastDeployFunction,
@@ -2086,6 +2197,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private _setProjectStatusMode(mode: ProjectStatusAreaMode) {
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: this.state.menuState,
@@ -2093,6 +2205,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       displayFileView: this.state.displayFileView,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       lastDeployKey: this.state.lastDeployKey,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
@@ -2160,6 +2273,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this.setState({
       activeReference: newReference,
       activeProjectItem: null,
+      tentativeProjectItem: this.state.tentativeProjectItem,
       mode: newMode,
       viewMode: this.state.viewMode,
       allInfoSet: this.props.project.infoSet,
@@ -2168,6 +2282,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       lastDeployKey: this.state.lastDeployKey,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
@@ -2205,12 +2320,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         this._activeEditorPersistable = undefined;
       }
 
-      if (newProjectItem.storagePath) {
-        this._setHash(ProjectEditorUtilities.convertStoragePathToBrowserSafe(newProjectItem.storagePath));
+      if (newProjectItem.projectPath) {
+        this._setHash(ProjectEditorUtilities.convertStoragePathToBrowserSafe(newProjectItem.projectPath));
       }
 
       this.setState({
         activeProjectItem: newProjectItem,
+        tentativeProjectItem: this.state.tentativeProjectItem,
         activeReference: null,
         mode: newMode,
         viewMode: newStateViewMode,
@@ -2218,6 +2334,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
         forceRawView: forceRawView,
         filteredItems: this.state.filteredItems,
+        searchFilter: this.state.searchFilter,
         statusAreaMode: this.state.statusAreaMode,
         displayFileView: this.state.displayFileView,
         lastDeployKey: this.state.lastDeployKey,
@@ -2241,20 +2358,109 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       window.location.hash = "#" + newHash;
     }
   }
+  async commitTentativeItem() {
+    this.setState({
+      activeProjectItem: this.state.tentativeProjectItem,
+      tentativeProjectItem: null,
+      activeReference: this.state.activeReference,
+      mode: this.state.mode,
+      effectMode: this.state.effectMode,
+      viewMode: this.state.viewMode,
+      allInfoSet: this.props.project.infoSet,
+      allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+      displayFileView: this.state.displayFileView,
+      menuState: this.state.menuState,
+      forceRawView: this.state.forceRawView,
+      filteredItems: undefined,
+      searchFilter: undefined,
+      statusAreaMode: this.state.statusAreaMode,
+      lastDeployKey: this.state.lastDeployKey,
+      lastExportKey: this.state.lastExportKey,
+      lastDeployFunction: this.state.lastDeployFunction,
+      lastExportFunction: this.state.lastExportFunction,
+      lastDeployData: this.state.lastDeployData,
+      lastExportData: this.state.lastExportData,
+    });
+  }
+
+  async moveTentativeItem(increment: number) {
+    const filteredItems = this.state.filteredItems;
+
+    if (filteredItems) {
+      const items = ProjectUtilities.getItemsFromSearch(this.props.project, filteredItems);
+
+      if (items && items.length) {
+        let currentIndex = 0;
+
+        for (const projectItem of items) {
+          if (projectItem === this.state.tentativeProjectItem) {
+            break;
+          }
+
+          currentIndex++;
+        }
+
+        currentIndex = currentIndex + increment;
+
+        if (currentIndex < 0) {
+          currentIndex = items.length - 1;
+        } else if (currentIndex >= items.length) {
+          currentIndex = 0;
+        }
+
+        this.setState({
+          activeProjectItem: this.state.activeProjectItem,
+          tentativeProjectItem: items[currentIndex],
+          activeReference: this.state.activeReference,
+          mode: this.state.mode,
+          effectMode: this.state.effectMode,
+          viewMode: this.state.viewMode,
+          allInfoSet: this.props.project.infoSet,
+          allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+          displayFileView: this.state.displayFileView,
+          menuState: this.state.menuState,
+          forceRawView: this.state.forceRawView,
+          filteredItems: this.state.filteredItems,
+          searchFilter: this.state.searchFilter,
+          statusAreaMode: this.state.statusAreaMode,
+          lastDeployKey: this.state.lastDeployKey,
+          lastExportKey: this.state.lastExportKey,
+          lastDeployFunction: this.state.lastDeployFunction,
+          lastExportFunction: this.state.lastExportFunction,
+          lastDeployData: this.state.lastDeployData,
+          lastExportData: this.state.lastExportData,
+        });
+      }
+    }
+  }
 
   async _handleFilterTextChanged(newFilterText: string | undefined) {
     if (!this.state.allInfoSetGenerated) {
       return;
     }
 
-    let searchResults = undefined;
+    let searchResults: IAnnotatedValue[] | undefined = undefined;
+    let tentativeItem = this.state.tentativeProjectItem;
 
     if (newFilterText !== undefined) {
       searchResults = await this.state.allInfoSet.contentIndex.getMatches(newFilterText);
+
+      if (searchResults) {
+        const items = ProjectUtilities.getItemsFromSearch(this.props.project, searchResults);
+
+        if (items && items.length) {
+          if (!tentativeItem || !items.includes(tentativeItem)) {
+            tentativeItem = items[0];
+          }
+        }
+      }
+    } else {
+      tentativeItem = null;
     }
 
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: tentativeItem,
       activeReference: this.state.activeReference,
       mode: this.state.mode,
       effectMode: this.state.effectMode,
@@ -2265,6 +2471,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       menuState: this.state.menuState,
       forceRawView: this.state.forceRawView,
       filteredItems: searchResults,
+      searchFilter: newFilterText,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
       lastExportKey: this.state.lastExportKey,
@@ -2475,6 +2682,18 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const deployMenu: any = [];
 
+    if (CartoApp.isWeb) {
+      const deployWebLocalKey = "deployToLocalFolder";
+      deployKeys[deployWebLocalKey] = {
+        key: deployWebLocalKey + "A",
+        icon: <FontAwesomeIcon icon={faBox} key={deployWebLocalKey} className="fa-lg" />,
+        content: "Deploy to local Minecraft folder",
+        onClick: this._handleWebLocalDeployClick,
+        title: "Deploys this to a remote Dev Tools server",
+      };
+      deployMenu.push(deployKeys[deployWebLocalKey]);
+    }
+
     for (let i = 0; i < this.props.project.items.length; i++) {
       const pi = this.props.project.items[i];
 
@@ -2663,45 +2882,49 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       kind: "divider",
     });
 
-    const defaultProjectWorld = "projectWorld|";
-    deployKeys[defaultProjectWorld] = {
-      key: defaultProjectWorld + "A",
+    const defaultWorldWithPacks = "projectWorld|";
+    deployKeys[defaultWorldWithPacks] = {
+      key: defaultWorldWithPacks + "A",
       icon: (
         <img
           className="pe-menuIcon"
           alt=""
-          key={defaultProjectWorld}
+          key={defaultWorldWithPacks}
           src={CartoApp.contentRoot + "res/latest/van/resource_pack/textures/blocks/grass_side_carried.png"}
         />
       ),
-      onClick: this._handleDeployDownloadProjectWorldWithPacks,
-      content: "Project world",
+      onClick: this._handleDeployDownloadWorldWithPacks,
+      content: "World with Packs",
       title: "Get this pack in a sample .mcworld file, using the sample pack configuration",
     };
-    deployMenu.push({
-      key: defaultProjectWorld + "AA",
-      icon: (
-        <img
-          className="pe-menuIcon"
-          alt=""
-          key={defaultProjectWorld}
-          src={CartoApp.contentRoot + "res/latest/van/resource_pack/textures/blocks/grass_side_carried.png"}
-        />
-      ),
-      onClick: this._handleDeployDownloadProjectWorldWithPacks,
-      content: "Download project world",
-      title: "Get this pack in a sample .mcworld file, using the sample pack configuration",
-    });
+    deployMenu.push(deployKeys[defaultWorldWithPacks]);
 
     const configureProjectWorld = "configProjectWorld|";
     deployKeys[configureProjectWorld] = {
-      key: defaultProjectWorld + "A",
+      key: defaultWorldWithPacks + "B",
       icon: <FontAwesomeIcon icon={faEdit} key={configureProjectWorld} className="fa-lg" />,
       onClick: this._handleChangeWorldSettingsClick,
-      content: "Change project world preferences",
-      title: "Change your preferred project world preferences",
+      content: "Change world with pack preferences",
+      title: "Change your preferred world with pack settings",
     };
     deployMenu.push(deployKeys[configureProjectWorld]);
+
+    const defaultEditorWorldWithPacks = "editorWorld|";
+    deployKeys[defaultEditorWorldWithPacks] = {
+      key: defaultEditorWorldWithPacks + "C",
+      icon: (
+        <img
+          className="pe-menuIcon"
+          alt=""
+          key={defaultWorldWithPacks}
+          src={CartoApp.contentRoot + "res/latest/van/resource_pack/textures/blocks/grass_side_carried.png"}
+        />
+      ),
+      onClick: this._handleDeployDownloadEditorWorldWithPacks,
+      content: "Editor Project with Packs",
+      title: "Get this pack in a sample .mcproject file, using the sample pack configuration",
+    };
+    deployMenu.push(deployKeys[defaultEditorWorldWithPacks]);
 
     let addedItems = 0;
 
@@ -3170,7 +3393,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         <div
           className="pe-meta"
           style={{
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground6,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground4,
           }}
         >
           <div className="pe-metaArea" title={title}>
@@ -3241,6 +3464,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           <FileExplorer
             theme={this.props.theme}
             rootFolder={this.props.project.projectFolder}
+            mode={FileExplorerMode.explorer}
             selectedItem={selectedFile}
             carto={this.props.carto}
             readOnly={this.props.readOnly}
@@ -3258,6 +3482,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           editorMode={this.state.mode}
           heightOffset={heightOffset}
           filteredItems={this.state.filteredItems}
+          searchFilter={this.state.searchFilter}
           allInfoSet={this.state.allInfoSet}
           allInfoSetGenerated={this.state.allInfoSetGenerated}
           onModeChangeRequested={this._handleModeChangeRequested}
@@ -3265,6 +3490,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           onActiveReferenceChangeRequested={this._handleReferenceSelected}
           readOnly={this.props.readOnly}
           activeProjectItem={this.state.activeProjectItem}
+          tentativeProjectItem={this.state.tentativeProjectItem}
         />
       );
     }
@@ -3295,7 +3521,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           className="pe-colAll"
           style={{
             border: border,
-            height: "calc(100vh - " + String(heightOffset - 10) + "px)",
+            height: "calc(100vh - " + String(heightOffset - 11) + "px)",
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
           }}
         >
@@ -3438,15 +3664,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     if (!this.props.hideMainToolbar) {
       toolbarArea = (
         <div className={toolbarStyle}>
-          <Toolbar
-            aria-label="Editor toolbar overflow menu"
-            items={toolbarItems}
-            overflow
-            style={{ minHeight: 50 }}
-            overflowItem={{
-              title: "More",
-            }}
-          />
+          <Toolbar aria-label="Project Editor main toolbar" items={toolbarItems} overflow style={{ minHeight: 50 }} />
         </div>
       );
     }

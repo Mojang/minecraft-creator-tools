@@ -1,9 +1,13 @@
 import Carto from "../app/Carto";
+import { ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 import Project from "../app/Project";
 import ProjectExporter from "../app/ProjectExporter";
+import ProjectItemUtilities from "../app/ProjectItemUtilities";
+import ProjectUtilities from "../app/ProjectUtilities";
 import Utilities from "../core/Utilities";
 import FileSystemFolder from "../storage/FileSystemFolder";
 import FileSystemStorage from "../storage/FileSystemStorage";
+import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import ZipStorage from "../storage/ZipStorage";
 
@@ -22,6 +26,7 @@ export enum ProjectEditorAction {
   worldPropertiesDialog,
   projectListUp,
   projectListDown,
+  projectListCommit,
 }
 
 export default class ProjectEditorUtilities {
@@ -125,14 +130,326 @@ export default class ProjectEditorUtilities {
     carto.notifyStatusUpdate("Done with save " + fileName);
   }
 
-  public static async launchProjectWorldWithPacksDownload(carto: Carto, project: Project) {
+  public static async launchWorldWithPacksDownload(carto: Carto, project: Project) {
     const name = Utilities.getFileFriendlySummarySeconds(new Date()) + "-" + project.name;
 
-    const fileName = name + "-project.mcworld";
+    const fileName = name + ".mcworld";
 
     carto.notifyStatusUpdate("Packing " + fileName);
 
-    const mcworld = await ProjectExporter.generateProjectWorld(carto, project, project.ensureWorldSettings());
+    const mcworld = await ProjectExporter.generateWorldWithPacks(carto, project, project.ensureWorldSettings());
+
+    if (mcworld === undefined) {
+      return;
+    }
+
+    const newBytes = await mcworld.getBytes();
+
+    if (newBytes !== undefined) {
+      saveAs(new Blob([newBytes], { type: "application/octet-stream" }), fileName);
+    }
+
+    carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");
+  }
+
+  static async addBrowserFile(project: Project, path: string, file: File) {
+    if (!project.projectFolder) {
+      return;
+    }
+
+    const pathCanon = path.toLowerCase();
+    const fileName = file.name.toLowerCase();
+    const extension = StorageUtilities.getTypeFromName(file.name);
+
+    if (
+      fileName === "level.dat" ||
+      extension === "db" ||
+      fileName === "current" ||
+      fileName.startsWith("manifest-") ||
+      fileName === "level.dat_old" ||
+      fileName === "levelname.txt" ||
+      fileName.startsWith("world_")
+    ) {
+      if (path.length < 2) {
+        path = "/default";
+      }
+
+      if (pathCanon.indexOf("worlds") < 0) {
+        path = StorageUtilities.joinPath("worlds", path);
+      }
+
+      path = StorageUtilities.ensureEndsWithDelimiter(StorageUtilities.absolutize(path));
+
+      const folder = await project.projectFolder.ensureFolderFromRelativePath(path);
+
+      if (fileName === "level.dat") {
+        project.ensureItemByProjectPath(
+          path,
+          ProjectItemStorageType.folder,
+          folder.name,
+          ProjectItemType.worldFolder,
+          undefined,
+          false
+        );
+      }
+
+      const buffer = await file.arrayBuffer();
+
+      const contentFile = folder.ensureFile(file.name);
+
+      contentFile.setContent(new Uint8Array(buffer));
+
+      contentFile.saveContent();
+    } else if (extension === "snbt") {
+      const operId = await project.carto.notifyOperationStarted("Saving new SNBT structure file '" + file.name + "'");
+
+      const text = await file.text();
+
+      const folder = project.projectFolder.ensureFolder("packs");
+      const contentFile = folder.ensureFile(file.name);
+      contentFile.setContent(text);
+      contentFile.saveContent();
+
+      const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
+
+      if (relPath !== undefined) {
+        project.ensureItemByProjectPath(
+          relPath,
+          ProjectItemStorageType.singleFile,
+          file.name,
+          ProjectItemType.structure,
+          undefined,
+          false
+        );
+      }
+
+      await project.carto.notifyOperationEnded(operId, "New SNBT structure file '" + file.name + "' added");
+    } else if (extension === "mcworld") {
+      const operId = await project.carto.notifyOperationStarted("Saving new MCWorld file '" + file.name + "'");
+
+      const buffer = await file.arrayBuffer();
+
+      const folder = project.projectFolder.ensureFolder("worlds");
+
+      const contentFile = folder.ensureFile(file.name);
+
+      contentFile.setContent(new Uint8Array(buffer));
+
+      contentFile.saveContent();
+
+      const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
+
+      if (relPath !== undefined) {
+        project.ensureItemByProjectPath(
+          relPath,
+          ProjectItemStorageType.singleFile,
+          file.name,
+          ProjectItemType.MCWorld,
+          undefined,
+          false
+        );
+
+        await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
+      }
+
+      await project.carto.notifyOperationEnded(operId, "New MCWorld file '" + file.name + "' added");
+    } else if (extension === "mcproject") {
+      const operId = await project.carto.notifyOperationStarted("Saving new MCProject file '" + file.name + "'");
+
+      const buffer = await file.arrayBuffer();
+
+      const folder = project.projectFolder.ensureFolder("editorworlds");
+
+      const contentFile = folder.ensureFile(file.name);
+
+      contentFile.setContent(new Uint8Array(buffer));
+
+      contentFile.saveContent();
+
+      const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
+
+      if (relPath !== undefined) {
+        project.ensureItemByProjectPath(
+          relPath,
+          ProjectItemStorageType.singleFile,
+          file.name,
+          ProjectItemType.MCProject,
+          undefined,
+          false
+        );
+
+        await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
+      }
+
+      await project.carto.notifyOperationEnded(operId, "New MCProject file '" + file.name + "' added");
+    } else if (extension === "mctemplate") {
+      const operId = await project.carto.notifyOperationStarted("Saving new MCTemplate file '" + file.name + "'");
+
+      const buffer = await file.arrayBuffer();
+
+      const folder = project.projectFolder.ensureFolder("templates");
+
+      const contentFile = folder.ensureFile(file.name);
+
+      contentFile.setContent(new Uint8Array(buffer));
+
+      contentFile.saveContent();
+
+      const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
+
+      if (relPath !== undefined) {
+        project.ensureItemByProjectPath(
+          relPath,
+          ProjectItemStorageType.singleFile,
+          file.name,
+          ProjectItemType.MCTemplate,
+          undefined,
+          false
+        );
+
+        await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
+      }
+
+      await project.carto.notifyOperationEnded(operId, "New MCTemplate file '" + file.name + "' added");
+    } else if (extension === "mcaddon") {
+      const operId = await project.carto.notifyOperationStarted("Saving new MCAddon file '" + file.name + "'");
+
+      const buffer = await file.arrayBuffer();
+
+      const folder = project.projectFolder.ensureFolder("addons");
+
+      const contentFile = folder.ensureFile(file.name);
+
+      contentFile.setContent(new Uint8Array(buffer));
+
+      contentFile.saveContent();
+
+      const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
+
+      if (relPath !== undefined) {
+        project.ensureItemByProjectPath(
+          relPath,
+          ProjectItemStorageType.singleFile,
+          file.name,
+          ProjectItemType.MCAddon,
+          undefined,
+          false
+        );
+
+        await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
+      }
+
+      await project.carto.notifyOperationEnded(operId, "New MCAddon file '" + file.name + "' added");
+    } else if (extension === "zip") {
+      const operId = await project.carto.notifyOperationStarted("Saving new zip file '" + file.name + "'");
+
+      const buffer = await file.arrayBuffer();
+
+      const folder = project.projectFolder.ensureFolder("zips");
+
+      const contentFile = folder.ensureFile(file.name);
+
+      contentFile.setContent(new Uint8Array(buffer));
+
+      contentFile.saveContent();
+
+      const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
+
+      if (relPath !== undefined) {
+        project.ensureItemByProjectPath(
+          relPath,
+          ProjectItemStorageType.singleFile,
+          file.name,
+          ProjectItemType.zip,
+          undefined,
+          false
+        );
+
+        await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
+      }
+
+      await project.carto.notifyOperationEnded(operId, "New zip file '" + file.name + "' added");
+    } else if (extension === "mcpack") {
+      const operId = await project.carto.notifyOperationStarted("Saving new MCPack file '" + file.name + "'");
+
+      const buffer = await file.arrayBuffer();
+
+      const folder = project.projectFolder.ensureFolder("packs");
+
+      const contentFile = folder.ensureFile(file.name);
+
+      contentFile.setContent(new Uint8Array(buffer));
+
+      contentFile.saveContent();
+
+      const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
+
+      if (relPath !== undefined) {
+        project.ensureItemByProjectPath(
+          relPath,
+          ProjectItemStorageType.singleFile,
+          file.name,
+          ProjectItemType.MCPack,
+          undefined,
+          false
+        );
+
+        await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
+      }
+
+      await project.carto.notifyOperationEnded(operId, "New zip file '" + file.name + "' added");
+    } else if (extension === "mcstructure") {
+      const operId = await project.carto.notifyOperationStarted("Saving new structure file '" + file.name + "'");
+
+      const buffer = await file.arrayBuffer();
+
+      const bpFolder = await project.ensureDefaultBehaviorPackFolder();
+
+      const folder = bpFolder.ensureFolder("structures");
+
+      const contentFile = folder.ensureFile(file.name);
+      contentFile.setContent(new Uint8Array(buffer));
+      contentFile.saveContent();
+
+      const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
+
+      if (relPath !== undefined) {
+        project.ensureItemByProjectPath(
+          relPath,
+          ProjectItemStorageType.singleFile,
+          file.name,
+          ProjectItemType.structure,
+          undefined,
+          false
+        );
+      }
+
+      await project.carto.notifyOperationEnded(operId, "New structure file '" + file.name + "' added");
+    } else if (extension === "json") {
+      const operId = await project.carto.notifyOperationStarted("Saving new JSON file '" + file.name + "'");
+
+      const jsonContentStr = await file.text();
+
+      const item = await ProjectUtilities.ensureJsonItem(project, jsonContentStr, fileName);
+
+      let description = "";
+
+      if (item) {
+        description = " as " + ProjectItemUtilities.getDescriptionForType(item.itemType) + " to " + item.projectPath;
+      }
+
+      await project.carto.notifyOperationEnded(operId, "New JSON file '" + file.name + "' added" + description);
+    }
+  }
+
+  public static async launchEditorWorldWithPacksDownload(carto: Carto, project: Project) {
+    const name = Utilities.getFileFriendlySummarySeconds(new Date()) + "-" + project.name;
+
+    const fileName = name + ".mcproject";
+
+    carto.notifyStatusUpdate("Packing " + fileName);
+
+    const mcworld = await ProjectExporter.generateWorldWithPacks(carto, project, project.ensureEditorWorldSettings());
 
     if (mcworld === undefined) {
       return;
@@ -173,6 +490,7 @@ export default class ProjectEditorUtilities {
           true,
           false,
           [],
+          undefined,
           async (message: string) => {
             await carto.notifyStatusUpdate(message);
           }
