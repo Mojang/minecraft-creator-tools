@@ -39,6 +39,11 @@ CartoApp.hostType = HostType.toolsNodejs;
 
 const MAX_LINES_PER_CSV_FILE = 500000;
 
+const ERROR_INIT_ERROR = 44;
+const ERROR_VALIDATION_INTERNALPROCESSINGERROR = 53;
+const ERROR_VALIDATION_TESTFAIL = 56;
+const ERROR_VALIDATION_ERROR = 57;
+
 const program = new Command();
 
 let carto: Carto | undefined;
@@ -49,6 +54,7 @@ let suite: string | undefined;
 let outputType: OutputType | undefined;
 let aggregateReportsAfterValidation: boolean | undefined = false;
 let threads: number = 8;
+let errorLevel: number | undefined;
 
 let force = false;
 let executionTaskType: TaskType = TaskType.noCommand;
@@ -261,7 +267,7 @@ async function loadProjects() {
       const subFolder = workFolder.folders[subFolderName];
 
       if (subFolder) {
-        await subFolder.load(false);
+        await subFolder.load();
 
         for (const subFileName in subFolder.files) {
           const subFile = subFolder.files[subFileName];
@@ -300,7 +306,7 @@ async function loadProjects() {
       const subFolder = workFolder.folders[subFolderName];
 
       if (subFolder && !subFolder.errorStatus) {
-        await subFolder.load(false);
+        await subFolder.load();
 
         for (const fileName in subFolder.files) {
           const file = subFolder.files[fileName];
@@ -403,7 +409,7 @@ async function loadProjects() {
         const folder = workFolder.folders[folderName];
 
         if (folder && !folder.errorStatus && folder.name !== "out") {
-          await folder.load(false);
+          await folder.load();
 
           if (folder.folderCount > 0) {
             const mainProject: IProjectStartInfo = { ctorProjectName: folder.name };
@@ -687,6 +693,20 @@ async function validate() {
           }
 
           projectList.push(result as IProjectMetaState);
+
+          const items = (result as IProjectMetaState).infoSetData?.items;
+
+          if (items) {
+            for (const item of items) {
+              if (item.iTp === InfoItemType.internalProcessingError) {
+                setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
+              } else if (item.iTp === InfoItemType.testCompleteFail) {
+                setErrorLevel(ERROR_VALIDATION_TESTFAIL);
+              } else if (item.iTp === InfoItemType.error) {
+                setErrorLevel(ERROR_VALIDATION_ERROR);
+              }
+            }
+          }
         }
       }
     });
@@ -698,6 +718,14 @@ async function validate() {
   if (aggregateReportsAfterValidation) {
     Log.message("Aggregating reports across " + projectList.length + " projects.");
     await saveAggregatedReports(projectList);
+  }
+}
+
+function setErrorLevel(newErrorLevel: number) {
+  if (errorLevel === undefined || newErrorLevel < errorLevel) {
+    errorLevel = newErrorLevel;
+
+    (process as any).exitCode = newErrorLevel;
   }
 }
 
@@ -713,7 +741,7 @@ async function aggregateReports() {
     Log.message("No main input folder was specified.");
   }
 
-  await inpFolder.load(false);
+  await inpFolder.load();
   let projectsLoaded = 0;
   for (const fileName in inpFolder.files) {
     let file = inpFolder.files[fileName];

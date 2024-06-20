@@ -29,42 +29,6 @@ const jsnbuildfilesigs = [
   "!node_modules/babylonjs/*.ts",
 ];
 
-const vsccorebuildfilesigs = [
-  "src/**/*.ts",
-  "!src/UX/*.ts",
-  "!src/UXex/*.ts",
-  "!out/**/*",
-  "!build/**/*",
-  "!toolbuild/**/*",
-  "!scriptlibs/**/*",
-  "!dist/**/*",
-  "!res/**/*",
-  "!src/vscodeweb/*.ts",
-  "!src/monaco/*.ts",
-  "!src/setupTests.ts",
-  "!src/worldux/*.ts",
-  "!src/local/*.ts",
-  "!src/babylon/*.ts",
-  "!node_modules/@types/leaflet/*.ts",
-  "!node_modules/babylonjs/*.ts",
-];
-
-const vscwebbuildfilesigs = [
-  "src/**/*.ts",
-  "!src/monaco/*.ts",
-  "!src/vscode/*.ts",
-  "!out/**/*",
-  "!build/**/*",
-  "!toolbuild/**/*",
-  "!scriptlibs/**/*",
-  "!dist/**/*",
-  "!res/**/*",
-  "!src/setupTests.ts",
-  "!src/local/*.ts",
-  "!node_modules/@types/leaflet/*.ts",
-  "!node_modules/babylonjs/*.ts",
-];
-
 const jsnwebbuildfilesigs = [
   "src/**/*.ts",
   "!src/vscode/*.ts",
@@ -104,33 +68,6 @@ const mcreslistvanillasigs = ["reslist/packs.resources.json"];
 const mcreslistsamplesigs = ["reslist/samples.resources.json"];
 const mcreslistscriptsamplesigs = ["reslist/scriptsamples.resources.json"];
 const mcreslistgametestsigs = ["reslist/gametestsamples.resources.json"];
-
-function compileVscCoreExeBuild() {
-  return gulp
-    .src(vsccorebuildfilesigs, { base: "" })
-    .pipe(gulpWebpack(require("./webpack.vsccore.config.js")))
-    .pipe(gulp.dest("toolbuild/vsc"))
-    .on("end", function () {})
-    .on("error", function () {});
-}
-
-function compileVscCoreWebBuild() {
-  return gulp
-    .src(vsccorebuildfilesigs, { base: "" })
-    .pipe(gulpWebpack(require("./webpack.vsccoreweb.config.js")))
-    .pipe(gulp.dest("toolbuild/vsc"))
-    .on("end", function () {})
-    .on("error", function () {});
-}
-
-function compileVscWebBuild() {
-  return gulp
-    .src(vscwebbuildfilesigs, { base: "" })
-    .pipe(gulpWebpack(require("./webpack.vscweb.config.js")))
-    .pipe(gulp.dest("toolbuild/vsc/web"))
-    .on("end", function () {})
-    .on("error", function () {});
-}
 
 function compileJsnWebBuild() {
   return gulp
@@ -181,10 +118,6 @@ function copyCheckedInRes() {
   return gulp.src(["public_ci/**/*"]).pipe(gulp.dest("public/"));
 }
 
-function copyVscData() {
-  return gulp.src(["public/data/**/*.json", "public/data/**/*.mcworld"]).pipe(gulp.dest("toolbuild/vsc/data/"));
-}
-
 function copyJsNodeData() {
   return gulp.src(["public/data/**/*.json", "public/data/**/*.mcworld"]).pipe(gulp.dest("toolbuild/jsn/data/"));
 }
@@ -205,48 +138,16 @@ function copyJsNodeDocs() {
   return gulp.src(["../CHANGELOG.md", "../NOTICE.md", "jsnode/README.md"]).pipe(gulp.dest("toolbuild/jsn/"));
 }
 
-function copyVscRes() {
-  return gulp.src(["public/res/**/*"]).pipe(gulp.dest("toolbuild/vsc/res/"));
-}
-
-function copyVscMc() {
-  return gulp.src(["../mc/dist/**/*"]).pipe(gulp.dest("toolbuild/vsc/mc/"));
-}
-
 function copyJsNodeResSchemas() {
   return gulp.src(["public/res/latest/schemas/**/*"]).pipe(gulp.dest("toolbuild/jsn/res/latest/schemas/"));
-}
-
-function copyJsNodeMc() {
-  return gulp.src(["../mc/dist/**/*"]).pipe(gulp.dest("toolbuild/jsn/mc/"));
 }
 
 function copyJsNodeAssets() {
   return gulp.src(["jsnode/**/*"]).pipe(gulp.dest("toolbuild/jsn/"));
 }
 
-function copyVscAssets() {
-  return gulp.src(["vscode/**/*.json"]).pipe(gulp.dest("toolbuild/vsc/"));
-}
-
-function copyVscDocs() {
-  return gulp.src(["../CHANGELOG.md", "../LICENSE.md", "vscode/README.md"]).pipe(gulp.dest("toolbuild/vsc/"));
-}
-
 gulp.task("clean-jsnbuild", function () {
   return del(["toolbuild/jsn"]);
-});
-
-gulp.task("clean-vscbuild", function () {
-  return del(["toolbuild/vsc"]);
-});
-
-gulp.task("clean-vsccorebuild", function () {
-  return del(["toolbuild/vsc/core"]);
-});
-
-gulp.task("clean-vscwebbuild", function () {
-  return del(["toolbuild/vsc/web"]);
 });
 
 gulp.task("clean-jsnwebbuild", function () {
@@ -279,63 +180,13 @@ gulp.task(
   gulp.series(
     "clean-jsnbuild",
     copyCheckedInRes,
-    gulp.parallel(
-      compileJsNodeBuild,
-      copyJsNodeAssets,
-      copyJsNodeData,
-      copyJsNodeDocs,
-      copyJsNodeResSchemas,
-      copyJsNodeMc
-    )
+    gulp.parallel(compileJsNodeBuild, copyJsNodeAssets, copyJsNodeData, copyJsNodeDocs, copyJsNodeResSchemas)
   )
 );
 
 gulp.task("jsncorebuild", gulp.series(compileJsNodeBuild));
 
 gulp.task("copyjsnodedata", gulp.series(copyJsNodeData));
-
-gulp.task(
-  "vsccorebuild",
-  gulp.series("clean-vsccorebuild", gulp.parallel(compileVscCoreExeBuild, compileVscCoreWebBuild))
-);
-
-gulp.task("vsccoreexebuild", compileVscCoreExeBuild);
-gulp.task("vsccorewebbuild", compileVscCoreExeBuild);
-
-gulp.task("postclean-vscwebbuild-node_modules", function () {
-  return del(["toolbuild/vsc/app/node_modules"]);
-});
-
-gulp.task("postclean-vscwebbuild-toolbuild", function () {
-  return del(["toolbuild/vsc/app/toolbuild"]);
-});
-
-gulp.task("postclean-vscwebbuild-build", function () {
-  return del(["toolbuild/vsc/app/build"]);
-});
-
-gulp.task(
-  "postclean-vscwebbuild",
-  gulp.parallel("postclean-vscwebbuild-node_modules", "postclean-vscwebbuild-toolbuild", "postclean-vscwebbuild-build")
-);
-
-gulp.task(
-  "vscbuild",
-  gulp.series(
-    "clean-vscbuild",
-    copyCheckedInRes,
-    gulp.parallel(
-      compileVscCoreExeBuild,
-      compileVscCoreWebBuild,
-      gulp.series(compileVscWebBuild, "postclean-vscwebbuild"),
-      copyVscAssets,
-      copyVscDocs,
-      copyVscData,
-      copyVscRes,
-      copyVscMc
-    )
-  )
-);
 
 function compileWebJsBuild() {
   const tsProject = ts.createProject({
@@ -400,8 +251,6 @@ function runDownloadVanillaResources() {
   return gulp.src(mcreslistvanillasigs, { base: "" }).pipe(downloadResources("public/res/latest/van/"));
 }
 
-gulp.task("vscwebbuild", gulp.series("clean-vscwebbuild", compileVscWebBuild, "postclean-vscwebbuild"));
-
 gulp.task("jsnwebbuild", gulp.series("clean-jsnwebbuild", compileJsnWebBuild, "postclean-jsnwebbuild"));
 
 gulp.task("clean-webbuild", function () {
@@ -439,15 +288,8 @@ gulp.task("devenv", gulp.parallel("mctypes", "dlres", copyMonacoNpmDist, copyMon
 
 gulp.task("npmdepends", gulp.parallel(copyMonacoNpmDist, copyMonacoMapsNpmDist, copyEsbuildWasmDist));
 
-gulp.task("default", gulp.parallel("jsnbuild", "vscbuild"));
+gulp.task("default", gulp.parallel("jsnbuild"));
 
 gulp.task("watch", function () {
   gulp.watch(jsnbuildfilesigs, gulp.series("jsnbuild"));
 });
-
-gulp.task(
-  "watchvsccore",
-  gulp.parallel("vsccorebuild", function () {
-    gulp.watch(vsccorebuildfilesigs, gulp.series("vsccorebuild"));
-  })
-);
