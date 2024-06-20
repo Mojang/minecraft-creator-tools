@@ -10,33 +10,33 @@
     "entityTypeResourceCount": 0,
     "behaviorPackAnimationCount": 0,
     "behaviorPackAnimationControllerCount": 0,
-    "overallSize": 127150,
-    "fileCounts": 55,
+    "overallSize": 77388,
+    "fileCounts": 38,
     "folderCounts": 23,
-    "contentSize": 127150,
-    "contentFileCounts": 55,
+    "contentSize": 77388,
+    "contentFileCounts": 38,
     "contentFolderCounts": 18,
     "textureCount": 0,
     "chunkCount": 0,
     "worldLoadErrors": 0,
     "featureSets": {
       "Textures Entity Resource Count": {
-        "Count": 6
+        "Count": 3
       },
       "Textures Texture References": {
-        "Count": 6
+        "Count": 3
       },
       "Textures Entity References": {
-        "Count": 6
+        "Count": 3
       },
       "Textures File Count": {
-        "Count": 7
+        "Count": 4
       },
       "Textures Unique Texture Handles (estimated)": {
-        "Count": 6
+        "Count": 3
       },
       "Textures Unique Texture Paths": {
-        "Count": 6
+        "Count": 3
       },
       "Textures Unique Particle Texture Paths": {
         "Count": 0
@@ -45,7 +45,7 @@
         "Count": 1
       },
       "Textures Unique Entity Texture Paths": {
-        "Count": 6
+        "Count": 3
       },
       "Command say": {
         "Count": 1
@@ -130,13 +130,13 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 1,
-      "d": 127150
+      "d": 77388
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 2,
-      "d": 55
+      "d": 38
     },
     {
       "iTp": 7,
@@ -148,13 +148,13 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 4,
-      "d": 127150
+      "d": 77388
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 5,
-      "d": 55
+      "d": 38
     },
     {
       "iTp": 7,
@@ -187,22 +187,22 @@
       "gIx": 1,
       "fs": {
         "Entity Resource Count": {
-          "Count": 6
+          "Count": 3
         },
         "Texture References": {
-          "Count": 6
+          "Count": 3
         },
         "Entity References": {
-          "Count": 6
+          "Count": 3
         },
         "File Count": {
-          "Count": 7
+          "Count": 4
         },
         "Unique Texture Handles (estimated)": {
-          "Count": 6
+          "Count": 3
         },
         "Unique Texture Paths": {
-          "Count": 6
+          "Count": 3
         },
         "Unique Particle Texture Paths": {
           "Count": 0
@@ -211,7 +211,7 @@
           "Count": 1
         },
         "Unique Entity Texture Paths": {
-          "Count": 6
+          "Count": 3
         }
       }
     },
@@ -407,78 +407,6 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
     },
     {
@@ -546,42 +474,6 @@
       "gId": "WORLDDATA",
       "gIx": 6,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json"
     },
     {
       "iTp": 7,
@@ -695,42 +587,6 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
     },
     {
@@ -798,42 +654,6 @@
       "gId": "WORLDDATA",
       "gIx": 6,
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json"
     },
     {
       "iTp": 7,
@@ -1055,78 +875,6 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
       "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
     },
     {
@@ -1235,42 +983,6 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
       "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
     },
     {
@@ -1302,78 +1014,6 @@
       "gId": "WORLDDATA",
       "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json"
     },
     {
       "iTp": 7,
@@ -1451,42 +1091,6 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
       "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
     },
     {
@@ -1559,78 +1163,6 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
       "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
     },
     {
@@ -1698,42 +1230,6 @@
       "gId": "WORLDDATA",
       "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json"
     },
     {
       "iTp": 7,
@@ -1898,86 +1394,69 @@
       "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
       "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json",
       "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json",
-      "/Content/behavior_packs/aop_mobsbp/entities/black_bear.behavior.json",
-      "/Content/behavior_packs/aop_mobsbp/entities/boomfly.behavior.json",
       "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json",
       "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json",
-      "/Content/behavior_packs/aop_mobsbp/entities/wraith.behavior.json",
       "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json",
       "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json",
       "/Content/behavior_packs/aop_mobsbp/scripts/main.js",
       "/Content/behavior_packs/aop_mobsbp/scripts/Utilities.js",
       "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json",
-      "/Content/behavior_packs/aop_mobsbp/spawn_rules/black_bear.json",
       "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json",
       "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json",
-      "/Content/behavior_packs/aop_mobsbp/spawn_rules/wraith.json",
       "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang",
       "/Content/behavior_packs/aop_mobsbp/texts/languages.json",
       "/Content/resource_packs/aop_mobsrp/manifest.json",
       "/Content/resource_packs/aop_mobsrp/pack_icon.png",
       "/Content/resource_packs/aop_mobsrp/sounds.json",
       "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json",
-      "/Content/resource_packs/aop_mobsrp/animations/black_bear.animation.json",
-      "/Content/resource_packs/aop_mobsrp/animations/boomfly.animation.json",
       "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json",
       "/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json",
       "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json",
-      "/Content/resource_packs/aop_mobsrp/animations/wraith.animation.json",
       "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
-      "/Content/resource_packs/aop_mobsrp/entity/black_bear.entity.json",
-      "/Content/resource_packs/aop_mobsrp/entity/boomfly.entity.json",
       "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json",
       "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
-      "/Content/resource_packs/aop_mobsrp/entity/wraith.entity.json",
       "/Content/resource_packs/aop_mobsrp/materials/entity.material",
       "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json",
-      "/Content/resource_packs/aop_mobsrp/models/entity/black_bear.geometry.json",
-      "/Content/resource_packs/aop_mobsrp/models/entity/boomfly.geometry.json",
       "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
       "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json",
-      "/Content/resource_packs/aop_mobsrp/models/entity/wraith.geometry.json",
       "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
       "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
       "/Content/resource_packs/aop_mobsrp/texts/en_US.lang",
       "/Content/resource_packs/aop_mobsrp/texts/languages.json",
       "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png",
-      "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/black_bear.png",
-      "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/boomfly.png",
       "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle.png",
       "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/raccoon.png",
-      "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/sheepomelon.png",
-      "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/wraith.png"
+      "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/sheepomelon.png"
     ],
     "trie": {
       "9": {
         "ec8af93-4b38-429f-a4bd-7e277a50d238": [
           0,
-          21
+          16
         ],
         "d6dad89-6e29-46ba-83d5-490a4901caef": [
           0,
-          21
+          16
         ]
       },
       "m": {
         "e": {
           "tadata": [
             0,
-            21
+            16
           ],
           "lon": {
             "±": [
               2,
-              10,
-              11
+              7,
+              8
             ],
             "_": {
               "slice": [
-                8
+                6
               ],
               "block": [
-                8
+                6
               ]
             }
           }
@@ -1986,7 +1465,7 @@
           "t": {
             "ches": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ],
@@ -1994,46 +1473,39 @@
               "random": [
                 4,
                 5,
-                7,
-                8,
+                6,
                 {
-                  "n": 12,
+                  "n": 9,
                   "a": "S"
                 },
                 {
-                  "n": 13,
+                  "n": 10,
                   "a": "S"
                 },
-                44,
-                45
+                30,
+                31
               ],
               "cos": [
-                24,
-                25,
-                26,
-                27,
-                28,
-                29,
-                30
+                19,
+                20,
+                21,
+                22
               ],
               "sin": [
-                29
+                22
               ]
             },
             "e": {
               "_type": [
-                7,
-                8
+                5,
+                6
               ],
               "rials": [
-                31,
-                32,
-                33,
-                34,
-                35,
-                36,
-                44,
-                45
+                23,
+                24,
+                25,
+                30,
+                31
               ]
             }
           },
@@ -2041,48 +1513,40 @@
             "dist": {
               "±": [
                 4,
-                5,
-                6,
-                8,
-                9
+                6
               ],
               "ance": [
                 4,
-                5,
-                8
+                6
               ]
             },
             "turn": [
-              7
-            ],
-            "activation_range": [
-              9
+              5
             ],
             "size": [
-              14,
-              15,
-              16,
-              17
+              11,
+              12,
+              13
             ],
             "lifetime": [
-              44,
-              45
+              30,
+              31
             ],
             "frame": [
-              44,
-              45
+              30,
+              31
             ]
           },
           "ss": [
-            8
+            6
           ],
           "in": {
             "±": [
-              12
+              9
             ],
             "tick": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ]
@@ -2090,10 +1554,10 @@
           "n": {
             "ifest": [
               0,
-              21
+              16
             ],
             "grove_swamp": [
-              16
+              12
             ]
           }
         },
@@ -2101,7 +1565,7 @@
           "dule": {
             "s": [
               0,
-              21
+              16
             ],
             "_name": [
               0
@@ -2112,177 +1576,132 @@
               4,
               5,
               6,
-              7,
-              8,
-              9,
-              31,
-              32,
-              33,
-              34,
-              35,
-              36
+              23,
+              24,
+              25
             ],
             ".": {
               "basic": [
                 4,
-                5,
-                6,
-                8,
-                9
+                6
               ],
               "amphibious": [
-                7
+                5
               ]
             }
           },
-          "nster": [
-            6,
-            9,
-            18
-          ],
           "b": {
             "loc": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ],
             ".": {
-              "warning": [
-                23
-              ],
-              "evocation_illager.": {
-                "ambient": [
-                  23
-                ],
-                "c": {
-                  "ast_spell": [
-                    23
-                  ],
-                  "elebrate": [
-                    23
-                  ]
-                },
-                "death": [
-                  23
-                ],
-                "hurt": [
-                  23
-                ],
-                "prepare_": {
-                  "attack": [
-                    23
-                  ],
-                  "summon": [
-                    23
-                  ],
-                  "wololo": [
-                    23
-                  ]
-                }
-              },
               "dolphin.": {
                 "idle": {
                   "±": [
-                    23
+                    18
                   ],
                   "_water": [
-                    23
+                    18
                   ]
                 },
                 "attack": [
-                  23
+                  18
                 ],
                 "blowhole": [
-                  23
+                  18
                 ],
                 "death": [
-                  23
+                  18
                 ],
                 "eat": [
-                  23
+                  18
                 ],
                 "hurt": [
-                  23
+                  18
                 ],
                 "jump": [
-                  23
+                  18
                 ],
                 "s": {
                   "plash": [
-                    23
+                    18
                   ],
                   "wim": [
-                    23
+                    18
                   ]
                 }
               },
               "p": {
+                "hantom.": {
+                  "idle": [
+                    18
+                  ],
+                  "bite": [
+                    18
+                  ],
+                  "death": [
+                    18
+                  ],
+                  "flap": [
+                    18
+                  ],
+                  "hurt": [
+                    18
+                  ],
+                  "swoop": [
+                    18
+                  ]
+                },
                 "olarbear": {
                   "_baby.idle": [
-                    23
+                    18
                   ],
                   ".": {
                     "idle": [
-                      23
+                      18
                     ],
                     "death": [
-                      23
+                      18
                     ],
                     "hurt": [
-                      23
+                      18
                     ],
                     "warning": [
-                      23
+                      18
                     ],
                     "step": [
-                      23
+                      18
                     ]
                   }
-                },
-                "hantom.": {
-                  "idle": [
-                    23
-                  ],
-                  "bite": [
-                    23
-                  ],
-                  "death": [
-                    23
-                  ],
-                  "flap": [
-                    23,
-                    33
-                  ],
-                  "hurt": [
-                    23
-                  ],
-                  "swoop": [
-                    23
-                  ]
                 }
               },
+              "warning": [
+                18
+              ],
               "sheep.s": {
                 "ay": [
-                  23
+                  18
                 ],
                 "tep": [
-                  23
+                  18
                 ]
               },
               "zombie.": {
                 "death": [
-                  23
+                  18
                 ],
                 "hurt": [
-                  23
+                  18
                 ],
                 "s": {
                   "ay": [
-                    23
+                    18
                   ],
                   "tep": [
-                    23
+                    18
                   ]
                 }
               }
@@ -2290,20 +1709,12 @@
           }
         },
         "u": {
-          "st_see": {
-            "±": [
-              4,
-              5,
-              6,
-              8,
-              9
-            ],
-            "_forget_duration": [
-              6
-            ]
-          },
+          "st_see": [
+            4,
+            6
+          ],
           "ttonraw": [
-            10
+            7
           ]
         },
         "i": {
@@ -2314,49 +1725,32 @@
               6,
               7,
               8,
-              9,
-              10,
               11,
-              14,
-              15,
-              16,
-              17,
-              18,
-              31,
-              32,
-              33,
-              34,
-              35,
-              36,
-              38,
-              39,
-              42,
-              44,
-              45
+              12,
+              13,
+              23,
+              24,
+              25,
+              27,
+              29,
+              30,
+              31
             ],
             "_": {
               "engine_version": [
                 0,
-                21,
-                35,
-                36
-              ],
-              "activation_range": [
-                9
+                16,
+                25
               ],
               "size": [
-                14,
-                15,
-                16,
-                17
+                11,
+                12,
+                13
               ]
             }
           },
           "rror": [
-            38,
-            39,
-            40,
-            43
+            27
           ]
         }
       },
@@ -2365,270 +1759,196 @@
           "iority": [
             4,
             5,
-            6,
-            7,
-            8,
-            9
+            6
           ],
           "o": {
             "duct_type": [
               0,
-              21
+              16
             ],
             "bability": [
               4,
               5,
-              7,
-              8,
-              9
+              6
             ],
             "perties": [
-              10
+              7
             ]
           },
           "e": {
             "gnant": [
-              7
+              5
             ],
             "fer_water": [
-              7
-            ],
-            "pare.": {
-              "attack": [
-                9,
-                23
-              ],
-              "summon": [
-                9,
-                23
-              ],
-              "wololo": [
-                9,
-                23
-              ]
-            }
+              5
+            ]
           }
         },
+        "hysics": [
+          4,
+          5,
+          6
+        ],
         "ushable": [
           4,
           5,
-          6,
-          7,
-          8,
-          9
+          6
         ],
         "o": {
-          "wer": [
-            6
-          ],
           "ols": [
-            10,
-            11
+            7,
+            8
           ],
           "pulation_control": [
-            14,
-            15,
-            16,
-            17,
-            18
+            11,
+            12,
+            13
           ],
           "s": {
             "ition": [
-              8,
-              24,
-              25,
-              26,
-              29,
-              30
+              6,
+              19,
+              22
             ],
             "t": [
-              29
+              22
             ]
           },
           "lar": {
             "bear": [
-              4,
-              5
+              4
             ],
             "_bear": [
-              31,
-              32
+              23
             ]
           }
+        },
+        "ermutation": [
+          {
+            "n": 9,
+            "a": "S"
+          },
+          {
+            "n": 10,
+            "a": "S"
+          }
+        ],
+        "la": {
+          "y": {
+            "er": {
+              "±": [
+                4,
+                6
+              ],
+              "s": [
+                {
+                  "n": 9,
+                  "a": "S"
+                }
+              ]
+            },
+            "_sounds": [
+              6
+            ]
+          },
+          "ins": [
+            11,
+            13
+          ]
+        },
+        "i": {
+          "tch": [
+            18
+          ],
+          "vot": [
+            27,
+            28,
+            29
+          ]
         },
         "a": {
           "ck": {
             ".": {
               "name": [
                 0,
-                21
+                16
               ],
               "description": [
                 0,
-                21
+                16
               ]
             },
             "_": {
               "icon": [
                 1,
-                22
+                17
               ],
               "scope": [
-                21
+                16
               ]
             },
             "±": [
-              21
+              16
             ]
           },
           "r": {
             "ent": [
-              38,
-              39,
-              40,
-              41,
-              42,
-              43
+              27,
+              28,
+              29
             ],
             "ticle": {
+              "s_alpha": [
+                30,
+                31
+              ],
               "_": {
-                "color": [
-                  9
-                ],
-                "effects": [
-                  33,
-                  36,
-                  44,
-                  45
+                "effect": [
+                  30,
+                  31
                 ],
                 "with_velocity": [
-                  44
+                  30
                 ],
                 "initial_sp": {
                   "eed": [
-                    44,
-                    45
+                    30,
+                    31
                   ],
                   "in": [
-                    44,
-                    45
+                    30,
+                    31
                   ]
                 },
                 "lifetime_e": {
                   "xpression": [
-                    44,
-                    45
+                    30,
+                    31
                   ],
                   "vents": [
-                    44
+                    30
                   ]
                 },
                 "motion_dynamic": [
-                  44,
-                  45
+                  30,
+                  31
                 ],
                 "appearance_": {
                   "billboard": [
-                    44,
-                    45
+                    30,
+                    31
                   ],
                   "tinting": [
-                    44,
-                    45
+                    30,
+                    31
                   ],
                   "lighting": [
-                    45
+                    31
                   ]
                 }
-              },
-              "s_alpha": [
-                44,
-                45
-              ]
+              }
             }
           }
-        },
-        "er": {
-          "sistent": [
-            9
-          ],
-          "mutation": [
-            {
-              "n": 12,
-              "a": "S"
-            },
-            {
-              "n": 13,
-              "a": "S"
-            }
-          ]
-        },
-        "la": {
-          "y": {
-            "er": {
-              "±": [
-                4,
-                5,
-                6,
-                8,
-                9
-              ],
-              "s": [
-                {
-                  "n": 12,
-                  "a": "S"
-                }
-              ]
-            },
-            "_sounds": [
-              6,
-              8
-            ]
-          },
-          "ins": [
-            14,
-            15,
-            17
-          ]
-        },
-        "h": {
-          "ysics": [
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
-          ],
-          "antom": {
-            "±": [
-              33
-            ],
-            "_": {
-              "invisible": [
-                33
-              ],
-              "base_pose": [
-                33
-              ],
-              "trail_particle": [
-                33
-              ]
-            }
-          }
-        },
-        "i": {
-          "tch": [
-            23
-          ],
-          "vot": [
-            38,
-            39,
-            40,
-            41,
-            42,
-            43
-          ]
         }
       },
       "2d59a3f6-d348-496d-a0c7-6d59ddb05c5e": [
@@ -2638,21 +1958,16 @@
         "e": {
           "pendencies": [
             0,
-            21
+            16
           ],
           "fault": [
             3,
-            14,
-            15,
-            16,
-            17,
-            18,
-            31,
-            32,
-            33,
-            34,
-            35,
-            36
+            11,
+            12,
+            13,
+            23,
+            24,
+            25
           ],
           "s": {
             "cription": [
@@ -2660,65 +1975,44 @@
               4,
               5,
               6,
-              7,
-              8,
-              9,
-              14,
-              15,
+              11,
+              12,
+              13,
               16,
-              17,
-              18,
-              21,
-              31,
-              32,
-              33,
-              34,
-              35,
-              36,
-              38,
-              39,
-              42,
-              44,
-              45
+              23,
+              24,
+              25,
+              27,
+              29,
+              30,
+              31
             ],
             "pawn": {
               "±": [
                 4,
                 5,
-                6,
-                7,
-                8
+                6
               ],
               "_from_distance": [
                 4,
                 5,
-                6,
-                7,
-                8
+                6
               ]
-            },
-            "troy_affected_by_griefing": [
-              6
-            ]
+            }
           },
-          "lay_per_summon": [
-            9
-          ],
           "nsity_limit": [
-            16,
-            18
+            12
           ],
           "a": {
             "ls_damage": [
-              6,
-              7
+              5
             ],
             "th": {
               "±": [
-                23
+                18
               ],
               ".in.water": [
-                23
+                18
               ]
             }
           }
@@ -2726,9 +2020,7 @@
         "uration": [
           4,
           5,
-          7,
-          8,
-          9
+          6
         ],
         "a": {
           "ta": [
@@ -2737,33 +2029,24 @@
           "mage": {
             "±": [
               4,
-              5,
-              6,
-              8
+              6
             ],
             "_": {
               "conditions": [
                 4,
                 5,
-                6,
-                7,
-                8,
-                9
+                6
               ],
               "per_tick": [
                 4,
                 5,
-                6,
-                7,
-                8,
-                9
+                6
               ],
               "sensor": [
-                6,
-                7
+                5
               ],
               "multiplier": [
-                7
+                5
               ]
             }
           }
@@ -2771,45 +2054,27 @@
         "r": {
           "ag_factor": [
             4,
-            5,
-            7
+            5
           ],
           "op_items": [
-            7
-          ]
-        },
-        "well": {
-          "er": {
-            "±": [
-              9
-            ],
-            "_role": [
-              9
-            ]
-          },
-          "ing_type": [
-            9
-          ]
-        },
-        "i": {
-          "stance_filter": [
-            16
-          ],
-          "fficulty_filter": [
-            18
-          ],
-          "rection": [
-            44,
-            45
+            5
           ]
         },
         "o": {
           "main": [
-            6,
-            8
+            6
           ],
           "lphin": [
-            34
+            24
+          ]
+        },
+        "i": {
+          "stance_filter": [
+            12
+          ],
+          "rection": [
+            30,
+            31
           ]
         }
       },
@@ -2823,117 +2088,92 @@
             4,
             5,
             6,
-            7,
-            8,
-            9,
-            14,
-            15,
-            17,
-            38,
-            39,
-            44,
-            45
+            11,
+            13,
+            27,
+            30,
+            31
           ],
           "mily": {
             "±": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ],
             "_types": [
-              8
+              6
             ]
           },
           "cing_": {
             "direction": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ],
             "camera_mode": [
-              44,
-              45
+              30,
+              31
             ]
           }
         },
         "o": {
-          "llow_range": [
+          "rmat_version": [
+            0,
+            2,
+            3,
             4,
             5,
-            7,
-            9
+            6,
+            11,
+            12,
+            13,
+            16,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            27,
+            28,
+            29,
+            30,
+            31
           ],
-          "r": {
-            "mat_version": [
-              0,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              14,
-              15,
-              16,
-              17,
-              18,
-              21,
-              24,
-              25,
-              26,
-              27,
-              28,
-              29,
-              30,
-              31,
-              32,
-              33,
-              34,
-              35,
-              36,
-              38,
-              39,
-              40,
-              41,
-              42,
-              43,
-              44,
-              45
-            ],
-            "ced_": {
-              "exploding": [
-                6
-              ],
-              "charged_exploding": [
-                6
-              ]
-            }
-          },
+          "llow_range": [
+            4,
+            5
+          ],
           "urwalls": [
             {
-              "n": 12,
+              "n": 9,
               "a": "S"
             },
             {
-              "n": 13,
+              "n": 10,
               "a": "S"
             }
           ]
         },
         "eed_items": [
-          7,
-          8
+          5,
+          6
         ],
+        "u": {
+          "nctions": [
+            7,
+            8
+          ],
+          "rnace_smelt": [
+            7
+          ]
+        },
         "i": {
           "ndtopmostblockusingplayer": [
             {
-              "n": 12,
+              "n": 9,
               "a": "S"
             }
           ],
@@ -2941,68 +2181,36 @@
             "ters": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ],
             "lblock": [
               {
-                "n": 13,
+                "n": 10,
                 "a": "S"
               }
             ]
           },
-          "r": {
-            "st_founding_reward": [
-              9
+          "reworks_": {
+            "pop": [
+              30
             ],
-            "eworks_": {
-              "pop": [
-                44
-              ],
-              "twinkles": [
-                44
-              ]
-            }
-          }
-        },
-        "u": {
-          "se_l": {
-            "ength": [
-              6
-            ],
-            "it": [
-              6
+            "twinkles": [
+              30
             ]
-          },
-          "nctions": [
-            10,
-            11
-          ],
-          "rnace_smelt": [
-            10
-          ]
+          }
         },
         "l": {
           "ap": [
-            23,
-            26,
-            33
+            18
           ],
-          "i": {
-            "nt_and_steel": [
-              6
-            ],
-            "pbook": [
-              44,
-              45
-            ]
-          }
+          "ipbook": [
+            30,
+            31
+          ]
         },
         "rames_per_second": [
-          44,
-          45
+          30,
+          31
         ]
       },
       "@minecraft/server": {
@@ -3014,6 +2222,74 @@
         ]
       },
       "s": {
+        "he": {
+          "ep": {
+            "_": {
+              "baby": [
+                6
+              ],
+              "adult": [
+                6
+              ],
+              "sheared": [
+                6
+              ]
+            },
+            "±": [
+              6,
+              25
+            ],
+            "omelon": {
+              "_shear": [
+                8
+              ],
+              "±": [
+                13,
+                18,
+                25,
+                37
+              ],
+              ".": {
+                "b": {
+                  "p_a": {
+                    "nims": [
+                      2
+                    ],
+                    "c": [
+                      3
+                    ]
+                  },
+                  "ehavior": [
+                    6
+                  ],
+                  "±": [
+                    6,
+                    7
+                  ]
+                },
+                "animation": [
+                  22
+                ],
+                "entity": [
+                  25
+                ],
+                "geometry": [
+                  29
+                ]
+              }
+            }
+          },
+          "ar": {
+            "ed": [
+              3,
+              6,
+              25
+            ],
+            "s": [
+              6
+            ]
+          }
+        },
         "c": {
           "ript": {
             "±": [
@@ -3021,418 +2297,210 @@
             ],
             "s/main.js": [
               0,
-              8,
-              31,
-              32,
-              33,
-              35,
-              36
+              6,
+              23,
+              25
             ]
           },
           "ale": [
             4,
             5,
-            7,
-            8,
-            24,
-            25,
-            29,
-            30,
-            31,
-            32,
-            36
+            6,
+            19,
+            22,
+            23
           ]
         },
         "p": {
           "awn": {
             "±": [
               3,
-              8
+              6
             ],
             "_": {
               "items": [
-                8
+                6
               ],
               "adult": [
-                8
+                6
               ],
               "baby": [
-                8
-              ],
-              "for_raid": [
-                9
+                6
               ],
               "rules": [
-                14,
-                15,
-                16,
-                17,
-                18
+                11,
+                12,
+                13
               ],
               "egg": [
-                31,
-                32,
-                33,
-                34,
-                35,
-                36
+                23,
+                24,
+                25
               ]
             },
             "loc": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ],
             "zoo": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ],
             "entity": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ],
             "s_": {
               "on_": {
                 "surface": [
-                  14,
-                  15,
-                  16,
-                  17,
-                  18
+                  11,
+                  12,
+                  13
                 ],
                 "block_filter": [
-                  14,
-                  15,
-                  17
+                  11,
+                  13
                 ]
               },
               "under": {
                 "water": [
-                  16
+                  12
                 ],
                 "ground": [
-                  16
+                  12
                 ]
               }
             }
           },
-          "rint_speed_multiplier": [
-            6,
-            9
+          "eed_multiplier": [
+            4,
+            5,
+            6
           ],
           "lash": [
-            23
-          ],
-          "e": {
-            "ed_multiplier": [
-              4,
-              5,
-              6,
-              7,
-              8,
-              9
-            ],
-            "ll": [
-              36
-            ]
-          }
+            18
+          ]
         },
         "t": {
-          "a": {
-            "rt_": {
-              "exploding": {
-                "±": [
-                  6
-                ],
-                "_forced": [
-                  6
-                ]
-              },
-              "sound_event": [
-                9
-              ],
-              "celebrating": [
-                9
-              ]
-            },
-            "t": {
-              "es": [
-                3
-              ],
-              "ic": [
-                {
-                  "n": 13,
-                  "a": "S"
-                }
-              ]
-            }
-          },
-          "o": {
-            "mp_range_multiplier": [
-              4,
-              5
+          "omp_range_multiplier": [
+            4
+          ],
+          "at": {
+            "es": [
+              3
             ],
-            "p_": {
-              "exploding": [
-                6
-              ],
-              "celebrating": [
-                9
-              ]
-            }
+            "ic": [
+              {
+                "n": 10,
+                "a": "S"
+              }
+            ]
           },
           "ep": {
             "±": [
-              23
+              18
             ],
             "_uv": [
-              44,
-              45
+              30,
+              31
             ]
           },
           "retch_to_lifetime": [
-            44,
-            45
+            30,
+            31
           ]
         },
         "u": {
           "ffocate_time": [
             4,
             5,
-            6,
-            7,
-            8,
-            9
+            6
           ],
           "ccess_chance": [
-            8
+            6
           ],
-          "mmon_c": {
-            "hoices": [
-              9
-            ],
-            "ap": {
-              "±": [
-                9
-              ],
-              "_radius": [
-                9
-              ]
-            }
-          },
           "b": {
             "ject": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ],
             "scribe": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ]
           },
           "rface": [
-            16,
-            18
+            12
           ]
         },
         "e": {
           "lf": [
             4,
             5,
-            6,
-            7,
-            8,
-            9
-          ],
-          "quence": [
-            6,
-            8,
-            9
+            6
           ],
           "a": {
             "rch_": {
               "range": [
-                7
+                5
               ],
               "height": [
-                7
+                5
               ]
             },
             "grass": [
-              7
+              5
             ],
             "t": {
               "_count": [
-                8
+                6
               ],
               "s": [
-                8
+                6
               ]
             }
           },
+          "quence": [
+            6
+          ],
           "ndmessage": [
             {
-              "n": 12,
+              "n": 9,
               "a": "S"
             }
           ],
           "t": {
             "_count": [
-              10,
-              11
+              7,
+              8
             ],
             "permutation": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               },
               {
-                "n": 13,
+                "n": 10,
                 "a": "S"
               }
             ],
             "up": [
-              35
+              25
             ]
           }
         },
-        "o": {
-          "ft_distance": [
-            4,
-            5,
-            8
-          ],
-          "und": {
-            "_": {
-              "interval": [
-                9
-              ],
-              "e": {
-                "vent": [
-                  9
-                ],
-                "ffects": [
-                  26,
-                  33
-                ]
-              }
-            },
-            "s": [
-              23
-            ],
-            "±": [
-              23
-            ]
-          }
-        },
-        "h": {
-          "e": {
-            "ep": {
-              "_": {
-                "baby": [
-                  8
-                ],
-                "adult": [
-                  8
-                ],
-                "sheared": [
-                  8
-                ]
-              },
-              "±": [
-                8,
-                9,
-                35
-              ],
-              "omelon": {
-                "_shear": [
-                  11
-                ],
-                "±": [
-                  17,
-                  23,
-                  35,
-                  53
-                ],
-                ".": {
-                  "b": {
-                    "p_a": {
-                      "nims": [
-                        2
-                      ],
-                      "c": [
-                        3
-                      ]
-                    },
-                    "ehavior": [
-                      8
-                    ],
-                    "±": [
-                      8,
-                      10
-                    ]
-                  },
-                  "animation": [
-                    29
-                  ],
-                  "entity": [
-                    35
-                  ],
-                  "geometry": [
-                    42
-                  ]
-                }
-              }
-            },
-            "ar": {
-              "ed": [
-                3,
-                8,
-                35
-              ],
-              "s": [
-                8
-              ]
-            }
-          },
-          "ape": [
-            9
-          ]
-        },
-        "ize": {
-          "±": [
-            9,
-            38,
-            39,
-            40,
-            41,
-            42,
-            43,
-            44,
-            45
-          ],
-          "_uv": [
-            44,
-            45
-          ]
-        },
-        "nowgolem": [
-          9
-        ],
         "ystem": [
           {
-            "n": 12,
+            "n": 9,
             "a": "S"
           }
         ],
@@ -3441,26 +2509,42 @@
             2
           ],
           "vanna": [
-            14,
-            15,
-            17
+            11,
+            13
+          ]
+        },
+        "o": {
+          "ft_distance": [
+            4,
+            6
+          ],
+          "unds": [
+            18
           ]
         },
         "w": {
-          "i": {
-            "ng": [
-              6
-            ],
-            "m": [
-              23
-            ]
-          },
+          "im": [
+            18
+          ],
           "oop": [
-            23
+            18
+          ]
+        },
+        "ize": {
+          "±": [
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "_uv": [
+            30,
+            31
           ]
         },
         "moke_puff": [
-          45
+          31
         ]
       },
       "a": {
@@ -3468,50 +2552,37 @@
           4,
           5,
           6,
-          7,
-          8,
-          9,
-          14,
-          15,
-          16,
-          17,
+          11,
+          12,
+          13,
           18,
           23,
-          31,
-          32,
-          33,
-          34,
-          35,
-          36,
-          44,
-          45
+          24,
+          25,
+          30,
+          31
         ],
         "geable": {
           "±": [
             4,
             5,
-            7,
-            8
+            6
           ],
           "_grow_up": [
             4,
             5,
-            7,
-            8
+            6
           ]
         },
         "n": {
           "gry": [
-            4,
+            4
+          ],
+          "jelika": [
             5
           ],
           "y_of": [
-            6,
-            9,
-            16
-          ],
-          "jelika": [
-            7
+            12
           ],
           "im": {
             "a": {
@@ -3520,137 +2591,83 @@
                   "s": [
                     2,
                     3,
-                    8,
+                    6,
+                    19,
+                    20,
+                    21,
+                    22,
+                    23,
                     24,
-                    25,
-                    26,
-                    27,
-                    28,
-                    29,
-                    30,
-                    31,
-                    32,
-                    33,
-                    34,
-                    35,
-                    36
+                    25
                   ],
                   "_": {
                     "length": [
                       2,
-                      26,
-                      29
+                      22
                     ],
                     "controllers": [
                       3,
-                      31,
-                      32,
-                      34
+                      23,
+                      24
                     ]
                   },
                   ".": {
                     "aop_moremobs.": {
-                      "b": {
-                        "iceson.": {
-                          "move": [
-                            24,
-                            31
-                          ],
-                          "walk": [
-                            24,
-                            31
-                          ]
-                        },
-                        "lack_bear.": {
-                          "move": [
-                            25,
-                            32
-                          ],
-                          "walk": [
-                            25,
-                            32
-                          ]
-                        },
-                        "oomfly.": {
-                          "base_pose": [
-                            26,
-                            33
-                          ],
-                          "move": [
-                            26,
-                            33
-                          ]
-                        }
+                      "biceson.": {
+                        "move": [
+                          19,
+                          23
+                        ],
+                        "walk": [
+                          19,
+                          23
+                        ]
                       },
                       "nar": {
                         "dolphle.move": [
-                          27,
-                          34
+                          20,
+                          24
                         ],
                         "whal.move": [
-                          28
+                          21
                         ]
                       },
                       "sheepomelon.": {
                         "walk": [
-                          29,
-                          35
+                          22,
+                          25
                         ],
                         "s": {
                           "pawn": [
                             2,
-                            8
+                            6
                           ],
                           "etup": [
-                            29,
-                            35
+                            22,
+                            25
                           ]
                         }
-                      },
-                      "wraith.": {
-                        "casting": [
-                          30,
-                          36
-                        ],
-                        "general": [
-                          30,
-                          36
-                        ],
-                        "move": [
-                          30,
-                          36
-                        ]
                       }
                     },
                     "common.look_at_target": [
-                      31,
-                      32,
-                      35,
-                      36
-                    ],
-                    "humanoid.celebrating": [
-                      36
+                      23,
+                      25
                     ]
                   }
                 },
                 "e": [
-                  8,
-                  33,
-                  35,
-                  36
+                  6,
+                  25
                 ]
               },
               "l": [
-                14,
-                15,
-                17
+                11,
+                13
               ]
             },
             "_time_update": [
-              24,
-              25,
-              29,
-              30
+              19,
+              22
             ]
           }
         },
@@ -3658,103 +2675,74 @@
           "ult": {
             "±": [
               4,
-              5,
-              7
+              5
             ],
             "_": {
               "wild": [
-                4,
-                5
+                4
               ],
               "hostile": [
-                4,
-                5
+                4
               ]
             }
           },
           "just_for_weather": [
-            14,
-            15,
-            17,
-            18
+            11,
+            13
           ],
           "d": {
             "on": [
               0,
-              21
+              16
             ],
             "-on": [
-              21
+              16
             ]
           }
         },
         "ttack": [
           4,
-          5,
           6,
-          8,
-          23
-        ],
-        "ll_of": [
-          6,
-          8,
-          9
+          18
         ],
         "void_": {
           "damage_blocks": [
             4,
-            5,
-            7
+            5
           ],
           "water": [
-            8,
-            9
+            6
           ]
         },
-        "mbient": {
-          "_sound_interval": [
-            9
-          ],
-          "±": [
-            23
-          ],
-          ".": {
-            "baby": [
-              23
-            ],
-            "in.": {
-              "raid": [
-                9,
-                23
-              ],
-              "water": [
-                23
-              ]
-            }
-          }
-        },
+        "ll_of": [
+          6
+        ],
         "fterevents": [
           {
-            "n": 12,
+            "n": 9,
             "a": "S"
           }
         ],
-        "rms": [
-          30,
-          43
-        ],
-        "cti": {
-          "on.interact.": {
-            "creeper": [
-              6
+        "mbient": {
+          "±": [
+            18
+          ],
+          ".": {
+            "in.water": [
+              18
             ],
-            "shear": [
-              8
+            "baby": [
+              18
             ]
-          },
+          }
+        },
+        "cti": {
+          "on.interact.shear": [
+            6
+          ],
           "ve_time": [
-            44,
-            45
+            30,
+            31
           ]
         }
       },
@@ -3765,118 +2753,66 @@
               0
             ],
             "s": [
-              20,
-              47
+              15,
+              33
             ]
           },
           "va": [
             4,
             5,
-            6,
-            7,
-            8,
-            9
+            6
           ],
           "id_egg": [
-            7
+            5
           ]
-        },
-        "i": {
-          "ghtning": [
-            6,
-            7
-          ],
-          "ne": {
-            "±": [
-              9
-            ],
-            "ar_": {
-              "acceleration": [
-                44,
-                45
-              ],
-              "drag_coefficient": [
-                44,
-                45
-              ]
-            }
-          }
         },
         "e": {
           "ngth": [
             {
-              "n": 12,
+              "n": 9,
               "a": "S"
             }
           ],
           "g": {
             "0": [
-              24,
-              25,
-              29,
-              30,
-              38,
-              39,
-              42,
-              43
+              19,
+              22,
+              27,
+              29
             ],
             "1": [
-              24,
-              25,
-              29,
-              30,
-              38,
-              39,
-              42,
-              43
+              19,
+              22,
+              27,
+              29
             ],
             "2": [
-              24,
-              25,
-              29,
-              38,
-              39,
-              42
+              19,
+              22,
+              27,
+              29
             ],
             "3": [
-              24,
-              25,
-              29,
-              38,
-              39,
-              42
+              19,
+              22,
+              27,
+              29
             ]
           },
-          "ft": {
-            "arm": [
-              30,
-              43
-            ],
-            "_": {
-              "fin": [
-                27,
-                28,
-                41
-              ],
-              "wing": [
-                40
-              ],
-              "hand": [
-                43
-              ]
-            }
-          },
+          "ft_fin": [
+            20,
+            21,
+            28
+          ],
           "a": {
             "shable": [
               4,
-              5,
-              8
+              6
             ],
             "d": [
-              38,
-              39,
-              41,
-              42
+              27,
+              28,
+              29
             ]
           }
         },
@@ -3884,121 +2820,116 @@
           "o": {
             "p": [
               2,
-              24,
-              25,
-              26,
-              27,
-              28,
-              29,
+              19,
+              20,
+              21,
+              22,
               30,
-              44,
-              45
+              31
             ],
             "t": {
               "±": [
                 4,
                 5,
-                6,
-                7,
-                8,
-                9
+                6
               ],
               "_": {
                 "tables/entities/": {
                   "polar_bear.json": [
-                    4,
-                    5
-                  ],
-                  "creeper.json": [
-                    6
+                    4
                   ],
                   "s": {
                     "ea_turtle.json": [
-                      7
+                      5
                     ],
                     "heep": {
                       "_sheared.json": [
-                        8
+                        6
                       ],
                       "omelon.json": [
-                        8
+                        6
                       ]
                     }
                   }
                 },
                 "sheared": [
-                  8
+                  6
                 ],
                 "wooly": [
-                  8
+                  6
                 ]
               },
               "ing_enchant": [
-                10
+                7
               ]
             },
             "k": {
               "_": {
                 "distance": [
-                  6,
-                  8,
-                  9
+                  6
                 ],
                 "at_target": [
-                  31,
-                  32,
-                  35,
-                  36
+                  23,
+                  25
                 ]
               },
               "at_xyz": [
-                44,
-                45
+                30,
+                31
               ]
             }
           },
           "cat": {
             "ion": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ],
             "ors": [
-              38,
-              39,
-              40,
-              41,
-              42,
-              43
+              27,
+              28,
+              29
             ]
           }
         },
         "u": {
           "kewarm": [
-            16
+            12
           ],
           "sh_caves": [
-            16
+            12
           ]
+        },
+        "i": {
+          "ghtning": [
+            5
+          ],
+          "near_": {
+            "acceleration": [
+              30,
+              31
+            ],
+            "drag_coefficient": [
+              30,
+              31
+            ]
+          }
         }
       },
       "t": {
         "ype": {
           "±": [
             0,
-            10,
-            11,
-            21,
-            44
+            7,
+            8,
+            16,
+            30
           ],
           "_family": [
             4,
             5,
-            6,
-            7,
-            8,
-            9
+            6
           ]
         },
         "r": {
@@ -4007,23 +2938,13 @@
             5,
             6,
             7,
-            8,
-            9,
-            10,
-            18,
-            24,
-            25,
-            26,
+            19,
+            20,
+            21,
+            22,
             27,
-            28,
-            29,
             30,
-            38,
-            39,
-            40,
-            43,
-            44,
-            45
+            31
           ],
           "a": {
             "nsitions": [
@@ -4031,20 +2952,17 @@
             ],
             "ck_target": [
               4,
-              5,
-              6,
-              8
+              6
             ]
           },
           "igger": {
             "s": [
-              6,
-              7,
-              8
+              5,
+              6
             ],
             "loc": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ]
@@ -4055,72 +2973,49 @@
             "±": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ],
-            "_": {
-              "distance": [
-                4,
-                5,
-                7,
-                8
-              ],
-              "nearby_sensor": [
-                6
-              ]
-            }
+            "_distance": [
+              4,
+              5,
+              6
+            ]
           },
           "ble": [
             4,
             5,
-            6,
-            7,
-            8,
-            9
+            6
           ],
           "il": {
             "±": [
-              26,
-              27,
-              28,
-              40,
-              41
-            ],
-            "tip": [
-              26,
-              40
+              20,
+              21,
+              28
             ],
             "_fin": [
-              27,
-              28,
-              41
+              20,
+              21,
+              28
             ]
           }
         },
         "otal_supply": [
           4,
           5,
-          6,
-          7,
-          8,
-          9
+          6
         ],
         "urtle": {
           "±": [
-            7
+            5
           ],
           "_shell_piece": [
-            7
+            5
           ]
         },
         "his": [
-          10,
-          24,
-          25,
-          29,
-          30
+          7,
+          19,
+          22
         ],
         "i": {
           "me": {
@@ -4128,12 +3023,12 @@
               2
             ],
             "_until_eat": [
-              8
+              6
             ]
           },
           "ckssinceload": [
             {
-              "n": 12,
+              "n": 9,
               "a": "S"
             }
           ]
@@ -4143,88 +3038,63 @@
             4,
             5,
             6,
-            7,
-            8,
-            9,
-            14,
-            15,
-            16,
-            17,
-            18
+            11,
+            12,
+            13
           ],
           "xture": {
             "s": {
               "±": [
-                31,
-                32,
-                33,
-                34,
-                35,
-                36
+                23,
+                24,
+                25
               ],
               "/": {
                 "aop/moremobs/": {
-                  "b": {
-                    "iceson": [
-                      31
-                    ],
-                    "lack_bear": [
-                      32
-                    ],
-                    "oomfly": [
-                      33
-                    ]
-                  },
+                  "biceson": [
+                    23
+                  ],
                   "nardolphle": [
-                    34
+                    24
                   ],
                   "sheepomelon": [
-                    35
-                  ],
-                  "wraith": [
-                    36
+                    25
                   ]
                 },
                 "particle/particles": [
-                  44,
-                  45
+                  30,
+                  31
                 ]
               }
             },
             "_": {
               "width": [
-                38,
-                39,
-                42,
-                44,
-                45
+                27,
+                29,
+                30,
+                31
               ],
               "height": [
-                38,
-                39,
-                42,
-                44,
-                45
+                27,
+                29,
+                30,
+                31
               ]
             },
             "width": [
-              40,
-              41,
-              43
+              28
             ],
             "height": [
-              40,
-              41,
-              43
+              28
             ],
             "±": [
-              44,
-              45
+              30,
+              31
             ]
           }
         },
         "winkle": [
-          44
+          30
         ]
       },
       "/": {
@@ -4242,9 +3112,9 @@
             1
           ],
           "resource_packs/aop_mobsrp/": [
-            21,
-            22,
-            23
+            16,
+            17,
+            18
           ]
         }
       },
@@ -4257,97 +3127,83 @@
             "±": [
               4,
               5,
-              7,
-              31,
-              32
+              23
             ],
             "_": {
               "wild": [
-                4,
-                5
+                4
               ],
               "scared": [
-                4,
-                5
+                4
               ],
               "on_calm": [
-                4,
-                5
+                4
               ],
               "t": {
                 "urtle": [
-                  7
+                  5
                 ],
                 "ype": [
-                  7,
-                  8
+                  5,
+                  6
                 ],
                 "ransform": [
-                  31,
-                  32,
-                  35
+                  23,
+                  25
                 ]
               }
             }
           },
           "lloonable": [
-            8
+            6
           ],
           "ck_fin": [
-            41
+            28
           ],
           "s": {
+            "ic_render_parameters": [
+              30,
+              31
+            ],
             "e_": {
-              "delay": [
-                9
-              ],
               "color": [
-                31,
-                32,
-                33,
-                34,
-                35,
-                36
+                23,
+                24,
+                25
               ],
               "uv": [
-                44,
-                45
+                30,
+                31
               ]
-            },
-            "ic_render_parameters": [
-              44,
-              45
-            ]
+            }
           }
         },
         "r": {
           "oadcast_": {
             "anger": [
-              4,
-              5
+              4
             ],
             "range": [
-              4,
-              5
+              4
             ]
           },
           "e": {
             "ed": {
               "able": [
-                7,
-                8
+                5,
+                6
               ],
               "s_with": [
-                7,
-                8
+                5,
+                6
               ],
               "_": {
                 "event": [
-                  7
+                  5
                 ],
                 "items": [
-                  7,
-                  8
+                  5,
+                  6
                 ]
               }
             },
@@ -4355,29 +3211,24 @@
               "able": [
                 4,
                 5,
-                6,
-                7,
-                8,
-                9
+                6
               ],
               "es_": {
                 "water": [
-                  7
+                  5
                 ],
                 "air": [
-                  7
+                  5
                 ],
                 "±": [
-                  23
+                  18
                 ]
               }
             }
           },
           "ightness_filter": [
-            14,
-            15,
-            17,
-            18
+            11,
+            13
           ]
         },
         "e": {
@@ -4388,270 +3239,167 @@
             ".": {
               "nearest_attackable_target": [
                 4,
-                5,
-                6,
-                8,
-                9
+                6
+              ],
+              "stomp_attack": [
+                4
               ],
               "f": {
                 "ollow_parent": [
                   4,
-                  5,
-                  8
+                  6
                 ],
                 "loat": [
                   4,
-                  5,
-                  6,
-                  8,
-                  9
+                  6
                 ]
               },
               "hurt_by_target": [
                 4,
-                5,
-                6,
-                7,
-                9
+                5
               ],
               "random_": {
                 "look_around": [
                   4,
-                  5,
-                  6,
-                  8
+                  6
                 ],
                 "s": {
                   "troll": [
                     4,
                     5,
-                    6,
-                    7,
-                    8,
-                    9
+                    6
                   ],
                   "wim": [
-                    7
+                    5
                   ]
                 }
               },
               "panic": [
                 4,
                 5,
-                7,
-                8
+                6
               ],
-              "avoid_mob_type": [
-                6,
-                9
+              "breed": [
+                5,
+                6
+              ],
+              "go_home": [
+                5
+              ],
+              "l": {
+                "ook_at_player": [
+                  4,
+                  5,
+                  6
+                ],
+                "ay_egg": [
+                  5
+                ]
+              },
+              "tempt": [
+                5,
+                6
               ],
               "m": {
                 "elee_attack": [
-                  6,
-                  8
+                  6
                 ],
                 "o": {
                   "ve_to_": {
                     "water": [
-                      7
+                      5
                     ],
                     "land": [
-                      7
-                    ],
-                    "village": [
-                      9
+                      5
                     ]
                   },
                   "unt_pathing": [
-                    8
+                    6
                   ]
                 }
               },
-              "breed": [
-                7,
-                8
-              ],
-              "go_home": [
-                7
-              ],
-              "l": {
-                "ay_egg": [
-                  7
-                ],
-                "ook_at_": {
-                  "player": [
-                    4,
-                    5,
-                    6,
-                    7,
-                    8,
-                    9
-                  ],
-                  "entity": [
-                    9
-                  ]
-                }
-              },
-              "tempt": [
-                7,
-                8
-              ],
               "eat_block": [
-                8
-              ],
-              "celebrate": [
-                9
-              ],
-              "s": {
-                "tomp_attack": [
-                  4,
-                  5
-                ],
-                "ummon_entity": [
-                  9
-                ],
-                "end_event": [
-                  9
-                ]
-              }
+                6
+              ]
             }
           },
-          "come_": {
-            "charged": [
-              6
-            ],
-            "pregnant": [
-              7
-            ]
-          }
+          "come_pregnant": [
+            5
+          ]
         },
-        "l": {
-          "ue": [
-            9
-          ],
-          "ockpermutation": [
-            {
-              "n": 12,
-              "a": "S"
-            },
-            {
-              "n": 13,
-              "a": "S"
-            }
-          ],
-          "ack_bear.": {
-            "behavior": [
-              5,
-              15,
-              23
-            ],
-            "animation": [
-              25
-            ],
-            "entity": [
-              32
-            ],
-            "±": [
-              32,
-              49
-            ],
-            "geometry": [
-              39
-            ]
+        "lockpermutation": [
+          {
+            "n": 9,
+            "a": "S"
+          },
+          {
+            "n": 10,
+            "a": "S"
           }
-        },
+        ],
         "utton": {
           "±": [
             {
-              "n": 12,
+              "n": 9,
               "a": "S"
             }
           ],
           "push": [
             {
-              "n": 12,
+              "n": 9,
               "a": "S"
             }
           ]
         },
         "i": {
           "ome_filter": [
-            14,
-            15,
-            16,
-            17,
-            18
+            11,
+            12,
+            13
           ],
           "ceson.": {
             "behavior": [
               4,
-              14,
-              23
+              11,
+              18
             ],
             "animation": [
-              24
+              19
             ],
             "entity": [
-              31
+              23
             ],
             "±": [
-              31,
-              48
+              23,
+              34
             ],
             "geometry": [
-              38
+              27
             ]
           }
         },
         "o": {
+          "omfly": [
+            18
+          ],
           "nes": [
-            24,
-            25,
-            26,
+            19,
+            20,
+            21,
+            22,
             27,
             28,
-            29,
-            30,
-            38,
-            39,
-            40,
-            41,
-            42,
-            43
+            29
           ],
           "dy": [
-            24,
-            25,
-            26,
+            19,
+            20,
+            21,
+            22,
             27,
             28,
-            29,
-            38,
-            39,
-            40,
-            41,
-            42,
-            43
-          ],
-          "omfly.": {
-            "behavior": [
-              6,
-              23
-            ],
-            "animation": [
-              26
-            ],
-            "entity": [
-              33
-            ],
-            "±": [
-              33,
-              50
-            ],
-            "geometry": [
-              40
-            ]
-          }
+            29
+          ]
         }
       },
       "!query.is_sheared": [
@@ -4662,331 +3410,176 @@
           4,
           5,
           6,
-          7,
-          8,
-          9,
-          14,
-          15,
-          16,
-          17,
-          18,
-          31,
-          32,
-          33,
-          34,
-          35,
-          36,
-          38,
-          39,
-          42,
-          44,
-          45
+          11,
+          12,
+          13,
+          23,
+          24,
+          25,
+          27,
+          29,
+          30,
+          31
         ],
         "s_": {
           "s": {
             "pawnable": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ],
             "ummonable": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ],
             "heared": [
-              8
+              6
             ]
           },
           "experimental": [
             4,
             5,
-            6,
-            7,
-            8,
-            9
+            6
           ],
           "baby": [
             4,
             5,
-            7,
-            8,
-            9
+            6
           ],
           "family": [
             4,
-            5,
-            6,
-            8,
-            9
+            6
           ],
           "pushable": {
             "±": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ],
             "_by_piston": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ]
           },
           "amphibious": [
-            7
-          ],
-          "c": {
-            "harged": [
-              6
-            ],
-            "olor": [
-              9
-            ]
-          }
+            5
+          ]
         },
         "n": {
           "_lava": [
             4,
             5,
-            6,
-            7,
-            8,
-            9
-          ],
-          "side_range": [
             6
           ],
           "ter": {
+            "val": [
+              5
+            ],
             "act": {
               "±": [
-                6,
-                8
+                6
               ],
               "ions": [
-                6,
-                8
+                6
               ],
               "_text": [
-                6,
-                8
+                6
               ]
             },
-            "val": [
-              7
-            ],
             "polant": [
-              44
+              30
             ]
           },
           "itialize": [
             {
-              "n": 12,
+              "n": 9,
               "a": "S"
-            },
-            33
-          ],
-          "visible": [
-            33
+            }
           ],
           "flate": [
-            42,
-            43
+            29
           ]
         },
-        "gnite": [
-          6
-        ],
         "tems": [
+          5,
+          6,
           7,
-          8,
-          10,
-          11
-        ],
-        "llager": [
-          9
-        ],
-        "rongolem": [
-          9
+          8
         ]
       },
       "v": {
         "ersion": [
           0,
-          21
+          16
         ],
         "olume": [
-          23
+          18
         ],
+        "isible_bounds_": {
+          "width": [
+            27,
+            28,
+            29
+          ],
+          "height": [
+            27,
+            28,
+            29
+          ],
+          "offset": [
+            27,
+            28,
+            29
+          ]
+        },
         "a": {
           "lue": [
             4,
             5,
             6,
-            7,
-            8,
-            9,
-            14,
-            15,
-            16,
-            17,
-            18
+            11,
+            12,
+            13
           ],
-          "riable.": {
-            "runtimeid": [
-              33
-            ],
-            "tailrotx": [
-              33
-            ],
-            "wingrotz": [
-              33
-            ],
-            "particle_": {
-              "random_1": {
-                "±": [
-                  44
-                ],
-                "*0.5": [
-                  45
-                ]
-              },
-              "age": [
-                44,
-                45
+          "riable.particle_": {
+            "random_1": {
+              "±": [
+                30
+              ],
+              "*0.5": [
+                31
               ]
-            }
-          }
-        },
-        "i": {
-          "llage": {
-            "±": [
-              9
-            ],
-            "r": [
-              9
-            ]
-          },
-          "sible_bounds_": {
-            "width": [
-              38,
-              39,
-              40,
-              41,
-              42,
-              43
-            ],
-            "height": [
-              38,
-              39,
-              40,
-              41,
-              42,
-              43
-            ],
-            "offset": [
-              38,
-              39,
-              40,
-              41,
-              42,
-              43
+            },
+            "age": [
+              30,
+              31
             ]
           }
         }
       },
       "e": {
-        "xp": {
-          "erience_reward": [
+        "vent": {
+          "±": [
+            4,
+            5,
+            6
+          ],
+          "s": [
             4,
             5,
             6,
-            7,
-            8,
-            9
-          ],
-          "lod": {
-            "ing": [
-              6
-            ],
-            "e": [
-              6
-            ]
-          },
-          "iration_event": [
-            44
+            18,
+            30
           ]
         },
-        "v": {
-          "ent": {
-            "±": [
-              4,
-              5,
-              6,
-              7,
-              8,
-              9
-            ],
-            "s": [
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              23,
-              44
-            ],
-            "_": {
-              "name": [
-                9
-              ],
-              "choices": [
-                9
-              ]
-            }
-          },
-          "o": {
-            "cation_": {
-              "illager": [
-                9
-              ],
-              "fang": [
-                9
-              ]
-            },
-            "ker": {
-              "±": [
-                36
-              ],
-              "_spell": [
-                36
-              ]
-            }
-          }
-        },
-        "a": {
-          "t_": {
-            "and_replace_block_pairs": [
-              8
-            ],
-            "block": [
-              8
-            ]
-          },
-          "sy": [
-            18
+        "at_": {
+          "and_replace_block_pairs": [
+            6
+          ],
+          "block": [
+            6
           ]
         },
         "n": {
@@ -4996,8 +3589,8 @@
                 0
               ],
               "ies": [
-                10,
-                11
+                7,
+                8
               ]
             },
             "it": {
@@ -5007,307 +3600,205 @@
                   5,
                   6,
                   7,
-                  8,
-                  9,
-                  10,
-                  37
+                  26
                 ],
                 "_": {
                   "types": [
                     4,
-                    5,
-                    6,
-                    8,
-                    9
+                    6
                   ],
                   "born": [
                     4,
                     5,
-                    7,
-                    8
-                  ],
-                  "lifespan": [
-                    9
+                    6
                   ],
                   "properties": [
-                    10
+                    7
                   ],
                   "s": {
                     "pawned": [
                       4,
                       5,
-                      7,
-                      8
+                      6
                     ],
                     "ounds": [
-                      23
+                      18
                     ]
                   }
                 }
               },
               "ies": [
-                23
+                18
               ]
             }
           },
           "_us": [
-            19,
-            20,
-            46,
-            47
+            14,
+            15,
+            32,
+            33
           ]
         },
         "ffect": [
-          26,
-          44
+          30
         ],
         "mitter_": {
           "rate_instant": [
-            44,
-            45
+            30,
+            31
           ],
           "lifetime_once": [
-            44,
-            45
+            30,
+            31
           ],
           "shape_sphere": [
-            44,
-            45
+            30,
+            31
+          ]
+        },
+        "xp": {
+          "erience_reward": [
+            4,
+            5,
+            6
+          ],
+          "iration_event": [
+            30
           ]
         }
       },
       "o": {
         "n_": {
-          "anger": [
+          "target_acquired": [
+            4
+          ],
+          "death": [
             4,
-            5
-          ],
-          "target_": {
-            "acquired": [
-              4,
-              5
-            ],
-            "escape": [
-              6
-            ]
-          },
-          "d": {
-            "eath": [
-              4,
-              5,
-              6,
-              7,
-              8,
-              9
-            ],
-            "amage": [
-              6
-            ]
-          },
-          "outside_range": [
+            5,
             6
           ],
-          "vision_lost_inside_range": [
-            6
+          "anger": [
+            4
           ],
-          "in": {
-            "side_range": [
-              6
-            ],
-            "teract": [
-              6,
-              8
-            ]
-          },
+          "calm": [
+            4
+          ],
           "bred": [
-            7,
-            8
+            5,
+            6
           ],
           "home": [
-            7
+            5
           ],
           "lay": [
-            7
+            5
+          ],
+          "interact": [
+            6
           ],
           "s": {
             "cared": [
-              4,
-              5
+              4
             ],
             "heared": [
-              8
+              6
             ]
           },
           "eat": {
             "±": [
-              8
+              6
             ],
             "_block": [
-              8
-            ]
-          },
-          "c": {
-            "alm": [
-              4,
-              5
-            ],
-            "elebration_end_event": [
-              9
+              6
             ]
           },
           "f": {
             "riendly_anger": [
-              4,
-              5
+              4
             ],
             "ire": [
-              10
+              7
             ]
           }
         },
         "ther": [
           4,
-          5,
-          6,
-          8,
-          9
+          6
         ],
         "perator": [
           4,
           5,
           6,
-          7,
-          8,
-          9,
-          14,
-          15,
-          16,
-          17,
-          18
+          11,
+          12,
+          13
         ],
-        "ce": {
-          "lot": [
-            6
-          ],
-          "an": [
-            16
-          ]
-        },
+        "cean": [
+          12
+        ],
         "ver": {
           "world": [
             {
-              "n": 12,
+              "n": 9,
               "a": "S"
             },
             {
-              "n": 13,
+              "n": 10,
               "a": "S"
             }
           ],
           "lay_color": [
-            31,
-            32,
-            33,
-            34,
-            35,
-            36
+            23,
+            24,
+            25
           ]
         },
         "rigin": [
-          38,
-          39,
-          40,
-          41,
-          42,
-          43
+          27,
+          28,
+          29
         ],
-        "ut": {
-          "side_range": [
-            6
-          ],
-          "wards": [
-            44,
-            45
-          ]
-        }
+        "utwards": [
+          30,
+          31
+        ]
       },
       "c": {
         "a": {
           "lm_event": [
-            4,
-            5
+            4
           ],
           "use": {
             "±": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ],
-            "s_": {
-              "fire": [
-                6
-              ],
-              "pregnancy": [
-                7
-              ]
-            }
+            "s_pregnancy": [
+              5
+            ]
           },
           "n_": {
-            "climb": [
+            "path_over_water": [
               4,
               5,
-              6,
-              8,
-              9
+              6
+            ],
+            "climb": [
+              4,
+              6
             ],
             "walk": [
-              7
+              5
             ],
             "s": {
               "wim": [
-                7
+                5
               ],
               "ink": [
-                7
+                5
               ]
-            },
-            "find_poi": [
-              9
-            ],
-            "migrate": [
-              9
-            ],
-            "pa": {
-              "th_over_water": [
-                4,
-                5,
-                6,
-                7,
-                8,
-                9
-              ],
-              "ss_doors": [
-                9
-              ]
-            },
-            "open_doors": [
-              9
-            ]
-          },
-          "st": {
-            "_duration": [
-              9
-            ],
-            ".spell": [
-              9,
-              23
-            ],
-            "ing": [
-              36
-            ]
+            }
           }
         },
         "o": {
@@ -5316,41 +3807,30 @@
               "_groups": [
                 4,
                 5,
-                6,
-                7,
-                8,
-                9
+                6
               ],
               "s": [
                 4,
                 5,
                 6,
-                7,
-                8,
-                9,
-                44,
-                45
+                30,
+                31
               ]
             },
             "mand_controller": [
-              8
+              6
             ]
           },
-          "oldown": {
-            "±": [
-              8
-            ],
-            "_time": [
-              9
-            ]
-          },
+          "oldown": [
+            6
+          ],
           "unt": [
-            10,
-            11
+            7,
+            8
           ],
           "bblestone": [
             {
-              "n": 12,
+              "n": 9,
               "a": "S"
             }
           ],
@@ -5359,84 +3839,50 @@
               "al_bandwidth_optimization": [
                 4,
                 5,
-                6,
-                7,
-                8,
-                9
+                6
               ],
               "s": [
-                10,
-                14,
-                15,
-                16,
-                17,
-                18
+                7,
+                11,
+                12,
+                13
               ],
               "±": [
-                10
+                7
               ]
             },
             "sole": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ],
-            "troller": {
-              ".": {
-                "animation.": {
-                  "polarbear.": {
-                    "move": [
-                      31,
-                      32
-                    ],
-                    "baby": [
-                      31,
-                      32
-                    ]
-                  },
-                  "dolphin.general": [
-                    34
+            "troller.": {
+              "animation.": {
+                "polarbear.": {
+                  "move": [
+                    23
                   ],
-                  "sheep.move": [
-                    35
-                  ],
-                  "villager.": {
-                    "general": [
-                      36
-                    ],
-                    "move": [
-                      36
-                    ]
-                  }
-                },
-                "render.": {
-                  "p": {
-                    "olarbear": [
-                      31,
-                      32
-                    ],
-                    "hantom": [
-                      33
-                    ]
-                  },
-                  "default": [
-                    34
-                  ],
-                  "sheep": [
-                    35
-                  ],
-                  "evoker": [
-                    36
+                  "baby": [
+                    23
                   ]
-                }
-              },
-              "_": {
-                "general": [
-                  36
+                },
+                "dolphin.general": [
+                  24
                 ],
-                "move": [
-                  36
+                "sheep.move": [
+                  25
+                ]
+              },
+              "render.": {
+                "polarbear": [
+                  23
+                ],
+                "default": [
+                  24
+                ],
+                "sheep": [
+                  25
                 ]
               }
             }
@@ -5445,60 +3891,23 @@
             "lision_box": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ],
             "or": [
-              44,
-              45
+              30,
+              31
             ]
           }
         },
-        "harged_": {
-          "boomfly": [
-            6
-          ],
-          "exploding": [
-            6
-          ]
-        },
-        "reeper": [
-          6
-        ],
-        "elebrat": {
-          "e": [
-            9,
-            23
-          ],
-          "i": {
-            "on_sound": [
-              9
-            ],
-            "ng": [
-              36
-            ]
-          }
-        },
-        "ircle": [
-          9
-        ],
         "lient_entity": [
-          31,
-          32,
-          33,
-          34,
-          35,
-          36
+          23,
+          24,
+          25
         ],
         "ubes": [
-          38,
-          39,
-          40,
-          41,
-          42,
-          43
+          27,
+          28,
+          29
         ]
       },
       "query.": {
@@ -5507,53 +3916,44 @@
             3
           ],
           "baby": [
-            8,
-            35
+            6,
+            25
           ]
         },
         "standing_scale": [
-          24,
-          25
+          19
         ],
         "modified_distance_moved": [
-          24,
-          25,
-          29,
-          30
+          19,
+          22
         ],
         "anim_time": [
-          24,
-          25,
-          26,
-          29,
-          30
+          19,
+          22
         ],
         "l": {
           "ast_hit_by_player": [
             4,
             5,
-            6,
-            7,
-            8
+            6
           ],
           "ife_time": [
-            27,
-            28,
-            30
+            20,
+            21
           ]
         },
         "target_": {
           "x_rotation": [
-            27,
-            28
+            20,
+            21
           ],
           "y_rotation": [
-            27,
-            28
+            20,
+            21
           ]
         },
         "key_frame_lerp_time": [
-          29
+          22
         ]
       },
       "n": {
@@ -5561,186 +3961,142 @@
           "me": {
             "±": [
               0,
-              10,
-              11,
-              21,
-              38,
-              39,
-              40,
-              41,
-              42,
-              43
+              7,
+              8,
+              16,
+              27,
+              28,
+              29
             ],
             "able": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ]
           },
           "vigation.": {
             "walk": [
               4,
-              5,
-              6,
-              8,
-              9
+              6
             ],
             "generic": [
-              7
+              5
             ]
           },
           "r": {
             "dolphle.": {
               "behavior": [
-                7,
-                16,
-                23
+                5,
+                12,
+                18
               ],
               "animation": [
-                27
+                20
               ],
               "entity": [
-                34
+                24
               ],
               "±": [
-                34,
-                51
+                24,
+                35
               ],
               "geometry": [
-                41
+                28
               ]
             },
             "whal.animation": [
-              28
+              21
             ]
           }
         },
         "o": {
           "_damage_range_multiplier": [
-            4,
-            5
+            4
           ],
           "se": [
-            41,
-            43
+            28
           ]
         },
-        "um_": {
-          "entities_spawned": [
-            9
-          ],
-          "particles": [
-            44,
-            45
-          ]
-        }
+        "um_particles": [
+          30,
+          31
+        ]
       },
       "h": {
         "e": {
           "a": {
             "der": [
               0,
-              21,
-              24,
-              25,
-              29,
-              38,
-              39,
-              40,
-              41,
-              42,
-              43
+              16,
+              19,
+              22,
+              27,
+              28,
+              29
             ],
             "lth": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ]
           },
           "ight": {
             "±": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ],
             "_filter": [
-              16
+              12
             ]
           },
           "rd": [
-            14,
-            15,
-            16,
-            17
+            11,
+            12,
+            13
           ]
         },
+        "ome": [
+          5
+        ],
         "a": {
           "rd_distance": [
             4,
-            5,
-            8,
-            18
+            6
           ],
           "nd": [
-            6,
-            8
+            6
           ],
           "s_": {
             "equipment": [
-              6,
-              8
+              6
             ],
             "component": [
-              6,
-              8,
-              9
+              6
             ],
             "biome_tag": [
-              14,
-              15,
-              16,
-              17,
-              18
+              11,
+              12,
+              13
             ]
           }
-        },
-        "o": {
-          "me": [
-            7
-          ],
-          "stile": [
-            9
-          ]
         },
         "urt": {
           "_": {
             "on_condition": [
               4,
               5,
-              6,
-              7,
-              8,
-              9
+              6
             ],
             "item": [
-              6,
-              8
+              6
             ],
             "±": [
-              23
+              18
             ]
           },
           ".in.water": [
-            23
+            18
           ]
         }
       },
@@ -5748,264 +4104,145 @@
         "eight": [
           4,
           5,
+          6,
           7,
           8,
-          9,
-          10,
           11,
-          14,
-          15,
-          16,
-          17,
-          18
+          12,
+          13
         ],
         "a": {
-          "lk_speed_multiplier": [
-            9,
-            31,
-            32,
-            35
+          "nts_to_lay_egg": [
+            5
           ],
-          "n": {
-            "ts_to_lay_egg": [
-              7
-            ],
-            "dering_trader": [
-              9
-            ]
-          },
           "ter_": {
             "movement": [
               4,
-              5,
-              7
+              5
             ],
             "animal": [
-              16
+              12
             ]
           },
           "r": {
             "n": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ],
             "m": [
-              16
+              12
             ]
-          }
+          },
+          "lk": [
+            23,
+            25
+          ]
         },
         "i": {
           "dth": [
             4,
             5,
-            6,
-            7,
-            8,
-            9
+            6
           ],
           "thin_radius": [
-            8
-          ],
-          "ng": {
-            "0": [
-              26,
-              40
-            ],
-            "1": [
-              26,
-              40
-            ],
-            "tip": {
-              "0": [
-                26,
-                40
-              ],
-              "1": [
-                26,
-                40
-              ]
-            },
-            "_dust": [
-              33
-            ]
-          }
-        },
-        "o": {
-          "lolo": [
-            9
-          ],
-          "rld": [
-            {
-              "n": 12,
-              "a": "S"
-            },
-            {
-              "n": 13,
-              "a": "S"
-            },
-            21
+            6
           ]
         },
-        "raith.": {
-          "behavior": [
-            9,
-            18,
-            23
-          ],
-          "animation": [
-            30
-          ],
-          "entity": [
-            36
-          ],
-          "±": [
-            36,
-            54
-          ],
-          "geometry": [
-            43
-          ]
-        }
+        "orld": [
+          {
+            "n": 9,
+            "a": "S"
+          },
+          {
+            "n": 10,
+            "a": "S"
+          },
+          16
+        ]
       },
       "j": {
         "avascript": [
           0
         ],
-        "ump": {
-          ".static": [
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
-          ],
-          "_interval": [
-            9
-          ],
-          "±": [
-            23
-          ]
-        }
+        "ump.static": [
+          4,
+          5,
+          6,
+          18
+        ]
       },
       "r": {
         "e": {
           "move": [
             4,
             5,
-            6,
-            7,
-            8,
-            9
-          ],
-          "ach_multiplier": [
             6
           ],
           "quire_": {
             "complete_path": [
-              4,
-              5
+              4
             ],
             "tame": [
-              7,
-              8
+              5,
+              6
             ]
           },
           "s": {
             "elect_targets": [
-              8
+              6
             ],
             "o": {
               "urces": [
                 0,
-                21
+                16
               ],
               "lve": [
                 {
-                  "n": 12,
+                  "n": 9,
                   "a": "S"
                 }
               ]
             }
           },
           "place_block": [
-            8
+            6
           ],
           "nder_controllers": [
-            31,
-            32,
-            33,
-            34,
-            35,
-            36
-          ]
-        },
-        "a": {
-          "n": {
-            "domize": [
-              4,
-              5,
-              7,
-              8
-            ],
-            "ge_m": {
-              "in": [
-                9
-              ],
-              "ax": [
-                9
-              ],
-              "±": [
-                9
-              ]
-            }
-          },
-          "id_configuration": [
-            9
-          ],
-          "dius": [
-            44,
-            45
-          ],
-          "ccoon": [
-            52
+            23,
+            24,
+            25
           ]
         },
         "o": {
           "lls": [
-            10,
-            11
+            7,
+            8
           ],
           "bot": [
-            23
+            18
           ],
           "tation": {
             "±": [
-              24,
-              25,
-              26,
+              19,
+              20,
+              21,
+              22,
               27,
               28,
               29,
               30,
-              38,
-              39,
-              40,
-              41,
-              42,
-              44,
-              45
+              31
             ],
             "_": {
               "rate": [
-                44,
-                45
+                30,
+                31
               ],
               "drag_coefficient": [
-                44,
-                45
+                30,
+                31
               ]
             }
           }
@@ -6013,75 +4250,64 @@
         "i": {
           "deable_": {
             "sheared": [
-              8
+              6
             ],
             "wooly": [
-              8
+              6
             ]
           },
-          "ght": {
-            "arm": [
-              30,
-              43
-            ],
-            "_": {
-              "fin": [
-                27,
-                28,
-                41
-              ],
-              "wing": [
-                40
-              ],
-              "hand": [
-                43
-              ]
-            },
-            "item": [
-              43
-            ]
-          }
+          "ght_fin": [
+            20,
+            21,
+            28
+          ]
+        },
+        "a": {
+          "ndomize": [
+            4,
+            5,
+            6
+          ],
+          "dius": [
+            30,
+            31
+          ],
+          "ccoon": [
+            36
+          ]
         }
       },
       "u": {
         "uid": [
           0,
-          21
+          16
         ],
         "se_item": [
-          8
+          6
         ],
-        "pdate_interval_": {
-          "base": [
-            9
-          ],
-          "variant": [
-            9
-          ]
-        },
         "tilities": [
           {
-            "n": 12,
+            "n": 9,
             "a": "S"
           },
           {
-            "n": 13,
+            "n": 10,
             "a": "S"
           }
         ],
         "nde": {
           "fined": [
             {
-              "n": 12,
+              "n": 9,
               "a": "S"
             }
           ],
           "r": {
             "water_movement": [
-              7
+              5
             ],
             "ground": [
-              16
+              12
             ]
           }
         }
@@ -6089,114 +4315,95 @@
       "g": {
         "o": {
           "al_radius": [
-            7
+            5
           ],
           "_lay_egg": [
-            7
+            5
           ]
         },
         "e": {
           "t": {
             "triggerloc": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ],
             "zooloc": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ],
             "d": {
               "efaultspawnlocation": [
                 {
-                  "n": 12,
+                  "n": 9,
                   "a": "S"
                 }
               ],
               "imension": [
                 {
-                  "n": 12,
+                  "n": 9,
                   "a": "S"
                 },
                 {
-                  "n": 13,
+                  "n": 10,
                   "a": "S"
                 }
               ]
             },
             "players": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ],
             "block": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               },
               {
-                "n": 13,
+                "n": 10,
                 "a": "S"
               }
             ]
           },
           "ometry": {
             "±": [
-              31,
-              32,
-              33,
-              34,
-              35,
-              36,
-              38,
-              39,
-              42
+              23,
+              24,
+              25,
+              27,
+              29
             ],
             ".": {
               "aop_mobs.": {
-                "b": {
-                  "iceson": [
-                    31,
-                    38
-                  ],
-                  "lack_bear": [
-                    32,
-                    39
-                  ],
-                  "oomfly": [
-                    33,
-                    40
-                  ]
-                },
+                "biceson": [
+                  23,
+                  27
+                ],
                 "nardolphle": [
-                  34,
-                  41
+                  24,
+                  28
                 ],
                 "sheepomelon": [
-                  35,
-                  42
-                ],
-                "wraith": [
-                  36,
-                  43
+                  25,
+                  29
                 ]
               },
               "sheep.sheared.v1.8": [
-                35
+                25
               ]
             }
           },
           "nera": {
             "tes_bubbles": [
-              7
+              5
             ],
             "l": [
-              34,
-              36
+              24
             ]
           }
         },
@@ -6204,70 +4411,68 @@
           "ow_up": [
             4,
             5,
-            7,
-            8
+            6
           ],
           "a": {
             "ss": [
-              14,
-              15,
-              17
+              11,
+              13
             ],
             "zing": [
-              35
+              25
             ],
             "dient": [
-              44
+              30
             ]
           }
         }
       },
       "x": {
         "z_dist": [
-          7
+          5
         ],
         "from": {
           "±": [
             {
-              "n": 13,
+              "n": 10,
               "a": "S"
             }
           ],
           "p": [
             {
-              "n": 13,
+              "n": 10,
               "a": "S"
             }
           ]
         },
         "top": [
           {
-            "n": 13,
+            "n": 10,
             "a": "S"
           }
         ]
       },
       "y": {
         "_dist": [
-          7
+          5
         ],
         "from": {
           "±": [
             {
-              "n": 13,
+              "n": 10,
               "a": "S"
             }
           ],
           "p": [
             {
-              "n": 13,
+              "n": 10,
               "a": "S"
             }
           ]
         },
         "top": [
           {
-            "n": 13,
+            "n": 10,
             "a": "S"
           }
         ]
@@ -6275,18 +4480,18 @@
       "z": {
         "o": {
           "mbie": [
-            8
+            6
           ],
           "o": {
             "moblist": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ],
             "loc": [
               {
-                "n": 12,
+                "n": 9,
                 "a": "S"
               }
             ]
@@ -6295,107 +4500,54 @@
         "from": {
           "±": [
             {
-              "n": 13,
+              "n": 10,
               "a": "S"
             }
           ],
           "p": [
             {
-              "n": 13,
+              "n": 10,
               "a": "S"
             }
           ]
         },
         "top": [
           {
-            "n": 13,
+            "n": 10,
             "a": "S"
           }
         ]
       },
       "523d72d2-3ba9-498a-bc63-8beb5fe268cb": [
-        21
+        16
       ],
-      "-": {
-        "query.target_x_rotation": [
-          26
-        ],
-        "this": [
-          29,
-          30
-        ],
-        "5.0;": [
-          33
-        ]
-      },
+      "-this": [
+        22
+      ],
       "#": {
-        "5": {
-          "ad100": [
-            33
-          ],
-          "e9e13": [
-            35
-          ]
-        },
-        "4b95c6": [
-          31
+        "00a4ff": [
+          23
         ],
-        "00": {
-          "a4ff": [
-            31
-          ],
-          "0000": [
-            32,
-            36
-          ]
-        },
-        "b": {
-          "e1616": [
-            33
-          ],
-          "421d1": [
-            34
-          ]
-        },
-        "f": {
-          "f": {
-            "6": {
-              "500": [
-                32
-              ],
-              "64d59": [
-                9
-              ]
-            },
-            "b3": {
-              "8033": [
-                9
-              ],
-              "b3cc": [
-                9
-              ]
-            },
-            "0000": [
-              36
-            ]
-          },
-          "407b1": [
-            34
-          ]
-        },
+        "4b95c6": [
+          23
+        ],
+        "b421d1": [
+          24
+        ],
+        "f407b1": [
+          24
+        ],
+        "5e9e13": [
+          25
+        ],
         "e06b77": [
-          35
+          25
         ]
       },
-      "0.": {
-        "0;": [
-          33
-        ],
-        "3f": [
-          44,
-          45
-        ]
-      }
+      "0.3f": [
+        30,
+        31
+      ]
     }
   },
   "generatorName": "Minecraft Creator Tools",

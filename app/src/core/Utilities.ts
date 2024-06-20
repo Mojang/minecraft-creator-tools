@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 import CartoApp, { HostType } from "../app/CartoApp";
-import AppServiceProxy from "./AppServiceProxy";
 import { IErrorable } from "./IErrorable";
 import Log from "./Log";
 
@@ -12,7 +11,6 @@ const multiComment = Symbol("multiComment");
 export default class Utilities {
   static _isDebug?: boolean;
   static _isAppSim?: boolean;
-  static _isInternal?: boolean;
   static defaultEncoding = "UTF-8";
   static replacementChar = 0xfffd;
 
@@ -401,25 +399,6 @@ export default class Utilities {
     Log.assert(seconds >= 0 && seconds <= 59, "Invalid seconds: " + dateStr);
 
     return new Date(year, month - 1, day, hours, minutes, seconds);
-  }
-
-  static get isInternal(): boolean {
-    if (Utilities._isInternal === undefined) {
-      if (AppServiceProxy.hasAppService) {
-        Utilities._isInternal = false;
-      } else {
-        // @ts-ignore
-        const query = window.location.search.toLowerCase();
-
-        if (query.indexOf("toolisinternalmojangonly=true") >= 0) {
-          Utilities._isInternal = true;
-        } else {
-          Utilities._isInternal = false;
-        }
-      }
-    }
-
-    return Utilities._isInternal;
   }
 
   static monthNames: string[] = [

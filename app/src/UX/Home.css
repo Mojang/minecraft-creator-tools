@@ -23,6 +23,11 @@
     grid-template-columns: 400px 1fr;
   }
 
+  .home-recentItem {
+    display: grid;
+    grid-template-columns: 244px 80px;
+  }
+
   .home-header {
     font-size: 30pt;
     margin-top: 19px;
@@ -85,6 +90,11 @@
     padding-top: 4px;
     padding-left: 32px;
     padding-bottom: 14px;
+  }
+
+  .home-recentItem {
+    display: grid;
+    grid-template-columns: 1fr 80px;
   }
 
   .home-toolTile {
@@ -218,7 +228,11 @@
 
 .home-header-docsLink {
   color: white;
-  padding-left: 7px;
+  padding-left: 6px;
+}
+
+.home-header-textArea {
+  padding-left: 6px;
 }
 
 .home-error {
@@ -303,11 +317,6 @@
 .home-projects {
   font-size: medium;
   margin-top: 1px;
-}
-
-.home-recentItem {
-  display: grid;
-  grid-template-columns: 244px 80px;
 }
 
 .home-recentItemLabel {

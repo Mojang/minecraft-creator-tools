@@ -33,6 +33,7 @@ out/
 results/
 dist/
 mci/
+public/res/index.json
 /app/forge.config.js
 .vscode-test-web/
 node_modules/
