@@ -5,7 +5,7 @@ import "./AddGitHubReference.css";
 import GitHubManager from "../github/GitHubManager";
 import { InputProps, Input, Accordion, ThemeInput } from "@fluentui/react-northstar";
 import { GitHubPropertyType } from "./ProjectPropertyEditor";
-import IGalleryProject, { GalleryProjectType } from "../app/IGalleryProject";
+import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import ProjectTile, { ProjectTileDisplayMode } from "./ProjectTile";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import IGallery from "../app/IGallery";
@@ -18,7 +18,7 @@ interface IAddGitHubReferenceProps extends IAppProps {
 
 interface IAddGitHubReferenceState {
   gitHub: GitHubManager | undefined;
-  selectedProject?: IGalleryProject;
+  selectedProject?: IGalleryItem;
   gallery: IGallery | undefined;
 }
 
@@ -49,7 +49,7 @@ export default class AddGitHubReference extends Component<IAddGitHubReferencePro
     });
   }
 
-  _handleGalleryItemCommand(command: GalleryProjectCommand, project: IGalleryProject) {
+  _handleGalleryItemCommand(command: GalleryProjectCommand, project: IGalleryItem) {
     if (this.props && this.props.onGitHubProjectUpdated !== undefined) {
       this.props.onGitHubProjectUpdated(GitHubPropertyType.owner, project.gitHubOwner);
       this.props.onGitHubProjectUpdated(GitHubPropertyType.mode, "existing");
@@ -101,10 +101,10 @@ export default class AddGitHubReference extends Component<IAddGitHubReferencePro
       return <div>Loading gallery...</div>;
     }
 
-    for (let i = 0; i < gal.projects.length; i++) {
-      const galItem = gal.projects[i];
+    for (let i = 0; i < gal.items.length; i++) {
+      const galItem = gal.items[i];
 
-      if (galItem.type === GalleryProjectType.chunk) {
+      if (galItem.type === GalleryItemType.chunk) {
         galleries.push(
           <ProjectTile
             theme={this.props.theme}

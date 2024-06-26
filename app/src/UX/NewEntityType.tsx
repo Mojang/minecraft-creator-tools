@@ -7,19 +7,19 @@ import Database from "./../minecraft/Database";
 import Log from "./../core/Log";
 import IFolder from "./../storage/IFolder";
 import { NewEntityTypeAddMode } from "../app/ProjectUtilities";
-import ProjectGallery, { GalleryProjectCommand } from "./ProjectGallery";
-import IGalleryProject, { GalleryProjectType } from "../app/IGalleryProject";
-import { ProjectTileDisplayMode } from "./ProjectTile";
+import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
+import ItemGallery, { GalleryItemCommand } from "./ItemGallery";
+import { ItemTileButtonDisplayMode } from "./ItemTileButton";
 
 interface INewEntityTypeProps extends IAppProps {
   project: Project;
   theme: ThemeInput<any>;
-  onNewEntityTypeUpdated: (propertyType: NewEntityTypeAddMode, project: IGalleryProject, name: string) => void;
+  onNewEntityTypeUpdated: (propertyType: NewEntityTypeAddMode, project: IGalleryItem, name: string) => void;
 }
 
 interface INewEntityTypeState {
   entitiesFolder?: IFolder;
-  selectedEntity?: IGalleryProject;
+  selectedEntityType?: IGalleryItem;
   name?: string;
   nameIsManuallySet?: boolean;
 }
@@ -45,13 +45,13 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
       return;
     }
 
-    const entitiesFolder = await Database.defaultBehaviorPackFolder.ensureFolder("entities");
+    const entitiesFolder = Database.defaultBehaviorPackFolder.ensureFolder("entities");
 
     await entitiesFolder.load();
 
     this.setState({
       entitiesFolder: entitiesFolder,
-      selectedEntity: this.state.selectedEntity,
+      selectedEntityType: this.state.selectedEntityType,
     });
   }
 
@@ -63,25 +63,25 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
     let nextNameIsManuallySet = this.state.nameIsManuallySet;
 
     if (!nextNameIsManuallySet) {
-      if (this.state.selectedEntity && data.value !== this.state.selectedEntity.id) {
+      if (this.state.selectedEntityType && data.value !== this.state.selectedEntityType.id) {
         nextNameIsManuallySet = true;
       }
     } else if (data.value === undefined || data.value === "") {
       nextNameIsManuallySet = false;
     }
 
-    if (this.state.selectedEntity && data.value) {
-      this.props.onNewEntityTypeUpdated(NewEntityTypeAddMode.baseId, this.state.selectedEntity, data.value);
+    if (this.state.selectedEntityType && data.value) {
+      this.props.onNewEntityTypeUpdated(NewEntityTypeAddMode.baseId, this.state.selectedEntityType, data.value);
     }
 
     this.setState({
-      selectedEntity: this.state.selectedEntity,
+      selectedEntityType: this.state.selectedEntityType,
       name: data.value,
       nameIsManuallySet: nextNameIsManuallySet,
     });
   }
 
-  private _handleTypeGalleryCommand(command: GalleryProjectCommand, project: IGalleryProject) {
+  private _handleTypeGalleryCommand(command: GalleryItemCommand, project: IGalleryItem) {
     let newName = this.state.name;
 
     if (!this.state.nameIsManuallySet || newName === undefined) {
@@ -89,7 +89,7 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
     }
 
     this.setState({
-      selectedEntity: project,
+      selectedEntityType: project,
       entitiesFolder: this.state.entitiesFolder,
       name: newName,
       nameIsManuallySet: this.state.nameIsManuallySet,
@@ -129,7 +129,7 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
             <Input
               value={inputText}
               defaultValue={inputText}
-              placeholder={this.state.selectedEntity ? this.state.selectedEntity.id : "myMobName"}
+              placeholder={this.state.selectedEntityType ? this.state.selectedEntityType.id : "myMobName"}
               onChange={this._handleNameChanged}
             />
           </div>
@@ -142,13 +142,13 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
           }}
         >
-          <ProjectGallery
+          <ItemGallery
             carto={this.props.carto}
             theme={this.props.theme}
-            view={ProjectTileDisplayMode.smallImage}
+            view={ItemTileButtonDisplayMode.smallImage}
             isSelectable={true}
             gallery={this.props.carto.gallery}
-            filterOn={[GalleryProjectType.entityType]}
+            filterOn={[GalleryItemType.entityType]}
             onGalleryItemCommand={this._handleTypeGalleryCommand}
           />
         </div>

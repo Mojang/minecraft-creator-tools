@@ -20,6 +20,9 @@ export default class HttpFolder extends FolderBase implements IFolder {
   private _storage: HttpStorage;
   private _parentFolder: HttpFolder | null;
 
+  private _pendingLoadRequests: ((value: unknown) => void)[] = [];
+  private _isLoading = false;
+
   get storage(): HttpStorage {
     return this._storage;
   }
@@ -124,35 +127,60 @@ export default class HttpFolder extends FolderBase implements IFolder {
       return this.lastLoadedOrSaved;
     }
 
-    let response = undefined;
+    if (this._isLoading) {
+      const pendingLoad = this._pendingLoadRequests;
 
-    try {
-      response = await axios.get(this.fullPath + "index.json");
-    } catch (e: any) {
-      Log.debug(e);
-    }
+      const prom = (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
+        pendingLoad.push(resolve);
+      };
 
-    if (response) {
-      const index: IIndexJson = response.data;
+      await new Promise(prom);
 
-      if (index.files !== null && index.files !== undefined) {
-        for (let i = 0; i < index.files.length; i++) {
-          const file = index.files[i];
+      if (this.lastLoadedOrSaved === null) {
+        throw new Error();
+      }
 
-          this.ensureFile(file);
+      return this.lastLoadedOrSaved;
+    } else {
+      let response = undefined;
+
+      try {
+        response = await axios.get(this.fullPath + "index.json");
+      } catch (e: any) {
+        Log.debug(e);
+      }
+
+      if (response) {
+        const index: IIndexJson = response.data;
+
+        if (index.files !== null && index.files !== undefined) {
+          for (let i = 0; i < index.files.length; i++) {
+            const file = index.files[i];
+
+            this.ensureFile(file);
+          }
+        }
+
+        if (index.folders !== null && index.folders !== undefined) {
+          for (let i = 0; i < index.folders.length; i++) {
+            const folder = index.folders[i];
+
+            this.ensureFolder(folder);
+          }
         }
       }
 
-      if (index.folders !== null && index.folders !== undefined) {
-        for (let i = 0; i < index.folders.length; i++) {
-          const folder = index.folders[i];
+      this.updateLastLoadedOrSaved();
 
-          this.ensureFolder(folder);
-        }
+      this._isLoading = false;
+
+      const pendingLoad = this._pendingLoadRequests;
+      this._pendingLoadRequests = [];
+
+      for (const prom of pendingLoad) {
+        prom(undefined);
       }
     }
-
-    this.updateLastLoadedOrSaved();
 
     return this.lastLoadedOrSaved as Date;
   }

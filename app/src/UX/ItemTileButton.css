@@ -1,0 +1,53 @@
+.itbi-button {
+  border: solid 1.5px #202020;
+}
+
+.itbi-outer {
+  width: 250px;
+  height: 88px !important;
+  padding: 6px !important;
+  background-color: transparent !important;
+  display: inline-block;
+  box-shadow: none !important;
+}
+
+.itbi-outer-selected {
+  background-color: green !important;
+}
+
+.itbi-grid:active {
+  border: inset 4px #848586;
+}
+
+.itbi-grid {
+  display: grid;
+  border: outset 4px #848586;
+  height: 100%;
+  cursor: pointer;
+  grid-template-columns: 63px 164px;
+}
+
+.itbi-mainArea {
+  grid-row: 1;
+  grid-column: 2;
+  padding: 4px;
+  padding-top: 7px;
+  vertical-align: middle;
+  word-wrap: break-word;
+}
+
+.itbi-title {
+  font-weight: bold;
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  width: 150px;
+  padding-left: 3px;
+  height: 36px;
+  max-width: 150px;
+}
+
+.itbi-iconArea {
+  grid-column: 1;
+  margin: 3px;
+}

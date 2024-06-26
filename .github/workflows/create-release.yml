@@ -27,6 +27,7 @@ jobs:
           npm pack  --max_old_space_size=16384
           popd
           popd
+          gulp customizesite
           popd
 
       - name: Create draft Minecraft Creator Tools release

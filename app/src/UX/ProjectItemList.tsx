@@ -35,7 +35,7 @@ import "./ProjectItemList.css";
 import Utilities from "../core/Utilities";
 import NewBlockType from "./NewBlockType";
 import { ProjectEditPreference, ProjectRole, ProjectScriptLanguage } from "../app/IProjectData";
-import IGalleryProject from "../app/IGalleryProject";
+import IGalleryItem from "../app/IGalleryItem";
 import ColorUtilities from "../core/ColorUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolder } from "@fortawesome/free-regular-svg-icons";
@@ -121,10 +121,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
   tentativeNewEntityTypeAddMode?: NewEntityTypeAddMode;
   tentativeNewEntityTypeName?: string;
-  tentativeNewEntityTypeProject?: IGalleryProject;
+  tentativeNewEntityTypeItem?: IGalleryItem;
 
   tentativeNewBlockTypeName?: string;
-  tentativeNewBlockTypeBaseId?: string;
+  tentativeNewBlockTypeItem?: IGalleryItem;
 
   constructor(props: IProjectItemListProps) {
     super(props);
@@ -186,14 +186,14 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._projectUpdated();
   }
 
-  _newEntityTypeUpdated(newAddMode: NewEntityTypeAddMode, entityTypeProject: IGalleryProject, name: string) {
-    this.tentativeNewEntityTypeProject = entityTypeProject;
+  _newEntityTypeUpdated(newAddMode: NewEntityTypeAddMode, entityTypeItem: IGalleryItem, name: string) {
+    this.tentativeNewEntityTypeItem = entityTypeItem;
     this.tentativeNewEntityTypeAddMode = newAddMode;
     this.tentativeNewEntityTypeName = name;
   }
 
-  _newBlockTypeUpdated(baseTypeId: string | undefined, name: string | undefined) {
-    this.tentativeNewBlockTypeBaseId = baseTypeId;
+  _newBlockTypeUpdated(blockTypeItem: IGalleryItem | undefined, name: string | undefined) {
+    this.tentativeNewBlockTypeItem = blockTypeItem;
     this.tentativeNewBlockTypeName = name;
   }
 
@@ -524,10 +524,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       return;
     }
 
-    if (this.tentativeNewBlockTypeName !== undefined && this.props.project !== null) {
-      await ProjectUtilities.addBlockType(
+    if (this.tentativeNewBlockTypeName && this.tentativeNewBlockTypeItem && this.props.project !== null) {
+      await ProjectUtilities.addBlockTypeFromGallery(
         this.props.project,
-        this.tentativeNewBlockTypeBaseId,
+        this.tentativeNewBlockTypeItem,
         this.tentativeNewBlockTypeName
       );
     }
@@ -551,10 +551,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       return;
     }
 
-    if (this.tentativeNewEntityTypeProject !== undefined && this.props.project !== null) {
+    if (this.tentativeNewEntityTypeItem !== undefined && this.props.project !== null) {
       await ProjectUtilities.addEntityTypeFromGallery(
         this.props.project,
-        this.tentativeNewEntityTypeProject,
+        this.tentativeNewEntityTypeItem,
         this.tentativeNewEntityTypeName,
         this.tentativeNewEntityTypeAddMode
       );
@@ -1679,7 +1679,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
                 !folderGroupingPath ||
                 !this.state.collapsedStoragePaths.includes(folderGroupingPath)
               ) {
-                if (projectItem === this.props.activeProjectItem) {
+                if (
+                  projectItem === this.props.activeProjectItem &&
+                  this.props.editorMode === ProjectEditorMode.activeItem
+                ) {
                   selectedItemIndex = this._projectListItems.length;
                 }
 
@@ -1903,6 +1906,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           content={
             <NewBlockType
               key="pil-newBlockTypeDia"
+              theme={this.props.theme}
               onNewBlockTypeUpdated={this._newBlockTypeUpdated}
               project={this.props.project}
               carto={this.props.carto}

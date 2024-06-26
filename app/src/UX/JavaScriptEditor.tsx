@@ -18,11 +18,11 @@ import Database from "../minecraft/Database";
 import ISnippet from "../app/ISnippet";
 import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
 import ITypeDefCatalog from "../minecraft/ITypeDefCatalog";
-import ProjectGallery, { GalleryProjectCommand } from "./ProjectGallery";
 import IAppProps from "./IAppProps";
-import IGalleryProject, { GalleryProjectType } from "../app/IGalleryProject";
+import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import ProjectUtilities from "../app/ProjectUtilities";
-import { ProjectTileDisplayMode } from "./ProjectTile";
+import ItemGallery, { GalleryItemCommand } from "./ItemGallery";
+import { ItemTileButtonDisplayMode } from "./ItemTileButton";
 
 export enum ScriptEditorRole {
   script = 0,
@@ -478,7 +478,9 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
 
       const intendedUrl = monaco.Uri.parse(JavaScriptEditor.getUriForFile(file, this.props.scriptLanguage)).toString();
 
-      Log.assert(url === intendedUrl, "Unexpectedly editor doesn't match file");
+      if (url !== intendedUrl) {
+        return;
+      }
 
       const value = this.editor.getValue();
 
@@ -610,7 +612,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     }
   }
 
-  private _handleSnippetGalleryCommand(command: GalleryProjectCommand, project: IGalleryProject) {
+  private _handleSnippetGalleryCommand(command: GalleryItemCommand, project: IGalleryItem) {
     if (this.editor === undefined) {
       return;
     }
@@ -755,13 +757,13 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
           }}
         >
-          <ProjectGallery
+          <ItemGallery
             carto={this.props.carto}
             theme={this.props.theme}
-            view={ProjectTileDisplayMode.smallImage}
+            view={ItemTileButtonDisplayMode.smallImage}
             gallery={this.props.carto.gallery}
             search={this.state.snippetSearch}
-            filterOn={[GalleryProjectType.codeSample, GalleryProjectType.editorCodeSample]}
+            filterOn={[GalleryItemType.codeSample, GalleryItemType.editorCodeSample]}
             onGalleryItemCommand={this._handleSnippetGalleryCommand}
           />
         </div>

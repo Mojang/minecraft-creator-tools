@@ -43,6 +43,9 @@ export default class Database {
   static latestVersion: string | undefined;
   static latestPreviewVersion: string | undefined;
 
+  private static _isLoadingSnippets: boolean = false;
+  private static _pendingLoadSnippetsRequests: ((value: unknown) => void)[] = [];
+
   static dataPath: string = "res/latest/";
 
   static minecraftModuleNames = [
@@ -147,7 +150,7 @@ export default class Database {
     const moduleDescriptor = await this.getModuleDescriptor("@minecraft/server");
 
     if (!moduleDescriptor || !moduleDescriptor.latestRetailVersion) {
-      return "1.20.10";
+      return "1.21.0";
     }
 
     return moduleDescriptor.latestRetailVersion;
@@ -416,35 +419,58 @@ export default class Database {
       return;
     }
 
-    let folder: IFolder | undefined;
+    if (this._isLoadingSnippets) {
+      const pendingLoad = this._pendingLoadSnippetsRequests;
 
-    if (Database.local) {
-      const storage = await Database.local.createStorage("data/snippets/");
+      const prom = (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
+        pendingLoad.push(resolve);
+      };
 
-      if (storage) {
+      await new Promise(prom);
+
+      return true;
+    } else {
+      this._isLoadingSnippets = true;
+
+      let folder: IFolder | undefined;
+
+      if (Database.local) {
+        const storage = await Database.local.createStorage("data/snippets/");
+
+        if (storage) {
+          folder = storage.rootFolder;
+        }
+      } else {
+        const storage = new HttpStorage(CartoApp.contentRoot + "data/snippets/");
+
         folder = storage.rootFolder;
       }
-    } else {
-      const storage = new HttpStorage(CartoApp.contentRoot + "data/snippets/");
 
-      folder = storage.rootFolder;
-    }
+      if (folder === undefined) {
+        return;
+      }
 
-    if (folder === undefined) {
-      return;
-    }
+      await folder.load();
 
-    await folder.load();
+      for (const fileName in folder.files) {
+        const file = folder.files[fileName];
 
-    for (const fileName in folder.files) {
-      const file = folder.files[fileName];
+        if (file) {
+          await file.loadContent();
+        }
+      }
 
-      if (file) {
-        await file.loadContent();
+      Database.snippetsFolder = folder;
+
+      this._isLoadingSnippets = false;
+
+      const pendingLoad = this._pendingLoadSnippetsRequests;
+      this._pendingLoadSnippetsRequests = [];
+
+      for (const prom of pendingLoad) {
+        prom(undefined);
       }
     }
-
-    Database.snippetsFolder = folder;
   }
 
   static async loadMetadataFolder() {

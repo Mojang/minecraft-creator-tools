@@ -4,7 +4,7 @@ import Home from "./Home";
 import "./App.css";
 import Carto from "./../app/Carto";
 import Project, { ProjectErrorState } from "./../app/Project";
-import IGalleryProject, { GalleryProjectType } from "../app/IGalleryProject";
+import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import IFolder from "../storage/IFolder";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import Log from "../core/Log";
@@ -543,11 +543,7 @@ export default class App extends Component<AppProps, AppState> {
     let nextMode = this.state.mode;
 
     if (nextMode === AppMode.home || nextMode === AppMode.loading) {
-      if (startInReadOnly) {
-        nextMode = AppMode.projectReadOnly;
-      } else {
-        nextMode = AppMode.project;
-      }
+      nextMode = AppMode.projectReadOnly;
     }
 
     this.initProject(newProject);
@@ -624,7 +620,7 @@ export default class App extends Component<AppProps, AppState> {
     this._ensureProjectFromGallery(gp, updateContent);
   }
 
-  private async _ensureProjectFromGallery(project: IGalleryProject, updateContent?: string) {
+  private async _ensureProjectFromGallery(project: IGalleryItem, updateContent?: string) {
     if (this.state === null || this.state.carto === undefined) {
       return;
     }
@@ -638,7 +634,7 @@ export default class App extends Component<AppProps, AppState> {
       project.gitHubFolder,
       project.fileList,
       project.id,
-      project.type === GalleryProjectType.codeSample ? project.id : undefined,
+      project.type === GalleryItemType.codeSample ? project.id : undefined,
       updateContent
     );
   }
@@ -723,7 +719,7 @@ export default class App extends Component<AppProps, AppState> {
     );
   }
 
-  private async _newProjectFromGallery(project: IGalleryProject, name?: string, creator?: string, shortName?: string) {
+  private async _newProjectFromGallery(project: IGalleryItem, name?: string, creator?: string, shortName?: string) {
     if (this.state === null || this.state.carto === undefined) {
       return;
     }
@@ -737,7 +733,7 @@ export default class App extends Component<AppProps, AppState> {
       project.gitHubFolder,
       project.fileList,
       project.id,
-      project.type === GalleryProjectType.codeSample || project.type === GalleryProjectType.editorCodeSample
+      project.type === GalleryItemType.codeSample || project.type === GalleryItemType.editorCodeSample
         ? project.id
         : undefined,
       undefined,
@@ -762,7 +758,7 @@ export default class App extends Component<AppProps, AppState> {
     suggestedName?: string,
     suggestedCreator?: string,
     suggestedShortName?: string,
-    galleryType?: GalleryProjectType
+    galleryType?: GalleryItemType
   ) {
     const carto = CartoApp.carto;
 
@@ -797,7 +793,7 @@ export default class App extends Component<AppProps, AppState> {
     if (gitHubOwner !== undefined && gitHubRepoName !== undefined) {
       let gh = undefined;
 
-      if (galleryType === GalleryProjectType.entityType || galleryType === GalleryProjectType.blockType) {
+      if (galleryType === GalleryItemType.entityType || galleryType === GalleryItemType.blockType) {
         gh = new HttpStorage(
           CartoApp.contentRoot + "res/samples/microsoft/minecraft-samples-main/addon_starter/start/"
         );
@@ -822,9 +818,9 @@ export default class App extends Component<AppProps, AppState> {
 
       let focus = ProjectFocus.general;
 
-      if (galleryType === GalleryProjectType.editorProject) {
+      if (galleryType === GalleryItemType.editorProject) {
         focus = ProjectFocus.editorExtension;
-      } else if (galleryType === GalleryProjectType.codeSample || galleryType === GalleryProjectType.editorCodeSample) {
+      } else if (galleryType === GalleryItemType.codeSample || galleryType === GalleryItemType.editorCodeSample) {
         focus = ProjectFocus.focusedCodeSnippet;
       }
 
@@ -869,16 +865,13 @@ export default class App extends Component<AppProps, AppState> {
       newProject.creator = suggestedCreator;
       newProject.shortName = suggestedShortName;
 
-      if (
-        (galleryType === GalleryProjectType.entityType || galleryType === GalleryProjectType.blockType) &&
-        galleryId
-      ) {
+      if ((galleryType === GalleryItemType.entityType || galleryType === GalleryItemType.blockType) && galleryId) {
         const galleryProject = await carto.getGalleryProjectById(galleryId);
 
         if (galleryProject) {
-          if (galleryType === GalleryProjectType.entityType) {
+          if (galleryType === GalleryItemType.entityType) {
             await ProjectUtilities.addEntityTypeFromGallery(newProject, galleryProject);
-          } else if (galleryType === GalleryProjectType.blockType) {
+          } else if (galleryType === GalleryItemType.blockType) {
             await ProjectUtilities.addBlockTypeFromGallery(newProject, galleryProject);
           }
         }
@@ -890,11 +883,7 @@ export default class App extends Component<AppProps, AppState> {
         Log.assertDefined(snippet, "Snippet " + sampleId + " could not be found.");
 
         if (snippet) {
-          await ProjectUtilities.injectSnippet(
-            newProject,
-            snippet,
-            galleryType === GalleryProjectType.editorCodeSample
-          );
+          await ProjectUtilities.injectSnippet(newProject, snippet, galleryType === GalleryItemType.editorCodeSample);
         }
       }
 
@@ -1003,7 +992,7 @@ export default class App extends Component<AppProps, AppState> {
 
   private _handleProjectGalleryCommand(
     command: GalleryProjectCommand,
-    project: IGalleryProject,
+    project: IGalleryItem,
     name?: string,
     creator?: string,
     shortName?: string
@@ -1050,12 +1039,6 @@ export default class App extends Component<AppProps, AppState> {
 
     if (this.state.carto === undefined) {
       return <div className="app-loading">Loading!</div>;
-    }
-
-    let isReadOnly = false;
-
-    if (this.state.mode === AppMode.projectReadOnly) {
-      isReadOnly = true;
     }
 
     let top = <></>;
@@ -1114,7 +1097,7 @@ export default class App extends Component<AppProps, AppState> {
           selectedItem={this.state.selectedItem}
           viewMode={CartoEditorViewMode.mainFocus}
           mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
-          readOnly={isReadOnly}
+          readOnly={true}
           onModeChangeRequested={this._handleModeChangeRequested}
         />
       );
@@ -1129,7 +1112,7 @@ export default class App extends Component<AppProps, AppState> {
           project={this.state.activeProject}
           mode={ProjectEditorMode.inspector}
           viewMode={CartoEditorViewMode.mainFocus}
-          readOnly={isReadOnly}
+          readOnly={true}
           onModeChangeRequested={this._handleModeChangeRequested}
         />
       );
@@ -1170,7 +1153,7 @@ export default class App extends Component<AppProps, AppState> {
             project={this.state.activeProject}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
             selectedItem={this.state.selectedItem}
-            readOnly={isReadOnly}
+            readOnly={true}
             onModeChangeRequested={this._handleModeChangeRequested}
           />
         );
@@ -1183,7 +1166,7 @@ export default class App extends Component<AppProps, AppState> {
             project={this.state.activeProject}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
             selectedItem={this.state.selectedItem}
-            readOnly={isReadOnly}
+            readOnly={true}
             onModeChangeRequested={this._handleModeChangeRequested}
           />
         );

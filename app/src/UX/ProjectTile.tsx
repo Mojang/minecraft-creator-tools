@@ -1,7 +1,7 @@
 import { Component } from "react";
 import "./ProjectTile.css";
 import IAppProps from "./IAppProps";
-import IGalleryProject, { GalleryProjectType } from "../app/IGalleryProject";
+import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import { Button, ThemeInput } from "@fluentui/react-northstar";
 import Utilities from "../core/Utilities";
@@ -11,17 +11,16 @@ import ProjectUtilities from "../app/ProjectUtilities";
 export enum ProjectTileDisplayMode {
   large = 1,
   smallCodeSample = 2,
-  smallImage = 3,
 }
 
 interface IProjectTileProps extends IAppProps {
-  project: IGalleryProject;
+  project: IGalleryItem;
   theme: ThemeInput<any>;
   displayMode?: ProjectTileDisplayMode;
   displayOpenButton?: boolean;
   isSelectable?: boolean;
   isSelected?: boolean;
-  onGalleryItemCommand: (command: GalleryProjectCommand, project: IGalleryProject) => void;
+  onGalleryItemCommand: (command: GalleryProjectCommand, project: IGalleryItem) => void;
 }
 
 interface IProjectTileState {}
@@ -87,8 +86,8 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
     let description = [];
 
     if (
-      this.props.project.type === GalleryProjectType.codeSample ||
-      this.props.project.type === GalleryProjectType.editorCodeSample
+      this.props.project.type === GalleryItemType.codeSample ||
+      this.props.project.type === GalleryItemType.editorCodeSample
     ) {
       const snippet = ProjectUtilities.getSnippet(this.props.project.id);
 
@@ -141,10 +140,8 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
 
     if (
       (proj.logoImage !== undefined || proj.localLogo !== undefined) &&
-      (this.props.displayMode === ProjectTileDisplayMode.large ||
-        this.props.displayMode === ProjectTileDisplayMode.smallImage)
+      this.props.displayMode === ProjectTileDisplayMode.large
     ) {
-      // <Button icon={<FontAwesomeIcon icon={faCodeBranch} className="fa-lg" />} onClick={this._handleBranchProject} iconPosition="before" primary />
       let imagePath = proj.logoImage;
 
       if (imagePath === undefined) {
@@ -237,7 +234,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
                 <div
                   title={summary}
                   className={
-                    this.props.project.type === GalleryProjectType.codeSample
+                    this.props.project.type === GalleryItemType.codeSample
                       ? "pts-description pt-code"
                       : "pts-description"
                   }
@@ -270,36 +267,6 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
                     </span>
                   </Button>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    } else if (this.props.displayMode === ProjectTileDisplayMode.smallImage) {
-      let outerClassName = "pti-outer";
-
-      if (this.props.isSelected) {
-        outerClassName += " pti-outer-selected";
-      }
-
-      return (
-        <div className={outerClassName} key="tileOuter" onClick={this._projectClick}>
-          <div
-            className="pti-button"
-            style={{
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
-            }}
-          >
-            <div
-              className="pti-grid"
-              style={{
-                borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
-              }}
-            >
-              <div className="pti-iconArea"> {imageElement}</div>
-              <div className="pti-mainArea">
-                <div className="pti-title">{proj.title}</div>
               </div>
             </div>
           </div>

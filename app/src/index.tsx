@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+import "@fontsource/noto-sans";
 import App from "./UX/App";
 import AppServiceProxy, { AppServiceProxyCommands } from "./core/AppServiceProxy";
 import CartoApp, { CartoThemeStyle } from "./app/CartoApp";

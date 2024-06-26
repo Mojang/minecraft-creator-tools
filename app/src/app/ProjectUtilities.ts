@@ -13,7 +13,7 @@ import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition"
 import NpmPackageJson from "../devproject/NpmPackageJson";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import ISnippet from "./ISnippet";
-import IGalleryProject from "./IGalleryProject";
+import IGalleryItem from "./IGalleryItem";
 import IFolder from "../storage/IFolder";
 import ProjectItemUtilities from "./ProjectItemUtilities";
 import { PackType } from "../minecraft/Pack";
@@ -488,7 +488,7 @@ export default class ProjectUtilities {
     return caption.substring(0, 4).toLowerCase();
   }
 
-  static getSuggestedProjectName(project: IGalleryProject) {
+  static getSuggestedProjectName(project: IGalleryItem) {
     return this.getSuggestedProjectNameFromElements(project.id, project.gitHubFolder, project.gitHubRepoName);
   }
 
@@ -593,7 +593,7 @@ export default class ProjectUtilities {
 
   static async addEntityTypeFromGallery(
     project: Project,
-    entityTypeProject: IGalleryProject,
+    entityTypeProject: IGalleryItem,
     entityTypeName?: string,
     addMode?: NewEntityTypeAddMode
   ) {
@@ -650,12 +650,7 @@ export default class ProjectUtilities {
     await project.save();
   }
 
-  static async addBlockTypeFromGallery(
-    project: Project,
-    blockTypeProject: IGalleryProject,
-    blockTypeName?: string,
-    addMode?: NewEntityTypeAddMode
-  ) {
+  static async addBlockTypeFromGallery(project: Project, blockTypeProject: IGalleryItem, blockTypeName?: string) {
     await ProjectUtilities.copyGalleryPackFiles(project, blockTypeProject, blockTypeName);
 
     await project.inferProjectItemsFromFiles(true);
@@ -663,7 +658,7 @@ export default class ProjectUtilities {
     await project.save();
   }
 
-  static async copyGalleryPackFiles(project: Project, galleryProject: IGalleryProject, newTypeName?: string) {
+  static async copyGalleryPackFiles(project: Project, galleryProject: IGalleryItem, newTypeName?: string) {
     const files = galleryProject.fileList;
 
     if (files === undefined) {
@@ -809,13 +804,13 @@ export default class ProjectUtilities {
     }
   }
 
-  static replaceNamesInPath(path: string, project: Project, entityTypeProject: IGalleryProject, newName: string) {
+  static replaceNamesInPath(path: string, project: Project, entityTypeProject: IGalleryItem, newName: string) {
     path = Utilities.replaceAll(path, entityTypeProject.id, newName);
 
     return path;
   }
 
-  static replaceNamesInContent(content: string, project: Project, entityTypeProject: IGalleryProject, newName: string) {
+  static replaceNamesInContent(content: string, project: Project, entityTypeProject: IGalleryItem, newName: string) {
     content = Utilities.replaceAll(
       content,
       "minecraft:" + entityTypeProject.id,

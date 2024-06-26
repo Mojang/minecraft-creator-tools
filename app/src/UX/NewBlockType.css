@@ -1,4 +1,4 @@
-.net-outer {
+.nbt-outer {
   padding: 8px;
   padding-top: 2px;
   width: 100%;
@@ -6,14 +6,22 @@
   height: 100%;
 }
 
-.net-gallery {
+.nbt-gallery {
   overflow-y: auto;
   min-height: 280px;
   background-color: #202020;
   max-height: calc(100vh - 280px);
 }
 
-.net-selectedProject {
+.nbt-projectGallery {
+  height: 360px;
+}
+
+.nbt-selectedProject {
   padding-top: 20px;
   padding-left: 30px;
+}
+
+.nbt-optionsArea {
+  padding-bottom: 10px;
 }

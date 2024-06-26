@@ -1,5 +1,5 @@
 {
-  "projects": [
+  "items": [
     {
       "title": "Add-On Starter",
       "description": "Starter for add-on projects.",
@@ -252,7 +252,7 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-gametests",
       "gitHubFolder": "/starterTestsTutorial",
-      "logoImage": "pack_icon.png",
+      "logoImage": "behavior_packs/starterTestsTutorial/pack_icon.png",
       "id": "helloWorldGameTest",
       "tags": ["gametest"],
       "type": 0
@@ -263,7 +263,7 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-gametests",
       "gitHubFolder": "/js-gametests",
-      "logoImage": "pack_icon.png",
+      "logoImage": "behavior_packs/JsGameTests/pack_icon.png",
       "id": "mobGameTest",
       "tags": ["gametest"],
       "type": 0

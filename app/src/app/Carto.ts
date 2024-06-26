@@ -1155,14 +1155,14 @@ export default class Carto {
       await this.loadGallery();
     }
 
-    if (this._galleryLoaded === false || this._gallery === undefined || this._gallery.projects === undefined) {
+    if (this._galleryLoaded === false || this._gallery === undefined || this._gallery.items === undefined) {
       return undefined;
     }
 
     repoName = repoName.toLowerCase();
     owner = owner.toLowerCase();
 
-    for (const galProj of this._gallery.projects) {
+    for (const galProj of this._gallery.items) {
       if (
         galProj.gitHubRepoName.toLowerCase() === repoName &&
         galProj.gitHubOwner.toLowerCase() === owner &&
@@ -1182,13 +1182,13 @@ export default class Carto {
       await this.loadGallery();
     }
 
-    if (this._galleryLoaded === false || this._gallery === undefined || this._gallery.projects === undefined) {
+    if (this._galleryLoaded === false || this._gallery === undefined || this._gallery.items === undefined) {
       return undefined;
     }
 
     galleryProjectId = galleryProjectId.toLowerCase();
 
-    for (const galProj of this._gallery.projects) {
+    for (const galProj of this._gallery.items) {
       if (galProj.id.toLowerCase() === galleryProjectId) {
         return galProj;
       }

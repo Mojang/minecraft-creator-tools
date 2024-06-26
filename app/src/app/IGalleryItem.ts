@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-export enum GalleryProjectType {
+export enum GalleryItemType {
   project = 0,
   chunk = 1,
   blockType = 2,
@@ -19,7 +19,7 @@ export interface LogoLocation {
   imageWidth: number;
 }
 
-export default interface IGalleryProject {
+export default interface IGalleryItem {
   gitHubOwner: string;
   gitHubRepoName: string;
   gitHubFolder?: string;
@@ -36,6 +36,6 @@ export default interface IGalleryProject {
   codeLineStart?: number;
   fileList?: string[];
   tags?: string[];
-  type: GalleryProjectType;
+  type: GalleryItemType;
   id: string;
 }

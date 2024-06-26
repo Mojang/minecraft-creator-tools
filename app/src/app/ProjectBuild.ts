@@ -53,7 +53,7 @@ export default class ProjectBuild implements IErrorable {
   }
 
   _getErrorResponse(id: string, message: string) {
-    this._pushError(message);
+    this._pushError("Project Build:" + message);
 
     return {
       errors: [
@@ -82,6 +82,10 @@ export default class ProjectBuild implements IErrorable {
     return this._getErrorResponse("esb-typenotfound", "Could not find typedef '" + name + "'");
   }
 
+  get isBuildable() {
+    return this.project && this.project.projectFolder && this.mainScriptsFolder && this.distScriptsFolder && this.libs;
+  }
+
   async loadFile(build: esbuild.OnLoadArgs): Promise<esbuild.OnLoadResult> {
     if (
       !this.project ||
@@ -90,7 +94,7 @@ export default class ProjectBuild implements IErrorable {
       !this.distScriptsFolder ||
       !this.libs
     ) {
-      return this._getErrorResponse("esb-uninit", "Could not load project.");
+      return this._getErrorResponse("esb-uninit", "Project does not have buildable elements.");
     }
 
     if (build.path === "@minecraft/vanilla-data") {
@@ -147,6 +151,10 @@ export default class ProjectBuild implements IErrorable {
   }
 
   async build() {
+    if (!this.isBuildable) {
+      return;
+    }
+
     const operId = await this.project.carto.notifyOperationStarted("Script building '" + this.project.name + "'");
 
     const defaultBehaviorPack = await this.project.getDefaultBehaviorPack();

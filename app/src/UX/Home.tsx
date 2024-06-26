@@ -23,7 +23,7 @@ import Utilities from "../core/Utilities";
 import Log from "../core/Log";
 import IGallery from "../app/IGallery";
 import IFolder from "../storage/IFolder";
-import IGalleryProject from "../app/IGalleryProject";
+import IGalleryItem from "../app/IGalleryItem";
 import Database from "../minecraft/Database";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
@@ -59,7 +59,7 @@ interface IHomeProps extends IAppProps {
   onSetProject: (project: Project) => void;
   onGalleryItemCommand: (
     command: GalleryProjectCommand,
-    project: IGalleryProject,
+    project: IGalleryItem,
     name?: string,
     creator?: string,
     shortName?: string
@@ -97,7 +97,7 @@ interface IHomeState {
   newProjectCreator?: string;
   newProjectPath?: string;
   contextFocusedProject?: number;
-  newGalleryProject?: IGalleryProject;
+  newGalleryProject?: IGalleryItem;
 }
 
 export default class Home extends Component<IHomeProps, IHomeState> {
@@ -732,7 +732,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
   }
 
-  private _handleProjectGalleryCommand(command: GalleryProjectCommand, project: IGalleryProject) {
+  private _handleProjectGalleryCommand(command: GalleryProjectCommand, project: IGalleryItem) {
     if (command === GalleryProjectCommand.newProject) {
       this.setState({
         gallery: this.state.gallery,
