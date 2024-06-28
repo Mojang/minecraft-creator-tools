@@ -65,6 +65,20 @@
       "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
     },
     {
+      "name": "cli (val vanilla)",
+      "cwd": "${workspaceRoot}/",
+      "args": ["validate", "--log-verbose", "--force", "-ot", "noreports", "-i", "./public/res/latest/van/", "-o", "./public/data"],
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/src/cli/index.ts",
+      "preLaunchTask": "gulp: jsncorebuild",
+      "sourceMaps":true,
+      "runtimeExecutable": null,
+      "localRoot": "${workspaceRoot}/src",
+      "runtimeArgs": ["--nolazy", "--max-old-space-size=32768"],
+      "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "Mocha tests",

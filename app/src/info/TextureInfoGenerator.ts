@@ -143,7 +143,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         if (projectItem.file) {
           const particleEffect = await ParticleEffectResourceDefinition.ensureOnFile(projectItem.file);
 
-          const desc = particleEffect?.wrapper?.particle_effect.description;
+          const desc = particleEffect?.wrapper?.particle_effect?.description;
 
           if (desc) {
             if (desc.identifier && desc.basic_render_parameters?.texture) {

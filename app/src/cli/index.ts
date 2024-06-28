@@ -39,7 +39,6 @@ CartoApp.hostType = HostType.toolsNodejs;
 
 const MAX_LINES_PER_CSV_FILE = 500000;
 
-const ERROR_INIT_ERROR = 44;
 const ERROR_VALIDATION_INTERNALPROCESSINGERROR = 53;
 const ERROR_VALIDATION_TESTFAIL = 56;
 const ERROR_VALIDATION_ERROR = 57;
@@ -151,7 +150,7 @@ if (options.threads) {
   }
 }
 
-if (options.outputType) {
+if (options.outputType && typeof options.outputType === "string") {
   switch (options.outputType.toLowerCase().trim()) {
     case "noreports":
       outputType = OutputType.noReports;
@@ -671,7 +670,7 @@ async function validate() {
         project: ps,
         arguments: {
           suite: suiteConst,
-          outputMci: aggregateReportsAfterValidationConst || outputType === OutputType.noReports ? "true" : "false",
+          outputMci: aggregateReportsAfterValidationConst || outputType === OutputType.noReports ? true : false,
           outputType: outputType,
         },
         outputFolder: options.outputFolder,
@@ -694,16 +693,25 @@ async function validate() {
 
           projectList.push(result as IProjectMetaState);
 
-          const items = (result as IProjectMetaState).infoSetData?.items;
+          const infoSet = (result as IProjectMetaState).infoSetData;
 
-          if (items) {
-            for (const item of items) {
-              if (item.iTp === InfoItemType.internalProcessingError) {
-                setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
-              } else if (item.iTp === InfoItemType.testCompleteFail) {
-                setErrorLevel(ERROR_VALIDATION_TESTFAIL);
-              } else if (item.iTp === InfoItemType.error) {
-                setErrorLevel(ERROR_VALIDATION_ERROR);
+          if (infoSet) {
+            const items = infoSet.items;
+
+            if (items) {
+              for (const item of items) {
+                if (item.iTp === InfoItemType.internalProcessingError) {
+                  console.error(
+                    "Internal Processing Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item)
+                  );
+                  setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
+                } else if (item.iTp === InfoItemType.testCompleteFail && !options.outputFolder) {
+                  console.error("Test Fail: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
+                  setErrorLevel(ERROR_VALIDATION_TESTFAIL);
+                } else if (item.iTp === InfoItemType.error && !options.outputFolder) {
+                  console.error("Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
+                  setErrorLevel(ERROR_VALIDATION_ERROR);
+                }
               }
             }
           }

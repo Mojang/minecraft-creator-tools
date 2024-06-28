@@ -243,7 +243,9 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
     if (this.wrapper) {
       const item = (this.wrapper as any)["minecraft:item"];
 
-      this.id = item.description.identifier;
+      if (item && item.description) {
+        this.id = item.description.identifier;
+      }
 
       this.data = item;
     }

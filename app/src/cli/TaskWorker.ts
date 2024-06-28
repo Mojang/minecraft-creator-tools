@@ -66,7 +66,7 @@ async function executeTask(task: ITask) {
           carto,
           task.project,
           task.arguments["suite"] as string | undefined,
-          task.arguments["outputMci"] === "true",
+          task.arguments["outputMci"] === true,
           task.arguments["outputType"] as number | undefined,
           task.displayInfo,
           task.force

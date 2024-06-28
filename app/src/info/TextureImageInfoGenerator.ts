@@ -24,6 +24,9 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       case 1:
         return { title: "Texture Images" };
 
+      case 401:
+        return { title: "Image Processing Error" };
+
       default:
         return { title: topicId.toString() };
     }
@@ -68,18 +71,31 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
           if (projectItem.file.content && projectItem.file.content instanceof Uint8Array) {
             const exifr = new Exifr({});
 
-            await exifr.read(projectItem.file.content);
+            try {
+              await exifr.read(projectItem.file.content);
 
-            const results = await exifr.parse();
+              const results = await exifr.parse();
 
-            if (results.ImageWidth && results.ImageHeight) {
-              textureImagePi.spectrumIntFeature("ImageWidth", results.ImageWidth);
-              textureImagePi.spectrumIntFeature("ImageHeight", results.ImageHeight);
-              textureImagePi.spectrumIntFeature("ImageSize", results.ImageWidth * results.ImageHeight);
+              if (results.ImageWidth && results.ImageHeight) {
+                textureImagePi.spectrumIntFeature("ImageWidth", results.ImageWidth);
+                textureImagePi.spectrumIntFeature("ImageHeight", results.ImageHeight);
+                textureImagePi.spectrumIntFeature("ImageSize", results.ImageWidth * results.ImageHeight);
 
-              if (!isVanilla) {
-                textureImagePi.spectrumIntFeature("NonVanillaImageSize", results.ImageWidth * results.ImageHeight);
+                if (!isVanilla) {
+                  textureImagePi.spectrumIntFeature("NonVanillaImageSize", results.ImageWidth * results.ImageHeight);
+                }
               }
+            } catch (e: any) {
+              items.push(
+                new ProjectInfoItem(
+                  InfoItemType.error,
+                  this.id,
+                  401,
+                  `Error processing image`,
+                  projectItem,
+                  e.toString()
+                )
+              );
             }
           }
         }

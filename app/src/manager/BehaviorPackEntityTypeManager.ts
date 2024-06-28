@@ -111,7 +111,7 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
 
     if (!ver) {
       infoItems.push(
-        new ProjectInfoItem(InfoItemType.internalProcessingError, this.id, 500, "Could not retrieve version.")
+        new ProjectInfoItem(InfoItemType.internalProcessingError, this.id, 509, "Could not retrieve version.")
       );
       return infoItems;
     }

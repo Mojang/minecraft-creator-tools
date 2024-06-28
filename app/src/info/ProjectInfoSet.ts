@@ -226,7 +226,7 @@ export default class ProjectInfoSet {
               this.pushItem(genItems, genItemsByStoragePath, item);
             }
           } catch (e: any) {
-            genItems.push(new ProjectInfoItem(InfoItemType.internalProcessingError, gen.id, 500, e.toString()));
+            genItems.push(new ProjectInfoItem(InfoItemType.internalProcessingError, gen.id, 500, e));
           }
         }
       }
@@ -516,6 +516,30 @@ export default class ProjectInfoSet {
     }
 
     return summaryString;
+  }
+
+  static getEffectiveMessageFromData(data: IProjectInfoData, item: IInfoItemData) {
+    if (item.m !== undefined) {
+      return item.m;
+    }
+
+    if (data.info === undefined || data.info.summary === undefined) {
+      return undefined;
+    }
+
+    let gen = data.info.summary[item.gId];
+
+    if (gen === undefined) {
+      return undefined;
+    }
+
+    let genI = gen[item.gIx];
+
+    if (genI === undefined) {
+      return undefined;
+    }
+
+    return genI.defaultMessage;
   }
 
   getEffectiveMessage(item: ProjectInfoItem) {
