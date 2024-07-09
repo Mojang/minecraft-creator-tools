@@ -8,7 +8,7 @@ import DataForm from "../dataform/DataForm";
 import Database from "../minecraft/Database";
 import CartoApp from "../app/CartoApp";
 import Project from "../app/Project";
-import { List, ListProps, ThemeInput } from "@fluentui/react-northstar";
+import { List, ListProps, ThemeInput, selectableListBehavior } from "@fluentui/react-northstar";
 import DocumentedCommandEditor from "./DocumentedCommandEditor";
 
 interface IDocumentedCommandSetEditorProps extends IFileProps {
@@ -229,6 +229,8 @@ export default class DocumentedCommandSetEditor extends Component<
           >
             <List
               selectable
+              aria-label="List of document command sets"
+              accessibility={selectableListBehavior}
               defaultSelectedIndex={-1}
               items={commandListing}
               onSelectedIndexChange={this._handleCommandSelected}

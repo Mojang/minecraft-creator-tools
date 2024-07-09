@@ -21,6 +21,16 @@ export interface IResourcePackManifest {
   capabilities?: string[];
 }
 
+export interface ISkinPackManifest {
+  format_version: number;
+  __comment__?: string;
+  header: IResourceAddonManifestHeader;
+  modules: IAddonModule[];
+  dependencies: IAddonDependency[];
+  metadata?: IAddonMetadata;
+  capabilities?: string[];
+}
+
 export interface IAddonManifestHeader {
   description: string;
   name: string;

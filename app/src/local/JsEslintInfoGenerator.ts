@@ -47,14 +47,14 @@ export default class JsEslintInfoGenerator implements IProjectInfoGenerator {
   }
 
   async generateFromFolder(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
-    await folder.load(false);
+    await folder.load();
     var foundError = false;
 
     for (const fileName in folder.files) {
       const baseType = StorageUtilities.getTypeFromName(fileName);
       const file = folder.files[fileName];
 
-      if ((baseType === "js" || baseType === "ts") && file) {
+      if ((baseType === "js" || baseType === "mjs" || baseType === "ts") && file) {
         if (await this.generateFromFile(project, file, items)) {
           foundError = true;
         }

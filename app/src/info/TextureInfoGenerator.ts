@@ -42,7 +42,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
     info.textureCount = infoSet.getSummedNumberValue("TEXTURE", 1);
   }
 
-  async matchesVanillaPath(path: string, resourcePackFolder: IFolder | null) {
+  static async matchesVanillaPath(path: string, resourcePackFolder: IFolder | null) {
     if (resourcePackFolder && resourcePackFolder.folderCount > 0) {
       path = Utilities.ensureStartsWithSlash(path);
 
@@ -60,7 +60,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
 
       const itemName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(path)).toLowerCase();
 
-      await folder.load(false);
+      await folder.load();
 
       for (let fileName in folder.files) {
         if (fileName && StorageUtilities.getBaseFromName(fileName).toLowerCase() === itemName) {
@@ -143,12 +143,15 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         if (projectItem.file) {
           const particleEffect = await ParticleEffectResourceDefinition.ensureOnFile(projectItem.file);
 
-          const desc = particleEffect?.wrapper?.particle_effect.description;
+          const desc = particleEffect?.wrapper?.particle_effect?.description;
 
           if (desc) {
             if (desc.identifier && desc.basic_render_parameters?.texture) {
               const texturePath = desc.basic_render_parameters.texture;
-              const matchesVanillaPath = await this.matchesVanillaPath(desc.basic_render_parameters.texture, rpFolder);
+              const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(
+                desc.basic_render_parameters.texture,
+                rpFolder
+              );
 
               if (!matchesVanillaPath) {
                 if (!textureHandles.includes(texturePath)) {
@@ -186,7 +189,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
 
               if (jsonControlId !== "namespace" && jsonControl && jsonControl.texture) {
                 const texturePath = jsonControl.texture;
-                const matchesVanillaPath = await this.matchesVanillaPath(texturePath, rpFolder);
+                const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(texturePath, rpFolder);
 
                 if (!matchesVanillaPath) {
                   if (!textureHandles.includes(texturePath)) {
@@ -301,7 +304,10 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
                     allTexturesLeaf.push(itemTexture.textures);
                   }*/
 
-                  const matchesVanillaPath = await this.matchesVanillaPath(itemTexture.textures, rpFolder);
+                  const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(
+                    itemTexture.textures,
+                    rpFolder
+                  );
 
                   if (!matchesVanillaPath && !itemTexturePaths.includes(itemTexture.textures)) {
                     itemTexturePaths.push(itemTexture.textures);
@@ -314,7 +320,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
                       allTexturesLeaf.push(str);
                     }*/
 
-                    const matchesVanillaPath = await this.matchesVanillaPath(str, rpFolder);
+                    const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(str, rpFolder);
 
                     if (!matchesVanillaPath && !itemTexturePaths.includes(str)) {
                       itemTexturePaths.push(str);
@@ -348,7 +354,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
               for (const texture in textures) {
                 const texturePath = textures[texture];
 
-                const matchesVanillaPath = await this.matchesVanillaPath(texturePath, rpFolder);
+                const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(texturePath, rpFolder);
 
                 if (!matchesVanillaPath) {
                   if (!textureHandles.includes(texturePath)) {

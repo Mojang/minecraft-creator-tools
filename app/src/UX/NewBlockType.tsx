@@ -2,21 +2,24 @@ import { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
 import Project from "../app/Project";
 import "./NewBlockType.css";
-import { Accordion, Input, InputProps } from "@fluentui/react-northstar";
+import { Input, InputProps, ThemeInput } from "@fluentui/react-northstar";
 import Database from "./../minecraft/Database";
 import Log from "./../core/Log";
 import IFolder from "./../storage/IFolder";
-import StorageUtilities from "../storage/StorageUtilities";
-import BlockTypeTile from "./BlockTypeTile";
+import ItemGallery, { GalleryItemCommand } from "./ItemGallery";
+import { ItemTileButtonDisplayMode } from "./ItemTileButton";
+import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 
 interface INewBlockTypeProps extends IAppProps {
   project: Project;
-  onNewBlockTypeUpdated: (blockTypeId?: string, name?: string) => void;
+  theme: ThemeInput<any>;
+  onNewBlockTypeUpdated: (blockTypeItem?: IGalleryItem, name?: string) => void;
 }
 
 interface INewBlockTypeState {
   blockTypesFolder?: IFolder;
-  selectedBlockTypeId?: string;
+  selectedBlockType?: IGalleryItem;
+  nameIsManuallySet?: boolean;
   name?: string;
 }
 
@@ -24,7 +27,7 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
   constructor(props: INewBlockTypeProps) {
     super(props);
 
-    this._handleBlockTypeCommand = this._handleBlockTypeCommand.bind(this);
+    this._handleTypeGalleryCommand = this._handleTypeGalleryCommand.bind(this);
     this._handleNameChanged = this._handleNameChanged.bind(this);
     this._ensureLoaded = this._ensureLoaded.bind(this);
 
@@ -43,25 +46,13 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
 
     const blocksFolder = Database.defaultBehaviorPackFolder.ensureFolder("blocks");
 
-    await blocksFolder.load(false);
+    await blocksFolder.load();
 
     this.setState({
       blockTypesFolder: blocksFolder,
-      selectedBlockTypeId: this.state.selectedBlockTypeId,
+      selectedBlockType: this.state.selectedBlockType,
       name: this.state.name,
     });
-  }
-
-  _handleBlockTypeCommand(blockTypeId: string) {
-    if (this.props && this.props.onNewBlockTypeUpdated !== undefined) {
-      const newName = this.state.name;
-      this.props.onNewBlockTypeUpdated(blockTypeId, newName);
-
-      this.setState({
-        name: newName,
-        selectedBlockTypeId: blockTypeId,
-      });
-    }
   }
 
   _handleNameChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
@@ -70,7 +61,7 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
     }
 
     if (this.state.name) {
-      this.props.onNewBlockTypeUpdated(this.state.name);
+      this.props.onNewBlockTypeUpdated(this.state.selectedBlockType, this.state.name);
     }
 
     this.setState({
@@ -78,35 +69,33 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
     });
   }
 
+  private _handleTypeGalleryCommand(command: GalleryItemCommand, item: IGalleryItem) {
+    let newName = this.state.name;
+
+    if (!this.state.nameIsManuallySet || newName === undefined) {
+      newName = item.id;
+    }
+
+    this.setState({
+      selectedBlockType: item,
+      blockTypesFolder: this.state.blockTypesFolder,
+      name: newName,
+      nameIsManuallySet: this.state.nameIsManuallySet,
+    });
+
+    if (this.props.onNewBlockTypeUpdated) {
+      this.props.onNewBlockTypeUpdated(item, newName);
+    }
+  }
+
   render() {
     if (
       this.state === null ||
       Database.defaultBehaviorPackFolder === null ||
-      this.state.blockTypesFolder === undefined
+      this.state.blockTypesFolder === undefined ||
+      this.props.carto.gallery === undefined
     ) {
       return <div>Loading...</div>;
-    }
-
-    const blockTypesFolder = this.state.blockTypesFolder;
-
-    const blockTypeTiles = [];
-
-    if (blockTypesFolder === undefined) {
-      return;
-    }
-
-    for (const fileName in blockTypesFolder.files) {
-      const baseName = StorageUtilities.getBaseFromName(fileName);
-
-      blockTypeTiles.push(
-        <BlockTypeTile
-          isSelected={baseName === this.state.selectedBlockTypeId}
-          key={"item" + fileName}
-          onClick={this._handleBlockTypeCommand}
-          carto={this.props.carto}
-          blockTypeId={baseName}
-        />
-      );
     }
 
     let inputText = this.state.name;
@@ -116,22 +105,29 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
     }
 
     return (
-      <div className="net-outer">
-        <div className="net-optionsArea">
+      <div className="nbt-outer">
+        <div className="nbt-optionsArea">
           <div>
             <Input value={inputText} defaultValue={inputText} onChange={this._handleNameChanged} />
           </div>
         </div>
-        <Accordion
-          defaultActiveIndex={0}
-          exclusive
-          panels={[
-            {
-              title: "Block Types",
-              content: <div className="net-gallery">{blockTypeTiles}</div>,
-            },
-          ]}
-        />
+        <div
+          className="nbt-projectGallery"
+          style={{
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
+          }}
+        >
+          <ItemGallery
+            carto={this.props.carto}
+            theme={this.props.theme}
+            view={ItemTileButtonDisplayMode.smallImage}
+            isSelectable={true}
+            gallery={this.props.carto.gallery}
+            filterOn={[GalleryItemType.blockType]}
+            onGalleryItemCommand={this._handleTypeGalleryCommand}
+          />
+        </div>
       </div>
     );
   }

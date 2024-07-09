@@ -4,6 +4,8 @@
 /.pnp
 bin/
 obj/
+dist/
+lib/
 PublishProfiles/
 wwwroot/
 .pnp.js
@@ -30,13 +32,17 @@ toolbuild/
 out/
 results/
 dist/
+mci/
+public/res/index.json
 /app/forge.config.js
 .vscode-test-web/
 node_modules/
-mci/
 app/public/data/typedefs.beta.json
 app/public/data/typedefs.stable.json
+app/public/data/libs.json
 app/public/res/latest/
+app/public/min-maps/
+app/public/res/samples/
 /~$
 app/nod
 # misc

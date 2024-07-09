@@ -47,6 +47,7 @@ export default class WorldLevelDat implements IWorldSettings, IErrorable {
   public spawnY?: number;
   public spawnZ?: number;
   public gameType?: GameType;
+  public editorWorldType?: number;
   public generator?: Generator;
   public commandsEnabled?: boolean; // same as "are cheats enabled".. or maybe not?
   public commandBlocksEnabled?: boolean;
@@ -219,7 +220,6 @@ export default class WorldLevelDat implements IWorldSettings, IErrorable {
     // some type 8 maps have restOfLength === bytes.length - 16 (?)
     if (restOfLength !== bytes.length - 8 && restOfLength !== bytes.length - 16) {
       this._pushError("Unexpected world level dat length.", context);
-      return;
     }
 
     tag.fromBinary(bytes, true, false, 8);
@@ -793,6 +793,14 @@ export default class WorldLevelDat implements IWorldSettings, IErrorable {
       this.lastPlayed = BigInt(settings.lastPlayed);
     }
 
+    if (settings.isEditor) {
+      this.isCreatedInEditor = true;
+      this.editorWorldType = 1;
+    } else if (settings.isEditor === false) {
+      this.isCreatedInEditor = false;
+      this.editorWorldType = undefined;
+    }
+
     if (settings.betaApisExperiment === true) {
       this.betaApisExperiment = settings.betaApisExperiment;
     } else if (settings.betaApisExperiment === false) {
@@ -1165,6 +1173,10 @@ export default class WorldLevelDat implements IWorldSettings, IErrorable {
       root.ensureTag("isCreatedInEditor", NbtTagType.byte).value = this.isCreatedInEditor;
     }
 
+    if (this.editorWorldType !== undefined) {
+      root.ensureTag("editorWorldType", NbtTagType.byte).value = this.editorWorldType;
+    }
+
     if (this.isExportedFromEditor !== undefined) {
       root.ensureTag("isExportedFromEditor", NbtTagType.byte).value = this.isExportedFromEditor;
     }
@@ -1346,6 +1358,12 @@ export default class WorldLevelDat implements IWorldSettings, IErrorable {
 
     if (tag !== null) {
       this.spawnZ = tag.valueAsInt;
+    }
+
+    tag = root.find("editorWorldType");
+
+    if (tag !== null) {
+      this.editorWorldType = tag.valueAsInt;
     }
 
     tag = root.find("GameType");

@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import IGalleryProject from "./IGalleryProject";
+import IGalleryItem from "./IGalleryItem";
 
 export default interface IGallery {
-  projects: IGalleryProject[];
+  items: IGalleryItem[];
 }

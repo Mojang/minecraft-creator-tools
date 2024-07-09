@@ -106,7 +106,7 @@ export default class ProjectUpdateResult {
       updaterId: updaterId,
       updaterIndex: updaterIndex,
       message: message,
-      itemStoragePath: projectItem ? projectItem.storagePath : undefined,
+      itemStoragePath: projectItem ? projectItem.projectPath : undefined,
       data: data,
       itemId: itemId,
       content: content,

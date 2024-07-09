@@ -35,6 +35,7 @@ import Package from "./Package";
 import CommandRegistry from "./CommandRegistry";
 import ZipStorage from "../storage/ZipStorage";
 import { MaxItemTypes, ProjectItemType } from "./IProjectItemData";
+import DeploymentStorageMinecraft from "./DeploymentStorageMinecraft";
 
 export enum CartoMinecraftState {
   none = 0,
@@ -78,6 +79,7 @@ export default class Carto {
   contentRoot = "";
 
   processHostedMinecraft: IMinecraft | undefined;
+  deploymentStorageMinecraft: IMinecraft | undefined;
   gameMinecraft: IMinecraft | undefined;
   remoteMinecraft: IMinecraft | undefined;
   activeMinecraft: IMinecraft | undefined;
@@ -97,6 +99,7 @@ export default class Carto {
   canCreateMinecraft: ((flavor: MinecraftFlavor) => boolean) | undefined;
 
   private _deployBehaviorPacksFolder: IFolder | null;
+  private _deployResourcePacksFolder: IFolder | null;
 
   private _pendingPackLoadRequests: ((value: unknown) => void)[] = [];
   private _arePacksLoading: boolean = false;
@@ -113,6 +116,7 @@ export default class Carto {
 
   _gallery?: IGallery;
   _galleryLoaded: boolean = false;
+  isDeployingToComMojang: boolean = false;
 
   hasAttemptedPersistentBrowserStorageSwitch: boolean = false;
 
@@ -144,6 +148,10 @@ export default class Carto {
     return this.#data.worldSettings;
   }
 
+  public get editorWorldSettings() {
+    return this.#data.editorWorldSettings;
+  }
+
   public get activeMinecraftState() {
     if (this.activeMinecraft === undefined) {
       return CartoMinecraftState.none;
@@ -154,6 +162,18 @@ export default class Carto {
 
   public get onMinecraftStateChanged() {
     return this._onMinecraftStateChanged.asEvent();
+  }
+
+  public get formatBeforeSave() {
+    if (this.#data.formatBeforeSave === undefined) {
+      return true;
+    }
+
+    return this.#data.formatBeforeSave;
+  }
+
+  public set formatBeforeSave(newValue: boolean) {
+    this.#data.formatBeforeSave = newValue;
   }
 
   public get preferredTextSize() {
@@ -568,6 +588,10 @@ export default class Carto {
     return this._deployBehaviorPacksFolder;
   }
 
+  get deployResourcePacksFolder(): IFolder | null {
+    return this._deployResourcePacksFolder;
+  }
+
   constructor(
     settingsStorage: IStorage,
     projectsStorage: IStorage,
@@ -585,6 +609,9 @@ export default class Carto {
     this.packStorage = packStorage;
     this.worldStorage = worldStorage;
     this.workingStorage = workingStorage;
+
+    this._deployBehaviorPacksFolder = null;
+    this._deployResourcePacksFolder = null;
 
     if (contentRoot) {
       this.contentRoot = contentRoot;
@@ -616,10 +643,18 @@ export default class Carto {
     this.status = [];
     this.activeOperations = [];
 
+    this.updateDeploymentStorage(deploymentsStorage);
+  }
+
+  public updateDeploymentStorage(deploymentsStorage: IStorage | null) {
+    this.deploymentStorage = deploymentsStorage;
+
     if (this.deploymentStorage != null) {
       this._deployBehaviorPacksFolder = this.deploymentStorage.rootFolder.ensureFolder("development_behavior_packs");
+      this._deployResourcePacksFolder = this.deploymentStorage.rootFolder.ensureFolder("development_resource_packs");
     } else {
       this._deployBehaviorPacksFolder = null;
+      this._deployResourcePacksFolder = null;
     }
   }
 
@@ -627,7 +662,8 @@ export default class Carto {
     if (this.#data.worldSettings === undefined) {
       this.#data.worldSettings = {
         gameType: GameType.creative,
-        generator: Generator.flat,
+        generator: Generator.infinite,
+        randomSeed: "2000",
         backupType: BackupType.every5Minutes,
         useCustomSettings: false,
         isEditor: false,
@@ -635,14 +671,33 @@ export default class Carto {
       };
 
       this.ensureDefaultWorldName();
-
-      //      this.save();
     }
   }
 
   private ensureDefaultWorldName() {
     if (this.worldSettings && this.worldSettings.name === undefined) {
       this.worldSettings.name = "world " + Utilities.getDateStr(new Date());
+    }
+  }
+
+  public initializeEditorWorldSettings() {
+    if (this.#data.editorWorldSettings === undefined) {
+      this.#data.editorWorldSettings = {
+        gameType: GameType.creative,
+        generator: Generator.infinite,
+        backupType: BackupType.every5Minutes,
+        useCustomSettings: false,
+        isEditor: true,
+        packageReferences: [],
+      };
+
+      this.ensureDefaultEditorWorldName();
+    }
+  }
+
+  private ensureDefaultEditorWorldName() {
+    if (this.editorWorldSettings && this.editorWorldSettings.name === undefined) {
+      this.editorWorldSettings.name = "editor project " + Utilities.getDateStr(new Date());
     }
   }
 
@@ -768,7 +823,7 @@ export default class Carto {
   }
 
   async loadPacksFromFolder(folder: IFolder) {
-    await folder.load(false);
+    await folder.load();
 
     for (let fileName in folder.files) {
       const file = folder.files[fileName];
@@ -879,6 +934,9 @@ export default class Carto {
         break;
 
       default:
+        if (this.deploymentStorageMinecraft) {
+          this.deploymentStorageMinecraft.processExternalMessage(command, data);
+        }
         if (this.processHostedMinecraft) {
           this.processHostedMinecraft.processExternalMessage(command, data);
         }
@@ -969,7 +1027,7 @@ export default class Carto {
     if (status.type === StatusType.operationStarted) {
       this.activeOperations.push(status);
     } else if (
-      status.type === StatusType.operationEnded &&
+      (status.type === StatusType.operationEndedComplete || status.type === StatusType.operationEndedErrors) &&
       status.operationId !== null &&
       status.operationId !== undefined
     ) {
@@ -1001,11 +1059,16 @@ export default class Carto {
     return status.operationId;
   }
 
-  async notifyOperationEnded(endedOperationId: number, message: string, topic?: StatusTopic) {
+  async notifyOperationEnded(
+    endedOperationId: number,
+    message: string,
+    topic?: StatusTopic,
+    endedWithErrors?: boolean
+  ) {
     const status = {
       message: message,
       operationId: endedOperationId,
-      type: StatusType.operationEnded,
+      type: endedWithErrors ? StatusType.operationEndedErrors : StatusType.operationEndedComplete,
       time: new Date(),
       topic: topic,
     };
@@ -1092,14 +1155,14 @@ export default class Carto {
       await this.loadGallery();
     }
 
-    if (this._galleryLoaded === false || this._gallery === undefined || this._gallery.projects === undefined) {
+    if (this._galleryLoaded === false || this._gallery === undefined || this._gallery.items === undefined) {
       return undefined;
     }
 
     repoName = repoName.toLowerCase();
     owner = owner.toLowerCase();
 
-    for (const galProj of this._gallery.projects) {
+    for (const galProj of this._gallery.items) {
       if (
         galProj.gitHubRepoName.toLowerCase() === repoName &&
         galProj.gitHubOwner.toLowerCase() === owner &&
@@ -1119,13 +1182,13 @@ export default class Carto {
       await this.loadGallery();
     }
 
-    if (this._galleryLoaded === false || this._gallery === undefined || this._gallery.projects === undefined) {
+    if (this._galleryLoaded === false || this._gallery === undefined || this._gallery.items === undefined) {
       return undefined;
     }
 
     galleryProjectId = galleryProjectId.toLowerCase();
 
-    for (const galProj of this._gallery.projects) {
+    for (const galProj of this._gallery.items) {
       if (galProj.id.toLowerCase() === galleryProjectId) {
         return galProj;
       }
@@ -1453,9 +1516,9 @@ export default class Carto {
 
     const projectsFolder = this.prefsProjectsFolder;
 
-    await projectsFolder.load(false);
+    await projectsFolder.load();
 
-    await this.projectsStorage.rootFolder.load(false);
+    await this.projectsStorage.rootFolder.load();
 
     this.projects = [];
 
@@ -1616,6 +1679,14 @@ export default class Carto {
     return this.processHostedMinecraft;
   }
 
+  public ensureDeploymentStorageMinecraft() {
+    if (this.deploymentStorageMinecraft === undefined) {
+      this.deploymentStorageMinecraft = new DeploymentStorageMinecraft(this);
+    }
+
+    return this.deploymentStorageMinecraft;
+  }
+
   public ensureGameMinecraft() {
     return this.gameMinecraft;
   }
@@ -1633,6 +1704,8 @@ export default class Carto {
 
     if (flavor === MinecraftFlavor.processHostedProxy) {
       this.ensureProcessHostedMinecraft();
+    } else if (flavor === MinecraftFlavor.deploymentStorage) {
+      this.ensureDeploymentStorageMinecraft();
     } else if (flavor === MinecraftFlavor.minecraftGameProxy) {
       this.ensureGameMinecraft();
     }
@@ -1701,6 +1774,28 @@ export default class Carto {
 
       if (this.activeMinecraft === undefined) {
         Log.unexpectedUndefined("EMD");
+        return undefined;
+      }
+
+      this.activeMinecraft.onStateChanged.subscribe(this._bubbleMinecraftStateChanged);
+      this.activeMinecraft.onRefreshed.subscribe(this._bubbleMinecraftRefreshed);
+    } else if (flavor === MinecraftFlavor.deploymentStorage) {
+      if (!this.deploymentStorageMinecraft) {
+        Log.throwUnexpectedUndefined("EMCD");
+        return undefined;
+      }
+
+      this.activeMinecraft = this.deploymentStorageMinecraft;
+
+      if (this.lastActiveMinecraftFlavor !== MinecraftFlavor.deploymentStorage) {
+        this.lastActiveMinecraftFlavor = MinecraftFlavor.deploymentStorage;
+        this.save();
+      }
+
+      this._onMinecraftStateChanged.dispatch(this.activeMinecraft, CartoMinecraftState.newMinecraft);
+
+      if (this.activeMinecraft === undefined) {
+        Log.unexpectedUndefined("EMDD");
         return undefined;
       }
 

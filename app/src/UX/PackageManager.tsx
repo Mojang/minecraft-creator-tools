@@ -1,7 +1,7 @@
 import React, { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
 import "./PackageManager.css";
-import { Checkbox, CheckboxProps, List } from "@fluentui/react-northstar";
+import { Checkbox, CheckboxProps, List, selectableListBehavior } from "@fluentui/react-northstar";
 import IPersistable from "./IPersistable";
 import WebUtilities from "./WebUtilities";
 import { IPackageReference, IWorldSettings } from "../minecraft/IWorldSettings";
@@ -256,7 +256,15 @@ export default class PackManager extends Component<IPackManagerProps, IPackManag
           <div className="pcmn-list">
             <input type="file" title="uploadPack" onChange={this._handleFileUpload} />
             {additional}
-            <List className="pcmn-list" selectable items={li} selectedIndex={index} defaultSelectedIndex={index} />
+            <List
+              className="pcmn-list"
+              aria-label="List of modules"
+              accessibility={selectableListBehavior}
+              selectable
+              items={li}
+              selectedIndex={index}
+              defaultSelectedIndex={index}
+            />
           </div>
         </div>
       </div>

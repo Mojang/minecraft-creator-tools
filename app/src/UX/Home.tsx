@@ -2,7 +2,20 @@ import { Component, MouseEvent, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
 import { AppMode } from "./App";
 import "./Home.css";
-import { List, Button, Dialog, Input, InputProps, ThemeInput, MenuButton } from "@fluentui/react-northstar";
+import {
+  List,
+  Dialog,
+  Input,
+  InputProps,
+  ThemeInput,
+  MenuButton,
+  selectableListBehavior,
+  selectableListItemBehavior,
+  ListItemProps,
+  ShorthandValue,
+  MenuProps,
+  menuItemBehavior,
+} from "@fluentui/react-northstar";
 import { NewProjectTemplateType } from "./App";
 import Carto from "./../app/Carto";
 import Project from "./../app/Project";
@@ -10,13 +23,12 @@ import Utilities from "../core/Utilities";
 import Log from "../core/Log";
 import IGallery from "../app/IGallery";
 import IFolder from "../storage/IFolder";
-import IGalleryProject from "../app/IGalleryProject";
+import IGalleryItem from "../app/IGalleryItem";
 import Database from "../minecraft/Database";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import { constants } from "../core/Constants";
 import StorageUtilities from "../storage/StorageUtilities";
-import { LocalFolderLabel } from "./Labels";
 import FileSystemStorage from "../storage/FileSystemStorage";
 import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
 import UrlUtilities from "../core/UrlUtilities";
@@ -32,19 +44,31 @@ enum HomeDialogMode {
   newProject = 1,
   errorMessage = 2,
   confirmProjectDelete = 3,
+  infoMessage = 4,
 }
 
 interface IHomeProps extends IAppProps {
   theme: ThemeInput<any>;
   errorMessage: string | undefined;
   isPersisted?: boolean;
+  heightOffset: number;
   onPersistenceUpgraded?: () => void;
   onModeChangeRequested?: (mode: AppMode) => void;
   onProjectSelected?: (project: Project) => void;
-  onGalleryItemCommand: (command: GalleryProjectCommand, project: IGalleryProject, name?: string) => void;
+  onLog: (message: string) => Promise<void>;
+  onSetProject: (project: Project) => void;
+  onGalleryItemCommand: (
+    command: GalleryProjectCommand,
+    project: IGalleryItem,
+    name?: string,
+    creator?: string,
+    shortName?: string
+  ) => void;
   onNewProjectSelected?: (
     name: string,
     newProjectType: NewProjectTemplateType,
+    creator?: string,
+    shortName?: string,
     path?: string,
     additionalFilePath?: string,
     additionalFile?: File,
@@ -67,11 +91,13 @@ interface IHomeState {
   selectedProject?: string;
   search?: string;
   errorMessage?: string;
+  inlineMessage?: string;
   newProjectName?: string;
   newProjectShortName?: string;
   newProjectCreator?: string;
   newProjectPath?: string;
-  newGalleryProject?: IGalleryProject;
+  contextFocusedProject?: number;
+  newGalleryProject?: IGalleryItem;
 }
 
 export default class Home extends Component<IHomeProps, IHomeState> {
@@ -103,6 +129,9 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._handleOpenLocalFolderForDocumentationClick = this._handleOpenLocalFolderForDocumentationClick.bind(this);
     this._handleProjectClicked = this._handleProjectClicked.bind(this);
     this._handleDialogCancel = this._handleDialogCancel.bind(this);
+    this._handleContextMenu = this._handleContextMenu.bind(this);
+    this._projectContextBlurred = this._projectContextBlurred.bind(this);
+    this._blurIfNotActive = this._blurIfNotActive.bind(this);
     this._handleNewProjectConfirm = this._handleNewProjectConfirm.bind(this);
     this._handleErrorMessageConfirm = this._handleErrorMessageConfirm.bind(this);
     this._handleDeleteProjectConfirm = this._handleDeleteProjectConfirm.bind(this);
@@ -240,11 +269,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           }
         }
       }
-    } else {
-      // Use DataTransfer interface to access the file(s)
-      for (var j = 0; j < ev.dataTransfer.files.length; j++) {
-        console.log("... file[" + j + "].name = " + ev.dataTransfer.files[j].name);
-      }
     }
 
     this._stopDragEffect();
@@ -271,6 +295,8 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       this.props.onNewProjectSelected(
         fileName,
         NewProjectTemplateType.empty,
+        undefined,
+        undefined,
         undefined,
         path,
         file,
@@ -401,6 +427,20 @@ export default class Home extends Component<IHomeProps, IHomeState> {
   }
 
   async _handleExportAllClick() {
+    const name = "mctbackup." + Utilities.getDateSummary(new Date()) + ".zip";
+
+    this.setState({
+      gallery: this.state.gallery,
+      search: this.state.search,
+      newProjectName: this.state.newProjectName,
+      newProjectCreator: this.state.newProjectCreator,
+      newProjectPath: this.state.newProjectPath,
+      newGalleryProject: this.state.newGalleryProject,
+      effect: HomeEffect.none,
+      dialogMode: HomeDialogMode.none,
+      inlineMessage: "Downloading backup zip as '" + name + "'...",
+    });
+
     const operId = await this.props.carto.notifyOperationStarted("Exporting all projects as zip.");
 
     const zipStorage = await this.props.carto.getExportZip();
@@ -409,7 +449,19 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
     await this.props.carto.notifyOperationEnded(operId, "Export of projects created; downloading");
 
-    saveAs(zipBinary, "mctbackup." + Utilities.getDateSummary(new Date()) + ".zip");
+    saveAs(zipBinary, name);
+
+    this.setState({
+      gallery: this.state.gallery,
+      search: this.state.search,
+      newProjectName: this.state.newProjectName,
+      newProjectCreator: this.state.newProjectCreator,
+      newProjectPath: this.state.newProjectPath,
+      newGalleryProject: this.state.newGalleryProject,
+      effect: HomeEffect.none,
+      dialogMode: HomeDialogMode.none,
+      inlineMessage: undefined,
+    });
   }
 
   async _updateCarto() {
@@ -457,7 +509,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
     const result = await AppServiceProxy.sendAsync(AppServiceProxyCommands.openFolder, "");
 
-    if (result.length > 0) {
+    if (result && result.length > 0) {
       this.setState({
         gallery: this.state.gallery,
         dialogMode: this.state.dialogMode,
@@ -493,6 +545,60 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     });
   }
 
+  private _handleContextMenu(e: MouseEvent<HTMLUListElement, Event>, data?: any | undefined) {
+    if (e.currentTarget && e.currentTarget.children.length > 0 && e.button < 0) {
+      let curIndex = 0;
+      const eltChildren = e.currentTarget.children;
+
+      for (let i = 0; i < eltChildren.length; i++) {
+        const elt = eltChildren[i];
+        if ((elt as HTMLElement).tabIndex === 0) {
+          this.setState({
+            gallery: this.state.gallery,
+            dialogMode: this.state.dialogMode,
+            effect: this.state.effect,
+            search: this.state.search,
+            errorMessage: this.state.errorMessage,
+            newProjectName: this.state.newProjectName,
+            newProjectCreator: this.state.newProjectCreator,
+            newProjectPath: this.state.newProjectPath,
+            newGalleryProject: this.state.newGalleryProject,
+            contextFocusedProject: curIndex,
+          });
+          e.preventDefault();
+          return;
+        }
+        curIndex++;
+      }
+    }
+  }
+
+  private _projectContextBlurred(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
+    window.setTimeout(this._blurIfNotActive, 10);
+  }
+
+  private _blurIfNotActive() {
+    if (
+      this.state &&
+      this.state.contextFocusedProject !== undefined &&
+      window.document.activeElement &&
+      window.document.activeElement.className.indexOf("menu") < 0
+    ) {
+      this.setState({
+        gallery: this.state.gallery,
+        dialogMode: this.state.dialogMode,
+        effect: this.state.effect,
+        search: this.state.search,
+        errorMessage: this.state.errorMessage,
+        newProjectName: this.state.newProjectName,
+        newProjectCreator: this.state.newProjectCreator,
+        newProjectPath: this.state.newProjectPath,
+        newGalleryProject: this.state.newGalleryProject,
+        contextFocusedProject: undefined,
+      });
+    }
+  }
+
   private _handleErrorMessageConfirm() {
     this.setState({
       gallery: this.state?.gallery,
@@ -525,12 +631,16 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       this.props.onGalleryItemCommand(
         GalleryProjectCommand.newProject,
         this.state.newGalleryProject,
-        this.state.newProjectName
+        this.state.newProjectName,
+        this.state.newProjectCreator,
+        this.state.newProjectShortName
       );
     } else if (this.props.onNewProjectSelected && this.state?.newProjectName !== undefined) {
       this.props.onNewProjectSelected(
         this.state.newProjectName,
         NewProjectTemplateType.gameTest,
+        this.state.newProjectCreator,
+        this.state.newProjectShortName,
         this.state.newProjectPath
       );
     }
@@ -539,7 +649,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
   private async _handleOpenFolderClick() {
     const result = await AppServiceProxy.sendAsync(AppServiceProxyCommands.openFolder, "");
 
-    if (result.length > 0) {
+    if (result && result.length > 0) {
       if (this.props.onNewProjectFromFolderSelected !== undefined) {
         this.props.onNewProjectFromFolderSelected(result);
       }
@@ -577,7 +687,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
   }
 
-  private async _handleProjectClicked(event: MouseEvent) {
+  private async _handleProjectClicked(event: SyntheticEvent<HTMLElement, Event>) {
     if (
       event === undefined ||
       (event.currentTarget as HTMLDivElement)?.title === undefined ||
@@ -622,7 +732,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
   }
 
-  private _handleProjectGalleryCommand(command: GalleryProjectCommand, project: IGalleryProject) {
+  private _handleProjectGalleryCommand(command: GalleryProjectCommand, project: IGalleryItem) {
     if (command === GalleryProjectCommand.newProject) {
       this.setState({
         gallery: this.state.gallery,
@@ -676,14 +786,14 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             search: this.state.search,
             effect: this.state.effect,
             selectedProject: data.tag,
+            contextFocusedProject: undefined,
           });
         }
       }
     }
 
     e.preventDefault();
-
-    e.bubbles = false;
+    e.stopPropagation();
   }
 
   private _handleInspectFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
@@ -721,11 +831,12 @@ export default class Home extends Component<IHomeProps, IHomeState> {
   }
 
   render() {
-    const projectListItems = [];
+    const projectListItems: ShorthandValue<ListItemProps>[] = [];
 
     let dialogArea = <></>;
     let localGallery = <></>;
     const webOnlyLinks: any[] = [];
+    const browserWidth = WebUtilities.getWidth();
 
     if (this.props === null || this.props.carto === null) {
       return;
@@ -735,13 +846,18 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
     for (let i = 0; i < sortedProjects.length; i++) {
       const project = sortedProjects[i];
-      const itemMenu = [
-        {
-          key: "delete",
-          content: "Delete",
-          tag: project.name,
-        },
-      ];
+      const itemMenu: ShorthandValue<MenuProps> = {
+        activeIndex: 0,
+        defaultActiveIndex: 0,
+        items: [
+          {
+            key: "delete",
+            content: "Delete",
+            accessibility: menuItemBehavior,
+            tag: project.name,
+          },
+        ],
+      };
       let modifiedSummary = "";
 
       if (project.modified != null) {
@@ -749,18 +865,17 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       }
 
       projectListItems.push({
-        key: "SP" + project.name + i,
+        key: "SP" + project.name + "." + i,
+        accessibility: selectableListItemBehavior,
+        onClick: this._handleProjectClicked,
+        title: project.name,
         content: (
           <MenuButton
-            contextMenu={true}
+            contextMenu={i !== this.state.contextFocusedProject}
+            open={i === this.state.contextFocusedProject ? true : undefined}
+            onBlur={this._projectContextBlurred}
             trigger={
-              <div
-                className="home-recentItem"
-                key={"rei" + i}
-                style={{ minWidth: 282 }}
-                title={project.name}
-                onClick={this._handleProjectClicked}
-              >
+              <div className="home-recentItem" key={"rei" + i} style={{ minWidth: 282 }} tabIndex={0}>
                 <span className="home-recentItemLabel">{project.name}</span>
                 <span className="home-recentItemModified">{modifiedSummary}</span>
               </div>
@@ -784,6 +899,22 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     if (this.state !== null && this.state.gallery !== undefined) {
       gallery = [];
 
+      if (this.state !== null && this.state.inlineMessage) {
+        gallery.push(
+          <div
+            className="home-inlineMessage"
+            key="loadingLabel"
+            style={{
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
+            }}
+          >
+            <img className="home-loadingIcon" src="/loading.gif" alt="Waiting spinner" />
+            {this.state.inlineMessage}
+          </div>
+        );
+      }
+
       gallery.push(
         <div className="home-gallery-label" key="toolsLabel">
           Tools
@@ -806,7 +937,12 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
             }}
           >
-            <div className="home-toolTile-label">
+            <div
+              className="home-toolTile-label"
+              style={{
+                color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
+              }}
+            >
               <FontAwesomeIcon icon={faMagnifyingGlass} className="fa-lg" />
               &#160;&#160;Validate/Inspect Content
             </div>
@@ -817,8 +953,9 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               type="file"
               accept=".mcaddon, .mcpack, .mcworld, .mcproject, .mctemplate, .zip"
               title="Upload a .mcpack, .mcaddon, or ZIP file to validate"
+              className="home-inspectFileUpload"
               style={{
-                color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+                color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
                 backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background5,
               }}
               onChange={this._handleInspectFileUpload}
@@ -854,41 +991,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
 
     if (this.state?.dialogMode === HomeDialogMode.newProject) {
-      const additionalDialogButtons = [];
-
-      if (AppServiceProxy.hasAppServiceOrDebug) {
-        let path = this.state.newProjectPath;
-
-        if (path === undefined) {
-          let delimiter = "\\";
-
-          if (!AppServiceProxy.hasAppService) {
-            delimiter = "/";
-          }
-
-          path = this.carto?.projectsStorage.rootFolder.fullPath + delimiter + this.state.newProjectName;
-        }
-
-        additionalDialogButtons.push(
-          <div key="newFolderLabel" className="home-newFolder">
-            Store project at:
-          </div>
-        );
-
-        additionalDialogButtons.push(
-          <div className="home-newPath" key="newPath">
-            <div className="home-path">{path}</div>
-            <Button
-              onClick={this._handleSelectFolderClick}
-              content="Select Folder"
-              key="selectFolder"
-              icon={<LocalFolderLabel isCompact={true} />}
-              iconPosition="before"
-            />
-          </div>
-        );
-      }
-
       const newDialogInnerContent = (
         <div className="home-dialog">
           <div className="home-newCreator">Creator Name:</div>
@@ -928,10 +1030,9 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               }
               key="newProjectShortName"
               value={this.state.newProjectShortName !== "" ? this.state.newProjectShortName : undefined}
-              onChange={this._handleNewProjectCreatorChange}
+              onChange={this._handleNewProjectShortNameChange}
             />
           </div>
-          {additionalDialogButtons}
         </div>
       );
 
@@ -960,6 +1061,20 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           header={"Error"}
         />
       );
+    } else if (this.state?.dialogMode === HomeDialogMode.infoMessage) {
+      const newDialogInnerContent = <div>{this.state.errorMessage}</div>;
+
+      dialogArea = (
+        <Dialog
+          open={true}
+          cancelButton="Cancel"
+          confirmButton="OK"
+          onCancel={this._handleErrorMessageConfirm}
+          onConfirm={this._handleErrorMessageConfirm}
+          content={newDialogInnerContent}
+          header={"Info"}
+        />
+      );
     } else if (this.state?.dialogMode === HomeDialogMode.confirmProjectDelete) {
       const newDialogInnerContent = (
         <div>
@@ -985,44 +1100,51 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     const recentsArea = [];
 
     if (projectListItems.length > 0) {
-      if (AppServiceProxy.hasAppService) {
+      introArea.push(
+        <div key="recentlyOpenedLabelA" className="home-projects">
+          Projects
+        </div>
+      );
+
+      if (!this.props.isPersisted) {
         introArea.push(
-          <div key="recentlyOpenedLabel" className="home-projects">
-            Recently opened
+          <div key="recentlyNote" className="home-projects-note">
+            (stored in temporary browser storage.){" "}
+            <span
+              className="home-clickLink"
+              tabIndex={0}
+              role="button"
+              onClick={this._handleUpgradeStorageClick}
+              onKeyDown={this._handleUpgradeStorageKey}
+            >
+              Make persistent
+            </span>
           </div>
         );
       } else {
         introArea.push(
-          <div key="recentlyOpenedLabelA" className="home-projects">
-            Projects
+          <div key="recentlyNoteA" className="home-projects-note">
+            (stored in this device's browser storage.)
           </div>
         );
-        if (!this.props.isPersisted) {
-          introArea.push(
-            <div key="recentlyNote" className="home-projects-note">
-              (stored in temporary browser storage.){" "}
-              <span
-                className="home-clickLink"
-                tabIndex={0}
-                role="button"
-                onClick={this._handleUpgradeStorageClick}
-                onKeyDown={this._handleUpgradeStorageKey}
-              >
-                Make persistent
-              </span>
-            </div>
-          );
-        } else {
-          introArea.push(
-            <div key="recentlyNoteA" className="home-projects-note">
-              (stored in this device's browser storage.)
-            </div>
-          );
-        }
       }
+
       recentsArea.push(
-        <div key="homeProjectsList" className="home-projects-list">
-          <List selectable defaultSelectedIndex={0} items={projectListItems} />
+        <div
+          key="homeProjectsList"
+          className="home-projects-list"
+          style={{
+            height: browserWidth >= 800 ? "calc(100vh - " + (300 + this.props.heightOffset) + "px)" : "",
+          }}
+        >
+          <List
+            selectable
+            accessibility={selectableListBehavior}
+            defaultSelectedIndex={0}
+            onContextMenu={this._handleContextMenu}
+            items={projectListItems}
+            aria-label="List of edited projects"
+          />
         </div>
       );
     }
@@ -1063,8 +1185,90 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
     let toolsArea = <></>;
 
+    let termsArea = (
+      <span>
+        <a
+          href={constants.repositoryUrl + "/blob/main/LICENSE"}
+          className="home-header-docsLink"
+          target="_blank"
+          rel="noreferrer noopener"
+          style={{
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+          }}
+        >
+          License
+        </a>
+        .
+      </span>
+    );
+    let privacyArea = <></>;
+    let trademarksArea = <></>;
+
+    if ((window as any).creatorToolsSite?.termsOfUseUrl) {
+      termsArea = (
+        <span>
+          <a
+            href={(window as any).creatorToolsSite.termsOfUseUrl}
+            className="home-header-docsLink"
+            target="_blank"
+            rel="noreferrer noopener"
+            style={{
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+            }}
+          >
+            Terms of use
+          </a>
+          .
+        </span>
+      );
+    }
+
+    if ((window as any).creatorToolsSite?.privacyUrl) {
+      privacyArea = (
+        <span>
+          <a
+            href={(window as any).creatorToolsSite.privacyUrl}
+            className="home-header-docsLink"
+            target="_blank"
+            rel="noreferrer noopener"
+            style={{
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+            }}
+          >
+            Privacy and Cookies
+          </a>
+          .
+        </span>
+      );
+    }
+
+    if ((window as any).creatorToolsSite?.trademarksUrl) {
+      trademarksArea = (
+        <span>
+          <a
+            href={(window as any).creatorToolsSite.trademarksUrl}
+            className="home-header-docsLink"
+            target="_blank"
+            rel="noreferrer noopener"
+            style={{
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+            }}
+          >
+            Trademarks
+          </a>
+          .
+        </span>
+      );
+    }
+
     return (
-      <div className="home-layout" draggable={true}>
+      <div
+        className="home-layout"
+        draggable={true}
+        style={{
+          height: browserWidth >= 800 ? "calc(100vh - " + this.props.heightOffset + "px)" : "",
+        }}
+      >
         {effectArea}
         {dialogArea}
         <div
@@ -1093,10 +1297,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               <a href={constants.repositoryUrl} target="_blank" rel="noreferrer noopener">
                 GitHub
               </a>
-              &#160;&#160;/&#160;&#160;
-              <a href={constants.homeUrl + "/docs/license.html"} target="_blank" rel="noreferrer noopener">
-                License
-              </a>
               {webOnlyLinks}
             </div>
           </div>
@@ -1123,7 +1323,8 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           <div
             className="home-gallery-interior"
             style={{
-              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+              height: browserWidth >= 800 ? "calc(100vh - " + (180 + this.props.heightOffset) + "px)" : "",
             }}
           >
             {localGallery}
@@ -1146,7 +1347,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           >
             {storageMessage}
             {storageAction}
-            &#160;&#160;
             <a
               href={constants.homeUrl + "/docs/"}
               className="home-header-docsLink"
@@ -1158,7 +1358,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             >
               Docs
             </a>{" "}
-            and{" "}
+            and
             <a
               href={constants.repositoryUrl}
               className="home-header-docsLink"
@@ -1168,7 +1368,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
                 color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
               }}
             >
-              more info
+              GitHub repo
             </a>
             .
           </div>
@@ -1180,19 +1380,10 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
           }}
         >
-          version {constants.version}. very early preview/work in progress.{" "}
-          <a
-            href={constants.homeUrl + "/docs/license.html"}
-            className="home-header-docsLink"
-            target="_blank"
-            rel="noreferrer noopener"
-            style={{
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-            }}
-          >
-            License
-          </a>{" "}
-          and{" "}
+          version {constants.version} - early preview.
+          {termsArea}
+          {privacyArea}
+          {trademarksArea}
           <a
             href={constants.homeUrl + "/docs/notice.html"}
             className="home-header-docsLink"
@@ -1202,21 +1393,9 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
             }}
           >
-            attribution
+            Attribution
           </a>
-          .{" "}
-          <a
-            href="https://go.microsoft.com/fwlink/?linkid=521839"
-            className="home-header-docsLink"
-            target="_blank"
-            rel="noreferrer noopener"
-            style={{
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-            }}
-          >
-            Privacy
-          </a>
-          . © 2024 Mojang AB.
+          .<span className="home-header-textArea">© 2024 Mojang AB.</span>
         </div>
       </div>
     );

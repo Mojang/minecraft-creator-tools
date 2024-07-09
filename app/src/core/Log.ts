@@ -134,7 +134,7 @@ export default class Log {
 
   static assertDefined(obj: any, message?: string) {
     if (!obj) {
-      Log.unexpectedUndefined("LAD" + (message ? message : ""));
+      Log.unexpectedUndefined("LAD." + (message ? message : ""));
     }
   }
 

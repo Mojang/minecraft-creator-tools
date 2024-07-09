@@ -22,7 +22,7 @@ export default class NpmModule {
     }
 
     if (this.beta) {
-      // 1.3.0-beta.1.20.0-preview.23;
+      // e.g., 1.3.0-beta.1.20.0-preview.23;
       const betaTag = this.beta.indexOf("-beta.");
 
       if (betaTag > 0) {

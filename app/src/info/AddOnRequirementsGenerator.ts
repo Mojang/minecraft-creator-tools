@@ -8,11 +8,11 @@ import { InfoItemType } from "./IInfoItemData";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import ProjectInfoSet from "./ProjectInfoSet";
-import BehaviorManifestJson from "../minecraft/BehaviorManifestJson";
+import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 import { ProjectItemType } from "../app/IProjectItemData";
 import ProjectItem from "../app/ProjectItem";
 import Utilities from "../core/Utilities";
-import ResourceManifestJson from "../minecraft/ResourceManifestJson";
+import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import ContentIndex from "../core/ContentIndex";
 
 const UniqueRegEx = new RegExp(/[a-zA-Z0-9]{2,}_[a-zA-Z0-9]{2,}:[\w]+/);
@@ -197,9 +197,9 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
-    let behaviorPackManifest: undefined | BehaviorManifestJson = undefined;
+    let behaviorPackManifest: undefined | BehaviorManifestDefinition = undefined;
     let behaviorPackItem: undefined | ProjectItem = undefined;
-    let resourcePackManifest: undefined | ResourceManifestJson = undefined;
+    let resourcePackManifest: undefined | ResourceManifestDefinition = undefined;
     let resourcePackItem: undefined | ProjectItem = undefined;
 
     for (const projectItem of project.items) {
@@ -217,7 +217,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
             );
           }
 
-          behaviorPackManifest = await BehaviorManifestJson.ensureOnFile(projectItem.file);
+          behaviorPackManifest = await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
           behaviorPackItem = projectItem;
 
           await behaviorPackManifest?.load();
@@ -234,7 +234,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
             );
           }
 
-          resourcePackManifest = await ResourceManifestJson.ensureOnFile(projectItem.file);
+          resourcePackManifest = await ResourceManifestDefinition.ensureOnFile(projectItem.file);
           resourcePackItem = projectItem;
 
           await resourcePackManifest?.load();
@@ -351,7 +351,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
   async generateFromBehaviorPackFolder(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
-    await folder.load(false);
+    await folder.load();
 
     for (const folderName in folder.folders) {
       const childFolder = folder.folders[folderName];
@@ -391,7 +391,6 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
           folderNameCanon !== "particles" &&
           folderNameCanon !== "items" &&
           folderNameCanon !== "scripts" &&
-          folderNameCanon !== "loot_tables" &&
           folderNameCanon !== "recipes" &&
           folderNameCanon !== "spawn_rules" &&
           folderNameCanon !== "animations" &&
@@ -405,7 +404,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     }
   }
   async generateFromResourcePackFolder(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
-    await folder.load(false);
+    await folder.load();
 
     for (const folderName in folder.folders) {
       const childFolder = folder.folders[folderName];
@@ -480,13 +479,13 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     return UniqueRegEx.test(name);
   }
   async generateFromFirstLevelFolderCreator_Game(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
-    await folder.load(false);
+    await folder.load();
 
     for (const fileName in folder.files) {
       if (!this.isSpecialFile(folder.name, fileName)) {
         const file = folder.files[fileName];
 
-        const projectItem = file?.extendedPath ? project.getItemByExtendedOrStoragePath(file?.extendedPath) : undefined;
+        const projectItem = file?.extendedPath ? project.getItemByExtendedOrProjectPath(file?.extendedPath) : undefined;
 
         items.push(
           new ProjectInfoItem(
@@ -560,13 +559,13 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
   }
 
   async generateFromFirstLevelFolderCreatorNameGameName(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
-    await folder.load(false);
+    await folder.load();
 
     for (const fileName in folder.files) {
       if (!this.isSpecialFile(folder.name, fileName)) {
         const file = folder.files[fileName];
 
-        const projectItem = file?.extendedPath ? project.getItemByExtendedOrStoragePath(file?.extendedPath) : undefined;
+        const projectItem = file?.extendedPath ? project.getItemByExtendedOrProjectPath(file?.extendedPath) : undefined;
 
         items.push(
           new ProjectInfoItem(
@@ -610,12 +609,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     folder: IFolder,
     items: ProjectInfoItem[]
   ) {
-    await folder.load(false);
+    await folder.load();
 
     for (const fileName in folder.files) {
       const file = folder.files[fileName];
 
-      const projectItem = file?.extendedPath ? project.getItemByExtendedOrStoragePath(file.extendedPath) : undefined;
+      const projectItem = file?.extendedPath ? project.getItemByExtendedOrProjectPath(file.extendedPath) : undefined;
 
       items.push(
         new ProjectInfoItem(

@@ -3,6 +3,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 const _allowedExtensions = [
   "js",
   "ts",
+  "mjs",
   "json",
   "md",
   "png",
@@ -12,7 +13,12 @@ const _allowedExtensions = [
   "fsb",
   "map",
   "ogg",
+  "env",
+  "gif",
+  "wav",
   "tga",
+  "env",
+  "mjs",
   "properties",
   "cartobackup",
   "mctbackup",
@@ -39,83 +45,6 @@ const _allowedExtensions = [
 ];
 const _allowedExecutableExtensions = ["mcstructure", "mcworld", "mctemplate", "mcaddon"];
 
-const _fs = require("fs");
-const _dirName = __dirname;
-
-const remote = require("electron").remote;
-const { app } = remote;
-
-const _isDev = require("electron-is-dev");
-
-function _arrayBufferToBase64(buffer) {
-  var binary = "";
-  const bytes = new Uint8Array(buffer);
-
-  const len = bytes.byteLength;
-
-  for (var i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-
-  return btoa(binary);
-}
-
-function _base64ToArrayBuffer(base64buffer) {
-  const binary = atob(base64buffer);
-
-  const arrayBuffer = new ArrayBuffer(binary.length);
-  const bytes = new Uint8Array(arrayBuffer);
-
-  const len = binary.length;
-
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binary.charCodeAt(i);
-  }
-
-  return arrayBuffer;
-}
-
-function _countChar(source, find) {
-  let count = 0;
-
-  let index = source.indexOf(find);
-
-  while (index >= 0) {
-    count++;
-
-    index = source.indexOf(find, index + find.length);
-  }
-
-  return count;
-}
-
-// eslint-disable-next-line no-unused-vars
-function _getLeafName(path) {
-  let name = path;
-
-  let lastSlash = name.lastIndexOf("/", path.length - 1);
-
-  if (lastSlash >= 0) {
-    name = name.substring(lastSlash + 1, name.length);
-  }
-
-  lastSlash = name.lastIndexOf("\\", path.length - 1);
-
-  if (lastSlash >= 0) {
-    name = name.substring(lastSlash + 1, name.length);
-  }
-
-  if (name.endsWith("/")) {
-    name = name.substring(0, name.length - 1);
-  }
-
-  if (name.endsWith("\\")) {
-    name = name.substring(0, name.length - 1);
-  }
-
-  return name;
-}
-
 function _getTypeFromName(name) {
   const nameW = name.trim().toLowerCase();
 
@@ -131,7 +60,22 @@ function _getTypeFromName(name) {
   return nameW.substring(lastPeriod + 1, nameW.length);
 }
 
+function _canonicalizePath(path) {
+  if (path[0] !== "<" || path[5] !== ">") {
+    throw new Error("PLD: Unsupported canon path: " + path);
+  }
+
+  if (path.startsWith("<UDRP>") || path.startsWith("<UDLP>") || path.startsWith("<DOCP>")) {
+    path = path.substring(6);
+  } else {
+    throw new Error("PLD: Unsupported canon path A: " + path);
+  }
+
+  return path;
+}
+
 function _validateFolderPath(path) {
+  path = _canonicalizePath(path);
   // banned character combos
   if (path.indexOf("..") >= 0 || path.indexOf("\\\\") >= 0 || path.indexOf("//") >= 0) {
     throw new Error("Unsupported path combinations: " + path);
@@ -139,12 +83,6 @@ function _validateFolderPath(path) {
 
   if (path.lastIndexOf(":") >= 2) {
     throw new Error("Unsupported drive location: " + path);
-  }
-
-  const count = _countChar(path, "\\") + _countChar(path, "/");
-
-  if (count < 3) {
-    throw new Error("Unsupported base path: " + path);
   }
 }
 
@@ -154,7 +92,7 @@ function _validateFilePath(path) {
   const extension = _getTypeFromName(path);
 
   if (!_allowedExtensions.includes(extension)) {
-    throw new Error("Unsupported file type: " + path);
+    throw new Error("PLD: Unsupported file type: " + path);
   }
 }
 
@@ -164,7 +102,7 @@ function _validateExecutableFilePath(path) {
   const extension = _getTypeFromName(path);
 
   if (!_allowedExecutableExtensions.includes(extension)) {
-    throw new Error("Unsupported executable file type: " + path);
+    throw new Error("PLD: Unsupported executable file type: " + path);
   }
 }
 
@@ -249,101 +187,35 @@ contextBridge.exposeInMainWorld("api", {
         case "asyncwindowRightSide":
         case "asyncupdateIAgree":
         case "asyncgetWindowState":
+        case "asyncfsFolderExists":
+        case "asyncgetDirname":
+        case "asyncaugerLogin":
           return ipcRenderer.invoke(commandName, position + "|" + data);
 
-        case "getDirname":
-          return _dirName;
-
         case "getIsDev":
-          return _isDev;
+          return ipcRenderer.invoke("getIsDev", data);
 
-        case "fsExistsSync":
+        case "asyncfsExists":
+        case "bsyncfsReadFile":
+        case "asyncfsReadUtf8File":
+        case "asyncfsStat":
           _validateFilePath(data);
 
-          return _fs.existsSync(data);
+          return ipcRenderer.invoke(commandName, position + "|" + data);
 
-        case "fsFolderExistsSync":
-          const folderExistsResult = _fs.existsSync(data);
-
-          if (folderExistsResult) {
-            const statResult = _fs.statSync(data);
-
-            if (statResult.isDirectory()) {
-              return true;
-            }
-          }
-
-          return false;
-
-        case "fsMkdirSync":
+        case "asyncfsMkdir":
+        case "asyncfsReaddir":
           _validateFolderPath(data);
 
-          return _fs.mkdirSync(data);
+          return ipcRenderer.invoke(commandName, position + "|" + data);
 
-        case "fsReaddirSync":
-          _validateFolderPath(data);
-
-          let fsReadDirResult = undefined;
-
-          try {
-            fsReadDirResult = _fs.readdirSync(data);
-          } catch (e) {}
-
-          return fsReadDirResult;
-
-        case "fsWriteFileSync":
+        case "asyncfsWriteFile":
+        case "asyncfsWriteUtf8File":
           const writeFilePath = data.path;
-          let writeFileContent = data.content;
 
           _validateFilePath(writeFilePath);
 
-          writeFileContent = new DataView(_base64ToArrayBuffer(writeFileContent));
-
-          return _fs.writeFileSync(writeFilePath, writeFileContent, (val) => {});
-
-        case "fsReadFileSync":
-          _validateFilePath(data);
-
-          if (!_fs.existsSync(data)) {
-            return undefined;
-          }
-
-          const readFileResult = _fs.readFileSync(data);
-
-          return _arrayBufferToBase64(readFileResult);
-
-        case "fsReadUtf8FileSync":
-          _validateFilePath(data);
-
-          if (!_fs.existsSync(data)) {
-            return undefined;
-          }
-
-          return _fs.readFileSync(data, { encoding: "UTF8" }, (val) => {}); //, 'utf8');
-
-        case "fsStatSync":
-          _validateFilePath(data);
-
-          const statResult = _fs.statSync(data);
-
-          return {
-            isDirectory: statResult.isDirectory(),
-            isFile: statResult.isFile(),
-            mtime: statResult.mtime,
-            ctime: statResult.ctime,
-            size: statResult.size,
-          };
-
-        case "fsWriteUtf8FileSync":
-          const path = data.path;
-          const content = data.content;
-
-          _validateFilePath(path);
-
-          return _fs.writeFileSync(path, content, { encoding: "utf8" });
-
-        case "appGetPath":
-          return app.getPath(data);
+          return ipcRenderer.invoke(commandName, position + "|" + data.path + "|" + data.content);
 
         default:
           throw new Error();

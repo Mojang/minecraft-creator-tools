@@ -18,6 +18,10 @@ import { ProjectFocus } from "../app/IProjectData";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
+import CartoApp from "./CartoApp";
+import HttpStorage from "../storage/HttpStorage";
+import ProjectBuild from "./ProjectBuild";
+import { Generator } from "../minecraft/WorldLevelDat";
 
 export default class ProjectExporter {
   static async generateFlatBetaApisWorldWithPacksZipBytes(carto: Carto, project: Project, name: string) {
@@ -28,7 +32,13 @@ export default class ProjectExporter {
       return undefined;
     }
 
-    const mcworld = await this.generateBetaApisWorldWithPacks(project, name);
+    const mcworld = await this.generateBetaApisWorldWithPacks(project, name, undefined, {
+      generator: Generator.flat,
+    });
+
+    if (!mcworld) {
+      return undefined;
+    }
 
     const newBytes = await mcworld.getBytes();
 
@@ -47,7 +57,23 @@ export default class ProjectExporter {
     fileList: string[] | undefined,
     messageUpdater?: (message: string) => Promise<void>
   ) {
-    const gh = new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
+    let gh = undefined;
+
+    if (CartoApp.isWeb) {
+      gh = new HttpStorage(
+        CartoApp.contentRoot +
+          "res/samples/" +
+          gitHubOwner +
+          "/" +
+          gitHubRepoName +
+          "-" +
+          (gitHubBranch ? gitHubBranch : "main") +
+          "/" +
+          gitHubFolder
+      );
+    } else {
+      gh = new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
+    }
 
     if (!projName) {
       projName = "local " + gitHubOwner + " " + gitHubRepoName;
@@ -64,11 +90,11 @@ export default class ProjectExporter {
       project = await carto.createNewProject(newProjectName, undefined, ProjectFocus.gameTests, false);
     }
 
-    if (fileList) {
+    /*if (fileList) {
       await gh.rootFolder.setStructureFromFileList(fileList);
-    } else {
-      await gh.rootFolder.load(false);
-    }
+    } else {*/
+    await gh.rootFolder.load();
+    //}
 
     const rootFolder = await project.ensureProjectFolder();
 
@@ -78,7 +104,8 @@ export default class ProjectExporter {
       false,
       false,
       false,
-      ["build", "node_modules", "dist", "/.git", "out"],
+      ["build", "node_modules", "dist", "lib", "/.git", "out"],
+      undefined,
       messageUpdater
     );
 
@@ -142,7 +169,7 @@ export default class ProjectExporter {
   ) {
     const gh = new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
 
-    await gh.rootFolder.load(false);
+    await gh.rootFolder.load();
 
     const info: IGitHubInfo = {
       owner: gitHubOwner,
@@ -180,7 +207,7 @@ export default class ProjectExporter {
     const existingProjects: string[] = [];
 
     for (let i = 0; i < project.items.length; i++) {
-      const spath = project.items[i].storagePath;
+      const spath = project.items[i].projectPath;
 
       if (spath !== undefined && spath !== null) {
         existingProjects.push(spath);
@@ -204,7 +231,7 @@ export default class ProjectExporter {
     for (let i = 0; i < project.items.length; i++) {
       const item = project.items[i];
 
-      const spath = item.storagePath;
+      const spath = item.projectPath;
 
       if (spath !== undefined && spath !== null && !existingProjects.includes(spath)) {
         item.gitHubReference = info;
@@ -215,7 +242,7 @@ export default class ProjectExporter {
   }
 
   static async getPackFolder(folder: IFolder, seekingResource: boolean) {
-    await folder.load(false);
+    await folder.load();
 
     const manifest = folder.files["manifest.json"];
 
@@ -317,6 +344,16 @@ export default class ProjectExporter {
 
     await project.save();
 
+    const projectBuild = new ProjectBuild(project);
+
+    await projectBuild.build();
+
+    if (projectBuild.isInErrorState) {
+      project.appendErrors(projectBuild);
+      await carto.notifyOperationEnded(operId, "Packaging the world not be completed.", undefined, true);
+      return;
+    }
+
     const dateNow = new Date();
 
     const title = mcworld.name + " - " + Utilities.getFriendlySummary(dateNow);
@@ -374,6 +411,8 @@ export default class ProjectExporter {
         "behavior_packs",
         "resource_packs",
       ]);
+
+      await projectBuild.syncToBehaviorPack(bpTargetFolder);
     }
 
     await targetFolder.saveAll();
@@ -441,6 +480,16 @@ export default class ProjectExporter {
 
     await project.save();
 
+    const projectBuild = new ProjectBuild(project);
+
+    await projectBuild.build();
+
+    if (projectBuild.isInErrorState) {
+      project.appendErrors(projectBuild);
+      await carto.notifyOperationEnded(operId, "World could not be packaged.", undefined, true);
+      return;
+    }
+
     const dateNow = new Date();
 
     const title = mcworld.name + " - " + Utilities.getFriendlySummary(dateNow);
@@ -494,23 +543,30 @@ export default class ProjectExporter {
     const pur = new ProjectUpdateRunner(project);
 
     await pur.updateProject(["SCRIPTMODULE"]);
-
-    //project.autoCompleteProject();
   }
 
-  static async generateProjectWorld(
+  static async generateWorldWithPacks(
     carto: Carto,
     project: Project,
     worldSettings: IWorldSettings,
     targetFolder?: IFolder
   ) {
-    const operId = await carto.notifyOperationStarted(
-      "Generating project '" + project.name + "' plus world and packs."
-    );
+    const operId = await carto.notifyOperationStarted("Generating world and packs for '" + project.name + "'.");
 
     await ProjectExporter.updateProjects(project);
 
     await project.save();
+
+    const projectBuild = new ProjectBuild(project);
+
+    await projectBuild.build();
+
+    if (projectBuild.isInErrorState) {
+      project.appendErrors(projectBuild);
+      await carto.notifyOperationEnded(operId, "Packaging the world could not be completed.", undefined, true);
+      return;
+    }
+
     let mcworld = undefined;
 
     if (targetFolder === undefined) {
@@ -538,6 +594,7 @@ export default class ProjectExporter {
     await mcworld.applyWorldSettings(worldSettings);
 
     const behaviorPackFolder = await project.getDefaultBehaviorPackFolder();
+    const scriptsFolder = await project.getMainScriptsFolder();
 
     if (behaviorPackFolder) {
       const bpGroupFolder = targetFolder.ensureFolder("behavior_packs");
@@ -557,6 +614,16 @@ export default class ProjectExporter {
         "behavior_packs",
         "resource_packs",
       ]);
+
+      await projectBuild.syncToBehaviorPack(bpTargetFolder);
+
+      if (scriptsFolder && scriptsFolder.parentFolder !== behaviorPackFolder) {
+        const scriptsTargetFolder = bpTargetFolder.ensureFolder("scripts");
+
+        await scriptsTargetFolder.ensureExists();
+
+        await StorageUtilities.syncFolderTo(scriptsFolder, scriptsTargetFolder, true, true, false, ["*.ts"]);
+      }
 
       mcworld.ensureBehaviorPack(
         project.defaultBehaviorPackUniqueId,
@@ -628,7 +695,7 @@ export default class ProjectExporter {
       const worldsFolder = await ProjectExporter.ensureWorldsFolder(deployFolder);
 
       if (!worldsFolder) {
-        Log.unexpectedUndefined("DAWATAD");
+        Log.unexpectedUndefined("DPWATAD");
         return;
       }
 
@@ -639,7 +706,7 @@ export default class ProjectExporter {
       const worldsFolder = await ProjectExporter.ensureMinecraftWorldsFolder(carto);
 
       if (!worldsFolder) {
-        Log.unexpectedUndefined("DAWATAE");
+        Log.unexpectedUndefined("DPWATAE");
         return;
       }
 
@@ -648,7 +715,7 @@ export default class ProjectExporter {
       await targetFolder.ensureExists();
     }
 
-    const mcworld = await ProjectExporter.generateProjectWorld(carto, project, worldSettings, targetFolder);
+    const mcworld = await ProjectExporter.generateWorldWithPacks(carto, project, worldSettings, targetFolder);
 
     if (mcworld) {
       await targetFolder.saveAll();
@@ -777,7 +844,7 @@ export default class ProjectExporter {
       await StorageUtilities.syncFolderTo(bpFolder, childFolder, true, true, false, [
         "/mcworlds",
         "/minecraftWorlds",
-        "*.ts*",
+        "*.ts",
       ]);
 
       const scriptsFolder = await project.ensureDefaultScriptsFolder();
@@ -824,23 +891,38 @@ export default class ProjectExporter {
   static async generateBetaApisWorldWithPacks(
     project: Project,
     worldName: string,
-    worldContent?: Uint8Array
-  ): Promise<MCWorld> {
+    worldContent?: Uint8Array,
+    worldSettings?: IWorldSettings
+  ): Promise<MCWorld | undefined> {
     await project.ensureLoadedProjectFolder();
 
     const mcworld = new MCWorld();
 
     if (worldContent) {
       mcworld.loadFromBytes(worldContent);
-    } else {
+    } else if (!worldSettings) {
       const levelDat = mcworld.ensureLevelData();
       levelDat.ensureDefaults();
     }
 
+    if (worldSettings) {
+      mcworld.applyWorldSettings(worldSettings);
+    }
+
     mcworld.project = project;
+
     await ProjectExporter.updateProjects(project);
 
     await project.save();
+
+    const projectBuild = new ProjectBuild(project);
+
+    await projectBuild.build();
+
+    if (projectBuild.isInErrorState) {
+      project.appendErrors(projectBuild);
+      return undefined;
+    }
 
     mcworld.betaApisExperiment = true;
     mcworld.name = worldName;
@@ -867,6 +949,8 @@ export default class ProjectExporter {
       ) {
         await StorageUtilities.syncFolderTo(scriptsFolder, bpf.ensureFolder("scripts"), true, false, false, [".ts"]);
       }
+
+      await projectBuild.syncToBehaviorPack(bpf);
 
       await bpf.saveAll();
     }

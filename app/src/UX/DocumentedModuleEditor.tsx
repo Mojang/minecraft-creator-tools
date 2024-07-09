@@ -7,11 +7,11 @@ import DocumentedModule from "../minecraft/docs/DocumentedModule";
 import DataForm from "../dataform/DataForm";
 import Database from "../minecraft/Database";
 import Project from "../app/Project";
-import { List, ListProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
+import { List, ListProps, ThemeInput, Toolbar, selectableListBehavior } from "@fluentui/react-northstar";
 import DocumentedClassEditor from "./DocumentedClassEditor";
 import { CustomTabLabel, UnassociatedDocumentationLabel } from "./Labels";
 import WebUtilities from "./WebUtilities";
-import FileExplorer from "./FileExplorer";
+import FileExplorer, { FileExplorerMode } from "./FileExplorer";
 import Carto from "../app/Carto";
 import ItemAnnotationCollection from "./ItemAnnotationCollection";
 import ItemAnnotation from "./ItemAnnotation";
@@ -426,6 +426,7 @@ export default class DocumentedModuleEditor extends Component<
           theme={this.props.theme}
           carto={this.props.carto}
           selectedItem={undefined}
+          mode={FileExplorerMode.explorer}
           itemAnnotations={this.state.fileAnnotations}
           heightOffset={this.props.heightOffset + 225}
           readOnly={false}
@@ -479,6 +480,8 @@ export default class DocumentedModuleEditor extends Component<
           >
             <List
               selectable
+              aria-label="List of document script modules"
+              accessibility={selectableListBehavior}
               defaultSelectedIndex={-1}
               items={classListing}
               onSelectedIndexChange={this._handleClassSelected}

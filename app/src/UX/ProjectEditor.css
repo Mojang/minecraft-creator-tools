@@ -2,8 +2,9 @@
   .pe-meta {
     padding: 10px 4px 8px 11px;
     cursor: default;
-    user-select: none;
     -webkit-user-select: none;
+    user-select: none;
+    text-align: right;
     grid-row: 1;
     grid-column: 4;
   }

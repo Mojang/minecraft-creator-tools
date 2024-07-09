@@ -2,7 +2,7 @@ import { Component } from "react";
 import "./FileExplorerContainerFile.css";
 import IFolder from "../storage/IFolder";
 import FileExplorerFileDetail from "./FileExplorerFileDetail";
-import FileExplorer from "./FileExplorer";
+import FileExplorer, { FileExplorerMode } from "./FileExplorer";
 import ItemAnnotationCollection from "./ItemAnnotationCollection";
 import IStorageObject from "../storage/IStorageObject";
 import IFile from "../storage/IFile";
@@ -16,8 +16,10 @@ interface IFileExplorerContainerFileProps {
   displayFileDetail: boolean;
   depth: number;
   theme: ThemeInput<any>;
+  mode: FileExplorerMode;
   selectedItem: IFile | IFolder | undefined | null;
   onFileSelected?: (file: IFile) => void;
+  onFolderSelected?: (folder: IFolder) => void;
   startExpanded: boolean;
   itemAnnotations?: ItemAnnotationCollection;
 }
@@ -148,8 +150,10 @@ export default class FileExplorerContainerFile extends Component<
                 startExpanded={false}
                 key={"fo" + childFolder.name}
                 theme={this.props.theme}
+                mode={this.props.mode}
                 selectedItem={this.props.selectedItem}
                 onFileSelected={this.props.onFileSelected}
+                onFolderSelected={this.props.onFolderSelected}
                 itemAnnotations={this.getAnnotationsForStorageObject(childFolder)}
                 fileExplorer={this.props.fileExplorer}
                 displayFolderDetail={true}

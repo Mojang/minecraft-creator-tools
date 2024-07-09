@@ -12,6 +12,9 @@ export default class HttpFile extends FileBase implements IFile {
   private _name: string;
   private _parentFolder: HttpFolder;
 
+  private _pendingLoadRequests: ((value: unknown) => void)[] = [];
+  private _isLoading = false;
+
   get name() {
     return this._name;
   }
@@ -45,58 +48,76 @@ export default class HttpFile extends FileBase implements IFile {
     //        Log.assert(this.fullPath.startsWith("/"), "Expecting a full absolute path");
 
     if (force || !this.lastLoadedOrSaved) {
-      this.lastLoadedOrSaved = new Date();
+      if (this._isLoading) {
+        const pendingLoad = this._pendingLoadRequests;
 
-      this._content = null;
+        const prom = (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
+          pendingLoad.push(resolve);
+        };
 
-      const path = this.fullPath;
+        await new Promise(prom);
 
-      /*      if (this.fullPath.startsWith("/")) {
-        path = this.fullPath.substring(1, this.fullPath.length);
-      }*/
-
-      if (StorageUtilities.getEncodingByFileName(this.name) === EncodingType.ByteBuffer) {
-        try {
-          const response = await axios.get(path, {
-            responseType: "arraybuffer",
-            headers: {},
-          });
-
-          this._content = new Uint8Array(response.data);
-        } catch (e) {}
-      } else {
-        let result = null;
-
-        try {
-          const response = await axios.get(path, {
-            headers: {},
-          });
-
-          result = response.data;
-
-          if (typeof result === "object") {
-            try {
-              result = JSON.stringify(result);
-            } catch (e) {
-              Log.fail("Could not convert file to JSON");
-            }
-          }
-
-          if (response.status !== 200) {
-            // Log.fail("Could not retrieve file from '" + path + "' - response code is " + response.status);
-            Log.verbose("Could not retrieve file from '" + path + "' - response code is " + response.status);
-          }
-
-          if (result === null || result === "null") {
-            // Log.fail("Could not retrieve file from '" + path + "' - result is null.");
-            Log.verbose("Could not retrieve file from '" + path + "' - result is null.");
-          }
-        } catch (e) {
-          // Log.fail("Could not retrieve file from '" + path + "' - " + e);
-          Log.verbose("Could not retrieve file from '" + path + "' - " + e);
+        if (this.lastLoadedOrSaved === null) {
+          throw new Error();
         }
 
-        this._content = result;
+        return this.lastLoadedOrSaved;
+      } else {
+        this._content = null;
+
+        const path = this.fullPath;
+
+        if (StorageUtilities.getEncodingByFileName(this.name) === EncodingType.ByteBuffer) {
+          try {
+            const response = await axios.get(path, {
+              responseType: "arraybuffer",
+              headers: {},
+            });
+
+            this._content = new Uint8Array(response.data);
+          } catch (e) {}
+        } else {
+          let result = null;
+
+          try {
+            const response = await axios.get(path, {
+              headers: {},
+            });
+
+            result = response.data;
+
+            if (typeof result === "object") {
+              try {
+                result = JSON.stringify(result, undefined, 2);
+              } catch (e) {
+                Log.fail("Could not convert file to JSON");
+              }
+            }
+
+            if (response.status !== 200) {
+              Log.verbose("Could not retrieve file from '" + path + "' - response code is " + response.status);
+            }
+
+            if (result === null || result === "null") {
+              Log.verbose("Could not retrieve file from '" + path + "' - result is null.");
+            }
+          } catch (e) {
+            Log.verbose("Could not retrieve file from '" + path + "' - " + e);
+          }
+
+          this._content = result;
+        }
+
+        this.lastLoadedOrSaved = new Date();
+
+        this._isLoading = false;
+
+        const pendingLoad = this._pendingLoadRequests;
+        this._pendingLoadRequests = [];
+
+        for (const prom of pendingLoad) {
+          prom(undefined);
+        }
       }
     }
 

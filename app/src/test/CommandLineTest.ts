@@ -13,7 +13,6 @@ import * as fs from "fs";
 
 CartoApp.hostType = HostType.testLocal;
 
-let carto: Carto | undefined = undefined;
 let localEnv: LocalEnvironment | undefined = undefined;
 
 let scenariosFolder: IFolder | undefined = undefined;

@@ -6,6 +6,7 @@ import Utilities from "../core/Utilities";
 import { PackType } from "../minecraft/Pack";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ProjectItemCategory, ProjectItemType } from "./IProjectItemData";
+import Project from "./Project";
 
 export default class ProjectItemUtilities {
   static inferTypeFromJsonContent(
@@ -24,49 +25,50 @@ export default class ProjectItemUtilities {
 
     const firstHundred = jsonContent.substring(0, 100);
 
-    if (firstHundred.indexOf('"minecraft:recipe_shaped"') || firstHundred.indexOf('"minecraft:recipe_shapeless"')) {
+    if (
+      firstHundred.indexOf('"minecraft:recipe_shaped"') >= 0 ||
+      firstHundred.indexOf('"minecraft:recipe_shapeless"') >= 0
+    ) {
       return { itemType: ProjectItemType.recipeBehaviorJson };
-    } else if (firstHundred.indexOf('"minecraft:entity"')) {
+    } else if (firstHundred.indexOf('"minecraft:entity"') >= 0) {
       return { itemType: ProjectItemType.entityTypeBehaviorJson };
-    } else if (firstHundred.indexOf('"minecraft:item"')) {
+    } else if (firstHundred.indexOf('"minecraft:item"') >= 0) {
       return { itemType: ProjectItemType.itemTypeBehaviorJson };
-    } else if (firstHundred.indexOf('"pools"')) {
+    } else if (firstHundred.indexOf('"pools"') >= 0) {
       return { itemType: ProjectItemType.itemTypeBehaviorJson };
-    } else if (firstHundred.indexOf('"minecraft:spawn_rules"')) {
+    } else if (firstHundred.indexOf('"minecraft:spawn_rules"') >= 0) {
       return { itemType: ProjectItemType.spawnRuleBehaviorJson };
-    } else if (firstHundred.indexOf('"tiers"')) {
+    } else if (firstHundred.indexOf('"tiers"') >= 0) {
       return { itemType: ProjectItemType.tradingBehaviorJson };
-    } else if (firstHundred.indexOf('"animation_controllers"')) {
+    } else if (firstHundred.indexOf('"animation_controllers"') >= 0) {
       return { itemType: ProjectItemType.animationControllerResourceJson, packType: PackType.resource };
-    } else if (firstHundred.indexOf('"animations"')) {
+    } else if (firstHundred.indexOf('"animations"') >= 0) {
       return { itemType: ProjectItemType.animationResourceJson, packType: PackType.resource };
-    } else if (firstHundred.indexOf('"animations"')) {
+    } else if (firstHundred.indexOf('"animations"') >= 0) {
       return { itemType: ProjectItemType.animationResourceJson, packType: PackType.resource };
-    } else if (firstHundred.indexOf('"minecraft:attachable"')) {
+    } else if (firstHundred.indexOf('"minecraft:attachable"') >= 0) {
       return { itemType: ProjectItemType.attachableResourceJson, packType: PackType.resource };
-    } else if (firstHundred.indexOf('"minecraft:client_entity"')) {
+    } else if (firstHundred.indexOf('"minecraft:client_entity"') >= 0) {
       return { itemType: ProjectItemType.entityTypeResourceJson, packType: PackType.resource };
-    } else if (firstHundred.indexOf('"minecraft:fog_settings"')) {
+    } else if (firstHundred.indexOf('"minecraft:fog_settings"') >= 0) {
       return { itemType: ProjectItemType.fogJson, packType: PackType.resource };
-    } else if (firstHundred.indexOf('"minecraft:geometry"')) {
+    } else if (firstHundred.indexOf('"minecraft:geometry"') >= 0) {
       return { itemType: ProjectItemType.modelGeometryJson, packType: PackType.resource };
-    } else if (firstHundred.indexOf('"particle_effect"')) {
+    } else if (firstHundred.indexOf('"particle_effect"') >= 0) {
       return { itemType: ProjectItemType.particleJson, packType: PackType.resource };
-    } else if (firstHundred.indexOf('"render_controllers"')) {
+    } else if (firstHundred.indexOf('"render_controllers"') >= 0) {
       return { itemType: ProjectItemType.renderControllerJson, packType: PackType.resource };
-    } else if (firstHundred.indexOf('"namespace"')) {
+    } else if (firstHundred.indexOf('"namespace"') >= 0) {
       return { itemType: ProjectItemType.uiJson, packType: PackType.resource };
-    } else if (firstHundred.indexOf('"sound_definitions"')) {
+    } else if (firstHundred.indexOf('"sound_definitions"') >= 0) {
       return { itemType: ProjectItemType.soundDefinitionJson, packType: PackType.resource };
     } else if (fileBaseName === "manifest") {
       const jsonO = Utilities.getJsonObject(jsonContent);
 
-      if (jsonO !== undefined && jsonO["depenedencies"]) {
-        for (const depName in jsonO["dependencies"]) {
-          const dep = jsonO["dependencies"][depName];
-
-          if (dep && dep["type"]) {
-            switch (dep["type"]) {
+      if (jsonO !== undefined && jsonO["modules"]) {
+        for (const mod of jsonO["modules"]) {
+          if (mod && mod["type"]) {
+            switch (mod["type"]) {
               case "script":
               case "data":
                 return { itemType: ProjectItemType.behaviorPackManifestJson };
@@ -128,7 +130,7 @@ export default class ProjectItemUtilities {
     switch (itemType) {
       case ProjectItemType.MCFunction:
       case ProjectItemType.testJs:
-      case ProjectItemType.autoScriptJson:
+      case ProjectItemType.actionSetJson:
       case ProjectItemType.animationBehaviorJson:
       case ProjectItemType.animationControllerBehaviorJson:
       case ProjectItemType.tickJson:
@@ -193,6 +195,9 @@ export default class ProjectItemUtilities {
       case ProjectItemType.featureRuleBehaviorJson:
         return ProjectItemCategory.types;
 
+      case ProjectItemType.esLintMjs:
+      case ProjectItemType.env:
+      case ProjectItemType.justConfigTs:
       case ProjectItemType.packageLockJson:
       case ProjectItemType.jsconfigJson:
       case ProjectItemType.tsconfigJson:
@@ -326,8 +331,8 @@ export default class ProjectItemUtilities {
         return "Resource pack";
       case ProjectItemType.skinPackFolder:
         return "Skin pack";
-      case ProjectItemType.autoScriptJson:
-        return "Auto-script";
+      case ProjectItemType.actionSetJson:
+        return "Action Set";
       case ProjectItemType.worldTest:
         return "World test";
       case ProjectItemType.behaviorPackListJson:
@@ -420,6 +425,12 @@ export default class ProjectItemUtilities {
         return "NPM package definition";
       case ProjectItemType.packageLockJson:
         return "NPM package lock definition";
+      case ProjectItemType.env:
+        return "Environment File";
+      case ProjectItemType.esLintMjs:
+        return "ESLint Config";
+      case ProjectItemType.justConfigTs:
+        return "Just Config";
       case ProjectItemType.docInfoJson:
         return "Doc info json";
       case ProjectItemType.scriptTypesJson:
@@ -488,7 +499,7 @@ export default class ProjectItemUtilities {
   }
 
   static getNewItemName(type: ProjectItemType) {
-    return ProjectItemUtilities.getDescriptionForType(type) + "Item";
+    return ProjectItemUtilities.getDescriptionForType(type);
   }
 
   static getColorForType(type: ProjectItemType): IColor {
@@ -526,232 +537,93 @@ export default class ProjectItemUtilities {
   }
 
   static getPluralDescriptionForType(type: ProjectItemType) {
+    // override non-"plus s" plural-ifications here
     switch (type) {
-      case ProjectItemType.js:
-        return "JavaScript";
-      case ProjectItemType.buildProcessedJs:
-        return "Built JavaScript";
       case ProjectItemType.ts:
-        return "TypeScript";
-      case ProjectItemType.json:
-        return "JSON files";
-      case ProjectItemType.behaviorPackManifestJson:
-        return "Behavior pack manifests";
-      case ProjectItemType.resourcePackManifestJson:
-        return "Resource pack manifests";
-      case ProjectItemType.testJs:
-        return "Test JavaScript";
-      case ProjectItemType.entityTypeBaseJs:
-        return "Entity type JavaScript";
-      case ProjectItemType.entityTypeBaseTs:
-        return "Entity type TypeScript";
-      case ProjectItemType.entityTypeBehaviorJson:
-        return "Entity types";
-      case ProjectItemType.MCTemplate:
-        return "World templates";
-      case ProjectItemType.MCWorld:
-        return "Minecraft worlds";
-      case ProjectItemType.MCProject:
-        return "Minecraft projects";
-      case ProjectItemType.MCAddon:
-        return "Minecraft addons";
-      case ProjectItemType.MCPack:
-        return "Minecraft packs";
-      case ProjectItemType.zip:
-        return "Minecraft zip";
-      case ProjectItemType.worldFolder:
-        return "Minecraft world folders";
-      case ProjectItemType.structure:
-        return "Structures";
-      case ProjectItemType.MCFunction:
-        return "Functions";
-      case ProjectItemType.tickJson:
-        return "Ticks";
-      case ProjectItemType.material:
-        return "Materials";
-      case ProjectItemType.materialSetJson:
-        return "Material sets";
+        return "TypeScript files";
+      case ProjectItemType.js:
+        return "JavaScript files";
+      case ProjectItemType.vsCodeTasksJson:
+        return "VS Code task sets";
+      case ProjectItemType.vsCodeSettingsJson:
+        return "VS Code settings sets";
+      case ProjectItemType.globalVariablesJson:
+        return "UI global variable sets";
+      case ProjectItemType.itemTypeResourceJson:
+        return "Item type resource sets";
+      case ProjectItemType.entityTypeResourceJson:
+        return "Entity type resource sets";
       case ProjectItemType.materialGeometry:
         return "Geometries";
-      case ProjectItemType.materialFragment:
-        return "Fragments";
-      case ProjectItemType.materialVertex:
-        return "Vertices";
-      case ProjectItemType.cameraJson:
-        return "Cameras";
       case ProjectItemType.catalogIndexJs:
         return "Catalog indexes";
-      case ProjectItemType.autoScriptJson:
-        return "Auto-scripts";
-      case ProjectItemType.worldTest:
-        return "World tests";
-      case ProjectItemType.behaviorPackListJson:
-        return "World behavior pack lists";
-      case ProjectItemType.resourcePackListJson:
-        return "World resource pack lists";
-      case ProjectItemType.animationBehaviorJson:
-        return "Behavior pack animations";
-      case ProjectItemType.animationControllerBehaviorJson:
-        return "Behavior pack animation controllers";
-      case ProjectItemType.blockTypeBehaviorJson:
-        return "Block types";
-      case ProjectItemType.blockMaterialsBehaviorJson:
-        return "Block type materials";
-      case ProjectItemType.itemTypeBehaviorJson:
-        return "Item types";
-      case ProjectItemType.lootTableBehaviorJson:
-        return "Loot tables";
-      case ProjectItemType.biomeResourceJson:
-        return "Biome resources";
-      case ProjectItemType.fileListArrayJson:
-        return "File lists";
-      case ProjectItemType.blocksCatalogResourceJson:
-        return "Block resource catalogs";
-      case ProjectItemType.soundsCatalogResourceJson:
-        return "Sound catalogs";
-      case ProjectItemType.audio:
-        return "Audio";
-      case ProjectItemType.contentIndexJson:
-        return "Content Descriptions";
-      case ProjectItemType.contentReportJson:
-        return "Content Reports";
-      case ProjectItemType.animationResourceJson:
-        return "Animations";
-      case ProjectItemType.animationControllerResourceJson:
-        return "Animation controllers";
-      case ProjectItemType.entityTypeResourceJson:
-        return "Entity type resources";
-      case ProjectItemType.fogResourceJson:
-        return "Fogs";
-      case ProjectItemType.modelGeometryJson:
-        return "Models";
-      case ProjectItemType.particleJson:
-        return "Particles";
-      case ProjectItemType.renderControllerJson:
-        return "Render controllers";
-      case ProjectItemType.uiTextureJson:
-        return "UI textures";
-      case ProjectItemType.uiJson:
-        return "User interfaces";
-      case ProjectItemType.languagesCatalogResourceJson:
-        return "Language catalogs";
-      case ProjectItemType.biomeBehaviorJson:
-        return "Biomes";
-      case ProjectItemType.behaviorPackFolder:
-        return "Behavior packs";
-      case ProjectItemType.resourcePackFolder:
-        return "Resource packs";
-      case ProjectItemType.skinPackFolder:
-        return "Skin packs";
-      case ProjectItemType.dialogueBehaviorJson:
-        return "Entity dialogues";
-      case ProjectItemType.featureRuleBehaviorJson:
-        return "World feature rules";
-      case ProjectItemType.featureBehaviorJson:
-        return "Features";
-      case ProjectItemType.functionEventJson:
-        return "Function events";
-      case ProjectItemType.recipeBehaviorJson:
-        return "Recipes";
-      case ProjectItemType.spawnRuleBehaviorJson:
-        return "Spawn rules";
-      case ProjectItemType.tradingBehaviorJson:
-        return "Trading rules";
-      case ProjectItemType.volumeBehaviorJson:
-        return "Volumes";
-      case ProjectItemType.attachableResourceJson:
-        return "Attachable";
-      case ProjectItemType.itemTypeResourceJson:
-        return "Item type resources";
-      case ProjectItemType.materialsResourceJson:
-        return "Materials";
-      case ProjectItemType.musicDefinitionJson:
-        return "Music catalogs";
-      case ProjectItemType.soundDefinitionJson:
-        return "Sound catalogs";
-      case ProjectItemType.tsconfigJson:
-        return "TypeScript configs";
-      case ProjectItemType.jsconfigJson:
-        return "JavaScript configs";
-      case ProjectItemType.docfxJson:
-        return "DocFX definitions";
-      case ProjectItemType.jsdocJson:
-        return "JSDoc definitions";
-      case ProjectItemType.packageJson:
-        return "NPM package definitions";
-      case ProjectItemType.packageLockJson:
-        return "NPM package lock definitions";
-      case ProjectItemType.docInfoJson:
-        return "Doc info files";
-      case ProjectItemType.scriptTypesJson:
-        return "Script type definitions";
-      case ProjectItemType.vanillaDataJson:
-        return "Vanilla data definitions";
-      case ProjectItemType.engineOrderingJson:
-        return "Engine ordering definition";
-      case ProjectItemType.commandSetDefinitionJson:
-        return "Command definitions";
-      case ProjectItemType.skinPackManifestJson:
-        return "Skin pack manifest";
-      case ProjectItemType.blockTypeBaseJs:
-        return "Block type base JavaScript";
-      case ProjectItemType.blockTypeBaseTs:
-        return "Block type base TypeScript";
-      case ProjectItemType.image:
-        return "Images";
-      case ProjectItemType.texture:
-        return "Textures";
-      case ProjectItemType.uiTexture:
-        return "UI textures";
-      case ProjectItemType.iconImage:
-        return "Icons";
-      case ProjectItemType.marketingAssetImage:
-        return "Marketing images";
-      case ProjectItemType.storeAssetImage:
-        return "Store images";
-      case ProjectItemType.vsCodeLaunchJson:
-        return "VS Code launch files";
-      case ProjectItemType.vsCodeTasksJson:
-        return "VS Code tasks";
-      case ProjectItemType.vsCodeSettingsJson:
-        return "VS Code settings";
-      case ProjectItemType.vsCodeExtensionsJson:
-        return "VS Code extensions";
-      case ProjectItemType.lang:
-        return "Language translations";
-      case ProjectItemType.worldTemplateManifestJson:
-        return "World template manifest";
-      case ProjectItemType.textureSetJson:
-        return "Texture sets";
-      case ProjectItemType.textureListJson:
-        return "Texture lists";
-      case ProjectItemType.lightingJson:
-        return "Lighting files";
-      case ProjectItemType.flipbookTexturesJson:
-        return "Flipbook textures";
-      case ProjectItemType.itemTextureJson:
-        return "Item textures";
-      case ProjectItemType.terrainTextureCatalogResourceJson:
-        return "Terrain textures";
-      case ProjectItemType.globalVariablesJson:
-        return "UI global variables";
-      case ProjectItemType.dataFormJson:
-        return "Forms";
-      case ProjectItemType.dimensionJson:
-        return "Dimensions";
       case ProjectItemType.behaviorPackHistoryListJson:
         return "Behavior pack histories";
       case ProjectItemType.resourcePackHistoryListJson:
         return "Resource pack histories";
       default:
-        return this.getDescriptionForType(type);
+        return this.getDescriptionForType(type) + "s";
     }
+  }
+
+  static async getDefaultFolderForType(project: Project, itemType: ProjectItemType) {
+    const path = ProjectItemUtilities.getFolderRootsForType(itemType);
+
+    if (path === undefined || path.length === 0) {
+      return undefined;
+    }
+
+    await project.ensureLoadedProjectFolder();
+
+    if (!project.projectFolder) {
+      return undefined;
+    }
+
+    switch (itemType) {
+      case ProjectItemType.js:
+      case ProjectItemType.ts:
+        const scriptsFolder = await project.getMainScriptsFolder();
+
+        return scriptsFolder;
+
+      case ProjectItemType.entityTypeBehaviorJson:
+      case ProjectItemType.MCFunction:
+        const defaultBpFolder = await project.getDefaultBehaviorPackFolder();
+
+        if (!defaultBpFolder) {
+          return undefined;
+        }
+
+        return defaultBpFolder.ensureFolderFromRelativePath(path[0]);
+
+      case ProjectItemType.entityTypeResourceJson:
+      case ProjectItemType.modelGeometryJson:
+        const defaultRpFolder = await project.getDefaultResourcePackFolder();
+
+        if (!defaultRpFolder) {
+          return undefined;
+        }
+
+        return defaultRpFolder.ensureFolderFromRelativePath(path[0]);
+
+      case ProjectItemType.uiTexture:
+        const defaultRpFolderA = await project.getDefaultResourcePackFolder();
+
+        if (!defaultRpFolderA) {
+          return undefined;
+        }
+
+        return defaultRpFolderA.ensureFolderFromRelativePath(path.join("/"));
+    }
+
+    return undefined;
   }
 
   static getFolderRootsForType(itemType: ProjectItemType) {
     switch (itemType) {
       case ProjectItemType.MCFunction:
         return ["functions"];
+
       case ProjectItemType.js:
       case ProjectItemType.ts:
         return ["scripts"];

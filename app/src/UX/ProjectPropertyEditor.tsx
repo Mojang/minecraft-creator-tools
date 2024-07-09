@@ -53,6 +53,8 @@ export enum GitHubPropertyType {
   title = 6,
 }
 
+export const ProjectFocusStrings = ["General", "GameTests", "World", "Sample Behavior", "Editor Extension"];
+
 export default class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProjectPropertyEditorState> {
   private tentativeGitHubMode: string = "existing";
   private tentativeGitHubRepoName?: string;
@@ -90,6 +92,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     this._handleConnectToGitHub = this._handleConnectToGitHub.bind(this);
     this._handleDescriptionChanged = this._handleDescriptionChanged.bind(this);
     this._rescanFiles = this._rescanFiles.bind(this);
+    this._handleFocusChange = this._handleFocusChange.bind(this);
     this._handleVersionMajorChanged = this._handleVersionMajorChanged.bind(this);
     this._handleVersionMinorChanged = this._handleVersionMinorChanged.bind(this);
     this._handleVersionPatchChanged = this._handleVersionPatchChanged.bind(this);
@@ -409,6 +412,19 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       this.props.project.editPreference = ProjectEditPreference.editors;
     } else {
       this.props.project.editPreference = ProjectEditPreference.raw;
+    }
+  }
+
+  _handleFocusChange(
+    event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
+    data: DropdownProps
+  ) {
+    let i = 0;
+    for (const str in ProjectFocusStrings) {
+      if (data.value === str) {
+        this.props.project.focus = i;
+      }
+      i++;
     }
   }
 
@@ -762,6 +778,15 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
                   : "TypeScript"
               }
               onChange={this._handleLanguageChange}
+            />
+          </div>
+          <div className="ppe-label ppe-focuslabel">Type</div>
+          <div className="ppe-focusinput">
+            <Dropdown
+              items={ProjectFocusStrings}
+              placeholder="Select your focus"
+              defaultValue={ProjectFocusStrings[this.props.project.focus]}
+              onChange={this._handleFocusChange}
             />
           </div>
           <div className="ppe-label ppe-scriptVersionlabel">Script Version</div>

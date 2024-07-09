@@ -9,6 +9,7 @@ import StorageUtilities from "./../storage/StorageUtilities";
 import ZipStorage from "../storage/ZipStorage";
 import IProjectItemSeed from "./IProjectItemSeed";
 import ProjectItemUtilities from "./ProjectItemUtilities";
+import IFolder from "../storage/IFolder";
 
 export default class ProjectItemManager {
   private static async _getDefaultBehaviorPackPath(project: Project) {
@@ -22,6 +23,17 @@ export default class ProjectItemManager {
 
     return defaultPath;
   }
+  private static async _getDefaultScriptsFolderPath(project: Project) {
+    const scriptsFolder = await project.ensureMainScriptsFolder();
+
+    if (project.projectFolder === null) {
+      return undefined;
+    }
+
+    const defaultPath = scriptsFolder.getFolderRelativePath(project.projectFolder);
+
+    return defaultPath;
+  }
 
   static async createNewItem(project: Project, itemSeed: IProjectItemSeed) {
     if (itemSeed.name === "" || itemSeed.name === undefined) {
@@ -32,15 +44,21 @@ export default class ProjectItemManager {
       switch (itemSeed.itemType) {
         case ProjectItemType.js:
         case ProjectItemType.ts:
-          return ProjectItemManager.createNewScript(project, itemSeed.itemType, itemSeed.name);
+          return ProjectItemManager.createNewScript(project, itemSeed.itemType, itemSeed.name, itemSeed.folder);
       }
     }
 
     return undefined;
   }
 
-  static async createNewScript(project: Project, itemType: ProjectItemType, name: string) {
-    const defaultPath = await ProjectItemManager._getDefaultBehaviorPackPath(project);
+  static async createNewScript(project: Project, itemType: ProjectItemType, name: string, folder: IFolder | undefined) {
+    let defaultPath = undefined;
+
+    if (folder && project.projectFolder) {
+      defaultPath = folder.getFolderRelativePath(project.projectFolder);
+    } else {
+      defaultPath = await ProjectItemManager._getDefaultScriptsFolderPath(project);
+    }
 
     if (defaultPath === undefined) {
       return;
@@ -48,7 +66,7 @@ export default class ProjectItemManager {
 
     const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
       project,
-      defaultPath + "scripts/",
+      defaultPath,
       name,
       itemType === ProjectItemType.js ? "js" : "ts"
     );
@@ -57,7 +75,7 @@ export default class ProjectItemManager {
       return;
     }
 
-    const pi = project.ensureItemByStoragePath(
+    const pi = project.ensureItemByProjectPath(
       candidateFilePath,
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
@@ -245,7 +263,7 @@ export default class ProjectItemManager {
       return;
     }
 
-    const pi = project.ensureItemByStoragePath(
+    const pi = project.ensureItemByProjectPath(
       candidateFilePath,
       ProjectItemStorageType.singleFile,
 
@@ -296,7 +314,7 @@ export default class ProjectItemManager {
       return;
     }
 
-    const pi = project.ensureItemByStoragePath(
+    const pi = project.ensureItemByProjectPath(
       candidateFilePath,
       ProjectItemStorageType.singleFile,
 
@@ -335,7 +353,7 @@ export default class ProjectItemManager {
       return;
     }
 
-    const pi = project.ensureItemByStoragePath(
+    const pi = project.ensureItemByProjectPath(
       candidateFilePath,
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
@@ -357,7 +375,7 @@ export default class ProjectItemManager {
     await project.save();
   }
 
-  static async createNewAutoScript(project: Project) {
+  static async createNewActionSet(project: Project) {
     const defaultPath = await this._getDefaultBehaviorPackPath(project);
 
     if (defaultPath === undefined) {
@@ -367,7 +385,7 @@ export default class ProjectItemManager {
     const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
       project,
       defaultPath + "scripts/",
-      "autoscript",
+      "actionset",
       "json"
     );
 
@@ -375,11 +393,11 @@ export default class ProjectItemManager {
       return;
     }
 
-    const pi = project.ensureItemByStoragePath(
+    const pi = project.ensureItemByProjectPath(
       candidateFilePath,
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
-      ProjectItemType.autoScriptJson,
+      ProjectItemType.actionSetJson,
       undefined,
       false
     );
@@ -389,7 +407,7 @@ export default class ProjectItemManager {
     if (file !== null) {
       const baseName = StorageUtilities.getBaseFromName(file.name);
 
-      const content = ProjectContent.getEmptyAutoScript(project.name, baseName);
+      const content = ProjectContent.getEmptyActionSet(project.name, baseName);
 
       file.setContent(content);
     }
@@ -414,7 +432,7 @@ export default class ProjectItemManager {
       return;
     }
 
-    const pi = project.ensureItemByStoragePath(
+    const pi = project.ensureItemByProjectPath(
       candidateFolderPath,
       ProjectItemStorageType.folder,
       candidateFolderPath,
@@ -448,7 +466,7 @@ export default class ProjectItemManager {
       return;
     }
 
-    const pi = project.ensureItemByStoragePath(
+    const pi = project.ensureItemByProjectPath(
       candidateFilePath,
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
@@ -488,7 +506,7 @@ export default class ProjectItemManager {
       return;
     }
 
-    const pi = project.ensureItemByStoragePath(
+    const pi = project.ensureItemByProjectPath(
       candidateFilePath,
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),

@@ -39,6 +39,10 @@ CartoApp.hostType = HostType.toolsNodejs;
 
 const MAX_LINES_PER_CSV_FILE = 500000;
 
+const ERROR_VALIDATION_INTERNALPROCESSINGERROR = 53;
+const ERROR_VALIDATION_TESTFAIL = 56;
+const ERROR_VALIDATION_ERROR = 57;
+
 const program = new Command();
 
 let carto: Carto | undefined;
@@ -49,6 +53,7 @@ let suite: string | undefined;
 let outputType: OutputType | undefined;
 let aggregateReportsAfterValidation: boolean | undefined = false;
 let threads: number = 8;
+let errorLevel: number | undefined;
 
 let force = false;
 let executionTaskType: TaskType = TaskType.noCommand;
@@ -86,9 +91,15 @@ program
   .command("validate")
   .alias("val")
   .description("Validate the current project.")
-  .addArgument(new Argument("[suite]", "Specifies the type of validation suite to run."))
+  .addArgument(
+    new Argument("[suite]", "Specifies the type of validation suite to run.")
+      .choices(["addon", "currentplatform", "main"])
+      .default("main", "main - runs most available validation tests.")
+  )
   .addArgument(
     new Argument("[aggregateReports]", "Whether to aggregate reports across projects at the end of the run.")
+      .choices(["true", "false"])
+      .default("false", "false - does not aggregate reports at the end of processing.")
   )
   .action((suiteIn?: string, aggregateReportsIn?: string) => {
     suite = suiteIn;
@@ -145,7 +156,7 @@ if (options.threads) {
   }
 }
 
-if (options.outputType) {
+if (options.outputType && typeof options.outputType === "string") {
   switch (options.outputType.toLowerCase().trim()) {
     case "noreports":
       outputType = OutputType.noReports;
@@ -158,6 +169,10 @@ if (options.displayOnly) {
   if (options.outputFolder === "out") {
     options.outputFolder = undefined;
   }
+} else if (options.outputFolder === "out") {
+  Log.message("Outputting full results to the `out` folder.");
+
+  localEnv.displayInfo = true;
 }
 
 if (options.logVerbose) {
@@ -261,7 +276,7 @@ async function loadProjects() {
       const subFolder = workFolder.folders[subFolderName];
 
       if (subFolder) {
-        await subFolder.load(false);
+        await subFolder.load();
 
         for (const subFileName in subFolder.files) {
           const subFile = subFolder.files[subFileName];
@@ -300,7 +315,7 @@ async function loadProjects() {
       const subFolder = workFolder.folders[subFolderName];
 
       if (subFolder && !subFolder.errorStatus) {
-        await subFolder.load(false);
+        await subFolder.load();
 
         for (const fileName in subFolder.files) {
           const file = subFolder.files[fileName];
@@ -403,7 +418,7 @@ async function loadProjects() {
         const folder = workFolder.folders[folderName];
 
         if (folder && !folder.errorStatus && folder.name !== "out") {
-          await folder.load(false);
+          await folder.load();
 
           if (folder.folderCount > 0) {
             const mainProject: IProjectStartInfo = { ctorProjectName: folder.name };
@@ -477,7 +492,7 @@ async function displayInfo() {
       for (let i = 0; i < project.items.length; i++) {
         const item = project.items[i];
 
-        console.log("=== " + item.typeTitle + ": " + item.storagePath);
+        console.log("=== " + item.typeTitle + ": " + item.projectPath);
 
         if (item.isWorld) {
           await setAndDisplayWorld(item, false);
@@ -521,9 +536,9 @@ async function setAndDisplayAllWorlds() {
         if (item.isWorld) {
           let shouldProcess = true;
 
-          if (item.storagePath && ofName) {
+          if (item.projectPath && ofName) {
             const name = StorageUtilities.canonicalizeName(
-              StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(item.storagePath))
+              StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(item.projectPath))
             );
 
             shouldProcess = ofName === name;
@@ -557,7 +572,7 @@ async function setAndDisplayAllWorlds() {
             if (path) {
               path = StorageUtilities.ensureEndsWithDelimiter(StorageUtilities.absolutize(path));
 
-              const pi = project.ensureItemByStoragePath(
+              const pi = project.ensureItemByProjectPath(
                 path,
                 ProjectItemStorageType.folder,
                 targetName,
@@ -623,7 +638,7 @@ async function setAndDisplayWorld(item: ProjectItem, isSettable: boolean) {
       }
 
       console.log("World name: " + mcworld.name);
-      console.log("World path: " + item.storagePath);
+      console.log("World path: " + item.projectPath);
 
       if (mcworld.betaApisExperiment !== undefined) {
         console.log("Beta APIs: " + mcworld.betaApisExperiment);
@@ -665,12 +680,12 @@ async function validate() {
         project: ps,
         arguments: {
           suite: suiteConst,
-          outputMci: aggregateReportsAfterValidationConst || outputType === OutputType.noReports ? "true" : "false",
+          outputMci: aggregateReportsAfterValidationConst || outputType === OutputType.noReports ? true : false,
           outputType: outputType,
         },
         outputFolder: options.outputFolder,
         inputFolder: options.inputFolder,
-        displayInfo: !options.outputFolder,
+        displayInfo: localEnvConst.displayInfo,
         displayVerbose: localEnvConst.displayVerbose,
         force: force,
       });
@@ -687,6 +702,27 @@ async function validate() {
           }
 
           projectList.push(result as IProjectMetaState);
+
+          const infoSet = (result as IProjectMetaState).infoSetData;
+
+          if (infoSet) {
+            const items = infoSet.items;
+
+            if (items) {
+              for (const item of items) {
+                if (item.iTp === InfoItemType.internalProcessingError) {
+                  console.error(
+                    "Internal Processing Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item)
+                  );
+                  setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
+                } else if (item.iTp === InfoItemType.testCompleteFail && !options.outputFolder) {
+                  setErrorLevel(ERROR_VALIDATION_TESTFAIL);
+                } else if (item.iTp === InfoItemType.error && !options.outputFolder) {
+                  setErrorLevel(ERROR_VALIDATION_ERROR);
+                }
+              }
+            }
+          }
         }
       }
     });
@@ -698,6 +734,14 @@ async function validate() {
   if (aggregateReportsAfterValidation) {
     Log.message("Aggregating reports across " + projectList.length + " projects.");
     await saveAggregatedReports(projectList);
+  }
+}
+
+function setErrorLevel(newErrorLevel: number) {
+  if (errorLevel === undefined || newErrorLevel < errorLevel) {
+    errorLevel = newErrorLevel;
+
+    (process as any).exitCode = newErrorLevel;
   }
 }
 
@@ -713,7 +757,7 @@ async function aggregateReports() {
     Log.message("No main input folder was specified.");
   }
 
-  await inpFolder.load(false);
+  await inpFolder.load();
   let projectsLoaded = 0;
   for (const fileName in inpFolder.files) {
     let file = inpFolder.files[fileName];

@@ -4,7 +4,8 @@
 export enum StatusType {
   message = 0,
   operationStarted = 1,
-  operationEnded = 2,
+  operationEndedComplete = 2,
+  operationEndedErrors = 3,
 }
 
 export enum StatusTopic {
@@ -12,6 +13,7 @@ export enum StatusTopic {
   validation = 1,
   projectLoad = 2,
   worldLoad = 3,
+  scriptBuild = 4,
 }
 
 export default interface IStatus {

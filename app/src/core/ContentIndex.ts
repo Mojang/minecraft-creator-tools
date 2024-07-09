@@ -152,7 +152,7 @@ export default class ContentIndex implements IContentIndex {
     let andResults: number[] | undefined;
 
     for (const term of terms) {
-      if (term.length > 3) {
+      if (term.length > 1) {
         const results = this.getTermMatch(term);
         termWasSearched = true;
 
@@ -180,7 +180,34 @@ export default class ContentIndex implements IContentIndex {
       return undefined;
     }
 
-    return this.getValuesFromIndexArray(andResults);
+    let annotatedValues = this.getValuesFromIndexArray(andResults);
+
+    return annotatedValues.sort((a: IAnnotatedValue, b: IAnnotatedValue) => {
+      let aTermMatches = 0;
+      let bTermMatches = 0;
+      const aVal = a.value.toLowerCase();
+      const bVal = b.value.toLowerCase();
+
+      for (const term of terms) {
+        if (aVal.startsWith(term)) {
+          aTermMatches += 5;
+        } else if (aVal.includes(term)) {
+          aTermMatches++;
+        }
+
+        if (bVal.startsWith(term)) {
+          bTermMatches += 5;
+        } else if (bVal.includes(term)) {
+          bTermMatches++;
+        }
+      }
+
+      if (aTermMatches === bTermMatches) {
+        return a.value.localeCompare(b.value);
+      }
+
+      return bTermMatches - aTermMatches;
+    });
   }
 
   getTermMatchStrings(term: string) {
@@ -274,7 +301,11 @@ export default class ContentIndex implements IContentIndex {
         termIndex++;
         hasAdvanced = true;
       } else {
-        const nextStart = term[termIndex] + term[termIndex + 1];
+        let nextStart = term[termIndex];
+
+        if (termIndex < term.length - 1) {
+          nextStart += term[termIndex + 1];
+        }
 
         for (const item in curNode) {
           // we've found part of our string in this node
@@ -301,9 +332,37 @@ export default class ContentIndex implements IContentIndex {
       return curNode;
     } else if (curNode["±"] !== undefined) {
       return curNode["±"];
-    }
+    } else {
+      const arr: number[] = [];
 
-    return undefined;
+      this.aggregateIndices(curNode, arr);
+
+      return arr;
+    }
+  }
+
+  aggregateIndices(curNode: any, arr: number[]) {
+    for (const childNodeName in curNode) {
+      const childNode = curNode[childNodeName];
+
+      if (childNode) {
+        if (childNode.constructor === Array) {
+          for (const num of childNode) {
+            if (!arr.includes(num)) {
+              arr.push(num);
+            }
+          }
+        } else if (childNode["±"] !== undefined) {
+          for (const num of childNode["±"]) {
+            if (!arr.includes(num)) {
+              arr.push(num);
+            }
+          }
+        } else {
+          this.aggregateIndices(childNode, arr);
+        }
+      }
+    }
   }
 
   insertArray(key: string, items: IAnnotatedValue[]) {

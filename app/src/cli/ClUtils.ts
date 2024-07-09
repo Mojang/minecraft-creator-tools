@@ -52,12 +52,19 @@ export default class ClUtils {
         "[[ START: " +
         message +
         consoleText_reset;
-    } else if (status.type === StatusType.operationEnded) {
+    } else if (status.type === StatusType.operationEndedComplete) {
       message =
         OperationColors[(status.operationId ? status.operationId : 0) % OperationColors.length] +
         "          " +
         message +
         " :END ]]" +
+        consoleText_reset;
+    } else if (status.type === StatusType.operationEndedErrors) {
+      message =
+        OperationColors[(status.operationId ? status.operationId : 0) % OperationColors.length] +
+        "          " +
+        message +
+        " :END - ERRORS ]]" +
         consoleText_reset;
     }
 
@@ -120,7 +127,7 @@ export default class ClUtils {
       throw new Error("Specified folder path '" + workFolder.fullPath + "' does not exist from '" + __dirname + "'.");
     }
 
-    await workFolder.load(false);
+    await workFolder.load();
 
     return workFolder;
   }

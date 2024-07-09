@@ -6,7 +6,7 @@ import Project from "../app/Project";
 import IProjectInfoGenerator from "../info/IProjectInfoGenerator";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "../info/IInfoItemData";
-import BehaviorManifestJson from "../minecraft/BehaviorManifestJson";
+import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 import NpmPackageJson from "../devproject/NpmPackageJson";
 import Database from "../minecraft/Database";
 import ProjectItem from "../app/ProjectItem";
@@ -16,12 +16,13 @@ import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
+import EnvFile from "../devproject/EnvFile";
 
 export default class ScriptModuleManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "SCRIPTMODULE";
   title = "Script Modules";
 
-  modulesInUse: { [name: string]: { version: string; manifest: BehaviorManifestJson; item: ProjectItem }[] } = {};
+  modulesInUse: { [name: string]: { version: string; manifest: BehaviorManifestDefinition; item: ProjectItem }[] } = {};
   packRegsInUse: { [name: string]: { package: NpmPackageJson; isDevDependency: boolean; version: string }[] } = {};
 
   getTopicData(topicId: number): IProjectInfoTopicData | undefined {
@@ -50,7 +51,7 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const bpManifest = await BehaviorManifestJson.ensureOnFile(pi.file);
+          const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.file);
 
           if (bpManifest && bpManifest.definition && bpManifest.definition.dependencies) {
             const deps = bpManifest.definition.dependencies;
@@ -153,6 +154,14 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
               }
             }
           }
+        }
+      } else if (pi.itemType === ProjectItemType.env) {
+        await pi.ensureFileStorage();
+
+        if (pi.file) {
+          const envFile = await EnvFile.ensureOnFile(pi.file);
+
+          await envFile?.ensureEnvFile(project);
         }
       }
     }

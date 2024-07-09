@@ -7,4 +7,6 @@ export default interface IEntityTypeDescription {
   is_spawnable: boolean;
   is_summonable: boolean;
   is_experimental: boolean;
+  properties?: { [propertyName: string]: object };
+  aliases?: { [aliasName: string]: object };
 }

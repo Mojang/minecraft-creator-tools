@@ -4,10 +4,9 @@ import Home from "./Home";
 import "./App.css";
 import Carto from "./../app/Carto";
 import Project, { ProjectErrorState } from "./../app/Project";
-import IGalleryProject, { GalleryProjectType } from "../app/IGalleryProject";
+import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import IFolder from "../storage/IFolder";
 import { GalleryProjectCommand } from "./ProjectGallery";
-import GitHubStorage from "../github/GitHubStorage";
 import Log from "../core/Log";
 import { ProjectFocus, ProjectScriptLanguage } from "../app/IProjectData";
 import CartoApp, { HostType } from "../app/CartoApp";
@@ -15,13 +14,11 @@ import StorageUtilities from "../storage/StorageUtilities";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { CartoEditorViewMode } from "../app/ICartoData";
 import ProjectItem from "../app/ProjectItem";
-import Utilities from "../core/Utilities";
 import ZipStorage from "../storage/ZipStorage";
 import ProjectUtilities from "../app/ProjectUtilities";
-import ProjectExporter from "../app/ProjectExporter";
-import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 import WebUtilities from "./WebUtilities";
-import { ProjectEditorMode } from "./ProjectEditorUtilities";
+import ProjectEditorUtilities, { ProjectEditorMode } from "./ProjectEditorUtilities";
+import HttpStorage from "../storage/HttpStorage";
 
 export enum NewProjectTemplateType {
   empty,
@@ -73,6 +70,7 @@ export default class App extends Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
 
+    this._setProject = this._setProject.bind(this);
     this._handleNewProject = this._handleNewProject.bind(this);
     this._handleNewProjectFromFolder = this._handleNewProjectFromFolder.bind(this);
     this._handleNewProjectFromFolderInstance = this._handleNewProjectFromFolderInstance.bind(this);
@@ -87,6 +85,7 @@ export default class App extends Component<AppProps, AppState> {
     this._saveAll = this._saveAll.bind(this);
     this._handleItemChanged = this._handleItemChanged.bind(this);
     this._handleSaved = this._handleSaved.bind(this);
+    this._doLog = this._doLog.bind(this);
 
     if (this.props.fileContentRetriever) {
       this.props.fileContentRetriever(this._getFileContent);
@@ -334,13 +333,11 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     if (queryVals["open"] !== undefined || queryVals["view"] !== undefined) {
-      let isReadOnly = true;
       let openQuery = queryVals["view"];
 
       const updateContent = queryVals["updates"];
 
       if (queryVals["open"]) {
-        isReadOnly = false;
         openQuery = queryVals["open"];
       }
 
@@ -353,64 +350,6 @@ export default class App extends Component<AppProps, AppState> {
 
         if (openToken === "gp") {
           this._ensureProjectFromGalleryId(openData, updateContent);
-        } else if (openToken === "gh") {
-          const segments = openData.split("/");
-
-          if (segments.length === 2) {
-            const owner = segments[0];
-            const repo = segments[1];
-
-            this._ensureProjectFromGitHubTemplate(
-              owner + " " + repo,
-              owner,
-              repo,
-              isReadOnly,
-              undefined,
-              undefined,
-              undefined,
-              updateContent
-            );
-          } else {
-            const treeIndex = openData.indexOf("/tree/");
-
-            if (treeIndex >= 0) {
-              const beforeTree = openData.substring(0, treeIndex);
-
-              const afterTree = openData.substring(treeIndex + 6, openData.length);
-
-              const beforeSegments = beforeTree.split("/");
-              const afterSegments = afterTree.split("/");
-
-              const owner = beforeSegments[0];
-              const repo = beforeSegments[1];
-
-              const branch = afterSegments[0];
-              const pathIndex = openData.indexOf("/", treeIndex + 6 + branch.length);
-              let path = undefined;
-
-              if (pathIndex > treeIndex) {
-                path = openData.substring(pathIndex, openData.length);
-              }
-
-              this._ensureProjectFromGitHubTemplate(
-                owner + " " + repo + " " + path,
-                owner,
-                repo,
-                isReadOnly,
-                branch,
-                path,
-                undefined,
-                updateContent
-              );
-
-              return {
-                mode: AppMode.loading,
-                activeProject: null,
-              };
-            }
-          }
-
-          Log.verbose("loading GitHub project '" + openData + "'");
         }
       }
     }
@@ -523,9 +462,26 @@ export default class App extends Component<AppProps, AppState> {
     this._isMountedInternal = false;
   }
 
+  private async _doLog(message: string) {
+    let carto = this.state?.carto;
+
+    if (!carto) {
+      carto = CartoApp.carto;
+    }
+
+    this.setState({
+      carto: carto,
+      isPersisted: this.state.isPersisted,
+      mode: AppMode.loading,
+      loadingMessage: message,
+    });
+  }
+
   private async _handleNewProject(
     newProjectName: string,
     newProjectType: NewProjectTemplateType,
+    newProjectCreator?: string,
+    newProjectShortName?: string,
     newProjectPath?: string,
     additionalFilePath?: string,
     additionalFile?: File,
@@ -543,13 +499,9 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     if (additionalFile && additionalFilePath && this.state && this._isMountedInternal) {
-      this.setState({
-        carto: carto,
-        isPersisted: this.state.isPersisted,
-        mode: AppMode.loading,
-        loadingMessage:
-          "Loading " + newProjectName + (additionalFilePath.length > 2 ? " from " + additionalFilePath : "") + "...",
-      });
+      this._doLog(
+        "Loading " + newProjectName + (additionalFilePath.length > 2 ? " from " + additionalFilePath : "") + "..."
+      );
     }
 
     let newProject = undefined;
@@ -580,7 +532,7 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     if (additionalFile && additionalFilePath) {
-      await newProject.addBrowserFile(additionalFilePath, additionalFile);
+      await ProjectEditorUtilities.addBrowserFile(newProject, additionalFilePath, additionalFile);
     }
 
     await newProject.save(true);
@@ -591,11 +543,7 @@ export default class App extends Component<AppProps, AppState> {
     let nextMode = this.state.mode;
 
     if (nextMode === AppMode.home || nextMode === AppMode.loading) {
-      if (startInReadOnly) {
-        nextMode = AppMode.projectReadOnly;
-      } else {
-        nextMode = AppMode.project;
-      }
+      nextMode = AppMode.projectReadOnly;
     }
 
     this.initProject(newProject);
@@ -622,13 +570,17 @@ export default class App extends Component<AppProps, AppState> {
     newProject.save();
     this.state.carto.save();
 
-    this._updateWindowTitle(AppMode.project, newProject);
-    this.initProject(newProject);
+    this._setProject(newProject);
+  }
+
+  private _setProject(project: Project) {
+    this._updateWindowTitle(AppMode.project, project);
+    this.initProject(project);
 
     this.setState({
       mode: AppMode.project,
       isPersisted: this.state.isPersisted,
-      activeProject: newProject,
+      activeProject: project,
     });
   }
 
@@ -650,14 +602,7 @@ export default class App extends Component<AppProps, AppState> {
     newProject.save();
     this.state.carto.save();
 
-    this._updateWindowTitle(AppMode.project, newProject);
-    this.initProject(newProject);
-
-    this.setState({
-      mode: AppMode.project,
-      isPersisted: this.state.isPersisted,
-      activeProject: newProject,
-    });
+    this._setProject(newProject);
   }
 
   private async _ensureProjectFromGalleryId(galleryId: string, updateContent?: string) {
@@ -675,7 +620,7 @@ export default class App extends Component<AppProps, AppState> {
     this._ensureProjectFromGallery(gp, updateContent);
   }
 
-  private async _ensureProjectFromGallery(project: IGalleryProject, updateContent?: string) {
+  private async _ensureProjectFromGallery(project: IGalleryItem, updateContent?: string) {
     if (this.state === null || this.state.carto === undefined) {
       return;
     }
@@ -689,7 +634,7 @@ export default class App extends Component<AppProps, AppState> {
       project.gitHubFolder,
       project.fileList,
       project.id,
-      project.type === GalleryProjectType.codeSample ? project.id : undefined,
+      project.type === GalleryItemType.codeSample ? project.id : undefined,
       updateContent
     );
   }
@@ -774,7 +719,7 @@ export default class App extends Component<AppProps, AppState> {
     );
   }
 
-  private async _newProjectFromGallery(project: IGalleryProject, name?: string) {
+  private async _newProjectFromGallery(project: IGalleryItem, name?: string, creator?: string, shortName?: string) {
     if (this.state === null || this.state.carto === undefined) {
       return;
     }
@@ -788,9 +733,14 @@ export default class App extends Component<AppProps, AppState> {
       project.gitHubFolder,
       project.fileList,
       project.id,
-      project.type === GalleryProjectType.codeSample ? project.id : undefined,
+      project.type === GalleryItemType.codeSample || project.type === GalleryItemType.editorCodeSample
+        ? project.id
+        : undefined,
       undefined,
-      name
+      name,
+      creator,
+      shortName,
+      project.type
     );
   }
 
@@ -805,7 +755,10 @@ export default class App extends Component<AppProps, AppState> {
     galleryId?: string,
     sampleId?: string,
     updateContent?: string,
-    suggestedName?: string
+    suggestedName?: string,
+    suggestedCreator?: string,
+    suggestedShortName?: string,
+    galleryType?: GalleryItemType
   ) {
     const carto = CartoApp.carto;
 
@@ -813,13 +766,15 @@ export default class App extends Component<AppProps, AppState> {
       return;
     }
 
-    this._loadingMessage = "opening GitHub " + gitHubOwner + "/" + gitHubRepoName + "...";
-
-    let newMode = AppMode.project;
-
-    if (isReadOnly) {
-      newMode = AppMode.projectReadOnly;
+    if (suggestedCreator === undefined) {
+      suggestedCreator = carto.creator;
     }
+
+    if (suggestedName && suggestedCreator && suggestedShortName === undefined) {
+      suggestedShortName = ProjectUtilities.getSuggestedProjectShortName(suggestedCreator, suggestedName);
+    }
+
+    this._loadingMessage = "opening sample " + gitHubOwner + "/" + gitHubRepoName + "...";
 
     this._updateWindowTitle(AppMode.loading, null);
 
@@ -836,21 +791,42 @@ export default class App extends Component<AppProps, AppState> {
     const operId = await carto.notifyOperationStarted("Creating new project from '" + title + "'");
 
     if (gitHubOwner !== undefined && gitHubRepoName !== undefined) {
-      const gh = new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
+      let gh = undefined;
 
+      if (galleryType === GalleryItemType.entityType || galleryType === GalleryItemType.blockType) {
+        gh = new HttpStorage(
+          CartoApp.contentRoot + "res/samples/microsoft/minecraft-samples-main/addon_starter/start/"
+        );
+      } else {
+        gh = new HttpStorage(
+          CartoApp.contentRoot +
+            "res/samples/" +
+            gitHubOwner +
+            "/" +
+            gitHubRepoName +
+            "-" +
+            (gitHubBranch ? gitHubBranch : "main") +
+            "/" +
+            gitHubFolder
+        ); //new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
+      }
       let projName = suggestedName
         ? suggestedName
         : ProjectUtilities.getSuggestedProjectNameFromElements(galleryId, gitHubFolder, gitHubRepoName);
 
       const newProjectName = await carto.getNewProjectName(projName);
 
-      const newProject = await carto.createNewProject(newProjectName, undefined, ProjectFocus.gameTests, false);
+      let focus = ProjectFocus.general;
 
-      if (fileList) {
-        await gh.rootFolder.setStructureFromFileList(fileList);
-      } else {
-        await gh.rootFolder.load(false);
+      if (galleryType === GalleryItemType.editorProject) {
+        focus = ProjectFocus.editorExtension;
+      } else if (galleryType === GalleryItemType.codeSample || galleryType === GalleryItemType.editorCodeSample) {
+        focus = ProjectFocus.focusedCodeSnippet;
       }
+
+      const newProject = await carto.createNewProject(newProjectName, undefined, focus, false);
+
+      await gh.rootFolder.load();
 
       const rootFolder = await newProject.ensureProjectFolder();
 
@@ -861,7 +837,8 @@ export default class App extends Component<AppProps, AppState> {
           false,
           false,
           false,
-          ["build", "node_modules", "dist", "/.git", "out"],
+          ["build", "node_modules", "/dist", "/.git", "/lib", "/out", "/node_modules"],
+          undefined,
           this._gitHubAddingMessageUpdater
         );
       } catch (e: any) {
@@ -885,56 +862,36 @@ export default class App extends Component<AppProps, AppState> {
       newProject.originalGitHubFolder = gitHubFolder;
       newProject.originalGalleryId = galleryId;
       newProject.originalSampleId = sampleId;
+      newProject.creator = suggestedCreator;
+      newProject.shortName = suggestedShortName;
+
+      if ((galleryType === GalleryItemType.entityType || galleryType === GalleryItemType.blockType) && galleryId) {
+        const galleryProject = await carto.getGalleryProjectById(galleryId);
+
+        if (galleryProject) {
+          if (galleryType === GalleryItemType.entityType) {
+            await ProjectUtilities.addEntityTypeFromGallery(newProject, galleryProject);
+          } else if (galleryType === GalleryItemType.blockType) {
+            await ProjectUtilities.addBlockTypeFromGallery(newProject, galleryProject);
+          }
+        }
+      }
 
       if (sampleId !== undefined) {
         const snippet = ProjectUtilities.getSnippet(sampleId);
 
+        Log.assertDefined(snippet, "Snippet " + sampleId + " could not be found.");
+
         if (snippet) {
-          await ProjectUtilities.injectSnippet(newProject, snippet);
+          await ProjectUtilities.injectSnippet(newProject, snippet, galleryType === GalleryItemType.editorCodeSample);
         }
       }
 
-      if (updateContent !== undefined && newProject.projectFolder !== null) {
-        try {
-          const zipBytes = Utilities.base64ToUint8Array(updateContent);
-
-          const zs = new ZipStorage();
-
-          await zs.loadFromUint8Array(zipBytes);
-
-          await StorageUtilities.syncFolderTo(zs.rootFolder, newProject.projectFolder, false, false, false, [
-            "package.json",
-          ]);
-        } catch (e) {
-          this.setHomeWithError(
-            "Could not process updated content from URL. Check to make sure your shared URL is valid. (" + e + ")"
-          );
-          return;
-        }
-      }
-
-      await ProjectExporter.renameDefaultFolders(newProject, title);
-
-      await newProject.inferProjectItemsFromFiles();
-
-      await ProjectUtilities.randomizeAllUids(newProject);
-
-      const pur = new ProjectUpdateRunner(newProject);
-
-      await pur.updateProject();
-
-      await newProject.save(true);
+      await ProjectUtilities.processNewProject(newProject, suggestedShortName);
 
       await carto.save();
 
-      this._updateWindowTitle(newMode, newProject);
-      this.initProject(newProject);
-
-      this.setState({
-        mode: newMode,
-        isPersisted: this.state.isPersisted,
-        activeProject: newProject,
-      });
+      this._setProject(newProject);
     }
 
     await carto.notifyOperationEnded(operId, "New project '" + title + "' created.  Have fun!");
@@ -1003,11 +960,17 @@ export default class App extends Component<AppProps, AppState> {
     window.document.title = title;
   }
 
-  private _handleProjectGalleryCommand(command: GalleryProjectCommand, project: IGalleryProject, name?: string) {
+  private _handleProjectGalleryCommand(
+    command: GalleryProjectCommand,
+    project: IGalleryItem,
+    name?: string,
+    creator?: string,
+    shortName?: string
+  ) {
     switch (command) {
       case GalleryProjectCommand.newProject:
       case GalleryProjectCommand.projectSelect:
-        this._newProjectFromGallery(project, name);
+        this._newProjectFromGallery(project, name, creator, shortName);
         break;
       case GalleryProjectCommand.ensureProject:
         this._ensureProjectFromGallery(project);
@@ -1051,6 +1014,7 @@ export default class App extends Component<AppProps, AppState> {
     let top = <></>;
     let borderStr = "";
     let height = "100vh";
+    let heightOffset = 0;
 
     if (this.state.mode === AppMode.loading) {
       let message = "loading...";
@@ -1066,7 +1030,7 @@ export default class App extends Component<AppProps, AppState> {
       }
 
       interior = (
-        <div className="app-loadingArea">
+        <div className="app-loadingArea" key="app-la">
           <div className="app-loading">{message}</div>
           <div className="app-subloading">{additionalLoadingMessage}</div>
         </div>
@@ -1076,8 +1040,12 @@ export default class App extends Component<AppProps, AppState> {
         <Home
           theme={this.props.theme}
           carto={this.state.carto}
+          heightOffset={heightOffset}
           isPersisted={this.state.isPersisted}
           errorMessage={this.state.errorMessage}
+          onLog={this._doLog}
+          key="app-h"
+          onSetProject={this._setProject}
           onPersistenceUpgraded={this._handlePersistenceUpgraded}
           onGalleryItemCommand={this._handleProjectGalleryCommand}
           onModeChangeRequested={this._handleModeChangeRequested}
@@ -1093,6 +1061,7 @@ export default class App extends Component<AppProps, AppState> {
           carto={this.state.carto}
           theme={this.props.theme}
           hideMainToolbar={true}
+          key="app-pe"
           statusAreaMode={ProjectStatusAreaMode.hidden}
           project={this.state.activeProject}
           selectedItem={this.state.selectedItem}
@@ -1108,6 +1077,7 @@ export default class App extends Component<AppProps, AppState> {
           carto={this.state.carto}
           theme={this.props.theme}
           hideMainToolbar={true}
+          key="app-pea"
           statusAreaMode={ProjectStatusAreaMode.hidden}
           project={this.state.activeProject}
           mode={ProjectEditorMode.inspector}
@@ -1130,7 +1100,11 @@ export default class App extends Component<AppProps, AppState> {
           <Home
             theme={this.props.theme}
             carto={this.state.carto}
+            heightOffset={heightOffset}
             errorMessage={error}
+            onLog={this._doLog}
+            key="app-hoa"
+            onSetProject={this._setProject}
             onGalleryItemCommand={this._handleProjectGalleryCommand}
             onModeChangeRequested={this._handleModeChangeRequested}
             onNewProjectSelected={this._handleNewProject}
@@ -1143,6 +1117,7 @@ export default class App extends Component<AppProps, AppState> {
         interior = (
           <ProjectEditor
             carto={this.state.carto}
+            key="app-pec"
             theme={this.props.theme}
             viewMode={CartoEditorViewMode.mainFocus}
             project={this.state.activeProject}
@@ -1157,6 +1132,7 @@ export default class App extends Component<AppProps, AppState> {
           <ProjectEditor
             carto={this.state.carto}
             theme={this.props.theme}
+            key="app-pef"
             project={this.state.activeProject}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
             selectedItem={this.state.selectedItem}

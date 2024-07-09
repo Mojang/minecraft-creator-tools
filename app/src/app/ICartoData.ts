@@ -25,6 +25,7 @@ export enum MinecraftFlavor {
   remote = 1,
   processHostedProxy = 2,
   minecraftGameProxy = 3,
+  deploymentStorage = 4,
 }
 
 // see DedicatedServerCommandHandler to ensure these stay in sync
@@ -53,10 +54,12 @@ export default interface ICartoData {
   successfullyStartedMinecraftServer: boolean;
   processHostedMinecraftTrack?: MinecraftTrack;
   worldSettings?: IWorldSettings;
+  editorWorldSettings?: IWorldSettings;
   autoStartMinecraft: boolean;
   showScreenOnConnect: boolean;
   useEditor?: boolean;
   creator?: string;
+  formatBeforeSave?: boolean;
   itemSidePaneWidth?: number;
   preferredTextSize?: number;
   preferredSuite?: number;

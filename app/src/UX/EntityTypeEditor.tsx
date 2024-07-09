@@ -6,7 +6,7 @@ import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import Database from "../minecraft/Database";
 import ComponentSetEditor from "./ComponentSetEditor";
 import { ThemeInput } from "@fluentui/styles";
-import { List, ListProps, Toolbar } from "@fluentui/react-northstar";
+import { List, ListProps, Toolbar, selectableListBehavior } from "@fluentui/react-northstar";
 import ManagedComponentGroup from "../minecraft/ManagedComponentGroup";
 import { CustomTabLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -328,7 +328,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
 
     const et = this.state.fileToEdit.manager as EntityTypeDefinition;
 
-    if (et.behaviorPackEntityTypeDef === undefined) {
+    if (et.data === undefined) {
       return <div className="ete-message">Loading mob definition...</div>;
     }
 
@@ -381,6 +381,8 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             >
               <List
                 selectable
+                aria-label="List of components"
+                accessibility={selectableListBehavior}
                 defaultSelectedIndex={0}
                 items={items}
                 onSelectedIndexChange={this._handleItemSelected}
@@ -445,6 +447,8 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             >
               <List
                 selectable
+                aria-label="List of entity actions"
+                accessibility={selectableListBehavior}
                 defaultSelectedIndex={0}
                 items={items}
                 onSelectedIndexChange={this._handleItemSelected}

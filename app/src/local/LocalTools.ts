@@ -8,6 +8,7 @@ import IFolder from "../storage/IFolder";
 import * as fs from "fs";
 import * as open from "open";
 import ProjectTools from "../app/ProjectTools";
+import IStorage from "../storage/IStorage";
 
 export default class LocalTools {
   static async exportWorld(carto: Carto, project: Project, path: string) {
@@ -42,8 +43,8 @@ export default class LocalTools {
     await childFolder.saveAll();
   }
 
-  static async deploy(carto: Carto, project: Project, rootFolder: IFolder, name: string) {
-    await ProjectTools.deployToBehaviorPackFolder(project, rootFolder);
+  static async deploy(carto: Carto, project: Project, storage: IStorage, rootFolder: IFolder, name: string) {
+    await ProjectTools.deployProject(carto, project, rootFolder);
 
     await rootFolder.saveAll();
   }

@@ -112,7 +112,7 @@ export default class ExporterToolEditor extends Component<IExporterToolProps, IE
         name: "exportMCPack",
         key: "exportMCPack",
         value: "exportMCPack",
-        label: "Minecraft Add-on",
+        label: "Minecraft Add-On",
       },
     ];
 

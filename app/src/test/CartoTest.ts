@@ -146,7 +146,7 @@ describe("simple", async () => {
   it("has expected structure", async () => {
     const project = await _loadProject("simple");
 
-    expect(project.items.length).to.equal(5);
+    expect(project.items.length).to.equal(6);
   });
 
   it("report file matches", async () => {
@@ -171,7 +171,7 @@ describe("deployJs", async () => {
   it("has expected structure", async () => {
     const project = await _loadProject("deployJs");
 
-    expect(project.items.length).to.equal(3);
+    expect(project.items.length).to.equal(4);
   });
 
   it("deploy outputs match", async () => {

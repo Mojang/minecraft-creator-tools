@@ -96,8 +96,8 @@ export default class ProjectInfoItemDisplay extends Component<
       );
     }
 
-    if (message && item.projectItem && item.projectItem.storagePath) {
-      location = item.projectItem.storagePath;
+    if (message && item.projectItem && item.projectItem.projectPath) {
+      location = item.projectItem.projectPath;
 
       const hashIndex = location.indexOf("#");
       if (location.startsWith("/zip/") && hashIndex > 0) {

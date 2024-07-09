@@ -1,0 +1,65 @@
+@media only screen and (min-width: 800px) {
+  .ig-binWrap {
+    margin-bottom: 10px;
+    margin-top: 0px;
+    padding-bottom: 10px;
+    border-left: solid 1px;
+    border-right: solid 1px;
+    border-bottom: solid 1px;
+    border-top: solid 1px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .ig-binWrap {
+    margin-top: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-left: solid 1px;
+    border-right: solid 1px;
+    border-bottom: solid 1px;
+    border-top: solid 1px;
+    text-align: center;
+  }
+
+  .ig-binWrap-small {
+    border-top: solid 1px;
+  }
+}
+
+.ig-binWrap-empty {
+  padding: 4px 10px 10px 10px;
+}
+
+.ig-outer {
+  padding-bottom: 0px;
+}
+
+.ig-tabArea {
+  display: block;
+  padding: 10px;
+  padding-bottom: 0px;
+}
+
+.ig-notFound {
+  padding-top: 6px;
+}
+
+.ig-tabButton {
+  border-top-left-radius: 3px !important;
+  border-top-right-radius: 3px !important;
+  box-shadow: none !important;
+  height: 32px;
+  padding: 20px !important;
+}
+
+.ig-underline {
+  display: inline-block;
+  height: 32px;
+  width: 6px;
+  border-bottom: solid 1px;
+}
+
+.ig-underlineLong {
+  width: calc(100vw - 724px);
+}

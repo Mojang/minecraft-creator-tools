@@ -3,11 +3,13 @@
 
 import IFolder, { FolderErrorStatus } from "./IFolder";
 import IFile from "./IFile";
-import IStorage from "./IStorage";
+import IStorage, { IFolderMove } from "./IStorage";
 import StorageUtilities from "./StorageUtilities";
 import Utilities from "./../core/Utilities";
 import AllFolderFileIterator from "./AllFolderFileIterator";
 import Log from "../core/Log";
+import { EventDispatcher } from "ste-events";
+import StorageBase from "./StorageBase";
 
 export default abstract class FolderBase implements IFolder {
   abstract get name(): string;
@@ -19,7 +21,18 @@ export default abstract class FolderBase implements IFolder {
   abstract get storage(): IStorage;
   manager?: any;
 
+  #onFolderMoved = new EventDispatcher<FolderBase, IFolderMove>();
+  #onChildFolderMoved = new EventDispatcher<FolderBase, IFolderMove>();
+
   errorStatus?: FolderErrorStatus;
+
+  public get onFolderMoved() {
+    return this.#onFolderMoved.asEvent();
+  }
+
+  public get onChildFolderMoved() {
+    return this.#onChildFolderMoved.asEvent();
+  }
 
   get isLoaded() {
     return this.#lastLoadedOrSaved !== null;
@@ -110,6 +123,8 @@ export default abstract class FolderBase implements IFolder {
   }
 
   dispose() {
+    this.manager = undefined;
+
     if (this.folders) {
       for (const folderName in this.folders) {
         const folder = this.folders[folderName];
@@ -257,6 +272,29 @@ export default abstract class FolderBase implements IFolder {
       return (folder as IFolder).getFileFromRelativePath(path.substring(nextSlash, path.length));
     }
   }
+
+  clearAllManagers() {
+    if (this.manager) {
+      this.manager = undefined;
+    }
+
+    for (const fileName in this.files) {
+      const file = this.files[fileName];
+
+      if (file) {
+        file.manager = undefined;
+      }
+    }
+
+    for (const folderName in this.folders) {
+      const folder = this.folders[folderName];
+
+      if (folder) {
+        folder.clearAllManagers();
+      }
+    }
+  }
+
   async getFolderFromRelativePath(path: string): Promise<IFolder | undefined> {
     if (this.isDisposed) {
       Log.throwIsDisposed();
@@ -304,6 +342,23 @@ export default abstract class FolderBase implements IFolder {
 
       return await (folder as IFolder).getFolderFromRelativePath(nextPath);
     }
+  }
+
+  getFolderByIndex(index: number) {
+    let curIndex = 0;
+    for (const folderName in this.folders) {
+      const folder = this.folders[folderName];
+
+      if (folder && curIndex === index) {
+        return folder;
+      }
+
+      if (folder) {
+        curIndex++;
+      }
+    }
+
+    return undefined;
   }
 
   getSummary() {
@@ -378,7 +433,7 @@ export default abstract class FolderBase implements IFolder {
     }
   }
 
-  async saveAll(): Promise<boolean> {
+  async saveAll(force?: boolean): Promise<boolean> {
     // Log.verbose("Saving all at " + this.storageRelativePath);
     if (this.isDisposed) {
       Log.throwIsDisposed();
@@ -387,8 +442,8 @@ export default abstract class FolderBase implements IFolder {
     for (const fileName in this.files) {
       const file = this.files[fileName];
 
-      if (file !== undefined && file.needsSave) {
-        await file.saveContent();
+      if (file !== undefined && (file.needsSave || force)) {
+        await file.saveContent(force);
       }
     }
 
@@ -396,7 +451,7 @@ export default abstract class FolderBase implements IFolder {
       const folder = this.folders[folderName];
 
       if (folder !== undefined && !folder.errorStatus) {
-        await folder.saveAll();
+        await folder.saveAll(force);
       }
     }
 
@@ -542,6 +597,24 @@ export default abstract class FolderBase implements IFolder {
     return isAllDeletes;
   }
 
+  notifyFolderMoved(folderMove: IFolderMove) {
+    this.#onFolderMoved.dispatch(this, folderMove);
+
+    if (this.parentFolder) {
+      (this.parentFolder as FolderBase).notifyChildFolderMoved(folderMove);
+    }
+
+    (this.storage as StorageBase).notifyFolderMoved(folderMove);
+  }
+
+  notifyChildFolderMoved(folderMove: IFolderMove) {
+    this.#onChildFolderMoved.dispatch(this, folderMove);
+
+    if (this.parentFolder) {
+      (this.parentFolder as FolderBase).notifyChildFolderMoved(folderMove);
+    }
+  }
+
   removeMeFromParent() {
     if (this.parentFolder) {
       this.parentFolder.removeFolder(this.name);
@@ -555,7 +628,7 @@ export default abstract class FolderBase implements IFolder {
   abstract folders: { [name: string]: IFolder | undefined };
   abstract files: { [name: string]: IFile | undefined };
   abstract moveTo(newStorageRelativePath: string): Promise<boolean>;
-  abstract load(force: boolean): Promise<Date>;
+  abstract load(force?: boolean): Promise<Date>;
 
   abstract ensureFolder(name: string): IFolder;
   abstract ensureFile(name: string): IFile;

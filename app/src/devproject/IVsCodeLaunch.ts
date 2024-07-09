@@ -7,6 +7,7 @@ export interface IVsCodeConfiguration {
   name?: string;
   mode?: string;
   preLaunchTask?: string;
+  targetedModuleUuid?: string;
   sourceMapRoot?: string;
   generatedSourceRoot?: string;
   port: number;

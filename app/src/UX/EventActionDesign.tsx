@@ -128,7 +128,7 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
 
     const et = this.state.fileToEdit.manager as EntityTypeDefinition;
 
-    if (et.behaviorPackEntityTypeDef === undefined) {
+    if (et.data === undefined) {
       return <div>Loading behavior pack...</div>;
     }
 

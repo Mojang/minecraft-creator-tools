@@ -11,6 +11,14 @@
   grid-template-rows: 46px 1fr;
 }
 
+.pil-expandButton {
+  margin-top: 3px;
+  padding-left: 6px;
+  margin-left: 3px;
+  width: 24px;
+  height: 25px;
+}
+
 .pil-newarea {
   grid-column: 1;
   grid-row: 1;
@@ -126,70 +134,48 @@
 .pil-itemLabel {
   text-overflow: ellipsis;
   padding-left: 6px;
+  display: block;
+  height: 20px;
   padding-top: 1px;
+}
+
+.pil-itemIcon {
+  background-size: cover;
+  width: 30px;
+  margin-top: 3px;
+  height: 30px;
+}
+
+.pil-itemIndicator {
+  border: solid 0px;
+  grid-column: 4;
+  line-height: 1;
+  padding: 5px 5px 4px 4px;
+  margin: 6px 0px 0px 1px;
+  box-shadow: none;
+  width: 24px;
+  height: 25px;
+  background-color: green;
+}
+
+.pil-itemIndicatorInterior {
+  text-align: center;
 }
 
 .pil-itemIndicatorRO {
   border: solid 0px;
-  max-width: 28px;
-  min-width: 28px;
   grid-column: 4;
   line-height: 1;
-  text-align: center;
-  padding: 8px 2px 0px 1px;
-  margin: 3px 0px 0px 1px;
-  min-height: 30px;
-  max-height: 30px;
-  padding-bottom: 12px;
+  padding: 5px 5px 4px 4px;
+  margin: 6px 0px 0px 1px;
   box-shadow: none;
-  vertical-align: middle;
+  width: 24px;
+  height: 25px;
   background-color: green;
-  text-align: center;
-}
-
-.pil-itemIndicator button {
-  border: solid 0px;
-  max-width: 28px;
-  min-width: 28px;
-  grid-column: 4;
-  line-height: 1;
-  text-align: center;
-  padding: 8px 2px 0px 1px;
-  margin: 3px 0px 0px 1px;
-  min-height: 30px;
-  max-height: 30px;
-  padding-bottom: 12px;
-  box-shadow: none;
-  vertical-align: middle;
-  background-color: green;
-  text-align: center;
-}
-
-.pil-contextMenuButton button {
-  border: solid 0px;
-  max-width: 26px;
-  min-width: 26px;
-  grid-column: 3;
-  line-height: 1;
-  text-align: center;
-  padding: 4px 2px 0px 1px;
-  margin: 3px 0px 0px 2px;
-  min-height: 30px;
-  max-height: 30px;
-  padding-bottom: 12px;
-  box-shadow: none;
 }
 
 .pil-cmbUnfocused button {
   opacity: 0;
-}
-
-.pil-contextMenuButton button:hover {
-  opacity: 1;
-}
-
-.pil-contextMenuButton button:focus {
-  opacity: 1;
 }
 
 .pil-stats {

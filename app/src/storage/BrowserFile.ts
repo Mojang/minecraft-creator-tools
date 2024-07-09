@@ -12,7 +12,7 @@ import Log from "../core/Log";
 export default class BrowserFile extends FileBase implements IFile {
   private _name: string;
   private _parentFolder: BrowserFolder;
-
+  private _lastLoadedPath?: string;
   sizeAtLoad?: number;
 
   get name(): string {
@@ -96,12 +96,28 @@ export default class BrowserFile extends FileBase implements IFile {
 
   async loadContent(force?: boolean): Promise<Date> {
     if (force || !this.lastLoadedOrSaved) {
+      this._lastLoadedPath = this.fullPath;
       this._content = await localforage.getItem(this.fullPath);
 
       this.lastLoadedOrSaved = new Date();
     }
 
     return this.lastLoadedOrSaved;
+  }
+
+  async resaveAfterMove() {
+    if (this._lastLoadedPath === undefined) {
+      return;
+    }
+
+    if (this._lastLoadedPath !== this.fullPath) {
+      // store old path because saving will change _lastLoadedPath
+      const oldPath = this._lastLoadedPath;
+
+      await this.saveContent(true, true);
+
+      await localforage.removeItem(oldPath);
+    }
   }
 
   setContent(newContent: string | Uint8Array | null) {
@@ -138,6 +154,7 @@ export default class BrowserFile extends FileBase implements IFile {
 
       // Log.debug("Saving file " + contentDescript + " to '" + this.fullPath + "'");
 
+      this._lastLoadedPath = this.fullPath;
       await localforage.setItem(this.fullPath, this.content);
 
       this.lastLoadedOrSaved = new Date();

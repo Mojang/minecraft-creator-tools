@@ -34,7 +34,7 @@ export default class UnknownFileGenerator implements IProjectFileInfoGenerator {
           this.id,
           2,
           `Unknown type ${ext} file ${file.storageRelativePath} found`,
-          project.getItemByExtendedOrStoragePath(file.extendedPath),
+          project.getItemByExtendedOrProjectPath(file.extendedPath),
           file.extendedPath
         )
       );

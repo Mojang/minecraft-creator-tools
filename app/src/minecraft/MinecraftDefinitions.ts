@@ -2,14 +2,14 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import ProjectItem from "../app/ProjectItem";
 import BehaviorAnimation from "./BehaviorAnimation";
 import BehaviorAnimationController from "./BehaviorAnimationController";
-import BehaviorManifestJson from "./BehaviorManifestJson";
+import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
 import BlockTypeBehaviorDefinition from "./BlockTypeBehaviorDefinition";
 import EntityTypeDefinition from "./EntityTypeDefinition";
 import FlipbookTextureCatalogDefinition from "./FlipbookTextureCatalogDefinition";
 import ItemTypeDefinition from "./ItemTypeDefinition";
 import ResourceAnimation from "./ResourceAnimation";
 import ResourceAnimationController from "./ResourceAnimationController";
-import ResourceManifestJson from "./ResourceManifestJson";
+import ResourceManifestDefinition from "./ResourceManifestDefinition";
 
 export default class MinecraftDefinitions {
   static async get(projectItem: ProjectItem) {
@@ -27,9 +27,9 @@ export default class MinecraftDefinitions {
       case ProjectItemType.flipbookTexturesJson:
         return await FlipbookTextureCatalogDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.behaviorPackManifestJson:
-        return await BehaviorManifestJson.ensureOnFile(projectItem.file);
+        return await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.resourcePackManifestJson:
-        return await ResourceManifestJson.ensureOnFile(projectItem.file);
+        return await ResourceManifestDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.animationControllerBehaviorJson:
         return await BehaviorAnimationController.ensureOnFile(projectItem.file);
       case ProjectItemType.animationControllerResourceJson:

@@ -112,7 +112,7 @@ export default class GitHubFolder extends FolderBase implements IFolder {
     throw new Error("Creation of files not supported");
   }
 
-  async load(force: boolean): Promise<Date> {
+  async load(force?: boolean): Promise<Date> {
     if (this.lastLoadedOrSaved != null && !force) {
       return this.lastLoadedOrSaved;
     }

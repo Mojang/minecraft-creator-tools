@@ -854,7 +854,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     }
   }
 
-  async load(force: boolean) {
+  async load(force?: boolean) {
     if ((this._isLoaded && !force) || (this._file === undefined && this._folder === undefined)) {
       return;
     }
@@ -1328,7 +1328,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       return;
     }
 
-    await rootFolder.load(false);
+    await rootFolder.load();
 
     const dbFolder = await rootFolder.getFolderFromRelativePath("/db");
 
@@ -1337,7 +1337,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     const manifestFileArr: IFile[] = [];
 
     if (dbFolder) {
-      await dbFolder.load(false);
+      await dbFolder.load();
 
       for (const fileName in dbFolder.files) {
         const file = dbFolder.files[fileName];
@@ -1856,7 +1856,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       if (scriptFolder) {
         this._autogenJsFile = genFolder.ensureFile(newFileName);
 
-        this._project.ensureItemByStoragePath(
+        this._project.ensureItemByProjectPath(
           this._autogenJsFile.storageRelativePath,
           ProjectItemStorageType.singleFile,
           this._autogenJsFile.name,

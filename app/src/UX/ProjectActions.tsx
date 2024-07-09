@@ -53,7 +53,7 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
   }
 
   private _downloadProjectWorld() {
-    ProjectEditorUtilities.launchProjectWorldWithPacksDownload(this.props.carto, this.props.project);
+    ProjectEditorUtilities.launchWorldWithPacksDownload(this.props.carto, this.props.project);
   }
 
   private _exportLocal() {

@@ -16,7 +16,8 @@ export enum ProjectFocus {
   general = 0,
   gameTests = 1,
   world = 2,
-  singleBehaviorPack = 3,
+  focusedCodeSnippet = 3,
+  editorExtension = 4,
 }
 
 export enum ProjectScriptLanguage {
@@ -71,6 +72,7 @@ export default interface IProjectData {
   versionPatch?: number;
   usesCustomWorldSettings?: boolean;
   worldSettings?: IWorldSettings;
+  editorWorldSettings?: IWorldSettings;
   autoDeploymentMode?: number;
 
   lastMapDeployedDate?: Date;

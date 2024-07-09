@@ -25,11 +25,14 @@ const _allowedExtensions = [
   "jpg",
   "gitignore",
   "jpeg",
+  "gif",
   "lang",
   "fsb",
   "map",
   "ico",
   "ogg",
+  "env",
+  "wav",
   "tga",
   "",
   "zip",
@@ -112,6 +115,8 @@ export default class StorageUtilities {
       case "ico":
       case "tga":
       case "ogg":
+      case "wav":
+      case "gif":
       case "jpeg":
       case "jpg":
       case "png":
@@ -146,6 +151,28 @@ export default class StorageUtilities {
     }
 
     return path;
+  }
+
+  public static getUniqueChildFolderName(name: string, folder: IFolder) {
+    let num = 1;
+    let nameCand = name;
+    let isUnique = false;
+
+    while (!isUnique) {
+      isUnique = true;
+      for (const childFolderName in folder.folders) {
+        if (StorageUtilities.canonicalizeName(childFolderName) === StorageUtilities.canonicalizeName(nameCand)) {
+          isUnique = false;
+        }
+      }
+
+      if (!isUnique) {
+        nameCand = name + " " + num;
+        num++;
+      }
+    }
+
+    return nameCand;
   }
 
   public static ensureEndsDelimited(path: string) {
@@ -657,7 +684,20 @@ export default class StorageUtilities {
   public static shouldProcessFile(fileName: string) {
     fileName = fileName.toLowerCase();
 
-    if (fileName.startsWith(".") || (fileName.startsWith("package") && fileName.endsWith("json"))) {
+    const ext = StorageUtilities.getTypeFromName(fileName);
+
+    if (ext !== "ts" && ext !== "js" && ext !== "json") {
+      return false;
+    }
+
+    if (
+      fileName.startsWith(".") ||
+      fileName.startsWith("just.config") ||
+      fileName.endsWith(".config.ts") ||
+      fileName.endsWith(".config.js") ||
+      (fileName.startsWith("manifest") && fileName.endsWith("json")) ||
+      (fileName.startsWith("package") && fileName.endsWith("json"))
+    ) {
       return false;
     }
 
@@ -665,7 +705,13 @@ export default class StorageUtilities {
   }
 
   public static shouldProcessFolder(folderName: string) {
-    if (folderName.startsWith(".")) {
+    if (
+      folderName.startsWith(".") ||
+      folderName === "lib" ||
+      folderName === "node_modules" ||
+      folderName === "dist" ||
+      folderName === "build"
+    ) {
       return false;
     }
 
@@ -929,6 +975,7 @@ export default class StorageUtilities {
     forceFileUpdates: boolean,
     removeOnTarget: boolean,
     exclude?: string[],
+    include?: string[],
     messageUpdater?: (message: string) => Promise<void>
   ): Promise<number> {
     let modifiedFileCount = 0;
@@ -972,6 +1019,10 @@ export default class StorageUtilities {
         process = false;
       }
 
+      if (include !== undefined && !StorageUtilities.matchesList(sourceFileName, include)) {
+        process = false;
+      }
+
       if (sourceFile !== undefined) {
         if (process) {
           targetFiles[sourceFileName] = false;
@@ -1011,6 +1062,7 @@ export default class StorageUtilities {
               forceFileUpdates,
               removeOnTarget,
               exclude,
+              include,
               messageUpdater
             );
 
@@ -1067,6 +1119,14 @@ export default class StorageUtilities {
 
       if (listC.length > 2 && listC.startsWith("*") && listC.endsWith("*")) {
         if (name.indexOf(listC.substring(1, listC.length - 1)) >= 0) {
+          return true;
+        }
+      } else if (listC.length > 2 && listC.startsWith("*") && !listC.endsWith("*")) {
+        if (name.endsWith(listC.substring(1))) {
+          return true;
+        }
+      } else if (listC.length > 2 && !listC.startsWith("*") && listC.endsWith("*")) {
+        if (name.startsWith(listC.substring(0, listC.length - 1))) {
           return true;
         }
       }

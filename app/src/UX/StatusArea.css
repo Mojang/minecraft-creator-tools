@@ -19,19 +19,26 @@
 }
 
 .sa-placeHolder {
-  padding-top: 5px;
+  padding-top: 4px;
   padding-left: 2px;
   display: grid;
   grid-template-columns: 16px 1fr;
 }
 
 .sa-placeHolderIcon {
-  padding-top: 1px;
+  padding-top: 3px;
   grid-column: 1;
 }
 
 .sa-placeHolderText {
-  padding-left: 7px;
+  border: solid 0px !important;
+  background-color: transparent !important;
+  padding: 3px 0px 0px 5px !important;
+  height: 24px !important;
+  box-shadow: none !important;
+  margin-left: 5px;
+  text-align: left I !important;
+  justify-content: left !important;
   grid-column: 2;
 }
 

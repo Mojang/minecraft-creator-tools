@@ -1,0 +1,11 @@
+{
+  "url": "https://github.com/microsoft/minecraft-samples/archive/refs/heads/main.zip",
+  "exclude": [
+    "add_entity_robot/",
+    "mclive2022_addon/",
+    "rtx_resource_pack/",
+    "culled_block_sample/",
+    "casual_creator/",
+    "parkour_sample_world/"
+  ]
+}

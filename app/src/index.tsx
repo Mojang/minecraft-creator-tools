@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+import "@fontsource/noto-sans";
 import App from "./UX/App";
 import AppServiceProxy, { AppServiceProxyCommands } from "./core/AppServiceProxy";
 import CartoApp, { CartoThemeStyle } from "./app/CartoApp";
@@ -17,29 +18,39 @@ window.addEventListener("unhandledrejection", (evt) => {
   }
 });
 
-if (AppServiceProxy.hasAppService) {
-  function ensureFirstBackSlash(str: string) {
-    return str.length > 0 && str.charAt(0) !== "/" ? "/" + str : str;
-  }
-
-  function uriFromPath(_path: string) {
-    const pathName = _path.replace(/\\/g, "/");
-
-    return encodeURI("file://" + ensureFirstBackSlash(pathName));
-  }
-
-  const path = uriFromPath(AppServiceProxy.send(AppServiceProxyCommands.getDirname, "") + "/../build/dist/vs");
-
-  loader.config({
-    paths: {
-      vs: path,
-    },
-  });
-} else {
-  loader.config({
-    paths: { vs: "/dist/vs" },
-  });
+function ensureFirstBackSlash(str: string) {
+  return str.length > 0 && str.charAt(0) !== "/" ? "/" + str : str;
 }
+
+function uriFromPath(_path: string) {
+  const pathName = _path.replace(/\\/g, "/");
+
+  return encodeURI("file://" + ensureFirstBackSlash(pathName));
+}
+
+async function initVsLoader() {
+  if (AppServiceProxy.hasAppService) {
+    let dirName = await AppServiceProxy.sendAsync(AppServiceProxyCommands.getDirname, "");
+
+    if (dirName === undefined) {
+      dirName = "";
+    }
+
+    const path = uriFromPath(dirName + "/../build/dist/vs");
+
+    loader.config({
+      paths: {
+        vs: path,
+      },
+    });
+  } else {
+    loader.config({
+      paths: { vs: "/dist/vs" },
+    });
+  }
+}
+
+initVsLoader();
 
 let theme = undefined;
 

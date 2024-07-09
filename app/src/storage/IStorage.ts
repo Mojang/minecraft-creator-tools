@@ -11,6 +11,12 @@ export enum StorageErrorStatus {
   notPresent = 2,
 }
 
+export interface IFolderMove {
+  previousStoragePath?: string;
+  newStoragePath: string;
+  folder: IFolder;
+}
+
 export default interface IStorage {
   rootFolder: IFolder;
   storagePath: string | undefined;
@@ -18,6 +24,7 @@ export default interface IStorage {
   onFileAdded: IEvent<IStorage, IFile>;
   onFileRemoved: IEvent<IStorage, string>;
   onFileContentsUpdated: IEvent<IStorage, IFile>;
+  onFolderMoved: IEvent<IStorage, IFolderMove>;
 
   errorStatus?: StorageErrorStatus;
   errorMessage?: string;

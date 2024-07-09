@@ -61,7 +61,7 @@ export default class EventEditorEditor extends Component<IEventEditorEditorProps
         <div className="eved-componentArea">
           <div className="eved-titleArea">{title}</div>
           <div className="eved-componentToolBarArea">
-            <Toolbar aria-label="Editor toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="Event editing toolbar" items={toolbarItems} />
           </div>
         </div>
         <div className="eved-cgAddBin">{componentGroupAdds}</div>

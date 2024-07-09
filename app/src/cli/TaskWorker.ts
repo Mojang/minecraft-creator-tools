@@ -20,11 +20,15 @@ let localEnv: LocalEnvironment | undefined;
 let outputStorage: NodeStorage | undefined;
 let outputStoragePath: string | undefined;
 
+let activeContext: string | undefined;
+
 async function executeTask(task: ITask) {
   if (!task.project) {
     Log.error("Could not find an associated project for the associated task.");
     return undefined;
   }
+
+  activeContext = task.project?.ctorProjectName;
 
   if (localEnv === undefined) {
     localEnv = new LocalEnvironment(true);
@@ -62,7 +66,7 @@ async function executeTask(task: ITask) {
           carto,
           task.project,
           task.arguments["suite"] as string | undefined,
-          task.arguments["outputMci"] === "true",
+          task.arguments["outputMci"] === true,
           task.arguments["outputType"] as number | undefined,
           task.displayInfo,
           task.force
@@ -157,7 +161,6 @@ async function validateAndDisposeProject(
   await pis.generateForProject();
 
   const pisData = pis.getDataObject();
-  const content = JSON.stringify(pisData, null, 2);
 
   const projectSet = {
     projectContainerName: project.containerName,
@@ -238,7 +241,13 @@ async function validateAndDisposeProject(
     }
 
     if (mcrJsonFile) {
-      mcrJsonFile.setContent(content);
+      if (pisData.index) {
+        pisData.index = undefined;
+      }
+
+      const mcrContent = JSON.stringify(pisData, null, 2);
+
+      mcrJsonFile.setContent(mcrContent);
 
       mcrJsonFile.saveContent();
     }

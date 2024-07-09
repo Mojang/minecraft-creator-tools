@@ -5,7 +5,7 @@ import IAppProps from "./IAppProps";
 import IStatus from "../app/Status";
 import IGallery from "../app/IGallery";
 import ProjectTile, { ProjectTileDisplayMode } from "./ProjectTile";
-import IGalleryProject, { GalleryProjectType } from "../app/IGalleryProject";
+import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import { Button, ThemeInput } from "@fluentui/react-northstar";
 import Project from "../app/Project";
 import Log from "../core/Log";
@@ -28,13 +28,13 @@ interface IProjectGalleryProps extends IAppProps {
   search?: string;
   view: ProjectTileDisplayMode;
   isSelectable?: boolean;
-  filterOn?: GalleryProjectType;
-  onGalleryItemCommand: (command: GalleryProjectCommand, project: IGalleryProject) => void;
+  filterOn?: GalleryItemType[];
+  onGalleryItemCommand: (command: GalleryProjectCommand, project: IGalleryItem) => void;
 }
 
 interface IProjectGalleryState {
   loadedProjectHash: string;
-  selectedItem?: IGalleryProject;
+  selectedItem?: IGalleryItem;
   mode: ProjectGalleryMode;
 }
 
@@ -122,7 +122,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
     return projectHash;
   }
 
-  getGalleryHash(item: IGalleryProject) {
+  getGalleryHash(item: IGalleryItem) {
     let seed = item.gitHubOwner + "|" + item.gitHubRepoName;
 
     if (item.gitHubBranch) {
@@ -150,7 +150,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
     return seed;
   }
 
-  _handleCommand(command: GalleryProjectCommand, project: IGalleryProject) {
+  _handleCommand(command: GalleryProjectCommand, project: IGalleryItem) {
     if (this.props.isSelectable) {
       this.setState({
         loadedProjectHash: this.state.loadedProjectHash,
@@ -161,7 +161,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
     this.props.onGalleryItemCommand(command, project);
   }
 
-  projectMatchesSearch(galProject: IGalleryProject) {
+  projectMatchesSearch(galProject: IGalleryItem) {
     if (!this.props.search || this.props.search.length < 3) {
       return true;
     }
@@ -187,7 +187,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
 
     const gal = this.props.gallery;
 
-    if (this.props.search === undefined && this.props.view !== ProjectTileDisplayMode.smallImage) {
+    if (this.props.search === undefined) {
       tabsElt = (
         <div className="pg-tabArea">
           <Button
@@ -258,19 +258,25 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
     let didPushStarter = false;
 
     if (this.props.search || this.state.mode === ProjectGalleryMode.codeSnippets) {
-      for (let i = 0; i < gal.projects.length; i++) {
-        const galItem = gal.projects[i];
+      for (let i = 0; i < gal.items.length; i++) {
+        const galItem = gal.items[i];
 
         if (
           this.projectMatchesSearch(galItem) &&
-          (this.props.filterOn === undefined || this.props.filterOn === galItem.type) &&
-          galItem.type === GalleryProjectType.codeSample
+          (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
+          (galItem.type === GalleryItemType.codeSample || galItem.type === GalleryItemType.editorCodeSample)
         ) {
+          let view = this.props.view;
+
+          if (this.state.mode === ProjectGalleryMode.codeSnippets) {
+            view = ProjectTileDisplayMode.smallCodeSample;
+          }
+
           snippetGalleries.push(
             <ProjectTile
               key={"csitem" + i}
               theme={this.props.theme}
-              displayMode={ProjectTileDisplayMode.smallCodeSample}
+              displayMode={view}
               isSelectable={this.props.isSelectable}
               onGalleryItemCommand={this._handleCommand}
               isSelected={this.state.selectedItem === galItem}
@@ -284,14 +290,11 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
         }
       }
 
-      if (!didPushSnippet) {
-        snippetGalleries.push(<div className="pg-notFound">No snippets found.</div>);
-      }
-
       let binClassName = "pg-binWrap";
 
-      if (this.props.view === ProjectTileDisplayMode.smallImage) {
-        binClassName += " pg-binWrap-small";
+      if (!didPushSnippet && !didPushStarter) {
+        snippetGalleries.push(<div className="pg-notFound">No snippets or starters found.</div>);
+        binClassName += " pg-binWrap-empty";
       }
 
       snippetGalleriesElt = (
@@ -308,15 +311,16 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
     }
 
     if (this.props.search || this.state.mode === ProjectGalleryMode.starters) {
-      for (let i = 0; i < gal.projects.length; i++) {
-        const galItem = gal.projects[i];
+      for (let i = 0; i < gal.items.length; i++) {
+        const galItem = gal.items[i];
 
         if (
           this.projectMatchesSearch(galItem) &&
-          (this.props.filterOn === undefined || this.props.filterOn === galItem.type) &&
-          (galItem.type === GalleryProjectType.project ||
-            galItem.type === GalleryProjectType.blockType ||
-            galItem.type === GalleryProjectType.entityType)
+          (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
+          (galItem.type === GalleryItemType.project ||
+            galItem.type === GalleryItemType.editorProject ||
+            galItem.type === GalleryItemType.blockType ||
+            galItem.type === GalleryItemType.entityType)
         ) {
           const displayOpen = this.state.loadedProjectHash.indexOf("[" + this.getGalleryHash(galItem) + "]") >= 0;
 
@@ -338,20 +342,19 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
         }
       }
 
-      if (!didPushStarter) {
-        projectGalleries.push(<div className="pg-notFound">No starters found.</div>);
+      if (projectGalleries.length > 0) {
+        projectGalleriesElt = (
+          <div
+            className="pg-binWrap"
+            style={{
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            }}
+          >
+            {projectGalleries}
+          </div>
+        );
       }
-      projectGalleriesElt = (
-        <div
-          className="pg-binWrap"
-          style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-          }}
-        >
-          {projectGalleries}
-        </div>
-      );
     }
 
     return (

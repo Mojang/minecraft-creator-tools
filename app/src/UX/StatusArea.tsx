@@ -6,7 +6,7 @@ import IStatus, { StatusType } from "../app/Status";
 import Utilities from "./../core/Utilities";
 import Log, { LogItem } from "./../core/Log";
 import { ProjectStatusAreaMode } from "./ProjectEditor";
-import { Toolbar, List, ThemeInput, Button } from "@fluentui/react-northstar";
+import { Toolbar, List, ThemeInput, Button, selectableListBehavior } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretSquareDown, faCaretSquareUp, faSearch, faXmark } from "@fortawesome/free-solid-svg-icons";
 import Project from "../app/Project";
@@ -77,7 +77,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         );
       });
       // this._prepareForFadeout(); // don't fade out text if an operation is ongoing.
-    } else if (status.type === StatusType.operationEnded) {
+    } else if (status.type === StatusType.operationEndedComplete || status.type === StatusType.operationEndedErrors) {
       return new Promise((resolve: () => void, reject: () => void) => {
         this.setState(
           {
@@ -187,6 +187,9 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
   _handleKeyPress(event: KeyboardEvent) {
     if (event.key === "Escape" && this.state.displayEditor) {
       this._toggleToMessage();
+    } else if (event.key === "Enter" && this.state.displayEditor) {
+      this.props.onActionRequested(ProjectEditorAction.projectListCommit);
+      this._toggleToMessage();
     } else if (event.ctrlKey === true && event.key === "e") {
       if (this.state.displayEditor) {
         this._toggleToMessage();
@@ -246,7 +249,13 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         setInterior = true;
       } else {
         if (this.props.carto.status.length > 0) {
-          const lastStatus = this.props.carto.status[this.props.carto.status.length - 1];
+          let lastItemIndex = this.props.carto.status.length - 1;
+          let lastStatus = this.props.carto.status[lastItemIndex];
+
+          while (lastStatus.type === StatusType.operationEndedErrors && lastItemIndex > 0) {
+            lastItemIndex--;
+            lastStatus = this.props.carto.status[lastItemIndex];
+          }
 
           const lastStatusUpdate = new Date().getTime() - lastStatus.time.getTime();
 
@@ -318,7 +327,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
                   }}
                 />
               </span>
-              <span className="sa-placeHolderText">Click or Ctrl-E to search</span>
+              <Button className="sa-placeHolderText">Click or Ctrl-E to search</Button>
             </div>
           );
         }
@@ -371,7 +380,14 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
       interior = (
         <div className="sa-listOuter">
           <div className="sa-list" ref={this.scrollArea}>
-            <List selectable items={li} selectedIndex={index} defaultSelectedIndex={index} />
+            <List
+              selectable
+              items={li}
+              aria-label="List of status items"
+              accessibility={selectableListBehavior}
+              selectedIndex={index}
+              defaultSelectedIndex={index}
+            />
           </div>
           {editor}
         </div>
@@ -384,7 +400,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
           {interior}
         </div>
         <div className="sa-tools">
-          <Toolbar aria-label="Editor toolbar overflow menu" items={toolbarItems} />
+          <Toolbar aria-label="Status area tools" items={toolbarItems} />
         </div>
       </div>
     );

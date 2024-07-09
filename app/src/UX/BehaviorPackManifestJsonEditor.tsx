@@ -2,14 +2,13 @@ import { Component } from "react";
 import IFileProps from "./IFileProps";
 import IFile from "../storage/IFile";
 import "./BehaviorPackManifestJsonEditor.css";
-import NpmPackageJson from "../devproject/NpmPackageJson";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
 import { ListProps } from "@fluentui/react-northstar";
 import ManagedComponentGroup from "../minecraft/ManagedComponentGroup";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import IProperty from "../dataform/IProperty";
-import BehaviorManifestJson from "../minecraft/BehaviorManifestJson";
+import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 import StorageUtilities from "../storage/StorageUtilities";
 import Utilities from "../core/Utilities";
 
@@ -22,7 +21,7 @@ interface IBehaviorPackManifestJsonEditorProps extends IFileProps {
 interface IBehaviorPackManifestJsonEditorState {
   fileToEdit: IFile;
   isLoaded: boolean;
-  selectedItem: NpmPackageJson | ManagedComponentGroup | undefined;
+  selectedItem: BehaviorManifestDefinition | ManagedComponentGroup | undefined;
 }
 
 export default class BehaviorPackManifestJsonEditor extends Component<
@@ -80,7 +79,7 @@ export default class BehaviorPackManifestJsonEditor extends Component<
       if (this.state.fileToEdit !== this._lastFileEdited) {
         this._lastFileEdited = this.state.fileToEdit;
 
-        await NpmPackageJson.ensureOnFile(this.state.fileToEdit, this._handleBehaviorManifestJsonLoaded);
+        await BehaviorManifestDefinition.ensureOnFile(this.state.fileToEdit, this._handleBehaviorManifestJsonLoaded);
       }
     }
 
@@ -90,15 +89,18 @@ export default class BehaviorPackManifestJsonEditor extends Component<
     if (
       this.state.fileToEdit &&
       this.state.fileToEdit.manager !== undefined &&
-      this.state.fileToEdit.manager instanceof NpmPackageJson &&
-      (this.state.fileToEdit.manager as NpmPackageJson).isLoaded &&
+      this.state.fileToEdit.manager instanceof BehaviorManifestDefinition &&
+      (this.state.fileToEdit.manager as BehaviorManifestDefinition).isLoaded &&
       !this.state.isLoaded
     ) {
       this._doUpdate(setState);
     }
   }
 
-  _handleBehaviorManifestJsonLoaded(npmPackageJson: NpmPackageJson, typeA: NpmPackageJson) {
+  _handleBehaviorManifestJsonLoaded(
+    BehaviorManifestJson: BehaviorManifestDefinition,
+    typeA: BehaviorManifestDefinition
+  ) {
     this._doUpdate(true);
   }
 
@@ -106,7 +108,7 @@ export default class BehaviorPackManifestJsonEditor extends Component<
     let selItem = this.state.selectedItem;
 
     if (selItem === undefined && this.state && this.state.fileToEdit && this.state.fileToEdit.manager) {
-      selItem = this.state.fileToEdit.manager as NpmPackageJson;
+      selItem = this.state.fileToEdit.manager as BehaviorManifestDefinition;
     }
 
     if (setState) {
@@ -129,7 +131,7 @@ export default class BehaviorPackManifestJsonEditor extends Component<
       const file = this.state.fileToEdit;
 
       if (file.manager !== null) {
-        const et = file.manager as NpmPackageJson;
+        const et = file.manager as BehaviorManifestDefinition;
 
         et.persist();
       }
@@ -147,7 +149,7 @@ export default class BehaviorPackManifestJsonEditor extends Component<
       return;
     }
 
-    const et = this.state.fileToEdit.manager as NpmPackageJson;
+    const et = this.state.fileToEdit.manager as BehaviorManifestDefinition;
     const itemListings = this.getItemListings();
 
     const key = itemListings[event.selectedIndex].key;
@@ -228,7 +230,7 @@ export default class BehaviorPackManifestJsonEditor extends Component<
       this.props.setActivePersistable(this);
     }
 
-    const bpManifestJsonFile = this.state.fileToEdit.manager as BehaviorManifestJson;
+    const bpManifestJsonFile = this.state.fileToEdit.manager as BehaviorManifestDefinition;
     const def = bpManifestJsonFile.definition;
 
     if (def === undefined) {

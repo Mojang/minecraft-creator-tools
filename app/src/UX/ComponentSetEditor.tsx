@@ -2,7 +2,7 @@ import { Component } from "react";
 import "./ComponentSetEditor.css";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import Database from "../minecraft/Database";
-import { Toolbar, SplitButton, ThemeInput, List, ListProps } from "@fluentui/react-northstar";
+import { Toolbar, SplitButton, ThemeInput, List, ListProps, selectableListBehavior } from "@fluentui/react-northstar";
 import IManagedComponentSetItem from "../minecraft/IManagedComponentSetItem";
 import DataFormUtilities from "../dataform/DataFormUtilities";
 import Utilities from "../core/Utilities";
@@ -249,7 +249,7 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
         <div className="cose-componentArea">
           <div className="cose-titleArea">{title}</div>
           <div className="cose-componentToolBarArea">
-            <Toolbar aria-label="Editor toolbar overflow menu" items={toolbarItems} />
+            <Toolbar aria-label="Component editing toolbar" items={toolbarItems} />
           </div>
           <div className="cose-extraArea">
             <SplitButton
@@ -278,6 +278,8 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
         >
           <List
             selectable
+            aria-label="List of components"
+            accessibility={selectableListBehavior}
             defaultSelectedIndex={selectedIndex}
             selectedIndex={selectedIndex}
             items={componentList}

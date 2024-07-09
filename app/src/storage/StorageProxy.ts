@@ -311,7 +311,7 @@ export default class StorageProxy {
       return;
     }
 
-    await folder.load(false);
+    await folder.load();
 
     const fileNames: string[] = [];
 
@@ -342,7 +342,7 @@ export default class StorageProxy {
       return;
     }
 
-    await folder.load(false);
+    await folder.load();
 
     this._sendMessage(sender, command, this._id, { isDirectory: true, isFile: false });
   }
