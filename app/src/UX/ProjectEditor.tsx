@@ -17,7 +17,6 @@ import {
   faSquareCaretLeft,
   faSquareCaretRight,
   faTools,
-  faLink,
   faComputer,
   faFolderTree,
   faList,
@@ -1634,6 +1633,17 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const zipStorage = new ZipStorage();
 
+    if (!this.props.carto.activeMinecraft) {
+      this.props.carto.ensureDeploymentStorageMinecraft();
+
+      if (this.props.carto.deploymentStorageMinecraft) {
+        this.props.carto.deploymentStorageMinecraft.activeProject = this.props.project;
+        await this.props.carto.deploymentStorageMinecraft.deploy();
+      }
+    } else {
+      await this.props.carto.activeMinecraft.deploy();
+    }
+
     await StorageUtilities.syncFolderTo(
       this.props.carto.deploymentStorage.rootFolder,
       zipStorage.rootFolder,
@@ -1691,12 +1701,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       await ProjectTools.deployProject(
         this.props.carto,
         this.props.project,
-        this.props.carto.deploymentStorage,
-        this.props.carto.deployBehaviorPacksFolder
+        this.props.carto.deploymentStorage.rootFolder
       );
     }
-
-    //    await ProjectExporter.deployAsWorldAndTestAssets(this.props.carto, this.props.project, );
 
     let zipStorage: ZipStorage | undefined;
 
@@ -1713,12 +1720,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const zipBinary = await zipStorage.generateBlobAsync();
 
-    await this.props.carto.notifyOperationEnded(
-      operId,
-      "Export deployment zip of '" + projName + "' created; downloading"
-    );
-
     saveAs(zipBinary, projName + ".zip");
+
+    await this.props.carto.notifyOperationEnded(operId, "Export deployment zip of '" + projName + "' complete.");
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewDeployKey((data.icon as any).key, this._handleDeployAsZipClick, data);
@@ -2585,16 +2589,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       this.props.project.role !== ProjectRole.documentation &&
       this.props.project.role !== ProjectRole.meta
     ) {
-      if (ProjectEditorUtilities.getIsLinkShareable(this.props.project)) {
-        exportKeys[nextExportKey] = {
-          key: nextExportKey,
-          icon: <FontAwesomeIcon icon={faLink} key={nextExportKey} className="fa-lg" />,
-          content: "Shareable Link",
-          onClick: this._handleGetShareableLinkClick,
-          title: "Get a shareable link of this project.",
-        };
-        exportMenu.push(exportKeys[nextExportKey]);
-      }
       nextExportKey = "mcpackAddon";
       exportKeys[nextExportKey] = {
         key: nextExportKey,
@@ -2681,18 +2675,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const deployKeys: { [deployOptionKey: string]: any } = {};
 
     const deployMenu: any = [];
-
-    if (CartoApp.isWeb) {
-      const deployWebLocalKey = "deployToLocalFolder";
-      deployKeys[deployWebLocalKey] = {
-        key: deployWebLocalKey + "A",
-        icon: <FontAwesomeIcon icon={faBox} key={deployWebLocalKey} className="fa-lg" />,
-        content: "Deploy to local Minecraft folder",
-        onClick: this._handleWebLocalDeployClick,
-        title: "Deploys this to a remote Dev Tools server",
-      };
-      deployMenu.push(deployKeys[deployWebLocalKey]);
-    }
 
     for (let i = 0; i < this.props.project.items.length; i++) {
       const pi = this.props.project.items[i];

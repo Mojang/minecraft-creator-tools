@@ -716,10 +716,8 @@ async function validate() {
                   );
                   setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
                 } else if (item.iTp === InfoItemType.testCompleteFail && !options.outputFolder) {
-                  console.error("Test Fail: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
                   setErrorLevel(ERROR_VALIDATION_TESTFAIL);
                 } else if (item.iTp === InfoItemType.error && !options.outputFolder) {
-                  console.error("Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
                   setErrorLevel(ERROR_VALIDATION_ERROR);
                 }
               }

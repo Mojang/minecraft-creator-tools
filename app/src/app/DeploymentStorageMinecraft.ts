@@ -144,12 +144,7 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
     const deployFolderExists = await this._carto.deployBehaviorPacksFolder.exists();
 
     if (deployFolderExists) {
-      await ProjectTools.deployProject(
-        this._carto,
-        this._project,
-        this._carto.deploymentStorage,
-        this._carto.deployBehaviorPacksFolder
-      );
+      await ProjectTools.deployProject(this._carto, this._project, this._carto.deploymentStorage.rootFolder);
     }
   }
 

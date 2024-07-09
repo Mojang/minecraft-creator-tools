@@ -93,9 +93,7 @@ export default class ProjectTools {
     }
   }
 
-  static async deployProject(carto: Carto, project: Project, deploymentStorage: IStorage, deployTargetFolder: IFolder) {
-    const operId = await carto.notifyOperationStarted("Deploying '" + project.name + "'.");
-
+  static async deployProject(carto: Carto, project: Project, deployTargetFolder: IFolder) {
     const targetBehaviorPacksFolder = deployTargetFolder.ensureFolder("development_behavior_packs");
 
     const bpDeployFolderExists = await targetBehaviorPacksFolder.exists();
@@ -121,12 +119,6 @@ export default class ProjectTools {
       if (projectBuild.isInErrorState) {
         project.appendErrors(projectBuild);
 
-        await project.carto.notifyOperationEnded(
-          operId,
-          "Deploying this project could not be completed.",
-          undefined,
-          true
-        );
         return;
       }
 

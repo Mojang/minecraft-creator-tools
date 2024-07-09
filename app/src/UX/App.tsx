@@ -887,36 +887,6 @@ export default class App extends Component<AppProps, AppState> {
         }
       }
 
-      if (updateContent !== undefined && newProject.projectFolder !== null) {
-        try {
-          const zs = new ZipStorage();
-
-          await zs.loadFromBase64(updateContent);
-
-          if (zs.errorStatus) {
-            this.setHomeWithError(
-              "Error processing compressed content from URL." + (zs.errorMessage ? "Details: " + zs.errorMessage : "")
-            );
-            return;
-          }
-
-          await StorageUtilities.syncFolderTo(
-            zs.rootFolder,
-            newProject.projectFolder,
-            false,
-            false,
-            false,
-            ["package.json", "package.lock.json", "gulpfile.js", "just.config.ts"],
-            ["*.ts", "*.js", "*.json"]
-          );
-        } catch (e) {
-          this.setHomeWithError(
-            "Could not process updated content from URL. Check to make sure your shared URL is valid. (" + e + ")"
-          );
-          return;
-        }
-      }
-
       await ProjectUtilities.processNewProject(newProject, suggestedShortName);
 
       await carto.save();

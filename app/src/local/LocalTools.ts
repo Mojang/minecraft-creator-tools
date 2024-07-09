@@ -44,7 +44,7 @@ export default class LocalTools {
   }
 
   static async deploy(carto: Carto, project: Project, storage: IStorage, rootFolder: IFolder, name: string) {
-    await ProjectTools.deployProject(carto, project, storage, rootFolder);
+    await ProjectTools.deployProject(carto, project, rootFolder);
 
     await rootFolder.saveAll();
   }
