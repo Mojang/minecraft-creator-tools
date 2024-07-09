@@ -13,13 +13,13 @@ export enum InfoItemType {
 }
 
 export default interface IInfoItemData {
-  iTp: InfoItemType;
-  gId: string;
-  gIx: number;
-  m: string | undefined;
-  p: string | null | undefined;
-  d: string | boolean | number | object | number[] | undefined;
-  iId: string | undefined;
+  iTp: InfoItemType; // type
+  gId: string; // generatorId
+  gIx: number; // generatorIndex
+  m: string | undefined; // message
+  p: string | null | undefined; // item project path
+  d: string | boolean | number | object | number[] | undefined; // data
+  iId: string | undefined; // item id
   c: string | undefined;
   fs: { [setName: string]: { [measureName: string]: number | undefined } | undefined } | undefined;
 }

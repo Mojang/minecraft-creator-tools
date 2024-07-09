@@ -10,6 +10,16 @@ export default class MinecraftUtilities {
     return differenceSet.hasFileOnlyOfExtension("js", "ts", "map") && !differenceSet.getHasDeletions();
   }
 
+  static getAfterPackPath(path: string) {
+    const hashIndex = path.indexOf("#");
+
+    if (hashIndex >= 0) {
+      path = path.substring(hashIndex + 1);
+    }
+
+    return path;
+  }
+
   static makeNameFolderSafe(tokenName: string) {
     tokenName = Utilities.replaceAll(tokenName, " ", "-").toLowerCase();
 

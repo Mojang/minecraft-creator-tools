@@ -348,7 +348,7 @@ export default class LocalEnvironment {
     } else if (item.level === LogItemLevel.important) {
       console.warn(consoleText_fgYellow + context + "Important: " + item.message + consoleText_reset);
     } else {
-      console.log(context + "Log: " + item.message);
+      console.log(context + item.message);
     }
   }
 

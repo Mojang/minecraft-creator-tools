@@ -91,9 +91,15 @@ program
   .command("validate")
   .alias("val")
   .description("Validate the current project.")
-  .addArgument(new Argument("[suite]", "Specifies the type of validation suite to run."))
+  .addArgument(
+    new Argument("[suite]", "Specifies the type of validation suite to run.")
+      .choices(["addon", "currentplatform", "main"])
+      .default("main", "main - runs most available validation tests.")
+  )
   .addArgument(
     new Argument("[aggregateReports]", "Whether to aggregate reports across projects at the end of the run.")
+      .choices(["true", "false"])
+      .default("false", "false - does not aggregate reports at the end of processing.")
   )
   .action((suiteIn?: string, aggregateReportsIn?: string) => {
     suite = suiteIn;
@@ -163,6 +169,10 @@ if (options.displayOnly) {
   if (options.outputFolder === "out") {
     options.outputFolder = undefined;
   }
+} else if (options.outputFolder === "out") {
+  Log.message("Outputting full results to the `out` folder.");
+
+  localEnv.displayInfo = true;
 }
 
 if (options.logVerbose) {
@@ -675,7 +685,7 @@ async function validate() {
         },
         outputFolder: options.outputFolder,
         inputFolder: options.inputFolder,
-        displayInfo: !options.outputFolder,
+        displayInfo: localEnvConst.displayInfo,
         displayVerbose: localEnvConst.displayVerbose,
         force: force,
       });

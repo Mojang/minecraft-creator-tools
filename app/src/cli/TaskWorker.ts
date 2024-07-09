@@ -161,7 +161,6 @@ async function validateAndDisposeProject(
   await pis.generateForProject();
 
   const pisData = pis.getDataObject();
-  const content = JSON.stringify(pisData, null, 2);
 
   const projectSet = {
     projectContainerName: project.containerName,
@@ -242,7 +241,13 @@ async function validateAndDisposeProject(
     }
 
     if (mcrJsonFile) {
-      mcrJsonFile.setContent(content);
+      if (pisData.index) {
+        pisData.index = undefined;
+      }
+
+      const mcrContent = JSON.stringify(pisData, null, 2);
+
+      mcrJsonFile.setContent(mcrContent);
 
       mcrJsonFile.saveContent();
     }

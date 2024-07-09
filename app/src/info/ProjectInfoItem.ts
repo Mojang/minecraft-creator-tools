@@ -3,6 +3,7 @@
 
 import ProjectItem from "../app/ProjectItem";
 import Utilities from "../core/Utilities";
+import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import IInfoItemData from "./IInfoItemData";
 import { InfoItemType } from "./IInfoItemData";
 
@@ -100,6 +101,26 @@ export default class ProjectInfoItem {
     }
   }
 
+  get projectItemPath() {
+    if (this.projectItem) {
+      return this.projectItem.projectPath;
+    } else if (this.#data.p) {
+      return this.#data.p;
+    }
+
+    return undefined;
+  }
+
+  get shortProjectItemPath() {
+    if (this.projectItem && this.projectItem.projectPath) {
+      return MinecraftUtilities.getAfterPackPath(this.projectItem.projectPath);
+    } else if (this.#data.p) {
+      return MinecraftUtilities.getAfterPackPath(this.#data.p);
+    }
+
+    return undefined;
+  }
+
   get typeSummaryShort() {
     let short = this.typeSummary.toUpperCase();
 
@@ -115,6 +136,8 @@ export default class ProjectInfoItem {
 
     if (this.projectItem) {
       summaryString += "(" + this.projectItem.projectPath + ") ";
+    } else if (this.#data.p) {
+      summaryString += "(" + this.#data.p + ") ";
     }
 
     if (this.message) {
@@ -295,14 +318,15 @@ export default class ProjectInfoItem {
     projectItem?: ProjectItem,
     data?: string | boolean | number | object | number[],
     itemId?: string,
-    content?: string
+    content?: string,
+    projectItemPath?: string
   ) {
     this.#data = {
       iTp: itemType,
       gId: generatorId,
       gIx: generatorIndex,
       m: message,
-      p: projectItem ? projectItem.projectPath : undefined,
+      p: projectItem ? projectItem.projectPath : projectItemPath,
       d: data,
       iId: itemId,
       c: content,

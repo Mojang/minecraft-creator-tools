@@ -87,7 +87,8 @@ export default class ProjectInfoSet {
             projectItem,
             item.d,
             item.iId,
-            item.c
+            item.c,
+            item.p
           );
 
           this.itemsByStoragePath[item.p]?.push(projectInfoItem);
@@ -500,9 +501,10 @@ export default class ProjectInfoSet {
 
     summaryString += "[" + item.generatorId + Utilities.frontPadToLength(item.generatorIndex, 3, "0") + "] ";
 
-    if (item.projectItem) {
-      summaryString += "(" + item.projectItem.projectPath + ") ";
+    if (item.shortProjectItemPath) {
+      summaryString += "(" + item.shortProjectItemPath + ") ";
     }
+
     summaryString += this.getEffectiveMessage(item);
 
     if (item.data) {

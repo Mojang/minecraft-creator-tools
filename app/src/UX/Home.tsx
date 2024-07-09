@@ -1188,7 +1188,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     let termsArea = (
       <span>
         <a
-          href={constants.homeUrl + "/docs/license.html"}
+          href={constants.repositoryUrl + "/blob/main/LICENSE"}
           className="home-header-docsLink"
           target="_blank"
           rel="noreferrer noopener"
