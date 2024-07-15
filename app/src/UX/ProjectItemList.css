@@ -51,6 +51,7 @@
 
 .pil-fixedLine {
   padding-left: 17px;
+  font-size: 0.875rem;
   height: 32px;
   padding-top: 6px;
 }
@@ -155,7 +156,6 @@
   box-shadow: none;
   width: 24px;
   height: 25px;
-  background-color: green;
 }
 
 .pil-itemIndicatorInterior {

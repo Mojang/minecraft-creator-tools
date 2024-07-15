@@ -176,7 +176,7 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
     }
 
     return (
-      <Button className={outerClassName} key="tileOuter" onClick={this._projectClick}>
+      <Button className={outerClassName} key="tileOuter" onClick={this._projectClick} role="button">
         <div
           className="itbi-button"
           style={{

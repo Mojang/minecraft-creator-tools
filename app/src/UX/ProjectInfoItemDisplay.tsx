@@ -163,8 +163,8 @@ export default class ProjectInfoItemDisplay extends Component<
     }
 
     return (
-      <div className="piid-outer">
-        <div
+      <tr className="piid-outer">
+        <td
           className={"piid-cell piid-indicator " + indicatorCellBg}
           style={{
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
@@ -172,8 +172,8 @@ export default class ProjectInfoItemDisplay extends Component<
           }}
         >
           {typeElt}
-        </div>
-        <div
+        </td>
+        <td
           className="piid-cell"
           style={{
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
@@ -181,9 +181,9 @@ export default class ProjectInfoItemDisplay extends Component<
           }}
         >
           {this.props.item.generatorId}
-        </div>
+        </td>
 
-        <div
+        <td
           className="piid-cell"
           style={{
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
@@ -191,8 +191,8 @@ export default class ProjectInfoItemDisplay extends Component<
           }}
         >
           {this.props.item.generatorIndex}
-        </div>
-        <div
+        </td>
+        <td
           className="piid-cell"
           style={{
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
@@ -200,8 +200,8 @@ export default class ProjectInfoItemDisplay extends Component<
           }}
         >
           {actions}
-        </div>
-        <div
+        </td>
+        <td
           className="piid-cell"
           style={{
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
@@ -209,8 +209,8 @@ export default class ProjectInfoItemDisplay extends Component<
           }}
         >
           {message}
-        </div>
-        <div
+        </td>
+        <td
           className="piid-cell piid-link"
           style={{
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
@@ -220,8 +220,8 @@ export default class ProjectInfoItemDisplay extends Component<
           onClick={this._projectClick}
         >
           {location}
-        </div>
-      </div>
+        </td>
+      </tr>
     );
   }
 }

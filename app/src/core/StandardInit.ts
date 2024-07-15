@@ -8,9 +8,9 @@ export const minecraftToolDarkTheme = {
       brand: {
         background: "#3c8527", // accent background for things like buttons. complemented with fore*4
         background1: "#313233", // main outermost background. in a dark theme, this should be dark. complemented with fore*1
-        background2: "#48494A",
-        background3: "#5A5B5C",
-        background4: "#656667",
+        background2: "#48494a",
+        background3: "#5a5b5c",
+        background4: "#bfbbb9",
         background5: "#5d7850", // subtle accent background
         background6: "#040404", // subtle theme background.  complemented with fore*6
         foreground: "red",
@@ -32,7 +32,7 @@ export const minecraftToolDarkTheme = {
         backgroundHover1: "pink",
         backgroundDisabled: "pink",
         backgroundDisabled1: "pink",
-        foregroundActive: "#CCCCCC",
+        foregroundActive: "#cccccc",
         foregroundActive1: "hotpink",
         foregroundActive2: "hotpink",
         foregroundActive3: "pink",
@@ -47,7 +47,7 @@ export const minecraftToolDarkTheme = {
         backgroundFocus1: "purple",
         backgroundFocus2: "hotpink",
         backgroundFocus3: "hotpink",
-        foregroundFocus: "#CCCCCC",
+        foregroundFocus: "#cccccc",
         foregroundFocus1: "hotpink",
         foregroundFocus2: "hotpink",
         foregroundFocus3: "hotpink",
@@ -96,18 +96,18 @@ export const minecraftToolLightTheme = {
     bodyFontFamily: '"Noto Sans", "Segoe UI", system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif',
     colorScheme: {
       brand: {
-        background: "#3c8527", // accent background for things like buttons. complemented with fore*4
-        background1: "#E6E4E2", // main outermost background. in a dark theme, this should be dark. complemented with fore*1
-        background2: "#dbd9d7", // complement background. in a dark theme, this should be dark, but slightly different vs back*1. complemented with fore*2
-        background3: "#cccac7",
-        background4: "#bfbbb9",
-        background5: "#649656", // subtle accent background
-        background6: "#B3B3B3", // subtle theme background.  complemented with fore*6
+        background: "#6bc349", // accent background for things like buttons. complemented with fore*4
+        background1: "#e6e4e2", // main outermost background. in a dark theme, this should be dark. complemented with fore*1
+        background2: "#cccac7", // complement background. in a dark theme, this should be dark, but slightly different vs back*1. complemented with fore*2
+        background3: "#bfbbb9",
+        background4: "#7b7876",
+        background5: "#52a435", // subtle accent background
+        background6: "#b3b3b3", // subtle theme background.  complemented with fore*6
         foreground: "red",
         foreground1: "#1a1a1a", // main foreground color.  in a dark theme, this should be light.
         foreground2: "#1a1a1a", // complement foreground color
         foreground3: "#1a1a1a",
-        foreground4: "#ffffff", // button complement and core accent color to background
+        foreground4: "#1a1a1a", // button complement and core accent color to background
         foreground5: "#1a1a1a",
         foreground6: "#4d4d4d", // subtle.
         shadow: "teal",

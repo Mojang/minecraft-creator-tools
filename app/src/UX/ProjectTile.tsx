@@ -228,7 +228,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
               }}
             >
               <div className="pts-mainArea">
-                <div className="pts-title">{proj.title}</div>
+                <h3 className="pts-title">{proj.title}</h3>
               </div>
               <div className="pts-descriptionArea">
                 <div
@@ -290,7 +290,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
           >
             <div className="pt-grid">
               <div className="pt-mainArea">
-                <div className="pt-title">{proj.title}</div>
+                <h3 className="pt-title">{proj.title}</h3>
                 <div className="pt-ghpath">
                   <a
                     href={ghurl}

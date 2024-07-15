@@ -90,25 +90,29 @@ export default class FileExplorerFileDetail extends Component<
 
     if (this.props.isExpandable) {
       expandable = (
-        <div className="fexfid-expander" onClick={this._handleExpanderClick}>
+        <button
+          className="fexfid-expander"
+          onClick={this._handleExpanderClick}
+          title={"Expand/collapse " + this.props.file.name}
+        >
           {this.props.isExpanded ? (
             <FontAwesomeIcon icon={faCaretDown} className="fa-lg" />
           ) : (
             <FontAwesomeIcon icon={faCaretRight} className="fa-lg" />
           )}
-        </div>
+        </button>
       );
     }
 
     return (
       <div className={outerCss} title={title} style={{ backgroundColor: backgroundColor }}>
         {expandable}
-        <div className="fexfid-icon" onClick={this._handleFileClick}>
-          <FontAwesomeIcon icon={faFile} className="fa-lg" />
-        </div>
-        <div className="fexfid-label" onClick={this._handleFileClick}>
-          {this.props.file.name}
-        </div>
+        <button className="fexfid-summary" onClick={this._handleFileClick} title={"Select " + this.props.file.name}>
+          <div className="fexfid-icon">
+            <FontAwesomeIcon icon={faFile} className="fa-lg" />
+          </div>
+          <div className="fexfid-label">{this.props.file.name}</div>
+        </button>
       </div>
     );
   }

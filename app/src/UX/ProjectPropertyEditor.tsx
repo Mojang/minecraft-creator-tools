@@ -10,7 +10,6 @@ import {
   Dialog,
   Input,
   InputProps,
-  Accordion,
   TextArea,
   TextAreaProps,
   DropdownProps,
@@ -671,7 +670,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
         }}
       >
-        <div
+        <h2
           className="ppe-header"
           style={{
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
@@ -679,7 +678,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           }}
         >
           Project Properties
-        </div>
+        </h2>
 
         <div
           className="ppe-grid"
@@ -844,107 +843,93 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           <div className="ppe-ghbutton">{gitHubConnect}</div>
           {statusArea}
           <div className="ppe-advancedArea">
-            <Accordion
-              defaultActiveIndex={[0]}
-              panels={[
-                {
-                  title: "Tools",
-                  content: (
-                    <div key="toolsAcc" className="ppe-toolArea">
-                      {localTools}
-                    </div>
-                  ),
-                },
-                {
-                  title: "Advanced",
-                  content: (
-                    <div key="adv" className="ppe-advgrid">
-                      <div className="ppe-label ppe-bpuniqueidlabel">Behavior Pack Unique Id</div>
-                      <div className="ppe-bpuniqueidinput">
-                        <Input
-                          inline
-                          clearable
-                          error={behaviorPackUniqueIdIsError}
-                          onChange={this._handleBehaviorPackUuidChanged}
-                          value={this.props.project.defaultBehaviorPackUniqueId}
-                          className="ppe-bpuniqueIdInputValue"
-                        />
-                      </div>
-                      <div className="ppe-bpuniqueidcreatenew">
-                        <Button
-                          content="Create new"
-                          icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
-                          onClick={this._createNewBehaviorPackUniqueId}
-                          iconPosition="before"
-                          primary
-                        />
-                      </div>
-                      <div className="ppe-label ppe-rpuniqueidlabel">Resource Pack Unique Id</div>
-                      <div className="ppe-rpuniqueidinput">
-                        <Input
-                          inline
-                          clearable
-                          error={resourcePackUniqueIdIsError}
-                          onChange={this._handleResourcePackUuidChanged}
-                          value={this.props.project.defaultResourcePackUniqueId}
-                          className="ppe-rpuniqueIdInputValue"
-                        />
-                      </div>
-                      <div className="ppe-rpuniqueidcreatenew">
-                        <Button
-                          content="Create new"
-                          icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
-                          onClick={this._createNewResourcePackUniqueId}
-                          iconPosition="before"
-                          primary
-                        />
-                      </div>
-
-                      <div className="ppe-label ppe-datauniqueidlabel">Data Unique Id</div>
-                      <div className="ppe-datauniqueidinput">
-                        <Input
-                          inline
-                          clearable
-                          error={dataUniqueIdIsError}
-                          onChange={this._handleBehaviorPackUuidChanged}
-                          value={this.props.project.defaultDataUniqueId}
-                          className="ppe-uniqueIdInputValue"
-                        />
-                      </div>
-                      <div className="ppe-datauniqueidcreatenew">
-                        <Button
-                          content="Create new"
-                          icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
-                          onClick={this._createNewDataUniqueId}
-                          iconPosition="before"
-                          primary
-                        />
-                      </div>
-                      <div className="ppe-label ppe-scriptuniqueidlabel">Script Unique Id</div>
-                      <div className="ppe-scriptuniqueidinput">
-                        <Input
-                          inline
-                          clearable
-                          error={scriptUniqueIdIsError}
-                          onChange={this._handleBehaviorPackUuidChanged}
-                          value={this.props.project.defaultScriptModuleUniqueId}
-                          className="ppe-uniqueIdInputValue"
-                        />
-                      </div>
-                      <div className="ppe-scriptuniqueidcreatenew">
-                        <Button
-                          content="Create new"
-                          icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
-                          onClick={this._createNewScriptUniqueId}
-                          iconPosition="before"
-                          primary
-                        />
-                      </div>
-                    </div>
-                  ),
-                },
-              ]}
-            />
+            <h3>Tools</h3>
+            <div key="toolsAcc" className="ppe-toolArea">
+              {localTools}
+            </div>
+            <h3>Advanced</h3>
+            <div key="adv" className="ppe-advgrid">
+              <div className="ppe-label ppe-bpuniqueidlabel">Behavior Pack Unique Id</div>
+              <div className="ppe-bpuniqueidinput">
+                <Input
+                  inline
+                  clearable
+                  error={behaviorPackUniqueIdIsError}
+                  onChange={this._handleBehaviorPackUuidChanged}
+                  value={this.props.project.defaultBehaviorPackUniqueId}
+                  className="ppe-bpuniqueIdInputValue"
+                />
+              </div>
+              <div className="ppe-bpuniqueidcreatenew">
+                <Button
+                  content="Create new"
+                  icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
+                  onClick={this._createNewBehaviorPackUniqueId}
+                  iconPosition="before"
+                  primary
+                />
+              </div>
+              <div className="ppe-label ppe-rpuniqueidlabel">Resource Pack Unique Id</div>
+              <div className="ppe-rpuniqueidinput">
+                <Input
+                  inline
+                  clearable
+                  error={resourcePackUniqueIdIsError}
+                  onChange={this._handleResourcePackUuidChanged}
+                  value={this.props.project.defaultResourcePackUniqueId}
+                  className="ppe-rpuniqueIdInputValue"
+                />
+              </div>
+              <div className="ppe-rpuniqueidcreatenew">
+                <Button
+                  content="Create new"
+                  icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
+                  onClick={this._createNewResourcePackUniqueId}
+                  iconPosition="before"
+                  primary
+                />
+              </div>
+              <div className="ppe-label ppe-datauniqueidlabel">Data Unique Id</div>
+              <div className="ppe-datauniqueidinput">
+                <Input
+                  inline
+                  clearable
+                  error={dataUniqueIdIsError}
+                  onChange={this._handleBehaviorPackUuidChanged}
+                  value={this.props.project.defaultDataUniqueId}
+                  className="ppe-uniqueIdInputValue"
+                />
+              </div>
+              <div className="ppe-datauniqueidcreatenew">
+                <Button
+                  content="Create new"
+                  icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
+                  onClick={this._createNewDataUniqueId}
+                  iconPosition="before"
+                  primary
+                />
+              </div>
+              <div className="ppe-label ppe-scriptuniqueidlabel">Script Unique Id</div>
+              <div className="ppe-scriptuniqueidinput">
+                <Input
+                  inline
+                  clearable
+                  error={scriptUniqueIdIsError}
+                  onChange={this._handleBehaviorPackUuidChanged}
+                  value={this.props.project.defaultScriptModuleUniqueId}
+                  className="ppe-uniqueIdInputValue"
+                />
+              </div>
+              <div className="ppe-scriptuniqueidcreatenew">
+                <Button
+                  content="Create new"
+                  icon={<FontAwesomeIcon icon={faDice} className="fa-lg" />}
+                  onClick={this._createNewScriptUniqueId}
+                  iconPosition="before"
+                  primary
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

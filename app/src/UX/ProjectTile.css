@@ -3,7 +3,7 @@
     margin-left: 10px;
     margin-top: 12px;
     width: 340px;
-    height: 191px;
+    min-height: 191px;
     max-width: calc(100vw - 60px);
     display: inline-block;
     border: solid 2px #202020;
@@ -23,7 +23,7 @@
     width: 340px;
     margin-left: 6px;
     margin-right: 6px;
-    height: 191px;
+    min-height: 191px;
     max-width: calc(100vw - 60px);
     display: inline-block;
     border: solid 2px #202020;
@@ -40,7 +40,7 @@
   display: grid;
   height: 100%;
   grid-template-columns: 56px 1fr;
-  grid-template-rows: 62px 80px 45px;
+  grid-template-rows: 1fr 80px 45px;
 }
 
 .pt-mainArea {
@@ -151,6 +151,8 @@
   font-weight: bold;
   padding-top: 1px;
   text-overflow: ellipsis;
+  margin-top: 0px;
+  margin-bottom: 0px;
   min-height: 22px;
   font-size: medium;
 }
@@ -184,6 +186,7 @@
   display: grid;
   height: 100%;
   cursor: pointer;
+  text-align: left;
   grid-template-rows: 20px 68px 50px;
 }
 
@@ -218,6 +221,8 @@
   vertical-align: middle;
   text-overflow: ellipsis;
   overflow-x: hidden;
+  margin-top: 0px;
+  margin-bottom: 0px;
   width: 320px;
   padding-left: 3px;
   padding-top: 3px;

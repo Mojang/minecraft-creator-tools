@@ -4,10 +4,6 @@
   padding-bottom: 6px;
   display: block;
   margin-top: 3px;
-  border-radius: 3px 3px 0px 0px;
-  border-left: solid 1px transparent;
-  border-bottom: solid 1px transparent;
-  border-right: solid 1px transparent;
 }
 
 .label-text {
@@ -106,14 +102,12 @@
 }
 
 .label-button {
-  padding-left: 7px;
-  padding-right: 7px;
+  padding-left: 1px;
   padding-top: 7px;
   padding-bottom: 6px;
   vertical-align: top;
+  min-width: 31px;
   display: inline-block;
-  min-width: 32px;
-  height: 32px;
   background-color: #000000;
   color: #c0c0c0;
 }

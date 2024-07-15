@@ -20,6 +20,7 @@ import {
   ThemeInput,
   selectableListBehavior,
   selectableListItemBehavior,
+  listItemBehavior,
 } from "@fluentui/react-northstar";
 
 import { AssetsLabel, EyeSlashLabel, FunctionsLabel, TypesLabel } from "./Labels";
@@ -357,15 +358,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       return;
     }
 
-    if (this.props.filteredItems === undefined && event.selectedIndex === 0) {
+    if (this.props.filteredItems === undefined && event.selectedIndex === 1) {
       if (this.props && this.props.onModeChangeRequested !== undefined) {
         this.props.onModeChangeRequested(ProjectEditorMode.actions);
       }
-    } else if (this.props.filteredItems === undefined && event.selectedIndex === 1) {
+    } else if (this.props.filteredItems === undefined && event.selectedIndex === 2) {
       if (this.props && this.props.onModeChangeRequested !== undefined) {
         this.props.onModeChangeRequested(ProjectEditorMode.properties);
       }
-    } else if (this.props.filteredItems === undefined && event.selectedIndex === 2) {
+    } else if (this.props.filteredItems === undefined && event.selectedIndex === 3) {
       if (this.props && this.props.onModeChangeRequested !== undefined) {
         this.props.onModeChangeRequested(ProjectEditorMode.inspector);
       }
@@ -671,11 +672,11 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   }
 
   _handleItemTypeToggle(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
-    if (data.header.key) {
-      const period = data.header.key.lastIndexOf(".");
+    if (data.content && data.content.key) {
+      const period = data.content.key.lastIndexOf(".");
 
       if (period >= 0) {
-        const liIndex = parseInt(data.header.key.substring(period + 1));
+        const liIndex = parseInt(data.content.key.substring(period + 1));
 
         if (!isNaN(liIndex)) {
           if (this.props.carto.collapsedTypes.includes(liIndex)) {
@@ -703,9 +704,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   _handleItemTypeDoubleClick(e: SyntheticEvent<HTMLDivElement, Event>, data?: any | undefined) {
     if (e && e.currentTarget && e.currentTarget.title) {
       for (let i = 0; i < MaxItemTypes; i++) {
-        const name = "Toggle " + ProjectItemUtilities.getPluralDescriptionForType(i) + " visibility";
+        const hideName = "Hide " + ProjectItemUtilities.getPluralDescriptionForType(i) + " items";
+        const showName = "Show " + ProjectItemUtilities.getPluralDescriptionForType(i) + " items";
 
-        if (name === e.currentTarget.title) {
+        if (hideName === e.currentTarget.title || showName === e.currentTarget.title) {
           this.props.carto.ensureAllTypesCollapsedExcept(i);
 
           this.props.carto.save();
@@ -725,8 +727,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   }
 
   _handleStoragePathToggle(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
-    if (data && data.header && data.header.key && this.props.project) {
-      const keyData = data.header.key.split(".");
+    if (data && data.content && data.content.key && this.props.project) {
+      const keyData = data.content.key.split(".");
 
       if (keyData.length === 3) {
         const folder = keyData[2];
@@ -848,13 +850,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     let toggle = <></>;
 
+    const isExpanded = !this.props.carto.collapsedTypes.includes(itemType);
+
     if (isToggleable) {
       toggle = (
-        <div className="pil-itemTypeCollapsedToggle">
-          <FontAwesomeIcon
-            icon={this.props.carto.collapsedTypes.includes(itemType) ? faCaretRight : faCaretDown}
-            className="fa-md"
-          />
+        <div className="pil-itemTypeCollapsedToggle" title={isExpanded ? "Hide" : "Show"}>
+          <FontAwesomeIcon icon={isExpanded ? faCaretDown : faCaretRight} className="fa-md" />
         </div>
       );
     }
@@ -862,12 +863,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._projectListItems.push({
       accessibility: selectableListItemBehavior,
       onClick: this._handleItemTypeToggle,
-      header: (
+      content: (
         <div
           className="pil-itemTypeHeader"
           key={"eit." + itemType}
           onDoubleClick={this._handleItemTypeDoubleClick}
-          title={"Toggle " + name + " visibility"}
+          title={isExpanded ? "Hide " + name + " items" : "Show " + name + " items"}
           style={{
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
             backgroundColor: ColorUtilities.toCss(color),
@@ -904,17 +905,17 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     let toggle = <></>;
 
     if (isToggleable) {
+      const isExpanded = !this.props.project?.collapsedStoragePaths.includes(storagePathFolder);
+
       toggle = (
         <div
           className="pil-storagePathCollapsedToggle"
           style={{
             backgroundColor: ColorUtilities.toCss(ColorUtilities.darker(typeColor, 0.1)),
           }}
+          title={isExpanded ? "Hide" : "Show"}
         >
-          <FontAwesomeIcon
-            icon={this.props.project?.collapsedStoragePaths.includes(storagePathFolder) ? faCaretRight : faCaretDown}
-            className="fa-md"
-          />
+          <FontAwesomeIcon icon={isExpanded ? faCaretRight : faCaretDown} className="fa-md" />
         </div>
       );
     }
@@ -922,7 +923,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._projectListItems.push({
       accessibility: selectableListItemBehavior,
       onClick: this._handleStoragePathToggle,
-      header: (
+      content: (
         <div
           className="pil-pathHeader"
           key={"eita." + itemType + "." + storagePathFolder}
@@ -931,7 +932,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
           }}
         >
-          <div className="pil-itemTypeTag" style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}>
+          <div
+            className="pil-itemTypeTag"
+            style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}
+            aria-hidden="true"
+            role="presentation"
+          >
             &#160;
           </div>
           {toggle}
@@ -1011,6 +1017,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
               gridColumn: issues ? 3 : 4,
               backgroundImage: sourceImage,
             }}
+            aria-hidden="true"
+            role="presentation"
           >
             &#160;
           </span>
@@ -1043,7 +1051,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         accessibility: selectableListItemBehavior,
         content: (
           <div className="pil-item" key={"pil-ro" + projectItem.projectPath}>
-            <div className="pil-itemTypeTag" style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}>
+            <div
+              className="pil-itemTypeTag"
+              style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}
+              aria-hidden="true"
+              role="presentation"
+            >
               &#160;
             </div>
             <span
@@ -1121,6 +1134,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           className="pil-itemTypeTag"
           key={"pil-itt." + projectItem.projectPath}
           style={{ backgroundColor: ColorUtilities.toCss(typeColor) }}
+          aria-hidden="true"
+          role="presentation"
         >
           &#160;
         </div>
@@ -1211,6 +1226,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           <MenuButton
             style={{
               gridColumn: 4,
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground4,
             }}
             className="pil-itemIndicator"
             key={"pil-mbc." + projectItem.projectPath}
@@ -1224,8 +1241,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       this._projectListItems.push({
         accessibility: selectableListItemBehavior,
+
         content: (
-          <div className="pil-item" key={"pil-eoa" + projectItem.projectPath}>
+          <div className="pil-item" key={"pil-eoa" + projectItem.projectPath} aria-haspopup={true}>
             {itemItems}
           </div>
         ),
@@ -1278,7 +1296,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             />
             <MenuButton
               trigger={
-                <span className="pil-contextMenuButton">
+                <span className="pil-contextMenuButton" aria-haspopup="false">
                   <Button content="..." aria-label="Click button" />
                 </span>
               }
@@ -1486,10 +1504,29 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   render() {
     this._projectListItems = [];
 
+    const searchSummaryContent = (
+      <div
+        className="pil-fixedLineRow"
+        key="pil-fixpropj"
+        aria-live="assertive"
+        style={{
+          height: this.props.filteredItems ? "32px" : "0px",
+        }}
+      >
+        <div className="pil-projectName">
+          {this.props.filteredItems ? this.props.filteredItems.length + " items found" : ""}
+        </div>
+      </div>
+    );
+    this._projectListItems.push({
+      accessibility: listItemBehavior,
+      content: searchSummaryContent,
+    });
+
     if (this.props.filteredItems === undefined) {
       this._projectListItems.push({
         accessibility: selectableListItemBehavior,
-        header: (
+        content: (
           <div className="pil-fixedLine" key="pil-ats">
             Actions
           </div>
@@ -1501,7 +1538,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       if (this.props.allInfoSet.info.defaultIcon && this.props.allInfoSet.info.defaultIcon) {
         projectContent = (
-          <div className="pil-fixedLineRow" key="pil-fixpropjRowA">
+          <div className="pil-fixedLineRow" key="pil-fixpropj">
             <div className="pil-projectName">{whatIsThis}</div>
             <div
               className="pil-projectIcon"
@@ -1521,12 +1558,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       this._projectListItems.push({
         accessibility: selectableListItemBehavior,
-        header: projectContent,
+        content: projectContent,
       });
 
       this._projectListItems.push({
         accessibility: selectableListItemBehavior,
-        header: (
+        content: (
           <div className="pil-fixedLine" key="pil-insp">
             Inspector
           </div>
@@ -1615,17 +1652,17 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       }
     }
 
-    let selectedItemIndex = 0;
-    let itemsAdded = 0;
+    let selectedItemIndex = 1;
+    let itemsAdded = 1;
 
     if (this.props.filteredItems === undefined) {
       if (this.props.editorMode === ProjectEditorMode.properties) {
-        selectedItemIndex = 1;
-      } else if (this.props.editorMode === ProjectEditorMode.inspector) {
         selectedItemIndex = 2;
+      } else if (this.props.editorMode === ProjectEditorMode.inspector) {
+        selectedItemIndex = 3;
       }
 
-      itemsAdded = 3;
+      itemsAdded = 4;
     }
 
     let lastItemType = -1;

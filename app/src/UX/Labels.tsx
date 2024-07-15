@@ -36,10 +36,13 @@ import {
   faImage,
   faCow,
   faDownload,
+  faListDots,
 } from "@fortawesome/free-solid-svg-icons";
+
 import "./Labels.css";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
 
 export interface ICompactableLabelProps {
   isCompact: boolean;
@@ -544,15 +547,15 @@ export const EyeSlashLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISe
     style={{
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.background2,
+        : props.theme.siteVariables?.colorScheme.brand.background4,
       borderRightColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.background2,
+        : props.theme.siteVariables?.colorScheme.brand.background4,
       color: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.foreground6,
       backgroundColor: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background2
+        ? props.theme.siteVariables?.colorScheme.brand.background4
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
   >
@@ -569,13 +572,17 @@ export const FunctionsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & IS
     style={{
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.background2,
+        : props.theme.siteVariables?.colorScheme.brand.background4,
       borderRightColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.background2,
-      color: "#EEBBBB",
+        : props.theme.siteVariables?.colorScheme.brand.background4,
+      color:
+        (CartoApp.theme === CartoThemeStyle.light && !props.isSelected) ||
+        (CartoApp.theme === CartoThemeStyle.dark && props.isSelected)
+          ? "#774444"
+          : "#FFCCCC",
       backgroundColor: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background2
+        ? props.theme.siteVariables?.colorScheme.brand.background4
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
   >
@@ -592,13 +599,17 @@ export const AssetsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISele
     style={{
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.background2,
+        : props.theme.siteVariables?.colorScheme.brand.background4,
       borderRightColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.background2,
-      color: "#BBEEBB",
+        : props.theme.siteVariables?.colorScheme.brand.background4,
+      color:
+        (CartoApp.theme === CartoThemeStyle.light && !props.isSelected) ||
+        (CartoApp.theme === CartoThemeStyle.dark && props.isSelected)
+          ? "#446D44"
+          : "#C9EDC9",
       backgroundColor: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background2
+        ? props.theme.siteVariables?.colorScheme.brand.background4
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
   >
@@ -613,16 +624,19 @@ export const TypesLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelec
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
     style={{
-      paddingLeft: "4px",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.background2,
+        : props.theme.siteVariables?.colorScheme.brand.background4,
       borderRightColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.background2,
-      color: "#BBBBEE",
+        : props.theme.siteVariables?.colorScheme.brand.background4,
+      color:
+        (CartoApp.theme === CartoThemeStyle.light && !props.isSelected) ||
+        (CartoApp.theme === CartoThemeStyle.dark && props.isSelected)
+          ? "#444477"
+          : "#DADAFF",
       backgroundColor: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background2
+        ? props.theme.siteVariables?.colorScheme.brand.background4
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
   >
@@ -645,7 +659,10 @@ export const InfoTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISel
 ) => (
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
+    role="tab"
     style={{
+      width: !props.isCompact ? "130px" : "",
+      fontWeight: props.isSelected ? "bold" : "normal",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
@@ -653,15 +670,23 @@ export const InfoTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISel
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+        ? props.theme.siteVariables?.colorScheme.brand.foreground4
+        : props.theme.siteVariables?.colorScheme.brand.foreground1,
       backgroundColor: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background2
+        ? props.theme.siteVariables?.colorScheme.brand.background4
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
   >
-    <FontAwesomeIcon icon={faCircleExclamation} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Info</span> : <></>}
+    <span
+      style={{
+        borderBottom: props.isSelected ? "solid 2px" : "solid 0px",
+        padding: "4px",
+        borderColor: props.isSelected ? props.theme.siteVariables?.colorScheme.brand.foreground4 : "transparent",
+      }}
+    >
+      <FontAwesomeIcon icon={faListDots} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">Items</span> : <></>}
+    </span>
   </span>
 );
 
@@ -671,6 +696,9 @@ export const SummaryTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
     style={{
+      width: !props.isCompact ? "130px" : "",
+
+      fontWeight: props.isSelected ? "bold" : "normal",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
@@ -678,16 +706,26 @@ export const SummaryTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+        ? props.theme.siteVariables?.colorScheme.brand.foreground4
+        : props.theme.siteVariables?.colorScheme.brand.foreground1,
       backgroundColor: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background2
+        ? props.theme.siteVariables?.colorScheme.brand.background4
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
+    role="tab"
     title="Summary"
   >
-    <FontAwesomeIcon icon={faCircleInfo} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Summary</span> : <></>}
+    {" "}
+    <span
+      style={{
+        borderBottom: props.isSelected ? "solid 2px" : "solid 0px",
+        padding: "4px",
+        borderColor: props.isSelected ? props.theme.siteVariables?.colorScheme.brand.foreground4 : "transparent",
+      }}
+    >
+      <FontAwesomeIcon icon={faCircleInfo} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">Summary</span> : <></>}
+    </span>
   </span>
 );
 
@@ -697,6 +735,7 @@ export const WarningFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
     style={{
+      fontWeight: props.isSelected ? "bold" : "normal",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
@@ -704,19 +743,28 @@ export const WarningFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+        ? props.theme.siteVariables?.colorScheme.brand.foreground4
+        : props.theme.siteVariables?.colorScheme.brand.foreground1,
       backgroundColor: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background2
+        ? props.theme.siteVariables?.colorScheme.brand.background4
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
   >
-    <FontAwesomeIcon icon={faCircleQuestion} className="fa-lg" />
-    {!props.isCompact ? (
-      <span className="label-text">Warning{props.value ? " (" + props.value + ")" : ""}</span>
-    ) : (
-      <></>
-    )}
+    {" "}
+    <span
+      style={{
+        borderBottom: props.isSelected ? "solid 2px" : "solid 0px",
+        padding: "4px",
+        borderColor: props.isSelected ? props.theme.siteVariables?.colorScheme.brand.foreground4 : "transparent",
+      }}
+    >
+      <FontAwesomeIcon icon={faCircleQuestion} className="fa-lg" />
+      {!props.isCompact ? (
+        <span className="label-text">Warning{props.value ? " (" + props.value + ")" : ""}</span>
+      ) : (
+        <></>
+      )}
+    </span>
   </span>
 );
 
@@ -726,6 +774,7 @@ export const RecommendationsFilterLabel: React.FC<
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
     style={{
+      fontWeight: props.isSelected ? "bold" : "normal",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
@@ -733,19 +782,28 @@ export const RecommendationsFilterLabel: React.FC<
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+        ? props.theme.siteVariables?.colorScheme.brand.foreground4
+        : props.theme.siteVariables?.colorScheme.brand.foreground1,
       backgroundColor: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background2
+        ? props.theme.siteVariables?.colorScheme.brand.background4
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
   >
-    <FontAwesomeIcon icon={faCircleArrowUp} className="fa-lg" />
-    {!props.isCompact ? (
-      <span className="label-text">Recommendations{props.value ? " (" + props.value + ")" : ""}</span>
-    ) : (
-      <></>
-    )}
+    {" "}
+    <span
+      style={{
+        borderBottom: props.isSelected ? "solid 2px" : "solid 0px",
+        padding: "4px",
+        borderColor: props.isSelected ? props.theme.siteVariables?.colorScheme.brand.foreground4 : "transparent",
+      }}
+    >
+      <FontAwesomeIcon icon={faCircleArrowUp} className="fa-lg" />
+      {!props.isCompact ? (
+        <span className="label-text">Recommendations{props.value ? " (" + props.value + ")" : ""}</span>
+      ) : (
+        <></>
+      )}
+    </span>
   </span>
 );
 
@@ -755,6 +813,7 @@ export const ErrorFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & 
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
     style={{
+      fontWeight: props.isSelected ? "bold" : "normal",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
@@ -762,15 +821,28 @@ export const ErrorFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & 
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+        ? props.theme.siteVariables?.colorScheme.brand.foreground4
+        : props.theme.siteVariables?.colorScheme.brand.foreground1,
       backgroundColor: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background2
+        ? props.theme.siteVariables?.colorScheme.brand.background4
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
   >
-    <FontAwesomeIcon icon={faCircleExclamation} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Errors{props.value ? " (" + props.value + ")" : ""}</span> : <></>}
+    {" "}
+    <span
+      style={{
+        borderBottom: props.isSelected ? "solid 2px" : "solid 0px",
+        padding: "4px",
+        borderColor: props.isSelected ? props.theme.siteVariables?.colorScheme.brand.foreground4 : "transparent",
+      }}
+    >
+      <FontAwesomeIcon icon={faCircleExclamation} className="fa-lg" />
+      {!props.isCompact ? (
+        <span className="label-text">Errors{props.value ? " (" + props.value + ")" : ""}</span>
+      ) : (
+        <></>
+      )}
+    </span>
   </span>
 );
 
@@ -780,6 +852,7 @@ export const InfoFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
     style={{
+      fontWeight: props.isSelected ? "bold" : "normal",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
@@ -787,15 +860,23 @@ export const InfoFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & I
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+        ? props.theme.siteVariables?.colorScheme.brand.foreground4
+        : props.theme.siteVariables?.colorScheme.brand.foreground1,
       backgroundColor: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background2
+        ? props.theme.siteVariables?.colorScheme.brand.background4
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
   >
-    <FontAwesomeIcon icon={faCircleInfo} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Info{props.value ? " (" + props.value + ")" : ""}</span> : <></>}
+    <span
+      style={{
+        borderBottom: props.isSelected ? "solid 2px" : "solid 0px",
+        padding: "4px",
+        borderColor: props.isSelected ? props.theme.siteVariables?.colorScheme.brand.foreground4 : "transparent",
+      }}
+    >
+      <FontAwesomeIcon icon={faCircleInfo} className="fa-lg" />
+      {!props.isCompact ? <span className="label-text">Info{props.value ? " (" + props.value + ")" : ""}</span> : <></>}
+    </span>
   </span>
 );
 
@@ -805,6 +886,8 @@ export const SuccessFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
     style={{
+      fontWeight: props.isSelected ? "bold" : "normal",
+
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
@@ -812,19 +895,27 @@ export const SuccessFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+        ? props.theme.siteVariables?.colorScheme.brand.foreground4
+        : props.theme.siteVariables?.colorScheme.brand.foreground1,
       backgroundColor: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background2
+        ? props.theme.siteVariables?.colorScheme.brand.background4
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
   >
-    <FontAwesomeIcon icon={faCircleCheck} className="fa-lg" />
-    {!props.isCompact ? (
-      <span className="label-text">Success{props.value ? " (" + props.value + ")" : ""}</span>
-    ) : (
-      <></>
-    )}
+    <span
+      style={{
+        borderBottom: props.isSelected ? "solid 2px" : "solid 0px",
+        padding: "4px",
+        borderColor: props.isSelected ? props.theme.siteVariables?.colorScheme.brand.foreground4 : "transparent",
+      }}
+    >
+      <FontAwesomeIcon icon={faCircleCheck} className="fa-lg" />
+      {!props.isCompact ? (
+        <span className="label-text">Success{props.value ? " (" + props.value + ")" : ""}</span>
+      ) : (
+        <></>
+      )}
+    </span>
   </span>
 );
 
@@ -834,6 +925,8 @@ export const FailureFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
   <span
     className={props.isSelected ? "label-button label-selected" : "label-button"}
     style={{
+      fontWeight: props.isSelected ? "bold" : "normal",
+
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
@@ -841,18 +934,26 @@ export const FailureFilterLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> 
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background2,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
-        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+        ? props.theme.siteVariables?.colorScheme.brand.foreground4
+        : props.theme.siteVariables?.colorScheme.brand.foreground1,
       backgroundColor: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background2
+        ? props.theme.siteVariables?.colorScheme.brand.background4
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
   >
-    <FontAwesomeIcon icon={faCircleXmark} className="fa-lg" />
-    {!props.isCompact ? (
-      <span className="label-text">Failure{props.value ? " (" + props.value + ")" : ""}</span>
-    ) : (
-      <></>
-    )}
+    <span
+      style={{
+        borderBottom: props.isSelected ? "solid 2px" : "solid 0px",
+        padding: "4px",
+        borderColor: props.isSelected ? props.theme.siteVariables?.colorScheme.brand.foreground4 : "transparent",
+      }}
+    >
+      <FontAwesomeIcon icon={faCircleXmark} className="fa-lg" />
+      {!props.isCompact ? (
+        <span className="label-text">Failure{props.value ? " (" + props.value + ")" : ""}</span>
+      ) : (
+        <></>
+      )}
+    </span>
   </span>
 );

@@ -52,6 +52,7 @@ interface IHomeProps extends IAppProps {
   errorMessage: string | undefined;
   isPersisted?: boolean;
   heightOffset: number;
+  visualSeed?: number;
   onPersistenceUpgraded?: () => void;
   onModeChangeRequested?: (mode: AppMode) => void;
   onProjectSelected?: (project: Project) => void;
@@ -106,7 +107,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     super(props);
 
     this._handleProjectGalleryCommand = this._handleProjectGalleryCommand.bind(this);
-
     if (this.props.errorMessage) {
       this.state = {
         gallery: undefined,
@@ -916,9 +916,9 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       }
 
       gallery.push(
-        <div className="home-gallery-label" key="toolsLabel">
+        <h2 className="home-gallery-label" key="toolsLabel">
           Tools
-        </div>
+        </h2>
       );
 
       toolBin.push(
@@ -933,8 +933,8 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             className="home-toolTileInner"
             style={{
               borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
             }}
           >
             <div
@@ -1101,9 +1101,9 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
     if (projectListItems.length > 0) {
       introArea.push(
-        <div key="recentlyOpenedLabelA" className="home-projects">
+        <h2 key="recentlyOpenedLabelA" className="home-projects">
           Projects
-        </div>
+        </h2>
       );
 
       if (!this.props.isPersisted) {
@@ -1140,7 +1140,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           <List
             selectable
             accessibility={selectableListBehavior}
-            defaultSelectedIndex={0}
+            defaultSelectedIndex={-1}
             onContextMenu={this._handleContextMenu}
             items={projectListItems}
             aria-label="List of edited projects"
@@ -1151,26 +1151,23 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     let storageAction = <></>;
     let storageMessage = undefined;
 
-    if (AppServiceProxy.hasAppService) {
-      storageMessage = "projects are saved in the mctools subfolder of your Documents library.";
-    } else {
-      storageMessage = "take care: projects are saved locally in your browser's storage on your device.";
-      storageAction = (
-        <span>
-          &#160;&#160;
-          <span
-            className="home-clickLink"
-            tabIndex={0}
-            role="button"
-            onClick={this._handleExportAllClick}
-            onKeyDown={this._handleExportAllKey}
-          >
-            Save backups
-          </span>
-          .
+    storageMessage = "take care: projects are saved locally in your browser's storage on your device.";
+    storageAction = (
+      <span>
+        &#160;&#160;
+        <span
+          className="home-clickLink"
+          tabIndex={0}
+          role="button"
+          onClick={this._handleExportAllClick}
+          onKeyDown={this._handleExportAllKey}
+        >
+          Save backups
         </span>
-      );
-    }
+        .
+      </span>
+    );
+
     let effectArea = <></>;
 
     if (this.state.effect === HomeEffect.dragOver) {
@@ -1271,7 +1268,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       >
         {effectArea}
         {dialogArea}
-        <div
+        <header
           className="home-header-area"
           style={{
             borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
@@ -1283,7 +1280,9 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
             }}
           >
-            <div className="home-header-image">&#160;</div>
+            <h1 className="home-header-image-outer">
+              <img src="images/mctoolsbanner.png" alt="Minecraft Creator Tools" className="home-header-image"></img>
+            </h1>
             <div className="home-header-sublink">
               <a
                 href={constants.homeUrl + "/docs/"}
@@ -1300,8 +1299,8 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               {webOnlyLinks}
             </div>
           </div>
-        </div>
-        <div
+        </header>
+        <main
           className="home-projects-bin"
           style={{
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
@@ -1311,9 +1310,10 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           {introArea}
           {toolsArea}
           {recentsArea}
-        </div>
-        <div
+        </main>
+        <section
           className="home-gallery"
+          aria-label="Gallery section"
           style={{
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
@@ -1324,14 +1324,15 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             className="home-gallery-interior"
             style={{
               borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-              height: browserWidth >= 800 ? "calc(100vh - " + (180 + this.props.heightOffset) + "px)" : "",
+              height: browserWidth >= 800 ? "calc(100vh - " + (168 + this.props.heightOffset) + "px)" : "",
             }}
           >
             {localGallery}
             {gallery}
           </div>
-        </div>
-        <div
+        </section>
+        <section
+          aria-label="Usage section"
           className="home-usage"
           style={{
             borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -1372,8 +1373,8 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             </a>
             .
           </div>
-        </div>
-        <div
+        </section>
+        <footer
           className="home-legal"
           style={{
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
@@ -1396,7 +1397,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             Attribution
           </a>
           .<span className="home-header-textArea">© 2024 Mojang AB.</span>
-        </div>
+        </footer>
       </div>
     );
   }

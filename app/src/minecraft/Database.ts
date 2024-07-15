@@ -414,7 +414,7 @@ export default class Database {
     }
   }
 
-  static async loadSnippets() {
+  static async loadSnippets(): Promise<void> {
     if (Database.snippetsFolder !== null) {
       return;
     }
@@ -428,7 +428,7 @@ export default class Database {
 
       await new Promise(prom);
 
-      return true;
+      return;
     } else {
       this._isLoadingSnippets = true;
 

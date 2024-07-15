@@ -73,25 +73,29 @@ export default class FileExplorerFolderDetail extends Component<
       (this.props.mode !== FileExplorerMode.folderPicker && this.props.folder.fileCount > 0)
     ) {
       expander = (
-        <div className="fexfod-expander" onClick={this._handleExpanderClick}>
+        <button
+          className="fexfod-expander"
+          onClick={this._handleExpanderClick}
+          title={"Expand/collapse " + this.props.folder.name}
+        >
           {this.props.isExpanded ? (
             <FontAwesomeIcon icon={faCaretDown} className="fa-lg" />
           ) : (
             <FontAwesomeIcon icon={faCaretRight} className="fa-lg" />
           )}
-        </div>
+        </button>
       );
     }
 
     return (
       <div className={outerTag} style={{ backgroundColor: backgroundColor }}>
         {expander}
-        <div className="fexfod-icon" onClick={this._handleFolderClick}>
-          <FontAwesomeIcon icon={faFolder} className="fa-lg" />
-        </div>
-        <div className="fexfod-label" onClick={this._handleFolderClick}>
-          {this.props.folder.name}
-        </div>
+        <button className="fexfod-summary" onClick={this._handleFolderClick} title={"Select " + this.props.folder.name}>
+          <div className="fexfod-icon">
+            <FontAwesomeIcon icon={faFolder} className="fa-lg" />
+          </div>
+          <div className="fexfod-label">{this.props.folder.name}</div>
+        </button>
       </div>
     );
   }

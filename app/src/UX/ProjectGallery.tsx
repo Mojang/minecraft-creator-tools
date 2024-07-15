@@ -192,6 +192,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
         <div className="pg-tabArea">
           <Button
             className="pg-tabButton"
+            role="tab"
             onClick={this._selectProjectStarters}
             style={{
               backgroundColor:
@@ -223,6 +224,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
           <Button
             className="pg-tabButton"
             onClick={this._selectCodeSnippets}
+            role="tab"
             style={{
               backgroundColor:
                 this.state.mode === ProjectGalleryMode.codeSnippets

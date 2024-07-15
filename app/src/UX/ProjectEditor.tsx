@@ -86,8 +86,10 @@ interface IProjectEditorProps extends IAppProps {
   project: Project;
   readOnly: boolean;
   isHosted?: boolean;
+  visualSeed?: number;
   theme: ThemeInput<any>;
   selectedItem?: string;
+  heightOffset: number;
   mode?: ProjectEditorMode;
   statusAreaMode?: ProjectStatusAreaMode;
   hideMainToolbar?: boolean;
@@ -1720,9 +1722,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const zipBinary = await zipStorage.generateBlobAsync();
 
-    saveAs(zipBinary, projName + ".zip");
+    await this.props.carto.notifyOperationEnded(
+      operId,
+      "Export deployment zip of '" + projName + "' created; downloading"
+    );
 
-    await this.props.carto.notifyOperationEnded(operId, "Export deployment zip of '" + projName + "' complete.");
+    saveAs(zipBinary, projName + ".zip");
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewDeployKey((data.icon as any).key, this._handleDeployAsZipClick, data);
@@ -2569,6 +2574,17 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       widthOffset = 590;
     }
 
+    let viewMode = this.state.viewMode;
+
+    if (
+      isFullyCompact &&
+      (viewMode === CartoEditorViewMode.itemsOnLeft ||
+        viewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox ||
+        viewMode === CartoEditorViewMode.itemsOnRight ||
+        viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox)
+    ) {
+      viewMode = CartoEditorViewMode.mainFocus;
+    }
     if (this.props.project.errorState === ProjectErrorState.projectFolderOrFileDoesNotExist) {
       let error = "Could not find project data folder. ";
 
@@ -2964,7 +2980,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         kind: "toggle",
         active: true,
         onClick: this._handleHomeClick,
-        title: "Toggle bold",
+        title: "Home/Project List",
       });
 
       if (Utilities.isPreview) {
@@ -2986,10 +3002,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         }
       }
 
-      if (this.state.viewMode === CartoEditorViewMode.mainFocus) {
+      if (viewMode === CartoEditorViewMode.mainFocus) {
         toolbarItems.push({
           key: "itemsFocusA",
-          content: "Items",
+          content: "View Items",
           icon: <FontAwesomeIcon icon={faSitemap} className="fa-lg" />,
           title: "Items",
           onClick: this._setItemsFocus,
@@ -3247,16 +3263,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     let interior = <></>;
 
     let gridStyle = "pe-gridOuter ";
-    let heightOffset = 96;
+    let heightOffset = this.props.heightOffset + 96;
 
-    let areaHeight = "calc(100vh)";
+    let areaHeight = "calc(100vh - " + this.props.heightOffset + "px)";
 
     if (CartoApp.hostType === HostType.vsCodeMainWeb || CartoApp.hostType === HostType.vsCodeWebWeb) {
       areaHeight = "calc(100vh)";
       heightOffset += 9;
-    } else if (CartoApp.hostType === HostType.electronWeb) {
-      areaHeight = "calc(100vh - 36px)";
-      heightOffset += 47;
     }
 
     if (this.props.hideMainToolbar) {
@@ -3477,8 +3490,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       );
     }
 
-    let viewMode = this.state.viewMode;
-
     let border = "";
 
     if (CartoApp.theme === CartoThemeStyle.dark) {
@@ -3487,20 +3498,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       border = "inset 4px #f1f1f1";
     }
 
-    if (
-      isFullyCompact &&
-      (viewMode === CartoEditorViewMode.itemsOnLeft ||
-        viewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox ||
-        viewMode === CartoEditorViewMode.itemsOnRight ||
-        viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox)
-    ) {
-      viewMode = CartoEditorViewMode.mainFocus;
-    }
-
     if (viewMode === CartoEditorViewMode.mainFocus) {
       column2 = (
-        <div
+        <main
           className="pe-colAll"
+          aria-label="Main content area"
           style={{
             border: border,
             height: "calc(100vh - " + String(heightOffset - 11) + "px)",
@@ -3508,10 +3510,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           }}
         >
           {interior}
-        </div>
+        </main>
       );
     } else if (viewMode === CartoEditorViewMode.itemsFocus) {
-      column2 = <div className="pe-itemlist pe-colAll">{itemList}</div>;
+      column2 = (
+        <section aria-label="Item listing area" className="pe-itemlist pe-colAll">
+          {itemList}
+        </section>
+      );
     } else if (viewMode === CartoEditorViewMode.toolboxFocus) {
       column2 = (
         <div className="pe-colAll">
@@ -3527,7 +3533,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         </div>
       );
     } else if (viewMode === CartoEditorViewMode.itemsOnLeft) {
-      column1 = <div className="pe-itemlist pe-col1">{itemList}</div>;
+      column1 = (
+        <section aria-label="Item listing area" className="pe-itemlist pe-col1">
+          {itemList}
+        </section>
+      );
       column2 = (
         <div
           className="pe-col2 pe-itemSplitter"
@@ -3542,7 +3552,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         </div>
       );
       column3 = (
-        <div
+        <main
+          aria-label="Main content area"
           className="pe-col3and4"
           style={{
             borderRight: border,
@@ -3552,12 +3563,17 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           }}
         >
           {interior}
-        </div>
+        </main>
       );
     } else if (viewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox) {
-      column1 = <div className="pe-itemlist pe-col1">{itemList}</div>;
+      column1 = (
+        <section aria-label="Item listing area" className="pe-itemlist pe-col1">
+          {itemList}
+        </section>
+      );
       column2 = (
-        <div
+        <main
+          aria-label="Main content area"
           className="pe-col2"
           style={{
             border: border,
@@ -3565,7 +3581,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           }}
         >
           {interior}
-        </div>
+        </main>
       );
       column3 = (
         <div className="pe-col4">
@@ -3595,7 +3611,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         </div>
       );
       column2 = (
-        <div
+        <main
+          aria-label="Main content area"
           className="pe-col2"
           style={{
             border: border,
@@ -3603,13 +3620,18 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           }}
         >
           {interior}
-        </div>
+        </main>
       );
-      column3 = <div className="pe-itemlist pe-col4">{itemList}</div>;
+      column3 = (
+        <section aria-label="Item listing area" className="pe-itemlist pe-col4">
+          {itemList}
+        </section>
+      );
     } else {
       // items on right
       column1 = (
-        <div
+        <main
+          aria-label="Main content area"
           className="pe-col1and2"
           style={{
             borderLeft: border,
@@ -3619,7 +3641,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           }}
         >
           {interior}
-        </div>
+        </main>
       );
 
       column2 = (
@@ -3636,7 +3658,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         </div>
       );
 
-      column3 = <div className="pe-itemlist pe-col4">{itemList}</div>;
+      column3 = (
+        <section aria-label="Item listing area" className="pe-itemlist pe-col4">
+          {itemList}
+        </section>
+      );
     }
 
     const toolbarStyle = isFullyCompact ? "pe-toolbar-compact" : "pe-toolbar";
@@ -3645,9 +3671,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     if (!this.props.hideMainToolbar) {
       toolbarArea = (
-        <div className={toolbarStyle}>
+        <section aria-label="ToolBar" className={toolbarStyle}>
           <Toolbar aria-label="Project Editor main toolbar" items={toolbarItems} overflow style={{ minHeight: 50 }} />
-        </div>
+        </section>
       );
     }
 
@@ -3655,7 +3681,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     if (this.state.statusAreaMode !== ProjectStatusAreaMode.hidden) {
       statusArea = (
-        <div
+        <section
+          aria-label="Status and item area"
           className="pe-statusbar"
           style={{
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
@@ -3672,7 +3699,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             onActionRequested={this._handleActionRequested}
             onSetExpandedSize={this._setProjectStatusMode}
           />
-        </div>
+        </section>
       );
     }
 

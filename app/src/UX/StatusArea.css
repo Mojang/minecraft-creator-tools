@@ -19,7 +19,7 @@
 }
 
 .sa-placeHolder {
-  padding-top: 4px;
+  padding-top: 2px;
   padding-left: 2px;
   display: grid;
   grid-template-columns: 16px 1fr;

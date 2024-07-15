@@ -5,7 +5,6 @@ import Project from "./Project";
 import ITool, { ToolType, ToolScope } from "./ITool";
 import { ProjectItemType } from "./IProjectItemData";
 import Carto from "./Carto";
-import IStorage from "../storage/IStorage";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import Log from "../core/Log";
