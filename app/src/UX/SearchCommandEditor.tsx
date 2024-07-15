@@ -444,6 +444,7 @@ export default class SearchCommandEditor extends Component<ISearchCommandEditorP
           id="sceed-forminput"
           className={this.props.isLarge ? "sceed-text-large" : "sceed-text"}
           autoFocus={true}
+          label="Search:"
           placeholder={this.props.placeholder}
           defaultValue={content as string}
           value={content as string}

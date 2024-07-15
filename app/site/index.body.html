@@ -1,8 +1,18 @@
-    <div id="cookie-banner"></div>
+<div id="cookie-banner"></div>
+    <div id="root"></div>
     <script>
         window.creatorToolsSite = {
+          termsOfUseUrl: "https://minecraft.net/eula",
           privacyUrl: "https://go.microsoft.com/fwlink/?linkid=521839",
           trademarksUrl: "https://www.microsoft.com/trademarks"
         };
+
+var siteConsent = null;
+WcpConsent.init("en-US", "cookie-banner", function (err, _siteConsent) {
+    if (err != undefined) {
+        return error;
+    } else {
+        siteConsent = _siteConsent;          
+    }
+});
     </script>
-</body>

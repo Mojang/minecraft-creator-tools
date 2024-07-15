@@ -7,6 +7,7 @@ import Carto from "../app/Carto";
 import ItemAnnotationCollection from "./ItemAnnotationCollection";
 import IFile from "../storage/IFile";
 import StorageUtilities from "../storage/StorageUtilities";
+import WebUtilities from "./WebUtilities";
 
 export enum FileExplorerMode {
   explorer = 0,
@@ -128,7 +129,12 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
   }
 
   render() {
-    const explorerHeight = "calc(100vh - " + (this.props.heightOffset - 10) + "px)";
+    const height = WebUtilities.getHeight();
+
+    const explorerHeight =
+      height > this.props.heightOffset + 100
+        ? "calc(100vh - " + Math.max(this.props.heightOffset - 10) + "px)"
+        : "inherit";
 
     let accessoryArea = <></>;
 

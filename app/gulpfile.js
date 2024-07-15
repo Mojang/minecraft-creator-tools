@@ -111,7 +111,9 @@ function customizeSiteHead() {
 }
 
 function customizeSiteBody() {
-  return gulp.src(["site/index.body.html"], { base: "" }).pipe(textReplaceStream("build/index.html", /<\/body>/gi));
+  return gulp
+    .src(["site/index.body.html"], { base: "" })
+    .pipe(textReplaceStream("build/index.html", /<div id="root"><\/div>/gi));
 }
 
 function copyCheckedInRes() {

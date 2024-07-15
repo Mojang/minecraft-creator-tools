@@ -37,7 +37,15 @@
 
 .sceed-text {
   font-size: 11pt !important;
+  display: grid;
+  grid-template-columns: 65px 1fr;
+  vertical-align: middle;
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace !important;
+}
+
+.sceed-text LABEL {
+  padding: 4px;
+  padding-top: 6px;
 }
 
 .sceed-text INPUT {

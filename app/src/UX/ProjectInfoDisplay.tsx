@@ -600,6 +600,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     let contentAreaHeightLarge = "calc(100vh - " + (this.props.heightOffset + 89) + "px)";
     const width = WebUtilities.getWidth();
 
+    const height = WebUtilities.getHeight();
+
     const lines = [];
     const contentSummaryLines = [];
 
@@ -609,7 +611,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           <SummaryTabLabel
             theme={this.props.theme}
             isSelected={this.state.viewMode === ProjectInfoDisplayMode.summary}
-            isCompact={width < 800}
+            isCompact={width < 1100}
           />
         ),
         key: "infoFilter",
@@ -622,7 +624,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           <InfoTabLabel
             theme={this.props.theme}
             isSelected={this.state.viewMode === ProjectInfoDisplayMode.info}
-            isCompact={width < 800}
+            isCompact={width < 1100}
           />
         ),
         key: "errorFilter",
@@ -1032,39 +1034,43 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       }
       outer = (
         <div className="pid-areaOuter">
-          <div>
+          <div className="pid-filterToolbar">
             <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
           </div>
           <div
             className="pid-tableWrapper"
             style={{
-              maxHeight: contentAreaHeightSmall,
+              maxHeight: height > 300 ? contentAreaHeightSmall : "inherit",
+              overflowY: height > 300 ? "auto" : "inherit",
             }}
+            tabIndex={height > 300 ? 0 : -1}
             onScroll={this._handleListScroll}
           >
-            <div
+            <table
               className="pid-area"
               style={{
-                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
-                color: this.props.theme.siteVariables?.colorScheme.brand.foreground4,
+                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+                color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
               }}
+              cellPadding={0}
+              cellSpacing={0}
             >
-              <div
+              <tr
                 className="pid-headerRow"
                 style={{
                   backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
                   color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
                 }}
               >
-                <div className="pid-headerCell pid-headerTypeCell">Type</div>
-                <div className="pid-headerCell">Area</div>
-                <div className="pid-headerCell">Test</div>
-                <div className="pid-headerCell">Actions</div>
-                <div className="pid-headerCell">Message</div>
-                <div className="pid-headerCell">File</div>
-              </div>
+                <th className="pid-headerCell pid-headerTypeCell">Type</th>
+                <th className="pid-headerCell">Area</th>
+                <th className="pid-headerCell">Test</th>
+                <th className="pid-headerCell">Actions</th>
+                <th className="pid-headerCell">Message</th>
+                <th className="pid-headerCell">File</th>
+              </tr>
               {itemTiles}
-            </div>
+            </table>
           </div>
         </div>
       );
@@ -1077,8 +1083,15 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
         }}
       >
-        <div className="pid-outer">
-          <div
+        <div
+          className="pid-outer"
+          style={{
+            maxHeight: height < 300 ? "calc(100vh - " + (this.props.heightOffset - 3) + "px)" : "inherit",
+            overflowY: height < 300 ? "auto" : "inherit",
+          }}
+          tabIndex={height < 300 ? 0 : -1}
+        >
+          <h2
             className="pid-title"
             style={{
               backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
@@ -1086,7 +1099,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
             }}
           >
             Project Inspector for {title}
-          </div>
+          </h2>
           <div className="pid-toolArea">
             <div className="pid-topToolbar">
               <Toolbar aria-label="Actions toolbar overflow menu" items={topToolbarItems} />

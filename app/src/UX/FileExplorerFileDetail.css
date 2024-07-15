@@ -7,18 +7,37 @@
   display: grid;
 }
 
-.fexfod-expander {
+.fexfid-expander {
   grid-column: 1;
+  background-color: transparent;
+  border: 0px;
+  padding: 2px;
+  padding-inline: 0px;
+  line-height: 1;
+  color: inherit;
+}
+
+.fexfid-summary {
+  grid-column: 2;
+  display: grid;
+  background-color: transparent;
+  border: 0px;
+  padding: 2px;
+  padding-left: 4px;
+  line-height: 1;
+  color: inherit;
+  user-select: none;
+  text-align: left;
+  grid-template-columns: 24px 1fr;
 }
 
 .fexfid-icon {
-  grid-column: 2;
+  grid-column: 1;
 }
 
 .fexfid-label {
-  grid-column: 3;
+  grid-column: 2;
   padding-top: 1px;
-  user-select: none;
 }
 
 .fexfid-error {

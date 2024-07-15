@@ -31,6 +31,7 @@
 
 .ppe-header {
   font-size: 16pt;
+  margin: 0px;
   padding-top: 15px;
   padding-left: 30px;
   padding-bottom: 16px;
@@ -260,7 +261,7 @@
   grid-row: 14;
   grid-column-start: 1;
   grid-column-end: 5;
-  padding-top: 30px;
+  padding-top: 10px;
 }
 
 .ppe-bedrock {

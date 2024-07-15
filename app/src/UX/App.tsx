@@ -14,7 +14,6 @@ import StorageUtilities from "../storage/StorageUtilities";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { CartoEditorViewMode } from "../app/ICartoData";
 import ProjectItem from "../app/ProjectItem";
-import ZipStorage from "../storage/ZipStorage";
 import ProjectUtilities from "../app/ProjectUtilities";
 import WebUtilities from "./WebUtilities";
 import ProjectEditorUtilities, { ProjectEditorMode } from "./ProjectEditorUtilities";
@@ -56,8 +55,10 @@ interface AppState {
   errorMessage?: string;
   activeProject: Project | null;
   selectedItem?: string;
+  hasBanner?: boolean;
   initialProjectEditorMode?: ProjectEditorMode;
   loadingMessage?: string;
+  visualSeed?: number;
   additionalLoadingMessage?: string;
 }
 
@@ -66,6 +67,7 @@ export default class App extends Component<AppProps, AppState> {
   private _loadingMessage?: string;
   private _lastHashProcessed?: string;
   private _isMountedInternal: boolean = false;
+  private _intervalId?: number = undefined;
 
   constructor(props: AppProps) {
     super(props);
@@ -80,12 +82,15 @@ export default class App extends Component<AppProps, AppState> {
     this._newProjectFromGallery = this._newProjectFromGallery.bind(this);
     this._handleProjectGalleryCommand = this._handleProjectGalleryCommand.bind(this);
     this._handleHashChange = this._handleHashChange.bind(this);
+    this._incrementVisualSeed = this._incrementVisualSeed.bind(this);
     this._gitHubAddingMessageUpdater = this._gitHubAddingMessageUpdater.bind(this);
     this._getFileContent = this._getFileContent.bind(this);
     this._saveAll = this._saveAll.bind(this);
     this._handleItemChanged = this._handleItemChanged.bind(this);
     this._handleSaved = this._handleSaved.bind(this);
     this._doLog = this._doLog.bind(this);
+
+    this._tick = this._tick.bind(this);
 
     if (this.props.fileContentRetriever) {
       this.props.fileContentRetriever(this._getFileContent);
@@ -213,6 +218,8 @@ export default class App extends Component<AppProps, AppState> {
           isPersisted: this.state.isPersisted,
           activeProject: newProject,
           selectedItem: selValue,
+          hasBanner: this.state.hasBanner,
+          visualSeed: this.state.visualSeed,
         };
 
         if (this._isMountedInternal) {
@@ -253,6 +260,33 @@ export default class App extends Component<AppProps, AppState> {
     }
   }
 
+  private _incrementVisualSeed() {
+    if (!this.state) {
+      return;
+    }
+
+    let newSeed = this.state.visualSeed;
+
+    if (newSeed === undefined) {
+      newSeed = 1;
+    } else {
+      newSeed++;
+    }
+
+    this.setState({
+      carto: this.state.carto,
+      mode: this.state.mode,
+      isPersisted: this.state.isPersisted,
+      loadingMessage: this.state.loadingMessage,
+      additionalLoadingMessage: this.state.additionalLoadingMessage,
+      activeProject: this.state.activeProject,
+      hasBanner: this.state.hasBanner,
+      selectedItem: this.state.selectedItem,
+      initialProjectEditorMode: this.state.initialProjectEditorMode,
+      visualSeed: newSeed,
+    });
+  }
+
   private _handleHashChange() {
     const result = this._getStateFromUrl();
 
@@ -264,7 +298,9 @@ export default class App extends Component<AppProps, AppState> {
         loadingMessage: this.state.loadingMessage,
         additionalLoadingMessage: this.state.additionalLoadingMessage,
         activeProject: this.state.activeProject,
+        hasBanner: this.state.hasBanner,
         selectedItem: result.selectedItem,
+        visualSeed: this.state.visualSeed,
         initialProjectEditorMode: this.state.initialProjectEditorMode,
       });
     }
@@ -299,6 +335,8 @@ export default class App extends Component<AppProps, AppState> {
       mode: nextMode,
       isPersisted: isPersisted,
       activeProject: this.state.activeProject,
+      hasBanner: this.state.hasBanner,
+      visualSeed: this.state.visualSeed,
     };
 
     if (this._isMountedInternal) {
@@ -441,7 +479,9 @@ export default class App extends Component<AppProps, AppState> {
       mode: AppMode.home,
       activeProject: null,
       isPersisted: this.state.isPersisted,
+      hasBanner: this.state.hasBanner,
       errorMessage: errorMessage,
+      visualSeed: this.state.visualSeed,
       initialProjectEditorMode: undefined,
     });
   }
@@ -449,6 +489,8 @@ export default class App extends Component<AppProps, AppState> {
   componentDidMount() {
     if (typeof window !== "undefined") {
       window.addEventListener("hashchange", this._handleHashChange, false);
+      window.addEventListener("resize", this._incrementVisualSeed, false);
+      this._intervalId = window.setInterval(this._tick, 50);
     }
 
     this._isMountedInternal = true;
@@ -457,6 +499,7 @@ export default class App extends Component<AppProps, AppState> {
   componentWillUnmount() {
     if (typeof window !== "undefined") {
       window.removeEventListener("hashchange", this._handleHashChange, false);
+      window.removeEventListener("resize", this._incrementVisualSeed, false);
     }
 
     this._isMountedInternal = false;
@@ -473,6 +516,8 @@ export default class App extends Component<AppProps, AppState> {
       carto: carto,
       isPersisted: this.state.isPersisted,
       mode: AppMode.loading,
+      hasBanner: this.state.hasBanner,
+      visualSeed: this.state.visualSeed,
       loadingMessage: message,
     });
   }
@@ -554,7 +599,9 @@ export default class App extends Component<AppProps, AppState> {
         mode: nextMode,
         isPersisted: this.state.isPersisted,
         activeProject: newProject,
+        hasBanner: this.state.hasBanner,
         selectedItem: this.state.selectedItem,
+        visualSeed: this.state.visualSeed,
         initialProjectEditorMode: editorStartMode,
       });
     }
@@ -580,6 +627,8 @@ export default class App extends Component<AppProps, AppState> {
     this.setState({
       mode: AppMode.project,
       isPersisted: this.state.isPersisted,
+      hasBanner: this.state.hasBanner,
+      visualSeed: this.state.visualSeed,
       activeProject: project,
     });
   }
@@ -671,7 +720,9 @@ export default class App extends Component<AppProps, AppState> {
       mode: AppMode.loading,
       activeProject: null,
       isPersisted: this.state.isPersisted,
+      hasBanner: this.state.hasBanner,
       loadingMessage: this._loadingMessage,
+      visualSeed: this.state.visualSeed,
       additionalLoadingMessage: undefined,
     });
 
@@ -697,6 +748,8 @@ export default class App extends Component<AppProps, AppState> {
 
         this.setState({
           mode: newMode,
+          visualSeed: this.state.visualSeed,
+          hasBanner: this.state.hasBanner,
           isPersisted: this.state.isPersisted,
           activeProject: proj,
         });
@@ -782,6 +835,8 @@ export default class App extends Component<AppProps, AppState> {
       mode: AppMode.loading,
       activeProject: null,
       isPersisted: this.state.isPersisted,
+      hasBanner: this.state.hasBanner,
+      visualSeed: this.state.visualSeed,
       loadingMessage: this._loadingMessage,
       additionalLoadingMessage: undefined,
     });
@@ -848,6 +903,8 @@ export default class App extends Component<AppProps, AppState> {
           activeProject: this.state.activeProject,
           selectedItem: this.state.selectedItem,
           initialProjectEditorMode: this.state.initialProjectEditorMode,
+          hasBanner: this.state.hasBanner,
+          visualSeed: this.state.visualSeed,
           isPersisted: this.state.isPersisted,
           errorMessage: "Could not create a new project. " + e.toString(),
         });
@@ -904,6 +961,8 @@ export default class App extends Component<AppProps, AppState> {
       isPersisted: true,
       activeProject: this.state.activeProject,
       selectedItem: this.state.selectedItem,
+      hasBanner: this.state.hasBanner,
+      visualSeed: this.state.visualSeed,
       loadingMessage: this.state.loadingMessage,
       additionalLoadingMessage: this.state.additionalLoadingMessage,
     });
@@ -922,6 +981,8 @@ export default class App extends Component<AppProps, AppState> {
       isPersisted: this.state.isPersisted,
       activeProject: this.state.activeProject,
       selectedItem: this.state.selectedItem,
+      hasBanner: this.state.hasBanner,
+      visualSeed: this.state.visualSeed,
       loadingMessage: message,
       additionalLoadingMessage: additionalMessage,
     });
@@ -981,6 +1042,64 @@ export default class App extends Component<AppProps, AppState> {
     }
   }
 
+  private _tick() {
+    // work around for pop up menus in small window-height cases
+
+    const cbElt = window.document.getElementById("cookie-banner");
+
+    if (cbElt?.hasChildNodes()) {
+      if (this.state && !this.state.hasBanner) {
+        this.setState({
+          carto: this.state.carto,
+          mode: this.state.mode,
+          isPersisted: this.state.isPersisted,
+          loadingMessage: this.state.loadingMessage,
+          additionalLoadingMessage: this.state.additionalLoadingMessage,
+          activeProject: this.state.activeProject,
+          hasBanner: true,
+          selectedItem: this.state.selectedItem,
+          initialProjectEditorMode: this.state.initialProjectEditorMode,
+          visualSeed: this.state.visualSeed,
+        });
+      }
+    } else if (this.state && this.state.hasBanner) {
+      this.setState({
+        carto: this.state.carto,
+        mode: this.state.mode,
+        isPersisted: this.state.isPersisted,
+        loadingMessage: this.state.loadingMessage,
+        additionalLoadingMessage: this.state.additionalLoadingMessage,
+        activeProject: this.state.activeProject,
+        hasBanner: false,
+        selectedItem: this.state.selectedItem,
+        initialProjectEditorMode: this.state.initialProjectEditorMode,
+        visualSeed: this.state.visualSeed,
+      });
+    }
+
+    const elts = window.document.getElementsByClassName("ui-toolbar__menu");
+
+    if (elts && elts.length > 0) {
+      for (let i = 0; i < elts.length; i++) {
+        const elt = elts[i];
+        if ((elt as HTMLElement).style && (elt as HTMLElement).style.transform) {
+          const transform = (elt as HTMLElement).style.transform;
+
+          let firstComma = transform.indexOf(", ");
+
+          if (firstComma > 0 && firstComma < transform.length - 2 && transform[firstComma + 2] === "-") {
+            let secondComma = transform.indexOf(", ", firstComma + 2);
+
+            if (secondComma > 0) {
+              (elt as HTMLElement).style.transform =
+                transform.substring(0, firstComma + 2) + " 145px" + transform.substring(secondComma);
+            }
+          }
+        }
+      }
+    }
+  }
+
   private async _handleProjectSelected(project: Project) {
     await project.loadFromFile();
 
@@ -991,6 +1110,8 @@ export default class App extends Component<AppProps, AppState> {
     this.setState({
       mode: AppMode.project,
       isPersisted: this.state.isPersisted,
+      hasBanner: this.state.hasBanner,
+      visualSeed: this.state.visualSeed,
       activeProject: project,
     });
   }
@@ -1000,6 +1121,8 @@ export default class App extends Component<AppProps, AppState> {
 
     this.setState({
       mode: newMode,
+      hasBanner: this.state.hasBanner,
+      visualSeed: this.state.visualSeed,
       isPersisted: this.state.isPersisted,
     });
   };
@@ -1015,6 +1138,11 @@ export default class App extends Component<AppProps, AppState> {
     let borderStr = "";
     let height = "100vh";
     let heightOffset = 0;
+
+    if (this.state.hasBanner) {
+      height = "calc(100vh - 136px)";
+      heightOffset = 136;
+    }
 
     if (this.state.mode === AppMode.loading) {
       let message = "loading...";
@@ -1044,6 +1172,7 @@ export default class App extends Component<AppProps, AppState> {
           isPersisted={this.state.isPersisted}
           errorMessage={this.state.errorMessage}
           onLog={this._doLog}
+          visualSeed={this.state.visualSeed}
           key="app-h"
           onSetProject={this._setProject}
           onPersistenceUpgraded={this._handlePersistenceUpgraded}
@@ -1062,6 +1191,7 @@ export default class App extends Component<AppProps, AppState> {
           theme={this.props.theme}
           hideMainToolbar={true}
           key="app-pe"
+          heightOffset={heightOffset}
           statusAreaMode={ProjectStatusAreaMode.hidden}
           project={this.state.activeProject}
           selectedItem={this.state.selectedItem}
@@ -1078,6 +1208,7 @@ export default class App extends Component<AppProps, AppState> {
           theme={this.props.theme}
           hideMainToolbar={true}
           key="app-pea"
+          heightOffset={heightOffset}
           statusAreaMode={ProjectStatusAreaMode.hidden}
           project={this.state.activeProject}
           mode={ProjectEditorMode.inspector}
@@ -1119,6 +1250,7 @@ export default class App extends Component<AppProps, AppState> {
             carto={this.state.carto}
             key="app-pec"
             theme={this.props.theme}
+            heightOffset={heightOffset}
             viewMode={CartoEditorViewMode.mainFocus}
             project={this.state.activeProject}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
@@ -1133,6 +1265,7 @@ export default class App extends Component<AppProps, AppState> {
             carto={this.state.carto}
             theme={this.props.theme}
             key="app-pef"
+            heightOffset={heightOffset}
             project={this.state.activeProject}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
             selectedItem={this.state.selectedItem}

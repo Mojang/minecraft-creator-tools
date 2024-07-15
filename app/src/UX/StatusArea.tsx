@@ -214,6 +214,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
           <div className="sa-inputButton">
             <Button
               onClick={this._toggleToMessage}
+              title="Close search box"
               icon={<FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />}
             />
           </div>
@@ -327,7 +328,9 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
                   }}
                 />
               </span>
-              <Button className="sa-placeHolderText">Click or Ctrl-E to search</Button>
+              <Button className="sa-placeHolderText" title="Use to search">
+                Click or Ctrl-E to search
+              </Button>
             </div>
           );
         }
@@ -396,7 +399,11 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
     return (
       <div className="sa-outer">
-        <div className="sa-messageOuter" onClick={this.state.displayEditor ? undefined : this._toggleToEditor}>
+        <div
+          className="sa-messageOuter"
+          onClick={this.state.displayEditor ? undefined : this._toggleToEditor}
+          aria-live="assertive"
+        >
           {interior}
         </div>
         <div className="sa-tools">

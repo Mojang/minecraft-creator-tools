@@ -52,3 +52,9 @@ input[type="file"]:hover {
 BUTTON {
   border-radius: 0px !important;
 }
+
+@media screen and (prefers-contrast: more) {
+  .ui-splitbutton__toggle {
+    border: solid 1px !important;
+  }
+}

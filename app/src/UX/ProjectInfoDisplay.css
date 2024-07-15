@@ -1,7 +1,7 @@
-@media only screen and (min-width: 800px) {
+@media only screen and (min-width: 1100px) {
   .pid-toolArea {
     display: grid;
-    grid-template-columns: 200px 50px 230px 1fr;
+    grid-template-columns: 280px 50px 230px 1fr;
     margin-bottom: 1px;
   }
 
@@ -10,10 +10,10 @@
   }
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 1100px) {
   .pid-toolArea {
     display: grid;
-    grid-template-columns: 80px 50px 185px 1fr;
+    grid-template-columns: 90px 50px 165px 1fr;
     margin-bottom: 1px;
   }
 
@@ -37,9 +37,14 @@
   padding-top: 10px;
   padding-left: 10px;
   padding-bottom: 16px;
+  margin-top: 0px;
+  margin-bottom: 0px;
   font-weight: bold;
 }
 
+.pid-filterToolbar {
+  margin-bottom: 1px;
+}
 .pis-contentSummaryHeader {
   padding: 10px;
 }
@@ -103,10 +108,6 @@
 
 .pis-itemData {
   grid-column: 2;
-}
-
-.pid-tableWrapper {
-  overflow-y: auto;
 }
 
 .pid-area {

@@ -2522,7 +2522,7 @@ export default class Project {
   }
 
   async inferProjectItemsFromZipFile(projectPath: string, file: IFile, force?: boolean) {
-    let operId = await this.carto.notifyOperationStarted("Loading package  file " + file.name);
+    let operId = await this.carto.notifyOperationStarted("Loading package file " + file.name);
     await file.loadContent();
 
     const rootFolder = await StorageUtilities.getFileStorageFolder(file);

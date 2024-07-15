@@ -19,13 +19,12 @@
   .home-layout {
     width: 100%;
     display: grid;
-    grid-template-rows: 120px 0.5fr 0.5fr 30px 30px;
+    grid-template-rows: 112px 0.5fr 0.5fr 30px 30px;
     grid-template-columns: 400px 1fr;
   }
 
   .home-header {
     font-size: 30pt;
-    margin-top: 19px;
     height: 100%;
     border-bottom: outset 2px;
   }
@@ -78,6 +77,15 @@
     overflow-y: scroll;
     margin-top: 8px;
   }
+
+  .home-dialog {
+    height: 320px;
+    display: grid;
+    grid-template-rows: 50px 50px 50px 1fr;
+    grid-template-columns: 140px 1fr;
+    padding-bottom: 15px;
+    padding-top: 20px;
+  }
 }
 
 @media only screen and (max-width: 800px) {
@@ -127,6 +135,8 @@
 
   .home-projects {
     padding-top: 10px;
+    margin-bottom: 4px;
+    line-height: 1;
   }
 
   .home-projects-list {
@@ -135,6 +145,11 @@
 
   .home-legal {
     padding-bottom: 30px;
+  }
+
+  .home-dialog {
+    padding-bottom: 15px;
+    padding-top: 20px;
   }
 }
 
@@ -146,10 +161,6 @@
 .home-search-area {
   padding-top: 12px;
   padding-left: 32px;
-  display: inline-block;
-}
-
-.home-gallery-label {
   display: inline-block;
 }
 
@@ -242,21 +253,16 @@
   grid-column-end: 3;
 }
 
-.home-header-image {
-  background-image: url(../images/mctoolsbanner.png);
+.home-header-image-outer {
   display: inline-block;
+  margin: 0px;
+  line-height: 1;
   background-size: cover;
-  width: 266px;
-  height: 60px;
 }
 
-.home-dialog {
-  height: 320px;
-  display: grid;
-  grid-template-rows: 50px 50px 50px 1fr;
-  grid-template-columns: 140px 1fr;
-  padding-bottom: 15px;
-  padding-top: 20px;
+.home-header-image {
+  width: 266px;
+  height: 60px;
 }
 
 .home-newCreator {
@@ -442,22 +448,25 @@
 .home-usage-interior {
   padding-left: 13px;
   padding-right: 13px;
-  padding-top: 5px;
+  padding-top: 4px;
 }
 
 .home-legal {
   grid-row: 5;
   padding-left: 13px;
   padding-right: 13px;
-  padding-top: 2px;
+  padding-top: 1px;
   grid-column-start: 1;
   grid-column-end: 3;
 }
 
 .home-gallery-label {
+  display: inline-block;
+  margin-bottom: 4px;
+  line-height: 1;
   font-size: large;
   grid-column: 1;
-  padding-top: 21px;
+  padding-top: 8px;
   padding-left: 10px;
   padding-bottom: 6px;
   user-select: none;

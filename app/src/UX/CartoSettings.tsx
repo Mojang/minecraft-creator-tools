@@ -52,7 +52,7 @@ export default class CartoSettings extends Component<ICartoSettingsProps, ICarto
           color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
         }}
       >
-        <div
+        <h2
           className="cs-header"
           style={{
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -60,7 +60,7 @@ export default class CartoSettings extends Component<ICartoSettingsProps, ICarto
           }}
         >
           App Settings
-        </div>
+        </h2>
         <div
           className="cs-panelArea"
           style={{
