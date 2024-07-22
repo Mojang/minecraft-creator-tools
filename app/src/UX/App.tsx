@@ -1092,7 +1092,7 @@ export default class App extends Component<AppProps, AppState> {
 
             if (secondComma > 0) {
               (elt as HTMLElement).style.transform =
-                transform.substring(0, firstComma + 2) + " 145px" + transform.substring(secondComma);
+                transform.substring(0, firstComma + 2) + " 235px" + transform.substring(secondComma);
             }
           }
         }
@@ -1131,7 +1131,7 @@ export default class App extends Component<AppProps, AppState> {
     let interior = <></>;
 
     if (this.state.carto === undefined) {
-      return <div className="app-loading">Loading!</div>;
+      return <div className="app-loading">Loading...</div>;
     }
 
     let top = <></>;
@@ -1140,8 +1140,14 @@ export default class App extends Component<AppProps, AppState> {
     let heightOffset = 0;
 
     if (this.state.hasBanner) {
-      height = "calc(100vh - 136px)";
-      heightOffset = 136;
+      let bannerHeight = 96;
+      const elt = window.document.getElementById("cookie-banner");
+      if (elt && elt.offsetHeight > 20) {
+        bannerHeight = elt.offsetHeight + 17;
+      }
+
+      height = "calc(100vh - " + bannerHeight + "px)";
+      heightOffset = bannerHeight;
     }
 
     if (this.state.mode === AppMode.loading) {

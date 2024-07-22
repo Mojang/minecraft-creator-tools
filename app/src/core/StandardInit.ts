@@ -107,7 +107,7 @@ export const minecraftToolLightTheme = {
         foreground1: "#1a1a1a", // main foreground color.  in a dark theme, this should be light.
         foreground2: "#1a1a1a", // complement foreground color
         foreground3: "#1a1a1a",
-        foreground4: "#1a1a1a", // button complement and core accent color to background
+        foreground4: "#000000", // button complement and core accent color to background
         foreground5: "#1a1a1a",
         foreground6: "#4d4d4d", // subtle.
         shadow: "teal",

@@ -19,8 +19,12 @@
   .home-layout {
     width: 100%;
     display: grid;
-    grid-template-rows: 112px 0.5fr 0.5fr 30px 30px;
+    grid-template-rows: 112px 0.5fr 0.5fr 60px;
+  }
+
+  .home-main {
     grid-template-columns: 400px 1fr;
+    display: grid;
   }
 
   .home-header {
@@ -52,15 +56,11 @@
   }
 
   .home-gallery {
-    grid-row-start: 2;
-    grid-row-end: 3;
     grid-column-start: 2;
     grid-column-end: 3;
   }
 
   .home-projects-bin {
-    grid-row-start: 2;
-    grid-row-end: 3;
     min-width: 320px;
     border-right: solid 1px black;
     padding: 10px 10px 10px 7px;
@@ -402,6 +402,8 @@
 .home-toolTile-label {
   font-weight: bold;
   padding-bottom: 6px;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 .home-toolTile-instruction {
@@ -440,9 +442,8 @@
 }
 
 .home-usage {
-  grid-row: 4;
-  grid-column-start: 1;
-  grid-column-end: 3;
+  width: 100%;
+  padding-bottom: 4px;
 }
 
 .home-usage-interior {
@@ -451,13 +452,24 @@
   padding-top: 4px;
 }
 
+.home-main {
+  grid-row-start: 2;
+  grid-row-end: 3;
+  width: 100%;
+}
+
+.home-footer {
+  grid-row: 4;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  width: 100%;
+  line-height: normal;
+}
+
 .home-legal {
-  grid-row: 5;
   padding-left: 13px;
   padding-right: 13px;
   padding-top: 1px;
-  grid-column-start: 1;
-  grid-column-end: 3;
 }
 
 .home-gallery-label {
@@ -466,6 +478,8 @@
   line-height: 1;
   font-size: large;
   grid-column: 1;
+  margin-top: 0px;
+  margin-bottom: 0px;
   padding-top: 8px;
   padding-left: 10px;
   padding-bottom: 6px;

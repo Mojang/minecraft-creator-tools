@@ -107,6 +107,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     super(props);
 
     this._handleProjectGalleryCommand = this._handleProjectGalleryCommand.bind(this);
+
     if (this.props.errorMessage) {
       this.state = {
         gallery: undefined,
@@ -937,7 +938,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
             }}
           >
-            <div
+            <h3
               className="home-toolTile-label"
               style={{
                 color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
@@ -945,7 +946,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             >
               <FontAwesomeIcon icon={faMagnifyingGlass} className="fa-lg" />
               &#160;&#160;Validate/Inspect Content
-            </div>
+            </h3>
             <div className="home-toolTile-instruction">
               Upload a zip/MCAddon/MCPack/MCWorld of Minecraft files to get an Inspector report.
             </div>
@@ -971,23 +972,21 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       );
     }
 
-    if (!AppServiceProxy.hasAppService) {
-      if (CartoApp.theme !== CartoThemeStyle.dark) {
-        webOnlyLinks.push(<span key="darksp">&#160;&#160;/&#160;&#160;</span>);
-        webOnlyLinks.push(
-          <a key="darkLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "dark")}>
-            Dark Theme
-          </a>
-        );
-      }
-      if (CartoApp.theme !== CartoThemeStyle.light) {
-        webOnlyLinks.push(<span key="lightsp">&#160;&#160;/&#160;&#160;</span>);
-        webOnlyLinks.push(
-          <a key="lightLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "light")}>
-            Light Theme
-          </a>
-        );
-      }
+    if (CartoApp.theme !== CartoThemeStyle.dark) {
+      webOnlyLinks.push(<span key="darksp">&#160;&#160;/&#160;&#160;</span>);
+      webOnlyLinks.push(
+        <a key="darkLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "dark")}>
+          Dark Theme
+        </a>
+      );
+    }
+    if (CartoApp.theme !== CartoThemeStyle.light) {
+      webOnlyLinks.push(<span key="lightsp">&#160;&#160;/&#160;&#160;</span>);
+      webOnlyLinks.push(
+        <a key="lightLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "light")}>
+          Light Theme
+        </a>
+      );
     }
 
     if (this.state?.dialogMode === HomeDialogMode.newProject) {
@@ -1263,7 +1262,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         className="home-layout"
         draggable={true}
         style={{
-          height: browserWidth >= 800 ? "calc(100vh - " + this.props.heightOffset + "px)" : "",
+          height: "calc(100vh - " + this.props.heightOffset + "px)",
         }}
       >
         {effectArea}
@@ -1300,103 +1299,107 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             </div>
           </div>
         </header>
-        <main
-          className="home-projects-bin"
-          style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-          }}
-        >
-          {introArea}
-          {toolsArea}
-          {recentsArea}
-        </main>
-        <section
-          className="home-gallery"
-          aria-label="Gallery section"
-          style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
-          }}
-        >
-          {errorMessageContainer}
+        <main className="home-main">
           <div
-            className="home-gallery-interior"
+            className="home-projects-bin"
             style={{
-              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-              height: browserWidth >= 800 ? "calc(100vh - " + (168 + this.props.heightOffset) + "px)" : "",
-            }}
-          >
-            {localGallery}
-            {gallery}
-          </div>
-        </section>
-        <section
-          aria-label="Usage section"
-          className="home-usage"
-          style={{
-            borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-          }}
-        >
-          <div
-            className="home-usage-interior"
-            style={{
-              borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            }}
-          >
-            {storageMessage}
-            {storageAction}
-            <a
-              href={constants.homeUrl + "/docs/"}
-              className="home-header-docsLink"
-              target="_blank"
-              rel="noreferrer noopener"
-              style={{
-                color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-              }}
-            >
-              Docs
-            </a>{" "}
-            and
-            <a
-              href={constants.repositoryUrl}
-              className="home-header-docsLink"
-              target="_blank"
-              rel="noreferrer noopener"
-              style={{
-                color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-              }}
-            >
-              GitHub repo
-            </a>
-            .
-          </div>
-        </section>
-        <footer
-          className="home-legal"
-          style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-          }}
-        >
-          version {constants.version} - early preview.
-          {termsArea}
-          {privacyArea}
-          {trademarksArea}
-          <a
-            href={constants.homeUrl + "/docs/notice.html"}
-            className="home-header-docsLink"
-            target="_blank"
-            rel="noreferrer noopener"
-            style={{
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
             }}
           >
-            Attribution
-          </a>
-          .<span className="home-header-textArea">© 2024 Mojang AB.</span>
+            {introArea}
+            {toolsArea}
+            {recentsArea}
+          </div>
+          <div
+            className="home-gallery"
+            aria-label="Gallery section"
+            style={{
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+            }}
+          >
+            {errorMessageContainer}
+            <div
+              className="home-gallery-interior"
+              style={{
+                borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+                height: browserWidth >= 800 ? "calc(100vh - " + (168 + this.props.heightOffset) + "px)" : "",
+              }}
+            >
+              {localGallery}
+              {gallery}
+            </div>
+          </div>
+        </main>
+        <footer className="home-footer">
+          <div
+            aria-label="Usage section"
+            className="home-usage"
+            style={{
+              borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+            }}
+          >
+            <div
+              className="home-usage-interior"
+              style={{
+                borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              }}
+            >
+              {storageMessage}
+              {storageAction}
+              <a
+                href={constants.homeUrl + "/docs/"}
+                className="home-header-docsLink"
+                target="_blank"
+                rel="noreferrer noopener"
+                style={{
+                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+                }}
+              >
+                Docs
+              </a>{" "}
+              and
+              <a
+                href={constants.repositoryUrl}
+                className="home-header-docsLink"
+                target="_blank"
+                rel="noreferrer noopener"
+                style={{
+                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+                }}
+              >
+                GitHub repo
+              </a>
+              .
+            </div>
+          </div>
+          <div
+            className="home-legal"
+            style={{
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+            }}
+          >
+            version {constants.version} - early preview.
+            {termsArea}
+            {privacyArea}
+            {trademarksArea}
+            <a
+              href={constants.homeUrl + "/docs/notice.html"}
+              className="home-header-docsLink"
+              target="_blank"
+              rel="noreferrer noopener"
+              style={{
+                color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+              }}
+            >
+              Attribution
+            </a>
+            .<span className="home-header-textArea">© 2024 Mojang AB.</span>
+          </div>
         </footer>
       </div>
     );
