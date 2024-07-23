@@ -1250,6 +1250,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       manageConsentArea = (
         <span>
           <button
+            id="home-manage-cookies"
             className="home-header-docsLink"
             onClick={this._doManageConsent}
             style={{
