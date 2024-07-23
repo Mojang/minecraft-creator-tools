@@ -19,8 +19,33 @@ if (WcpConsent) {
   });
 }
 
+if (oneDS && oneDS.ApplicationInsights) {
+  const analytics = new oneDS.ApplicationInsights();
+
+  analytics.initialize({
+    instrumentationKey: "1e1425454dbc4c25b1be2762598df0b6-7f4669a7-d9f8-4e51-9bba-266dcfc0dc00-7638",
+    propertyConfiguration: {
+      callback: {
+        userConsentDetails: siteConsent ? siteConsent.getConsent : null
+      },
+    },
+    webAnalyticsConfiguration: {
+      autoCapture: {
+        scroll: true,
+        pageView: true,
+        onLoad: true,
+        onUnload: true,
+        click: true,
+        scroll: true,
+        resize: true,
+        jsError: true
+      }
+    }
+  }, []);
+}
+
 window.manageConsent = function() {
-  if(siteConsent.isConsentRequired){
+  if(siteConsent && siteConsent.isConsentRequired){
     siteConsent.manageConsent();
   }
 }
