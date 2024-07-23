@@ -8,11 +8,20 @@
         };
 
 var siteConsent = null;
-WcpConsent.init("en-US", "cookie-banner", function (err, _siteConsent) {
+
+if (WcpConsent) {
+  WcpConsent.init("en-US", "cookie-banner", function (err, _siteConsent) {
     if (err != undefined) {
-        return error;
+      return error;
     } else {
-        siteConsent = _siteConsent;          
+      siteConsent = _siteConsent;          
     }
-});
+  });
+}
+
+window.manageConsent = function() {
+  if(siteConsent.isConsentRequired){
+    siteConsent.manageConsent();
+  }
+}
     </script>

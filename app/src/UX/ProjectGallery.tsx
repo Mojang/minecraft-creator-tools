@@ -97,6 +97,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
       selectedItem: this.state.selectedItem,
     });
   }
+
   _selectCodeSnippets() {
     this.setState({
       loadedProjectHash: this.state.loadedProjectHash,
@@ -189,11 +190,12 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
 
     if (this.props.search === undefined) {
       tabsElt = (
-        <div className="pg-tabArea">
+        <div className="pg-tabArea" role="tablist">
           <Button
             className="pg-tabButton"
             role="tab"
             onClick={this._selectProjectStarters}
+            aria-selected={this.state.mode === ProjectGalleryMode.starters}
             style={{
               backgroundColor:
                 this.state.mode === ProjectGalleryMode.starters
@@ -215,6 +217,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
           </Button>
           <div
             className="pg-underline"
+            aria-hidden="true"
             style={{
               borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
             }}
@@ -225,6 +228,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
             className="pg-tabButton"
             onClick={this._selectCodeSnippets}
             role="tab"
+            aria-selected={this.state.mode === ProjectGalleryMode.codeSnippets}
             style={{
               backgroundColor:
                 this.state.mode === ProjectGalleryMode.codeSnippets

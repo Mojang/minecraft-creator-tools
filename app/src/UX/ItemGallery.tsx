@@ -279,6 +279,7 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
               backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
               borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
             }}
+            role="radiogroup"
           >
             {galleryButtons}
           </div>

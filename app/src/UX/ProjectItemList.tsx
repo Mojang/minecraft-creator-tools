@@ -918,6 +918,18 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           <FontAwesomeIcon icon={isExpanded ? faCaretRight : faCaretDown} className="fa-md" />
         </div>
       );
+    } else {
+      toggle = (
+        <div
+          className="pil-storagePathCollapsedToggle"
+          style={{
+            backgroundColor: ColorUtilities.toCss(ColorUtilities.darker(typeColor, 0.1)),
+          }}
+          aria-hidden="true"
+        >
+          &#160;
+        </div>
+      );
     }
 
     this._projectListItems.push({
@@ -1508,16 +1520,16 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       <div
         className="pil-fixedLineRow"
         key="pil-fixpropj"
-        aria-live="assertive"
         style={{
           height: this.props.filteredItems ? "32px" : "0px",
         }}
       >
-        <div className="pil-projectName">
+        <div className="pil-projectName" aria-live="assertive">
           {this.props.filteredItems ? this.props.filteredItems.length + " items found" : ""}
         </div>
       </div>
     );
+
     this._projectListItems.push({
       accessibility: listItemBehavior,
       content: searchSummaryContent,

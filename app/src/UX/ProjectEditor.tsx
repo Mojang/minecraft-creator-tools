@@ -2595,6 +2595,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return <h1>{error}</h1>;
     }
 
+    if (this.state.searchFilter && viewMode === CartoEditorViewMode.mainFocus) {
+      viewMode = CartoEditorViewMode.itemsFocus;
+    }
+
     let exportKeys: { [exportOptionKey: string]: any } = {};
     const exportMenu: any = [];
 
