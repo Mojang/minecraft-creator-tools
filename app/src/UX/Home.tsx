@@ -137,6 +137,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._handleErrorMessageConfirm = this._handleErrorMessageConfirm.bind(this);
     this._handleDeleteProjectConfirm = this._handleDeleteProjectConfirm.bind(this);
     this._handleNewProjectName = this._handleNewProjectName.bind(this);
+    this._doManageConsent = this._doManageConsent.bind(this);
     this._handleNewProjectNameChange = this._handleNewProjectNameChange.bind(this);
     this._handleNewProjectShortNameChange = this._handleNewProjectShortNameChange.bind(this);
     this._handleNewProjectCreatorChange = this._handleNewProjectCreatorChange.bind(this);
@@ -187,6 +188,12 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           newProjectPath: this.state.newProjectPath,
         });
       }
+    }
+  }
+
+  private _doManageConsent() {
+    if ((window as any).manageConsent) {
+      (window as any).manageConsent();
     }
   }
 
@@ -1198,6 +1205,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       </span>
     );
     let privacyArea = <></>;
+    let manageConsentArea = <></>;
     let trademarksArea = <></>;
 
     if ((window as any).creatorToolsSite?.termsOfUseUrl) {
@@ -1233,6 +1241,23 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           >
             Privacy and Cookies
           </a>
+          .
+        </span>
+      );
+    }
+
+    if ((window as any).manageConsent && (window as any).siteConsent && (window as any).siteConsent.isConsentRequired) {
+      manageConsentArea = (
+        <span>
+          <button
+            className="home-header-docsLink"
+            onClick={this._doManageConsent}
+            style={{
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+            }}
+          >
+            Manage Cookies
+          </button>
           .
         </span>
       );
@@ -1386,6 +1411,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             version {constants.version} - early preview.
             {termsArea}
             {privacyArea}
+            {manageConsentArea}
             {trademarksArea}
             <a
               href={constants.homeUrl + "/docs/notice.html"}

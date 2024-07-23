@@ -230,6 +230,10 @@
 .home-header-docsLink {
   color: white;
   padding-left: 6px;
+  background-color: transparent;
+  border: 0px;
+  text-decoration: underline;
+  padding-right: 0px;
 }
 
 .home-header-textArea {
