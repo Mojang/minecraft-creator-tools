@@ -80,3 +80,7 @@ Loads the project folder `d:\mycontent\myprojectfolder`, validates using the 'ad
 `npx mct validate addon -if d:\mycontent\packages\myaddon.mcaddon -show --log-verbose`
 
 Loads the project file `d:\mycontent\packages\myaddon.mcaddon`, validates using the 'addon' suite of strict tests and shows validation results on the command line. Also displays verbose logging messages.
+
+## Trademarks 
+
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks/usage/general). Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party’s policies.
