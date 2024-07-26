@@ -21,12 +21,13 @@ if (WcpConsent) {
 
         analytics.initialize({
           instrumentationKey: "1e1425454dbc4c25b1be2762598df0b6-7f4669a7-d9f8-4e51-9bba-266dcfc0dc00-7638",
+          disableCookiesUsage: !siteConsent || !siteConsent.getConsent || (siteConsent.isConsentRequired && !siteConsent.getConsent().Analytics),
           propertyConfiguration: {
             callback: {
               userConsentDetails: siteConsent ? siteConsent.getConsent : null
             },
           },
-        webAnalyticsConfiguration: {
+          webAnalyticsConfiguration: {
             autoCapture: {
               scroll: true,
               pageView: true,
