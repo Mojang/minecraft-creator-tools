@@ -9,6 +9,7 @@ import Varint from "./Varint";
 import DataUtilities from "../core/DataUtilities";
 import Utilities from "../core/Utilities";
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
+import ILevelDbFileInfo from "./ILevelDbFileInfo";
 
 export default class LevelDb implements IErrorable {
   ldbFiles: IFile[];
@@ -74,31 +75,6 @@ export default class LevelDb implements IErrorable {
     this.isInErrorState = false;
     this.errorMessages = undefined;
 
-    for (let i = 0; i < this.ldbFiles.length; i++) {
-      await this.ldbFiles[i].loadContent(false);
-
-      const content = this.ldbFiles[i].content;
-
-      if (content instanceof Uint8Array && content.length > 0) {
-        const kp = this.parseLdbContent(content, this.ldbFiles[i].storageRelativePath);
-        if (log) {
-          await log("Loaded map record file '" + this.ldbFiles[i].fullPath + "'. Records: " + kp);
-        }
-      }
-    }
-
-    for (let i = 0; i < this.logFiles.length; i++) {
-      await this.logFiles[i].loadContent(false);
-
-      const content = this.logFiles[i].content;
-
-      if (content instanceof Uint8Array && content.length > 0) {
-        const kp = this.parseLogContent(content, this.logFiles[i].storageRelativePath);
-        if (log) {
-          await log("Loaded map latest-updates file '" + this.logFiles[i].fullPath + "'. Records: " + kp);
-        }
-      }
-    }
     for (let i = 0; i < this.manifestFiles.length; i++) {
       await this.manifestFiles[i].loadContent(false);
 
@@ -108,6 +84,79 @@ export default class LevelDb implements IErrorable {
         this.parseManifestContent(content, this.manifestFiles[i].storageRelativePath);
         if (log) {
           await log("Loaded map manifest file '" + this.manifestFiles[i].fullPath + "'.");
+        }
+      }
+    }
+
+    const ldbFileInfos: ILevelDbFileInfo[] = [];
+
+    for (let i = 0; i < this.ldbFiles.length; i++) {
+      const file = this.ldbFiles[i];
+
+      try {
+        const index = parseInt(file.name);
+
+        if (!this.deletedFileNumber || !this.deletedFileNumber.includes(index)) {
+          let level = 0;
+
+          if (this.newFileLevel && this.newFileNumber) {
+            Log.assert(this.newFileLevel.length === this.newFileNumber.length);
+
+            if (this.newFileLevel.length === this.newFileNumber.length) {
+              for (let j = 0; j < this.newFileNumber.length; j++) {
+                if (this.newFileNumber[j] === index) {
+                  level = this.newFileLevel[j];
+                }
+              }
+            }
+          }
+
+          ldbFileInfos.push({
+            index: index,
+            file: file,
+            isDeleted: false,
+            level: level,
+          });
+        }
+      } catch (e) {}
+    }
+
+    const ldbFileInfoSorted = ldbFileInfos.sort((fileA: ILevelDbFileInfo, fileB: ILevelDbFileInfo) => {
+      if (fileA.level === fileB.level) {
+        return fileA.index - fileB.index;
+      }
+
+      return fileB.level - fileA.level;
+    });
+
+    for (let i = 0; i < ldbFileInfoSorted.length; i++) {
+      const ldbFile = ldbFileInfoSorted[i].file;
+
+      await ldbFile.loadContent(false);
+
+      const content = ldbFile.content;
+
+      if (content instanceof Uint8Array && content.length > 0) {
+        const kp = this.parseLdbContent(content, ldbFile.storageRelativePath);
+        if (log) {
+          await log("Loaded map record file '" + ldbFile.fullPath + "'. Records: " + kp);
+        }
+      }
+    }
+
+    const logFilesSorted = this.logFiles.sort((fileA: IFile, fileB: IFile) => {
+      return fileA.name.localeCompare(fileB.name);
+    });
+
+    for (let i = 0; i < logFilesSorted.length; i++) {
+      await logFilesSorted[i].loadContent(false);
+
+      const content = logFilesSorted[i].content;
+
+      if (content instanceof Uint8Array && content.length > 0) {
+        const kp = this.parseLogContent(content, logFilesSorted[i].storageRelativePath);
+        if (log) {
+          await log("Loaded map latest-updates file '" + logFilesSorted[i].fullPath + "'. Records: " + kp);
         }
       }
     }
@@ -312,7 +361,6 @@ export default class LevelDb implements IErrorable {
     while (index < offset + length - endRestartSize) {
       const lb = new LevelKeyValue();
 
-      lb.level = 1;
       lb.loadFromLdb(data, index, lastKeyValuePair);
 
       const key = lb.key;
@@ -451,7 +499,6 @@ export default class LevelDb implements IErrorable {
             index += dataLength.value;
 
             const kv = new LevelKeyValue();
-            kv.level = 0;
             kv.sharedKey = "";
             kv.keyDelta = key;
             kv.unsharedKeyBytes = keyBytes;

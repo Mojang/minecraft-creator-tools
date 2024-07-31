@@ -10,7 +10,7 @@ import { IProjectInfoTopicData } from "./IProjectInfoGeneratorBase";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
-import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
+import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
 
 export default class StrictPlatformInfoGenerator implements IProjectInfoGenerator {
   id = "STRICT";
@@ -89,7 +89,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const bpItemType = await ItemTypeDefinition.ensureOnFile(pi.file);
+          const bpItemType = await ItemTypeBehaviorDefinition.ensureOnFile(pi.file);
 
           if (bpItemType) {
             await bpItemType.load();

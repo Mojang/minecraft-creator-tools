@@ -6,7 +6,7 @@ import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
 import BlockTypeBehaviorDefinition from "./BlockTypeBehaviorDefinition";
 import EntityTypeDefinition from "./EntityTypeDefinition";
 import FlipbookTextureCatalogDefinition from "./FlipbookTextureCatalogDefinition";
-import ItemTypeDefinition from "./ItemTypeDefinition";
+import ItemTypeBehaviorDefinition from "./ItemTypeBehaviorDefinition";
 import ResourceAnimation from "./ResourceAnimation";
 import ResourceAnimationController from "./ResourceAnimationController";
 import ResourceManifestDefinition from "./ResourceManifestDefinition";
@@ -21,7 +21,7 @@ export default class MinecraftDefinitions {
       case ProjectItemType.entityTypeBehaviorJson:
         return await EntityTypeDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.itemTypeBehaviorJson:
-        return await ItemTypeDefinition.ensureOnFile(projectItem.file);
+        return await ItemTypeBehaviorDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.blockTypeBehaviorJson:
         return await BlockTypeBehaviorDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.flipbookTexturesJson:

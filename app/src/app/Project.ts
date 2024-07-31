@@ -38,6 +38,7 @@ import { StatusTopic, StatusType } from "./Status";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
 import Pack, { PackType } from "../minecraft/Pack";
 import { IErrorable } from "../core/IErrorable";
+import ProjectDeploySync from "./ProjectDeploySync";
 
 export enum ProjectAutoDeploymentMode {
   deployOnSave = 0,
@@ -111,6 +112,7 @@ export default class Project {
 
   #folderStructureLoaded: boolean = false;
 
+  #mainDeployFolder: IFolder | null = null;
   #projectFolder: IFolder | null;
   #projectCabinetFile: IFile | null = null;
 
@@ -123,6 +125,8 @@ export default class Project {
   #docsContainer: IFolder | null;
 
   #worldContainer: IFolder | null = null;
+
+  #mainDeploySync: ProjectDeploySync | null = null;
 
   #isDisposed: boolean = false;
 
@@ -482,6 +486,14 @@ export default class Project {
 
   set localFolderPath(newPath: string | undefined) {
     this.#data.localFolderPath = newPath;
+  }
+
+  get mainDeployFolderPath(): string | undefined {
+    return this.#data.mainDeployFolderPath;
+  }
+
+  set mainDeployFolderPath(newPath: string | undefined) {
+    this.#data.mainDeployFolderPath = newPath;
   }
 
   get localFilePath(): string | undefined {
@@ -1349,7 +1361,7 @@ export default class Project {
   }
 
   clearFolders() {
-    this._unapplyFomProjectFolder();
+    this._unapplyFromProjectFolder();
 
     if (this.#projectFolder) {
       this.#projectFolder.clearAllManagers();
@@ -1529,7 +1541,7 @@ export default class Project {
 
   dispose() {
     if (this.#projectFolder) {
-      this._unapplyFomProjectFolder();
+      this._unapplyFromProjectFolder();
       this.#projectFolder.dispose();
       this.#projectFolder = null;
     }
@@ -2377,9 +2389,9 @@ export default class Project {
                 newJsonType = ProjectItemType.behaviorPackListJson;
               } else if (baseName === "world_resource_packs") {
                 newJsonType = ProjectItemType.resourcePackListJson;
-              } else if (baseName === "world_behavior_packs_history") {
+              } else if (baseName === "world_behavior_pack_history") {
                 newJsonType = ProjectItemType.behaviorPackHistoryListJson;
-              } else if (baseName === "world_resource_packs_history") {
+              } else if (baseName === "world_resource_pack_history") {
                 newJsonType = ProjectItemType.resourcePackHistoryListJson;
               } else if (baseName === "tsconfig") {
                 newJsonType = ProjectItemType.tsconfigJson;
@@ -2393,6 +2405,8 @@ export default class Project {
                 newJsonType = ProjectItemType.packageJson;
               } else if (baseName === "package.lock") {
                 newJsonType = ProjectItemType.packageLockJson;
+              } else if (baseName === ".prettierrc") {
+                newJsonType = ProjectItemType.prettierRcJson;
               } else if (
                 folderContext === FolderContext.behaviorPack &&
                 (folderPathLower.indexOf("/entities/") >= 0 || folderPathLower.indexOf("/entity/") >= 0)
@@ -2510,7 +2524,7 @@ export default class Project {
     const rootFolder = await StorageUtilities.getFileStorageFolder(this.#projectCabinetFile);
 
     if (rootFolder !== this.#projectFolder) {
-      this._unapplyFomProjectFolder();
+      this._unapplyFromProjectFolder();
       if (rootFolder) {
         this.#projectFolder = rootFolder;
 
@@ -3160,7 +3174,7 @@ export default class Project {
       this.#carto.deployBehaviorPacksFolder !== null &&
       this.#carto.activeMinecraft
     ) {
-      await this.#carto.activeMinecraft.deploy();
+      await this.#carto.activeMinecraft.syncWithDeployment();
     }
 
     this._onSaved.dispatch(this, this);
@@ -3186,7 +3200,7 @@ export default class Project {
 
   setProjectFolder(newFolder: IFolder) {
     if (this.#projectFolder !== newFolder) {
-      this._unapplyFomProjectFolder();
+      this._unapplyFromProjectFolder();
       this.#projectFolder = newFolder;
       this._applyToProjectFolder();
     }
@@ -3194,7 +3208,7 @@ export default class Project {
     this.#isProjectFolderEnsured = true;
   }
 
-  _unapplyFomProjectFolder() {
+  _unapplyFromProjectFolder() {
     if (this.#projectFolder) {
       this.#projectFolder.storage.onFileContentsUpdated.unsubscribe(this._handleProjectFileContentsUpdated);
       this.#projectFolder.onChildFolderMoved.unsubscribe(this._handleProjectFolderMoved);
@@ -3226,7 +3240,7 @@ export default class Project {
         const folder = this.#carto.ensureLocalFolder(this.#data.localFolderPath);
 
         if (folder !== this.#projectFolder) {
-          this._unapplyFomProjectFolder();
+          this._unapplyFromProjectFolder();
           this.#projectFolder = folder;
           this._applyToProjectFolder();
         }
@@ -3236,7 +3250,7 @@ export default class Project {
         );
 
         if (folder !== this.#projectFolder) {
-          this._unapplyFomProjectFolder();
+          this._unapplyFromProjectFolder();
           this.#projectFolder = folder;
           this._applyToProjectFolder();
           Log.debug(
@@ -3245,6 +3259,65 @@ export default class Project {
           );
         }
 
+        this.#errorState = ProjectErrorState.projectFolderOrFileDoesNotExist;
+      }
+    } else if (
+      this.#data.mainDeployFolderPath !== undefined &&
+      this.#carto.ensureLocalFolder !== undefined &&
+      this.#carto.localFolderExists !== undefined
+    ) {
+      const folder = this.#carto.projectsStorage.rootFolder.ensureFolder(
+        ProjectUtilities.canonicalizeStoragePath(this.#data.name)
+      );
+
+      if (folder !== this.#projectFolder) {
+        this._unapplyFromProjectFolder();
+        this.#projectFolder = folder;
+        this._applyToProjectFolder();
+      }
+
+      const deployFolderExists = await this.#carto.localFolderExists(this.#data.mainDeployFolderPath);
+
+      if (deployFolderExists) {
+        const folder = this.#carto.ensureLocalFolder(this.#data.mainDeployFolderPath);
+
+        if (folder !== this.#mainDeployFolder) {
+          this.#mainDeployFolder = folder;
+          this.#mainDeploySync = new ProjectDeploySync(this, folder);
+
+          await this.#mainDeploySync.fullIngestIntoProject();
+        }
+      } else {
+        this.#errorState = ProjectErrorState.projectFolderOrFileDoesNotExist;
+      }
+    } else if (
+      this.#data.mainDeployFolderPath !== undefined &&
+      this.#carto.isDeployingToComMojang &&
+      this.#carto.deploymentStorage
+    ) {
+      const folder = this.#carto.projectsStorage.rootFolder.ensureFolder(
+        ProjectUtilities.canonicalizeStoragePath(this.#data.name)
+      );
+
+      if (folder !== this.#projectFolder) {
+        this._unapplyFromProjectFolder();
+        this.#projectFolder = folder;
+        this._applyToProjectFolder();
+      }
+
+      const deployFolder = await this.#carto.deploymentStorage.ensureFolderFromStorageRelativePath(
+        this.#data.mainDeployFolderPath
+      );
+      const deployFolderExists = await deployFolder.exists();
+
+      if (deployFolderExists) {
+        if (deployFolder !== this.#mainDeployFolder) {
+          this.#mainDeployFolder = folder;
+          this.#mainDeploySync = new ProjectDeploySync(this, deployFolder);
+
+          await this.#mainDeploySync.fullIngestIntoProject();
+        }
+      } else {
         this.#errorState = ProjectErrorState.projectFolderOrFileDoesNotExist;
       }
     } else if (
@@ -3316,7 +3389,7 @@ export default class Project {
           ProjectUtilities.canonicalizeStoragePath(this.#data.name)
         );
         if (folder !== this.#projectFolder) {
-          this._unapplyFomProjectFolder();
+          this._unapplyFromProjectFolder();
           this.#projectFolder = folder;
           this._applyToProjectFolder();
         }
@@ -3327,7 +3400,7 @@ export default class Project {
       const folder = this.#carto.projectsStorage.rootFolder.ensureFolder(this.name);
 
       if (folder !== this.#projectFolder) {
-        this._unapplyFomProjectFolder();
+        this._unapplyFromProjectFolder();
         this.#projectFolder = folder;
         this._applyToProjectFolder();
       }
@@ -3339,7 +3412,7 @@ export default class Project {
       );
 
       if (folder !== this.#projectFolder) {
-        this._unapplyFomProjectFolder();
+        this._unapplyFromProjectFolder();
         this.#projectFolder = folder;
         this._applyToProjectFolder();
       }

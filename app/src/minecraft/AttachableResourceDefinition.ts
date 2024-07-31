@@ -76,7 +76,7 @@ export default class AttachableResourceDefinition {
     return this.attachableWrapper.format_version;
   }
 
-  static async ensureAttachableDefinitionOnFile(
+  static async ensureOnFile(
     file: IFile,
     loadHandler?: IEventHandler<AttachableResourceDefinition, AttachableResourceDefinition>
   ) {

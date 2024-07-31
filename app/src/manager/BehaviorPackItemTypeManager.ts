@@ -13,7 +13,7 @@ import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
-import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
+import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
 
 export default class BehaviorPackItemTypeManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "BPITEMTYPE";
@@ -143,7 +143,7 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
 
         if (pi.file) {
           foundWorldTemplate = true;
-          const bpItemType = await ItemTypeDefinition.ensureOnFile(pi.file);
+          const bpItemType = await ItemTypeBehaviorDefinition.ensureOnFile(pi.file);
 
           if (bpItemType) {
             await bpItemType.load();
@@ -357,7 +357,7 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const wtManifest = await ItemTypeDefinition.ensureOnFile(pi.file);
+          const wtManifest = await ItemTypeBehaviorDefinition.ensureOnFile(pi.file);
 
           if (wtManifest) {
             const mev = wtManifest.wrapper?.format_version;

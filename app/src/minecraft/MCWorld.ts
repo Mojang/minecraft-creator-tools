@@ -32,6 +32,7 @@ import { ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData
 import ActorItem from "./ActorItem";
 import { StatusTopic } from "../app/Status";
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
+import ProjectItem from "../app/ProjectItem";
 
 const BEHAVIOR_PACKS_RELPATH = "/world_behavior_packs.json";
 const BEHAVIOR_PACK_HISTORY_RELPATH = "/world_behavior_pack_history.json";
@@ -189,6 +190,18 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     }
 
     return this._generationSeed;
+  }
+
+  public async copyAsFolderTo(targetFolder: IFolder) {
+    if (this._folder) {
+      await StorageUtilities.syncFolderTo(this._folder, targetFolder, true, true, true);
+    } else if (this._file) {
+      const storage = this.storage;
+
+      if (storage) {
+        await StorageUtilities.syncFolderTo(this.storage.rootFolder, targetFolder, true, true, true);
+      }
+    }
   }
 
   public get storage() {
@@ -423,8 +436,8 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   static async ensureMCWorldOnFolder(folder: IFolder, project?: Project, handler?: IEventHandler<MCWorld, MCWorld>) {
     if (folder.manager === undefined) {
       const world = new MCWorld();
-      world.project = project;
 
+      world.project = project;
       world.folder = folder;
 
       folder.manager = world;
@@ -446,6 +459,22 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     }
 
     return undefined;
+  }
+
+  static async ensureOnItem(projectItem: ProjectItem) {
+    let mcworld: MCWorld | undefined = undefined;
+
+    if (projectItem.folder) {
+      mcworld = await MCWorld.ensureMCWorldOnFolder(projectItem.folder, projectItem.project);
+    } else if (projectItem.file) {
+      mcworld = await MCWorld.ensureOnFile(projectItem.file, projectItem.project);
+    }
+
+    if (!mcworld) {
+      Log.debugAlert("Could not find respective world.");
+    }
+
+    return mcworld;
   }
 
   static async ensureOnFile(file: IFile, project?: Project, handler?: IEventHandler<MCWorld, MCWorld>) {
@@ -1307,9 +1336,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       }
     }
 
-    this._onLoaded.dispatch(this, this);
-
     this._isLoaded = true;
+
+    this._onLoaded.dispatch(this, this);
   }
 
   async loadData(force: boolean = false) {
@@ -1703,14 +1732,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       } else if (keyname.startsWith("Nether")) {
       } else if (
         keyValue &&
-        (keyname.length === 9 ||
-          keyname.length === 10 ||
-          keyname.length === 17 ||
-          keyname.length === 18 ||
-          keyname.length === 21 ||
-          keyname.length === 22 ||
-          keyname.length === 13 ||
-          keyname.length === 14)
+        (keyname.length === 9 || keyname.length === 10 || keyname.length === 13 || keyname.length === 14)
       ) {
         const keyBytes = keyValue.keyBytes;
         const hasDimensionParam = keyname.length > 18 || keyname.length === 13 || keyname.length === 14;
@@ -1773,16 +1795,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
         }
       } else if (
         keyValue === false &&
-        (keyname.length === 9 ||
-          keyname.length === 10 ||
-          keyname.length === 17 ||
-          keyname.length === 18 ||
-          keyname.length === 21 ||
-          keyname.length === 22 ||
-          keyname.length === 13 ||
-          keyname.length === 14)
+        (keyname.length === 9 || keyname.length === 10 || keyname.length === 13 || keyname.length === 14)
       ) {
-        const hasDimensionParam = keyname.length > 18 || keyname.length === 13 || keyname.length === 14;
+        const hasDimensionParam = keyname.length === 13 || keyname.length === 14;
 
         const x = DataUtilities.getSignedInteger(
           keyname.charCodeAt(0),

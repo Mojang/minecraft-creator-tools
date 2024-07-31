@@ -218,7 +218,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       title: this.state.title,
     });
 
-    ProjectUtilities.applyName(this.props.project, data.value);
+    ProjectUtilities.applyTitle(this.props.project, data.value);
   }
 
   async _handleBehaviorPackUuidChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {

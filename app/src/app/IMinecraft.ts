@@ -53,7 +53,7 @@ export default interface IMinecraft {
   initialize(): Promise<void>;
 
   stop(): Promise<void>;
-  deploy(): Promise<void>;
+  syncWithDeployment(): Promise<void>;
 
   updateStatus(): Promise<CartoMinecraftState>;
 

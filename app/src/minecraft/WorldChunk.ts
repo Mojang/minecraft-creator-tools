@@ -34,8 +34,8 @@ export default class WorldChunk {
   finalizedState: LevelKeyValue | undefined;
   entity: LevelKeyValue | undefined;
   blockActorKeys: LevelKeyValue[] = [];
-  blockActorsRelLoc: BlockActor[][][] = [];
-  blockActors: BlockActor[] = [];
+  private _blockActorsRelLoc: BlockActor[][][] = [];
+  private _blockActors: BlockActor[] = [];
   pendingTicks: LevelKeyValue | undefined;
   biomeState: LevelKeyValue | undefined;
   blockTops: number[][] | undefined;
@@ -63,8 +63,6 @@ export default class WorldChunk {
   maxSubChunkIndex: number = -512; // set it very low
   minSubChunkIndex: number = 512; // set it very high
 
-  lowestProcessedSubChunkLevel = 32768;
-
   get absoluteMinY() {
     return this.absoluteZeroY;
   }
@@ -79,6 +77,14 @@ export default class WorldChunk {
 
   get absoluteMaxY() {
     return this.absoluteZeroY + this.subChunks.length * 16;
+  }
+
+  get blockActors() {
+    if (!this.blockActorsEnsured) {
+      this.ensureBlockActors();
+    }
+
+    return this._blockActors;
   }
 
   constructor(world: MCWorld, inX: number, inZ: number) {
@@ -158,12 +164,6 @@ export default class WorldChunk {
           break;
 
         case 47: // subchunk prefix
-          if (keyValue.level > this.lowestProcessedSubChunkLevel) {
-            return;
-          }
-
-          this.lowestProcessedSubChunkLevel = keyValue.level;
-
           let subChunkIndex = this.translateSubChunkIndex(keyBytes[9 + dimExtensionBytes]);
 
           if (subChunkIndex < 0) {
@@ -198,7 +198,6 @@ export default class WorldChunk {
         case 49: // block entity
           this.blockActorKeys.push(keyValue);
           this.blockActorsEnsured = false;
-          this.ensureBlockActors();
           break;
 
         case 50: // entity
@@ -250,6 +249,8 @@ export default class WorldChunk {
         case 65: // actor digest version
           break;
 
+        case 119: // ??
+          break;
         default:
           throw new Error("Unsupported chunk type: " + val);
       }
@@ -344,6 +345,9 @@ export default class WorldChunk {
           break;
         case 72: // actor digest version
           break;
+
+        case 119: // ??
+          break;
         default:
           throw new Error("Unsupported chunk type: " + val);
       }
@@ -351,12 +355,12 @@ export default class WorldChunk {
   }
 
   ensureBlockActors() {
-    if (!this.blockActorsRelLoc || this.blockActorsEnsured) {
+    if (!this._blockActorsRelLoc || this.blockActorsEnsured) {
       return;
     }
 
-    this.blockActorsRelLoc = [];
-    this.blockActors = [];
+    this._blockActorsRelLoc = [];
+    this._blockActors = [];
 
     for (const keyValue of this.blockActorKeys) {
       if (keyValue.value && keyValue.value.length > 0) {
@@ -398,15 +402,20 @@ export default class WorldChunk {
 
               if (specificBa) {
                 specificBa.load();
-                if (!this.blockActorsRelLoc[actorRelX]) {
-                  this.blockActorsRelLoc[actorRelX] = [];
+                if (!this._blockActorsRelLoc[actorRelX]) {
+                  this._blockActorsRelLoc[actorRelX] = [];
                 }
-                if (!this.blockActorsRelLoc[actorRelX][ba.y]) {
-                  this.blockActorsRelLoc[actorRelX][ba.y] = [];
+                if (!this._blockActorsRelLoc[actorRelX][ba.y]) {
+                  this._blockActorsRelLoc[actorRelX][ba.y] = [];
                 }
 
-                this.blockActorsRelLoc[actorRelX][ba.y][actorRelZ] = specificBa;
-                this.blockActors.push(specificBa);
+                this._blockActorsRelLoc[actorRelX][ba.y][actorRelZ] = specificBa;
+
+                if (specificBa.x !== undefined && specificBa.y !== undefined && specificBa.z !== undefined) {
+                  this.removeBlockActorAtLoc(specificBa.x, specificBa.y, specificBa.z);
+                }
+
+                this._blockActors.push(specificBa);
               }
 
               Log.assert(specificBa !== undefined, "Could not find an actor implementation for '" + ba.id + "'");
@@ -417,6 +426,18 @@ export default class WorldChunk {
     }
 
     this.blockActorsEnsured = true;
+  }
+
+  removeBlockActorAtLoc(x: number, y: number, z: number) {
+    const newBlockActors = [];
+
+    for (const blockActor of this._blockActors) {
+      if (blockActor.x !== x || blockActor.y !== y || blockActor.z !== z) {
+        newBlockActors.push(blockActor);
+      }
+    }
+
+    this._blockActors = newBlockActors;
   }
 
   getSubChunkCube(subChunkId: number) {
@@ -524,6 +545,7 @@ export default class WorldChunk {
     const zHeight = maxCubeY - cubeY;
     const initialChunkId = this.getSubChunkIndexFromY(internalOffsetY);
     const finalChunkId = this.getSubChunkIndexFromY(internalOffsetY + zHeight);
+
     Log.assert(initialChunkId >= 0 && finalChunkId >= initialChunkId, "WCFC");
 
     for (let i = 0; i <= finalChunkId - initialChunkId; i++) {
@@ -547,7 +569,7 @@ export default class WorldChunk {
           const bytes = subChunk.value;
           if (bytes) {
             Log.assert(
-              bytes.length === 10241 || bytes.length === 6145,
+              bytes.length === 10251 || bytes.length === 10241 || bytes.length === 6145,
               "Expected 6145 or 10241 bytes for a legacy subchunk. (" + bytes.length + ")"
             );
 
@@ -749,8 +771,8 @@ export default class WorldChunk {
 
         Log.assert(inSubChunkY >= 0 && inSubChunkY < 16, "Unexpected Y for a sub chunk (" + inSubChunkY + ")");
         Log.assert(
-          bytes.length === 10241 || bytes.length === 6145,
-          "Legacy subchunk format should be 6145 or 10241 bytes. (" + bytes.length + ")"
+          bytes.length === 10251 || bytes.length === 10241 || bytes.length === 6145,
+          "1.00 subchunk format should be 6145 or 10241 bytes. (" + bytes.length + ")"
         );
 
         const blockTypeIndex = bytes[1 + (inSubChunkY + z * 16 + x * 256)];
@@ -807,7 +829,7 @@ export default class WorldChunk {
           const bytes = subChunk.value;
           if (bytes) {
             Log.assert(
-              bytes.length === 10241 || bytes.length === 6145,
+              bytes.length === 10251 || bytes.length === 10241 || bytes.length === 6145,
               "Expected 6145 or 10241 bytes for a legacy subchunk in getblock. (" + bytes.length + ")"
             );
             // 6145 bytes if the light information is omitted;
@@ -912,21 +934,20 @@ export default class WorldChunk {
 
         if (bytes !== undefined) {
           if (this.subChunkFormatType[subChunkId] === SubChunkFormatType.subChunk1dot0) {
-            matchCount = 0;
-
             for (let iY = 15; iY >= 0; iY--) {
-              const yIndex = iY + subChunkId * 16 + this.absoluteZeroY;
-
               for (let iZ = 0; iZ < 16; iZ++) {
                 for (let iX = 0; iX < 16; iX++) {
-                  let blockTypeId = bytes[iY * 256 + iZ * 64 + iX];
+                  let blockTypeId = bytes[iX * 256 + iZ * CHUNK_Z_SIZE + iY];
 
                   if (
                     blockTypeId !== 0 /* air */ &&
                     blockTypeId !== 37 /* flower */ &&
-                    blockTypeId !== 31 /* tallgrass*/
+                    blockTypeId !== 31 /* tallgrass*/ &&
+                    this.blockTops[iX][iZ] < -1024
                   ) {
-                    this.blockTops[iX][iZ] = yIndex;
+                    const yIndex = iY + this.getStartYFromSubChunkIndex(subChunkId);
+
+                    this.blockTops[iX][iZ] = yIndex - 1;
                     matchCount++;
                     if (matchCount === 256) {
                       return;
@@ -959,7 +980,7 @@ export default class WorldChunk {
                 }
               }
               for (let iY = 15; iY >= 0; iY--) {
-                const yIndex = iY + (subChunkId * 16 - 512);
+                const yIndex = iY + this.getStartYFromSubChunkIndex(subChunkId);
 
                 for (let iZ = 0; iZ < 16; iZ++) {
                   for (let iX = 0; iX < 16; iX++) {
@@ -1132,7 +1153,7 @@ export default class WorldChunk {
   parseSubChunk(subChunkIndex: number) {
     const bytes = this.subChunks[subChunkIndex].value;
 
-    if (bytes === undefined || bytes.length <= 0 || bytes[0] === 0) {
+    if (bytes === undefined || bytes.length <= 0) {
       return;
     }
 

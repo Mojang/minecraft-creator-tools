@@ -7,7 +7,7 @@ import IProjectInfo from "./IProjectInfo";
 
 export enum ProjectInfoSuite {
   allExceptAddOn = 0,
-  currentPlatform = 1,
+  currentPlatformVersions = 1,
   addOn = 2,
 }
 

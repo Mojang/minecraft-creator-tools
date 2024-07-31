@@ -386,9 +386,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         await projectItem.ensureFileStorage();
 
         if (projectItem.file) {
-          const attachableResourceDef = await AttachableResourceDefinition.ensureAttachableDefinitionOnFile(
-            projectItem.file
-          );
+          const attachableResourceDef = await AttachableResourceDefinition.ensureOnFile(projectItem.file);
 
           if (
             attachableResourceDef?.attachableWrapper &&

@@ -32,13 +32,7 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
       projectItem.itemType === ProjectItemType.MCTemplate ||
       projectItem.itemType === ProjectItemType.worldFolder
     ) {
-      let mcworld: MCWorld | undefined;
-
-      if (projectItem.folder) {
-        mcworld = await MCWorld.ensureMCWorldOnFolder(projectItem.folder, projectItem.project);
-      } else if (projectItem.file) {
-        mcworld = await MCWorld.ensureOnFile(projectItem.file, projectItem.project);
-      }
+      let mcworld: MCWorld | undefined = await MCWorld.ensureOnItem(projectItem);
 
       if (!mcworld) {
         Log.debugAlert("Could not find respective world.");

@@ -48,6 +48,7 @@ export enum AppServiceProxyCommands {
   getWindowState = "getWindowState",
   appGetPath = "appGetPath",
   updateIAgree = "updateIAgree",
+  convertFile = "convertFile",
 }
 
 export default class AppServiceProxy {

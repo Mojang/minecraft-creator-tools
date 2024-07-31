@@ -19,6 +19,8 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
   id = "BASEGAMEVER";
   title = "Base Game Version";
 
+  performPlatformVersionValidations: boolean = false;
+
   getTopicData(topicId: number): IProjectInfoTopicData | undefined {
     const baseGameVersion = {
       updaterId: this.id,
@@ -119,6 +121,8 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
       return infoItems;
     }
 
+    const verShort = verSplit[0] + "." + verSplit[1] + "." + verSplit[2];
+
     for (let i = 0; i < project.items.length; i++) {
       const pi = project.items[i];
 
@@ -151,13 +155,13 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
               if (bpVer[0] < parseInt(verSplit[0])) {
                 infoItems.push(
                   new ProjectInfoItem(
-                    InfoItemType.recommendation,
+                    this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
                     this.id,
                     110,
                     "World template manifest base game version (" +
                       bpVer.join(".") +
                       ") has a lower major version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -171,7 +175,7 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
                     "World template manifest base game version (" +
                       bpVer.join(".") +
                       ") has a higher major version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -180,13 +184,13 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
               } else if (bpVer[1] < parseInt(verSplit[1]) - 1) {
                 infoItems.push(
                   new ProjectInfoItem(
-                    InfoItemType.recommendation,
+                    this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
                     this.id,
                     120,
                     "World template manifest base game version (" +
                       bpVer.join(".") +
                       ") has a lower minor version number compared to the current version or the previous current minor version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -200,7 +204,7 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
                     "World template manifest base game version (" +
                       bpVer.join(".") +
                       ") has a higher minor version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -209,13 +213,13 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
               } else if (bpVer[2] < parseInt(verSplit[2])) {
                 infoItems.push(
                   new ProjectInfoItem(
-                    InfoItemType.recommendation,
+                    this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
                     this.id,
                     130,
                     "World template manifest base game version (" +
                       bpVer.join(".") +
                       ") has a lower patch version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -229,7 +233,7 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
                     "World template manifest base game version (" +
                       bpVer.join(".") +
                       ") has a higher patch version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )

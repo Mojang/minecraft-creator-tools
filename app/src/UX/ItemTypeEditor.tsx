@@ -3,7 +3,7 @@ import IFileProps from "./IFileProps";
 import IFile from "../storage/IFile";
 import "./ItemTypeEditor.css";
 import IPersistable from "./IPersistable";
-import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
+import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
 import Database from "../minecraft/Database";
 import ComponentSetEditor from "./ComponentSetEditor";
 import { ThemeInput } from "@fluentui/styles";
@@ -64,22 +64,22 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
       if (this.state.fileToEdit !== this._lastFileEdited) {
         this._lastFileEdited = this.state.fileToEdit;
 
-        await ItemTypeDefinition.ensureOnFile(this.state.fileToEdit, this._handleItemTypeLoaded);
+        await ItemTypeBehaviorDefinition.ensureOnFile(this.state.fileToEdit, this._handleItemTypeLoaded);
       }
     }
 
     if (
       this.state.fileToEdit &&
       this.state.fileToEdit.manager !== undefined &&
-      this.state.fileToEdit.manager instanceof ItemTypeDefinition &&
-      (this.state.fileToEdit.manager as ItemTypeDefinition).isLoaded &&
+      this.state.fileToEdit.manager instanceof ItemTypeBehaviorDefinition &&
+      (this.state.fileToEdit.manager as ItemTypeBehaviorDefinition).isLoaded &&
       !this.state.isLoaded
     ) {
       this._doUpdate(setState);
     }
   }
 
-  _handleItemTypeLoaded(itemType: ItemTypeDefinition, typeA: ItemTypeDefinition) {
+  _handleItemTypeLoaded(itemType: ItemTypeBehaviorDefinition, typeA: ItemTypeBehaviorDefinition) {
     this._doUpdate(true);
   }
 
@@ -102,7 +102,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
       const file = this.state.fileToEdit;
 
       if (file.manager !== null) {
-        const et = file.manager as ItemTypeDefinition;
+        const et = file.manager as ItemTypeBehaviorDefinition;
 
         et.persist();
       }
@@ -131,7 +131,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
       this.props.setActivePersistable(this);
     }
 
-    const et = this.state.fileToEdit.manager as ItemTypeDefinition;
+    const et = this.state.fileToEdit.manager as ItemTypeBehaviorDefinition;
 
     if (et.data === undefined) {
       return <div>Loading behavior pack...</div>;

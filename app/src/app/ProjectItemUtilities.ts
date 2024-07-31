@@ -51,7 +51,7 @@ export default class ProjectItemUtilities {
     } else if (firstHundred.indexOf('"minecraft:client_entity"') >= 0) {
       return { itemType: ProjectItemType.entityTypeResourceJson, packType: PackType.resource };
     } else if (firstHundred.indexOf('"minecraft:fog_settings"') >= 0) {
-      return { itemType: ProjectItemType.fogJson, packType: PackType.resource };
+      return { itemType: ProjectItemType.fogResourceJson, packType: PackType.resource };
     } else if (firstHundred.indexOf('"minecraft:geometry"') >= 0) {
       return { itemType: ProjectItemType.modelGeometryJson, packType: PackType.resource };
     } else if (firstHundred.indexOf('"particle_effect"') >= 0) {
@@ -200,6 +200,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.justConfigTs:
       case ProjectItemType.packageLockJson:
       case ProjectItemType.jsconfigJson:
+      case ProjectItemType.prettierRcJson:
       case ProjectItemType.tsconfigJson:
       case ProjectItemType.docfxJson:
       case ProjectItemType.jsdocJson:
@@ -415,6 +416,8 @@ export default class ProjectItemUtilities {
         return "Content Report";
       case ProjectItemType.tsconfigJson:
         return "TypeScript config";
+      case ProjectItemType.prettierRcJson:
+        return "Prettier JavaScript/JSON style config";
       case ProjectItemType.jsconfigJson:
         return "JavaScript config";
       case ProjectItemType.docfxJson:
@@ -691,7 +694,6 @@ export default class ProjectItemUtilities {
         return ["cameras"];
       case ProjectItemType.dimensionJson:
         return ["dimensions"];
-      case ProjectItemType.fogJson:
       case ProjectItemType.fogResourceJson:
         return ["fogs"];
       case ProjectItemType.dataFormJson:

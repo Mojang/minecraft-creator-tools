@@ -128,7 +128,7 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
     return name;
   }
 
-  async deploy() {
+  async syncWithDeployment() {
     if (
       this._carto.deploymentStorage == null ||
       this._carto.deployBehaviorPacksFolder == null ||
@@ -158,7 +158,7 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
     if (push.project) {
       this._project = push.project;
 
-      await this.deploy();
+      await this.syncWithDeployment();
     }
 
     if (push.worldType) {

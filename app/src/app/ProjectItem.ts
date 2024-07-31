@@ -287,8 +287,6 @@ export default class ProjectItem {
         return "resource/animations/actor_animation.json";
       case ProjectItemType.animationControllerResourceJson:
         return "resource/animation_controllers/animation_controller.json";
-      case ProjectItemType.fogJson:
-        return "resource/fog/fog.json";
       case ProjectItemType.entityTypeResourceJson:
         return "resource/entity/entity.json";
       case ProjectItemType.fogResourceJson:

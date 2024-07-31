@@ -29,6 +29,7 @@ import TextureInfoGenerator from "./TextureInfoGenerator";
 import PackSizeInfoGenerator from "./PackSizeInfoGenerator";
 import BehaviorPackItemTypeManager from "../manager/BehaviorPackItemTypeManager";
 import TextureImageInfoGenerator from "./TextureImageInfoGenerator";
+import FormatVersionManager from "../manager/FormatVersionManager";
 
 export default class GeneratorRegistrations {
   static projectGenerators = [
@@ -41,6 +42,7 @@ export default class GeneratorRegistrations {
     new VsCodeFileManager(),
     new MinEngineVersionManager(),
     new BaseGameVersionManager(),
+    new FormatVersionManager(),
     new BehaviorPackEntityTypeManager(),
     new BehaviorPackItemTypeManager(),
     new AddOnRequirementsGenerator(),
@@ -83,6 +85,28 @@ export default class GeneratorRegistrations {
         (generator as TextureInfoGenerator).performAddOnValidations = false;
       } else if (generator.id === "PACKSIZE") {
         (generator as PackSizeInfoGenerator).performAddOnValidations = false;
+      }
+    }
+
+    if (suite === ProjectInfoSuite.currentPlatformVersions) {
+      if (generator.id === "FORMATVER") {
+        (generator as FormatVersionManager).performPlatformVersionValidations = true;
+      } else if (generator.id === "BASEGAMEVER") {
+        (generator as BaseGameVersionManager).performPlatformVersionValidations = true;
+      } else if (generator.id === "MINENGINEVER") {
+        (generator as MinEngineVersionManager).performPlatformVersionValidations = true;
+      } else if (generator.id === "WORLDDATA") {
+        (generator as WorldDataInfoGenerator).performPlatformVersionValidations = true;
+      }
+    } else {
+      if (generator.id === "FORMATVER") {
+        (generator as FormatVersionManager).performPlatformVersionValidations = false;
+      } else if (generator.id === "BASEGAMEVER") {
+        (generator as BaseGameVersionManager).performPlatformVersionValidations = false;
+      } else if (generator.id === "MINENGINEVER") {
+        (generator as MinEngineVersionManager).performPlatformVersionValidations = false;
+      } else if (generator.id === "WORLDDATA") {
+        (generator as WorldDataInfoGenerator).performPlatformVersionValidations = false;
       }
     }
   }

@@ -73,7 +73,7 @@ export enum ProjectInfoDisplayMenuState {
   exportMenu,
 }
 
-export const SuiteTitles = ["All", "Platform Versions", "Add-On Best Practices"];
+export const SuiteTitles = ["All", "Current Platform Versions", "Add-On Best Practices"];
 
 export enum InfoItemCommand {
   itemSelect,
@@ -424,7 +424,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     let targetedSuite = ProjectInfoSuite.allExceptAddOn;
 
     if (data.value === SuiteTitles[1]) {
-      targetedSuite = ProjectInfoSuite.currentPlatform;
+      targetedSuite = ProjectInfoSuite.currentPlatformVersions;
     } else if (data.value === SuiteTitles[2]) {
       targetedSuite = ProjectInfoSuite.addOn;
     }

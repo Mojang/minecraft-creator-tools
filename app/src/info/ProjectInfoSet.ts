@@ -43,7 +43,7 @@ export default class ProjectInfoSet {
         return ProjectInfoSuite.addOn;
 
       case "currentplatform":
-        return ProjectInfoSuite.currentPlatform;
+        return ProjectInfoSuite.currentPlatformVersions;
 
       default:
         return ProjectInfoSuite.allExceptAddOn;
@@ -149,8 +149,13 @@ export default class ProjectInfoSet {
       return true;
     }
 
-    if (this.suite === ProjectInfoSuite.currentPlatform) {
-      if (generator.id === "MINENGINEVER" || generator.id === "BASEGAMEVER") {
+    if (this.suite === ProjectInfoSuite.currentPlatformVersions) {
+      if (
+        generator.id === "MINENGINEVER" ||
+        generator.id === "BASEGAMEVER" ||
+        generator.id === "FORMATVER" ||
+        generator.id === "WORLDDATA"
+      ) {
         return true;
       }
     }

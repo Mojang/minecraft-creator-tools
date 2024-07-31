@@ -13,6 +13,7 @@ import CartoApp, { HostType } from "../app/CartoApp";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { CartoEditorViewMode } from "../app/ICartoData";
+import MCWorld from "../minecraft/MCWorld";
 import ProjectItem from "../app/ProjectItem";
 import ProjectUtilities from "../app/ProjectUtilities";
 import WebUtilities from "./WebUtilities";
@@ -567,7 +568,7 @@ export default class App extends Component<AppProps, AppState> {
         ProjectScriptLanguage.typeScript
       );
     } else {
-      newProject = await carto.ensureProjectFromFolder(newProjectPath, newProjectName, false);
+      newProject = await carto.ensureProjectForFolder(newProjectPath, newProjectName, false);
 
       await newProject.ensureProjectFolder();
 
@@ -612,7 +613,7 @@ export default class App extends Component<AppProps, AppState> {
       return;
     }
 
-    const newProject = await this.state.carto.ensureProjectFromFolder(folderPath);
+    const newProject = await this.state.carto.ensureProjectForFolder(folderPath);
 
     newProject.save();
     this.state.carto.save();
@@ -698,7 +699,8 @@ export default class App extends Component<AppProps, AppState> {
     fileList?: string[],
     projectId?: string,
     sampleId?: string,
-    updateContent?: string
+    updateContent?: string,
+    description?: string
   ) {
     const carto = CartoApp.carto;
 
@@ -768,11 +770,18 @@ export default class App extends Component<AppProps, AppState> {
       fileList,
       projectId,
       sampleId,
-      updateContent
+      updateContent,
+      description
     );
   }
 
-  private async _newProjectFromGallery(project: IGalleryItem, name?: string, creator?: string, shortName?: string) {
+  private async _newProjectFromGallery(
+    project: IGalleryItem,
+    name?: string,
+    creator?: string,
+    shortName?: string,
+    description?: string
+  ) {
     if (this.state === null || this.state.carto === undefined) {
       return;
     }
@@ -793,6 +802,7 @@ export default class App extends Component<AppProps, AppState> {
       name,
       creator,
       shortName,
+      description,
       project.type
     );
   }
@@ -811,6 +821,7 @@ export default class App extends Component<AppProps, AppState> {
     suggestedName?: string,
     suggestedCreator?: string,
     suggestedShortName?: string,
+    description?: string,
     galleryType?: GalleryItemType
   ) {
     const carto = CartoApp.carto;
@@ -821,6 +832,10 @@ export default class App extends Component<AppProps, AppState> {
 
     if (suggestedCreator === undefined) {
       suggestedCreator = carto.creator;
+    }
+
+    if (suggestedName === undefined) {
+      suggestedName = title;
     }
 
     if (suggestedName && suggestedCreator && suggestedShortName === undefined) {
@@ -944,7 +959,9 @@ export default class App extends Component<AppProps, AppState> {
         }
       }
 
-      await ProjectUtilities.processNewProject(newProject, suggestedShortName);
+      description = description ? description : title;
+
+      await ProjectUtilities.processNewProject(newProject, suggestedName, description, suggestedShortName);
 
       await carto.save();
 
@@ -1026,12 +1043,13 @@ export default class App extends Component<AppProps, AppState> {
     project: IGalleryItem,
     name?: string,
     creator?: string,
-    shortName?: string
+    shortName?: string,
+    description?: string
   ) {
     switch (command) {
       case GalleryProjectCommand.newProject:
       case GalleryProjectCommand.projectSelect:
-        this._newProjectFromGallery(project, name, creator, shortName);
+        this._newProjectFromGallery(project, name, creator, shortName, description);
         break;
       case GalleryProjectCommand.ensureProject:
         this._ensureProjectFromGallery(project);
@@ -1165,8 +1183,12 @@ export default class App extends Component<AppProps, AppState> {
 
       interior = (
         <div className="app-loadingArea" key="app-la">
-          <div className="app-loading">{message}</div>
-          <div className="app-subloading">{additionalLoadingMessage}</div>
+          <div className="app-loading" aria-live="polite">
+            {message}
+          </div>
+          <div className="app-subloading" aria-live="polite">
+            {additionalLoadingMessage}
+          </div>
         </div>
       );
     } else if (this.state.mode === AppMode.home) {
@@ -1227,8 +1249,8 @@ export default class App extends Component<AppProps, AppState> {
       if (this.state.activeProject.errorState === ProjectErrorState.projectFolderOrFileDoesNotExist) {
         let error = "Could not find project data folder: ";
 
-        if (this.state.activeProject.localFolderPath) {
-          error += this.state.activeProject.localFolderPath;
+        if (this.state.activeProject.mainDeployFolderPath) {
+          error += this.state.activeProject.mainDeployFolderPath;
         }
 
         error += ". It may not be available on this PC?";

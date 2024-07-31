@@ -469,7 +469,11 @@ export default abstract class FolderBase implements IFolder {
 
     path = this.canonicalizePath(path);
 
-    if (path[0] !== "/" || path[path.length - 1] !== "/") {
+    if (path[path.length - 1] !== "/") {
+      path = path + "/";
+    }
+
+    if (path[0] !== "/") {
       throw Error("Storage relative path '" + path + "' is not in the right format.");
     }
 

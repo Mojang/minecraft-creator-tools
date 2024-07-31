@@ -10,7 +10,7 @@ export const minecraftToolDarkTheme = {
         background1: "#313233", // main outermost background. in a dark theme, this should be dark. complemented with fore*1
         background2: "#48494a",
         background3: "#5a5b5c",
-        background4: "#bfbbb9",
+        background4: "#8f8b89",
         background5: "#5d7850", // subtle accent background
         background6: "#040404", // subtle theme background.  complemented with fore*6
         foreground: "red",

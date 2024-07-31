@@ -14,7 +14,7 @@ import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 
-export default class ItemTypeDefinition implements IManagedComponentSetItem {
+export default class ItemTypeBehaviorDefinition implements IManagedComponentSetItem {
   public wrapper: IItemTypeWrapper | null = null;
   private _behaviorPackFile?: IFile;
   private _id?: string;
@@ -23,11 +23,11 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
 
   public data?: IItemTypeBehaviorPack;
 
-  private _onLoaded = new EventDispatcher<ItemTypeDefinition, ItemTypeDefinition>();
+  private _onLoaded = new EventDispatcher<ItemTypeBehaviorDefinition, ItemTypeBehaviorDefinition>();
 
-  private _onComponentAdded = new EventDispatcher<ItemTypeDefinition, IManagedComponent>();
-  private _onComponentRemoved = new EventDispatcher<ItemTypeDefinition, string>();
-  private _onComponentChanged = new EventDispatcher<ItemTypeDefinition, IManagedComponent>();
+  private _onComponentAdded = new EventDispatcher<ItemTypeBehaviorDefinition, IManagedComponent>();
+  private _onComponentRemoved = new EventDispatcher<ItemTypeBehaviorDefinition, string>();
+  private _onComponentChanged = new EventDispatcher<ItemTypeBehaviorDefinition, IManagedComponent>();
 
   public get onComponentAdded() {
     return this._onComponentAdded.asEvent();
@@ -193,19 +193,22 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem {
     }
   }
 
-  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<ItemTypeDefinition, ItemTypeDefinition>) {
-    let itt: ItemTypeDefinition | undefined;
+  static async ensureOnFile(
+    file: IFile,
+    loadHandler?: IEventHandler<ItemTypeBehaviorDefinition, ItemTypeBehaviorDefinition>
+  ) {
+    let itt: ItemTypeBehaviorDefinition | undefined;
 
     if (file.manager === undefined) {
-      itt = new ItemTypeDefinition();
+      itt = new ItemTypeBehaviorDefinition();
 
       itt.behaviorPackFile = file;
 
       file.manager = itt;
     }
 
-    if (file.manager !== undefined && file.manager instanceof ItemTypeDefinition) {
-      itt = file.manager as ItemTypeDefinition;
+    if (file.manager !== undefined && file.manager instanceof ItemTypeBehaviorDefinition) {
+      itt = file.manager as ItemTypeBehaviorDefinition;
 
       if (!itt.isLoaded && loadHandler) {
         itt.onLoaded.subscribe(loadHandler);

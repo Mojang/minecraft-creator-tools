@@ -37,7 +37,8 @@
 
 .pg-tabArea {
   display: block;
-  padding: 10px;
+  padding-top: 10px;
+  padding-left: 10px;
   padding-bottom: 0px;
 }
 

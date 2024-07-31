@@ -22,6 +22,7 @@ import CartoApp from "./CartoApp";
 import HttpStorage from "../storage/HttpStorage";
 import ProjectBuild from "./ProjectBuild";
 import { Generator } from "../minecraft/WorldLevelDat";
+import IConversionSettings from "../core/IConversionSettings";
 
 export default class ProjectExporter {
   static async generateFlatBetaApisWorldWithPacksZipBytes(carto: Carto, project: Project, name: string) {
@@ -746,7 +747,7 @@ export default class ProjectExporter {
       carto.activeMinecraft
     ) {
       carto.notifyStatusUpdate("Deploying pack add-ons");
-      carto.activeMinecraft.deploy();
+      carto.activeMinecraft.syncWithDeployment();
       carto.notifyStatusUpdate("Deployed");
     }
 
@@ -761,6 +762,47 @@ export default class ProjectExporter {
       project.lastMapDeployedHash = hash;
       project.lastMapDeployedDate = new Date();
     }
+  }
+
+  static async convertWorld(carto: Carto, project: Project, settings: IConversionSettings, world?: MCWorld) {
+    if (!world) {
+      return;
+    }
+
+    if (carto.workingStorage === null) {
+      Log.fail("Did not find expected working storage.");
+      return;
+    }
+    const dtNow = new Date();
+    const tempWorkingPathName = "WorldConvert" + Utilities.getDateStr(dtNow);
+
+    const workingFolder = carto.workingStorage.rootFolder.ensureFolder(tempWorkingPathName);
+
+    if (world) {
+      const inputFolder = workingFolder.ensureFolder("source-" + settings.name);
+
+      await world.copyAsFolderTo(inputFolder);
+    }
+
+    const jsonContent = JSON.stringify(settings);
+
+    await AppServiceProxy.sendAsync(AppServiceProxyCommands.convertFile, jsonContent, true);
+
+    await workingFolder.load(true);
+
+    if (workingFolder.folderExists(settings.name)) {
+      const outputFolder = workingFolder.ensureFolder(settings.name);
+
+      const zs = new ZipStorage();
+
+      await StorageUtilities.syncFolderTo(outputFolder, zs.rootFolder, false, false, false);
+
+      const resultBytes = zs.generateCompressedUint8ArrayAsync();
+
+      return resultBytes;
+    }
+
+    return undefined;
   }
 
   static async syncFlatPackRefWorldTo(carto: Carto, project: Project, worldFolder: IFolder, name: string) {

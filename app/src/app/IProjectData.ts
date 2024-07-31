@@ -106,6 +106,7 @@ export default interface IProjectData {
   contentsModified: Date | null;
 
   localFolderPath?: string;
+  mainDeployFolderPath?: string;
   localFilePath?: string;
   dataStorageRelativePath: string;
   messages?: IStatus[];
