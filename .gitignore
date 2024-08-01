@@ -5,6 +5,7 @@
 bin/
 obj/
 dist/
+debugoutput/
 lib/
 PublishProfiles/
 wwwroot/
