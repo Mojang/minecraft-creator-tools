@@ -1,0 +1,16 @@
+{
+  "files": [
+    ".prettierrc.json",
+    "README.md",
+    "just.config.ts",
+    "package.json",
+    "tsconfig.json",
+    "package-lock.json"
+  ],
+  "folders": [
+    ".vscode",
+    "behavior_packs",
+    "scripts",
+    "tasks"
+  ]
+}

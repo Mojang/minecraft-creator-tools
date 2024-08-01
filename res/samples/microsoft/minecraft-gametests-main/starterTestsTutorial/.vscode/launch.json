@@ -1,0 +1,14 @@
+{
+    "version": "0.3.0",
+    "configurations": [
+      {
+        "type": "minecraft-js",
+        "request": "attach",
+        "name": "Debug with Minecraft",
+        "mode": "listen",
+        "targetModuleUuid": "ead57a90-41fc-4f3b-8e1a-ccc64c99da0c",
+        "localRoot": "${workspaceFolder}/behavior_packs/starterTestsTutorial/scripts/",
+        "port": 19144
+      }
+    ]
+  }

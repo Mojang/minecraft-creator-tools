@@ -1,0 +1,17 @@
+{
+  "files": [
+    "LICENSE",
+    "README.md"
+  ],
+  "folders": [
+    ".vscode",
+    "build-challenge",
+    "custom-components",
+    "editor-basics",
+    "editor-script-box",
+    "howto-gallery",
+    "script-box",
+    "ts-starter-complete-cotta",
+    "ts-starter"
+  ]
+}

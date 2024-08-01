@@ -1,0 +1,23 @@
+{
+  "files": [
+    "biomes_client.json",
+    "blocks.json",
+    "sounds.json"
+  ],
+  "folders": [
+    "animation_controllers",
+    "animations",
+    "attachables",
+    "block_culling",
+    "entity",
+    "fog",
+    "items",
+    "materials",
+    "models",
+    "particles",
+    "render_controllers",
+    "sounds",
+    "textures",
+    "ui"
+  ]
+}

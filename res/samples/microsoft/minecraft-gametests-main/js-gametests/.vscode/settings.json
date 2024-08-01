@@ -1,0 +1,16 @@
+{
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "cSpell.words": [
+    "gametest",
+    "gametests",
+    "mediumglass",
+    "minecart",
+    "minibiomes",
+    "shulker",
+    "startertests",
+    "zoglin"
+  ]
+}

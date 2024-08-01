@@ -1,0 +1,13 @@
+{
+  "files": [
+    "LICENSE",
+    "README.md"
+  ],
+  "folders": [
+    "behavior",
+    "general",
+    "language",
+    "resource",
+    "skinpacks"
+  ]
+}

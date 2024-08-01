@@ -1,0 +1,11 @@
+{
+  "files": [
+    ".prettierrc.json",
+    "package-lock.json",
+    "package.json"
+  ],
+  "folders": [
+    ".vscode",
+    "behavior_packs"
+  ]
+}
