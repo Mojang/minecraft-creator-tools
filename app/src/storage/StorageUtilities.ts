@@ -29,6 +29,7 @@ const _allowedExtensions = [
   "lang",
   "fsb",
   "map",
+  "yml",
   "ico",
   "ogg",
   "env",
@@ -303,6 +304,7 @@ export default class StorageUtilities {
     path = path.replace(/%20/g, " ");
     path = path.replace(/%28/g, "(");
     path = path.replace(/%29/g, ")");
+
     return path;
   }
 

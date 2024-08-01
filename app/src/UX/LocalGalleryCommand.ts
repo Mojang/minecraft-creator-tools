@@ -1,6 +1,6 @@
 export enum LocalGalleryCommand {
   copyProject,
-  openProjectDirect,
+  ensureAndOpenProjectFromFolder,
 }
 
 export enum LocalFolderType {

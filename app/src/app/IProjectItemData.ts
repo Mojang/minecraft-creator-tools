@@ -3,7 +3,7 @@
 
 import IGitHubInfo from "./IGitHubInfo";
 
-export const MaxItemTypes = 122;
+export const MaxItemTypes = 123;
 
 export enum ProjectItemCategory {
   assets,
@@ -107,7 +107,6 @@ export enum ProjectItemType {
   materialGeometry = 87, // NOTE: this is a /materials specific .geometry file, and not a .geo.json type file (which is modelGeometryJson)
   lightingJson = 88,
   textureSetJson = 89,
-  fogJson = 90,
   flipbookTexturesJson = 91,
   itemTextureJson = 92,
   terrainTextureCatalogResourceJson = 93,
@@ -139,6 +138,7 @@ export enum ProjectItemType {
   justConfigTs = 119,
   esLintMjs = 120,
   env = 121,
+  prettierRcJson = 122,
 }
 
 export enum ProjectItemStorageType {

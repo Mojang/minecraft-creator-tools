@@ -10,10 +10,10 @@ export default class FileSystemStorage extends StorageBase implements IStorage {
 
   static readonly folderDelimiter = "/";
 
-  constructor(handle: FileSystemDirectoryHandle) {
+  constructor(handle: FileSystemDirectoryHandle, name?: string) {
     super();
 
-    this.rootFolder = new FileSystemFolder(this, null, "", "root", handle);
+    this.rootFolder = new FileSystemFolder(this, null, "", name ? name : "root", handle);
   }
 
   joinPath(pathA: string, pathB: string) {

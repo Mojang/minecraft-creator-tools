@@ -17,6 +17,7 @@ import {
   faSquareCaretLeft,
   faSquareCaretRight,
   faTools,
+  faLink,
   faComputer,
   faFolderTree,
   faList,
@@ -79,6 +80,7 @@ import ProjectInfoSet from "../info/ProjectInfoSet";
 import { IAnnotatedValue } from "../core/AnnotatedValue";
 import { ProjectRole } from "../app/IProjectData";
 import ProjectUtilities from "../app/ProjectUtilities";
+import IConversionSettings from "../core/IConversionSettings";
 
 interface IProjectEditorProps extends IAppProps {
   onModeChangeRequested?: (mode: AppMode) => void;
@@ -109,6 +111,8 @@ interface IProjectEditorState {
   menuState: ProjectEditorMenuState;
   effectMode?: ProjectEditorEffect;
   dialog?: ProjectEditorDialog;
+  dialogData?: object | undefined;
+  dialogActiveItem?: ProjectItem | undefined;
   statusAreaMode: ProjectStatusAreaMode;
   tab: ProjectEditorTab;
   allInfoSet: ProjectInfoSet;
@@ -143,6 +147,7 @@ export enum ProjectEditorDialog {
   shareableLink = 1,
   worldSettings = 2,
   webLocalDeploy = 3,
+  convertTo = 4,
 }
 
 export enum ProjectStatusAreaMode {
@@ -169,6 +174,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this._handleExportMCPackClick = this._handleExportMCPackClick.bind(this);
     this._handleExportToLocalFolderClick = this._handleExportToLocalFolderClick.bind(this);
+    this._handleDialogDataUpdated = this._handleDialogDataUpdated.bind(this);
     this._handleGetShareableLinkClick = this._handleGetShareableLinkClick.bind(this);
     this._handleWebLocalDeployClick = this._handleWebLocalDeployClick.bind(this);
     this._handleChangeWorldSettingsClick = this._handleChangeWorldSettingsClick.bind(this);
@@ -207,6 +213,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleDeployMenuOpen = this._handleDeployMenuOpen.bind(this);
     this._handleViewMenuOpen = this._handleViewMenuOpen.bind(this);
     this._handleWebLocalDeployOK = this._handleWebLocalDeployOK.bind(this);
+    this._handleConvertOK = this._handleConvertOK.bind(this);
     this._handleDeployWorldAndTestAssetsPackClick = this._handleDeployWorldAndTestAssetsPackClick.bind(this);
     this._handleDeployWorldAndTestAssetsLocalClick = this._handleDeployWorldAndTestAssetsLocalClick.bind(this);
     this._handleDeployWorldPackClick = this._handleDeployWorldPackClick.bind(this);
@@ -604,6 +611,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         mode: this.state.mode,
         effectMode: undefined,
         dialog: undefined,
+        dialogData: this.state.dialogData,
+        dialogActiveItem: this.state.dialogActiveItem,
         viewMode: this.state.viewMode,
         allInfoSet: this.props.project.infoSet,
         allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
@@ -631,9 +640,26 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         "Deploying project '" + this.props.project.name + "'..."
       );
 
-      await this.props.carto.activeMinecraft.deploy();
+      await this.props.carto.activeMinecraft.syncWithDeployment();
 
       await this.props.carto.notifyOperationEnded(operId, "Deployed '" + this.props.project.name + "'.");
+    }
+  }
+
+  private async _handleConvertOK() {
+    this._handleDialogDone();
+
+    if (this.state.dialogData && this.state.dialogActiveItem) {
+      let mcworld: MCWorld | undefined = await MCWorld.ensureOnItem(this.state.dialogActiveItem);
+
+      if (mcworld) {
+        await ProjectExporter.convertWorld(
+          this.props.carto,
+          this.props.project,
+          this.state.dialogData as IConversionSettings,
+          mcworld
+        );
+      }
     }
   }
 
@@ -840,14 +866,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       })
     );
   }
-  private async _openInExplorerClick() {
-    if (AppServiceProxy.hasAppService && this.props.project.projectFolder) {
-      await AppServiceProxy.sendAsync(
-        AppServiceProxyCommands.shellOpenFolderInExplorer,
-        this.props.project.projectFolder.fullPath
-      );
-    }
-  }
+  private async _openInExplorerClick() {}
 
   private async _handleSaveClick() {
     this.save();
@@ -888,6 +907,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       lastDeployKey: this.state.lastDeployKey,
       displayFileView: this.state.displayFileView,
       dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
@@ -913,6 +934,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: deployKey,
       dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
@@ -942,6 +965,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       displayFileView: this.state.displayFileView,
       lastExportKey: exportKey,
       lastDeployFunction: this.state.lastDeployFunction,
@@ -984,6 +1009,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       lastDeployKey: this.state.lastDeployKey,
       displayFileView: this.state.displayFileView,
       dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
@@ -1013,6 +1040,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
       lastExportFunction: this.state.lastExportFunction,
@@ -1039,6 +1068,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
       lastExportFunction: this.state.lastExportFunction,
@@ -1112,6 +1143,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       displayFileView: this.state.displayFileView,
       lastDeployKey: this.state.lastDeployKey,
       dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
       lastExportFunction: this.state.lastExportFunction,
@@ -1158,6 +1191,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       searchFilter: this.state.searchFilter,
       lastDeployKey: this.state.lastDeployKey,
       dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
       lastExportFunction: this.state.lastExportFunction,
@@ -1229,6 +1264,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       displayFileView: this.state.displayFileView,
       lastExportKey: this.state.lastExportKey,
       dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
@@ -1265,6 +1302,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
       lastExportFunction: this.state.lastExportFunction,
@@ -1293,6 +1332,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
       dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
       lastExportFunction: this.state.lastExportFunction,
@@ -1321,6 +1362,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
       dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
       lastExportFunction: this.state.lastExportFunction,
@@ -1349,6 +1392,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
       dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       lastExportKey: this.state.lastExportKey,
       lastDeployFunction: this.state.lastDeployFunction,
       lastExportFunction: this.state.lastExportFunction,
@@ -1378,6 +1423,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         searchFilter: this.state.searchFilter,
         effectMode: this.state.effectMode,
         dialog: ProjectEditorDialog.shareableLink,
+        dialogData: this.state.dialogData,
+        dialogActiveItem: this.state.dialogActiveItem,
         statusAreaMode: this.state.statusAreaMode,
         lastDeployKey: this.state.lastDeployKey,
         lastExportKey: (data.icon as any).key,
@@ -1410,6 +1457,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         searchFilter: this.state.searchFilter,
         effectMode: this.state.effectMode,
         dialog: ProjectEditorDialog.webLocalDeploy,
+        dialogData: this.state.dialogData,
+        dialogActiveItem: this.state.dialogActiveItem,
         statusAreaMode: this.state.statusAreaMode,
         lastDeployKey: (data.icon as any).key,
         lastExportKey: this.state.lastExportKey,
@@ -1446,6 +1495,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         searchFilter: this.state.searchFilter,
         effectMode: this.state.effectMode,
         dialog: ProjectEditorDialog.worldSettings,
+        dialogData: this.state.dialogData,
+        dialogActiveItem: this.state.dialogActiveItem,
         statusAreaMode: this.state.statusAreaMode,
         lastDeployKey: this.state.lastDeployKey,
         lastExportKey: this.state.lastExportKey,
@@ -1640,10 +1691,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
       if (this.props.carto.deploymentStorageMinecraft) {
         this.props.carto.deploymentStorageMinecraft.activeProject = this.props.project;
-        await this.props.carto.deploymentStorageMinecraft.deploy();
+        await this.props.carto.deploymentStorageMinecraft.syncWithDeployment();
       }
     } else {
-      await this.props.carto.activeMinecraft.deploy();
+      await this.props.carto.activeMinecraft.syncWithDeployment();
     }
 
     await StorageUtilities.syncFolderTo(
@@ -1953,6 +2004,30 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       menuState: this.state.menuState,
       viewMode: newStateViewMode,
       mode: newMode,
+      forceRawView: this.state.forceRawView,
+      filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
+      displayFileView: this.state.displayFileView,
+      statusAreaMode: this.state.statusAreaMode,
+      lastDeployKey: this.state.lastDeployKey,
+      lastExportKey: this.state.lastExportKey,
+      lastDeployFunction: this.state.lastDeployFunction,
+      lastExportFunction: this.state.lastExportFunction,
+      lastDeployData: this.state.lastDeployData,
+      lastExportData: this.state.lastExportData,
+    });
+  }
+
+  private _handleDialogDataUpdated(dialogData: object | undefined) {
+    this.setState({
+      activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
+      menuState: this.state.menuState,
+      viewMode: this.state.viewMode,
+      mode: this.state.mode,
+      dialog: this.state.dialog,
+      dialogData: dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
       forceRawView: this.state.forceRawView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
@@ -2588,8 +2663,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     if (this.props.project.errorState === ProjectErrorState.projectFolderOrFileDoesNotExist) {
       let error = "Could not find project data folder. ";
 
-      if (this.props.project.localFolderPath) {
-        error += this.props.project.localFolderPath;
+      if (this.props.project.mainDeployFolderPath) {
+        error += this.props.project.mainDeployFolderPath;
       }
 
       return <h1>{error}</h1>;
@@ -2609,6 +2684,16 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       this.props.project.role !== ProjectRole.documentation &&
       this.props.project.role !== ProjectRole.meta
     ) {
+      if (ProjectEditorUtilities.getIsLinkShareable(this.props.project)) {
+        exportKeys[nextExportKey] = {
+          key: nextExportKey,
+          icon: <FontAwesomeIcon icon={faLink} key={nextExportKey} className="fa-lg" />,
+          content: "Shareable Link",
+          onClick: this._handleGetShareableLinkClick,
+          title: "Get a shareable link of this project.",
+        };
+        exportMenu.push(exportKeys[nextExportKey]);
+      }
       nextExportKey = "mcpackAddon";
       exportKeys[nextExportKey] = {
         key: nextExportKey,
@@ -2750,18 +2835,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           title: "Deploys " + title + " and test assets in a zip",
         };
         deployMenu.push(deployKeys[miKey]);
-
-        if (AppServiceProxy.hasAppServiceOrDebug) {
-          const miKeyA = "deployWorldTestAssetsLocal|" + pi.name;
-          deployKeys[miKeyA] = {
-            key: miKeyA,
-            icon: <FontAwesomeIcon icon={faBox} key={miKeyA} className="fa-lg" />,
-            content: title + " and test assets to Minecraft",
-            onClick: this._handleDeployWorldAndTestAssetsLocalClick,
-            title: "Deploys " + title + " and test assets in a zip",
-          };
-          deployMenu.push(deployKeys[miKeyA]);
-        }
       }
     }
 
@@ -3095,25 +3168,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         title: "Item list on the right",
         onClick: this._viewAsFiles,
       });
-
-      if (AppServiceProxy.hasAppService && !isFullyCompact) {
-        viewMenuItems.push({
-          key: "worldToolsDivider",
-          kind: "divider",
-        });
-
-        viewMenuItems.push({
-          key: "minecraftToolboxFocus",
-          content:
-            this.state.viewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox ||
-            this.state.viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox
-              ? "Hide Toolbox Pane"
-              : "Show Toolbox Pane",
-          icon: <FontAwesomeIcon icon={faTools} className="fa-lg" />,
-          title: "Show Toolbox Pane",
-          onClick: this._toggleMinecraftToolbox,
-        });
-      }
 
       toolbarItems.push({
         icon: <ViewLabel isCompact={isButtonCompact} />,

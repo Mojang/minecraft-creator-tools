@@ -56,10 +56,15 @@
   padding-top: 6px;
 }
 
+.pil-projectResults {
+  padding-left: 17px;
+}
+
 .pil-fixedLineRow {
   height: 32px;
   display: grid;
   grid-template-columns: 1fr 32px;
+  padding-top: 0px;
 }
 
 .pil-list LI * {
@@ -190,13 +195,11 @@
 .pil-projectName {
   overflow-x: hidden;
   width: 100%;
-  padding-left: 16px;
-  padding-top: 6px;
-  padding-bottom: 6x;
   margin-right: 2px;
   text-overflow: clip;
   grid-column: 1;
   z-index: 90;
+  padding-top: 6px;
   display: block;
   white-space: nowrap;
 }

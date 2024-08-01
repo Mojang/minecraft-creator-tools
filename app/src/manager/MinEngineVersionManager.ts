@@ -20,6 +20,8 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
   id = "MINENGINEVER";
   title = "Min Engine Version";
 
+  performPlatformVersionValidations: boolean = false;
+
   getTopicData(topicId: number): IProjectInfoTopicData | undefined {
     const updateMinEngineVersion = {
       updaterId: this.id,
@@ -162,6 +164,8 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
       return infoItems;
     }
 
+    const verShort = verSplit[0] + "." + verSplit[1] + "." + verSplit[2];
+
     for (let i = 0; i < project.items.length; i++) {
       const pi = project.items[i];
 
@@ -194,13 +198,13 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
               if (bpVer[0] < parseInt(verSplit[0])) {
                 infoItems.push(
                   new ProjectInfoItem(
-                    InfoItemType.recommendation,
+                    this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
                     this.id,
                     110,
                     "Behavior pack manifest (" +
                       bpVer.join(".") +
                       ") has a lower major version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -214,7 +218,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                     "Behavior pack manifest (" +
                       bpVer.join(".") +
                       ") has a higher major version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -223,13 +227,13 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
               } else if (bpVer[1] < parseInt(verSplit[1]) - 1) {
                 infoItems.push(
                   new ProjectInfoItem(
-                    InfoItemType.recommendation,
+                    this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
                     this.id,
                     120,
                     "Behavior pack manifest (" +
                       bpVer.join(".") +
                       ") has a lower minor version number compared to the current version or the previous current minor version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -243,7 +247,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                     "Behavior pack manifest (" +
                       bpVer.join(".") +
                       ") has a higher minor version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -258,7 +262,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                     "Behavior pack manifest (" +
                       bpVer.join(".") +
                       ") has a lower patch version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -273,7 +277,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                     "Behavior pack manifest (" +
                       bpVer.join(".") +
                       ") has a higher patch version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -318,7 +322,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                     "Resource pack manifest (" +
                       rpVer.join(".") +
                       ") has a lower major version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -332,7 +336,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                     "Resource pack manifest (" +
                       rpVer.join(".") +
                       ") has a higher major version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -340,13 +344,13 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
               } else if (rpVer[1] < parseInt(verSplit[1]) - 1) {
                 infoItems.push(
                   new ProjectInfoItem(
-                    InfoItemType.recommendation,
+                    this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
                     this.id,
                     220,
                     "Resource pack manifest (" +
                       rpVer.join(".") +
                       ") has a lower minor version number compared to current version or the previous current minor version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -360,7 +364,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                     "Resource pack manifest (" +
                       rpVer.join(".") +
                       ") has a higher minor version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -374,7 +378,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                     "Resource pack manifest (" +
                       rpVer.join(".") +
                       ") has a lower patch version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )
@@ -388,7 +392,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                     "Resource pack manifest (" +
                       rpVer.join(".") +
                       ") has a higher patch version number compared to current version (" +
-                      ver +
+                      verShort +
                       ")",
                     pi
                   )

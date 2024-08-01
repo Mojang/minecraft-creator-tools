@@ -16,7 +16,7 @@ import ResourceAnimation from "../minecraft/ResourceAnimation";
 import ResourceRenderController from "../minecraft/ResourceRenderController";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
-import ModelGeometry from "../minecraft/ModelGeometry";
+import ModelGeometryDefinition from "../minecraft/ModelGeometryDefinition";
 import Material from "../minecraft/Material";
 import ContentIndex from "../core/ContentIndex";
 
@@ -304,7 +304,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
       await projectItem.ensureFileStorage();
 
       if (projectItem.file) {
-        const modGeo = await ModelGeometry.ensureOnFile(projectItem.file);
+        const modGeo = await ModelGeometryDefinition.ensureOnFile(projectItem.file);
 
         if (modGeo && modGeo.identifier) {
           let modGeoBreaks = modGeo.identifier.split(".");

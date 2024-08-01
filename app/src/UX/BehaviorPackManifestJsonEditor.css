@@ -11,25 +11,6 @@
   height: 40px;
 }
 
-.bpme-mainArea {
-  display: grid;
-  grid-template-columns: 210px 1fr;
-}
-
-.bpme-componentList {
-  grid-column: 1;
-  padding-top: 40px;
-}
-
-.bpme-componentListInterior {
-  overflow-y: scroll;
-  overflow-x: hidden;
-}
-
-.bpme-itemBin {
-  grid-column: 2;
-}
-
 .bpme-header {
   font-size: 16pt;
   padding-top: 10px;
@@ -40,30 +21,4 @@
 .bpme-form {
   padding-top: 20px;
   padding-left: 20px;
-}
-
-.bpme-componentHeader {
-  padding-top: 20px;
-  font-size: 14pt;
-  padding: 12px;
-  padding-top: 40px;
-  padding-bottom: 14px;
-}
-
-.bpme-extraArea {
-  margin-bottom: 5px;
-}
-
-.bpme-commands {
-  display: grid;
-  padding: 3px;
-  grid-template-columns: 200px 1fr;
-}
-
-.bpme-toolBarArea {
-  grid-column: 1;
-}
-
-.bpme-extraArea {
-  grid-column: 2;
 }

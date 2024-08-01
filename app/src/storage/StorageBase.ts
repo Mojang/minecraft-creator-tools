@@ -54,6 +54,10 @@ export default abstract class StorageBase implements IStorage {
   }
 
   async ensureFolderFromStorageRelativePath(path: string) {
+    if (path.startsWith("/" + this.rootFolder.name + "/")) {
+      path = path.substring(this.rootFolder.name.length + 1);
+    }
+
     return this.rootFolder.ensureFolderFromRelativePath(path);
   }
 

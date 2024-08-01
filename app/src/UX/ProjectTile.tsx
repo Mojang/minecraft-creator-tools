@@ -107,7 +107,11 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
 
           while (curLine < lines.length && addedLines < 4) {
             if (lines[curLine] && lines[curLine].indexOf("const overworld") <= 0 && lines[curLine].trim().length > 0) {
-              description.push(<div className="pts-code-line">{lines[curLine]}</div>);
+              description.push(
+                <div className="pts-code-line" key={"cl" + curLine}>
+                  {lines[curLine]}
+                </div>
+              );
               addedLines++;
             }
 
@@ -122,6 +126,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
         description.push(
           <span
             className="pts-tag"
+            key={"pts-tag" + tag}
             style={{
               backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,

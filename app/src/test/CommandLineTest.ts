@@ -13,6 +13,7 @@ import * as fs from "fs";
 
 CartoApp.hostType = HostType.testLocal;
 
+let carto: Carto | undefined = undefined;
 let localEnv: LocalEnvironment | undefined = undefined;
 
 let scenariosFolder: IFolder | undefined = undefined;
@@ -231,6 +232,50 @@ describe("validateAddons3ExtraneousStuffUsesMinecraftCommand", async () => {
 
   it("output matches", async function () {
     await folderMatches("validateAddons3ExtraneousStuffUsesMinecraftCommand");
+  });
+});
+
+describe("validateAddons3PlatformVersions", async () => {
+  let exitCode: number | null = null;
+  const stdoutLines: string[] = [];
+  const stderrLines: string[] = [];
+
+  before(function (done) {
+    this.timeout(20000);
+
+    removeResultFolder("validateAddons3PlatformVersions");
+
+    const process = spawn("node", [
+      " ./../toolbuild/jsn/cli",
+      "val",
+      "currentplatform",
+      "-i",
+      "./../samplecontent/addon/build/content3",
+      "-o",
+      "./test/results/validateAddons3PlatformVersions/",
+    ]);
+
+    collectLines(process.stdout, stdoutLines);
+    collectLines(process.stderr, stderrLines);
+
+    process.on("exit", (code) => {
+      exitCode = code;
+      done();
+    });
+  });
+
+  it("should have no stderr lines", async (done) => {
+    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    done();
+  }).timeout(10000);
+
+  it("exit code should be zero", async (done) => {
+    assert.equal(exitCode, 0);
+    done();
+  }).timeout(10000);
+
+  it("output matches", async function () {
+    await folderMatches("validateAddons3PlatformVersions");
   });
 });
 

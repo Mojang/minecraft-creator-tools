@@ -18,8 +18,6 @@ export default class LevelKeyValue {
   keyCached: string | undefined;
   fullBytesCached: Uint8Array | undefined;
 
-  level = 0;
-
   public get unsharedKey(): string | undefined {
     if (this.unsharedKeyBytes === undefined) {
       return undefined;
@@ -120,7 +118,14 @@ export default class LevelKeyValue {
     const valueLength = new Varint(this.fileBytes, this.startIndex + i);
     i += valueLength.byteLength;
 
-    this.unsharedKeyBytes = incomingBytes.subarray(startingIndex + i, startingIndex + i + unsharedBytes.value); //new Uint8Array(incomingBytes.buffer, startingIndex + i, unsharedBytes.value);
+    // mystery: why is unsharedKeyBytes 8 bytes longer than what we are expecting for keys?
+    this.unsharedKeyBytes = incomingBytes.subarray(startingIndex + i, startingIndex + i + unsharedBytes.value - 8);
+
+    /*const extraBytes = incomingBytes.subarray(
+      startingIndex + i + unsharedBytes.value - 8,
+      startingIndex + i + unsharedBytes.value
+    ); */
+
     i += unsharedBytes.value;
 
     this.value = incomingBytes.subarray(startingIndex + i, startingIndex + i + valueLength.value);

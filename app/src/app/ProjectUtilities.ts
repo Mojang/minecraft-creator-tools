@@ -223,7 +223,8 @@ export default class ProjectUtilities {
 
             if (npmPackageJson && npmPackageJson.definition) {
               npmPackageJson.definition.description = newDescription;
-              npmPackageJson.save();
+
+              await npmPackageJson.save();
             }
           }
         } else if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
@@ -241,7 +242,25 @@ export default class ProjectUtilities {
 
               header.description = newDescription;
 
-              manifestJson.save();
+              await manifestJson.save();
+            }
+          }
+        } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
+          await projectItem.ensureFileStorage();
+
+          if (projectItem.file) {
+            const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.file);
+
+            if (
+              manifestJson &&
+              manifestJson.definition &&
+              Utilities.uuidEqual(manifestJson.definition.header.uuid, project.defaultResourcePackUniqueId)
+            ) {
+              const header = manifestJson.ensureHeader(project.title, project.description);
+
+              header.description = newDescription;
+
+              await manifestJson.save();
             }
           }
         }
@@ -262,15 +281,14 @@ export default class ProjectUtilities {
 
     if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
       for (const projectItem of project.items) {
-        /* for NPM, we'll not use title, but name and description.
         if (projectItem.file && projectItem.itemType === ProjectItemType.packageJson) {
           const npmPackageJson = await NpmPackageJson.ensureOnFile(projectItem.file);
 
           if (npmPackageJson && npmPackageJson.definition) {
-            npmPackageJson.definition.description = newTitle;
-            npmPackageJson.save();
+            npmPackageJson.definition.name = newTitle;
+            await npmPackageJson.save();
           }
-        } else */ if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
+        } else if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
           await projectItem.ensureFileStorage();
 
           if (projectItem.file) {
@@ -285,7 +303,25 @@ export default class ProjectUtilities {
 
               header.name = newTitle;
 
-              manifestJson.save();
+              await manifestJson.save();
+            }
+          }
+        } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
+          await projectItem.ensureFileStorage();
+
+          if (projectItem.file) {
+            const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.file);
+
+            if (
+              manifestJson &&
+              manifestJson.definition &&
+              Utilities.uuidEqual(manifestJson.definition.header.uuid, project.defaultResourcePackUniqueId)
+            ) {
+              const header = manifestJson.ensureHeader(project.title, project.description);
+
+              header.name = newTitle;
+
+              await manifestJson.save();
             }
           }
         }
@@ -386,77 +422,6 @@ export default class ProjectUtilities {
     }
   }
 
-  static async applyName(project: Project, newName: string) {
-    project.name = newName;
-
-    const isPackFolderManaged = project.getIsPackFolderManaged();
-
-    if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
-      for (const projectItem of project.items) {
-        if (projectItem.itemType === ProjectItemType.packageJson) {
-          await projectItem.ensureFileStorage();
-
-          if (projectItem.file) {
-            const npmPackageJson = await NpmPackageJson.ensureOnFile(projectItem.file);
-
-            if (npmPackageJson && npmPackageJson.definition) {
-              npmPackageJson.definition.name = newName;
-              npmPackageJson.save();
-            }
-          }
-        } else if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          await projectItem.ensureFileStorage();
-
-          if (projectItem.file) {
-            if (isPackFolderManaged) {
-              const manifestParentFolder = projectItem.file.parentFolder;
-
-              await manifestParentFolder.rename(newName);
-            }
-
-            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
-
-            if (
-              manifestJson &&
-              manifestJson.definition &&
-              Utilities.uuidEqual(manifestJson.definition.header.uuid, project.defaultBehaviorPackUniqueId)
-            ) {
-              const header = manifestJson.ensureHeader(project.title, project.description);
-
-              header.name = newName;
-
-              manifestJson.save();
-            }
-          }
-        } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
-          await projectItem.ensureFileStorage();
-
-          if (projectItem.file) {
-            if (isPackFolderManaged) {
-              const manifestParentFolder = projectItem.file.parentFolder;
-
-              await manifestParentFolder.rename(newName);
-            }
-
-            const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.file);
-
-            if (
-              manifestJson &&
-              manifestJson.definition &&
-              Utilities.uuidEqual(manifestJson.definition.header.uuid, project.defaultResourcePackUniqueId)
-            ) {
-              const header = manifestJson.ensureHeader(project.title, project.description);
-
-              header.name = newName;
-
-              manifestJson.save();
-            }
-          }
-        }
-      }
-    }
-  }
-
   static getSuggestedProjectShortName(creator: string, name: string) {
     return this.getSuggestedShortName(creator) + "_" + this.getSuggestedShortName(name);
   }
@@ -522,11 +487,7 @@ export default class ProjectUtilities {
     return scriptsFolder.getFolderRelativePath(project.projectFolder);
   }
 
-  static async applyTitleAndName(project: Project, title: string, name: string) {
-    await ProjectUtilities.applyTitle(project, title);
-  }
-
-  static async processNewProject(project: Project, suggestedShortName?: string) {
+  static async processNewProject(project: Project, title: string, description: string, suggestedShortName?: string) {
     await project.inferProjectItemsFromFiles();
 
     if (suggestedShortName) {
@@ -535,6 +496,9 @@ export default class ProjectUtilities {
 
     await this.ensureStandardFiles(project);
     await ProjectUtilities.randomizeAllUids(project);
+
+    await ProjectUtilities.applyTitle(project, title);
+    await ProjectUtilities.applyDescription(project, description);
 
     const pur = new ProjectUpdateRunner(project);
 

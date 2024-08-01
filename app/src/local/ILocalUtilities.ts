@@ -29,5 +29,6 @@ export default interface ILocalUtilities {
   ensureEndsWithBackSlash(pathSegment: string): string;
 
   readJsonFile(path: string): Promise<object | null>;
+
   createStorage(path: string): Promise<IStorage | null>;
 }

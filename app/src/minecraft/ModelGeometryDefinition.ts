@@ -5,14 +5,16 @@ import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import IModelGeometry from "./IModelGeometry";
+import Database from "./Database";
+import MinecraftUtilities from "./MinecraftUtilities";
 
-export default class ModelGeometry {
+export default class ModelGeometryDefinition {
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
   public definition?: IModelGeometry;
 
-  private _onLoaded = new EventDispatcher<ModelGeometry, ModelGeometry>();
+  private _onLoaded = new EventDispatcher<ModelGeometryDefinition, ModelGeometryDefinition>();
 
   public get isLoaded() {
     return this._isLoaded;
@@ -43,19 +45,22 @@ export default class ModelGeometry {
     return this.definition["minecraft:geometry"][0].description.identifier;
   }
 
-  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<ModelGeometry, ModelGeometry>) {
-    let rc: ModelGeometry | undefined;
+  static async ensureOnFile(
+    file: IFile,
+    loadHandler?: IEventHandler<ModelGeometryDefinition, ModelGeometryDefinition>
+  ) {
+    let rc: ModelGeometryDefinition | undefined;
 
     if (file.manager === undefined) {
-      rc = new ModelGeometry();
+      rc = new ModelGeometryDefinition();
 
       rc.file = file;
 
       file.manager = rc;
     }
 
-    if (file.manager !== undefined && file.manager instanceof ModelGeometry) {
-      rc = file.manager as ModelGeometry;
+    if (file.manager !== undefined && file.manager instanceof ModelGeometryDefinition) {
+      rc = file.manager as ModelGeometryDefinition;
 
       if (!rc.isLoaded && loadHandler) {
         rc.onLoaded.subscribe(loadHandler);
@@ -65,6 +70,24 @@ export default class ModelGeometry {
     }
 
     return rc;
+  }
+
+  public async getFormatVersionIsCurrent() {
+    const fv = this.getFormatVersion();
+
+    if (fv === undefined || fv.length !== 3) {
+      return false;
+    }
+
+    return await Database.isRecentVersionFromVersionArray(fv);
+  }
+
+  public getFormatVersion(): number[] | undefined {
+    if (!this.definition || !this.definition.format_version) {
+      return undefined;
+    }
+
+    return MinecraftUtilities.getVersionArrayFrom(this.definition.format_version);
   }
 
   persist() {

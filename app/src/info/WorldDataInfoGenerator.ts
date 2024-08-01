@@ -24,7 +24,10 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
   id = "WORLDDATA";
   title = "World Data Validation";
 
+  modernCommandVersion = 33; // corresponds to 1.20.0 versions of Minecraft.
+
   performAddOnValidations = false;
+  performPlatformVersionValidations: boolean = false;
 
   getTopicData(topicId: number) {
     switch (topicId) {
@@ -241,13 +244,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       projectItem.itemType === ProjectItemType.MCTemplate ||
       projectItem.itemType === ProjectItemType.worldFolder
     ) {
-      let mcworld: MCWorld | undefined;
-
-      if (projectItem.folder) {
-        mcworld = await MCWorld.ensureMCWorldOnFolder(projectItem.folder, projectItem.project);
-      } else if (projectItem.file) {
-        mcworld = await MCWorld.ensureOnFile(projectItem.file, projectItem.project);
-      }
+      let mcworld: MCWorld | undefined = await MCWorld.ensureOnItem(projectItem);
 
       if (!mcworld) {
         Log.debugAlert("Could not find respective world.");
@@ -365,8 +362,6 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                   );
                 }
 
-                chunk.ensureBlockActors();
-
                 const blockActors = chunk.blockActors;
 
                 for (let i = 0; i < blockActors.length; i++) {
@@ -380,6 +375,21 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                     let cba = blockActor as CommandBlockActor;
                     if (cba.version) {
                       blockActorsPi.spectrumIntFeature("Command Version", cba.version);
+                    }
+
+                    if (cba.version && cba.version < this.modernCommandVersion) {
+                      items.push(
+                        new ProjectInfoItem(
+                          this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
+                          this.id,
+                          212,
+                          "Command '" + cba.command + "' is from an older Minecraft version (" + cba.version + ") ",
+                          projectItem,
+                          "(Command at location " + cba.x + ", " + cba.y + ", " + cba.z + ")",
+                          undefined,
+                          cba.command
+                        )
+                      );
                     }
 
                     if (cba.command && cba.command.trim().length > 2) {

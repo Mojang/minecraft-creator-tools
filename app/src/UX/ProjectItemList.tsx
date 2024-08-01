@@ -1479,6 +1479,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       projectItem.itemType === ProjectItemType.entityTypeResourceJson || // this should be handled by entity type editor for bp entity type
       projectItem.itemType === ProjectItemType.behaviorPackListJson || // this should be handled by world editor
       projectItem.itemType === ProjectItemType.resourcePackListJson || // this should be handled by world editor
+      projectItem.itemType === ProjectItemType.behaviorPackHistoryListJson || // this should be handled by world editor
+      projectItem.itemType === ProjectItemType.resourcePackHistoryListJson || // this should be handled by world editor
       projectItem.itemType === ProjectItemType.animationControllerBehaviorJson || // this should be rendered by entity type editor
       projectItem.itemType === ProjectItemType.animationBehaviorJson || // this should be rendered by entity type editor
       projectItem.itemType === ProjectItemType.animationResourceJson || // this should be model editor
@@ -1516,6 +1518,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   render() {
     this._projectListItems = [];
 
+    const searchSummaryText = this.props.filteredItems ? this.props.filteredItems.length + " items found" : "";
     const searchSummaryContent = (
       <div
         className="pil-fixedLineRow"
@@ -1524,8 +1527,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           height: this.props.filteredItems ? "32px" : "0px",
         }}
       >
-        <div className="pil-projectName" aria-live="assertive">
-          {this.props.filteredItems ? this.props.filteredItems.length + " items found" : ""}
+        <div
+          className="pil-projectName pil-projectResults"
+          aria-live="assertive"
+          aria-atomic="true"
+          aria-relevant="all"
+          role="alert"
+          aria-label={searchSummaryText}
+        >
+          {searchSummaryText}
         </div>
       </div>
     );
@@ -1550,7 +1560,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       if (this.props.allInfoSet.info.defaultIcon && this.props.allInfoSet.info.defaultIcon) {
         projectContent = (
-          <div className="pil-fixedLineRow" key="pil-fixpropj">
+          <div className="pil-fixedLine pil-fixedLineRow" key="pil-fixpropj">
             <div className="pil-projectName">{whatIsThis}</div>
             <div
               className="pil-projectIcon"
