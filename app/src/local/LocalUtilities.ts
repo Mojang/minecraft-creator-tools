@@ -260,9 +260,9 @@ export default class LocalUtilities implements ILocalUtilities {
     }
 
     if (this.isWindows) {
-      fullPath += path.replace("/", "\\");
+      fullPath += path.replace(/\//g, "\\");
     } else {
-      fullPath += path.replace("\\", NodeStorage.folderDelimiter);
+      fullPath += path.replace(/\\/g, NodeStorage.folderDelimiter);
     }
 
     return fullPath;
