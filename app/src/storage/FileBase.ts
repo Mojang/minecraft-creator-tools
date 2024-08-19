@@ -121,6 +121,18 @@ export default abstract class FileBase implements IFile {
     return result + this.name;
   }
 
+  get coreContentLength() {
+    if (!this.content) {
+      return 0;
+    }
+
+    if (this.isBinary || typeof this.content !== "string") {
+      return this.content.length;
+    }
+
+    return this.content.replace(/\s/g, "").length;
+  }
+
   constructor() {
     this.modified = null;
     this.modifiedAtLoad = null;

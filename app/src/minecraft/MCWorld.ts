@@ -45,7 +45,6 @@ const MANIFEST_RELPATH = "/manifest.json";
 
 const CHUNK_X_SIZE = 16;
 const CHUNK_Z_SIZE = 16;
-const SUBCHUNK_Y_SIZE = 16;
 
 const CREATOR_TOOLS_EDITOR_BPUUID = "5d2f0b91-ca29-49da-a275-e6c6262ea3de";
 
@@ -182,8 +181,8 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   }
 
   public get generationSeed() {
-    if (this._generationSeed === undefined && this._levelChunkMetaData && this._levelChunkMetaData.root) {
-      const tag = this._levelChunkMetaData.root.find("GenerationSeed");
+    if (this._generationSeed === undefined && this._levelChunkMetaData && this._levelChunkMetaData.singleRoot) {
+      const tag = this._levelChunkMetaData.singleRoot.find("GenerationSeed");
       if (tag !== null) {
         this._generationSeed = tag.valueAsBigInt.toString();
       }
@@ -1469,22 +1468,22 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     }
 
     const chunkZ = Math.floor(blockLocation.z / CHUNK_Z_SIZE);
-    const zDim = xDim[chunkZ];
-    if (zDim === undefined) {
+    const chunk = xDim[chunkZ];
+    if (chunk === undefined) {
       return new Block("air");
     }
+    let offsetX = blockLocation.x % 16;
+    let offsetZ = blockLocation.z % 16;
 
-    const subChunk = zDim.subChunks[Math.floor(blockLocation.y / SUBCHUNK_Y_SIZE)];
-
-    if (subChunk === undefined) {
-      return new Block("air");
+    if (offsetX < 0) {
+      offsetX += 16;
     }
 
-    const block = zDim.getBlock(
-      blockLocation.x - chunkX * CHUNK_X_SIZE,
-      blockLocation.y,
-      blockLocation.z - chunkZ * CHUNK_Z_SIZE
-    );
+    if (offsetZ < 0) {
+      offsetZ += 16;
+    }
+
+    const block = chunk.getBlock(offsetX, blockLocation.y, offsetZ);
 
     if (!block) {
       return new Block("air");
@@ -1548,8 +1547,8 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
           dynamicProps.fromBinary(dynamicPropertyBytes, true, false, 0, true);
 
-          if (dynamicProps.root) {
-            const children = dynamicProps.root.getTagChildren();
+          if (dynamicProps.singleRoot) {
+            const children = dynamicProps.singleRoot.getTagChildren();
             this._dynamicProperties = {};
 
             for (const child of children) {
@@ -1573,6 +1572,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
         }
       } else if (keyname.startsWith("LevelChunkMetaDataDictionary") && keyValue) {
         const levelChunkMetaBytes = keyValue.value;
+
         if (levelChunkMetaBytes) {
           const levelChunkMeta = new NbtBinary();
 
@@ -1597,7 +1597,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
           let dim = 0;
 
-          if (keyBytes.length >= 25) {
+          if (keyBytes.length >= 17) {
             dim = DataUtilities.getSignedInteger(keyBytes[8], keyBytes[9], keyBytes[10], keyBytes[11], true);
 
             Log.assert(dim >= 0 && dim <= 2, "Unexpected dimension index - digp (" + dim + ")");
@@ -1735,7 +1735,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
         (keyname.length === 9 || keyname.length === 10 || keyname.length === 13 || keyname.length === 14)
       ) {
         const keyBytes = keyValue.keyBytes;
-        const hasDimensionParam = keyname.length > 18 || keyname.length === 13 || keyname.length === 14;
+        const hasDimensionParam = keyname.length >= 13;
+
+        Log.assertDefined(keyBytes);
 
         if (keyBytes) {
           const x = DataUtilities.getSignedInteger(keyBytes[0], keyBytes[1], keyBytes[2], keyBytes[3], true);
@@ -1745,8 +1747,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
           if (hasDimensionParam) {
             dim = DataUtilities.getSignedInteger(keyBytes[8], keyBytes[9], keyBytes[10], keyBytes[11], true);
 
-            if (dim < 0 || dim > 2) {
-              // Log.assert(dim >= 0 && dim <= 2, "Unexpected dimension index. (" + dim + ")");
+            if (dim < 1 || dim > 2) {
+              // note overworld dimension = 0, but should be omitted so we should not see overworld = 0.
+              this._pushError("Unexpected dimension index. (" + dim + ")");
               continue;
             }
           }

@@ -97,8 +97,8 @@ export default class ActorItem {
 
     actorStorage.fromBinary(keyData, true, false, 0, true);
 
-    if (actorStorage.root) {
-      this.#nbtRoot = actorStorage.root;
+    if (actorStorage.singleRoot) {
+      this.#nbtRoot = actorStorage.singleRoot;
       this.loadFromNbt();
     }
   }

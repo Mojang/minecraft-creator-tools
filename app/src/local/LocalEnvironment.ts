@@ -174,9 +174,12 @@ export default class LocalEnvironment {
     }
 
     newPasscode = newPasscode.toLowerCase();
+    newPasscode = newPasscode.replace("-", "");
 
     if (newPasscode.length !== 8 || !Utilities.isAlphaNumeric(newPasscode)) {
-      throw new Error("Improperly formatted passcode.");
+      throw new Error(
+        "Improperly formatted display read-only passcode. Passcodes should be 8 alphanumeric characters."
+      );
     }
 
     this.#data.displayReadOnlyPasscode = newPasscode;
@@ -197,9 +200,10 @@ export default class LocalEnvironment {
     }
 
     newPasscode = newPasscode.toLowerCase();
+    newPasscode = newPasscode.replace("-", "");
 
     if (newPasscode.length !== 8 || !Utilities.isAlphaNumeric(newPasscode)) {
-      throw new Error("Improperly formatted passcode.");
+      throw new Error("Improperly formatted full read-only passcode. Passcodes should be 8 alphanumeric characters.");
     }
 
     this.#data.fullReadOnlyPasscode = newPasscode;
@@ -220,9 +224,10 @@ export default class LocalEnvironment {
     }
 
     newPasscode = newPasscode.toLowerCase();
+    newPasscode = newPasscode.replace("-", "");
 
     if (newPasscode.length !== 8 || !Utilities.isAlphaNumeric(newPasscode)) {
-      throw new Error("Improperly formatted passcode.");
+      throw new Error("Improperly formatted update passcode. Passcodes should be 8 alphanumeric characters.");
     }
 
     this.#data.updateStatePasscode = newPasscode;
@@ -242,9 +247,10 @@ export default class LocalEnvironment {
     }
 
     newPasscode = newPasscode.toLowerCase();
+    newPasscode = newPasscode.replace("-", "");
 
     if (newPasscode.length !== 8 || !Utilities.isAlphaNumeric(newPasscode)) {
-      throw new Error("Improperly formatted passcode.");
+      throw new Error("Improperly formatted admin passcode. Passcodes should be 8 alphanumeric characters.");
     }
 
     this.#data.adminPasscode = newPasscode;
@@ -255,14 +261,14 @@ export default class LocalEnvironment {
     return this.#data.tokenEncryptionPassword;
   }
 
-  get iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashTerms() {
-    return this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashTerms;
+  get iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula() {
+    return this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula;
   }
 
-  set iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashTerms(
+  set iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula(
     iAgreeValue: boolean | undefined
   ) {
-    this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashTerms = iAgreeValue;
+    this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula = iAgreeValue;
   }
 
   public constructor(subscribeToLog: boolean) {

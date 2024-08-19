@@ -6,6 +6,7 @@ const importTransform = require("./tools/gulp-importTransform");
 const nodeifyScript = require("./tools/gulp-nodeifyScript");
 const jsonifyTypes = require("./tools/gulp-jsonifyTypes");
 const downloadResources = require("./tools/gulp-downloadResources");
+const updateVersions = require("./tools/gulp-updateVersions");
 const textReplaceStream = require("./tools/gulp-textReplaceStream");
 const gulpWebpack = require("webpack-stream");
 
@@ -18,6 +19,8 @@ const jsnbuildfilesigs = [
   "!build/**/*",
   "!toolbuild/**/*",
   "!scriptlibs/**/*",
+  "!test/results/**/*",
+  "!test/scenarios/**/*",
   "!dist/**/*",
   "!res/**/*",
   "!src/monaco/*.ts",
@@ -37,6 +40,8 @@ const jsnwebbuildfilesigs = [
   "!build/**/*",
   "!toolbuild/**/*",
   "!scriptlibs/**/*",
+  "!test/results/**/*",
+  "!test/scenarios/**/*",
   "!dist/**/*",
   "!res/**/*",
   "!src/setupTests.ts",
@@ -62,6 +67,8 @@ const mclibsigs = [
   "scriptlibs/@minecraft/math/minecraft-math.js",
   "scriptlibs/@minecraft/vanilla-data/minecraft-vanilla-data.ts",
 ];
+
+const versionSource = ["toolbuild/jsn/package.json"];
 
 const mcreslistsigs = ["reslist/schemas.resources.json"];
 const mcreslistvanillasigs = ["reslist/packs.resources.json"];
@@ -137,7 +144,7 @@ function copyEsbuildWasmDist() {
 }
 
 function copyJsNodeDocs() {
-  return gulp.src(["../CHANGELOG.md", "../NOTICE.md", "jsnode/README.md"]).pipe(gulp.dest("toolbuild/jsn/"));
+  return gulp.src(["../CHANGELOG.md", "../NOTICE.md"]).pipe(gulp.dest("toolbuild/jsn/"));
 }
 
 function copyJsNodeResSchemas() {
@@ -237,6 +244,20 @@ function runDownloadResources() {
   return gulp.src(mcreslistsigs, { base: "" }).pipe(downloadResources("public/res/latest/"));
 }
 
+function runUpdateVersions() {
+  return gulp
+    .src(versionSource, { base: "" })
+    .pipe(
+      updateVersions([
+        "./package.json",
+        "./package-lock.json",
+        "./jsnode/package.json",
+        "./src/core/Constants.ts",
+      ])
+    );
+}
+
+
 function runDownloadSamples() {
   return gulp.src(mcreslistsamplesigs, { base: "" }).pipe(downloadResources("public/res/samples/microsoft/"));
 }
@@ -270,6 +291,8 @@ gulp.task("webbuild", gulp.series("clean-webbuild", compileWebJsBuild));
 gulp.task("mcbuild", gulp.series(gulp.parallel("clean-mcbuild", "webbuild"), buildMinecraftJs));
 
 gulp.task("mctypes", gulp.parallel(buildBetaJsonTypeDefs, buildStableJsonTypeDefs, buildIncludes));
+
+gulp.task("updateversions", gulp.series(runUpdateVersions));
 
 gulp.task(
   "dlres",

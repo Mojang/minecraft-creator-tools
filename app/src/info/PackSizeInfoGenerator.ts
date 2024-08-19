@@ -186,14 +186,10 @@ export default class PackSizeInfoGenerator implements IProjectInfoGenerator {
           if (isInContent) {
             results.contentFileCounts++;
 
-            if (file.content) {
-              results.contentSize += file.content.length;
-            }
+            results.contentSize += file.coreContentLength;
           }
 
-          if (file.content) {
-            results.size += file.content.length;
-          }
+          results.size += file.coreContentLength;
         }
       }
     }

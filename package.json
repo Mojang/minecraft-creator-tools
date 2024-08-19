@@ -1,0 +1,71 @@
+{
+  "name": "mctools-all-src",
+  "version": "0.0.0-semantically-released",
+  "productName": "Minecraft Creator Tools",
+  "description": "Minecraft Creator Tools for building Bedrock Edition add-ons.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mojang/minecraft-creator-tools.git"
+  },
+  "private": true,
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "CHANGELOG.md"
+        }
+      ],
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false,
+          "pkgRoot": "./app/toolbuild/jsn",
+          "tarballDir": "dist"
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "execCwd": "app",
+          "prepareCmd": "npm run updateversionsandbuild"
+        }
+      ],
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            {
+              "path": "dist/*.tgz",
+              "label": "Minecraft Creator Tools command line"
+            }
+          ]
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "CHANGELOG.md",
+            "package.json",
+            "app/package.json",
+            "app/jsnode/package.json",
+            "app/src/core/Constants.ts"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ]
+    ]
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "semantic-release": "^24.0.0"
+  }
+}

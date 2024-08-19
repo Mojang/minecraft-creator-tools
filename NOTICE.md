@@ -1225,8 +1225,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ### tui-grid
 
-### tui-image-editor
-
 #### MIT License
 
 Copyright (c) 2019 NHN Cloud Corp.

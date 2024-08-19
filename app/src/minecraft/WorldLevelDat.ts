@@ -240,7 +240,7 @@ export default class WorldLevelDat implements IWorldSettings, IErrorable {
 
     tag.context = this.context;
 
-    tag.ensureRoot();
+    tag.ensureSingleRoot();
 
     this.nbt = tag;
   }
@@ -815,7 +815,7 @@ export default class WorldLevelDat implements IWorldSettings, IErrorable {
   }
 
   _saveToNbt(binary: NbtBinary) {
-    const root = binary.root;
+    const root = binary.ensureSingleRoot();
 
     if (root == null) {
       return;
@@ -1330,11 +1330,11 @@ export default class WorldLevelDat implements IWorldSettings, IErrorable {
   loadFromNbt(binary: NbtBinary) {
     this.nbt = binary;
 
-    if (binary.root == null) {
+    if (binary.singleRoot == null) {
       return;
     }
 
-    const root = binary.root;
+    const root = binary.singleRoot;
 
     let tag = root.find("LevelName");
 

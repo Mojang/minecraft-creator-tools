@@ -3,7 +3,7 @@
 
 import BlockCube from "./BlockCube";
 import NbtBinary from "./NbtBinary";
-import NbtBinaryTag, { NbtTagType } from "./NbtBinaryTag";
+import { NbtTagType } from "./NbtBinaryTag";
 import ISnbtContent from "./ISnbtContent";
 import MinecraftUtilities from "./MinecraftUtilities";
 import ISnbtBlock from "./ISnbtBlock";
@@ -52,9 +52,7 @@ export default class Structure {
 
     const nbt = new NbtBinary();
 
-    const root = new NbtBinaryTag(NbtTagType.compound, "", false);
-
-    nbt.root = root;
+    const root = nbt.ensureSingleRoot();
 
     root.addTag(NbtTagType.int, "format_version").value = 1;
 
@@ -276,13 +274,15 @@ export default class Structure {
   async loadFromNbt(binary: NbtBinary) {
     const cube = new BlockCube();
 
-    if (binary.root == null) {
+    const root = binary.singleRoot;
+
+    if (root === null) {
       return;
     }
 
-    const paletteTag = binary.root.find("block_palette");
-    const indicesTag = binary.root.find("block_indices");
-    const sizeTag = binary.root.find("size");
+    const paletteTag = root.find("block_palette");
+    const indicesTag = root.find("block_indices");
+    const sizeTag = root.find("size");
 
     if (
       paletteTag === null ||
@@ -383,7 +383,7 @@ export default class Structure {
       }
     }
 
-    const entities = binary.root.find("entities");
+    const entities = root.find("entities");
 
     this._entities = [];
 
@@ -469,7 +469,7 @@ export default class Structure {
       }
     }
 
-    const structureOrigin = binary.root.find("structure_world_origin");
+    const structureOrigin = root.find("structure_world_origin");
 
     if (structureOrigin !== null && structureOrigin.getTagChildren().length === 3) {
       const structuresOriginChildren = structureOrigin.getTagChildren();

@@ -43,6 +43,8 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
         return { title: "Level.dat" };
       case 6:
         return { title: "Level.dat Experiments" };
+      case 7:
+        return { title: "Subchunkless Chunks" };
       case 101:
         return { title: "Unexpected command in MCFunction" };
       case 102:
@@ -58,6 +60,8 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
 
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.chunkCount = infoSet.getSummedNumberValue("WORLDDATA", 101);
+
+    info.subchunkLessChunkCount = infoSet.getSummedNumberValue("WORLDDATA", 107);
     info.worldLoadErrors = infoSet.getCount("WORLDDATA", 400);
   }
 
@@ -276,9 +280,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
         contentIndex &&
         mcworld.levelData &&
         mcworld.levelData.nbt &&
-        mcworld.levelData.nbt.root
+        mcworld.levelData.nbt.singleRoot
       ) {
-        const children = mcworld.levelData.nbt.root.getTagChildren();
+        const children = mcworld.levelData.nbt.singleRoot.getTagChildren();
 
         for (const child of children) {
           if (child.name === "experiments") {
@@ -337,6 +341,8 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
 
       let blockCount = 0;
       let chunkCount = 0;
+      let subchunkLessChunkCount = 0;
+
       for (const dimIndex in mcworld.chunks) {
         let dim = mcworld.chunks[dimIndex];
 
@@ -349,6 +355,10 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
 
               if (chunk) {
                 chunkCount++;
+
+                if (chunk.subChunks.length <= 0) {
+                  subchunkLessChunkCount++;
+                }
 
                 if (chunkCount % 1000 === 0) {
                   await projectItem.project.carto.notifyStatusUpdate(
@@ -481,6 +491,17 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       );
       items.push(
         new ProjectInfoItem(InfoItemType.info, this.id, 106, "Max Z", projectItem, mcworld.maxZ, mcworld.name)
+      );
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.info,
+          this.id,
+          107,
+          "Subchunkless Chunks",
+          projectItem,
+          subchunkLessChunkCount,
+          mcworld.name
+        )
       );
     }
 

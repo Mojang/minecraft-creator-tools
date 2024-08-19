@@ -4,38 +4,31 @@
 import NodeFolder from "./NodeFolder";
 import StorageBase from "../storage/StorageBase";
 import IStorage from "../storage/IStorage";
+import * as path from "path";
 
 export default class NodeStorage extends StorageBase implements IStorage {
-  path: string;
+  rootPath: string;
   name: string;
 
   rootFolder: NodeFolder;
 
-  static folderDelimiter = "\\";
+  static folderDelimiter = path.sep;
 
-  static determineDelimiter(path: string) {
-    if (path.indexOf("\\") >= 0) {
-      NodeStorage.folderDelimiter = "\\";
-    } else {
-      NodeStorage.folderDelimiter = "/";
-    }
-  }
-
-  constructor(path: string, name: string) {
+  constructor(incomingPath: string, name: string) {
     super();
 
     if (NodeStorage.folderDelimiter === "\\") {
-      path = path.replace(/\//gi, NodeStorage.folderDelimiter);
-      path = path.replace(/\\\\/gi, "\\");
+      incomingPath = incomingPath.replace(/\//gi, NodeStorage.folderDelimiter);
+      incomingPath = incomingPath.replace(/\\\\/gi, "\\");
     } else if (NodeStorage.folderDelimiter === "/") {
-      path = path.replace(/\\/gi, NodeStorage.folderDelimiter);
-      path = path.replace(/\/\//gi, NodeStorage.folderDelimiter);
+      incomingPath = incomingPath.replace(/\\/gi, NodeStorage.folderDelimiter);
+      incomingPath = incomingPath.replace(/\/\//gi, NodeStorage.folderDelimiter);
     }
 
-    this.path = path;
+    this.rootPath = incomingPath;
     this.name = name;
 
-    this.rootFolder = new NodeFolder(this, null, path, name);
+    this.rootFolder = new NodeFolder(this, null, incomingPath, name);
   }
 
   joinPath(pathA: string, pathB: string) {
@@ -50,29 +43,29 @@ export default class NodeStorage extends StorageBase implements IStorage {
     return fullPath;
   }
 
-  static getParentFolderPath(path: string) {
-    const lastDelim = path.lastIndexOf(this.folderDelimiter);
+  static getParentFolderPath(parentPath: string) {
+    const lastDelim = parentPath.lastIndexOf(this.folderDelimiter);
 
     if (lastDelim < 0) {
-      return path;
+      return parentPath;
     }
 
-    return path.substring(0, lastDelim);
+    return parentPath.substring(0, lastDelim);
   }
 
-  public static ensureEndsWithDelimiter(path: string) {
-    if (!path.endsWith(NodeStorage.folderDelimiter)) {
-      path = path + NodeStorage.folderDelimiter;
+  public static ensureEndsWithDelimiter(pth: string) {
+    if (!pth.endsWith(NodeStorage.folderDelimiter)) {
+      pth = pth + NodeStorage.folderDelimiter;
     }
 
-    return path;
+    return pth;
   }
 
-  public static ensureStartsWithDelimiter(path: string) {
-    if (!path.startsWith(NodeStorage.folderDelimiter)) {
-      path = NodeStorage.folderDelimiter + path;
+  public static ensureStartsWithDelimiter(pth: string) {
+    if (!pth.startsWith(NodeStorage.folderDelimiter)) {
+      pth = NodeStorage.folderDelimiter + pth;
     }
 
-    return path;
+    return pth;
   }
 }

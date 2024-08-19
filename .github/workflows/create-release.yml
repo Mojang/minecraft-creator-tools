@@ -7,50 +7,64 @@ jobs:
   build-and-publish:
     runs-on: windows-latest
 
+    permissions:
+      actions: read
+      pages: write
+      contents: write
+      deployments: none
+      packages: none
+      pull-requests: write
+      security-events: none
+      checks: none
+      id-token: none
+      issues: write
+      repository-projects: none
+      statuses: none
+
+    strategy:
+      matrix:
+        node-version: [20]
+
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Get Package Version
-        id: get-package-version
+    - uses: actions/checkout@v4
+      - name: Using Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
-          path: app
-        uses: stevenbenitez/get-package-version-action@v1
+          node-version: ${{ matrix.node-version }}
 
-      - name: Build
+      - name: Prep and Command Line Build
         env:
           CI: ""
         run: |
+          npm ci
           pushd app
-          npm run all
+          npm ci
+          npm run devenvandjsnbuild --max_old_space_size=16384
           pushd toolbuild
           pushd jsn
-          npm pack  --max_old_space_size=16384
+          npm pack --max_old_space_size=16384
           popd
           popd
-          gulp customizesite
           popd
 
-      - name: Create draft Minecraft Creator Tools release
+      - name: Run Tests
+        id: runtests
+        run: |
+          pushd samplecontent
+          pushd addon
+          npm ci
+          npx gulp package
+          popd
+          popd
+          pushd app
+          npm test
+          popd
+
+      - name: Create Minecraft Creator Tools release
         id: create_mctools_release
-        uses: actions/create-release@v1
+        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ steps.get-package-version.outputs.version }}-alpha
-          release_name: Minecraft Creator Tools
-          draft: true
-          prerelease: true
-
-      - name: Upload mctools-v.tgz to node_module release
-        id: upload_mctools-v_tgz
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_mctools_release.outputs.upload_url }}
-          asset_path: ./app/toolbuild/jsn/mctools-${{ steps.get-package-version.outputs.version }}.tgz
-          asset_name: mctools-${{ steps.get-package-version.outputs.version }}.tgz
-          asset_content_type: application/tar+gzip
 
       - name: Deploy to GitHub Pages
         if: success()

@@ -32,6 +32,7 @@ const _allowedExtensions = [
   "yml",
   "ico",
   "ogg",
+  "nojekyll",
   "env",
   "wav",
   "tga",
@@ -504,7 +505,7 @@ export default class StorageUtilities {
       const fileB = folderB.files[fileName];
 
       if (fileA === undefined) {
-        return { result: false, reason: "Unexpected file undefined. " };
+        return { result: false, reason: "Unexpected file '" + fileName + "' undefined." };
       }
 
       if (fileB === undefined) {
@@ -522,7 +523,18 @@ export default class StorageUtilities {
         if (!result) {
           return {
             result: false,
-            reason: "File '" + fileA.fullPath + "' contents does not match '" + fileB.fullPath,
+            reason:
+              "File '" +
+              fileA.fullPath +
+              "' (size: " +
+              fileA.content?.length +
+              (fileA.isBinary ? "B" : "C") +
+              ") contents does not match '" +
+              fileB.fullPath +
+              "' (size: " +
+              fileB.content?.length +
+              (fileB.isBinary ? "B" : "C") +
+              ")",
           };
         }
       }

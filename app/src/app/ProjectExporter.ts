@@ -778,8 +778,12 @@ export default class ProjectExporter {
 
     const workingFolder = carto.workingStorage.rootFolder.ensureFolder(tempWorkingPathName);
 
+    await workingFolder.ensureExists();
+
     if (world) {
       const inputFolder = workingFolder.ensureFolder("source-" + settings.name);
+
+      await inputFolder.ensureExists();
 
       await world.copyAsFolderTo(inputFolder);
     }

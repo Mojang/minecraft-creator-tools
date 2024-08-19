@@ -96,6 +96,7 @@ export default class LevelDb implements IErrorable {
       try {
         const index = parseInt(file.name);
 
+        //        if (true) {
         if (!this.deletedFileNumber || !this.deletedFileNumber.includes(index)) {
           let level = 0;
 
@@ -118,7 +119,9 @@ export default class LevelDb implements IErrorable {
             level: level,
           });
         }
-      } catch (e) {}
+      } catch (e: any) {
+        this._pushError("Error including LDB file: " + file.fullPath + " Error: " + e.toString());
+      }
     }
 
     const ldbFileInfoSorted = ldbFileInfos.sort((fileA: ILevelDbFileInfo, fileB: ILevelDbFileInfo) => {
@@ -229,6 +232,8 @@ export default class LevelDb implements IErrorable {
 
     if (!indexContent) {
       indexContent = indexContentCompressed;
+
+      this._pushError("Treating level DB content as compressed.", context);
     }
 
     if (indexContent) {

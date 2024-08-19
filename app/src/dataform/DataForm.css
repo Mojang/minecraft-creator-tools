@@ -80,13 +80,17 @@
 }
 
 .df-fieldWrap .ui-form__label {
-  padding-bottom: 2px;
+  padding-bottom: 4px;
+  vertical-align: bottom;
+  padding-right: 4px;
   display: inline-block !important;
   min-width: 90px;
 }
+
 .df-fieldWrap .ui-dropdown {
   display: inline-block;
 }
+
 .df-fieldWrap .ui-dropdown__container {
   width: 235px;
 }

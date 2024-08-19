@@ -43,6 +43,7 @@ export default class WorldChunk {
   blockActorsEnsured = false;
   absoluteZeroY = -512;
   chunkMinY: number = 0;
+  legacyVersion: number | undefined;
   world: MCWorld;
   legacyTerrainBytes: Uint8Array | undefined;
 
@@ -89,15 +90,15 @@ export default class WorldChunk {
 
   constructor(world: MCWorld, inX: number, inZ: number) {
     this.world = world;
-    this.subChunks = new Array(64);
-    this.subChunkFormatType = new Array(64);
-    this.blockPalettes = new Array(64);
-    this.bitsPerBlock = new Array(64);
-    this.blockDataStart = new Array(64);
-    this.auxBlockPalettes = new Array(64);
-    this.auxBitsPerBlock = new Array(64);
-    this.auxBlockDataStart = new Array(64);
-    this.pendingSubChunksToProcess = new Array(64);
+    this.subChunks = [];
+    this.subChunkFormatType = [];
+    this.blockPalettes = [];
+    this.bitsPerBlock = [];
+    this.blockDataStart = [];
+    this.auxBlockPalettes = [];
+    this.auxBitsPerBlock = [];
+    this.auxBlockDataStart = [];
+    this.pendingSubChunksToProcess = [];
     this.actorDigests = [];
 
     for (let i = 0; i < 64; i++) {
@@ -127,55 +128,84 @@ export default class WorldChunk {
 
   processSubChunk(index: number) {
     if (this.pendingSubChunksToProcess[index] === true) {
+      this.pendingSubChunksToProcess[index] = false;
       this.parseSubChunk(index);
     }
-
-    this.pendingSubChunksToProcess[index] = false;
   }
 
   addKeyValue(keyValue: LevelKeyValue) {
     let keyBytes = keyValue.keyBytes;
 
     if (keyBytes) {
-      const dimExtensionBytes = keyBytes.length > 18 || keyBytes.length === 13 || keyBytes.length === 14 ? 4 : 0;
+      const dimExtensionBytes = keyBytes.length >= 13 ? 4 : 0;
 
       const val = keyBytes[8 + dimExtensionBytes];
 
       // disabling the "duplicate unexpected versions" since this assumption is violated in C&C R17 world
 
       switch (val) {
-        case 43: // not sure what chunk #43 is, or if this is a parsing bug. observed to be 578 bytes. "data3d"
+        case 43:
+          Log.assert(
+            keyValue.value !== undefined && keyValue.value.length > 512,
+            "Unexpected length for a type 43 recrod."
+          );
+
+          if (keyValue.value) {
+            this.blockTops = [];
+
+            for (let i = 0; i < 16; i++) {
+              const arr = [];
+
+              for (let j = 0; j < 16; j++) {
+                let val = keyValue.value[j * 32 + i * 2] + keyValue.value[j * 32 + (i * 2 + 1)] * 256;
+
+                arr.push(val - 65); // subtracting - 65 is arbitrary here
+              }
+
+              this.blockTops.push(arr);
+            }
+          }
+
           break;
-        case 115: // not sure what chunk #61 is, or if this is a parsing bug. observed to be one byte with a value of 0
+
+        case 115: // not sure what chunk #115 is, or if this is a parsing bug. observed to be one byte with a value of 0
+          Log.assert(false, "Unexpected type 115 record.");
           break;
 
         case 118: // 118 = legacy version
+          Log.assert(keyValue.value !== undefined && keyValue.value.length === 1, "Unexpected type 118 record.");
+
+          if (keyValue.value) {
+            this.legacyVersion = keyValue.value[0];
+          }
+          break;
+
         case 44: // version
-          //    Log.assert(!this.chunkVersion, "Unexpected multiple chunk versions.");
           this.chunkVersion = keyValue;
           break;
 
         case 45: // data2d
-          //  Log.assert(!this.biomesAndElevation, "Unexpected multiple biomes and elevations.");
           this.biomesAndElevation = keyValue;
           break;
 
         case 46: // data2d legacy
+          Log.assert(false, "Unexpected data 2D legacy.");
           break;
 
         case 47: // subchunk prefix
           let subChunkIndex = this.translateSubChunkIndex(keyBytes[9 + dimExtensionBytes]);
 
           if (subChunkIndex < 0) {
+            Log.fail("Unexpected sub chunk index.");
             return;
           }
 
           if (this.subChunks[subChunkIndex] !== undefined) {
-            //Log.fail("Unexpected subchunk already defined.");
+            // Log.fail("Unexpected subchunk already defined.");
           }
 
           if (!keyValue.value || keyValue.value.length <= 0) {
-            //Log.fail("Empty subchunk defined.");
+            Log.fail("Empty subchunk defined.");
             return;
           }
 
@@ -211,7 +241,9 @@ export default class WorldChunk {
           break;
 
         case 52: // legacy block extra data
+          Log.assert(false, "Unexpected legacy block extra data.");
           break;
+
         case 53: // biome state
           //Log.assert(!this.biomeState, "Unexpected multiple biome states.");
           this.biomeState = keyValue;
@@ -229,6 +261,7 @@ export default class WorldChunk {
           break;
         case 58: // random tick
           break;
+
         case 59: // check sums
           // Log.assert(!this.checksumKey, "Unexpected multiple states.");
           this.checksumKey = keyValue;
@@ -236,8 +269,10 @@ export default class WorldChunk {
 
         case 60: // generation seed
           break;
+
         case 61: // generated pre caves and cliffs blending (unused)
           break;
+
         case 62: // blending biome height (unused)
           break;
 
@@ -246,10 +281,12 @@ export default class WorldChunk {
 
         case 64: // blending data
           break;
+
         case 65: // actor digest version
           break;
 
         case 119: // ??
+          Log.assert(false, "Unexpected type 119 data.");
           break;
         default:
           throw new Error("Unsupported chunk type: " + val);
@@ -369,56 +406,58 @@ export default class WorldChunk {
         tag.context = this.world.name + " chunk at x:" + this.x * 16 + " z:" + this.z * 16;
 
         try {
-          tag.fromBinary(keyValue.value, true, false, 0, true);
+          tag.fromBinary(keyValue.value, true, false, 0, true, true);
         } catch (e) {
           Log.error("Could not parse a block actor.");
         }
 
-        if (tag.root) {
-          const ba = new GenericBlockActor(tag.root);
+        if (tag.roots) {
+          for (let i = 0; i < tag.roots.length; i++) {
+            const ba = new GenericBlockActor(tag.roots[i]);
 
-          if (
-            ba.x !== undefined &&
-            ba.z !== undefined &&
-            ba.y !== undefined &&
-            ba.x >= this.x * 16 &&
-            ba.x < (this.x + 1) * 16 &&
-            ba.z >= this.z * 16 &&
-            ba.z < (this.z + 1) * 16
-          ) {
-            let actorRelX = ba.x % 16;
-            let actorRelZ = ba.z % 16;
+            if (
+              ba.x !== undefined &&
+              ba.z !== undefined &&
+              ba.y !== undefined &&
+              ba.x >= this.x * 16 &&
+              ba.x < (this.x + 1) * 16 &&
+              ba.z >= this.z * 16 &&
+              ba.z < (this.z + 1) * 16
+            ) {
+              let actorRelX = ba.x % 16;
+              let actorRelZ = ba.z % 16;
 
-            if (actorRelX < 0) {
-              actorRelX = 16 + actorRelX;
-            }
-
-            if (actorRelZ < 0) {
-              actorRelZ = 16 + actorRelZ;
-            }
-
-            if (ba.id) {
-              const specificBa = BlockActorFactory.create(ba.id, tag.root);
-
-              if (specificBa) {
-                specificBa.load();
-                if (!this._blockActorsRelLoc[actorRelX]) {
-                  this._blockActorsRelLoc[actorRelX] = [];
-                }
-                if (!this._blockActorsRelLoc[actorRelX][ba.y]) {
-                  this._blockActorsRelLoc[actorRelX][ba.y] = [];
-                }
-
-                this._blockActorsRelLoc[actorRelX][ba.y][actorRelZ] = specificBa;
-
-                if (specificBa.x !== undefined && specificBa.y !== undefined && specificBa.z !== undefined) {
-                  this.removeBlockActorAtLoc(specificBa.x, specificBa.y, specificBa.z);
-                }
-
-                this._blockActors.push(specificBa);
+              if (actorRelX < 0) {
+                actorRelX = 16 + actorRelX;
               }
 
-              Log.assert(specificBa !== undefined, "Could not find an actor implementation for '" + ba.id + "'");
+              if (actorRelZ < 0) {
+                actorRelZ = 16 + actorRelZ;
+              }
+
+              if (ba.id) {
+                const specificBa = BlockActorFactory.create(ba.id, tag.roots[i]);
+
+                if (specificBa) {
+                  specificBa.load();
+                  if (!this._blockActorsRelLoc[actorRelX]) {
+                    this._blockActorsRelLoc[actorRelX] = [];
+                  }
+                  if (!this._blockActorsRelLoc[actorRelX][ba.y]) {
+                    this._blockActorsRelLoc[actorRelX][ba.y] = [];
+                  }
+
+                  this._blockActorsRelLoc[actorRelX][ba.y][actorRelZ] = specificBa;
+
+                  if (specificBa.x !== undefined && specificBa.y !== undefined && specificBa.z !== undefined) {
+                    //       this.removeBlockActorAtLoc(specificBa.x, specificBa.y, specificBa.z);
+                  }
+
+                  this._blockActors.push(specificBa);
+                }
+
+                Log.assert(specificBa !== undefined, "Could not find an actor implementation for '" + ba.id + "'");
+              }
             }
           }
         }
@@ -746,6 +785,8 @@ export default class WorldChunk {
     if (y < this.absoluteZeroY) {
       return undefined;
     }
+
+    Log.assert(x >= 0 && x < 16 && z >= 0 && z < 16, "Retrieving an out-of-range block from a chunk.");
 
     if (this.legacyTerrainBytes) {
       return this._getBlockLegacy(x, y, z);
@@ -1154,6 +1195,7 @@ export default class WorldChunk {
     const bytes = this.subChunks[subChunkIndex].value;
 
     if (bytes === undefined || bytes.length <= 0) {
+      Log.fail("Unexpected no bytes supplied for a chunk.");
       return;
     }
 

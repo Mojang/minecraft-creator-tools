@@ -7,9 +7,14 @@ import NodeStorage from "./NodeStorage";
 import IStorage from "./../storage/IStorage";
 import ILocalUtilities from "./ILocalUtilities";
 import Log from "../core/Log";
+import IConversionSettings from "../core/IConversionSettings";
 
 export default class LocalUtilities implements ILocalUtilities {
   #productNameSeed = "mctools";
+
+  get isWindows() {
+    return os.platform() === "win32";
+  }
 
   get productNameSeed() {
     return this.#productNameSeed;
@@ -24,27 +29,35 @@ export default class LocalUtilities implements ILocalUtilities {
   }
 
   get localAppDataPath() {
-    return (
-      this.userDataPath +
-      NodeStorage.folderDelimiter +
-      "AppData" +
-      NodeStorage.folderDelimiter +
-      "Local" +
-      NodeStorage.folderDelimiter
-    );
+    if (this.isWindows) {
+      return (
+        this.userDataPath +
+        NodeStorage.folderDelimiter +
+        "AppData" +
+        NodeStorage.folderDelimiter +
+        "Local" +
+        NodeStorage.folderDelimiter
+      );
+    } else {
+      return this.userDataPath;
+    }
   }
 
   get localServerLogPath() {
-    return (
-      this.userDataPath +
-      NodeStorage.folderDelimiter +
-      "AppData" +
-      NodeStorage.folderDelimiter +
-      "Roaming" +
-      NodeStorage.folderDelimiter +
-      "logs" +
-      NodeStorage.folderDelimiter
-    );
+    if (this.isWindows) {
+      return (
+        this.userDataPath +
+        NodeStorage.folderDelimiter +
+        "AppData" +
+        NodeStorage.folderDelimiter +
+        "Roaming" +
+        NodeStorage.folderDelimiter +
+        "logs" +
+        NodeStorage.folderDelimiter
+      );
+    } else {
+      return "." + NodeStorage.folderDelimiter;
+    }
   }
 
   get minecraftPath() {
@@ -82,7 +95,12 @@ export default class LocalUtilities implements ILocalUtilities {
   get testWorkingPath() {
     let path = this.localAppDataPath;
 
-    path = NodeStorage.ensureEndsWithDelimiter(path) + this.#productNameSeed + "_test" + NodeStorage.folderDelimiter;
+    path =
+      NodeStorage.ensureEndsWithDelimiter(path) +
+      (this.isWindows ? "" : ".") +
+      this.#productNameSeed +
+      "_test" +
+      NodeStorage.folderDelimiter;
 
     return path;
   }
@@ -90,7 +108,12 @@ export default class LocalUtilities implements ILocalUtilities {
   get cliWorkingPath() {
     let path = this.localAppDataPath;
 
-    path = NodeStorage.ensureEndsWithDelimiter(path) + this.#productNameSeed + "_cli" + NodeStorage.folderDelimiter;
+    path =
+      NodeStorage.ensureEndsWithDelimiter(path) +
+      (this.isWindows ? "" : ".") +
+      this.#productNameSeed +
+      "_cli" +
+      NodeStorage.folderDelimiter;
 
     return path;
   }
@@ -98,7 +121,12 @@ export default class LocalUtilities implements ILocalUtilities {
   get serverWorkingPath() {
     let path = this.localAppDataPath;
 
-    path = NodeStorage.ensureEndsWithDelimiter(path) + this.#productNameSeed + "_server" + NodeStorage.folderDelimiter;
+    path =
+      NodeStorage.ensureEndsWithDelimiter(path) +
+      (this.isWindows ? "" : ".") +
+      this.#productNameSeed +
+      "_server" +
+      NodeStorage.folderDelimiter;
 
     return path;
   }
@@ -106,7 +134,12 @@ export default class LocalUtilities implements ILocalUtilities {
   get worldsWorkingPath() {
     let path = this.localAppDataPath;
 
-    path = NodeStorage.ensureEndsWithDelimiter(path) + this.#productNameSeed + "_worlds" + NodeStorage.folderDelimiter;
+    path =
+      NodeStorage.ensureEndsWithDelimiter(path) +
+      (this.isWindows ? "" : ".") +
+      this.#productNameSeed +
+      "_worlds" +
+      NodeStorage.folderDelimiter;
 
     return path;
   }
@@ -226,7 +259,12 @@ export default class LocalUtilities implements ILocalUtilities {
       fullPath = fullPath.substring(0, lastSlash + 1);
     }
 
-    fullPath += path.replace("/", "\\");
+    if (this.isWindows) {
+      fullPath += path.replace("/", "\\");
+    } else {
+      fullPath += path.replace("\\", NodeStorage.folderDelimiter);
+    }
+
     return fullPath;
   }
 
@@ -250,5 +288,11 @@ export default class LocalUtilities implements ILocalUtilities {
     const jsonData = JSON.parse(rawData);
 
     return jsonData;
+  }
+
+  async processConversion(conversionSettings: IConversionSettings): Promise<boolean> {
+    console.log("Converting!");
+
+    return true;
   }
 }
