@@ -5,7 +5,7 @@
   "description": "Minecraft Creator Tools for building Bedrock Edition add-ons.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mojang/minecraft-creator-tools.git"
+    "url": "https://github.com/Mojang/minecraft-creator-tools.git"
   },
   "private": true,
   "homepage": "./",
