@@ -39,11 +39,6 @@ jobs:
           pushd app
           npm ci
           npm run devenvandjsnbuild --max_old_space_size=16384
-          pushd toolbuild
-          pushd jsn
-          npm pack --max_old_space_size=16384
-          popd
-          popd
           popd
 
       - name: Run Tests
