@@ -3241,6 +3241,9 @@ export default class Project {
 
         if (folder !== this.#projectFolder) {
           this._unapplyFromProjectFolder();
+
+          await folder.ensureExists();
+
           this.#projectFolder = folder;
           this._applyToProjectFolder();
         }
@@ -3251,6 +3254,9 @@ export default class Project {
 
         if (folder !== this.#projectFolder) {
           this._unapplyFromProjectFolder();
+
+          await folder.ensureExists();
+
           this.#projectFolder = folder;
           this._applyToProjectFolder();
           Log.debug(
@@ -3272,6 +3278,9 @@ export default class Project {
 
       if (folder !== this.#projectFolder) {
         this._unapplyFromProjectFolder();
+
+        await folder.ensureExists();
+
         this.#projectFolder = folder;
         this._applyToProjectFolder();
       }
@@ -3283,6 +3292,7 @@ export default class Project {
 
         if (folder !== this.#mainDeployFolder) {
           this.#mainDeployFolder = folder;
+
           this.#mainDeploySync = new ProjectDeploySync(this, folder);
 
           await this.#mainDeploySync.fullIngestIntoProject();
@@ -3301,6 +3311,7 @@ export default class Project {
 
       if (folder !== this.#projectFolder) {
         this._unapplyFromProjectFolder();
+        await folder.ensureExists();
         this.#projectFolder = folder;
         this._applyToProjectFolder();
       }

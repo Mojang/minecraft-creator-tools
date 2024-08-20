@@ -16,6 +16,7 @@ export default interface IFile extends IStorageObject {
   needsSave: boolean;
   fileContainerStorage: IStorage | null;
   extendedPath: string;
+  readonly coreContentLength: number;
 
   isBinary: boolean;
   isString: boolean;

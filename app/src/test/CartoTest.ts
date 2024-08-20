@@ -184,6 +184,7 @@ describe("deployJs", async () => {
     const worldSettings: IWorldSettings = {
       generator: Generator.infinite,
       gameType: GameType.survival,
+      randomSeed: "3000",
       lastPlayed: BigInt(new Date(2023, 0, 1).getTime()),
     };
 
@@ -192,7 +193,7 @@ describe("deployJs", async () => {
 
     await ProjectExporter.deployProjectAndGeneratedWorldTo(carto, project, worldSettings, resultsOutFolder);
 
-    await folderMatches("deployJs");
+    await folderMatches("deployJs", ["level.dat", "level.dat_old"]);
   });
 });
 

@@ -181,6 +181,14 @@ export default class Carto {
     this.#data.formatBeforeSave = newValue;
   }
 
+  public get conversionJarPath() {
+    return this.#data.conversionJarPath;
+  }
+
+  public set conversionJarPath(newValue: string | undefined) {
+    this.#data.conversionJarPath = newValue;
+  }
+
   public get preferredTextSize() {
     if (this.#data.preferredTextSize === undefined) {
       return 16;
@@ -367,14 +375,14 @@ export default class Carto {
     }
   }
 
-  public get iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashTerms() {
-    return this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashTerms;
+  public get iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula() {
+    return this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula;
   }
 
-  public set iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashTerms(
+  public set iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula(
     newPort: boolean | undefined
   ) {
-    this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashTerms = newPort;
+    this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula = newPort;
   }
 
   public get dedicatedServerSlotCount() {

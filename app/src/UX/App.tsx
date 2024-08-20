@@ -13,7 +13,6 @@ import CartoApp, { HostType } from "../app/CartoApp";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { CartoEditorViewMode } from "../app/ICartoData";
-import MCWorld from "../minecraft/MCWorld";
 import ProjectItem from "../app/ProjectItem";
 import ProjectUtilities from "../app/ProjectUtilities";
 import WebUtilities from "./WebUtilities";

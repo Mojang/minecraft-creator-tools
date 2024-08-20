@@ -85,9 +85,14 @@ export const MCPackLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & IComp
   </span>
 );
 
-export const RemoteMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
-  props: ISelectableLabelProps
-) => (
+export const RemoteMinecraftLabel: React.FC<
+  React.HTMLAttributes<HTMLSpanElement> & {
+    isCompact: boolean;
+    theme: ThemeInput<any>;
+    isSelected: boolean;
+    isWebServer: boolean;
+  }
+> = (props: { isCompact: boolean; theme: ThemeInput<any>; isSelected: boolean; isWebServer: boolean }) => (
   <span
     className={props.isSelected ? "label-tab" : "label-deseltab"}
     style={{
@@ -106,7 +111,7 @@ export const RemoteMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElement
     }}
   >
     <FontAwesomeIcon icon={faPlug} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Remote</span> : <></>}
+    {!props.isCompact ? <span className="label-text">{props.isWebServer ? "Login" : "Remote"}</span> : <></>}
   </span>
 );
 
@@ -453,6 +458,24 @@ export const OpenInMinecraftLabel: React.FC<React.HTMLAttributes<HTMLSpanElement
   <span className="label label-toolbar3">
     <FontAwesomeIcon icon={faPlay} className="fa-lg" />
     <span className="label-text">Open in Minecraft</span>
+  </span>
+);
+
+export const TopsMapLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => (
+  <span className="label label-toolbar3">
+    <span className="label-text">Tops</span>
+  </span>
+);
+
+export const PlusMapLevelLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => (
+  <span className="label label-toolbar3">
+    <span className="label-text">+</span>
+  </span>
+);
+
+export const MinusMapLevelLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = () => (
+  <span className="label label-toolbar3">
+    <span className="label-text">-</span>
   </span>
 );
 

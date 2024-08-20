@@ -66,7 +66,8 @@ export default interface ICartoData {
   editorViewMode?: CartoEditorViewMode;
   defaultFunction?: string;
   customTools: ICustomTool[];
-  iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashTerms?: boolean;
+  conversionJarPath?: string;
+  iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula?: boolean;
   autoStartDedicatedServer?: boolean;
   dedicatedServerMode?: DedicatedServerMode;
   dedicatedServerPath?: string;

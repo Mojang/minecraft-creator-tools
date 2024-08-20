@@ -10,10 +10,10 @@
     "entityTypeResourceCount": 0,
     "behaviorPackAnimationCount": 0,
     "behaviorPackAnimationControllerCount": 0,
-    "overallSize": 19250,
+    "overallSize": 18965,
     "fileCounts": 5,
     "folderCounts": 5,
-    "contentSize": 19250,
+    "contentSize": 18965,
     "contentFileCounts": 5,
     "contentFolderCounts": 3,
     "defaultBehaviorPackUuid": "afeeb2ab-0404-4518-822f-9837117e78e1",
@@ -23,14 +23,15 @@
     "defaultBehaviorPackDescription": "Introductory tests for Minecraft GameTest Framework.",
     "textureCount": 0,
     "chunkCount": 0,
+    "subchunkLessChunkCount": 0,
     "worldLoadErrors": 0,
     "featureSets": {
       "Behavior pack manifest Size": {
         "Instance Count": 1,
-        "Total": 506,
-        "Max": 506,
-        "Min": 506,
-        "Average": 506
+        "Total": 356,
+        "Max": 356,
+        "Min": 356,
+        "Average": 356
       },
       "Behavior pack manifest Lines": {
         "Instance Count": 1,
@@ -48,10 +49,10 @@
       },
       "Catalog index Size": {
         "Instance Count": 1,
-        "Total": 142,
-        "Max": 142,
-        "Min": 142,
-        "Average": 142
+        "Total": 116,
+        "Max": 116,
+        "Min": 116,
+        "Average": 116
       },
       "Catalog index Lines": {
         "Instance Count": 1,
@@ -62,10 +63,10 @@
       },
       "JavaScript Size": {
         "Instance Count": 1,
-        "Total": 638,
-        "Max": 638,
-        "Min": 638,
-        "Average": 638
+        "Total": 529,
+        "Max": 529,
+        "Min": 529,
+        "Average": 529
       },
       "JavaScript Lines": {
         "Instance Count": 1,
@@ -365,10 +366,10 @@
       "fs": {
         "Size": {
           "Instance Count": 1,
-          "Total": 506,
-          "Max": 506,
-          "Min": 506,
-          "Average": 506
+          "Total": 356,
+          "Max": 356,
+          "Min": 356,
+          "Average": 356
         },
         "Lines": {
           "Instance Count": 1,
@@ -402,10 +403,10 @@
       "fs": {
         "Size": {
           "Instance Count": 1,
-          "Total": 142,
-          "Max": 142,
-          "Min": 142,
-          "Average": 142
+          "Total": 116,
+          "Max": 116,
+          "Min": 116,
+          "Average": 116
         },
         "Lines": {
           "Instance Count": 1,
@@ -424,10 +425,10 @@
       "fs": {
         "Size": {
           "Instance Count": 1,
-          "Total": 638,
-          "Max": 638,
-          "Min": 638,
-          "Average": 638
+          "Total": 529,
+          "Max": 529,
+          "Min": 529,
+          "Average": 529
         },
         "Lines": {
           "Instance Count": 1,
@@ -457,7 +458,7 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 1,
-      "d": 19250
+      "d": 18965
     },
     {
       "iTp": 7,
@@ -475,7 +476,7 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 4,
-      "d": 19250
+      "d": 18965
     },
     {
       "iTp": 7,
@@ -1005,5 +1006,5 @@
   },
   "generatorName": "Minecraft Creator Tools",
   "suite": 0,
-  "generatorVersion": "0.2.3"
+  "generatorVersion": "0.2.9"
 }

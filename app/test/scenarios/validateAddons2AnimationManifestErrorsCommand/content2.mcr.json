@@ -10,14 +10,15 @@
     "entityTypeResourceCount": 0,
     "behaviorPackAnimationCount": 0,
     "behaviorPackAnimationControllerCount": 0,
-    "overallSize": 73747,
+    "overallSize": 50304,
     "fileCounts": 35,
     "folderCounts": 21,
-    "contentSize": 73747,
+    "contentSize": 50304,
     "contentFileCounts": 35,
     "contentFolderCounts": 16,
     "textureCount": 0,
     "chunkCount": 0,
+    "subchunkLessChunkCount": 0,
     "worldLoadErrors": 0,
     "featureSets": {
       "Textures Entity Resource Count": {
@@ -151,7 +152,7 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 1,
-      "d": 73747
+      "d": 50304
     },
     {
       "iTp": 7,
@@ -169,7 +170,7 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 4,
-      "d": 73747
+      "d": 50304
     },
     {
       "iTp": 7,
@@ -1455,5 +1456,5 @@
   ],
   "generatorName": "Minecraft Creator Tools",
   "suite": 2,
-  "generatorVersion": "0.2.3"
+  "generatorVersion": "0.2.9"
 }

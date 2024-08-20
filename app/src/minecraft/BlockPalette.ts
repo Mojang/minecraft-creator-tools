@@ -16,11 +16,11 @@ export default class BlockPalette {
 
       Log.assert(index <= bytes.length, "Unexpected expansion of bytes processed.");
 
-      if (nbt.root === null) {
+      if (nbt.singleRoot === null) {
         return index;
       }
 
-      const children = nbt.root.getTagChildren();
+      const children = nbt.singleRoot.getTagChildren();
 
       let block = null;
 

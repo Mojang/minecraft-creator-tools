@@ -62,14 +62,11 @@ export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
         if (file) {
           await file.loadContent();
 
+          projInfoItem.spectrumIntFeature("Size", file.coreContentLength);
+
           const content = file.content;
-
-          if (content) {
-            projInfoItem.spectrumIntFeature("Size", content.length);
-
-            if (content && typeof content === "string") {
-              projInfoItem.spectrumIntFeature("Lines", Utilities.countSignificantLines(content));
-            }
+          if (content && typeof content === "string") {
+            projInfoItem.spectrumIntFeature("Lines", Utilities.countSignificantLines(content));
           }
         }
       }

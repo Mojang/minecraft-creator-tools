@@ -1,9 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import IConversionSettings from "../core/IConversionSettings";
 import IStorage from "../storage/IStorage";
 
 export default interface ILocalUtilities {
+  readonly isWindows: boolean;
+
   readonly userDataPath: string;
 
   readonly localAppDataPath: string;
@@ -31,4 +34,6 @@ export default interface ILocalUtilities {
   readJsonFile(path: string): Promise<object | null>;
 
   createStorage(path: string): Promise<IStorage | null>;
+
+  processConversion(settings: IConversionSettings): Promise<boolean>;
 }

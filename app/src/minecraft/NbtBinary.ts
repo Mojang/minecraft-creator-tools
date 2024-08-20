@@ -8,10 +8,22 @@ import Log from "../core/Log";
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
 
 export default class NbtBinary implements IErrorable {
-  root: NbtBinaryTag | null = null;
+  roots: NbtBinaryTag[] | null = null;
   context?: string;
   isInErrorState?: boolean;
   errorMessages?: IErrorMessage[];
+
+  get singleRoot() {
+    if (this.roots === null) {
+      return null;
+    }
+
+    if (this.roots.length !== 1) {
+      throw new Error("Unexpectedly did not find a single root.");
+    }
+
+    return this.roots[0];
+  }
 
   private _pushError(message: string, contextIn?: string) {
     this.isInErrorState = true;
@@ -205,36 +217,54 @@ export default class NbtBinary implements IErrorable {
   }
 
   getJson(): INbtTag {
-    if (this.root === null) {
+    if (this.roots === null) {
       return {};
     }
-    return this.root.getJson();
+
+    if (this.roots.length === 1) {
+      return this.roots[0].getJson();
+    }
+
+    throw new Error("Unexpected multiple roots.");
   }
 
   toBinary(): Uint8Array | undefined {
-    if (this.root === undefined || this.root === null) {
+    if (this.roots === undefined || this.roots === null) {
       return undefined;
     }
 
-    const byteSize = this.root.getByteSize();
+    let byteSize = 0;
+    for (let i = 0; i < this.roots.length; i++) {
+      byteSize += this.roots[i].getByteSize();
+    }
     const ab = new ArrayBuffer(byteSize);
     const bytes = new Uint8Array(ab);
 
-    const bytesWritten = this.root.writeBytes(bytes, 0, true);
+    let bytesWrittenAll = 0;
 
-    if (bytesWritten !== byteSize) {
-      throw new Error("Unexpectedly didn't write out our full structure.");
+    for (let i = 0; i < this.roots.length; i++) {
+      bytesWrittenAll += this.roots[i].writeBytes(bytes, bytesWrittenAll, true);
     }
+
+    Log.assert(bytesWrittenAll === byteSize, "Unexpectedly did not write full NBT.");
 
     return bytes;
   }
 
-  ensureRoot() {
-    if (this.root) {
-      return;
+  ensureSingleRoot() {
+    if (this.roots) {
+      if (this.roots.length !== 1) {
+        throw new Error("Unexpected root count.");
+      }
+
+      return this.roots[0];
     }
 
-    this.root = new NbtBinaryTag(NbtTagType.compound, "", false);
+    this.roots = [];
+
+    this.roots.push(new NbtBinaryTag(NbtTagType.compound, "", false));
+
+    return this.roots[0];
   }
 
   fromBinary(
@@ -242,11 +272,14 @@ export default class NbtBinary implements IErrorable {
     littleEndian: boolean,
     isVarint: boolean,
     skipBytes?: number,
-    stringsAreASCII?: boolean
+    stringsAreASCII?: boolean,
+    processAsList?: boolean
   ) {
     const tagStack: NbtBinaryTag[] = [];
     const listCountStack: number[] = [];
     const listTypeStack: NbtTagType[] = [];
+
+    this.roots = [];
 
     let i = 0;
 
@@ -297,7 +330,7 @@ export default class NbtBinary implements IErrorable {
       const activeTag = new NbtBinaryTag(tagType, name, isListChild);
 
       if (tagStack.length === 0) {
-        this.root = activeTag;
+        this.roots.push(activeTag);
       } // if (activeTag.type !== NbtTagType.end)
       else {
         const parentTag = tagStack[tagStack.length - 1];
@@ -324,7 +357,7 @@ export default class NbtBinary implements IErrorable {
         tagStack.push(activeTag);
       } else if (activeTag.type === NbtTagType.end) {
         tagStack.pop();
-        if (tagStack.length === 0) {
+        if (tagStack.length === 0 && !processAsList) {
           break;
         }
       } else if (activeTag.type === NbtTagType.byte) {

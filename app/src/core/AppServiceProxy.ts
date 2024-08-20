@@ -244,6 +244,7 @@ export default class AppServiceProxy {
 
     const commandStr = "async" + (commandName as string) + "|" + position;
 
+    // Do not uncomment this as it'll cause a loop.
     // Log.verbose("Sending async command '" + commandStr + "' + data: " + data);
 
     AppServiceProxy._api.send("appweb", commandStr, data);
@@ -296,7 +297,6 @@ export default class AppServiceProxy {
   }
 
   private static _handleNewMessage(args: string) {
-    // Log.verbose("New message inbound: '" + args + "'");
     if (args !== null && args.length > 0) {
       if (args.startsWith("async")) {
         const argSplit = args.split("|");

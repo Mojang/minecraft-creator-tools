@@ -62,7 +62,7 @@ export default class DedicatedServerSettingsPanel extends Component<
       dedicatedServerSlotCount: port,
       dedicatedServerMode: this.props.carto.dedicatedServerMode,
       dedicatedServerPath: this.props.carto.dedicatedServerPath,
-      iagree: this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashTerms,
+      iagree: this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula,
     };
 
     this.props.carto.onLoaded.subscribe(this._onCartoLoaded);
@@ -94,7 +94,7 @@ export default class DedicatedServerSettingsPanel extends Component<
 
   _handleIAgreeChanged(e: SyntheticEvent, data: (CheckboxProps & { checked: boolean }) | undefined) {
     if (data) {
-      this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashTerms =
+      this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula =
         data.checked;
       this.props.carto.save();
       this._notifyOnChange();
@@ -247,7 +247,7 @@ export default class DedicatedServerSettingsPanel extends Component<
         <div className="dssp-iagreeinput" key="iagreeinput">
           <Checkbox
             checked={
-              this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashTerms
+              this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula
             }
             onClick={this._handleIAgreeChanged}
           />
@@ -259,14 +259,14 @@ export default class DedicatedServerSettingsPanel extends Component<
           I agree to the Minecraft End User License Agreement (
           <a
             className="dssp-link"
-            href="https://minecraft.net/terms"
+            href="https://minecraft.net/eula"
             rel="noreferrer noopener"
             target="_blank"
             style={{
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
             }}
           >
-            https://minecraft.net/terms
+            https://minecraft.net/eula
           </a>
           ) and Privacy Policy (
           <a
