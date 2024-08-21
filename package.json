@@ -14,13 +14,6 @@
     ],
     "plugins": [
       "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      [
-        "@semantic-release/changelog",
-        {
-          "changelogFile": "CHANGELOG.md"
-        }
-      ],
       [
         "@semantic-release/npm",
         {
@@ -39,25 +32,13 @@
       [
         "@semantic-release/github",
         {
+          "draftRelease": true,
           "assets": [
             {
               "path": "dist/*.tgz",
               "label": "Minecraft Creator Tools command line"
             }
           ]
-        }
-      ],
-      [
-        "@semantic-release/git",
-        {
-          "assets": [
-            "CHANGELOG.md",
-            "package.json",
-            "app/package.json",
-            "app/jsnode/package.json",
-            "app/src/core/Constants.ts"
-          ],
-          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
         }
       ]
     ]
