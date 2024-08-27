@@ -16,11 +16,19 @@
     "contentSize": 0,
     "contentFileCounts": 0,
     "contentFolderCounts": 0,
+    "animationCount": 0,
     "textureCount": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
     "worldLoadErrors": 0,
-    "featureSets": {},
+    "featureSets": {
+      "Command say": {
+        "Count": 1
+      },
+      "Command summon": {
+        "Count": 1
+      }
+    },
     "summary": {
       "MINENGINEVER": {
         "100": {
@@ -265,7 +273,15 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
+      "fs": {
+        "say": {
+          "Count": 1
+        },
+        "summon": {
+          "Count": 1
+        }
+      }
     },
     {
       "iTp": 7,

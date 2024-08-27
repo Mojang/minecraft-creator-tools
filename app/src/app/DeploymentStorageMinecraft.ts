@@ -10,7 +10,6 @@ import Project from "./Project";
 import MinecraftPush from "./MinecraftPush";
 import GameStateManager from "../minecraft/GameStateManager";
 import Log from "../core/Log";
-import ProjectTools from "./ProjectTools";
 import IFolder from "../storage/IFolder";
 import { MinecraftGameConnectionMode } from "./ICartoData";
 import ProjectExporter from "./ProjectExporter";
@@ -144,7 +143,7 @@ export default class DeploymentStorageMinecraft implements IMinecraft {
     const deployFolderExists = await this._carto.deployBehaviorPacksFolder.exists();
 
     if (deployFolderExists) {
-      await ProjectTools.deployProject(this._carto, this._project, this._carto.deploymentStorage.rootFolder);
+      await ProjectExporter.deployProject(this._carto, this._project, this._carto.deploymentStorage.rootFolder);
     }
   }
 

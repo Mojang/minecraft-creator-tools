@@ -57,7 +57,9 @@ Builds the web app for production to the `build` folder. It correctly bundles Re
 
 ## Sample Command Lines
 
-Once packaged, you can install the command line locally via `npx mctools-<version>.tgz`. Some sample command lines:
+Once packaged, you can install the command line locally via `npm install minecraft-creator-tools-<version>.tgz`. If you'd like to make Minecraft Creator Tools available across your device, you can install it globally via `npm install -g minecraft-creator-tools-<version>.tgz`. 
+
+Some sample command lines:
 
 `npx mct`
 
@@ -80,6 +82,14 @@ Loads the project folder `d:\mycontent\myprojectfolder`, validates using the 'ad
 `npx mct validate addon -if d:\mycontent\packages\myaddon.mcaddon -show --log-verbose`
 
 Loads the project file `d:\mycontent\packages\myaddon.mcaddon`, validates using the 'addon' suite of strict tests and shows validation results on the command line. Also displays verbose logging messages.
+
+
+### New project creation
+
+`npx mct create`
+
+Asks a series of questions and creates a new project based on those preferences.
+
 
 ## Trademarks 
 

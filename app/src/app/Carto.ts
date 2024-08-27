@@ -126,6 +126,7 @@ export default class Carto {
   private _onPropertyChanged = new EventDispatcher<Carto, string>();
   private _onLoaded = new EventDispatcher<Carto, Carto>();
   private _onStatusAdded = new EventDispatcher<Carto, IStatus>();
+  private _onOperationCompleted = new EventDispatcher<Carto, number>();
   private _onStatusAddedAsync: ((carto: Carto, status: IStatus) => Promise<void>)[] = [];
   private _onGalleryLoaded = new EventDispatcher<Carto, IGallery | undefined>();
 
@@ -507,6 +508,10 @@ export default class Carto {
 
   public get onStatusAdded() {
     return this._onStatusAdded.asEvent();
+  }
+
+  public get onOperationCompleted() {
+    return this._onOperationCompleted.asEvent();
   }
 
   public get successfullyConnectedWebSocketToMinecraft() {
@@ -1076,10 +1081,20 @@ export default class Carto {
 
   async notifyOperationEnded(
     endedOperationId: number,
-    message: string,
+    message?: string,
     topic?: StatusTopic,
     endedWithErrors?: boolean
   ) {
+    this.ensureStatusArrayIsTrimmed();
+
+    this.removeOperation(endedOperationId);
+
+    this._onOperationCompleted.dispatch(this, endedOperationId);
+
+    if (!message) {
+      return;
+    }
+
     const status = {
       message: message,
       operationId: endedOperationId,
@@ -1089,10 +1104,6 @@ export default class Carto {
     };
 
     this.status.push(status);
-
-    this.ensureStatusArrayIsTrimmed();
-
-    this.removeOperation(endedOperationId);
 
     await this.callStatusAddedListeners(status);
   }
@@ -1397,7 +1408,6 @@ export default class Carto {
 
     const projectPrefs = await this.prefsProjectsFolder.createFile(desiredProjectName + ".json");
 
-    //    Log.debugAlert("Creating new project " + messageProjectPath + "|" + desiredProjectName);
     const newProject = new Project(this, desiredProjectName, projectPrefs);
     newProject.mainDeployFolderPath = messageProjectPath;
     newProject.originalFullPath = messageProjectPath;

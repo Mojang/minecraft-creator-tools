@@ -1,14 +1,14 @@
 import { ProjectItemType } from "../app/IProjectItemData";
 import ProjectItem from "../app/ProjectItem";
-import BehaviorAnimation from "./BehaviorAnimation";
-import BehaviorAnimationController from "./BehaviorAnimationController";
+import AnimationBehaviorDefinition from "./AnimationBehaviorDefinition";
+import AnimationControllerBehaviorDefinition from "./AnimationControllerBehaviorDefinition";
+import AnimationControllerResourceDefinition from "./AnimationControllerResourceDefinition";
+import AnimationResourceDefinition from "./AnimationResourceDefinition";
 import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
 import BlockTypeBehaviorDefinition from "./BlockTypeBehaviorDefinition";
 import EntityTypeDefinition from "./EntityTypeDefinition";
 import FlipbookTextureCatalogDefinition from "./FlipbookTextureCatalogDefinition";
 import ItemTypeBehaviorDefinition from "./ItemTypeBehaviorDefinition";
-import ResourceAnimation from "./ResourceAnimation";
-import ResourceAnimationController from "./ResourceAnimationController";
 import ResourceManifestDefinition from "./ResourceManifestDefinition";
 
 export default class MinecraftDefinitions {
@@ -31,13 +31,13 @@ export default class MinecraftDefinitions {
       case ProjectItemType.resourcePackManifestJson:
         return await ResourceManifestDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.animationControllerBehaviorJson:
-        return await BehaviorAnimationController.ensureOnFile(projectItem.file);
+        return await AnimationControllerBehaviorDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.animationControllerResourceJson:
-        return await ResourceAnimationController.ensureOnFile(projectItem.file);
+        return await AnimationControllerResourceDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.animationBehaviorJson:
-        return await BehaviorAnimation.ensureOnFile(projectItem.file);
+        return await AnimationBehaviorDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.animationResourceJson:
-        return await ResourceAnimation.ensureOnFile(projectItem.file);
+        return await AnimationResourceDefinition.ensureOnFile(projectItem.file);
     }
 
     return undefined;

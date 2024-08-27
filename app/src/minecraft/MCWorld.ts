@@ -28,7 +28,7 @@ import NbtBinary from "./NbtBinary";
 import { NbtTagType } from "./NbtBinaryTag";
 import AnchorSet from "./AnchorSet";
 import Project from "../app/Project";
-import { ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
+import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 import ActorItem from "./ActorItem";
 import { StatusTopic } from "../app/Status";
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
@@ -1388,9 +1388,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
     this.levelDb = new LevelDb(ldbFileArr, logFileArr, manifestFileArr, this.name);
 
-    await this.levelDb.init(/*async (message: string): Promise<void> => {
+    await this.levelDb.init(async (message: string): Promise<void> => {
       await this._project?.carto.notifyStatusUpdate(message, StatusTopic.worldLoad);
-    }*/);
+    });
 
     Utilities.appendErrors(this, this.levelDb);
 
@@ -1591,7 +1591,11 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
           const z = DataUtilities.getSignedInteger(keyBytes[8], keyBytes[9], keyBytes[10], keyBytes[11], true);
 
           Log.assert(
-            keyBytes.length === 16 || keyBytes.length === 24 || keyBytes.length === 20 || keyBytes.length === 12,
+            keyBytes.length === 16 ||
+              keyBytes.length === 24 ||
+              keyBytes.length === 20 ||
+              keyBytes.length === 13 ||
+              keyBytes.length === 12,
             "Unexpected digp key size (" + keyBytes.length + ")"
           );
 
@@ -1869,9 +1873,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
       const scriptFolder = await this._project.ensureDefaultScriptsFolder();
 
-      const genFolder = scriptFolder.ensureFolder("generated");
-
       if (scriptFolder) {
+        const genFolder = scriptFolder.ensureFolder("generated");
+
         this._autogenJsFile = genFolder.ensureFile(newFileName);
 
         this._project.ensureItemByProjectPath(
@@ -1880,7 +1884,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
           this._autogenJsFile.name,
           ProjectItemType.js,
           undefined,
-          true
+          ProjectItemCreationType.generated
         );
       }
     }
@@ -1896,7 +1900,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   private getAutoGenScript() {
     const content: string[] = [];
 
-    content.push("export const " + this.name + " = {");
+    content.push("export const " + MinecraftUtilities.makeNameScriptSafe(this.name) + " = {");
     if (this.anchors) {
       const anchorKeys = this.anchors.getKeys();
 
@@ -1907,7 +1911,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
         if (anchor) {
           content.push(
             "    " +
-              anchor.name +
+              MinecraftUtilities.makeNameScriptSafe(anchor.name) +
               ": { from: { x: " +
               anchor.from.x +
               ", y: " +

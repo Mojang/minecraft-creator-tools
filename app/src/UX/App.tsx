@@ -588,7 +588,11 @@ export default class App extends Component<AppProps, AppState> {
     let nextMode = this.state.mode;
 
     if (nextMode === AppMode.home || nextMode === AppMode.loading) {
-      nextMode = AppMode.projectReadOnly;
+      if (startInReadOnly) {
+        nextMode = AppMode.projectReadOnly;
+      } else {
+        nextMode = AppMode.project;
+      }
     }
 
     this.initProject(newProject);
@@ -1151,6 +1155,12 @@ export default class App extends Component<AppProps, AppState> {
       return <div className="app-loading">Loading...</div>;
     }
 
+    let isReadOnly = false;
+
+    if (this.state.mode === AppMode.projectReadOnly) {
+      isReadOnly = true;
+    }
+
     let top = <></>;
     let borderStr = "";
     let height = "100vh";
@@ -1224,7 +1234,7 @@ export default class App extends Component<AppProps, AppState> {
           selectedItem={this.state.selectedItem}
           viewMode={CartoEditorViewMode.mainFocus}
           mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
-          readOnly={true}
+          readOnly={isReadOnly}
           onModeChangeRequested={this._handleModeChangeRequested}
         />
       );
@@ -1240,7 +1250,7 @@ export default class App extends Component<AppProps, AppState> {
           project={this.state.activeProject}
           mode={ProjectEditorMode.inspector}
           viewMode={CartoEditorViewMode.mainFocus}
-          readOnly={true}
+          readOnly={isReadOnly}
           onModeChangeRequested={this._handleModeChangeRequested}
         />
       );
@@ -1282,7 +1292,7 @@ export default class App extends Component<AppProps, AppState> {
             project={this.state.activeProject}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
             selectedItem={this.state.selectedItem}
-            readOnly={true}
+            readOnly={isReadOnly}
             onModeChangeRequested={this._handleModeChangeRequested}
           />
         );
@@ -1296,7 +1306,7 @@ export default class App extends Component<AppProps, AppState> {
             project={this.state.activeProject}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
             selectedItem={this.state.selectedItem}
-            readOnly={true}
+            readOnly={isReadOnly}
             onModeChangeRequested={this._handleModeChangeRequested}
           />
         );

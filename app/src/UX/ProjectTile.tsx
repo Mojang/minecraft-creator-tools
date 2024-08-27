@@ -64,7 +64,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
     let imageElement = <></>;
     const additionalButtons = [];
     let summary = undefined;
-    let tags = undefined;
+    let tags = [];
 
     const ghurl = "https://github.com/" + proj.gitHubOwner + "/" + proj.gitHubRepoName;
 
@@ -123,7 +123,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
 
     if (this.props.project.tags) {
       for (const tag of this.props.project.tags) {
-        description.push(
+        tags.push(
           <span
             className="pts-tag"
             key={"pts-tag" + tag}
@@ -234,6 +234,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
             >
               <div className="pts-mainArea">
                 <h3 className="pts-title">{proj.title}</h3>
+                {tags}
               </div>
               <div className="pts-descriptionArea">
                 <div
@@ -245,7 +246,6 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
                   }
                 >
                   {description}
-                  {tags}
                 </div>
               </div>
               <div
@@ -295,7 +295,10 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
           >
             <div className="pt-grid">
               <div className="pt-mainArea">
-                <h3 className="pt-title">{proj.title}</h3>
+                <div className="pt-titleOuter">
+                  <h3 className="pt-title">{proj.title}</h3>
+                  {tags}
+                </div>
                 <div className="pt-ghpath">
                   <a
                     href={ghurl}

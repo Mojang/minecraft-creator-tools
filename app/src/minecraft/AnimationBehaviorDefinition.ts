@@ -6,14 +6,14 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
-import IAnimationBehavior from "./IAnimationBehavior";
+import IAnimationBehaviorWrapper, { IAnimationBehaviorTimelineWrapper } from "./IAnimationBehavior";
 
 export default class AnimationBehaviorDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
 
-  public data?: IAnimationBehavior;
+  public data?: IAnimationBehaviorWrapper;
 
   private _onLoaded = new EventDispatcher<AnimationBehaviorDefinition, AnimationBehaviorDefinition>();
 
@@ -53,6 +53,31 @@ export default class AnimationBehaviorDefinition {
     return undefined;
   }
 
+  getAllTimeline() {
+    const timelines: IAnimationBehaviorTimelineWrapper[] = [];
+
+    if (this.data && this.data.animations) {
+      for (const aName in this.data.animations) {
+        const anim = this.data.animations[aName];
+
+        if (anim && anim.timeline) {
+          for (const timestamp in anim.timeline) {
+            const timeline = anim.timeline[timestamp];
+            if (timeline) {
+              timelines.push({
+                animationId: aName,
+                timestamp: timestamp,
+                timeline: timeline,
+              });
+            }
+          }
+        }
+      }
+    }
+
+    return timelines;
+  }
+
   public async getFormatVersionIsCurrent() {
     const fv = this.getFormatVersion();
 
@@ -81,7 +106,10 @@ export default class AnimationBehaviorDefinition {
 
   _ensureDataInitialized() {
     if (this.data === undefined) {
-      this.data = {};
+      this.data = {
+        format_version: "1.12.0",
+        animations: {},
+      };
     }
   }
 

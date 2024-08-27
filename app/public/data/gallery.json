@@ -156,119 +156,6 @@
       "type": 2
     },
     {
-      "title": "Camera Grapple",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
-      "localLogo": "blocks/camera_front.png",
-      "id": "CameraGrapple.ts",
-      "codeLineStart": 18,
-      "tags": ["editor"],
-      "type": 5
-    },
-    {
-      "title": "Star Brush Shape",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
-      "localLogo": "items/nether_star.png",
-      "id": "StarBrushShape.ts",
-      "codeLineStart": 15,
-      "type": 5
-    },
-    {
-      "title": "Dye Brush",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
-      "localLogo": "items/dye_powder_red.png",
-      "id": "DyeBrush.ts",
-      "codeLineStart": 117,
-      "type": 5
-    },
-    {
-      "title": "Farm Generator",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
-      "localLogo": "blocks/farmland_wet.png",
-      "id": "FarmGenerator.ts",
-      "codeLineStart": 43,
-      "type": 5
-    },
-    {
-      "title": "Go to Mark",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
-      "localLogo": "blocks/cut_copper.png",
-      "id": "GotoMark.ts",
-      "codeLineStart": 100,
-      "type": 5
-    },
-    {
-      "title": "Portal Generator",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
-      "localLogo": "blocks/cut_copper.png",
-      "id": "PortalGenerator.ts",
-      "codeLineStart": 322,
-      "type": 5
-    },
-    {
-      "title": "Simple Tool",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
-      "localLogo": "blocks/cut_copper.png",
-      "id": "SimpleTool.ts",
-      "codeLineStart": 108,
-      "type": 5
-    },
-    {
-      "title": "Locate Biome",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
-      "localLogo": "blocks/cut_copper.png",
-      "id": "LocateBiome.ts",
-      "codeLineStart": 94,
-      "type": 5
-    },
-    {
-      "title": "Tree Generator",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
-      "localLogo": "blocks/cut_copper.png",
-      "id": "TreeGenerator.ts",
-      "codeLineStart": 43,
-      "type": 5
-    },
-    {
-      "title": "Starter Hello World GameTest",
-      "description": "A simple introduction to creating GameTests. See the tutorial at https://aka.ms/newgametest.",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-gametests",
-      "gitHubFolder": "/starterTestsTutorial",
-      "logoImage": "behavior_packs/starterTestsTutorial/pack_icon.png",
-      "id": "helloWorldGameTest",
-      "tags": ["gametest"],
-      "type": 0
-    },
-    {
-      "title": "Basic GameTests",
-      "description": "A collection of GameTests focused on exploring different facets of Mob Behavior.",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-gametests",
-      "gitHubFolder": "/js-gametests",
-      "logoImage": "behavior_packs/JsGameTests/pack_icon.png",
-      "id": "mobGameTest",
-      "tags": ["gametest"],
-      "type": 0
-    },
-    {
       "title": "Create Explosion",
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-scripting-samples",
@@ -665,6 +552,116 @@
         "/resource_pack/textures/entity/wolf/wolf_angry.png",
         "/resource_pack/textures/entity/wolf/wolf_tame.tga"
       ]
+    },
+    {
+      "title": "Camera Grapple",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/editor-script-box",
+      "localLogo": "blocks/camera_front.png",
+      "id": "camera-grapple.ts",
+      "codeLineStart": 19,
+      "tags": ["editor"],
+      "type": 5
+    },
+    {
+      "title": "Star Shape Brush",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/editor-script-box",
+      "localLogo": "items/nether_star.png",
+      "id": "star-brush-shape.ts",
+      "codeLineStart": 15,
+      "tags": ["editor"],
+      "type": 5
+    },
+    {
+      "title": "Dye Brush",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/editor-script-box",
+      "localLogo": "items/dye_powder_red.png",
+      "id": "dye-brush.ts",
+      "codeLineStart": 117,
+      "tags": ["editor"],
+      "type": 5
+    },
+    {
+      "title": "Farm Generator",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/editor-script-box",
+      "localLogo": "blocks/farmland_wet.png",
+      "id": "farm-generator.ts",
+      "codeLineStart": 43,
+      "tags": ["editor"],
+      "type": 5
+    },
+    {
+      "title": "Go to Mark",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/editor-script-box",
+      "localLogo": "blocks/cut_copper.png",
+      "id": "goto-mark.ts",
+      "codeLineStart": 100,
+      "tags": ["editor"],
+      "type": 5
+    },
+    {
+      "title": "Portal Generator",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/editor-script-box",
+      "localLogo": "blocks/cut_copper.png",
+      "id": "portal-generator.ts",
+      "codeLineStart": 322,
+      "tags": ["editor"],
+      "type": 5
+    },
+    {
+      "title": "Locate Biome",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/editor-script-box",
+      "localLogo": "blocks/cut_copper.png",
+      "id": "locate-biome.ts",
+      "codeLineStart": 94,
+      "tags": ["editor"],
+      "type": 5
+    },
+    {
+      "title": "Tree Generator",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/editor-script-box",
+      "localLogo": "blocks/cut_copper.png",
+      "id": "tree-generator.ts",
+      "codeLineStart": 43,
+      "tags": ["editor"],
+      "type": 5
+    },
+    {
+      "title": "Starter GameTest",
+      "description": "A simple introduction to creating GameTests. See the tutorial at https://aka.ms/newgametest.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-gametests",
+      "gitHubFolder": "/starterTestsTutorial",
+      "logoImage": "behavior_packs/starterTestsTutorial/pack_icon.png",
+      "id": "helloWorldGameTest",
+      "tags": ["gametest"],
+      "type": 0
+    },
+    {
+      "title": "Basic GameTests",
+      "description": "A collection of GameTests focused on exploring different facets of Mob Behavior.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-gametests",
+      "gitHubFolder": "/js-gametests",
+      "logoImage": "behavior_packs/JsGameTests/pack_icon.png",
+      "id": "mobGameTest",
+      "tags": ["gametest"],
+      "type": 0
     }
   ]
 }

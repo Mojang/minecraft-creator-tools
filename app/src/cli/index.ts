@@ -20,6 +20,11 @@ import ClUtils, { OutputType, TaskType } from "./ClUtils.js";
 import { spawn, Pool, Worker } from "threads";
 import ContentIndex from "../core/ContentIndex.js";
 import IIndexJson from "../storage/IIndexJson.js";
+import inquirer from "inquirer";
+import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem.js";
+import ProjectUtilities, { NewEntityTypeAddMode } from "../app/ProjectUtilities.js";
+import Project, { ProjectAutoDeploymentMode } from "../app/Project.js";
+import ProjectExporter from "../app/ProjectExporter.js";
 
 if (typeof btoa === "undefined") {
   // @ts-ignore
@@ -39,6 +44,7 @@ CartoApp.hostType = HostType.toolsNodejs;
 
 const MAX_LINES_PER_CSV_FILE = 500000;
 
+const ERROR_INIT_ERROR = 44;
 const ERROR_VALIDATION_INTERNALPROCESSINGERROR = 53;
 const ERROR_VALIDATION_TESTFAIL = 56;
 const ERROR_VALIDATION_ERROR = 57;
@@ -49,6 +55,11 @@ let carto: Carto | undefined;
 const projectStarts: (IProjectStartInfo | undefined)[] = [];
 let localEnv: LocalEnvironment | undefined;
 let mode: string | undefined;
+let type: string | undefined;
+let newName: string | undefined;
+let newDescription: string | undefined;
+let template: string | undefined;
+let creator: string | undefined;
 let suite: string | undefined;
 let outputType: OutputType | undefined;
 let aggregateReportsAfterValidation: boolean | undefined = false;
@@ -76,7 +87,19 @@ program
   )
   .option("-of, --output-file [path to file]", "Path to the export file, if applicable for the command you are using.")
   .option("-ot, --output-type [output type]", "Type of output, if applicable for the command you are using.")
+  .option(
+    "-bp, --behavior-pack <behavior pack uuid>",
+    "Adds a set of behavior pack UUIDs as references for any worlds that are updated."
+  )
+  .option(
+    "-rp, --resource-pack <resource pack uuid>",
+    "Adds a set of resources pack UUIDs as references for any worlds that are updated."
+  )
+  .option("-betaapis, --beta-apis", "Ensures that the Beta APIs experiment is set for any worlds that are updated.")
+  .option("-no-betaapis, --no-beta-apis", "Removes the Beta APIs experiment if set.")
   .option("-f, --force", "Force any updates.")
+  .option("-editor", "Ensures that the world is an Editor world.")
+  .option("-no-editor", "Removes that the world is an editor.")
   .option("--threads [thread count]", "Targeted number of threads to use.")
   .option("-show, --display-only", "Whether to only show messages, vs. output report files.")
   .option("-lv, --log-verbose", "Whether to show verbose log messages.");
@@ -86,6 +109,52 @@ program.addHelpText("before", "\x1b[32m│ ▄ ▄ │\x1b[0m Minecraft Creator 
 program.addHelpText("before", "\x1b[32m│ ┏▀┓ │\x1b[0m See " + constants.homeUrl + " for more info.");
 program.addHelpText("before", "\x1b[32m└─────┘\x1b[0m");
 program.addHelpText("before", " ");
+
+program
+  .command("world")
+  .alias("w")
+  .description("Displays/sets world settings within a folder.")
+  .addArgument(
+    new Argument("[mode]", "If set to 'set', will update the world with a set of properties that are specified.")
+  )
+  .action((modeIn) => {
+    mode = modeIn;
+    executionTaskType = TaskType.world;
+  });
+
+program
+  .command("add")
+  .alias("a")
+  .description("Adds new content into this Minecraft project")
+  .addArgument(new Argument("[type]", "Type of item to add"))
+  .action((typeIn) => {
+    type = typeIn;
+    executionTaskType = TaskType.add;
+  });
+
+program
+  .command("create")
+  .alias("c")
+  .description("Creates a new Minecraft project")
+  .addArgument(new Argument("[name]", "Desired project name"))
+  .addArgument(new Argument("[template]", "Template name"))
+  .addArgument(new Argument("[creator]", "Creator name"))
+  .addArgument(new Argument("[description]", "Project description"))
+  .action((nameIn, templateIn, creatorIn, descriptionIn) => {
+    newName = nameIn;
+    template = templateIn;
+    creator = creatorIn;
+    newDescription = descriptionIn;
+    executionTaskType = TaskType.create;
+  });
+
+program
+  .command("info")
+  .alias("i")
+  .description("Displays information about the current project.")
+  .action(() => {
+    executionTaskType = TaskType.info;
+  });
 
 program
   .command("validate")
@@ -193,6 +262,10 @@ if (options.logVerbose) {
   await loadProjects();
 
   switch (executionTaskType as TaskType) {
+    case TaskType.info:
+      await displayInfo();
+      break;
+
     case TaskType.version:
       await displayVersion();
       break;
@@ -203,6 +276,35 @@ if (options.logVerbose) {
 
     case TaskType.aggregateReports:
       await aggregateReports();
+      break;
+
+    case TaskType.add:
+      try {
+        for (const projectStart of projectStarts) {
+          if (projectStart) {
+            await add(ClUtils.createProject(carto, projectStart));
+          }
+        }
+      } catch (e) {
+        errorLevel = ERROR_INIT_ERROR;
+        console.error("Error adding to a project. " + e.toString());
+      }
+      break;
+
+    case TaskType.create:
+      try {
+        for (const projectStart of projectStarts) {
+          if (projectStart) {
+            await create(ClUtils.createProject(carto, projectStart), projectStarts.length <= 1);
+          }
+        }
+      } catch (e) {
+        errorLevel = ERROR_INIT_ERROR;
+        console.error("Error creating a project. " + e.toString());
+      }
+      break;
+    case TaskType.world:
+      await setAndDisplayAllWorlds();
       break;
   }
 })();
@@ -562,7 +664,7 @@ async function setAndDisplayAllWorlds() {
 
           // if only an output folder is specified, put the world there
           // if an input and an output folder is specified, put the world at a subfolder of the input folder.
-          if (options.inputFolder) {
+          if (options.outputFolder) {
             destF = await wcf.ensureFolderFromRelativePath(StorageUtilities.ensureEndsDelimited(options.outputFolder));
           }
 
@@ -946,4 +1048,400 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
 
     await projectsCsvFile.saveContent();
   }
+}
+
+async function create(project: Project, isSingleFolder: boolean) {
+  outputLogo("Minecraft Creator Tools (preview)");
+
+  if (!carto) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to create a project (no mctools core).");
+    return;
+  }
+
+  await carto.loadGallery();
+
+  if (!carto.gallery) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to create a project (no gallery).");
+    return;
+  }
+
+  let title = newName;
+
+  if (!newName) {
+    const titleQuestions: inquirer.DistinctQuestion<any>[] = [];
+    titleQuestions.push({
+      type: "input",
+      name: "title",
+      default: "My Project",
+      message: "What's your preferred project title?",
+    });
+    const titleAnswer = await inquirer.prompt(titleQuestions);
+
+    if (titleAnswer["title"]) {
+      title = titleAnswer["title"];
+    }
+  }
+
+  if (!title) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("No title for your project was selected.");
+    return;
+  }
+
+  let applyDescription = newDescription;
+
+  if (applyDescription === undefined) {
+    applyDescription = title;
+
+    const descriptionQuestions: inquirer.DistinctQuestion<any>[] = [];
+    descriptionQuestions.push({
+      type: "input",
+      name: "description",
+      default: applyDescription,
+      message: "What's your preferred project description?",
+    });
+
+    const descriptionAnswer = await inquirer.prompt(descriptionQuestions);
+
+    if (descriptionAnswer["description"]) {
+      applyDescription = descriptionAnswer["description"];
+    }
+
+    if (applyDescription === undefined) {
+      applyDescription = title;
+    }
+  }
+
+  if (!creator) {
+    const creatorQuestions: inquirer.DistinctQuestion<any>[] = [];
+    creatorQuestions.push({
+      type: "input",
+      name: "creator",
+      default: "Creator",
+      message: "What's your creator name?",
+    });
+    const creatorAnswer = await inquirer.prompt(creatorQuestions);
+
+    if (creatorAnswer["creator"]) {
+      creator = creatorAnswer["creator"];
+    }
+  }
+
+  const questions: inquirer.DistinctQuestion<any>[] = [];
+  if (!newName) {
+    newName = title?.replace(/ /gi, "-").toLowerCase();
+
+    questions.push({
+      type: "input",
+      name: "name",
+      default: newName,
+      message: "What's your preferred project short name? (<20 chars, no spaces)",
+    });
+  }
+
+  if (!options.inputFolder && (!options.outputFolder || options.outputFolder === "out") && isSingleFolder) {
+    const folderNameQuestions: inquirer.DistinctQuestion<any>[] = [];
+
+    folderNameQuestions.push({
+      type: "input",
+      name: "folderName",
+      default: newName,
+      message: "What's your preferred folder name?",
+    });
+
+    const folderNameAnswer = await inquirer.prompt(folderNameQuestions);
+
+    if (folderNameAnswer["folderName"]) {
+      const folderName = folderNameAnswer["folderName"];
+
+      if (folderName && project.mainDeployFolderPath) {
+        const path =
+          NodeStorage.ensureEndsWithDelimiter(process.cwd()) + NodeStorage.ensureEndsWithDelimiter(folderName);
+
+        const outputStorage = new NodeStorage(path, "");
+        const outFolder = outputStorage.rootFolder;
+        await outFolder.ensureExists();
+
+        project = new Project(carto, project.name, null);
+
+        project.localFolderPath = path;
+
+        project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
+      }
+    }
+  }
+
+  const galProjects = carto.gallery.items;
+  let galProject: IGalleryItem | undefined;
+
+  if (template) {
+    for (let i = 0; i < galProjects.length; i++) {
+      const galProjectCand = galProjects[i];
+      if (galProjectCand && galProjectCand.id && galProjectCand.id.toLowerCase() === template.toLowerCase()) {
+        galProject = galProjectCand;
+      }
+    }
+  }
+
+  if (!galProject) {
+    const projectTypeChoices: inquirer.DistinctChoice[] = [];
+
+    for (let i = 0; i < galProjects.length; i++) {
+      const galProjectCand = galProjects[i];
+
+      if (galProjectCand.type === GalleryItemType.project)
+        projectTypeChoices.push({
+          name: galProjectCand.id + ": " + galProjectCand.title,
+          value: i,
+        });
+    }
+
+    questions.push({
+      type: "list",
+      name: "projectSource",
+      message: "What template should we use?",
+      choices: projectTypeChoices,
+    });
+  }
+
+  if (!galProject || !newName) {
+    const answers = await inquirer.prompt(questions);
+
+    if (answers) {
+      if (answers["name"]) {
+        newName = answers["name"];
+      }
+
+      if (!galProject) {
+        galProject = galProjects[answers["projectSource"]];
+      }
+    }
+  }
+
+  if (!newName) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to create a project.");
+    return;
+  }
+
+  if (!galProject) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("No project was selected.");
+    return;
+  }
+
+  project = await ProjectExporter.syncProjectFromGitHub(
+    true,
+    carto,
+    galProject.gitHubRepoName,
+    galProject.gitHubOwner,
+    galProject.gitHubBranch,
+    galProject.gitHubFolder,
+    newName,
+    project,
+    galProject.fileList
+  );
+
+  let suggestedShortName: string | undefined = undefined;
+
+  if (newName && creator) {
+    suggestedShortName = ProjectUtilities.getSuggestedProjectShortName(creator, newName);
+  }
+
+  if (creator) {
+    await ProjectUtilities.applyCreator(project, creator);
+  }
+
+  await ProjectUtilities.processNewProject(project, title, applyDescription, suggestedShortName);
+
+  console.log(
+    "\nAll done! Now run \x1b[47m\x1b[30mnpm i\x1b[37m\x1b[40m in the \x1b[47m\x1b[30m" +
+      project.projectFolder?.fullPath +
+      "\x1b[37m\x1b[40m folder to install dependencies, if any, from npm."
+  );
+}
+
+async function add(project: Project) {
+  let typeDesc = "Item";
+  if (type) {
+    switch (type) {
+      case "entity":
+        typeDesc = "Entity";
+        break;
+      case "item":
+        typeDesc = "Item";
+        break;
+      case "block":
+        typeDesc = "Block";
+        break;
+      default:
+        console.log("Unknown item type '" + typeDesc + "' specified.");
+        type = undefined;
+        break;
+    }
+  }
+  outputLogo("Minecraft Add " + typeDesc);
+
+  if (!carto) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to add an item (no mctools core).");
+    return;
+  }
+
+  await carto.loadGallery();
+
+  if (!carto.gallery) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to add an item (no gallery).");
+    return;
+  }
+
+  const typeQuestions: inquirer.DistinctQuestion<any>[] = [];
+  const questions: inquirer.DistinctQuestion<any>[] = [];
+
+  const galProjects = carto.gallery.items;
+  let galProject: IGalleryItem | undefined;
+
+  if (template) {
+    for (let i = 0; i < galProjects.length; i++) {
+      const galProjectCand = galProjects[i];
+      if (galProjectCand && galProjectCand.id && galProjectCand.id.toLowerCase() === template.toLowerCase()) {
+        galProject = galProjectCand;
+      }
+    }
+  }
+
+  if (type === undefined) {
+    typeQuestions.push({
+      type: "list",
+      name: "type",
+      message: "What type of item should we add?",
+      choices: [
+        { name: "Entity Type", value: "entity" },
+        { name: "Block Type", value: "block" },
+        { name: "Item Type", value: "item" },
+      ],
+    });
+
+    const typeAnswers = await inquirer.prompt(typeQuestions);
+
+    type = typeAnswers["type"];
+  }
+
+  if (type === "entity") {
+    const gallery = await carto.loadGallery();
+
+    if (gallery) {
+      const entityTypeChoices: inquirer.DistinctChoice[] = [];
+
+      for (const proj of gallery.items) {
+        if (proj.type === GalleryItemType.entityType) {
+          entityTypeChoices.push({
+            name: proj.id,
+            value: proj.title,
+          });
+        }
+      }
+
+      questions.push({
+        type: "list",
+        name: "entityType",
+        message: "Based on which entity type?",
+        choices: entityTypeChoices,
+      });
+
+      if (!newName) {
+        questions.push({
+          type: "input",
+          name: "name",
+          message: "What's your preferred new item name? (<20 chars, no spaces)",
+        });
+      }
+
+      const answers = await inquirer.prompt(questions);
+
+      if (!newName) {
+        newName = answers["name"];
+      }
+
+      const entityType = answers["entityType"];
+
+      if (entityType) {
+        for (const proj of gallery.items) {
+          if (proj.id === entityType) {
+            await ProjectUtilities.addEntityTypeFromGallery(project, proj, newName, NewEntityTypeAddMode.baseId);
+          }
+        }
+      }
+    } else {
+      errorLevel = ERROR_INIT_ERROR;
+      console.error("Could not find any entity types.");
+    }
+  } else {
+    if (!galProject) {
+      const projectTypeChoices: inquirer.DistinctChoice[] = [];
+
+      for (let i = 0; i < galProjects.length; i++) {
+        const galProjectCand = galProjects[i];
+
+        if (galProjectCand.type === GalleryItemType.chunk) {
+          projectTypeChoices.push({
+            name: galProjectCand.id + ": " + galProjectCand.title,
+            value: i,
+          });
+        }
+      }
+
+      questions.push({
+        type: "list",
+        name: "projectSource",
+        message: "What type of item should we add?",
+        choices: projectTypeChoices,
+      });
+    }
+
+    if (!newName) {
+      questions.push({
+        type: "input",
+        name: "name",
+        message: "What's your preferred new item name? (<20 chars, no spaces)",
+      });
+    }
+
+    const answers = await inquirer.prompt(questions);
+
+    if (!newName) {
+      newName = answers["name"];
+    }
+
+    if (!galProject) {
+      galProject = galProjects[answers["projectSource"]];
+    }
+
+    await project.ensureDefaultBehaviorPackFolder();
+
+    project = await ProjectExporter.syncProjectFromGitHub(
+      false,
+      carto,
+      galProject.gitHubRepoName,
+      galProject.gitHubOwner,
+      galProject.gitHubBranch,
+      galProject.gitHubFolder,
+      project.name,
+      project,
+      galProject.fileList
+    );
+  }
+
+  await project.save();
+}
+
+function outputLogo(message: string) {
+  console.log("\x1b[32m┌─────┐\x1b[0m");
+  console.log("\x1b[32m│ ▄ ▄ │\x1b[0m " + message);
+  console.log("\x1b[32m│ ┏▀┓ │\x1b[0m");
+  console.log("\x1b[32m└─────┘\x1b[0m");
+  console.log("");
 }

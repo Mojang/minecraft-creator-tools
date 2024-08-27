@@ -6,14 +6,16 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
-import IAnimationControllerBehavior from "./IAnimationControllerBehavior";
+import IAnimationControllerBehaviorWrapper, {
+  IAnimationControllerBehaviorStateWrapper,
+} from "./IAnimationControllerBehavior";
 
 export default class AnimationControllerBehaviorDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
 
-  public data?: IAnimationControllerBehavior;
+  public data?: IAnimationControllerBehaviorWrapper;
 
   private _onLoaded = new EventDispatcher<
     AnimationControllerBehaviorDefinition,
@@ -66,6 +68,31 @@ export default class AnimationControllerBehaviorDefinition {
     return await Database.isRecentVersionFromVersionArray(fv);
   }
 
+  getAllStates() {
+    const states: IAnimationControllerBehaviorStateWrapper[] = [];
+
+    if (this.data && this.data.animation_controllers) {
+      for (const acName in this.data.animation_controllers) {
+        const ac = this.data.animation_controllers[acName];
+
+        if (ac && ac.states) {
+          for (const stateName in ac.states) {
+            const state = ac.states[stateName];
+
+            if (state) {
+              states.push({
+                id: stateName,
+                animationControllerId: acName,
+                state: state,
+              });
+            }
+          }
+        }
+      }
+    }
+
+    return states;
+  }
   public getFormatVersion(): number[] | undefined {
     if (!this.data || !this.data.format_version) {
       return undefined;
@@ -84,7 +111,10 @@ export default class AnimationControllerBehaviorDefinition {
 
   _ensureDataInitialized() {
     if (this.data === undefined) {
-      this.data = {};
+      this.data = {
+        format_version: "1.12.0",
+        animation_controllers: {},
+      };
     }
   }
 

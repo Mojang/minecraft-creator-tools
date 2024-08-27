@@ -21,12 +21,15 @@ import IMainInfoVersions from "./IMainInfoVersions";
 import IFormDefinition from "../dataform/IFormDefinition";
 import ContentIndex from "../core/ContentIndex";
 import IProjectInfoData from "../info/IProjectInfoData";
+import Project from "../app/Project";
+import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 
 export default class Database {
   static isLoaded = false;
   static isScriptTypesLoaded = false;
   static catalog: Catalog | null = null;
   static loadedFormCount = 0;
+  static _creatorToolsIngameProject: Project | null = null;
   static uxCatalog: { [formName: string]: IFormDefinition } = {};
   static betaTypeDefs: ITypeDefCatalog | null = null;
   static libs: ITypeDefCatalog | null = null;
@@ -184,6 +187,56 @@ export default class Database {
     }
 
     return true;
+  }
+
+  static async ensureCreatorToolsIngameProject() {
+    if (Database._creatorToolsIngameProject) {
+      return Database._creatorToolsIngameProject;
+    }
+
+    await Database.loadContent();
+
+    if (Database.contentFolder === null || !CartoApp.carto) {
+      Log.unexpectedContentState();
+      return undefined;
+    }
+
+    const file = Database.contentFolder.ensureFile("creator_tools_ingame.mcaddon");
+
+    await file.loadContent();
+
+    if (file.content instanceof Uint8Array) {
+      Database._creatorToolsIngameProject = new Project(CartoApp.carto, "Creator Tools", null);
+
+      const projectFolder = await Database._creatorToolsIngameProject.ensureProjectFolder();
+
+      const folder = projectFolder.ensureFolder("addons");
+
+      const contentFile = folder.ensureFile(file.name);
+
+      contentFile.setContent(file.content);
+
+      contentFile.saveContent();
+
+      const relPath = contentFile.getFolderRelativePath(Database._creatorToolsIngameProject.projectFolder as IFolder);
+
+      if (relPath !== undefined) {
+        Database._creatorToolsIngameProject.ensureItemByProjectPath(
+          relPath,
+          ProjectItemStorageType.singleFile,
+          file.name,
+          ProjectItemType.MCAddon,
+          undefined,
+          ProjectItemCreationType.normal
+        );
+
+        await Database._creatorToolsIngameProject.inferProjectItemsFromZipFile(relPath, contentFile, false);
+      }
+
+      return Database._creatorToolsIngameProject;
+    }
+
+    return undefined;
   }
 
   static async getLatestVersionInfo(preview: boolean, force?: boolean) {

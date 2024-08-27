@@ -30,6 +30,7 @@ import PackSizeInfoGenerator from "./PackSizeInfoGenerator";
 import BehaviorPackItemTypeManager from "../manager/BehaviorPackItemTypeManager";
 import TextureImageInfoGenerator from "./TextureImageInfoGenerator";
 import FormatVersionManager from "../manager/FormatVersionManager";
+import AnimationResourceInfoGenerator from "./AnimationResourceInfoGenerator";
 
 export default class GeneratorRegistrations {
   static projectGenerators = [
@@ -43,6 +44,7 @@ export default class GeneratorRegistrations {
     new MinEngineVersionManager(),
     new BaseGameVersionManager(),
     new FormatVersionManager(),
+    new AnimationResourceInfoGenerator(),
     new BehaviorPackEntityTypeManager(),
     new BehaviorPackItemTypeManager(),
     new AddOnRequirementsGenerator(),

@@ -6,14 +6,14 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
-import IAnimationControllerResource from "./IAnimationControllerResource";
+import IResourceAnimationControllerDefinition from "./IAnimationControllerResource";
 
 export default class AnimationControllerResourceDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
 
-  public data?: IAnimationControllerResource;
+  public data?: IResourceAnimationControllerDefinition;
 
   private _onLoaded = new EventDispatcher<
     AnimationControllerResourceDefinition,
@@ -84,7 +84,10 @@ export default class AnimationControllerResourceDefinition {
 
   _ensureDataInitialized() {
     if (this.data === undefined) {
-      this.data = {};
+      this.data = {
+        format_version: "1.12.0",
+        animation_controllers: {},
+      };
     }
   }
 

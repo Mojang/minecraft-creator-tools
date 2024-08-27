@@ -31,6 +31,16 @@
 }
 
 .sa-placeHolderText {
+  padding: 4px 0px 0px 5px !important;
+  height: 24px !important;
+  box-shadow: none !important;
+  margin-left: 5px;
+  text-align: left I !important;
+  justify-content: left !important;
+  grid-column: 2;
+}
+
+.sa-serchplaceHolder {
   border: solid 0px !important;
   background-color: transparent !important;
   padding: 3px 0px 0px 5px !important;

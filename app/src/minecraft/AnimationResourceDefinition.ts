@@ -6,14 +6,14 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
-import IAnimationResource from "./IAnimationResource";
+import IResourceAnimationWrapper from "./IAnimationResource";
 
 export default class AnimationResourceDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
 
-  public data?: IAnimationResource;
+  public data?: IResourceAnimationWrapper;
 
   private _onLoaded = new EventDispatcher<AnimationResourceDefinition, AnimationResourceDefinition>();
 
@@ -53,6 +53,13 @@ export default class AnimationResourceDefinition {
     return undefined;
   }
 
+  public get animations() {
+    if (this.data && this.data.animations) {
+      return this.data.animations;
+    }
+
+    return undefined;
+  }
   public async getFormatVersionIsCurrent() {
     const fv = this.getFormatVersion();
 
@@ -81,7 +88,10 @@ export default class AnimationResourceDefinition {
 
   _ensureDataInitialized() {
     if (this.data === undefined) {
-      this.data = {};
+      this.data = {
+        format_version: "1.12.0",
+        animations: {},
+      };
     }
   }
 

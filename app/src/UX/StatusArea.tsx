@@ -41,6 +41,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
     this._handleKeyPress = this._handleKeyPress.bind(this);
     this._handleStatusAdded = this._handleStatusAdded.bind(this);
+    this._handleOperationCompleted = this._handleOperationCompleted.bind(this);
     this._handleLogItemAdded = this._handleLogItemAdded.bind(this);
     this._checkForTimeOut = this._checkForTimeOut.bind(this);
     this._toggleExpandedSize = this._toggleExpandedSize.bind(this);
@@ -58,6 +59,13 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
 
   _handleLogItemAdded(log: Log, item: LogItem) {
     this._update();
+  }
+
+  async _handleOperationCompleted(carto: Carto, operation: number) {
+    this.setState({
+      displayEditor: this.state.displayEditor,
+      activeOperations: this.props.carto.activeOperations.length,
+    });
   }
 
   async _handleStatusAdded(carto: Carto, status: IStatus): Promise<void> {
@@ -82,7 +90,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
         this.setState(
           {
             displayEditor: this.state.displayEditor,
-            activeOperations: this.state.activeOperations - 1,
+            activeOperations: this.props.carto.activeOperations.length,
           },
           () => {
             this._prepareForFadeout();
@@ -162,6 +170,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
     }
 
     this.props.carto.subscribeStatusAddedAsync(this._handleStatusAdded);
+    this.props.carto.onOperationCompleted.subscribe(this._handleOperationCompleted);
   }
 
   componentWillUnmount(): void {
@@ -328,7 +337,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
                   }}
                 />
               </span>
-              <Button className="sa-placeHolderText" title="Use to search">
+              <Button className="sa-serchplaceHolder" title="Use to search">
                 Click or Ctrl-E to search
               </Button>
             </div>

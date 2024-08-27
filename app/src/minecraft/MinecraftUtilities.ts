@@ -20,6 +20,20 @@ export default class MinecraftUtilities {
     return path;
   }
 
+  static makeNameScriptSafe(tokenName: string) {
+    tokenName = tokenName.replace(/[^a-z0-9]/gi, "-").replace(/\s+/g, "-");
+
+    while (tokenName.length > 1 && !Utilities.isAlpha(tokenName.substring(0, 1))) {
+      tokenName = tokenName.substring(1);
+    }
+
+    if (!Utilities.isAlpha(tokenName.substring(0, 1))) {
+      tokenName = "a" + tokenName;
+    }
+
+    return tokenName;
+  }
+
   static makeNameFolderSafe(tokenName: string) {
     tokenName = Utilities.replaceAll(tokenName, " ", "-").toLowerCase();
 

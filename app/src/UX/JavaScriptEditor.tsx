@@ -191,6 +191,13 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
           typeDefs = Database.betaTypeDefs;
         }
 
+        let globalUri = encodeURI("file://fs/global.d.ts");
+
+        const globalContent =
+          "interface GlobalConsole { warn: (message: string) => void; log: (message: string) => void;}; declare var console: GlobalConsole; ";
+        tslang.javascriptDefaults.addExtraLib(globalContent, globalUri);
+        tslang.typescriptDefaults.addExtraLib(globalContent, globalUri);
+
         if (typeDefs) {
           for (let i = 0; i < typeDefs.typeDefs.length; i++) {
             const td = typeDefs.typeDefs[i];
@@ -592,7 +599,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       const projName = this.props.project.loc.getTokenValueOrDefault(this.props.project.name);
 
       result = ProjectContent.replaceCommonItems(result, projName);
-      result = ProjectUtilities.adaptSample(result, "").sampleContent;
+      result = ProjectUtilities.adaptSample(result, "");
 
       this.editor.trigger("keyboard", "type", { text: result });
     }

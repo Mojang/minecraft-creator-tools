@@ -182,7 +182,9 @@ export default class StorageUtilities {
       path = path + StorageUtilities.standardFolderDelimiter;
     }
 
-    if (!path.startsWith(StorageUtilities.standardFolderDelimiter)) {
+    if (path.startsWith("." + StorageUtilities.standardFolderDelimiter)) {
+      path = path.substring(1);
+    } else if (!path.startsWith(StorageUtilities.standardFolderDelimiter)) {
       path = StorageUtilities.standardFolderDelimiter + path;
     }
 

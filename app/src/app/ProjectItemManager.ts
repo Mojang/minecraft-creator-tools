@@ -4,7 +4,7 @@
 import Project from "./Project";
 import ProjectContent from "./ProjectContent";
 import { ProjectScriptLanguage } from "./IProjectData";
-import { ProjectItemStorageType, ProjectItemType } from "./IProjectItemData";
+import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "./IProjectItemData";
 import StorageUtilities from "./../storage/StorageUtilities";
 import ZipStorage from "../storage/ZipStorage";
 import IProjectItemSeed from "./IProjectItemSeed";
@@ -81,7 +81,7 @@ export default class ProjectItemManager {
       StorageUtilities.getLeafName(candidateFilePath),
       itemType === ProjectItemType.js ? ProjectItemType.js : ProjectItemType.ts,
       undefined,
-      false
+      ProjectItemCreationType.normal
     );
 
     const file = await pi.ensureFileStorage();
@@ -270,7 +270,7 @@ export default class ProjectItemManager {
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.testJs,
       undefined,
-      false
+      ProjectItemCreationType.normal
     );
 
     const file = await pi.ensureFileStorage();
@@ -321,7 +321,7 @@ export default class ProjectItemManager {
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.MCFunction,
       undefined,
-      false
+      ProjectItemCreationType.normal
     );
 
     const file = await pi.ensureFileStorage();
@@ -359,7 +359,7 @@ export default class ProjectItemManager {
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.structure,
       undefined,
-      false
+      ProjectItemCreationType.normal
     );
 
     const file = await pi.ensureFileStorage();
@@ -399,7 +399,7 @@ export default class ProjectItemManager {
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.actionSetJson,
       undefined,
-      false
+      ProjectItemCreationType.normal
     );
 
     const file = await pi.ensureFileStorage();
@@ -438,7 +438,7 @@ export default class ProjectItemManager {
       candidateFolderPath,
       ProjectItemType.documentedTypeFolder,
       undefined,
-      false
+      ProjectItemCreationType.normal
     );
 
     await pi.ensureFolderStorage();
@@ -472,7 +472,7 @@ export default class ProjectItemManager {
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.worldTest,
       undefined,
-      false
+      ProjectItemCreationType.normal
     );
 
     const file = await pi.ensureFileStorage();
@@ -512,7 +512,7 @@ export default class ProjectItemManager {
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.worldTest,
       undefined,
-      false
+      ProjectItemCreationType.normal
     );
 
     const file = await pi.ensureFileStorage();

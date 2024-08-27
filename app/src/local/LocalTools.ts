@@ -7,8 +7,8 @@ import Project from "../app/Project";
 import IFolder from "../storage/IFolder";
 import * as fs from "fs";
 import * as open from "open";
-import ProjectTools from "../app/ProjectTools";
 import IStorage from "../storage/IStorage";
+import IFile from "../storage/IFile";
 
 export default class LocalTools {
   static async exportWorld(carto: Carto, project: Project, path: string) {
@@ -27,6 +27,8 @@ export default class LocalTools {
     }
   }
 
+  static async convertFromJavaWorld(carto: Carto, javaWorldFile: IFile) {}
+
   static async launchWorld(carto: Carto, worldFolderName: string) {
     const commandLine = "minecraft://mode/?load=" + worldFolderName;
     console.log("Running " + commandLine);
@@ -44,7 +46,7 @@ export default class LocalTools {
   }
 
   static async deploy(carto: Carto, project: Project, storage: IStorage, rootFolder: IFolder, name: string) {
-    await ProjectTools.deployProject(carto, project, rootFolder);
+    await ProjectExporter.deployProject(carto, project, rootFolder);
 
     await rootFolder.saveAll();
   }

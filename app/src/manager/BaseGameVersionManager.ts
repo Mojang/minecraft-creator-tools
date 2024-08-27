@@ -11,7 +11,7 @@ import IProjectUpdater from "../updates/IProjectUpdater";
 import ProjectUpdateResult from "../updates/ProjectUpdateResult";
 import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
-import WorldTemplateManifestJson from "../minecraft/WorldTemplateManifestJson";
+import WorldTemplateManifestDefinition from "../minecraft/WorldTemplateManifestDefinition";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 
@@ -131,7 +131,7 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
 
         if (pi.file) {
           foundWorldTemplate = true;
-          const bpManifest = await WorldTemplateManifestJson.ensureOnFile(pi.file);
+          const bpManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.file);
 
           if (bpManifest) {
             if (
@@ -325,7 +325,7 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const wtManifest = await WorldTemplateManifestJson.ensureOnFile(pi.file);
+          const wtManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.file);
 
           if (wtManifest) {
             const mev = wtManifest.baseGameVersion;

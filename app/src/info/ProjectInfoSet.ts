@@ -233,6 +233,7 @@ export default class ProjectInfoSet {
             }
           } catch (e: any) {
             genItems.push(new ProjectInfoItem(InfoItemType.internalProcessingError, gen.id, 500, e));
+            Log.debugAlert(e);
           }
         }
       }
