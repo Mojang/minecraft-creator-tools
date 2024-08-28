@@ -155,7 +155,46 @@ export default class ProjectEditorUtilities {
     carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");
   }
 
-  static async addBrowserFile(project: Project, path: string, file: File) {
+  static getIntegrateBrowserFileDefaultActionDescription(project: Project, path: string, file: File) {
+    if (!project.projectFolder) {
+      return undefined;
+    }
+
+    const fileName = file.name.toLowerCase();
+    const extension = StorageUtilities.getTypeFromName(file.name);
+
+    if (
+      fileName === "level.dat" ||
+      extension === "db" ||
+      fileName === "current" ||
+      fileName.startsWith("manifest-") ||
+      fileName === "level.dat_old" ||
+      fileName === "levelname.txt" ||
+      fileName.startsWith("world_")
+    ) {
+      return "Add as new world";
+    } else if (extension === "snbt") {
+      return "Add as new '" + file.name + "' structure";
+    } else if (extension === "mcworld") {
+      return "Add as new '" + file.name + "' world";
+    } else if (extension === "mcproject") {
+      return "Add as new '" + file.name + "' project";
+    } else if (extension === "mctemplate") {
+      return "Add as new '" + file.name + "' world template";
+    } else if (extension === "mcaddon") {
+      return "Add as new '" + file.name + "' addon pack";
+    } else if (extension === "zip") {
+      return "Add as new '" + file.name + "' folder";
+    } else if (extension === "mcpack") {
+      return "Add as new '" + file.name + "' pack folder";
+    } else if (extension === "mcstructure") {
+      return "Add as new '" + file.name + "' structure";
+    } else if (extension === "json") {
+      return "Add as new '" + file.name + "' data file";
+    }
+  }
+
+  static async integrateBrowserFileDefaultAction(project: Project, path: string, file: File) {
     if (!project.projectFolder) {
       return;
     }

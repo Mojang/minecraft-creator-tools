@@ -25,6 +25,7 @@ import BehaviorPackManifestJsonEditor from "./BehaviorPackManifestJsonEditor";
 import ImageEditor from "./ImageEditor";
 import DataFormEditor from "./DataFormEditor";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
+import ProjectInfoDisplay from "./ProjectInfoDisplay";
 
 enum ProjectItemEditorDirtyState {
   clean = 0,
@@ -37,6 +38,7 @@ interface IProjectItemEditorProps extends IAppProps {
   theme: ThemeInput<any>;
   heightOffset: number;
   forceRawView: boolean;
+  visualSeed?: number;
   activeProjectItem: ProjectItem | null;
   activeReference: IGitHubInfo | null;
   readOnly: boolean;
@@ -180,7 +182,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
 
         const projItem = this.props.activeProjectItem;
 
-        if (file.type === "js" || file.type === "ts") {
+        if (file.type === "js" || file.type === "ts" || file.type === "mjs") {
           let pref = this.props.project.preferredScriptLanguage;
 
           if (file.type === "ts") {
@@ -264,6 +266,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
             <ImageEditor
               readOnly={this.props.readOnly}
               heightOffset={this.props.heightOffset}
+              visualSeed={this.props.visualSeed}
               carto={this.props.carto}
               theme={this.props.theme}
               file={file}
@@ -334,6 +337,23 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           );
         } else if (
           file.type === "json" &&
+          (projItem.itemType === ProjectItemType.contentIndexJson ||
+            projItem.itemType === ProjectItemType.contentReportJson) &&
+          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
+        ) {
+          interior = (
+            <ProjectInfoDisplay
+              carto={this.props.carto}
+              theme={this.props.theme}
+              heightOffset={this.props.heightOffset}
+              file={file}
+              project={this.props.project}
+              allInfoSet={this.props.project.infoSet}
+              allInfoSetGenerated={this.props.project.infoSet.completedGeneration}
+            />
+          );
+        } else if (
+          file.type === "json" &&
           projItem.itemType === ProjectItemType.dataFormJson &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
@@ -347,7 +367,12 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               setActivePersistable={this._handleNewChildPersistable}
             />
           );
-        } else if (file.type === "geometry" || file.type === "vertex" || file.type === "fragment") {
+        } else if (
+          file.type === "geometry" ||
+          file.type === "vertex" ||
+          file.type === "fragment" ||
+          file.type === ".env"
+        ) {
           interior = (
             <TextEditor
               theme={this.props.theme}
@@ -380,8 +405,8 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           } else {
             interior = (
               <JsonEditor
-                project={this.props.project}
                 theme={this.props.theme}
+                project={this.props.project}
                 onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
                 preferredTextSize={this.props.carto.preferredTextSize}
                 readOnly={readOnly}

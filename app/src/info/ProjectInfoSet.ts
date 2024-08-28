@@ -232,7 +232,9 @@ export default class ProjectInfoSet {
               this.pushItem(genItems, genItemsByStoragePath, item);
             }
           } catch (e: any) {
-            genItems.push(new ProjectInfoItem(InfoItemType.internalProcessingError, gen.id, 500, e));
+            genItems.push(
+              new ProjectInfoItem(InfoItemType.internalProcessingError, gen.id, 500, this.project.name + ": " + e)
+            );
             Log.debugAlert(e);
           }
         }
@@ -255,7 +257,14 @@ export default class ProjectInfoSet {
                 this.pushItem(genItems, genItemsByStoragePath, item);
               }
             } catch (e: any) {
-              genItems.push(new ProjectInfoItem(InfoItemType.internalProcessingError, gen.id, 501, e.toString()));
+              genItems.push(
+                new ProjectInfoItem(
+                  InfoItemType.internalProcessingError,
+                  gen.id,
+                  501,
+                  this.project.name + ": " + e.toString()
+                )
+              );
             }
           }
         }
@@ -1421,7 +1430,14 @@ function _addReportJson(data) {
                   this.pushItem(genItems, genItemsByStoragePath, item);
                 }
               } catch (e: any) {
-                genItems.push(new ProjectInfoItem(InfoItemType.internalProcessingError, fileGen.id, 502, e.toString()));
+                genItems.push(
+                  new ProjectInfoItem(
+                    InfoItemType.internalProcessingError,
+                    fileGen.id,
+                    502,
+                    file.fullPath + ": " + e.toString()
+                  )
+                );
               }
             }
           }

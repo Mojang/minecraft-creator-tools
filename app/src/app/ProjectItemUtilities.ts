@@ -7,8 +7,30 @@ import { PackType } from "../minecraft/Pack";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ProjectItemCategory, ProjectItemType } from "./IProjectItemData";
 import Project from "./Project";
+import ProjectItem from "./ProjectItem";
 
 export default class ProjectItemUtilities {
+  static inferTypeFromContent(
+    content: Uint8Array | string,
+    fileName: string
+  ): { itemType: ProjectItemType; packType?: PackType; path?: string } {
+    const type = StorageUtilities.getTypeFromName(fileName);
+
+    if (typeof content === "string") {
+      switch (type) {
+        case "json":
+          return ProjectItemUtilities.inferTypeFromJsonContent(content, fileName);
+      }
+    } else {
+      switch (type) {
+        case "png":
+          return { itemType: ProjectItemType.texture, packType: PackType.resource, path: "/textures/ " };
+      }
+    }
+
+    return { itemType: ProjectItemType.unknown, packType: PackType.behavior, path: "/" };
+  }
+
   static inferTypeFromJsonContent(
     jsonContent: string,
     fileName: string
@@ -268,6 +290,137 @@ export default class ProjectItemUtilities {
     }
 
     return false;
+  }
+
+  static getMimeTypes(item: ProjectItem) {
+    switch (item.itemType) {
+      case ProjectItemType.js:
+      case ProjectItemType.testJs:
+      case ProjectItemType.entityTypeBaseJs:
+      case ProjectItemType.buildProcessedJs:
+      case ProjectItemType.catalogIndexJs:
+      case ProjectItemType.entityTypeBaseTs:
+      case ProjectItemType.esLintMjs:
+      case ProjectItemType.blockTypeBaseJs:
+        return ["application/javascript"];
+
+      case ProjectItemType.justConfigTs:
+      case ProjectItemType.ts:
+      case ProjectItemType.blockTypeBaseTs:
+        return ["application/typescript"];
+
+      case ProjectItemType.json:
+      case ProjectItemType.behaviorPackManifestJson:
+      case ProjectItemType.resourcePackManifestJson:
+      case ProjectItemType.entityTypeBehaviorJson:
+      case ProjectItemType.tickJson:
+      case ProjectItemType.cameraJson:
+      case ProjectItemType.actionSetJson:
+      case ProjectItemType.worldTest:
+      case ProjectItemType.behaviorPackListJson:
+      case ProjectItemType.resourcePackListJson:
+      case ProjectItemType.animationBehaviorJson:
+      case ProjectItemType.animationControllerBehaviorJson:
+      case ProjectItemType.blockTypeBehaviorJson:
+      case ProjectItemType.blockMaterialsBehaviorJson:
+      case ProjectItemType.itemTypeBehaviorJson:
+      case ProjectItemType.lootTableBehaviorJson:
+      case ProjectItemType.biomeResourceJson:
+      case ProjectItemType.fileListArrayJson:
+      case ProjectItemType.blocksCatalogResourceJson:
+      case ProjectItemType.soundsCatalogResourceJson:
+      case ProjectItemType.animationResourceJson:
+      case ProjectItemType.animationControllerResourceJson:
+      case ProjectItemType.entityTypeResourceJson:
+      case ProjectItemType.fogResourceJson:
+      case ProjectItemType.modelGeometryJson:
+      case ProjectItemType.particleJson:
+      case ProjectItemType.renderControllerJson:
+      case ProjectItemType.uiTextureJson:
+      case ProjectItemType.uiJson:
+      case ProjectItemType.languagesCatalogResourceJson:
+      case ProjectItemType.biomeBehaviorJson:
+      case ProjectItemType.dialogueBehaviorJson:
+      case ProjectItemType.featureRuleBehaviorJson:
+      case ProjectItemType.featureBehaviorJson:
+      case ProjectItemType.functionEventJson:
+      case ProjectItemType.recipeBehaviorJson:
+      case ProjectItemType.spawnRuleBehaviorJson:
+      case ProjectItemType.tradingBehaviorJson:
+      case ProjectItemType.volumeBehaviorJson:
+      case ProjectItemType.attachableResourceJson:
+      case ProjectItemType.itemTypeResourceJson:
+      case ProjectItemType.materialsResourceJson:
+      case ProjectItemType.musicDefinitionJson:
+      case ProjectItemType.soundDefinitionJson:
+      case ProjectItemType.contentIndexJson:
+      case ProjectItemType.contentReportJson:
+      case ProjectItemType.tsconfigJson:
+      case ProjectItemType.prettierRcJson:
+      case ProjectItemType.jsconfigJson:
+      case ProjectItemType.docfxJson:
+      case ProjectItemType.jsdocJson:
+      case ProjectItemType.packageJson:
+      case ProjectItemType.packageLockJson:
+      case ProjectItemType.docInfoJson:
+      case ProjectItemType.scriptTypesJson:
+      case ProjectItemType.vanillaDataJson:
+      case ProjectItemType.engineOrderingJson:
+      case ProjectItemType.commandSetDefinitionJson:
+      case ProjectItemType.skinPackManifestJson:
+      case ProjectItemType.vsCodeLaunchJson:
+      case ProjectItemType.vsCodeTasksJson:
+      case ProjectItemType.vsCodeSettingsJson:
+      case ProjectItemType.vsCodeExtensionsJson:
+      case ProjectItemType.worldTemplateManifestJson:
+      case ProjectItemType.textureSetJson:
+      case ProjectItemType.textureListJson:
+      case ProjectItemType.lightingJson:
+      case ProjectItemType.flipbookTexturesJson:
+      case ProjectItemType.itemTextureJson:
+      case ProjectItemType.terrainTextureCatalogResourceJson:
+      case ProjectItemType.globalVariablesJson:
+      case ProjectItemType.dataFormJson:
+      case ProjectItemType.dimensionJson:
+      case ProjectItemType.behaviorPackHistoryListJson:
+      case ProjectItemType.resourcePackHistoryListJson:
+        return ["application/json"];
+
+      case ProjectItemType.MCWorld:
+      case ProjectItemType.MCTemplate:
+      case ProjectItemType.MCProject:
+      case ProjectItemType.MCAddon:
+      case ProjectItemType.MCPack:
+      case ProjectItemType.zip:
+        return ["application/zip"];
+
+      case ProjectItemType.structure:
+        return ["application/octet-stream"];
+
+      case ProjectItemType.MCFunction:
+      case ProjectItemType.material:
+      case ProjectItemType.materialGeometry:
+      case ProjectItemType.materialFragment:
+      case ProjectItemType.materialSetJson:
+      case ProjectItemType.materialVertex:
+      case ProjectItemType.env:
+      case ProjectItemType.lang:
+        return ["text/plain"];
+
+      case ProjectItemType.audio:
+        return ["audio/wav", "audio/mp3", "audio/ogg"];
+
+      case ProjectItemType.image:
+      case ProjectItemType.texture:
+      case ProjectItemType.uiTexture:
+      case ProjectItemType.iconImage:
+      case ProjectItemType.marketingAssetImage:
+      case ProjectItemType.storeAssetImage:
+        return ["image/png", "image/tiff"];
+
+      default:
+        return ["application/octet-stream"];
+    }
   }
 
   static getDescriptionForType(type: ProjectItemType) {

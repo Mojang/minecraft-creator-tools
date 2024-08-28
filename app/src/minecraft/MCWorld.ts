@@ -28,7 +28,6 @@ import NbtBinary from "./NbtBinary";
 import { NbtTagType } from "./NbtBinaryTag";
 import AnchorSet from "./AnchorSet";
 import Project from "../app/Project";
-import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 import ActorItem from "./ActorItem";
 import { StatusTopic } from "../app/Status";
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
@@ -1867,7 +1866,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     if (!this._project) {
       return;
     }
-
+    /*
     if (this._autogenJsFile === undefined) {
       const newFileName = "LocalWorld.js";
 
@@ -1894,7 +1893,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       this._autogenJsFile.setContent(content);
 
       await this._autogenJsFile.saveContent(false);
-    }
+    }*/
   }
 
   private getAutoGenScript() {

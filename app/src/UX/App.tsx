@@ -577,7 +577,7 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     if (additionalFile && additionalFilePath) {
-      await ProjectEditorUtilities.addBrowserFile(newProject, additionalFilePath, additionalFile);
+      await ProjectEditorUtilities.integrateBrowserFileDefaultAction(newProject, additionalFilePath, additionalFile);
     }
 
     await newProject.save(true);

@@ -398,6 +398,7 @@ async function folderMatches(scenarioName: string, excludeFileList?: string[]) {
   const isEqual = await StorageUtilities.folderContentsEqual(scenarioFolder, scenarioOutFolder, excludeFileList, true, [
     "generatorVersion",
     "uuid",
+    "version",
   ]);
 
   assert(
@@ -427,7 +428,11 @@ async function ensureJsonMatchesScenario(obj: object, scenarioName: string) {
 
   assert(exists, "report.json file for scenario '" + scenarioName + "' does not exist.");
 
-  const isEqual = await StorageUtilities.fileContentsEqual(scenarioFile, outFile, true, ["generatorVersion", "uuid"]);
+  const isEqual = await StorageUtilities.fileContentsEqual(scenarioFile, outFile, true, [
+    "generatorVersion",
+    "uuid",
+    "version",
+  ]);
 
   assert(
     isEqual,

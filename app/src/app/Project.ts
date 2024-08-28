@@ -1725,6 +1725,8 @@ export default class Project {
         folder.folders["ui"]
       ) {
         folderContext = FolderContext.resourcePack;
+      } else if (folder.fullPath.indexOf("rp") >= 0 || folder.fullPath.indexOf("esource") >= 0) {
+        folderContext = FolderContext.resourcePack;
       } else {
         folderContext = FolderContext.behaviorPack;
       }

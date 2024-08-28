@@ -956,16 +956,14 @@ export default class ProjectUtilities {
           if (leftBracket > 0 && rightBracket > leftBracket) {
             const interior = importLine.substring(leftBracket + 1, rightBracket).trim();
 
-            if (interior.indexOf(importType) < 0) {
-              let injectToken = importType;
+            let injectToken = importType;
 
-              // is there one token already in the import linte
-              if (interior.length > 0) {
-                injectToken = ", " + injectToken;
-              }
-
-              importLine = importLine.substring(0, rightBracket) + injectToken + importLine.substring(rightBracket);
+            // is there one token already in the import linte
+            if (interior.length > 0) {
+              injectToken = ", " + injectToken;
             }
+
+            importLine = importLine.substring(0, rightBracket) + injectToken + importLine.substring(rightBracket);
           }
 
           introSection = introSection.substring(0, previousNewLine) + importLine + introSection.substring(endNewLine);

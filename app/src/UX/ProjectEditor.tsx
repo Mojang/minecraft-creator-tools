@@ -42,7 +42,7 @@ import "./ProjectEditor.css";
 import ZipStorage from "../storage/ZipStorage";
 import Utilities from "../core/Utilities";
 import { saveAs } from "file-saver";
-import StorageUtilities from "../storage/StorageUtilities";
+import StorageUtilities, { EncodingType } from "../storage/StorageUtilities";
 import StatusArea from "./StatusArea";
 import ProjectPropertyEditor from "./ProjectPropertyEditor";
 import IPersistable from "./IPersistable";
@@ -79,6 +79,9 @@ import { IAnnotatedValue } from "../core/AnnotatedValue";
 import { ProjectRole } from "../app/IProjectData";
 import ProjectUtilities from "../app/ProjectUtilities";
 import IConversionSettings from "../core/IConversionSettings";
+import ProjectItemUtilities from "../app/ProjectItemUtilities";
+import IntegrateItem from "./IntegrateItem";
+import IProjectItemSeed, { ProjectItemSeedAction } from "../app/IProjectItemSeed";
 
 interface IProjectEditorProps extends IAppProps {
   onModeChangeRequested?: (mode: AppMode) => void;
@@ -105,9 +108,11 @@ interface IProjectEditorState {
   filteredItems?: IAnnotatedValue[];
   searchFilter?: string;
   displayFileView: boolean;
+  visualSeed?: number;
   viewMode: CartoEditorViewMode;
   menuState: ProjectEditorMenuState;
   effectMode?: ProjectEditorEffect;
+  dragStyle?: ProjectEditorDragStyle;
   dialog?: ProjectEditorDialog;
   dialogData?: object | undefined;
   dialogActiveItem?: ProjectItem | undefined;
@@ -140,12 +145,18 @@ export enum ProjectEditorEffect {
   dragOver = 1,
 }
 
+export enum ProjectEditorDragStyle {
+  addOverwrite = 0,
+  addOverwriteOrActiveItem = 1,
+}
+
 export enum ProjectEditorDialog {
   noDialog = 0,
   shareableLink = 1,
   worldSettings = 2,
   webLocalDeploy = 3,
   convertTo = 4,
+  integrateItem = 5,
 }
 
 export enum ProjectStatusAreaMode {
@@ -213,6 +224,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleViewMenuOpen = this._handleViewMenuOpen.bind(this);
     this._handleWebLocalDeployOK = this._handleWebLocalDeployOK.bind(this);
     this._handleConvertOK = this._handleConvertOK.bind(this);
+    this._handleIntegrateItemOK = this._handleIntegrateItemOK.bind(this);
     this._handleDeployWorldAndTestAssetsPackClick = this._handleDeployWorldAndTestAssetsPackClick.bind(this);
     this._handleDeployWorldAndTestAssetsLocalClick = this._handleDeployWorldAndTestAssetsLocalClick.bind(this);
     this._handleDeployWorldPackClick = this._handleDeployWorldPackClick.bind(this);
@@ -327,6 +339,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       tentativeProjectItem: null,
       activeReference: null,
       mode: initialMode,
+      visualSeed: 0 + (this.props.visualSeed ? this.props.visualSeed : 0),
       allInfoSet: this.props.project.infoSet,
       allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
       menuState: ProjectEditorMenuState.noMenu,
@@ -549,6 +562,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           activeReference: this.state.activeReference,
           mode: this.state.mode,
           effectMode: undefined,
+          dragStyle: undefined,
+          visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
           viewMode: this.state.viewMode,
           allInfoSet: this.props.project.infoSet,
           allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
@@ -569,6 +584,35 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
+  private _incrementVisualSeed() {
+    if (this.state !== undefined) {
+      this.setState({
+        activeProjectItem: this.state.activeProjectItem,
+        tentativeProjectItem: this.state.tentativeProjectItem,
+        activeReference: this.state.activeReference,
+        mode: this.state.mode,
+        effectMode: undefined,
+        dragStyle: undefined,
+        visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
+        viewMode: this.state.viewMode,
+        allInfoSet: this.props.project.infoSet,
+        allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+        displayFileView: this.state.displayFileView,
+        menuState: this.state.menuState,
+        forceRawView: this.state.forceRawView,
+        filteredItems: this.state.filteredItems,
+        searchFilter: this.state.searchFilter,
+        statusAreaMode: this.state.statusAreaMode,
+        lastDeployKey: this.state.lastDeployKey,
+        lastExportKey: this.state.lastExportKey,
+        lastDeployFunction: this.state.lastDeployFunction,
+        lastExportFunction: this.state.lastExportFunction,
+        lastDeployData: this.state.lastDeployData,
+        lastExportData: this.state.lastExportData,
+      });
+    }
+  }
+
   private _onNotifyNewAllItemSetLoaded() {
     if (this.state) {
       if (
@@ -581,6 +625,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           activeReference: this.state.activeReference,
           mode: this.state.mode,
           effectMode: this.state.effectMode,
+          dragStyle: this.state.dragStyle,
+          visualSeed: this.state.visualSeed,
           viewMode: this.state.viewMode,
           allInfoSet: this.props.project.infoSet,
           allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
@@ -609,6 +655,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         activeReference: this.state.activeReference,
         mode: this.state.mode,
         effectMode: undefined,
+        dragStyle: undefined,
         dialog: undefined,
         dialogData: this.state.dialogData,
         dialogActiveItem: this.state.dialogActiveItem,
@@ -645,6 +692,39 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
+  private async _handleIntegrateItemOK() {
+    this._handleDialogDone();
+
+    if (this.state.dialogData) {
+      const fileSource = (this.state.dialogData as IProjectItemSeed).fileSource;
+
+      if (fileSource) {
+        if ((this.state.dialogData as IProjectItemSeed).action === ProjectItemSeedAction.defaultAction) {
+          ProjectEditorUtilities.integrateBrowserFileDefaultAction(
+            this.props.project,
+            "/" + fileSource.name,
+            fileSource
+          );
+        } else if ((this.state.dialogData as IProjectItemSeed).action === ProjectItemSeedAction.overwriteFile) {
+          const item = (this.state.dialogData as IProjectItemSeed).targetedItem;
+
+          if (item && item.file) {
+            let content = undefined;
+
+            if (StorageUtilities.getEncodingByFileName(fileSource.name) === EncodingType.Utf8String) {
+              content = await fileSource.text();
+            } else {
+              content = new Uint8Array(await fileSource.arrayBuffer());
+            }
+
+            item.file.setContent(content);
+          }
+          this._incrementVisualSeed();
+        }
+      }
+    }
+  }
+
   private async _handleConvertOK() {
     this._handleDialogDone();
 
@@ -662,7 +742,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
-  private _handleFileDragOver(event: any) {
+  private _handleFileDragOver(event: DragEvent) {
     if (this.state !== undefined) {
       if (this.state.effectMode !== ProjectEditorEffect.dragOver) {
         const top = event.pageY;
@@ -671,6 +751,23 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         const bottom = document.body.clientHeight - top;
 
         if (top > 10 && right > 10 && bottom > 10 && left > 10) {
+          let dragStyle = ProjectEditorDragStyle.addOverwrite;
+
+          if (
+            this.state.activeProjectItem &&
+            this.state.activeProjectItem.storageType === ProjectItemStorageType.singleFile &&
+            event &&
+            event.dataTransfer &&
+            event.dataTransfer.items &&
+            event.dataTransfer.items.length === 1
+          ) {
+            const dtitem = event.dataTransfer.items[0];
+
+            if (ProjectItemUtilities.getMimeTypes(this.state.activeProjectItem).includes(dtitem.type)) {
+              dragStyle = ProjectEditorDragStyle.addOverwriteOrActiveItem;
+            }
+          }
+
           this.setState({
             activeProjectItem: this.state.activeProjectItem,
             tentativeProjectItem: this.state.tentativeProjectItem,
@@ -685,6 +782,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             filteredItems: this.state.filteredItems,
             searchFilter: this.state.searchFilter,
             effectMode: ProjectEditorEffect.dragOver,
+            dragStyle: dragStyle,
+            visualSeed: this.state.visualSeed,
             statusAreaMode: this.state.statusAreaMode,
             lastDeployKey: this.state.lastDeployKey,
             lastExportKey: this.state.lastExportKey,
@@ -825,7 +924,58 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         } else if (dtitem.kind === "file") {
           const file = dtitem.getAsFile();
           if (file) {
-            this._processIncomingFile("/", file);
+            let content = undefined;
+
+            if (StorageUtilities.getEncodingByFileName(file.name) === EncodingType.Utf8String) {
+              content = await file.text();
+            } else {
+              content = new Uint8Array(await file.arrayBuffer());
+            }
+
+            const typeData = ProjectItemUtilities.inferTypeFromContent(content, file.name);
+
+            if (this.state.dragStyle === ProjectEditorDragStyle.addOverwriteOrActiveItem) {
+              const top = ev.pageY;
+
+              const height = WebUtilities.getHeight();
+
+              if (top > height / 2 && this.state.activeProjectItem && this.state.activeProjectItem.file) {
+                this.state.activeProjectItem.file.setContent(content);
+
+                this._stopDragEffect();
+
+                return;
+              }
+            }
+            this.setState({
+              activeProjectItem: this.state.activeProjectItem,
+              tentativeProjectItem: this.state.tentativeProjectItem,
+              activeReference: this.state.activeReference,
+              menuState: this.state.menuState,
+              mode: this.state.mode,
+              viewMode: this.state.viewMode,
+              allInfoSet: this.props.project.infoSet,
+              allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+              displayFileView: this.state.displayFileView,
+              forceRawView: this.state.forceRawView,
+              filteredItems: this.state.filteredItems,
+              searchFilter: this.state.searchFilter,
+              effectMode: undefined,
+              dragStyle: undefined,
+              visualSeed: this.state.visualSeed,
+              dialog: ProjectEditorDialog.integrateItem,
+              dialogActiveItem: this.state.activeProjectItem ? this.state.activeProjectItem : undefined,
+              dialogData: { itemType: typeData.itemType, path: file.name, fileSource: file },
+              statusAreaMode: this.state.statusAreaMode,
+              lastDeployKey: this.state.lastDeployKey,
+              lastExportKey: this.state.lastExportKey,
+              lastDeployFunction: this.state.lastDeployFunction,
+              lastExportFunction: this.state.lastExportFunction,
+              lastDeployData: this.state.lastDeployData,
+              lastExportData: this.state.lastExportData,
+            });
+
+            return;
           }
         }
       }
@@ -844,7 +994,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
   private async _processIncomingFile(path: string, file: File) {
     if (file != null && this.props.project != null && this.props.project.projectFolder != null) {
-      await ProjectEditorUtilities.addBrowserFile(this.props.project, path, file);
+      await ProjectEditorUtilities.integrateBrowserFileDefaultAction(this.props.project, path, file);
 
       this.forceUpdate();
     }
@@ -865,7 +1015,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       })
     );
   }
-  private async _openInExplorerClick() {}
+  private async _openInExplorerClick() {
+    if (AppServiceProxy.hasAppService && this.props.project.projectFolder) {
+      await AppServiceProxy.sendAsync(
+        AppServiceProxyCommands.shellOpenFolderInExplorer,
+        this.props.project.projectFolder.fullPath
+      );
+    }
+  }
 
   private async _handleSaveClick() {
     this.save();
@@ -1421,6 +1578,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         filteredItems: this.state.filteredItems,
         searchFilter: this.state.searchFilter,
         effectMode: this.state.effectMode,
+        dragStyle: this.state.dragStyle,
+        visualSeed: this.state.visualSeed,
         dialog: ProjectEditorDialog.shareableLink,
         dialogData: this.state.dialogData,
         dialogActiveItem: this.state.dialogActiveItem,
@@ -1455,6 +1614,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         filteredItems: this.state.filteredItems,
         searchFilter: this.state.searchFilter,
         effectMode: this.state.effectMode,
+        dragStyle: this.state.dragStyle,
+        visualSeed: this.state.visualSeed,
         dialog: ProjectEditorDialog.webLocalDeploy,
         dialogData: this.state.dialogData,
         dialogActiveItem: this.state.dialogActiveItem,
@@ -1493,6 +1654,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         filteredItems: this.state.filteredItems,
         searchFilter: this.state.searchFilter,
         effectMode: this.state.effectMode,
+        dragStyle: this.state.dragStyle,
+        visualSeed: this.state.visualSeed,
         dialog: ProjectEditorDialog.worldSettings,
         dialogData: this.state.dialogData,
         dialogActiveItem: this.state.dialogActiveItem,
@@ -1567,6 +1730,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           filteredItems: this.state.filteredItems,
           searchFilter: this.state.searchFilter,
           effectMode: this.state.effectMode,
+          dragStyle: this.state.dragStyle,
+          visualSeed: this.state.visualSeed,
           dialog: ProjectEditorDialog.convertTo,
           dialogActiveItem: projectItem,
           dialogData: {
@@ -2551,6 +2716,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       activeReference: this.state.activeReference,
       mode: this.state.mode,
       effectMode: this.state.effectMode,
+      dragStyle: this.state.dragStyle,
+      visualSeed: this.state.visualSeed,
       viewMode: this.state.viewMode,
       allInfoSet: this.props.project.infoSet,
       allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
@@ -2600,6 +2767,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           activeReference: this.state.activeReference,
           mode: this.state.mode,
           effectMode: this.state.effectMode,
+          dragStyle: this.state.dragStyle,
+          visualSeed: this.state.visualSeed,
           viewMode: this.state.viewMode,
           allInfoSet: this.props.project.infoSet,
           allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
@@ -2650,6 +2819,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       activeReference: this.state.activeReference,
       mode: this.state.mode,
       effectMode: this.state.effectMode,
+      dragStyle: this.state.dragStyle,
+      visualSeed: this.state.visualSeed,
       viewMode: this.state.viewMode,
       allInfoSet: this.props.project.infoSet,
       allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
@@ -2882,6 +3053,18 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const deployKeys: { [deployOptionKey: string]: any } = {};
 
     const deployMenu: any = [];
+
+    if (CartoApp.isWeb) {
+      const deployWebLocalKey = "deployToLocalFolder";
+      deployKeys[deployWebLocalKey] = {
+        key: deployWebLocalKey + "A",
+        icon: <FontAwesomeIcon icon={faBox} key={deployWebLocalKey} className="fa-lg" />,
+        content: "Deploy to local Minecraft folder",
+        onClick: this._handleWebLocalDeployClick,
+        title: "Deploys this to a remote Dev Tools server",
+      };
+      deployMenu.push(deployKeys[deployWebLocalKey]);
+    }
 
     for (let i = 0; i < this.props.project.items.length; i++) {
       const pi = this.props.project.items[i];
@@ -3571,6 +3754,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           theme={this.props.theme}
           readOnly={this.props.readOnly}
           heightOffset={heightOffset}
+          visualSeed={this.state.visualSeed}
           forceRawView={this.state.forceRawView}
           project={this.props.project}
           setActivePersistable={this._setActiveEditorPersistable}
@@ -3584,7 +3768,18 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     let effectArea = <></>;
 
     if (this.state.effectMode === ProjectEditorEffect.dragOver) {
-      effectArea = <div className="pe-dragOver">Drop any additional files here.</div>;
+      if (this.state.dragStyle === ProjectEditorDragStyle.addOverwriteOrActiveItem) {
+        effectArea = (
+          <div className="pe-zoneDragOver">
+            <div className="pe-dragZone1">Drop any additional files here.</div>
+            <div className="pe-dragZone2">
+              Replace the contents of {this.state.activeProjectItem ? this.state.activeProjectItem.name : ""}.
+            </div>
+          </div>
+        );
+      } else {
+        effectArea = <div className="pe-singleDragOver">Drop any additional files here.</div>;
+      }
     }
 
     if (this.state.dialog === ProjectEditorDialog.shareableLink) {
@@ -3598,6 +3793,34 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           onConfirm={this._handleDialogDone}
           content={dialogContent}
           header={"Share Link to this Project"}
+        />
+      );
+    } else if (
+      this.state.dialog === ProjectEditorDialog.integrateItem &&
+      this.state.dialogData &&
+      (this.state.dialogData as any).fileSource
+    ) {
+      effectArea = (
+        <Dialog
+          open={true}
+          cancelButton="Cancel"
+          confirmButton="OK"
+          onCancel={this._handleDialogDone}
+          onConfirm={this._handleIntegrateItemOK}
+          content={
+            <IntegrateItem
+              carto={this.props.carto}
+              project={this.props.project}
+              theme={this.props.theme}
+              heightOffset={this.props.heightOffset}
+              data={this.state.dialogData as IProjectItemSeed}
+              onDialogDataChange={this._handleDialogDataUpdated}
+            />
+          }
+          header={
+            "Integate " +
+            ((this.state.dialogData as any).fileSource ? (this.state.dialogData as any).fileSource.name : "")
+          }
         />
       );
     } else if (this.state.dialog === ProjectEditorDialog.worldSettings) {
@@ -3657,6 +3880,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           carto={this.props.carto}
           editorMode={this.state.mode}
           heightOffset={heightOffset}
+          visualSeed={this.state.visualSeed}
           filteredItems={this.state.filteredItems}
           searchFilter={this.state.searchFilter}
           allInfoSet={this.state.allInfoSet}
