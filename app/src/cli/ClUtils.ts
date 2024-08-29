@@ -128,7 +128,9 @@ export default class ClUtils {
     const exists = await workFolder.exists();
 
     if (!exists) {
-      throw new Error("Specified folder path '" + workFolder.fullPath + "' does not exist within '" + __dirname + "'.");
+      throw new Error(
+        "Specified folder path '" + workFolder.fullPath + "' does not exist within '" + process.cwd() + "'."
+      );
     }
 
     await workFolder.load();

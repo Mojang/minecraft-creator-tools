@@ -19,7 +19,6 @@ import {
 import { faDice, faBinoculars } from "@fortawesome/free-solid-svg-icons";
 import ConnectToGitHub from "./ConnectToGitHub";
 import Utilities from "../core/Utilities";
-import Log from "../core/Log";
 import GitHubManager from "../github/GitHubManager";
 import AppServiceProxy from "../core/AppServiceProxy";
 import { ProjectEditPreference, ProjectScriptLanguage, ProjectScriptVersion } from "../app/IProjectData";
@@ -377,12 +376,6 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
   }
 
   async _handleCommitToGitHub() {
-    if (this.tentativeCommitMessage !== undefined && this.props.project.differencesFromGitHub !== undefined) {
-      Log.debug("Committing updates to GitHub with commit message '" + this.tentativeCommitMessage + "'");
-
-      await this.props.project.commitToGitHub(this.tentativeCommitMessage);
-    }
-
     this.forceUpdate();
   }
 

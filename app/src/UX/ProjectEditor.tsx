@@ -242,7 +242,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleFileDrop = this._handleFileDrop.bind(this);
     this._handleFileDragOut = this._handleFileDragOut.bind(this);
     this._handleFileDragOver = this._handleFileDragOver.bind(this);
-    this._handleConvertToBedrockClick = this._handleConvertToBedrockClick.bind(this);
     this._handleModeChangeRequested = this._handleModeChangeRequested.bind(this);
     this._handleActionRequested = this._handleActionRequested.bind(this);
     this._handleProjectItemSelected = this._handleProjectItemSelected.bind(this);
@@ -1761,15 +1760,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     if (data && data.icon && (data.icon as any).key) {
       this._setNewExportKey((data.icon as any).key, this._handleExportZipClick, data);
     }
-  }
-
-  private async _handleConvertToBedrockClick() {
-    if (this.props.carto.deploymentStorage === null || this.props.project === null) {
-      return;
-    }
-    await this._ensurePersisted();
-
-    this.props.project.convertToBedrock();
   }
 
   private async _handleInfoItemCommand(command: InfoItemCommand, item: ProjectInfoItem | IProjectUpdaterReference) {

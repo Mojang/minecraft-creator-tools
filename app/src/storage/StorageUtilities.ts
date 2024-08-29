@@ -33,6 +33,7 @@ const _allowedExtensions = [
   "ico",
   "ogg",
   "nojekyll",
+  "mjs",
   "env",
   "wav",
   "tga",

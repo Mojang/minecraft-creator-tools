@@ -371,7 +371,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           file.type === "geometry" ||
           file.type === "vertex" ||
           file.type === "fragment" ||
-          file.type === ".env"
+          file.type === "env"
         ) {
           interior = (
             <TextEditor

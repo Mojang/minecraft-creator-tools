@@ -66,20 +66,21 @@ export default class ProjectExporter {
   ) {
     let gh = undefined;
 
+    const urlExtension =
+      "res/samples/" +
+      gitHubOwner +
+      "/" +
+      gitHubRepoName +
+      "-" +
+      (gitHubBranch ? gitHubBranch : "main") +
+      "/" +
+      gitHubFolder;
+
     if (CartoApp.isWeb) {
-      gh = new HttpStorage(
-        CartoApp.contentRoot +
-          "res/samples/" +
-          gitHubOwner +
-          "/" +
-          gitHubRepoName +
-          "-" +
-          (gitHubBranch ? gitHubBranch : "main") +
-          "/" +
-          gitHubFolder
-      );
+      gh = new HttpStorage(Utilities.ensureEndsWithSlash(CartoApp.contentRoot) + urlExtension);
     } else {
       gh = new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
+      //gh = new HttpStorage(Utilities.ensureEndsWithSlash(constants.homeUrl) + urlExtension);
     }
 
     if (!projName) {

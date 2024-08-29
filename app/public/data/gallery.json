@@ -162,7 +162,7 @@
       "gitHubFolder": "/script-box",
       "localLogo": "items/fireball.png",
       "id": "createExplosion",
-      "codeLineStart": 0,
+      "codeLineStart": 1,
       "type": 3
     },
     {
@@ -172,6 +172,7 @@
       "gitHubFolder": "/script-box",
       "localLogo": "blocks/barrel_bottom.png",
       "id": "buttonPushEvent",
+      "codeLineStart": 15,
       "type": 3
     },
     {
@@ -181,6 +182,7 @@
       "gitHubFolder": "/script-box",
       "localLogo": "blocks/lever.png",
       "id": "leverActionEvent",
+      "codeLineStart": 15,
       "type": 3
     },
     {
@@ -190,6 +192,7 @@
       "gitHubFolder": "/script-box",
       "localLogo": "blocks/cut_copper.png",
       "id": "tripWireTripEvent",
+      "codeLineStart": 13,
       "type": 3
     },
     {
@@ -208,16 +211,7 @@
       "gitHubFolder": "/script-box",
       "localLogo": "items/fireball.png",
       "id": "createNoBlockExplosion",
-      "type": 3
-    },
-    {
-      "title": "Fire Water Explosion",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
-      "localLogo": "particle/particles.png",
-      "logoLocation": { "x": 0, "y": 24, "width": 8, "height": 8, "imageWidth": 128 },
-      "id": "createFireAndWaterExplosions",
+      "codeLineStart": 1,
       "type": 3
     },
     {
@@ -245,8 +239,8 @@
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/script-box",
       "localLogo": "blocks/structure_block_data.png",
-      "id": "incrementProperty",
-      "codeLineStart": 8,
+      "id": "incrementDynamicProperty",
+      "codeLineStart": 9,
       "type": 3
     },
     {
@@ -255,7 +249,8 @@
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/script-box",
       "localLogo": "blocks/structure_block_data.png",
-      "id": "incrementPropertyInJsonBlob",
+      "id": "incrementDynamicPropertyInJsonBlob",
+      "codeLineStart": 25,
       "type": 3
     },
     {
@@ -310,6 +305,7 @@
       "gitHubFolder": "/script-box",
       "localLogo": "ui/portalBg.png",
       "id": "teleport",
+      "codeLineStart": 2,
       "type": 3
     },
     {
@@ -319,6 +315,7 @@
       "gitHubFolder": "/script-box",
       "localLogo": "ui/portalBg.png",
       "id": "teleportMovement",
+      "codeLineStart": 3,
       "type": 3
     },
     {
@@ -328,6 +325,7 @@
       "gitHubFolder": "/script-box",
       "localLogo": "blocks/cut_copper.png",
       "id": "bounceSkeletons",
+      "codeLineStart": 8,
       "type": 3
     },
     {
@@ -337,17 +335,17 @@
       "gitHubFolder": "/script-box",
       "localLogo": "items/name_tag.png",
       "id": "tagsQuery",
-      "codeLineStart": 9,
+      "codeLineStart": 4,
       "type": 3
     },
     {
-      "title": "Run Entity Spawn Event",
+      "title": "Portal Generator",
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/script-box",
       "localLogo": "blocks/cut_copper.png",
-      "id": "runEntitySpawnEvent",
-      "codeLineStart": 5,
+      "id": "logEntitySpawnEvent",
+      "codeLineStart": 1,
       "type": 3
     },
     {
@@ -356,7 +354,7 @@
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/script-box",
       "localLogo": "ui/promo_bee.png",
-      "id": "createOldHorse",
+      "id": "spawnAdultHorse",
       "codeLineStart": 1,
       "type": 3
     },
@@ -376,6 +374,7 @@
       "gitHubFolder": "/script-box",
       "localLogo": "items/record_cat.png",
       "id": "playMusicAndSound",
+      "codeLineStart": 1,
       "type": 3
     },
     {
@@ -386,6 +385,7 @@
       "localLogo": "particle/particles.png",
       "logoLocation": { "x": 56, "y": 0, "width": 8, "height": 8, "imageWidth": 128 },
       "id": "spawnParticle",
+      "codeLineStart": 8,
       "type": 3
     },
     {
@@ -403,6 +403,7 @@
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/script-box",
       "localLogo": "blocks/cut_copper.png",
+      "codeLineStart": 5,
       "id": "updateScoreboard",
       "type": 3
     },
@@ -421,6 +422,7 @@
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/script-box",
       "localLogo": "ui/screenshot_frame.png",
+      "codeLineStart": 1,
       "id": "setTitleAndSubtitle",
       "type": 3
     },
@@ -449,6 +451,7 @@
       "gitHubFolder": "/script-box",
       "localLogo": "ui/dialog_background_opaque_overlap_bottom.png",
       "id": "showTranslatedMessageForm",
+      "codeLineStart": 1,
       "type": 3
     },
     {
@@ -458,6 +461,7 @@
       "gitHubFolder": "/script-box",
       "localLogo": "ui/icon_sign.png",
       "id": "addSign",
+      "codeLineStart": 9,
       "type": 3
     },
     {
@@ -467,6 +471,7 @@
       "gitHubFolder": "/script-box",
       "localLogo": "ui/icon_sign.png",
       "id": "addTranslatedSign",
+      "codeLineStart": 9,
       "type": 3
     },
     {
@@ -485,6 +490,7 @@
       "gitHubFolder": "/script-box",
       "localLogo": "ui/timer.png",
       "id": "trapTick",
+      "codeLineStart": 1,
       "type": 3
     },
     {
@@ -571,7 +577,7 @@
       "gitHubFolder": "/editor-script-box",
       "localLogo": "items/nether_star.png",
       "id": "star-brush-shape.ts",
-      "codeLineStart": 15,
+      "codeLineStart": 17,
       "tags": ["editor"],
       "type": 5
     },
@@ -593,7 +599,7 @@
       "gitHubFolder": "/editor-script-box",
       "localLogo": "blocks/farmland_wet.png",
       "id": "farm-generator.ts",
-      "codeLineStart": 43,
+      "codeLineStart": 41,
       "tags": ["editor"],
       "type": 5
     },
@@ -604,7 +610,7 @@
       "gitHubFolder": "/editor-script-box",
       "localLogo": "blocks/cut_copper.png",
       "id": "goto-mark.ts",
-      "codeLineStart": 100,
+      "codeLineStart": 96,
       "tags": ["editor"],
       "type": 5
     },
@@ -615,7 +621,7 @@
       "gitHubFolder": "/editor-script-box",
       "localLogo": "blocks/cut_copper.png",
       "id": "portal-generator.ts",
-      "codeLineStart": 322,
+      "codeLineStart": 316,
       "tags": ["editor"],
       "type": 5
     },
@@ -625,8 +631,8 @@
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/editor-script-box",
       "localLogo": "blocks/cut_copper.png",
-      "id": "locate-biome.ts",
-      "codeLineStart": 94,
+      "id": "simple-locate-biome.ts",
+      "codeLineStart": 93,
       "tags": ["editor"],
       "type": 5
     },
@@ -637,7 +643,7 @@
       "gitHubFolder": "/editor-script-box",
       "localLogo": "blocks/cut_copper.png",
       "id": "tree-generator.ts",
-      "codeLineStart": 43,
+      "codeLineStart": 47,
       "tags": ["editor"],
       "type": 5
     },

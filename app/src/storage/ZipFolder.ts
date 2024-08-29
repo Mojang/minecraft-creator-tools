@@ -169,7 +169,7 @@ export default class ZipFolder extends FolderBase implements IFolder {
 
         let candFile = this.files[nameCanon];
 
-        if (candFile == null) {
+        if (candFile == null && StorageUtilities.isUsableFile(StorageUtilities.getLeafName(relativePath))) {
           candFile = new ZipFile(this, relativePath, file);
 
           this.files[nameCanon] = candFile;

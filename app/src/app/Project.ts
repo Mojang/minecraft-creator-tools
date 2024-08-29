@@ -16,8 +16,6 @@ import IProjectItemData, { ProjectItemCreationType, ProjectItemStorageType, Proj
 import Utilities from "./../core/Utilities";
 import { EventDispatcher } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import Structure from "../minecraft/Structure";
-import Converter from "../minecraft/Converter";
 import ProjectContent from "./ProjectContent";
 import GitHubStorage from "../github/GitHubStorage";
 import Log from "../core/Log";
@@ -2559,116 +2557,6 @@ export default class Project {
     }
 
     await this.carto.notifyOperationEnded(operId, "Done loading package file " + file.name);
-  }
-
-  async stageChangesToGitHub() {
-    if (this.gitHubOwner === undefined || this.gitHubRepoName === undefined) {
-      Log.fail("Attempting to stage on a project without a GitHub connection");
-      return;
-    }
-
-    const operId = await this.#carto.notifyOperationStarted("Staging changes for a GitHub commit");
-
-    await this.#carto.userGitHub.ensureUserStateLoaded();
-
-    if (this.#gitHubStorage === undefined) {
-      this.#gitHubStorage = new GitHubStorage(
-        this.#carto.userGitHub,
-        this.gitHubRepoName,
-        this.gitHubOwner,
-        this.gitHubBranch,
-        this.gitHubFolder
-      );
-    }
-
-    const projectFolder = await this.ensureLoadedProjectFolder();
-
-    this.differencesFromGitHub = await StorageUtilities.getDifferences(
-      this.#gitHubStorage.rootFolder,
-      projectFolder,
-      false
-    );
-    await this.#carto.notifyOperationEnded(operId, "Done staging changes for a GitHub commit");
-  }
-
-  async commitToGitHub(commitMessage: string) {
-    if (
-      this.gitHubOwner === undefined ||
-      this.gitHubRepoName === undefined ||
-      this.differencesFromGitHub === undefined
-    ) {
-      Log.fail("Invalid configuration for committing to GitHub");
-      return;
-    }
-
-    const operId = await this.#carto.notifyOperationStarted(
-      "Committing " + this.differencesFromGitHub.fileDifferences.length + " file changes to GitHub"
-    );
-    this.#carto.userGitHub.commitToRepo(
-      this.gitHubOwner,
-      this.gitHubRepoName,
-      this.gitHubBranch,
-      this.gitHubFolder,
-      commitMessage,
-      this.differencesFromGitHub
-    );
-    await this.#carto.notifyOperationEnded(
-      operId,
-      "Done committing " + this.differencesFromGitHub.fileDifferences.length + " file changes to GitHub"
-    );
-  }
-
-  async convertToBedrock() {
-    if (this.projectFolder === null) {
-      return;
-    }
-
-    const structuresFolder = this.projectFolder.folders["structures"];
-
-    if (structuresFolder !== undefined) {
-      for (const fileName in structuresFolder.files) {
-        if (StorageUtilities.getTypeFromName(fileName) === "snbt") {
-          const targetFileName = StorageUtilities.getBaseFromName(fileName) + ".mcstructure";
-
-          const operId = await this.#carto.notifyOperationStarted(
-            "Converting file '" + fileName + "' to '" + targetFileName + "'"
-          );
-
-          const sourceFile = structuresFolder.files[fileName];
-
-          if (sourceFile !== undefined) {
-            await sourceFile.loadContent();
-
-            if (typeof sourceFile.content === "string") {
-              const targetFile = structuresFolder.ensureFile(targetFileName);
-
-              const folderRelativePath = targetFile.getFolderRelativePath(this.projectFolder);
-
-              if (folderRelativePath !== undefined) {
-                this.ensureItemByProjectPath(
-                  folderRelativePath,
-                  ProjectItemStorageType.singleFile,
-                  targetFileName,
-                  ProjectItemType.structure,
-                  undefined,
-                  ProjectItemCreationType.normal
-                );
-
-                const mcs = new Structure();
-
-                mcs.loadFromSnbtText(sourceFile.content);
-
-                if (mcs.cube !== undefined) {
-                  Converter.cubeEnsureBedrockProperties(mcs.cube);
-                }
-              }
-            }
-          }
-
-          await this.#carto.notifyOperationEnded(operId, "Conversion complete.");
-        }
-      }
-    }
   }
 
   async ensureDefaultItems() {
