@@ -20,7 +20,7 @@ import ClUtils, { OutputType, TaskType } from "./ClUtils.js";
 import { spawn, Pool, Worker } from "threads";
 import ContentIndex from "../core/ContentIndex.js";
 import IIndexJson from "../storage/IIndexJson.js";
-import inquirer from "inquirer";
+import * as inquirer from "inquirer";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem.js";
 import ProjectUtilities, { NewEntityTypeAddMode } from "../app/ProjectUtilities.js";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project.js";
@@ -120,16 +120,6 @@ program
   .action((modeIn) => {
     mode = modeIn;
     executionTaskType = TaskType.world;
-  });
-
-program
-  .command("add")
-  .alias("a")
-  .description("Adds new content into this Minecraft project")
-  .addArgument(new Argument("[type]", "Type of item to add"))
-  .action((typeIn) => {
-    type = typeIn;
-    executionTaskType = TaskType.add;
   });
 
 program
@@ -239,7 +229,9 @@ if (options.displayOnly) {
     options.outputFolder = undefined;
   }
 } else if (options.outputFolder === "out") {
-  Log.message("Outputting full results to the `out` folder.");
+  if ((executionTaskType as any) !== TaskType.create) {
+    Log.message("Outputting results to the `out` folder.\r\n");
+  }
 
   localEnv.displayInfo = true;
 }
@@ -276,19 +268,6 @@ if (options.logVerbose) {
 
     case TaskType.aggregateReports:
       await aggregateReports();
-      break;
-
-    case TaskType.add:
-      try {
-        for (const projectStart of projectStarts) {
-          if (projectStart) {
-            await add(ClUtils.createProject(carto, projectStart));
-          }
-        }
-      } catch (e) {
-        errorLevel = ERROR_INIT_ERROR;
-        console.error("Error adding to a project. " + e.toString());
-      }
       break;
 
     case TaskType.create:
@@ -631,6 +610,7 @@ async function setAndDisplayAllWorlds() {
   for (const projectStart of projectStarts) {
     if (projectStart && carto) {
       const project = ClUtils.createProject(carto, projectStart);
+      await project.inferProjectItemsFromFiles();
 
       let setWorld = false;
 
@@ -649,6 +629,8 @@ async function setAndDisplayAllWorlds() {
           if (shouldProcess) {
             await setAndDisplayWorld(item, isEnsure);
             setWorld = true;
+          } else {
+            await setAndDisplayWorld(item, false);
           }
         }
       }
@@ -665,7 +647,15 @@ async function setAndDisplayAllWorlds() {
           // if only an output folder is specified, put the world there
           // if an input and an output folder is specified, put the world at a subfolder of the input folder.
           if (options.outputFolder) {
-            destF = await wcf.ensureFolderFromRelativePath(StorageUtilities.ensureEndsDelimited(options.outputFolder));
+            let targetFolder = options.outputFolder;
+
+            if (options.inputFolder && targetFolder.startsWith(options.inputFolder)) {
+              targetFolder = targetFolder.substring(options.inputFolder.length);
+            }
+
+            if (targetFolder.length > 2) {
+              destF = await wcf.ensureFolderFromRelativePath(StorageUtilities.ensureEndsDelimited(targetFolder));
+            }
           }
 
           if (destF) {
@@ -1156,7 +1146,7 @@ async function create(project: Project, isSingleFolder: boolean) {
     if (folderNameAnswer["folderName"]) {
       const folderName = folderNameAnswer["folderName"];
 
-      if (folderName && project.mainDeployFolderPath) {
+      if (folderName) {
         const path =
           NodeStorage.ensureEndsWithDelimiter(process.cwd()) + NodeStorage.ensureEndsWithDelimiter(folderName);
 
@@ -1164,7 +1154,7 @@ async function create(project: Project, isSingleFolder: boolean) {
         const outFolder = outputStorage.rootFolder;
         await outFolder.ensureExists();
 
-        project = new Project(carto, project.name, null);
+        //project = new Project(carto, project.name, null);
 
         project.localFolderPath = path;
 
@@ -1241,7 +1231,11 @@ async function create(project: Project, isSingleFolder: boolean) {
     galProject.gitHubFolder,
     newName,
     project,
-    galProject.fileList
+    galProject.fileList,
+    async (message: string) => {
+      Log.message(message);
+    },
+    true
   );
 
   let suggestedShortName: string | undefined = undefined;
@@ -1339,8 +1333,8 @@ async function add(project: Project) {
       for (const proj of gallery.items) {
         if (proj.type === GalleryItemType.entityType) {
           entityTypeChoices.push({
-            name: proj.id,
-            value: proj.title,
+            name: proj.title,
+            value: proj.id,
           });
         }
       }
@@ -1371,7 +1365,15 @@ async function add(project: Project) {
       if (entityType) {
         for (const proj of gallery.items) {
           if (proj.id === entityType) {
-            await ProjectUtilities.addEntityTypeFromGallery(project, proj, newName, NewEntityTypeAddMode.baseId);
+            await ProjectUtilities.addEntityTypeFromGallery(
+              project,
+              proj,
+              newName,
+              NewEntityTypeAddMode.baseId,
+              async (message: string) => {
+                Log.message(message);
+              }
+            );
           }
         }
       }
@@ -1431,7 +1433,11 @@ async function add(project: Project) {
       galProject.gitHubFolder,
       project.name,
       project,
-      galProject.fileList
+      galProject.fileList,
+      async (message: string) => {
+        Log.message(message);
+      },
+      true
     );
   }
 

@@ -62,7 +62,8 @@ export default class ProjectExporter {
     projName: string | undefined,
     project: Project | undefined,
     fileList: string[] | undefined,
-    messageUpdater?: (message: string) => Promise<void>
+    messageUpdater?: (message: string) => Promise<void>,
+    dontOverwriteExistingFiles?: boolean
   ) {
     let gh = undefined;
 
@@ -114,7 +115,8 @@ export default class ProjectExporter {
       false,
       ["build", "node_modules", "dist", "lib", "/.git", "out"],
       undefined,
-      messageUpdater
+      messageUpdater,
+      dontOverwriteExistingFiles
     );
 
     await rootFolder.saveAll();

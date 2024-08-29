@@ -559,9 +559,17 @@ export default class ProjectUtilities {
     project: Project,
     entityTypeProject: IGalleryItem,
     entityTypeName?: string,
-    addMode?: NewEntityTypeAddMode
+    addMode?: NewEntityTypeAddMode,
+    messageUpdater?: (message: string) => Promise<void>,
+    dontOverwriteExistingFiles?: boolean
   ) {
-    await ProjectUtilities.copyGalleryPackFiles(project, entityTypeProject, entityTypeName);
+    await ProjectUtilities.copyGalleryPackFiles(
+      project,
+      entityTypeProject,
+      entityTypeName,
+      messageUpdater,
+      dontOverwriteExistingFiles
+    );
 
     await project.inferProjectItemsFromFiles(true);
 
@@ -622,7 +630,13 @@ export default class ProjectUtilities {
     await project.save();
   }
 
-  static async copyGalleryPackFiles(project: Project, galleryProject: IGalleryItem, newTypeName?: string) {
+  static async copyGalleryPackFiles(
+    project: Project,
+    galleryProject: IGalleryItem,
+    newTypeName?: string,
+    messagerUpdater?: (message: string) => Promise<void>,
+    dontOverwriteExistingFiles?: boolean
+  ) {
     const files = galleryProject.fileList;
 
     if (files === undefined) {
@@ -637,6 +651,7 @@ export default class ProjectUtilities {
     let sourceRpFolder = undefined;
 
     if (galleryProject.gitHubRepoName === "bedrock-samples") {
+      Log.message("Loading sampls");
       sourceBpFolder = await Database.loadDefaultBehaviorPack();
       sourceRpFolder = await Database.loadDefaultResourcePack();
     } else {
@@ -715,16 +730,32 @@ export default class ProjectUtilities {
         } else {
           const targetFile = await targetBpFolder.ensureFileFromRelativePath(targetPath);
 
-          await sourceFile.loadContent();
+          let update = true;
 
-          let content = sourceFile.content;
+          if (dontOverwriteExistingFiles) {
+            const targetExists = await targetFile.exists();
 
-          if (typeof content === "string") {
-            content = ProjectUtilities.replaceNamesInContent(content, project, galleryProject, newTypeName);
+            if (targetExists) {
+              update = false;
+            }
           }
 
-          if (content !== null) {
-            targetFile.setContent(content);
+          if (update) {
+            await sourceFile.loadContent();
+
+            let content = sourceFile.content;
+
+            if (typeof content === "string") {
+              content = ProjectUtilities.replaceNamesInContent(content, project, galleryProject, newTypeName);
+            }
+
+            if (content !== null) {
+              if (messagerUpdater) {
+                messagerUpdater("Updating '" + targetFile.fullPath + "'");
+              }
+
+              targetFile.setContent(content);
+            }
           }
         }
       } else if (filePath.startsWith("/resource_pack")) {
@@ -752,16 +783,31 @@ export default class ProjectUtilities {
         } else {
           const targetFile = await targetRpFolder.ensureFileFromRelativePath(targetPath);
 
-          await sourceFile.loadContent();
+          let update = true;
 
-          let content = sourceFile.content;
+          if (update) {
+            if (dontOverwriteExistingFiles) {
+              const targetExists = await targetFile.exists();
 
-          if (typeof content === "string") {
-            content = ProjectUtilities.replaceNamesInContent(content, project, galleryProject, newTypeName);
-          }
+              if (targetExists) {
+                update = false;
+              }
+            }
+            await sourceFile.loadContent();
 
-          if (content !== null) {
-            targetFile.setContent(content);
+            let content = sourceFile.content;
+
+            if (typeof content === "string") {
+              content = ProjectUtilities.replaceNamesInContent(content, project, galleryProject, newTypeName);
+            }
+
+            if (content !== null) {
+              if (messagerUpdater) {
+                messagerUpdater("Updating '" + targetFile.fullPath + "'");
+              }
+
+              targetFile.setContent(content);
+            }
           }
         }
       }

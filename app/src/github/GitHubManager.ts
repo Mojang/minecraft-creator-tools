@@ -98,13 +98,13 @@ export default class GitHubManager {
     this._onAuthenticated = this._onAuthenticated.bind(this);
 
     this._octokit = new Octokit({
-      auth: GitHubManager._tokenFromLogin,
+      auth: "", // GitHubManager._tokenFromLogin,
       userAgent: constants.name + " " + constants.version,
     });
 
     this._prefsFile = prefsStorageFile;
 
-    GitHubManager.onAuthenticated.subscribe(this._onAuthenticated);
+    // GitHubManager.onAuthenticated.subscribe(this._onAuthenticated);
   }
 
   private _onAuthenticated(dummy: string, dummy2: string) {
@@ -133,7 +133,7 @@ export default class GitHubManager {
       }
 
       this._octokit = new Octokit({
-        auth: this._data.authToken,
+        // auth: this._data.authToken,
         userAgent: constants.name + " " + constants.version,
       });
     }

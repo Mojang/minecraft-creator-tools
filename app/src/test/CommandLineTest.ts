@@ -11,6 +11,7 @@ import { spawn } from "child_process";
 import { chunksToLinesAsync } from "@rauschma/stringio";
 import { Readable } from "stream";
 import * as fs from "fs";
+import Utilities from "../core/Utilities";
 
 CartoApp.hostType = HostType.testLocal;
 
@@ -102,9 +103,24 @@ function removeResultFolder(scenarioName: string) {
     const path =
       StorageUtilities.ensureEndsWithDelimiter(resultsFolder.fullPath) +
       StorageUtilities.ensureEndsWithDelimiter(scenarioName);
-    if (fs.existsSync(path))
+
+    // guard against being called at a "more root" file path
+    if (fs.existsSync(path) && Utilities.countChar(path, NodeStorage.folderDelimiter) > 5)
       // @ts-ignore
       fs.rmSync(path, {
+        recursive: true,
+      });
+  }
+}
+
+function ensureResultFolder(scenarioName: string) {
+  if (resultsFolder) {
+    const path =
+      StorageUtilities.ensureEndsWithDelimiter(resultsFolder.fullPath) +
+      StorageUtilities.ensureEndsWithDelimiter(scenarioName);
+    if (!fs.existsSync(path))
+      // @ts-ignore
+      fs.mkdirSync(path, {
         recursive: true,
       });
   }
@@ -119,11 +135,14 @@ describe("worldCommand", async () => {
     this.timeout(10000);
 
     removeResultFolder("worldCommand");
+    ensureResultFolder("worldCommand");
 
     const process = spawn("node", [
       " ./../toolbuild/jsn/cli",
       "world",
       "set",
+      "-i",
+      "./test/results/worldCommand",
       "-betaapis",
       "-o",
       "./test/results/worldCommand/",
