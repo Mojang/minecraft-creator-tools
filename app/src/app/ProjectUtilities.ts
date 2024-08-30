@@ -867,7 +867,6 @@ export default class ProjectUtilities {
       "ModalFormResponse",
     ],
     mc: [
-      "world",
       "system",
       "BlockPermutation",
       "BlockSignComponent",
@@ -896,9 +895,22 @@ export default class ProjectUtilities {
       "TripWireAfterEvent",
       "LeverActionAfterEvent",
       "Vector3",
-      "DimensionLocation",
     ],
   };
+
+  static adaptFullSample(content: string) {
+    const registerFunction = content.indexOf("export function register");
+
+    if (registerFunction >= 0) {
+      let nextParen = content.indexOf("Extension(", registerFunction);
+
+      if (nextParen > registerFunction) {
+        content = content.substring(0, registerFunction + 24) + content.substring(nextParen);
+      }
+    }
+
+    return content;
+  }
 
   static adaptSample(sampleContent: string, fileContent: string) {
     if (sampleContent.indexOf(" mc.") >= 0 && fileContent.indexOf(" as mc") <= 0) {
@@ -1033,6 +1045,8 @@ export default class ProjectUtilities {
 
       if (file !== undefined) {
         if (fullScriptBoxReplace && fileName === "ScriptBox.ts") {
+          snippetInjectContent = ProjectUtilities.adaptFullSample(snippetInjectContent);
+
           file.setContent(snippetInjectContent);
         } else {
           const type = StorageUtilities.getTypeFromName(file.name);

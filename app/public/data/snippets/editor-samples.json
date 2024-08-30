@@ -867,7 +867,7 @@
       "      uiSession.log.debug(`Initializing [${uiSession.extensionContext.extensionInfo.name}] extension`);",
       "    },",
       "    {",
-      "      description: ''Farm Generator' Sample Extension',",
+      "      description: 'Farm Generator Sample Extension',",
       "      notes: 'by Molly',",
       "    }",
       "  );",
