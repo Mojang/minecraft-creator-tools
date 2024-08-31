@@ -171,7 +171,10 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
 
       const ep = this.props.activeProjectItem.effectiveEditPreference;
 
-      if (this.props.activeProjectItem.creationType !== ProjectItemCreationType.normal) {
+      if (
+        this.props.activeProjectItem.creationType !== ProjectItemCreationType.normal &&
+        this.props.activeProjectItem.creationType !== undefined
+      ) {
         readOnly = true;
       }
 

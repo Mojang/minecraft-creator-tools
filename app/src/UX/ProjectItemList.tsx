@@ -1539,7 +1539,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
 
     return (
-      (projectItem.creationType === ProjectItemCreationType.normal || this.props.project.showHiddenItems) &&
+      (projectItem.creationType === undefined ||
+        projectItem.creationType === ProjectItemCreationType.normal ||
+        this.props.project.showHiddenItems) &&
       perTypeShouldShow &&
       (projectItem.itemType !== ProjectItemType.json || !fileName.startsWith(".")) && // hide files like .prettierrc.json from view
       (projectItem.itemType !== ProjectItemType.json || !fileName.startsWith("extensions")) && // hide files like extensions.json from view

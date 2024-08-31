@@ -504,7 +504,11 @@ export default class ProjectItem {
   }
 
   get needsSave() {
-    if (this._file === null && this.creationType && this.storageType === ProjectItemStorageType.singleFile) {
+    if (
+      this._file === null &&
+      this.creationType === ProjectItemCreationType.generated &&
+      this.storageType === ProjectItemStorageType.singleFile
+    ) {
       return true;
     }
 
