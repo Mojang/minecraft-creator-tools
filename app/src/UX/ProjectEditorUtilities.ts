@@ -533,7 +533,8 @@ export default class ProjectEditorUtilities {
           undefined,
           async (message: string) => {
             await carto.notifyStatusUpdate(message);
-          }
+          },
+          true
         );
 
         await storage.rootFolder.saveAll();

@@ -2977,9 +2977,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         exportKeys[nextExportKey] = {
           key: nextExportKey,
           icon: <FontAwesomeIcon icon={faComputer} key={nextExportKey} className="fa-lg" />,
-          content: "Export to folder on this PC",
+          content: "Export to a folder on this device",
           onClick: this._handleExportToLocalFolderClick,
-          title: "Exports this project to a folder on your PC.",
+          title: "Exports this project to a folder on your device.",
         };
         exportMenu.push(exportKeys[nextExportKey]);
       }

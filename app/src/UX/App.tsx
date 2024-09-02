@@ -1274,7 +1274,7 @@ export default class App extends Component<AppProps, AppState> {
           error += this.state.activeProject.mainDeployFolderPath;
         }
 
-        error += ". It may not be available on this PC?";
+        error += ". It may not be available on this device?";
 
         interior = (
           <Home

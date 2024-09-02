@@ -34,7 +34,7 @@
   }
 
   .home-toolTile {
-    height: 120px;
+    height: 126px;
     display: inline-flex;
     margin-top: 10px;
     margin-left: 10px;
@@ -179,7 +179,7 @@
 .home-inspectFileUpload {
   max-width: calc(100vw - 100px);
   margin-left: 0px !important;
-  width: 210px;
+  width: 250px;
 }
 
 .home-projects-note {
