@@ -20,6 +20,38 @@ export default class MinecraftUtilities {
     return path;
   }
 
+  static replaceMinecraftPathTokens(tokenizePath: string) {
+    if (tokenizePath.startsWith("<RPME>")) {
+      tokenizePath += ".geo.json";
+    } else if (
+      tokenizePath.startsWith("<BPE>") ||
+      tokenizePath.startsWith("<BPLE>") ||
+      tokenizePath.startsWith("<BPSR>")
+    ) {
+      tokenizePath += ".json";
+    } else if (tokenizePath.startsWith("<RPE>")) {
+      tokenizePath += ".entity.json";
+    } else if (tokenizePath.startsWith("<RPAC>")) {
+      tokenizePath += ".animation_controlllers.json";
+    } else if (tokenizePath.startsWith("<RPA>")) {
+      tokenizePath += ".animations.json";
+    } else if (tokenizePath.startsWith("<RPTE>")) {
+      if (tokenizePath.indexOf(".") < 0) {
+        tokenizePath += ".png";
+      }
+    }
+    tokenizePath = tokenizePath.replace(/<RPTE>/gi, "/resource_pack/textures/entity/");
+    tokenizePath = tokenizePath.replace(/<RPME>/gi, "/resource_pack/models/entity/");
+    tokenizePath = tokenizePath.replace(/<RPAC>/gi, "/resource_pack/animation_controllers/");
+    tokenizePath = tokenizePath.replace(/<RPA>/gi, "/resource_pack/animations/");
+    tokenizePath = tokenizePath.replace(/<RPE>/gi, "/resource_pack/entity/");
+    tokenizePath = tokenizePath.replace(/<BPE>/gi, "/behavior_pack/entities/");
+    tokenizePath = tokenizePath.replace(/<BPLE>/gi, "/behavior_pack/loot_tables/entities/");
+    tokenizePath = tokenizePath.replace(/<BPSR>/gi, "/behavior_pack/spawn_rules/");
+
+    return tokenizePath;
+  }
+
   static makeNameScriptSafe(tokenName: string) {
     tokenName = tokenName.replace(/[^a-z0-9]/gi, "-").replace(/\s+/g, "-");
 

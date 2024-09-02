@@ -68,7 +68,11 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
 
           await projectItem.file.loadContent();
 
-          if (projectItem.file.content && projectItem.file.content instanceof Uint8Array) {
+          if (
+            projectItem.file.content &&
+            projectItem.file.content instanceof Uint8Array &&
+            projectItem.file.type !== "tga"
+          ) {
             const exifr = new Exifr({});
 
             try {

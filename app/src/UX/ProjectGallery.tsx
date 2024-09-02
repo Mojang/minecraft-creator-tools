@@ -19,6 +19,7 @@ export enum GalleryProjectCommand {
 
 export enum ProjectGalleryMode {
   starters,
+  entities,
   codeSnippets,
 }
 
@@ -45,6 +46,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
     this._handleStatusAdded = this._handleStatusAdded.bind(this);
     this._handleCommand = this._handleCommand.bind(this);
     this._selectCodeSnippets = this._selectCodeSnippets.bind(this);
+    this._selectEntities = this._selectEntities.bind(this);
     this._selectProjectStarters = this._selectProjectStarters.bind(this);
 
     this.loadProjects = this.loadProjects.bind(this);
@@ -98,6 +100,14 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
     });
   }
 
+  _selectEntities() {
+    this.setState({
+      loadedProjectHash: this.state.loadedProjectHash,
+      mode: ProjectGalleryMode.entities,
+      selectedItem: this.state.selectedItem,
+    });
+  }
+
   _selectCodeSnippets() {
     this.setState({
       loadedProjectHash: this.state.loadedProjectHash,
@@ -134,6 +144,8 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
       seed += "|" + item.gitHubFolder;
     }
 
+    seed += "|" + item.id;
+
     return seed;
   }
 
@@ -146,6 +158,10 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
 
     if (project.originalGitHubFolder) {
       seed += "|" + project.originalGitHubFolder;
+    }
+
+    if (project.originalSampleId) {
+      seed += "|" + project.originalSampleId;
     }
 
     return seed;
@@ -188,7 +204,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
 
     const gal = this.props.gallery;
 
-    if (this.props.search === undefined) {
+    if (this.props.search === undefined || this.props.search.length === 0) {
       tabsElt = (
         <div className="pg-tabArea" role="tablist">
           <Button
@@ -213,7 +229,40 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
                   : this.props.theme.siteVariables?.colorScheme.brand.background1),
             }}
           >
-            Project Starters
+            Starters
+          </Button>
+          <div
+            className="pg-underline"
+            aria-hidden="true"
+            style={{
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            }}
+          >
+            &#160;
+          </div>
+          <Button
+            className="pg-tabButton"
+            role="tab"
+            onClick={this._selectEntities}
+            aria-selected={this.state.mode === ProjectGalleryMode.entities}
+            style={{
+              backgroundColor:
+                this.state.mode === ProjectGalleryMode.entities
+                  ? this.props.theme.siteVariables?.colorScheme.brand.background3
+                  : this.props.theme.siteVariables?.colorScheme.brand.background2,
+              color:
+                this.state.mode === ProjectGalleryMode.entities
+                  ? this.props.theme.siteVariables?.colorScheme.brand.foreground2
+                  : this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+              borderBottom:
+                "1px solid " +
+                (this.state.mode === ProjectGalleryMode.entities
+                  ? this.props.theme.siteVariables?.colorScheme.brand.background3
+                  : this.props.theme.siteVariables?.colorScheme.brand.background1),
+            }}
+          >
+            From a Mob
           </Button>
           <div
             className="pg-underline"
@@ -248,14 +297,6 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
           >
             Code Snippets
           </Button>
-          <div
-            className="pg-underline pg-underlineLong"
-            style={{
-              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-            }}
-          >
-            &#160;
-          </div>
         </div>
       );
     }
@@ -325,8 +366,51 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
           (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
           (galItem.type === GalleryItemType.project ||
             galItem.type === GalleryItemType.editorProject ||
-            galItem.type === GalleryItemType.blockType ||
-            galItem.type === GalleryItemType.entityType)
+            galItem.type === GalleryItemType.blockType)
+        ) {
+          const displayOpen = this.state.loadedProjectHash.indexOf("[" + this.getGalleryHash(galItem) + "]") >= 0;
+
+          projectGalleries.push(
+            <ProjectTile
+              key={"galitem" + i}
+              theme={this.props.theme}
+              displayMode={this.props.view}
+              isSelectable={this.props.isSelectable}
+              isSelected={this.state.selectedItem === galItem}
+              onGalleryItemCommand={this._handleCommand}
+              displayOpenButton={displayOpen}
+              carto={this.props.carto}
+              project={galItem}
+            />
+          );
+
+          didPushStarter = true;
+        }
+      }
+
+      if (projectGalleries.length > 0) {
+        projectGalleriesElt = (
+          <div
+            className="pg-binWrap"
+            style={{
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            }}
+          >
+            {projectGalleries}
+          </div>
+        );
+      }
+    }
+
+    if (this.props.search || this.state.mode === ProjectGalleryMode.entities) {
+      for (let i = 0; i < gal.items.length; i++) {
+        const galItem = gal.items[i];
+
+        if (
+          this.projectMatchesSearch(galItem) &&
+          (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
+          galItem.type === GalleryItemType.entityType
         ) {
           const displayOpen = this.state.loadedProjectHash.indexOf("[" + this.getGalleryHash(galItem) + "]") >= 0;
 

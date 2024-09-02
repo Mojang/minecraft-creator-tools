@@ -36,6 +36,7 @@ import CommandRegistry from "./CommandRegistry";
 import ZipStorage from "../storage/ZipStorage";
 import { MaxItemTypes, ProjectItemType } from "./IProjectItemData";
 import DeploymentStorageMinecraft from "./DeploymentStorageMinecraft";
+import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 
 export enum CartoMinecraftState {
   none = 0,
@@ -1160,6 +1161,20 @@ export default class Carto {
 
       if (result !== null) {
         this._gallery = result as IGallery;
+      }
+    }
+
+    if (this._gallery) {
+      for (const item of this._gallery.items) {
+        if (item.fileList) {
+          const newFileList = [];
+
+          for (const fileItem of item.fileList) {
+            newFileList.push(MinecraftUtilities.replaceMinecraftPathTokens(fileItem));
+          }
+
+          item.fileList = newFileList;
+        }
       }
     }
 
