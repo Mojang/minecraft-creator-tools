@@ -1400,7 +1400,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         onClick: this._handleConnectClick,
         title: "Connect",
       });
-    } else {
+    } else if (window.showDirectoryPicker !== undefined) {
       actionsToolbar.push({
         icon: <LocalFolderLabel isCompact={false} />,
         key: "openFolderA",

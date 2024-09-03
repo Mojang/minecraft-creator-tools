@@ -133,35 +133,37 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
       </Button>
     );
 
-    exportBin.push(
-      <Button
-        className="pact-toolTile"
-        key="pact-exportLocalFolder"
-        style={{
-          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-        }}
-        onClick={this._exportLocal}
-        onMouseDown={this._handleToolTileMouseDown}
-        onMouseUp={this._handleToolTileMouseUp}
-      >
-        <div
-          className="pact-toolTileInner"
+    if (window.showDirectoryPicker !== undefined) {
+      exportBin.push(
+        <Button
+          className="pact-toolTile"
+          key="pact-exportLocalFolder"
           style={{
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
           }}
+          onClick={this._exportLocal}
+          onMouseDown={this._handleToolTileMouseDown}
+          onMouseUp={this._handleToolTileMouseUp}
         >
-          <div className="pact-toolTile-label">
-            <div className="pact-faIconWrap">
-              <FontAwesomeIcon icon={faFolder} className="fa-xl" />
+          <div
+            className="pact-toolTileInner"
+            style={{
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+            }}
+          >
+            <div className="pact-toolTile-label">
+              <div className="pact-faIconWrap">
+                <FontAwesomeIcon icon={faFolder} className="fa-xl" />
+              </div>
+              <div className="pact-label">Export to folder on your device</div>
             </div>
-            <div className="pact-label">Export to folder on your device</div>
+            <div className="pact-toolTile-instruction">Exports this project to a folder on your local device</div>
           </div>
-          <div className="pact-toolTile-instruction">Exports this project to a folder on your local device</div>
-        </div>
-      </Button>
-    );
+        </Button>
+      );
+    }
 
     packageBin.push(
       <Button

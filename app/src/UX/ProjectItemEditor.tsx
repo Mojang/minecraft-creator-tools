@@ -149,7 +149,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         {this.props.activeProjectItem
           ? ProjectItemUtilities.getDescriptionForType(this.props.activeProjectItem.itemType)
           : ""}{" "}
-        - {this.props.activeProjectItem?.file?.isContentLoaded ? "loaded." : "loading..."}
+        - {this.props.activeProjectItem?.file?.isContentLoaded ? "loaded." : ""}
       </div>
     );
     let readOnly = this.props.readOnly;

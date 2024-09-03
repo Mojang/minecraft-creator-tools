@@ -390,7 +390,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                     if (cba.version && cba.version < this.modernCommandVersion) {
                       items.push(
                         new ProjectInfoItem(
-                          this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
+                          InfoItemType.recommendation,
                           this.id,
                           212,
                           "Command '" + cba.command + "' is from an older Minecraft version (" + cba.version + ") ",
