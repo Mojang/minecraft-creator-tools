@@ -179,8 +179,10 @@ export default class GitHubFolder extends FolderBase implements IFolder {
         const childFolder = this.ensureFolder(fso.name);
         childFolder.sha = fso.sha;
       } else if (fso.type === "file") {
-        const childFile = this.ensureFile(fso.name);
-        childFile.sha = fso.sha;
+        if (StorageUtilities.isUsableFile(fso.name)) {
+          const childFile = this.ensureFile(fso.name);
+          childFile.sha = fso.sha;
+        }
       }
     }
 

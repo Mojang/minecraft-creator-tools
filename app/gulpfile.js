@@ -248,15 +248,9 @@ function runUpdateVersions() {
   return gulp
     .src(versionSource, { base: "" })
     .pipe(
-      updateVersions([
-        "./package.json",
-        "./package-lock.json",
-        "./jsnode/package.json",
-        "./src/core/Constants.ts",
-      ])
+      updateVersions(["./package.json", "./package-lock.json", "./jsnode/package.json", "./src/core/Constants.ts"])
     );
 }
-
 
 function runDownloadSamples() {
   return gulp.src(mcreslistsamplesigs, { base: "" }).pipe(downloadResources("public/res/samples/microsoft/"));
@@ -277,7 +271,7 @@ function runDownloadVanillaResources() {
 gulp.task("jsnwebbuild", gulp.series("clean-jsnwebbuild", compileJsnWebBuild, "postclean-jsnwebbuild"));
 
 gulp.task("clean-webbuild", function () {
-  return del(["web"]);
+  return del(["out/web"]);
 });
 
 gulp.task("clean-res", function () {

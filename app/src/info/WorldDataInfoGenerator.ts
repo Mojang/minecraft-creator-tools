@@ -13,12 +13,12 @@ import { StatusTopic } from "../app/Status";
 import CommandStructure from "../app/CommandStructure";
 import ProjectInfoSet from "./ProjectInfoSet";
 import CommandRegistry from "../app/CommandRegistry";
-import BehaviorAnimationController from "../minecraft/BehaviorAnimationController";
-import BehaviorAnimation from "../minecraft/BehaviorAnimation";
 import Dialogue from "../minecraft/Dialogue";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ContentIndex, { AnnotationCategories } from "../core/ContentIndex";
 import { NbtTagType } from "../minecraft/NbtBinaryTag";
+import AnimationControllerBehaviorDefinition from "../minecraft/AnimationControllerBehaviorDefinition";
+import AnimationBehaviorDefinition from "../minecraft/AnimationBehaviorDefinition";
 
 export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator {
   id = "WORLDDATA";
@@ -201,9 +201,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       await projectItem.ensureFileStorage();
 
       if (projectItem.file) {
-        const acManifest = await BehaviorAnimationController.ensureOnFile(projectItem.file);
+        const acManifest = await AnimationControllerBehaviorDefinition.ensureOnFile(projectItem.file);
 
-        if (acManifest && acManifest.wrapper && acManifest.wrapper.animation_controllers) {
+        if (acManifest && acManifest.data && acManifest.data.animation_controllers) {
           let states = acManifest.getAllStates();
 
           for (const state of states) {
@@ -221,9 +221,9 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       await projectItem.ensureFileStorage();
 
       if (projectItem.file) {
-        const animManifest = await BehaviorAnimation.ensureOnFile(projectItem.file);
+        const animManifest = await AnimationBehaviorDefinition.ensureOnFile(projectItem.file);
 
-        if (animManifest && animManifest.wrapper && animManifest.wrapper.animations) {
+        if (animManifest && animManifest.data && animManifest.data.animations) {
           let timelines = animManifest.getAllTimeline();
 
           for (const timeline of timelines) {
@@ -390,7 +390,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                     if (cba.version && cba.version < this.modernCommandVersion) {
                       items.push(
                         new ProjectInfoItem(
-                          this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
+                          InfoItemType.recommendation,
                           this.id,
                           212,
                           "Command '" + cba.command + "' is from an older Minecraft version (" + cba.version + ") ",
@@ -472,6 +472,8 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                     }
                   }
                 }
+
+                chunk.clearCachedData();
               }
             }
           }

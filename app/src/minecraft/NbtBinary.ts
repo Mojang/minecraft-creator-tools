@@ -18,8 +18,12 @@ export default class NbtBinary implements IErrorable {
       return null;
     }
 
+    if (this.roots.length === 0) {
+      return null;
+    }
+
     if (this.roots.length !== 1) {
-      throw new Error("Unexpectedly did not find a single root.");
+      this._pushError("Unexpectedly did not find a single root (" + this.roots.length + ")");
     }
 
     return this.roots[0];

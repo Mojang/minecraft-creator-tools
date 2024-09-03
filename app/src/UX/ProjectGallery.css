@@ -6,7 +6,16 @@
     border-left: solid 1px;
     border-right: solid 1px;
     border-bottom: solid 1px;
-    border-top: solid 0px;
+    border-top: solid 1px;
+  }
+
+  .pg-tabArea {
+    display: block;
+    position: relative;
+    top: 0.75px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 0px;
   }
 }
 
@@ -15,8 +24,8 @@
     margin-top: 0px;
     padding-top: 10px;
     padding-bottom: 10px;
-    border-left: solid 1px;
-    border-right: solid 1px;
+    border-left: solid 0px;
+    border-right: solid 0px;
     border-bottom: solid 1px;
     border-top: solid 1px;
     text-align: center;
@@ -24,6 +33,15 @@
 
   .pg-binWrap-small {
     border-top: solid 1px;
+  }
+
+  .pg-tabArea {
+    display: block;
+    position: relative;
+    top: 1px;
+    padding-top: 10px;
+    padding-left: 5px;
+    padding-bottom: 0px;
   }
 }
 
@@ -33,13 +51,6 @@
 
 .pg-outer {
   padding-bottom: 10px;
-}
-
-.pg-tabArea {
-  display: block;
-  padding-top: 10px;
-  padding-left: 10px;
-  padding-bottom: 0px;
 }
 
 .pg-notFound {
@@ -59,8 +70,4 @@
   height: 32px;
   width: 6px;
   border-bottom: solid 1px;
-}
-
-.pg-underlineLong {
-  width: calc(100vw - 724px);
 }

@@ -1,5 +1,6 @@
 import { assert } from "chai";
 import Carto from "../app/Carto";
+import Project, { ProjectAutoDeploymentMode } from "../app/Project";
 import CartoApp, { HostType } from "../app/CartoApp";
 import NodeStorage from "../local/NodeStorage";
 import Database from "../minecraft/Database";
@@ -10,6 +11,7 @@ import { spawn } from "child_process";
 import { chunksToLinesAsync } from "@rauschma/stringio";
 import { Readable } from "stream";
 import * as fs from "fs";
+import Utilities from "../core/Utilities";
 
 CartoApp.hostType = HostType.testLocal;
 
@@ -17,8 +19,8 @@ let carto: Carto | undefined = undefined;
 let localEnv: LocalEnvironment | undefined = undefined;
 
 let scenariosFolder: IFolder | undefined = undefined;
-
 let resultsFolder: IFolder | undefined = undefined;
+let sampleFolder: IFolder | undefined = undefined;
 
 localEnv = new LocalEnvironment(false);
 
@@ -27,6 +29,7 @@ localEnv = new LocalEnvironment(false);
   CartoApp.ensureLocalFolder = _ensureLocalFolder;
 
   const testRootPath = NodeStorage.ensureEndsWithDelimiter(__dirname) + "/../../test/";
+  const sampleContentRootPath = NodeStorage.ensureEndsWithDelimiter(__dirname) + "/../../../";
 
   const scenariosStorage = new NodeStorage(testRootPath, "scenarios");
 
@@ -39,6 +42,12 @@ localEnv = new LocalEnvironment(false);
   resultsFolder = resultsStorage.rootFolder;
 
   await resultsFolder.ensureExists();
+
+  const sampleContentStorage = new NodeStorage(sampleContentRootPath, "samplecontent");
+
+  sampleFolder = sampleContentStorage.rootFolder;
+
+  await sampleFolder.ensureExists();
 
   CartoApp.prefsStorage = new NodeStorage(
     localEnv.utilities.testWorkingPath + "prefs" + NodeStorage.folderDelimiter,
@@ -95,13 +104,114 @@ function removeResultFolder(scenarioName: string) {
       StorageUtilities.ensureEndsWithDelimiter(resultsFolder.fullPath) +
       StorageUtilities.ensureEndsWithDelimiter(scenarioName);
 
-    if (fs.existsSync(path))
+    // guard against being called at a "more root" file path
+    if (fs.existsSync(path) && Utilities.countChar(path, NodeStorage.folderDelimiter) > 5)
       // @ts-ignore
       fs.rmSync(path, {
         recursive: true,
       });
   }
 }
+
+function ensureResultFolder(scenarioName: string) {
+  if (resultsFolder) {
+    const path =
+      StorageUtilities.ensureEndsWithDelimiter(resultsFolder.fullPath) +
+      StorageUtilities.ensureEndsWithDelimiter(scenarioName);
+    if (!fs.existsSync(path))
+      // @ts-ignore
+      fs.mkdirSync(path, {
+        recursive: true,
+      });
+  }
+}
+
+describe("worldCommand", async () => {
+  let exitCode: number | null = null;
+  const stdoutLines: string[] = [];
+  const stderrLines: string[] = [];
+
+  before(function (done) {
+    this.timeout(10000);
+
+    removeResultFolder("worldCommand");
+    ensureResultFolder("worldCommand");
+
+    const process = spawn("node", [
+      " ./../toolbuild/jsn/cli",
+      "world",
+      "set",
+      "-i",
+      "./test/results/worldCommand",
+      "-betaapis",
+      "-o",
+      "./test/results/worldCommand/",
+    ]);
+
+    collectLines(process.stdout, stdoutLines);
+    collectLines(process.stderr, stderrLines);
+
+    process.on("exit", (code) => {
+      exitCode = code;
+      done();
+    });
+  });
+
+  it("should have no stderr lines", async () => {
+    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+  }).timeout(10000);
+
+  it("exit code should be zero", async () => {
+    assert.equal(exitCode, 0);
+  }).timeout(10000);
+
+  it("output matches", async () => {
+    await folderMatches("worldCommand");
+  });
+});
+
+describe("createCommandAddonStarter", async () => {
+  let exitCode: number | null = null;
+  const stdoutLines: string[] = [];
+  const stderrLines: string[] = [];
+
+  before(function (done) {
+    this.timeout(10000);
+
+    removeResultFolder("createCommandAddonStarter");
+
+    const process = spawn("node", [
+      " ./../toolbuild/jsn/cli",
+      "create",
+      "testerName",
+      "addonStarter",
+      "testerCreatorName",
+      "testerDescription",
+      "-o",
+      "./test/results/createCommandAddonStarter/",
+    ]);
+
+    collectLines(process.stdout, stdoutLines);
+    collectLines(process.stderr, stderrLines);
+
+    process.on("exit", (code) => {
+      exitCode = code;
+      done();
+    });
+  });
+
+  it("should have no stderr lines", async () => {
+    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+  }).timeout(10000);
+
+  it("exit code should be zero", async () => {
+    assert.equal(exitCode, 0);
+  }).timeout(10000);
+
+  it("output matches", async () => {
+    await folderMatches("createCommandAddonStarter");
+  });
+});
 
 describe("validateAddons1WellFormedCommand", async () => {
   let exitCode: number | null = null;
@@ -285,9 +395,9 @@ async function collectLines(readable: Readable, data: string[]) {
       let lineUp = line.replace(/\\n/g, "");
       lineUp = lineUp.replace(/\\r/g, "");
 
-      if (lineUp.indexOf("ebugger") === -1) {
+      if (lineUp.indexOf("ebugger") <= 0) {
         // ignore any lines about the debugger.
-        console.log(lineUp);
+        // console.log(lineUp);
         data.push(lineUp);
       }
     }
@@ -306,6 +416,8 @@ async function folderMatches(scenarioName: string, excludeFileList?: string[]) {
 
   const isEqual = await StorageUtilities.folderContentsEqual(scenarioFolder, scenarioOutFolder, excludeFileList, true, [
     "generatorVersion",
+    "uuid",
+    "version",
   ]);
 
   assert(
@@ -335,7 +447,11 @@ async function ensureJsonMatchesScenario(obj: object, scenarioName: string) {
 
   assert(exists, "report.json file for scenario '" + scenarioName + "' does not exist.");
 
-  const isEqual = await StorageUtilities.fileContentsEqual(scenarioFile, outFile, true, ["generatorVersion"]);
+  const isEqual = await StorageUtilities.fileContentsEqual(scenarioFile, outFile, true, [
+    "generatorVersion",
+    "uuid",
+    "version",
+  ]);
 
   assert(
     isEqual,

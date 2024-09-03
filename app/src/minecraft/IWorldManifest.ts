@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+// supports both world and world template manifests.
+
 export default interface IWorldManifest {
   format_version: number;
   __comment__?: string;
@@ -11,9 +13,9 @@ export default interface IWorldManifest {
 export interface IWorldManifestHeader {
   base_game_version: number[];
   description: string;
-  lock_template_options: boolean;
+  lock_template_options?: boolean;
   name: string;
-  platform_locked: boolean;
+  platform_locked?: boolean;
   uuid: string;
   version: number[];
 }

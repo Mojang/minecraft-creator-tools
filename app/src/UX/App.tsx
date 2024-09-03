@@ -18,6 +18,7 @@ import ProjectUtilities from "../app/ProjectUtilities";
 import WebUtilities from "./WebUtilities";
 import ProjectEditorUtilities, { ProjectEditorMode } from "./ProjectEditorUtilities";
 import HttpStorage from "../storage/HttpStorage";
+import Utilities from "../core/Utilities";
 
 export enum NewProjectTemplateType {
   empty,
@@ -384,9 +385,11 @@ export default class App extends Component<AppProps, AppState> {
       if (firstSlash > 1) {
         const openToken = openQuery.substring(0, firstSlash).toLowerCase();
 
-        const openData = openQuery.substring(firstSlash + 1, openQuery.length);
+        let openData = openQuery.substring(firstSlash + 1, openQuery.length);
 
         if (openToken === "gp") {
+          openData = Utilities.ensureNotEndsWithSlash(openData);
+
           this._ensureProjectFromGalleryId(openData, updateContent);
         }
       }
@@ -577,7 +580,7 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     if (additionalFile && additionalFilePath) {
-      await ProjectEditorUtilities.addBrowserFile(newProject, additionalFilePath, additionalFile);
+      await ProjectEditorUtilities.integrateBrowserFileDefaultAction(newProject, additionalFilePath, additionalFile);
     }
 
     await newProject.save(true);
@@ -588,7 +591,11 @@ export default class App extends Component<AppProps, AppState> {
     let nextMode = this.state.mode;
 
     if (nextMode === AppMode.home || nextMode === AppMode.loading) {
-      nextMode = AppMode.projectReadOnly;
+      if (startInReadOnly) {
+        nextMode = AppMode.projectReadOnly;
+      } else {
+        nextMode = AppMode.project;
+      }
     }
 
     this.initProject(newProject);
@@ -655,7 +662,7 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   private async _ensureProjectFromGalleryId(galleryId: string, updateContent?: string) {
-    if (this.state.carto === undefined) {
+    if (!this.state || this.state.carto === undefined) {
       return;
     }
 
@@ -669,22 +676,24 @@ export default class App extends Component<AppProps, AppState> {
     this._ensureProjectFromGallery(gp, updateContent);
   }
 
-  private async _ensureProjectFromGallery(project: IGalleryItem, updateContent?: string) {
+  private async _ensureProjectFromGallery(galleryItem: IGalleryItem, updateContent?: string) {
     if (this.state === null || this.state.carto === undefined) {
       return;
     }
 
     this._ensureProjectFromGitHubTemplate(
-      project.title,
-      project.gitHubOwner,
-      project.gitHubRepoName,
+      galleryItem.title,
+      galleryItem.gitHubOwner,
+      galleryItem.gitHubRepoName,
       false,
-      project.gitHubBranch,
-      project.gitHubFolder,
-      project.fileList,
-      project.id,
-      project.type === GalleryItemType.codeSample ? project.id : undefined,
-      updateContent
+      galleryItem.gitHubBranch,
+      galleryItem.gitHubFolder,
+      galleryItem.fileList,
+      galleryItem.id,
+      galleryItem.type !== GalleryItemType.project ? galleryItem.id : undefined,
+      updateContent,
+      undefined,
+      galleryItem.type
     );
   }
 
@@ -699,11 +708,13 @@ export default class App extends Component<AppProps, AppState> {
     projectId?: string,
     sampleId?: string,
     updateContent?: string,
-    description?: string
+    description?: string,
+    galleryItemType?: GalleryItemType
   ) {
     const carto = CartoApp.carto;
 
-    if (this.state === null || carto === undefined) {
+    // don't load if we're already actively loading something.
+    if (this.state === null || carto === undefined || this._loadingMessage || this.state.loadingMessage) {
       return;
     }
 
@@ -741,6 +752,7 @@ export default class App extends Component<AppProps, AppState> {
         proj.originalGitHubRepoName === gitHubRepoName &&
         proj.originalGitHubBranch === gitHubBranch &&
         proj.originalGitHubFolder === gitHubFolder &&
+        proj.originalSampleId === sampleId &&
         updateContent === undefined
       ) {
         this._updateWindowTitle(newMode, proj);
@@ -770,7 +782,11 @@ export default class App extends Component<AppProps, AppState> {
       projectId,
       sampleId,
       updateContent,
-      description
+      undefined,
+      undefined,
+      undefined,
+      description,
+      galleryItemType
     );
   }
 
@@ -1151,6 +1167,12 @@ export default class App extends Component<AppProps, AppState> {
       return <div className="app-loading">Loading...</div>;
     }
 
+    let isReadOnly = false;
+
+    if (this.state.mode === AppMode.projectReadOnly) {
+      isReadOnly = true;
+    }
+
     let top = <></>;
     let borderStr = "";
     let height = "100vh";
@@ -1224,7 +1246,7 @@ export default class App extends Component<AppProps, AppState> {
           selectedItem={this.state.selectedItem}
           viewMode={CartoEditorViewMode.mainFocus}
           mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
-          readOnly={true}
+          readOnly={isReadOnly}
           onModeChangeRequested={this._handleModeChangeRequested}
         />
       );
@@ -1240,7 +1262,7 @@ export default class App extends Component<AppProps, AppState> {
           project={this.state.activeProject}
           mode={ProjectEditorMode.inspector}
           viewMode={CartoEditorViewMode.mainFocus}
-          readOnly={true}
+          readOnly={isReadOnly}
           onModeChangeRequested={this._handleModeChangeRequested}
         />
       );
@@ -1252,7 +1274,7 @@ export default class App extends Component<AppProps, AppState> {
           error += this.state.activeProject.mainDeployFolderPath;
         }
 
-        error += ". It may not be available on this PC?";
+        error += ". It may not be available on this device?";
 
         interior = (
           <Home
@@ -1270,7 +1292,10 @@ export default class App extends Component<AppProps, AppState> {
             onProjectSelected={this._handleProjectSelected}
           />
         );
-      } else if (this.state.activeProject.originalSampleId) {
+      } else if (
+        this.state.activeProject.originalSampleId &&
+        this.state.activeProject.getItemByProjectPath("/scripts/ScriptBox.ts")
+      ) {
         // show main view (no sidebar) if it's a code sample.
         interior = (
           <ProjectEditor
@@ -1282,7 +1307,7 @@ export default class App extends Component<AppProps, AppState> {
             project={this.state.activeProject}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
             selectedItem={this.state.selectedItem}
-            readOnly={true}
+            readOnly={isReadOnly}
             onModeChangeRequested={this._handleModeChangeRequested}
           />
         );
@@ -1296,7 +1321,7 @@ export default class App extends Component<AppProps, AppState> {
             project={this.state.activeProject}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
             selectedItem={this.state.selectedItem}
-            readOnly={true}
+            readOnly={isReadOnly}
             onModeChangeRequested={this._handleModeChangeRequested}
           />
         );

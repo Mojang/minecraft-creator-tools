@@ -7,18 +7,18 @@ import IProjectInfoItemGenerator from "./IProjectItemInfoGenerator";
 
 import ProjectInfoSet from "./ProjectInfoSet";
 import { ProjectItemType } from "../app/IProjectItemData";
-import BehaviorAnimationController from "../minecraft/BehaviorAnimationController";
 import { InfoItemType } from "./IInfoItemData";
 import AddOnRequirementsGenerator from "./AddOnRequirementsGenerator";
-import BehaviorAnimation from "../minecraft/BehaviorAnimation";
-import ResourceAnimationController from "../minecraft/ResourceAnimationController";
-import ResourceAnimation from "../minecraft/ResourceAnimation";
 import ResourceRenderController from "../minecraft/ResourceRenderController";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 import ModelGeometryDefinition from "../minecraft/ModelGeometryDefinition";
 import Material from "../minecraft/Material";
 import ContentIndex from "../core/ContentIndex";
+import AnimationResourceDefinition from "../minecraft/AnimationResourceDefinition";
+import AnimationBehaviorDefinition from "../minecraft/AnimationBehaviorDefinition";
+import AnimationControllerBehaviorDefinition from "../minecraft/AnimationControllerBehaviorDefinition";
+import AnimationControllerResourceDefinition from "../minecraft/AnimationControllerResourceDefinition";
 
 export default class AddOnItemRequirementsGenerator implements IProjectInfoItemGenerator {
   id = "ADDONIREQ";
@@ -124,10 +124,10 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
       await projectItem.ensureFileStorage();
 
       if (projectItem.file) {
-        const bacManifest = await BehaviorAnimationController.ensureOnFile(projectItem.file);
+        const bacManifest = await AnimationControllerBehaviorDefinition.ensureOnFile(projectItem.file);
 
-        if (bacManifest && bacManifest.wrapper && bacManifest.wrapper.animation_controllers) {
-          for (let bacName in bacManifest.wrapper.animation_controllers) {
+        if (bacManifest && bacManifest.data && bacManifest.data.animation_controllers) {
+          for (let bacName in bacManifest.data.animation_controllers) {
             let bacNameBreak = bacName.split(".");
 
             if (bacNameBreak.length < 3 || bacNameBreak[0] !== "controller" || bacNameBreak[1] !== "animation") {
@@ -160,10 +160,10 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
       await projectItem.ensureFileStorage();
 
       if (projectItem.file) {
-        const baManifest = await BehaviorAnimation.ensureOnFile(projectItem.file);
+        const baManifest = await AnimationBehaviorDefinition.ensureOnFile(projectItem.file);
 
-        if (baManifest && baManifest.wrapper && baManifest.wrapper.animations) {
-          for (let aName in baManifest.wrapper.animations) {
+        if (baManifest && baManifest.data && baManifest.data.animations) {
+          for (let aName in baManifest.data.animations) {
             let baNameBreak = aName.split(".");
 
             if (baNameBreak.length < 2 || baNameBreak[0] !== "animation") {
@@ -196,10 +196,10 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
       await projectItem.ensureFileStorage();
 
       if (projectItem.file) {
-        const racManifest = await ResourceAnimationController.ensureOnFile(projectItem.file);
+        const racManifest = await AnimationControllerResourceDefinition.ensureOnFile(projectItem.file);
 
-        if (racManifest && racManifest.definition && racManifest.definition.animation_controllers) {
-          for (let racName in racManifest.definition.animation_controllers) {
+        if (racManifest && racManifest.data && racManifest.data.animation_controllers) {
+          for (let racName in racManifest.data.animation_controllers) {
             let racNameBreak = racName.split(".");
 
             if (racNameBreak.length < 3 || racNameBreak[0] !== "controller" || racNameBreak[1] !== "animation") {
@@ -232,10 +232,10 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
       await projectItem.ensureFileStorage();
 
       if (projectItem.file) {
-        const raManifest = await ResourceAnimation.ensureOnFile(projectItem.file);
+        const raManifest = await AnimationResourceDefinition.ensureOnFile(projectItem.file);
 
-        if (raManifest && raManifest.wrapper && raManifest.wrapper.animations) {
-          for (let aName in raManifest.wrapper.animations) {
+        if (raManifest && raManifest.animations) {
+          for (let aName in raManifest.animations) {
             let raNameBreak = aName.split(".");
 
             if (raNameBreak.length < 2 || raNameBreak[0] !== "animation") {

@@ -5,15 +5,15 @@ import BlockCube from "../minecraft/BlockCube";
 import Structure from "../minecraft/Structure";
 
 export default class ProjectContent {
-  static defaultTestJavaScript = `import * as gt from "@minecraft/server-gametest";
-import * as mc from "@minecraft/server";
+  static defaultTestJavaScript = `import { Test } from "@minecraft/server-gametest";
+import { world, system } from "@minecraft/server";
         
 function basicTest(test) {
     const zoglinEntityType = "zoglin";
     const skeletonEntityType = "skeleton";
         
-    test.spawn(zoglinEntityType, new mc.BlockLocation(2, 2, 3));
-    test.spawn(skeletonEntityType, new mc.BlockLocation(5, 2, 3));
+    test.spawn(zoglinEntityType, { x: 2, y: 2, z: 3});
+    test.spawn(skeletonEntityType, { x: 5, y: 2, z: 3});
     
     test.succeedWhen( ()=> {
             test.assertEntityPresentInArea(skeletonEntityType, false);
@@ -24,8 +24,8 @@ function basicTest(test) {
 gt.register("MyProject", "basicTest", basicTest).structureName("gametests:basic");     
 `;
 
-  static emptyTestJavaScript = `import * as gt from "@minecraft/server-gametest";
-import * as mc from "@minecraft/server";
+  static emptyTestJavaScript = `import { Test } from "@minecraft/server-gametest";
+import { world, system } from "@minecraft/server";
         
 function basicTest(test) {
 
@@ -34,7 +34,7 @@ function basicTest(test) {
 gt.register("MyProject", "basicTest", basicTest).structureName("gametests:basic");     
 `;
 
-  static emptyJavaScript = `import * as mc from "@minecraft/server";
+  static emptyJavaScript = `import { world, system } from "@minecraft/server";
         
 function myFunction() 
 {

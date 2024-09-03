@@ -30,12 +30,18 @@ export default class LogItemArea extends Component<ILogItemAreaProps, ILogItemAr
     this.scrollArea = React.createRef();
 
     this._handleStatusAdded = this._handleStatusAdded.bind(this);
+    this._handleOperationEnded = this._handleOperationEnded.bind(this);
     this._checkForTimeOut = this._checkForTimeOut.bind(this);
     this._toggleExpandedSize = this._toggleExpandedSize.bind(this);
     this._update = this._update.bind(this);
     this.scrollToListBottom = this.scrollToListBottom.bind(this);
 
     this.props.carto.onStatusAdded.subscribe(this._handleStatusAdded);
+    this.props.carto.onOperationCompleted.subscribe(this._handleOperationEnded);
+  }
+
+  _handleOperationEnded(carto: Carto, operationId: number) {
+    this._update();
   }
 
   _handleStatusAdded(carto: Carto, status: IStatus) {

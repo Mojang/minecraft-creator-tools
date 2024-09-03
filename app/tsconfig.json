@@ -28,6 +28,8 @@
   "exclude": [
     "node_modules",
     "out",
+    "build",
+    "toolbuild",
     "public/**/*",		
     "src/cli/**/*.ts",
     "src/cli/*.ts",

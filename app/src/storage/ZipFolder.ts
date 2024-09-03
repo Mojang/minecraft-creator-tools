@@ -23,6 +23,26 @@ export default class ZipFolder extends FolderBase implements IFolder {
 
   private _jsz: JSZip;
 
+  get ensuredName(): string {
+    if (this.name.length > 0) {
+      return this.name;
+    }
+
+    if (this.storage.name) {
+      let name = this.storage.name;
+
+      const lastPeriod = name.lastIndexOf(".");
+
+      if (lastPeriod > 0) {
+        name = name.substring(0, lastPeriod);
+      }
+
+      return name;
+    }
+
+    return "folder";
+  }
+
   get zip() {
     return this._jsz;
   }
@@ -149,7 +169,7 @@ export default class ZipFolder extends FolderBase implements IFolder {
 
         let candFile = this.files[nameCanon];
 
-        if (candFile == null) {
+        if (candFile == null && StorageUtilities.isUsableFile(StorageUtilities.getLeafName(relativePath))) {
           candFile = new ZipFile(this, relativePath, file);
 
           this.files[nameCanon] = candFile;

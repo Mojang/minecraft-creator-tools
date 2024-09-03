@@ -21,6 +21,7 @@
     "defaultBehaviorPackMinEngineVersion": "1.20.10",
     "defaultBehaviorPackName": "Starter Hello World Tests",
     "defaultBehaviorPackDescription": "Introductory tests for Minecraft GameTest Framework.",
+    "animationCount": 0,
     "textureCount": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -209,6 +210,14 @@
           "title": "260",
           "defaultMessage": "No world template was found; base game version check passes.",
           "testCompleteSuccesses": 1
+        }
+      },
+      "RESOURCEANIMATION": {
+        "1": {
+          "title": "Animations"
+        },
+        "2": {
+          "title": "Bones"
         }
       },
       "BPENTITYTYPE": {
@@ -578,6 +587,16 @@
       "iTp": 0,
       "gId": "BASEGAMEVER",
       "gIx": 260
+    },
+    {
+      "iTp": 7,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 2
     },
     {
       "iTp": 7,

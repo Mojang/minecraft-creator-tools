@@ -16,6 +16,8 @@ export default interface IFolder extends IStorageObject {
   parentFolder: IFolder | null;
   storage: IStorage;
 
+  ensuredName: string;
+
   extendedPath: string;
 
   fileCount: number;

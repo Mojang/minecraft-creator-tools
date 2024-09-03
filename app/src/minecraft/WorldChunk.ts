@@ -49,7 +49,7 @@ export default class WorldChunk {
 
   bitsPerBlock: number[];
   blockDataStart: number[];
-  blockPalettes: BlockPalette[];
+  blockPalettes: (BlockPalette | undefined)[];
   subChunkFormatType: SubChunkFormatType[];
 
   actorDigests: string[];
@@ -107,6 +107,24 @@ export default class WorldChunk {
 
     this.x = inX;
     this.z = inZ;
+  }
+
+  clearCachedData() {
+    for (let i = 0; i < 64; i++) {
+      if (this.subChunks[i] !== undefined) {
+        this.blockDataStart[i] = -1;
+        this.bitsPerBlock[i] = -1;
+        this.blockPalettes[i] = undefined;
+
+        this.pendingSubChunksToProcess[i] = true;
+      }
+    }
+
+    this.blockTops = undefined;
+    this.blockActorsEnsured = false;
+
+    this._blockActorsRelLoc = [];
+    this._blockActors = [];
   }
 
   addActorDigest(digest: string) {
@@ -169,14 +187,19 @@ export default class WorldChunk {
           break;
 
         case 115: // not sure what chunk #115 is, or if this is a parsing bug. observed to be one byte with a value of 0
-          Log.assert(false, "Unexpected type 115 record.");
+          // Log.assert(false, "Unexpected type 115 record.");
           break;
 
         case 118: // 118 = legacy version
-          Log.assert(keyValue.value !== undefined && keyValue.value.length === 1, "Unexpected type 118 record.");
+          Log.assert(
+            keyValue.value !== undefined && (keyValue.value.length === 0 || keyValue.value.length === 1),
+            "Unexpected type 118 record."
+          );
 
-          if (keyValue.value) {
+          if (keyValue.value && keyValue.value.length === 1) {
             this.legacyVersion = keyValue.value[0];
+          } else if (keyValue.value && keyValue.value.length === 0) {
+            this.legacyVersion = undefined;
           }
           break;
 
@@ -189,7 +212,7 @@ export default class WorldChunk {
           break;
 
         case 46: // data2d legacy
-          Log.assert(false, "Unexpected data 2D legacy.");
+          // Log.assert(false, "Data 2D legacy (NYI).");
           break;
 
         case 47: // subchunk prefix
@@ -205,7 +228,7 @@ export default class WorldChunk {
           }
 
           if (!keyValue.value || keyValue.value.length <= 0) {
-            Log.fail("Empty subchunk defined.");
+            Log.assert(this.subChunks[subChunkIndex] === undefined, "Empty subchunk defined.");
             return;
           }
 
@@ -217,7 +240,6 @@ export default class WorldChunk {
 
         case 48: // legacy terrain
           const bytes = keyValue.value;
-          //          Log.assert(!this.legacyTerrainBytes);
 
           if (bytes && bytes.length > 0) {
             Log.assert(bytes.length === 83200, "LegacyTerrain record should be 83,200 bytes");
@@ -241,7 +263,7 @@ export default class WorldChunk {
           break;
 
         case 52: // legacy block extra data
-          Log.assert(false, "Unexpected legacy block extra data.");
+          // Log.assert(false, "Legacy block extra data - NYI");
           break;
 
         case 53: // biome state
@@ -1169,7 +1191,6 @@ export default class WorldChunk {
             bytes[byteStart + 3],
             true
           );
-          //  Log.assert(x !== 15 || y !== 80 || z !== 15);
 
           word >>>= subChunkBitsPerBlock * blocksIn;
 

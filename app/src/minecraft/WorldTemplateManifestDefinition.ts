@@ -5,17 +5,17 @@ import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import Utilities from "../core/Utilities";
 import Project from "../app/Project";
-import IWorldTemplateManifest, { IWorldTemplateManifestHeader } from "./IWorldTemplateManifest";
 import StorageUtilities from "../storage/StorageUtilities";
+import IWorldManifest, { IWorldManifestHeader } from "./IWorldManifest";
 
-export default class WorldTemplateManifestJson {
+export default class WorldTemplateManifestDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
 
-  public definition?: IWorldTemplateManifest;
+  public definition?: IWorldManifest;
 
-  private _onLoaded = new EventDispatcher<WorldTemplateManifestJson, WorldTemplateManifestJson>();
+  private _onLoaded = new EventDispatcher<WorldTemplateManifestDefinition, WorldTemplateManifestDefinition>();
 
   public get isLoaded() {
     return this._isLoaded;
@@ -79,20 +79,20 @@ export default class WorldTemplateManifestJson {
 
   static async ensureOnFile(
     file: IFile,
-    loadHandler?: IEventHandler<WorldTemplateManifestJson, WorldTemplateManifestJson>
+    loadHandler?: IEventHandler<WorldTemplateManifestDefinition, WorldTemplateManifestDefinition>
   ) {
-    let bmj: WorldTemplateManifestJson | undefined;
+    let bmj: WorldTemplateManifestDefinition | undefined;
 
     if (file.manager === undefined) {
-      bmj = new WorldTemplateManifestJson();
+      bmj = new WorldTemplateManifestDefinition();
 
       bmj.file = file;
 
       file.manager = bmj;
     }
 
-    if (file.manager !== undefined && file.manager instanceof WorldTemplateManifestJson) {
-      bmj = file.manager as WorldTemplateManifestJson;
+    if (file.manager !== undefined && file.manager instanceof WorldTemplateManifestDefinition) {
+      bmj = file.manager as WorldTemplateManifestDefinition;
 
       if (!bmj.isLoaded && loadHandler) {
         bmj.onLoaded.subscribe(loadHandler);
@@ -145,11 +145,11 @@ export default class WorldTemplateManifestJson {
     }
   }
 
-  public ensureHeaderForProject(project: Project): IWorldTemplateManifestHeader {
+  public ensureHeaderForProject(project: Project): IWorldManifestHeader {
     return this.ensureHeader(project.title, project.description);
   }
 
-  public ensureHeader(name: string, description: string): IWorldTemplateManifestHeader {
+  public ensureHeader(name: string, description: string): IWorldManifestHeader {
     this.ensureDefinition(name, description);
 
     if (!this.definition) {

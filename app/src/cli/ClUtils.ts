@@ -12,9 +12,13 @@ import IProjectStartInfo from "./IProjectStartInfo";
 
 export enum TaskType {
   noCommand = 0,
-  validate = 1,
-  version = 2,
-  aggregateReports = 3,
+  info = 7,
+  add = 8,
+  create = 9,
+  validate = 10,
+  version = 12,
+  world = 18,
+  aggregateReports = 22,
 }
 
 export enum OutputType {
@@ -99,7 +103,7 @@ export default class ClUtils {
   }
 
   static getIsWriteCommand(taskType: TaskType) {
-    return false;
+    return taskType === TaskType.create || taskType === TaskType.add;
   }
 
   static async getMainWorkFolder(taskType: TaskType, inputFolder?: string, outputFolder?: string) {
@@ -124,7 +128,9 @@ export default class ClUtils {
     const exists = await workFolder.exists();
 
     if (!exists) {
-      throw new Error("Specified folder path '" + workFolder.fullPath + "' does not exist from '" + __dirname + "'.");
+      throw new Error(
+        "Specified folder path '" + workFolder.fullPath + "' does not exist within '" + process.cwd() + "'."
+      );
     }
 
     await workFolder.load();

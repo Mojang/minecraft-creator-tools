@@ -1,5 +1,5 @@
 import Carto from "../app/Carto";
-import { ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
+import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 import Project from "../app/Project";
 import ProjectExporter from "../app/ProjectExporter";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
@@ -108,7 +108,7 @@ export default class ProjectEditorUtilities {
   }
 
   public static async launchFlatWorldWithPacksDownload(carto: Carto, project: Project) {
-    carto.notifyStatusUpdate("Starting export");
+    const operId = await carto.notifyOperationStarted("Starting export of flat world with packs.");
 
     const projName = await project.loc.getTokenValue(project.name);
 
@@ -121,21 +121,24 @@ export default class ProjectEditorUtilities {
 
     const newBytes = await ProjectExporter.generateFlatBetaApisWorldWithPacksZipBytes(carto, project, name);
 
+    if (!newBytes) {
+      carto.notifyOperationEnded(operId);
+      return;
+    }
+
     carto.notifyStatusUpdate("Now downloading " + fileName);
 
     if (newBytes !== undefined) {
       saveAs(new Blob([newBytes], { type: "application/octet-stream" }), fileName);
     }
 
-    carto.notifyStatusUpdate("Done with save " + fileName);
+    carto.notifyOperationEnded(operId, "Done with save " + fileName);
   }
 
   public static async launchWorldWithPacksDownload(carto: Carto, project: Project) {
     const name = Utilities.getFileFriendlySummarySeconds(new Date()) + "-" + project.name;
 
     const fileName = name + ".mcworld";
-
-    carto.notifyStatusUpdate("Packing " + fileName);
 
     const mcworld = await ProjectExporter.generateWorldWithPacks(carto, project, project.ensureWorldSettings());
 
@@ -152,7 +155,46 @@ export default class ProjectEditorUtilities {
     carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");
   }
 
-  static async addBrowserFile(project: Project, path: string, file: File) {
+  static getIntegrateBrowserFileDefaultActionDescription(project: Project, path: string, file: File) {
+    if (!project.projectFolder) {
+      return undefined;
+    }
+
+    const fileName = file.name.toLowerCase();
+    const extension = StorageUtilities.getTypeFromName(file.name);
+
+    if (
+      fileName === "level.dat" ||
+      extension === "db" ||
+      fileName === "current" ||
+      fileName.startsWith("manifest-") ||
+      fileName === "level.dat_old" ||
+      fileName === "levelname.txt" ||
+      fileName.startsWith("world_")
+    ) {
+      return "Add as new world";
+    } else if (extension === "snbt") {
+      return "Add as new '" + file.name + "' structure";
+    } else if (extension === "mcworld") {
+      return "Add as new '" + file.name + "' world";
+    } else if (extension === "mcproject") {
+      return "Add as new '" + file.name + "' project";
+    } else if (extension === "mctemplate") {
+      return "Add as new '" + file.name + "' world template";
+    } else if (extension === "mcaddon") {
+      return "Add as new '" + file.name + "' addon pack";
+    } else if (extension === "zip") {
+      return "Add as new '" + file.name + "' folder";
+    } else if (extension === "mcpack") {
+      return "Add as new '" + file.name + "' pack folder";
+    } else if (extension === "mcstructure") {
+      return "Add as new '" + file.name + "' structure";
+    } else if (extension === "json") {
+      return "Add as new '" + file.name + "' data file";
+    }
+  }
+
+  static async integrateBrowserFileDefaultAction(project: Project, path: string, file: File) {
     if (!project.projectFolder) {
       return;
     }
@@ -189,7 +231,7 @@ export default class ProjectEditorUtilities {
           folder.name,
           ProjectItemType.worldFolder,
           undefined,
-          false
+          ProjectItemCreationType.normal
         );
       }
 
@@ -219,7 +261,7 @@ export default class ProjectEditorUtilities {
           file.name,
           ProjectItemType.structure,
           undefined,
-          false
+          ProjectItemCreationType.normal
         );
       }
 
@@ -246,7 +288,7 @@ export default class ProjectEditorUtilities {
           file.name,
           ProjectItemType.MCWorld,
           undefined,
-          false
+          ProjectItemCreationType.normal
         );
 
         await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
@@ -275,7 +317,7 @@ export default class ProjectEditorUtilities {
           file.name,
           ProjectItemType.MCProject,
           undefined,
-          false
+          ProjectItemCreationType.normal
         );
 
         await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
@@ -304,7 +346,7 @@ export default class ProjectEditorUtilities {
           file.name,
           ProjectItemType.MCTemplate,
           undefined,
-          false
+          ProjectItemCreationType.normal
         );
 
         await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
@@ -333,7 +375,7 @@ export default class ProjectEditorUtilities {
           file.name,
           ProjectItemType.MCAddon,
           undefined,
-          false
+          ProjectItemCreationType.normal
         );
 
         await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
@@ -362,7 +404,7 @@ export default class ProjectEditorUtilities {
           file.name,
           ProjectItemType.zip,
           undefined,
-          false
+          ProjectItemCreationType.normal
         );
 
         await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
@@ -391,7 +433,7 @@ export default class ProjectEditorUtilities {
           file.name,
           ProjectItemType.MCPack,
           undefined,
-          false
+          ProjectItemCreationType.normal
         );
 
         await project.inferProjectItemsFromZipFile(relPath, contentFile, false);
@@ -420,7 +462,7 @@ export default class ProjectEditorUtilities {
           file.name,
           ProjectItemType.structure,
           undefined,
-          false
+          ProjectItemCreationType.normal
         );
       }
 
@@ -446,8 +488,6 @@ export default class ProjectEditorUtilities {
     const name = Utilities.getFileFriendlySummarySeconds(new Date()) + "-" + project.name;
 
     const fileName = name + ".mcproject";
-
-    carto.notifyStatusUpdate("Packing " + fileName);
 
     const mcworld = await ProjectExporter.generateWorldWithPacks(carto, project, project.ensureEditorWorldSettings());
 
@@ -493,7 +533,8 @@ export default class ProjectEditorUtilities {
           undefined,
           async (message: string) => {
             await carto.notifyStatusUpdate(message);
-          }
+          },
+          true
         );
 
         await storage.rootFolder.saveAll();

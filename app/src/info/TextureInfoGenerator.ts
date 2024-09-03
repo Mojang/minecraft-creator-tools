@@ -315,17 +315,39 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
                     itemTextureVanillaPaths.push(itemTexture.textures);
                   }
                 } else if (itemTexture.textures) {
-                  for (let str of itemTexture.textures) {
-                    /*if (!allTexturesLeaf.includes(str)) {
+                  if (typeof itemTexture.textures === "string") {
+                    const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(
+                      itemTexture.textures,
+                      rpFolder
+                    );
+
+                    if (!matchesVanillaPath && !itemTexturePaths.includes(itemTexture.textures)) {
+                      itemTexturePaths.push(itemTexture.textures);
+                    } else if (matchesVanillaPath && !itemTextureVanillaPaths.includes(itemTexture.textures)) {
+                      itemTextureVanillaPaths.push(itemTexture.textures);
+                    }
+                  } else if (itemTexture.textures.constructor === Array) {
+                    for (let str of itemTexture.textures) {
+                      /*if (!allTexturesLeaf.includes(str)) {
                       allTexturesLeaf.push(str);
                     }*/
 
-                    const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(str, rpFolder);
+                      const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(str, rpFolder);
 
-                    if (!matchesVanillaPath && !itemTexturePaths.includes(str)) {
-                      itemTexturePaths.push(str);
-                    } else if (matchesVanillaPath && !itemTextureVanillaPaths.includes(str)) {
-                      itemTextureVanillaPaths.push(str);
+                      if (!matchesVanillaPath && !itemTexturePaths.includes(str)) {
+                        itemTexturePaths.push(str);
+                      } else if (matchesVanillaPath && !itemTextureVanillaPaths.includes(str)) {
+                        itemTextureVanillaPaths.push(str);
+                      }
+                    }
+                  } else if ((itemTexture.textures as any).path) {
+                    const texturePath = (itemTexture.textures as any).path;
+                    const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(texturePath, rpFolder);
+
+                    if (!matchesVanillaPath && !itemTexturePaths.includes(texturePath)) {
+                      itemTexturePaths.push(texturePath);
+                    } else if (matchesVanillaPath && !itemTextureVanillaPaths.includes(texturePath)) {
+                      itemTextureVanillaPaths.push(texturePath);
                     }
                   }
                 }

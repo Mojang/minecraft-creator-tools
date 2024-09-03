@@ -157,7 +157,9 @@ export default class HttpFolder extends FolderBase implements IFolder {
           for (let i = 0; i < index.files.length; i++) {
             const file = index.files[i];
 
-            this.ensureFile(file);
+            if (StorageUtilities.isUsableFile(file)) {
+              this.ensureFile(file);
+            }
           }
         }
 

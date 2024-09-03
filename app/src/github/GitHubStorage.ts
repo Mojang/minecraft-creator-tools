@@ -25,6 +25,10 @@ export default class GitHubStorage extends StorageBase implements IStorage {
     this.branch = branch;
     this.ownerName = ownerName;
 
+    if (ownerName !== "microsoft" && ownerName !== "mojang") {
+      throw new Error("Unsupported GitHub action.");
+    }
+
     this.subPath = subPath;
 
     this.rootFolder = new GitHubFolder(this, null, subPath, "");

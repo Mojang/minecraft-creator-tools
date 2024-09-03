@@ -5,11 +5,7 @@ import Project from "./Project";
 import ITool, { ToolType, ToolScope } from "./ITool";
 import { ProjectItemType } from "./IProjectItemData";
 import Carto from "./Carto";
-import IFolder from "../storage/IFolder";
-import StorageUtilities from "../storage/StorageUtilities";
-import Log from "../core/Log";
 import CommandRunner from "./CommandRunner";
-import ProjectBuild from "./ProjectBuild";
 
 export default class ProjectTools {
   static async addGlobalTools(tools: ITool[]) {
@@ -89,80 +85,6 @@ export default class ProjectTools {
           ProjectTools.say(carto, tool.parameter1);
         }
         break;
-    }
-  }
-
-  static async deployProject(carto: Carto, project: Project, deployTargetFolder: IFolder) {
-    const targetBehaviorPacksFolder = deployTargetFolder.ensureFolder("development_behavior_packs");
-
-    const bpDeployFolderExists = await targetBehaviorPacksFolder.exists();
-
-    if (bpDeployFolderExists) {
-      await project.ensureProjectFolder();
-
-      const bpi = await project.ensureDefaultBehaviorPackFolder();
-
-      const deployProjectFolder = targetBehaviorPacksFolder.ensureFolder(project.name);
-
-      await deployProjectFolder.ensureExists();
-
-      await StorageUtilities.syncFolderTo(bpi, deployProjectFolder, true, true, true, [
-        "/mcworlds",
-        "/minecraftWorlds",
-      ]);
-
-      const projectBuild = new ProjectBuild(project);
-
-      await projectBuild.build();
-
-      if (projectBuild.isInErrorState) {
-        project.appendErrors(projectBuild);
-
-        return;
-      }
-
-      const scriptsFolder = project.getDistBuildScriptsFolder();
-
-      if (
-        scriptsFolder &&
-        !scriptsFolder.storageRelativePath.startsWith(bpi.storageRelativePath) &&
-        scriptsFolder.storageRelativePath !== "/"
-      ) {
-        await StorageUtilities.syncFolderTo(
-          scriptsFolder,
-          deployProjectFolder.ensureFolder("scripts"),
-          true,
-          true,
-          true,
-          [".ts"],
-          undefined,
-          async (message: string) => {
-            Log.verbose(message);
-          }
-        );
-      }
-
-      await deployProjectFolder.saveAll();
-    }
-
-    const targetResourcePacksFolder = deployTargetFolder.ensureFolder("development_resource_packs");
-    const rpDeployFolderExists = await targetResourcePacksFolder.exists();
-
-    if (rpDeployFolderExists) {
-      await project.ensureProjectFolder();
-
-      const rpi = await project.getDefaultResourcePackFolder();
-
-      if (rpi) {
-        const deployProjectFolder = targetResourcePacksFolder.ensureFolder(project.name);
-
-        await deployProjectFolder.ensureExists();
-
-        await StorageUtilities.syncFolderTo(rpi, deployProjectFolder, true, true, true, [
-          "/mcworlds",
-          "/minecraftWorlds",
-        ]);
-      }
     }
   }
 

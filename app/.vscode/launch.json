@@ -9,6 +9,48 @@
       "webRoot": "${workspaceFolder}"
     },
     {
+      "name": "cli (add)",
+      "cwd": "${workspaceRoot}/debugoutput/minecraft-gametests/",
+      "args": ["add", "-i", "../temp/test"],
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/src/cli/index.ts",
+      "preLaunchTask": "gulp: jsncorebuild",
+      "sourceMaps":true,
+      "runtimeExecutable": null,
+      "localRoot": "${workspaceRoot}/src",
+      "runtimeArgs": ["--nolazy"],
+      "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
+    },
+    {
+      "name": "cli (info)",
+      "cwd": "${workspaceRoot}/debugoutput/gtbasicworld/",
+      "args": ["info"],
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/src/cli/index.ts",
+      "preLaunchTask": "gulp: jsncorebuild",
+      "sourceMaps": true,
+      "runtimeExecutable": null,
+      "localRoot": "${workspaceRoot}/src",
+      "runtimeArgs": ["--nolazy"],
+      "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
+    },
+    {
+      "name": "cli (world)",
+      "cwd": "${workspaceRoot}/debugoutput/",
+      "args": ["world", "set", "-betaapis", "-o", "./worldtest/"],
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/src/cli/index.ts",
+      "preLaunchTask": "gulp: jsncorebuild",
+      "sourceMaps": true,
+      "runtimeExecutable": null,
+      "localRoot": "${workspaceRoot}/src",
+      "runtimeArgs": ["--nolazy"],
+      "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
+    },
+    {
       "name": "cli (val content1)",
       "cwd": "${workspaceRoot}/../samplecontent/addon/build/content1/",
       "args": ["validate", "--log-verbose", "--display-only"],
@@ -76,6 +118,20 @@
       "runtimeExecutable": null,
       "localRoot": "${workspaceRoot}/src",
       "runtimeArgs": ["--nolazy", "--max-old-space-size=32768"],
+      "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
+    },
+    {
+      "name": "cli (create)",
+      "cwd": "${workspaceRoot}/",
+      "args": ["create", "-o", "debugoutput", "custom_name", "addonStarter", "custom_creator", "florid description"],
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/src/cli/index.ts",
+      "preLaunchTask": "gulp: jsncorebuild",
+      "sourceMaps":true,
+      "runtimeExecutable": null,
+      "localRoot": "${workspaceRoot}/src",
+      "runtimeArgs": ["--nolazy"],
       "outFiles": ["${workspaceFolder}/toolbuild/jsn/**/*.js"]
     },
     {

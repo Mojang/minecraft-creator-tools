@@ -6,8 +6,6 @@ import IPersistable from "./IPersistable";
 import WebUtilities from "./WebUtilities";
 import { BackupType, IPackageReference, IWorldSettings } from "../minecraft/IWorldSettings";
 import { Difficulty, GameType, Generator } from "../minecraft/WorldLevelDat";
-import PackManager from "./PackageManager";
-import TemplateManager from "./TemplateManager";
 
 interface IWorldSettingsAreaProps extends IAppProps {
   setActivePersistable?: (persistObject: IPersistable) => void;
@@ -386,28 +384,11 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
         </div>
       );
 
-      settingsProps.push(
-        <div className={"wsa-label wsa-packlabel" + outerClassNameModifier} key="packslabel">
-          {this.props.isAdditive === true ? "Additional Packs" : "Packs"}
-        </div>
-      );
-
       let packRefs = this.props.worldSettings?.packageReferences;
 
       if (packRefs === undefined) {
         packRefs = [];
       }
-
-      settingsProps.push(
-        <div className="wsa-packs" key="packbin">
-          <PackManager
-            carto={this.props.carto}
-            packReferences={packRefs}
-            isWorldFocused={false}
-            onPackSetChanged={this._handlePackSetChanged}
-          />
-        </div>
-      );
 
       if (!this.props.isAdditive) {
         settingsProps.push(
@@ -417,27 +398,11 @@ export default class WorldSettingsArea extends Component<IWorldSettingsAreaProps
         );
       }
 
-      settingsProps.push(
-        <div className={"wsa-label wsa-templatelabel" + outerClassNameModifier} key="templateslabel">
-          Use world template
-        </div>
-      );
-
       let templateRefs = this.props.worldSettings?.worldTemplateReferences;
 
       if (templateRefs === undefined) {
         templateRefs = [];
       }
-
-      settingsProps.push(
-        <div className="wsa-templates" key="templatebin">
-          <TemplateManager
-            carto={this.props.carto}
-            packReferences={templateRefs}
-            onPackSetChanged={this._handleTemplateSetChanged}
-          />
-        </div>
-      );
 
       settingsProps.push(
         <div className={"wsa-label wsa-genlabel" + outerClassNameModifier} key="genlabel">

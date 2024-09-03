@@ -28,7 +28,7 @@
   max-height: 20px;
 }
 
-.pe-dragOver {
+.pe-singleDragOver {
   position: fixed;
   width: calc(100vw - 20px);
   height: calc(100vh - 20px);
@@ -37,8 +37,50 @@
   vertical-align: middle;
   text-align: center;
   margin: 10px;
+  padding-top: calc(50vh - 20px);
   z-index: 10000;
   opacity: 0.9;
+}
+
+.pe-zoneDragOver {
+  position: fixed;
+  width: calc(100vw - 20px);
+  height: calc(100vh - 20px);
+  vertical-align: middle;
+  text-align: center;
+  margin: 10px;
+  z-index: 10000;
+  opacity: 0.9;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+
+.pe-dragZone1 {
+  grid-row: 1;
+  background-color: rgba(48, 96, 48, 0.8);
+  border: solid 6px rgba(48, 96, 48, 1);
+  vertical-align: middle;
+  margin: 10px;
+  padding-top: calc(25vh - 20px);
+}
+
+.pe-dragZone1:hover {
+  background-color: rgba(64, 112, 64, 0.8);
+  border: solid 6px rgba(64, 112, 64, 1);
+}
+
+.pe-dragZone2 {
+  grid-row: 2;
+  background-color: rgba(48, 96, 48, 0.8);
+  border: solid 6px rgba(48, 96, 48, 1);
+  vertical-align: middle;
+  padding-top: calc(25vh - 20px);
+  margin: 10px;
+}
+
+.pe-dragZone2:hover {
+  background-color: rgba(64, 112, 64, 0.8);
+  border: solid 6px rgba(64, 112, 64, 1);
 }
 
 .pe-gridOuter {

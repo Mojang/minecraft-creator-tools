@@ -14,6 +14,10 @@ import StorageBase from "./StorageBase";
 export default abstract class FolderBase implements IFolder {
   abstract get name(): string;
 
+  get ensuredName(): string {
+    return this.name;
+  }
+
   isDisposed: boolean = false;
   #lastLoadedOrSaved: Date | null;
 
@@ -106,6 +110,18 @@ export default abstract class FolderBase implements IFolder {
 
   getFolderRelativePath(toFolder: IFolder): string | undefined {
     if (toFolder.storage !== this.storage && this.storage.storagePath) {
+      const parentPath = toFolder.storageRelativePath;
+
+      if (
+        parentPath &&
+        this.extendedPath &&
+        this.extendedPath.startsWith(parentPath) &&
+        StorageUtilities.ensureEndsWithDelimiter(parentPath)
+      ) {
+        const subPath = this.extendedPath.substring(parentPath.length - 1);
+
+        return subPath;
+      }
       return this.extendedPath;
     } else if (this === toFolder) {
       return "/";
@@ -465,6 +481,10 @@ export default abstract class FolderBase implements IFolder {
 
     if (path === "/" || path === "\\") {
       return this;
+    }
+
+    if (path.startsWith("./")) {
+      path = path.substring(1);
     }
 
     path = this.canonicalizePath(path);

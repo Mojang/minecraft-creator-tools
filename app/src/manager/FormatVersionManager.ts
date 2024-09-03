@@ -11,7 +11,6 @@ import IProjectUpdater from "../updates/IProjectUpdater";
 import ProjectUpdateResult from "../updates/ProjectUpdateResult";
 import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData, IProjectUpdaterReference } from "../info/IProjectInfoGeneratorBase";
-import WorldTemplateManifestJson from "../minecraft/WorldTemplateManifestJson";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import BlockTypeBehaviorDefinition from "../minecraft/BlockTypeBehaviorDefinition";
@@ -25,6 +24,7 @@ import AnimationResourceDefinition from "../minecraft/AnimationResourceDefinitio
 import AttachableResourceDefinition from "../minecraft/AttachableResourceDefinition";
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
 import FogResourceDefinition from "../minecraft/FogResourceDefinition";
+import WorldTemplateManifestDefinition from "../minecraft/WorldTemplateManifestDefinition";
 
 export default class FormatVersionManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "FORMATVER";
@@ -545,7 +545,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const wtManifest = await WorldTemplateManifestJson.ensureOnFile(pi.file);
+          const wtManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.file);
 
           if (wtManifest) {
             const mev = wtManifest.baseGameVersion;

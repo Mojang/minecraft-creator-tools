@@ -10,6 +10,7 @@ import * as esbuild from "esbuild-wasm";
 import ITypeDefCatalog from "../minecraft/ITypeDefCatalog";
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
 import { StatusTopic } from "./Status";
+import { ProjectItemType } from "./IProjectItemData";
 
 export default class ProjectBuild implements IErrorable {
   private project: Project;
@@ -83,7 +84,17 @@ export default class ProjectBuild implements IErrorable {
   }
 
   get isBuildable() {
-    return this.project && this.project.projectFolder && this.mainScriptsFolder && this.distScriptsFolder && this.libs;
+    return this.project && this.project.projectFolder !== undefined;
+  }
+
+  getHasBuildableElements() {
+    for (const projectItem of this.project.items) {
+      if (projectItem.itemType === ProjectItemType.ts) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   async loadFile(build: esbuild.OnLoadArgs): Promise<esbuild.OnLoadResult> {
@@ -152,6 +163,10 @@ export default class ProjectBuild implements IErrorable {
 
   async build() {
     if (!this.isBuildable) {
+      return;
+    }
+
+    if (!this.getHasBuildableElements()) {
       return;
     }
 
@@ -269,6 +284,10 @@ export default class ProjectBuild implements IErrorable {
   }
 
   async syncToBehaviorPack(bpTargetFolder: IFolder) {
+    if (!this.getHasBuildableElements()) {
+      return;
+    }
+
     const distScriptsFolder = await this.project.ensureDistBuildScriptsFolder();
 
     const scriptsFolder = bpTargetFolder.ensureFolder("scripts");

@@ -17,6 +17,7 @@ import ProjectExporter from "../app/ProjectExporter";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
 import { GameType, Generator } from "../minecraft/WorldLevelDat";
 import * as fs from "fs";
+import Utilities from "../core/Utilities";
 
 CartoApp.hostType = HostType.testLocal;
 
@@ -134,7 +135,8 @@ function removeResultFolder(scenarioName: string) {
     const path =
       StorageUtilities.ensureEndsWithDelimiter(resultsFolder.fullPath) +
       StorageUtilities.ensureEndsWithDelimiter(scenarioName);
-    if (fs.existsSync(path))
+    // guard against being called at a "more root" file path
+    if (fs.existsSync(path) && Utilities.countChar(path, NodeStorage.folderDelimiter) > 5)
       // @ts-ignore
       fs.rmSync(path, {
         recursive: true,

@@ -150,6 +150,7 @@
 .pt-title {
   font-weight: bold;
   padding-top: 1px;
+  display: inline;
   text-overflow: ellipsis;
   margin-top: 0px;
   margin-bottom: 0px;
@@ -193,7 +194,8 @@
 .pts-tag {
   text-transform: uppercase;
   font-size: x-small;
-  margin-right: 7px;
+  margin-left: 7px;
+  margin-top: 1px;
   border: solid 1px;
   position: relative;
   top: -1px;
@@ -221,6 +223,7 @@
   vertical-align: middle;
   text-overflow: ellipsis;
   overflow-x: hidden;
+  display: inline;
   margin-top: 0px;
   margin-bottom: 0px;
   width: 320px;

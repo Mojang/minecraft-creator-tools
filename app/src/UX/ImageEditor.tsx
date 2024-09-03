@@ -13,6 +13,7 @@ interface IImageEditorProps {
   theme: ThemeInput<any>;
   initialContent?: Uint8Array;
   placeholder?: string;
+  visualSeed?: number;
   setActivePersistable?: (persistObject: IPersistable) => void;
   heightOffset?: number;
   readOnly: boolean;
@@ -76,7 +77,7 @@ export default class ImageEditor extends Component<IImageEditorProps, IImageEdit
   }
 
   componentDidUpdate(prevProps: IImageEditorProps, prevState: IImageEditorState) {
-    if (this.props.file !== prevProps.file) {
+    if (this.props.file !== prevProps.file || this.props.visualSeed !== prevProps.visualSeed) {
       if (this.imageElement && this.props.file) {
         this.imageElement.style.backgroundImage = "url('" + this.getImageString() + "')";
       } else {

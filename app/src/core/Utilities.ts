@@ -894,6 +894,14 @@ export default class Utilities {
     return pathSegment;
   }
 
+  static ensureNotEndsWithSlash(pathSegment: string) {
+    while (pathSegment.length > 0 && pathSegment.endsWith("/")) {
+      pathSegment = pathSegment.substring(0, pathSegment.length - 1);
+    }
+
+    return pathSegment;
+  }
+
   static ensureStartsWithBackSlash(pathSegment: string) {
     if (!pathSegment.startsWith("\\")) {
       pathSegment = "\\" + pathSegment;

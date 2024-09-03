@@ -33,6 +33,7 @@ const _allowedExtensions = [
   "ico",
   "ogg",
   "nojekyll",
+  "mjs",
   "env",
   "wav",
   "tga",
@@ -182,7 +183,9 @@ export default class StorageUtilities {
       path = path + StorageUtilities.standardFolderDelimiter;
     }
 
-    if (!path.startsWith(StorageUtilities.standardFolderDelimiter)) {
+    if (path.startsWith("." + StorageUtilities.standardFolderDelimiter)) {
+      path = path.substring(1);
+    } else if (!path.startsWith(StorageUtilities.standardFolderDelimiter)) {
       path = StorageUtilities.standardFolderDelimiter + path;
     }
 
@@ -990,7 +993,8 @@ export default class StorageUtilities {
     removeOnTarget: boolean,
     exclude?: string[],
     include?: string[],
-    messageUpdater?: (message: string) => Promise<void>
+    messageUpdater?: (message: string) => Promise<void>,
+    dontOverwriteExistingFiles?: boolean
   ): Promise<number> {
     let modifiedFileCount = 0;
     // Log.debug("Syncing folder '" + source.storageRelativePath + "' to '" + target.storageRelativePath + "'");
@@ -1043,10 +1047,22 @@ export default class StorageUtilities {
 
           const targetFile = target.ensureFile(sourceFile.name);
 
-          const wasUpdated = await this.syncFileTo(sourceFile, targetFile, forceFileUpdates, messageUpdater);
+          let updateFile = true;
+          if (dontOverwriteExistingFiles) {
+            if (await targetFile.exists()) {
+              updateFile = false;
+              if (messageUpdater) {
+                messageUpdater("Not updating '" + targetFile.fullPath + "' as it already exists.");
+              }
+            }
+          }
 
-          if (wasUpdated) {
-            modifiedFileCount++;
+          if (updateFile) {
+            const wasUpdated = await this.syncFileTo(sourceFile, targetFile, forceFileUpdates, messageUpdater);
+
+            if (wasUpdated) {
+              modifiedFileCount++;
+            }
           }
         }
       }
@@ -1077,7 +1093,8 @@ export default class StorageUtilities {
               removeOnTarget,
               exclude,
               include,
-              messageUpdater
+              messageUpdater,
+              dontOverwriteExistingFiles
             );
 
             modifiedFileCount += subfolderFilesUpdated;
