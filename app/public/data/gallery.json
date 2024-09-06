@@ -538,7 +538,7 @@
     },
     {
       "title": "Cat",
-      "description": "The cow can be found mooing about in grassy areas. It is very resourceful and makes for a great cattle companion.",
+      "description": "Cats are commonly found in well-populated villages. To tame a stray cat, you'll need to slowly approach it while holding something tasty.",
       "gitHubOwner": "mojang",
       "gitHubRepoName": "bedrock-samples",
       "id": "cat",

@@ -176,6 +176,7 @@
 .pts-button {
   width: 425px;
   height: 138px;
+  max-width: calc(100vw - 46px);
   border: solid 2px #202020;
 }
 

@@ -31,7 +31,6 @@ import {
   HomeLabel,
   DeployLabel,
   ConnectLabel as MinecraftLabel,
-  EditLabel,
   MCPackLabel,
   DownArrowLabel,
   CustomLabel,
@@ -3283,23 +3282,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         title: "Home/Project List",
       });
 
-      if (Utilities.isPreview) {
-        if (this.props.readOnly) {
-          toolbarItems.push({
-            icon: <EditLabel />,
-            key: "editCopy",
-            onClick: this._handleEditCopyClick,
-            title: "Edit copy",
-          });
-        } else {
-          toolbarItems.push({
-            icon: <SaveLabel />,
-            key: "save",
-            content: <Text content="Save" />,
-            onClick: this._handleSaveClick,
-            title: "Save",
-          });
-        }
+      if (!this.props.readOnly) {
+        toolbarItems.push({
+          icon: <SaveLabel />,
+          key: "save",
+          content: <Text content="Save" />,
+          onClick: this._handleSaveClick,
+          title: "Save",
+        });
       }
 
       if (viewMode === CartoEditorViewMode.mainFocus) {
