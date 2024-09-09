@@ -12,7 +12,6 @@ import Log from "../core/Log";
 import Carto from "./Carto";
 import GitHubStorage from "./../github/GitHubStorage";
 import AppServiceProxy, { AppServiceProxyCommands } from "./../core/AppServiceProxy";
-import IGitHubInfo from "./IGitHubInfo";
 import ZipStorage from "../storage/ZipStorage";
 import { ProjectFocus } from "../app/IProjectData";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
@@ -29,6 +28,19 @@ export const enum FolderDeploy {
   developmentFolders = 1,
   noFolders = 2,
 }
+
+export const ProjectImportExclusions = [
+  "build",
+  "node_modules",
+  "dist",
+  "lib",
+  ".env",
+  "*/.*",
+  "out",
+  "*just.config*",
+  "*package-lock*",
+  "*.mjs*",
+];
 
 export default class ProjectExporter {
   static async generateFlatBetaApisWorldWithPacksZipBytes(carto: Carto, project: Project, name: string) {
@@ -113,7 +125,7 @@ export default class ProjectExporter {
       false,
       false,
       false,
-      ["build", "node_modules", "dist", "lib", "/.git", "out"],
+      ProjectImportExclusions,
       undefined,
       messageUpdater,
       dontOverwriteExistingFiles
@@ -165,90 +177,6 @@ export default class ProjectExporter {
         // perhaps folder could not be renamed because a folder exists; continue in this case.
       }
     }
-  }
-
-  static async addGitHubReference(
-    carto: Carto,
-    project: Project,
-    gitHubOwner: string,
-    gitHubRepoName: string,
-    gitHubBranch?: string,
-    gitHubFolder?: string,
-    commit?: string,
-    title?: string
-  ) {
-    const gh = new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
-
-    await gh.rootFolder.load();
-
-    const info: IGitHubInfo = {
-      owner: gitHubOwner,
-      repoName: gitHubRepoName,
-      branch: gitHubBranch,
-      folder: gitHubFolder,
-      commit: commit,
-      title: title,
-    };
-
-    const sig = ProjectItem.getGitHubSignature(info);
-    let foundReference = false;
-
-    for (let i = 0; i < project.gitHubReferences.length; i++) {
-      const ghr = project.gitHubReferences[i];
-
-      const sigCandidate = ProjectItem.getGitHubSignature(ghr);
-
-      if (sigCandidate === sig) {
-        foundReference = true;
-
-        project.gitHubReferences[i] = info;
-      }
-    }
-
-    if (!foundReference) {
-      project.gitHubReferences.push(info);
-    }
-
-    const bpFolder = await project.ensureDefaultBehaviorPackFolder();
-
-    // run infer project items before we add the project items just to catch up on anything that might be out there.
-    await project.inferProjectItemsFromFiles();
-
-    const existingProjects: string[] = [];
-
-    for (let i = 0; i < project.items.length; i++) {
-      const spath = project.items[i].projectPath;
-
-      if (spath !== undefined && spath !== null) {
-        existingProjects.push(spath);
-      }
-    }
-
-    let ghFolder: IFolder = gh.rootFolder;
-
-    const bpGhFolder = await ProjectExporter.getPackFolder(ghFolder, false);
-
-    if (bpGhFolder !== undefined) {
-      ghFolder = bpGhFolder;
-    }
-
-    await StorageUtilities.syncFolderTo(ghFolder, bpFolder, false, false, false, ["/.git"]);
-
-    await bpFolder.saveAll();
-
-    await project.inferProjectItemsFromFiles(true);
-
-    for (let i = 0; i < project.items.length; i++) {
-      const item = project.items[i];
-
-      const spath = item.projectPath;
-
-      if (spath !== undefined && spath !== null && !existingProjects.includes(spath)) {
-        item.gitHubReference = info;
-      }
-    }
-
-    await project.save();
   }
 
   static async getPackFolder(folder: IFolder, seekingResource: boolean) {

@@ -32,9 +32,11 @@ export default class MinecraftUtilities {
     } else if (tokenizePath.startsWith("<RPE>")) {
       tokenizePath += ".entity.json";
     } else if (tokenizePath.startsWith("<RPAC>")) {
-      tokenizePath += ".animation_controlllers.json";
+      tokenizePath += ".animation_controllers.json";
+    } else if (tokenizePath.startsWith("<RPRC>")) {
+      tokenizePath += ".render_controllers.json";
     } else if (tokenizePath.startsWith("<RPA>")) {
-      tokenizePath += ".animations.json";
+      tokenizePath += ".animation.json";
     } else if (tokenizePath.startsWith("<RPTE>")) {
       if (tokenizePath.indexOf(".") < 0) {
         tokenizePath += ".png";
@@ -43,6 +45,7 @@ export default class MinecraftUtilities {
     tokenizePath = tokenizePath.replace(/<RPTE>/gi, "/resource_pack/textures/entity/");
     tokenizePath = tokenizePath.replace(/<RPME>/gi, "/resource_pack/models/entity/");
     tokenizePath = tokenizePath.replace(/<RPAC>/gi, "/resource_pack/animation_controllers/");
+    tokenizePath = tokenizePath.replace(/<RPRC>/gi, "/resource_pack/render_controllers/");
     tokenizePath = tokenizePath.replace(/<RPA>/gi, "/resource_pack/animations/");
     tokenizePath = tokenizePath.replace(/<RPE>/gi, "/resource_pack/entity/");
     tokenizePath = tokenizePath.replace(/<BPE>/gi, "/behavior_pack/entities/");

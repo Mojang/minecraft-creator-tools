@@ -7,7 +7,7 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import IVsCodeTasks from "./IVsCodeTasks";
 import Utilities from "../core/Utilities";
 
-export default class VsCodeTasksJson {
+export default class VsCodeTasksDefinition {
   private _file?: IFile;
   private _id?: string;
   private _version?: string;
@@ -15,7 +15,7 @@ export default class VsCodeTasksJson {
 
   public definition?: IVsCodeTasks;
 
-  private _onLoaded = new EventDispatcher<VsCodeTasksJson, VsCodeTasksJson>();
+  private _onLoaded = new EventDispatcher<VsCodeTasksDefinition, VsCodeTasksDefinition>();
 
   public get isLoaded() {
     return this._isLoaded;
@@ -41,19 +41,19 @@ export default class VsCodeTasksJson {
     this._id = newId;
   }
 
-  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<VsCodeTasksJson, VsCodeTasksJson>) {
-    let dt: VsCodeTasksJson | undefined;
+  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<VsCodeTasksDefinition, VsCodeTasksDefinition>) {
+    let dt: VsCodeTasksDefinition | undefined;
 
     if (file.manager === undefined) {
-      dt = new VsCodeTasksJson();
+      dt = new VsCodeTasksDefinition();
 
       dt.file = file;
 
       file.manager = dt;
     }
 
-    if (file.manager !== undefined && file.manager instanceof VsCodeTasksJson) {
-      dt = file.manager as VsCodeTasksJson;
+    if (file.manager !== undefined && file.manager instanceof VsCodeTasksDefinition) {
+      dt = file.manager as VsCodeTasksDefinition;
 
       if (!dt.isLoaded && loadHandler) {
         dt.onLoaded.subscribe(loadHandler);
@@ -87,7 +87,7 @@ export default class VsCodeTasksJson {
     await this._file.saveContent(false);
   }
 
-  async hasMinecraftTasks() {
+  async hasMinContent() {
     await this.load();
 
     if (!this.definition || !this.definition.tasks) {
@@ -109,8 +109,8 @@ export default class VsCodeTasksJson {
     return false;
   }
 
-  async ensureMinecraftTasks() {
-    const hasTasks = await this.hasMinecraftTasks();
+  async ensureMinContent() {
+    const hasTasks = await this.hasMinContent();
 
     if (hasTasks) {
       return true;

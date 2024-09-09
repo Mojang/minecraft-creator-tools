@@ -231,14 +231,23 @@ export default class Carto {
     this.#data.preferredSuite = newValue;
   }
 
-  public get processHostedMinecraftTrack() {
-    return this.#data.processHostedMinecraftTrack;
+  get track(): MinecraftTrack | undefined {
+    return this.#data.track;
   }
 
-  public set processHostedMinecraftTrack(newMinecraftTrack: MinecraftTrack | undefined) {
-    if (newMinecraftTrack !== this.#data.processHostedMinecraftTrack) {
-      this.#data.processHostedMinecraftTrack = newMinecraftTrack;
+  set track(newTrack: MinecraftTrack | undefined) {
+    if (newTrack !== this.#data.track) {
+      this.#data.track = newTrack;
+      this._onPropertyChanged.dispatch(this, "track");
     }
+  }
+
+  get effectiveTrack(): MinecraftTrack {
+    if (this.#data.track !== undefined) {
+      return this.#data.track;
+    }
+
+    return MinecraftTrack.main;
   }
 
   public get useEditor() {
@@ -1399,10 +1408,11 @@ export default class Carto {
     const canonPath = StorageUtilities.canonicalizePath(messageProjectPath);
 
     if (project !== undefined) {
-      await project.loadFromFile();
+      await project.ensureLoadedFromFile();
 
       if (project.mainDeployFolderPath !== undefined) {
         if (canonPath === StorageUtilities.canonicalizePath(project.mainDeployFolderPath)) {
+          await project.ensureInflated();
           await project.inferProjectItemsFromFiles();
 
           return project;
@@ -1466,10 +1476,11 @@ export default class Carto {
     }
 
     if (project !== undefined && !openDirect) {
-      await project.loadFromFile();
+      await project.ensureLoadedFromFile();
 
       if (project.mainDeployFolderPath !== undefined) {
         if (canonPath === StorageUtilities.canonicalizePath(project.mainDeployFolderPath)) {
+          await project.ensureInflated();
           await project.inferProjectItemsFromFiles();
 
           return project;
@@ -1497,10 +1508,11 @@ export default class Carto {
     for (let i = 0; i < this.projects.length; i++) {
       project = this.projects[i];
 
-      await project.loadFromFile();
+      await project.ensureLoadedFromFile();
 
       if (project.mainDeployFolderPath !== undefined) {
         if (canonPath === StorageUtilities.canonicalizePath(project.mainDeployFolderPath)) {
+          await project.ensureInflated();
           await project.inferProjectItemsFromFiles();
 
           return project;
@@ -1544,7 +1556,7 @@ export default class Carto {
     for (let i = 0; i < this.projects.length; i++) {
       const project = this.projects[i];
 
-      await project.loadFromFile();
+      await project.ensureLoadedFromFile();
 
       await project.ensureProjectFolder();
 

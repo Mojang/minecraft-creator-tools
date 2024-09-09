@@ -52,13 +52,13 @@ export default interface ICartoData {
   successfullyConnectedWebSocketToMinecraft: boolean;
   successfullyConnectedToRemoteMinecraft: boolean;
   successfullyStartedMinecraftServer: boolean;
-  processHostedMinecraftTrack?: MinecraftTrack;
   worldSettings?: IWorldSettings;
   editorWorldSettings?: IWorldSettings;
   autoStartMinecraft: boolean;
   showScreenOnConnect: boolean;
   useEditor?: boolean;
   creator?: string;
+  track?: MinecraftTrack;
   formatBeforeSave?: boolean;
   itemSidePaneWidth?: number;
   preferredTextSize?: number;

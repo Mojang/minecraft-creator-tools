@@ -5,10 +5,10 @@ import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import { IClientEntityTypeWrapper } from "./IClientEntityType";
+import { IEntityTypeResourceWrapper } from "./IEntityTypeResource";
 
 export default class EntityTypeResourceDefinition {
-  public clientEntityTypeWrapper?: IClientEntityTypeWrapper;
+  public dataWrapper?: IEntityTypeResourceWrapper;
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
@@ -31,29 +31,29 @@ export default class EntityTypeResourceDefinition {
 
   public get id() {
     if (
-      !this.clientEntityTypeWrapper ||
-      !this.clientEntityTypeWrapper["minecraft:client_entity"] ||
-      !this.clientEntityTypeWrapper["minecraft:client_entity"].description
+      !this.dataWrapper ||
+      !this.dataWrapper["minecraft:client_entity"] ||
+      !this.dataWrapper["minecraft:client_entity"].description
     ) {
       return undefined;
     }
 
-    return this.clientEntityTypeWrapper["minecraft:client_entity"].description.identifier;
+    return this.dataWrapper["minecraft:client_entity"].description.identifier;
   }
 
   public getFormatVersion(): number[] | undefined {
-    if (!this.clientEntityTypeWrapper) {
+    if (!this.dataWrapper) {
       return undefined;
     }
 
-    const fv = this.clientEntityTypeWrapper.format_version;
+    const fv = this.dataWrapper.format_version;
 
     if (typeof fv === "number") {
       return [fv];
     }
 
     if (typeof fv === "string") {
-      let fvarr = this.clientEntityTypeWrapper.format_version.split(".");
+      let fvarr = this.dataWrapper.format_version.split(".");
 
       let fvarrInt: number[] = [];
       for (let i = 0; i < fvarr.length; i++) {
@@ -69,11 +69,11 @@ export default class EntityTypeResourceDefinition {
   }
 
   get formatVersion() {
-    if (!this.clientEntityTypeWrapper || !this.clientEntityTypeWrapper.format_version) {
+    if (!this.dataWrapper || !this.dataWrapper.format_version) {
       return undefined;
     }
 
-    return this.clientEntityTypeWrapper.format_version;
+    return this.dataWrapper.format_version;
   }
 
   static async ensureOnFile(
@@ -108,7 +108,7 @@ export default class EntityTypeResourceDefinition {
       return;
     }
 
-    const defString = JSON.stringify(this.clientEntityTypeWrapper, null, 2);
+    const defString = JSON.stringify(this.dataWrapper, null, 2);
 
     this._file.setContent(defString);
   }
@@ -137,7 +137,7 @@ export default class EntityTypeResourceDefinition {
       data = result;
     }
 
-    this.clientEntityTypeWrapper = data;
+    this.dataWrapper = data;
 
     this._isLoaded = true;
 

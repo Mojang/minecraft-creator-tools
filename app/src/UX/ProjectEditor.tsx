@@ -62,7 +62,6 @@ import { faEdit, faWindowMaximize } from "@fortawesome/free-regular-svg-icons";
 import FileExplorer, { FileExplorerMode } from "./FileExplorer";
 import ShareProject from "./ShareProject";
 import { IProjectUpdaterReference } from "../info/IProjectInfoGeneratorBase";
-import { StatusTopic } from "../app/Status";
 import { SidePaneMaxWidth, SidePaneMinWidth } from "../app/Carto";
 import ProjectEditorUtilities, {
   ProjectEditorMode,
@@ -81,6 +80,8 @@ import IConversionSettings from "../core/IConversionSettings";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import IntegrateItem from "./IntegrateItem";
 import IProjectItemSeed, { ProjectItemSeedAction } from "../app/IProjectItemSeed";
+import ProjectStandard from "../app/ProjectStandard";
+import ProjectAutogeneration from "../app/ProjectAutogeneration";
 
 interface IProjectEditorProps extends IAppProps {
   onModeChangeRequested?: (mode: AppMode) => void;
@@ -90,6 +91,8 @@ interface IProjectEditorProps extends IAppProps {
   isHosted?: boolean;
   visualSeed?: number;
   theme: ThemeInput<any>;
+  isPersisted?: boolean;
+  onPersistenceUpgraded?: () => void;
   selectedItem?: string;
   heightOffset: number;
   mode?: ProjectEditorMode;
@@ -185,6 +188,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleConvertToClick = this._handleConvertToClick.bind(this);
     this._handleDialogDataUpdated = this._handleDialogDataUpdated.bind(this);
     this._handleGetShareableLinkClick = this._handleGetShareableLinkClick.bind(this);
+    this._handleWebLocalDeployClick = this._handleWebLocalDeployClick.bind(this);
     this._handleChangeWorldSettingsClick = this._handleChangeWorldSettingsClick.bind(this);
     this._handleDownloadMCWorldWithPacks = this._handleDownloadMCWorldWithPacks.bind(this);
     this._handleDeployDownloadWorldWithPacks = this._handleDeployDownloadWorldWithPacks.bind(this);
@@ -220,6 +224,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleExportMenuOpen = this._handleExportMenuOpen.bind(this);
     this._handleDeployMenuOpen = this._handleDeployMenuOpen.bind(this);
     this._handleViewMenuOpen = this._handleViewMenuOpen.bind(this);
+    this._handleWebLocalDeployOK = this._handleWebLocalDeployOK.bind(this);
     this._handleConvertOK = this._handleConvertOK.bind(this);
     this._handleIntegrateItemOK = this._handleIntegrateItemOK.bind(this);
     this._handleDeployWorldAndTestAssetsPackClick = this._handleDeployWorldAndTestAssetsPackClick.bind(this);
@@ -267,7 +272,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this.launchFlatButton = this.launchFlatButton.bind(this);
     this._setActiveEditorPersistable = this._setActiveEditorPersistable.bind(this);
     this._handleDownloadMCWorld = this._handleDownloadMCWorld.bind(this);
-    this._handleEditCopyClick = this._handleEditCopyClick.bind(this);
     this._serverStateChanged = this._serverStateChanged.bind(this);
     this._doAsyncLoading = this._doAsyncLoading.bind(this);
 
@@ -674,6 +678,20 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
+  private async _handleWebLocalDeployOK() {
+    this._handleDialogDone();
+
+    if (this.props.carto.activeMinecraft) {
+      const operId = await this.props.carto.notifyOperationStarted(
+        "Deploying project '" + this.props.project.name + "'..."
+      );
+
+      await this.props.carto.activeMinecraft.syncWithDeployment();
+
+      await this.props.carto.notifyOperationEnded(operId, "Deployed '" + this.props.project.name + "'.");
+    }
+  }
+
   private async _handleIntegrateItemOK() {
     this._handleDialogDone();
 
@@ -701,6 +719,30 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
             item.file.setContent(content);
           }
+          this._incrementVisualSeed();
+        } else if ((this.state.dialogData as IProjectItemSeed).action === ProjectItemSeedAction.fileOrFolder) {
+          const folder = (this.state.dialogData as IProjectItemSeed).folder;
+          let name = (this.state.dialogData as IProjectItemSeed).name;
+
+          if (name === undefined) {
+            name = (this.state.dialogData as IProjectItemSeed).fileSource?.name;
+          }
+
+          if (folder && name) {
+            const file = folder.ensureFile(name);
+            let content = undefined;
+
+            if (StorageUtilities.getEncodingByFileName(fileSource.name) === EncodingType.Utf8String) {
+              content = await fileSource.text();
+            } else {
+              content = new Uint8Array(await fileSource.arrayBuffer());
+            }
+
+            file.setContent(content);
+
+            await this.props.project.inferProjectItemsFromFiles();
+          }
+
           this._incrementVisualSeed();
         }
       }
@@ -1344,37 +1386,47 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
-    await this._ensurePersisted();
-
-    await this.props.carto.save();
-
     const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
 
     const operId = await this.props.carto.notifyOperationStarted("Saving project '" + projName + "'...");
 
+    await ProjectAutogeneration.updateProjectAutogeneration(this.props.project);
+
+    await this.props.carto.save();
+
     await this.props.project.save();
 
-    await this.props.carto.notifyOperationEnded(operId, "Saved '" + projName + "'.");
+    const persistResult = await this.ensurePersistentBrowserStorage();
 
-    await this.ensurePersistentBrowserStorage();
+    if (persistResult && this.props.isPersisted) {
+      await this.props.carto.notifyOperationEnded(operId, "Saved '" + projName + "'.");
+    } else {
+      await this.props.carto.notifyOperationEnded(
+        operId,
+        "Saved '" +
+          projName +
+          "' in temporary device browser storage. Keep in mind temporary device storage can go away at any time; save backups frequently."
+      );
+    }
   }
 
   private async ensurePersistentBrowserStorage() {
     if (!AppServiceProxy.hasAppService && !this.props.carto.hasAttemptedPersistentBrowserStorageSwitch) {
-      const isPersisted = WebUtilities.getIsPersisted();
+      const isPersisted = await WebUtilities.getIsPersisted();
 
       if (!isPersisted) {
         const couldPersist = await WebUtilities.requestPersistence();
-        this.props.carto.hasAttemptedPersistentBrowserStorageSwitch = true;
 
         if (!couldPersist) {
-          this.props.carto.notifyStatusUpdate(
-            "Could not shift to persistent browser storage; project storage is still temporary. Download backups frequently.",
-            StatusTopic.general
-          );
+          return false;
+        } else if (couldPersist && this.props.onPersistenceUpgraded) {
+          this.props.carto.hasAttemptedPersistentBrowserStorageSwitch = true;
+          this.props.onPersistenceUpgraded();
         }
       }
     }
+
+    return true;
   }
 
   private async _showMinecraftClick() {
@@ -1575,6 +1627,43 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       });
     }, 2);
   }
+
+  private async _handleWebLocalDeployClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
+    if (this.props.project == null || !data || !data.icon) {
+      return;
+    }
+
+    window.setTimeout(() => {
+      this.setState({
+        activeProjectItem: this.state.activeProjectItem,
+        tentativeProjectItem: this.state.tentativeProjectItem,
+        activeReference: this.state.activeReference,
+        menuState: this.state.menuState,
+        mode: this.state.mode,
+        viewMode: this.state.viewMode,
+        allInfoSet: this.props.project.infoSet,
+        allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+        displayFileView: this.state.displayFileView,
+        forceRawView: this.state.forceRawView,
+        filteredItems: this.state.filteredItems,
+        searchFilter: this.state.searchFilter,
+        effectMode: this.state.effectMode,
+        dragStyle: this.state.dragStyle,
+        visualSeed: this.state.visualSeed,
+        dialog: ProjectEditorDialog.webLocalDeploy,
+        dialogData: this.state.dialogData,
+        dialogActiveItem: this.state.dialogActiveItem,
+        statusAreaMode: this.state.statusAreaMode,
+        lastDeployKey: (data.icon as any).key,
+        lastExportKey: this.state.lastExportKey,
+        lastDeployFunction: this._handleWebLocalDeployClick,
+        lastExportFunction: this.state.lastExportFunction,
+        lastDeployData: data,
+        lastExportData: this.state.lastExportData,
+      });
+    }, 2);
+  }
+
   private async _handleChangeWorldSettingsClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
     if (this.props.project == null || !data || !data.icon) {
       return;
@@ -1620,6 +1709,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
+    await ProjectStandard.ensureIsStandard(this.props.project);
+
     await this._ensurePersisted();
 
     const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
@@ -1640,6 +1731,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private async _handleExportToLocalFolderClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
     await this._ensurePersisted();
 
+    await ProjectStandard.ensureIsStandard(this.props.project);
+
     await ProjectEditorUtilities.launchLocalExport(this.props.carto, this.props.project);
 
     if (data && data.icon && (data.icon as any).key) {
@@ -1651,6 +1744,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     if (data === undefined || typeof data.content !== "string") {
       return;
     }
+
+    await ProjectStandard.ensureIsStandard(this.props.project);
 
     const projectItem = this._getProjectItemFromName(data.content, "conversion...", [
       ProjectItemType.MCWorld,
@@ -1699,7 +1794,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private async _handleExportZipClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
-    await this._ensurePersisted();
+    await this.save();
+
+    await ProjectStandard.ensureIsStandard(this.props.project);
 
     await ProjectEditorUtilities.launchZipExport(this.props.carto, this.props.project);
 
@@ -1828,6 +1925,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
+    await ProjectStandard.ensureIsStandard(this.props.project);
+
     const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
 
     const operId = await this.props.carto.notifyOperationStarted(
@@ -1894,6 +1993,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
+    await ProjectStandard.ensureIsStandard(this.props.project);
+
     const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
 
     const operId = await this.props.carto.notifyOperationStarted(
@@ -1955,6 +2056,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       return;
     }
 
+    await ProjectStandard.ensureIsStandard(this.props.project);
+
     const projectItem = this._getProjectItemFromName(data.content, "and test assets to Minecraft", [
       ProjectItemType.MCWorld,
       ProjectItemType.MCProject,
@@ -1993,6 +2096,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     if (data === undefined || typeof data.content !== "string") {
       return;
     }
+
+    await ProjectStandard.ensureIsStandard(this.props.project);
 
     const projectItem = this._getProjectItemFromName(data.content, "and test assets mcworld", [
       ProjectItemType.MCProject,
@@ -2350,6 +2455,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private async saveAsBetaApisWorldWithPacks(name: string, content: Uint8Array) {
     await this._ensurePersisted();
 
+    await ProjectStandard.ensureIsStandard(this.props.project);
+
     const mcworld = await ProjectExporter.generateBetaApisWorldWithPacks(this.props.project, name, content);
 
     if (mcworld === undefined) {
@@ -2367,6 +2474,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
   private async saveAsWorldWithPackRefs(name: string, content: Uint8Array) {
     await this._ensurePersisted();
+
+    await ProjectStandard.ensureIsStandard(this.props.project);
 
     const mcworld = await ProjectExporter.generateBetaApisWorldWithPackRefs(this.props.project, name, content);
 
@@ -2507,6 +2616,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const name = projName + " Flat GameTest";
     const fileName = projName + " flat.mcworld";
+
+    await ProjectStandard.ensureIsStandard(this.props.project);
 
     const mcworld = await ProjectExporter.generateFlatGameTestWorldWithPackRefs(this.props.project, name);
 
@@ -2775,16 +2886,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     });
   }
 
-  async _handleEditCopyClick() {
-    if (this.props === undefined || this.props.onModeChangeRequested === undefined) {
-      return;
-    }
-
-    this.props.onModeChangeRequested(AppMode.project);
-
-    await this.ensurePersistentBrowserStorage();
-  }
-
   getProjectTitle() {
     if (this.props.project === null) {
       return "(no project)";
@@ -2990,6 +3091,18 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     const deployMenu: any = [];
 
+    if (CartoApp.isWeb) {
+      const deployWebLocalKey = "deployToLocalFolder";
+      deployKeys[deployWebLocalKey] = {
+        key: deployWebLocalKey + "A",
+        icon: <FontAwesomeIcon icon={faBox} key={deployWebLocalKey} className="fa-lg" />,
+        content: "Deploy to local Minecraft folder",
+        onClick: this._handleWebLocalDeployClick,
+        title: "Deploys this to a remote Dev Tools server",
+      };
+      deployMenu.push(deployKeys[deployWebLocalKey]);
+    }
+
     for (let i = 0; i < this.props.project.items.length; i++) {
       const pi = this.props.project.items[i];
 
@@ -3011,10 +3124,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         if (world) {
           title = world.name;
         }
-        /*
+
         nextExportKey = "exportWorld|" + pi.name;
 
-        exportKeys[nextExportKey] = {
+        exportKeys = {
           key: nextExportKey,
           icon: <FontAwesomeIcon icon={faBox} className="fa-lg" />,
           content: title + " world",
@@ -3022,7 +3135,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           title: "Download " + title,
         };
 
-        exportMenu.push(exportKeys[nextExportKey]);*/
+        exportMenu.push(exportKeys[nextExportKey]);
 
         if (AppServiceProxy.hasAppServiceOrSim) {
           nextExportKey = "convertTo|" + pi.name;
@@ -3046,7 +3159,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         };
         deployMenu.push(deployKeys[dlsKey]);
 
-        /*
         const miKey = "deployWorldTestAssetsPack|" + pi.name;
         deployKeys[miKey] = {
           key: miKey + "A",
@@ -3056,7 +3168,18 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           title: "Deploys " + title + " and test assets in a zip",
         };
         deployMenu.push(deployKeys[miKey]);
-        */
+
+        if (AppServiceProxy.hasAppServiceOrDebug) {
+          const miKeyA = "deployWorldTestAssetsLocal|" + pi.name;
+          deployKeys[miKeyA] = {
+            key: miKeyA,
+            icon: <FontAwesomeIcon icon={faBox} key={miKeyA} className="fa-lg" />,
+            content: title + " and test assets to Minecraft",
+            onClick: this._handleDeployWorldAndTestAssetsLocalClick,
+            title: "Deploys " + title + " and test assets in a zip",
+          };
+          deployMenu.push(deployKeys[miKeyA]);
+        }
       }
     }
 
@@ -3282,15 +3405,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         title: "Home/Project List",
       });
 
-      if (!this.props.readOnly) {
-        toolbarItems.push({
-          icon: <SaveLabel />,
-          key: "save",
-          content: <Text content="Save" />,
-          onClick: this._handleSaveClick,
-          title: "Save",
-        });
-      }
+      toolbarItems.push({
+        icon: <SaveLabel />,
+        key: "save",
+        content: <Text content="Save" />,
+        onClick: this._handleSaveClick,
+        title: "Save",
+      });
 
       if (viewMode === CartoEditorViewMode.mainFocus) {
         toolbarItems.push({
@@ -3455,14 +3576,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       });*/
     }
 
-    if (Utilities.isPreview) {
-      toolbarItems.push({
-        icon: <SettingsLabel isCompact={isButtonCompact} />,
-        key: "settings",
-        onClick: this._showSettingsClick,
-        title: "Settings",
-      });
+    toolbarItems.push({
+      icon: <SettingsLabel isCompact={isButtonCompact} />,
+      key: "settings",
+      onClick: this._showSettingsClick,
+      title: "Settings",
+    });
 
+    if (Utilities.isPreview) {
       if (
         this.props.project.role !== ProjectRole.documentation &&
         this.props.project.role !== ProjectRole.meta &&
@@ -3493,36 +3614,23 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     } else {
       const exportItem = exportKeys[this.state.lastExportKey];
 
-      if (exportItem) {
-        toolbarItems.push({
-          icon: <CustomLabel icon={exportItem.icon} text={exportItem.content} isCompact={isButtonCompact} />,
-          key: exportItem.key + "I",
-          onClick: exportItem.onClick,
-          active: true,
-          title: exportItem.title,
-        });
+      toolbarItems.push({
+        icon: <CustomLabel icon={exportItem.icon} text={exportItem.content} isCompact={isButtonCompact} />,
+        key: exportItem.key + "I",
+        onClick: exportItem.onClick,
+        active: true,
+        title: exportItem.title,
+      });
 
-        toolbarItems.push({
-          icon: <DownArrowLabel />,
-          key: "export",
-          onMenuOpenChange: this._handleExportMenuOpen,
-          menuOpen: this.state.menuState === ProjectEditorMenuState.exportMenu,
-          menu: exportMenu,
-          active: true,
-          title: "Export Options",
-        });
-      } else {
-        toolbarItems.push({
-          key: "export",
-          icon: <MCPackLabel isCompact={isButtonCompact} />,
-          content: "Export",
-          title: isButtonCompact ? "" : "Export",
-          active: true,
-          menuOpen: this.state.menuState === ProjectEditorMenuState.exportMenu,
-          onMenuOpenChange: this._handleExportMenuOpen,
-          menu: exportMenu,
-        });
-      }
+      toolbarItems.push({
+        icon: <DownArrowLabel />,
+        key: "export",
+        onMenuOpenChange: this._handleExportMenuOpen,
+        menuOpen: this.state.menuState === ProjectEditorMenuState.exportMenu,
+        menu: exportMenu,
+        active: true,
+        title: "Export Options",
+      });
     }
 
     if (
@@ -3673,7 +3781,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           readOnly={this.props.readOnly}
           heightOffset={heightOffset}
           visualSeed={this.state.visualSeed}
-          forceRawView={this.state.forceRawView}
+          forceRawView={true}
           project={this.props.project}
           setActivePersistable={this._setActiveEditorPersistable}
           carto={this.props.carto}

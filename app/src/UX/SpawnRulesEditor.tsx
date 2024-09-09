@@ -1,35 +1,33 @@
 import { Component } from "react";
 import IFileProps from "./IFileProps";
 import IFile from "../storage/IFile";
-import "./NpmPackageJsonEditor.css";
-import NpmPackageJson from "../devproject/NpmPackageJson";
+import "./SpawnRulesEditor.css";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
-import { ListProps } from "@fluentui/react-northstar";
-import ManagedComponentGroup from "../minecraft/ManagedComponentGroup";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import IProperty from "../dataform/IProperty";
+import SpawnRulesBehaviorDefinition from "../minecraft/SpawnRulesBehaviorDefinition";
 
-interface INpmPackageJsonEditorProps extends IFileProps {
+interface ISpawnRulesEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
+  displayHeader?: boolean;
   theme: ThemeInput<any>;
 }
 
-interface INpmPackageJsonEditorState {
+interface ISpawnRulesEditorState {
   fileToEdit: IFile;
   isLoaded: boolean;
-  selectedItem: NpmPackageJson | ManagedComponentGroup | undefined;
+  selectedItem: SpawnRulesBehaviorDefinition | undefined;
 }
 
-export default class NpmPackageJsonEditor extends Component<INpmPackageJsonEditorProps, INpmPackageJsonEditorState> {
+export default class SpawnRulesEditor extends Component<ISpawnRulesEditorProps, ISpawnRulesEditorState> {
   private _lastFileEdited?: IFile;
 
-  constructor(props: INpmPackageJsonEditorProps) {
+  constructor(props: ISpawnRulesEditorProps) {
     super(props);
 
-    this._handleNpmPackageJsonLoaded = this._handleNpmPackageJsonLoaded.bind(this);
-    this._handleItemSelected = this._handleItemSelected.bind(this);
+    this._definitionLoaded = this._definitionLoaded.bind(this);
     this._handleDataFormPropertyChange = this._handleDataFormPropertyChange.bind(this);
 
     this.state = {
@@ -41,7 +39,7 @@ export default class NpmPackageJsonEditor extends Component<INpmPackageJsonEdito
     this._updateManager(true);
   }
 
-  static getDerivedStateFromProps(props: INpmPackageJsonEditorProps, state: INpmPackageJsonEditorState) {
+  static getDerivedStateFromProps(props: ISpawnRulesEditorProps, state: ISpawnRulesEditorState) {
     if (state === undefined || state === null) {
       state = {
         fileToEdit: props.file,
@@ -62,7 +60,7 @@ export default class NpmPackageJsonEditor extends Component<INpmPackageJsonEdito
     return null; // No change to state
   }
 
-  componentDidUpdate(prevProps: INpmPackageJsonEditorProps, prevState: INpmPackageJsonEditorState) {
+  componentDidUpdate(prevProps: ISpawnRulesEditorProps, prevState: ISpawnRulesEditorState) {
     this._updateManager(true);
   }
 
@@ -71,32 +69,32 @@ export default class NpmPackageJsonEditor extends Component<INpmPackageJsonEdito
       if (this.state.fileToEdit !== this._lastFileEdited) {
         this._lastFileEdited = this.state.fileToEdit;
 
-        await NpmPackageJson.ensureOnFile(this.state.fileToEdit, this._handleNpmPackageJsonLoaded);
+        await SpawnRulesBehaviorDefinition.ensureOnFile(this.state.fileToEdit, this._definitionLoaded);
       }
     }
+
+    await Database.ensureFormLoaded("spawn_rules_header");
 
     if (
       this.state.fileToEdit &&
       this.state.fileToEdit.manager !== undefined &&
-      this.state.fileToEdit.manager instanceof NpmPackageJson &&
-      (this.state.fileToEdit.manager as NpmPackageJson).isLoaded &&
+      this.state.fileToEdit.manager instanceof SpawnRulesBehaviorDefinition &&
+      (this.state.fileToEdit.manager as SpawnRulesBehaviorDefinition).isLoaded &&
       !this.state.isLoaded
     ) {
       this._doUpdate(setState);
     }
   }
 
-  _handleNpmPackageJsonLoaded(npmPackageJson: NpmPackageJson, typeA: NpmPackageJson) {
+  _definitionLoaded(defA: SpawnRulesBehaviorDefinition, defB: SpawnRulesBehaviorDefinition) {
     this._doUpdate(true);
   }
 
   async _doUpdate(setState: boolean) {
-    await Database.ensureFormLoaded("package_json");
-
     let selItem = this.state.selectedItem;
 
     if (selItem === undefined && this.state && this.state.fileToEdit && this.state.fileToEdit.manager) {
-      selItem = this.state.fileToEdit.manager as NpmPackageJson;
+      selItem = this.state.fileToEdit.manager as SpawnRulesBehaviorDefinition;
     }
 
     if (setState) {
@@ -119,71 +117,11 @@ export default class NpmPackageJsonEditor extends Component<INpmPackageJsonEdito
       const file = this.state.fileToEdit;
 
       if (file.manager !== null) {
-        const et = file.manager as NpmPackageJson;
+        const srbd = file.manager as SpawnRulesBehaviorDefinition;
 
-        et.persist();
+        srbd.persist();
       }
     }
-  }
-
-  _handleItemSelected(elt: any, event: ListProps | undefined) {
-    if (
-      event === undefined ||
-      event.selectedIndex === undefined ||
-      this.state == null ||
-      this.state.fileToEdit === undefined ||
-      this.state.fileToEdit.manager === undefined
-    ) {
-      return;
-    }
-
-    const et = this.state.fileToEdit.manager as NpmPackageJson;
-    const itemListings = this.getItemListings();
-
-    const key = itemListings[event.selectedIndex].key;
-
-    if (key) {
-      if (key === "defaultNpmPackageJson") {
-        this.setState({
-          fileToEdit: this.state.fileToEdit,
-          isLoaded: this.state.isLoaded,
-          selectedItem: et,
-        });
-      } else if (key.startsWith("cg.")) {
-      }
-    }
-  }
-
-  getItemListings() {
-    if (!this.state || !this.state.fileToEdit) {
-      return [];
-    }
-
-    const itemListings = [];
-
-    itemListings.push({
-      key: "defaultNpmPackageJson",
-      header: "Default Components",
-      headerMedia: " ",
-      content: " ",
-    });
-
-    // const npme = this.state.fileToEdit.manager as NpmPackageJson;
-
-    /*    const componentGroups = et.getComponentGroups();
-
-    for (const compGroup of componentGroups) {
-      const header = compGroup.id;
-
-      itemListings.push({
-        key: "cg." + compGroup.id,
-        header: header,
-        headerMedia: " ",
-        content: " ",
-      });
-    }*/
-
-    return itemListings;
   }
 
   _handleDataFormPropertyChange(props: IDataFormProps, property: IProperty, newValue: any) {
@@ -218,29 +156,40 @@ export default class NpmPackageJsonEditor extends Component<INpmPackageJsonEdito
       this.props.setActivePersistable(this);
     }
 
-    const npmJsonFile = this.state.fileToEdit.manager as NpmPackageJson;
-    const def = npmJsonFile.definition;
+    const definitionFile = this.state.fileToEdit.manager as SpawnRulesBehaviorDefinition;
+    const def = definitionFile.data;
 
     if (def === undefined) {
       return <div>Loading definition...</div>;
     }
 
-    const form = Database.getForm("package_json");
+    let defInner = def["minecraft:spawn_rules"];
+    if (defInner === undefined) {
+      defInner = {};
+      def["minecraft:spawn_rules"] = defInner;
+    }
+
+    const form = Database.getForm("spawn_rules_header");
+
+    let header = <></>;
+    if (this.props.displayHeader === undefined || this.props.displayHeader) {
+      header = <div className="sre-header">Spawn Rules</div>;
+    }
 
     return (
       <div
-        className="npme-area"
+        className="sre-area"
         style={{
           minHeight: height,
           maxHeight: height,
         }}
       >
-        <div className="npme-header">{npmJsonFile.id}</div>
-        <div className="npme-mainArea">
-          <div className="npme-form">
+        {header}
+        <div className="sre-mainArea">
+          <div className="sre-form">
             <DataForm
               definition={form}
-              directObject={def}
+              directObject={defInner.description}
               readOnly={false}
               theme={this.props.theme}
               objectKey={this.props.file.storageRelativePath}

@@ -1,5 +1,6 @@
 .itbi-button {
   border: solid 1.5px #202020;
+  max-width: calc(100vw - 45px);
 }
 
 .itbi-outer {
@@ -24,7 +25,7 @@
   border: outset 4px #848586;
   height: 100%;
   cursor: pointer;
-  grid-template-columns: 63px 164px;
+  grid-template-columns: 63px 1fr;
 }
 
 .itbi-mainArea {

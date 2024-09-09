@@ -6,7 +6,8 @@
 .sarr-add BUTTON {
   padding-left: 3px;
   padding-right: 3px;
-  margin-left: 200px;
+  margin-top: 4px;
+  margin-bottom: 6px;
   min-width: 30px;
   width: 30px;
 }
@@ -27,6 +28,7 @@
   padding-left: 6px !important;
   padding-right: 6px !important;
   min-width: 500px;
+  margin-bottom: 2px;
 }
 
 .sarr-none {

@@ -28,6 +28,10 @@
   grid-template-rows: 55px 1fr;
 }
 
+.ete-componentEditorInteriorFull {
+  grid-row: 2;
+}
+
 .ete-select {
   padding: 8px;
 }

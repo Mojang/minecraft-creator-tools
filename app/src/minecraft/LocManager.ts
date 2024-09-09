@@ -87,7 +87,9 @@ export default class LocManager {
 
     this.tokens = {};
 
-    for (const pi of this._project.items) {
+    const itemsCopy = this._project.getItemsCopy();
+
+    for (const pi of itemsCopy) {
       if (pi.itemType === ProjectItemType.lang) {
         await pi.ensureFileStorage();
 

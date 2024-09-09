@@ -1,7 +1,7 @@
 @media only screen and (min-width: 1016px) {
   .csp-grid {
     display: grid;
-    grid-template-columns: 180px 1fr;
+    grid-template-columns: 150px 1fr;
   }
 }
 
@@ -12,7 +12,6 @@
   padding: 10px;
   padding-top: 10px;
   padding-bottom: 30px;
-  overflow-y: auto;
 }
 
 .csp-label {
@@ -74,4 +73,21 @@
 
 .csp-nameinput input {
   width: 300px;
+}
+
+.csp-tracklabel {
+  grid-row: 4;
+  grid-column: 1;
+  padding-top: 7px;
+}
+
+.csp-trackinput {
+  grid-row: 4;
+  grid-column: 2;
+  padding-bottom: 20px;
+  margin-right: 4px;
+}
+
+.csp-trackinput .ui-dropdown__container {
+  width: 235px;
 }

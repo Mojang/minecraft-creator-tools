@@ -256,21 +256,10 @@ export default class Database {
       versionUrl = "https://raw.githubusercontent.com/Mojang/bedrock-samples/preview/version.json";
     }
 
-    // Log.message("Retrieving " + (preview ? "preview" : "retail") + " version data.");
-
-    /*Log.verbose(
-      "Getting latest version info from '" +
-        versionUrl +
-        "' " +
-        this.#usePreview +
-        "|" +
-        (this.carto && this.carto.processHostedMinecraftTrack === MinecraftTrack.preview)
-    );*/
-
     try {
       minecraftInfoResponse = await axios.get(versionUrl);
     } catch (e: any) {
-      console.log("Could not access Bedrock Dedicated Server details." + e);
+      console.log("Could not access Minecraft version details." + e);
       throw new Error(e.toString());
     }
 
@@ -307,7 +296,7 @@ export default class Database {
         }
       }
     } catch (e: any) {
-      Log.error("Could not access Bedrock Dedicated Server details." + e);
+      Log.error("Could not process Minecraft version details." + e);
       throw new Error(e.toString());
     }
 

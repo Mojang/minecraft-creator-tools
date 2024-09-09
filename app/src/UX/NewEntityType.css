@@ -14,6 +14,7 @@
 
 .net-projectGallery {
   height: 360px;
+  overflow-y: auto;
 }
 
 .net-galleryHeader {

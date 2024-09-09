@@ -6,6 +6,7 @@ import IGitHubInfo from "./IGitHubInfo";
 import ITool from "./ITool";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
 import IStatus from "./Status";
+import { MinecraftTrack } from "./ICartoData";
 
 export enum ProjectDataType {
   localStorage = 0,
@@ -55,6 +56,8 @@ export default interface IProjectData {
   description: string;
   focus: ProjectFocus;
   role?: ProjectRole;
+
+  track?: MinecraftTrack;
 
   editPreference: ProjectEditPreference;
 

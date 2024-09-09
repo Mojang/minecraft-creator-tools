@@ -16,6 +16,11 @@ import ManagedEvent from "./ManagedEvent";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
+import Project from "../app/Project";
+import ProjectItem from "../app/ProjectItem";
+import { ProjectItemType } from "../app/IProjectItemData";
+import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
+import SpawnRulesBehaviorDefinition from "./SpawnRulesBehaviorDefinition";
 
 export default class EntityTypeDefinition implements IManagedComponentSetItem {
   public behaviorPackWrapper?: IEntityTypeWrapper;
@@ -139,6 +144,33 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem {
     }
 
     return this._managedComponents[id];
+  }
+
+  getComponentsInBaseAndGroups(id: string): IManagedComponent[] {
+    if (this.data === undefined) {
+      return [];
+    }
+
+    let results: IManagedComponent[] = [];
+
+    let comp = this.getComponent(id);
+
+    if (comp) {
+      results.push(comp);
+    }
+
+    for (const componentGroupName in this._componentGroups) {
+      const group = this._componentGroups[componentGroupName];
+      if (group) {
+        comp = group.getComponent(id);
+
+        if (comp) {
+          results.push(comp);
+        }
+      }
+    }
+
+    return results;
   }
 
   get behaviorPackFormatVersion() {
@@ -321,6 +353,60 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem {
     }
   }
 
+  async addChildItems(project: Project, item: ProjectItem) {
+    let lootTablePaths: string[] = [];
+
+    const comps = this.getComponentsInBaseAndGroups("minecraft:loot");
+
+    for (const comp of comps) {
+      let lootTablePath = comp.getProperty("table");
+
+      if (lootTablePath) {
+        lootTablePaths.push(lootTablePath);
+      }
+    }
+
+    const itemsCopy = project.getItemsCopy();
+
+    for (const candItem of itemsCopy) {
+      if (candItem.itemType === ProjectItemType.entityTypeResource) {
+        await candItem.ensureStorage();
+
+        if (candItem.file) {
+          const etrd = await EntityTypeResourceDefinition.ensureOnFile(candItem.file);
+
+          if (etrd) {
+            const id = etrd.id;
+
+            if (id === this.id) {
+              item.addChildItem(candItem);
+            }
+          }
+        }
+      } else if (candItem.itemType === ProjectItemType.spawnRuleBehavior) {
+        await candItem.ensureStorage();
+
+        if (candItem.file) {
+          const srb = await SpawnRulesBehaviorDefinition.ensureOnFile(candItem.file);
+
+          if (srb) {
+            const id = srb.id;
+
+            if (id === this.id) {
+              item.addChildItem(candItem);
+            }
+          }
+        }
+      } else if (candItem.itemType === ProjectItemType.lootTableBehaviorJson) {
+        for (const lootTablePath of lootTablePaths) {
+          if (candItem.projectPath?.endsWith(lootTablePath)) {
+            item.addChildItem(candItem);
+          }
+        }
+      }
+    }
+  }
+
   static async ensureOnFile(
     behaviorPackFile: IFile,
     loadHandler?: IEventHandler<EntityTypeDefinition, EntityTypeDefinition>
@@ -476,6 +562,27 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem {
     }
 
     this.data = entity;
+
+    if (this.data) {
+      if (this.data.components) {
+        for (const compName in this.data.components) {
+          const comp = this.data.components[compName];
+
+          if (comp) {
+            this._managedComponents[compName] = new ManagedComponent(compName, comp);
+          }
+        }
+      }
+      if (this.data.component_groups) {
+        for (const compGroupName in this.data.component_groups) {
+          const compGroup = this.data.component_groups[compGroupName];
+
+          if (compGroup) {
+            this._componentGroups[compGroupName] = new ManagedComponentGroup(compGroup, compGroupName);
+          }
+        }
+      }
+    }
 
     this._isLoaded = true;
 

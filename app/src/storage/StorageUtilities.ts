@@ -726,6 +726,7 @@ export default class StorageUtilities {
       folderName.startsWith(".") ||
       folderName === "lib" ||
       folderName === "node_modules" ||
+      folderName === ".git" ||
       folderName === "dist" ||
       folderName === "build"
     ) {

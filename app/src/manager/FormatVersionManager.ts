@@ -197,8 +197,10 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       return infoItems;
     }
 
-    for (let i = 0; i < project.items.length; i++) {
-      const pi = project.items[i];
+    const itemsCopy = project.getItemsCopy();
+
+    for (let i = 0; i < itemsCopy.length; i++) {
+      const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.blockTypeBehaviorJson) {
         await pi.ensureFileStorage();
@@ -298,7 +300,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             }
           }
         }
-      } else if (pi.itemType === ProjectItemType.spawnRuleBehaviorJson) {
+      } else if (pi.itemType === ProjectItemType.spawnRuleBehavior) {
         await pi.ensureFileStorage();
 
         if (pi.file) {
@@ -326,7 +328,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             }
           }
         }
-      } else if (pi.itemType === ProjectItemType.entityTypeResourceJson) {
+      } else if (pi.itemType === ProjectItemType.entityTypeResource) {
         await pi.ensureFileStorage();
 
         if (pi.file) {
@@ -538,8 +540,10 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
     const minor = parseInt(verSplit[1]);
     const patch = parseInt(verSplit[2]);
 
-    for (let i = 0; i < project.items.length; i++) {
-      const pi = project.items[i];
+    const itemsCopy = project.getItemsCopy();
+
+    for (let i = 0; i < itemsCopy.length; i++) {
+      const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.worldTemplateManifestJson) {
         await pi.ensureFileStorage();

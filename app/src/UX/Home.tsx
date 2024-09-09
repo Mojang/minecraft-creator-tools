@@ -33,7 +33,7 @@ import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProx
 import ProjectGallery from "./ProjectGallery";
 import { constants } from "../core/Constants";
 import StorageUtilities from "../storage/StorageUtilities";
-import { LocalFolderLabel, ConnectLabel, ExportBackupLabel } from "./Labels";
+import { LocalFolderLabel, ExportBackupLabel } from "./Labels";
 import FileSystemStorage from "../storage/FileSystemStorage";
 import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
 import UrlUtilities from "../core/UrlUtilities";
@@ -58,10 +58,9 @@ enum HomeDialogMode {
 interface IHomeProps extends IAppProps {
   theme: ThemeInput<any>;
   errorMessage: string | undefined;
-  isPersisted?: boolean;
   heightOffset: number;
   visualSeed?: number;
-  onPersistenceUpgraded?: () => void;
+  isPersisted?: boolean;
   onModeChangeRequested?: (mode: AppMode) => void;
   onProjectSelected?: (project: Project) => void;
   onLog: (message: string) => Promise<void>;
@@ -159,13 +158,9 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._handleNewProjectCreatorChange = this._handleNewProjectCreatorChange.bind(this);
     this._handleNewProjectDescriptionChange = this._handleNewProjectDescriptionChange.bind(this);
     this._handleSelectFolderClick = this._handleSelectFolderClick.bind(this);
-    this._handleExportToolClick = this._handleExportToolClick.bind(this);
-    this._handleUpgradeStorageKey = this._handleUpgradeStorageKey.bind(this);
-    this._handleUpgradeStorageClick = this._handleUpgradeStorageClick.bind(this);
     this._handleExportAllKey = this._handleExportAllKey.bind(this);
     this._handleExportAllClick = this._handleExportAllClick.bind(this);
     this._handleNewSearch = this._handleNewSearch.bind(this);
-    this._handleConnectClick = this._handleConnectClick.bind(this);
     this._onGalleryLoaded = this._onGalleryLoaded.bind(this);
     this._handleFileUpload = this._handleFileUpload.bind(this);
     this._handleInspectFileUpload = this._handleInspectFileUpload.bind(this);
@@ -448,42 +443,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
   componentDidUpdate(prevProps: IHomeProps, prevState: IHomeState) {
     this.setCarto(this.props.carto);
-  }
-
-  async _handleConnectClick() {
-    if (this.props.onModeChangeRequested) {
-      this.props.onModeChangeRequested(AppMode.companionPlusBack);
-    }
-  }
-
-  _handleExportToolClick() {
-    if (this.props.onModeChangeRequested === undefined) {
-      Log.unexpectedUndefined("HETC");
-      return;
-    }
-
-    this.props.onModeChangeRequested(AppMode.exporterTool);
-  }
-
-  async _handleUpgradeStorageKey(event: React.KeyboardEvent) {
-    if (event.key === "Enter") {
-      await this._handleUpgradeStorageClick();
-    }
-  }
-
-  async _handleUpgradeStorageClick() {
-    const result = await WebUtilities.requestPersistence();
-
-    if (result && this.props.onPersistenceUpgraded) {
-      this.props.onPersistenceUpgraded();
-    } else {
-      this.setState({
-        errorMessage: "Could not change the browser's storage for this site from temporary to a more persistent state.",
-        dialogMode: HomeDialogMode.errorMessage,
-        isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-      });
-      return;
-    }
   }
 
   async _handleExportAllKey(event: React.KeyboardEvent) {
@@ -791,7 +750,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       if (safeMessage !== undefined) {
         this.setState({
           errorMessage:
-            "Folder could not be read - please choose a folder on your device that only has Minecraft files in it (no .exes, .bat files, etc.)\r\n\r\nDetails: " +
+            "Folder has unsupported files within it. Please choose a folder on your device that only has Minecraft asset files in it (.json, .png, .mcfunction, etc.)\r\n\r\nDetails: " +
             safeMessage,
           dialogMode: HomeDialogMode.errorMessage,
           isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
@@ -1305,26 +1264,16 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             Projects
           </h2>
         );
-
-        if (!this.props.isPersisted) {
+        if (this.props.isPersisted) {
           introArea.push(
-            <div key="recentlyNote" className="home-projects-note">
-              (stored in temporary browser storage.){" "}
-              <span
-                className="home-clickLink"
-                tabIndex={0}
-                role="button"
-                onClick={this._handleUpgradeStorageClick}
-                onKeyDown={this._handleUpgradeStorageKey}
-              >
-                Make persistent
-              </span>
+            <div key="recentlyNoteA" className="home-projects-note">
+              (stored in this device browser's storage.)
             </div>
           );
         } else {
           introArea.push(
             <div key="recentlyNoteA" className="home-projects-note">
-              (stored in this device's browser storage.)
+              (stored in this device browser's temporary storage.)
             </div>
           );
         }
@@ -1386,21 +1335,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     let accessoryToolArea = <></>;
 
     const actionsToolbar = [];
-    if (AppServiceProxy.hasAppService) {
-      actionsToolbar.push({
-        icon: <LocalFolderLabel isCompact={false} />,
-        key: "openFolder",
-        onClick: this._handleOpenFolderClick,
-        title: "Open folder on this device",
-      });
-
-      actionsToolbar.push({
-        icon: <ConnectLabel isCompact={false} />,
-        key: "connect",
-        onClick: this._handleConnectClick,
-        title: "Connect",
-      });
-    } else if (window.showDirectoryPicker !== undefined) {
+    if (window.showDirectoryPicker !== undefined) {
       actionsToolbar.push({
         icon: <LocalFolderLabel isCompact={false} />,
         key: "openFolderA",
@@ -1661,6 +1596,18 @@ export default class Home extends Component<IHomeProps, IHomeState> {
                 }}
               >
                 GitHub repo
+              </a>
+              .
+              <a
+                href={Utilities.ensureEndsWithSlash(constants.repositoryUrl + "/issues/new")}
+                className="home-header-docsLink"
+                target="_blank"
+                rel="noreferrer noopener"
+                style={{
+                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+                }}
+              >
+                Report an issue
               </a>
               .
             </div>

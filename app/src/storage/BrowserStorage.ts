@@ -12,15 +12,7 @@ export default class BrowserStorage extends StorageBase implements IStorage {
 
   static readonly folderDelimiter = "/";
 
-  constructor(name: string | null) {
-    super();
-
-    if (name == null) {
-      name = "";
-    } else {
-      name = "." + name;
-    }
-
+  static ensureConfigured() {
     if (!BrowserStorage.isConfigured) {
       localforage.config({
         name: "Minecraft Creator Tools",
@@ -30,6 +22,18 @@ export default class BrowserStorage extends StorageBase implements IStorage {
 
       BrowserStorage.isConfigured = true;
     }
+  }
+
+  constructor(name: string | null) {
+    super();
+
+    if (name == null) {
+      name = "";
+    } else {
+      name = "." + name;
+    }
+
+    BrowserStorage.ensureConfigured();
 
     this.rootFolder = new BrowserFolder(this, null, "fs" + name, "root");
   }

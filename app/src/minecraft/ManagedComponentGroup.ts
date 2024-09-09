@@ -68,8 +68,9 @@ export default class ManagedComponentGroup implements IManagedComponentSetItem {
     }
 
     if (!this._managed[id]) {
-      if (this._data[id]) {
-        this._managed[id] = new ManagedComponent(id, this._data);
+      const data = this._data[id];
+      if (data) {
+        this._managed[id] = new ManagedComponent(id, data);
       }
     }
 

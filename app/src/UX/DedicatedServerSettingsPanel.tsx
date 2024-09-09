@@ -104,9 +104,9 @@ export default class DedicatedServerSettingsPanel extends Component<
   _handleUsePreview(e: SyntheticEvent, data: (CheckboxProps & { checked: boolean }) | undefined) {
     if (data) {
       if (data.checked) {
-        this.props.carto.processHostedMinecraftTrack = MinecraftTrack.preview;
+        this.props.carto.track = MinecraftTrack.preview;
       } else {
-        this.props.carto.processHostedMinecraftTrack = MinecraftTrack.main;
+        this.props.carto.track = MinecraftTrack.main;
       }
 
       this.props.carto.save();
@@ -286,10 +286,7 @@ export default class DedicatedServerSettingsPanel extends Component<
 
       serverProps.push(
         <div className="dssp-usepreviewinput" key="usepreviewinput">
-          <Checkbox
-            checked={this.props.carto.processHostedMinecraftTrack === MinecraftTrack.preview}
-            onClick={this._handleUsePreview}
-          />
+          <Checkbox checked={this.props.carto.track === MinecraftTrack.preview} onClick={this._handleUsePreview} />
         </div>
       );
 

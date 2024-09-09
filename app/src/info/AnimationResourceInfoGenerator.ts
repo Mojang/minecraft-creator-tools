@@ -42,7 +42,9 @@ export default class AnimationResourceInfoGenerator implements IProjectInfoGener
     const boneCountPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 2, "Bones");
     items.push(boneCountPi);
 
-    for (const projectItem of project.items) {
+    const itemsCopy = project.getItemsCopy();
+
+    for (const projectItem of itemsCopy) {
       if (projectItem.itemType === ProjectItemType.animationResourceJson) {
         await projectItem.ensureFileStorage();
 

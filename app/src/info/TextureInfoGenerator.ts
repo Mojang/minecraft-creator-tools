@@ -109,7 +109,9 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
 
     const rpFolder = await Database.loadDefaultResourcePack();
 
-    for (const projectItem of project.items) {
+    const itemsCopy = project.getItemsCopy();
+
+    for (const projectItem of itemsCopy) {
       if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
         await projectItem.ensureFileStorage();
 
@@ -355,7 +357,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
             }
           }
         }
-      } else if (projectItem.itemType === ProjectItemType.entityTypeResourceJson) {
+      } else if (projectItem.itemType === ProjectItemType.entityTypeResource) {
         textureCountPi.incrementFeature("Entity Resource Count");
         await projectItem.ensureFileStorage();
 
@@ -363,11 +365,11 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
           const entityTypeResourceDef = await EntityTypeResourceDefinition.ensureOnFile(projectItem.file);
 
           if (
-            entityTypeResourceDef?.clientEntityTypeWrapper &&
-            entityTypeResourceDef?.clientEntityTypeWrapper["minecraft:client_entity"] &&
-            entityTypeResourceDef?.clientEntityTypeWrapper["minecraft:client_entity"].description
+            entityTypeResourceDef?.dataWrapper &&
+            entityTypeResourceDef?.dataWrapper["minecraft:client_entity"] &&
+            entityTypeResourceDef?.dataWrapper["minecraft:client_entity"].description
           ) {
-            const desc = entityTypeResourceDef.clientEntityTypeWrapper["minecraft:client_entity"].description;
+            const desc = entityTypeResourceDef.dataWrapper["minecraft:client_entity"].description;
             const textures = desc.textures;
 
             if (textures) {

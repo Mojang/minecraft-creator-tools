@@ -23,5 +23,9 @@
 
 .iitem-folderArea {
   padding-top: 30px;
-  max-width: 600px;
+  max-width: 800px;
+}
+
+.iitem-nameArea input {
+  min-width: 300px;
 }
