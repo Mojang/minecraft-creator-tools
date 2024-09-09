@@ -7,6 +7,18 @@
     "type": "git",
     "url": "https://github.com/Mojang/minecraft-creator-tools.git"
   },
+  "keywords": [
+    "minecraft",
+    "tools",
+    "bedrock",
+    "add-on",
+    "creator"
+  ], 
+  "bugs": {
+    "url": "https://aka.ms/mctbugs"
+  },
+  "license": "https://aka.ms/mctrlicense",
+  "homepage": "https://aka.ms/mcthomepage",
   "release": {
     "branches": [
       "main"
