@@ -19,6 +19,7 @@
   },
   "license": "https://aka.ms/mctrlicense",
   "homepage": "https://aka.ms/mcthomepage",
+  "private": false,
   "release": {
     "branches": [
       "main"
@@ -52,6 +53,9 @@
         }
       ]
     ]
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
