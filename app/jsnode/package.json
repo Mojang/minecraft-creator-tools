@@ -1,8 +1,12 @@
 {
   "name": "@minecraft/creator-tools",
-  "version": "0.2.9",
+  "version": "0.0.0-semantically-released",
   "productName": "Minecraft Creator Tools",
   "description": "Minecraft Creator Tools command line and libraries.",
+  "publisher": "mojang-studios",
+  "author": {
+      "name": "Mojang Studios"
+  },
   "keywords": [
     "minecraft",
     "tools",
@@ -13,7 +17,7 @@
   "bugs": {
     "url": "https://aka.ms/mctbugs"
   },
-  "license": "https://aka.ms/mctlicense",
+  "license": "MIT",
   "homepage": "https://aka.ms/mcthomepage",
   "bin": {
     "mct": "./cli/index.js"
