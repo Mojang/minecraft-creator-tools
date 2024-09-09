@@ -32,9 +32,7 @@ import {
 
 import { AssetsLabel, EyeSlashLabel, FunctionsLabel, TypesLabel } from "./Labels";
 import { GitHubPropertyType } from "./ProjectPropertyEditor";
-import AddGitHubReference from "./AddGitHubReference";
 import NewEntityType from "./NewEntityType";
-import ProjectExporter from "../app/ProjectExporter";
 import ProjectUtilities, { NewEntityTypeAddMode } from "../app/ProjectUtilities";
 import IGitHubInfo from "../app/IGitHubInfo";
 import ProjectItemManager from "../app/ProjectItemManager";
@@ -168,11 +166,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._handleItemTypeDoubleClick = this._handleItemTypeDoubleClick.bind(this);
     this._handleStoragePathToggle = this._handleStoragePathToggle.bind(this);
     this._handleNewFunctionClick = this._handleNewFunctionClick.bind(this);
-    this._addGitHubReferenceClick = this._addGitHubReferenceClick.bind(this);
     this._handleNewEntityTypeClick = this._handleNewEntityTypeClick.bind(this);
     this._handleNewBlockTypeClick = this._handleNewBlockTypeClick.bind(this);
     this._githubProjectUpdated = this._githubProjectUpdated.bind(this);
-    this._handleAddReference = this._handleAddReference.bind(this);
     this._newEntityTypeUpdated = this._newEntityTypeUpdated.bind(this);
     this._newBlockTypeUpdated = this._newBlockTypeUpdated.bind(this);
     this._handleNewEntityType = this._handleNewEntityType.bind(this);
@@ -496,21 +492,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     });
   }
 
-  async _addGitHubReferenceClick() {
-    if (this.state === null || !this._isMountedInternal) {
-      return;
-    }
-
-    this.setState({
-      activeItem: this.state.activeItem,
-      dialogMode: ProjectItemListDialogType.addGitHubReferenceDialog,
-      maxItemsToShow: this.state.maxItemsToShow,
-      contextFocusedItem: this.state.contextFocusedItem,
-      collapsedItemTypes: this.state.collapsedItemTypes,
-      collapsedStoragePaths: this.state.collapsedStoragePaths,
-    });
-  }
-
   _handleConfirmRename() {
     if (this.state === null || this.state.activeItem === undefined || this._newItemName === undefined) {
       return;
@@ -610,37 +591,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     if (projectItem && this.props.onActiveProjectItemChangeRequested) {
       this.props.onActiveProjectItemChangeRequested(projectItem, false);
     }
-  }
-
-  _handleAddReference() {
-    if (this.state === null) {
-      return;
-    }
-
-    if (
-      this.tentativeGitHubOwner !== undefined &&
-      this.tentativeGitHubRepoName !== undefined &&
-      this.props.project !== null
-    ) {
-      ProjectExporter.addGitHubReference(
-        this.props.carto,
-        this.props.project,
-        this.tentativeGitHubOwner,
-        this.tentativeGitHubRepoName,
-        this.tentativeGitHubBranch,
-        this.tentativeGitHubFolder,
-        this.tentativeGitHubRepoName
-      );
-    }
-
-    this.setState({
-      activeItem: undefined,
-      dialogMode: ProjectItemListDialogType.noDialog,
-      maxItemsToShow: this.state.maxItemsToShow,
-      contextFocusedItem: this.state.contextFocusedItem,
-      collapsedItemTypes: this.state.collapsedItemTypes,
-      collapsedStoragePaths: this.state.collapsedStoragePaths,
-    });
   }
 
   _handleConfirmDelete() {
@@ -1671,57 +1621,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       },
     ];
 
-    if (Utilities.isDebug) {
-      splitButtonMenuItems.push(
-        {
-          id: "structure",
-          key: "pil-structure",
-          onClick: this._handleNewStructureClick,
-          content: "New structure",
-        },
-        {
-          id: "actionset",
-          key: "pil-actionset",
-          onClick: this._handleNewActionSetClick,
-          content: "New action set",
-        },
-        {
-          id: "worldtest",
-          key: "pil-worldtest",
-          onClick: this._handleNewWorldTestClick,
-          content: "New world test",
-        },
-        {
-          key: "pil-divider1",
-          kind: "divider",
-        },
-        {
-          id: "entityType",
-          key: "pil-addReference",
-          onClick: this._addGitHubReferenceClick,
-          content: "Add GitHub reference",
-        }
-      );
-
-      if (this.props.project && this.props.project.role === ProjectRole.documentation) {
-        splitButtonMenuItems.push({
-          id: "doctype",
-          key: "pil-doctype",
-          onClick: this._handleNewDocTypeClick,
-          content: "New documented type",
-        });
-      }
-
-      if (this.props.project && this.props.project.role === ProjectRole.meta) {
-        splitButtonMenuItems.push({
-          id: "form",
-          key: "pil-form",
-          onClick: this._handleNewFormClick,
-          content: "New form",
-        });
-      }
-    }
-
     let selectedItemIndex = 1;
     let itemsAdded = 1;
 
@@ -2020,31 +1919,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             />
           }
           header={"New Block Type"}
-        />
-      );
-    } else if (
-      this.state !== null &&
-      this.props.project !== null &&
-      this.state.dialogMode === ProjectItemListDialogType.addGitHubReferenceDialog
-    ) {
-      dialogArea = (
-        <Dialog
-          open={true}
-          cancelButton="Cancel"
-          confirmButton="Add"
-          key="pil-addghouter"
-          onCancel={this._handleCancel}
-          onConfirm={this._handleAddReference}
-          content={
-            <AddGitHubReference
-              theme={this.props.theme}
-              key="pil-addghdia"
-              onGitHubProjectUpdated={this._githubProjectUpdated}
-              project={this.props.project}
-              carto={this.props.carto}
-            />
-          }
-          header={"Add GitHub Reference"}
         />
       );
     }

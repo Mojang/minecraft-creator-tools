@@ -106,10 +106,15 @@ function removeResultFolder(scenarioName: string) {
 
     // guard against being called at a "more root" file path
     if (fs.existsSync(path) && Utilities.countChar(path, NodeStorage.folderDelimiter) > 5)
-      // @ts-ignore
-      fs.rmSync(path, {
-        recursive: true,
-      });
+      try {
+        fs.rmSync(path, {
+          recursive: true,
+        });
+      } catch (e) {
+        console.log("Error occurred during rmSync on '" + path + "'");
+
+        throw e;
+      }
   }
 }
 

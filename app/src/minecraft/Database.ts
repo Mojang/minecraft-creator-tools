@@ -259,7 +259,7 @@ export default class Database {
     try {
       minecraftInfoResponse = await axios.get(versionUrl);
     } catch (e: any) {
-      console.log("Could not access Bedrock Dedicated Server details." + e);
+      console.log("Could not access Minecraft version details." + e);
       throw new Error(e.toString());
     }
 
@@ -296,7 +296,7 @@ export default class Database {
         }
       }
     } catch (e: any) {
-      Log.error("Could not access Bedrock Dedicated Server details." + e);
+      Log.error("Could not process Minecraft version details." + e);
       throw new Error(e.toString());
     }
 

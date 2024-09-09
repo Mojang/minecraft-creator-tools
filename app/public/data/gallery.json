@@ -83,14 +83,6 @@
       "type": 0
     },
     {
-      "title": "Beautiful natural shapes for your building adventures",
-      "description": "Trees, trees, and more trees!",
-      "gitHubOwner": "scriptVillager",
-      "gitHubRepoName": "NaturalStructures",
-      "id": "naturalStructures",
-      "type": 1
-    },
-    {
       "title": "Solid Cube Block with Textures",
       "description": "The dice block is a simple solid cube.",
       "gitHubOwner": "microsoft",
