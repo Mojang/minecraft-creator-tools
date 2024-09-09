@@ -22,6 +22,9 @@
   "bin": {
     "mct": "./cli/index.js"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@octokit/rest": "^18.5.2",
     "@rauschma/stringio": "^1.4.0",
