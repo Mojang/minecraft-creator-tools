@@ -10,21 +10,31 @@ import { List, ListProps, Toolbar, selectableListBehavior } from "@fluentui/reac
 import ManagedComponentGroup from "../minecraft/ManagedComponentGroup";
 import { CustomTabLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBolt, faSliders } from "@fortawesome/free-solid-svg-icons";
+import { faBolt, faBone, faCow, faEgg, faSliders } from "@fortawesome/free-solid-svg-icons";
 import WebUtilities from "./WebUtilities";
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
 import ManagedEvent from "../minecraft/ManagedEvent";
 import EventActionDesign from "./EventActionDesign";
+import SpawnRulesEditor from "./SpawnRulesEditor";
+import ProjectItem from "../app/ProjectItem";
+import { ProjectItemType } from "../app/IProjectItemData";
+import LootTableEditor from "./LootTableEditor";
+import EntityTypeResourceEditor from "./EntityTypeResourceEditor";
 
 export enum EntityTypeEditorMode {
   properties = 0,
   actions = 1,
+  visuals = 2,
+  audio = 3,
+  spawnRules = 4,
+  loot = 5,
 }
 
 interface IEntityTypeEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
+  item: ProjectItem;
   theme: ThemeInput<any>;
 }
 
@@ -45,6 +55,11 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     this._setPropertiesMode = this._setPropertiesMode.bind(this);
     this._updateManager = this._updateManager.bind(this);
     this._doUpdate = this._doUpdate.bind(this);
+
+    this._setAudioMode = this._setAudioMode.bind(this);
+    this._setVisualsMode = this._setVisualsMode.bind(this);
+    this._setSpawnRulesMode = this._setSpawnRulesMode.bind(this);
+    this._setLootMode = this._setLootMode.bind(this);
 
     this.state = {
       fileToEdit: props.file,
@@ -142,19 +157,34 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
   }
 
   _setPropertiesMode() {
-    this.setState({
-      fileToEdit: this.state.fileToEdit,
-      isLoaded: this.state.isLoaded,
-      mode: EntityTypeEditorMode.properties,
-      selectedItem: this.state.selectedItem,
-    });
+    this._setMode(EntityTypeEditorMode.properties);
   }
 
   _setActionsMode() {
+    this._setMode(EntityTypeEditorMode.actions);
+  }
+
+  _setVisualsMode() {
+    this._setMode(EntityTypeEditorMode.visuals);
+  }
+
+  _setAudioMode() {
+    this._setMode(EntityTypeEditorMode.audio);
+  }
+
+  _setSpawnRulesMode() {
+    this._setMode(EntityTypeEditorMode.spawnRules);
+  }
+
+  _setLootMode() {
+    this._setMode(EntityTypeEditorMode.loot);
+  }
+
+  _setMode(mode: EntityTypeEditorMode) {
     this.setState({
       fileToEdit: this.state.fileToEdit,
       isLoaded: this.state.isLoaded,
-      mode: EntityTypeEditorMode.actions,
+      mode: mode,
       selectedItem: this.state.selectedItem,
     });
   }
@@ -300,13 +330,13 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       icon: (
         <CustomTabLabel
           icon={<FontAwesomeIcon icon={faSliders} className="fa-lg" />}
-          text={"Properties"}
+          text={"Properties & Behavior"}
           isCompact={isButtonCompact}
           isSelected={this.state.mode === EntityTypeEditorMode.properties}
           theme={this.props.theme}
         />
       ),
-      key: "typesMode",
+      key: "etePropertiesTab",
       onClick: this._setPropertiesMode,
       title: "Edit documentation by types",
     });
@@ -321,9 +351,54 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           theme={this.props.theme}
         />
       ),
-      key: "typesNeedingEditsMode",
+      key: "eteActionsTab",
       onClick: this._setActionsMode,
       title: "Edit documentation by types that need edits",
+    });
+
+    toolbarItems.push({
+      icon: (
+        <CustomTabLabel
+          icon={<FontAwesomeIcon icon={faCow} className="fa-lg" />}
+          text={"Visuals"}
+          isCompact={isButtonCompact}
+          isSelected={this.state.mode === EntityTypeEditorMode.visuals}
+          theme={this.props.theme}
+        />
+      ),
+      key: "eteVisualsTab",
+      onClick: this._setVisualsMode,
+      title: "Edit documentation by types that need edits",
+    });
+
+    toolbarItems.push({
+      icon: (
+        <CustomTabLabel
+          icon={<FontAwesomeIcon icon={faEgg} className="fa-lg" />}
+          text={"Spawn"}
+          isCompact={isButtonCompact}
+          isSelected={this.state.mode === EntityTypeEditorMode.spawnRules}
+          theme={this.props.theme}
+        />
+      ),
+      key: "eteSpawnRulesTab",
+      onClick: this._setSpawnRulesMode,
+      title: "Spawn behavior",
+    });
+
+    toolbarItems.push({
+      icon: (
+        <CustomTabLabel
+          icon={<FontAwesomeIcon icon={faBone} className="fa-lg" />}
+          text={"Loot Table"}
+          isCompact={isButtonCompact}
+          isSelected={this.state.mode === EntityTypeEditorMode.loot}
+          theme={this.props.theme}
+        />
+      ),
+      key: "eteLootTableTab",
+      onClick: this._setLootMode,
+      title: "Loot",
     });
 
     const et = this.state.fileToEdit.manager as EntityTypeDefinition;
@@ -465,6 +540,89 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           </div>
         </div>
       );
+    } else if (this.state.mode === EntityTypeEditorMode.spawnRules) {
+      let spawnItem = undefined;
+      if (this.props.item && this.props.item.childItems) {
+        for (const childItem of this.props.item.childItems) {
+          if (childItem.childItem.itemType === ProjectItemType.spawnRuleBehavior) {
+            spawnItem = childItem.childItem;
+          }
+        }
+      }
+
+      if (spawnItem && spawnItem.file) {
+        modeArea = (
+          <div
+            className="ete-componentEditorInteriorFull"
+            style={{
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            }}
+          >
+            <SpawnRulesEditor
+              readOnly={this.props.readOnly}
+              theme={this.props.theme}
+              displayHeader={false}
+              file={spawnItem.file}
+              heightOffset={this.props.heightOffset + 170}
+            />
+          </div>
+        );
+      }
+    } else if (this.state.mode === EntityTypeEditorMode.visuals) {
+      let resourceItem = undefined;
+      if (this.props.item && this.props.item.childItems) {
+        for (const childItem of this.props.item.childItems) {
+          if (childItem.childItem.itemType === ProjectItemType.entityTypeResource) {
+            resourceItem = childItem.childItem;
+          }
+        }
+      }
+
+      if (resourceItem && resourceItem.file) {
+        modeArea = (
+          <div
+            className="ete-componentEditorInteriorFull"
+            style={{
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            }}
+          >
+            <EntityTypeResourceEditor
+              readOnly={this.props.readOnly}
+              theme={this.props.theme}
+              displayHeader={false}
+              file={resourceItem.file}
+              heightOffset={this.props.heightOffset + 170}
+            />
+          </div>
+        );
+      }
+    } else if (this.state.mode === EntityTypeEditorMode.loot) {
+      let lootTableItem = undefined;
+      if (this.props.item && this.props.item.childItems) {
+        for (const childItem of this.props.item.childItems) {
+          if (childItem.childItem.itemType === ProjectItemType.lootTableBehaviorJson) {
+            lootTableItem = childItem.childItem;
+          }
+        }
+      }
+
+      if (lootTableItem && lootTableItem.file) {
+        modeArea = (
+          <div
+            className="ete-componentEditorInteriorFull"
+            style={{
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            }}
+          >
+            <LootTableEditor
+              readOnly={this.props.readOnly}
+              theme={this.props.theme}
+              file={lootTableItem.file}
+              heightOffset={this.props.heightOffset + 170}
+            />
+          </div>
+        );
+      }
     }
 
     return (

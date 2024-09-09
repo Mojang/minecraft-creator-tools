@@ -234,14 +234,6 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
 
     let title = <></>;
 
-    /*
-    if (this.props.componentSetItem instanceof EntityType) {
-      title = <div>Component</div>;
-    } else if (this.props.componentSetItem instanceof ManagedComponentGroup) {
-      const mcgTitle = (this.props.componentSetItem as ManagedComponentGroup).id;
-      title = <div className="cose-title">{mcgTitle} Group</div>;
-    }*/
-
     const areaHeight = "calc(100vh - " + String(this.props.heightOffset + 34) + "px)";
 
     return (

@@ -15,6 +15,7 @@ class DownloadResources {
   // as an additional security defense, enforce an explicit allow list of file extensions (never extract .exes, say.)
   // note that LICENSE (no extension) is also allowed through special case code.
   fileExtensionAllowList = ["json", "js", "ts", "png", "tga", "jpg", "lang"];
+  pathDisallowList = ["./", "/.", "just.config.ts"];
 
   constructor(targetFilePath, excludeIfContents) {
     this._targetFilePath = targetFilePath;
@@ -76,24 +77,24 @@ class DownloadResources {
 
                         JSZip.loadAsync(content)
                           .then(function (zip) {
-                            const fileNamesToProcess = [];
-                            const fileNamesWritten = [];
+                            const filePathsToProcess = [];
+                            const filePathsWritten = [];
 
-                            for (const filename in zip.files) {
+                            for (const filePath in zip.files) {
                               let addFile = false;
 
-                              const filenameCanon = filename.toLowerCase().replace(/\\/g, "/");
+                              const filePathCanon = filePath.toLowerCase().replace(/\\/g, "/");
 
-                              const extension = me.getTypeFromName(filenameCanon);
+                              const extension = me.getTypeFromName(filePathCanon);
 
                               if (
                                 (extension === "" || extension === "md") &&
-                                (filenameCanon.endsWith("/notice") ||
-                                  filenameCanon.endsWith("/readme") ||
-                                  filenameCanon.endsWith("/readme.md") ||
-                                  filenameCanon.endsWith("/license") ||
-                                  filenameCanon.endsWith("/license.md") ||
-                                  filenameCanon.endsWith("/notice.md"))
+                                (filePathCanon.endsWith("/notice") ||
+                                  filePathCanon.endsWith("/readme") ||
+                                  filePathCanon.endsWith("/readme.md") ||
+                                  filePathCanon.endsWith("/license") ||
+                                  filePathCanon.endsWith("/license.md") ||
+                                  filePathCanon.endsWith("/notice.md"))
                               ) {
                                 addFile = true;
                               }
@@ -104,24 +105,30 @@ class DownloadResources {
                                 }
                               }
 
+                              for (const exclude of me.pathDisallowList) {
+                                if (filePathCanon.indexOf(exclude) >= 0) {
+                                  addFile = false;
+                                }
+                              }
+
                               if (addFile) {
-                                if (filenameCanon.indexOf("..") >= 0 || filenameCanon.indexOf("//") >= 0) {
+                                if (filePathCanon.indexOf("..") >= 0 || filePathCanon.indexOf("//") >= 0) {
                                   addFile = false;
                                 }
 
                                 for (const exclusionPath of extraExcludeIfContents) {
-                                  if (filenameCanon.indexOf(exclusionPath.toLowerCase()) >= 0) {
+                                  if (filePathCanon.indexOf(exclusionPath.toLowerCase()) >= 0) {
                                     addFile = false;
                                   }
                                 }
                               }
 
                               if (addFile) {
-                                fileNamesToProcess.push(filename);
+                                filePathsToProcess.push(filePath);
                               }
                             }
 
-                            for (const filename of fileNamesToProcess) {
+                            for (const filename of filePathsToProcess) {
                               let destFile = filename;
 
                               if (ignoreSubfolder && destFile.toLowerCase().startsWith(ignoreSubfolder.toLowerCase())) {
@@ -170,9 +177,9 @@ class DownloadResources {
                               }
 
                               if (content.dir) {
-                                fileNamesWritten.push(filename);
+                                filePathsWritten.push(filename);
 
-                                if (fileNamesWritten.length >= fileNamesToProcess.length) {
+                                if (filePathsWritten.length >= filePathsToProcess.length) {
                                   callback(null, null);
                                   return;
                                 }
@@ -191,12 +198,12 @@ class DownloadResources {
 
                                   fs.writeFileSync(fileDest, contentBytes);
 
-                                  fileNamesWritten.push(filename);
+                                  filePathsWritten.push(filename);
 
-                                  if (fileNamesWritten.length >= fileNamesToProcess.length) {
+                                  if (filePathsWritten.length >= filePathsToProcess.length) {
                                     console.log(
                                       "Wrote " +
-                                        fileNamesWritten.length +
+                                        filePathsWritten.length +
                                         " files and folders to '" +
                                         path.join(me._targetFilePath, subfolder) +
                                         "'"
@@ -214,7 +221,7 @@ class DownloadResources {
                               }
                             }
 
-                            if (fileNamesWritten.length >= fileNamesToProcess.length) {
+                            if (filePathsWritten.length >= filePathsToProcess.length) {
                               callback(null, null);
                             }
                           })

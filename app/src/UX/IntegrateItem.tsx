@@ -25,6 +25,7 @@ interface IIntegrateItemState {
   selectedFolder?: IFolder;
   selectedItem?: ProjectItem;
   action?: ProjectItemSeedAction;
+  fileContent?: string | Uint8Array | undefined;
   nameIsManuallySet?: boolean;
 }
 
@@ -38,6 +39,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
 
     this.state = {
       action: this.props.data.action,
+      name: this.props.data.fileSource ? this.props.data.fileSource.name : this.state.name,
     };
   }
 
@@ -55,6 +57,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
     if (this.props.onDialogDataChange) {
       this.props.onDialogDataChange({
         name: data.value,
+        action: this.state.action,
         itemType: this.props.data.itemType,
         folder: this.state.selectedFolder,
         selectedItem: this.state.selectedItem,
@@ -64,6 +67,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
 
     this.setState({
       name: data.value,
+      fileContent: this.state.fileContent,
       nameIsManuallySet: nextNameIsManuallySet,
       rootFolder: this.state.rootFolder,
       selectedItem: this.state.selectedItem,
@@ -225,19 +229,26 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
         key: "defaultAction",
         value: "defaultAction",
         label: label,
-      } /*,
+      },
       {
         name: "addNewFile",
         key: "addNewFile",
         value: "addNewFile",
-        label: "Add file at folder",
-      },*/,
+        label: "Add file at folder...",
+      },
     ];
 
     if (this.props.data.fileSource) {
       const additionalOptions = this.getRelatedFiles();
 
-      integrateOptions = [integrateOptions[0], ...additionalOptions /*, integrateOptions[1]*/];
+      integrateOptions = [integrateOptions[0], ...additionalOptions, integrateOptions[1]];
+    }
+
+    let selectedOption = integrateOptions[0];
+
+    if (this.state.action === ProjectItemSeedAction.fileOrFolder) {
+      selectedOption = integrateOptions[integrateOptions.length - 1];
+    } else if (this.state.action === ProjectItemSeedAction.overwriteFile) {
     }
 
     if (this.state.action === ProjectItemSeedAction.fileOrFolder) {
@@ -251,7 +262,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
               rootFolder={this.state.rootFolder}
               theme={this.props.theme}
               mode={FileExplorerMode.folderPicker}
-              heightOffset={this.props.heightOffset + 440}
+              heightOffset={this.props.heightOffset + 340}
               carto={this.props.carto}
               selectedItem={this.state.rootFolder}
               onFolderSelected={this._handleFolderSelected}
@@ -264,11 +275,11 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
       fileArea = (
         <div>
           <div className="iitem-optionsArea">
-            <div className="iitem-nameLabel">Name</div>
+            <div className="iitem-nameLabel">File Name</div>
             <div className="iitem-nameArea">
               <Input
-                value={inputText}
-                defaultValue={inputText}
+                value={this.state.name}
+                defaultValue={this.props.data.fileSource ? this.props.data.fileSource.name : this.state.name}
                 placeholder={ProjectItemUtilities.getNewItemName(this.props.data.itemType) + " name"}
                 onChange={this._handleNameChanged}
               />
@@ -283,7 +294,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
       <div className="iitem-outer">
         <RadioGroup
           vertical
-          defaultCheckedValue={integrateOptions[this.state.action ? this.state.action : 0].name}
+          defaultCheckedValue={selectedOption.name}
           items={integrateOptions}
           onCheckedValueChange={this._handleTypeChange}
         />

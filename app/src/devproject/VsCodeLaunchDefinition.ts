@@ -9,14 +9,14 @@ import StorageUtilities from "../storage/StorageUtilities";
 import Project from "../app/Project";
 import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 
-export default class VsCodeLaunchJson {
+export default class VsCodeLaunchDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
 
   public definition?: IVsCodeLaunch;
 
-  private _onLoaded = new EventDispatcher<VsCodeLaunchJson, VsCodeLaunchJson>();
+  private _onLoaded = new EventDispatcher<VsCodeLaunchDefinition, VsCodeLaunchDefinition>();
 
   public project: Project | undefined = undefined;
 
@@ -44,19 +44,19 @@ export default class VsCodeLaunchJson {
     this._id = newId;
   }
 
-  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<VsCodeLaunchJson, VsCodeLaunchJson>) {
-    let dt: VsCodeLaunchJson | undefined;
+  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<VsCodeLaunchDefinition, VsCodeLaunchDefinition>) {
+    let dt: VsCodeLaunchDefinition | undefined;
 
     if (file.manager === undefined) {
-      dt = new VsCodeLaunchJson();
+      dt = new VsCodeLaunchDefinition();
 
       dt.file = file;
 
       file.manager = dt;
     }
 
-    if (file.manager !== undefined && file.manager instanceof VsCodeLaunchJson) {
-      dt = file.manager as VsCodeLaunchJson;
+    if (file.manager !== undefined && file.manager instanceof VsCodeLaunchDefinition) {
+      dt = file.manager as VsCodeLaunchDefinition;
 
       if (!dt.isLoaded && loadHandler) {
         dt.onLoaded.subscribe(loadHandler);
@@ -70,7 +70,11 @@ export default class VsCodeLaunchJson {
     return dt;
   }
 
-  async hasMinecraftDebugLaunch(debugSettings: IDebugSettings) {
+  async hasMinContent(debugSettings?: IDebugSettings) {
+    if (!debugSettings) {
+      debugSettings = { isServer: false };
+    }
+
     await this.load();
 
     if (!this.definition || !this.definition.configurations) {
@@ -98,8 +102,12 @@ export default class VsCodeLaunchJson {
     return false;
   }
 
-  async ensureMinecraftDebugLaunch(debugSettings: IDebugSettings) {
-    const hasDebug = await this.hasMinecraftDebugLaunch(debugSettings);
+  async ensureMinContent(debugSettings?: IDebugSettings) {
+    if (!debugSettings) {
+      debugSettings = { isServer: false };
+    }
+
+    const hasDebug = await this.hasMinContent(debugSettings);
 
     if (hasDebug) {
       return true;

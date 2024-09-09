@@ -63,7 +63,6 @@
   margin-left: 1px;
   margin-top: 6px;
   margin-bottom: 2px;
-  padding-left: 90px;
 }
 
 .df-fieldTitle {
@@ -82,9 +81,13 @@
 .df-fieldWrap .ui-form__label {
   padding-bottom: 4px;
   vertical-align: bottom;
-  padding-right: 4px;
+  padding-right: 14px;
   display: inline-block !important;
-  min-width: 90px;
+  min-width: 136px;
+}
+
+.df-fieldWrap input {
+  max-width: 136px;
 }
 
 .df-fieldWrap .ui-dropdown {

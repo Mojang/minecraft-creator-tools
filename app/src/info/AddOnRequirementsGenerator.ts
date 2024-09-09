@@ -202,7 +202,9 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     let resourcePackManifest: undefined | ResourceManifestDefinition = undefined;
     let resourcePackItem: undefined | ProjectItem = undefined;
 
-    for (const projectItem of project.items) {
+    const itemsCopy = project.getItemsCopy();
+
+    for (const projectItem of itemsCopy) {
       if (projectItem.file) {
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
           if (behaviorPackManifest) {

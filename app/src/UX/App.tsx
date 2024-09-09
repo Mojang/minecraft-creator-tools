@@ -9,16 +9,19 @@ import IFolder from "../storage/IFolder";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import Log from "../core/Log";
 import { ProjectFocus, ProjectScriptLanguage } from "../app/IProjectData";
-import CartoApp, { HostType } from "../app/CartoApp";
+import CartoApp from "../app/CartoApp";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { CartoEditorViewMode } from "../app/ICartoData";
+import MCWorld from "../minecraft/MCWorld";
 import ProjectItem from "../app/ProjectItem";
+import ZipStorage from "../storage/ZipStorage";
 import ProjectUtilities from "../app/ProjectUtilities";
+import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
 import WebUtilities from "./WebUtilities";
 import ProjectEditorUtilities, { ProjectEditorMode } from "./ProjectEditorUtilities";
 import HttpStorage from "../storage/HttpStorage";
-import Utilities from "../core/Utilities";
+import { ProjectImportExclusions } from "../app/ProjectExporter";
 
 export enum NewProjectTemplateType {
   empty,
@@ -31,16 +34,6 @@ export enum AppMode {
   project = 3,
   codeToolbox = 4,
   projectReadOnly = 5,
-  exporterTool = 6,
-  remoteServerManager = 7,
-  companion = 8,
-  codeStartPage = 9,
-  companionPlusBack = 10,
-  companionMinusTitlebar = 11,
-  codeStartPageForceNewProject = 12,
-  codeLandingForceNewProject = 13,
-  codeMinecraftView = 14,
-  search = 15,
 }
 
 interface AppProps {
@@ -135,13 +128,7 @@ export default class App extends Component<AppProps, AppState> {
 
       let selectedItem = undefined;
 
-      if (
-        (CartoApp.hostType === HostType.vsCodeWebWeb || CartoApp.hostType === HostType.vsCodeMainWeb) &&
-        CartoApp.projectPath &&
-        (initialAppMode === AppMode.codeToolbox || initialAppMode === AppMode.codeStartPage)
-      ) {
-        this._loadLocalStorageProject();
-      } else if (CartoApp.modeParameter && CartoApp.modeParameter.startsWith("project/")) {
+      if (CartoApp.modeParameter && CartoApp.modeParameter.startsWith("project/")) {
         const segments = CartoApp.modeParameter.split("/");
 
         if (segments.length === 2) {
@@ -385,11 +372,9 @@ export default class App extends Component<AppProps, AppState> {
       if (firstSlash > 1) {
         const openToken = openQuery.substring(0, firstSlash).toLowerCase();
 
-        let openData = openQuery.substring(firstSlash + 1, openQuery.length);
+        const openData = openQuery.substring(firstSlash + 1, openQuery.length);
 
         if (openToken === "gp") {
-          openData = Utilities.ensureNotEndsWithSlash(openData);
-
           this._ensureProjectFromGalleryId(openData, updateContent);
         }
       }
@@ -434,31 +419,6 @@ export default class App extends Component<AppProps, AppState> {
               selectedItem: segments[0],
             };
           }
-        } else if (commandToken === "codestartpage") {
-          return {
-            mode: AppMode.codeStartPage,
-            activeProject: null,
-          };
-        } else if (commandToken === "codestartpageforcenewproject") {
-          return {
-            mode: AppMode.codeStartPageForceNewProject,
-            activeProject: null,
-          };
-        } else if (commandToken === "codelandingforcenewproject") {
-          return {
-            mode: AppMode.codeLandingForceNewProject,
-            activeProject: null,
-          };
-        } else if (commandToken === "companion") {
-          return {
-            mode: AppMode.companion,
-            activeProject: null,
-          };
-        } else if (commandToken === "companionht") {
-          return {
-            mode: AppMode.companionMinusTitlebar,
-            activeProject: null,
-          };
         }
       } else {
         const commandToken = hash.substring(1).toLowerCase();
@@ -662,7 +622,7 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   private async _ensureProjectFromGalleryId(galleryId: string, updateContent?: string) {
-    if (!this.state || this.state.carto === undefined) {
+    if (this.state.carto === undefined) {
       return;
     }
 
@@ -676,24 +636,22 @@ export default class App extends Component<AppProps, AppState> {
     this._ensureProjectFromGallery(gp, updateContent);
   }
 
-  private async _ensureProjectFromGallery(galleryItem: IGalleryItem, updateContent?: string) {
+  private async _ensureProjectFromGallery(project: IGalleryItem, updateContent?: string) {
     if (this.state === null || this.state.carto === undefined) {
       return;
     }
 
     this._ensureProjectFromGitHubTemplate(
-      galleryItem.title,
-      galleryItem.gitHubOwner,
-      galleryItem.gitHubRepoName,
+      project.title,
+      project.gitHubOwner,
+      project.gitHubRepoName,
       false,
-      galleryItem.gitHubBranch,
-      galleryItem.gitHubFolder,
-      galleryItem.fileList,
-      galleryItem.id,
-      galleryItem.type !== GalleryItemType.project ? galleryItem.id : undefined,
-      updateContent,
-      undefined,
-      galleryItem.type
+      project.gitHubBranch,
+      project.gitHubFolder,
+      project.fileList,
+      project.id,
+      project.type === GalleryItemType.codeSample ? project.id : undefined,
+      updateContent
     );
   }
 
@@ -708,13 +666,11 @@ export default class App extends Component<AppProps, AppState> {
     projectId?: string,
     sampleId?: string,
     updateContent?: string,
-    description?: string,
-    galleryItemType?: GalleryItemType
+    description?: string
   ) {
     const carto = CartoApp.carto;
 
-    // don't load if we're already actively loading something.
-    if (this.state === null || carto === undefined || this._loadingMessage || this.state.loadingMessage) {
+    if (this.state === null || carto === undefined) {
       return;
     }
 
@@ -745,16 +701,17 @@ export default class App extends Component<AppProps, AppState> {
     for (let i = 0; i < projects.length; i++) {
       const proj = projects[i];
 
-      await proj.loadFromFile();
+      await proj.ensureLoadedFromFile();
 
       if (
         proj.originalGitHubOwner === gitHubOwner &&
         proj.originalGitHubRepoName === gitHubRepoName &&
         proj.originalGitHubBranch === gitHubBranch &&
         proj.originalGitHubFolder === gitHubFolder &&
-        proj.originalSampleId === sampleId &&
         updateContent === undefined
       ) {
+        await proj.ensureInflated();
+
         this._updateWindowTitle(newMode, proj);
 
         this.initProject(proj);
@@ -782,11 +739,7 @@ export default class App extends Component<AppProps, AppState> {
       projectId,
       sampleId,
       updateContent,
-      undefined,
-      undefined,
-      undefined,
-      description,
-      galleryItemType
+      description
     );
   }
 
@@ -922,7 +875,7 @@ export default class App extends Component<AppProps, AppState> {
           false,
           false,
           false,
-          ["build", "node_modules", "/dist", "/.git", "/lib", "/out", "/node_modules"],
+          ProjectImportExclusions,
           undefined,
           this._gitHubAddingMessageUpdater
         );
@@ -974,6 +927,36 @@ export default class App extends Component<AppProps, AppState> {
         }
       }
 
+      if (updateContent !== undefined && newProject.projectFolder !== null) {
+        try {
+          const zs = new ZipStorage();
+
+          await zs.loadFromBase64(updateContent);
+
+          if (zs.errorStatus) {
+            this.setHomeWithError(
+              "Error processing compressed content from URL." + (zs.errorMessage ? "Details: " + zs.errorMessage : "")
+            );
+            return;
+          }
+
+          await StorageUtilities.syncFolderTo(
+            zs.rootFolder,
+            newProject.projectFolder,
+            false,
+            false,
+            false,
+            ["package.json", "package.lock.json", "gulpfile.js", "just.config.ts"],
+            ["*.ts", "*.js", "*.json"]
+          );
+        } catch (e) {
+          this.setHomeWithError(
+            "Could not process updated content from URL. Check to make sure your shared URL is valid. (" + e + ")"
+          );
+          return;
+        }
+      }
+
       description = description ? description : title;
 
       await ProjectUtilities.processNewProject(newProject, suggestedName, description, suggestedShortName);
@@ -1020,6 +1003,125 @@ export default class App extends Component<AppProps, AppState> {
     });
   }
 
+  private async _newProjectFromMinecraftFolder(folderType: LocalFolderType, folder: IFolder) {
+    if (this.state === null || this.state.carto === undefined) {
+      return;
+    }
+
+    let proposedProjectName = StorageUtilities.getBaseFromName(folder.fullPath);
+    const mcw = await MCWorld.ensureMCWorldOnFolder(folder);
+
+    if (mcw && mcw.name) {
+      proposedProjectName = mcw.name;
+    }
+
+    const newProject = await this.state.carto.ensureProjectForFolder(folder.fullPath, proposedProjectName);
+
+    newProject.save();
+    this.state.carto.save();
+
+    this._updateWindowTitle(AppMode.project, newProject);
+    this.initProject(newProject);
+
+    this.setState({
+      mode: AppMode.project,
+      isPersisted: this.state.isPersisted,
+      hasBanner: this.state.hasBanner,
+      visualSeed: this.state.visualSeed,
+      activeProject: newProject,
+    });
+  }
+
+  private async _ensureProjectFromMinecraftFolder(folderType: LocalFolderType, folder: IFolder, isReadOnly: boolean) {
+    const carto = CartoApp.carto;
+
+    if (this.state === null || carto === undefined) {
+      return;
+    }
+
+    this._loadingMessage = "opening folder " + folder.fullPath + "...";
+
+    let newMode = AppMode.project;
+
+    if (isReadOnly) {
+      newMode = AppMode.projectReadOnly;
+    }
+
+    this._updateWindowTitle(AppMode.loading, null);
+
+    this.setState({
+      mode: AppMode.loading,
+      activeProject: null,
+      isPersisted: this.state.isPersisted,
+      hasBanner: this.state.hasBanner,
+      visualSeed: this.state.visualSeed,
+      loadingMessage: this._loadingMessage,
+    });
+
+    await carto.load();
+
+    const projects = carto.projects;
+    const canonPath = StorageUtilities.canonicalizePath(folder.fullPath);
+
+    for (let i = 0; i < projects.length; i++) {
+      const proj = projects[i];
+
+      await proj.ensureLoadedFromFile();
+
+      if (proj.originalFullPath === canonPath) {
+        await proj.ensureInflated();
+
+        this._updateWindowTitle(newMode, proj);
+        this.initProject(proj);
+
+        this.setState({
+          mode: newMode,
+          isPersisted: this.state.isPersisted,
+          hasBanner: this.state.hasBanner,
+          visualSeed: this.state.visualSeed,
+          activeProject: proj,
+        });
+
+        return;
+      }
+    }
+
+    const folderName = StorageUtilities.getLeafName(canonPath);
+
+    const operId = await carto.notifyOperationStarted("Creating new project from '" + canonPath + "'");
+
+    if (folderName !== undefined) {
+      let projName = "my-" + folderName;
+
+      const newProjectName = await carto.getNewProjectName(projName);
+
+      let newFocus = ProjectFocus.focusedCodeSnippet;
+
+      if (folderType === LocalFolderType.world) {
+        newFocus = ProjectFocus.world;
+      }
+
+      projName = projName.replace(/_/gi, "");
+      projName = projName.replace(/\//gi, "");
+      projName = projName.replace(/\\/gi, "");
+      projName = projName.replace(/ /gi, "");
+
+      const newProject = await carto.createNewProject(newProjectName, folder.fullPath, newFocus, false);
+
+      await newProject.ensureProjectFolder();
+
+      await newProject.inferProjectItemsFromFiles();
+
+      newProject.save();
+
+      carto.save();
+
+      this._setProject(newProject);
+    }
+
+    await carto.notifyOperationEnded(operId, "New project '" + folderName + "' created. Have fun!");
+  }
+
   private initProject(newProject: Project) {
     newProject.onItemChanged.subscribe(this._handleItemChanged);
     newProject.onSaved.subscribe(this._handleSaved);
@@ -1029,10 +1131,6 @@ export default class App extends Component<AppProps, AppState> {
     let title = "Minecraft Creator Tools";
 
     switch (newMode) {
-      case AppMode.exporterTool:
-        title = "Export - " + title;
-        break;
-
       case AppMode.project:
       case AppMode.projectReadOnly:
         if (activeProject !== null) {
@@ -1133,8 +1231,17 @@ export default class App extends Component<AppProps, AppState> {
     }
   }
 
+  private _handleLocalGalleryCommand(command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) {
+    switch (command) {
+      case LocalGalleryCommand.ensureAndOpenProjectFromFolder:
+        this._newProjectFromMinecraftFolder(folderType, folder);
+        break;
+    }
+  }
+
   private async _handleProjectSelected(project: Project) {
-    await project.loadFromFile();
+    await project.ensureLoadedFromFile();
+    await project.ensureInflated();
 
     this._updateWindowTitle(AppMode.project, project);
 
@@ -1217,14 +1324,13 @@ export default class App extends Component<AppProps, AppState> {
         <Home
           theme={this.props.theme}
           carto={this.state.carto}
-          heightOffset={heightOffset}
           isPersisted={this.state.isPersisted}
+          heightOffset={heightOffset}
           errorMessage={this.state.errorMessage}
           onLog={this._doLog}
           visualSeed={this.state.visualSeed}
           key="app-h"
           onSetProject={this._setProject}
-          onPersistenceUpgraded={this._handlePersistenceUpgraded}
           onGalleryItemCommand={this._handleProjectGalleryCommand}
           onModeChangeRequested={this._handleModeChangeRequested}
           onNewProjectSelected={this._handleNewProject}
@@ -1242,6 +1348,8 @@ export default class App extends Component<AppProps, AppState> {
           key="app-pe"
           heightOffset={heightOffset}
           statusAreaMode={ProjectStatusAreaMode.hidden}
+          isPersisted={this.state.isPersisted}
+          onPersistenceUpgraded={this._handlePersistenceUpgraded}
           project={this.state.activeProject}
           selectedItem={this.state.selectedItem}
           viewMode={CartoEditorViewMode.mainFocus}
@@ -1258,6 +1366,8 @@ export default class App extends Component<AppProps, AppState> {
           hideMainToolbar={true}
           key="app-pea"
           heightOffset={heightOffset}
+          isPersisted={this.state.isPersisted}
+          onPersistenceUpgraded={this._handlePersistenceUpgraded}
           statusAreaMode={ProjectStatusAreaMode.hidden}
           project={this.state.activeProject}
           mode={ProjectEditorMode.inspector}
@@ -1292,10 +1402,7 @@ export default class App extends Component<AppProps, AppState> {
             onProjectSelected={this._handleProjectSelected}
           />
         );
-      } else if (
-        this.state.activeProject.originalSampleId &&
-        this.state.activeProject.getItemByProjectPath("/scripts/ScriptBox.ts")
-      ) {
+      } else if (this.state.activeProject.originalSampleId) {
         // show main view (no sidebar) if it's a code sample.
         interior = (
           <ProjectEditor
@@ -1305,6 +1412,8 @@ export default class App extends Component<AppProps, AppState> {
             heightOffset={heightOffset}
             viewMode={CartoEditorViewMode.mainFocus}
             project={this.state.activeProject}
+            isPersisted={this.state.isPersisted}
+            onPersistenceUpgraded={this._handlePersistenceUpgraded}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
             selectedItem={this.state.selectedItem}
             readOnly={isReadOnly}
@@ -1319,6 +1428,8 @@ export default class App extends Component<AppProps, AppState> {
             key="app-pef"
             heightOffset={heightOffset}
             project={this.state.activeProject}
+            isPersisted={this.state.isPersisted}
+            onPersistenceUpgraded={this._handlePersistenceUpgraded}
             mode={this.state.initialProjectEditorMode ? this.state.initialProjectEditorMode : undefined}
             selectedItem={this.state.selectedItem}
             readOnly={isReadOnly}

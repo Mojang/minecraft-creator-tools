@@ -25,6 +25,7 @@ import { ProjectEditPreference, ProjectScriptLanguage, ProjectScriptVersion } fr
 import CartoApp, { HostType } from "../app/CartoApp";
 import ProjectUtilities from "../app/ProjectUtilities";
 import StatusList from "./StatusList";
+import { MinecraftTrack } from "../app/ICartoData";
 
 interface IProjectPropertyEditorProps extends IAppProps {
   project: Project;
@@ -52,6 +53,8 @@ export enum GitHubPropertyType {
 }
 
 export const ProjectFocusStrings = ["General", "GameTests", "World", "Sample Behavior", "Editor Extension"];
+
+export const ProjectTargetStrings = ["<default>", "Latest Minecraft release", "Latest Minecraft preview"];
 
 export default class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProjectPropertyEditorState> {
   private tentativeGitHubMode: string = "existing";
@@ -98,6 +101,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     this._handleScriptEntryPointChanged = this._handleScriptEntryPointChanged.bind(this);
     this._convertJavaToBedrock = this._convertJavaToBedrock.bind(this);
     this._handleLanguageChange = this._handleLanguageChange.bind(this);
+    this._handleTrackChange = this._handleTrackChange.bind(this);
     this._handleEditPreferenceChange = this._handleEditPreferenceChange.bind(this);
     this._handleVersionChange = this._handleVersionChange.bind(this);
     this._handleSignedIn = this._handleSignedIn.bind(this);
@@ -394,6 +398,19 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     }
   }
 
+  _handleTrackChange(
+    event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
+    data: DropdownProps
+  ) {
+    if (data.value === ProjectTargetStrings[1]) {
+      this.props.project.track = MinecraftTrack.main;
+    } else if (data.value === ProjectTargetStrings[2]) {
+      this.props.project.track = MinecraftTrack.preview;
+    } else {
+      this.props.project.track = undefined;
+    }
+  }
+
   _handleEditPreferenceChange(
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
     data: DropdownProps
@@ -438,7 +455,6 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
 
   render() {
     const gitHubInner = [];
-    // const gitHubCommands = [];
 
     const baseUrl = window.location.href;
     const localTools = [];
@@ -770,6 +786,21 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
                   : "TypeScript"
               }
               onChange={this._handleLanguageChange}
+            />
+          </div>
+          <div className="ppe-label ppe-tracklabel">Target Minecraft</div>
+          <div className="ppe-trackinput">
+            <Dropdown
+              items={ProjectTargetStrings}
+              placeholder="Select which version of Minecraft to target"
+              defaultValue={
+                this.props.project.track === undefined
+                  ? ProjectTargetStrings[0]
+                  : this.props.project.track === MinecraftTrack.main
+                  ? ProjectTargetStrings[1]
+                  : ProjectTargetStrings[2]
+              }
+              onChange={this._handleTrackChange}
             />
           </div>
           <div className="ppe-label ppe-focuslabel">Type</div>

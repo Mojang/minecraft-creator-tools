@@ -2,10 +2,20 @@ import { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
 import Carto from "./../app/Carto";
 import "./CartoSettingsPanel.css";
-import { Input, InputProps, Button, ThemeInput, CheckboxProps, Checkbox } from "@fluentui/react-northstar";
+import {
+  Input,
+  InputProps,
+  Button,
+  ThemeInput,
+  CheckboxProps,
+  Checkbox,
+  Dropdown,
+  DropdownProps,
+} from "@fluentui/react-northstar";
 import IPersistable from "./IPersistable";
 import AppServiceProxy, { AppServiceProxyCommands } from "./../core/AppServiceProxy";
 import CartoApp, { HostType } from "../app/CartoApp";
+import { MinecraftTrack } from "../app/ICartoData";
 
 interface ICartoSettingsPanelProps extends IAppProps {
   theme: ThemeInput<any>;
@@ -17,6 +27,8 @@ interface ICartoSettingsPanelState {
   autoStartMinecraft: boolean | undefined;
   formatBeforeSave: boolean;
 }
+
+export const CartoTargetStrings = ["Latest Minecraft release", "Latest Minecraft preview"];
 
 export default class CartoSettingsPanel extends Component<ICartoSettingsPanelProps, ICartoSettingsPanelState> {
   private _activeEditorPersistable?: IPersistable;
@@ -30,6 +42,7 @@ export default class CartoSettingsPanel extends Component<ICartoSettingsPanelPro
     this._handleAutoStartChanged = this._handleAutoStartChanged.bind(this);
     this._handleSelectFolderClick = this._handleSelectFolderClick.bind(this);
     this._handleFormatBeforeSaveChanged = this._handleFormatBeforeSaveChanged.bind(this);
+    this._handleTrackChange = this._handleTrackChange.bind(this);
     this._onCartoLoaded = this._onCartoLoaded.bind(this);
 
     this.state = {
@@ -78,6 +91,19 @@ export default class CartoSettingsPanel extends Component<ICartoSettingsPanelPro
     });
   }
 
+  async _handleTrackChange(
+    event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
+    data: DropdownProps
+  ) {
+    if (data.value === CartoTargetStrings[1]) {
+      this.props.carto.track = MinecraftTrack.preview;
+    } else {
+      this.props.carto.track = MinecraftTrack.main;
+    }
+
+    await this.props.carto.save();
+  }
+
   _handleAutoStartChanged(e: SyntheticEvent, data: (CheckboxProps & { checked: boolean }) | undefined) {
     if (data === undefined || this.props.carto === null || this.state == null) {
       return;
@@ -123,6 +149,20 @@ export default class CartoSettingsPanel extends Component<ICartoSettingsPanelPro
 
     const serverProps = [];
     const coreProps = [];
+
+    coreProps.push(<div className="csp-label csp-tracklabel">Target Minecraft</div>);
+    coreProps.push(
+      <div className="csp-trackinput">
+        <Dropdown
+          items={CartoTargetStrings}
+          placeholder="Select which version of Minecraft to target"
+          defaultValue={
+            this.props.carto.track === MinecraftTrack.preview ? CartoTargetStrings[1] : CartoTargetStrings[0]
+          }
+          onChange={this._handleTrackChange}
+        />
+      </div>
+    );
 
     coreProps.push(
       <div className="csp-label csp-formatbeforesavelabel" key="csp-formatbeforesavelabel">

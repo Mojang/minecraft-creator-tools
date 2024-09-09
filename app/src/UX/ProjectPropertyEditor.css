@@ -33,7 +33,7 @@
   font-size: 16pt;
   margin: 0px;
   padding-top: 15px;
-  padding-left: 30px;
+  padding-left: 18px;
   padding-bottom: 16px;
   font-weight: bold;
 }
@@ -169,33 +169,44 @@
   grid-column-end: 3;
   padding-bottom: 20px;
 }
-
-.ppe-focuslabel {
+.ppe-tracklabel {
   grid-row: 9;
   grid-column: 1;
 }
 
-.ppe-focusinput {
+.ppe-trackinput {
   grid-row: 9;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding-bottom: 20px;
+}
+
+.ppe-focuslabel {
+  grid-row: 10;
+  grid-column: 1;
+}
+
+.ppe-focusinput {
+  grid-row: 10;
   grid-column-start: 2;
   grid-column-end: 3;
   padding-bottom: 20px;
 }
 
 .ppe-scriptVersionlabel {
-  grid-row: 10;
+  grid-row: 11;
   grid-column: 1;
 }
 
 .ppe-scriptVersioninput {
-  grid-row: 10;
+  grid-row: 11;
   grid-column-start: 2;
   grid-column-end: 3;
   padding-bottom: 20px;
 }
 
 .ppe-versionlabel {
-  grid-row: 11;
+  grid-row: 12;
   grid-column-start: 1;
   grid-column-end: 3;
 }
@@ -214,7 +225,7 @@
 }
 
 .ppe-versioninput {
-  grid-row: 11;
+  grid-row: 12;
   grid-column: 2;
   padding-bottom: 20px;
 }
@@ -229,20 +240,20 @@
 }
 
 .ppe-ghlabel {
-  grid-row: 12;
+  grid-row: 13;
   grid-column: 1;
   padding-top: 27px;
 }
 
 .ppe-ghinput {
-  grid-row: 12;
+  grid-row: 13;
   grid-column: 2;
   padding-top: 26px;
   padding-bottom: 20px;
 }
 
 .ppe-ghbutton {
-  grid-row: 11;
+  grid-row: 12;
   grid-column: 3;
   padding-top: 30px;
   padding-bottom: 20px;
@@ -250,7 +261,7 @@
 
 .ppe-statusArea {
   font-size: 14pt;
-  grid-row: 13;
+  grid-row: 14;
   grid-column-start: 1;
   grid-column-end: 5;
   padding-top: 30px;
@@ -258,14 +269,14 @@
 
 .ppe-advancedArea {
   font-size: 14pt;
-  grid-row: 14;
+  grid-row: 15;
   grid-column-start: 1;
   grid-column-end: 5;
   padding-top: 10px;
 }
 
 .ppe-bedrock {
-  grid-row: 14;
+  grid-row: 15;
   font-size: 2;
   line-height: 0.5;
   min-height: 16px;

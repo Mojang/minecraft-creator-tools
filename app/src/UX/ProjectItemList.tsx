@@ -1020,6 +1020,11 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       sourceImage = "url('" + projectItem.imageUrl + "')";
     }
 
+    // display .env files as ".env"
+    if (name === "") {
+      name = projectItem.name;
+    }
+
     if (
       projectItem.projectPath &&
       this.props.project &&
@@ -1509,7 +1514,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       projectItem.itemType === ProjectItemType.soundsCatalogResourceJson ||
       projectItem.itemType === ProjectItemType.blocksCatalogResourceJson || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.blockTypeResourceJson || // this should be handled by block type editor for bp block type
-      projectItem.itemType === ProjectItemType.entityTypeResourceJson || // this should be handled by entity type editor for bp entity type
       projectItem.itemType === ProjectItemType.behaviorPackListJson || // this should be handled by world editor
       projectItem.itemType === ProjectItemType.resourcePackListJson || // this should be handled by world editor
       projectItem.itemType === ProjectItemType.behaviorPackHistoryListJson || // this should be handled by world editor
@@ -1519,6 +1523,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       projectItem.itemType === ProjectItemType.animationResourceJson || // this should be model editor
       projectItem.itemType === ProjectItemType.animationControllerResourceJson || // this should be model editor
       projectItem.itemType === ProjectItemType.docInfoJson
+    ) {
+      return false;
+    }
+
+    if (
+      projectItem.parentItems?.length === 1 &&
+      (projectItem.itemType === ProjectItemType.entityTypeResource ||
+        projectItem.itemType === ProjectItemType.spawnRuleBehavior ||
+        projectItem.itemType === ProjectItemType.lootTableBehaviorJson)
     ) {
       return false;
     }

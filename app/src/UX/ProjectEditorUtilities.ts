@@ -5,6 +5,7 @@ import ProjectExporter from "../app/ProjectExporter";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ProjectUtilities from "../app/ProjectUtilities";
 import Utilities from "../core/Utilities";
+import { PackType } from "../minecraft/Pack";
 import FileSystemFolder from "../storage/FileSystemFolder";
 import FileSystemStorage from "../storage/FileSystemStorage";
 import IFolder from "../storage/IFolder";
@@ -155,7 +156,12 @@ export default class ProjectEditorUtilities {
     carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");
   }
 
-  static getIntegrateBrowserFileDefaultActionDescription(project: Project, path: string, file: File) {
+  static getIntegrateBrowserFileDefaultActionDescription(
+    project: Project,
+    path: string,
+    file: File,
+    content?: string | Uint8Array | undefined
+  ) {
     if (!project.projectFolder) {
       return undefined;
     }
@@ -174,24 +180,40 @@ export default class ProjectEditorUtilities {
     ) {
       return "Add as new world";
     } else if (extension === "snbt") {
-      return "Add as new '" + file.name + "' structure";
+      return "Add '" + file.name + "' as new structure";
     } else if (extension === "mcworld") {
-      return "Add as new '" + file.name + "' world";
+      return "Add '" + file.name + "' as new world";
     } else if (extension === "mcproject") {
-      return "Add as new '" + file.name + "' project";
+      return "Add '" + file.name + "' as new project";
     } else if (extension === "mctemplate") {
-      return "Add as new '" + file.name + "' world template";
+      return "Add '" + file.name + "' as new world template";
     } else if (extension === "mcaddon") {
-      return "Add as new '" + file.name + "' addon pack";
+      return "Add '" + file.name + "' as new addon pack";
     } else if (extension === "zip") {
-      return "Add as new '" + file.name + "' folder";
+      return "Add '" + file.name + "' as new folder";
     } else if (extension === "mcpack") {
-      return "Add as new '" + file.name + "' pack folder";
+      return "Add '" + file.name + "'as new  pack folder";
     } else if (extension === "mcstructure") {
-      return "Add as new '" + file.name + "' structure";
+      return "Add '" + file.name + "' as new structure";
     } else if (extension === "json") {
-      return "Add as new '" + file.name + "' data file";
+      if (content && typeof content === "string") {
+        const typeInfo = ProjectItemUtilities.inferTypeFromJsonContent(content, fileName);
+
+        let packType = typeInfo.packType;
+
+        if (packType === undefined) {
+          packType = PackType.behavior;
+        }
+
+        const typeDescriptor = ProjectItemUtilities.getDescriptionForType(typeInfo.itemType);
+
+        return "Add '" + file.name + "' as new " + typeDescriptor;
+      } else {
+        return "Add '" + file.name + "' as new  data file";
+      }
     }
+
+    return undefined;
   }
 
   static async integrateBrowserFileDefaultAction(project: Project, path: string, file: File) {

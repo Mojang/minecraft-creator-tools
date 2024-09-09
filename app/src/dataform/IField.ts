@@ -64,6 +64,7 @@ export default interface IField {
   lookupId?: string;
   maxLength?: number;
   newItemPrototype?: any;
+  noun?: string;
   allowCreateDelete?: boolean;
   readOnly?: boolean;
   forceString?: boolean;

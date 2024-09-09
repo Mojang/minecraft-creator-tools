@@ -7,7 +7,6 @@ import IGallery from "../app/IGallery";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import { ThemeInput } from "@fluentui/react-northstar";
 import Project from "../app/Project";
-import Log from "../core/Log";
 import ItemTileButton, { ItemTileButtonDisplayMode } from "./ItemTileButton";
 
 export enum GalleryItemCommand {
@@ -45,7 +44,6 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
     this._selectCodeSnippets = this._selectCodeSnippets.bind(this);
     this._selectProjectStarters = this._selectProjectStarters.bind(this);
 
-    this.loadProjects = this.loadProjects.bind(this);
     this.getProjectHash = this.getProjectHash.bind(this);
 
     this.state = {
@@ -56,37 +54,6 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
   }
 
   _handleStatusAdded(carto: Carto, status: IStatus) {}
-
-  componentDidMount() {
-    this.loadProjects();
-  }
-
-  async loadProjects() {
-    let didLoad = false;
-
-    await this.props.carto.load();
-
-    const projects = this.props.carto.projects;
-
-    for (let i = 0; i < projects.length; i++) {
-      const proj = projects[i];
-
-      if (!proj.isLoaded) {
-        await proj.loadFromFile();
-
-        Log.assert(proj.isLoaded, "Project is not loaded in ItemGallery.");
-        didLoad = true;
-      }
-    }
-
-    if (didLoad) {
-      const hash = this.getProjectHash();
-      this.setState({
-        loadedProjectHash: hash,
-        mode: this.state.mode,
-      });
-    }
-  }
 
   _selectProjectStarters() {
     this.setState({

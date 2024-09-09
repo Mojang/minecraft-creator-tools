@@ -7,7 +7,6 @@
     "type": "git",
     "url": "https://github.com/Mojang/minecraft-creator-tools.git"
   },
-  "private": true,
   "release": {
     "branches": [
       "main"
@@ -17,7 +16,6 @@
       [
         "@semantic-release/npm",
         {
-          "npmPublish": false,
           "pkgRoot": "./app/toolbuild/jsn",
           "tarballDir": "dist"
         }

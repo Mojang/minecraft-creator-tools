@@ -7,7 +7,7 @@ import IProjectInfoGenerator from "../info/IProjectInfoGenerator";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "../info/IInfoItemData";
 import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
-import NpmPackageJson from "../devproject/NpmPackageJson";
+import NpmPackageDefinition from "../devproject/NpmPackageDefinition";
 import Database from "../minecraft/Database";
 import ProjectItem from "../app/ProjectItem";
 import IProjectUpdater from "../updates/IProjectUpdater";
@@ -16,14 +16,15 @@ import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
-import EnvFile from "../devproject/EnvFile";
+import EnvSettings from "../devproject/EnvSettings";
 
 export default class ScriptModuleManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "SCRIPTMODULE";
   title = "Script Modules";
 
   modulesInUse: { [name: string]: { version: string; manifest: BehaviorManifestDefinition; item: ProjectItem }[] } = {};
-  packRegsInUse: { [name: string]: { package: NpmPackageJson; isDevDependency: boolean; version: string }[] } = {};
+  packRegsInUse: { [name: string]: { package: NpmPackageDefinition; isDevDependency: boolean; version: string }[] } =
+    {};
 
   getTopicData(topicId: number): IProjectInfoTopicData | undefined {
     return {
@@ -44,8 +45,10 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
     this.modulesInUse = {};
     this.packRegsInUse = {};
 
-    for (let i = 0; i < project.items.length; i++) {
-      const pi = project.items[i];
+    const itemsCopy = project.getItemsCopy();
+
+    for (let i = 0; i < itemsCopy.length; i++) {
+      const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
         await pi.ensureFileStorage();
@@ -92,7 +95,7 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const npmPackageJson = await NpmPackageJson.ensureOnFile(pi.file);
+          const npmPackageJson = await NpmPackageDefinition.ensureOnFile(pi.file);
 
           if (npmPackageJson && npmPackageJson.definition) {
             const deps = npmPackageJson.definition.dependencies;
@@ -159,7 +162,7 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const envFile = await EnvFile.ensureOnFile(pi.file);
+          const envFile = await EnvSettings.ensureOnFile(pi.file);
 
           await envFile?.ensureEnvFile(project);
         }

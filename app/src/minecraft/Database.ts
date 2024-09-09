@@ -256,17 +256,6 @@ export default class Database {
       versionUrl = "https://raw.githubusercontent.com/Mojang/bedrock-samples/preview/version.json";
     }
 
-    // Log.message("Retrieving " + (preview ? "preview" : "retail") + " version data.");
-
-    /*Log.verbose(
-      "Getting latest version info from '" +
-        versionUrl +
-        "' " +
-        this.#usePreview +
-        "|" +
-        (this.carto && this.carto.processHostedMinecraftTrack === MinecraftTrack.preview)
-    );*/
-
     try {
       minecraftInfoResponse = await axios.get(versionUrl);
     } catch (e: any) {

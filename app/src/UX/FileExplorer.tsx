@@ -8,6 +8,8 @@ import ItemAnnotationCollection from "./ItemAnnotationCollection";
 import IFile from "../storage/IFile";
 import StorageUtilities from "../storage/StorageUtilities";
 import WebUtilities from "./WebUtilities";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
 
 export enum FileExplorerMode {
   explorer = 0,
@@ -131,17 +133,23 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
   render() {
     const height = WebUtilities.getHeight();
 
-    const explorerHeight =
-      height > this.props.heightOffset + 100
-        ? "calc(100vh - " + Math.max(this.props.heightOffset - 10) + "px)"
-        : "inherit";
+    let explorerHeight =
+      height > this.props.heightOffset + 100 ? "calc(100vh - " + (this.props.heightOffset - 10) + "px)" : "inherit";
 
     let accessoryArea = <></>;
 
     if (this.props.mode === FileExplorerMode.folderPicker && this.state.selectedItem) {
       const label = "Create a new folder at " + this.state.selectedItem.name + ":";
       accessoryArea = (
-        <div className="fex-newFolderArea">
+        <div
+          className="fex-newFolderArea"
+          style={{
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+          }}
+        >
+          <div className="fex-newFolderIcon">
+            <FontAwesomeIcon icon={faFolderPlus} className="fa-lg" />
+          </div>
           <div className="fex-newFolderLabel" title={label}>
             {label}
           </div>
@@ -149,10 +157,16 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
             <Input value={this.state.newFolderName} placeholder="New Folder" onChange={this._handleNewFolderChanged} />
           </div>
           <div className="fex-newFolderGo">
-            <Button onClick={this._handleNewFolderGo} content="Create" />
+            <Button
+              onClick={this._handleNewFolderGo}
+              content="Create"
+              disabled={this.state.newFolderName === undefined || this.state.newFolderName.length === 0}
+            />
           </div>
         </div>
       );
+      explorerHeight =
+        height > this.props.heightOffset + 100 ? "calc(100vh - " + (this.props.heightOffset + 50) + "px)" : "inherit";
     }
 
     return (
@@ -163,19 +177,26 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
           minHeight: explorerHeight,
         }}
       >
-        <FileExplorerFolder
-          folder={this.props.rootFolder}
-          startExpanded={true}
-          itemAnnotations={this.getAnnotationsForFolder(this.props.rootFolder)}
-          fileExplorer={this}
-          theme={this.props.theme}
-          mode={this.props.mode}
-          selectedItem={this.state.selectedItem}
-          onFileSelected={this._handleNewFileSelected}
-          onFolderSelected={this._handleNewFolderSelected}
-          displayFolderDetail={false}
-          depth={0}
-        />
+        <div
+          className="fex-folderArea"
+          style={{
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+          }}
+        >
+          <FileExplorerFolder
+            folder={this.props.rootFolder}
+            startExpanded={true}
+            itemAnnotations={this.getAnnotationsForFolder(this.props.rootFolder)}
+            fileExplorer={this}
+            theme={this.props.theme}
+            mode={this.props.mode}
+            selectedItem={this.state.selectedItem}
+            onFileSelected={this._handleNewFileSelected}
+            onFolderSelected={this._handleNewFolderSelected}
+            displayFolderDetail={false}
+            depth={0}
+          />
+        </div>
         {accessoryArea}
       </div>
     );

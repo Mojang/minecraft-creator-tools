@@ -3,7 +3,6 @@
   "version": "0.2.9",
   "productName": "Minecraft Creator Tools",
   "description": "Minecraft Creator Tools command line and libraries.",
-  "private": true,
   "bin": {
     "mct": "./cli/index.js"
   },

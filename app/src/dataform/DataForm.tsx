@@ -1355,6 +1355,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       this.formComponents.push(headerElement);
       fieldTopper.push(headerElement);
 
+      fieldTopper.push(descriptionElement);
+
       const toolbarItems = [];
 
       toolbarItems.push({
@@ -1447,7 +1449,16 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         }
       } else {
         for (const index in arrayOfDataVal) {
+          let visualIndex = 0;
           let title = index;
+
+          try {
+            visualIndex = parseInt(index);
+          } catch (e) {}
+
+          if (!isNaN(visualIndex)) {
+            title = String(visualIndex + 1);
+          }
 
           let objKey = field.id;
 
@@ -1480,9 +1491,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             if (val) {
               title = val;
             }
-          }
-
-          if (field.objectArrayToSubFieldKey) {
+          } else if (field.objectArrayToSubFieldKey) {
             const val = obj[field.objectArrayToSubFieldKey];
 
             if (field.subFields && val) {
@@ -1492,6 +1501,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                 title = subField.title;
               }
             }
+          } else if (field.noun) {
+            title = field.noun + " " + title;
           }
 
           const subForm = (
@@ -1522,7 +1533,6 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     formInterior.push(
       <div className="df-fieldWrap" key={"fw" + field.id}>
         {fieldTopper}
-        {descriptionElement}
         {fieldInterior}
       </div>
     );

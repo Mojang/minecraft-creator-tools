@@ -48,18 +48,18 @@ export default class CartoSettings extends Component<ICartoSettingsProps, ICarto
       <div
         className="cs-outer"
         style={{
-          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-          color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+          color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
         }}
       >
         <h2
           className="cs-header"
           style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
           }}
         >
-          App Settings
+          Creator Tools Settings
         </h2>
         <div
           className="cs-panelArea"

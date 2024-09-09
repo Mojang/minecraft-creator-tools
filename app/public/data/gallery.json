@@ -511,7 +511,15 @@
       "id": "allay",
       "type": 4,
       "logoLocation": { "x": 5, "y": 5, "width": 5, "height": 5, "imageWidth": 32 },
-      "fileList": ["<BPE>allay", "<RPE>allay", "<RPME>allay", "<RPTE>allay/allay", "<RPAC>allay", "<RPA>allay"]
+      "fileList": [
+        "<BPE>allay",
+        "<RPE>allay",
+        "<RPME>allay",
+        "<RPTE>allay/allay",
+        "<RPAC>allay",
+        "<RPA>allay",
+        "<RPRC>allay"
+      ]
     },
     {
       "title": "Axolotl",
@@ -551,6 +559,8 @@
         "<BPSR>cat",
         "<RPE>cat",
         "<RPME>cat",
+        "<RPRC>cat",
+        "<RPAC>cat",
         "<RPA>cat",
         "<RPTE>cat/allblackcat",
         "<RPTE>cat/allblackcat_tame.tga",
@@ -597,6 +607,7 @@
         "<BPSR>cow",
         "<RPE>cow",
         "<RPME>cow",
+        "<RPRC>cow",
         "<RPA>cow",
         "<RPTE>cow/cow",
         "<RPTE>cow/brown_mooshroom",
@@ -617,6 +628,7 @@
         "<BPLE>creeper",
         "<BPSR>creeper",
         "<RPE>creeper",
+        "<RPRC>creeper",
         "<RPAC>creeper",
         "<RPA>creeper",
         "<RPME>creeper",
@@ -639,6 +651,7 @@
         "<BPSR>enderman",
         "<RPE>enderman",
         "<RPME>enderman",
+        "<RPRC>enderman",
         "<RPTE>enderman/enderman.tga",
         "<RPAC>enderman",
         "<RPA>enderman"
@@ -660,6 +673,7 @@
         "<RPE>rabbit",
         "<RPME>rabbit",
         "<RPAC>rabbit",
+        "<RPRC>rabbit",
         "<RPA>rabbit",
         "<RPTE>rabbit/blackrabbit",
         "<RPTE>rabbit/brown",
@@ -684,6 +698,7 @@
         "<BPLE>pig",
         "<BPSR>pig",
         "<RPE>pig",
+        "<RPRC>pig",
         "<RPA>pig",
         "<RPME>pig",
         "<RPTE>pig/pig",
@@ -707,6 +722,7 @@
         "<RPE>sheep",
         "<RPME>sheep",
         "<RPTE>sheep/sheep.tga",
+        "<RPRC>sheep",
         "<RPAC>sheep",
         "<RPA>sheep"
       ]
@@ -726,6 +742,7 @@
         "<BPSR>skeleton",
         "<RPE>skeleton",
         "<RPME>skeleton",
+        "<RPRC>skeleton",
         "<RPAC>skeleton",
         "<RPA>skeleton",
         "<RPTE>skeleton/skeleton",
@@ -749,6 +766,7 @@
         "<BPSR>wolf",
         "<RPE>wolf",
         "<RPME>wolf",
+        "<RPRC>wolf",
         "<RPAC>wolf",
         "<RPA>wolf",
         "<RPTE>wolf/wolf",
@@ -801,6 +819,7 @@
         "<BPLE>zombie",
         "<BPSR>zombie",
         "<RPE>zombie",
+        "<RPRC>zombie",
         "<RPAC>zombie",
         "<RPA>zombie",
         "<RPME>zombie",

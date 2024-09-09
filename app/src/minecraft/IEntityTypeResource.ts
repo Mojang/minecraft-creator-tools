@@ -1,16 +1,16 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-export interface IClientEntityTypeWrapper {
+export interface IEntityTypeResourceWrapper {
   format_version: string;
-  "minecraft:client_entity": IClientEntityType;
+  "minecraft:client_entity": IEntityTypeResource;
 }
 
-export interface IClientEntityType {
-  description: IClientEntityTypeDescription;
+export interface IEntityTypeResource {
+  description: IEntityTypeResourceDescription;
 }
 
-export interface IClientEntityTypeDescription {
+export interface IEntityTypeResourceDescription {
   identifier: string;
   materials: { [identifier: string]: string };
   textures: { [identifier: string]: string };
@@ -20,10 +20,10 @@ export interface IClientEntityTypeDescription {
   animations: { [identifier: string]: string };
   scripts: { [identifier: string]: string[] };
   render_controllers: string[];
-  spawn_egg?: IClientEntitySpawnEgg;
+  spawn_egg?: IEntityResourceSpawnEgg;
 }
 
-export interface IClientEntitySpawnEgg {
+export interface IEntityResourceSpawnEgg {
   texture?: string;
   texture_index?: number;
 }

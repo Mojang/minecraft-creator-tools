@@ -20,12 +20,16 @@ import DocumentedCommandSetEditor from "./DocumentedCommandSetEditor";
 import Utilities from "../core/Utilities";
 import CartoApp, { HostType } from "../app/CartoApp";
 import TextEditor from "./TextEditor";
-import NpmPackageJsonEditor from "./NpmPackageJsonEditor";
+import NpmPackageEditor from "./NpmPackageEditor";
 import BehaviorPackManifestJsonEditor from "./BehaviorPackManifestJsonEditor";
 import ImageEditor from "./ImageEditor";
 import DataFormEditor from "./DataFormEditor";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ProjectInfoDisplay from "./ProjectInfoDisplay";
+import EntityTypeEditor from "./EntityTypeEditor";
+import SpawnRulesEditor from "./SpawnRulesEditor";
+import LootTableEditor from "./LootTableEditor";
+import EntityTypeResourceEditor from "./EntityTypeResourceEditor";
 
 enum ProjectItemEditorDirtyState {
   clean = 0,
@@ -278,6 +282,22 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           );
         } else if (
           file.type === "json" &&
+          projItem.itemType === ProjectItemType.entityTypeBehaviorJson &&
+          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
+        ) {
+          Log.verbose("Showing entity type editor for '" + file.storageRelativePath + "'");
+          interior = (
+            <EntityTypeEditor
+              readOnly={this.props.readOnly}
+              heightOffset={this.props.heightOffset}
+              theme={this.props.theme}
+              file={file}
+              item={this.props.activeProjectItem}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
+        } else if (
+          file.type === "json" &&
           projItem.itemType === ProjectItemType.scriptTypesJson &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
@@ -299,7 +319,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
           interior = (
-            <NpmPackageJsonEditor
+            <NpmPackageEditor
               theme={this.props.theme}
               heightOffset={this.props.heightOffset}
               file={file}
@@ -314,6 +334,48 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         ) {
           interior = (
             <BehaviorPackManifestJsonEditor
+              theme={this.props.theme}
+              heightOffset={this.props.heightOffset}
+              file={file}
+              readOnly={this.props.readOnly}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
+        } else if (
+          file.type === "json" &&
+          projItem.itemType === ProjectItemType.spawnRuleBehavior &&
+          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
+        ) {
+          interior = (
+            <SpawnRulesEditor
+              theme={this.props.theme}
+              heightOffset={this.props.heightOffset}
+              file={file}
+              readOnly={this.props.readOnly}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
+        } else if (
+          file.type === "json" &&
+          projItem.itemType === ProjectItemType.lootTableBehaviorJson &&
+          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
+        ) {
+          interior = (
+            <LootTableEditor
+              theme={this.props.theme}
+              heightOffset={this.props.heightOffset}
+              file={file}
+              readOnly={this.props.readOnly}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
+        } else if (
+          file.type === "json" &&
+          projItem.itemType === ProjectItemType.entityTypeResource &&
+          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
+        ) {
+          interior = (
+            <EntityTypeResourceEditor
               theme={this.props.theme}
               heightOffset={this.props.heightOffset}
               file={file}

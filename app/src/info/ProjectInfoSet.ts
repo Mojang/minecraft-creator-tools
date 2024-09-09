@@ -240,8 +240,10 @@ export default class ProjectInfoSet {
         }
       }
 
-      for (let i = 0; i < this.project.items.length; i++) {
-        const pi = this.project.items[i];
+      const itemsCopy = this.project.getItemsCopy();
+
+      for (let i = 0; i < itemsCopy.length; i++) {
+        const pi = itemsCopy[i];
 
         await pi.load();
 

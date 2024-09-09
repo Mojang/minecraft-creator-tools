@@ -30,6 +30,19 @@ export const enum FolderDeploy {
   noFolders = 2,
 }
 
+export const ProjectImportExclusions = [
+  "build",
+  "node_modules",
+  "dist",
+  "lib",
+  ".env",
+  "*/.*",
+  "out",
+  "*just.config*",
+  "*package-lock*",
+  "*.mjs*",
+];
+
 export default class ProjectExporter {
   static async generateFlatBetaApisWorldWithPacksZipBytes(carto: Carto, project: Project, name: string) {
     await Database.loadContent();
@@ -113,7 +126,7 @@ export default class ProjectExporter {
       false,
       false,
       false,
-      ["build", "node_modules", "dist", "lib", "/.git", "out"],
+      ProjectImportExclusions,
       undefined,
       messageUpdater,
       dontOverwriteExistingFiles
@@ -216,8 +229,10 @@ export default class ProjectExporter {
 
     const existingProjects: string[] = [];
 
-    for (let i = 0; i < project.items.length; i++) {
-      const spath = project.items[i].projectPath;
+    const items = project.getItemsCopy();
+
+    for (let i = 0; i < items.length; i++) {
+      const spath = items[i].projectPath;
 
       if (spath !== undefined && spath !== null) {
         existingProjects.push(spath);

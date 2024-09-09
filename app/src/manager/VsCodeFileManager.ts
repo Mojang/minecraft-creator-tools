@@ -8,9 +8,9 @@ import { ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData
 import { InfoItemType } from "../info/IInfoItemData";
 import IProjectUpdater from "../updates/IProjectUpdater";
 import ProjectUpdateResult from "../updates/ProjectUpdateResult";
-import VsCodeTasksJson from "../devproject/VsCodeTasksJson";
+import VsCodeTasksDefinition from "../devproject/VsCodeTasksDefinition";
 import { UpdateResultType } from "../updates/IUpdateResult";
-import VsCodeLaunchJson from "../devproject/VsCodeLaunchJson";
+import VsCodeLaunchDefinition from "../devproject/VsCodeLaunchDefinition";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
@@ -37,15 +37,17 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const infoItems: ProjectInfoItem[] = [];
 
-    for (const pi of project.items) {
+    const itemsCopy = project.getItemsCopy();
+
+    for (const pi of itemsCopy) {
       if (pi.itemType === ProjectItemType.vsCodeTasksJson && pi.storageType === ProjectItemStorageType.singleFile) {
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const vscodeTasksJson = await VsCodeTasksJson.ensureOnFile(pi.file);
+          const vscodeTasksJson = await VsCodeTasksDefinition.ensureOnFile(pi.file);
 
           if (vscodeTasksJson) {
-            const hasMinecraftTasks = await vscodeTasksJson.hasMinecraftTasks();
+            const hasMinecraftTasks = await vscodeTasksJson.hasMinContent();
 
             if (!hasMinecraftTasks) {
               infoItems.push(
@@ -69,11 +71,11 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const vscodeLaunchJson = await VsCodeLaunchJson.ensureOnFile(pi.file);
+          const vscodeLaunchJson = await VsCodeLaunchDefinition.ensureOnFile(pi.file);
 
           if (vscodeLaunchJson) {
             vscodeLaunchJson.project = project;
-            const hasMinecraftDebugConfig = await vscodeLaunchJson.hasMinecraftDebugLaunch({ isServer: true });
+            const hasMinecraftDebugConfig = await vscodeLaunchJson.hasMinContent({ isServer: true });
 
             if (!hasMinecraftDebugConfig) {
               infoItems.push(
@@ -118,18 +120,20 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
   async ensureMinecraftLaunchTasks(project: Project) {
     const results: ProjectUpdateResult[] = [];
 
-    for (const pi of project.items) {
+    const itemsCopy = project.getItemsCopy();
+
+    for (const pi of itemsCopy) {
       if (pi.itemType === ProjectItemType.vsCodeTasksJson && pi.storageType === ProjectItemStorageType.singleFile) {
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const vscodeTasksJson = await VsCodeTasksJson.ensureOnFile(pi.file);
+          const vscodeTasksJson = await VsCodeTasksDefinition.ensureOnFile(pi.file);
 
           if (vscodeTasksJson) {
-            const hasTasks = await vscodeTasksJson.hasMinecraftTasks();
+            const hasTasks = await vscodeTasksJson.hasMinContent();
 
             if (!hasTasks) {
-              const result = await vscodeTasksJson.ensureMinecraftTasks();
+              const result = await vscodeTasksJson.ensureMinContent();
 
               if (result) {
                 await vscodeTasksJson.save();
@@ -149,12 +153,14 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
   async ensureMinecraftDebugConfig(project: Project) {
     const results: ProjectUpdateResult[] = [];
 
-    for (const pi of project.items) {
+    const itemsCopy = project.getItemsCopy();
+
+    for (const pi of itemsCopy) {
       if (pi.itemType === ProjectItemType.vsCodeLaunchJson && pi.storageType === ProjectItemStorageType.singleFile) {
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const vscodeLaunchJson = await VsCodeLaunchJson.ensureOnFile(pi.file);
+          const vscodeLaunchJson = await VsCodeLaunchDefinition.ensureOnFile(pi.file);
 
           const pack = await project.getDefaultBehaviorPack();
 
@@ -165,10 +171,10 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
           }
 
           if (vscodeLaunchJson) {
-            const hasConfig = await vscodeLaunchJson.hasMinecraftDebugLaunch(debugSettings);
+            const hasConfig = await vscodeLaunchJson.hasMinContent(debugSettings);
 
             if (!hasConfig) {
-              const result = await vscodeLaunchJson.ensureMinecraftDebugLaunch(debugSettings);
+              const result = await vscodeLaunchJson.ensureMinContent(debugSettings);
 
               if (result) {
                 await vscodeLaunchJson.save();

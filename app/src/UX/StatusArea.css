@@ -10,7 +10,7 @@
 }
 
 .sa-singleline {
-  padding-bottom: 4px;
+  padding-bottom: 6px;
   overflow-x: hidden;
   overflow-y: hidden;
   text-overflow: clip;

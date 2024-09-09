@@ -59,7 +59,7 @@ export default class ProjectItemUtilities {
     } else if (firstHundred.indexOf('"pools"') >= 0) {
       return { itemType: ProjectItemType.itemTypeBehaviorJson };
     } else if (firstHundred.indexOf('"minecraft:spawn_rules"') >= 0) {
-      return { itemType: ProjectItemType.spawnRuleBehaviorJson };
+      return { itemType: ProjectItemType.spawnRuleBehavior };
     } else if (firstHundred.indexOf('"tiers"') >= 0) {
       return { itemType: ProjectItemType.tradingBehaviorJson };
     } else if (firstHundred.indexOf('"animation_controllers"') >= 0) {
@@ -71,7 +71,7 @@ export default class ProjectItemUtilities {
     } else if (firstHundred.indexOf('"minecraft:attachable"') >= 0) {
       return { itemType: ProjectItemType.attachableResourceJson, packType: PackType.resource };
     } else if (firstHundred.indexOf('"minecraft:client_entity"') >= 0) {
-      return { itemType: ProjectItemType.entityTypeResourceJson, packType: PackType.resource };
+      return { itemType: ProjectItemType.entityTypeResource, packType: PackType.resource };
     } else if (firstHundred.indexOf('"minecraft:fog_settings"') >= 0) {
       return { itemType: ProjectItemType.fogResourceJson, packType: PackType.resource };
     } else if (firstHundred.indexOf('"minecraft:geometry"') >= 0) {
@@ -193,7 +193,7 @@ export default class ProjectItemUtilities {
         return ProjectItemCategory.assets;
 
       case ProjectItemType.entityTypeBehaviorJson:
-      case ProjectItemType.entityTypeResourceJson:
+      case ProjectItemType.entityTypeResource:
       case ProjectItemType.entityTypeBaseJs:
       case ProjectItemType.entityTypeBaseTs:
       case ProjectItemType.blockTypeBehaviorJson:
@@ -208,7 +208,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.biomeBehaviorJson:
       case ProjectItemType.biomeResourceJson:
       case ProjectItemType.lootTableBehaviorJson:
-      case ProjectItemType.spawnRuleBehaviorJson:
+      case ProjectItemType.spawnRuleBehavior:
       case ProjectItemType.dialogueBehaviorJson:
       case ProjectItemType.MCWorld:
       case ProjectItemType.worldTemplateManifestJson:
@@ -217,7 +217,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.featureRuleBehaviorJson:
         return ProjectItemCategory.types;
 
-      case ProjectItemType.esLintMjs:
+      case ProjectItemType.esLintConfigMjs:
       case ProjectItemType.env:
       case ProjectItemType.justConfigTs:
       case ProjectItemType.packageLockJson:
@@ -300,7 +300,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.buildProcessedJs:
       case ProjectItemType.catalogIndexJs:
       case ProjectItemType.entityTypeBaseTs:
-      case ProjectItemType.esLintMjs:
+      case ProjectItemType.esLintConfigMjs:
       case ProjectItemType.blockTypeBaseJs:
         return ["application/javascript"];
 
@@ -331,7 +331,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.soundsCatalogResourceJson:
       case ProjectItemType.animationResourceJson:
       case ProjectItemType.animationControllerResourceJson:
-      case ProjectItemType.entityTypeResourceJson:
+      case ProjectItemType.entityTypeResource:
       case ProjectItemType.fogResourceJson:
       case ProjectItemType.modelGeometryJson:
       case ProjectItemType.particleJson:
@@ -345,7 +345,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.featureBehaviorJson:
       case ProjectItemType.functionEventJson:
       case ProjectItemType.recipeBehaviorJson:
-      case ProjectItemType.spawnRuleBehaviorJson:
+      case ProjectItemType.spawnRuleBehavior:
       case ProjectItemType.tradingBehaviorJson:
       case ProjectItemType.volumeBehaviorJson:
       case ProjectItemType.attachableResourceJson:
@@ -517,7 +517,7 @@ export default class ProjectItemUtilities {
         return "Animation";
       case ProjectItemType.animationControllerResourceJson:
         return "Animation controller";
-      case ProjectItemType.entityTypeResourceJson:
+      case ProjectItemType.entityTypeResource:
         return "Entity type resources";
       case ProjectItemType.fogResourceJson:
         return "Fog";
@@ -545,7 +545,7 @@ export default class ProjectItemUtilities {
         return "Function event";
       case ProjectItemType.recipeBehaviorJson:
         return "Recipe";
-      case ProjectItemType.spawnRuleBehaviorJson:
+      case ProjectItemType.spawnRuleBehavior:
         return "Spawn rule";
       case ProjectItemType.tradingBehaviorJson:
         return "Trading";
@@ -583,7 +583,7 @@ export default class ProjectItemUtilities {
         return "NPM package lock definition";
       case ProjectItemType.env:
         return "Environment File";
-      case ProjectItemType.esLintMjs:
+      case ProjectItemType.esLintConfigMjs:
         return "ESLint Config";
       case ProjectItemType.justConfigTs:
         return "Just Config";
@@ -707,7 +707,7 @@ export default class ProjectItemUtilities {
         return "UI global variable sets";
       case ProjectItemType.itemTypeResourceJson:
         return "Item type resource sets";
-      case ProjectItemType.entityTypeResourceJson:
+      case ProjectItemType.entityTypeResource:
         return "Entity type resource sets";
       case ProjectItemType.materialGeometry:
         return "Geometries";
@@ -752,7 +752,7 @@ export default class ProjectItemUtilities {
 
         return defaultBpFolder.ensureFolderFromRelativePath(path[0]);
 
-      case ProjectItemType.entityTypeResourceJson:
+      case ProjectItemType.entityTypeResource:
       case ProjectItemType.modelGeometryJson:
         const defaultRpFolder = await project.getDefaultResourcePackFolder();
 
@@ -834,7 +834,7 @@ export default class ProjectItemUtilities {
         return ["loot_tables"];
       case ProjectItemType.recipeBehaviorJson:
         return ["recipes"];
-      case ProjectItemType.spawnRuleBehaviorJson:
+      case ProjectItemType.spawnRuleBehavior:
         return ["spawn_rules"];
       case ProjectItemType.particleJson:
         return ["particles"];

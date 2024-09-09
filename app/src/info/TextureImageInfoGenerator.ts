@@ -44,7 +44,9 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
 
     const rpFolder = await Database.loadDefaultResourcePack();
 
-    for (const projectItem of project.items) {
+    const itemsCopy = project.getItemsCopy();
+
+    for (const projectItem of itemsCopy) {
       if (projectItem.itemType === ProjectItemType.texture) {
         await projectItem.ensureFileStorage();
 

@@ -39,8 +39,10 @@ export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
       lineSizeCounts[i] = 0;
     }
 
-    for (let i = 0; i < project.items.length; i++) {
-      const pi = project.items[i];
+    const itemsCopy = project.getItemsCopy();
+
+    for (let i = 0; i < itemsCopy.length; i++) {
+      const pi = itemsCopy[i];
       let projInfoItem = undefined;
 
       if (itemsByType[pi.itemType] !== undefined) {

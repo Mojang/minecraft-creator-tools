@@ -44,7 +44,7 @@ export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
       infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.MCWorld) +
       infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.worldFolder);
 
-    info.entityTypeResourceCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.entityTypeResourceJson);
+    info.entityTypeResourceCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.entityTypeResource);
 
     info.behaviorPackAnimationCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.animationBehaviorJson);
 
@@ -62,8 +62,10 @@ export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
       typeCounts[i] = 0;
     }
 
-    for (let i = 0; i < project.items.length; i++) {
-      const pi = project.items[i];
+    const itemsCopy = project.getItemsCopy();
+
+    for (let i = 0; i < itemsCopy.length; i++) {
+      const pi = itemsCopy[i];
 
       typeCounts[pi.itemType]++;
 

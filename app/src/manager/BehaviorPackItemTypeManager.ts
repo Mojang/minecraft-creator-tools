@@ -135,8 +135,10 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
 
     infoItems.push(piiCategory);
 
-    for (let i = 0; i < project.items.length; i++) {
-      const pi = project.items[i];
+    const itemsCopy = project.getItemsCopy();
+
+    for (let i = 0; i < itemsCopy.length; i++) {
+      const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.itemTypeBehaviorJson) {
         await pi.ensureFileStorage();
@@ -350,8 +352,10 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
     const minor = parseInt(verSplit[1]);
     const patch = parseInt(verSplit[2]);
 
-    for (let i = 0; i < project.items.length; i++) {
-      const pi = project.items[i];
+    const itemsCopy = project.getItemsCopy();
+
+    for (let i = 0; i < itemsCopy.length; i++) {
+      const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
         await pi.ensureFileStorage();

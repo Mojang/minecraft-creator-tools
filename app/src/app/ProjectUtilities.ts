@@ -10,7 +10,7 @@ import Log from "../core/Log";
 import Utilities from "../core/Utilities";
 import { ProjectEditPreference } from "./IProjectData";
 import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
-import NpmPackageJson from "../devproject/NpmPackageJson";
+import NpmPackageDefinition from "../devproject/NpmPackageDefinition";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import ISnippet from "./ISnippet";
 import IGalleryItem from "./IGalleryItem";
@@ -24,6 +24,8 @@ import HttpStorage from "../storage/HttpStorage";
 import CartoApp from "./CartoApp";
 import ProjectExporter from "./ProjectExporter";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
+import ProjectStandard from "./ProjectStandard";
+import ProjectAutogeneration from "./ProjectAutogeneration";
 
 export enum NewEntityTypeAddMode {
   baseId,
@@ -186,7 +188,9 @@ export default class ProjectUtilities {
     project.scriptEntryPoint = newScriptEntryPoint;
 
     if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
-      for (const projectItem of project.items) {
+      const itemsCopy = project.getItemsCopy();
+
+      for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
           await projectItem.ensureFileStorage();
 
@@ -214,12 +218,14 @@ export default class ProjectUtilities {
     project.description = newDescription;
 
     if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
-      for (const projectItem of project.items) {
+      const itemsCopy = project.getItemsCopy();
+
+      for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.packageJson) {
           await projectItem.ensureFileStorage();
 
           if (projectItem.file) {
-            const npmPackageJson = await NpmPackageJson.ensureOnFile(projectItem.file);
+            const npmPackageJson = await NpmPackageDefinition.ensureOnFile(projectItem.file);
 
             if (npmPackageJson && npmPackageJson.definition) {
               npmPackageJson.definition.description = newDescription;
@@ -280,9 +286,11 @@ export default class ProjectUtilities {
     project.title = newTitle;
 
     if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
-      for (const projectItem of project.items) {
+      const itemsCopy = project.getItemsCopy();
+
+      for (const projectItem of itemsCopy) {
         if (projectItem.file && projectItem.itemType === ProjectItemType.packageJson) {
-          const npmPackageJson = await NpmPackageJson.ensureOnFile(projectItem.file);
+          const npmPackageJson = await NpmPackageDefinition.ensureOnFile(projectItem.file);
 
           if (npmPackageJson && npmPackageJson.definition) {
             npmPackageJson.definition.name = newTitle;
@@ -328,19 +336,6 @@ export default class ProjectUtilities {
       }
     }
   }
-  static async ensureStandardFiles(project: Project) {
-    project.ensureItemByProjectPath(
-      "/.env",
-      ProjectItemStorageType.singleFile,
-      ".env",
-      ProjectItemType.env,
-      undefined,
-      ProjectItemCreationType.normal,
-      undefined,
-      undefined,
-      false
-    );
-  }
 
   static async applyBehaviorPackUniqueId(project: Project, newBehaviorPackId: string) {
     const oldBehaviorPackId = project.defaultBehaviorPackUniqueId;
@@ -350,13 +345,15 @@ export default class ProjectUtilities {
     if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
       let bpackCount = 0;
 
-      for (const projectItem of project.items) {
+      const itemsCopy = project.getItemsCopy();
+
+      for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
           bpackCount++;
         }
       }
 
-      for (const projectItem of project.items) {
+      for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
           await projectItem.ensureFileStorage();
 
@@ -390,13 +387,15 @@ export default class ProjectUtilities {
     if (project.editPreference === ProjectEditPreference.summarized && project.defaultResourcePackUniqueId) {
       let rpackCount = 0;
 
-      for (const projectItem of project.items) {
+      const itemsCopy = project.getItemsCopy();
+
+      for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
           rpackCount++;
         }
       }
 
-      for (const projectItem of project.items) {
+      for (const projectItem of itemsCopy) {
         if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
           await projectItem.ensureFileStorage();
 
@@ -494,11 +493,14 @@ export default class ProjectUtilities {
       await ProjectExporter.renameDefaultFolders(project, suggestedShortName);
     }
 
-    await this.ensureStandardFiles(project);
+    await ProjectAutogeneration.updateProjectAutogeneration(project);
+
     await ProjectUtilities.randomizeAllUids(project);
 
     await ProjectUtilities.applyTitle(project, title);
     await ProjectUtilities.applyDescription(project, description);
+
+    await ProjectStandard.ensureIsStandard(project);
 
     const pur = new ProjectUpdateRunner(project);
 
@@ -522,8 +524,10 @@ export default class ProjectUtilities {
     project.defaultDataUniqueId = Utilities.createUuid();
     project.defaultScriptModuleUniqueId = Utilities.createUuid();
 
-    for (let i = 0; i < project.items.length; i++) {
-      const pi = project.items[i];
+    const itemsCopy = project.getItemsCopy();
+
+    for (let i = 0; i < itemsCopy.length; i++) {
+      const pi = itemsCopy[i];
 
       if (pi.file) {
         if (pi.itemType === ProjectItemType.behaviorPackManifestJson && !setBehaviorPack) {
@@ -573,8 +577,8 @@ export default class ProjectUtilities {
 
     await project.inferProjectItemsFromFiles(true);
 
-    /*
-    const defaultScriptsPath = await ProjectUtilities.getBaseScriptsPath(project);
+    /*    const defaultScriptsPath = await ProjectUtilities.getBaseScriptsPath(project);
+
     if (project.preferredScriptLanguage === ProjectScriptLanguage.javaScript) {
       const candidateJsFilePath = await ProjectUtilities.getFileName(
         project,
@@ -594,7 +598,7 @@ export default class ProjectUtilities {
           ProjectItemCreationType.generated
         );
 
-        piGenJs.updateAutogenerated();
+        await ProjectAutogeneration.updateItemAutogeneration(piGenJs);
       }
     } else if (project.preferredScriptLanguage === ProjectScriptLanguage.typeScript) {
       const candidateJsFilePath = await ProjectUtilities.getFileName(
@@ -615,7 +619,7 @@ export default class ProjectUtilities {
           ProjectItemCreationType.generated
         );
 
-        piGenJs.updateAutogenerated();
+        await ProjectAutogeneration.updateItemAutogeneration(piGenJs);
       }
     }*/
 
@@ -728,7 +732,6 @@ export default class ProjectUtilities {
           Log.debugAlert("Could not find file '" + subPath + "'");
         } else {
           const targetFile = await targetBpFolder.ensureFileFromRelativePath(targetPath);
-
           let update = true;
 
           if (dontOverwriteExistingFiles) {
@@ -781,7 +784,6 @@ export default class ProjectUtilities {
           Log.debugAlert("Could not find file '" + subPath + "'");
         } else {
           const targetFile = await targetRpFolder.ensureFileFromRelativePath(targetPath);
-
           let update = true;
 
           if (update) {
@@ -792,6 +794,7 @@ export default class ProjectUtilities {
                 update = false;
               }
             }
+
             await sourceFile.loadContent();
 
             let content = sourceFile.content;
@@ -834,6 +837,7 @@ export default class ProjectUtilities {
 
     // accomodate minecraft:suffocate
     content = Utilities.replaceAll(content, "suffo" + newName + "e", "suffo" + entityTypeProject.id + "e");
+    content = Utilities.replaceAll(content, newName + "egory", "category");
 
     return content;
   }
@@ -896,6 +900,9 @@ export default class ProjectUtilities {
       "DisplaySlotId",
       "ObjectiveSortOrder",
       "TripWireAfterEvent",
+      "BlockComponentTypes",
+      "EntityComponentTypes",
+      "ItemComponentTypes",
       "LeverActionAfterEvent",
       "Vector3",
     ],
@@ -1193,7 +1200,7 @@ export default class ProjectUtilities {
           ProjectItemCreationType.generated
         );
 
-        piGenJs.updateAutogenerated();
+        await ProjectAutogeneration.updateItemAutogeneration(piGenJs);
       }
     } else if (project.preferredScriptLanguage === ProjectScriptLanguage.typeScript) {
       const candidateJsFilePath = await ProjectUtilities.getFileName(
@@ -1214,7 +1221,7 @@ export default class ProjectUtilities {
           ProjectItemCreationType.normal
         );
 
-        piGenJs.updateAutogenerated();
+        await ProjectAutogeneration.updateItemAutogeneration(piGenJs);
       }
     }*/
   }

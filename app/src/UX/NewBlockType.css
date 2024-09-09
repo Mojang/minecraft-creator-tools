@@ -15,6 +15,7 @@
 
 .nbt-projectGallery {
   height: 360px;
+  overflow-y: auto;
 }
 
 .nbt-selectedProject {

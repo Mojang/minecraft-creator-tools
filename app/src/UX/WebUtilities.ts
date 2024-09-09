@@ -21,7 +21,7 @@ export default class WebUtilities {
 
   static async requestPersistence() {
     if (!navigator.storage || !navigator.storage.persist) {
-      return;
+      return false;
     }
 
     return await navigator.storage.persist();
@@ -29,7 +29,7 @@ export default class WebUtilities {
 
   static async getIsPersisted() {
     if (!navigator.storage || !navigator.storage.persist) {
-      return;
+      return false;
     }
 
     return await navigator.storage.persisted();

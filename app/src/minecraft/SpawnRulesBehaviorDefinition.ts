@@ -6,7 +6,7 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
-import ISpawnRulesBehavior from "./ISpawnRulesBehavior";
+import ISpawnRulesBehavior, { ISpawnRulesInner } from "./ISpawnRulesBehavior";
 
 export default class SpawnRulesBehaviorDefinition {
   private _file?: IFile;
@@ -14,6 +14,7 @@ export default class SpawnRulesBehaviorDefinition {
   private _isLoaded: boolean = false;
 
   public data?: ISpawnRulesBehavior;
+  public dataInner?: ISpawnRulesInner;
 
   private _onLoaded = new EventDispatcher<SpawnRulesBehaviorDefinition, SpawnRulesBehaviorDefinition>();
 
@@ -39,6 +40,10 @@ export default class SpawnRulesBehaviorDefinition {
 
   public set id(newId: string | undefined) {
     this._id = newId;
+
+    if (this.dataInner && this.dataInner.description && newId) {
+      this.dataInner.description.identifier = newId;
+    }
   }
 
   public get shortId() {
@@ -81,7 +86,7 @@ export default class SpawnRulesBehaviorDefinition {
 
   _ensureDataInitialized() {
     if (this.data === undefined) {
-      this.data = {};
+      this.data = { "minecraft:spawn_rules": { description: { identifier: this._id ? this._id : "" } } };
     }
   }
 
@@ -89,27 +94,27 @@ export default class SpawnRulesBehaviorDefinition {
     file: IFile,
     loadHandler?: IEventHandler<SpawnRulesBehaviorDefinition, SpawnRulesBehaviorDefinition>
   ) {
-    let rbd: SpawnRulesBehaviorDefinition | undefined;
+    let srb: SpawnRulesBehaviorDefinition | undefined;
 
     if (file.manager === undefined) {
-      rbd = new SpawnRulesBehaviorDefinition();
+      srb = new SpawnRulesBehaviorDefinition();
 
-      rbd.file = file;
+      srb.file = file;
 
-      file.manager = rbd;
+      file.manager = srb;
     }
 
     if (file.manager !== undefined && file.manager instanceof SpawnRulesBehaviorDefinition) {
-      rbd = file.manager as SpawnRulesBehaviorDefinition;
+      srb = file.manager as SpawnRulesBehaviorDefinition;
 
-      if (!rbd.isLoaded && loadHandler) {
-        rbd.onLoaded.subscribe(loadHandler);
+      if (!srb.isLoaded && loadHandler) {
+        srb.onLoaded.subscribe(loadHandler);
       }
 
-      await rbd.load();
+      await srb.load();
     }
 
-    return rbd;
+    return srb;
   }
 
   persist() {
@@ -134,6 +139,12 @@ export default class SpawnRulesBehaviorDefinition {
     }
 
     this.data = StorageUtilities.getJsonObject(this._file);
+
+    this.dataInner = this.data?.["minecraft:spawn_rules"];
+
+    if (this.dataInner && this.dataInner.description) {
+      this._id = this.dataInner.description.identifier;
+    }
 
     this._isLoaded = true;
   }
