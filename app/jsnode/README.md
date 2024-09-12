@@ -1,14 +1,14 @@
-# Minecraft Creator Tools Readme
+# Minecraft Creator Tools
 
 ### Copyright (c) 2024 Mojang AB. All rights reserved.
 
-- [License](LICENSE.md)
-- [Changelog](CHANGELOG.md)
-- [Notices](NOTICE.md)
+- [License](https://aka.ms/mctlicense)
+- [GitHub](https://aka.ms/mcthomepage)
+- [Report an Issue](https://aka.ms/mctbugs)
 
-This code is currently in alpha preview.
+This toolset is currently in alpha preview.
 
-### Some sample command lines:
+### Sample command lines
 
 `npx mct`
 
@@ -31,3 +31,13 @@ Loads the project folder `d:\mycontent\myprojectfolder`, validates using the 'ad
 `npx mct validate addon -if d:\mycontent\packages\myaddon.mcaddon -show --log-verbose`
 
 Loads the project file `d:\mycontent\packages\myaddon.mcaddon`, validates using the 'addon' suite of strict tests and shows validation results on the command line. Also displays verbose logging messages.
+
+### New project creation
+
+`npx mct create`
+
+Asks a series of questions and creates a new project based on those preferences.
+
+## Trademarks
+
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks/usage/general). Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party’s policies.
