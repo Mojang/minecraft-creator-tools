@@ -25,11 +25,13 @@ export const ScriptsDefault: NpmScripts = {
     "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436",
   enablemcpreviewloopback:
     "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-424268864-5579737-879501358-346833251-474568803-887069379-4040235476",
+  buildsnippets: "just-scripts buildSnippets",
 };
 
 export const DependenciesDefault: Dependencies = {
   "@minecraft/math": "^1.4.0",
   "@minecraft/server": "^1.13.0",
+  "@minecraft/server-editor": "^0.1.0-beta.1.21.30-preview.24",
   "@minecraft/server-ui": "^1.2.0",
   "@minecraft/vanilla-data": "^1.21.20",
 };

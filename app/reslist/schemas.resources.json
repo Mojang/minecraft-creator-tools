@@ -1,7 +1,6 @@
 {
-  "url": "https://github.com/Blockception/Minecraft-bedrock-json-schemas/archive/refs/heads/main.zip",
-  "ignoreSubfolder": "Minecraft-bedrock-json-schemas-main",
-  "subfolder": "schemas",
+  "url": "https://github.com/Blockception/Minecraft-bedrock-json-schemas/archive/67326c3e50d136483444e82d00fecb0a570c9a64.zip",
+  "replaceFirstFolderWith": "schemas",
   "exclude": [
     ".git",
     ".vscode/",

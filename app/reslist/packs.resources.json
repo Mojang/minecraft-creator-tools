@@ -1,6 +1,6 @@
 {
-  "url": "https://github.com/Mojang/bedrock-samples/archive/refs/heads/preview.zip",
-  "ignoreSubfolder": "bedrock-samples-preview",
+  "url": "https://github.com/Mojang/bedrock-samples/archive/1c48a87a35864df286f5a8403a88706cdede963d.zip",
+  "ignoreFirstFolder": true,
   "exclude": [
     "documentation/",
     "scripts/",

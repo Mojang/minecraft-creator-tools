@@ -41,13 +41,15 @@ class DownloadResources {
       if (jsonObj && jsonObj.url) {
         console.log("Downloading '" + jsonObj.url + "' contents to '" + this._targetFilePath + "'");
 
-        let subfolder = jsonObj.subfolder;
+        let subFolder = jsonObj.subFolder;
 
-        if (!subfolder) {
-          subfolder = "";
+        if (!subFolder) {
+          subFolder = "";
         }
 
-        const ignoreSubfolder = jsonObj.ignoreSubfolder;
+        const ignoreSubFolder = jsonObj.ignoreSubFolder;
+        const ignoreFirstFolder = jsonObj.ignoreFirstFolder;
+        const replaceFirstFolderWith = jsonObj.replaceFirstFolderWith;
 
         let extraExcludeIfContents = jsonObj.exclude;
 
@@ -131,11 +133,33 @@ class DownloadResources {
                             for (const filename of filePathsToProcess) {
                               let destFile = filename;
 
-                              if (ignoreSubfolder && destFile.toLowerCase().startsWith(ignoreSubfolder.toLowerCase())) {
-                                destFile = destFile.substring(ignoreSubfolder.length);
+                              if (ignoreSubFolder && destFile.toLowerCase().startsWith(ignoreSubFolder.toLowerCase())) {
+                                let nextSlash = destFile.indexOf("/", ignoreSubFolder.length);
+
+                                if (nextSlash < ignoreSubFolder.length) {
+                                  nextSlash = ignoreSubFolder.length;
+                                }
+
+                                destFile = destFile.substring(nextSlash);
                               }
 
-                              const dest = path.join(me._targetFilePath, subfolder, destFile);
+                              if (ignoreFirstFolder) {
+                                let nextSlash = destFile.indexOf("/", 1);
+
+                                if (nextSlash > 1) {
+                                  destFile = destFile.substring(nextSlash);
+                                }
+                              }
+
+                              if (replaceFirstFolderWith) {
+                                let nextSlash = destFile.indexOf("/", 1);
+
+                                if (nextSlash > 1) {
+                                  destFile = path.join(replaceFirstFolderWith, destFile.substring(nextSlash));
+                                }
+                              }
+
+                              const dest = path.join(me._targetFilePath, subFolder, destFile);
                               const folderPath = me.getPath(dest);
 
                               if (!folderInfos[folderPath]) {
@@ -205,7 +229,7 @@ class DownloadResources {
                                       "Wrote " +
                                         filePathsWritten.length +
                                         " files and folders to '" +
-                                        path.join(me._targetFilePath, subfolder) +
+                                        path.join(me._targetFilePath, subFolder) +
                                         "'"
                                     );
 

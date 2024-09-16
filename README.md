@@ -35,9 +35,7 @@ In the project directory, you can run:
 Runs the app in the development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.
-
-You will also see any lint errors in the console.
+The page will reload if you make edits. You will also see any lint errors in the console.
 
 ### `npm test`
 
@@ -55,42 +53,12 @@ You can package the command-line by running `npm pack` in `toolbuild/jsn`.
 
 Builds the web app for production to the `build` folder. It correctly bundles React in production mode and optimizes the build for the best performance. The build is also minified.
 
-## Sample Command Lines
+## Command Line Tool
 
-Once packaged, you can install the command line locally via `npm install minecraft-creator-tools-<version>.tgz`. If you'd like to make Minecraft Creator Tools available across your device, you can install it globally via `npm install -g minecraft-creator-tools-<version>.tgz`. 
+Once packaged, you can install the command line locally via `npm install minecraft-creator-tools-<version>.tgz`. If you'd like to make Minecraft Creator Tools available across your device, you can install it globally via `npm install -g minecraft-creator-tools-<version>.tgz`. Minecraft Creator Tools is also available on NPM via [@minecraft/creator-tools](https://aka.ms/mctnpm).
 
-Some sample command lines:
+See the [command-line readme](./app/jsnode/README.md) for more instructions on using the command line.
 
-`npx mct`
-
-Displays default information for the Minecraft Creator Tools command line tool.
-
-### Validation
-
-`npx mct validate -i d:\mycontent\myprojectfolder`
-
-Loads the project folder `d:\mycontent\myprojectfolder` and outputs result files into the default output folder `out`.
-
-`npx mct validate -i d:\mycontent\myprojectfolder -show`
-
-Loads the project folder `d:\mycontent\myprojectfolder` and shows validation results on the command line.
-
-`npx mct validate addon -i d:\mycontent\myprojectfolder -show --log-verbose`
-
-Loads the project folder `d:\mycontent\myprojectfolder`, validates using the 'addon' suite of strict tests and shows validation results on the command line. Also displays verbose logging messages.
-
-`npx mct validate addon -if d:\mycontent\packages\myaddon.mcaddon -show --log-verbose`
-
-Loads the project file `d:\mycontent\packages\myaddon.mcaddon`, validates using the 'addon' suite of strict tests and shows validation results on the command line. Also displays verbose logging messages.
-
-
-### New project creation
-
-`npx mct create`
-
-Asks a series of questions and creates a new project based on those preferences.
-
-
-## Trademarks 
+## Trademarks
 
 This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks/usage/general). Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party’s policies.
