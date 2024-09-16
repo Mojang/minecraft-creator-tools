@@ -188,7 +188,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleConvertToClick = this._handleConvertToClick.bind(this);
     this._handleDialogDataUpdated = this._handleDialogDataUpdated.bind(this);
     this._handleGetShareableLinkClick = this._handleGetShareableLinkClick.bind(this);
-    this._handleWebLocalDeployClick = this._handleWebLocalDeployClick.bind(this);
     this._handleChangeWorldSettingsClick = this._handleChangeWorldSettingsClick.bind(this);
     this._handleDownloadMCWorldWithPacks = this._handleDownloadMCWorldWithPacks.bind(this);
     this._handleDeployDownloadWorldWithPacks = this._handleDeployDownloadWorldWithPacks.bind(this);
@@ -224,7 +223,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleExportMenuOpen = this._handleExportMenuOpen.bind(this);
     this._handleDeployMenuOpen = this._handleDeployMenuOpen.bind(this);
     this._handleViewMenuOpen = this._handleViewMenuOpen.bind(this);
-    this._handleWebLocalDeployOK = this._handleWebLocalDeployOK.bind(this);
     this._handleConvertOK = this._handleConvertOK.bind(this);
     this._handleIntegrateItemOK = this._handleIntegrateItemOK.bind(this);
     this._handleDeployWorldAndTestAssetsPackClick = this._handleDeployWorldAndTestAssetsPackClick.bind(this);
@@ -675,20 +673,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         lastDeployData: this.state.lastDeployData,
         lastExportData: this.state.lastExportData,
       });
-    }
-  }
-
-  private async _handleWebLocalDeployOK() {
-    this._handleDialogDone();
-
-    if (this.props.carto.activeMinecraft) {
-      const operId = await this.props.carto.notifyOperationStarted(
-        "Deploying project '" + this.props.project.name + "'..."
-      );
-
-      await this.props.carto.activeMinecraft.syncWithDeployment();
-
-      await this.props.carto.notifyOperationEnded(operId, "Deployed '" + this.props.project.name + "'.");
     }
   }
 
@@ -1624,42 +1608,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         lastExportFunction: this._handleGetShareableLinkClick,
         lastDeployData: this.state.lastDeployData,
         lastExportData: data,
-      });
-    }, 2);
-  }
-
-  private async _handleWebLocalDeployClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
-    if (this.props.project == null || !data || !data.icon) {
-      return;
-    }
-
-    window.setTimeout(() => {
-      this.setState({
-        activeProjectItem: this.state.activeProjectItem,
-        tentativeProjectItem: this.state.tentativeProjectItem,
-        activeReference: this.state.activeReference,
-        menuState: this.state.menuState,
-        mode: this.state.mode,
-        viewMode: this.state.viewMode,
-        allInfoSet: this.props.project.infoSet,
-        allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
-        displayFileView: this.state.displayFileView,
-        forceRawView: this.state.forceRawView,
-        filteredItems: this.state.filteredItems,
-        searchFilter: this.state.searchFilter,
-        effectMode: this.state.effectMode,
-        dragStyle: this.state.dragStyle,
-        visualSeed: this.state.visualSeed,
-        dialog: ProjectEditorDialog.webLocalDeploy,
-        dialogData: this.state.dialogData,
-        dialogActiveItem: this.state.dialogActiveItem,
-        statusAreaMode: this.state.statusAreaMode,
-        lastDeployKey: (data.icon as any).key,
-        lastExportKey: this.state.lastExportKey,
-        lastDeployFunction: this._handleWebLocalDeployClick,
-        lastExportFunction: this.state.lastExportFunction,
-        lastDeployData: data,
-        lastExportData: this.state.lastExportData,
       });
     }, 2);
   }
@@ -3010,7 +2958,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         icon: <FontAwesomeIcon icon={faBox} key={nextExportKey} className="fa-lg" />,
         content: "Add-On File",
         onClick: this._handleExportMCAddonClick,
-        title: "Exports this set of project files as a MCA, for use in Minecraft",
+        title: "Exports this set of project files as a MCAddon, for use in Minecraft",
       };
       exportMenu.push(exportKeys[nextExportKey]);
 
@@ -3090,18 +3038,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const deployKeys: { [deployOptionKey: string]: any } = {};
 
     const deployMenu: any = [];
-
-    if (CartoApp.isWeb) {
-      const deployWebLocalKey = "deployToLocalFolder";
-      deployKeys[deployWebLocalKey] = {
-        key: deployWebLocalKey + "A",
-        icon: <FontAwesomeIcon icon={faBox} key={deployWebLocalKey} className="fa-lg" />,
-        content: "Deploy to local Minecraft folder",
-        onClick: this._handleWebLocalDeployClick,
-        title: "Deploys this to a remote Dev Tools server",
-      };
-      deployMenu.push(deployKeys[deployWebLocalKey]);
-    }
 
     for (let i = 0; i < this.props.project.items.length; i++) {
       const pi = this.props.project.items[i];
