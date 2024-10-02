@@ -56,6 +56,14 @@
         "Count": 1
       }
     },
+    "errorCount": 2,
+    "internalProcessingErrorCount": 0,
+    "warningCount": 0,
+    "testSuccessCount": 1,
+    "testFailCount": 10,
+    "errorSummary": "ERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp/manifest.json) Behavior pack manifest does not define a header/min_engine_version.\r\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Behavior pack manifest does not define a header/min_engine_version.",
+    "internalProcessingErrorSummary": "",
+    "testFailSummary": "TESTFAIL: [MINENGINEVER261] Errors found with minimum engine version check.\r\nTESTFAIL: [ADDONREQ160] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Found more than one behavior pack manifest, which is not supported\r\nTESTFAIL: [ADDONREQ169] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Resource pack manifest does not have a proper dependency on the behavior pack identifier.\r\nTESTFAIL: [ADDONREQ130] Found feature or feature_rules in an add-on, which is not supported\r\nTESTFAIL: [ADDONREQ101] Found a loose file in the features folder. Should only see files in the folder features\\creatorshortname\\gamename\\: aggregate2.json\r\nTESTFAIL: [ADDONREQ101] Found a loose file in the font folder. Should only see files in the folder font\\creatorshortname\\gamename\\: glyph_E0.png\r\nTESTFAIL: [ADDONIREQ192] (/Content/behavior_packs/aop_mobsbp/features/aggregate.json) Feature definition resources are not permitted in an add-on targeted behavior pack\r\nTESTFAIL: [ADDONIREQ192] (/Content/behavior_packs/aop_mobsbp_2/features/aggregate2.json) Feature definition resources are not permitted in an add-on targeted behavior pack\r\nTESTFAIL: [ADDONIREQ161] (/Content/resource_packs/aop_mobsrp/materials/entity.material) First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem: entity_static\r\nTESTFAIL: [ADDONIREQ161] (/Content/resource_packs/aop_mobsrp/materials/entity.material) First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem: aopthisisnotagoodname:entity_flat_color_line",
     "summary": {
       "PACKSIZE": {
         "1": {

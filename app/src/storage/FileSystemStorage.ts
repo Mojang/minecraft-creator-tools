@@ -8,7 +8,11 @@ import IStorage from "./IStorage";
 export default class FileSystemStorage extends StorageBase implements IStorage {
   rootFolder: FileSystemFolder;
 
-  static readonly folderDelimiter = "/";
+  static readonly fileSystemFolderDelimiter = "/";
+
+  get folderDelimiter() {
+    return FileSystemStorage.fileSystemFolderDelimiter;
+  }
 
   constructor(handle: FileSystemDirectoryHandle, name?: string) {
     super();
@@ -19,8 +23,8 @@ export default class FileSystemStorage extends StorageBase implements IStorage {
   joinPath(pathA: string, pathB: string) {
     let fullPath = pathA;
 
-    if (!fullPath.endsWith(FileSystemStorage.folderDelimiter)) {
-      fullPath += FileSystemStorage.folderDelimiter;
+    if (!fullPath.endsWith(FileSystemStorage.fileSystemFolderDelimiter)) {
+      fullPath += FileSystemStorage.fileSystemFolderDelimiter;
     }
 
     fullPath += pathB;
@@ -29,7 +33,7 @@ export default class FileSystemStorage extends StorageBase implements IStorage {
   }
 
   static getParentFolderPath(path: string) {
-    const lastDelim = path.lastIndexOf(this.folderDelimiter);
+    const lastDelim = path.lastIndexOf(this.fileSystemFolderDelimiter);
 
     if (lastDelim < 0) {
       return path;

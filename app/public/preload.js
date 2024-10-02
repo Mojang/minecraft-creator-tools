@@ -124,6 +124,9 @@ contextBridge.exposeInMainWorld("api", {
           ipcRenderer.invoke("asyncselectDirectory", position + "|" + data);
           return;
 
+        case "asyncconvertFile":
+          return ipcRenderer.invoke("asyncconvertFile", position + "|" + data);
+
         case "asyncstartWebSocketServer":
           return ipcRenderer.invoke("asyncstartWebSocketServer", position + "|" + data);
 
@@ -187,7 +190,6 @@ contextBridge.exposeInMainWorld("api", {
         case "asyncwindowRightSide":
         case "asyncupdateIAgree":
         case "asyncgetWindowState":
-        case "asyncfsFolderExists":
         case "asyncgetDirname":
         case "asyncaugerLogin":
           return ipcRenderer.invoke(commandName, position + "|" + data);
@@ -203,6 +205,7 @@ contextBridge.exposeInMainWorld("api", {
 
           return ipcRenderer.invoke(commandName, position + "|" + data);
 
+        case "asyncfsFolderExists":
         case "asyncfsMkdir":
         case "asyncfsReaddir":
           _validateFolderPath(data);

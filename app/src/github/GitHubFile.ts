@@ -35,8 +35,8 @@ export default class GitHubFile extends FileBase implements IFile {
   get fullPath() {
     let path = this._parentFolder.fullPath;
 
-    if (!path.endsWith(GitHubStorage.folderDelimiter)) {
-      path += GitHubStorage.folderDelimiter;
+    if (!path.endsWith(GitHubStorage.slashFolderDelimiter)) {
+      path += GitHubStorage.slashFolderDelimiter;
     }
 
     path += this._name;

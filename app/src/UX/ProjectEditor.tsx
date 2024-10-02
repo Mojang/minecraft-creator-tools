@@ -82,6 +82,7 @@ import IntegrateItem from "./IntegrateItem";
 import IProjectItemSeed, { ProjectItemSeedAction } from "../app/IProjectItemSeed";
 import ProjectStandard from "../app/ProjectStandard";
 import ProjectAutogeneration from "../app/ProjectAutogeneration";
+import BrowserFolder from "../storage/BrowserFolder";
 
 interface IProjectEditorProps extends IAppProps {
   onModeChangeRequested?: (mode: AppMode) => void;
@@ -1380,17 +1381,21 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await this.props.project.save();
 
-    const persistResult = await this.ensurePersistentBrowserStorage();
+    if (this.props.project.projectFolder && this.props.project.projectFolder instanceof BrowserFolder) {
+      const persistResult = await this.ensurePersistentBrowserStorage();
 
-    if (persistResult && this.props.isPersisted) {
-      await this.props.carto.notifyOperationEnded(operId, "Saved '" + projName + "'.");
+      if (persistResult && this.props.isPersisted) {
+        await this.props.carto.notifyOperationEnded(operId, "Saved '" + projName + "'.");
+      } else {
+        await this.props.carto.notifyOperationEnded(
+          operId,
+          "Saved '" +
+            projName +
+            "' in temporary device browser storage. Keep in mind temporary device storage can go away at any time; save backups frequently."
+        );
+      }
     } else {
-      await this.props.carto.notifyOperationEnded(
-        operId,
-        "Saved '" +
-          projName +
-          "' in temporary device browser storage. Keep in mind temporary device storage can go away at any time; save backups frequently."
-      );
+      await this.props.carto.notifyOperationEnded(operId, "Saved '" + projName + "'.");
     }
   }
 
@@ -3468,15 +3473,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         onMenuOpenChange: this._handleViewMenuOpen,
       });
     } else {
-      /*
-      toolbarItems.push({
-        icon: <AddLabel isCompact={isButtonCompact} />,
-        key: "add",
-        active: true,
-        onClick: this._handleVscAddClick,
-      });*/
-
-      //      const viewMenuItems: any[] = [];
       toolbarItems.push({
         key: "itemsFocus",
         content: "Items",

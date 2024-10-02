@@ -15,8 +15,6 @@ export default class GitHubStorage extends StorageBase implements IStorage {
 
   subPath: string;
 
-  static readonly folderDelimiter = "/";
-
   constructor(manager: GitHubManager, repoName: string, ownerName: string, branch?: string, subPath: string = "") {
     super();
 
@@ -37,8 +35,8 @@ export default class GitHubStorage extends StorageBase implements IStorage {
   joinPath(pathA: string, pathB: string) {
     let fullPath = pathA;
 
-    if (!fullPath.endsWith(GitHubStorage.folderDelimiter)) {
-      fullPath += GitHubStorage.folderDelimiter;
+    if (!fullPath.endsWith(GitHubStorage.slashFolderDelimiter)) {
+      fullPath += GitHubStorage.slashFolderDelimiter;
     }
 
     fullPath += pathB;
@@ -47,7 +45,7 @@ export default class GitHubStorage extends StorageBase implements IStorage {
   }
 
   static getParentFolderPath(path: string) {
-    const lastDelim = path.lastIndexOf(this.folderDelimiter);
+    const lastDelim = path.lastIndexOf(this.slashFolderDelimiter);
 
     if (lastDelim < 0) {
       return path;

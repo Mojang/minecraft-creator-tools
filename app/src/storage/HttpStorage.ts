@@ -10,39 +10,15 @@ export default class HttpStorage extends StorageBase implements IStorage {
 
   baseUrl: string;
 
-  static readonly folderDelimiter = "/";
-
   constructor(newUrl: string) {
     super();
 
     this.baseUrl = newUrl;
 
-    if (!this.baseUrl.endsWith(HttpStorage.folderDelimiter)) {
-      this.baseUrl += HttpStorage.folderDelimiter;
+    if (!this.baseUrl.endsWith(StorageBase.slashFolderDelimiter)) {
+      this.baseUrl += StorageBase.slashFolderDelimiter;
     }
 
     this.rootFolder = new HttpFolder(this, null, "");
-  }
-
-  joinPath(pathA: string, pathB: string) {
-    let fullPath = pathA;
-
-    if (!fullPath.endsWith(HttpStorage.folderDelimiter)) {
-      fullPath += HttpStorage.folderDelimiter;
-    }
-
-    fullPath += pathB;
-
-    return fullPath;
-  }
-
-  static getParentFolderPath(path: string) {
-    const lastDelim = path.lastIndexOf(this.folderDelimiter);
-
-    if (lastDelim < 0) {
-      return path;
-    }
-
-    return path.substring(0, lastDelim);
   }
 }

@@ -74,20 +74,12 @@
   padding-bottom: 8px;
 }
 
-.df-fieldWrap .ui-form__checkbox {
-  padding-left: 35px;
-}
-
 .df-fieldWrap .ui-form__label {
   padding-bottom: 4px;
   vertical-align: bottom;
   padding-right: 14px;
   display: inline-block !important;
   min-width: 136px;
-}
-
-.df-fieldWrap input {
-  max-width: 136px;
 }
 
 .df-fieldWrap .ui-dropdown {
@@ -98,9 +90,13 @@
   width: 235px;
 }
 
+.df-elementBinTitle {
+  padding-bottom: 5px;
+}
+
 .df-cardWrapper {
   padding: 5px 10px 10px 10px;
-  border: solid 1px black;
+  border: outset 1px black;
   margin-bottom: 4px;
   margin-top: 4px;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 0.2rem 0.4rem -0.075rem;
@@ -115,8 +111,38 @@
   grid-template-columns: 180px 80px;
 }
 
+.df-sliderSet .ui-form__input {
+  margin-left: 10px;
+}
+
 .df-elementTitle {
   padding-bottom: 3px;
+}
+
+.df-elementBin {
+  padding: 10px;
+  margin-left: 10px;
+  border: inset 1px;
+}
+
+.df-stringArray {
+  display: grid;
+  grid-template-columns: 115px 1fr;
+}
+
+.df-stringArrayTitle {
+  grid-column: 1;
+  padding-top: 6px;
+}
+
+.df-stringArrayData {
+  grid-column: 2;
+}
+
+.df-stringArrayData .ui-form__input {
+  width: 300px;
+  max-width: 300px;
+  margin-bottom: 1px;
 }
 
 .df-elementTitleInvalid {

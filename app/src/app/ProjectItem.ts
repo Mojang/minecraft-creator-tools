@@ -311,7 +311,7 @@ export default class ProjectItem {
         return "behavior/blocks/blocks.json";
       case ProjectItemType.dialogueBehaviorJson:
         return "behavior/dialogue/dialogue.json";
-      case ProjectItemType.entityTypeBehaviorJson:
+      case ProjectItemType.entityTypeBehavior:
         return "behavior/entities/entities.json";
       case ProjectItemType.blocksCatalogResourceJson:
         return "resource/blocks.json";
@@ -887,7 +887,7 @@ export default class ProjectItem {
             this.errorStatus = ProjectItemErrorStatus.none;
           }
         }
-      } else if (this.itemType === ProjectItemType.entityTypeBehaviorJson) {
+      } else if (this.itemType === ProjectItemType.entityTypeBehavior) {
         await EntityTypeDefinition.ensureOnFile(this._file);
 
         this._fireLoadedEvent();

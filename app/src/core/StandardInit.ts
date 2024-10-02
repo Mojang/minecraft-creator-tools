@@ -7,13 +7,13 @@ export const minecraftToolDarkTheme = {
     colorScheme: {
       brand: {
         background: "#3c8527", // accent background for things like buttons. complemented with fore*4
-        background1: "#313233", // main outermost background. in a dark theme, this should be dark. complemented with fore*1
-        background2: "#48494a",
-        background3: "#5a5b5c",
+        background1: "#312f2d", // main outermost background. in a dark theme, this should be dark. complemented with fore*1
+        background2: "#484644",
+        background3: "#5a5856",
         background4: "#8f8b89",
         background5: "#5d7850", // subtle accent background
         background6: "#040404", // subtle theme background.  complemented with fore*6
-        foreground: "red",
+        foreground: "#5ca547",
         foreground1: "#f8f8f8", // main foreground color. in a dark theme, this should be light.
         foreground2: "#ffffff",
         foreground3: "#ffffff",
@@ -103,7 +103,7 @@ export const minecraftToolLightTheme = {
         background4: "#7b7876",
         background5: "#52a435", // subtle accent background
         background6: "#b3b3b3", // subtle theme background.  complemented with fore*6
-        foreground: "red",
+        foreground: "#3b9329",
         foreground1: "#1a1a1a", // main foreground color.  in a dark theme, this should be light.
         foreground2: "#1a1a1a", // complement foreground color
         foreground3: "#1a1a1a",

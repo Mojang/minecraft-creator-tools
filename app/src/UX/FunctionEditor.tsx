@@ -16,6 +16,7 @@ import Project from "../app/Project";
 interface IFunctionEditorProps {
   file?: IFile;
   project?: Project;
+  title?: string;
   theme: ThemeInput<any>;
   isCommandEditor: boolean;
   initialContent?: string;
@@ -28,7 +29,7 @@ interface IFunctionEditorProps {
   preferredTextSize: number;
   carto: Carto;
   onFilterTextChanged?: (newFilterText: string) => void;
-  onUpdatePreferredTextSize: (newSize: number) => void;
+  onUpdatePreferredTextSize?: (newSize: number) => void;
   onUpdateContent?: (newContent: string) => void;
 }
 
@@ -236,7 +237,11 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
     const val = this.editor.getOption(monaco.editor.EditorOptions.fontSize.id);
 
     if (val !== undefined) {
-      this.props.onUpdatePreferredTextSize(Math.round(val));
+      if (this.props.onUpdatePreferredTextSize) {
+        this.props.onUpdatePreferredTextSize(Math.round(val));
+      } else {
+        this.props.carto.preferredTextSize = Math.round(val);
+      }
     }
   }
 
@@ -477,7 +482,7 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
       toolBarArea = (
         <div className="mcfe-toolBarArea">
           <div className="mcfe-title">
-            <span>{this.props.isCommandEditor ? "Commands" : "Function"}</span>
+            <span>{this.props.title ? this.props.title : this.props.isCommandEditor ? "Commands" : "Function"}</span>
           </div>
           <div className="mcfe-toolbar">
             <Toolbar aria-label="Function editor toolbar" items={toolbarItems} />

@@ -373,7 +373,7 @@ export default class ProjectAutogeneration {
       const candItem = items[i];
 
       if (
-        candItem.itemType === ProjectItemType.entityTypeBehaviorJson &&
+        candItem.itemType === ProjectItemType.entityTypeBehavior &&
         candItem.projectPath !== null &&
         candItem.projectPath !== undefined
       ) {

@@ -179,6 +179,40 @@ export default abstract class FileBase implements IFile {
     return this._content !== null;
   }
 
+  getRelativePathFor(file: IFile): string | undefined {
+    if (file.parentFolder.storage !== this.parentFolder.storage) {
+      return undefined;
+    }
+    const foldersByPath: { [path: string]: IFolder } = {};
+    let targetParentFolder: IFolder | null = file.parentFolder;
+
+    while (targetParentFolder) {
+      foldersByPath[targetParentFolder.storageRelativePath] = targetParentFolder;
+      targetParentFolder = targetParentFolder.parentFolder;
+    }
+
+    let myParentFolder: IFolder | null = this.parentFolder;
+
+    let relativePath = "." + myParentFolder.storage.folderDelimiter;
+    while (myParentFolder && foldersByPath[myParentFolder.storageRelativePath] === undefined) {
+      relativePath += ".." + myParentFolder.storage.folderDelimiter;
+
+      myParentFolder = myParentFolder.parentFolder;
+    }
+
+    if (!myParentFolder) {
+      return undefined;
+    }
+
+    const folderRelativePath = file.getFolderRelativePath(myParentFolder);
+
+    if (!folderRelativePath) {
+      return undefined;
+    }
+
+    return relativePath + StorageUtilities.ensureNotStartsWithDelimiter(folderRelativePath);
+  }
+
   abstract deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean>;
   abstract moveTo(newStorageRelativePath: string): Promise<boolean>;
   abstract loadContent(force?: boolean): Promise<Date>;

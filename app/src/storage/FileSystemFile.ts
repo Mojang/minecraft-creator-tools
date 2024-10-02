@@ -41,7 +41,7 @@ export default class FileSystemFile extends FileBase implements IFile {
   }
 
   get fullPath(): string {
-    return this._parentFolder.fullPath + FileSystemStorage.folderDelimiter + this.name;
+    return this._parentFolder.fullPath + FileSystemStorage.fileSystemFolderDelimiter + this.name;
   }
 
   get size(): number {

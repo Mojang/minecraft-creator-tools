@@ -237,7 +237,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       return;
     }
 
-    this.props.project.defaultResourcePackUniqueId = data.value;
+    this.props.project.setDefaultResourcePackUniqueIdAndUpdateDependencies(data.value);
   }
 
   _handleScriptUuidChanged(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
@@ -259,7 +259,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
   async _rescanFiles() {
     this.props.project.resetProjectItems();
     await this.props.project.inferProjectItemsFromFilesRootFolder(true);
-    this.props.carto.notifyStatusUpdate("Rescanned " + this.props.project.projectFolder?.fullPath);
+    await this.props.carto.notifyStatusUpdate("Rescanned " + this.props.project.projectFolder?.fullPath);
     this.forceUpdate();
 
     if (this.props.onContentUpdated) {
@@ -340,11 +340,11 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
   _convertJavaToBedrock() {}
 
   _createNewResourcePackUniqueId() {
-    this.props.project.defaultResourcePackUniqueId = Utilities.createUuid();
+    this.props.project.setDefaultResourcePackUniqueIdAndUpdateDependencies(Utilities.createUuid());
   }
 
   _createNewBehaviorPackUniqueId() {
-    this.props.project.defaultBehaviorPackUniqueId = Utilities.createUuid();
+    this.props.project.setDefaultBehaviorPackUniqueIdAndUpdateDependencies(Utilities.createUuid());
   }
 
   _createNewDataUniqueId() {

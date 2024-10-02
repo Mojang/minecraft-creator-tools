@@ -4,7 +4,7 @@
 import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import IModelGeometry from "./IModelGeometry";
+import IModelGeometry, { IGeometry } from "./IModelGeometry";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 
@@ -12,7 +12,10 @@ export default class ModelGeometryDefinition {
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
-  public definition?: IModelGeometry;
+  public wrapper?: IModelGeometry;
+  public definitions: IGeometry[] = [];
+
+  private _identifiers: string[] = [];
 
   private _onLoaded = new EventDispatcher<ModelGeometryDefinition, ModelGeometryDefinition>();
 
@@ -32,17 +35,109 @@ export default class ModelGeometryDefinition {
     return this._onLoaded.asEvent();
   }
 
-  public get identifier(): string | undefined {
+  public get identifiers(): string[] {
+    if (this._identifiers) {
+      return this._identifiers;
+    }
+
     if (
-      !this.definition ||
-      !this.definition["minecraft:geometry"] ||
-      this.definition["minecraft:geometry"].length !== 1 ||
-      !this.definition["minecraft:geometry"][0].description
+      !this.wrapper ||
+      !this.wrapper["minecraft:geometry"] ||
+      this.wrapper["minecraft:geometry"].length !== 1 ||
+      !this.wrapper["minecraft:geometry"][0].description
     ) {
+      return [];
+    }
+
+    const ids: string[] = [];
+
+    for (const def of this.definitions) {
+      if (def.description && def.description.identifier) {
+        ids.push(def.description.identifier);
+      }
+    }
+
+    return ids;
+  }
+
+  public getVisibleBoundsWidth(defIndex: number): number | undefined {
+    if (defIndex < 0 || defIndex >= this.definitions.length) {
+      return;
+    }
+
+    if (!this.definitions[defIndex]) {
       return undefined;
     }
 
-    return this.definition["minecraft:geometry"][0].description.identifier;
+    if (this.definitions[defIndex].description) {
+      return this.definitions[defIndex].description.visible_bounds_width;
+    }
+
+    return this.definitions[defIndex].visible_bounds_width;
+  }
+
+  public getVisibleBoundsHeight(defIndex: number): number | undefined {
+    if (defIndex < 0 || defIndex >= this.definitions.length) {
+      return;
+    }
+
+    if (!this.definitions[defIndex]) {
+      return undefined;
+    }
+
+    if (this.definitions[defIndex].description) {
+      return this.definitions[defIndex].description.visible_bounds_height;
+    }
+
+    return this.definitions[defIndex].visible_bounds_height;
+  }
+
+  public getVisibleBoundsOffset(defIndex: number): number[] | undefined {
+    if (defIndex < 0 || defIndex >= this.definitions.length) {
+      return;
+    }
+
+    if (!this.definitions[defIndex]) {
+      return undefined;
+    }
+
+    if (this.definitions[defIndex].description) {
+      return this.definitions[defIndex].description.visible_bounds_offset;
+    }
+
+    return this.definitions[defIndex].visible_bounds_offset;
+  }
+
+  public getTextureWidth(defIndex: number): number | undefined {
+    if (defIndex < 0 || defIndex >= this.definitions.length) {
+      return;
+    }
+
+    if (!this.definitions[defIndex]) {
+      return undefined;
+    }
+
+    if (this.definitions[defIndex].description) {
+      return this.definitions[defIndex].description.texture_width;
+    }
+
+    return this.definitions[defIndex].texturewidth;
+  }
+
+  public getTextureHeight(defIndex: number): number | undefined {
+    if (defIndex < 0 || defIndex >= this.definitions.length) {
+      return;
+    }
+
+    if (!this.definitions[defIndex]) {
+      return undefined;
+    }
+
+    if (this.definitions[defIndex].description) {
+      return this.definitions[defIndex].description.texture_height;
+    }
+
+    return this.definitions[defIndex].textureheight;
   }
 
   static async ensureOnFile(
@@ -83,11 +178,11 @@ export default class ModelGeometryDefinition {
   }
 
   public getFormatVersion(): number[] | undefined {
-    if (!this.definition || !this.definition.format_version) {
+    if (!this.wrapper || !this.wrapper.format_version) {
       return undefined;
     }
 
-    return MinecraftUtilities.getVersionArrayFrom(this.definition.format_version);
+    return MinecraftUtilities.getVersionArrayFrom(this.wrapper.format_version);
   }
 
   persist() {
@@ -95,14 +190,14 @@ export default class ModelGeometryDefinition {
       return;
     }
 
-    const pjString = JSON.stringify(this.definition, null, 2);
+    const pjString = JSON.stringify(this.wrapper, null, 2);
 
     this._file.setContent(pjString);
   }
 
   public ensureDefinition(name: string) {
-    if (!this.definition) {
-      this.definition = {
+    if (!this.wrapper) {
+      this.wrapper = {
         format_version: "1.12.0",
         "minecraft:geometry": [
           {
@@ -142,7 +237,29 @@ export default class ModelGeometryDefinition {
       return;
     }
 
-    this.definition = StorageUtilities.getJsonObject(this._file);
+    this.wrapper = StorageUtilities.getJsonObject(this._file);
+
+    this.definitions = [];
+
+    if (this.wrapper && this.wrapper["minecraft:geometry"]) {
+      for (const def of this.wrapper["minecraft:geometry"]) {
+        this.definitions.push(def);
+      }
+    } else if (this.wrapper) {
+      // look for 1.8.0 style geometries:
+      // {
+      //   "format_version": ...
+      //   "geometry.foobar": {}
+      // }
+
+      for (const elt in this.wrapper) {
+        if (elt !== "format_version" && elt.startsWith("geometry.") && (this.wrapper as any)[elt]) {
+          this._identifiers.push(elt);
+
+          this.definitions.push((this.wrapper as any)[elt]);
+        }
+      }
+    }
 
     this._isLoaded = true;
   }

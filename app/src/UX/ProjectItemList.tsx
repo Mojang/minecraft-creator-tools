@@ -12,7 +12,6 @@ import {
 import ProjectItem from "./../app/ProjectItem";
 import { ProjectEditorMode } from "./ProjectEditorUtilities";
 import StorageUtilities from "./../storage/StorageUtilities";
-
 import {
   SplitButton,
   Dialog,
@@ -36,7 +35,6 @@ import NewEntityType from "./NewEntityType";
 import ProjectUtilities, { NewEntityTypeAddMode } from "../app/ProjectUtilities";
 import IGitHubInfo from "../app/IGitHubInfo";
 import ProjectItemManager from "../app/ProjectItemManager";
-
 import "./ProjectItemList.css";
 import Utilities from "../core/Utilities";
 import NewBlockType from "./NewBlockType";
@@ -52,6 +50,7 @@ import IProjectItemSeed from "../app/IProjectItemSeed";
 import NewItem from "./NewItem";
 import ProjectInfoItem from "../info/ProjectInfoItem";
 import { AnnotatedValueSet, IAnnotatedValue } from "../core/AnnotatedValue";
+import BlockbenchModel from "./../integrations/BlockbenchModel";
 
 export enum EntityTypeCommand {
   select,
@@ -762,6 +761,36 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
   }
 
+  async downloadBbmodel(projectItem: ProjectItem) {
+    if (projectItem.storageType === ProjectItemStorageType.singleFile) {
+      const file = projectItem.file;
+
+      if (file) {
+        await file.loadContent();
+
+        if (file.content) {
+          const def = await BlockbenchModel.exportModel(projectItem);
+
+          if (def) {
+            const defStr = JSON.stringify(def);
+            if (defStr) {
+              saveAs(
+                new Blob([defStr], { type: "application/json" }),
+                StorageUtilities.getBaseFromName(projectItem.name) + ".bbmodel"
+              );
+
+              return;
+            }
+          }
+        }
+      }
+    }
+
+    await this.props.carto.notifyStatusUpdate(
+      "Could not export a Blockbench model for '" + projectItem.projectPath + "'"
+    );
+  }
+
   _contextMenuClick(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
     if (data !== undefined && data.tag !== undefined && this.props.project !== null) {
       const projectItem = this.props.project.getItemByProjectPath(data.tag);
@@ -769,6 +798,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       if (projectItem) {
         if (data.content === "Download") {
           this.downloadProjectItem(projectItem);
+        }
+        if (data.content === "Download Blockbench Model") {
+          this.downloadBbmodel(projectItem);
         } else if (data.content === "Rename") {
           this.setState({
             activeItem: projectItem,
@@ -1087,6 +1119,14 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           tag: projectItem.projectPath,
         },
       ];
+
+      if (projectItem.itemType === ProjectItemType.modelGeometryJson) {
+        itemMenu.push({
+          key: "downloadBbmodel",
+          content: "Download Blockbench Model",
+          tag: projectItem.projectPath,
+        });
+      }
 
       let path = "";
 
@@ -1471,6 +1511,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       projectItem.itemType === ProjectItemType.animationControllerBehaviorJson || // this should be rendered by entity type editor
       projectItem.itemType === ProjectItemType.animationBehaviorJson || // this should be rendered by entity type editor
       projectItem.itemType === ProjectItemType.animationResourceJson || // this should be model editor
+      projectItem.itemType === ProjectItemType.renderControllerJson || // this should be model editor
       projectItem.itemType === ProjectItemType.animationControllerResourceJson || // this should be model editor
       projectItem.itemType === ProjectItemType.docInfoJson
     ) {
@@ -1495,6 +1536,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         projectItem.itemType === ProjectItemType.behaviorPackManifestJson ||
         projectItem.itemType === ProjectItemType.resourcePackManifestJson ||
         projectItem.itemType === ProjectItemType.skinPackManifestJson ||
+        projectItem.itemType === ProjectItemType.ninesliceJson ||
         projectItem.itemType === ProjectItemType.worldTemplateManifestJson) &&
       this.props.project.editPreference === ProjectEditPreference.summarized
     ) {
@@ -1763,7 +1805,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       toolbarItems.push({
         icon: (
-          <EyeSlashLabel theme={this.props.theme} isSelected={this.props.project?.showHiddenItems} isCompact={true} />
+          <EyeSlashLabel theme={this.props.theme} isSelected={!this.props.project?.showHiddenItems} isCompact={true} />
         ),
         key: "pil-hideShowSlash",
         kind: "toggle",

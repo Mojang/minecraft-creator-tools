@@ -3,10 +3,12 @@
 
 import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
-import { IAddonManifestHeader, IResourcePackManifest } from "./IAddonManifest";
+import { IAddonManifestHeader, IAddonMetadata, IResourcePackManifest } from "./IAddonManifest";
 import Utilities from "../core/Utilities";
 import Project from "../app/Project";
 import StorageUtilities from "../storage/StorageUtilities";
+import { ProjectItemType } from "../app/IProjectItemData";
+import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
 
 export default class ResourceManifestDefinition {
   private _file?: IFile;
@@ -55,12 +57,30 @@ export default class ResourceManifestDefinition {
     return this.definition.header.pack_scope;
   }
 
+  public set packScope(newValue: "world" | "global" | "any" | undefined) {
+    if (!this.definition || !this.definition.header) {
+      return;
+    }
+
+    this.definition.header.pack_scope = newValue;
+  }
+
   public get productType() {
     if (!this.definition || !this.definition.metadata) {
       return undefined;
     }
 
     return this.definition.metadata.product_type;
+  }
+
+  public set productType(value: "" | "addon" | undefined) {
+    this.ensureMetadata();
+
+    if (!this.definition || !this.definition.metadata) {
+      return;
+    }
+
+    this.definition.metadata.product_type = value;
   }
 
   public get name() {
@@ -93,6 +113,16 @@ export default class ResourceManifestDefinition {
     this._id = newId;
   }
 
+  public async setUuid(newId: string | undefined, project?: Project) {
+    const oldUuid = this.uuid;
+
+    this.uuid = newId;
+
+    if (newId && oldUuid && project) {
+      await ResourceManifestDefinition.setNewResourcePackId(project, newId, oldUuid);
+    }
+  }
+
   public ensureHeaderForProject(project: Project): IAddonManifestHeader {
     return this.ensureHeader(project.title, project.description);
   }
@@ -109,6 +139,83 @@ export default class ResourceManifestDefinition {
     const header = this.ensureHeaderForProject(project);
 
     header.min_engine_version = versionArray;
+  }
+
+  static async setNewResourcePackId(project: Project, newResourcePackId: string, oldResourcePackId: string) {
+    const itemsCopy = project.getItemsCopy();
+    let setResourcePack = false;
+
+    for (let i = 0; i < itemsCopy.length; i++) {
+      const pi = itemsCopy[i];
+
+      if (pi.file) {
+        if (pi.itemType === ProjectItemType.resourcePackManifestJson && !setResourcePack) {
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.file);
+
+          if (rpManifestJson) {
+            if (rpManifestJson.uuid && Utilities.uuidEqual(rpManifestJson.uuid, oldResourcePackId)) {
+              rpManifestJson.uuid = newResourcePackId;
+              setResourcePack = true;
+              await rpManifestJson.save();
+            } else if (rpManifestJson.definition && rpManifestJson.definition.dependencies) {
+              const deps = rpManifestJson.definition?.dependencies;
+
+              for (const dep of deps) {
+                if (dep.uuid === oldResourcePackId) {
+                  dep.uuid = newResourcePackId;
+                }
+              }
+              await rpManifestJson.save();
+            }
+          }
+        } else if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
+          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.file);
+
+          if (bpManifestJson) {
+            if (bpManifestJson.definition && bpManifestJson.definition.dependencies) {
+              const deps = bpManifestJson.definition?.dependencies;
+
+              for (const dep of deps) {
+                if (dep.uuid === oldResourcePackId) {
+                  dep.uuid = newResourcePackId;
+                }
+              }
+
+              await bpManifestJson.save();
+            }
+          }
+        }
+      }
+    }
+  }
+
+  public hasAddonProperties(): boolean {
+    return this.productType === "addon" && this.packScope === "world";
+  }
+
+  public async setAddonProperties() {
+    this.productType = "addon";
+    this.packScope = "world";
+
+    await this.save();
+  }
+
+  public randomizeModuleUuids(newDataModuleId?: string, oldDataModuleId?: string) {
+    if (!this.definition) {
+      return;
+    }
+
+    for (let i = 0; i < this.definition.modules.length; i++) {
+      const mod = this.definition.modules[i];
+
+      if (mod.uuid) {
+        if (oldDataModuleId && newDataModuleId && (mod.uuid === oldDataModuleId || mod.uuid === newDataModuleId)) {
+          mod.uuid = newDataModuleId;
+        } else {
+          mod.uuid = Utilities.createUuid();
+        }
+      }
+    }
   }
 
   static async ensureOnFile(
@@ -180,6 +287,18 @@ export default class ResourceManifestDefinition {
     return this.definition.header;
   }
 
+  public ensureMetadata(): IAddonMetadata | undefined {
+    if (!this.definition) {
+      return undefined;
+    }
+
+    if (!this.definition.metadata) {
+      this.definition.metadata = {};
+    }
+
+    return this.definition.metadata;
+  }
+
   public getDefaultHeader(name: string, description: string) {
     return {
       name: name,
@@ -210,8 +329,6 @@ export default class ResourceManifestDefinition {
     if (this._file.content === null || this._file.content instanceof Uint8Array) {
       return;
     }
-
-    this.uuid = this._file.name;
 
     this.definition = StorageUtilities.getJsonObject(this._file);
 

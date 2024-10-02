@@ -160,7 +160,7 @@ export default class EntityTypeResourceEditor extends Component<
     }
 
     const definitionFile = this.state.fileToEdit.manager as EntityTypeResourceDefinition;
-    const def = definitionFile.dataWrapper;
+    const def = definitionFile._dataWrapper;
 
     if (def === undefined) {
       return <div>Loading definition...</div>;

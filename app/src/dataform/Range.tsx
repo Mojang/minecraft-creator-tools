@@ -168,6 +168,7 @@ export default class Range extends Component<IRangeProps, IRangeState> {
         {header}
         <div className="rng-data">
           <div className="rng-inner">
+            <span className="rng-intro">Random number between </span>
             <div className="rng-cell">
               <FormInput
                 id="min"
@@ -177,6 +178,7 @@ export default class Range extends Component<IRangeProps, IRangeState> {
                 onChange={this._handleMinChange}
               />
             </div>
+            <span className="rng-joiner">and</span>
             <div className="rng-cell">
               <FormInput
                 id="max"

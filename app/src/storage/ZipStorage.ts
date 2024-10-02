@@ -16,8 +16,6 @@ export default class ZipStorage extends StorageBase implements IStorage {
   modified: Date | null = null;
   lastLoadedOrSaved: Date | null = null;
 
-  static readonly folderDelimiter = "/";
-
   get updatedSinceLoad() {
     if (this.modified === null || (this.lastLoadedOrSaved === null && this.modified === null)) {
       return false;
@@ -113,8 +111,8 @@ export default class ZipStorage extends StorageBase implements IStorage {
   joinPath(pathA: string, pathB: string) {
     let fullPath = pathA;
 
-    if (!fullPath.endsWith(ZipStorage.folderDelimiter)) {
-      fullPath += ZipStorage.folderDelimiter;
+    if (!fullPath.endsWith(StorageBase.slashFolderDelimiter)) {
+      fullPath += StorageBase.slashFolderDelimiter;
     }
 
     fullPath += pathB;

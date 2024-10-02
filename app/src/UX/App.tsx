@@ -17,7 +17,7 @@ import MCWorld from "../minecraft/MCWorld";
 import ProjectItem from "../app/ProjectItem";
 import ZipStorage from "../storage/ZipStorage";
 import ProjectUtilities from "../app/ProjectUtilities";
-import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
+import { LocalFolderType } from "./LocalGalleryCommand";
 import WebUtilities from "./WebUtilities";
 import ProjectEditorUtilities, { ProjectEditorMode } from "./ProjectEditorUtilities";
 import HttpStorage from "../storage/HttpStorage";
@@ -215,8 +215,6 @@ export default class App extends Component<AppProps, AppState> {
         } else {
           this.state = newState;
         }
-
-        // Log.debug("Setting state with new project '" + newProject.name + "'");
       }
     }
   }
@@ -372,9 +370,15 @@ export default class App extends Component<AppProps, AppState> {
       if (firstSlash > 1) {
         const openToken = openQuery.substring(0, firstSlash).toLowerCase();
 
-        const openData = openQuery.substring(firstSlash + 1, openQuery.length);
+        let openData = openQuery.substring(firstSlash + 1, openQuery.length);
 
         if (openToken === "gp") {
+          const lastPeriod = openData.lastIndexOf(".");
+
+          if (lastPeriod > 0) {
+            openData = openData.substring(lastPeriod);
+          }
+
           this._ensureProjectFromGalleryId(openData, updateContent);
         }
       }
@@ -708,6 +712,7 @@ export default class App extends Component<AppProps, AppState> {
         proj.originalGitHubRepoName === gitHubRepoName &&
         proj.originalGitHubBranch === gitHubBranch &&
         proj.originalGitHubFolder === gitHubFolder &&
+        (sampleId === undefined || proj.originalSampleId === sampleId) &&
         updateContent === undefined
       ) {
         await proj.ensureInflated();
@@ -1228,14 +1233,6 @@ export default class App extends Component<AppProps, AppState> {
           }
         }
       }
-    }
-  }
-
-  private _handleLocalGalleryCommand(command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) {
-    switch (command) {
-      case LocalGalleryCommand.ensureAndOpenProjectFromFolder:
-        this._newProjectFromMinecraftFolder(folderType, folder);
-        break;
     }
   }
 

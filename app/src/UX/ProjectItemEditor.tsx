@@ -282,7 +282,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           );
         } else if (
           file.type === "json" &&
-          projItem.itemType === ProjectItemType.entityTypeBehaviorJson &&
+          projItem.itemType === ProjectItemType.entityTypeBehavior &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
           Log.verbose("Showing entity type editor for '" + file.storageRelativePath + "'");

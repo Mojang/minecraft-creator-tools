@@ -110,11 +110,12 @@ export default class DataFormEditor extends Component<IDataFormEditorProps, IDat
     return (
       <div
         className="dfe-area"
+        key="dfeArea"
         style={{
           minHeight: formHeight,
           maxHeight: formHeight,
-          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-          color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+          color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
         }}
       >
         <div className="dfe-header">{dform.id}</div>

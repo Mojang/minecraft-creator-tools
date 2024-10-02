@@ -6,7 +6,7 @@ import Carto from "../app/Carto";
 import NodeFile from "../local/NodeFile";
 import StorageUtilities from "../storage/StorageUtilities";
 import NodeStorage from "../local/NodeStorage";
-import IProjectInfoData from "../info/IProjectInfoData";
+import IProjectInfoData, { ProjectInfoSuite } from "../info/IProjectInfoData";
 import Project from "../app/Project";
 import IProjectMetaState from "./IProjectMetaState";
 import { expose } from "threads/worker";
@@ -14,6 +14,7 @@ import CartoApp, { HostType } from "../app/CartoApp";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { InfoItemType } from "../info/IInfoItemData";
 import LocalEnvironment from "../local/LocalEnvironment";
+import ProjectUtilities from "../app/ProjectUtilities";
 
 let carto: Carto | undefined;
 let localEnv: LocalEnvironment | undefined;
@@ -122,7 +123,7 @@ async function validate(
 
         project.dispose();
 
-        return metaState;
+        return [metaState];
       }
     }
   }
@@ -143,24 +144,27 @@ async function validateAndDisposeProject(
   suite?: string,
   outputMci?: boolean,
   outputType?: OutputType
-): Promise<IProjectMetaState> {
+): Promise<IProjectMetaState[]> {
   Log.verbose("Validating '" + project.name + "'" + (suite ? " with suite '" + suite + "'" : "") + ".");
-
-  const csvHeader = ProjectInfoSet.CommonCsvHeader;
 
   await project.inferProjectItemsFromFiles();
 
   let pis: ProjectInfoSet | undefined;
 
+  let suiteInst: ProjectInfoSuite | undefined;
+
   if (!suite) {
     pis = project.infoSet;
   } else {
-    pis = new ProjectInfoSet(project, ProjectInfoSet.getSuiteFromString(suite));
+    suiteInst = ProjectInfoSet.getSuiteFromString(suite);
+    pis = new ProjectInfoSet(project, suiteInst);
   }
 
   await pis.generateForProject();
 
   const pisData = pis.getDataObject();
+
+  const metaStates: IProjectMetaState[] = [];
 
   const projectSet = {
     projectContainerName: project.containerName,
@@ -168,7 +172,10 @@ async function validateAndDisposeProject(
     projectName: project.name,
     projectTitle: project.title,
     infoSetData: pisData,
+    suite: suiteInst,
   };
+
+  metaStates.push(projectSet);
 
   pis.disconnectFromProject();
 
@@ -192,10 +199,76 @@ async function validateAndDisposeProject(
     }
   }
 
+  try {
+    await outputResults(projectSet, pis, "", outputStorage, mcrJsonFile, outputMci, outputType);
+  } catch (e) {
+    Log.error(e);
+  }
+
+  // run derivative suites if no specific suite specified
+  if (!suite || suite === "all") {
+    const isAddon = await ProjectUtilities.getIsAddon(project);
+
+    if (isAddon) {
+      pis = new ProjectInfoSet(project, ProjectInfoSuite.addOn);
+
+      await pis.generateForProject();
+
+      const projectSet = {
+        projectContainerName: project.containerName,
+        projectPath: project.projectFolder?.storageRelativePath,
+        projectName: project.name,
+        projectTitle: project.title,
+        infoSetData: pis.getDataObject(),
+        suite: ProjectInfoSuite.addOn,
+      };
+
+      metaStates.push(projectSet);
+
+      await outputResults(projectSet, pis, "addon", outputStorage, undefined);
+    }
+
+    const shouldRunPlatformVersion = (pisData.info as any)["CWave"] !== undefined;
+
+    if (shouldRunPlatformVersion) {
+      pis = new ProjectInfoSet(project, ProjectInfoSuite.currentPlatformVersions);
+
+      await pis.generateForProject();
+
+      const projectSet = {
+        projectContainerName: project.containerName,
+        projectPath: project.projectFolder?.storageRelativePath,
+        projectName: project.name,
+        projectTitle: project.title,
+        infoSetData: pis.getDataObject(),
+        suite: ProjectInfoSuite.currentPlatformVersions,
+      };
+
+      metaStates.push(projectSet);
+
+      await outputResults(projectSet, pis, "currentplatform", outputStorage, undefined);
+    }
+  }
+
+  project.dispose();
+
+  return metaStates;
+}
+
+async function outputResults(
+  projectSet: IProjectMetaState,
+  pis: ProjectInfoSet,
+  fileNameModifier: string,
+  outputStorage: NodeStorage | undefined,
+  mcrJsonFile: NodeFile | undefined,
+  outputMci?: boolean,
+  outputType?: OutputType
+) {
   if (outputStorage) {
     if (outputType !== OutputType.noReports) {
       const reportHtmlFile = outputStorage.rootFolder.ensureFile(
         StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(projectSet.projectContainerName)) +
+          fileNameModifier +
           ".report.html"
       );
 
@@ -213,6 +286,7 @@ async function validateAndDisposeProject(
 
       const mciContentFile = indexFolder.ensureFile(
         StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(projectSet.projectContainerName)) +
+          fileNameModifier +
           ".mci.json"
       );
 
@@ -228,12 +302,13 @@ async function validateAndDisposeProject(
     if (outputType !== OutputType.noReports) {
       const csvFile = outputStorage.rootFolder.ensureFile(
         StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(projectSet.projectContainerName)) +
+          fileNameModifier +
           ".csv"
       );
 
       const pisLines = pis.getItemCsvLines();
 
-      const csvContent = csvHeader + "\r\n" + pisLines.join("\n");
+      const csvContent = ProjectInfoSet.CommonCsvHeader + "\r\n" + pisLines.join("\n");
 
       csvFile.setContent(csvContent);
 
@@ -241,19 +316,15 @@ async function validateAndDisposeProject(
     }
 
     if (mcrJsonFile) {
-      if (pisData.index) {
-        pisData.index = undefined;
+      if (projectSet.infoSetData.index) {
+        projectSet.infoSetData.index = undefined;
       }
 
-      const mcrContent = JSON.stringify(pisData, null, 2);
+      const mcrContent = JSON.stringify(projectSet.infoSetData, null, 2);
 
       mcrJsonFile.setContent(mcrContent);
 
       mcrJsonFile.saveContent();
     }
   }
-
-  project.dispose();
-
-  return projectSet;
 }

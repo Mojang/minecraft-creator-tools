@@ -39,6 +39,7 @@ import { IErrorable } from "../core/IErrorable";
 import ProjectDeploySync from "./ProjectDeploySync";
 import { MinecraftTrack } from "./ICartoData";
 import ProjectItemRelations from "./ProjectItemRelations";
+import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 
 export enum ProjectAutoDeploymentMode {
   deployOnSave = 0,
@@ -1177,6 +1178,21 @@ export default class Project {
       this._onPropertyChanged.dispatch(this, "defaultResourcePackUniqueId");
     }
   }
+
+  async setDefaultResourcePackUniqueIdAndUpdateDependencies(newId: string) {
+    if (this.#data.defaultResourcePackUniqueId !== newId) {
+      const oldId = this.#data.defaultResourcePackUniqueId;
+
+      this.#data.defaultResourcePackUniqueId = newId;
+
+      if (oldId && oldId.length > 4) {
+        await ResourceManifestDefinition.setNewResourcePackId(this, newId, oldId);
+      }
+
+      this._onPropertyChanged.dispatch(this, "defaultResourcePackUniqueId");
+    }
+  }
+
   get defaultResourcePackVersion(): number[] {
     if (this.#data.defaultResourcePackVersion === undefined) {
       const vMajor = this.versionMajor ? this.versionMajor : 0;
@@ -1204,6 +1220,19 @@ export default class Project {
   set defaultBehaviorPackUniqueId(newId: string) {
     if (this.#data.defaultBehaviorPackUniqueId !== newId) {
       this.#data.defaultBehaviorPackUniqueId = newId;
+
+      this._onPropertyChanged.dispatch(this, "defaultBehaviorPackUniqueId");
+    }
+  }
+
+  async setDefaultBehaviorPackUniqueIdAndUpdateDependencies(newId: string) {
+    if (this.#data.defaultBehaviorPackUniqueId !== newId) {
+      const oldId = this.#data.defaultBehaviorPackUniqueId;
+      this.#data.defaultBehaviorPackUniqueId = newId;
+
+      if (oldId && oldId.length > 4) {
+        await BehaviorManifestDefinition.setNewBehaviorPackId(this, newId, oldId);
+      }
 
       this._onPropertyChanged.dispatch(this, "defaultBehaviorPackUniqueId");
     }
@@ -1714,7 +1743,7 @@ export default class Project {
     } else if (
       (folderPathA.indexOf("/docs/") >= 0 ||
         folderPathA.indexOf("/@minecraft/") >= 0 ||
-        folderPathA.indexOf("/mojang-commands/") >= 0) &&
+        folderPathA.indexOf("/mojang-commands") >= 0) &&
       folderContext === FolderContext.unknown
     ) {
       folderContext = FolderContext.docs;
@@ -2370,7 +2399,7 @@ export default class Project {
                 (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
                 folderPathLower.indexOf("/textures/ui/") >= 0
               ) {
-                newJsonType = ProjectItemType.uiTextureJson;
+                newJsonType = ProjectItemType.ninesliceJson;
               } else if (
                 folderContext === FolderContext.resourcePack &&
                 folderPathLower.indexOf("/texture_sets/") >= 0
@@ -2432,7 +2461,7 @@ export default class Project {
                 folderContext === FolderContext.behaviorPack &&
                 (folderPathLower.indexOf("/entities/") >= 0 || folderPathLower.indexOf("/entity/") >= 0)
               ) {
-                newJsonType = ProjectItemType.entityTypeBehaviorJson;
+                newJsonType = ProjectItemType.entityTypeBehavior;
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/items/") >= 0) {
                 newJsonType = ProjectItemType.itemTypeBehaviorJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/blocks/") >= 0) {
@@ -2442,6 +2471,11 @@ export default class Project {
                 this.role = ProjectRole.documentation;
 
                 itemName = StorageUtilities.getLeafName(folderPath);
+              } else if (
+                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                folderPathLower.indexOf("/textures/") >= 0
+              ) {
+                newJsonType = ProjectItemType.ninesliceJson;
               } else if (
                 folderContext === FolderContext.docs &&
                 (baseName === "_example_files" || baseName === "example_files")
@@ -2453,7 +2487,10 @@ export default class Project {
               } else if (folderContext === FolderContext.typeDefs && folderPathLower.indexOf("/command_modules") >= 0) {
                 newJsonType = ProjectItemType.commandSetDefinitionJson;
                 this.role = ProjectRole.documentation;
-              } else if (folderContext === FolderContext.metaData && folderPathLower.indexOf("/forms") >= 0) {
+              } else if (
+                (folderContext === FolderContext.metaData && folderPathLower.indexOf("/forms") >= 0) ||
+                projectPath.endsWith(".form.json")
+              ) {
                 newJsonType = ProjectItemType.dataFormJson;
                 this.role = ProjectRole.meta;
               } else if (folderContext === FolderContext.typeDefs && folderPathLower.indexOf("/script_modules") >= 0) {
@@ -3297,31 +3334,63 @@ export default class Project {
 
         if (this.#accessoryFilePaths && this.#projectFolder) {
           for (let i = 0; i < this.#accessoryFilePaths.length; i++) {
-            const addFile = containingFolder.ensureFile(this.#accessoryFilePaths[i]);
+            if (
+              (this.#accessoryFilePaths[i].startsWith("\\") || this.#accessoryFilePaths[i].indexOf(":") >= 0) &&
+              this.carto.localFileExists &&
+              this.carto.ensureLocalFolder
+            ) {
+              if (StorageUtilities.isUsableFile(this.#accessoryFilePaths[i])) {
+                const exists = await this.carto.localFileExists(this.#accessoryFilePaths[i]);
 
-            const additionalFileExists = await addFile.exists();
-            if (additionalFileExists) {
-              let isChildOfExistingFolder = false;
+                if (exists) {
+                  const folder = this.carto.ensureLocalFolder(
+                    StorageUtilities.getFolderPath(this.#accessoryFilePaths[i])
+                  );
 
-              if (this.#accessoryFoldersForFilePaths === null) {
-                this.#accessoryFoldersForFilePaths = [];
-              }
+                  if (folder) {
+                    folder.storage.readOnly = true;
 
-              for (let j = 0; j < this.#accessoryFoldersForFilePaths.length; j++) {
-                let addFileStoragePath = addFile.getFolderRelativePath(this.#accessoryFoldersForFilePaths[j]);
+                    const fileName = StorageUtilities.getLeafName(this.#accessoryFilePaths[i]);
+                    await folder.load();
+                    const file = folder.files[fileName];
 
-                if (addFileStoragePath) {
-                  isChildOfExistingFolder = true;
-                  this._inferProjectItemFromFile(addFile, this.#accessoryFoldersForFilePaths[j], addFileStoragePath);
+                    if (file && (await file.exists())) {
+                      if (this.#accessoryFoldersForFilePaths === null) {
+                        this.#accessoryFoldersForFilePaths = [];
+                      }
+                      this.#accessoryFoldersForFilePaths.push(file.parentFolder);
+                      this._inferProjectItemFromFile(file, file.parentFolder, file.storageRelativePath);
+                    }
+                  }
                 }
               }
+            } else {
+              const addFile = containingFolder.ensureFile(this.#accessoryFilePaths[i]);
 
-              if (!isChildOfExistingFolder) {
-                if (addFile.parentFolder) {
-                  let addFileStoragePath = addFile.getFolderRelativePath(addFile.parentFolder);
+              const additionalFileExists = await addFile.exists();
+              if (additionalFileExists) {
+                let isChildOfExistingFolder = false;
+
+                if (this.#accessoryFoldersForFilePaths === null) {
+                  this.#accessoryFoldersForFilePaths = [];
+                }
+
+                for (let j = 0; j < this.#accessoryFoldersForFilePaths.length; j++) {
+                  let addFileStoragePath = addFile.getFolderRelativePath(this.#accessoryFoldersForFilePaths[j]);
+
                   if (addFileStoragePath) {
-                    this.#accessoryFoldersForFilePaths.push(addFile.parentFolder);
-                    this._inferProjectItemFromFile(addFile, addFile.parentFolder, addFileStoragePath);
+                    isChildOfExistingFolder = true;
+                    this._inferProjectItemFromFile(addFile, this.#accessoryFoldersForFilePaths[j], addFileStoragePath);
+                  }
+                }
+
+                if (!isChildOfExistingFolder) {
+                  if (addFile.parentFolder) {
+                    let addFileStoragePath = addFile.getFolderRelativePath(addFile.parentFolder);
+                    if (addFileStoragePath) {
+                      this.#accessoryFoldersForFilePaths.push(addFile.parentFolder);
+                      this._inferProjectItemFromFile(addFile, addFile.parentFolder, addFileStoragePath);
+                    }
                   }
                 }
               }
@@ -3372,15 +3441,29 @@ export default class Project {
   }
 
   async _inferProjectItemFromFile(file: IFile, folder: IFolder, fileStoragePath: string) {
-    this.ensureItemByProjectPath(
-      fileStoragePath,
-      ProjectItemStorageType.singleFile,
-      file.name,
-      ProjectItemType.projectSummaryMetadata,
-      undefined,
-      ProjectItemCreationType.normal,
-      file
-    );
+    const fileName = StorageUtilities.canonicalizeName(file.name);
+
+    if (fileName.endsWith(".data.json")) {
+      this.ensureItemByProjectPath(
+        fileStoragePath,
+        ProjectItemStorageType.singleFile,
+        file.name,
+        ProjectItemType.projectSummaryMetadata,
+        undefined,
+        ProjectItemCreationType.normal,
+        file
+      );
+    } else if (fileName.endsWith(".tags.json")) {
+      this.ensureItemByProjectPath(
+        fileStoragePath,
+        ProjectItemStorageType.singleFile,
+        file.name,
+        ProjectItemType.tagsMetadata,
+        undefined,
+        ProjectItemCreationType.normal,
+        file
+      );
+    }
   }
 
   _handleProjectFolderMoved(folder: IFolder, folderMove: IFolderMove) {

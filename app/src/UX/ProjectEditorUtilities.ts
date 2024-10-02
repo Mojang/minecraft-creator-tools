@@ -118,22 +118,22 @@ export default class ProjectEditorUtilities {
     const name = nameCore + " Flat GameTest";
     const fileName = nameCore + "-flatpack.mcworld";
 
-    carto.notifyStatusUpdate("Packing " + fileName);
+    await carto.notifyStatusUpdate("Packing " + fileName);
 
     const newBytes = await ProjectExporter.generateFlatBetaApisWorldWithPacksZipBytes(carto, project, name);
 
     if (!newBytes) {
-      carto.notifyOperationEnded(operId);
+      await carto.notifyOperationEnded(operId);
       return;
     }
 
-    carto.notifyStatusUpdate("Now downloading " + fileName);
+    await carto.notifyStatusUpdate("Now downloading " + fileName);
 
     if (newBytes !== undefined) {
       saveAs(new Blob([newBytes], { type: "application/octet-stream" }), fileName);
     }
 
-    carto.notifyOperationEnded(operId, "Done with save " + fileName);
+    await carto.notifyOperationEnded(operId, "Done with save " + fileName);
   }
 
   public static async launchWorldWithPacksDownload(carto: Carto, project: Project) {
@@ -153,7 +153,7 @@ export default class ProjectEditorUtilities {
       saveAs(new Blob([newBytes], { type: "application/octet-stream" }), fileName);
     }
 
-    carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");
+    await carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");
   }
 
   static getIntegrateBrowserFileDefaultActionDescription(
@@ -523,7 +523,7 @@ export default class ProjectEditorUtilities {
       saveAs(new Blob([newBytes], { type: "application/octet-stream" }), fileName);
     }
 
-    carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");
+    await carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + project.name + "'.");
   }
 
   public static async launchLocalExport(carto: Carto, project: Project) {

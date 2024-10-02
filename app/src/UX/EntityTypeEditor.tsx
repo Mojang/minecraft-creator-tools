@@ -306,12 +306,13 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     const toolbarItems = [];
     const width = WebUtilities.getWidth();
     let isButtonCompact = false;
+    let selectedIndex = 0;
 
     if (width < 1016) {
       isButtonCompact = true;
     }
 
-    let topHeight = 154;
+    let topHeight = 144;
 
     if (
       this.state === null ||
@@ -330,7 +331,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       icon: (
         <CustomTabLabel
           icon={<FontAwesomeIcon icon={faSliders} className="fa-lg" />}
-          text={"Properties & Behavior"}
+          text={"Properties"}
           isCompact={isButtonCompact}
           isSelected={this.state.mode === EntityTypeEditorMode.properties}
           theme={this.props.theme}
@@ -390,7 +391,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       icon: (
         <CustomTabLabel
           icon={<FontAwesomeIcon icon={faBone} className="fa-lg" />}
-          text={"Loot Table"}
+          text={"Loot"}
           isCompact={isButtonCompact}
           isSelected={this.state.mode === EntityTypeEditorMode.loot}
           theme={this.props.theme}
@@ -411,9 +412,20 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
 
     if (this.state.mode === EntityTypeEditorMode.properties) {
       const items = this.getComponentGroupListings();
-      const componentListHeight = "calc(100vh - " + String(this.props.heightOffset + topHeight) + "px)";
+
+      const cgs = et.getComponentGroups();
+
+      let index = 0;
+      for (const item of cgs) {
+        if (item === this.state.selectedItem) {
+          selectedIndex = index;
+        }
+        index++;
+      }
+      const componentListHeight = "calc(100vh - " + String(this.props.heightOffset + topHeight + 30) + "px)";
 
       let itemInterior = <></>;
+
       if (this.state) {
         let selItem = this.state.selectedItem;
         if (
@@ -431,6 +443,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             <ComponentSetEditor
               componentSetItem={selItem}
               theme={this.props.theme}
+              title={selItem.id}
               isDefault={true}
               heightOffset={this.props.heightOffset + 170}
             />
@@ -458,7 +471,8 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
                 selectable
                 aria-label="List of components"
                 accessibility={selectableListBehavior}
-                defaultSelectedIndex={0}
+                defaultSelectedIndex={selectedIndex}
+                selectedIndex={selectedIndex}
                 items={items}
                 onSelectedIndexChange={this._handleItemSelected}
               />
@@ -492,6 +506,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           itemInterior = (
             <div>
               <EventActionDesign
+                item={this.props.item}
                 readOnly={this.props.readOnly}
                 file={this.props.file}
                 theme={this.props.theme}
@@ -534,6 +549,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             className="ete-itemBin"
             style={{
               borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
             }}
           >
             {itemInterior}
@@ -618,7 +634,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               readOnly={this.props.readOnly}
               theme={this.props.theme}
               file={lootTableItem.file}
-              heightOffset={this.props.heightOffset + 170}
+              heightOffset={this.props.heightOffset + 88}
             />
           </div>
         );

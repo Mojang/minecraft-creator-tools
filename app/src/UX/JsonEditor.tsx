@@ -76,6 +76,11 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
 
   static getUriForFile(file: IFile) {
     let baseUri = "file:/" + StorageUtilities.ensureStartsWithDelimiter(file.storageRelativePath);
+
+    // if we encode baseUri, the JSON model lookup doesn't seem to work for paths with spaces
+    // encode with __ instead.
+    baseUri = baseUri.replace(/ /gi, "__");
+
     baseUri = baseUri.toLowerCase();
 
     return baseUri;

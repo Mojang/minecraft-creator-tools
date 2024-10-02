@@ -28,7 +28,7 @@ export default interface IFile extends IStorageObject {
   dispose(): void;
 
   getHash(): Promise<string | undefined>;
-
+  getRelativePathFor(file: IFile): string | undefined;
   deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean>;
   moveTo(newStorageRelativePath: string): Promise<boolean>;
   exists(): Promise<boolean>;

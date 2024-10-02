@@ -1056,6 +1056,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             <FormInput
               id="projSearch"
               className="home-search"
+              aria-label="Search starters"
               defaultValue={""}
               placeholder="Search starters"
               value={this.state.search}
@@ -1283,7 +1284,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           key="homeProjectsList"
           className="home-projects-list"
           style={{
-            height: browserWidth >= 800 ? "calc(100vh - " + (300 + this.props.heightOffset) + "px)" : "",
+            height: browserWidth >= 800 ? "calc(100vh - " + (332 + this.props.heightOffset) + "px)" : "",
           }}
         >
           <List
@@ -1369,18 +1370,28 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               borderBottom: "outset 1.5px " + this.props.theme.siteVariables?.colorScheme.brand.background4,
             }}
           >
+            <div className="home-tools-bin-upload">
+              <span
+                className="home-tools-bin-upload-label"
+                style={{
+                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+                }}
+              >
+                From MC/Zip File:
+              </span>
+              <input
+                type="file"
+                className="home-uploadFile"
+                accept=".mcaddon, .mcpack, .mcworld, .mcproject, .mctemplate, .zip"
+                title="Upload a .MCPack, .MCAddon, .MCWorld or .zip file to edit"
+                style={{
+                  backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+                }}
+                onChange={this._handleFileUpload}
+              />
+            </div>
             <Toolbar aria-label="Home toolbar overflow menu" items={actionsToolbar} />
-            <input
-              type="file"
-              className="home-uploadFile"
-              accept=".mcaddon, .mcpack, .mcworld, .mcproject, .mctemplate, .zip"
-              title="Upload a .MCPack, .MCAddon, .MCWorld or .zip file to edit"
-              style={{
-                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-                color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-              }}
-              onChange={this._handleFileUpload}
-            />
           </div>
         </div>
       </div>

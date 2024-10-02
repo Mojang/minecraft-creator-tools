@@ -11,6 +11,7 @@ interface IComponentSetEditorProps {
   componentSetItem: IManagedComponentSetItem;
   isDefault: boolean;
   heightOffset: number;
+  title?: string;
   theme: ThemeInput<any>;
 }
 
@@ -170,9 +171,17 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
 
         componentList.push({
           key: component.id,
-          header: Utilities.humanifyMinecraftName(component.id),
-          headerMedia: " ",
-          content: " ",
+          content: (
+            <div
+              className="cose-componentWrapper"
+              style={{
+                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+                borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              }}
+            >
+              {Utilities.humanifyMinecraftName(component.id)}
+            </div>
+          ),
         });
 
         if (component && component.id) {
@@ -234,6 +243,10 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
 
     let title = <></>;
 
+    if (this.props.title) {
+      title = <span>{this.props.title}</span>;
+    }
+
     const areaHeight = "calc(100vh - " + String(this.props.heightOffset + 34) + "px)";
 
     return (
@@ -262,6 +275,7 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
         <div
           className="cose-componentList"
           style={{
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
             minHeight: areaHeight,
@@ -283,8 +297,9 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
           style={{
             minHeight: areaHeight,
             maxHeight: areaHeight,
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
           }}
         >
           {componentForms}

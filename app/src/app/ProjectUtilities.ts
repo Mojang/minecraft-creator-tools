@@ -340,7 +340,7 @@ export default class ProjectUtilities {
   static async applyBehaviorPackUniqueId(project: Project, newBehaviorPackId: string) {
     const oldBehaviorPackId = project.defaultBehaviorPackUniqueId;
 
-    project.defaultBehaviorPackUniqueId = newBehaviorPackId;
+    await project.setDefaultBehaviorPackUniqueIdAndUpdateDependencies(newBehaviorPackId);
 
     if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
       let bpackCount = 0;
@@ -382,7 +382,7 @@ export default class ProjectUtilities {
   static async applyResourcePackUniqueId(project: Project, newResourcePackId: string) {
     const oldResourcePackId = project.defaultResourcePackUniqueId;
 
-    project.defaultResourcePackUniqueId = newResourcePackId;
+    await project.setDefaultResourcePackUniqueIdAndUpdateDependencies(newResourcePackId);
 
     if (project.editPreference === ProjectEditPreference.summarized && project.defaultResourcePackUniqueId) {
       let rpackCount = 0;
@@ -509,18 +509,115 @@ export default class ProjectUtilities {
     await project.save(true);
   }
 
-  static async randomizeAllUids(project: Project) {
-    const uids: { [name: string]: string } = {};
-    let setBehaviorPack = false;
+  static async setNewModuleId(project: Project, newModuleId: string, oldModuleId: string) {
+    const itemsCopy = project.getItemsCopy();
     let setResourcePack = false;
 
-    uids["defaultResourcePack"] = project.defaultResourcePackUniqueId;
-    uids["defaultBehaviorPack"] = project.defaultBehaviorPackUniqueId;
-    uids["defaultDataPack"] = project.defaultDataUniqueId;
-    uids["defaultScriptModulePack"] = project.defaultScriptModuleUniqueId;
+    for (let i = 0; i < itemsCopy.length; i++) {
+      const pi = itemsCopy[i];
 
-    project.defaultResourcePackUniqueId = Utilities.createUuid();
-    project.defaultBehaviorPackUniqueId = Utilities.createUuid();
+      if (pi.file) {
+        if (pi.itemType === ProjectItemType.resourcePackManifestJson && !setResourcePack) {
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.file);
+
+          if (rpManifestJson) {
+            if (rpManifestJson.definition && rpManifestJson.definition.modules) {
+              const mods = rpManifestJson.definition.modules;
+
+              for (const mod of mods) {
+                if (mod.uuid === oldModuleId) {
+                  mod.uuid = newModuleId;
+                }
+              }
+            }
+          }
+        } else if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
+          const bpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.file);
+
+          if (bpManifestJson) {
+            if (bpManifestJson.definition && bpManifestJson.definition.modules) {
+              const mods = bpManifestJson.definition.modules;
+
+              for (const mod of mods) {
+                if (mod.uuid === oldModuleId) {
+                  mod.uuid = newModuleId;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  static async getIsAddon(project: Project) {
+    const itemsCopy = project.getItemsCopy();
+    let rpCount = 0;
+    let bpCount = 0;
+
+    for (let i = 0; i < itemsCopy.length; i++) {
+      const pi = itemsCopy[i];
+
+      if (pi.file) {
+        if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
+          rpCount++;
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.file);
+
+          if (rpManifestJson) {
+            if (!rpManifestJson.hasAddonProperties()) {
+              return false;
+            }
+          }
+        } else if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
+          bpCount++;
+          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.file);
+
+          if (bpManifestJson) {
+            if (!bpManifestJson.hasAddonProperties()) {
+              return false;
+            }
+          }
+        }
+      }
+    }
+
+    return bpCount === 1 && rpCount === 1;
+  }
+
+  static async setIsAddon(project: Project) {
+    const itemsCopy = project.getItemsCopy();
+
+    for (let i = 0; i < itemsCopy.length; i++) {
+      const pi = itemsCopy[i];
+
+      if (pi.file) {
+        if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.file);
+
+          if (rpManifestJson) {
+            rpManifestJson.setAddonProperties();
+          }
+        } else if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
+          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.file);
+
+          if (bpManifestJson) {
+            bpManifestJson.setAddonProperties();
+          }
+        }
+      }
+    }
+  }
+
+  static async randomizeAllUids(project: Project) {
+    const oldUids: { [name: string]: string } = {};
+
+    oldUids["defaultBehaviorPack"] = project.defaultBehaviorPackUniqueId;
+    oldUids["defaultResourcePack"] = project.defaultResourcePackUniqueId;
+    oldUids["defaultDataPack"] = project.defaultDataUniqueId;
+    oldUids["defaultScriptModulePack"] = project.defaultScriptModuleUniqueId;
+
+    await project.setDefaultResourcePackUniqueIdAndUpdateDependencies(Utilities.createUuid());
+    await project.setDefaultBehaviorPackUniqueIdAndUpdateDependencies(Utilities.createUuid());
     project.defaultDataUniqueId = Utilities.createUuid();
     project.defaultScriptModuleUniqueId = Utilities.createUuid();
 
@@ -530,26 +627,33 @@ export default class ProjectUtilities {
       const pi = itemsCopy[i];
 
       if (pi.file) {
-        if (pi.itemType === ProjectItemType.behaviorPackManifestJson && !setBehaviorPack) {
+        if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
           const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.file);
 
           if (bpManifestJson) {
-            bpManifestJson.randomizeModuleUuids();
+            bpManifestJson.randomizeModuleUuids(
+              project.defaultScriptModuleUniqueId,
+              oldUids["defaultScriptModulePack"]
+            );
 
-            if (bpManifestJson.uuid && Utilities.uuidEqual(bpManifestJson.uuid, uids["defaultBehaviorPack"])) {
-              bpManifestJson.uuid = project.defaultBehaviorPackUniqueId;
-              setBehaviorPack = true;
-              await bpManifestJson.save();
+            if (
+              bpManifestJson.uuid !== oldUids["defaultBehaviorPack"] &&
+              bpManifestJson.uuid !== project.defaultBehaviorPackUniqueId
+            ) {
+              await bpManifestJson.setUuid(Utilities.createUuid(), project);
             }
           }
-        } else if (pi.itemType === ProjectItemType.resourcePackManifestJson && !setResourcePack) {
+        } else if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
           const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.file);
 
           if (rpManifestJson) {
-            if (rpManifestJson.uuid && Utilities.uuidEqual(rpManifestJson.uuid, uids["defaultResourcePack"])) {
-              rpManifestJson.uuid = project.defaultResourcePackUniqueId;
-              setResourcePack = true;
-              await rpManifestJson.save();
+            rpManifestJson.randomizeModuleUuids(project.defaultDataUniqueId, oldUids["defaultDataModulePack"]);
+
+            if (
+              rpManifestJson.uuid !== oldUids["defaultResourcePack"] &&
+              rpManifestJson.uuid !== project.defaultResourcePackUniqueId
+            ) {
+              await rpManifestJson.setUuid(Utilities.createUuid(), project);
             }
           }
         }

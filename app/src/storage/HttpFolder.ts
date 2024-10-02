@@ -40,7 +40,7 @@ export default class HttpFolder extends FolderBase implements IFolder {
       return this._storage.baseUrl;
     }
 
-    return this._parentFolder.fullPath + this.name + HttpStorage.folderDelimiter;
+    return this._parentFolder.fullPath + this.name + HttpStorage.slashFolderDelimiter;
   }
 
   constructor(storage: HttpStorage, parentFolder: HttpFolder | null, folderName: string) {

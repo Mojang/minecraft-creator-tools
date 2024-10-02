@@ -32,11 +32,11 @@ export default class LocalUtilities implements ILocalUtilities {
     if (this.isWindows) {
       return (
         this.userDataPath +
-        NodeStorage.folderDelimiter +
+        NodeStorage.platformFolderDelimiter +
         "AppData" +
-        NodeStorage.folderDelimiter +
+        NodeStorage.platformFolderDelimiter +
         "Local" +
-        NodeStorage.folderDelimiter
+        NodeStorage.platformFolderDelimiter
       );
     } else {
       return this.userDataPath;
@@ -47,16 +47,16 @@ export default class LocalUtilities implements ILocalUtilities {
     if (this.isWindows) {
       return (
         this.userDataPath +
-        NodeStorage.folderDelimiter +
+        NodeStorage.platformFolderDelimiter +
         "AppData" +
-        NodeStorage.folderDelimiter +
+        NodeStorage.platformFolderDelimiter +
         "Roaming" +
-        NodeStorage.folderDelimiter +
+        NodeStorage.platformFolderDelimiter +
         "logs" +
-        NodeStorage.folderDelimiter
+        NodeStorage.platformFolderDelimiter
       );
     } else {
-      return "." + NodeStorage.folderDelimiter;
+      return "." + NodeStorage.platformFolderDelimiter;
     }
   }
 
@@ -64,15 +64,15 @@ export default class LocalUtilities implements ILocalUtilities {
     return (
       this.localAppDataPath +
       "Packages" +
-      NodeStorage.folderDelimiter +
+      NodeStorage.platformFolderDelimiter +
       "Microsoft.MinecraftUWP_8wekyb3d8bbwe" +
-      NodeStorage.folderDelimiter +
+      NodeStorage.platformFolderDelimiter +
       "LocalState" +
-      NodeStorage.folderDelimiter +
+      NodeStorage.platformFolderDelimiter +
       "games" +
-      NodeStorage.folderDelimiter +
+      NodeStorage.platformFolderDelimiter +
       "com.mojang" +
-      NodeStorage.folderDelimiter
+      NodeStorage.platformFolderDelimiter
     );
   }
 
@@ -80,15 +80,15 @@ export default class LocalUtilities implements ILocalUtilities {
     return (
       this.localAppDataPath +
       "Packages" +
-      NodeStorage.folderDelimiter +
+      NodeStorage.platformFolderDelimiter +
       "Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe" +
-      NodeStorage.folderDelimiter +
+      NodeStorage.platformFolderDelimiter +
       "LocalState" +
-      NodeStorage.folderDelimiter +
+      NodeStorage.platformFolderDelimiter +
       "games" +
-      NodeStorage.folderDelimiter +
+      NodeStorage.platformFolderDelimiter +
       "com.mojang" +
-      NodeStorage.folderDelimiter
+      NodeStorage.platformFolderDelimiter
     );
   }
 
@@ -100,7 +100,7 @@ export default class LocalUtilities implements ILocalUtilities {
       (this.isWindows ? "" : ".") +
       this.#productNameSeed +
       "_test" +
-      NodeStorage.folderDelimiter;
+      NodeStorage.platformFolderDelimiter;
 
     return path;
   }
@@ -113,7 +113,7 @@ export default class LocalUtilities implements ILocalUtilities {
       (this.isWindows ? "" : ".") +
       this.#productNameSeed +
       "_cli" +
-      NodeStorage.folderDelimiter;
+      NodeStorage.platformFolderDelimiter;
 
     return path;
   }
@@ -126,7 +126,7 @@ export default class LocalUtilities implements ILocalUtilities {
       (this.isWindows ? "" : ".") +
       this.#productNameSeed +
       "_server" +
-      NodeStorage.folderDelimiter;
+      NodeStorage.platformFolderDelimiter;
 
     return path;
   }
@@ -139,7 +139,7 @@ export default class LocalUtilities implements ILocalUtilities {
       (this.isWindows ? "" : ".") +
       this.#productNameSeed +
       "_worlds" +
-      NodeStorage.folderDelimiter;
+      NodeStorage.platformFolderDelimiter;
 
     return path;
   }
@@ -147,7 +147,7 @@ export default class LocalUtilities implements ILocalUtilities {
   get serversPath() {
     let path = this.serverWorkingPath;
 
-    path = NodeStorage.ensureEndsWithDelimiter(path) + "servers" + NodeStorage.folderDelimiter;
+    path = NodeStorage.ensureEndsWithDelimiter(path) + "servers" + NodeStorage.platformFolderDelimiter;
 
     return path;
   }
@@ -155,7 +155,7 @@ export default class LocalUtilities implements ILocalUtilities {
   get sourceServersPath() {
     let path = this.serverWorkingPath;
 
-    path = NodeStorage.ensureEndsWithDelimiter(path) + "serverSources" + NodeStorage.folderDelimiter;
+    path = NodeStorage.ensureEndsWithDelimiter(path) + "serverSources" + NodeStorage.platformFolderDelimiter;
 
     return path;
   }
@@ -163,7 +163,7 @@ export default class LocalUtilities implements ILocalUtilities {
   get packCachePath() {
     let path = this.serverWorkingPath;
 
-    path = NodeStorage.ensureEndsWithDelimiter(path) + "packCache" + NodeStorage.folderDelimiter;
+    path = NodeStorage.ensureEndsWithDelimiter(path) + "packCache" + NodeStorage.platformFolderDelimiter;
 
     return path;
   }
@@ -171,7 +171,7 @@ export default class LocalUtilities implements ILocalUtilities {
   get envPrefsPath() {
     let path = this.serverWorkingPath;
 
-    path = NodeStorage.ensureEndsWithDelimiter(path) + "envprefs" + NodeStorage.folderDelimiter;
+    path = NodeStorage.ensureEndsWithDelimiter(path) + "envprefs" + NodeStorage.platformFolderDelimiter;
 
     return path;
   }
@@ -262,7 +262,7 @@ export default class LocalUtilities implements ILocalUtilities {
     if (this.isWindows) {
       fullPath += path.replace(/\//g, "\\");
     } else {
-      fullPath += path.replace(/\\/g, NodeStorage.folderDelimiter);
+      fullPath += path.replace(/\\/g, NodeStorage.platformFolderDelimiter);
     }
 
     return fullPath;

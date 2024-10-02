@@ -724,11 +724,11 @@ export default class ProjectExporter {
   }
 
   static async deployAsFlatPackRefWorld(carto: Carto, project: Project) {
-    carto.notifyStatusUpdate("Saving...");
+    await carto.notifyStatusUpdate("Saving...");
     await ProjectExporter.updateProjects(project);
 
     await project.save();
-    carto.notifyStatusUpdate("Saved");
+    await carto.notifyStatusUpdate("Saved");
 
     // only do an explicit deploy here autodeployment is not turned on; otherwise, deployment should happen in the save() above.
     if (
@@ -737,9 +737,9 @@ export default class ProjectExporter {
       carto.deployBehaviorPacksFolder !== null &&
       carto.activeMinecraft
     ) {
-      carto.notifyStatusUpdate("Deploying pack add-ons");
+      await carto.notifyStatusUpdate("Deploying pack add-ons");
       carto.activeMinecraft.syncWithDeployment();
-      carto.notifyStatusUpdate("Deployed");
+      await carto.notifyStatusUpdate("Deployed");
     }
 
     const hash = project.defaultBehaviorPackUniqueId + "|";

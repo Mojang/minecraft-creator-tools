@@ -24,6 +24,18 @@
   padding-right: 6px !important;
 }
 
+.rng-intro {
+  display: table-cell;
+  padding-right: 9px;
+  text-wrap: nowrap;
+}
+
+.rng-joiner {
+  display: table-cell;
+  padding-left: 4px;
+  padding-right: 9px;
+}
+
 .rng-ambient {
   display: table-cell;
   width: 50px;

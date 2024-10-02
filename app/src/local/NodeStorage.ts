@@ -12,17 +12,21 @@ export default class NodeStorage extends StorageBase implements IStorage {
 
   rootFolder: NodeFolder;
 
-  static folderDelimiter = path.sep;
+  static platformFolderDelimiter = path.sep;
+
+  get folderDelimiter() {
+    return path.sep;
+  }
 
   constructor(incomingPath: string, name: string) {
     super();
 
-    if (NodeStorage.folderDelimiter === "\\") {
-      incomingPath = incomingPath.replace(/\//gi, NodeStorage.folderDelimiter);
+    if (NodeStorage.platformFolderDelimiter === "\\") {
+      incomingPath = incomingPath.replace(/\//gi, NodeStorage.platformFolderDelimiter);
       incomingPath = incomingPath.replace(/\\\\/gi, "\\");
-    } else if (NodeStorage.folderDelimiter === "/") {
-      incomingPath = incomingPath.replace(/\\/gi, NodeStorage.folderDelimiter);
-      incomingPath = incomingPath.replace(/\/\//gi, NodeStorage.folderDelimiter);
+    } else if (NodeStorage.platformFolderDelimiter === "/") {
+      incomingPath = incomingPath.replace(/\\/gi, NodeStorage.platformFolderDelimiter);
+      incomingPath = incomingPath.replace(/\/\//gi, NodeStorage.platformFolderDelimiter);
     }
 
     this.rootPath = incomingPath;
@@ -34,8 +38,8 @@ export default class NodeStorage extends StorageBase implements IStorage {
   joinPath(pathA: string, pathB: string) {
     let fullPath = pathA;
 
-    if (!fullPath.endsWith(NodeStorage.folderDelimiter)) {
-      fullPath += NodeStorage.folderDelimiter;
+    if (!fullPath.endsWith(NodeStorage.platformFolderDelimiter)) {
+      fullPath += NodeStorage.platformFolderDelimiter;
     }
 
     fullPath += pathB;
@@ -44,7 +48,7 @@ export default class NodeStorage extends StorageBase implements IStorage {
   }
 
   static getParentFolderPath(parentPath: string) {
-    const lastDelim = parentPath.lastIndexOf(this.folderDelimiter);
+    const lastDelim = parentPath.lastIndexOf(this.platformFolderDelimiter);
 
     if (lastDelim < 0) {
       return parentPath;
@@ -54,16 +58,16 @@ export default class NodeStorage extends StorageBase implements IStorage {
   }
 
   public static ensureEndsWithDelimiter(pth: string) {
-    if (!pth.endsWith(NodeStorage.folderDelimiter)) {
-      pth = pth + NodeStorage.folderDelimiter;
+    if (!pth.endsWith(NodeStorage.platformFolderDelimiter)) {
+      pth = pth + NodeStorage.platformFolderDelimiter;
     }
 
     return pth;
   }
 
   public static ensureStartsWithDelimiter(pth: string) {
-    if (!pth.startsWith(NodeStorage.folderDelimiter)) {
-      pth = NodeStorage.folderDelimiter + pth;
+    if (!pth.startsWith(NodeStorage.platformFolderDelimiter)) {
+      pth = NodeStorage.platformFolderDelimiter + pth;
     }
 
     return pth;

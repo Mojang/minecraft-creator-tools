@@ -171,9 +171,12 @@
 .home-uploadFile {
   display: inline-block;
   border: 0px !important;
-  grid-column: 2;
   max-width: calc(100vw - 40px);
   box-shadow: none !important;
+}
+
+.home-tools-bin-upload {
+  grid-row: 1;
 }
 
 .home-inspectFileUpload {
@@ -368,7 +371,11 @@
   padding-top: 1px;
   font-size: small;
   display: grid;
-  grid-template-columns: 1fr 196px;
+  grid-template-rows: 32px 32px;
+}
+
+.home-tools-bin-upload-label {
+  padding-left: 7px;
 }
 
 .home-tools-bin-inner BUTTON DIV SPAN {

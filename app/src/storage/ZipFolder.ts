@@ -160,9 +160,9 @@ export default class ZipFolder extends FolderBase implements IFolder {
 
     this._jsz.forEach((relativePath: string, file: JSZip.JSZipObject) => {
       // some zip files use \ as a delimiter (??)
-      relativePath = relativePath.replace(/\\/gi, ZipStorage.folderDelimiter);
+      relativePath = relativePath.replace(/\\/gi, ZipStorage.slashFolderDelimiter);
 
-      const countDelim = Utilities.countChar(relativePath, ZipStorage.folderDelimiter);
+      const countDelim = Utilities.countChar(relativePath, ZipStorage.slashFolderDelimiter);
 
       if (countDelim === 0) {
         const nameCanon = StorageUtilities.canonicalizeName(relativePath);
@@ -182,13 +182,13 @@ export default class ZipFolder extends FolderBase implements IFolder {
           subPath = subPath.substring(1);
         }
 
-        let nextDelim = subPath.indexOf(ZipStorage.folderDelimiter);
+        let nextDelim = subPath.indexOf(ZipStorage.slashFolderDelimiter);
 
         while (nextDelim > 0) {
           lastFolder = lastFolder.ensureFolder(subPath.substring(0, nextDelim));
 
           subPath = subPath.substring(nextDelim + 1);
-          nextDelim = subPath.indexOf(ZipStorage.folderDelimiter);
+          nextDelim = subPath.indexOf(ZipStorage.slashFolderDelimiter);
         }
 
         if (subPath.length > 0 && file) {

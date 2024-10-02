@@ -232,6 +232,68 @@ export default class StorageUtilities {
     return fullPath;
   }
 
+  static getMimeType(file: IFile) {
+    switch (StorageUtilities.getTypeFromName(file.name)) {
+      case "js":
+        return "application/javascript";
+
+      case "ts":
+        return "application/typescript";
+
+      case "json":
+        return "application/json";
+
+      case "mcworld":
+      case "mctemplate":
+      case "mcproject":
+      case "mcaddon":
+      case "mcpack":
+      case "zip":
+        return "application/zip";
+
+      case "mcstucture":
+        return "application/octet-stream";
+
+      case "mcfunction":
+      case "material":
+      case "env":
+      case "lang":
+        return "text/plain";
+
+      case "wav":
+        return "audio/wav";
+
+      case "mp3":
+        return "audio/mp3";
+      case "ogg":
+        return "audio/ogg";
+
+      case "jpg":
+      case "jpeg":
+        return "image/jpg";
+
+      case "png":
+        return "image/png";
+
+      case "tiff":
+      case "tga":
+        return "image/tiff";
+
+      default:
+        return "application/octet-stream";
+    }
+  }
+
+  public static getContentAsString(file: IFile) {
+    if (typeof file.content === "string") {
+      return file.content;
+    } else if (file.content instanceof Uint8Array) {
+      return "data:" + StorageUtilities.getMimeType(file) + ";base64," + Utilities.uint8ArrayToBase64(file.content);
+    }
+
+    return undefined;
+  }
+
   public static async getFileStorageFolder(file: IFile) {
     let zipStorage = file.fileContainerStorage as ZipStorage;
 

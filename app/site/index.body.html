@@ -9,6 +9,19 @@
 
 var siteConsent = null;
 
+window.getUserConsentDetails = function() {
+  if (siteConsent) {
+    return siteConsent.getConsent();
+  }
+
+  return {
+    Required: true,
+    Analytics: true,
+    SocialMedia: false,
+    Advertising: false
+  };
+}
+
 if (WcpConsent) {
   WcpConsent.init("en-US", "cookie-banner", function (err, _siteConsent) {
     if (err != undefined) {
@@ -16,15 +29,16 @@ if (WcpConsent) {
     } else {
       siteConsent = _siteConsent;    
       
-      if (oneDS && oneDS.ApplicationInsights) {
+      if (oneDS && oneDS.ApplicationInsights && !navigator.globalPrivacyControl) {
         const analytics = new oneDS.ApplicationInsights();
 
         analytics.initialize({
           instrumentationKey: "1e1425454dbc4c25b1be2762598df0b6-7f4669a7-d9f8-4e51-9bba-266dcfc0dc00-7638",
           disableCookiesUsage: !siteConsent || !siteConsent.getConsent || (siteConsent.isConsentRequired && !siteConsent.getConsent().Analytics),
           propertyConfiguration: {
+            gpcDataSharingOptIn: false,
             callback: {
-              userConsentDetails: siteConsent ? siteConsent.getConsent : null
+              userConsentDetails: window.getUserConsentDetails
             },
           },
           webAnalyticsConfiguration: {

@@ -78,7 +78,7 @@ export default class CommandRunner {
 
         commandText = command.toString();
 
-        carto.notifyStatusUpdate("Running command '" + commandText + "'");
+        await carto.notifyStatusUpdate("Running command '" + commandText + "'");
 
         const commandResult = await carto.runCommand(commandText);
         const result = commandResult?.data;
