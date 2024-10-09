@@ -42,7 +42,7 @@ export default class BrowserFolder extends FolderBase implements IFolder {
   }
 
   get fullPath() {
-    return this._parentPath + BrowserStorage.folderDelimiter + StorageUtilities.canonicalizeName(this.name);
+    return this._parentPath + BrowserStorage.slashFolderDelimiter + StorageUtilities.canonicalizeName(this.name);
   }
 
   constructor(storage: BrowserStorage, parentFolder: BrowserFolder | null, parentPath: string, folderName: string) {
@@ -92,7 +92,7 @@ export default class BrowserFolder extends FolderBase implements IFolder {
 
     let result = await this.recursiveDeleteThisFolder();
 
-    await localforage.removeItem(this.fullPath + BrowserStorage.folderDelimiter);
+    await localforage.removeItem(this.fullPath + BrowserStorage.slashFolderDelimiter);
 
     return result;
   }
@@ -209,8 +209,8 @@ export default class BrowserFolder extends FolderBase implements IFolder {
       return this.lastLoadedOrSaved;
     }
 
-    this._lastLoadedPath = this.fullPath + BrowserStorage.folderDelimiter;
-    const listingContent = await localforage.getItem<string>(this.fullPath + BrowserStorage.folderDelimiter);
+    this._lastLoadedPath = this.fullPath + BrowserStorage.slashFolderDelimiter;
+    const listingContent = await localforage.getItem<string>(this.fullPath + BrowserStorage.slashFolderDelimiter);
 
     if (listingContent != null) {
       this._lastSavedContent = listingContent;
@@ -339,8 +339,8 @@ export default class BrowserFolder extends FolderBase implements IFolder {
 
     if (this._lastSavedContent !== saveContent || force) {
       this._lastSavedContent = saveContent;
-      this._lastLoadedPath = this.fullPath + BrowserStorage.folderDelimiter;
-      await localforage.setItem<string>(this.fullPath + BrowserStorage.folderDelimiter, saveContent);
+      this._lastLoadedPath = this.fullPath + BrowserStorage.slashFolderDelimiter;
+      await localforage.setItem<string>(this.fullPath + BrowserStorage.slashFolderDelimiter, saveContent);
     }
 
     return this.lastLoadedOrSaved as Date;

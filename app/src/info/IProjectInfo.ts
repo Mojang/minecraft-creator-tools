@@ -14,6 +14,14 @@ export default interface IProjectInfo {
   defaultResourcePackMinEngineVersion?: string;
   defaultResourcePackName?: string;
   defaultResourcePackDescription?: string;
+  errorCount?: number;
+  internalProcessingErrorCount?: number;
+  warningCount?: number;
+  testSuccessCount?: number;
+  testFailCount?: number;
+  errorSummary?: string;
+  internalProcessingErrorSummary?: string;
+  testFailSummary?: string;
   resourcePackManifestCount?: number;
   unknownJsonCount?: number;
   entityTypeManifestCount?: number;

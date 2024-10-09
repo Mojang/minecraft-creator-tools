@@ -1,4 +1,5 @@
 {
+  "title": "Breathable",
   "description": "Defines what blocks an entity can breathe in and gives them the ability to suffocate.",
   "fields": [
     {

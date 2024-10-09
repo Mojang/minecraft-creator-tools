@@ -44,6 +44,7 @@ export default class GeneratorRegistrations {
     new MinEngineVersionManager(),
     new BaseGameVersionManager(),
     new FormatVersionManager(),
+    new PackMetaDataInformationGenerator(),
     new AnimationResourceInfoGenerator(),
     new BehaviorPackEntityTypeManager(),
     new BehaviorPackItemTypeManager(),
@@ -55,7 +56,6 @@ export default class GeneratorRegistrations {
 
   static itemGenerators = [
     new UnknownItemGenerator(),
-    new PackMetaDataInformationGenerator(),
     new SchemaItemInfoGenerator(),
     new WorldItemInfoGenerator(),
     new WorldDataInfoGenerator(),

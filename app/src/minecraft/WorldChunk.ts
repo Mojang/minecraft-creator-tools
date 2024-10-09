@@ -311,7 +311,7 @@ export default class WorldChunk {
           Log.assert(false, "Unexpected type 119 data.");
           break;
         default:
-          throw new Error("Unsupported chunk type: " + val);
+          Log.debugAlert("Unsupported chunk type: " + val);
       }
     }
   }

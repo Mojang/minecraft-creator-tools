@@ -4,12 +4,17 @@
 export default interface IModelGeometry {
   format_version: string;
   __comment__?: string;
-  "minecraft:geometry": IGeometry[];
+  "minecraft:geometry": IGeometry[]; // note this is a 1.10.0+ definition thing
 }
 
 export interface IGeometry {
   description: IGeometryDescription;
   bones: IGeometryBone[];
+  texturewidth?: number; // geometry 1.8.0 prop
+  textureheight?: number; // geometry 1.8.0 prop
+  visible_bounds_width?: number; // geometry 1.8.0 prop
+  visible_bounds_height?: number; // geometry 1.8.0 prop
+  visible_bounds_offset?: number[]; // geometry 1.8.0 prop
 }
 
 export interface IGeometryDescription {
@@ -24,11 +29,12 @@ export interface IGeometryDescription {
 export interface IGeometryBone {
   name: string;
   pivot: number[];
-  cubes: IGeometryBoneCubes[];
+  bind_pose_rotation?: number[];
+  cubes: IGeometryBoneCube[];
   locators: { [name: string]: number[] };
 }
 
-export interface IGeometryBoneCubes {
+export interface IGeometryBoneCube {
   origin: number[];
   size: number[];
   uv: number[];

@@ -1,4 +1,4 @@
-import IProjectInfoData from "../info/IProjectInfoData";
+import IProjectInfoData, { ProjectInfoSuite } from "../info/IProjectInfoData";
 
 export default interface IProjectMetaState {
   projectContainerName: string;
@@ -6,4 +6,5 @@ export default interface IProjectMetaState {
   projectName?: string;
   projectTitle: string;
   infoSetData: IProjectInfoData;
+  suite: ProjectInfoSuite | undefined;
 }

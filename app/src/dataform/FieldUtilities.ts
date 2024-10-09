@@ -131,33 +131,36 @@ export default class FieldUtilities {
       }
 
       const actualVal = FieldUtilities.getFieldValue(field, container);
-      const comp = condition.comparison.toLowerCase();
 
-      if (comp === ComparisonType.equals) {
-        if (condition.value !== undefined && actualVal !== condition.value) {
-          return false;
-        }
+      if (condition.comparison) {
+        const comp = condition.comparison.toLowerCase();
 
-        if (condition.anyValues !== undefined) {
-          let foundMatch = false;
-
-          for (const val of condition.anyValues) {
-            if (val === actualVal) {
-              foundMatch = true;
-            }
-          }
-
-          if (!foundMatch) {
+        if (comp === ComparisonType.equals) {
+          if (condition.value !== undefined && actualVal !== condition.value) {
             return false;
           }
+
+          if (condition.anyValues !== undefined) {
+            let foundMatch = false;
+
+            for (const val of condition.anyValues) {
+              if (val === actualVal) {
+                foundMatch = true;
+              }
+            }
+
+            if (!foundMatch) {
+              return false;
+            }
+          }
+        } else if (comp === ComparisonType.isDefined && (actualVal === undefined || actualVal === null)) {
+          return false;
+        } else if (
+          comp === ComparisonType.isNonEmpty &&
+          (actualVal === undefined || actualVal === null || (typeof actualVal === "string" && actualVal.length <= 0))
+        ) {
+          return false;
         }
-      } else if (comp === ComparisonType.isDefined && (actualVal === undefined || actualVal === null)) {
-        return false;
-      } else if (
-        comp === ComparisonType.isNonEmpty &&
-        (actualVal === undefined || actualVal === null || (typeof actualVal === "string" && actualVal.length <= 0))
-      ) {
-        return false;
       }
     }
 

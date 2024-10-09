@@ -25,6 +25,9 @@ import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem.js";
 import ProjectUtilities, { NewEntityTypeAddMode } from "../app/ProjectUtilities.js";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project.js";
 import ProjectExporter from "../app/ProjectExporter.js";
+import Utilities from "../core/Utilities.js";
+import { ProjectInfoSuite } from "../info/IProjectInfoData.js";
+import NodeFolder from "../local/NodeFolder.js";
 
 if (typeof btoa === "undefined") {
   // @ts-ignore
@@ -788,29 +791,33 @@ async function validate() {
             Log.error(ps.ctorProjectName + " error: " + result);
           }
         } else {
-          // clear out icons since the aggregation won't need them, and it should save memory.
-          if (result.infoSetData && result.infoSetData.info && result.infoSetData.info["defaultIcon"]) {
-            result.infoSetData.info["defaultIcon"] = undefined;
-          }
+          for (const metaState of result) {
+            // clear out icons since the aggregation won't need them, and it should save memory.
+            if (metaState.infoSetData && metaState.infoSetData.info && metaState.infoSetData.info["defaultIcon"]) {
+              metaState.infoSetData.info["defaultIcon"] = undefined;
+            }
 
-          projectList.push(result as IProjectMetaState);
+            projectList.push(metaState as IProjectMetaState);
 
-          const infoSet = (result as IProjectMetaState).infoSetData;
+            const infoSet = (metaState as IProjectMetaState).infoSetData;
 
-          if (infoSet) {
-            const items = infoSet.items;
+            if (infoSet) {
+              const items = infoSet.items;
 
-            if (items) {
-              for (const item of items) {
-                if (item.iTp === InfoItemType.internalProcessingError) {
-                  console.error(
-                    "Internal Processing Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item)
-                  );
-                  setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
-                } else if (item.iTp === InfoItemType.testCompleteFail && !options.outputFolder) {
-                  setErrorLevel(ERROR_VALIDATION_TESTFAIL);
-                } else if (item.iTp === InfoItemType.error && !options.outputFolder) {
-                  setErrorLevel(ERROR_VALIDATION_ERROR);
+              if (items) {
+                for (const item of items) {
+                  if (item.iTp === InfoItemType.internalProcessingError) {
+                    console.error(
+                      "Internal Processing Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item)
+                    );
+                    setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
+                  } else if (item.iTp === InfoItemType.testCompleteFail && !options.outputFolder) {
+                    console.error("Test Fail: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
+                    setErrorLevel(ERROR_VALIDATION_TESTFAIL);
+                  } else if (item.iTp === InfoItemType.error && !options.outputFolder) {
+                    console.error("Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
+                    setErrorLevel(ERROR_VALIDATION_ERROR);
+                  }
                 }
               }
             }
@@ -862,10 +869,22 @@ async function aggregateReports() {
       if (jsonO.info && jsonO.items && jsonO.generatorName !== undefined && jsonO.generatorVersion !== undefined) {
         const pis = new ProjectInfoSet(undefined, undefined, undefined, jsonO.info, jsonO.items);
 
+        let suite: ProjectInfoSuite | undefined = undefined;
+
         let baseName = StorageUtilities.getBaseFromName(fileName);
 
         if (baseName.endsWith(".mcr")) {
           baseName = baseName.substring(0, baseName.length - 4);
+        }
+
+        if (baseName.endsWith("addon")) {
+          suite = ProjectInfoSuite.addOn;
+          baseName = baseName.substring(0, baseName.length - 6);
+        }
+
+        if (baseName.endsWith("currentplatform")) {
+          suite = ProjectInfoSuite.currentPlatformVersions;
+          baseName = baseName.substring(0, baseName.length - 16);
         }
 
         let title = StorageUtilities.getBaseFromName(fileName);
@@ -894,6 +913,7 @@ async function aggregateReports() {
           projectName: baseName,
           projectTitle: title,
           infoSetData: jsonO,
+          suite: suite,
         });
 
         projectsLoaded++;
@@ -912,12 +932,18 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
   let outputStorage: NodeStorage | undefined;
   const csvHeader = ProjectInfoSet.CommonCsvHeader;
 
-  let samplePis: ProjectInfoSet | undefined;
-  const allFeatureSets: { [setName: string]: { [measureName: string]: number | undefined } | undefined } = {};
-  const allFields: { [featureName: string]: boolean | undefined } = {};
+  let sampleProjectInfoSets: {
+    [suiteName: string]: ProjectInfoSet | undefined;
+  } = {};
 
-  const allIssueLines: string[] = [];
-  const allSummaryLines: string[] = [];
+  const featureSetsByName: {
+    [suiteName: string]: { [setName: string]: { [measureName: string]: number | undefined } | undefined };
+  } = {};
+
+  const fieldsByName: { [suiteName: string]: { [featureName: string]: boolean | undefined } } = {};
+
+  const issueLines: { [name: string]: string[] } = {};
+  const summaryLines: { [name: string]: string[] } = {};
   const mciFileList: IIndexJson = { files: [], folders: [] };
   const megaContentIndex: ContentIndex = new ContentIndex();
   const measures: { [featureSetName: string]: { name: string; items: { [featureName: string]: any } } } = {};
@@ -928,7 +954,14 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
   }
 
   let projectsConsidered = 0;
+
   for (const projectSet of projectList) {
+    let suiteName = "all";
+
+    if (projectSet.suite !== undefined) {
+      suiteName = ProjectInfoSet.getSuiteString(projectSet.suite);
+    }
+
     const pisData = projectSet.infoSetData;
 
     const contentIndex = new ContentIndex();
@@ -953,90 +986,157 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
       console.warn("Processed " + projectsConsidered + " reports, @ " + projectBaseName);
     }
 
-    pis.mergeFeatureSetsAndFieldsTo(allFeatureSets, allFields);
+    if (featureSetsByName[suiteName] === undefined) {
+      featureSetsByName[suiteName] = {};
+    }
+
+    const featureSets = featureSetsByName[suiteName];
+
+    if (fieldsByName[suiteName] === undefined) {
+      fieldsByName[suiteName] = {};
+    }
+
+    const fields = fieldsByName[suiteName];
+
+    pis.mergeFeatureSetsAndFieldsTo(featureSets, fields);
     projectsConsidered++;
   }
 
-  for (const featureSetName in allFeatureSets) {
-    const featureSet = allFeatureSets[featureSetName];
+  for (const setName in featureSetsByName) {
+    const featureSets = featureSetsByName[setName];
 
-    if (featureSet) {
-      measures[featureSetName] = {
-        name: featureSetName,
-        items: {},
-      };
+    if (featureSets) {
+      for (const featureSetName in featureSets) {
+        const featureSet = featureSets[featureSetName];
+
+        if (featureSet) {
+          measures[featureSetName] = {
+            name: featureSetName,
+            items: {},
+          };
+        }
+      }
     }
   }
 
   for (const projectSet of projectList) {
+    let suiteName = "all";
+
+    if (projectSet.suite !== undefined) {
+      suiteName = ProjectInfoSet.getSuiteString(projectSet.suite);
+    }
+
     const pisData = projectSet.infoSetData;
-    const pis = new ProjectInfoSet(undefined, undefined, undefined, pisData.info, pisData.items);
     const projectBaseName = StorageUtilities.removeContainerExtension(projectSet.projectContainerName);
+    const pis = new ProjectInfoSet(undefined, undefined, undefined, pisData.info, pisData.items);
 
-    pis.mergeFeatureSetsAndFieldsTo(allFeatureSets, allFields);
+    if (featureSetsByName[suiteName] === undefined) {
+      featureSetsByName[suiteName] = {};
+    }
 
-    samplePis = pis;
+    const featureSets = featureSetsByName[suiteName];
 
-    if (projectSet.infoSetData.info) {
-      for (const memberName in projectSet.infoSetData.info) {
-        if (ProjectInfoSet.isAggregableFieldName(memberName)) {
-          let data: { name: string; items: { [featureName: string]: any } } = dataMeasures[memberName];
+    if (fieldsByName[suiteName] === undefined) {
+      fieldsByName[suiteName] = {};
+    }
 
-          if (data === undefined) {
-            data = { name: memberName, items: {} };
-            dataMeasures[memberName] = data;
+    const fields = fieldsByName[suiteName];
+
+    pis.mergeFeatureSetsAndFieldsTo(featureSets, fields);
+
+    sampleProjectInfoSets[suiteName] = pis;
+
+    if (projectSet.suite === undefined || projectSet.suite === ProjectInfoSuite.allExceptAddOn) {
+      if (projectSet.infoSetData.info) {
+        for (const memberName in projectSet.infoSetData.info) {
+          if (ProjectInfoSet.isAggregableFieldName(memberName)) {
+            let data: { name: string; items: { [featureName: string]: any } } = dataMeasures[memberName];
+
+            if (data === undefined) {
+              data = { name: memberName, items: {} };
+              dataMeasures[memberName] = data;
+            }
+
+            if ((projectSet.infoSetData.info as any)[memberName] !== undefined) {
+              data.items[projectBaseName] = (projectSet.infoSetData.info as any)[memberName];
+            }
           }
+        }
+      }
 
-          if ((projectSet.infoSetData.info as any)[memberName] !== undefined) {
-            data.items[projectBaseName] = (projectSet.infoSetData.info as any)[memberName];
+      if (projectSet.infoSetData.info && projectSet.infoSetData.info.featureSets) {
+        for (const featureSetName in featureSets) {
+          const featureSet = projectSet.infoSetData.info.featureSets[featureSetName];
+
+          if (featureSet) {
+            measures[featureSetName].items[projectBaseName] = featureSet;
           }
         }
       }
     }
 
-    if (projectSet.infoSetData.info && projectSet.infoSetData.info.featureSets) {
-      for (const featureSetName in allFeatureSets) {
-        const featureSet = projectSet.infoSetData.info.featureSets[featureSetName];
-
-        if (featureSet) {
-          measures[featureSetName].items[projectBaseName] = featureSet;
-        }
-      }
+    if (issueLines[suiteName] === undefined) {
+      issueLines[suiteName] = [];
     }
 
-    if (allIssueLines.length <= MAX_LINES_PER_CSV_FILE) {
+    if (issueLines[suiteName].length <= MAX_LINES_PER_CSV_FILE) {
       const pisLines = pis.getItemCsvLines();
 
       for (let j = 0; j < pisLines.length; j++) {
-        allIssueLines.push('"' + projectBaseName + '",' + pisLines[j]);
+        issueLines[suiteName].push('"' + projectBaseName + '",' + pisLines[j]);
       }
     }
 
+    if (summaryLines[suiteName] === undefined) {
+      summaryLines[suiteName] = [];
+    }
+
     if (outputStorage) {
-      allSummaryLines.push(pis.getSummaryCsvLine(projectBaseName, projectSet.projectTitle, allFeatureSets));
+      summaryLines[suiteName].push(pis.getSummaryCsvLine(projectBaseName, projectSet.projectTitle, featureSets));
     }
   }
 
-  if (outputStorage && samplePis) {
-    if (allIssueLines.length < MAX_LINES_PER_CSV_FILE) {
-      let allCsvFile = outputStorage.rootFolder.ensureFile("all.csv");
+  if (outputStorage) {
+    for (const issueLinesName in issueLines) {
+      if (sampleProjectInfoSets[issueLinesName]) {
+        const issueLinesSet = issueLines[issueLinesName];
 
-      let allCsvContent = "Project," + csvHeader + "\r\n" + allIssueLines.join("\n");
+        if (issueLinesSet.length < MAX_LINES_PER_CSV_FILE) {
+          let allCsvFile = outputStorage.rootFolder.ensureFile(issueLinesName + ".csv");
 
-      allCsvFile.setContent(allCsvContent);
+          let allCsvContent = "Project," + csvHeader + "\r\n" + issueLinesSet.join("\n");
 
-      await allCsvFile.saveContent();
+          allCsvFile.setContent(allCsvContent);
+
+          await allCsvFile.saveContent();
+        }
+      }
     }
 
-    const projectsCsvFile = outputStorage.rootFolder.ensureFile("projects.csv");
+    for (const summaryLinesName in summaryLines) {
+      if (featureSetsByName[summaryLinesName] === undefined) {
+        featureSetsByName[summaryLinesName] = {};
+      }
 
-    let projectsCsvContent = ProjectInfoSet.getSummaryCsvHeaderLine(samplePis.info, allFeatureSets);
+      if (sampleProjectInfoSets[summaryLinesName]) {
+        const featureSets = featureSetsByName[summaryLinesName];
 
-    projectsCsvContent += "\r\n" + allSummaryLines.join("\n");
+        const summaryLinesSet = summaryLines[summaryLinesName];
 
-    projectsCsvFile.setContent(projectsCsvContent);
+        const projectsCsvFile = outputStorage.rootFolder.ensureFile(summaryLinesName + "projects.csv");
 
-    await projectsCsvFile.saveContent();
+        let projectsCsvContent = ProjectInfoSet.getSummaryCsvHeaderLine(
+          sampleProjectInfoSets[summaryLinesName].info,
+          featureSets
+        );
+
+        projectsCsvContent += "\r\n" + summaryLinesSet.join("\n");
+
+        projectsCsvFile.setContent(projectsCsvContent);
+
+        await projectsCsvFile.saveContent();
+      }
+    }
   }
 }
 

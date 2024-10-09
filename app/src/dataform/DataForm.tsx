@@ -1068,27 +1068,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     let contents = <></>;
 
     if (!this.props.readOnly) {
-      contents = (
-        /*        <Form
-          onSubmit={(event: React.SyntheticEvent<HTMLElement>, data?: FormProps) => {
-            event.stopPropagation();
-            event.preventDefault();
-            event.nativeEvent.stopImmediatePropagation();
-            event.nativeEvent.preventDefault();
-            return false;
-          }}
-        >*/
-        <div className="df-form">{formInterior}</div>
-        //</Form>
-      );
+      contents = <div className="df-form">{formInterior}</div>;
     } else {
       contents = <div className="df-ro-table">{formInterior}</div>;
-    }
-
-    let paddingLevel = 0;
-
-    if (this.props.indentLevel) {
-      paddingLevel = this.props.indentLevel;
     }
 
     if (header.length > 0) {
@@ -1096,7 +1078,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
 
     return (
-      <div className="df-outer" style={{ paddingLeft: paddingLevel * 20 }}>
+      <div className="df-outer">
         <div
           className={
             this.props.indentLevel || this.props.defaultVisualExperience === FieldVisualExperience.deemphasized
@@ -1152,12 +1134,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
   addKeyedObjectArrayComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
     const val = this._getProperty(field.id, {});
     const fieldInterior = [];
+    const childElements = [];
     Log.assert(val !== undefined, "Keyed object is not available in DataForm.");
 
     if (val && field.subForm && field.subFields) {
       const keys = [];
 
-      const headerElement = <div>{FieldUtilities.getFieldTitle(field)}</div>;
+      const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
       this.formComponentNames.push(field.id);
       this.formComponents.push(headerElement);
       fieldInterior.push(headerElement);
@@ -1220,9 +1203,22 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         this.formComponentNames.push(propertyId);
         this.formComponents.push(subForm);
 
-        fieldInterior.push(subForm);
+        childElements.push(subForm);
       }
+
+      fieldInterior.push(
+        <div
+          className="df-elementBin"
+          style={{
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+          }}
+        >
+          {childElements}
+        </div>
+      );
     }
+
     formInterior.push(
       <div className="df-fieldWrap" key={"fw" + field.id}>
         {fieldInterior}
@@ -1234,28 +1230,22 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
   addKeyedStringArrayComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
     const val = this._getProperty(field.id, {});
     const fieldInterior = [];
+    const childElements = [];
+
     Log.assert(val !== undefined, "Keyed string array not available in data form.");
 
-    if (val && field.subForm && field.subFields) {
+    if (val) {
       const keys = [];
 
-      const headerElement = <div>{FieldUtilities.getFieldTitle(field)}</div>;
+      const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
       this.formComponentNames.push(field.id);
       this.formComponents.push(headerElement);
       fieldInterior.push(headerElement);
 
-      for (const key in field.subFields) {
+      for (const key in val) {
         keys.push(key);
 
         let title = key;
-
-        if (field.subFields && field.subFields[key]) {
-          const subField = field.subFields[key];
-
-          if (subField.title) {
-            title = subField.title;
-          }
-        }
 
         let objKey = field.id;
 
@@ -1285,14 +1275,27 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         this.formComponentNames.push(propertyId);
         this.formComponents.push(subForm);
 
-        fieldInterior.push(
-          <div>
-            <div>{title}</div>
-            <div>{subForm}</div>
+        childElements.push(
+          <div className="df-stringArray">
+            <div className="df-stringArrayTitle">{title}</div>
+            <div className="df-stringArrayData">{subForm}</div>
           </div>
         );
       }
     }
+
+    fieldInterior.push(
+      <div
+        className="df-elementBin"
+        style={{
+          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+        }}
+      >
+        {childElements}
+      </div>
+    );
+
     formInterior.push(
       <div className="df-fieldWrap" key={"fw" + field.id}>
         {fieldInterior}
@@ -1346,11 +1349,12 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     const arrayOfDataVal = this._getProperty(field.id, []);
     const fieldTopper = [];
     const fieldInterior = [];
+    const childElements = [];
 
     Log.assert(arrayOfDataVal, "DFAOAC");
 
     if (arrayOfDataVal !== undefined && field.subForm && arrayOfDataVal instanceof Array) {
-      const headerElement = <div>{FieldUtilities.getFieldTitle(field)}</div>;
+      const headerElement = <div className="df-elementBinTItle">{FieldUtilities.getFieldTitle(field)}</div>;
       this.formComponentNames.push(field.id);
       this.formComponents.push(headerElement);
       fieldTopper.push(headerElement);
@@ -1445,7 +1449,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           this.formComponentNames.push(fieldName);
           this.formComponents.push(subForm);
 
-          fieldInterior.push(subForm);
+          childElements.push(subForm);
         }
       } else {
         for (const index in arrayOfDataVal) {
@@ -1526,10 +1530,23 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           this.formComponentNames.push(propertyId);
           this.formComponents.push(subForm);
 
-          fieldInterior.push(subForm);
+          childElements.push(subForm);
         }
       }
     }
+
+    fieldInterior.push(
+      <div
+        className="df-elementBin"
+        style={{
+          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+        }}
+      >
+        {childElements}
+      </div>
+    );
+
     formInterior.push(
       <div className="df-fieldWrap" key={"fw" + field.id}>
         {fieldTopper}
@@ -1635,12 +1652,6 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
       const propertyId = field.id;
 
-      let indentLevel = 0;
-
-      if (this.props.indentLevel) {
-        indentLevel = this.props.indentLevel;
-      }
-
       const subForm = (
         <DataForm
           directObject={val}
@@ -1650,9 +1661,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           parentField={field}
           theme={this.props.theme}
           title={FieldUtilities.getFieldTitle(field)}
-          defaultVisualExperience={field.visualExperience}
+          defaultVisualExperience={FieldVisualExperience.normal}
           displayTitle={true}
-          indentLevel={indentLevel}
+          indentLevel={0}
           onPropertyChanged={this._handleObjectSubFormPropertyChange}
           definition={field.subForm}
           readOnly={this.props.readOnly}

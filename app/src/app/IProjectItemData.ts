@@ -3,7 +3,7 @@
 
 import IGitHubInfo from "./IGitHubInfo";
 
-export const MaxItemTypes = 124;
+export const MaxItemTypes = 125;
 
 export enum ProjectItemCategory {
   assets,
@@ -27,7 +27,7 @@ export enum ProjectItemType {
   MCWorld = 7,
   MCTemplate = 8,
   MCFunction = 9,
-  entityTypeBehaviorJson = 10,
+  entityTypeBehavior = 10,
   entityTypeBaseJs = 11,
   actionSetJson = 12,
   ts = 13,
@@ -52,7 +52,7 @@ export enum ProjectItemType {
   modelGeometryJson = 32,
   particleJson = 33,
   renderControllerJson = 34,
-  uiTextureJson = 35,
+  ninesliceJson = 35,
   uiJson = 36,
   languagesCatalogResourceJson = 37,
   biomeBehaviorJson = 38,
@@ -140,6 +140,7 @@ export enum ProjectItemType {
   env = 121,
   prettierRcJson = 122,
   skinCatalogJson = 123,
+  tagsMetadata = 124,
 }
 
 export enum ProjectItemStorageType {

@@ -278,8 +278,10 @@ export const CustomTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & IS
         ? props.theme.siteVariables?.colorScheme.brand.background2
         : props.theme.siteVariables?.colorScheme.brand.background1,
       color: props.isSelected
-        ? props.theme.siteVariables?.colorScheme.brand.background
+        ? props.theme.siteVariables?.colorScheme.brand.foreground
         : props.theme.siteVariables?.colorScheme.brand.foreground6,
+      fontWeight: props.isSelected ? "bold" : "normal",
+      textDecoration: props.isSelected ? "underline" : "none",
       backgroundColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background2
         : props.theme.siteVariables?.colorScheme.brand.background1,
@@ -348,7 +350,7 @@ export const ExportBackupLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> &
 ) => (
   <span className="label label-toolbar">
     <FontAwesomeIcon icon={faFileExport} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Backup</span> : <></>}
+    {!props.isCompact ? <span className="label-text">Download Backup</span> : <></>}
   </span>
 );
 
@@ -357,7 +359,7 @@ export const LocalFolderLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & 
 ) => (
   <span className="label label-toolbar">
     <FontAwesomeIcon icon={faComputer} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Folder</span> : <></>}
+    {!props.isCompact ? <span className="label-text">Edit Folder</span> : <></>}
   </span>
 );
 

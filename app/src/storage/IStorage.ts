@@ -21,6 +21,8 @@ export default interface IStorage {
   rootFolder: IFolder;
   storagePath: string | undefined;
 
+  readonly folderDelimiter: string;
+
   onFileAdded: IEvent<IStorage, IFile>;
   onFileRemoved: IEvent<IStorage, string>;
   onFileContentsUpdated: IEvent<IStorage, IFile>;

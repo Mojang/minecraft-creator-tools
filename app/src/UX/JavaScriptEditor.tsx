@@ -383,10 +383,10 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
   static getUriForFile(file: IFile, preferredLanguage: ProjectScriptLanguage) {
     let baseUri = "file://fs" + StorageUtilities.ensureStartsWithDelimiter(file.storageRelativePath);
 
-    /*if (preferredLanguage === ProjectScriptLanguage.typeScript) {
-      baseUri = baseUri.replace(".js", ".ts");
-    }*/
+    baseUri = baseUri.replace(/ /gi, "__");
+
     baseUri = encodeURI(baseUri);
+
     return baseUri;
   }
 

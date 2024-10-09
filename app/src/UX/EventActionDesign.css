@@ -3,6 +3,7 @@
   min-width: calc(100% - 2px);
   max-width: calc(100% - 2px);
   overflow-y: auto;
+  padding: 4px 20px 4px 20px;
 }
 
 .ead-headerTransition {
@@ -12,35 +13,86 @@
 }
 
 .ead-header {
-  font-size: 16pt;
   padding-top: 15px;
-  padding-left: 30px;
   padding-bottom: 8px;
-  background: #242425;
+  font-weight: bold;
+  font-size: large;
 }
 
-.ead-componentHeader {
-  padding-top: 20px;
-  font-size: 14pt;
-  padding: 12px;
-  padding-top: 40px;
-  padding-bottom: 14px;
-}
-
-.ead-extraArea {
-  margin-bottom: 5px;
-}
-
-.ead-commands {
-  display: grid;
+.ead-codeSnippet {
+  background-color: black;
+  font-family: "Consolas", "Courier New", Courier, monospace;
   padding: 3px;
-  grid-template-columns: 200px 1fr;
+  text-wrap: nowrap;
 }
 
-.ead-toolBarArea {
+.ead-cgToggle {
+  border: outset 1px;
+  display: inline-block;
+  margin-right: 3px;
+  margin-bottom: 3px;
+  box-shadow: none !important;
+  text-wrap: wrap;
+  padding: 0px 8px 0px 2px !important;
+}
+
+.ead-addTriggerArea {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 100px 230px 1fr;
+  margin-bottom: 10px;
+}
+
+.ead-addTriggerInstruction {
   grid-column: 1;
+  padding-top: 6px;
 }
 
-.ead-extraArea {
+.ead-addTriggerArea .ui-dropdown__container {
+  width: 220px;
+}
+
+.ead-addTriggerDropdown {
   grid-column: 2;
+}
+
+.ead-addTriggerButton {
+  grid-column: 3;
+}
+
+.ead-cgAdd {
+  background-color: green !important;
+}
+
+.ead-cgRemove {
+  background-color: red !important;
+}
+
+.ead-icon {
+  min-width: 18px;
+  display: inline-block;
+}
+
+.ead-componentGroupsHeaderInfo {
+  padding-bottom: 4px;
+}
+
+.ead-componentGroupsBin {
+  padding: 4px;
+  border: inset 1px;
+}
+.ead-triggerTitle {
+  padding-bottom: 10px;
+  padding-top: 15px;
+  font-weight: bold;
+}
+
+.ead-actionsTitle {
+  padding-bottom: 10px;
+  padding-top: 20px;
+  font-weight: bold;
+}
+
+.ead-instruction {
+  padding-bottom: 4px;
 }

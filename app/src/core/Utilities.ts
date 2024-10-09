@@ -111,8 +111,10 @@ export default class Utilities {
       name = name.substring(0, name.length - 7);
     }
 
-    if (name.startsWith("minecraft:")) {
-      name = name.substring(10, name.length);
+    const colon = name.indexOf(":");
+
+    if (colon >= 0) {
+      name = name.substring(colon + 1);
     }
 
     name = name.replace(/[_]/gi, " ");
@@ -252,9 +254,6 @@ export default class Utilities {
       throw new TypeError(`Expected argument \`jsonString\` to be a \`string\`, got \`${typeof jsonString}\``);
     }
 
-    jsonString = jsonString.replace(/,\s*]/g, "]"); // remove trailing commas
-    jsonString = jsonString.replace(/,\s*}/g, "}"); // remove trailing commas
-
     const strip = whitespace ? Utilities.stripWithWhitespace : Utilities.stripWithoutWhitespace;
 
     let isInsideString = false;
@@ -277,6 +276,10 @@ export default class Utilities {
       }
 
       if (isInsideString) {
+        // fix control characters inside of strings, if they exist
+        if (currentCharacter === "\r" || currentCharacter === "\n" || currentCharacter === "\t") {
+          jsonString = jsonString.substring(0, index) + " " + jsonString.substring(index + 1);
+        }
         continue;
       }
 
@@ -342,11 +345,15 @@ export default class Utilities {
       }
     }
 
-    return (
+    let results =
       result +
       buffer +
-      (isInsideComment ? strip(jsonString.slice(offset), undefined, undefined) : jsonString.slice(offset))
-    );
+      (isInsideComment ? strip(jsonString.slice(offset), undefined, undefined) : jsonString.slice(offset));
+
+    results = results.replace(/,(\s*)]/g, "]"); // ["a", "b", ] => ["a", "b"]
+    results = results.replace(/,(\s*)}/g, "}"); // { "foo": "bar", } => { "foo": "bar"}
+
+    return results;
   }
 
   static setIsDebug(boolVal: boolean) {

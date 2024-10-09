@@ -53,7 +53,7 @@ export default class ProjectItemUtilities {
     ) {
       return { itemType: ProjectItemType.recipeBehaviorJson };
     } else if (firstHundred.indexOf('"minecraft:entity"') >= 0) {
-      return { itemType: ProjectItemType.entityTypeBehaviorJson };
+      return { itemType: ProjectItemType.entityTypeBehavior };
     } else if (firstHundred.indexOf('"minecraft:item"') >= 0) {
       return { itemType: ProjectItemType.itemTypeBehaviorJson };
     } else if (firstHundred.indexOf('"pools"') >= 0) {
@@ -111,7 +111,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.resourcePackManifestJson: // sort next to .behaviorPackManifestJson
         return 510;
 
-      case ProjectItemType.entityTypeBehaviorJson:
+      case ProjectItemType.entityTypeBehavior:
         return 1851;
 
       case ProjectItemType.blockTypeBehaviorJson:
@@ -187,12 +187,12 @@ export default class ProjectItemUtilities {
       case ProjectItemType.uiJson:
       case ProjectItemType.lang:
       case ProjectItemType.languagesCatalogResourceJson:
-      case ProjectItemType.uiTextureJson:
+      case ProjectItemType.ninesliceJson:
       case ProjectItemType.attachableResourceJson:
       case ProjectItemType.audio:
         return ProjectItemCategory.assets;
 
-      case ProjectItemType.entityTypeBehaviorJson:
+      case ProjectItemType.entityTypeBehavior:
       case ProjectItemType.entityTypeResource:
       case ProjectItemType.entityTypeBaseJs:
       case ProjectItemType.entityTypeBaseTs:
@@ -312,7 +312,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.json:
       case ProjectItemType.behaviorPackManifestJson:
       case ProjectItemType.resourcePackManifestJson:
-      case ProjectItemType.entityTypeBehaviorJson:
+      case ProjectItemType.entityTypeBehavior:
       case ProjectItemType.tickJson:
       case ProjectItemType.cameraJson:
       case ProjectItemType.actionSetJson:
@@ -336,7 +336,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.modelGeometryJson:
       case ProjectItemType.particleJson:
       case ProjectItemType.renderControllerJson:
-      case ProjectItemType.uiTextureJson:
+      case ProjectItemType.ninesliceJson:
       case ProjectItemType.uiJson:
       case ProjectItemType.languagesCatalogResourceJson:
       case ProjectItemType.biomeBehaviorJson:
@@ -443,7 +443,7 @@ export default class ProjectItemUtilities {
         return "Entity type JavaScript";
       case ProjectItemType.entityTypeBaseTs:
         return "Entity type TypeScript";
-      case ProjectItemType.entityTypeBehaviorJson:
+      case ProjectItemType.entityTypeBehavior:
         return "Entity type";
       case ProjectItemType.MCTemplate:
         return "Minecraft template";
@@ -527,8 +527,6 @@ export default class ProjectItemUtilities {
         return "Particle";
       case ProjectItemType.renderControllerJson:
         return "Render controller";
-      case ProjectItemType.uiTextureJson:
-        return "UI texture";
       case ProjectItemType.uiJson:
         return "User interface";
       case ProjectItemType.languagesCatalogResourceJson:
@@ -584,11 +582,13 @@ export default class ProjectItemUtilities {
       case ProjectItemType.env:
         return "Environment File";
       case ProjectItemType.esLintConfigMjs:
-        return "ESLint Config";
+        return "ESLint config";
       case ProjectItemType.justConfigTs:
-        return "Just Config";
+        return "Just config";
       case ProjectItemType.docInfoJson:
         return "Doc info json";
+      case ProjectItemType.ninesliceJson:
+        return "Nine-slice scaling config";
       case ProjectItemType.scriptTypesJson:
         return "Script types definition";
       case ProjectItemType.vanillaDataJson:
@@ -742,7 +742,7 @@ export default class ProjectItemUtilities {
 
         return scriptsFolder;
 
-      case ProjectItemType.entityTypeBehaviorJson:
+      case ProjectItemType.entityTypeBehavior:
       case ProjectItemType.MCFunction:
         const defaultBpFolder = await project.getDefaultBehaviorPackFolder();
 
@@ -819,7 +819,7 @@ export default class ProjectItemUtilities {
         return ["render_controllers"];
       case ProjectItemType.attachableResourceJson:
         return ["attachables"];
-      case ProjectItemType.entityTypeBehaviorJson:
+      case ProjectItemType.entityTypeBehavior:
         return ["entities"];
       case ProjectItemType.itemTypeBehaviorJson:
       case ProjectItemType.itemTypeResourceJson:

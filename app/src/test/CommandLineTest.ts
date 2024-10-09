@@ -12,6 +12,9 @@ import { chunksToLinesAsync } from "@rauschma/stringio";
 import { Readable } from "stream";
 import * as fs from "fs";
 import Utilities from "../core/Utilities";
+import ProjectInfoSet from "../info/ProjectInfoSet";
+import { ProjectInfoSuite } from "../info/IProjectInfoData";
+import ProjectUtilities from "../app/ProjectUtilities";
 
 CartoApp.hostType = HostType.testLocal;
 
@@ -50,31 +53,31 @@ localEnv = new LocalEnvironment(false);
   await sampleFolder.ensureExists();
 
   CartoApp.prefsStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "prefs" + NodeStorage.folderDelimiter,
+    localEnv.utilities.testWorkingPath + "prefs" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
   CartoApp.projectsStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "projects" + NodeStorage.folderDelimiter,
+    localEnv.utilities.testWorkingPath + "projects" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
   CartoApp.packStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "packs" + NodeStorage.folderDelimiter,
+    localEnv.utilities.testWorkingPath + "packs" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
   CartoApp.worldStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "worlds" + NodeStorage.folderDelimiter,
+    localEnv.utilities.testWorkingPath + "worlds" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
   CartoApp.deploymentStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "deployment" + NodeStorage.folderDelimiter,
+    localEnv.utilities.testWorkingPath + "deployment" + NodeStorage.platformFolderDelimiter,
     ""
   );
   CartoApp.workingStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "working" + NodeStorage.folderDelimiter,
+    localEnv.utilities.testWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
@@ -82,6 +85,14 @@ localEnv = new LocalEnvironment(false);
   Database.contentFolder = coreStorage.rootFolder;
 
   await CartoApp.init(); // carto app init does something here that, if removed, causes these tests to fail. Also, await needs to be here.
+
+  carto = CartoApp.carto;
+
+  if (!carto) {
+    return;
+  }
+
+  await carto.load();
 
   run();
 })();
@@ -105,7 +116,7 @@ function removeResultFolder(scenarioName: string) {
       StorageUtilities.ensureEndsWithDelimiter(scenarioName);
 
     // guard against being called at a "more root" file path
-    if (fs.existsSync(path) && Utilities.countChar(path, NodeStorage.folderDelimiter) > 5)
+    if (fs.existsSync(path) && Utilities.countChar(path, NodeStorage.platformFolderDelimiter) > 5)
       try {
         fs.rmSync(path, {
           recursive: true,
@@ -179,6 +190,9 @@ describe("createCommandAddonStarter", async () => {
   let exitCode: number | null = null;
   const stdoutLines: string[] = [];
   const stderrLines: string[] = [];
+  let project: Project | null = null;
+  let allProjectInfoSet: ProjectInfoSet | null = null;
+  let addonProjectInfoSet: ProjectInfoSet | null = null;
 
   before(function (done) {
     this.timeout(10000);
@@ -201,7 +215,35 @@ describe("createCommandAddonStarter", async () => {
 
     process.on("exit", (code) => {
       exitCode = code;
-      done();
+
+      assert(carto, "Carto is not properly initialized");
+
+      project = new Project(carto, "createCommandAddonStarter", null);
+
+      // exclude eslint because we know the .ts comes with some warnings due to
+      // the starter TS having some unused variables.
+      allProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.allExceptAddOn, ["ESLINT"]);
+
+      addonProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.addOn);
+
+      project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
+      project.localFolderPath = __dirname + "/../../test/results/createCommandAddonStarter/";
+
+      project.inferProjectItemsFromFiles().then(() => {
+        assert(project);
+
+        ProjectUtilities.setIsAddon(project).then(() => {
+          assert(allProjectInfoSet);
+
+          allProjectInfoSet.generateForProject().then(() => {
+            assert(addonProjectInfoSet);
+
+            addonProjectInfoSet.generateForProject().then(() => {
+              done();
+            });
+          });
+        });
+      });
     });
   });
 
@@ -213,8 +255,23 @@ describe("createCommandAddonStarter", async () => {
     assert.equal(exitCode, 0);
   }).timeout(10000);
 
+  it("should have 17 project items", async () => {
+    assert(project);
+    assert.equal(project.items.length, 17);
+  }).timeout(10000);
+
+  it("main validation should have 0 errors, failures, or warnings", async () => {
+    assert(allProjectInfoSet);
+    assert.equal(allProjectInfoSet.errorFailWarnCount, 0, allProjectInfoSet.errorFailWarnString);
+  }).timeout(10000);
+
+  it("addon validation should have 0 errors, failures, or warnings", async () => {
+    assert(addonProjectInfoSet);
+    assert.equal(addonProjectInfoSet.errorFailWarnCount, 0, addonProjectInfoSet.errorFailWarnString);
+  }).timeout(10000);
+
   it("output matches", async () => {
-    await folderMatches("createCommandAddonStarter");
+    await folderMatches("createCommandAddonStarter", ["manifest.json"]);
   });
 });
 

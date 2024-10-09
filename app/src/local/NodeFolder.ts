@@ -51,8 +51,8 @@ export default class NodeFolder extends FolderBase implements IFolder {
   get fullPath() {
     let path = this._path;
 
-    if (!path.endsWith(NodeStorage.folderDelimiter)) {
-      path += NodeStorage.folderDelimiter;
+    if (!path.endsWith(NodeStorage.platformFolderDelimiter)) {
+      path += NodeStorage.platformFolderDelimiter;
     }
 
     return path + this.name;
@@ -403,7 +403,7 @@ export default class NodeFolder extends FolderBase implements IFolder {
           addFilesToInclusionList,
           listings,
           destStorageRelativePath,
-          copyPath + folderName + NodeStorage.folderDelimiter
+          copyPath + folderName + NodeStorage.platformFolderDelimiter
         );
       }
     }
@@ -483,8 +483,8 @@ export default class NodeFolder extends FolderBase implements IFolder {
       results.forEach((fileName: string) => {
         let filePath = this.fullPath;
 
-        if (!filePath.endsWith(NodeStorage.folderDelimiter)) {
-          filePath += NodeStorage.folderDelimiter;
+        if (!filePath.endsWith(NodeStorage.platformFolderDelimiter)) {
+          filePath += NodeStorage.platformFolderDelimiter;
         }
 
         filePath += fileName;

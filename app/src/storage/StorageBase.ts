@@ -11,6 +11,12 @@ export default abstract class StorageBase implements IStorage {
   isContentUpdated: boolean = false;
   readOnly: boolean = false;
 
+  static readonly slashFolderDelimiter = "/";
+
+  get folderDelimiter() {
+    return StorageBase.slashFolderDelimiter;
+  }
+
   #onFileAdded = new EventDispatcher<StorageBase, IFile>();
   #onFileRemoved = new EventDispatcher<StorageBase, string>();
   #onFileContentsUpdated = new EventDispatcher<StorageBase, IFile>();
@@ -30,8 +36,6 @@ export default abstract class StorageBase implements IStorage {
   public set storagePath(newStoragePath: string | undefined) {
     this.#storagePath = newStoragePath;
   }
-
-  abstract joinPath(pathA: string, pathB: string): string;
 
   public resetContentUpdated() {
     this.isContentUpdated = false;
@@ -77,5 +81,27 @@ export default abstract class StorageBase implements IStorage {
 
   notifyFileRemoved(fileName: string) {
     this.#onFileRemoved.dispatch(this, fileName);
+  }
+
+  joinPath(pathA: string, pathB: string) {
+    let fullPath = pathA;
+
+    if (!fullPath.endsWith(StorageBase.slashFolderDelimiter)) {
+      fullPath += StorageBase.slashFolderDelimiter;
+    }
+
+    fullPath += pathB;
+
+    return fullPath;
+  }
+
+  static getParentFolderPath(path: string) {
+    const lastDelim = path.lastIndexOf(StorageBase.slashFolderDelimiter);
+
+    if (lastDelim < 0) {
+      return path;
+    }
+
+    return path.substring(0, lastDelim);
   }
 }

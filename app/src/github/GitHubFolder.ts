@@ -39,8 +39,8 @@ export default class GitHubFolder extends FolderBase implements IFolder {
   get fullPath() {
     let path = this._parentPath;
 
-    if (!path.endsWith(GitHubStorage.folderDelimiter)) {
-      path += GitHubStorage.folderDelimiter;
+    if (!path.endsWith(GitHubStorage.slashFolderDelimiter)) {
+      path += GitHubStorage.slashFolderDelimiter;
     }
 
     path += this.name;

@@ -1,0 +1,38 @@
+{
+  "title": "Leashable",
+  "description": "Describes how this mob can be leashed to other items",
+  "fields": [
+    {
+      "id": "can_be_stolen",
+      "dataType": 1,
+      "defaultValue": false
+    },
+    {
+      "id": "hard_distance",
+      "description": "Distance in blocks at which the leash stiffens, restricting movement.",
+      "dataType": 0,
+      "experienceType": 3,
+      "minValue": 0,
+      "suggestedMaxValue": 20,
+      "defaultValue": 6
+    },
+    {
+      "id": "soft_distance",
+      "description": "Distance in blocks at which the 'spring' effect starts acting to keep this entity close to the entity that leashed it.",
+      "dataType": 0,
+      "experienceType": 3,
+      "minValue": 0,
+      "suggestedMaxValue": 20,
+      "defaultValue": 4
+    },
+    {
+      "id": "max_distance",
+      "description": "Distance in blocks it which the leash breaks.",
+      "dataType": 0,
+      "experienceType": 3,
+      "minValue": 0,
+      "suggestedMaxValue": 20,
+      "defaultValue": 0
+    }
+  ]
+}

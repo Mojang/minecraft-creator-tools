@@ -365,11 +365,11 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
           const entityTypeResourceDef = await EntityTypeResourceDefinition.ensureOnFile(projectItem.file);
 
           if (
-            entityTypeResourceDef?.dataWrapper &&
-            entityTypeResourceDef?.dataWrapper["minecraft:client_entity"] &&
-            entityTypeResourceDef?.dataWrapper["minecraft:client_entity"].description
+            entityTypeResourceDef?._dataWrapper &&
+            entityTypeResourceDef?._dataWrapper["minecraft:client_entity"] &&
+            entityTypeResourceDef?._dataWrapper["minecraft:client_entity"].description
           ) {
-            const desc = entityTypeResourceDef.dataWrapper["minecraft:client_entity"].description;
+            const desc = entityTypeResourceDef._dataWrapper["minecraft:client_entity"].description;
             const textures = desc.textures;
 
             if (textures) {

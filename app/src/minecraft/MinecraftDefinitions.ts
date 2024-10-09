@@ -18,7 +18,7 @@ export default class MinecraftDefinitions {
     }
 
     switch (projectItem.itemType) {
-      case ProjectItemType.entityTypeBehaviorJson:
+      case ProjectItemType.entityTypeBehavior:
         return await EntityTypeDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.itemTypeBehaviorJson:
         return await ItemTypeBehaviorDefinition.ensureOnFile(projectItem.file);

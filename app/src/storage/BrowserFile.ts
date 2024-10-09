@@ -24,7 +24,7 @@ export default class BrowserFile extends FileBase implements IFile {
   }
 
   get fullPath(): string {
-    return this._parentFolder.fullPath + BrowserStorage.folderDelimiter + this.name;
+    return this._parentFolder.fullPath + BrowserStorage.slashFolderDelimiter + this.name;
   }
 
   get size(): number {

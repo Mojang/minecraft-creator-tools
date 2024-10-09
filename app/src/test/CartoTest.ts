@@ -50,31 +50,31 @@ localEnv = new LocalEnvironment(false);
   await resultsFolder.ensureExists();
 
   CartoApp.prefsStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "prefs" + NodeStorage.folderDelimiter,
+    localEnv.utilities.testWorkingPath + "prefs" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
   CartoApp.projectsStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "projects" + NodeStorage.folderDelimiter,
+    localEnv.utilities.testWorkingPath + "projects" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
   CartoApp.packStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "packs" + NodeStorage.folderDelimiter,
+    localEnv.utilities.testWorkingPath + "packs" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
   CartoApp.worldStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "worlds" + NodeStorage.folderDelimiter,
+    localEnv.utilities.testWorkingPath + "worlds" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
   CartoApp.deploymentStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "deployment" + NodeStorage.folderDelimiter,
+    localEnv.utilities.testWorkingPath + "deployment" + NodeStorage.platformFolderDelimiter,
     ""
   );
   CartoApp.workingStorage = new NodeStorage(
-    localEnv.utilities.testWorkingPath + "working" + NodeStorage.folderDelimiter,
+    localEnv.utilities.testWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
     ""
   );
 
@@ -135,12 +135,19 @@ function removeResultFolder(scenarioName: string) {
     const path =
       StorageUtilities.ensureEndsWithDelimiter(resultsFolder.fullPath) +
       StorageUtilities.ensureEndsWithDelimiter(scenarioName);
+
     // guard against being called at a "more root" file path
-    if (fs.existsSync(path) && Utilities.countChar(path, NodeStorage.folderDelimiter) > 5)
-      // @ts-ignore
-      fs.rmSync(path, {
-        recursive: true,
-      });
+    if (fs.existsSync(path) && Utilities.countChar(path, NodeStorage.platformFolderDelimiter) > 5) {
+      try {
+        fs.rmSync(path, {
+          recursive: true,
+        });
+      } catch (e) {
+        console.log("Error occurred during rmSync on '" + path + "'");
+
+        throw e;
+      }
+    }
   }
 }
 

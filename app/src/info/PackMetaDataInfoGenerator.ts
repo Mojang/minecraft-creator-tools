@@ -2,11 +2,11 @@
 // Licensed under the MIT License.
 
 import ProjectInfoItem from "./ProjectInfoItem";
-import ProjectItem from "../app/ProjectItem";
-import IProjectItemInfoGenerator from "./IProjectItemInfoGenerator";
 import ProjectInfoSet from "./ProjectInfoSet";
+import IProjectInfoGenerator from "./IProjectInfoGenerator";
+import Project from "../app/Project";
 
-export default class PackMetaDataInformationGenerator implements IProjectItemInfoGenerator {
+export default class PackMetaDataInformationGenerator implements IProjectInfoGenerator {
   id = "PACKMETADATA";
   title = "General info";
 
@@ -18,7 +18,7 @@ export default class PackMetaDataInformationGenerator implements IProjectItemInf
 
   summarize(info: any, infoSet: ProjectInfoSet) {}
 
-  async generate(projectItem: ProjectItem): Promise<ProjectInfoItem[]> {
+  async generate(project: Project): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
     return items;

@@ -1237,6 +1237,7 @@ export default class Carto {
     }
 
     galleryProjectId = galleryProjectId.toLowerCase();
+    galleryProjectId = galleryProjectId.replace(/-/gi, "");
 
     for (const galProj of this._gallery.items) {
       if (galProj.id.toLowerCase() === galleryProjectId) {

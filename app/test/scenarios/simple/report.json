@@ -84,6 +84,14 @@
         "Average": 9872
       }
     },
+    "errorCount": 0,
+    "internalProcessingErrorCount": 0,
+    "warningCount": 0,
+    "testSuccessCount": 9,
+    "testFailCount": 1,
+    "errorSummary": "",
+    "internalProcessingErrorSummary": "",
+    "testFailSummary": "TESTFAIL: [PATHLENGTH003] File path contains more than 80 characters, and may not run on all devices: /behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure",
     "summary": {
       "ITEMS": {
         "2": {
@@ -301,12 +309,6 @@
       "UNKJSON": {
         "1": {
           "defaultMessage": "Test Unknown JSON completed successfully.",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "PACKMETADATA": {
-        "1": {
-          "defaultMessage": "Test General info completed successfully.",
           "testCompleteSuccesses": 1
         }
       },
@@ -787,11 +789,6 @@
     {
       "iTp": 0,
       "gId": "UNKJSON",
-      "gIx": 1
-    },
-    {
-      "iTp": 0,
-      "gId": "PACKMETADATA",
       "gIx": 1
     },
     {

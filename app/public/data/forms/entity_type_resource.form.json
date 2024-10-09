@@ -7,27 +7,22 @@
     },
     {
       "id": "materials",
-      "title": "Materials",
       "dataType": 24
     },
     {
       "id": "textures",
-      "title": "Textures",
       "dataType": 24
     },
     {
       "id": "geometry",
-      "title": "Geometry",
       "dataType": 24
     },
     {
       "id": "animations",
-      "title": "Animations",
       "dataType": 24
     },
     {
       "id": "render_controllers",
-      "title": "Render Controllers",
       "dataType": 17
     }
   ]

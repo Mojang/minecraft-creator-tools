@@ -306,31 +306,35 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
       if (projectItem.file) {
         const modGeo = await ModelGeometryDefinition.ensureOnFile(projectItem.file);
 
-        if (modGeo && modGeo.identifier) {
-          let modGeoBreaks = modGeo.identifier.split(".");
+        if (modGeo) {
+          for (const modId of modGeo.identifiers) {
+            if (modGeo && modId) {
+              let modGeoBreaks = modId.split(".");
 
-          if (modGeoBreaks.length < 2 || modGeoBreaks[0] !== "geometry") {
-            items.push(
-              new ProjectInfoItem(
-                InfoItemType.testCompleteFail,
-                this.id,
-                150,
-                `Geometry is not in expected form of geometry.creatorshortname_projectshortname.other`,
-                projectItem,
-                modGeo.identifier
-              )
-            );
-          } else if (!AddOnRequirementsGenerator.isNamespacedString(modGeoBreaks[1])) {
-            items.push(
-              new ProjectInfoItem(
-                InfoItemType.testCompleteFail,
-                this.id,
-                151,
-                `Geometry identifier section is not in expected form of geometry.creatorshortname_projectshortname`,
-                projectItem,
-                modGeo.identifier
-              )
-            );
+              if (modGeoBreaks.length < 2 || modGeoBreaks[0] !== "geometry") {
+                items.push(
+                  new ProjectInfoItem(
+                    InfoItemType.testCompleteFail,
+                    this.id,
+                    150,
+                    `Geometry is not in expected form of geometry.creatorshortname_projectshortname.other`,
+                    projectItem,
+                    modId
+                  )
+                );
+              } else if (!AddOnRequirementsGenerator.isNamespacedString(modGeoBreaks[1])) {
+                items.push(
+                  new ProjectInfoItem(
+                    InfoItemType.testCompleteFail,
+                    this.id,
+                    151,
+                    `Geometry identifier section is not in expected form of geometry.creatorshortname_projectshortname`,
+                    projectItem,
+                    modId
+                  )
+                );
+              }
+            }
           }
         }
       }

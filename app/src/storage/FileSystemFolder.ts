@@ -58,7 +58,9 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
   }
 
   get fullPath() {
-    return this._parentPath + FileSystemStorage.folderDelimiter + StorageUtilities.canonicalizeName(this.name);
+    return (
+      this._parentPath + FileSystemStorage.fileSystemFolderDelimiter + StorageUtilities.canonicalizeName(this.name)
+    );
   }
 
   constructor(

@@ -50,8 +50,71 @@ export default class ProjectInfoSet {
     }
   }
 
+  static getSuiteString(suite: ProjectInfoSuite) {
+    switch (suite) {
+      case ProjectInfoSuite.addOn:
+        return "addon";
+
+      case ProjectInfoSuite.currentPlatformVersions:
+        return "currentplatform";
+
+      default:
+        return "all";
+    }
+  }
+
   get completedGeneration() {
     return this._completedGeneration;
+  }
+
+  get errorAndFailCount() {
+    let count = 0;
+
+    for (const item of this.items) {
+      if (
+        item.itemType === InfoItemType.error ||
+        item.itemType === InfoItemType.internalProcessingError ||
+        item.itemType === InfoItemType.testCompleteFail
+      ) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  get errorFailWarnCount() {
+    let count = 0;
+
+    for (const item of this.items) {
+      if (
+        item.itemType === InfoItemType.error ||
+        item.itemType === InfoItemType.warning ||
+        item.itemType === InfoItemType.internalProcessingError ||
+        item.itemType === InfoItemType.testCompleteFail
+      ) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  get errorFailWarnString() {
+    let str: string[] = [];
+
+    for (const item of this.items) {
+      if (
+        item.itemType === InfoItemType.error ||
+        item.itemType === InfoItemType.warning ||
+        item.itemType === InfoItemType.internalProcessingError ||
+        item.itemType === InfoItemType.testCompleteFail
+      ) {
+        str.push(item.toString());
+      }
+    }
+
+    return str.join("\r\n");
   }
 
   constructor(
@@ -140,6 +203,30 @@ export default class ProjectInfoSet {
     }
 
     return undefined;
+  }
+
+  getCountByType(itemType: InfoItemType) {
+    let count = 0;
+
+    for (const item of this.items) {
+      if (item.itemType === itemType) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  getSummaryByType(itemType: InfoItemType) {
+    let str: string[] = [];
+
+    for (const item of this.items) {
+      if (str.length < 50 && item.itemType === itemType) {
+        str.push(item.toString());
+      }
+    }
+
+    return str.join("\r\n");
   }
 
   matchesSuite(
@@ -297,6 +384,16 @@ export default class ProjectInfoSet {
       const pendingLoad = this._pendingGenerateRequests;
       this._pendingGenerateRequests = [];
       this._isGenerating = false;
+
+      this.info.errorCount = this.getCountByType(InfoItemType.error);
+      this.info.internalProcessingErrorCount = this.getCountByType(InfoItemType.internalProcessingError);
+      this.info.warningCount = this.getCountByType(InfoItemType.warning);
+      this.info.testSuccessCount = this.getCountByType(InfoItemType.testCompleteSuccess);
+      this.info.testFailCount = this.getCountByType(InfoItemType.testCompleteFail);
+
+      this.info.errorSummary = this.getSummaryByType(InfoItemType.error);
+      this.info.internalProcessingErrorSummary = this.getSummaryByType(InfoItemType.internalProcessingError);
+      this.info.testFailSummary = this.getSummaryByType(InfoItemType.testCompleteFail);
 
       if (valOperId !== undefined) {
         await this.project?.carto.notifyOperationEnded(

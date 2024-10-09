@@ -20,8 +20,8 @@ export default class NodeFile extends FileBase implements IFile {
   get fullPath() {
     let path = this._parentFolder.fullPath;
 
-    if (!path.endsWith(NodeStorage.folderDelimiter)) {
-      path += NodeStorage.folderDelimiter;
+    if (!path.endsWith(NodeStorage.platformFolderDelimiter)) {
+      path += NodeStorage.platformFolderDelimiter;
     }
 
     return path + this.name;

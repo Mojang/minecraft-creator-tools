@@ -56,6 +56,14 @@
         "Count": 1
       }
     },
+    "errorCount": 0,
+    "internalProcessingErrorCount": 0,
+    "warningCount": 0,
+    "testSuccessCount": 2,
+    "testFailCount": 3,
+    "errorSummary": "",
+    "internalProcessingErrorSummary": "",
+    "testFailSummary": "TESTFAIL: [ADDONREQ102] Found an add-on-blocked folder 'entities' in a parent folder pack\\loot_tables. Should be named 'creatorshortname' and not a common term: entities\r\nTESTFAIL: [ADDONREQ104] Found a loose file 'sheepomelon.json' in loot_tables\\entities. Files should only be in the folder loot_tables\\entities\\<mygamename>: sheepomelon.json\r\nTESTFAIL: [ADDONREQ104] Found a loose file 'sheepomelon_shear.json' in loot_tables\\entities. Files should only be in the folder loot_tables\\entities\\<mygamename>: sheepomelon_shear.json",
     "summary": {
       "PACKSIZE": {
         "1": {

@@ -18,7 +18,7 @@
 .ete-mainArea {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 55px 1fr;
+  grid-template-rows: 45px 1fr;
 }
 
 .ete-componentEditorInterior {
@@ -81,8 +81,7 @@
 .ete-header {
   font-size: 16pt;
   padding-top: 10px;
-  padding-left: 30px;
-  padding-bottom: 13px;
+  padding-left: 36px;
 }
 
 .ete-componentHeader {
@@ -107,7 +106,7 @@
 .ete-toolBarArea {
   grid-column: 1;
   width: 100%;
-  padding-top: 24px;
+  padding-top: 13px;
   padding-left: 29px;
 }
 

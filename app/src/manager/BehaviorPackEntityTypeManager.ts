@@ -151,7 +151,7 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
 
-      if (pi.itemType === ProjectItemType.entityTypeBehaviorJson) {
+      if (pi.itemType === ProjectItemType.entityTypeBehavior) {
         await pi.ensureFileStorage();
 
         if (pi.file) {

@@ -103,7 +103,7 @@ export default class ClUtils {
   }
 
   static getIsWriteCommand(taskType: TaskType) {
-    return taskType === TaskType.create || taskType === TaskType.add;
+    return taskType === TaskType.world || taskType === TaskType.create || taskType === TaskType.add;
   }
 
   static async getMainWorkFolder(taskType: TaskType, inputFolder?: string, outputFolder?: string) {
@@ -128,9 +128,7 @@ export default class ClUtils {
     const exists = await workFolder.exists();
 
     if (!exists) {
-      throw new Error(
-        "Specified folder path '" + workFolder.fullPath + "' does not exist within '" + process.cwd() + "'."
-      );
+      throw new Error("Specified folder path '" + workFolder.fullPath + "' does not exist within '" + __dirname + "'.");
     }
 
     await workFolder.load();
@@ -144,27 +142,27 @@ export default class ClUtils {
     CartoApp.ensureLocalFolder = ClUtils.ensureLocalFolder;
 
     CartoApp.prefsStorage = new NodeStorage(
-      localEnv.utilities.cliWorkingPath + "prefs" + NodeStorage.folderDelimiter,
+      localEnv.utilities.cliWorkingPath + "prefs" + NodeStorage.platformFolderDelimiter,
       ""
     );
 
     CartoApp.projectsStorage = new NodeStorage(
-      localEnv.utilities.cliWorkingPath + "projects" + NodeStorage.folderDelimiter,
+      localEnv.utilities.cliWorkingPath + "projects" + NodeStorage.platformFolderDelimiter,
       ""
     );
 
     CartoApp.packStorage = new NodeStorage(
-      localEnv.utilities.cliWorkingPath + "packs" + NodeStorage.folderDelimiter,
+      localEnv.utilities.cliWorkingPath + "packs" + NodeStorage.platformFolderDelimiter,
       ""
     );
 
     CartoApp.deploymentStorage = new NodeStorage(
-      localEnv.utilities.cliWorkingPath + "deployment" + NodeStorage.folderDelimiter,
+      localEnv.utilities.cliWorkingPath + "deployment" + NodeStorage.platformFolderDelimiter,
       ""
     );
 
     CartoApp.workingStorage = new NodeStorage(
-      localEnv.utilities.cliWorkingPath + "working" + NodeStorage.folderDelimiter,
+      localEnv.utilities.cliWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
       ""
     );
 

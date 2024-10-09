@@ -1,4 +1,5 @@
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
+import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
 import { ProjectItemType } from "./IProjectItemData";
 import Project from "./Project";
 
@@ -13,7 +14,7 @@ export default class ProjectItemRelations {
     }
 
     for (const item of items) {
-      if (item.itemType === ProjectItemType.entityTypeBehaviorJson) {
+      if (item.itemType === ProjectItemType.entityTypeBehavior) {
         await item.ensureStorage();
 
         if (item.file) {
@@ -21,6 +22,16 @@ export default class ProjectItemRelations {
 
           if (entityTypeBehavior) {
             entityTypeBehavior.addChildItems(project, item);
+          }
+        }
+      } else if (item.itemType === ProjectItemType.entityTypeResource) {
+        await item.ensureStorage();
+
+        if (item.file) {
+          const entityTypeResource = await EntityTypeResourceDefinition.ensureOnFile(item.file);
+
+          if (entityTypeResource) {
+            entityTypeResource.addChildItems(project, item);
           }
         }
       }
