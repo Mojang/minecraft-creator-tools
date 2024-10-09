@@ -376,7 +376,7 @@ export default class App extends Component<AppProps, AppState> {
           const lastPeriod = openData.lastIndexOf(".");
 
           if (lastPeriod > 0) {
-            openData = openData.substring(lastPeriod);
+            openData = openData.substring(0, lastPeriod);
           }
 
           this._ensureProjectFromGalleryId(openData, updateContent);

@@ -79,7 +79,7 @@
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/custom-components",
       "localLogo": "items/potion_bottle_damageBoost.png",
-      "id": "customComponents",
+      "id": "registeringExampleCustomComponent",
       "type": 0
     },
     {
@@ -492,6 +492,33 @@
       "gitHubFolder": "/script-box",
       "localLogo": "ui/timer.png",
       "id": "every30Seconds",
+      "type": 3
+    },
+    {
+      "title": "Check Block Tags",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/timer.png",
+      "id": "checkBlockTags",
+      "type": 3
+    },
+    {
+      "title": "Containers",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/timer.png",
+      "id": "containers",
+      "type": 3
+    },
+    {
+      "title": "Place Items in Chest",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-scripting-samples",
+      "gitHubFolder": "/script-box",
+      "localLogo": "ui/timer.png",
+      "id": "placeItemsInChest",
       "type": 3
     },
     {

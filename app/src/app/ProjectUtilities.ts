@@ -988,6 +988,7 @@ export default class ProjectUtilities {
       "ItemStack",
       "MolangVariableMap",
       "EntityInventoryComponent",
+      "BlockInventoryComponent",
       "Enchantment",
       "ItemEnchantsComponent",
       "EntityHealthComponent",
