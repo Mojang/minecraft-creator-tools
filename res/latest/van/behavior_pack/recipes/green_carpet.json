@@ -1,0 +1,32 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:green_carpet"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "carpet",
+    "pattern": [
+      "##"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:wool",
+        "data": 13
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:wool",
+        "data": 13
+      }
+    ],
+    "result": {
+      "item": "minecraft:carpet",
+      "data": 13,
+      "count": 3
+    }
+  }
+}

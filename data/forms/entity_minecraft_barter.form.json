@@ -1,0 +1,18 @@
+{
+  "description": "Enables the component to drop an item as a barter exchange.",
+  "fields": [
+    {
+      "id": "barter_table",
+      "description": "Loot table that's used to drop a random item.",
+      "dataType": 8,
+      "lookupId": "lootTable"
+    },
+    {
+      "id": "cooldown_after_being_attacked",
+      "description": "Duration, in seconds, for which mob won't barter items if it was hurt.",
+      "dataType": 18,
+      "minValue": 0,
+      "maxValue": 60
+    }
+  ]
+}

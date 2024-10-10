@@ -1,0 +1,33 @@
+{
+  "files": [
+    "common_1.0.0.json",
+    "common_1.1.0.json",
+    "common_1.2.0.json",
+    "debug-utilities_1.0.0-beta.json",
+    "server-admin_1.0.0-beta.json",
+    "server-gametest_1.0.0-beta.json",
+    "server-net_1.0.0-beta.json",
+    "server-ui_1.0.0.json",
+    "server-ui_1.1.0.json",
+    "server-ui_1.2.0.json",
+    "server-ui_1.3.0.json",
+    "server-ui_1.4.0-beta.json",
+    "server_1.0.0.json",
+    "server_1.1.0.json",
+    "server_1.2.0.json",
+    "server_1.3.0.json",
+    "server_1.4.0.json",
+    "server_1.5.0.json",
+    "server_1.10.0.json",
+    "server_1.11.0.json",
+    "server_1.6.0.json",
+    "server_1.7.0.json",
+    "server_1.8.0.json",
+    "server_1.9.0.json",
+    "server_1.12.0.json",
+    "server_1.13.0.json",
+    "server_1.14.0.json",
+    "server_1.15.0-beta.json"
+  ],
+  "folders": []
+}

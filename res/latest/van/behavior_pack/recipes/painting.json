@@ -1,0 +1,33 @@
+{
+    "format_version": "1.20.10",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "minecraft:painting"
+        },
+        "tags": [
+            "crafting_table"
+        ],
+        "pattern": [
+            "AAA",
+            "ABA",
+            "AAA"
+        ],
+        "key": {
+            "A": {
+                "item": "minecraft:stick"
+            },
+            "B": {
+                "item": "minecraft:wool"
+            }
+        },
+        "unlock": [
+          {
+            "item": "minecraft:wool"
+          }
+        ],
+        "result": {
+            "item": "painting",
+            "count": 1
+        }
+    }
+}

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+
+    <meta name="description" content="Minecraft Creator Tools" />
+
+    <link rel="apple-touch-icon" href="/logo192.png" />
+
+    <link rel="manifest" href="/manifest.json" />
+
+    <title>Docs - Minecraft Creator Tools </title>
+
+    <style type="text/css">
+      body {
+        background-color: #101010;
+        color: #E0E0E0;
+        margin: 0px;
+        padding: 0px;
+        width: 100vw;
+        height: 100vh;
+        overflow-x: hidden;
+        font-size: medium;
+        font-family: "Noto Sans", "Segoe UI", "Helvetica Neue", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      a {
+        color: #bb7f56;
+        text-decoration: none;
+      }
+
+      a:hover {
+        color: white;
+        text-decoration: underline;
+      }
+
+      .g-outer {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+      }
+
+      .g-overlay {
+        display: grid;
+        position: fixed;
+        background-color: black;;
+        width: 220px;
+        height: 100vh;
+        max-width: 220px;
+        max-height: 100vh;
+        grid-template-rows: 70px;
+      }
+
+      .g-leftRailSpacerCell {
+        grid-column: 1;
+      }
+      
+      .g-contentsCell {
+        grid-column: 2;
+        padding-left:20px;
+        padding-right:40px;
+        max-width: 800px;
+      }
+
+      .g-logoCell {
+        grid-column: 1;
+        grid-row:1;
+        background-color: black;
+        padding-left: 4px;
+      }
+
+      .g-logoArea {
+        display: grid;
+        grid-template-columns: 76px 1fr;
+      }
+
+      .g-logoImage {
+        grid-column: 1;
+      }
+
+      .g-logo {
+        width: 58px;
+        height: 58px;
+        padding: 11px;        
+      }
+      
+      .g-header {
+        grid-column: 2;
+        text-align: left;
+        padding-top: 8px;
+        font-weight: 700;
+        font-size: medium;
+      }
+
+      .g-bodyCell {
+        grid-row: 2;
+        padding: 12px;
+      }
+
+      h3 {
+        padding-top: 30px;
+        display: block;
+      }
+
+      h4 {
+        padding-top: 10px;
+        display: block;
+      }
+
+      .g-interior {
+        height: 100%;
+        font-size: small;
+        max-width: 600px;
+      }
+
+      .g-tocIndent {
+        padding-left: 20px;
+      }
+
+      ul { 
+        list-style-type: none; 
+        padding-left: 0px;
+      }
+
+      .g-tocHeader {
+        padding-top: 20px;
+        font-weight: bold;
+      }
+
+      .g-spacer {
+        height: 80px;
+      }
+
+      .g-code {
+        font-family: 'Consolas', 'Courier New', Courier, monospace;
+        background-color: #303030;
+        padding-left: 2px;
+        padding-right: 2px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+      }
+
+      .g-caboose {
+        height: 40px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="g-outer">
+      <div class="g-leftRailSpacerCell">&#160;</div>
+      <div class="g-contentsCell">
+        <h2>What it does</h2>
+        <h3 id="projectStarter">New Project Starter</h3>
+        <div>
+          Start and extend your Minecraft projects from a growing set of GitHub-hosted sources of samples and 
+          content. Start on the <a href="#toolsSite">website</a> and select from the gallery of projects.  Add new items 
+          from the set of Minecraft samples. With <a href="#commandLine">command line</a> tools, use the 
+          <span class='g-code'>create</span> command to start a new project, and <span class='g-code'>add</span> to add 
+          additional elements.
+        </div>
+        <h3 id="projectEditor">Project Editor</h3>
+        <div>
+          Minecraft Creator Tools includes editors for various files including JavaScript and JSON: editing JavaScript or 
+          TypeScript, the Project Editor includes a modern editor with autocomplete and built-in support for Minecraft 
+          types, plus a rich array of code snippets.
+
+          <h4 id="accessibilitySupport">Accessibility Support</h4>
+          <div>
+            Where possible, additional capabilities are provided to help make Minecraft Creator Tools accessible to all users. 
+            This section discusses using some of these tools and features.
+            
+            <h5>Tab Trapping</h5>
+            <div>
+              By default, pressing Tab in the JavaScript/JSON editor inserts the Tab character and does not navigate to the next focusable element on the page. 
+              You can toggle the trapping of Tab with Ctrl+M on Windows and Linux and with Ctrl+Shift+M on OSX, and subsequent Tab keys will move focus out of the editor.
+            </div>
+          </div>
+        </div>
+        <h3 id="validationAnalytics">Validation and Analytics</h3>
+        <p>
+          Minecraft Creator Tools includes a suite of tests and analytics that can be used to build reports across 
+          projects. It can output reports as an HTML file, in addition to being displayed within the site.
+        </p>
+        <p>
+          To use the validator, use "Choose file" in the Validate/Inspect Tool to select a zip file from your local device 
+          that contains project files. This can be any typical zip of a Minecraft project: an MCAddon file, an MCPack
+          file, or a ZIP file where you have behavior packs under behavior_packs and resource packs under resource_packs. 
+          Note that these ZIP files are temporarily stored and locally processed within your browser.
+        </p>
+        <p>
+          Validation results are displayed in the "Inspector" section of the application. Note that there are different
+          suites of tests that you can use. You can also opt to download the results in comma-separated-value (CSV) 
+          format or web page (HTML) format.
+         </p> 
+        <div class="g-spacer">&#160;</div>
+        <h2>Apps</h2>
+        <h3 id="toolsSite">https://mctools.dev website</h3>
+        <div>
+          The <a href="https://mctools.dev/" target="_blank">creator tools site</a> is the easiest way to get started - 
+          simply navigate to <a href="https://mctools.dev/" target="_blank">https://mctools.dev</a>. 
+        </div> 
+        <h3 id="commandLine">Command Line Tools</h3> 
+        <div>          
+          Command line tools let you access the power of creator tools from a command line. You can also integrate
+          this into broader processes or project-level tasks.
+        </div>
+        <div>
+          Command line tools are available via the <a href="https://aka.ms/mctnpm" target="_blank">@minecraft/creator-tools</a> page on
+          NPM. To install via NPM, install <a href="https://nodejs.org/" target="_blank">nodejs tools</a> and then run <code>npm -i @minecraft/creator-tools</code>
+          from a command line. See the <a href="https://aka.ms/mctnpm" target="_blank">NPM page</a> for more documentation and sample command lines.
+        </div>
+        <div class="g-caboose">&#160;</div>
+    </div>
+    <div class="g-overlay">
+      <div class="g-logoCell">
+        <div class="g-logoArea">
+          <div class="g-logoImage">
+            <img src="/logo512.png" class="g-logo" alt="Logo image"/>
+          </div>
+          <div class="g-header">
+            Minecraft<br/>Creator<br/>Tools
+          </div>
+        </div>
+      </div>
+      <div class="g-bodyCell">
+        <div class="g-interior">
+          <div class="g-tocHeader">What it does</div>
+          <ul>
+            <li><a href="#validationAnalytics">Validation and Analytics</a></li>
+          </ul>
+
+
+          <div class="g-tocHeader">Apps</div>
+          <ul>
+            <li><a href="#toolsSite">https://mctools.dev website</a></li>
+            <li><a href="#commandLine">Command Line Tools</a></li>
+          </ul>
+
+          <div class="g-tocHeader">Links</div>
+          <ul>
+            <li><a href="https://github.com/Mojang/minecraft-creator-tools/">GitHub repo</a></li>
+            <li><a href="notice.html">Attribution</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:sign_oak"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "group": "sign",
+    "pattern": [
+      "###",
+  	  "###",
+  	  " | "
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:planks",
+  	  "data": 0
+      },
+      "|": {
+        "item": "minecraft:stick"
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:planks",
+        "data": 0
+      }
+    ],
+    "result": {
+      "item": "minecraft:sign",
+      "count": 3
+    }
+  }
+}

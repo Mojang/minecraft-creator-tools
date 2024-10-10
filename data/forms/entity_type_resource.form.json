@@ -1,0 +1,29 @@
+{
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Id",
+      "dataType": 2
+    },
+    {
+      "id": "materials",
+      "dataType": 24
+    },
+    {
+      "id": "textures",
+      "dataType": 24
+    },
+    {
+      "id": "geometry",
+      "dataType": 24
+    },
+    {
+      "id": "animations",
+      "dataType": 24
+    },
+    {
+      "id": "render_controllers",
+      "dataType": 17
+    }
+  ]
+}
