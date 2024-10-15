@@ -202,7 +202,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
 
-      if (pi.itemType === ProjectItemType.blockTypeBehaviorJson) {
+      if (pi.itemType === ProjectItemType.blockTypeBehavior) {
         await pi.ensureFileStorage();
 
         if (pi.file) {

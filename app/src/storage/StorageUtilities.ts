@@ -37,6 +37,7 @@ const _allowedExtensions = [
   "env",
   "wav",
   "tga",
+  "old",
   "",
   "zip",
   "mcstructure",

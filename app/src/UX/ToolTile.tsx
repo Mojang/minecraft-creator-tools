@@ -33,10 +33,6 @@ export default class ToolTile extends Component<IToolTileProps, IToolTileState> 
   render() {
     let imageElement = <></>;
 
-    //    const imagePath = "/test.gif";
-
-    //    imageElement = <img className="tt-imageTile" alt="" src={imagePath} />;
-
     if (this.props.displayMode === TT_TILE_SMALL) {
       let outerClassName = "tts-outer";
 

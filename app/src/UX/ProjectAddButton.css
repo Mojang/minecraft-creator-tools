@@ -1,0 +1,23 @@
+.pab-outer {
+  padding: 7px;
+}
+
+.pab-commands {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: right;
+  max-width: 140px;
+  padding-top: 7px;
+  padding-bottom: 6px;
+  padding-left: 8px;
+}
+
+.pab-dialog {
+  min-height: 90px;
+  margin-top: 20px;
+  vertical-align: top;
+}
+
+.pab-extension {
+  padding-left: 8px;
+}

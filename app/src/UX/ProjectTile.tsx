@@ -89,33 +89,36 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
       this.props.project.type === GalleryItemType.codeSample ||
       this.props.project.type === GalleryItemType.editorCodeSample
     ) {
-      const snippet = ProjectUtilities.getSnippet(this.props.project.id);
+      const topics = this.props.project.topics;
 
-      if (snippet) {
-        const lines = snippet.body;
+      if (topics && topics.length > 0) {
+        description.push(<span>{"Uses"}</span>);
+        for (var i = 0; i < Math.min(topics.length, 5); i++) {
+          const topic = topics[i];
+          const url = ProjectUtilities.getTopicUrl(topic);
 
-        summary = lines.join("\r\n");
-
-        if (lines.length >= 1) {
-          let curLine = this.props.project.codeLineStart;
-
-          if (curLine === undefined) {
-            curLine = Math.ceil(lines.length / 2) - 1;
-          }
-
-          let addedLines = 0;
-
-          while (curLine < lines.length && addedLines < 4) {
-            if (lines[curLine] && lines[curLine].indexOf("const overworld") <= 0 && lines[curLine].trim().length > 0) {
-              description.push(
-                <div className="pts-code-line" key={"cl" + curLine}>
-                  {lines[curLine]}
-                </div>
-              );
-              addedLines++;
-            }
-
-            curLine++;
+          if (url) {
+            description.push(
+              <a
+                href={url}
+                target="_blank"
+                className="pt-docLink pts-code-topic"
+                rel="noreferrer noopener"
+                style={{
+                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+                }}
+              >
+                {topic}
+                {i < Math.min(topics.length - 1, 4) ? ", " : " "}
+              </a>
+            );
+          } else {
+            description.push(
+              <span className="pts-code-topic">
+                {topic}
+                {i < Math.min(topics.length - 1, 4) ? ", " : " "}
+              </span>
+            );
           }
         }
       }
@@ -218,7 +221,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
       }
 
       return (
-        <div className={outerClassName} key="tileOuter" onClick={this._projectClick}>
+        <div className={outerClassName} key="tileOuter">
           <div
             className="pts-button"
             style={{
@@ -235,19 +238,20 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
               <div className="pts-mainArea">
                 <h3 className="pts-title">{proj.title}</h3>
                 {tags}
-              </div>
-              <div className="pts-descriptionArea">
-                <div
-                  title={summary}
-                  className={
-                    this.props.project.type === GalleryItemType.codeSample
-                      ? "pts-description pt-code"
-                      : "pts-description"
-                  }
-                >
-                  {description}
+                <div className="pts-descriptionArea">
+                  <div
+                    title={summary}
+                    className={
+                      this.props.project.type === GalleryItemType.codeSample
+                        ? "pts-description pt-code"
+                        : "pts-description"
+                    }
+                  >
+                    {description}
+                  </div>
                 </div>
               </div>
+
               <div
                 className="pt-mini-toolbar"
                 style={{
@@ -261,14 +265,14 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
                   }}
                 >
                   {additionalButtons}
-                  <Button primary onClick={this._handleNewProject}>
+                  <Button primary onClick={this._projectClick}>
                     <span
                       style={{
                         color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
                         borderLeftColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
                       }}
                     >
-                      New
+                      Open
                     </span>
                   </Button>
                 </div>

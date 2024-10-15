@@ -301,11 +301,11 @@ export default class ProjectItem {
         return "behavior/animation_controllers/animation_controller.json";
       case ProjectItemType.animationBehaviorJson:
         return "behavior/animations/animations.json";
-      case ProjectItemType.blockTypeBehaviorJson:
+      case ProjectItemType.blockTypeBehavior:
         return "behavior/blocks/blocks.json";
       case ProjectItemType.itemTypeBehaviorJson:
         return "behavior/items/items.json";
-      case ProjectItemType.lootTableBehaviorJson:
+      case ProjectItemType.lootTableBehavior:
         return "behavior/loot_tables/loot_tables.json";
       case ProjectItemType.biomeBehaviorJson:
         return "behavior/blocks/blocks.json";
@@ -337,7 +337,7 @@ export default class ProjectItem {
       //        return "resource/textures/ui_texture_definition.json";
       case ProjectItemType.languagesCatalogResourceJson:
         return "language/languages.json";
-      case ProjectItemType.featureBehaviorJson:
+      case ProjectItemType.featureBehavior:
         return "behavior/features/features.json";
       case ProjectItemType.featureRuleBehaviorJson:
         return "behavior/feature_rules/feature_rules.json";
@@ -1021,7 +1021,7 @@ export default class ProjectItem {
       return undefined;
     }
 
-    if (this.itemType === ProjectItemType.actionSetJson) {
+    if (this.itemType === ProjectItemType.actionSet) {
       const functionTwinName = StorageUtilities.canonicalizeName(
         StorageUtilities.getBaseFromName(this._file.name) + ".mcfunction"
       );

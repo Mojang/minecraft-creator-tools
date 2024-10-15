@@ -8,32 +8,28 @@
   font-size: large;
   font-weight: bold;
   padding-top: 14px;
+  line-height: 1;
 }
 
 .pact-toolTile {
   height: 110px !important;
   display: inline-flex !important;
-  margin-top: 10px;
   margin-left: 10px;
   padding: 0px !important;
   text-align: left;
-  width: 320px;
-  border: solid 1.5px black;
 }
 
 .pact-toolTile-button {
   margin-top: 3px;
   margin-left: 0px !important;
   height: 35px !important;
-  border: solid 1px rgb(72, 73, 74) !important;
-  box-shadow: none !important;
 }
 
 .pact-toolTileInner {
   height: 100%;
-  width: 100%;
+  width: 320px;
+  text-align: left;
   padding: 6px 8px 6px 8px;
-  border: outset 3px;
 }
 
 .pact-toolTile input[type="file"] {
@@ -47,7 +43,7 @@
   font-weight: bold;
   padding-bottom: 6px;
   display: grid;
-  grid-template-columns: 34px 1fr;
+  grid-template-columns: 30px 1fr;
 }
 
 .pact-toolTile-instruction {
@@ -69,14 +65,13 @@
 
 .pact-faIconWrap {
   grid-column: 1;
-  padding-top: 3px;
-  padding-left: 4px;
+  padding-top: 2px;
 }
 
 .pact-faIconWrapIn {
   grid-column: 1;
-  padding-top: 3px;
-  padding-left: 7px;
+  padding-top: 2px;
+  padding-left: 1px;
 }
 
 .pact-icon {
@@ -88,8 +83,8 @@
   max-width: 24px;
   min-height: 24px;
   max-height: 24px;
-  margin: 1px;
-  margin-top: 3px;
+  margin-left: 0px;
+  margin-top: 1px;
   border: solid 1px black;
 }
 

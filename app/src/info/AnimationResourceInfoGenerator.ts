@@ -57,7 +57,7 @@ export default class AnimationResourceInfoGenerator implements IProjectInfoGener
 
               animationCountPi.incrementFeature("Resource", "Count", 1);
 
-              if (animation.bones) {
+              if (animation && animation.bones) {
                 for (const boneName in animation.bones) {
                   const bone = animation.bones[boneName];
 

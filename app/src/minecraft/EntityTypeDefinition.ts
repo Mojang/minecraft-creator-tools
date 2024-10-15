@@ -397,7 +397,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem {
             }
           }
         }
-      } else if (candItem.itemType === ProjectItemType.lootTableBehaviorJson) {
+      } else if (candItem.itemType === ProjectItemType.lootTableBehavior) {
         for (const lootTablePath of lootTablePaths) {
           if (candItem.projectPath?.endsWith(lootTablePath)) {
             item.addChildItem(candItem);

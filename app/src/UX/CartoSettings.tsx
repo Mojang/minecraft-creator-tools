@@ -13,7 +13,7 @@ interface ICartoSettingsProps extends IAppProps {
 
 interface ICartoSettingsState {}
 
-export default class CartoSettings extends Component<ICartoSettingsProps, ICartoSettingsState> implements IPersistable {
+export default class CartoSettings extends Component<ICartoSettingsProps, ICartoSettingsState> {
   private _activeEditorPersistable?: IPersistable;
 
   constructor(props: ICartoSettingsProps) {

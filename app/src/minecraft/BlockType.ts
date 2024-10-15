@@ -343,8 +343,20 @@ export default class BlockType implements IManagedComponentSetItem {
     return this.shortTypeName;
   }
 
+  public get id() {
+    if (this.behaviorPackBlockTypeDef && this.behaviorPackBlockTypeDef.description) {
+      return this.behaviorPackBlockTypeDef.description.identifier;
+    }
+
+    return this._id;
+  }
+
   public set id(newId: string | undefined) {
     this._id = newId;
+
+    if (this.behaviorPackBlockTypeDef && this.behaviorPackBlockTypeDef.description && newId) {
+      this.behaviorPackBlockTypeDef.description.identifier = newId;
+    }
   }
 
   public get onComponentAdded() {

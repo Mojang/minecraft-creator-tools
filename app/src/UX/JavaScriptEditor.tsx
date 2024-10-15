@@ -7,7 +7,7 @@ import "./JavaScriptEditor.css";
 import * as monaco from "monaco-editor";
 import IPersistable from "./IPersistable";
 import Log from "./../core/Log";
-import { Toolbar, DropdownProps, ThemeInput, FormInput, InputProps } from "@fluentui/react-northstar";
+import { Toolbar, ThemeInput, FormInput, InputProps } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearchPlus, faSearchMinus } from "@fortawesome/free-solid-svg-icons";
 import { ProjectScriptLanguage, ProjectScriptVersion } from "../app/IProjectData";
@@ -20,9 +20,9 @@ import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
 import ITypeDefCatalog from "../minecraft/ITypeDefCatalog";
 import IAppProps from "./IAppProps";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
-import ProjectUtilities from "../app/ProjectUtilities";
 import ItemGallery, { GalleryItemCommand } from "./ItemGallery";
 import { ItemTileButtonDisplayMode } from "./ItemTileButton";
+import WebUtilities from "./WebUtilities";
 
 export enum ScriptEditorRole {
   script = 0,
@@ -49,6 +49,7 @@ interface IJavaScriptEditorState {
   pathToEdit: string;
   isLoaded: boolean;
   snippetSearch?: string;
+  proposedLeft?: number;
 }
 
 export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, IJavaScriptEditorState> {
@@ -69,7 +70,6 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     this._handleFileStateRemoved = this._handleFileStateRemoved.bind(this);
     this._handleSnippetGalleryCommand = this._handleSnippetGalleryCommand.bind(this);
     this._handleNewSearch = this._handleNewSearch.bind(this);
-    this._handleSnippet = this._handleSnippet.bind(this);
     this._updateModels = this._updateModels.bind(this);
     this._doUpdate = this._doUpdate.bind(this);
     this.persist = this.persist.bind(this);
@@ -100,10 +100,13 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
 
     const newSearch = data.value;
 
+    const left = WebUtilities.getElementLeft(event.currentTarget as HTMLElement);
+
     this.setState({
       pathToEdit: this.state.pathToEdit,
       isLoaded: this.state.isLoaded,
       snippetSearch: newSearch,
+      proposedLeft: left,
     });
   }
 
@@ -306,6 +309,8 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       this.setState({
         pathToEdit: this.state.pathToEdit,
         isLoaded: true,
+        snippetSearch: this.state.snippetSearch,
+        proposedLeft: this.state.proposedLeft,
       });
     }
   }
@@ -572,44 +577,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       this.props.onUpdatePreferredTextSize(Math.round(val));
     }
   }
-
-  _handleSnippet(
-    event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
-    data: DropdownProps
-  ) {
-    if (
-      this.editor === undefined ||
-      data.value === undefined ||
-      data.value === null ||
-      typeof data.value !== "string"
-    ) {
-      return;
-    }
-
-    const snippet = ProjectUtilities.getSnippet(data.value);
-
-    if (!snippet) {
-      return;
-    }
-
-    let result = undefined;
-    result = snippet.body.join("\n");
-
-    if (result !== undefined && this.props.project) {
-      const projName = this.props.project.loc.getTokenValueOrDefault(this.props.project.name);
-
-      result = ProjectContent.replaceCommonItems(result, projName);
-      result = ProjectUtilities.adaptSample(result, "");
-
-      this.editor.trigger("keyboard", "type", { text: result });
-    }
-  }
-
   async _doUpdate() {
-    if (Database.snippetsFolder === null) {
-      await Database.loadSnippets();
-    }
-
     if (this.props.project && this.props.project.scriptVersion === ProjectScriptVersion.stable10) {
       if (!Database.stableTypeDefs) {
         await Database.loadStableScriptTypes();
@@ -619,8 +587,8 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     }
   }
 
-  private _handleSnippetGalleryCommand(command: GalleryItemCommand, project: IGalleryItem) {
-    if (this.editor === undefined) {
+  private async _handleSnippetGalleryCommand(command: GalleryItemCommand, project: IGalleryItem) {
+    if (this.editor === undefined || !project.sampleSet) {
       return;
     }
 
@@ -630,7 +598,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       snippetSearch: undefined,
     });
 
-    const snippet = ProjectUtilities.getSnippet(project.id);
+    const snippet = await Database.getSnippet(project.sampleSet, project.id);
 
     if (!snippet) {
       return;
@@ -762,6 +730,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
           style={{
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+            left: this.state.proposedLeft ? this.state.proposedLeft : undefined,
           }}
         >
           <ItemGallery

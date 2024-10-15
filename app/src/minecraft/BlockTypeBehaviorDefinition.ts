@@ -138,8 +138,20 @@ export default class BlockTypeBehaviorDefinition implements IManagedComponentSet
     }
   }
 
+  public get id() {
+    if (this.behaviorPackBlockTypeDef && this.behaviorPackBlockTypeDef.description) {
+      return this.behaviorPackBlockTypeDef.description.identifier;
+    }
+
+    return this._id;
+  }
+
   public set id(newId: string | undefined) {
     this._id = newId;
+
+    if (this.behaviorPackBlockTypeDef && this.behaviorPackBlockTypeDef.description && newId) {
+      this.behaviorPackBlockTypeDef.description.identifier = newId;
+    }
   }
 
   public get onComponentAdded() {
@@ -332,7 +344,7 @@ export default class BlockTypeBehaviorDefinition implements IManagedComponentSet
 
     const block = data["minecraft:block"];
 
-    if (block.description) {
+    if (block && block.description) {
       this.id = block.description.identifier;
     }
 

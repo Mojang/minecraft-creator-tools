@@ -1,6 +1,6 @@
 {
 "showActionForm": {
-  "description": "Shows a very basic action form See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-ui/actionformdata",
+  "description": "Shows a very basic action form. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-ui/actionformdata",
   "prefix": ["mc"],
   "body": ["  const playerList = world.getPlayers();",
 "  if (playerList.length >= 1) {",
@@ -23,7 +23,7 @@
 "  }"
 ]},
 "showFavoriteMonth": {
-  "description": "Shows a dialog that lets a player pick their favorite month See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-ui/actionformdata",
+  "description": "Shows a dialog that lets a player pick their favorite month. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-ui/actionformdata",
   "prefix": ["mc"],
   "body": ["  const players = world.getPlayers();",
 "  if (players.length >= 1) {",
@@ -44,7 +44,7 @@
 "  }"
 ]},
 "showBasicMessageForm": {
-  "description": "Shows an example two-button dialog See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-ui/messageformdata",
+  "description": "Shows an example two-button dialog. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-ui/messageformdata",
   "prefix": ["mc"],
   "body": ["  const players = world.getPlayers();",
 "  const messageForm = new MessageFormData()",
@@ -67,7 +67,7 @@
 "    });"
 ]},
 "showTranslatedMessageForm": {
-  "description": "Shows an example translated two-button dialog dialog See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-ui/messageformdata",
+  "description": "Shows an example translated two-button dialog dialog. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-ui/messageformdata",
   "prefix": ["mc"],
   "body": ["  const players = world.getPlayers();",
 "  const messageForm = new MessageFormData()",
@@ -90,7 +90,7 @@
 "    });"
 ]},
 "showBasicModalForm": {
-  "description": "Shows an example multiple-control modal dialog See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-ui/modalformdata",
+  "description": "Shows an example multiple-control modal dialog. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-ui/modalformdata",
   "prefix": ["mc"],
   "body": ["  const players = world.getPlayers();",
 "  const modalForm = new ModalFormData().title('Example Modal Controls for §o§7ModalFormData§r');",

@@ -550,6 +550,34 @@ export default class ProjectUtilities {
     }
   }
 
+  static async getDefaultSpawnRulesFolder(project: Project) {
+    const bpFolder = await project.getDefaultBehaviorPackFolder();
+
+    if (!bpFolder) {
+      return undefined;
+    }
+
+    const srFolder = bpFolder.ensureFolder("spawn_rules");
+
+    await srFolder.ensureExists();
+
+    return srFolder;
+  }
+
+  static async getDefaultLootTableFolder(project: Project) {
+    const bpFolder = await project.getDefaultBehaviorPackFolder();
+
+    if (!bpFolder) {
+      return undefined;
+    }
+
+    const ltFolder = bpFolder.ensureFolder("loot_table");
+
+    await ltFolder.ensureExists();
+
+    return ltFolder;
+  }
+
   static async getIsAddon(project: Project) {
     const itemsCopy = project.getItemsCopy();
     let rpCount = 0;
@@ -946,28 +974,23 @@ export default class ProjectUtilities {
     return content;
   }
 
-  static getSnippet(snippetId: string) {
-    if (Database.snippetsFolder !== null && Database.snippetsFolder.files) {
-      for (const fileName in Database.snippetsFolder.files) {
-        const file = Database.snippetsFolder.files[fileName];
-
-        if (file) {
-          const snipSet = StorageUtilities.getJsonObject(file) as { [snippetName: string]: ISnippet };
-
-          if (snipSet && snipSet[snippetId]) {
-            return snipSet[snippetId];
-          }
-        }
-      }
-    }
-
-    return undefined;
-  }
-
   static CodeReplaceTokens = ["say Hello", 'sendMessage("Hello world'];
 
   static ImportTypes = {
-    vanilla: ["MinecraftDimensionTypes", "MinecraftBlockTypes", "MinecraftItemTypes", "MinecraftEntityTypes"],
+    vanilla: [
+      "MinecraftDimensionTypes",
+      "MinecraftBlockTypes",
+      "MinecraftItemTypes",
+      "MinecraftEntityTypes",
+      "MinecraftEffectTypes",
+      "MinecraftEnchantmentTypes",
+      "MinecraftBiomeTypes",
+      "MinecraftFeatureTypes",
+      "MinecraftPotionEffectTypes",
+      "MinecraftPotionLiquidTypes",
+      "MinecraftPotionModifierTypes",
+      "MinecraftCooldownCategoryTypes",
+    ],
     math: ["Vector3Utils"],
     mcui: [
       "MessageFormResponse",
@@ -981,8 +1004,13 @@ export default class ProjectUtilities {
       "system",
       "BlockPermutation",
       "BlockSignComponent",
+      "CompoundBlockVolume",
       "SignSide",
       "DyeColor",
+      "ItemDurabilityComponent",
+      "RawMessage",
+      "RawText",
+      "EntityProjectileComponent",
       "EntityQueryOptions",
       "ButtonPushAfterEvent",
       "ItemStack",
@@ -1004,14 +1032,64 @@ export default class ProjectUtilities {
       "PlayerSoundOptions",
       "DisplaySlotId",
       "ObjectiveSortOrder",
-      "TripWireAfterEvent",
+      "TripWireTripAfterEvent",
       "BlockComponentTypes",
       "EntityComponentTypes",
       "ItemComponentTypes",
       "LeverActionAfterEvent",
       "Vector3",
     ],
+    mced: [
+      "IPlayerUISession",
+      "ExtensionContext",
+      "IModalToolContainer",
+      "registerEditorExtension",
+      "ActionManager",
+      "IModalTool",
+      "ActionTypes",
+      "MouseProps",
+      "MouseActionType",
+      "MouseInputType",
+      "KeyboardKey",
+      "InputModifier",
+      "EditorInputContext",
+      "IPropertyPane",
+    ],
   };
+
+  static getTopicUrl(topic: string) {
+    const tokens = topic.split(".");
+
+    if (tokens.length < 1) {
+      return undefined;
+    }
+
+    if (
+      this.ImportTypes.mc.includes(tokens[0]) ||
+      tokens[0] === "World" ||
+      tokens[0] === "System" ||
+      tokens[0] === "Dimension"
+    ) {
+      return (
+        "https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/" +
+        topic.toLowerCase().replace(".", "#")
+      );
+    }
+    if (this.ImportTypes.mcui.includes(tokens[0])) {
+      return (
+        "https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-ui/" +
+        topic.toLowerCase().replace(".", "#")
+      );
+    }
+    if (this.ImportTypes.mced.includes(tokens[0])) {
+      return (
+        "https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-editor/" +
+        topic.toLowerCase().replace(".", "#")
+      );
+    }
+
+    return undefined;
+  }
 
   static adaptFullSample(content: string) {
     const registerFunction = content.indexOf("export function register");
@@ -1260,7 +1338,7 @@ export default class ProjectUtilities {
       candidateFilePath,
       ProjectItemStorageType.singleFile,
       nextBlockTypeName,
-      ProjectItemType.blockTypeBehaviorJson,
+      ProjectItemType.blockTypeBehavior,
       undefined,
       ProjectItemCreationType.normal
     );

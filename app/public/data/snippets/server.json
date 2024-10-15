@@ -1,6 +1,6 @@
 {
 "buttonPushEvent": {
-  "description": "A simple button push before even See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/buttonpushaftereventsignal",
+  "description": "A simple button push before event. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/buttonpushaftereventsignal",
   "prefix": ["mc"],
   "body": ["  // set up a button on cobblestone",
 "  const cobblestone = targetLocation.dimension.getBlock(targetLocation);",
@@ -23,7 +23,7 @@
 "  });"
 ]},
 "leverActionEvent": {
-  "description": "A simple lever activate even See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/leveractionaftereventsignal",
+  "description": "A simple lever activate event. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/leveractionaftereventsignal",
   "prefix": ["mc"],
   "body": ["  // set up a lever",
 "  const cobblestone = targetLocation.dimension.getBlock(targetLocation);",
@@ -48,7 +48,7 @@
 "  });"
 ]},
 "tripWireTripEvent": {
-  "description": "A basic tripwire even See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/tripwiretripaftereventsignal",
+  "description": "A basic tripwire event. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/tripwiretripaftereventsignal",
   "prefix": ["mc"],
   "body": ["  // set up a tripwire",
 "  const redstone = targetLocation.dimension.getBlock({",
@@ -75,7 +75,7 @@
 "  });"
 ]},
 "addBlockColorCube": {
-  "description": "Creates a multicolored block out of different colors of wool See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/blockpermutation/resolve",
+  "description": "Creates a multicolored block out of different colors of wool. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/blockpermutation/resolve",
   "prefix": ["mc"],
   "body": ["  const allWoolBlocks: string[] = [",
 "    MinecraftBlockTypes.WhiteWool,",
@@ -109,7 +109,7 @@
 "  }"
 ]},
 "checkBlockTags": {
-  "description": "Checks whether a specified block is dirt, wood, or stone See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/block/hastag",
+  "description": "Checks whether a specified block is dirt, wood, or stone. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/block/hastag",
   "prefix": ["mc"],
   "body": ["  // Fetch the block",
 "  const block = targetLocation.dimension.getBlock(targetLocation);",
@@ -121,17 +121,17 @@
 "  }"
 ]},
 "containers": {
-  "description": "Creates a multicolored block out of different colors of wool See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/container",
+  "description": "Creates some chests and containers and uses container transfer and swapping APIs. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/container",
   "prefix": ["mc"],
-  "body": ["  let xLocation = targetLocation; // left chest location",
-"  let xPlusTwoLocation = { x: targetLocation.x + 2, y: targetLocation.y, z: targetLocation.z }; // right chest",
+  "body": ["  const xLocation = targetLocation; // left chest location",
+"  const xPlusTwoLocation = { x: targetLocation.x + 2, y: targetLocation.y, z: targetLocation.z }; // right chest",
 "  const chestCart = targetLocation.dimension.spawnEntity(MinecraftEntityTypes.ChestMinecart, {",
 "    x: targetLocation.x + 4,",
 "    y: targetLocation.y,",
 "    z: targetLocation.z,",
 "  });",
-"  let xChestBlock = targetLocation.dimension.getBlock(xLocation);",
-"  let xPlusTwoChestBlock = targetLocation.dimension.getBlock(xPlusTwoLocation);",
+"  const xChestBlock = targetLocation.dimension.getBlock(xLocation);",
+"  const xPlusTwoChestBlock = targetLocation.dimension.getBlock(xPlusTwoLocation);",
 "  if (!xChestBlock || !xPlusTwoChestBlock) {",
 "    log('Could not retrieve chest blocks.');",
 "    return;",
@@ -176,7 +176,7 @@
 "  }"
 ]},
 "placeItemsInChest": {
-  "description": "Creates a multicolored block out of different colors of wool See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/blockinventorycomponent",
+  "description": "Creates a chest and places some items within it. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/blockinventorycomponent",
   "prefix": ["mc"],
   "body": ["  // Fetch block",
 "  const block = targetLocation.dimension.getBlock(targetLocation);",
@@ -197,20 +197,20 @@
 "  inventoryContainer.setItem(0, new ItemStack(MinecraftItemTypes.Apple, 10));"
 ]},
 "createExplosion": {
-  "description": "Creates an explosion in the world See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/createexplosion",
+  "description": "Creates an explosion in the world. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/createexplosion",
   "prefix": ["mc"],
   "body": ["  log('Creating an explosion of radius 10.');",
 "  targetLocation.dimension.createExplosion(targetLocation, 10);"
 ]},
 "createNoBlockExplosion": {
-  "description": "Creates an explosion in the world that does not impact blocks See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/createexplosion",
+  "description": "Creates an explosion in the world that does not impact blocks. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/createexplosion",
   "prefix": ["mc"],
   "body": ["  const explodeNoBlocksLoc = Vector3Utils.floor(Vector3Utils.add(targetLocation, { x: 1, y: 2, z: 1 }));",
 "  log('Creating an explosion of radius 15 that does not break blocks.');",
 "  targetLocation.dimension.createExplosion(explodeNoBlocksLoc, 15, { breaksBlocks: false });"
 ]},
 "createExplosions": {
-  "description": "Creates a fire explosion and an underwater explosion in the world See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/createexplosion",
+  "description": "Creates a fire explosion and an underwater explosion in the world. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/createexplosion",
   "prefix": ["mc"],
   "body": ["  const explosionLoc = Vector3Utils.add(targetLocation, { x: 0.5, y: 0.5, z: 0.5 });",
 "  log('Creating an explosion of radius 15 that causes fire.');",
@@ -220,7 +220,7 @@
 "  targetLocation.dimension.createExplosion(belowWaterLoc, 10, { allowUnderwater: true });"
 ]},
 "itemStacks": {
-  "description": "Creates free-floating item stacks in the world See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/itemstack",
+  "description": "Creates free-floating item stacks in the world. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/itemstack",
   "prefix": ["mc"],
   "body": ["  const oneItemLoc = { x: targetLocation.x + targetLocation.y + 3, y: 2, z: targetLocation.z + 1 };",
 "  const fiveItemsLoc = { x: targetLocation.x + 1, y: targetLocation.y + 2, z: targetLocation.z + 1 };",
@@ -236,7 +236,7 @@
 "  targetLocation.dimension.spawnItem(onePickaxe, diamondPickaxeLoc);"
 ]},
 "quickFoxLazyDog": {
-  "description": "Creates a fox and, well, a wolf with effects applied See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/spawnentity",
+  "description": "Creates a fox and, well, a wolf with effects applied. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/spawnentity",
   "prefix": ["mc"],
   "body": ["  const fox = targetLocation.dimension.spawnEntity(MinecraftEntityTypes.Fox, {",
 "    x: targetLocation.x + 1,",
@@ -259,7 +259,7 @@
 "  log('Created a sneaking wolf.', 1);"
 ]},
 "incrementDynamicProperty": {
-  "description": "Increments a dynamic numeric persisted property See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/world/getdynamicproperty",
+  "description": "Increments a dynamic numeric persisted property. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/world/getdynamicproperty",
   "prefix": ["mc"],
   "body": ["  let number = world.getDynamicProperty('samplelibrary:number');",
 "  log('Current value is: ' + number);",
@@ -273,7 +273,7 @@
 "  world.setDynamicProperty('samplelibrary:number', number + 1);"
 ]},
 "incrementDynamicPropertyInJsonBlob": {
-  "description": "Increments a dynamic numeric persisted property See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/world/getdynamicproperty",
+  "description": "Increments a dynamic numeric persisted property. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/world/getdynamicproperty",
   "prefix": ["mc"],
   "body": ["  let paintStr = world.getDynamicProperty('samplelibrary:longerjson');",
 "  let paint: { color: string; intensity: number } | undefined = undefined;",
@@ -303,14 +303,22 @@
 "  paintStr = JSON.stringify(paint); // be very careful to ensure your serialized JSON str cannot exceed limits",
 "  world.setDynamicProperty('samplelibrary:longerjson', paintStr);"
 ]},
+"spawnPoisonedVillager": {
+  "description": "Spawns a villager and gives it a poison effect. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entity/addeffect",
+  "prefix": ["mc"],
+  "body": ["  const villagerType = 'minecraft:villager_v2<minecraft:ageable_grow_up>';",
+"  const villager = targetLocation.dimension.spawnEntity(villagerType, targetLocation);",
+"  const duration = 20;",
+"  villager.addEffect(MinecraftEffectTypes.Poison, duration, { amplifier: 1 });"
+]},
 "triggerEvent": {
-  "description": "Creates a creeper and then triggers an explosion See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/spawnentity",
+  "description": "Creates a creeper and then triggers an explosion. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/spawnentity",
   "prefix": ["mc"],
   "body": ["  const creeper = targetLocation.dimension.spawnEntity(MinecraftEntityTypes.Creeper, targetLocation);",
 "  creeper.triggerEvent('minecraft:start_exploding_forced');"
 ]},
 "applyImpulse": {
-  "description": "Creates a zombie and then applies an impulse See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entity/applyimpulse",
+  "description": "Creates a zombie and then applies an impulse. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entity/applyimpulse",
   "prefix": ["mc"],
   "body": ["  const zombie = targetLocation.dimension.spawnEntity(MinecraftEntityTypes.Zombie, targetLocation);",
 "  zombie.clearVelocity();",
@@ -318,7 +326,7 @@
 "  zombie.applyImpulse({ x: 0, y: 0.5, z: 0 });"
 ]},
 "getFireworkVelocity": {
-  "description": "Gets a velocity of a firewor See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entity/getvelocity",
+  "description": "Gets a velocity of a firework. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entity/getvelocity",
   "prefix": ["mc"],
   "body": ["  const fireworkRocket = targetLocation.dimension.spawnEntity(MinecraftEntityTypes.FireworksRocket, targetLocation);",
 "  system.runTimeout(() => {",
@@ -327,7 +335,7 @@
 "  }, 5);"
 ]},
 "applyDamageThenHeal": {
-  "description": "Applies damage then heals an entity See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entity/applydamage",
+  "description": "Applies damage, then heals an entity. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entity/applydamage",
   "prefix": ["mc"],
   "body": ["  const skelly = targetLocation.dimension.spawnEntity(MinecraftEntityTypes.Skeleton, targetLocation);",
 "  skelly.applyDamage(19); // skeletons have max damage of 20 so this is a near-death skeleton",
@@ -339,7 +347,7 @@
 "  }, 20);"
 ]},
 "setOnFire": {
-  "description": "Applies damage then heals an entity See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entity/setonfire",
+  "description": "Sets an entity on fire. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entity/setonfire",
   "prefix": ["mc"],
   "body": ["  const skelly = targetLocation.dimension.spawnEntity(MinecraftEntityTypes.Skeleton, targetLocation);",
 "  skelly.setOnFire(20, true);",
@@ -351,7 +359,7 @@
 "  }, 20);"
 ]},
 "teleport": {
-  "description": "Does a basic teleport action See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entity/teleport",
+  "description": "Does a basic teleport action. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entity/teleport",
   "prefix": ["mc"],
   "body": ["  const cow = targetLocation.dimension.spawnEntity(MinecraftEntityTypes.Cow, targetLocation);",
 "  system.runTimeout(() => {",
@@ -364,7 +372,7 @@
 "  }, 20);"
 ]},
 "teleportMovement": {
-  "description": "Does a basic movements with frequent teleport actions See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entity/teleport",
+  "description": "Does a basic movements with frequent teleport actions. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entity/teleport",
   "prefix": ["mc"],
   "body": ["  const pig = targetLocation.dimension.spawnEntity(MinecraftEntityTypes.Pig, targetLocation);",
 "  let inc = 1;",
@@ -381,8 +389,100 @@
 "    inc++;",
 "  }, 4);"
 ]},
+"shootArrow": {
+  "description": "Shoots an arrow. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entityprojectilecomponent",
+  "prefix": ["mc"],
+  "body": ["  const velocity = { x: 0, y: 1, z: 5 };",
+"  const arrow = targetLocation.dimension.spawnEntity('minecraft:arrow', {",
+"    x: targetLocation.x,",
+"    y: targetLocation.y + 2,",
+"    z: targetLocation.z,",
+"  });",
+"  const projectileComp = arrow.getComponent('minecraft:projectile') as EntityProjectileComponent;",
+"  projectileComp?.shoot(velocity);"
+]},
+"blockConditional": {
+  "description": "Spawns a salmon next to every fox, if the fox is standing on stone. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entityqueryoptions",
+  "prefix": ["mc"],
+  "body": ["  targetLocation.dimension",
+"    .getEntities({",
+"      type: 'fox',",
+"    })",
+"    .filter((entity) => {",
+"      const block = targetLocation.dimension.getBlock({",
+"        x: entity.location.x,",
+"        y: entity.location.y - 1,",
+"        z: entity.location.z,",
+"      });",
+"      return block !== undefined && block.matches('minecraft:stone');",
+"    })",
+"    .forEach((entity) => {",
+"      targetLocation.dimension.spawnEntity('salmon', entity.location);",
+"    });"
+]},
+"findEntitiesHavingPropertyEqualsTo": {
+  "description": "Find entities having a property that is equals to a value. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entityqueryoptions",
+  "prefix": ["mc"],
+  "body": ["  // Minecraft bees have a has_nectar boolean property",
+"  const queryOption: EntityQueryOptions = {",
+"    propertyOptions: [{ propertyId: 'minecraft:has_nectar', value: { equals: true } }],",
+"  };",
+"  const entities = targetLocation.dimension.getEntities(queryOption);"
+]},
+"playSoundChained": {
+  "description": "Plays a sound for every player, based on armor stands. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entityqueryoptions",
+  "prefix": ["mc"],
+  "body": ["  const targetPlayers = targetLocation.dimension.getPlayers();",
+"  const originEntities = targetLocation.dimension.getEntities({",
+"    type: 'armor_stand',",
+"    name: 'myArmorStand',",
+"    tags: ['dummyTag1'],",
+"    excludeTags: ['dummyTag2'],",
+"  });",
+"  originEntities.forEach((entity) => {",
+"    targetPlayers.forEach((player) => {",
+"      player.playSound('raid.horn');",
+"    });",
+"  });"
+]},
+"setScoreboardChained": {
+  "description": "Sets a scoreboard, based on the presence of armor stands. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entityqueryoptions",
+  "prefix": ["mc"],
+  "body": ["  const objective = world.scoreboard.addObjective('scoreObjective1', 'dummy');",
+"  targetLocation.dimension",
+"    .getEntities({",
+"      type: 'armor_stand',",
+"      name: 'myArmorStand',",
+"    })",
+"    .forEach((entity) => {",
+"      if (entity.scoreboardIdentity !== undefined) {",
+"        objective.setScore(entity.scoreboardIdentity, -1);",
+"      }",
+"    });"
+]},
+"summonMobChained": {
+  "description": "Summons a mob near every player, based on a number of armor stands. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entityqueryoptions",
+  "prefix": ["mc"],
+  "body": ["  const armorStandArray = targetLocation.dimension.getEntities({",
+"    type: 'armor_stand',",
+"  });",
+"  const playerArray = targetLocation.dimension.getPlayers({",
+"    location: { x: 0, y: -60, z: 0 },",
+"    closest: 4,",
+"    maxDistance: 15,",
+"  });",
+"  armorStandArray.forEach((entity) => {",
+"    playerArray.forEach((player) => {",
+"      targetLocation.dimension.spawnEntity('pig', {",
+"        x: player.location.x + 1,",
+"        y: player.location.y,",
+"        z: player.location.z,",
+"      });",
+"    });",
+"  });"
+]},
 "bounceSkeletons": {
-  "description": "Amongst a set of entities, uses entity query to find specific entities and bounce them with applyKnockback See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/getentities",
+  "description": "Amongst a set of entities, uses entity query to find specific entities and bounce them with applyKnockback. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/getentities",
   "prefix": ["mc"],
   "body": ["  const mobs = ['creeper', 'skeleton', 'sheep'];",
 "  // create some sample mob data",
@@ -397,7 +497,7 @@
 "  }"
 ]},
 "tagsQuery": {
-  "description": "Amongst a set of entities, uses entity query to find specific entities based on a tag See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/getentities",
+  "description": "Amongst a set of entities, uses entity query to find specific entities based on a tag. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/getentities",
   "prefix": ["mc"],
   "body": ["  const mobs = ['creeper', 'skeleton', 'sheep'];",
 "  // create some sample mob data",
@@ -414,31 +514,34 @@
 "  }"
 ]},
 "logEntitySpawnEvent": {
-  "description": "Registers and contains an entity spawned event handler See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entityspawnaftereventsignal/subscribe",
+  "description": "Registers and contains an entity spawned event handler. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entityspawnaftereventsignal/subscribe",
   "prefix": ["mc"],
   "body": ["  // register a new function that is called when a new entity is created.",
 "  world.afterEvents.entitySpawn.subscribe((entityEvent: EntitySpawnAfterEvent) => {",
 "    if (entityEvent && entityEvent.entity) {",
-"      log(`New entity of type '${entityEvent.entity.typeId}' created!`, 1);",
+"      log(`New entity of type ${entityEvent.entity.typeId} created!`, 1);",
 "    } else {",
-"      log(`The entity event didn't work as expected.`, -1);",
+"      log(`The entity event did not work as expected.`, -1);",
 "    }",
 "  });",
 "  system.runTimeout(() => {",
-"    spawnAdultHorse(log, targetLocation);",
+"    targetLocation.dimension.spawnEntity(",
+"      'minecraft:horse<minecraft:ageable_grow_up>',",
+"      Vector3Utils.add(targetLocation, { x: 0, y: 1, z: 0 })",
+"    );",
 "  }, 20);"
 ]},
 "spawnAdultHorse": {
-  "description": "A simple function to create a horse See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/spawnentity",
+  "description": "A simple function to create an adult horse. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/spawnentity",
   "prefix": ["mc"],
-  "body": ["  log('Create a horse and triggering the 'ageable_grow_up' event, ensuring the horse is created as an adult');",
+  "body": ["  log('Create a horse and triggering the ageable_grow_up event, ensuring the horse is created as an adult');",
 "  targetLocation.dimension.spawnEntity(",
 "    'minecraft:horse<minecraft:ageable_grow_up>',",
 "    Vector3Utils.add(targetLocation, { x: 0, y: 1, z: 0 })",
 "  );"
 ]},
 "givePlayerElytra": {
-  "description": "Give a player elytra See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entityequipmentinventorycomponent",
+  "description": "Gives a player an elytra. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entityequipmentinventorycomponent",
   "prefix": ["mc"],
   "body": ["  const players = world.getAllPlayers();",
 "  const equipment = players[0].getComponent(EntityComponentTypes.Equippable) as EntityEquippableComponent;",
@@ -446,7 +549,7 @@
 "  log('Player given Elytra');"
 ]},
 "givePlayerEquipment": {
-  "description": "Give a player, and an armorstand, a full set of equipment See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/itemstack",
+  "description": "Give a player, and an armorstand, a full set of equipment. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/itemstack",
   "prefix": ["mc"],
   "body": ["  const players = world.getAllPlayers();",
 "  const armorStandLoc = { x: targetLocation.x, y: targetLocation.y, z: targetLocation.z + 4 };",
@@ -470,8 +573,132 @@
 "    equipmentCompArmorStand.setEquipment(EquipmentSlot.Offhand, new ItemStack(MinecraftItemTypes.Shield));",
 "  }"
 ]},
+"giveHurtDiamondSword": {
+  "description": "Gives a player a half-damaged diamond sword. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/itemstack/getcomponent",
+  "prefix": ["mc"],
+  "body": ["  const hurtDiamondSword = new ItemStack(MinecraftItemTypes.DiamondSword);",
+"  const durabilityComponent = hurtDiamondSword.getComponent(ItemComponentTypes.Durability) as ItemDurabilityComponent;",
+"  if (durabilityComponent !== undefined) {",
+"    durabilityComponent.damage = durabilityComponent.maxDurability / 2;",
+"  }",
+"  for (const player of world.getAllPlayers()) {",
+"    const inventory = player.getComponent(EntityComponentTypes.Inventory) as EntityInventoryComponent;",
+"    if (inventory && inventory.container) {",
+"      inventory.container.addItem(hurtDiamondSword);",
+"    }",
+"  }"
+]},
+"giveDestroyRestrictedPickaxe": {
+  "description": "Gives a player a restricted pickaxe. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/itemstack/setcandestroy",
+  "prefix": ["mc"],
+  "body": ["  for (const player of world.getAllPlayers()) {",
+"    const specialPickaxe = new ItemStack(MinecraftItemTypes.DiamondPickaxe);",
+"    specialPickaxe.setCanDestroy([MinecraftItemTypes.Cobblestone, MinecraftItemTypes.Obsidian]);",
+"    const inventory = player.getComponent('inventory') as EntityInventoryComponent;",
+"    if (inventory === undefined || inventory.container === undefined) {",
+"      return;",
+"    }",
+"    inventory.container.addItem(specialPickaxe);",
+"  }"
+]},
+"givePlaceRestrictedGoldBlock": {
+  "description": "Gives a player a restricted gold block. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/itemstack/setcanplaceon",
+  "prefix": ["mc"],
+  "body": ["  for (const player of world.getAllPlayers()) {",
+"    const specialGoldBlock = new ItemStack(MinecraftItemTypes.GoldBlock);",
+"    specialGoldBlock.setCanPlaceOn([MinecraftItemTypes.GrassBlock, MinecraftItemTypes.Dirt]);",
+"    const inventory = player.getComponent(EntityComponentTypes.Inventory) as EntityInventoryComponent;",
+"    if (inventory === undefined || inventory.container === undefined) {",
+"      return;",
+"    }",
+"    inventory.container.addItem(specialGoldBlock);",
+"  }"
+]},
+"diamondAwesomeSword": {
+  "description": "Gives a player a diamond sword with custom lore text. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/itemstack/addlore",
+  "prefix": ["mc"],
+  "body": ["  for (const player of world.getAllPlayers()) {",
+"    const diamondAwesomeSword = new ItemStack(MinecraftItemTypes.DiamondSword, 1);",
+"    diamondAwesomeSword.setLore(['§c§lDiamond Sword of Awesome§r', '+10 coolness', '§p+4 shiny§r']);",
+"    // hover over/select the item in your inventory to see the lore.",
+"    const inventory = player.getComponent(EntityComponentTypes.Inventory) as EntityInventoryComponent;",
+"    if (inventory === undefined || inventory.container === undefined) {",
+"      return;",
+"    }",
+"    inventory.container.setItem(0, diamondAwesomeSword);",
+"  }"
+]},
+"getFirstHotbarItem": {
+  "description": "Gets the first hotbar item. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/container/getitem",
+  "prefix": ["mc"],
+  "body": ["  for (const player of world.getAllPlayers()) {",
+"    const inventory = player.getComponent(EntityInventoryComponent.componentId) as EntityInventoryComponent;",
+"    if (inventory && inventory.container) {",
+"      const firstItem = inventory.container.getItem(0);",
+"      if (firstItem) {",
+"        log('First item in hotbar is: ' + firstItem.typeId);",
+"      }",
+"      return inventory.container.getItem(0);",
+"    }",
+"    return undefined;",
+"  }"
+]},
+"moveBetweenContainers": {
+  "description": "Move an item between containers. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/container/moveitem",
+  "prefix": ["mc"],
+  "body": ["  const players = world.getAllPlayers();",
+"  const chestCart = targetLocation.dimension.spawnEntity(MinecraftEntityTypes.ChestMinecart, {",
+"    x: targetLocation.x + 1,",
+"    y: targetLocation.y,",
+"    z: targetLocation.z,",
+"  });",
+"  if (players.length > 0) {",
+"    const fromPlayer = players[0];",
+"    const fromInventory = fromPlayer.getComponent(EntityComponentTypes.Inventory) as EntityInventoryComponent;",
+"    const toInventory = chestCart.getComponent(EntityComponentTypes.Inventory) as EntityInventoryComponent;",
+"    if (fromInventory && toInventory && fromInventory.container && toInventory.container) {",
+"      fromInventory.container.moveItem(0, 0, toInventory.container);",
+"    }",
+"  }"
+]},
+"swapBetweenContainers": {
+  "description": "Swap an item between containers. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/container/swapitem",
+  "prefix": ["mc"],
+  "body": ["  const players = world.getAllPlayers();",
+"  const chestCart = targetLocation.dimension.spawnEntity(MinecraftEntityTypes.ChestMinecart, {",
+"    x: targetLocation.x + 1,",
+"    y: targetLocation.y,",
+"    z: targetLocation.z,",
+"  });",
+"  if (players.length > 0) {",
+"    const fromPlayer = players[0];",
+"    const fromInventory = fromPlayer.getComponent(EntityComponentTypes.Inventory) as EntityInventoryComponent;",
+"    const toInventory = chestCart.getComponent(EntityComponentTypes.Inventory) as EntityInventoryComponent;",
+"    if (fromInventory && toInventory && fromInventory.container && toInventory.container) {",
+"      fromInventory.container.swapItems(0, 0, toInventory.container);",
+"    }",
+"  }"
+]},
+"transferBetweenContainers": {
+  "description": "Transfer an item between containers. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/container/transferitem",
+  "prefix": ["mc"],
+  "body": ["  const players = world.getAllPlayers();",
+"  const chestCart = targetLocation.dimension.spawnEntity(MinecraftEntityTypes.ChestMinecart, {",
+"    x: targetLocation.x + 1,",
+"    y: targetLocation.y,",
+"    z: targetLocation.z,",
+"  });",
+"  if (players.length > 0) {",
+"    const fromPlayer = players[0];",
+"    const fromInventory = fromPlayer.getComponent(EntityComponentTypes.Inventory) as EntityInventoryComponent;",
+"    const toInventory = chestCart.getComponent(EntityComponentTypes.Inventory) as EntityInventoryComponent;",
+"    if (fromInventory && toInventory && fromInventory.container && toInventory.container) {",
+"      fromInventory.container.transferItem(0, toInventory.container);",
+"    }",
+"  }"
+]},
 "playMusicAndSound": {
-  "description": "Plays some music and sound effects See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/world/playmusic",
+  "description": "Plays some music and sound effects. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/world/playmusic",
   "prefix": ["mc"],
   "body": ["  const players = world.getPlayers();",
 "  const musicOptions: MusicOptions = {",
@@ -492,7 +719,7 @@
 "  players[0].playSound('bucket.fill_water', playerSoundOptions);"
 ]},
 "spawnParticle": {
-  "description": "Spawns a cloud of colored flame particles See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/spawnparticle",
+  "description": "Spawns a cloud of colored flame particles. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/dimension/spawnparticle",
   "prefix": ["mc"],
   "body": ["  for (let i = 0; i < 100; i++) {",
 "    const molang = new MolangVariableMap();",
@@ -506,7 +733,7 @@
 "  }"
 ]},
 "pistonAfterEvent": {
-  "description": "A simple piston after activate even See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/pistonactivateaftereventsignal/subscribe",
+  "description": "A simple piston after activate event. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/pistonactivateaftereventsignal/subscribe",
   "prefix": ["mc"],
   "body": ["  // set up a couple of piston blocks",
 "  const piston = targetLocation.dimension.getBlock(targetLocation);",
@@ -536,8 +763,30 @@
 "    }",
 "  });"
 ]},
+"sendPlayerMessages": {
+  "description": "Sends player a number of diverse message types. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/player/sendmessage",
+  "prefix": ["mc"],
+  "body": ["  for (const player of world.getAllPlayers()) {",
+"    // Displays 'First or Second'",
+"    const rawMessage = { translate: 'accessibility.list.or.two', with: ['First', 'Second'] };",
+"    player.sendMessage(rawMessage);",
+"    // Displays 'Hello, world!'",
+"    player.sendMessage('Hello, world!');",
+"    // Displays 'Welcome, Amazing Player 1!'",
+"    player.sendMessage({ translate: 'authentication.welcome', with: ['Amazing Player 1'] });",
+"    // Displays the player's score for objective 'obj'. Each player will see their own score.",
+"    const rawMessageWithScore = { score: { name: '*', objective: 'obj' } };",
+"    player.sendMessage(rawMessageWithScore);",
+"    // Displays 'Apple or Coal'",
+"    const rawMessageWithNestedTranslations = {",
+"      translate: 'accessibility.list.or.two',",
+"      with: { rawtext: [{ translate: 'item.apple.name' }, { translate: 'item.coal.name' }] },",
+"    };",
+"    player.sendMessage(rawMessageWithNestedTranslations);",
+"  }"
+]},
 "updateScoreboard": {
-  "description": "Creates and updates a scoreboard objective, plus a player score See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/scoreboard",
+  "description": "Creates and updates a scoreboard objective, plus a player score. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/scoreboard",
   "prefix": ["mc"],
   "body": ["  const scoreboardObjectiveId = 'scoreboard_demo_objective';",
 "  const scoreboardObjectiveDisplayName = 'Demo Objective';",
@@ -564,7 +813,7 @@
 "  objective.setScore(player0Identity, playerScore + 10);"
 ]},
 "setTitle": {
-  "description": "Sets a title overlay on the player's scree See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/screendisplay",
+  "description": "Sets a title overlay on the player's screen. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/screendisplay",
   "prefix": ["mc"],
   "body": ["  const players = world.getPlayers();",
 "  if (players.length > 0) {",
@@ -572,7 +821,7 @@
 "  }"
 ]},
 "setTitleAndSubtitle": {
-  "description": "Sets a title and subtitle overlay on the player's scree See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/screendisplay",
+  "description": "Sets a title and subtitle overlay on the player's screen. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/screendisplay",
   "prefix": ["mc"],
   "body": ["  const players = world.getPlayers();",
 "  players[0].onScreenDisplay.setTitle('Chapter 1', {",
@@ -583,7 +832,7 @@
 "  });"
 ]},
 "countdown": {
-  "description": "Runs a countdown from 10 to 0 See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/screendisplay",
+  "description": "Runs a countdown from 10 to 0. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/screendisplay",
   "prefix": ["mc"],
   "body": ["  const players = world.getPlayers();",
 "  players[0].onScreenDisplay.setTitle('Get ready!', {",
@@ -602,19 +851,36 @@
 "  }, 20);"
 ]},
 "sendBasicMessage": {
-  "description": "Sends a basic message See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/player/sendmessage",
+  "description": "Sends a basic message. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/player/sendmessage",
   "prefix": ["mc"],
   "body": ["  const players = world.getPlayers();",
 "  players[0].sendMessage('Hello World!');"
 ]},
 "sendTranslatedMessage": {
-  "description": "Sends a translated message See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/player/sendmessage",
+  "description": "Sends a translated message. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/player/sendmessage",
   "prefix": ["mc"],
   "body": ["  const players = world.getPlayers();",
 "  players[0].sendMessage({ translate: 'authentication.welcome', with: ['Amazing Player 1'] });"
 ]},
+"nestedTranslation": {
+  "description": "Sends a message with nested translation. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/player/sendmessage",
+  "prefix": ["mc"],
+  "body": ["  // Displays 'Apple or Coal'",
+"  const rawMessage = {",
+"    translate: 'accessibility.list.or.two',",
+"    with: { rawtext: [{ translate: 'item.apple.name' }, { translate: 'item.coal.name' }] },",
+"  };",
+"  world.sendMessage(rawMessage);"
+]},
+"scoreWildcard": {
+  "description": "Sends a message with a wildcard score. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/player/sendmessage",
+  "prefix": ["mc"],
+  "body": ["  // Displays the player's score for objective 'obj'. Each player will see their own score.",
+"  const rawMessage = { score: { name: '*', objective: 'obj' } };",
+"  world.sendMessage(rawMessage);"
+]},
 "showTranslatedMessageForm": {
-  "description": "Shows an example translated two-button dialog dialog See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/rawmessage",
+  "description": "Shows an example translated two-button dialog dialog. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/rawmessage",
   "prefix": ["mc"],
   "body": ["  const players = world.getPlayers();",
 "  const messageForm = new MessageFormData()",
@@ -637,7 +903,7 @@
 "    });"
 ]},
 "addSign": {
-  "description": "Creates a single-sided simple sig See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/blocksigncomponent",
+  "description": "Creates a single-sided simple sign. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/blocksigncomponent",
   "prefix": ["mc"],
   "body": ["  const players = world.getPlayers();",
 "  const dim = players[0].dimension;",
@@ -652,7 +918,7 @@
 "  signComponent?.setText(`Basic sign!/nThis is green on the front.`);"
 ]},
 "addTranslatedSign": {
-  "description": "Creates a single-sided simple sig See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/blockpermutation",
+  "description": "Creates a single-sided simple sign. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/blockpermutation",
   "prefix": ["mc"],
   "body": ["  const players = world.getPlayers();",
 "  const dim = players[0].dimension;",
@@ -667,7 +933,7 @@
 "  signComponent?.setText({ translate: 'item.skull.player.name', with: [players[0].name] });"
 ]},
 "addTwoSidedSign": {
-  "description": "Creates a two-sided sign with custom colors and a read-only statu See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/blocksigncomponent",
+  "description": "Creates a two-sided sign with custom colors and a read-only status. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/blocksigncomponent",
   "prefix": ["mc"],
   "body": ["  const signBlock = targetLocation.dimension.getBlock(targetLocation);",
 "  if (!signBlock) {",
@@ -688,15 +954,37 @@
 "    log('Could not find sign component.');",
 "  }"
 ]},
+"updateSignText": {
+  "description": "Updates sign text. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/blocksigncomponent",
+  "prefix": ["mc"],
+  "body": ["  const block = targetLocation.dimension.getBlock(targetLocation);",
+"  if (!block) {",
+"    console.warn('Could not find a block at specified location.');",
+"    return;",
+"  }",
+"  const sign = block.getComponent(BlockComponentTypes.Sign) as BlockSignComponent;",
+"  if (sign) {",
+"    // RawMessage",
+"    const helloWorldMessage: RawMessage = { text: 'Hello World' };",
+"    sign.setText(helloWorldMessage);",
+"    // RawText",
+"    const helloWorldText: RawText = { rawtext: [{ text: 'Hello World' }] };",
+"    sign.setText(helloWorldText);",
+"    // Regular string",
+"    sign.setText('Hello World');",
+"  } else {",
+"    console.warn('Could not find a sign component on the block.');",
+"  }"
+]},
 "spawnFeatherItem": {
-  "description": "Creates a free-floating feather item in the world See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/itemstack",
+  "description": "Creates a free-floating feather item in the world. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/itemstack",
   "prefix": ["mc"],
   "body": ["  const featherItem = new ItemStack(MinecraftItemTypes.Feather, 1);",
 "  targetLocation.dimension.spawnItem(featherItem, targetLocation);",
 "  log(`New feather created at ${targetLocation.x}, ${targetLocation.y}, ${targetLocation.z}!`);"
 ]},
 "testThatEntityIsFeatherItem": {
-  "description": "Tests whether there is a feather nearby a spot See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entityitemcomponent",
+  "description": "Tests whether there is a feather nearby a spot. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/entityitemcomponent",
   "prefix": ["mc"],
   "body": ["  const items = targetLocation.dimension.getEntities({",
 "    location: targetLocation,",
@@ -712,7 +1000,7 @@
 "  }"
 ]},
 "trapTick": {
-  "description": "A simple tick timer that runs a command every minute See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/system/run",
+  "description": "A simple tick timer that runs a command every minute. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/system/run",
   "prefix": ["mc"],
   "body": ["  try {",
 "    // Minecraft runs at 20 ticks per second.",
@@ -725,11 +1013,17 @@
 "  system.run(trapTick);"
 ]},
 "every30Seconds": {
-  "description": "An alternate interval timer that runs a command every 30 seconds See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/system/runinterval",
+  "description": "An alternate interval timer that runs a command every 30 seconds. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/system/runinterval",
   "prefix": ["mc"],
   "body": ["  const intervalRunIdentifier = Math.floor(Math.random() * 10000);",
 "  system.runInterval(() => {",
 "    world.sendMessage('This is an interval run ' + intervalRunIdentifier + ' sending a message every 30 seconds.');",
 "  }, 600);"
+]},
+"cubeGenerator": {
+  "description": "Uses a generator function to, over the span of multiple ticks, provision blocks in a cube. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server/system/runjob",
+  "prefix": ["mc"],
+  "body": ["  const blockPerm = BlockPermutation.resolve('minecraft:cobblestone');",
+"  system.runJob(blockPlacingGenerator(blockPerm, targetLocation, 15));"
 ]}
 }

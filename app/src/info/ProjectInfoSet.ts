@@ -319,6 +319,7 @@ export default class ProjectInfoSet {
               this.pushItem(genItems, genItemsByStoragePath, item);
             }
           } catch (e: any) {
+            // V--- add a breakpoint to the line below to catch validator exceptions (1 of 3) ---V
             genItems.push(
               new ProjectInfoItem(InfoItemType.internalProcessingError, gen.id, 500, this.project.name + ": " + e)
             );
@@ -346,6 +347,7 @@ export default class ProjectInfoSet {
                 this.pushItem(genItems, genItemsByStoragePath, item);
               }
             } catch (e: any) {
+              // V--- add a breakpoint to the line below to catch validator exceptions (2 of 3) ---V
               genItems.push(
                 new ProjectInfoItem(
                   InfoItemType.internalProcessingError,
@@ -1529,6 +1531,7 @@ function _addReportJson(data) {
                   this.pushItem(genItems, genItemsByStoragePath, item);
                 }
               } catch (e: any) {
+                // V--- add a breakpoint to the line below to catch validator exceptions (3 of 3) ---V
                 genItems.push(
                   new ProjectInfoItem(
                     InfoItemType.internalProcessingError,

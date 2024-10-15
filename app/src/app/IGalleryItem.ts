@@ -27,6 +27,8 @@ export default interface IGalleryItem {
   thumbnailImage: string;
   logoImage?: string;
   localLogo?: string;
+  sampleSet?: string;
+  topics?: string[];
   logoLocation?: LogoLocation;
   title: string;
   description: string;

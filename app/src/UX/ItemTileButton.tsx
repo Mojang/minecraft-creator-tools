@@ -5,7 +5,6 @@ import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import { Button, ThemeInput } from "@fluentui/react-northstar";
 import Utilities from "../core/Utilities";
 import CartoApp from "../app/CartoApp";
-import ProjectUtilities from "../app/ProjectUtilities";
 import { GalleryItemCommand } from "./ItemGallery";
 
 export enum ItemTileButtonDisplayMode {
@@ -50,33 +49,15 @@ export default class ItemTileButton extends Component<IItemTileButtonProps, IIte
     let imageElement = <></>;
 
     let description = [];
-
     if (
       this.props.project.type === GalleryItemType.codeSample ||
       this.props.project.type === GalleryItemType.editorCodeSample
     ) {
-      const snippet = ProjectUtilities.getSnippet(this.props.project.id);
+      const topics = this.props.project.topics;
 
-      if (snippet) {
-        const lines = snippet.body;
-
-        if (lines.length >= 1) {
-          let curLine = this.props.project.codeLineStart;
-
-          if (curLine === undefined) {
-            curLine = Math.ceil(lines.length / 2) - 1;
-          }
-
-          let addedLines = 0;
-
-          while (curLine < lines.length && addedLines < 4) {
-            if (lines[curLine] && lines[curLine].indexOf("const overworld") <= 0 && lines[curLine].trim().length > 0) {
-              description.push(<div className="itb-code-line">{lines[curLine]}</div>);
-              addedLines++;
-            }
-
-            curLine++;
-          }
+      if (topics) {
+        for (const topic of topics) {
+          description.push(<span className="itbi-code-topic">{topic}</span>);
         }
       }
     }

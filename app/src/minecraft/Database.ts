@@ -23,6 +23,9 @@ import ContentIndex from "../core/ContentIndex";
 import IProjectInfoData from "../info/IProjectInfoData";
 import Project from "../app/Project";
 import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
+import StorageUtilities from "../storage/StorageUtilities";
+import ISnippet from "../app/ISnippet";
+import IGalleryItem from "../app/IGalleryItem";
 
 export default class Database {
   static isLoaded = false;
@@ -456,7 +459,7 @@ export default class Database {
     }
   }
 
-  static async loadSnippets(): Promise<void> {
+  static async initSnippetsFolder(): Promise<void> {
     if (Database.snippetsFolder !== null) {
       return;
     }
@@ -513,6 +516,55 @@ export default class Database {
         prom(undefined);
       }
     }
+  }
+
+  public static itemMatchesSearch(item: IGalleryItem, searchString?: string) {
+    if (!searchString || searchString.length < 3) {
+      return true;
+    }
+
+    const searchKey = searchString.toLowerCase();
+
+    if (
+      (item.title && item.title.toLowerCase().indexOf(searchKey) >= 0) ||
+      (item.description && item.description.toLowerCase().indexOf(searchKey) >= 0)
+    ) {
+      return true;
+    }
+
+    if (item.topics) {
+      for (const topic of item.topics) {
+        if (topic.toLowerCase().indexOf(searchKey) >= 0) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  static async getSnippet(sampleSet: string, snippetId: string) {
+    if (!Database.snippetsFolder) {
+      await Database.initSnippetsFolder();
+    }
+
+    if (!Database.snippetsFolder) {
+      return undefined;
+    }
+
+    if (Database.snippetsFolder !== null && Database.snippetsFolder.files) {
+      const file = Database.snippetsFolder.files[sampleSet + ".json"];
+
+      if (file) {
+        const snipSet = StorageUtilities.getJsonObject(file) as { [snippetName: string]: ISnippet };
+
+        if (snipSet && snipSet[snippetId]) {
+          return snipSet[snippetId];
+        }
+      }
+    }
+
+    return undefined;
   }
 
   static async loadMetadataFolder() {

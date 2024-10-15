@@ -1,5 +1,5 @@
 import { Component } from "react";
-import "./ComponentSetEditor.css";
+import "./BlockTypeComponentSetEditor.css";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import Database from "../minecraft/Database";
 import { Toolbar, SplitButton, ThemeInput, List, ListProps, selectableListBehavior } from "@fluentui/react-northstar";
@@ -7,21 +7,24 @@ import IManagedComponentSetItem from "../minecraft/IManagedComponentSetItem";
 import DataFormUtilities from "../dataform/DataFormUtilities";
 import Utilities from "../core/Utilities";
 
-interface IComponentSetEditorProps {
-  componentSetItem: IManagedComponentSetItem;
+interface IBlockTypeComponentSetEditorProps {
+  blockTypeItem: IManagedComponentSetItem;
   isDefault: boolean;
   heightOffset: number;
   title?: string;
   theme: ThemeInput<any>;
 }
 
-interface IComponentSetEditorState {
+interface IBlockTypeComponentSetEditorState {
   loadedFormCount?: number;
   activeComponentId: string | undefined;
 }
 
-export default class ComponentSetEditor extends Component<IComponentSetEditorProps, IComponentSetEditorState> {
-  constructor(props: IComponentSetEditorProps) {
+export default class BlockTypeComponentSetEditor extends Component<
+  IBlockTypeComponentSetEditorProps,
+  IBlockTypeComponentSetEditorState
+> {
+  constructor(props: IBlockTypeComponentSetEditorProps) {
     super(props);
 
     this._addComponentClick = this._addComponentClick.bind(this);
@@ -43,8 +46,8 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
     };
   }
 
-  componentDidUpdate(prevProps: IComponentSetEditorProps, prevState: IComponentSetEditorState) {
-    if (prevProps.componentSetItem !== this.props.componentSetItem) {
+  componentDidUpdate(prevProps: IBlockTypeComponentSetEditorProps, prevState: IBlockTypeComponentSetEditorState) {
+    if (prevProps.blockTypeItem !== this.props.blockTypeItem) {
       let id = undefined;
 
       const componentListing = this.getUsableComponents();
@@ -74,20 +77,20 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
     if (form !== undefined) {
       const newDataObject = DataFormUtilities.generateDefaultItem(form);
 
-      this.props.componentSetItem.addComponent(name, newDataObject);
+      this.props.blockTypeItem.addComponent(name, newDataObject);
     }
   }
 
   getFormIdFromComponentId(componentId: string) {
-    return "entity_" + componentId.replace(/:/gi, "_").replace(/_/gi, "_");
+    return "block_" + componentId.replace(/:/gi, "_").replace(/_/gi, "_");
   }
 
   async _updateManager() {
-    if (!this.props.componentSetItem) {
+    if (!this.props.blockTypeItem) {
       return;
     }
 
-    const components = this.props.componentSetItem.getComponents();
+    const components = this.props.blockTypeItem.getComponents();
 
     for (let i = 0; i < components.length; i++) {
       const component = components[i];
@@ -128,13 +131,13 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
     const componentId = props.tag;
 
     if (componentId) {
-      this.props.componentSetItem.removeComponent(componentId);
+      this.props.blockTypeItem.removeComponent(componentId);
       this.forceUpdate();
     }
   }
 
   getUsableComponents() {
-    const components = this.props.componentSetItem.getComponents();
+    const components = this.props.blockTypeItem.getComponents();
     const componentList = [];
 
     for (let i = 0; i < components.length; i++) {
@@ -155,7 +158,7 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
       return <div>Loading...</div>;
     }
 
-    const components = this.props.componentSetItem.getComponents();
+    const components = this.props.blockTypeItem.getComponents();
     const componentForms = [];
     const componentList = [];
 
@@ -167,7 +170,7 @@ export default class ComponentSetEditor extends Component<IComponentSetEditorPro
       if (typeof component === "object" && component.id !== undefined) {
         const formId = component.id.replace(/:/gi, "_").replace(/_/gi, "_");
 
-        const form = Database.getForm("entity_" + formId);
+        const form = Database.getForm("block_" + formId);
 
         componentList.push({
           key: component.id,

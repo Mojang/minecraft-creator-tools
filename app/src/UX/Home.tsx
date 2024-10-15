@@ -27,7 +27,6 @@ import Log from "../core/Log";
 import IGallery from "../app/IGallery";
 import IFolder from "../storage/IFolder";
 import IGalleryItem from "../app/IGalleryItem";
-import Database from "../minecraft/Database";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import ProjectGallery from "./ProjectGallery";
@@ -45,6 +44,7 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import WebUtilities from "./WebUtilities";
 import FileSystemFolder from "../storage/FileSystemFolder";
 import IStorage from "../storage/IStorage";
+import MinecraftBox from "./MinecraftBox";
 
 enum HomeDialogMode {
   none = 0,
@@ -543,11 +543,11 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
   private _onCartoLoaded(source: Carto, target: Carto) {
     this.forceUpdate();
-    this._loadSnippets();
+    this._loadAsync();
   }
 
-  private async _loadSnippets() {
-    await Database.loadSnippets();
+  private async _loadAsync() {
+    // add any async loading code here.
     this.forceUpdate();
   }
 
@@ -1001,29 +1001,18 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       );
 
       toolBin.push(
-        <div
-          className="home-toolTile"
-          key="home-validateTool"
-          style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-          }}
-        >
-          <div
-            className="home-toolTileInner"
-            style={{
-              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
-            }}
-          >
+        <MinecraftBox theme={this.props.theme} key="home-validateTool" className="home-toolTile">
+          <div className="home-toolTileInner">
             <h3
               className="home-toolTile-label"
               style={{
                 color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
               }}
             >
-              <FontAwesomeIcon icon={faMagnifyingGlass} className="fa-lg" />
-              &#160;&#160;Validate/Inspect Content
+              <span className="home-iconAdjust">
+                <FontAwesomeIcon icon={faMagnifyingGlass} className="fa-lg home-iconAdjust" />
+              </span>
+              <span>&#160;Validate/Inspect Content</span>
             </h3>
             <div className="home-toolTile-instruction">
               Upload a zip/MCAddon/MCPack/MCWorld of Minecraft files to get an Inspector report.
@@ -1040,7 +1029,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               onChange={this._handleInspectFileUpload}
             />
           </div>
-        </div>
+        </MinecraftBox>
       );
 
       mainToolArea.push(

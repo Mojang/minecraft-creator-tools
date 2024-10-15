@@ -88,7 +88,7 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
   }
 
   async getFirstUnsafeError(depth?: number, processedFolders?: number): Promise<string | undefined> {
-    if (depth && depth > 7) {
+    if (depth && depth > 12) {
       return "Folder hierarchy is too deep.";
     }
 

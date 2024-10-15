@@ -19,6 +19,17 @@ export default class WebUtilities {
     );
   }
 
+  static getElementLeft(element: any) {
+    let left = 0;
+
+    do {
+      left += (element.offsetLeft as number | undefined) ? (element.offsetLeft as number) : 0;
+      element = element.offsetParent as Element | undefined;
+    } while (element);
+
+    return left;
+  }
+
   static async requestPersistence() {
     if (!navigator.storage || !navigator.storage.persist) {
       return false;

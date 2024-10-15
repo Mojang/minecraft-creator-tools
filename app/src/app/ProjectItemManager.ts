@@ -11,6 +11,7 @@ import IProjectItemSeed from "./IProjectItemSeed";
 import ProjectItemUtilities from "./ProjectItemUtilities";
 import IFolder from "../storage/IFolder";
 import ProjectAutogeneration from "./ProjectAutogeneration";
+import ProjectItem from "./ProjectItem";
 
 export default class ProjectItemManager {
   private static async _getDefaultBehaviorPackPath(project: Project) {
@@ -24,6 +25,22 @@ export default class ProjectItemManager {
 
     return defaultPath;
   }
+
+  private static async _getDefaultBehaviorPackFolderPath(project: Project, name: string) {
+    const bpFolder = await project.ensureDefaultBehaviorPackFolder();
+
+    if (project.projectFolder === null) {
+      return undefined;
+    }
+
+    const subfolder = bpFolder.ensureFolder(name);
+    await subfolder.ensureExists();
+
+    const defaultPath = subfolder.getFolderRelativePath(project.projectFolder);
+
+    return defaultPath;
+  }
+
   private static async _getDefaultScriptsFolderPath(project: Project) {
     const scriptsFolder = await project.ensureMainScriptsFolder();
 
@@ -36,7 +53,7 @@ export default class ProjectItemManager {
     return defaultPath;
   }
 
-  static async createNewItem(project: Project, itemSeed: IProjectItemSeed) {
+  static async createNewItem(project: Project, itemSeed: IProjectItemSeed): Promise<ProjectItem | undefined> {
     if (itemSeed.name === "" || itemSeed.name === undefined) {
       itemSeed.name = ProjectItemUtilities.getNewItemName(itemSeed.itemType);
     }
@@ -46,6 +63,12 @@ export default class ProjectItemManager {
         case ProjectItemType.js:
         case ProjectItemType.ts:
           return ProjectItemManager.createNewScript(project, itemSeed.itemType, itemSeed.name, itemSeed.folder);
+
+        case ProjectItemType.dataForm:
+          return ProjectItemManager.createNewForm(project, itemSeed.name, itemSeed.folder);
+
+        case ProjectItemType.spawnRuleBehavior:
+          return ProjectItemManager.createNewSpawnRule(project, itemSeed.name, itemSeed.folder);
       }
     }
 
@@ -247,18 +270,13 @@ export default class ProjectItemManager {
   }
 
   static async createNewGameTestScript(project: Project) {
-    const defaultPath = await ProjectItemManager._getDefaultBehaviorPackPath(project);
+    const defaultPath = await ProjectItemManager._getDefaultBehaviorPackFolderPath(project, "scripts");
 
     if (defaultPath === undefined) {
       return;
     }
 
-    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
-      project,
-      defaultPath + "scripts/",
-      "test",
-      "js"
-    );
+    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(project, defaultPath, "test", "js");
 
     if (candidateFilePath === undefined) {
       return;
@@ -280,7 +298,7 @@ export default class ProjectItemManager {
       const baseName = StorageUtilities.getBaseFromName(file.name);
 
       if (project.preferredScriptLanguage === ProjectScriptLanguage.typeScript) {
-        const tsFile = await file.parentFolder.ensureFile(baseName + ".ts");
+        const tsFile = file.parentFolder.ensureFile(baseName + ".ts");
 
         if (tsFile !== null) {
           const content = ProjectContent.getEmptyTestTypeScript(project.name, baseName);
@@ -298,7 +316,7 @@ export default class ProjectItemManager {
   }
 
   static async createNewFunction(project: Project) {
-    const defaultPath = await this._getDefaultBehaviorPackPath(project);
+    const defaultPath = await this._getDefaultBehaviorPackFolderPath(project, "functions");
 
     if (defaultPath === undefined) {
       return;
@@ -306,7 +324,7 @@ export default class ProjectItemManager {
 
     const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
       project,
-      defaultPath + "functions/",
+      defaultPath,
       "action",
       "mcfunction"
     );
@@ -337,7 +355,7 @@ export default class ProjectItemManager {
   }
 
   static async createNewStructure(project: Project) {
-    const defaultPath = await ProjectItemManager._getDefaultBehaviorPackPath(project);
+    const defaultPath = await ProjectItemManager._getDefaultBehaviorPackFolderPath(project, "structures");
 
     if (defaultPath === undefined) {
       return;
@@ -345,7 +363,7 @@ export default class ProjectItemManager {
 
     const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
       project,
-      defaultPath + "structures/",
+      defaultPath,
       "structure",
       "mcstructure"
     );
@@ -377,7 +395,7 @@ export default class ProjectItemManager {
   }
 
   static async createNewActionSet(project: Project) {
-    const defaultPath = await this._getDefaultBehaviorPackPath(project);
+    const defaultPath = await this._getDefaultBehaviorPackFolderPath(project, "actions");
 
     if (defaultPath === undefined) {
       return;
@@ -385,7 +403,7 @@ export default class ProjectItemManager {
 
     const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
       project,
-      defaultPath + "scripts/",
+      defaultPath,
       "actionset",
       "json"
     );
@@ -398,7 +416,7 @@ export default class ProjectItemManager {
       candidateFilePath,
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
-      ProjectItemType.actionSetJson,
+      ProjectItemType.actionSet,
       undefined,
       ProjectItemCreationType.normal
     );
@@ -417,17 +435,13 @@ export default class ProjectItemManager {
   }
 
   static async createNewDocumentedType(project: Project) {
-    const defaultPath = await this._getDefaultBehaviorPackPath(project);
+    const defaultPath = await this._getDefaultBehaviorPackFolderPath(project, "docs");
 
     if (defaultPath === undefined) {
       return;
     }
 
-    const candidateFolderPath = await ProjectItemManager._generateFolderNameForNewItem(
-      project,
-      defaultPath + "docs/",
-      "type"
-    );
+    const candidateFolderPath = await ProjectItemManager._generateFolderNameForNewItem(project, defaultPath, "type");
 
     if (candidateFolderPath === undefined) {
       return;
@@ -449,29 +463,60 @@ export default class ProjectItemManager {
     await project.save();
   }
 
-  static async createNewForm(project: Project) {
-    const defaultPath = await this._getDefaultBehaviorPackPath(project);
-
-    if (defaultPath === undefined) {
-      return;
+  static getExistingPath(project: Project, itemType: ProjectItemType) {
+    if (!project.projectFolder) {
+      return undefined;
     }
 
-    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
-      project,
-      defaultPath + "forms/",
-      "form",
-      "json"
-    );
+    for (const item of project.items) {
+      if (item.itemType === itemType && item.file) {
+        return item.file.parentFolder.getFolderRelativePath(project.projectFolder);
+      }
+    }
+
+    return undefined;
+  }
+
+  static async createNewForm(project: Project, name?: string, folder?: IFolder) {
+    let path: string | undefined = undefined;
+
+    if (!project.projectFolder) {
+      return undefined;
+    }
+
+    if (folder) {
+      path = folder.getFolderRelativePath(project.projectFolder);
+    } else {
+      path = ProjectItemManager.getExistingPath(project, ProjectItemType.dataForm);
+
+      if (path === undefined) {
+        path = await this._getDefaultBehaviorPackFolderPath(project, "forms");
+
+        if (path === undefined) {
+          return undefined;
+        }
+      }
+    }
+
+    if (!path) {
+      return undefined;
+    }
+
+    if (!name) {
+      name = "form";
+    }
+
+    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(project, path, name, "form.json");
 
     if (candidateFilePath === undefined) {
-      return;
+      return undefined;
     }
 
     const pi = project.ensureItemByProjectPath(
       candidateFilePath,
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
-      ProjectItemType.worldTest,
+      ProjectItemType.dataForm,
       undefined,
       ProjectItemCreationType.normal
     );
@@ -487,18 +532,101 @@ export default class ProjectItemManager {
     await ProjectAutogeneration.updateProjectAutogeneration(project);
 
     await project.save();
+
+    return pi;
   }
 
-  static async createNewWorldTest(project: Project) {
-    const defaultPath = await this._getDefaultBehaviorPackPath(project);
+  static async createNewSpawnRule(project: Project, name?: string, folder?: IFolder): Promise<ProjectItem | undefined> {
+    let path: string | undefined = undefined;
 
-    if (defaultPath === undefined) {
+    if (!project.projectFolder) {
+      return undefined;
+    }
+
+    if (folder) {
+      path = folder.getFolderRelativePath(project.projectFolder);
+    } else {
+      path = ProjectItemManager.getExistingPath(project, ProjectItemType.spawnRuleBehavior);
+
+      if (path === undefined) {
+        path = await this._getDefaultBehaviorPackFolderPath(project, "spawn_rules");
+
+        if (path === undefined) {
+          return undefined;
+        }
+      }
+    }
+
+    if (!path) {
+      return undefined;
+    }
+
+    if (!name) {
+      name = "spawn_rule";
+    }
+
+    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(project, path, name, "json");
+
+    if (candidateFilePath === undefined) {
+      return undefined;
+    }
+
+    const pi = project.ensureItemByProjectPath(
+      candidateFilePath,
+      ProjectItemStorageType.singleFile,
+      StorageUtilities.getLeafName(candidateFilePath),
+      ProjectItemType.spawnRuleBehavior,
+      undefined,
+      ProjectItemCreationType.normal
+    );
+
+    const file = await pi.ensureFileStorage();
+
+    if (file !== null) {
+      const content = "{}";
+
+      file.setContent(content);
+    }
+
+    await ProjectAutogeneration.updateProjectAutogeneration(project);
+
+    await project.save();
+
+    return pi;
+  }
+
+  static async createNewWorldTest(project: Project, name?: string, folder?: IFolder) {
+    let path: string | undefined = undefined;
+
+    if (!project.projectFolder) {
       return;
+    }
+
+    if (folder) {
+      path = folder.getFolderRelativePath(project.projectFolder);
+    } else {
+      path = ProjectItemManager.getExistingPath(project, ProjectItemType.dataForm);
+
+      if (path === undefined) {
+        path = await this._getDefaultBehaviorPackFolderPath(project, "forms");
+
+        if (path === undefined) {
+          return;
+        }
+      }
+    }
+
+    if (!path) {
+      return;
+    }
+
+    if (!name) {
+      name = "form";
     }
 
     const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
       project,
-      defaultPath + "scripts/",
+      path + "tests/",
       "worldtest",
       "json"
     );

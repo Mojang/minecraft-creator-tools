@@ -33,7 +33,7 @@ interface IGridEditorState {
   isView: boolean;
 }
 
-export default class GridEditor extends Component<IGridEditorProps, IGridEditorState> implements IPersistable {
+export default class GridEditor extends Component<IGridEditorProps, IGridEditorState> {
   private rootElt: React.RefObject<HTMLDivElement>;
   private grid: TuiGrid | null = null;
   private gridElement: HTMLDivElement | null = null;

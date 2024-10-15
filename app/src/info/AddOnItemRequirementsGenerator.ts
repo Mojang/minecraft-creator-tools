@@ -45,7 +45,7 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
           projectItem
         )
       );
-    } else if (projectItem.itemType === ProjectItemType.featureBehaviorJson) {
+    } else if (projectItem.itemType === ProjectItemType.featureBehavior) {
       items.push(
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,

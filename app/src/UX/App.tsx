@@ -22,6 +22,7 @@ import WebUtilities from "./WebUtilities";
 import ProjectEditorUtilities, { ProjectEditorMode } from "./ProjectEditorUtilities";
 import HttpStorage from "../storage/HttpStorage";
 import { ProjectImportExclusions } from "../app/ProjectExporter";
+import Database from "../minecraft/Database";
 
 export enum NewProjectTemplateType {
   empty,
@@ -654,6 +655,7 @@ export default class App extends Component<AppProps, AppState> {
       project.gitHubFolder,
       project.fileList,
       project.id,
+      project.sampleSet,
       project.type === GalleryItemType.codeSample ? project.id : undefined,
       updateContent
     );
@@ -668,6 +670,7 @@ export default class App extends Component<AppProps, AppState> {
     gitHubFolder?: string,
     fileList?: string[],
     projectId?: string,
+    sampleSet?: string,
     sampleId?: string,
     updateContent?: string,
     description?: string
@@ -742,6 +745,7 @@ export default class App extends Component<AppProps, AppState> {
       gitHubFolder,
       fileList,
       projectId,
+      sampleSet,
       sampleId,
       updateContent,
       description
@@ -749,7 +753,7 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   private async _newProjectFromGallery(
-    project: IGalleryItem,
+    galleryItem: IGalleryItem,
     name?: string,
     creator?: string,
     shortName?: string,
@@ -760,23 +764,24 @@ export default class App extends Component<AppProps, AppState> {
     }
 
     this._newProjectFromGitHubTemplate(
-      project.title,
-      project.gitHubOwner,
-      project.gitHubRepoName,
+      galleryItem.title,
+      galleryItem.gitHubOwner,
+      galleryItem.gitHubRepoName,
       false,
-      project.gitHubBranch,
-      project.gitHubFolder,
-      project.fileList,
-      project.id,
-      project.type === GalleryItemType.codeSample || project.type === GalleryItemType.editorCodeSample
-        ? project.id
+      galleryItem.gitHubBranch,
+      galleryItem.gitHubFolder,
+      galleryItem.fileList,
+      galleryItem.id,
+      galleryItem.sampleSet,
+      galleryItem.type === GalleryItemType.codeSample || galleryItem.type === GalleryItemType.editorCodeSample
+        ? galleryItem.id
         : undefined,
       undefined,
       name,
       creator,
       shortName,
       description,
-      project.type
+      galleryItem.type
     );
   }
 
@@ -789,6 +794,7 @@ export default class App extends Component<AppProps, AppState> {
     gitHubFolder?: string,
     fileList?: string[],
     galleryId?: string,
+    sampleSet?: string,
     sampleId?: string,
     updateContent?: string,
     suggestedName?: string,
@@ -922,8 +928,8 @@ export default class App extends Component<AppProps, AppState> {
         }
       }
 
-      if (sampleId !== undefined) {
-        const snippet = ProjectUtilities.getSnippet(sampleId);
+      if (sampleSet !== undefined && sampleId !== undefined) {
+        const snippet = await Database.getSnippet(sampleSet, sampleId);
 
         Log.assertDefined(snippet, "Snippet " + sampleId + " could not be found.");
 

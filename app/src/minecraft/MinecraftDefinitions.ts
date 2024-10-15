@@ -22,7 +22,7 @@ export default class MinecraftDefinitions {
         return await EntityTypeDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.itemTypeBehaviorJson:
         return await ItemTypeBehaviorDefinition.ensureOnFile(projectItem.file);
-      case ProjectItemType.blockTypeBehaviorJson:
+      case ProjectItemType.blockTypeBehavior:
         return await BlockTypeBehaviorDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.flipbookTexturesJson:
         return await FlipbookTextureCatalogDefinition.ensureOnFile(projectItem.file);
@@ -57,7 +57,13 @@ export default class MinecraftDefinitions {
     const def = await MinecraftDefinitions.get(projectItem);
 
     if (def && (def as any).getFormatVersion) {
-      return await (def as any).getFormatVersion();
+      const fv = await (def as any).getFormatVersion();
+
+      if (!(fv instanceof Array)) {
+        return undefined;
+      }
+
+      return fv;
     }
 
     return undefined;

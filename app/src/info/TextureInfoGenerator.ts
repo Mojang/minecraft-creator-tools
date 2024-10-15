@@ -296,27 +296,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
               if (itemTexture && itemTexture.textures) {
                 textureCountPi.incrementFeature("Item Texture Resource Count");
 
-                /*if (!allTextures.includes(itemTextureId)) {
-                  allTextures.push(itemTextureId);
-                }*/
-
-                if (typeof itemTexture.textures === "string") {
-                  /* assume these get atlas'ed into one texture, which is counted as 1, above.
-                  if (!allTexturesLeaf.includes(itemTexture.textures)) {
-                    allTexturesLeaf.push(itemTexture.textures);
-                  }*/
-
-                  const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(
-                    itemTexture.textures,
-                    rpFolder
-                  );
-
-                  if (!matchesVanillaPath && !itemTexturePaths.includes(itemTexture.textures)) {
-                    itemTexturePaths.push(itemTexture.textures);
-                  } else if (matchesVanillaPath && !itemTextureVanillaPaths.includes(itemTexture.textures)) {
-                    itemTextureVanillaPaths.push(itemTexture.textures);
-                  }
-                } else if (itemTexture.textures) {
+                if (itemTexture.textures) {
                   if (typeof itemTexture.textures === "string") {
                     const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(
                       itemTexture.textures,
@@ -330,10 +310,6 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
                     }
                   } else if (itemTexture.textures.constructor === Array) {
                     for (let str of itemTexture.textures) {
-                      /*if (!allTexturesLeaf.includes(str)) {
-                      allTexturesLeaf.push(str);
-                    }*/
-
                       const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(str, rpFolder);
 
                       if (!matchesVanillaPath && !itemTexturePaths.includes(str)) {

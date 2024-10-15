@@ -37,6 +37,7 @@ import ZipStorage from "../storage/ZipStorage";
 import { MaxItemTypes, ProjectItemType } from "./IProjectItemData";
 import DeploymentStorageMinecraft from "./DeploymentStorageMinecraft";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
+import { GalleryItemType } from "./IGalleryItem";
 
 export enum CartoMinecraftState {
   none = 0,
@@ -1175,6 +1176,21 @@ export default class Carto {
 
     if (this._gallery) {
       for (const item of this._gallery.items) {
+        if (item.sampleSet) {
+          item.gitHubOwner = "microsoft";
+          item.gitHubRepoName = "minecraft-scripting-samples";
+
+          if (item.type === GalleryItemType.editorCodeSample) {
+            item.gitHubFolder = "/editor-script-box";
+
+            if (!item.tags) {
+              item.tags = ["editor"];
+            }
+          } else {
+            item.gitHubFolder = "/script-box";
+          }
+        }
+
         if (item.fileList) {
           const newFileList = [];
 

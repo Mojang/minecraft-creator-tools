@@ -5,7 +5,7 @@ import "./ItemTypeEditor.css";
 import IPersistable from "./IPersistable";
 import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
 import Database from "../minecraft/Database";
-import ComponentSetEditor from "./ComponentSetEditor";
+import EntityTypeComponentSetEditor from "./EntityTypeComponentSetEditor";
 import { ThemeInput } from "@fluentui/styles";
 
 interface IItemTypeEditorProps extends IFileProps {
@@ -149,7 +149,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
 
         <div className="ite-componentHeader">default components:</div>
         <div>
-          <ComponentSetEditor
+          <EntityTypeComponentSetEditor
             componentSetItem={et}
             theme={this.props.theme}
             isDefault={true}

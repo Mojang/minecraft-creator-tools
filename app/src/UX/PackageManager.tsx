@@ -24,7 +24,7 @@ interface IPackManagerState {
   packReferences: IPackageReference[];
 }
 
-export default class PackManager extends Component<IPackManagerProps, IPackManagerState> implements IPersistable {
+export default class PackManager extends Component<IPackManagerProps, IPackManagerState> {
   #activeEditorPersistable?: IPersistable;
 
   constructor(props: IPackManagerProps) {

@@ -4,7 +4,7 @@ import IFile from "../storage/IFile";
 import "./EntityTypeEditor.css";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import Database from "../minecraft/Database";
-import ComponentSetEditor from "./ComponentSetEditor";
+import EntityTypeComponentSetEditor from "./EntityTypeComponentSetEditor";
 import { ThemeInput } from "@fluentui/styles";
 import { List, ListProps, Toolbar, selectableListBehavior } from "@fluentui/react-northstar";
 import ManagedComponentGroup from "../minecraft/ManagedComponentGroup";
@@ -440,7 +440,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
 
         if (selItem instanceof EntityTypeDefinition || selItem instanceof ManagedComponentGroup) {
           itemInterior = (
-            <ComponentSetEditor
+            <EntityTypeComponentSetEditor
               componentSetItem={selItem}
               theme={this.props.theme}
               title={selItem.id}
@@ -616,7 +616,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       let lootTableItem = undefined;
       if (this.props.item && this.props.item.childItems) {
         for (const childItem of this.props.item.childItems) {
-          if (childItem.childItem.itemType === ProjectItemType.lootTableBehaviorJson) {
+          if (childItem.childItem.itemType === ProjectItemType.lootTableBehavior) {
             lootTableItem = childItem.childItem;
           }
         }

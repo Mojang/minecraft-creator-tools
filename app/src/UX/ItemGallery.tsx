@@ -8,6 +8,7 @@ import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import { ThemeInput } from "@fluentui/react-northstar";
 import Project from "../app/Project";
 import ItemTileButton, { ItemTileButtonDisplayMode } from "./ItemTileButton";
+import Database from "../minecraft/Database";
 
 export enum GalleryItemCommand {
   newItem,
@@ -126,23 +127,6 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
     this.props.onGalleryItemCommand(command, project);
   }
 
-  projectMatchesSearch(galProject: IGalleryItem) {
-    if (!this.props.search || this.props.search.length < 3) {
-      return true;
-    }
-
-    const searchKey = this.props.search.toLowerCase();
-
-    if (
-      (galProject.title && galProject.title.toLowerCase().indexOf(searchKey) >= 0) ||
-      (galProject.description && galProject.description.toLowerCase().indexOf(searchKey) >= 0)
-    ) {
-      return true;
-    }
-
-    return false;
-  }
-
   render() {
     const galleryButtons = [];
     let itemGalleriesElt = <></>;
@@ -157,7 +141,7 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
         const galItem = gal.items[i];
 
         if (
-          this.projectMatchesSearch(galItem) &&
+          Database.itemMatchesSearch(galItem, this.props.search) &&
           (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
           (galItem.type === GalleryItemType.codeSample || galItem.type === GalleryItemType.editorCodeSample)
         ) {
@@ -214,7 +198,7 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
         const galItem = gal.items[i];
 
         if (
-          this.projectMatchesSearch(galItem) &&
+          Database.itemMatchesSearch(galItem, this.props.search) &&
           (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
           (galItem.type === GalleryItemType.blockType || galItem.type === GalleryItemType.entityType)
         ) {
