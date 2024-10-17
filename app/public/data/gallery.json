@@ -731,9 +731,49 @@
       "type": 3
     },
     {
+      "title": "Phantoms should fly from cats",
+      "topics": ["Test.spawn", "Test.assertEntityPresentInArea", "register"],
+      "sampleSet": "server-gametest-beta",
+      "localLogo": "blocks/cobblestone.png",
+      "id": "phantomsShouldFlyFromCats",
+      "type": 3
+    },
+    {
+      "title": "Tests a roller coaster obstacle course.",
+      "topics": ["Test.spawn", "Test.assertEntityPresentInArea", "register"],
+      "sampleSet": "server-gametest-beta",
+      "localLogo": "blocks/cobblestone.png",
+      "id": "minibiomes",
+      "type": 3
+    },
+    {
+      "title": "A simple mob test - the fox should attack the chicken.",
+      "topics": ["Test.spawn", "Test.assertEntityPresentInArea", "register"],
+      "sampleSet": "server-gametest-beta",
+      "localLogo": "blocks/cobblestone.png",
+      "id": "simpleMobGameTest",
+      "type": 3
+    },
+    {
+      "title": "Get Player Profile",
+      "topics": ["variables", "secrets"],
+      "sampleSet": "server-admin-beta",
+      "localLogo": "blocks/cobblestone.png",
+      "id": "getPlayerProfile",
+      "type": 3
+    },
+    {
+      "title": "Update score via Http Request",
+      "topics": ["HttpRequestMethod", "HttpHeader", "HttpResponse"],
+      "sampleSet": "server-net-beta",
+      "localLogo": "blocks/cobblestone.png",
+      "id": "updateScore",
+      "type": 3
+    },
+    {
       "title": "Translated Message Form",
       "topics": ["MessageFormData", "MessageFormResponse", "World.getPlayers"],
-      "sampleSet": "server",
+      "sampleSet": "server-ui",
       "localLogo": "ui/dialog_background_opaque_overlap_bottom.png",
       "id": "showTranslatedMessageForm",
       "type": 3
@@ -862,7 +902,7 @@
       "topics": ["MessageFormData", "MessageFormResponse", "World.getPlayers"],
       "sampleSet": "server-ui",
       "localLogo": "ui/timer.png",
-      "id": "showBasicMesageForm",
+      "id": "showBasicMessageForm",
       "type": 3
     },
     {

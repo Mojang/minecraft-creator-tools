@@ -25,6 +25,7 @@
   .home-main {
     grid-template-columns: 400px 1fr;
     display: grid;
+    width: 100vw;
   }
 
   .home-header {

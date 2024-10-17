@@ -1039,6 +1039,9 @@ export default class ProjectUtilities {
       "LeverActionAfterEvent",
       "Vector3",
     ],
+    mcgt: ["Test", "register"],
+    mcsa: ["secrets", "variables"],
+    mcnet: ["http", "HttpRequest", "HttpResponse", "HttpRequestMethod", "HttpHeader"],
     mced: [
       "IPlayerUISession",
       "ExtensionContext",
@@ -1114,6 +1117,14 @@ export default class ProjectUtilities {
       sampleContent = sampleContent.replace(/mcui./gi, "");
     }
 
+    if (sampleContent.indexOf(" mcnet.") >= 0 && fileContent.indexOf(" as mcnet") <= 0) {
+      sampleContent = sampleContent.replace(/mcnet./gi, "");
+    }
+
+    if (sampleContent.indexOf(" mcsa.") >= 0 && fileContent.indexOf(" as mcsa") <= 0) {
+      sampleContent = sampleContent.replace(/mcsa./gi, "");
+    }
+
     return sampleContent;
   }
 
@@ -1160,6 +1171,27 @@ export default class ProjectUtilities {
         restOfContent,
         "@minecraft/vanilla-data",
         this.ImportTypes.vanilla
+      );
+
+      introContent = ProjectUtilities.ensureImportLines(
+        introContent,
+        restOfContent,
+        "@minecraft/server-admin",
+        this.ImportTypes.mcsa
+      );
+
+      introContent = ProjectUtilities.ensureImportLines(
+        introContent,
+        restOfContent,
+        "@minecraft/server-net",
+        this.ImportTypes.mcnet
+      );
+
+      introContent = ProjectUtilities.ensureImportLines(
+        introContent,
+        restOfContent,
+        "@minecraft/server-gametest",
+        this.ImportTypes.mcgt
       );
 
       introContent = ProjectUtilities.ensureImportLines(
