@@ -255,37 +255,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                   )
                 );
                 foundError = true;
-              } /*else if (bpVer[2] < parseInt(verSplit[2])) {
-                infoItems.push(
-                  new ProjectInfoItem(
-                    InfoItemType.recommendation,
-                    this.id,
-                    130,
-                    "Behavior pack manifest (" +
-                      bpVer.join(".") +
-                      ") has a lower patch version number compared to current version (" +
-                      verShort +
-                      ")",
-                    pi
-                  )
-                );
-                foundError = true;
-              } else if (bpVer[2] > parseInt(verSplit[2])) {
-                infoItems.push(
-                  new ProjectInfoItem(
-                    InfoItemType.error,
-                    this.id,
-                    131,
-                    "Behavior pack manifest (" +
-                      bpVer.join(".") +
-                      ") has a higher patch version number compared to current version (" +
-                      verShort +
-                      ")",
-                    pi
-                  )
-                );
-                foundError = true;
-              }*/
+              }
             }
           }
         }
@@ -371,35 +341,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                     pi
                   )
                 );
-              } /*else if (rpVer[2] < parseInt(verSplit[2])) {
-                infoItems.push(
-                  new ProjectInfoItem(
-                    InfoItemType.recommendation,
-                    this.id,
-                    230,
-                    "Resource pack manifest (" +
-                      rpVer.join(".") +
-                      ") has a lower patch version number compared to current version (" +
-                      verShort +
-                      ")",
-                    pi
-                  )
-                );
-              } else if (rpVer[2] > parseInt(verSplit[2])) {
-                infoItems.push(
-                  new ProjectInfoItem(
-                    InfoItemType.error,
-                    this.id,
-                    231,
-                    "Resource pack manifest (" +
-                      rpVer.join(".") +
-                      ") has a higher patch version number compared to current version (" +
-                      verShort +
-                      ")",
-                    pi
-                  )
-                );
-              }*/
+              }
             }
           }
         }

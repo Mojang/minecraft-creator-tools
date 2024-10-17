@@ -438,10 +438,10 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             pi
           )
         );
-      } else if (ver[1] > parseInt(currentVersion[1])) {
+      } else if (ver[1] > parseInt(currentVersion[1]) && !this.performPlatformVersionValidations) {
         infoItems.push(
           new ProjectInfoItem(
-            InfoItemType.error,
+            InfoItemType.warning,
             this.id,
             identifierOffset + 8,
             typeString +
@@ -457,7 +457,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       } else if (ver[2] < parseInt(currentVersion[2])) {
         infoItems.push(
           new ProjectInfoItem(
-            this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
+            InfoItemType.recommendation,
             this.id,
             identifierOffset + 10,
             typeString +
@@ -469,7 +469,11 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             pi
           )
         );
-      } else if (ver[2] > parseInt(currentVersion[2]) && ver[1] === parseInt(currentVersion[1])) {
+      } else if (
+        ver[2] > parseInt(currentVersion[2]) &&
+        ver[1] === parseInt(currentVersion[1]) &&
+        !this.performPlatformVersionValidations
+      ) {
         infoItems.push(
           new ProjectInfoItem(
             InfoItemType.error,
