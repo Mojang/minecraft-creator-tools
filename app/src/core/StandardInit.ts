@@ -6,6 +6,13 @@ export const minecraftToolDarkTheme = {
     bodyFontFamily: '"Noto Sans", "Segoe UI", system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif',
     colorScheme: {
       brand: {
+        mc0: "#131313",
+        mc1: "#212121",
+        mc2: "#212121",
+        mc3: "#373737",
+        mc4: "#3a3a3a",
+        mc5: "#4e4e4e",
+        mcc1: "#ffffff",
         background: "#3c8527", // accent background for things like buttons. complemented with fore*4
         background1: "#312f2d", // main outermost background. in a dark theme, this should be dark. complemented with fore*1
         background2: "#484644",
@@ -96,6 +103,13 @@ export const minecraftToolLightTheme = {
     bodyFontFamily: '"Noto Sans", "Segoe UI", system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif',
     colorScheme: {
       brand: {
+        mc0: "#131313",
+        mc1: "#595759",
+        mc2: "#656465",
+        mc3: "#C0BFC0",
+        mc4: "#C6C6C6",
+        mc5: "#f7f7f7",
+        mcc1: "#4C4C4C",
         background: "#6bc349", // accent background for things like buttons. complemented with fore*4
         background1: "#e6e4e2", // main outermost background. in a dark theme, this should be dark. complemented with fore*1
         background2: "#cccac7", // complement background. in a dark theme, this should be dark, but slightly different vs back*1. complemented with fore*2

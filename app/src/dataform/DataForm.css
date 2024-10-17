@@ -122,7 +122,10 @@
 .df-elementBin {
   padding: 10px;
   margin-left: 10px;
+  min-height: 121px;
   border: inset 1px;
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
 }
 
 .df-stringArray {
@@ -192,4 +195,43 @@
 
 .df-ro-table {
   display: table;
+}
+
+.df-keyedBooleanCollection {
+  display: grid;
+}
+
+.df-keyedBooleanCollectionTitle {
+  grid-column: 1;
+}
+
+.df-keyedBooleanCollectionData {
+  grid-column: 2;
+}
+
+.df-keyedBooleanCollectionClose {
+  grid-column: 3;
+}
+
+.df-keyedStringCollection {
+  display: grid;
+  grid-template-columns: 220px 1fr 100px;
+}
+
+.df-keyedStringCollectionTitle {
+  grid-column: 1;
+}
+
+.df-keyedStringCollectionData {
+  grid-column: 2;
+}
+
+.df-keyedStringCollectionData input {
+  width: 500px;
+  max-width: calc(100vw - 550px);
+  margin-bottom: 1px;
+}
+
+.df-keyedStringCollectionClose {
+  grid-column: 3;
 }

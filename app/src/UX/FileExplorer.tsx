@@ -136,10 +136,12 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
     let explorerHeight =
       height > this.props.heightOffset + 100 ? "calc(100vh - " + (this.props.heightOffset - 10) + "px)" : "inherit";
 
+    let folderAreaHeight =
+      height > this.props.heightOffset + 100 ? "calc(100vh - " + (this.props.heightOffset + 106) + "px)" : "inherit";
+
     let accessoryArea = <></>;
 
     if (this.props.mode === FileExplorerMode.folderPicker && this.state.selectedItem) {
-      const label = "Create a new folder at " + this.state.selectedItem.name + ":";
       accessoryArea = (
         <div
           className="fex-newFolderArea"
@@ -150,8 +152,12 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
           <div className="fex-newFolderIcon">
             <FontAwesomeIcon icon={faFolderPlus} className="fa-lg" />
           </div>
-          <div className="fex-newFolderLabel" title={label}>
-            {label}
+          <div className="fex-newFolderLabel" title={"Create a new folder at " + this.state.selectedItem.name}>
+            <span>(create a new folder at </span>
+            <span style={{ backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3 }}>
+              {this.state.selectedItem.name}
+            </span>
+            <span>):</span>
           </div>
           <div className="fex-newFolderName">
             <Input value={this.state.newFolderName} placeholder="New Folder" onChange={this._handleNewFolderChanged} />
@@ -175,12 +181,15 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
         style={{
           maxHeight: explorerHeight,
           minHeight: explorerHeight,
+          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
         }}
       >
         <div
           className="fex-folderArea"
           style={{
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            maxHeight: folderAreaHeight,
+            minHeight: folderAreaHeight,
           }}
         >
           <FileExplorerFolder

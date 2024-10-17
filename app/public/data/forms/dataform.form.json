@@ -97,11 +97,11 @@
               },
               {
                 "id": 14,
-                "title": "Keyed object collection"
+                "title": "Keyed object collection ({\"foo\": {\"color\":\"green\"}})"
               },
               {
                 "id": 15,
-                "title": "Object array"
+                "title": "Object array ([\"foo\", \"green\"])"
               },
               {
                 "id": 16,
@@ -137,7 +137,7 @@
               },
               {
                 "id": 24,
-                "title": "Keyed string collection"
+                "title": "Keyed string ({\"foo\": \"alpha\"})"
               },
               {
                 "id": 25,
@@ -146,6 +146,14 @@
               {
                 "id": 26,
                 "title": "Uuid"
+              },
+              {
+                "id": 27,
+                "title": "Keyed boolean ({\"foo\": true})"
+              },
+              {
+                "id": 28,
+                "title": "Keyed string array ({\"foo\": [\"alpha\"]})"
               }
             ]
           },

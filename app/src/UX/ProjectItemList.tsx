@@ -13,7 +13,6 @@ import ProjectItem from "./../app/ProjectItem";
 import { ProjectEditorMode } from "./ProjectEditorUtilities";
 import StorageUtilities from "./../storage/StorageUtilities";
 import {
-  SplitButton,
   Dialog,
   Toolbar,
   List,
@@ -31,14 +30,12 @@ import {
 
 import { AssetsLabel, EyeSlashLabel, FunctionsLabel, TypesLabel } from "./Labels";
 import { GitHubPropertyType } from "./ProjectPropertyEditor";
-import NewEntityType from "./NewEntityType";
 import ProjectUtilities, { NewEntityTypeAddMode } from "../app/ProjectUtilities";
 import IGitHubInfo from "../app/IGitHubInfo";
 import ProjectItemManager from "../app/ProjectItemManager";
 import "./ProjectItemList.css";
 import Utilities from "../core/Utilities";
-import NewBlockType from "./NewBlockType";
-import { ProjectEditPreference, ProjectRole, ProjectScriptLanguage } from "../app/IProjectData";
+import { ProjectEditPreference, ProjectRole } from "../app/IProjectData";
 import IGalleryItem from "../app/IGalleryItem";
 import ColorUtilities from "../core/ColorUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -47,10 +44,10 @@ import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import IProjectItemSeed from "../app/IProjectItemSeed";
-import NewItem from "./NewItem";
 import ProjectInfoItem from "../info/ProjectInfoItem";
 import { AnnotatedValueSet, IAnnotatedValue } from "../core/AnnotatedValue";
 import BlockbenchModel from "./../integrations/BlockbenchModel";
+import ProjectAddButton from "./ProjectAddButton";
 
 export enum EntityTypeCommand {
   select,
@@ -135,8 +132,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   constructor(props: IProjectItemListProps) {
     super(props);
 
-    this._updateNewItemSeed = this._updateNewItemSeed.bind(this);
-
     this._handleNewItem = this._handleNewItem.bind(this);
     this._handleItemSelected = this._handleItemSelected.bind(this);
     this._handleProjectChanged = this._handleProjectChanged.bind(this);
@@ -145,16 +140,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._showFunctionsClick = this._showFunctionsClick.bind(this);
     this._showAssetsClick = this._showAssetsClick.bind(this);
     this._showTypesClick = this._showTypesClick.bind(this);
-    this._handleNewTestClick = this._handleNewTestClick.bind(this);
     this._blurIfNotActive = this._blurIfNotActive.bind(this);
     this._handleContextMenu = this._handleContextMenu.bind(this);
     this._itemContextBlurred = this._itemContextBlurred.bind(this);
-    this._handleNewScriptClick = this._handleNewScriptClick.bind(this);
-    this._handleNewActionSetClick = this._handleNewActionSetClick.bind(this);
-    this._handleNewWorldTestClick = this._handleNewWorldTestClick.bind(this);
-    this._handleNewStructureClick = this._handleNewStructureClick.bind(this);
-    this._handleNewDocTypeClick = this._handleNewDocTypeClick.bind(this);
-    this._handleNewFormClick = this._handleNewFormClick.bind(this);
     this._contextMenuClick = this._contextMenuClick.bind(this);
     this._getSortedItems = this._getSortedItems.bind(this);
     this._handleNewProjectItemName = this._handleNewProjectItemName.bind(this);
@@ -164,9 +152,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._handleItemTypeToggle = this._handleItemTypeToggle.bind(this);
     this._handleItemTypeDoubleClick = this._handleItemTypeDoubleClick.bind(this);
     this._handleStoragePathToggle = this._handleStoragePathToggle.bind(this);
-    this._handleNewFunctionClick = this._handleNewFunctionClick.bind(this);
-    this._handleNewEntityTypeClick = this._handleNewEntityTypeClick.bind(this);
-    this._handleNewBlockTypeClick = this._handleNewBlockTypeClick.bind(this);
     this._githubProjectUpdated = this._githubProjectUpdated.bind(this);
     this._newEntityTypeUpdated = this._newEntityTypeUpdated.bind(this);
     this._newBlockTypeUpdated = this._newBlockTypeUpdated.bind(this);
@@ -394,101 +379,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         this.props.onActiveReferenceChangeRequested(newRef as IGitHubInfo);
       }
     }
-  }
-
-  _handleNewTestClick() {
-    if (this.props.project !== null) {
-      ProjectItemManager.createNewGameTestScript(this.props.project);
-    }
-  }
-
-  _handleNewScriptClick() {
-    if (this.props.project !== null) {
-      this.launchNewItemType(
-        this.props.project.preferredScriptLanguage === ProjectScriptLanguage.javaScript
-          ? ProjectItemType.js
-          : ProjectItemType.ts
-      );
-    }
-  }
-
-  _handleNewActionSetClick() {
-    if (this.props.project !== null) {
-      ProjectItemManager.createNewActionSet(this.props.project);
-    }
-  }
-
-  _handleNewWorldTestClick() {
-    if (this.props.project !== null) {
-      ProjectItemManager.createNewWorldTest(this.props.project);
-    }
-  }
-
-  _handleNewDocTypeClick() {
-    if (this.props.project !== null) {
-      ProjectItemManager.createNewDocumentedType(this.props.project);
-    }
-  }
-
-  _handleNewFormClick() {
-    if (this.props.project !== null) {
-      ProjectItemManager.createNewForm(this.props.project);
-    }
-  }
-
-  _handleNewFunctionClick() {
-    if (this.props.project !== null) {
-      ProjectItemManager.createNewFunction(this.props.project);
-    }
-  }
-
-  async _handleNewStructureClick() {}
-
-  launchNewItemType(itemType: ProjectItemType) {
-    this._tentativeNewItem = {
-      name: undefined,
-      itemType: itemType,
-    };
-
-    this.setState({
-      activeItem: this.state.activeItem,
-      dialogMode: ProjectItemListDialogType.newItemDialog,
-      newItemType: itemType,
-      maxItemsToShow: this.state.maxItemsToShow,
-      contextFocusedItem: this.state.contextFocusedItem,
-      collapsedItemTypes: this.state.collapsedItemTypes,
-      collapsedStoragePaths: this.state.collapsedStoragePaths,
-    });
-  }
-
-  async _handleNewEntityTypeClick() {
-    if (this.state === null || !this._isMountedInternal) {
-      return;
-    }
-
-    this.setState({
-      activeItem: this.state.activeItem,
-      dialogMode: ProjectItemListDialogType.newEntityTypeDialog,
-      contextFocusedItem: this.state.contextFocusedItem,
-      maxItemsToShow: this.state.maxItemsToShow,
-      collapsedItemTypes: this.state.collapsedItemTypes,
-      collapsedStoragePaths: this.state.collapsedStoragePaths,
-    });
-  }
-
-  async _handleNewBlockTypeClick() {
-    if (this.state === null || !this._isMountedInternal) {
-      return;
-    }
-
-    this.setState({
-      activeItem: this.state.activeItem,
-      dialogMode: ProjectItemListDialogType.newBlockTypeDialog,
-      maxItemsToShow: this.state.maxItemsToShow,
-      contextFocusedItem: this.state.contextFocusedItem,
-      collapsedItemTypes: this.state.collapsedItemTypes,
-      collapsedStoragePaths: this.state.collapsedStoragePaths,
-    });
   }
 
   _handleConfirmRename() {
@@ -1291,10 +1181,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
   }
 
-  _updateNewItemSeed(newSeed: IProjectItemSeed) {
-    this._tentativeNewItem = newSeed;
-  }
-
   _addReference(reference: IGitHubInfo, itemIndex: number) {
     const name = reference.repoName;
     const sig = ProjectItem.getGitHubSignature(reference);
@@ -1522,7 +1408,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       projectItem.parentItems?.length === 1 &&
       (projectItem.itemType === ProjectItemType.entityTypeResource ||
         projectItem.itemType === ProjectItemType.spawnRuleBehavior ||
-        projectItem.itemType === ProjectItemType.lootTableBehaviorJson)
+        projectItem.itemType === ProjectItemType.lootTableBehavior)
     ) {
       return false;
     }
@@ -1632,36 +1518,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         ),
       });
     }
-
-    const splitButtonMenuItems: any[] = [
-      {
-        id: "gpscript",
-        key: "gpscript",
-        onClick: this._handleNewScriptClick,
-        content:
-          this.props.project?.preferredScriptLanguage === ProjectScriptLanguage.typeScript
-            ? "New TypeScript"
-            : "New JavaScript",
-      },
-      {
-        id: "function",
-        key: "function",
-        onClick: this._handleNewFunctionClick,
-        content: "New function",
-      },
-      {
-        id: "entityType",
-        key: "entityType",
-        onClick: this._handleNewEntityTypeClick,
-        content: "New mob",
-      },
-      {
-        id: "blockType",
-        key: "blockType",
-        onClick: this._handleNewBlockTypeClick,
-        content: "New block type",
-      },
-    ];
 
     let selectedItemIndex = 1;
     let itemsAdded = 1;
@@ -1860,130 +1716,18 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           header={"Delete " + this.state.activeItem.name}
         />
       );
-    } else if (
-      this.state !== null &&
-      this.props.project !== null &&
-      this.state.dialogMode === ProjectItemListDialogType.newEntityTypeDialog
-    ) {
-      dialogArea = (
-        <Dialog
-          open={true}
-          cancelButton="Cancel"
-          confirmButton="Add"
-          key="pil-newEntityOuter"
-          onCancel={this._handleCancel}
-          onConfirm={this._handleNewEntityType}
-          content={
-            <NewEntityType
-              theme={this.props.theme}
-              key="pil-newEntityDia"
-              onNewEntityTypeUpdated={this._newEntityTypeUpdated}
-              project={this.props.project}
-              carto={this.props.carto}
-            />
-          }
-          header={"New mob"}
-        />
-      );
-    } else if (
-      this.state !== null &&
-      this.props.project !== null &&
-      this.state.dialogMode === ProjectItemListDialogType.newEntityTypeDialog
-    ) {
-      dialogArea = (
-        <Dialog
-          open={true}
-          cancelButton="Cancel"
-          confirmButton="Add"
-          key="pil-newEntityOuter"
-          onCancel={this._handleCancel}
-          onConfirm={this._handleNewEntityType}
-          content={
-            <NewEntityType
-              theme={this.props.theme}
-              key="pil-newEntityDia"
-              onNewEntityTypeUpdated={this._newEntityTypeUpdated}
-              project={this.props.project}
-              carto={this.props.carto}
-            />
-          }
-          header={"New mob"}
-        />
-      );
-    } else if (
-      this.state !== null &&
-      this.props.project !== null &&
-      this.state.newItemType !== undefined &&
-      this.state.dialogMode === ProjectItemListDialogType.newItemDialog
-    ) {
-      dialogArea = (
-        <Dialog
-          open={true}
-          cancelButton="Cancel"
-          confirmButton="Add"
-          key="pil-newItemOuter"
-          onCancel={this._handleCancel}
-          onConfirm={this._handleNewItem}
-          content={
-            <NewItem
-              theme={this.props.theme}
-              key="pil-newItemDia"
-              heightOffset={this.props.heightOffset + 100}
-              itemType={this.state.newItemType}
-              onNewItemSeedUpdated={this._updateNewItemSeed}
-              project={this.props.project}
-              carto={this.props.carto}
-            />
-          }
-          header={"New " + ProjectItemUtilities.getDescriptionForType(this.state.newItemType)}
-        />
-      );
-    } else if (
-      this.state !== null &&
-      this.props.project !== null &&
-      this.state.dialogMode === ProjectItemListDialogType.newBlockTypeDialog
-    ) {
-      dialogArea = (
-        <Dialog
-          open={true}
-          cancelButton="Cancel"
-          confirmButton="Add"
-          key="pil-newBlockTypeOuter"
-          onCancel={this._handleCancel}
-          onConfirm={this._handleNewBlockType}
-          content={
-            <NewBlockType
-              key="pil-newBlockTypeDia"
-              theme={this.props.theme}
-              onNewBlockTypeUpdated={this._newBlockTypeUpdated}
-              project={this.props.project}
-              carto={this.props.carto}
-            />
-          }
-          header={"New Block Type"}
-        />
-      );
     }
 
     let splitButton = <></>;
 
     if (this.props.project && !this.props.readOnly && this.props.project.role !== ProjectRole.explorer) {
       splitButton = (
-        <div className="pil-newarea" key="pil-newSplit">
-          <SplitButton
-            menu={splitButtonMenuItems}
-            button={{
-              content: "New script",
-              "aria-roledescription": "splitbutton",
-              "aria-describedby": "instruction-message-primary-button",
-            }}
-            primary
-            toggleButton={{
-              "aria-label": "more options",
-            }}
-            onMainButtonClick={this._handleNewScriptClick}
-          />
-        </div>
+        <ProjectAddButton
+          carto={this.props.carto}
+          heightOffset={this.props.heightOffset}
+          theme={this.props.theme}
+          project={this.props.project}
+        />
       );
     }
 

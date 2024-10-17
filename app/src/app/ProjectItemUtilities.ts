@@ -8,6 +8,7 @@ import StorageUtilities from "../storage/StorageUtilities";
 import { ProjectItemCategory, ProjectItemType } from "./IProjectItemData";
 import Project from "./Project";
 import ProjectItem from "./ProjectItem";
+import ProjectUtilities from "./ProjectUtilities";
 
 export default class ProjectItemUtilities {
   static inferTypeFromContent(
@@ -114,7 +115,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.entityTypeBehavior:
         return 1851;
 
-      case ProjectItemType.blockTypeBehaviorJson:
+      case ProjectItemType.blockTypeBehavior:
         return 1852;
 
       case ProjectItemType.itemTypeBehaviorJson:
@@ -152,7 +153,7 @@ export default class ProjectItemUtilities {
     switch (itemType) {
       case ProjectItemType.MCFunction:
       case ProjectItemType.testJs:
-      case ProjectItemType.actionSetJson:
+      case ProjectItemType.actionSet:
       case ProjectItemType.animationBehaviorJson:
       case ProjectItemType.animationControllerBehaviorJson:
       case ProjectItemType.tickJson:
@@ -196,7 +197,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.entityTypeResource:
       case ProjectItemType.entityTypeBaseJs:
       case ProjectItemType.entityTypeBaseTs:
-      case ProjectItemType.blockTypeBehaviorJson:
+      case ProjectItemType.blockTypeBehavior:
       case ProjectItemType.blocksCatalogResourceJson:
       case ProjectItemType.blockTypeResourceJson:
       case ProjectItemType.itemTypeBehaviorJson:
@@ -207,13 +208,13 @@ export default class ProjectItemUtilities {
       case ProjectItemType.recipeBehaviorJson:
       case ProjectItemType.biomeBehaviorJson:
       case ProjectItemType.biomeResourceJson:
-      case ProjectItemType.lootTableBehaviorJson:
+      case ProjectItemType.lootTableBehavior:
       case ProjectItemType.spawnRuleBehavior:
       case ProjectItemType.dialogueBehaviorJson:
       case ProjectItemType.MCWorld:
       case ProjectItemType.worldTemplateManifestJson:
       case ProjectItemType.itemTypeResourceJson:
-      case ProjectItemType.featureBehaviorJson:
+      case ProjectItemType.featureBehavior:
       case ProjectItemType.featureRuleBehaviorJson:
         return ProjectItemCategory.types;
 
@@ -315,16 +316,16 @@ export default class ProjectItemUtilities {
       case ProjectItemType.entityTypeBehavior:
       case ProjectItemType.tickJson:
       case ProjectItemType.cameraJson:
-      case ProjectItemType.actionSetJson:
+      case ProjectItemType.actionSet:
       case ProjectItemType.worldTest:
       case ProjectItemType.behaviorPackListJson:
       case ProjectItemType.resourcePackListJson:
       case ProjectItemType.animationBehaviorJson:
       case ProjectItemType.animationControllerBehaviorJson:
-      case ProjectItemType.blockTypeBehaviorJson:
+      case ProjectItemType.blockTypeBehavior:
       case ProjectItemType.blockMaterialsBehaviorJson:
       case ProjectItemType.itemTypeBehaviorJson:
-      case ProjectItemType.lootTableBehaviorJson:
+      case ProjectItemType.lootTableBehavior:
       case ProjectItemType.biomeResourceJson:
       case ProjectItemType.fileListArrayJson:
       case ProjectItemType.blocksCatalogResourceJson:
@@ -342,7 +343,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.biomeBehaviorJson:
       case ProjectItemType.dialogueBehaviorJson:
       case ProjectItemType.featureRuleBehaviorJson:
-      case ProjectItemType.featureBehaviorJson:
+      case ProjectItemType.featureBehavior:
       case ProjectItemType.functionEventJson:
       case ProjectItemType.recipeBehaviorJson:
       case ProjectItemType.spawnRuleBehavior:
@@ -380,7 +381,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.itemTextureJson:
       case ProjectItemType.terrainTextureCatalogResourceJson:
       case ProjectItemType.globalVariablesJson:
-      case ProjectItemType.dataFormJson:
+      case ProjectItemType.dataForm:
       case ProjectItemType.dimensionJson:
       case ProjectItemType.behaviorPackHistoryListJson:
       case ProjectItemType.resourcePackHistoryListJson:
@@ -485,7 +486,7 @@ export default class ProjectItemUtilities {
         return "Resource pack";
       case ProjectItemType.skinPackFolder:
         return "Skin pack";
-      case ProjectItemType.actionSetJson:
+      case ProjectItemType.actionSet:
         return "Action Set";
       case ProjectItemType.worldTest:
         return "World test";
@@ -497,13 +498,13 @@ export default class ProjectItemUtilities {
         return "Behavior pack animation";
       case ProjectItemType.animationControllerBehaviorJson:
         return "Behavior pack animation controller";
-      case ProjectItemType.blockTypeBehaviorJson:
+      case ProjectItemType.blockTypeBehavior:
         return "Block type";
       case ProjectItemType.blockMaterialsBehaviorJson:
         return "Block type materials";
       case ProjectItemType.itemTypeBehaviorJson:
         return "Item type";
-      case ProjectItemType.lootTableBehaviorJson:
+      case ProjectItemType.lootTableBehavior:
         return "Loot table";
       case ProjectItemType.biomeResourceJson:
         return "Biome resources";
@@ -537,7 +538,7 @@ export default class ProjectItemUtilities {
         return "Entity dialogue";
       case ProjectItemType.featureRuleBehaviorJson:
         return "World feature rule";
-      case ProjectItemType.featureBehaviorJson:
+      case ProjectItemType.featureBehavior:
         return "Feature";
       case ProjectItemType.functionEventJson:
         return "Function event";
@@ -641,7 +642,7 @@ export default class ProjectItemUtilities {
         return "Terrain texture";
       case ProjectItemType.globalVariablesJson:
         return "UI global variables";
-      case ProjectItemType.dataFormJson:
+      case ProjectItemType.dataForm:
         return "Form";
       case ProjectItemType.dimensionJson:
         return "Dimension";
@@ -655,7 +656,7 @@ export default class ProjectItemUtilities {
   }
 
   static getNewItemName(type: ProjectItemType) {
-    return ProjectItemUtilities.getDescriptionForType(type);
+    return "New " + ProjectItemUtilities.getDescriptionForType(type).toLowerCase();
   }
 
   static getColorForType(type: ProjectItemType): IColor {
@@ -762,6 +763,12 @@ export default class ProjectItemUtilities {
 
         return defaultRpFolder.ensureFolderFromRelativePath(path[0]);
 
+      case ProjectItemType.spawnRuleBehavior:
+        return await ProjectUtilities.getDefaultSpawnRulesFolder(project);
+
+      case ProjectItemType.lootTableBehavior:
+        return await ProjectUtilities.getDefaultLootTableFolder(project);
+
       case ProjectItemType.uiTexture:
         const defaultRpFolderA = await project.getDefaultResourcePackFolder();
 
@@ -824,13 +831,13 @@ export default class ProjectItemUtilities {
       case ProjectItemType.itemTypeBehaviorJson:
       case ProjectItemType.itemTypeResourceJson:
         return ["items"];
-      case ProjectItemType.blockTypeBehaviorJson:
+      case ProjectItemType.blockTypeBehavior:
         return ["blocks"];
       case ProjectItemType.documentedTypeFolder:
         return ["script_modules"];
       case ProjectItemType.commandSetDefinitionJson:
         return ["command_modules"];
-      case ProjectItemType.lootTableBehaviorJson:
+      case ProjectItemType.lootTableBehavior:
         return ["loot_tables"];
       case ProjectItemType.recipeBehaviorJson:
         return ["recipes"];
@@ -849,7 +856,7 @@ export default class ProjectItemUtilities {
         return ["dimensions"];
       case ProjectItemType.fogResourceJson:
         return ["fogs"];
-      case ProjectItemType.dataFormJson:
+      case ProjectItemType.dataForm:
         return ["forms"];
       case ProjectItemType.scriptTypesJson:
         return ["checkpoint_input", "script_modules"];

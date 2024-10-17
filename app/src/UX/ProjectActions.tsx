@@ -1,13 +1,14 @@
-import { Component, MouseEvent } from "react";
+import { Component } from "react";
 import IAppProps from "./IAppProps";
 import Project from "../app/Project";
 import "./ProjectActions.css";
-import { Button, ThemeInput } from "@fluentui/react-northstar";
+import { ThemeInput } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import ProjectEditorUtilities, { ProjectEditorAction, ProjectEditorMode } from "./ProjectEditorUtilities";
 import CartoApp from "../app/CartoApp";
 import { faFileZipper, faFolder } from "@fortawesome/free-regular-svg-icons";
+import MinecraftButton from "./MinecraftButton";
 
 interface IProjectActionsProps extends IAppProps {
   project: Project;
@@ -54,42 +55,19 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
     ProjectEditorUtilities.launchZipExport(this.props.carto, this.props.project);
   }
 
-  private _handleToolTileMouseDown(event: MouseEvent) {
-    if (event.currentTarget && event.currentTarget.className.indexOf("tileDown") < 0) {
-      event.currentTarget.className = event.currentTarget.className + " pact-tileDown";
-    }
-  }
-
-  private _handleToolTileMouseUp(event: MouseEvent) {
-    if (event.currentTarget && event.currentTarget.className.indexOf("tileDown") >= 0) {
-      event.currentTarget.className = event.currentTarget.className.replace(" pact-tileDown", "");
-    }
-  }
-
   render() {
     const packageBin = [];
     const exportBin = [];
     const inspectBin = [];
 
     inspectBin.push(
-      <Button
+      <MinecraftButton
         className="pact-toolTile"
         key="pact-inspectProject"
-        style={{
-          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-        }}
+        theme={this.props.theme}
         onClick={this._inspectProject}
-        onMouseDown={this._handleToolTileMouseDown}
-        onMouseUp={this._handleToolTileMouseUp}
       >
-        <div
-          className="pact-toolTileInner"
-          style={{
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
-          }}
-        >
+        <div className="pact-toolTileInner">
           <div className="pact-toolTile-label">
             <div className="pact-faIconWrap">
               <FontAwesomeIcon icon={faMagnifyingGlass} className="fa-xl" />
@@ -100,28 +78,17 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
             Use a variety of different test suites to identify any issues with this project.
           </div>
         </div>
-      </Button>
+      </MinecraftButton>
     );
 
     exportBin.push(
-      <Button
+      <MinecraftButton
         className="pact-toolTile"
         key="pact-exportZip"
-        style={{
-          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-        }}
+        theme={this.props.theme}
         onClick={this._exportZip}
-        onMouseDown={this._handleToolTileMouseDown}
-        onMouseUp={this._handleToolTileMouseUp}
       >
-        <div
-          className="pact-toolTileInner"
-          style={{
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
-          }}
-        >
+        <div className="pact-toolTileInner">
           <div className="pact-toolTile-label">
             <div className="pact-faIconWrapIn">
               <FontAwesomeIcon icon={faFileZipper} className="fa-xl" />
@@ -130,29 +97,18 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
           </div>
           <div className="pact-toolTile-instruction">Exports this project as a zip file</div>
         </div>
-      </Button>
+      </MinecraftButton>
     );
 
     if (window.showDirectoryPicker !== undefined) {
       exportBin.push(
-        <Button
+        <MinecraftButton
           className="pact-toolTile"
           key="pact-exportLocalFolder"
-          style={{
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-          }}
+          theme={this.props.theme}
           onClick={this._exportLocal}
-          onMouseDown={this._handleToolTileMouseDown}
-          onMouseUp={this._handleToolTileMouseUp}
         >
-          <div
-            className="pact-toolTileInner"
-            style={{
-              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
-            }}
-          >
+          <div className="pact-toolTileInner">
             <div className="pact-toolTile-label">
               <div className="pact-faIconWrap">
                 <FontAwesomeIcon icon={faFolder} className="fa-xl" />
@@ -161,29 +117,18 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
             </div>
             <div className="pact-toolTile-instruction">Exports this project to a folder on your local device</div>
           </div>
-        </Button>
+        </MinecraftButton>
       );
     }
 
     packageBin.push(
-      <Button
+      <MinecraftButton
         className="pact-toolTile"
         key="pact-dlFlatWorld"
-        style={{
-          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-        }}
+        theme={this.props.theme}
         onClick={this._downloadFlatWorld}
-        onMouseDown={this._handleToolTileMouseDown}
-        onMouseUp={this._handleToolTileMouseUp}
       >
-        <div
-          className="pact-toolTileInner"
-          style={{
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
-          }}
-        >
+        <div className="pact-toolTileInner">
           <div className="pact-toolTile-label">
             <img
               className="pact-icon"
@@ -196,28 +141,17 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
             Download this content in a flat world as a .mcworld file, for running within Minecraft
           </div>
         </div>
-      </Button>
+      </MinecraftButton>
     );
 
     packageBin.push(
-      <Button
+      <MinecraftButton
         className="pact-toolTile"
         key="pact-dlProjectWorld"
-        style={{
-          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-        }}
+        theme={this.props.theme}
         onClick={this._downloadProjectWorld}
-        onMouseDown={this._handleToolTileMouseDown}
-        onMouseUp={this._handleToolTileMouseUp}
       >
-        <div
-          className="pact-toolTileInner"
-          style={{
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
-          }}
-        >
+        <div className="pact-toolTileInner">
           <div className="pact-toolTile-label">
             <img
               className="pact-icon"
@@ -230,7 +164,7 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
             Download this content in a project world as a .mcworld file, for running within Minecraft
           </div>
         </div>
-      </Button>
+      </MinecraftButton>
     );
 
     const height = "calc(100vh - " + this.props.heightOffset + "px)";

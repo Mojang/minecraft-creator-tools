@@ -17,6 +17,10 @@
   padding-top: 5px;
 }
 
+.nitem-folderAreaLabel {
+  padding-bottom: 2px;
+}
+
 .nitem-nameArea {
   grid-column: 2;
 }

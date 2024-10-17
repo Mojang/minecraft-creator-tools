@@ -308,7 +308,7 @@ export default class WorldChunk {
           break;
 
         case 119: // ??
-          Log.assert(false, "Unexpected type 119 data.");
+          //Log.assert(false, "Unexpected type 119 data.");
           break;
         default:
           Log.debugAlert("Unsupported chunk type: " + val);
@@ -892,7 +892,7 @@ export default class WorldChunk {
           const bytes = subChunk.value;
           if (bytes) {
             Log.assert(
-              bytes.length === 10251 || bytes.length === 10241 || bytes.length === 6145,
+              bytes.length === 10251 || bytes.length === 10241 || bytes.length === 6145 || bytes.length === 6155,
               "Expected 6145 or 10241 bytes for a legacy subchunk in getblock. (" + bytes.length + ")"
             );
             // 6145 bytes if the light information is omitted;
@@ -1284,13 +1284,24 @@ export default class WorldChunk {
         const blocksPerWord = Math.floor(32 / bitsPerBlock);
         const blockBytes = Math.ceil(4096 / blocksPerWord) * 4;
 
-        const numPaletteEntries = DataUtilities.getUnsignedInteger(
+        let numPaletteEntries = DataUtilities.getUnsignedInteger(
           bytes[blockBytes + index],
           bytes[blockBytes + index + 1],
           bytes[blockBytes + index + 2],
           bytes[blockBytes + index + 3],
           true
         );
+
+        if (numPaletteEntries >= 4096) {
+          // this is an odd workaround; but it seeems like some worlds have their num palette entries listed as big endian
+          numPaletteEntries = DataUtilities.getUnsignedInteger(
+            bytes[blockBytes + index],
+            bytes[blockBytes + index + 1],
+            bytes[blockBytes + index + 2],
+            bytes[blockBytes + index + 3],
+            false
+          );
+        }
 
         Log.assert(numPaletteEntries <= 4096, "Unexpectedly large number of palette entries");
 

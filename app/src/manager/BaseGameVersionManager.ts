@@ -215,7 +215,7 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
               } else if (bpVer[2] < parseInt(verSplit[2])) {
                 infoItems.push(
                   new ProjectInfoItem(
-                    this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
+                    InfoItemType.recommendation,
                     this.id,
                     130,
                     "World template manifest base game version (" +

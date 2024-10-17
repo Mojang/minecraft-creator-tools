@@ -103,7 +103,7 @@ export default class NewItem extends Component<INewItemProps, INewItemState> {
     let inputText = this.state.name;
 
     if (inputText === undefined) {
-      inputText = "";
+      inputText = ProjectItemUtilities.getNewItemName(this.props.itemType);
     }
 
     let folderPicker = <></>;

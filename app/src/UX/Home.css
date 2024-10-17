@@ -25,6 +25,7 @@
   .home-main {
     grid-template-columns: 400px 1fr;
     display: grid;
+    width: 100vw;
   }
 
   .home-header {
@@ -34,13 +35,12 @@
   }
 
   .home-toolTile {
-    height: 126px;
-    display: inline-flex;
+    height: 130px;
     margin-top: 10px;
     margin-left: 10px;
-    width: 330px;
+    width: 310px;
     text-align: left;
-    border: solid 1.5px black;
+    vertical-align: middle;
   }
 
   .home-header-area {
@@ -49,10 +49,6 @@
 
   .home-usage {
     border-top: inset 2px;
-  }
-
-  .home-usage-interior {
-    border-top: outset 2px;
   }
 
   .home-gallery {
@@ -411,9 +407,7 @@
 
 .home-toolTileInner {
   height: 100%;
-  width: 100%;
   padding: 8px 10px 8px 10px;
-  border: outset 3px;
 }
 
 .home-tileDown {
@@ -433,6 +427,8 @@
   margin-left: 1px;
   margin-top: 0px;
   margin-bottom: 0px;
+  display: grid;
+  grid-template-columns: 24px 1fr;
 }
 
 .home-toolTile-instruction {
@@ -448,6 +444,11 @@
   border: solid 1px rgb(72, 73, 74) !important;
   box-shadow: none !important;
   text-align: center;
+  margin-top: 2.5px;
+  padding-top: 8px;
+  width: 100%;
+  vertical-align: middle;
+  font-weight: bold;
   padding-left: 8px !important;
   padding-right: 8px !important;
   max-width: calc(100vw - 100px) !important;

@@ -1315,7 +1315,7 @@ export default class Project {
   async hasScript() {
     for (const pi of this.#items) {
       if (
-        pi.itemType === ProjectItemType.actionSetJson ||
+        pi.itemType === ProjectItemType.actionSet ||
         pi.itemType === ProjectItemType.testJs ||
         pi.itemType === ProjectItemType.js ||
         pi.itemType === ProjectItemType.buildProcessedJs ||
@@ -1729,9 +1729,19 @@ export default class Project {
       folderContext = FolderContext.metaData;
     } else if (folderPathA.indexOf("/.vscode") >= 0) {
       folderContext = FolderContext.vscodeFolder;
-    } else if (folderPathA.indexOf("/behavior") >= 0 || folderPathA.indexOf("/bp") >= 0) {
+    } else if (
+      folderPathA.indexOf("/behavior") >= 0 ||
+      folderPathA.indexOf("/bp/") >= 0 ||
+      folderPathA.indexOf("/bp ") >= 0 ||
+      folderPathA.indexOf(" bp/") >= 0
+    ) {
       folderContext = FolderContext.behaviorPack;
-    } else if (folderPathA.indexOf("/resource") >= 0 || folderPathA.indexOf("/rp") >= 0) {
+    } else if (
+      folderPathA.indexOf("/resource") >= 0 ||
+      folderPathA.indexOf("/rp/") >= 0 ||
+      folderPathA.indexOf("/rp ") >= 0 ||
+      folderPathA.indexOf(" rp/") >= 0
+    ) {
       folderContext = FolderContext.resourcePack;
     } else if (folderPathA.indexOf("/subpacks") >= 0) {
       folderContext = FolderContext.resourcePackSubPack;
@@ -1771,7 +1781,12 @@ export default class Project {
         folder.folders["ui"]
       ) {
         folderContext = FolderContext.resourcePack;
-      } else if (folder.fullPath.indexOf("rp") >= 0 || folder.fullPath.indexOf("esource") >= 0) {
+      } else if (
+        folder.fullPath.indexOf("/rp/") >= 0 ||
+        folder.fullPath.indexOf(" rp/") >= 0 ||
+        folder.fullPath.indexOf("/rp ") >= 0 ||
+        folder.fullPath.indexOf("esource") >= 0
+      ) {
         folderContext = FolderContext.resourcePack;
       } else {
         folderContext = FolderContext.behaviorPack;
@@ -2290,7 +2305,7 @@ export default class Project {
               let itemName = candidateFile.name;
 
               if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/loot_tables/") >= 0) {
-                newJsonType = ProjectItemType.lootTableBehaviorJson;
+                newJsonType = ProjectItemType.lootTableBehavior;
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/dialogue/") >= 0) {
                 newJsonType = ProjectItemType.dialogueBehaviorJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/recipes/") >= 0) {
@@ -2325,7 +2340,7 @@ export default class Project {
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/dimension/") >= 0) {
                 newJsonType = ProjectItemType.dimensionJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/features/") >= 0) {
-                newJsonType = ProjectItemType.featureBehaviorJson;
+                newJsonType = ProjectItemType.featureBehavior;
               } else if (
                 folderContext === FolderContext.behaviorPack &&
                 folderPathLower.indexOf("/feature_rules/") >= 0
@@ -2465,7 +2480,7 @@ export default class Project {
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/items/") >= 0) {
                 newJsonType = ProjectItemType.itemTypeBehaviorJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/blocks/") >= 0) {
-                newJsonType = ProjectItemType.blockTypeBehaviorJson;
+                newJsonType = ProjectItemType.blockTypeBehavior;
               } else if (folderContext === FolderContext.docs && baseName === "info") {
                 newJsonType = ProjectItemType.docInfoJson;
                 this.role = ProjectRole.documentation;
@@ -2491,7 +2506,7 @@ export default class Project {
                 (folderContext === FolderContext.metaData && folderPathLower.indexOf("/forms") >= 0) ||
                 projectPath.endsWith(".form.json")
               ) {
-                newJsonType = ProjectItemType.dataFormJson;
+                newJsonType = ProjectItemType.dataForm;
                 this.role = ProjectRole.meta;
               } else if (folderContext === FolderContext.typeDefs && folderPathLower.indexOf("/script_modules") >= 0) {
                 newJsonType = ProjectItemType.scriptTypesJson;

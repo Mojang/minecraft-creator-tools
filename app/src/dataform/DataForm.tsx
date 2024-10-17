@@ -17,6 +17,8 @@ import {
   Slider,
   SliderProps,
   ThemeInput,
+  CheckboxProps,
+  Button,
 } from "@fluentui/react-northstar";
 import Log from "./../core/Log";
 import Point3, { IPoint3Props } from "./Point3";
@@ -38,6 +40,7 @@ export interface IDataFormProps extends IDataContainer {
   displayTitle?: boolean;
   displaySubTitle?: boolean;
   title?: string;
+  titleFieldBinding?: string;
   subTitle?: string;
   indentLevel?: number;
   tag?: any;
@@ -56,6 +59,7 @@ export interface IDataFormProps extends IDataContainer {
 
 interface IDataFormState {
   objectIncrement: number;
+  keyAliases: { [name: string]: string };
 }
 
 export default class DataForm extends Component<IDataFormProps, IDataFormState> {
@@ -85,9 +89,20 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     this._handleIndexedArraySubFormPropertyChange = this._handleIndexedArraySubFormPropertyChange.bind(this);
     this._handleKeyedObjectArraySubFormPropertyChange = this._handleKeyedObjectArraySubFormPropertyChange.bind(this);
     this._handleObjectSubFormPropertyChange = this._handleObjectSubFormPropertyChange.bind(this);
+    this._handleKeyedObjectArraySubFormClose = this._handleKeyedObjectArraySubFormClose.bind(this);
+    this._handleIndexedArraySubFormClose = this._handleIndexedArraySubFormClose.bind(this);
+    this._addKeyedBooleanItem = this._addKeyedBooleanItem.bind(this);
+    this._addKeyedStringItem = this._addKeyedStringItem.bind(this);
+    this._handleKeyedBooleanTextChange = this._handleKeyedBooleanTextChange.bind(this);
+    this._handleKeyedBooleanValueChange = this._handleKeyedBooleanValueChange.bind(this);
+    this._handleKeyedBooleanValueClose = this._handleKeyedBooleanValueClose.bind(this);
+    this._handleKeyedStringTextChange = this._handleKeyedStringTextChange.bind(this);
+    this._handleKeyedStringValueChange = this._handleKeyedStringValueChange.bind(this);
+    this._handleKeyedStringValueClose = this._handleKeyedStringValueClose.bind(this);
 
     this.state = {
       objectIncrement: 0,
+      keyAliases: {},
     };
   }
 
@@ -102,7 +117,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
   }
 
   _handleBlockChanged() {
-    this.forceUpdate();
+    this._doUpdate();
+  }
+
+  _doUpdate() {
+    this.setState({
+      objectIncrement: this.state.objectIncrement + 1,
+      keyAliases: this.state.keyAliases,
+    });
   }
 
   _getObjectId() {
@@ -249,6 +271,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
       this._fixupDirectObject(dirObj);
     }
+
     Log.assert(
       dirObj !== undefined || protogsObj !== undefined || protoObj !== undefined,
       "Could not find a backing object to edit."
@@ -302,6 +325,196 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     data: TextAreaProps | undefined
   ) {
     this.processInputUpdate(event, data?.value);
+  }
+
+  _handleKeyedBooleanTextChange(
+    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
+    data: (InputProps & { value: string }) | undefined
+  ) {
+    if (!data || !data.id) {
+      return;
+    }
+
+    const keySplit = data.id.split(".");
+
+    if (keySplit.length !== 3) {
+      Log.unexpectedState("DFKBTFC1");
+      return;
+    }
+
+    const arrayOfDataVal = this._getProperty(keySplit[0], []);
+    const field = this._getFieldById(keySplit[0]);
+
+    if (field === undefined) {
+      Log.unexpectedUndefined("DFKBTFC3");
+      return;
+    }
+
+    const val = arrayOfDataVal[keySplit[1]];
+    arrayOfDataVal[keySplit[1]] = undefined;
+
+    arrayOfDataVal[data.value] = val;
+
+    const keyAliases = this.state.keyAliases;
+    keyAliases[data.value] = this.state.keyAliases[keySplit[1]] ? this.state.keyAliases[keySplit[1]] : keySplit[1];
+
+    this.setState({
+      objectIncrement: this.state.objectIncrement,
+      keyAliases: keyAliases,
+    });
+  }
+
+  _handleKeyedBooleanValueChange(
+    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
+    data?: CheckboxProps & { checked: boolean; id?: string }
+  ) {
+    if (!data || !data.id) {
+      return;
+    }
+
+    const keySplit = data.id.split(".");
+
+    if (keySplit.length !== 3) {
+      Log.unexpectedState("DFKBVFC1");
+      return;
+    }
+
+    const arrayOfDataVal = this._getProperty(keySplit[0], []);
+    const field = this._getFieldById(keySplit[0]);
+
+    if (field === undefined) {
+      Log.unexpectedUndefined("DFKBVFC3");
+      return;
+    }
+
+    arrayOfDataVal[keySplit[1]] = data.checked;
+
+    this.forceUpdate();
+  }
+
+  _handleKeyedBooleanValueClose(event: React.SyntheticEvent<HTMLElement>, data?: ButtonProps & { id?: string }) {
+    if (!data || !data.id) {
+      return;
+    }
+
+    if (this.props.onClose) {
+      this.props.onClose(this.props);
+    }
+
+    const keySplit = data.id.split(".");
+
+    if (keySplit.length !== 3) {
+      Log.unexpectedState("DFKBVFC1");
+      return;
+    }
+
+    const arrayOfDataVal = this._getProperty(keySplit[0], []);
+    const field = this._getFieldById(keySplit[0]);
+
+    if (field === undefined) {
+      Log.unexpectedUndefined("DFKBVFC3");
+      return;
+    }
+
+    arrayOfDataVal[keySplit[1]] = undefined;
+
+    this.forceUpdate();
+  }
+
+  _handleKeyedStringTextChange(
+    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
+    data: (InputProps & { value: string }) | undefined
+  ) {
+    if (!data || !data.id) {
+      return;
+    }
+
+    const keySplit = data.id.split(".");
+
+    if (keySplit.length !== 3) {
+      Log.unexpectedState("DFKBTFC1");
+      return;
+    }
+
+    const arrayOfDataVal = this._getProperty(keySplit[0], []);
+    const field = this._getFieldById(keySplit[0]);
+
+    if (field === undefined) {
+      Log.unexpectedUndefined("DFKBTFC3");
+      return;
+    }
+
+    const val = arrayOfDataVal[keySplit[1]];
+    arrayOfDataVal[keySplit[1]] = undefined;
+
+    arrayOfDataVal[data.value] = val;
+
+    const keyAliases = this.state.keyAliases;
+    keyAliases[data.value] = this.state.keyAliases[keySplit[1]] ? this.state.keyAliases[keySplit[1]] : keySplit[1];
+
+    this.setState({
+      objectIncrement: this.state.objectIncrement,
+      keyAliases: keyAliases,
+    });
+
+    this.forceUpdate();
+  }
+
+  _handleKeyedStringValueChange(
+    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
+    data?: (InputProps & { value: string }) | undefined
+  ) {
+    if (!data || !data.id) {
+      return;
+    }
+
+    const keySplit = data.id.split(".");
+
+    if (keySplit.length !== 3) {
+      Log.unexpectedState("DFKBVFC1");
+      return;
+    }
+
+    const arrayOfDataVal = this._getProperty(keySplit[0], []);
+    const field = this._getFieldById(keySplit[0]);
+
+    if (field === undefined) {
+      Log.unexpectedUndefined("DFKBVFC3");
+      return;
+    }
+
+    arrayOfDataVal[keySplit[1]] = data.value;
+
+    this.forceUpdate();
+  }
+
+  _handleKeyedStringValueClose(event: React.SyntheticEvent<HTMLElement>, data?: ButtonProps & { id?: string }) {
+    if (!data || !data.id) {
+      return;
+    }
+
+    if (this.props.onClose) {
+      this.props.onClose(this.props);
+    }
+
+    const keySplit = data.id.split(".");
+
+    if (keySplit.length !== 3) {
+      Log.unexpectedState("DFKBVFC1");
+      return;
+    }
+
+    const arrayOfDataVal = this._getProperty(keySplit[0], []);
+    const field = this._getFieldById(keySplit[0]);
+
+    if (field === undefined) {
+      Log.unexpectedUndefined("DFKBVFC3");
+      return;
+    }
+
+    arrayOfDataVal[keySplit[1]] = undefined;
+
+    this.forceUpdate();
   }
 
   _getTypedData(field: IField, value: any) {
@@ -396,7 +609,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       this.props.onPropertyChanged(this.props, { id: id, value: val }, val);
     }
 
-    this.forceUpdate();
+    this._doUpdate();
   }
 
   _handleDropdownChange(
@@ -448,7 +661,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         }
       }
 
-      this.forceUpdate();
+      this._doUpdate();
     }
   }
 
@@ -478,6 +691,51 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     if (this.props.onPropertyChanged !== undefined) {
       this.props.onPropertyChanged(this.props, { id: id, value: val }, val);
+    }
+  }
+
+  _handleKeyedObjectArraySubFormClose(props: IDataFormProps) {
+    const formId = props.formId;
+
+    if (formId === undefined) {
+      Log.unexpectedState("DFKOASFC1");
+      return;
+    }
+
+    const lastPeriod = formId.lastIndexOf(".");
+
+    if (lastPeriod < 0) {
+      Log.unexpectedState("DFKOASFC1");
+      return;
+    }
+
+    const objectFieldIndex: string = formId.substring(lastPeriod + 1);
+    const fieldId = formId.substring(0, lastPeriod);
+
+    if (fieldId === undefined || objectFieldIndex === undefined) {
+      Log.unexpectedUndefined("DFKOASFC2");
+      return;
+    }
+
+    const arrayOfDataVal = this._getProperty(fieldId, []);
+    const field = this._getFieldById(fieldId);
+
+    if (field === undefined || field.objectArrayToSubFieldKey === undefined) {
+      Log.unexpectedUndefined("DFKOASFC3");
+      return;
+    }
+
+    const dataVal = this.getObjectWithFieldIndex(arrayOfDataVal, field.objectArrayToSubFieldKey, objectFieldIndex);
+
+    if (dataVal === undefined) {
+      Log.unexpectedUndefined("DFKOASFC4");
+      return;
+    }
+
+    //  dataVal[property.id] = newValue;
+
+    if (this.props.onPropertyChanged !== undefined) {
+      //     this.props.onPropertyChanged(this.props, { id: fieldId, value: newValue }, newValue);
     }
   }
 
@@ -523,6 +781,61 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     if (this.props.onPropertyChanged !== undefined) {
       this.props.onPropertyChanged(this.props, { id: fieldId, value: newValue }, newValue);
+    }
+  }
+
+  _handleIndexedArraySubFormClose(props: IDataFormProps) {
+    const formId = props.formId;
+
+    if (formId === undefined) {
+      Log.unexpectedState("DFIASFC1");
+      return;
+    }
+
+    const lastPeriod = formId.lastIndexOf(".");
+
+    if (lastPeriod < 0) {
+      Log.unexpectedState("DFIASFC1");
+      return;
+    }
+
+    const objectFieldIndex: string = formId.substring(lastPeriod + 1);
+    const fieldId = formId.substring(0, lastPeriod);
+
+    if (fieldId === undefined || objectFieldIndex === undefined) {
+      Log.unexpectedUndefined("DFIASFC2");
+      return;
+    }
+
+    const arrayOfDataVal = this._getProperty(fieldId, []);
+    const field = this._getFieldById(fieldId);
+
+    if (field === undefined) {
+      Log.unexpectedUndefined("DFIASFC3");
+      return;
+    }
+
+    try {
+      const arrayIndex = parseInt(objectFieldIndex);
+      if (isNaN(arrayIndex)) {
+        Log.unexpectedUndefined("DFIASFC4");
+        return;
+      }
+
+      const newArr = [];
+
+      for (let i = 0; i < arrayOfDataVal.length; i++) {
+        if (i !== arrayIndex) {
+          newArr.push(arrayOfDataVal[i]);
+        }
+      }
+
+      this._setPropertyValue(fieldId, newArr);
+      this._doUpdate();
+    } catch (e) {
+      Log.unexpectedUndefined("DFIASFC5");
+
+      return;
     }
   }
 
@@ -901,8 +1214,12 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               );
             } else if (field.dataType === FieldDataType.keyedObjectCollection) {
               this.addKeyedObjectArrayComponent(field, formInterior, descriptionElement);
+            } else if (field.dataType === FieldDataType.keyedStringArrayCollection) {
+              this.addKeyedStringArrayCollectionComponent(field, formInterior, descriptionElement);
             } else if (field.dataType === FieldDataType.keyedStringCollection) {
-              this.addKeyedStringArrayComponent(field, formInterior, descriptionElement);
+              this.addKeyedStringComponent(field, formInterior, descriptionElement);
+            } else if (field.dataType === FieldDataType.keyedBooleanCollection) {
+              this.addKeyedBooleanComponent(field, formInterior, descriptionElement);
             } else if (field.dataType === FieldDataType.objectArray) {
               this.addObjectArrayComponent(field, formInterior, descriptionElement);
             } else if (field.dataType === FieldDataType.object) {
@@ -1002,6 +1319,10 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
       if (this.props.title) {
         title = this.props.title;
+      }
+
+      if (this.props.titleFieldBinding) {
+        title = this._getProperty(this.props.titleFieldBinding, title);
       }
 
       if (this.props.indentLevel || this.props.defaultVisualExperience === FieldVisualExperience.deemphasized) {
@@ -1195,6 +1516,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             displayTitle={true}
             indentLevel={indentLevel}
             onPropertyChanged={this._handleIndexedArraySubFormPropertyChange}
+            onClose={this._handleIndexedArraySubFormClose}
             definition={field.subForm}
             readOnly={this.props.readOnly}
           />
@@ -1227,7 +1549,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     );
   }
 
-  addKeyedStringArrayComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
+  addKeyedStringArrayCollectionComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
     const val = this._getProperty(field.id, {});
     const fieldInterior = [];
     const childElements = [];
@@ -1304,6 +1626,298 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     );
   }
 
+  addKeyedStringComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
+    const val = this._getProperty(field.id, {});
+    const fieldInterior = [];
+    const childElements = [];
+    const fieldTopper = [];
+
+    Log.assert(val !== undefined, "Keyed string boolean not available in data form.");
+
+    if (val) {
+      const keys = [];
+
+      const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
+      this.formComponentNames.push(field.id);
+      this.formComponents.push(headerElement);
+      fieldTopper.push(headerElement);
+
+      if (!this.props.readOnly) {
+        const toolbarItems = [];
+
+        toolbarItems.push({
+          icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
+          key: "add",
+          tag: field.id,
+          onClick: this._addKeyedStringItem,
+          title: "Add item",
+        });
+
+        const toolBarElement = (
+          <div>
+            <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+          </div>
+        );
+        this.formComponentNames.push(field.id + "toolbar");
+        this.formComponents.push(toolBarElement);
+        fieldTopper.push(toolBarElement);
+      }
+
+      let index = 0;
+
+      const valList = [];
+
+      for (const key in val) {
+        if (this.state.keyAliases[key]) {
+          valList.push(this.state.keyAliases[key] + "     |" + key);
+        } else {
+          valList.push(key);
+        }
+      }
+
+      valList.sort();
+
+      for (let key of valList) {
+        const lastPeriod = key.lastIndexOf("|");
+
+        if (lastPeriod >= 0) {
+          key = key.substring(lastPeriod + 1);
+        }
+
+        let strVal = val[key] as string | undefined;
+
+        if (strVal !== undefined) {
+          keys.push(key);
+
+          let objKey = field.id;
+
+          if (this.props.objectKey) {
+            objKey += this.props.objectKey;
+          }
+
+          objKey += "." + index;
+
+          let title = <div>{key}</div>;
+
+          if (!this.props.readOnly) {
+            title = (
+              <FormInput
+                key={objKey + ".title.text"}
+                id={field.id + "." + key + ".text"}
+                value={key as string}
+                defaultValue={key as string}
+                onChange={this._handleKeyedStringTextChange}
+              />
+            );
+          }
+
+          let propertyId = field.id;
+
+          propertyId += "." + key;
+
+          const inputControl = (
+            <FormInput
+              key={field.id + propertyId + objKey + ".input"}
+              id={field.id + "." + key + ".input"}
+              value={strVal}
+              onChange={this._handleKeyedStringValueChange}
+            />
+          );
+
+          this.formComponentNames.push(propertyId);
+          this.formComponents.push(inputControl);
+
+          const closeRow = (
+            <Button
+              icon={<FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />}
+              key={field.id + propertyId + objKey + ".close"}
+              id={field.id + "." + key + ".close"}
+              onClick={this._handleKeyedStringValueClose}
+              title="Close"
+            />
+          );
+
+          childElements.push(
+            <div className="df-keyedStringCollection" key={objKey}>
+              <div className="df-keyedStringCollectionTitle">{title}</div>
+              <div className="df-keyedStringCollectionData">{inputControl}</div>
+              <div className="df-keyedStringCollectionClose">{closeRow}</div>
+            </div>
+          );
+
+          index++;
+        }
+      }
+    }
+
+    fieldInterior.push(
+      <div
+        className="df-elementBin"
+        style={{
+          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+        }}
+      >
+        {childElements}
+      </div>
+    );
+
+    formInterior.push(
+      <div className="df-fieldWrap" key={"fw" + field.id}>
+        {fieldTopper}
+        {fieldInterior}
+        {descriptionElement}
+      </div>
+    );
+  }
+
+  addKeyedBooleanComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
+    const val = this._getProperty(field.id, {});
+    const fieldInterior = [];
+    const childElements = [];
+    const fieldTopper = [];
+
+    Log.assert(val !== undefined, "Keyed string boolean not available in data form.");
+
+    if (val) {
+      const keys = [];
+
+      const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
+      this.formComponentNames.push(field.id);
+      this.formComponents.push(headerElement);
+      fieldTopper.push(headerElement);
+
+      if (!this.props.readOnly) {
+        const toolbarItems = [];
+
+        toolbarItems.push({
+          icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
+          key: "add",
+          tag: field.id,
+          onClick: this._addKeyedBooleanItem,
+          title: "Add item",
+        });
+
+        const toolBarElement = (
+          <div>
+            <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+          </div>
+        );
+        this.formComponentNames.push(field.id + "toolbar");
+        this.formComponents.push(toolBarElement);
+        fieldTopper.push(toolBarElement);
+      }
+
+      let index = 0;
+
+      const valList = [];
+
+      for (const key in val) {
+        if (this.state.keyAliases[key]) {
+          valList.push(this.state.keyAliases[key] + "     |" + key);
+        } else {
+          valList.push(key);
+        }
+      }
+
+      valList.sort();
+
+      for (let key of valList) {
+        const lastPeriod = key.lastIndexOf("|");
+
+        if (lastPeriod >= 0) {
+          key = key.substring(lastPeriod + 1);
+        }
+
+        const boolVal = val[key] as boolean | undefined;
+
+        if (boolVal !== undefined) {
+          keys.push(key);
+
+          let objKey = field.id;
+
+          if (this.props.objectKey) {
+            objKey += this.props.objectKey;
+          }
+
+          objKey += "." + index;
+
+          let title = <div>{key}</div>;
+
+          if (!this.props.readOnly) {
+            title = (
+              <FormInput
+                key={objKey + ".title.text"}
+                id={field.id + "." + key + ".text"}
+                value={key as string}
+                defaultValue={key as string}
+                onChange={this._handleKeyedBooleanTextChange}
+              />
+            );
+          }
+
+          let propertyId = field.id;
+
+          propertyId += "." + key;
+
+          const checkboxControl = (
+            <FormCheckbox
+              key={field.id + propertyId + objKey + ".check"}
+              label="On/off"
+              id={field.id + "." + key + ".check"}
+              checked={boolVal}
+              toggle={true}
+              onChange={this._handleKeyedBooleanValueChange}
+            />
+          );
+
+          this.formComponentNames.push(propertyId);
+          this.formComponents.push(checkboxControl);
+
+          const closeRow = (
+            <Button
+              icon={<FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />}
+              key={field.id + propertyId + objKey + ".close"}
+              id={field.id + "." + key + ".close"}
+              onClick={this._handleKeyedBooleanValueClose}
+              title="Close"
+            />
+          );
+
+          childElements.push(
+            <div className="df-keyedBooleanCollection" key={objKey}>
+              <div className="df-keyedBooleanCollectionTitle">{title}</div>
+              <div className="df-keyedBooleanCollectionData">{checkboxControl}</div>
+              <div className="df-keyedBooleanCollectionClose">{closeRow}</div>
+            </div>
+          );
+
+          index++;
+        }
+      }
+    }
+
+    fieldInterior.push(
+      <div
+        className="df-elementBin"
+        style={{
+          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+        }}
+      >
+        {childElements}
+      </div>
+    );
+
+    formInterior.push(
+      <div className="df-fieldWrap" key={"fw" + field.id}>
+        {fieldTopper}
+        {fieldInterior}
+        {descriptionElement}
+      </div>
+    );
+  }
+
   getObjectWithFieldIndex(objArr: any[], fieldToMap: string, val: number | string) {
     if (typeof val === "string") {
       let fieldNum: number | undefined;
@@ -1340,7 +1954,51 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           arrayOfDataVal.push({});
         }
 
-        this.forceUpdate();
+        this._doUpdate();
+      }
+    }
+  }
+
+  _addKeyedBooleanItem(event: React.SyntheticEvent<HTMLElement>, data?: any) {
+    if (data && data.tag) {
+      const field = this._getFieldById(data.tag);
+
+      if (field) {
+        const arrayOfDataVal = this._getProperty(field.id, {});
+
+        let newName = "a new value";
+        let iter = 0;
+        while (arrayOfDataVal[newName] !== undefined) {
+          iter++;
+
+          newName = "a new value " + String(iter);
+        }
+
+        arrayOfDataVal[newName] = true;
+
+        this._doUpdate();
+      }
+    }
+  }
+
+  _addKeyedStringItem(event: React.SyntheticEvent<HTMLElement>, data?: any) {
+    if (data && data.tag) {
+      const field = this._getFieldById(data.tag);
+
+      if (field) {
+        const arrayOfDataVal = this._getProperty(field.id, {});
+
+        let newName = "a new value";
+        let iter = 0;
+
+        while (arrayOfDataVal[newName] !== undefined) {
+          iter++;
+          newName = "a new value " + String(iter);
+        }
+
+        arrayOfDataVal[newName] = "value";
+
+        this._doUpdate();
       }
     }
   }
@@ -1361,17 +2019,17 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
       fieldTopper.push(descriptionElement);
 
-      const toolbarItems = [];
-
-      toolbarItems.push({
-        icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
-        key: "add",
-        tag: field.id,
-        onClick: this._addObjectArrayItem,
-        title: "Add item",
-      });
-
       if (!this.props.readOnly) {
+        const toolbarItems = [];
+
+        toolbarItems.push({
+          icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
+          key: "add",
+          tag: field.id,
+          onClick: this._addObjectArrayItem,
+          title: "Add item",
+        });
+
         const toolBarElement = (
           <div>
             <Toolbar aria-label="Actions  toolbar overflow menu" items={toolbarItems} />
@@ -1439,6 +2097,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               defaultVisualExperience={field.visualExperience}
               displayTitle={true}
               indentLevel={indentLevel}
+              onClose={this._handleKeyedObjectArraySubFormClose}
               onPropertyChanged={this._handleKeyedObjectArraySubFormPropertyChange}
               definition={field.subForm}
               readOnly={this.props.readOnly}
@@ -1516,11 +2175,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               key={propertyId}
               formId={propertyId}
               title={title}
+              titleFieldBinding={field.objectArrayTitleFieldKey}
               theme={this.props.theme}
               defaultVisualExperience={field.visualExperience}
               displayTitle={true}
               indentLevel={indentLevel}
               onPropertyChanged={this._handleIndexedArraySubFormPropertyChange}
+              onClose={this._handleIndexedArraySubFormClose}
               definition={field.subForm}
               readOnly={this.props.readOnly}
               closeButton={!this.props.readOnly}

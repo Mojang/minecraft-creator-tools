@@ -40,7 +40,7 @@
   display: grid;
   height: 100%;
   grid-template-columns: 56px 1fr;
-  grid-template-rows: 1fr 80px 45px;
+  grid-template-rows: 59px 84px 45px;
 }
 
 .pt-mainArea {
@@ -159,7 +159,7 @@
 }
 
 .pt-ghpath {
-  padding-bottom: 10px;
+  padding-bottom: 8px;
 }
 
 .pt-ghlogo {
@@ -174,7 +174,7 @@
 }
 
 .pts-button {
-  width: 425px;
+  width: 360px;
   height: 138px;
   max-width: calc(100vw - 46px);
   border: solid 2px #202020;
@@ -189,7 +189,7 @@
   height: 100%;
   cursor: pointer;
   text-align: left;
-  grid-template-rows: 20px 68px 50px;
+  grid-template-rows: 88px 1px 50px;
 }
 
 .pts-tag {
@@ -248,8 +248,17 @@
   grid-column-end: 3;
   padding: 3px;
   margin-top: 4px;
+  height: 60px;
+  overflow: hidden;
   padding-left: 8px;
   padding-right: 8px;
-  font-size: x-small;
-  overflow: hidden;
+  font-size: small;
+}
+
+.pt-docLink {
+  display: inline-block;
+}
+
+.pts-code-topic {
+  padding-left: 4px;
 }

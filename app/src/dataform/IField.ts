@@ -44,6 +44,8 @@ export enum FieldDataType {
   keyedStringCollection = 24, // { "foo": "blah", "barg" : "borg" }
   version = 25,
   uuid = 26,
+  keyedBooleanCollection = 27, // { "foo": true, "blah": false}
+  keyedStringArrayCollection = 28, // { "foo": ["blah", "alpha"], "barg" : ["borg"] }
 }
 
 export default interface IField {

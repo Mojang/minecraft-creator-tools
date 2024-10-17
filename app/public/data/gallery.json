@@ -148,20 +148,146 @@
       "type": 2
     },
     {
+      "title": "Spawn Feather Item",
+      "topics": ["Dimension.spawnItem", "ItemStack", "MinecraftItemTypes"],
+      "sampleSet": "server",
+      "localLogo": "items/feather.png",
+      "id": "spawnFeatherItem",
+      "type": 3
+    },
+    {
+      "title": "Test that Entity is Feather Item",
+      "topics": ["EntityItemComponent", "ItemStack.getComponent", "Dimension.getEntities"],
+      "sampleSet": "server",
+      "localLogo": "items/feather.png",
+      "id": "testThatEntityIsFeatherItem",
+      "type": 3
+    },
+    {
+      "title": "Give player equipment",
+      "topics": [
+        "EntityEquippableComponent.setEquipment",
+        "World.getAllPlayers",
+        "Dimension.spawnEntity",
+        "MinecraftItemTypes",
+        "EntityComponentTypes",
+        "ItemStack"
+      ],
+      "sampleSet": "server",
+      "localLogo": "items/feather.png",
+      "id": "givePlayerEquipment",
+      "type": 3
+    },
+    {
+      "title": "Give player a damaged sword",
+      "topics": [
+        "ItemDurabilityComponent",
+        "ItemStack.getComponent",
+        "ItemComponentTypes",
+        "EntityInventoryComponent",
+        "World.getAllPlayers",
+        "Entity.getComponent",
+        "Container.addItem"
+      ],
+      "sampleSet": "server",
+      "localLogo": "items/wood_sword.png",
+      "id": "giveHurtDiamondSword",
+      "type": 3
+    },
+    {
+      "title": "Give player a destroy-restricted pickaxe",
+      "topics": ["ItemStack.setCanDestroy", "World.getAllPlayers", "EntityInventoryComponent", "Container.addItem"],
+      "sampleSet": "server",
+      "localLogo": "items/wood_pickaxe.png",
+      "id": "giveDestroyRestrictedPickaxe",
+      "type": 3
+    },
+    {
+      "title": "Give player a place-restricted gold block",
+      "topics": ["ItemStack.setCanPlaceOn", "World.getAllPlayers", "EntityInventoryComponent", "Container.addItem"],
+      "sampleSet": "server",
+      "localLogo": "items/gold_ingot.png",
+      "id": "givePlaceRestrictedGoldBlock",
+      "type": 3
+    },
+    {
+      "title": "Give player a sword with custom lore",
+      "topics": ["ItemStack.setLore", "World.getAllPlayers", "EntityInventoryComponent", "Container.setItem"],
+      "sampleSet": "server",
+      "localLogo": "items/diamond_sword.png",
+      "id": "diamondAwesomeSword",
+      "type": 3
+    },
+    {
+      "title": "Get first hotbar item",
+      "topics": ["Container.getItem", "World.getAllPlayers", "EntityInventoryComponent"],
+      "sampleSet": "server",
+      "localLogo": "items/item_frame.png",
+      "id": "getFirstHotbarItem",
+      "type": 3
+    },
+    {
+      "title": "Move an item between containers",
+      "topics": ["Container.moveItem", "Dimension.spawnEntity", "World.getAllPlayers", "EntityInventoryComponent"],
+      "sampleSet": "server",
+      "localLogo": "items/minecart_chest.png",
+      "id": "moveBetweenContainers",
+      "type": 3
+    },
+    {
+      "title": "Swap an item between containers",
+      "topics": ["Container.swapItems", "Dimension.spawnEntity", "World.getAllPlayers", "EntityInventoryComponent"],
+      "sampleSet": "server",
+      "localLogo": "items/minecart_chest.png",
+      "id": "swapBetweenContainers",
+      "type": 3
+    },
+    {
+      "title": "Transfer an item between containers",
+      "topics": ["Container.transferItem", "Dimension.spawnEntity", "World.getAllPlayers", "EntityInventoryComponent"],
+      "sampleSet": "server",
+      "localLogo": "items/minecart_chest.png",
+      "id": "transferBetweenContainers",
+      "type": 3
+    },
+    {
       "title": "Create Explosion",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "Dimension.createExplosion",
+        "ExplosionOptions.breaksBlocks",
+        "Vector3Utils.floor",
+        "Vector3Utils.add"
+      ],
+      "sampleSet": "server",
       "localLogo": "items/fireball.png",
       "id": "createExplosion",
-      "codeLineStart": 1,
+      "type": 3
+    },
+    {
+      "title": "Explosions of Different Types",
+      "topics": [
+        "Dimension.createExplosion",
+        "ExplosionOptions.causesFire",
+        "ExplosionOptions.allowUnderwater",
+        "Vector3Utils.add"
+      ],
+      "sampleSet": "server",
+      "localLogo": "items/fireball.png",
+      "id": "createExplosions",
       "type": 3
     },
     {
       "title": "Button Push Event",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "ButtonPushAfterEvent",
+        "ButtonPushAfterEventSignal",
+        "World.afterEvents",
+        "Dimension.getBlock",
+        "Block.setPermutation",
+        "BlockPermutation.resolve",
+        "BlockPermutation.withState"
+      ],
+      "sampleSet": "server",
       "localLogo": "blocks/barrel_bottom.png",
       "id": "buttonPushEvent",
       "codeLineStart": 15,
@@ -169,19 +295,33 @@
     },
     {
       "title": "Lever Action Event",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "LeverActionAfterEvent",
+        "LeverActionAfterEventSignal",
+        "World.afterEvents",
+        "Dimension.getBlock",
+        "Block.setPermutation",
+        "BlockPermutation.resolve",
+        "BlockPermutation.withState"
+      ],
+      "sampleSet": "server",
       "localLogo": "blocks/lever.png",
       "id": "leverActionEvent",
       "codeLineStart": 15,
       "type": 3
     },
     {
-      "title": "Tripwire Trip Event",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "title": "TripWire Trip Event",
+      "topics": [
+        "TripWireTripAfterEvent",
+        "TripWireTripAfterEventSignal",
+        "World.afterEvents",
+        "Dimension.getBlock",
+        "Block.setPermutation",
+        "BlockPermutation.resolve",
+        "BlockPermutation.withState"
+      ],
+      "sampleSet": "server",
       "localLogo": "blocks/cut_copper.png",
       "id": "tripWireTripEvent",
       "codeLineStart": 13,
@@ -189,37 +329,37 @@
     },
     {
       "title": "Block Color Cube",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["MinecraftBlockTypes", "BlockPermutation.resolve", "Vector3Utils.add", "Dimension.getBlock"],
+      "sampleSet": "server",
       "localLogo": "blocks/wool_colored_red.png",
       "id": "addBlockColorCube",
       "type": 3
     },
     {
       "title": "No-Block Explosion",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "ExplosionOptions.breaksBlocks",
+        "Dimension.createExplosion",
+        "Vector3Utils.floor",
+        "Vector3Utils.add"
+      ],
+      "sampleSet": "server",
       "localLogo": "items/fireball.png",
       "id": "createNoBlockExplosion",
-      "codeLineStart": 1,
       "type": 3
     },
     {
       "title": "Item Stacks",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["ItemStack", "MinecraftItemTypes", "Dimension.spawnItem"],
+      "sampleSet": "server",
       "localLogo": "items/diamond_pickaxe.png",
       "id": "itemStacks",
       "type": 3
     },
     {
       "title": "Spawn Mobs with Effects",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["Entity.addEffect", "Dimension.spawnEntity", "MinecraftEntityTypes", "Entity.isSneaking"],
+      "sampleSet": "server",
       "localLogo": "entity/wolf/wolf.png",
       "logoLocation": { "x": 4, "y": 4, "width": 6, "height": 6 },
       "id": "quickFoxLazyDog",
@@ -227,9 +367,8 @@
     },
     {
       "title": "Set Dynamic Property",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["World.setDynamicProperty", "World.getDynamicProperty"],
+      "sampleSet": "server",
       "localLogo": "blocks/structure_block_data.png",
       "id": "incrementDynamicProperty",
       "codeLineStart": 9,
@@ -237,9 +376,8 @@
     },
     {
       "title": "Set Json Dynamic Property",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["World.setDynamicProperty", "World.getDynamicProperty", "JSON.stringify", "JSON.parse"],
+      "sampleSet": "server",
       "localLogo": "blocks/structure_block_data.png",
       "id": "incrementDynamicPropertyInJsonBlob",
       "codeLineStart": 25,
@@ -247,54 +385,60 @@
     },
     {
       "title": "Trigger Event",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["Entity.triggerEvent"],
+      "sampleSet": "server",
       "localLogo": "blocks/redstone_lamp_on.png",
       "id": "triggerEvent",
       "type": 3
     },
     {
       "title": "Apply Impulse",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["Entity.applyImpulse", "Entity.clearVelocity", "Dimension.spawnEntity"],
+      "sampleSet": "server",
       "localLogo": "items/potion_bottle_splash_jump.png",
       "id": "applyImpulse",
       "type": 3
     },
     {
       "title": "Get Entity Velocity",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["Entity.getVelocity", "Dimension.spawnEntity"],
+      "sampleSet": "server",
       "localLogo": "ui/speed_effect.png",
       "id": "getFireworkVelocity",
       "type": 3
     },
     {
       "title": "Apply Damage and Heal",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["Entity.getVelocity", "Dimension.spawnEntity", "MinecraftEntityTypes"],
+      "sampleSet": "server",
       "localLogo": "items/potion_bottle_splash_damageBoost.png",
       "id": "applyDamageThenHeal",
       "type": 3
     },
     {
       "title": "Set On Fire",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "Entity.setOnFire",
+        "Entity.extinguishFire",
+        "EntityOnFireComponent",
+        "Dimension.spawnEntity",
+        "MinecraftEntityTypes"
+      ],
+      "sampleSet": "server",
       "localLogo": "blocks/fire_1_placeholder.png",
       "id": "setOnFire",
       "type": 3
     },
     {
       "title": "Teleport",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "Entity.teleport",
+        "TeleportOptions",
+        "System.runTimeout",
+        "Dimension.spawnEntity",
+        "MinecraftEntityTypes"
+      ],
+      "sampleSet": "server",
       "localLogo": "ui/portalBg.png",
       "id": "teleport",
       "codeLineStart": 2,
@@ -302,9 +446,15 @@
     },
     {
       "title": "Teleport for Movement",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "Entity.teleport",
+        "TeleportOptions",
+        "System.runInterval",
+        "System.clearRun",
+        "Dimension.spawnEntity",
+        "MinecraftEntityTypes"
+      ],
+      "sampleSet": "server",
       "localLogo": "ui/portalBg.png",
       "id": "teleportMovement",
       "codeLineStart": 3,
@@ -312,9 +462,8 @@
     },
     {
       "title": "Apply Knockback",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["Entity.applyKnockback", "Dimension.spawnEntity", "EntityQueryOptions", "Dimension.getEntities"],
+      "sampleSet": "server",
       "localLogo": "blocks/cut_copper.png",
       "id": "bounceSkeletons",
       "codeLineStart": 8,
@@ -322,58 +471,159 @@
     },
     {
       "title": "Tag Query",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "EntityQueryOptions.tags",
+        "Entity.addTag",
+        "Dimension.getEntities",
+        "Dimension.spawnEntity",
+        "EntityQueryOptions"
+      ],
+      "sampleSet": "server",
       "localLogo": "items/name_tag.png",
       "id": "tagsQuery",
       "codeLineStart": 4,
       "type": 3
     },
     {
-      "title": "Portal Generator",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "title": "Entity spawn event with test",
+      "topics": [
+        "EntitySpawnAfterEventSignal",
+        "EntitySpawnAfterEvent",
+        "Dimension.spawnEntity",
+        "System.runTimeout",
+        "Vector3Utils.add"
+      ],
+      "sampleSet": "server",
       "localLogo": "blocks/cut_copper.png",
       "id": "logEntitySpawnEvent",
-      "codeLineStart": 1,
       "type": 3
     },
     {
       "title": "Create mob",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
-      "localLogo": "ui/promo_bee.png",
+      "topics": ["Dimension.spawnEntity", "Vector3Utils.add"],
+      "sampleSet": "server",
+      "localLogo": "items/spawn_egg.png",
       "id": "spawnAdultHorse",
-      "codeLineStart": 1,
       "type": 3
     },
     {
-      "title": "Give player equipment",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "title": "Spawn poisoned villager",
+      "topics": ["Entity.addEffect", "Dimension.spawnEntity", "MinecraftEffectTypes", "Vector3Utils.add"],
+      "sampleSet": "server",
+      "localLogo": "items/spawn_egg.png",
+      "id": "spawnPoisonedVillager",
+      "type": 3
+    },
+    {
+      "title": "Conditionally spawn entities on block",
+      "topics": ["Block.matches", "Dimension.getEntities", "Dimension.getBlock", "Dimension.spawnEntity"],
+      "sampleSet": "server",
+      "localLogo": "items/fish_raw.png",
+      "id": "blockConditional",
+      "type": 3
+    },
+    {
+      "title": "Shoot arrow",
+      "topics": [
+        "EntityProjectileComponent.shoot",
+        "Dimension.spawnEntity",
+        "Entity.getComponent",
+        "Dimension.spawnEntity",
+        "EntityQueryOptions"
+      ],
+      "sampleSet": "server",
+      "localLogo": "items/arrow.png",
+      "id": "shootArrow",
+      "type": 3
+    },
+    {
+      "title": "Find entities based on properties",
+      "topics": ["EntityQueryOptions.propertyOptions", "Dimension.getEntities", "EntityQueryOptions"],
+      "sampleSet": "server",
+      "localLogo": "items/seeds_beetroot.png",
+      "id": "findEntitiesHavingPropertyEqualsTo",
+      "type": 3
+    },
+    {
+      "title": "Give player elytra",
+      "topics": [
+        "EntityEquippableComponent.setEquipment",
+        "EquipmentSlot",
+        "Entity.getComponent",
+        "ItemStack",
+        "MinecraftItemTypes",
+        "World.getAllPlayers"
+      ],
+      "sampleSet": "server",
       "localLogo": "items/elytra.png",
       "id": "givePlayerElytra",
       "type": 3
     },
     {
+      "title": "Play sound chained",
+      "topics": ["Entity.playSound", "Dimension.getEntities", "Dimension.getPlayers"],
+      "sampleSet": "server",
+      "localLogo": "items/record_cat.png",
+      "id": "playSoundChained",
+      "type": 3
+    },
+    {
+      "title": "Set scoreboard chained",
+      "topics": [
+        "Scoreboard.setScore",
+        "World.scoreboard",
+        "Scoreboard.addObjective",
+        "Entity.scoreboardIdentity",
+        "Dimension.getEntities"
+      ],
+      "sampleSet": "server",
+      "localLogo": "items/painting.png",
+      "id": "setScoreboardChained",
+      "type": 3
+    },
+    {
+      "title": "A message that displays a scoreboard score using a wildcard",
+      "topics": ["RawMessage", "World.sendMessage"],
+      "sampleSet": "server",
+      "localLogo": "items/painting.png",
+      "id": "scoreWildcard",
+      "type": 3
+    },
+    {
+      "title": "Update a signs existing sign text",
+      "topics": ["RawMessage", "RawText", "BlockSignComponent.setText", "BlockComponentTypes", "Block.getComponent"],
+      "sampleSet": "server",
+      "localLogo": "items/painting.png",
+      "id": "updateSignText",
+      "type": 3
+    },
+    {
+      "title": "Summon mob chained",
+      "topics": ["Dimension.spawnEntity", "Dimension.getEntities", "Dimension.getPlayers"],
+      "sampleSet": "server",
+      "localLogo": "items/record_cat.png",
+      "id": "summonMobChained",
+      "type": 3
+    },
+    {
       "title": "Play Music and Sound",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "World.playMusic",
+        "World.playSound",
+        "MusicOptions",
+        "WorldSoundOptions",
+        "PlayerSoundOptions",
+        "World.getPlayers"
+      ],
+      "sampleSet": "server",
       "localLogo": "items/record_cat.png",
       "id": "playMusicAndSound",
-      "codeLineStart": 1,
       "type": 3
     },
     {
       "title": "Spawn Particles",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["Dimensions.spawnParticle", "MolangVariableMap.setColorRGB"],
+      "sampleSet": "server",
       "localLogo": "particle/particles.png",
       "logoLocation": { "x": 56, "y": 0, "width": 8, "height": 8, "imageWidth": 128 },
       "id": "spawnParticle",
@@ -382,18 +632,29 @@
     },
     {
       "title": "Piston After Event",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "PistonActivateAfterEvent",
+        "PistonActivateAfterEventSignal",
+        "Block.setPermutation",
+        "Dimension.getBlock",
+        "MinecraftBlockTypes"
+      ],
+      "sampleSet": "server",
       "localLogo": "blocks/piston_side.png",
       "id": "pistonAfterEvent",
       "type": 3
     },
     {
       "title": "Update Scoreboard",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "Scoreboard.getObjective",
+        "Scoreboard.addObjective",
+        "Entity.scoreboardIdentity",
+        "Scoreboard.setScore",
+        "ScoreboardObjective.setScore",
+        "DisplaySlotId"
+      ],
+      "sampleSet": "server",
       "localLogo": "blocks/cut_copper.png",
       "codeLineStart": 5,
       "id": "updateScoreboard",
@@ -401,56 +662,132 @@
     },
     {
       "title": "Set Onscreen Display Title",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["ScreenDisplay.setTitle", "World.getPlayers"],
+      "sampleSet": "server",
       "localLogo": "ui/screenshot_frame.png",
       "id": "setTitle",
       "type": 3
     },
     {
       "title": "Set Display Title/Subtitle",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
-      "localLogo": "ui/screenshot_frame.png",
-      "codeLineStart": 1,
+      "topics": ["ScreenDisplay.setTitle", "World.getPlayers"],
+      "sampleSet": "server",
+      "localLogo": "items/sign_darkoak.png",
       "id": "setTitleAndSubtitle",
       "type": 3
     },
     {
       "title": "Countdown",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
-      "localLogo": "ui/timer.png",
+      "topics": [
+        "ScreenDisplay.setTitle",
+        "ScreenDisplay.updateSubtitle",
+        "World.getPlayers",
+        "System.runInterval",
+        "System.clearRun"
+      ],
+      "sampleSet": "server",
+      "localLogo": "items/clock_item.png",
       "id": "countdown",
       "type": 3
     },
     {
       "title": "Send Basic Message",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
-      "localLogo": "ui/dialog_background_opaque_overlap_bottom.png",
+      "topics": ["Player.sendMessage", "World.getPlayers"],
+      "sampleSet": "server",
+      "localLogo": "items/paper.png",
       "id": "sendBasicMessage",
       "type": 3
     },
     {
+      "title": "Send Translated Message",
+      "topics": ["RawMessage", "Player.sendMessage", "World.getPlayers"],
+      "sampleSet": "server",
+      "localLogo": "items/paper.png",
+      "id": "sendTranslatedMessage",
+      "type": 3
+    },
+    {
+      "title": "Send Players Different Message Types",
+      "topics": ["RawMessage", "Player.sendMessage", "World.getAllPlayers"],
+      "sampleSet": "server",
+      "localLogo": "items/paper.png",
+      "id": "sendPlayerMessages",
+      "type": 3
+    },
+    {
+      "title": "Messages with nested translatations",
+      "topics": ["RawMessage", "Player.sendMessage", "World.getPlayers"],
+      "sampleSet": "server",
+      "localLogo": "items/paper.png",
+      "id": "nestedTranslation",
+      "type": 3
+    },
+    {
+      "title": "Cube generator",
+      "topics": ["System.runJob", "Block.setPermutation"],
+      "sampleSet": "server",
+      "localLogo": "blocks/cobblestone.png",
+      "id": "cubeGenerator",
+      "type": 3
+    },
+    {
+      "title": "Phantoms should fly from cats",
+      "topics": ["Test.spawn", "Test.assertEntityPresentInArea", "register"],
+      "sampleSet": "server-gametest-beta",
+      "localLogo": "blocks/cobblestone.png",
+      "id": "phantomsShouldFlyFromCats",
+      "type": 3
+    },
+    {
+      "title": "Tests a roller coaster obstacle course.",
+      "topics": ["Test.spawn", "Test.assertEntityPresentInArea", "register"],
+      "sampleSet": "server-gametest-beta",
+      "localLogo": "blocks/cobblestone.png",
+      "id": "minibiomes",
+      "type": 3
+    },
+    {
+      "title": "A simple mob test - the fox should attack the chicken.",
+      "topics": ["Test.spawn", "Test.assertEntityPresentInArea", "register"],
+      "sampleSet": "server-gametest-beta",
+      "localLogo": "blocks/cobblestone.png",
+      "id": "simpleMobGameTest",
+      "type": 3
+    },
+    {
+      "title": "Get Player Profile",
+      "topics": ["variables", "secrets"],
+      "sampleSet": "server-admin-beta",
+      "localLogo": "blocks/cobblestone.png",
+      "id": "getPlayerProfile",
+      "type": 3
+    },
+    {
+      "title": "Update score via Http Request",
+      "topics": ["HttpRequestMethod", "HttpHeader", "HttpResponse"],
+      "sampleSet": "server-net-beta",
+      "localLogo": "blocks/cobblestone.png",
+      "id": "updateScore",
+      "type": 3
+    },
+    {
       "title": "Translated Message Form",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["MessageFormData", "MessageFormResponse", "World.getPlayers"],
+      "sampleSet": "server-ui",
       "localLogo": "ui/dialog_background_opaque_overlap_bottom.png",
       "id": "showTranslatedMessageForm",
-      "codeLineStart": 1,
       "type": 3
     },
     {
       "title": "Add Sign",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "BlockSignComponent.setText",
+        "Block.getComponent",
+        "BlockPermutation.resolve",
+        "Block.setPermutation",
+        "Dimension.getBlock"
+      ],
+      "sampleSet": "server",
       "localLogo": "ui/icon_sign.png",
       "id": "addSign",
       "codeLineStart": 9,
@@ -458,9 +795,15 @@
     },
     {
       "title": "Add Translated Sign",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "BlockSignComponent.setText",
+        "RawMessage",
+        "Block.getComponent",
+        "BlockPermutation.resolve",
+        "Block.setPermutation",
+        "Dimension.getBlock"
+      ],
+      "sampleSet": "server",
       "localLogo": "ui/icon_sign.png",
       "id": "addTranslatedSign",
       "codeLineStart": 9,
@@ -468,57 +811,106 @@
     },
     {
       "title": "Add Two Sided Sign",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "BlockSignComponent.setText",
+        "BlockSignComponent.setTextDyeColor",
+        "BlockSignComponent.setWaxed",
+        "RawMessage",
+        "Block.getComponent",
+        "BlockPermutation.resolve",
+        "Block.setPermutation",
+        "Dimension.getBlock"
+      ],
+      "sampleSet": "server",
       "localLogo": "ui/icon_sign.png",
       "id": "addTwoSidedSign",
       "type": 3
     },
     {
       "title": "Trap Tick",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["System.run", "World.sendMessage"],
+      "sampleSet": "server",
       "localLogo": "ui/timer.png",
       "id": "trapTick",
-      "codeLineStart": 1,
       "type": 3
     },
     {
       "title": "Every 30 Seconds",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["System.runInterval", "World.sendMessage"],
+      "sampleSet": "server",
       "localLogo": "ui/timer.png",
       "id": "every30Seconds",
       "type": 3
     },
     {
       "title": "Check Block Tags",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": ["Block.hasTag", "Dimension.getBlock"],
+      "sampleSet": "server",
       "localLogo": "ui/timer.png",
       "id": "checkBlockTags",
       "type": 3
     },
     {
       "title": "Containers",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "BlockInventoryComponent",
+        "EntityInventoryComponent",
+        "Container",
+        "Dimension.getBlock",
+        "ItemStack",
+        "MinecraftItemTypes"
+      ],
+      "sampleSet": "server",
       "localLogo": "ui/timer.png",
       "id": "containers",
       "type": 3
     },
     {
       "title": "Place Items in Chest",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/script-box",
+      "topics": [
+        "BlockInventoryComponent",
+        "ItemStack",
+        "MinecraftBlockTypes",
+        "Dimension.getBlock",
+        "Container.setItem",
+        "Block.setType",
+        "MinecraftItemTypes"
+      ],
+      "sampleSet": "server",
       "localLogo": "ui/timer.png",
       "id": "placeItemsInChest",
+      "type": 3
+    },
+    {
+      "title": "Show action form",
+      "topics": ["ActionFormData", "ActionFormResponse", "World.getPlayers"],
+      "sampleSet": "server-ui",
+      "localLogo": "ui/timer.png",
+      "id": "showActionForm",
+      "type": 3
+    },
+    {
+      "title": "Show favorite month dialog",
+      "topics": ["ActionFormData", "ActionFormResponse", "World.getPlayers"],
+      "sampleSet": "server-ui",
+      "localLogo": "ui/timer.png",
+      "id": "showFavoriteMonth",
+      "type": 3
+    },
+    {
+      "title": "Show message form",
+      "topics": ["MessageFormData", "MessageFormResponse", "World.getPlayers"],
+      "sampleSet": "server-ui",
+      "localLogo": "ui/timer.png",
+      "id": "showBasicMessageForm",
+      "type": 3
+    },
+    {
+      "title": "Show basic modal form",
+      "topics": ["ModalFormData", "ModalFormResponse", "World.getPlayers"],
+      "sampleSet": "server-ui",
+      "localLogo": "ui/timer.png",
+      "id": "showBasicModalForm",
       "type": 3
     },
     {
@@ -849,90 +1241,74 @@
     },
     {
       "title": "Camera Grapple",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
+      "topics": ["IModalToolContainer", "IPlayerUISession", "ActionManager", "registerEditorExtension"],
+      "sampleSet": "server-editor",
       "localLogo": "blocks/camera_front.png",
       "id": "camera-grapple.ts",
       "codeLineStart": 19,
-      "tags": ["editor"],
       "type": 5
     },
     {
       "title": "Star Shape Brush",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
+      "topics": ["CompoundBlockVolume", "IPlayerUISession", "ActionManager", "registerEditorExtension"],
+      "sampleSet": "server-editor",
       "localLogo": "items/nether_star.png",
       "id": "star-brush-shape.ts",
       "codeLineStart": 17,
-      "tags": ["editor"],
       "type": 5
     },
     {
       "title": "Dye Brush",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
+      "topics": ["ExtensionContext", "IPlayerUISession", "ActionManager", "registerEditorExtension"],
+      "sampleSet": "server-editor",
       "localLogo": "items/dye_powder_red.png",
       "id": "dye-brush.ts",
       "codeLineStart": 117,
-      "tags": ["editor"],
       "type": 5
     },
     {
       "title": "Farm Generator",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
+      "topics": ["IPlayerUISession", "ActionManager", "registerEditorExtension"],
+      "sampleSet": "server-editor",
       "localLogo": "blocks/farmland_wet.png",
       "id": "farm-generator.ts",
       "codeLineStart": 41,
-      "tags": ["editor"],
       "type": 5
     },
     {
       "title": "Go to Mark",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
+      "topics": ["IPlayerUISession", "ActionManager", "registerEditorExtension"],
+      "sampleSet": "server-editor",
       "localLogo": "blocks/cut_copper.png",
       "id": "goto-mark.ts",
       "codeLineStart": 96,
-      "tags": ["editor"],
       "type": 5
     },
     {
       "title": "Portal Generator",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
+      "topics": ["IPlayerUISession", "ActionManager", "registerEditorExtension"],
+      "sampleSet": "server-editor",
       "localLogo": "blocks/cut_copper.png",
       "id": "portal-generator.ts",
       "codeLineStart": 316,
-      "tags": ["editor"],
       "type": 5
     },
     {
       "title": "Locate Biome",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
+      "topics": ["IPlayerUISession", "ActionManager", "registerEditorExtension"],
+      "sampleSet": "server-editor",
       "localLogo": "blocks/cut_copper.png",
       "id": "simple-locate-biome.ts",
       "codeLineStart": 93,
-      "tags": ["editor"],
       "type": 5
     },
     {
       "title": "Tree Generator",
-      "gitHubOwner": "microsoft",
-      "gitHubRepoName": "minecraft-scripting-samples",
-      "gitHubFolder": "/editor-script-box",
+      "topics": ["IPlayerUISession", "ActionManager", "registerEditorExtension"],
+      "sampleSet": "server-editor",
       "localLogo": "blocks/cut_copper.png",
       "id": "tree-generator.ts",
       "codeLineStart": 47,
-      "tags": ["editor"],
       "type": 5
     },
     {

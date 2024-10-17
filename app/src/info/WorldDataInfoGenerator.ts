@@ -107,7 +107,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
               }
             }
           }
-        } else {
+        } else if (!this.performPlatformVersionValidations && !this.performAddOnValidations) {
           items.push(
             new ProjectInfoItem(
               InfoItemType.error,
@@ -259,7 +259,12 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
 
       await mcworld.loadData(false);
 
-      if (mcworld.isInErrorState && mcworld.errorMessages) {
+      if (
+        mcworld.isInErrorState &&
+        mcworld.errorMessages &&
+        !this.performAddOnValidations &&
+        !this.performPlatformVersionValidations
+      ) {
         for (const err of mcworld.errorMessages) {
           items.push(
             new ProjectInfoItem(
@@ -436,7 +441,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                             }
                           }
                         }
-                      } else {
+                      } else if (!this.performAddOnValidations && !this.performPlatformVersionValidations) {
                         items.push(
                           new ProjectInfoItem(
                             InfoItemType.error,

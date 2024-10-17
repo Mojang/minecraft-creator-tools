@@ -277,7 +277,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
                 index.insert(bareTag + "==" + childObj, pi.projectItem.projectPath, annotation);
               }
             } else {
-              if (childObj.constructor !== Array) {
+              if (childObj && childObj.constructor !== Array) {
                 this.addDescendentSubTags(pi, bareTag, index, annotation, childObj);
               }
             }
@@ -315,7 +315,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
               index.insert(prefix + "." + childEltName + "==" + obj, pi.projectItem.projectPath, annotation);
             }
           } else {
-            if (obj.constructor !== Array) {
+            if (obj && obj.constructor !== Array) {
               this.addDescendentSubTags(pi, prefix + "." + childEltName, index, annotation, obj);
             }
           }

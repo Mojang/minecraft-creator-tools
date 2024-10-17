@@ -9,6 +9,7 @@ import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem";
 import { Button, ThemeInput } from "@fluentui/react-northstar";
 import Project from "../app/Project";
 import Log from "../core/Log";
+import Database from "../minecraft/Database";
 
 export enum GalleryProjectCommand {
   newProject,
@@ -178,23 +179,6 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
     this.props.onGalleryItemCommand(command, project);
   }
 
-  projectMatchesSearch(galProject: IGalleryItem) {
-    if (!this.props.search || this.props.search.length < 3) {
-      return true;
-    }
-
-    const searchKey = this.props.search.toLowerCase();
-
-    if (
-      (galProject.title && galProject.title.toLowerCase().indexOf(searchKey) >= 0) ||
-      (galProject.description && galProject.description.toLowerCase().indexOf(searchKey) >= 0)
-    ) {
-      return true;
-    }
-
-    return false;
-  }
-
   render() {
     const snippetGalleries = [];
     const projectGalleries = [];
@@ -309,7 +293,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
         const galItem = gal.items[i];
 
         if (
-          this.projectMatchesSearch(galItem) &&
+          Database.itemMatchesSearch(galItem, this.props.search) &&
           (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
           (galItem.type === GalleryItemType.codeSample || galItem.type === GalleryItemType.editorCodeSample)
         ) {
@@ -362,7 +346,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
         const galItem = gal.items[i];
 
         if (
-          this.projectMatchesSearch(galItem) &&
+          Database.itemMatchesSearch(galItem, this.props.search) &&
           (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
           (galItem.type === GalleryItemType.project ||
             galItem.type === GalleryItemType.editorProject ||
@@ -408,7 +392,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
         const galItem = gal.items[i];
 
         if (
-          this.projectMatchesSearch(galItem) &&
+          Database.itemMatchesSearch(galItem, this.props.search) &&
           (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
           galItem.type === GalleryItemType.entityType
         ) {
@@ -449,7 +433,15 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
 
     return (
       <div className="pg-outer">
-        {tabsElt}
+        <div className="pg-tabsTop">
+          {tabsElt}
+          <div
+            className="pg-tabsFiller"
+            style={{ borderColor: this.props.theme.siteVariables?.colorScheme.brand.background1 }}
+          >
+            &#160;
+          </div>
+        </div>
         {projectGalleriesElt}
         {snippetGalleriesElt}
       </div>

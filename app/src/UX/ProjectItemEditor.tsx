@@ -357,7 +357,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           );
         } else if (
           file.type === "json" &&
-          projItem.itemType === ProjectItemType.lootTableBehaviorJson &&
+          projItem.itemType === ProjectItemType.lootTableBehavior &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
           interior = (
@@ -419,7 +419,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           );
         } else if (
           file.type === "json" &&
-          projItem.itemType === ProjectItemType.dataFormJson &&
+          projItem.itemType === ProjectItemType.dataForm &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
           interior = (
