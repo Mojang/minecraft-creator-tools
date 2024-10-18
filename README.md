@@ -1,6 +1,6 @@
 # Minecraft Creator Tools
 
-This is project is a work in progress for a set of web-based tools for Minecraft Creators.
+This project is a work in progress for a set of web-based tools for Minecraft Creators.
 
 Visit the [documentation](https://mctools.dev/docs/) for more information on Minecraft Creator Tools and the current set of capabilities.
 
