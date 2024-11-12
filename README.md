@@ -1,12 +1,14 @@
 # Minecraft Creator Tools
 
-This is project is a work in progress for a set of web-based tools for Minecraft Creators.
+This project is a work in progress for a set of web-based and command line tools for Minecraft creators.
 
 Visit the [documentation](https://mctools.dev/docs/) for more information on Minecraft Creator Tools and the current set of capabilities.
 
 See the [changelog](CHANGELOG.md) for detailed updates and notes. If you have issues, please create a [GitHub issue](https://github.com/Mojang/minecraft-creator-tools/issues).
 
 See the [Project Structure](ProjectStructure.md) file for a look at the structure of the codebase including a tour of major types.
+
+Please note that, at this time, we are not able to accept pull request contributions from the broader community.
 
 ## Using Creator Tools
 
