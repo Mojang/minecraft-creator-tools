@@ -69,9 +69,11 @@ export default interface IField {
   noun?: string;
   allowCreateDelete?: boolean;
   readOnly?: boolean;
+  displayTitle?: boolean;
   forceString?: boolean;
   minValue?: number;
   maxValue?: number;
+  step?: number;
   suggestedMinValue?: number;
   suggestedMaxValue?: number;
   validity?: ICondition[];

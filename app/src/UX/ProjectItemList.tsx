@@ -1387,7 +1387,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       projectItem.itemType === ProjectItemType.behaviorPackFolder || // some day we may explicitly show pack folders
       projectItem.itemType === ProjectItemType.resourcePackFolder ||
       projectItem.itemType === ProjectItemType.skinPackFolder ||
-      projectItem.itemType === ProjectItemType.soundsCatalogResourceJson ||
+      projectItem.itemType === ProjectItemType.soundCatalog ||
       projectItem.itemType === ProjectItemType.blocksCatalogResourceJson || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.blockTypeResourceJson || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.behaviorPackListJson || // this should be handled by world editor
@@ -1564,7 +1564,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
                 if (
                   folderGroupingPath !== undefined &&
                   folderGroupingPath.length > 1 &&
-                  projectItem.itemType !== ProjectItemType.soundsCatalogResourceJson
+                  projectItem.itemType !== ProjectItemType.soundCatalog
                 ) {
                   this._addStoragePathSpacer(
                     folderGroupingPath,
@@ -1700,6 +1700,43 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       this.state.dialogMode === ProjectItemListDialogType.deleteConfirmDialog &&
       this.state.activeItem !== undefined
     ) {
+      let warnings = <></>;
+
+      if (this.state.activeItem.parentItems) {
+        let warningItems = [];
+
+        for (const item of this.state.activeItem.parentItems) {
+          warningItems.push(
+            <li>
+              <span
+                className="pil-inlineSource"
+                style={{ backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3 }}
+              >
+                {item.parentItem.title}
+              </span>
+            </li>
+          );
+        }
+
+        if (warningItems.length === 1) {
+          warnings = (
+            <div className="pil-deleteWarning">
+              <div>The following item is using this. Deleting will remove any associated links from:</div>
+              <ul>{warningItems}</ul>
+            </div>
+          );
+        } else if (warningItems.length > 1) {
+          warnings = (
+            <div className="pil-deleteWarning">
+              <div>
+                The following items are using this. Deleting will remove any associated links in the following items:
+              </div>
+              <ul>{warningItems}</ul>
+            </div>
+          );
+        }
+      }
+
       dialogArea = (
         <Dialog
           open={true}
@@ -1710,10 +1747,17 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           onConfirm={this._handleConfirmDelete}
           content={
             <div className="pil-dialog" key="pil-deleteConfirmDia">
-              Are you sure you wish to delete '{this.state.activeItem.projectPath}'?
+              Are you sure you wish to delete{" "}
+              <span
+                className="pil-inlineSource"
+                style={{ backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3 }}
+              >
+                {this.state.activeItem.title}
+              </span>
+              ?{warnings}
             </div>
           }
-          header={"Delete " + this.state.activeItem.name}
+          header={"Delete " + this.state.activeItem.name + "?"}
         />
       );
     }

@@ -5,10 +5,10 @@ import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import { ITerrainTexture } from "./ITerrainTexture";
+import { ITerrainTextureCatalog } from "./ITerrainTextureCatalog";
 
 export default class TerrainTextureCatalogDefinition {
-  public terrainTexture?: ITerrainTexture;
+  public terrainTextureCatalog?: ITerrainTextureCatalog;
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
@@ -29,7 +29,7 @@ export default class TerrainTextureCatalogDefinition {
     this._file = newFile;
   }
 
-  static async ensureTerrainTextureCatalogDefinitionOnFile(
+  static async ensureOnFile(
     file: IFile,
     loadHandler?: IEventHandler<TerrainTextureCatalogDefinition, TerrainTextureCatalogDefinition>
   ) {
@@ -61,7 +61,7 @@ export default class TerrainTextureCatalogDefinition {
       return;
     }
 
-    const defString = JSON.stringify(this.terrainTexture, null, 2);
+    const defString = JSON.stringify(this.terrainTextureCatalog, null, 2);
 
     this._file.setContent(defString);
   }
@@ -90,7 +90,7 @@ export default class TerrainTextureCatalogDefinition {
       data = result;
     }
 
-    this.terrainTexture = data;
+    this.terrainTextureCatalog = data;
 
     this._isLoaded = true;
 

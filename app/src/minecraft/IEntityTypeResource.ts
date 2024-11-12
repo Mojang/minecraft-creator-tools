@@ -13,7 +13,7 @@ export interface IEntityTypeResource {
 export interface IEntityTypeResourceDescription {
   identifier: string;
   materials: { [identifier: string]: string };
-  textures: { [identifier: string]: string };
+  textures: { [identifier: string]: string | undefined };
 
   geometry: { [identifier: string]: string };
   particle_effects: { [identifier: string]: string };

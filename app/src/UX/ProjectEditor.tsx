@@ -157,7 +157,6 @@ export enum ProjectEditorDialog {
   noDialog = 0,
   shareableLink = 1,
   worldSettings = 2,
-  webLocalDeploy = 3,
   convertTo = 4,
   integrateItem = 5,
 }
@@ -974,7 +973,13 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               visualSeed: this.state.visualSeed,
               dialog: ProjectEditorDialog.integrateItem,
               dialogActiveItem: this.state.activeProjectItem ? this.state.activeProjectItem : undefined,
-              dialogData: { itemType: typeData.itemType, path: file.name, fileSource: file },
+              dialogData: {
+                itemType: typeData.itemType,
+                path: file.name,
+                fileSource: file,
+                fileContent: content,
+                action: ProjectItemSeedAction.defaultAction,
+              },
               statusAreaMode: this.state.statusAreaMode,
               lastDeployKey: this.state.lastDeployKey,
               lastExportKey: this.state.lastExportKey,
@@ -1034,7 +1039,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private async _handleSaveClick() {
-    this.save();
+    await this.save();
   }
 
   private _setItemsOnLeft() {
@@ -1374,6 +1379,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
 
     const operId = await this.props.carto.notifyOperationStarted("Saving project '" + projName + "'...");
+
+    await this._ensurePersisted();
 
     await ProjectAutogeneration.updateProjectAutogeneration(this.props.project);
 
@@ -3216,7 +3223,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           className="pe-menuIcon"
           alt=""
           key={flatBp}
-          src={CartoApp.contentRoot + "res/latest/van/resource_pack/textures/blocks/grass_path_side.png"}
+          src={CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_path_side.png"}
         />
       ),
       onClick: this._handleDownloadFlatWorldWithPacks,
@@ -3230,7 +3237,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           className="pe-menuIcon"
           alt=""
           key={flatBp}
-          src={CartoApp.contentRoot + "res/latest/van/resource_pack/textures/blocks/grass_path_side.png"}
+          src={CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_path_side.png"}
         />
       ),
       onClick: this._handleDownloadFlatWorldWithPacks,
@@ -3246,7 +3253,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           className="pe-menuIcon"
           alt=""
           key={defaultEditorWorldWithPacks}
-          src={CartoApp.contentRoot + "res/latest/van/resource_pack/textures/blocks/grass_side_carried.png"}
+          src={CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_side_carried.png"}
         />
       ),
       onClick: this._handleDeployDownloadEditorWorldWithPacks,
@@ -3268,7 +3275,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           className="pe-menuIcon"
           alt=""
           key={defaultWorldWithPacks}
-          src={CartoApp.contentRoot + "res/latest/van/resource_pack/textures/blocks/grass_side_carried.png"}
+          src={CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_side_carried.png"}
         />
       ),
       onClick: this._handleDeployDownloadWorldWithPacks,

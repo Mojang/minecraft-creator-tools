@@ -1,0 +1,354 @@
+.aum-outer {
+  image-rendering: pixelated;
+}
+
+.aum-image {
+  padding: 6px;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.aum-float {
+  position: absolute;
+  margin: 8px;
+  z-index: 100;
+}
+
+.aum-status {
+  padding-left: 7px;
+  margin-top: 10px;
+  min-height: 20px;
+}
+
+.aum-float BUTTON {
+  padding-left: 0px;
+  padding-right: 0px;
+  width: 36px;
+  min-width: inherit;
+}
+
+.playlist {
+  margin: 5px 0px 5px 0px;
+}
+
+.playlist *,
+.playlist ::after,
+.playlist ::before {
+  box-sizing: border-box;
+}
+
+.playlist .btn:not(:disabled) {
+  cursor: pointer;
+}
+
+.playlist .fas {
+  font-style: normal;
+  font-size: 16pt;
+}
+.playlist .btn-group-lean {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.playlist .btn-group-lean button {
+  margin-left: 6px;
+  margin-right: 6px;
+  margin-top: 4px;
+  height: 24px;
+}
+
+.playlist .fa-volume-up::before {
+  content: "Vol";
+  font-size: small;
+  position: relative;
+  top: -3px;
+  font-family: inherit;
+}
+
+.playlist .fa-caret-up::before {
+  content: "\25B2";
+  font-size: small;
+  position: relative;
+  top: -3px;
+  font-family: inherit;
+}
+
+.playlist .fa-caret-down::before {
+  content: "\25BC";
+  font-size: small;
+  position: relative;
+  top: -3px;
+  font-family: inherit;
+}
+
+.playlist .fa-times::before {
+  content: "\0078";
+  font-family: inherit;
+  line-height: 0;
+  position: relative;
+  top: -2px;
+}
+
+.playlist .btn {
+  display: inline-block;
+  width: 60px;
+  text-align: center;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.playlist .btn-outline-dark {
+  border-color: var(--wp-mute-solo-color);
+}
+
+.playlist .btn-outline-dark:hover {
+  background-color: var(--wp-mute-solo-color);
+  border-color: var(--wp-mute-solo-color);
+}
+
+.playlist .btn-outline-dark:active:focus,
+.playlist .btn-outline-dark:focus {
+  box-shadow: 0 0 0 0.2rem var(--wp-mute-solo-focus-color);
+}
+
+.playlist .btn-xs {
+  padding: 0.25rem 0.4rem;
+  font-size: 0.875rem;
+  line-height: 0.5;
+}
+
+.playlist .btn-group {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.playlist .btn-group button {
+  padding: 8px;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.playlist .btn-group > .btn:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.playlist .btn-group > .btn:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.playlist .playlist-time-scale {
+  height: 30px;
+}
+
+.playlist .state-cursor,
+.playlist .state-select {
+  cursor: text;
+}
+
+.playlist .state-fadein {
+  cursor: w-resize;
+}
+
+.playlist .state-fadeout {
+  cursor: e-resize;
+}
+
+.playlist .state-shift {
+  cursor: ew-resize;
+}
+
+.playlist .channel-wrapper.silent .channel {
+  opacity: 0.3;
+}
+
+.playlist .controls {
+  text-align: center;
+}
+
+.playlist .playlist-tracks {
+  border-top: solid 1px black;
+  border-bottom: solid 1px black;
+  padding: 4px;
+}
+
+.playlist .waveform {
+  background-color: #3c8527;
+}
+
+.playlist-dark .controls {
+  background-color: #312f2dd0;
+}
+
+.playlist .controls .track-header {
+  overflow: hidden;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 5px 4px 5px 4px;
+  padding: 8px 0px 8px 0px;
+  font-size: 0.75rem;
+}
+
+.playlist .controls .track-header button {
+  width: 60px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playlist .controls .track-header span {
+  margin: 10px;
+  max-width: 70px;
+}
+
+.playlist .cursor {
+  background: "purple";
+}
+
+.playlist .selection.point {
+  background: "red";
+}
+
+.playlist .selection.segment {
+  background: "red";
+}
+
+.playlist .channel {
+  background: "red";
+}
+
+.playlist .channel-progress {
+  background: "red";
+}
+
+.playlist .cursor {
+  background: "red";
+}
+
+.playlist .controls label {
+  width: 100%;
+  display: flex;
+  font-size: small;
+  justify-content: space-between;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform: translate(0, 0);
+  padding: 0 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.playlist .controls label:before {
+  padding-right: 5px;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.playlist .controls label:after {
+  padding-left: 5px;
+}
+
+.playlist .controls label.volume:before {
+  content: "-";
+}
+
+.playlist .controls label.volume:after {
+  content: "+";
+}
+
+.playlist .controls label.stereopan:before {
+  content: "L";
+}
+
+.playlist .controls label.stereopan:after {
+  content: "R";
+}
+
+.playlist .controls input[type="range"] {
+  display: inline-block;
+  width: 75%;
+  accent-color: #3c8527;
+}
+
+.playlist .controls input[type="range"]::-webkit-slider-runnable-track {
+  height: 5px;
+  border: none;
+  border-radius: 0px;
+}
+
+.playlist .controls input[type="range"]::-moz-range-track {
+  height: 5px;
+  border: none;
+  border-radius: 0px;
+}
+
+.playlist .controls input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  height: 12px;
+  width: 12px;
+  border-radius: 0%;
+  margin-top: -5px;
+  cursor: ew-resize;
+}
+
+.playlist .volume-lean {
+  height: 30px;
+}
+
+.playlist .controls input[type="range"]::-moz-range-thumb {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  height: 12px;
+  width: 12px;
+  border-radius: 0%;
+  margin-top: -5px;
+  cursor: ew-resize;
+}
+
+.playlist .controls input[type="range"]:focus {
+  outline: none;
+}
+
+.aum-bin {
+  overflow-y: auto;
+}
+.aum-propTitle {
+  padding-left: 40px;
+}
+
+.aum-recordbutton {
+  color: rgb(201, 39, 39);
+}
+
+.playlist .selection.point {
+  background: #42932b;
+}
+.playlist .selection.segment {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.playlist .channel {
+  background: #3c8527;
+}
+.playlist .channel-progress {
+  background: #55bf38;
+}
+.playlist .cursor {
+  background: black;
+}

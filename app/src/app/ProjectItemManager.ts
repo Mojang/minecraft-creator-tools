@@ -12,6 +12,11 @@ import ProjectItemUtilities from "./ProjectItemUtilities";
 import IFolder from "../storage/IFolder";
 import ProjectAutogeneration from "./ProjectAutogeneration";
 import ProjectItem from "./ProjectItem";
+import Database from "../minecraft/Database";
+import Log from "../core/Log";
+import SoundDefinitionCatalogDefinition from "../minecraft/SoundDefinitionCatalogDefinition";
+import SoundCatalogDefinition from "../minecraft/SoundCatalogDefinition";
+import IFile from "../storage/IFile";
 
 export default class ProjectItemManager {
   private static async _getDefaultBehaviorPackPath(project: Project) {
@@ -34,6 +39,33 @@ export default class ProjectItemManager {
     }
 
     const subfolder = bpFolder.ensureFolder(name);
+    await subfolder.ensureExists();
+
+    const defaultPath = subfolder.getFolderRelativePath(project.projectFolder);
+
+    return defaultPath;
+  }
+
+  private static async _getDefaultResourcePackPath(project: Project) {
+    const rpFolder = await project.ensureDefaultResourcePackFolder();
+
+    if (project.projectFolder === null) {
+      return undefined;
+    }
+
+    const defaultPath = rpFolder.getFolderRelativePath(project.projectFolder);
+
+    return defaultPath;
+  }
+
+  private static async _getDefaultResourcePackFolderPath(project: Project, name: string) {
+    const rpFolder = await project.ensureDefaultResourcePackFolder();
+
+    if (project.projectFolder === null) {
+      return undefined;
+    }
+
+    const subfolder = rpFolder.ensureFolder(name);
     await subfolder.ensureExists();
 
     const defaultPath = subfolder.getFolderRelativePath(project.projectFolder);
@@ -69,6 +101,9 @@ export default class ProjectItemManager {
 
         case ProjectItemType.spawnRuleBehavior:
           return ProjectItemManager.createNewSpawnRule(project, itemSeed.name, itemSeed.folder);
+
+        case ProjectItemType.audio:
+          return ProjectItemManager.createNewAudio(project, itemSeed.name, itemSeed.folder);
       }
     }
 
@@ -536,6 +571,134 @@ export default class ProjectItemManager {
     return pi;
   }
 
+  static async ensureSoundDefinitionCatalogDefinition(
+    project: Project
+  ): Promise<SoundDefinitionCatalogDefinition | undefined> {
+    const items = project.getItemByType(ProjectItemType.soundDefinitionCatalog);
+
+    if (items.length > 0) {
+      await items[0].ensureStorage();
+
+      if (items[0].file) {
+        await items[0].file.loadContent();
+
+        if (!items[0].file.content) {
+          this.setFileToDefaultContent(items[0].file);
+        }
+
+        return await SoundDefinitionCatalogDefinition.ensureOnFile(items[0].file);
+      }
+    }
+
+    let path: string | undefined = undefined;
+
+    if (!project.projectFolder) {
+      return undefined;
+    }
+
+    path = await this._getDefaultResourcePackFolderPath(project, "sounds");
+
+    if (path === undefined) {
+      return undefined;
+    }
+
+    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
+      project,
+      path,
+      "sound_definitions",
+      "json"
+    );
+
+    if (candidateFilePath === undefined) {
+      return undefined;
+    }
+
+    const pi = project.ensureItemByProjectPath(
+      candidateFilePath,
+      ProjectItemStorageType.singleFile,
+      StorageUtilities.getLeafName(candidateFilePath),
+      ProjectItemType.soundDefinitionCatalog,
+      undefined,
+      ProjectItemCreationType.normal
+    );
+
+    const file = await pi.ensureFileStorage();
+
+    if (file === null) {
+      return undefined;
+    }
+
+    this.setFileToDefaultContent(file);
+
+    await ProjectAutogeneration.updateProjectAutogeneration(project);
+
+    await project.save();
+
+    return await SoundDefinitionCatalogDefinition.ensureOnFile(file);
+  }
+
+  static setFileToDefaultContent(file: IFile) {
+    const content = '{\r\n   "format_version" : "1.20.20",\r\n   "sound_definitions" : {}\r\n}';
+
+    file.setContent(content);
+    file.saveContent();
+  }
+
+  static async ensureSoundCatalogDefinition(project: Project): Promise<SoundCatalogDefinition | undefined> {
+    const items = project.getItemByType(ProjectItemType.soundCatalog);
+
+    if (items.length > 0) {
+      await items[0].ensureStorage();
+
+      if (items[0].file) {
+        return await SoundCatalogDefinition.ensureOnFile(items[0].file);
+      }
+    }
+
+    let path: string | undefined = undefined;
+
+    if (!project.projectFolder) {
+      return undefined;
+    }
+
+    path = await this._getDefaultResourcePackFolderPath(project, "sounds");
+
+    if (path === undefined) {
+      return undefined;
+    }
+
+    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(project, path, "sounds", "json");
+
+    if (candidateFilePath === undefined) {
+      return undefined;
+    }
+
+    const pi = project.ensureItemByProjectPath(
+      candidateFilePath,
+      ProjectItemStorageType.singleFile,
+      StorageUtilities.getLeafName(candidateFilePath),
+      ProjectItemType.soundCatalog,
+      undefined,
+      ProjectItemCreationType.normal
+    );
+
+    const file = await pi.ensureFileStorage();
+
+    if (file === null) {
+      return undefined;
+    }
+
+    const content = "{\r\n}";
+
+    file.setContent(content);
+
+    await ProjectAutogeneration.updateProjectAutogeneration(project);
+
+    await project.save();
+
+    return await SoundCatalogDefinition.ensureOnFile(file);
+  }
+
   static async createNewSpawnRule(project: Project, name?: string, folder?: IFolder): Promise<ProjectItem | undefined> {
     let path: string | undefined = undefined;
 
@@ -586,6 +749,78 @@ export default class ProjectItemManager {
       const content = "{}";
 
       file.setContent(content);
+    }
+
+    await ProjectAutogeneration.updateProjectAutogeneration(project);
+
+    await project.save();
+
+    return pi;
+  }
+
+  static async createNewAudio(project: Project, name?: string, folder?: IFolder): Promise<ProjectItem | undefined> {
+    let path: string | undefined = undefined;
+
+    if (!project.projectFolder) {
+      return undefined;
+    }
+    await Database.loadContent();
+
+    if (Database.contentFolder === null) {
+      Log.unexpectedContentState();
+      return undefined;
+    }
+
+    const sourceFile = Database.contentFolder.ensureFile("blank.ogg");
+
+    await sourceFile.loadContent();
+
+    if (!(sourceFile.content instanceof Uint8Array)) {
+      Log.error("Could not find source OGG file content.");
+      return;
+    }
+
+    if (folder) {
+      path = folder.getFolderRelativePath(project.projectFolder);
+    } else {
+      path = ProjectItemManager.getExistingPath(project, ProjectItemType.audio);
+
+      if (path === undefined) {
+        path = await this._getDefaultResourcePackFolderPath(project, "sounds");
+
+        if (path === undefined) {
+          return undefined;
+        }
+      }
+    }
+
+    if (!path) {
+      return undefined;
+    }
+
+    if (!name) {
+      name = "sound";
+    }
+
+    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(project, path, name, "mp3");
+
+    if (candidateFilePath === undefined) {
+      return undefined;
+    }
+
+    const pi = project.ensureItemByProjectPath(
+      candidateFilePath,
+      ProjectItemStorageType.singleFile,
+      StorageUtilities.getLeafName(candidateFilePath),
+      ProjectItemType.audio,
+      undefined,
+      ProjectItemCreationType.normal
+    );
+
+    const file = await pi.ensureFileStorage();
+
+    if (file !== null) {
+      file.setContent(sourceFile.content);
     }
 
     await ProjectAutogeneration.updateProjectAutogeneration(project);

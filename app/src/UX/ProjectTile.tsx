@@ -153,12 +153,12 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
       let imagePath = proj.logoImage;
 
       if (imagePath === undefined) {
-        imagePath = CartoApp.contentRoot + "res/latest/van/resource_pack/textures/" + proj.localLogo;
+        imagePath = CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/" + proj.localLogo;
       }
 
       if (proj.logoImage !== undefined) {
         if (proj.gitHubRepoName === "bedrock-samples") {
-          imagePath = CartoApp.contentRoot + Utilities.ensureEndsWithSlash("res/latest/van/");
+          imagePath = CartoApp.contentRoot + Utilities.ensureEndsWithSlash("res/latest/van/release/");
         } else {
           imagePath = CartoApp.contentRoot + "res/samples/" + proj.gitHubOwner + "/" + proj.gitHubRepoName + "-";
 

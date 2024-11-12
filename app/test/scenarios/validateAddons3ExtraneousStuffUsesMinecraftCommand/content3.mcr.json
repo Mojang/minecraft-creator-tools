@@ -10,10 +10,10 @@
     "entityTypeResourceCount": 0,
     "behaviorPackAnimationCount": 0,
     "behaviorPackAnimationControllerCount": 0,
-    "overallSize": 62171,
+    "overallSize": 62112,
     "fileCounts": 46,
     "folderCounts": 28,
-    "contentSize": 62171,
+    "contentSize": 62112,
     "contentFileCounts": 46,
     "contentFolderCounts": 22,
     "animationCount": 0,
@@ -166,7 +166,7 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 1,
-      "d": 62171
+      "d": 62112
     },
     {
       "iTp": 7,
@@ -184,7 +184,7 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 4,
-      "d": 62171
+      "d": 62112
     },
     {
       "iTp": 7,

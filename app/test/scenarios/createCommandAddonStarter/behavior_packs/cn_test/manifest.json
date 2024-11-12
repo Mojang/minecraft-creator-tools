@@ -3,7 +3,7 @@
   "header": {
     "name": "testerName",
     "description": "testerDescription",
-    "uuid": "6d0ccf49-bcb7-49f5-a894-72c7e2b66320",
+    "uuid": "ddadbe06-4ae7-4a9b-91d0-21f648b3e28e",
     "version": [
       1,
       0,
@@ -12,7 +12,7 @@
     "min_engine_version": [
       1,
       21,
-      30
+      40
     ]
   },
   "modules": [
@@ -23,14 +23,14 @@
         0,
         0
       ],
-      "uuid": "a46ebb3c-b824-4091-aac8-e93897601df1",
+      "uuid": "0811f882-d2d7-4dfd-8f6e-154ac159e3ab",
       "type": "data"
     },
     {
       "description": "Script resources",
       "language": "javascript",
       "type": "script",
-      "uuid": "fc08504c-36ed-4541-b308-c319560cceed",
+      "uuid": "13efb64a-2d49-40a3-873e-3d267d67a57a",
       "version": [
         0,
         0,
@@ -41,7 +41,7 @@
   ],
   "dependencies": [
     {
-      "uuid": "e0a6c016-1d1f-480d-86af-8f240f7b8fbc",
+      "uuid": "3b5298dc-d819-42c3-b2f1-2ab7d1c3510a",
       "version": [
         1,
         0,
@@ -52,7 +52,7 @@
       "module_name": "@minecraft/server",
       "version": [
         1,
-        14,
+        15,
         0
       ]
     },
@@ -64,5 +64,8 @@
         0
       ]
     }
-  ]
+  ],
+  "metadata": {
+    "product_type": "addon"
+  }
 }

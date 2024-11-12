@@ -30,6 +30,7 @@ import EntityTypeEditor from "./EntityTypeEditor";
 import SpawnRulesEditor from "./SpawnRulesEditor";
 import LootTableEditor from "./LootTableEditor";
 import EntityTypeResourceEditor from "./EntityTypeResourceEditor";
+import AudioManager from "./AudioManager";
 
 enum ProjectItemEditorDirtyState {
   clean = 0,
@@ -275,6 +276,19 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               heightOffset={this.props.heightOffset}
               visualSeed={this.props.visualSeed}
               carto={this.props.carto}
+              theme={this.props.theme}
+              file={file}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
+        } else if (file.type === "mp3" || file.type === "ogg" || file.type === "wav") {
+          interior = (
+            <AudioManager
+              readOnly={this.props.readOnly}
+              heightOffset={this.props.heightOffset}
+              visualSeed={this.props.visualSeed}
+              carto={this.props.carto}
+              project={this.props.project}
               theme={this.props.theme}
               file={file}
               setActivePersistable={this._handleNewChildPersistable}

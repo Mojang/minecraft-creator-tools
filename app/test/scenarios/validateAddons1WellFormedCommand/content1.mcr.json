@@ -10,11 +10,11 @@
     "entityTypeResourceCount": 0,
     "behaviorPackAnimationCount": 0,
     "behaviorPackAnimationControllerCount": 0,
-    "overallSize": 54260,
-    "fileCounts": 37,
+    "overallSize": 50944,
+    "fileCounts": 36,
     "folderCounts": 23,
-    "contentSize": 54260,
-    "contentFileCounts": 37,
+    "contentSize": 50944,
+    "contentFileCounts": 36,
     "contentFolderCounts": 18,
     "animationCount": 0,
     "textureCount": 0,
@@ -32,7 +32,7 @@
         "Count": 3
       },
       "Textures File Count": {
-        "Count": 4
+        "Count": 3
       },
       "Textures Unique Texture Handles (estimated)": {
         "Count": 3
@@ -140,13 +140,13 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 1,
-      "d": 54260
+      "d": 50944
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 2,
-      "d": 37
+      "d": 36
     },
     {
       "iTp": 7,
@@ -158,13 +158,13 @@
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 4,
-      "d": 54260
+      "d": 50944
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 5,
-      "d": 37
+      "d": 36
     },
     {
       "iTp": 7,
@@ -206,7 +206,7 @@
           "Count": 3
         },
         "File Count": {
-          "Count": 4
+          "Count": 3
         },
         "Unique Texture Handles (estimated)": {
           "Count": 3

@@ -535,7 +535,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
         return 0;
       }
-    } else if (field.dataType === FieldDataType.number) {
+    } else if (field.dataType === FieldDataType.number || field.dataType === FieldDataType.float) {
       if (typeof value === "number") {
         return value;
       } else if (typeof value === "string") {
@@ -1049,7 +1049,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                   label={title}
                   id={propIndex}
                   items={items}
-                  key={seedId + title + propIndex}
+                  key={"frs" + seedId + title + propIndex}
                   fluid={true}
                   onChange={this._handleDropdownChange}
                   value={[dropdownValue]}
@@ -1075,7 +1075,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                 <Point3
                   data={val}
                   objectKey={objKey}
-                  key={seedId + field.id}
+                  key={"p3" + seedId + field.id}
                   label={title}
                   ambientPoint={this.props.ambientSelectedPoint}
                   onChange={this._handlePoint3PropertyChange}
@@ -1103,7 +1103,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                 <Version
                   data={val}
                   objectKey={objKey}
-                  key={seedId + field.id}
+                  key={"ver" + seedId + field.id}
                   label={title}
                   onChange={this._handleVersionPropertyChange}
                   form={this.props.definition}
@@ -1134,7 +1134,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                 <StringArray
                   data={val}
                   objectKey={objKey}
-                  key={seedId + field.id}
+                  key={"sarr" + seedId + field.id}
                   longForm={field.dataType === FieldDataType.longFormStringArray}
                   label={title}
                   onChange={this._handleStringArrayPropertyChange}
@@ -1166,7 +1166,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                 <Range
                   data={val}
                   objectKey={objKey}
-                  key={seedId + field.id}
+                  key={"ra" + seedId + field.id}
                   label={title}
                   isInt={field.dataType === FieldDataType.intRange}
                   onChange={this._handleRangePropertyChange}
@@ -1196,7 +1196,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                 <MinecraftFilter
                   data={val}
                   objectKey={objKey}
-                  key={seedId + field.id}
+                  key={"mifi" + seedId + field.id}
                   onChange={this._handleMinecraftFilterPropertyChange}
                   form={this.props.definition}
                   field={field}
@@ -1213,7 +1213,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                 </div>
               );
             } else if (field.dataType === FieldDataType.keyedObjectCollection) {
-              this.addKeyedObjectArrayComponent(field, formInterior, descriptionElement);
+              this.addKeyedObjectComponent(field, formInterior, descriptionElement);
             } else if (field.dataType === FieldDataType.keyedStringArrayCollection) {
               this.addKeyedStringArrayCollectionComponent(field, formInterior, descriptionElement);
             } else if (field.dataType === FieldDataType.keyedStringCollection) {
@@ -1230,7 +1230,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               const fieldInput = (
                 <TextArea
                   fluid={true}
-                  key={seedId + field.id}
+                  key={"txa" + seedId + field.id}
                   id={field.id}
                   value={curVal as string}
                   defaultValue={defaultVal as string}
@@ -1249,8 +1249,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                 </div>
               );
             } else if (
-              field.dataType === FieldDataType.int &&
+              (field.dataType === FieldDataType.int || field.dataType === FieldDataType.float) &&
               field.experienceType === FieldExperienceType.slider &&
+              !this.props.readOnly &&
               (field.minValue !== undefined || field.suggestedMinValue !== undefined) &&
               (field.maxValue !== undefined || field.suggestedMaxValue !== undefined)
             ) {
@@ -1259,10 +1260,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                   <div className="df-sliderSet" key={seedId + field.id + "W"}>
                     <div className="df-sliderTitle">{title}</div>
                     <Slider
-                      key={seedId + field.id}
+                      key={"sli" + seedId + field.id}
                       id={field.id}
                       fluid={true}
                       className="df-slider"
+                      step={field.step ? field.step : 1}
                       min={field.minValue ? field.minValue : field.suggestedMinValue}
                       max={field.maxValue ? field.maxValue : field.suggestedMaxValue}
                       value={curVal as string}
@@ -1287,7 +1289,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                 <div className="df-fieldWrap" key={"fw" + field.id}>
                   <FormInput
                     label={title}
-                    key={seedId + field.id}
+                    key={"fri" + seedId + field.id}
                     id={field.id}
                     value={curVal as string}
                     defaultValue={defaultVal as string}
@@ -1452,21 +1454,37 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     );
   }
 
-  addKeyedObjectArrayComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
+  addKeyedObjectComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
     const val = this._getProperty(field.id, {});
     const fieldInterior = [];
     const childElements = [];
     Log.assert(val !== undefined, "Keyed object is not available in DataForm.");
 
-    if (val && field.subForm && field.subFields) {
+    let fieldList = field.subFields;
+
+    if (!fieldList) {
+      fieldList = {};
+
+      for (const key in val) {
+        fieldList[key] = {
+          id: key,
+          title: key,
+          dataType: 2,
+        };
+      }
+    }
+
+    if (val && field.subForm && fieldList) {
       const keys = [];
 
-      const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
-      this.formComponentNames.push(field.id);
-      this.formComponents.push(headerElement);
-      fieldInterior.push(headerElement);
+      if (field.displayTitle !== false) {
+        const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
+        this.formComponentNames.push(field.id);
+        this.formComponents.push(headerElement);
+        fieldInterior.push(headerElement);
+      }
 
-      for (const key in field.subFields) {
+      for (const key in fieldList) {
         keys.push(key);
 
         let title = key;
@@ -1531,6 +1549,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       fieldInterior.push(
         <div
           className="df-elementBin"
+          key="dfeltbin"
           style={{
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
             borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
@@ -1559,10 +1578,12 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     if (val) {
       const keys = [];
 
-      const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
-      this.formComponentNames.push(field.id);
-      this.formComponents.push(headerElement);
-      fieldInterior.push(headerElement);
+      if (field.displayTitle !== false) {
+        const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
+        this.formComponentNames.push(field.id);
+        this.formComponents.push(headerElement);
+        fieldInterior.push(headerElement);
+      }
 
       for (const key in val) {
         keys.push(key);
@@ -1609,6 +1630,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     fieldInterior.push(
       <div
         className="df-elementBin"
+        key="dfelb2"
         style={{
           backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
           borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
@@ -1637,21 +1659,25 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     if (val) {
       const keys = [];
 
-      const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
-      this.formComponentNames.push(field.id);
-      this.formComponents.push(headerElement);
-      fieldTopper.push(headerElement);
+      if (field.displayTitle !== false) {
+        const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
+        this.formComponentNames.push(field.id);
+        this.formComponents.push(headerElement);
+        fieldTopper.push(headerElement);
+      }
 
       if (!this.props.readOnly) {
         const toolbarItems = [];
 
-        toolbarItems.push({
-          icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
-          key: "add",
-          tag: field.id,
-          onClick: this._addKeyedStringItem,
-          title: "Add item",
-        });
+        if (field.allowCreateDelete !== false) {
+          toolbarItems.push({
+            icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
+            key: "add",
+            tag: field.id,
+            onClick: this._addKeyedStringItem,
+            title: "Add item",
+          });
+        }
 
         const toolBarElement = (
           <div>
@@ -1753,6 +1779,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     fieldInterior.push(
       <div
         className="df-elementBin"
+        key="dfelf3"
         style={{
           backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
           borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
@@ -1782,21 +1809,25 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     if (val) {
       const keys = [];
 
-      const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
-      this.formComponentNames.push(field.id);
-      this.formComponents.push(headerElement);
-      fieldTopper.push(headerElement);
+      if (field.displayTitle !== false) {
+        const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
+        this.formComponentNames.push(field.id);
+        this.formComponents.push(headerElement);
+        fieldTopper.push(headerElement);
+      }
 
       if (!this.props.readOnly) {
         const toolbarItems = [];
 
-        toolbarItems.push({
-          icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
-          key: "add",
-          tag: field.id,
-          onClick: this._addKeyedBooleanItem,
-          title: "Add item",
-        });
+        if (field.allowCreateDelete !== false) {
+          toolbarItems.push({
+            icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
+            key: "add",
+            tag: field.id,
+            onClick: this._addKeyedBooleanItem,
+            title: "Add item",
+          });
+        }
 
         const toolBarElement = (
           <div>
@@ -1900,6 +1931,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     fieldInterior.push(
       <div
         className="df-elementBin"
+        key="dfelfb4"
         style={{
           backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
           borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
@@ -2012,23 +2044,27 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     Log.assert(arrayOfDataVal, "DFAOAC");
 
     if (arrayOfDataVal !== undefined && field.subForm && arrayOfDataVal instanceof Array) {
-      const headerElement = <div className="df-elementBinTItle">{FieldUtilities.getFieldTitle(field)}</div>;
-      this.formComponentNames.push(field.id);
-      this.formComponents.push(headerElement);
-      fieldTopper.push(headerElement);
+      if (field.displayTitle !== false) {
+        const headerElement = <div className="df-elementBinTItle">{FieldUtilities.getFieldTitle(field)}</div>;
+        this.formComponentNames.push(field.id);
+        this.formComponents.push(headerElement);
+        fieldTopper.push(headerElement);
+      }
 
       fieldTopper.push(descriptionElement);
 
       if (!this.props.readOnly) {
         const toolbarItems = [];
 
-        toolbarItems.push({
-          icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
-          key: "add",
-          tag: field.id,
-          onClick: this._addObjectArrayItem,
-          title: "Add item",
-        });
+        if (field.allowCreateDelete !== false) {
+          toolbarItems.push({
+            icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
+            key: "add",
+            tag: field.id,
+            onClick: this._addObjectArrayItem,
+            title: "Add item",
+          });
+        }
 
         const toolBarElement = (
           <div>
@@ -2101,7 +2137,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               onPropertyChanged={this._handleKeyedObjectArraySubFormPropertyChange}
               definition={field.subForm}
               readOnly={this.props.readOnly}
-              closeButton={!this.props.readOnly}
+              closeButton={!this.props.readOnly && field.allowCreateDelete !== false}
             />
           );
 
@@ -2199,6 +2235,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     fieldInterior.push(
       <div
         className="df-elementBin"
+        key="dfelfb5"
         style={{
           backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
           borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
@@ -2317,7 +2354,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         <DataForm
           directObject={val}
           objectKey={objKey}
-          key={propertyId}
+          key={"dfp" + propertyId}
           formId={propertyId}
           parentField={field}
           theme={this.props.theme}

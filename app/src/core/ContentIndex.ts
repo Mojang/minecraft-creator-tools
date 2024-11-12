@@ -125,6 +125,10 @@ export default class ContentIndex implements IContentIndex {
       return results;
     }
 
+    if (Utilities.arrayHasNegativeAndIsNumeric(indices)) {
+      indices = Utilities.decodeSequentialRunLengthUsingNegative(indices as number[]);
+    }
+
     for (const index of indices) {
       if (typeof index === "object") {
         const indexN = (index as IAnnotatedIndexData).n;
@@ -421,7 +425,8 @@ export default class ContentIndex implements IContentIndex {
 
             // if we're in the middle of a string like "subset", and we're trying add the word "subpar",
             // create a new node called "sub" and place "set" underneath it.
-            if (item[itemIndex] !== key[keyIndex] && itemIndex < item.length && keyIndex < key.length) {
+            // also support the case where we're adding "sub" but "subset" already exists (keyIndex === key.length)
+            if (item[itemIndex] !== key[keyIndex] && itemIndex < item.length && keyIndex <= key.length) {
               parentNode[curNodeIndex] = undefined;
               curNodeIndex = item.substring(0, itemIndex);
 

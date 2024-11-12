@@ -38,6 +38,10 @@ input[type="file"]:hover {
   box-shadow: rgba(0, 0, 0, 0.25) 0px 0.2rem 0.4rem -0.075rem;
 }
 
+.ui-input__input {
+  padding-right: 5px !important;
+}
+
 .ui-checkbox__label {
   padding-top: 2px;
 }

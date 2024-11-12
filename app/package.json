@@ -50,7 +50,8 @@
     "threads": "^1.7.0",
     "trash": "^8.0.0",
     "tui-grid": "^4.18.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "waveform-playlist": "^4.3.3"
   },
   "scripts": {
     "devenv": "gulp devenv --max_old_space_size=16384",
@@ -119,6 +120,7 @@
     "@minecraft/server-ui": "^1.4.0-beta.1.21.30-preview.25",
     "@minecraft/vanilla-data": "^1.21.22",
     "@octokit/rest": "^18.5.2",
+    "@npm/types": "^1.0.2",
     "@octokit/types": "^6.13.0",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.1",

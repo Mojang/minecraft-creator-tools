@@ -10,6 +10,9 @@ import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
 import ModelGeometryDefinition from "./ModelGeometryDefinition";
+import Database from "./Database";
+import Utilities from "../core/Utilities";
+import IFolder from "../storage/IFolder";
 
 export default class EntityTypeResourceDefinition {
   public _dataWrapper?: IEntityTypeResourceWrapper;
@@ -45,6 +48,10 @@ export default class EntityTypeResourceDefinition {
   public get textures() {
     if (!this._data) {
       return undefined;
+    }
+
+    if (this._data.textures === undefined) {
+      this._data.textures = {};
     }
 
     return this._data.textures;
@@ -234,9 +241,35 @@ export default class EntityTypeResourceDefinition {
     this._onLoaded.dispatch(this, this);
   }
 
-  async addChildItems(project: Project, item: ProjectItem) {
-    const itemsCopy = project.getItemsCopy();
+  async deleteLink(childItem: ProjectItem) {
+    let packRootFolder = this.getPackRootFolder();
 
+    if (this._data === undefined) {
+      await this.load();
+    }
+
+    if (childItem.itemType === ProjectItemType.texture && this._data && this._data.textures) {
+      await childItem.ensureStorage();
+
+      if (childItem.file && packRootFolder) {
+        let relativePath = this.getRelativePath(childItem.file, packRootFolder);
+
+        if (relativePath) {
+          for (const key in this._data.textures) {
+            const texturePath = this._data.textures[key];
+
+            if (texturePath === relativePath) {
+              this._data.textures[key] = undefined;
+            }
+          }
+        }
+      }
+    }
+
+    this.persist();
+  }
+
+  getPackRootFolder() {
     let packRootFolder = undefined;
     if (this.file && this.file.parentFolder) {
       let parentFolder = this.file.parentFolder;
@@ -250,26 +283,44 @@ export default class EntityTypeResourceDefinition {
       }
     }
 
-    const textureList = this.texturesList;
-    const geometryList = this.geometryList;
+    return packRootFolder;
+  }
+
+  getRelativePath(file: IFile, packRootFolder: IFolder) {
+    let relativePath = file.getFolderRelativePath(packRootFolder);
+
+    if (relativePath) {
+      const lastPeriod = relativePath?.lastIndexOf(".");
+      if (lastPeriod >= 0) {
+        relativePath = relativePath?.substring(0, lastPeriod).toLowerCase();
+      }
+
+      relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
+    }
+
+    return relativePath;
+  }
+
+  async addChildItems(project: Project, item: ProjectItem) {
+    const itemsCopy = project.getItemsCopy();
+
+    let packRootFolder = this.getPackRootFolder();
+
+    let textureList = this.texturesList;
+    let geometryList = this.geometryList;
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
         await candItem.ensureStorage();
 
         if (candItem.file) {
-          let relativePath = candItem.file.getFolderRelativePath(packRootFolder);
+          let relativePath = this.getRelativePath(candItem.file, packRootFolder);
 
           if (relativePath) {
-            const lastPeriod = relativePath?.lastIndexOf(".");
-            if (lastPeriod >= 0) {
-              relativePath = relativePath?.substring(0, lastPeriod).toLowerCase();
-            }
-
-            relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
-
-            if (this.texturesList?.includes(relativePath)) {
+            if (textureList && textureList.includes(relativePath)) {
               item.addChildItem(candItem);
+
+              textureList = Utilities.removeItemInArray(relativePath, textureList);
             }
           }
         }
@@ -282,8 +333,10 @@ export default class EntityTypeResourceDefinition {
           if (model) {
             let doAddModel = false;
             for (const modelId of model.identifiers) {
-              if (this.geometryList?.includes(modelId)) {
+              if (geometryList && geometryList.includes(modelId)) {
                 doAddModel = true;
+
+                geometryList = Utilities.removeItemInArray(modelId, geometryList);
               }
             }
 
@@ -292,6 +345,22 @@ export default class EntityTypeResourceDefinition {
             }
           }
         }
+      }
+    }
+
+    if (textureList) {
+      for (const texturePath of textureList) {
+        item.addUnfulfilledRelationship(
+          texturePath,
+          ProjectItemType.texture,
+          await Database.isVanillaToken(texturePath)
+        );
+      }
+    }
+
+    if (geometryList) {
+      for (const geoId of geometryList) {
+        item.addUnfulfilledRelationship(geoId, ProjectItemType.modelGeometryJson, await Database.isVanillaToken(geoId));
       }
     }
   }

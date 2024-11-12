@@ -710,6 +710,8 @@ export default class ProjectInfoSet {
       }
     }
 
+    Utilities.encodeObjectWithSequentialRunLengthEncodeUsingNegative(this.contentIndex.data.trie);
+
     return {
       info: this.info,
       items: items,

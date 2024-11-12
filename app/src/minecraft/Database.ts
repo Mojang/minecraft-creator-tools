@@ -51,6 +51,8 @@ export default class Database {
 
   private static _isLoadingSnippets: boolean = false;
   private static _pendingLoadSnippetsRequests: ((value: unknown) => void)[] = [];
+  private static _isLoadingVanilla: boolean = false;
+  private static _pendingLoadVanillaRequests: ((value: unknown) => void)[] = [];
 
   static dataPath: string = "res/latest/";
 
@@ -66,7 +68,7 @@ export default class Database {
   static maxMinecraftPatchVersions = {
     "1.19": "80",
     "1.20": "80",
-    "1.21": "0",
+    "1.21": "50",
   };
 
   static moduleDescriptors: { [id: string]: NpmModule } = {};
@@ -567,9 +569,9 @@ export default class Database {
     return undefined;
   }
 
-  static async loadMetadataFolder() {
+  static async loadPreviewMetadataFolder() {
     if (!this.metadataFolder) {
-      const metadataStorage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/metadata/");
+      const metadataStorage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/preview/metadata/");
 
       await metadataStorage.rootFolder.load();
 
@@ -585,13 +587,13 @@ export default class Database {
     }
 
     if (Database.local) {
-      const storage = await Database.local.createStorage("res/latest/van/behavior_pack/");
+      const storage = await Database.local.createStorage("res/latest/van/release/behavior_pack/");
 
       if (storage) {
         Database.defaultBehaviorPackFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/behavior_pack/");
+      const storage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/release/behavior_pack/");
 
       Database.defaultBehaviorPackFolder = storage.rootFolder;
     }
@@ -609,13 +611,13 @@ export default class Database {
     }
 
     if (Database.local) {
-      const storage = await Database.local.createStorage("res/latest/van/resource_pack/");
+      const storage = await Database.local.createStorage("res/latest/van/release/resource_pack/");
 
       if (storage) {
         Database.defaultResourcePackFolder = storage.rootFolder;
       }
     } else {
-      const storage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/resource_pack/");
+      const storage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/release/resource_pack/");
 
       Database.defaultResourcePackFolder = storage.rootFolder;
     }
@@ -772,30 +774,68 @@ export default class Database {
     return Database.libs;
   }
 
+  static async isVanillaToken(path: string) {
+    if (!Database.vanillaContentIndex) {
+      await this.loadVanillaInfoData();
+    }
+
+    if (!Database.vanillaContentIndex) {
+      return false;
+    }
+
+    const matches = await Database.vanillaContentIndex.getMatches(path);
+
+    if (matches && matches.length > 0) {
+      return true;
+    }
+    return false;
+  }
+
   static async loadVanillaInfoData() {
     if (Database.vanillaInfoData) {
       return;
     }
 
-    try {
-      // @ts-ignore
-      if (typeof window !== "undefined") {
-        const response = await axios.get(CartoApp.contentRoot + "data/mci/van.mci.json");
+    if (this._isLoadingVanilla) {
+      const pendingLoad = this._pendingLoadVanillaRequests;
 
-        Database.vanillaInfoData = response.data;
-      } else if (Database.local) {
-        const result = await Database.local.readJsonFile("data/mci/van.mci.json");
-        if (result !== null) {
-          Database.vanillaInfoData = result as IProjectInfoData;
+      const prom = (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
+        pendingLoad.push(resolve);
+      };
+
+      await new Promise(prom);
+    } else {
+      this._isLoadingVanilla = true;
+
+      try {
+        // @ts-ignore
+        if (typeof window !== "undefined") {
+          const response = await axios.get(CartoApp.contentRoot + "data/mci/release.mci.json");
+
+          Database.vanillaInfoData = response.data;
+        } else if (Database.local) {
+          const result = await Database.local.readJsonFile("data/mci/release.mci.json");
+          if (result !== null) {
+            Database.vanillaInfoData = result as IProjectInfoData;
+          }
         }
+
+        if (Database.vanillaInfoData && Database.vanillaInfoData.index && !Database.vanillaContentIndex) {
+          Database.vanillaContentIndex = new ContentIndex();
+          Database.vanillaContentIndex.loadFromData(Database.vanillaInfoData.index);
+        }
+      } catch {
+        // Log.fail("Could not load vanilla metadata.");
       }
 
-      if (Database.vanillaInfoData && Database.vanillaInfoData.index && !Database.vanillaContentIndex) {
-        Database.vanillaContentIndex = new ContentIndex();
-        Database.vanillaContentIndex.loadFromData(Database.vanillaInfoData.index);
+      this._isLoadingVanilla = false;
+
+      const pendingLoad = this._pendingLoadVanillaRequests;
+      this._pendingLoadVanillaRequests = [];
+
+      for (const prom of pendingLoad) {
+        prom(undefined);
       }
-    } catch {
-      // Log.fail("Could not load vanilla metadata.");
     }
   }
 

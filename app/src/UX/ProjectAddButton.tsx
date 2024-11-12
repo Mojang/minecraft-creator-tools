@@ -102,6 +102,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     this._newBlockTypeUpdated = this._newBlockTypeUpdated.bind(this);
     this._handleNewEntityType = this._handleNewEntityType.bind(this);
     this._handleNewBlockType = this._handleNewBlockType.bind(this);
+    this._handleNewAudioClick = this._handleNewAudioClick.bind(this);
 
     this.state = {
       activeItem: undefined,
@@ -172,6 +173,12 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
   _handleNewLootTableClick() {
     if (this.props.project !== null) {
       this.launchNewItemType(ProjectItemType.lootTableBehavior);
+    }
+  }
+
+  _handleNewAudioClick() {
+    if (this.props.project !== null) {
+      this.launchNewItemType(ProjectItemType.audio);
     }
   }
 
@@ -411,6 +418,12 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
             },
           ],
         },
+      },
+      {
+        id: "audio",
+        key: "newAudio",
+        onClick: this._handleNewAudioClick,
+        content: "New audio",
       },
     ];
 

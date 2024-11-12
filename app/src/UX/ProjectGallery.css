@@ -66,7 +66,7 @@
   width: 100%;
   display: grid;
   margin-right: 28px;
-  grid-template-columns: 375px 1fr;
+  grid-template-columns: 376px 1fr;
 }
 
 .pg-underline {

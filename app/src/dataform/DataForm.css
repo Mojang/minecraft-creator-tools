@@ -17,7 +17,7 @@
 }
 
 .df-outer {
-  padding: 2px;
+  padding: 0px;
   vertical-align: top;
 }
 
@@ -120,7 +120,7 @@
 }
 
 .df-elementBin {
-  padding: 10px;
+  padding: 6px 8px 6px 8px;
   margin-left: 10px;
   min-height: 121px;
   border: inset 1px;

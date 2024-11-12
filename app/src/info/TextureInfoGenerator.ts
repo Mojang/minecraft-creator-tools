@@ -68,14 +68,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         }
       }
     } else {
-      await Database.loadVanillaInfoData();
-
-      if (Database.vanillaContentIndex) {
-        const matches = await Database.vanillaContentIndex.getMatches(path);
-        if (matches && matches.length > 0) {
-          return true;
-        }
-      }
+      return await Database.isVanillaToken(path);
     }
 
     return false;
@@ -220,13 +213,15 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         await projectItem.ensureFileStorage();
 
         if (projectItem.file) {
-          const terrainTextureCat = await TerrainTextureCatalogDefinition.ensureTerrainTextureCatalogDefinitionOnFile(
-            projectItem.file
-          );
+          const terrainTextureCat = await TerrainTextureCatalogDefinition.ensureOnFile(projectItem.file);
 
-          if (terrainTextureCat && terrainTextureCat.terrainTexture && terrainTextureCat.terrainTexture.texture_data) {
-            for (const terrainTextureId in terrainTextureCat.terrainTexture.texture_data) {
-              const terrainTexture = terrainTextureCat.terrainTexture.texture_data[terrainTextureId];
+          if (
+            terrainTextureCat &&
+            terrainTextureCat.terrainTextureCatalog &&
+            terrainTextureCat.terrainTextureCatalog.texture_data
+          ) {
+            for (const terrainTextureId in terrainTextureCat.terrainTextureCatalog.texture_data) {
+              const terrainTexture = terrainTextureCat.terrainTextureCatalog.texture_data[terrainTextureId];
 
               if (terrainTexture && terrainTexture.textures) {
                 textureCountPi.incrementFeature("Terrain Texture Resource Count");
@@ -354,24 +349,27 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
               for (const texture in textures) {
                 const texturePath = textures[texture];
 
-                const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(texturePath, rpFolder);
+                if (texturePath) {
+                  const matchesVanillaPath = await TextureInfoGenerator.matchesVanillaPath(texturePath, rpFolder);
 
-                if (!matchesVanillaPath) {
-                  if (!textureHandles.includes(texturePath)) {
-                    textureHandles.push(texturePath);
-                  }
+                  if (!matchesVanillaPath) {
+                    if (!textureHandles.includes(texturePath)) {
+                      textureHandles.push(texturePath);
+                    }
 
-                  if (!entityTexturePaths.includes(texturePath)) {
-                    entityTexturePaths.push(texturePath);
-                  }
+                    if (!entityTexturePaths.includes(texturePath)) {
+                      entityTexturePaths.push(texturePath);
+                    }
 
-                  if (!allTexturePaths.includes(textures[texture])) {
-                    allTexturePaths.push(textures[texture]);
+                    const tex = textures[texture];
+
+                    if (tex && !allTexturePaths.includes(tex)) {
+                      allTexturePaths.push(tex);
+                    }
+                  } else if (!entityVanillaTexturePaths.includes(texturePath)) {
+                    entityVanillaTexturePaths.push(texturePath);
                   }
-                } else if (!entityVanillaTexturePaths.includes(texturePath)) {
-                  entityVanillaTexturePaths.push(texturePath);
                 }
-
                 textureCount++;
               }
 

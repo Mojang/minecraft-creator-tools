@@ -97,7 +97,13 @@ export default abstract class FolderBase implements IFolder {
       start = this.storage.storagePath;
     }
 
-    return start + this.fullPath;
+    let result = start + this.fullPath;
+
+    if (!result.endsWith(this.storage.folderDelimiter)) {
+      result += this.storage.folderDelimiter;
+    }
+
+    return result;
   }
 
   constructor() {
@@ -122,6 +128,7 @@ export default abstract class FolderBase implements IFolder {
 
         return subPath;
       }
+
       return this.extendedPath;
     } else if (this === toFolder) {
       return "/";

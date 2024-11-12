@@ -31,6 +31,7 @@ import BehaviorPackItemTypeManager from "../manager/BehaviorPackItemTypeManager"
 import TextureImageInfoGenerator from "./TextureImageInfoGenerator";
 import FormatVersionManager from "../manager/FormatVersionManager";
 import AnimationResourceInfoGenerator from "./AnimationResourceInfoGenerator";
+import UnlinkedItemInfoGenerator from "./UnlinkedItemInfoGenerator";
 
 export default class GeneratorRegistrations {
   static projectGenerators = [
@@ -60,6 +61,7 @@ export default class GeneratorRegistrations {
     new WorldItemInfoGenerator(),
     new WorldDataInfoGenerator(),
     new AddOnItemRequirementsGenerator(),
+    new UnlinkedItemInfoGenerator(),
   ];
 
   static fileGenerators = [new UnknownFileGenerator(), new PathLengthFileGenerator()];

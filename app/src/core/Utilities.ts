@@ -36,6 +36,133 @@ export default class Utilities {
     return Utilities._isDebug;
   }
 
+  static removeItemInArray(objToRemove: any, stringArr: any[]) {
+    const nextArray: any[] = [];
+
+    for (const candStr of stringArr) {
+      if (candStr !== objToRemove) {
+        nextArray.push(candStr);
+      }
+    }
+
+    return nextArray;
+  }
+
+  static isArrayNonNegative(arr: number[]) {
+    for (const val of arr) {
+      if (val < 0) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  static arrayHasNegativeAndIsNumeric(arr: any[]) {
+    let foundNegative = false;
+    for (const val of arr) {
+      if (typeof val !== "number") {
+        return false;
+      } else if (val < 0) {
+        foundNegative = true;
+      }
+    }
+
+    return foundNegative;
+  }
+
+  static encodeObjectWithSequentialRunLengthEncodeUsingNegative(obj: { [key: string]: any }) {
+    for (const key in obj) {
+      const val: any = obj[key];
+      if (val !== undefined) {
+        if (typeof val === "object" && !Array.isArray(val)) {
+          this.encodeObjectWithSequentialRunLengthEncodeUsingNegative(val);
+        } else if (Array.isArray(val)) {
+          let isNumericArray = true;
+          for (const arrVal of val) {
+            if (typeof arrVal !== "number") {
+              isNumericArray = false;
+              break;
+            }
+          }
+
+          if (isNumericArray) {
+            obj[key] = this.encodeSequentialRunLengthUsingNegative(val);
+          }
+        }
+      }
+    }
+  }
+
+  static decodeSequentialRunLengthUsingNegative(arr: number[]) {
+    if (this.isArrayNonNegative(arr)) {
+      return arr;
+    }
+
+    const newArr: number[] = [];
+
+    newArr.push(arr[0]);
+
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i] < 0) {
+        let startVal = arr[i - 1];
+
+        for (let j = 0; j < Math.abs(arr[i]); j++) {
+          startVal++;
+
+          newArr.push(startVal);
+        }
+      } else {
+        newArr.push(arr[i]);
+      }
+    }
+    return newArr;
+  }
+
+  /* Convert a numeric array from:
+     [1, 2, 3, 7, 9, 10, 15, 16, 17, 18]
+     to a "sequential run length encode", where negative numbers are used to indicate a "run"
+     so the above becomes 
+     [1, -2, 7, 9, -1, 15, -3]
+  */
+  static encodeSequentialRunLengthUsingNegative(arr: number[]) {
+    if (!this.isArrayNonNegative(arr)) {
+      return arr;
+    }
+
+    arr.sort();
+
+    const newArr: number[] = [];
+
+    newArr.push(arr[0]);
+
+    let streak = -1;
+
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i] === arr[i - 1] + 1) {
+        if (streak < 1) {
+          streak = 1;
+        } else {
+          streak++;
+        }
+      } else {
+        if (streak >= 1) {
+          newArr.push(-streak);
+          streak = -1;
+        }
+
+        newArr.push(arr[i]);
+      }
+    }
+
+    if (streak >= 1) {
+      newArr.push(-streak);
+      streak = -1;
+    }
+
+    return newArr;
+  }
+
   static trimEllipsis(text: string, length: number) {
     if (text.length > length) {
       text = text.substring(0, length - 1) + "…";
@@ -613,6 +740,12 @@ export default class Utilities {
   }
 
   static base64ToArrayBuffer(base64buffer: string) {
+    const start = base64buffer.indexOf(";base64,");
+
+    if (start > 0 && start < 50) {
+      base64buffer = base64buffer.substring(start + 8);
+    }
+
     const binary = atob(base64buffer);
 
     const arrayBuffer = new ArrayBuffer(binary.length);
@@ -628,6 +761,12 @@ export default class Utilities {
   }
 
   static base64ToUint8Array(base64buffer: string) {
+    const start = base64buffer.indexOf(";base64,");
+
+    if (start > 0 && start < 50) {
+      base64buffer = base64buffer.substring(start + 8);
+    }
+
     const binary = atob(base64buffer);
 
     const arrayBuffer = new ArrayBuffer(binary.length);

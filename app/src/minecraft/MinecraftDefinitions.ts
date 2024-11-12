@@ -7,9 +7,13 @@ import AnimationResourceDefinition from "./AnimationResourceDefinition";
 import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
 import BlockTypeBehaviorDefinition from "./BlockTypeBehaviorDefinition";
 import EntityTypeDefinition from "./EntityTypeDefinition";
+import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
 import FlipbookTextureCatalogDefinition from "./FlipbookTextureCatalogDefinition";
 import ItemTypeBehaviorDefinition from "./ItemTypeBehaviorDefinition";
+import MusicDefinitionCatalogDefinition from "./MusicDefinitionCatalogDefinition";
 import ResourceManifestDefinition from "./ResourceManifestDefinition";
+import SoundCatalogDefinition from "./SoundCatalogDefinition";
+import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition";
 
 export default class MinecraftDefinitions {
   static async get(projectItem: ProjectItem) {
@@ -20,6 +24,8 @@ export default class MinecraftDefinitions {
     switch (projectItem.itemType) {
       case ProjectItemType.entityTypeBehavior:
         return await EntityTypeDefinition.ensureOnFile(projectItem.file);
+      case ProjectItemType.entityTypeResource:
+        return await EntityTypeResourceDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.itemTypeBehaviorJson:
         return await ItemTypeBehaviorDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.blockTypeBehavior:
@@ -38,6 +44,12 @@ export default class MinecraftDefinitions {
         return await AnimationBehaviorDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.animationResourceJson:
         return await AnimationResourceDefinition.ensureOnFile(projectItem.file);
+      case ProjectItemType.soundDefinitionCatalog:
+        return await SoundDefinitionCatalogDefinition.ensureOnFile(projectItem.file);
+      case ProjectItemType.soundCatalog:
+        return await SoundCatalogDefinition.ensureOnFile(projectItem.file);
+      case ProjectItemType.musicDefinitionJson:
+        return await MusicDefinitionCatalogDefinition.ensureOnFile(projectItem.file);
     }
 
     return undefined;

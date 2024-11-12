@@ -5,6 +5,7 @@ import ProjectExporter from "../app/ProjectExporter";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ProjectUtilities from "../app/ProjectUtilities";
 import Utilities from "../core/Utilities";
+import BlockbenchModel from "../integrations/BlockbenchModel";
 import { PackType } from "../minecraft/Pack";
 import FileSystemFolder from "../storage/FileSystemFolder";
 import FileSystemStorage from "../storage/FileSystemStorage";
@@ -192,9 +193,43 @@ export default class ProjectEditorUtilities {
     } else if (extension === "zip") {
       return "Add '" + file.name + "' as new folder";
     } else if (extension === "mcpack") {
-      return "Add '" + file.name + "'as new  pack folder";
+      return "Add '" + file.name + "' as new pack folder";
+    } else if (extension === "ogg" || extension === "mp3" || extension === "wav") {
+      return "Add '" + file.name + "' as new sound";
     } else if (extension === "mcstructure") {
       return "Add '" + file.name + "' as new structure";
+    } else if (extension === "bbmodel") {
+      let descrip = "Integrate '" + file.name + "' as a model ";
+
+      if (content && typeof content === "string") {
+        const bd = BlockbenchModel.ensureFromContent(content);
+
+        if (bd.id) {
+          descrip += "(" + bd.id + ") ";
+        }
+
+        descrip += "and textures";
+
+        if (bd.data && bd.data.textures) {
+          descrip += " (";
+          let first = true;
+
+          for (const texture of bd.data.textures) {
+            if (!first) {
+              descrip += ", ";
+            }
+
+            descrip += texture.name;
+            first = false;
+          }
+
+          descrip += ")";
+        }
+      } else {
+        descrip += "and textures";
+      }
+
+      return descrip;
     } else if (extension === "json") {
       if (content && typeof content === "string") {
         const typeInfo = ProjectItemUtilities.inferTypeFromJsonContent(content, fileName);
@@ -489,6 +524,33 @@ export default class ProjectEditorUtilities {
       }
 
       await project.carto.notifyOperationEnded(operId, "New structure file '" + file.name + "' added");
+    } else if (extension === "mp3" || extension === "ogg" || extension === "wav") {
+      const operId = await project.carto.notifyOperationStarted("Saving new audio file '" + file.name + "'");
+
+      const buffer = await file.arrayBuffer();
+
+      const rpFolder = await project.ensureDefaultResourcePackFolder();
+
+      const folder = rpFolder.ensureFolder("sounds");
+
+      const contentFile = folder.ensureFile(file.name);
+      contentFile.setContent(new Uint8Array(buffer));
+      contentFile.saveContent();
+
+      const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
+
+      if (relPath !== undefined) {
+        project.ensureItemByProjectPath(
+          relPath,
+          ProjectItemStorageType.singleFile,
+          file.name,
+          ProjectItemType.audio,
+          undefined,
+          ProjectItemCreationType.normal
+        );
+      }
+
+      await project.carto.notifyOperationEnded(operId, "New audio file '" + file.name + "' added");
     } else if (extension === "json") {
       const operId = await project.carto.notifyOperationStarted("Saving new JSON file '" + file.name + "'");
 
@@ -503,6 +565,16 @@ export default class ProjectEditorUtilities {
       }
 
       await project.carto.notifyOperationEnded(operId, "New JSON file '" + file.name + "' added" + description);
+    } else if (extension === "bbmodel") {
+      const operId = await project.carto.notifyOperationStarted("Integrating bbmodel file '" + file.name + "'");
+
+      const jsonContentStr = await file.text();
+
+      const bbm = BlockbenchModel.ensureFromContent(jsonContentStr);
+
+      bbm.integrateIntoProject(project);
+
+      await project.carto.notifyOperationEnded(operId, "Integrated bbmodel '" + file.name + "'.");
     }
   }
 

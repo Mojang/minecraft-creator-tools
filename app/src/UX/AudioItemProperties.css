@@ -1,0 +1,24 @@
+.aipro-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  overflow-y: auto;
+}
+
+.aipro-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.aipro-header {
+  font-size: 16pt;
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-bottom: 13px;
+}
+
+.aipro-form {
+  padding-top: 20px;
+  padding-left: 20px;
+}

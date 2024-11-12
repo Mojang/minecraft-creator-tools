@@ -32,6 +32,16 @@
   grid-column: 1;
 }
 
+.pil-deleteWarning {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-top: 20px;
+}
+
+.pil-inlineSource {
+  display: inline-block;
+}
+
 .pil-commands {
   grid-column: 2;
   grid-row: 1;

@@ -188,6 +188,7 @@ export default class DocumentedCommandEditor extends Component<
           infoForm.fields.push({
             id: "overloads",
             title: "Overloads",
+            allowCreateDelete: false,
             subForm: Database.getForm("command_overload"),
             subFields: overloadSubfields,
             objectArrayToSubFieldKey: "id",

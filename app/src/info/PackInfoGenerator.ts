@@ -11,6 +11,7 @@ import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import StorageUtilities from "../storage/StorageUtilities";
 import Utilities from "../core/Utilities";
+import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 
 export default class PackInformationGenerator implements IProjectInfoGenerator {
   id = "PACK";
@@ -63,12 +64,12 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
               let index = 21;
               let description = "Resource pack icon";
 
-              if (
-                pi.file.storageRelativePath.indexOf("behavior") >= 0 ||
-                pi.file.storageRelativePath.indexOf("bp") >= 0
-              ) {
+              if (MinecraftUtilities.pathLooksLikeBehaviorPackName(pi.file.storageRelativePath)) {
                 index = 22;
                 description = "Behavior pack icon";
+              } else if (MinecraftUtilities.pathLooksLikeSkinPackName(pi.file.storageRelativePath)) {
+                index = 23;
+                description = "Skin pack icon";
               }
 
               items.push(

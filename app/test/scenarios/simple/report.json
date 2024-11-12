@@ -87,7 +87,7 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
-    "testSuccessCount": 9,
+    "testSuccessCount": 10,
     "testFailCount": 1,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
@@ -315,6 +315,12 @@
       "WORLD": {
         "1": {
           "defaultMessage": "Test World Validation completed successfully.",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "UNLINK": {
+        "1": {
+          "defaultMessage": "Test Unlinked item info generator completed successfully.",
           "testCompleteSuccesses": 1
         }
       }
@@ -801,6 +807,11 @@
       "gId": "WORLDDATA",
       "gIx": 1,
       "m": "Test World Data Validation completed successfully."
+    },
+    {
+      "iTp": 0,
+      "gId": "UNLINK",
+      "gIx": 1
     }
   ],
   "index": {
@@ -814,7 +825,7 @@
     "trie": {
       "/behavior_packs/starterteststutorial/": [
         0,
-        1
+        -1
       ],
       "__comment__": [
         0
@@ -873,13 +884,17 @@
         "ooling": [
           0
         ],
-        "ests": [
-          0,
-          {
-            "n": 3,
-            "a": "S"
-          }
-        ]
+        "est": {
+          "s": [
+            0
+          ],
+          "±": [
+            {
+              "n": 3,
+              "a": "S"
+            }
+          ]
+        }
       },
       "m": {
         "in": {

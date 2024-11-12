@@ -72,6 +72,7 @@ const versionSource = ["toolbuild/jsn/package.json"];
 
 const mcreslistsigs = ["reslist/schemas.resources.json"];
 const mcreslistvanillasigs = ["reslist/packs.resources.json"];
+const mcreslistpreviewvanillasigs = ["reslist/packs-preview.resources.json"];
 const mcreslistsamplesigs = ["reslist/samples.resources.json"];
 const mcreslistscriptsamplesigs = ["reslist/scriptsamples.resources.json"];
 const mcreslistgametestsigs = ["reslist/gametestsamples.resources.json"];
@@ -265,7 +266,11 @@ function runDownloadGameTests() {
 }
 
 function runDownloadVanillaResources() {
-  return gulp.src(mcreslistvanillasigs, { base: "" }).pipe(downloadResources("public/res/latest/van/"));
+  return gulp.src(mcreslistvanillasigs, { base: "" }).pipe(downloadResources("public/res/latest/van/release/"));
+}
+
+function runDownloadVanillaPreviewResources() {
+  return gulp.src(mcreslistpreviewvanillasigs, { base: "" }).pipe(downloadResources("public/res/latest/van/preview/"));
 }
 
 gulp.task("jsnwebbuild", gulp.series("clean-jsnwebbuild", compileJsnWebBuild, "postclean-jsnwebbuild"));
@@ -298,6 +303,7 @@ gulp.task(
       runDownloadScriptSamples,
       runDownloadGameTests,
       runDownloadVanillaResources,
+      runDownloadVanillaPreviewResources,
       copyCheckedInRes
     )
   )
