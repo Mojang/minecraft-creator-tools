@@ -16,8 +16,15 @@ export enum TaskType {
   add = 8,
   create = 9,
   validate = 10,
+  serve = 11,
   version = 12,
+  passcodes = 13,
+  setPasscode = 14,
+  setServerProperties = 15,
+  minecraftEulaAndPrivacyPolicy = 16,
   world = 18,
+  fix = 19,
+  setProjectProperty = 20,
   aggregateReports = 22,
 }
 

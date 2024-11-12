@@ -56,6 +56,18 @@ export default class LocalEnvironment {
   #displayInfo: boolean = false;
   #displayVerbose: boolean = false;
 
+  _inmemDisplayReadOnlyPasscode?: string;
+  _inmemDisplayReadOnlyPasscodeComplement?: string;
+
+  _inmemFullReadOnlyPasscode?: string;
+  _inmemFullReadOnlyPasscodeComplement?: string;
+
+  _inmemUpdateStatePasscode?: string;
+  _inmemUpdateStatePasscodeComplement?: string;
+
+  _inmemAdminPasscode?: string;
+  _inmemAdminPasscodeComplement?: string;
+
   public get displayInfo() {
     return this.#displayInfo;
   }
@@ -78,46 +90,6 @@ export default class LocalEnvironment {
 
   public get worldContainerPath() {
     return this.#data.worldContainerPath;
-  }
-
-  public get httpsCertPath() {
-    return this.#data.httpsCertPath;
-  }
-
-  public set httpsCertPath(newPath: string | undefined) {
-    if (newPath !== this.#data.httpsCertPath) {
-      this.#data.httpsCertPath = newPath;
-    }
-  }
-
-  public get httpsKeyPath() {
-    return this.#data.httpsKeyPath;
-  }
-
-  public set httpsKeyPath(newPath: string | undefined) {
-    if (newPath !== this.#data.httpsKeyPath) {
-      this.#data.httpsKeyPath = newPath;
-    }
-  }
-
-  public get caRootPath() {
-    return this.#data.caRootPath;
-  }
-
-  public set caRootPath(newPath: string | undefined) {
-    if (newPath !== this.#data.caRootPath) {
-      this.#data.caRootPath = newPath;
-    }
-  }
-
-  public get caBundleCertificatePath() {
-    return this.#data.caBundleCertificatePath;
-  }
-
-  public set caBundleCertificatePath(newPath: string | undefined) {
-    if (newPath !== this.#data.caBundleCertificatePath) {
-      this.#data.caBundleCertificatePath = newPath;
-    }
   }
 
   public get serverHostPort() {
@@ -161,11 +133,11 @@ export default class LocalEnvironment {
   }
 
   get displayReadOnlyPasscode() {
-    return this.#data.displayReadOnlyPasscode;
+    return this._inmemDisplayReadOnlyPasscode; //this.#data.displayReadOnlyPasscode;
   }
 
   get displayReadOnlyPasscodeComplement() {
-    return this.#data.displayReadOnlyPasscodeComplement;
+    return this._inmemDisplayReadOnlyPasscodeComplement; //this.#data.displayReadOnlyPasscodeComplement;
   }
 
   set displayReadOnlyPasscode(newPasscode: string | undefined) {
@@ -182,16 +154,16 @@ export default class LocalEnvironment {
       );
     }
 
-    this.#data.displayReadOnlyPasscode = newPasscode;
-    this.#data.displayReadOnlyPasscodeComplement = this.generateRandomPasscode();
+    this._inmemDisplayReadOnlyPasscode = newPasscode;
+    this._inmemDisplayReadOnlyPasscodeComplement = this.generateRandomPasscode();
   }
 
   get fullReadOnlyPasscode() {
-    return this.#data.fullReadOnlyPasscode;
+    return this._inmemFullReadOnlyPasscode;
   }
 
   get fullReadOnlyPasscodeComplement() {
-    return this.#data.fullReadOnlyPasscodeComplement;
+    return this._inmemFullReadOnlyPasscodeComplement;
   }
 
   set fullReadOnlyPasscode(newPasscode: string | undefined) {
@@ -206,16 +178,16 @@ export default class LocalEnvironment {
       throw new Error("Improperly formatted full read-only passcode. Passcodes should be 8 alphanumeric characters.");
     }
 
-    this.#data.fullReadOnlyPasscode = newPasscode;
-    this.#data.fullReadOnlyPasscodeComplement = this.generateRandomPasscode();
+    this._inmemFullReadOnlyPasscode = newPasscode;
+    this._inmemFullReadOnlyPasscodeComplement = this.generateRandomPasscode();
   }
 
   get updateStatePasscode() {
-    return this.#data.updateStatePasscode;
+    return this._inmemUpdateStatePasscode;
   }
 
   get updateStatePasscodeComplement() {
-    return this.#data.updateStatePasscodeComplement;
+    return this._inmemUpdateStatePasscodeComplement;
   }
 
   set updateStatePasscode(newPasscode: string | undefined) {
@@ -230,15 +202,15 @@ export default class LocalEnvironment {
       throw new Error("Improperly formatted update passcode. Passcodes should be 8 alphanumeric characters.");
     }
 
-    this.#data.updateStatePasscode = newPasscode;
-    this.#data.updateStatePasscodeComplement = this.generateRandomPasscode();
+    this._inmemUpdateStatePasscode = newPasscode;
+    this._inmemUpdateStatePasscodeComplement = this.generateRandomPasscode();
   }
 
   get adminPasscode() {
-    return this.#data.adminPasscode;
+    return this._inmemAdminPasscode;
   }
   get adminPasscodeComplement() {
-    return this.#data.adminPasscodeComplement;
+    return this._inmemAdminPasscodeComplement;
   }
 
   set adminPasscode(newPasscode: string | undefined) {
@@ -253,14 +225,9 @@ export default class LocalEnvironment {
       throw new Error("Improperly formatted admin passcode. Passcodes should be 8 alphanumeric characters.");
     }
 
-    this.#data.adminPasscode = newPasscode;
-    this.#data.adminPasscodeComplement = this.generateRandomPasscode();
+    this._inmemAdminPasscode = newPasscode;
+    this._inmemAdminPasscodeComplement = this.generateRandomPasscode();
   }
-
-  get tokenEncryptionKey() {
-    return this.#data.tokenEncryptionPassword;
-  }
-
   get iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula() {
     return this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula;
   }
@@ -388,26 +355,22 @@ export default class LocalEnvironment {
     }
 
     if (
-      this.#data.displayReadOnlyPasscode === undefined ||
-      this.#data.displayReadOnlyPasscodeComplement === undefined
+      this._inmemDisplayReadOnlyPasscode === undefined ||
+      this._inmemDisplayReadOnlyPasscodeComplement === undefined
     ) {
-      this.displayReadOnlyPasscode = this.generateRandomPasscode();
+      this._inmemDisplayReadOnlyPasscode = this.generateRandomPasscode();
     }
 
-    if (this.#data.adminPasscodeComplement === undefined || this.#data.adminPasscodeComplement === undefined) {
-      this.adminPasscode = this.generateRandomPasscode();
+    if (this._inmemAdminPasscodeComplement === undefined || this._inmemAdminPasscodeComplement === undefined) {
+      this._inmemAdminPasscode = this.generateRandomPasscode();
     }
 
-    if (this.#data.fullReadOnlyPasscode === undefined || this.#data.fullReadOnlyPasscodeComplement === undefined) {
+    if (this._inmemFullReadOnlyPasscode === undefined || this._inmemFullReadOnlyPasscodeComplement === undefined) {
       this.fullReadOnlyPasscode = this.generateRandomPasscode();
     }
 
-    if (this.#data.updateStatePasscode === undefined || this.#data.updateStatePasscodeComplement === undefined) {
+    if (this._inmemUpdateStatePasscode === undefined || this._inmemUpdateStatePasscodeComplement === undefined) {
       this.updateStatePasscode = this.generateRandomPasscode();
-    }
-
-    if (this.#data.tokenEncryptionPassword === undefined) {
-      this.#data.tokenEncryptionPassword = this.generateRandomTokenPassword();
     }
 
     await this.save();

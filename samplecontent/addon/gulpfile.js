@@ -28,7 +28,7 @@ const mcdir = useMinecraftDedicatedServer
       : "/AppData/Local/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/");
 
 function clean_build(callbackFunction) {
-  del(["build/behavior_packs/", "build/resource_packs/", "build/content1/", "build/content2/", "build/content3/"]).then(
+  del(["build/behavior_packs/", "build/content_linkerrors/", "build/content1/", "build/content2/", "build/content3/", "build/packages/", "build/resource_packs/"]).then(
     (value) => {
       callbackFunction(); // success
     },
@@ -125,13 +125,16 @@ function create_content_layout_1_bp() {
     .pipe(gulp.dest("build/content1/Content/behavior_packs/" + bpfoldername + "/"));
 }
 
+function create_content_layout_1_acc() {
+  return gulp.src(["accessory_files/**/*"]).pipe(gulp.dest("build/content1/"));
+}
+
 function create_content_1_zip() {
   return gulp
     .src(["build/content1/**/*"])
     .pipe(zip("aop_moremobs_wellformed.zip"))
     .pipe(gulp.dest("build/packages/"));
 }
-
 
 function create_content_layout_2_rp() {
   return gulp
@@ -149,6 +152,10 @@ function create_content_layout_2_scripts() {
   return gulp
     .src(["build/behavior_packs/" + bpfoldername + "/scripts/**/*"])
     .pipe(gulp.dest("build/content2/Content/behavior_packs/" + bpfoldername + "/scripts/"));
+}
+
+function create_content_layout_2_acc() {
+  return gulp.src(["accessory_files/**/*"]).pipe(gulp.dest("build/content2/"));
 }
 
 function create_content_2_zip() {
@@ -184,10 +191,42 @@ function create_content_layout_3_scripts() {
     .pipe(gulp.dest("build/content3/Content/behavior_packs/" + bpfoldername + "_2/scripts/"));
 }
 
+function create_content_layout_3_acc() {
+  return gulp.src(["accessory_files/**/*"]).pipe(gulp.dest("build/content3/"));
+}
+
 function create_content_3_zip() {
   return gulp
     .src(["build/content3/**/*"])
     .pipe(zip("aop_moremobs_extraneousstuffusesminecraft.zip"))
+    .pipe(gulp.dest("build/packages/"));
+}
+function create_content_layout_linkerrors_rp() {
+  return gulp
+    .src(["altdiffs/linkerrors/resource_packs/" + rpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_linkerrors/Content/resource_packs/" + rpfoldername + "/"));
+}
+
+function create_content_layout_linkerrors_base_bp() {
+  return gulp
+    .src(["build/behavior_packs/" + bpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_linkerrors/Content/behavior_packs/" + bpfoldername + "/"));
+}
+
+function create_content_layout_linkerrors_base_rp() {
+  return gulp
+    .src(["build/resource_packs/" + rpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_linkerrors/Content/resource_packs/" + rpfoldername + "/"));
+}
+
+function create_content_layout_linkerrors_base_acc() {
+  return gulp.src(["accessory_files/**/*"]).pipe(gulp.dest("build/content_linkerrors/"));
+}
+
+function create_content_linkerrors_zip() {
+  return gulp
+    .src(["build/content_linkerrors/**/*"])
+    .pipe(zip("aop_moremobs_linkerrors.zip"))
     .pipe(gulp.dest("build/packages/"));
 }
 
@@ -219,6 +258,10 @@ function create_content_layout_vnext_scripts() {
   return gulp
     .src(["build/behavior_packs/" + bpfoldername + "/scripts/**/*"])
     .pipe(gulp.dest("build/contentvnext/Content/behavior_packs/" + bpfoldername + "/scripts/"));
+}
+
+function create_content_layout_vnext_acc() {
+  return gulp.src(["accessory_files/**/*"]).pipe(gulp.dest("build/contentvnext/"));
 }
 
 function create_content_vnext_zip() {
@@ -265,6 +308,10 @@ function create_content_layout_vnext2_scripts() {
     .pipe(gulp.dest("build/contentvnext2/Content/behavior_packs/" + bpfoldername + "/scripts/"));
 }
 
+function create_content_layout_vnext2_acc() {
+  return gulp.src(["accessory_files/**/*"]).pipe(gulp.dest("build/contentvnext2/"));
+}
+
 function create_content_vnext2_zip() {
   return gulp
     .src(["build/contentvnext2/**/*"])
@@ -309,6 +356,10 @@ function create_content_layout_vnext3_scripts() {
     .pipe(gulp.dest("build/contentvnext3/Content/behavior_packs/" + bpfoldername + "/scripts/"));
 }
 
+function create_content_layout_vnext3_acc() {
+  return gulp.src(["accessory_files/**/*"]).pipe(gulp.dest("build/contentvnext3/"));
+}
+
 function create_content_vnext3_zip() {
   return gulp
     .src(["build/contentvnext3/**/*"])
@@ -316,115 +367,6 @@ function create_content_vnext3_zip() {
     .pipe(gulp.dest("build/packages/"));
 }
 
-function create_content_layout_vnext4_base_rp() {
-  return gulp
-    .src(["build/resource_packs/" + rpfoldername + "/**/*"])
-    .pipe(gulp.dest("build/contentvnext4/Content/resource_packs/" + rpfoldername + "/"));
-}
-
-function create_content_layout_vnext4_base_bp() {
-  return gulp
-    .src(["build/behavior_packs/" + bpfoldername + "/**/*"])
-    .pipe(gulp.dest("build/contentvnext4/Content/behavior_packs/" + bpfoldername + "/"));
-}
-
-function create_content_layout_vnext4_rp() {
-  return gulp
-    .src(["altdiffs/vnext4/resource_packs/" + rpfoldername + "/**/*"])
-    .pipe(gulp.dest("build/contentvnext4/Content/resource_packs/" + rpfoldername + "/"));
-}
-
-function create_content_layout_vnext4_bp() {
-  return gulp
-    .src(["altdiffs/vnext4/behavior_packs/" + bpfoldername + "/**/*"])
-    .pipe(gulp.dest("build/contentvnext4/Content/behavior_packs/" + bpfoldername + "/"));
-}
-
-function create_content_layout_vnext4_scripts() {
-  return gulp
-    .src(["build/behavior_packs/" + bpfoldername + "/scripts/**/*"])
-    .pipe(gulp.dest("build/contentvnext4/Content/behavior_packs/" + bpfoldername + "/scripts/"));
-}
-
-function create_content_vnext4_zip() {
-  return gulp
-    .src(["build/contentvnext4/**/*"])
-    .pipe(zip("aop_moremobs_vnext4.zip"))
-    .pipe(gulp.dest("build/packages/"));
-}
-
-function create_content_layout_vnext5_base_rp() {
-  return gulp
-    .src(["build/resource_packs/" + rpfoldername + "/**/*"])
-    .pipe(gulp.dest("build/contentvnext5/Content/resource_packs/" + rpfoldername + "/"));
-}
-
-function create_content_layout_vnext5_base_bp() {
-  return gulp
-    .src(["build/behavior_packs/" + bpfoldername + "/**/*"])
-    .pipe(gulp.dest("build/contentvnext5/Content/behavior_packs/" + bpfoldername + "/"));
-}
-
-function create_content_layout_vnext5_rp() {
-  return gulp
-    .src(["altdiffs/vnext5/resource_packs/" + rpfoldername + "/**/*"])
-    .pipe(gulp.dest("build/contentvnext5/Content/resource_packs/" + rpfoldername + "/"));
-}
-
-function create_content_layout_vnext5_bp() {
-  return gulp
-    .src(["altdiffs/vnext5/behavior_packs/" + bpfoldername + "/**/*"])
-    .pipe(gulp.dest("build/contentvnext5/Content/behavior_packs/" + bpfoldername + "/"));
-}
-
-function create_content_layout_vnext5_scripts() {
-  return gulp
-    .src(["build/behavior_packs/" + bpfoldername + "/scripts/**/*"])
-    .pipe(gulp.dest("build/contentvnext5/Content/behavior_packs/" + bpfoldername + "/scripts/"));
-}
-
-function create_content_vnext5_zip() {
-  return gulp
-    .src(["build/contentvnext5/**/*"])
-    .pipe(zip("aop_moremobs_vnext5.zip"))
-    .pipe(gulp.dest("build/packages/"));
-}
-function create_content_layout_vnext6_base_rp() {
-  return gulp
-    .src(["build/resource_packs/" + rpfoldername + "/**/*"])
-    .pipe(gulp.dest("build/contentvnext6/Content/resource_packs/" + rpfoldername + "/"));
-}
-
-function create_content_layout_vnext6_base_bp() {
-  return gulp
-    .src(["build/behavior_packs/" + bpfoldername + "/**/*"])
-    .pipe(gulp.dest("build/contentvnext6/Content/behavior_packs/" + bpfoldername + "/"));
-}
-
-function create_content_layout_vnext6_rp() {
-  return gulp
-    .src(["altdiffs/vnext6/resource_packs/" + rpfoldername + "/**/*"])
-    .pipe(gulp.dest("build/contentvnext6/Content/resource_packs/" + rpfoldername + "/"));
-}
-
-function create_content_layout_vnext6_bp() {
-  return gulp
-    .src(["altdiffs/vnext6/behavior_packs/" + bpfoldername + "/**/*"])
-    .pipe(gulp.dest("build/contentvnext6/Content/behavior_packs/" + bpfoldername + "/"));
-}
-
-function create_content_layout_vnext6_scripts() {
-  return gulp
-    .src(["build/behavior_packs/" + bpfoldername + "/scripts/**/*"])
-    .pipe(gulp.dest("build/contentvnext6/Content/behavior_packs/" + bpfoldername + "/scripts/"));
-}
-
-function create_content_vnext6_zip() {
-  return gulp
-    .src(["build/contentvnext6/**/*"])
-    .pipe(zip("aop_moremobs_vnext6.zip"))
-    .pipe(gulp.dest("build/packages/"));
-}
 function create_mcaddon() {
   return gulp
     .src(["build/packages/" + bpfoldername + ".mcpack", "build/packages/" + rpfoldername + ".mcpack"])
@@ -652,6 +594,10 @@ exports.package = gulp.series(
     create_rp_mcpack,
     create_content_layout_1_rp,
     create_content_layout_1_bp,
+    create_content_layout_1_acc,
+    create_content_layout_linkerrors_base_bp,
+    create_content_layout_linkerrors_base_rp, 
+    create_content_layout_linkerrors_base_acc,
     create_content_layout_vnext_base_rp,
     create_content_layout_vnext_base_bp,
     create_content_layout_vnext_scripts,
@@ -666,18 +612,35 @@ exports.package = gulp.series(
     create_content_layout_2_rp,
     create_content_layout_2_bp,
     create_content_layout_2_scripts,
+    create_content_layout_2_acc,
     create_content_layout_3_rp,
     create_content_layout_3_bp,
     create_content_layout_3_bpa,
     create_content_layout_3_scripts,
+    create_content_layout_3_acc,
+    create_content_layout_linkerrors_rp,
     create_content_layout_vnext_rp,
     create_content_layout_vnext_bp,
+    create_content_layout_vnext_acc,    
     create_content_layout_vnext2_rp,
     create_content_layout_vnext2_bp,
+    create_content_layout_vnext2_acc,
     create_content_layout_vnext3_rp,
     create_content_layout_vnext3_bp,
+    create_content_layout_vnext3_acc,
   ),
-  gulp.parallel(create_mcaddon, create_content_1_zip, create_content_2_zip, create_content_3_zip,create_content_vnext_zip,create_content_vnext_mcaddon,create_content_vnext2_zip,create_content_vnext2_mcaddon,create_content_vnext3_zip)
+  gulp.parallel(
+    create_mcaddon, 
+    create_content_1_zip, 
+    create_content_2_zip, 
+    create_content_3_zip, 
+    create_content_linkerrors_zip, 
+    create_content_vnext_zip,
+    create_content_vnext_mcaddon,
+    create_content_vnext2_zip,
+    create_content_vnext2_mcaddon,
+    create_content_vnext3_zip
+  )
 );
 exports.updateworld = gulp.series(
   clean_localmc_world_backup,

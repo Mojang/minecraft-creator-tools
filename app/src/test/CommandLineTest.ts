@@ -7,7 +7,7 @@ import Database from "../minecraft/Database";
 import LocalEnvironment from "../local/LocalEnvironment";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
-import { spawn } from "child_process";
+import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import { chunksToLinesAsync } from "@rauschma/stringio";
 import { Readable } from "stream";
 import * as fs from "fs";
@@ -15,6 +15,8 @@ import Utilities from "../core/Utilities";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
 import ProjectUtilities from "../app/ProjectUtilities";
+import axios, { AxiosResponse } from "axios";
+import IFile from "../storage/IFile";
 
 CartoApp.hostType = HostType.testLocal;
 
@@ -183,6 +185,102 @@ describe("worldCommand", async () => {
 
   it("output matches", async () => {
     await folderMatches("worldCommand");
+  });
+});
+
+describe("serveCommandValidate", async () => {
+  let exitCode: number | null = null;
+  const stdoutLines: string[] = [];
+  const stderrLines: string[] = [];
+  let process: ChildProcessWithoutNullStreams | null = null;
+
+  before(function (done) {
+    this.timeout(20000);
+
+    removeResultFolder("serveCommandValidate");
+    const passcode = Utilities.createUuid().substring(0, 8);
+
+    if (!sampleFolder) {
+      throw new Error("Sample folder does not exist.");
+    }
+
+    sampleFolder
+      .ensureFileFromRelativePath("/addon/build/packages/aop_moremobs_animationmanifesterrors.zip")
+      .then((sampleFile: IFile) => {
+        console.log("Starting web server.");
+
+        process = spawn("node", [
+          " ./../toolbuild/jsn/cli",
+          "serve",
+          "basicwebservices",
+          "-lv",
+          "-once",
+          "-updatepc",
+          passcode,
+        ]);
+
+        collectLines(process.stdout, stdoutLines);
+        collectLines(process.stderr, stderrLines);
+
+        sampleFile.loadContent().then(() => {
+          const content = sampleFile.content;
+
+          Utilities.sleep(3000).then(() => {
+            console.log(
+              "Making validation web request to http://localhost:6126/api/validate/ " + content?.length + " bytes"
+            );
+
+            axios
+              .post("http://localhost:6126/api/validate/", content, {
+                headers: { mctpc: passcode, "content-type": "application/zip" },
+                method: "POST",
+              })
+              .then((response: AxiosResponse) => {
+                ensureJsonMatchesScenario(response.data, "serveCommandValidate");
+
+                if (response === undefined) {
+                  throw new Error("Could not connect to server.");
+                }
+
+                if (process) {
+                  process.on("exit", (code) => {
+                    exitCode = code;
+                    process = null;
+                    done();
+                  });
+                }
+              });
+          });
+        });
+      });
+  });
+
+  it("should have no stderr lines", async () => {
+    if (process) {
+      process.kill();
+      process = null;
+    }
+    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+  }).timeout(10000);
+
+  it("exit code should be zero", async () => {
+    if (process) {
+      process.kill();
+      process = null;
+    }
+    assert.equal(exitCode, 0);
+  }).timeout(10000);
+
+  it("output matches", async () => {
+    await folderMatches("serveCommandValidate");
+  });
+
+  after(function () {
+    if (process) {
+      console.log("Ending web process in after function.");
+      process.kill();
+      process = null;
+    }
   });
 });
 
@@ -451,15 +549,59 @@ describe("validateAddons3PlatformVersions", async () => {
   });
 });
 
+describe("validateLinkErrors", async () => {
+  let exitCode: number | null = null;
+  const stdoutLines: string[] = [];
+  const stderrLines: string[] = [];
+
+  before(function (done) {
+    this.timeout(20000);
+
+    removeResultFolder("validateLinkErrors");
+
+    const process = spawn("node", [
+      " ./../toolbuild/jsn/cli",
+      "val",
+      "all",
+      "-i",
+      "./../samplecontent/addon/build/content_linkerrors",
+      "-o",
+      "./test/results/validateLinkErrors/",
+    ]);
+
+    collectLines(process.stdout, stdoutLines);
+    collectLines(process.stderr, stderrLines);
+
+    process.on("exit", (code) => {
+      exitCode = code;
+      done();
+    });
+  });
+
+  it("should have no stderr lines", async (done) => {
+    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+    done();
+  }).timeout(10000);
+
+  it("exit code should be zero", async (done) => {
+    assert.equal(exitCode, 0);
+    done();
+  }).timeout(10000);
+
+  it("output matches", async function () {
+    await folderMatches("validateLinkErrors");
+  });
+});
+
 async function collectLines(readable: Readable, data: string[]) {
   for await (const line of chunksToLinesAsync(readable)) {
     if (line !== undefined && line.length >= 0) {
       let lineUp = line.replace(/\\n/g, "");
       lineUp = lineUp.replace(/\\r/g, "");
 
+      // ignore any lines about the debugger.
       if (lineUp.indexOf("ebugger") <= 0) {
-        // ignore any lines about the debugger.
-        // console.log(lineUp);
+        //console.log(lineUp);
         data.push(lineUp);
       }
     }

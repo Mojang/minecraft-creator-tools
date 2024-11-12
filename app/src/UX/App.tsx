@@ -200,7 +200,7 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   private _handleHashChange() {
-    const result = this._getStateFromUrlWithSideEffects(false);
+    const result = this._getStateFromUrlWithSideEffects(true);
 
     if (result && this._isMountedInternal) {
       this.setState({
