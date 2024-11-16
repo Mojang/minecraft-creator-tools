@@ -202,6 +202,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleInfoItemCommand = this._handleInfoItemCommand.bind(this);
     this._handleDialogDone = this._handleDialogDone.bind(this);
     this._handleFilterTextChanged = this._handleFilterTextChanged.bind(this);
+    this._incrementVisualSeed = this._incrementVisualSeed.bind(this);
 
     this._showMinecraftClick = this._showMinecraftClick.bind(this);
     this._showSettingsClick = this._showSettingsClick.bind(this);
@@ -3720,7 +3721,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           readOnly={this.props.readOnly}
           heightOffset={heightOffset}
           visualSeed={this.state.visualSeed}
-          forceRawView={true}
+          forceRawView={this.state.forceRawView}
           project={this.props.project}
           setActivePersistable={this._setActiveEditorPersistable}
           carto={this.props.carto}
@@ -3853,6 +3854,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           onModeChangeRequested={this._handleModeChangeRequested}
           onActiveProjectItemChangeRequested={this._handleProjectItemSelected}
           onActiveReferenceChangeRequested={this._handleReferenceSelected}
+          onVisualSeedUpdateRequested={this._incrementVisualSeed}
           readOnly={this.props.readOnly}
           activeProjectItem={this.state.activeProjectItem}
           tentativeProjectItem={this.state.tentativeProjectItem}

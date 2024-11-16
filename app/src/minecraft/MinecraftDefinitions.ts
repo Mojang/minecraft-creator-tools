@@ -11,6 +11,7 @@ import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
 import FlipbookTextureCatalogDefinition from "./FlipbookTextureCatalogDefinition";
 import ItemTypeBehaviorDefinition from "./ItemTypeBehaviorDefinition";
 import MusicDefinitionCatalogDefinition from "./MusicDefinitionCatalogDefinition";
+import RenderControllerSetDefinition from "./RenderControllerSetDefinition";
 import ResourceManifestDefinition from "./ResourceManifestDefinition";
 import SoundCatalogDefinition from "./SoundCatalogDefinition";
 import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition";
@@ -18,7 +19,11 @@ import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition
 export default class MinecraftDefinitions {
   static async get(projectItem: ProjectItem) {
     if (!projectItem.file || !projectItem.file.content || typeof projectItem.file.content !== "string") {
-      return undefined;
+      await projectItem.ensureFileStorage();
+
+      if (!projectItem.file || !projectItem.file.content || typeof projectItem.file.content !== "string") {
+        return undefined;
+      }
     }
 
     switch (projectItem.itemType) {
@@ -50,6 +55,8 @@ export default class MinecraftDefinitions {
         return await SoundCatalogDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.musicDefinitionJson:
         return await MusicDefinitionCatalogDefinition.ensureOnFile(projectItem.file);
+      case ProjectItemType.renderControllerJson:
+        return await RenderControllerSetDefinition.ensureOnFile(projectItem.file);
     }
 
     return undefined;

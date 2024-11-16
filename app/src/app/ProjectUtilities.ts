@@ -26,6 +26,8 @@ import ProjectExporter from "./ProjectExporter";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 import ProjectStandard from "./ProjectStandard";
 import ProjectAutogeneration from "./ProjectAutogeneration";
+import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
+import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 
 export enum NewEntityTypeAddMode {
   baseId,
@@ -699,7 +701,7 @@ export default class ProjectUtilities {
     messageUpdater?: (message: string) => Promise<void>,
     dontOverwriteExistingFiles?: boolean
   ) {
-    await ProjectUtilities.copyGalleryPackFiles(
+    await ProjectUtilities.copyGalleryPackFilesAndFixupIds(
       project,
       entityTypeProject,
       entityTypeName,
@@ -709,64 +711,38 @@ export default class ProjectUtilities {
 
     await project.inferProjectItemsFromFiles(true);
 
-    /*    const defaultScriptsPath = await ProjectUtilities.getBaseScriptsPath(project);
+    const items = project.getItemsCopy();
 
-    if (project.preferredScriptLanguage === ProjectScriptLanguage.javaScript) {
-      const candidateJsFilePath = await ProjectUtilities.getFileName(
-        project,
-        defaultScriptsPath + "generated/",
-        entityTypeName + ".base",
-        "js",
-        true
-      );
+    for (const item of items) {
+      if (item.itemType === ProjectItemType.entityTypeBehavior) {
+        let minecraftEntityType = (await MinecraftDefinitions.get(item)) as EntityTypeDefinition | undefined;
 
-      if (candidateJsFilePath) {
-        const piGenJs = project.ensureItemByProjectPath(
-          candidateJsFilePath,
-          ProjectItemStorageType.singleFile,
-          StorageUtilities.getLeafName(candidateJsFilePath),
-          ProjectItemType.entityTypeBaseJs,
-          undefined,
-          ProjectItemCreationType.generated
-        );
+        if (minecraftEntityType) {
+          const targetId = entityTypeName ? entityTypeName : entityTypeProject.id;
 
-        await ProjectAutogeneration.updateItemAutogeneration(piGenJs);
+          if (minecraftEntityType.id?.endsWith(targetId)) {
+            minecraftEntityType.runtimeIdentifier = entityTypeProject.targetRuntimeIdentifier
+              ? entityTypeProject.targetRuntimeIdentifier
+              : "minecraft:" + entityTypeProject.id;
+
+            minecraftEntityType.persist();
+          }
+        }
       }
-    } else if (project.preferredScriptLanguage === ProjectScriptLanguage.typeScript) {
-      const candidateJsFilePath = await ProjectUtilities.getFileName(
-        project,
-        defaultScriptsPath + "generated/",
-        entityTypeName + ".base",
-        "ts",
-        true
-      );
-
-      if (candidateJsFilePath) {
-        const piGenJs = project.ensureItemByProjectPath(
-          candidateJsFilePath,
-          ProjectItemStorageType.singleFile,
-          StorageUtilities.getLeafName(candidateJsFilePath),
-          ProjectItemType.entityTypeBaseTs,
-          undefined,
-          ProjectItemCreationType.generated
-        );
-
-        await ProjectAutogeneration.updateItemAutogeneration(piGenJs);
-      }
-    }*/
+    }
 
     await project.save();
   }
 
   static async addBlockTypeFromGallery(project: Project, blockTypeProject: IGalleryItem, blockTypeName?: string) {
-    await ProjectUtilities.copyGalleryPackFiles(project, blockTypeProject, blockTypeName);
+    await ProjectUtilities.copyGalleryPackFilesAndFixupIds(project, blockTypeProject, blockTypeName);
 
     await project.inferProjectItemsFromFiles(true);
 
     await project.save();
   }
 
-  static async copyGalleryPackFiles(
+  static async copyGalleryPackFilesAndFixupIds(
     project: Project,
     galleryProject: IGalleryItem,
     newTypeName?: string,
@@ -961,15 +937,25 @@ export default class ProjectUtilities {
       project.effectiveDefaultNamespace + ":" + newName
     );
 
-    content = Utilities.replaceAllExceptInLines(content, entityTypeProject.id, newName, [
-      "controller.",
-      "animation.",
-      '"materials"',
-    ]);
-
-    // accomodate minecraft:suffocate
-    content = Utilities.replaceAll(content, "suffo" + newName + "e", "suffo" + entityTypeProject.id + "e");
-    content = Utilities.replaceAll(content, newName + "egory", "category");
+    const replaceAllExclusions = ['"identifier"', '"materials"'];
+    content = Utilities.replaceAllExceptInLines(
+      content,
+      ":" + entityTypeProject.id,
+      ":" + newName,
+      replaceAllExclusions
+    );
+    content = Utilities.replaceAllExceptInLines(
+      content,
+      "/" + entityTypeProject.id,
+      "/" + newName,
+      replaceAllExclusions
+    );
+    content = Utilities.replaceAllExceptInLines(
+      content,
+      "." + entityTypeProject.id,
+      "." + newName,
+      replaceAllExclusions
+    );
 
     return content;
   }

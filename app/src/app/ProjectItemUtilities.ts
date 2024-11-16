@@ -519,7 +519,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.animationControllerResourceJson:
         return "Animation controller";
       case ProjectItemType.entityTypeResource:
-        return "Entity type resources";
+        return "Entity type visuals/audio";
       case ProjectItemType.fogResourceJson:
         return "Fog";
       case ProjectItemType.modelGeometryJson:
@@ -709,11 +709,11 @@ export default class ProjectItemUtilities {
       case ProjectItemType.globalVariablesJson:
         return "UI global variable sets";
       case ProjectItemType.itemTypeResourceJson:
-        return "Item type resource sets";
-      case ProjectItemType.entityTypeResource:
-        return "Entity type resource sets";
+        return "Item type visuals and audio";
       case ProjectItemType.materialGeometry:
-        return "Geometries";
+        return "Model shapes";
+      case ProjectItemType.entityTypeResource:
+        return "Entity type visuals/audio";
       case ProjectItemType.catalogIndexJs:
         return "Catalog indexes";
       case ProjectItemType.behaviorPackHistoryListJson:
@@ -824,6 +824,8 @@ export default class ProjectItemUtilities {
         return ["resource_packs", "rps", "development_resource_packs"];
       case ProjectItemType.soundDefinitionCatalog:
         return ["sounds"];
+      case ProjectItemType.entityTypeResource:
+        return ["entity"];
       case ProjectItemType.renderControllerJson:
         return ["render_controllers"];
       case ProjectItemType.attachableResourceJson:

@@ -25,7 +25,7 @@ export default class ProjectItemRelations {
           const entityTypeBehavior = await EntityTypeDefinition.ensureOnFile(item.file);
 
           if (entityTypeBehavior) {
-            entityTypeBehavior.addChildItems(project, item);
+            await entityTypeBehavior.addChildItems(project, item);
           }
         }
       } else if (item.itemType === ProjectItemType.entityTypeResource) {
@@ -35,7 +35,7 @@ export default class ProjectItemRelations {
           const entityTypeResource = await EntityTypeResourceDefinition.ensureOnFile(item.file);
 
           if (entityTypeResource) {
-            entityTypeResource.addChildItems(project, item);
+            await entityTypeResource.addChildItems(project, item);
           }
         }
       } else if (item.itemType === ProjectItemType.soundDefinitionCatalog) {
@@ -45,7 +45,7 @@ export default class ProjectItemRelations {
           const soundDefCat = await SoundDefinitionCatalogDefinition.ensureOnFile(item.file);
 
           if (soundDefCat) {
-            soundDefCat.addChildItems(project, item);
+            await soundDefCat.addChildItems(project, item);
           }
         }
       } else if (item.itemType === ProjectItemType.musicDefinitionJson) {
@@ -55,7 +55,7 @@ export default class ProjectItemRelations {
           const musicDefCat = await MusicDefinitionCatalogDefinition.ensureOnFile(item.file);
 
           if (musicDefCat) {
-            musicDefCat.addChildItems(project, item);
+            await musicDefCat.addChildItems(project, item);
           }
         }
       } else if (item.itemType === ProjectItemType.soundCatalog) {
@@ -65,7 +65,7 @@ export default class ProjectItemRelations {
           const soundCat = await SoundCatalogDefinition.ensureOnFile(item.file);
 
           if (soundCat) {
-            soundCat.addChildItems(project, item);
+            await soundCat.addChildItems(project, item);
           }
         }
       }
@@ -86,7 +86,7 @@ export default class ProjectItemRelations {
             const entityTypeResource = await EntityTypeResourceDefinition.ensureOnFile(rel.parentItem.file);
 
             if (entityTypeResource) {
-              entityTypeResource.deleteLink(rel.childItem);
+              await entityTypeResource.deleteLink(rel);
             }
           }
         } else if (rel.parentItem.itemType === ProjectItemType.soundCatalog) {
@@ -96,7 +96,7 @@ export default class ProjectItemRelations {
             const soundCat = await SoundDefinitionCatalogDefinition.ensureOnFile(rel.parentItem.file);
 
             if (soundCat) {
-              soundCat.deleteLink(rel.childItem);
+              await soundCat.deleteLink(rel.childItem);
             }
           }
         }

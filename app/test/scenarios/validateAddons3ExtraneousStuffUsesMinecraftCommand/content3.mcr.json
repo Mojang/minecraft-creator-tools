@@ -35,13 +35,16 @@
         "Count": 3
       },
       "Textures Unique Texture Handles (estimated)": {
-        "Count": 4
+        "Count": 3
       },
       "Textures Unique Texture Paths": {
-        "Count": 4
+        "Count": 3
       },
-      "Textures Unique Particle Texture References": {
-        "Count": 2
+      "Textures Unique Particle Texture Paths": {
+        "Count": 0
+      },
+      "Textures Unique Particle Texture Vanilla Paths": {
+        "Count": 1
       },
       "Textures Unique Entity Texture Paths": {
         "Count": 3
@@ -260,13 +263,16 @@
           "Count": 3
         },
         "Unique Texture Handles (estimated)": {
-          "Count": 4
+          "Count": 3
         },
         "Unique Texture Paths": {
-          "Count": 4
+          "Count": 3
         },
-        "Unique Particle Texture References": {
-          "Count": 2
+        "Unique Particle Texture Paths": {
+          "Count": 0
+        },
+        "Unique Particle Texture Vanilla Paths": {
+          "Count": 1
         },
         "Unique Entity Texture Paths": {
           "Count": 3

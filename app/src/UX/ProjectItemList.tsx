@@ -69,6 +69,7 @@ interface IProjectItemListProps extends IAppProps {
   onActiveProjectItemChangeRequested?: (projectItem: ProjectItem, forceRawView: boolean) => void;
   onActiveReferenceChangeRequested?: (reference: IGitHubInfo) => void;
   onModeChangeRequested?: (mode: ProjectEditorMode) => void;
+  onVisualSeedUpdateRequested: () => void;
   filteredItems?: IAnnotatedValue[];
   searchFilter?: string;
   project: Project | null;
@@ -482,7 +483,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
   }
 
-  _handleConfirmDelete() {
+  async _handleConfirmDelete() {
     if (this.state === null || this.state.activeItem === undefined) {
       return;
     }
@@ -491,7 +492,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       this.props.onModeChangeRequested(ProjectEditorMode.properties);
     }
 
-    this.state.activeItem.deleteItem();
+    await this.state.activeItem.deleteItem();
 
     this.setState({
       activeItem: undefined,
@@ -501,6 +502,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
     });
+
+    if (this.props.onVisualSeedUpdateRequested) {
+      this.props.onVisualSeedUpdateRequested();
+    }
   }
 
   _handleCancel() {
@@ -1405,9 +1410,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
 
     if (
-      projectItem.parentItems?.length === 1 &&
-      (projectItem.itemType === ProjectItemType.entityTypeResource ||
-        projectItem.itemType === ProjectItemType.spawnRuleBehavior ||
+      projectItem.parentItems?.length === 1 && //projectItem.itemType === ProjectItemType.entityTypeResource ||
+      (projectItem.itemType === ProjectItemType.spawnRuleBehavior ||
         projectItem.itemType === ProjectItemType.lootTableBehavior)
     ) {
       return false;

@@ -7,18 +7,26 @@ import { ThemeInput } from "@fluentui/styles";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import IProperty from "../dataform/IProperty";
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
+import ProjectItem from "../app/ProjectItem";
+import RenderControllerSetDefinition from "../minecraft/RenderControllerSetDefinition";
+import RenderControllerSetEditor from "./RenderControllerSetEditor";
+import { ProjectItemType } from "../app/IProjectItemData";
+import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
+import IPersistable from "./IPersistable";
 
 interface IEntityTypeResourceEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
   displayHeader?: boolean;
   theme: ThemeInput<any>;
+  projectItem: ProjectItem;
 }
 
 interface IEntityTypeResourceEditorState {
   fileToEdit: IFile;
   isLoaded: boolean;
-  selectedItem: EntityTypeResourceDefinition | undefined;
+  renderControllerSets?: RenderControllerSetDefinition[] | undefined;
+  entityTypeResource: EntityTypeResourceDefinition | undefined;
 }
 
 export default class EntityTypeResourceEditor extends Component<
@@ -26,18 +34,22 @@ export default class EntityTypeResourceEditor extends Component<
   IEntityTypeResourceEditorState
 > {
   private _lastFileEdited?: IFile;
+  private _childPersistables: IPersistable[];
 
   constructor(props: IEntityTypeResourceEditorProps) {
     super(props);
 
     this._definitionLoaded = this._definitionLoaded.bind(this);
     this._handleDataFormPropertyChange = this._handleDataFormPropertyChange.bind(this);
+    this._handleNewChildPersistable = this._handleNewChildPersistable.bind(this);
 
     this.state = {
       fileToEdit: props.file,
       isLoaded: false,
-      selectedItem: undefined,
+      entityTypeResource: undefined,
     };
+
+    this._childPersistables = [];
 
     this._updateManager(true);
   }
@@ -47,7 +59,7 @@ export default class EntityTypeResourceEditor extends Component<
       state = {
         fileToEdit: props.file,
         isLoaded: false,
-        selectedItem: undefined,
+        entityTypeResource: undefined,
       };
 
       return state;
@@ -63,7 +75,8 @@ export default class EntityTypeResourceEditor extends Component<
     return null;
   }
 
-  componentDidUpdate(prevProps: IEntityTypeResourceEditorProps, prevState: IEntityTypeResourceEditorState) {
+  componentDidMount(): void {
+    this._childPersistables = [];
     this._updateManager(true);
   }
 
@@ -94,23 +107,37 @@ export default class EntityTypeResourceEditor extends Component<
   }
 
   async _doUpdate(setState: boolean) {
-    let selItem = this.state.selectedItem;
+    let selItem = this.state.entityTypeResource;
 
     if (selItem === undefined && this.state && this.state.fileToEdit && this.state.fileToEdit.manager) {
       selItem = this.state.fileToEdit.manager as EntityTypeResourceDefinition;
+    }
+
+    const renderControllerSets: RenderControllerSetDefinition[] = [];
+
+    if (this.props.projectItem && this.props.projectItem.childItems) {
+      for (const item of this.props.projectItem.childItems) {
+        if (item.childItem.itemType === ProjectItemType.renderControllerJson) {
+          const renderControllerSet = (await MinecraftDefinitions.get(item.childItem)) as RenderControllerSetDefinition;
+
+          renderControllerSets.push(renderControllerSet);
+        }
+      }
     }
 
     if (setState) {
       this.setState({
         fileToEdit: this.state.fileToEdit,
         isLoaded: true,
-        selectedItem: this.state.selectedItem,
+        entityTypeResource: this.state.entityTypeResource,
+        renderControllerSets: renderControllerSets,
       });
     } else {
       this.state = {
         fileToEdit: this.props.file,
         isLoaded: true,
-        selectedItem: this.state.selectedItem,
+        entityTypeResource: this.state.entityTypeResource,
+        renderControllerSets: renderControllerSets,
       };
     }
   }
@@ -124,6 +151,18 @@ export default class EntityTypeResourceEditor extends Component<
 
         srbd.persist();
       }
+    }
+
+    if (this._childPersistables) {
+      for (const persister of this._childPersistables) {
+        persister.persist();
+      }
+    }
+  }
+
+  _handleNewChildPersistable(newPersistable: IPersistable) {
+    if (!this._childPersistables.includes(newPersistable)) {
+      this._childPersistables.push(newPersistable);
     }
   }
 
@@ -174,6 +213,7 @@ export default class EntityTypeResourceEditor extends Component<
           materials: {},
           textures: {},
           geometry: {},
+          animation_controllers: {},
           particle_effects: {},
           animations: {},
           render_controllers: [],
@@ -188,6 +228,36 @@ export default class EntityTypeResourceEditor extends Component<
     let header = <></>;
     if (this.props.displayHeader === undefined || this.props.displayHeader) {
       header = <div className="etre-header">Entity Type Resources</div>;
+    }
+
+    let renderControllerEditors = [];
+
+    let renderControllerHeader = <></>;
+
+    if (this.state.renderControllerSets && this.state.renderControllerSets.length > 0) {
+      renderControllerHeader = (
+        <div className="etre-rc-header">
+          <div className="etre-header-interior">Render Controllers</div>
+          <div>
+            Render controllers tell Minecraft how to select a texture, geometry model, and material rendering strategy
+            based on the configuration of the mob.
+          </div>
+        </div>
+      );
+
+      for (const renderControllerSet of this.state.renderControllerSets) {
+        renderControllerEditors.push(
+          <RenderControllerSetEditor
+            theme={this.props.theme}
+            displayHeader={false}
+            heightOffset={this.props.heightOffset}
+            readOnly={this.props.readOnly}
+            isInline={true}
+            renderControllerSet={renderControllerSet}
+            setActivePersistable={this._handleNewChildPersistable}
+          />
+        );
+      }
     }
 
     return (
@@ -210,6 +280,8 @@ export default class EntityTypeResourceEditor extends Component<
               onPropertyChanged={this._handleDataFormPropertyChange}
             ></DataForm>
           </div>
+          {renderControllerHeader}
+          <div>{renderControllerEditors}</div>
         </div>
       </div>
     );

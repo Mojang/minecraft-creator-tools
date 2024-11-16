@@ -649,10 +649,10 @@ export default class ProjectItem {
   async deleteItem() {
     await this.load();
 
-    ProjectItemRelations.deleteLinksFromParents(this);
+    await ProjectItemRelations.deleteLinksFromParents(this);
 
     if (this._file !== null) {
-      this._file.deleteThisFile();
+      await this._file.deleteThisFile();
     }
 
     this._project.removeItem(this);

@@ -13,6 +13,11 @@ import ModelGeometryDefinition from "./ModelGeometryDefinition";
 import Database from "./Database";
 import Utilities from "../core/Utilities";
 import IFolder from "../storage/IFolder";
+import RenderControllerSetDefinition from "./RenderControllerSetDefinition";
+import AnimationControllerResourceDefinition from "./AnimationControllerResourceDefinition";
+import AnimationResourceDefinition from "./AnimationResourceDefinition";
+import IProjectItemRelationship from "../app/IProjectItemRelationship";
+import MinecraftDefinitions from "./MinecraftDefinitions";
 
 export default class EntityTypeResourceDefinition {
   public _dataWrapper?: IEntityTypeResourceWrapper;
@@ -73,6 +78,92 @@ export default class EntityTypeResourceDefinition {
     }
 
     return textureList;
+  }
+
+  public get texturesIdList() {
+    if (!this._data || !this._data.textures) {
+      return undefined;
+    }
+
+    const textureIdList = [];
+
+    for (const key in this._data.textures) {
+      textureIdList.push(key);
+    }
+
+    return textureIdList;
+  }
+
+  public get renderControllerIdList(): string[] | undefined {
+    if (!this._data || !this._data.render_controllers) {
+      return undefined;
+    }
+
+    return this._data.render_controllers;
+  }
+
+  public get animationControllerIdList(): string[] | undefined {
+    if (!this._data || !this._data.animation_controllers) {
+      return undefined;
+    }
+
+    const animationControllerIdList = [];
+
+    for (const key in this._data.animation_controllers) {
+      animationControllerIdList.push(key);
+    }
+
+    return animationControllerIdList;
+  }
+
+  public get animationControllerList(): string[] | undefined {
+    if (!this._data || !this._data.animation_controllers) {
+      return undefined;
+    }
+
+    const animationControllerList = [];
+
+    for (const key in this._data.animation_controllers) {
+      const val = this._data.animation_controllers[key];
+
+      if (val) {
+        animationControllerList.push(val);
+      }
+    }
+
+    return animationControllerList;
+  }
+
+  public get animationIdList(): string[] | undefined {
+    if (!this._data || !this._data.animations) {
+      return undefined;
+    }
+
+    const animationIdList = [];
+
+    for (const key in this._data.animations) {
+      animationIdList.push(key);
+    }
+
+    return animationIdList;
+  }
+
+  public get animationList(): string[] | undefined {
+    if (!this._data || !this._data.animations) {
+      return undefined;
+    }
+
+    const animationList = [];
+
+    for (const key in this._data.animations) {
+      const val = this._data.animations[key];
+
+      if (val) {
+        animationList.push(val);
+      }
+    }
+
+    return animationList;
   }
 
   public get geometry() {
@@ -241,18 +332,20 @@ export default class EntityTypeResourceDefinition {
     this._onLoaded.dispatch(this, this);
   }
 
-  async deleteLink(childItem: ProjectItem) {
+  async deleteLink(rel: IProjectItemRelationship) {
     let packRootFolder = this.getPackRootFolder();
 
     if (this._data === undefined) {
       await this.load();
     }
 
-    if (childItem.itemType === ProjectItemType.texture && this._data && this._data.textures) {
-      await childItem.ensureStorage();
+    const etrChildItems = rel.parentItem.childItems;
 
-      if (childItem.file && packRootFolder) {
-        let relativePath = this.getRelativePath(childItem.file, packRootFolder);
+    if (rel.childItem.itemType === ProjectItemType.texture && this._data && this._data.textures) {
+      await rel.childItem.ensureStorage();
+
+      if (rel.childItem.file && packRootFolder) {
+        let relativePath = this.getRelativePath(rel.childItem.file, packRootFolder);
 
         if (relativePath) {
           for (const key in this._data.textures) {
@@ -260,6 +353,18 @@ export default class EntityTypeResourceDefinition {
 
             if (texturePath === relativePath) {
               this._data.textures[key] = undefined;
+
+              if (etrChildItems) {
+                for (const otherChild of etrChildItems) {
+                  if (otherChild.childItem.itemType === ProjectItemType.renderControllerJson) {
+                    const renderController = (await MinecraftDefinitions.get(
+                      otherChild.childItem
+                    )) as RenderControllerSetDefinition;
+
+                    renderController.removeTexture(key);
+                  }
+                }
+              }
             }
           }
         }
@@ -308,9 +413,63 @@ export default class EntityTypeResourceDefinition {
 
     let textureList = this.texturesList;
     let geometryList = this.geometryList;
+    let renderControllerIdList = this.renderControllerIdList;
+    let animationControllerIdList = this.animationControllerIdList;
+    let animationIdList = this.animationIdList;
 
     for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
+      if (candItem.itemType === ProjectItemType.animationResourceJson && animationIdList) {
+        await candItem.ensureStorage();
+
+        if (candItem.file) {
+          const animationDef = await AnimationResourceDefinition.ensureOnFile(candItem.file);
+
+          const animIds = animationDef?.idList;
+
+          if (animIds) {
+            for (const animId of animationIdList) {
+              if (animIds.includes(animId)) {
+                item.addChildItem(candItem);
+                continue;
+              }
+            }
+          }
+        }
+      } else if (candItem.itemType === ProjectItemType.animationControllerResourceJson && animationControllerIdList) {
+        await candItem.ensureStorage();
+
+        if (candItem.file) {
+          const animationControllerDef = await AnimationControllerResourceDefinition.ensureOnFile(candItem.file);
+
+          const acIds = animationControllerDef?.idList;
+
+          if (acIds) {
+            for (const acId of animationControllerIdList) {
+              if (acIds.includes(acId)) {
+                item.addChildItem(candItem);
+                continue;
+              }
+            }
+          }
+        }
+      } else if (candItem.itemType === ProjectItemType.renderControllerJson && renderControllerIdList) {
+        await candItem.ensureStorage();
+
+        if (candItem.file) {
+          const renderControllerDef = await RenderControllerSetDefinition.ensureOnFile(candItem.file);
+
+          const renderIds = renderControllerDef?.idList;
+
+          if (renderIds) {
+            for (const rcId of renderControllerIdList) {
+              if (renderIds.includes(rcId)) {
+                item.addChildItem(candItem);
+                continue;
+              }
+            }
+          }
+        }
+      } else if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
         await candItem.ensureStorage();
 
         if (candItem.file) {

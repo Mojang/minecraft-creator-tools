@@ -296,95 +296,6 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           );
         } else if (
           file.type === "json" &&
-          projItem.itemType === ProjectItemType.entityTypeBehavior &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          Log.verbose("Showing entity type editor for '" + file.storageRelativePath + "'");
-          interior = (
-            <EntityTypeEditor
-              readOnly={this.props.readOnly}
-              heightOffset={this.props.heightOffset}
-              theme={this.props.theme}
-              file={file}
-              item={this.props.activeProjectItem}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.scriptTypesJson &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          interior = (
-            <DocumentedModuleEditor
-              carto={this.props.carto}
-              theme={this.props.theme}
-              typesReadOnly={true}
-              docsReadOnly={this.props.readOnly}
-              heightOffset={this.props.heightOffset}
-              file={file}
-              project={this.props.project}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.packageJson &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          interior = (
-            <NpmPackageEditor
-              theme={this.props.theme}
-              heightOffset={this.props.heightOffset}
-              file={file}
-              readOnly={this.props.readOnly}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.behaviorPackManifestJson &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          interior = (
-            <BehaviorPackManifestJsonEditor
-              theme={this.props.theme}
-              heightOffset={this.props.heightOffset}
-              file={file}
-              readOnly={this.props.readOnly}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.spawnRuleBehavior &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          interior = (
-            <SpawnRulesEditor
-              theme={this.props.theme}
-              heightOffset={this.props.heightOffset}
-              file={file}
-              readOnly={this.props.readOnly}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.lootTableBehavior &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          interior = (
-            <LootTableEditor
-              theme={this.props.theme}
-              heightOffset={this.props.heightOffset}
-              file={file}
-              readOnly={this.props.readOnly}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
           projItem.itemType === ProjectItemType.entityTypeResource &&
           !(this.props.forceRawView || ep === ProjectEditPreference.raw)
         ) {
@@ -393,24 +304,8 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               theme={this.props.theme}
               heightOffset={this.props.heightOffset}
               file={file}
+              projectItem={this.props.activeProjectItem}
               readOnly={this.props.readOnly}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.commandSetDefinitionJson &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          interior = (
-            <DocumentedCommandSetEditor
-              carto={this.props.carto}
-              theme={this.props.theme}
-              typesReadOnly={true}
-              docsReadOnly={this.props.readOnly}
-              heightOffset={this.props.heightOffset}
-              file={file}
-              project={this.props.project}
               setActivePersistable={this._handleNewChildPersistable}
             />
           );

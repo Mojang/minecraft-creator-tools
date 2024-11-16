@@ -13,9 +13,13 @@ export default class AnimationResourceDefinition {
   private _id?: string;
   private _isLoaded: boolean = false;
 
-  public data?: IResourceAnimationWrapper;
+  private _data?: IResourceAnimationWrapper;
 
   private _onLoaded = new EventDispatcher<AnimationResourceDefinition, AnimationResourceDefinition>();
+
+  public get data() {
+    return this._data;
+  }
 
   public get isLoaded() {
     return this._isLoaded;
@@ -53,9 +57,27 @@ export default class AnimationResourceDefinition {
     return undefined;
   }
 
+  public get idList() {
+    if (!this._data || !this._data.animations) {
+      return undefined;
+    }
+
+    const idList = [];
+
+    for (const key in this._data.animations) {
+      const animation = this._data.animations[key];
+
+      if (key && animation) {
+        idList.push(key);
+      }
+    }
+
+    return idList;
+  }
+
   public get animations() {
-    if (this.data && this.data.animations) {
-      return this.data.animations;
+    if (this._data && this._data.animations) {
+      return this._data.animations;
     }
 
     return undefined;
@@ -71,24 +93,24 @@ export default class AnimationResourceDefinition {
   }
 
   public getFormatVersion(): number[] | undefined {
-    if (!this.data || !this.data.format_version) {
+    if (!this._data || !this._data.format_version) {
       return undefined;
     }
 
-    return MinecraftUtilities.getVersionArrayFrom(this.data.format_version);
+    return MinecraftUtilities.getVersionArrayFrom(this._data.format_version);
   }
 
   setResourcePackFormatVersion(versionStr: string) {
     this._ensureDataInitialized();
 
-    if (this.data) {
-      this.data.format_version = versionStr;
+    if (this._data) {
+      this._data.format_version = versionStr;
     }
   }
 
   _ensureDataInitialized() {
-    if (this.data === undefined) {
-      this.data = {
+    if (this._data === undefined) {
+      this._data = {
         format_version: "1.12.0",
         animations: {},
       };
@@ -127,7 +149,7 @@ export default class AnimationResourceDefinition {
       return;
     }
 
-    const bpString = JSON.stringify(this.data, null, 2);
+    const bpString = JSON.stringify(this._data, null, 2);
 
     this._file.setContent(bpString);
   }
@@ -143,7 +165,7 @@ export default class AnimationResourceDefinition {
       return;
     }
 
-    this.data = StorageUtilities.getJsonObject(this._file);
+    this._data = StorageUtilities.getJsonObject(this._file);
 
     this._isLoaded = true;
   }

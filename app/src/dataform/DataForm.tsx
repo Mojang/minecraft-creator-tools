@@ -48,6 +48,7 @@ export interface IDataFormProps extends IDataContainer {
   formId?: string;
   theme: ThemeInput<any>;
   closeButton?: boolean;
+  constrainHeight?: boolean;
   defaultVisualExperience?: FieldVisualExperience;
   displayDescription?: boolean;
   ambientSelectedPoint?: number[] | undefined;
@@ -1149,8 +1150,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               formInterior.push(
                 <div className="df-fieldWrap" key={"fw" + field.id}>
                   <div className={isValid ? "df-elementTitle" : "df-elementTitleInvalid"}>{title}</div>
-                  {sarrt}
                   {descriptionElement}
+                  {sarrt}
                 </div>
               );
             } else if (field.dataType === FieldDataType.intRange || field.dataType === FieldDataType.floatRange) {
@@ -1208,14 +1209,16 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
               formInterior.push(
                 <div className="df-fieldWrap" key={"fw" + field.id}>
-                  {sarr}
                   {descriptionElement}
+                  {sarr}
                 </div>
               );
             } else if (field.dataType === FieldDataType.keyedObjectCollection) {
               this.addKeyedObjectComponent(field, formInterior, descriptionElement);
             } else if (field.dataType === FieldDataType.keyedStringArrayCollection) {
               this.addKeyedStringArrayCollectionComponent(field, formInterior, descriptionElement);
+            } else if (field.dataType === FieldDataType.arrayOfKeyedStringCollection) {
+              this.addArrayOfKeyedStringCollectionComponent(field, formInterior, descriptionElement);
             } else if (field.dataType === FieldDataType.keyedStringCollection) {
               this.addKeyedStringComponent(field, formInterior, descriptionElement);
             } else if (field.dataType === FieldDataType.keyedBooleanCollection) {
@@ -1533,6 +1536,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             defaultVisualExperience={field.visualExperience}
             displayTitle={true}
             indentLevel={indentLevel}
+            constrainHeight={this.props.constrainHeight}
             onPropertyChanged={this._handleIndexedArraySubFormPropertyChange}
             onClose={this._handleIndexedArraySubFormClose}
             definition={field.subForm}
@@ -1546,9 +1550,15 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         childElements.push(subForm);
       }
 
+      let binClassName = "df-elementBin";
+
+      if (this.props.constrainHeight === false) {
+        binClassName = "df-elementBinNoScroll";
+      }
+
       fieldInterior.push(
         <div
-          className="df-elementBin"
+          className={binClassName}
           key="dfeltbin"
           style={{
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
@@ -1562,8 +1572,101 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     formInterior.push(
       <div className="df-fieldWrap" key={"fw" + field.id}>
-        {fieldInterior}
         {descriptionElement}
+        {fieldInterior}
+      </div>
+    );
+  }
+
+  addArrayOfKeyedStringCollectionComponent(field: IField, formInterior: any[], descriptionElement: JSX.Element) {
+    const val = this._getProperty(field.id, {});
+    const fieldInterior = [];
+    const childElements = [];
+
+    Log.assert(val !== undefined, "Keyed string array not available in data form.");
+
+    if (val) {
+      const keys = [];
+
+      if (field.displayTitle !== false) {
+        const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
+        this.formComponentNames.push(field.id);
+        this.formComponents.push(headerElement);
+        fieldInterior.push(headerElement);
+      }
+
+      fieldInterior.push(descriptionElement);
+
+      for (const keyValuePairs of val) {
+        const kvpArea = [];
+
+        for (const key in keyValuePairs) {
+          keys.push(key);
+
+          let title = key;
+
+          let objKey = field.id;
+
+          if (this.props.objectKey) {
+            objKey += this.props.objectKey;
+          }
+
+          objKey += "." + key;
+
+          let propertyId = field.id;
+
+          propertyId += "." + key;
+
+          const objStr = keyValuePairs[key];
+
+          const subForm = (
+            <FormInput
+              className="df-keyedSarrText"
+              key={objKey + "T"}
+              id={objKey}
+              fluid={true}
+              value={objStr as string}
+              onChange={this._handleTextboxChange}
+            />
+          );
+
+          this.formComponentNames.push(propertyId);
+          this.formComponents.push(subForm);
+
+          kvpArea.push(
+            <div className="df-stringArray">
+              <div className="df-stringArrayTitle">{title}</div>
+              <div className="df-stringArrayData">{subForm}</div>
+            </div>
+          );
+        }
+
+        childElements.push(<div className="df-arrayOfKeyedStringSet">{kvpArea}</div>);
+      }
+    }
+
+    let binClassName = "df-elementBin";
+
+    if (this.props.constrainHeight === false) {
+      binClassName = "df-elementBinNoScroll";
+    }
+
+    fieldInterior.push(
+      <div
+        className={binClassName}
+        key="dfelb2"
+        style={{
+          backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+          borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+        }}
+      >
+        {childElements}
+      </div>
+    );
+
+    formInterior.push(
+      <div className="df-fieldWrap" key={"fw" + field.id}>
+        {fieldInterior}
       </div>
     );
   }
@@ -1585,6 +1688,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         fieldInterior.push(headerElement);
       }
 
+      fieldInterior.push(descriptionElement);
+
       for (const key in val) {
         keys.push(key);
 
@@ -1602,34 +1707,44 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
         propertyId += "." + key;
 
-        const objStr = val[key];
+        const stringArr = val[key];
 
-        const subForm = (
-          <FormInput
-            className="df-keyedSarrText"
-            key={objKey + "T"}
-            id={objKey}
-            fluid={true}
-            value={objStr as string}
-            onChange={this._handleTextboxChange}
-          />
-        );
+        const textElts = [];
+
+        for (const stringArrStr of stringArr) {
+          textElts.push(
+            <FormInput
+              className="df-keyedSarrText"
+              key={objKey + "T"}
+              id={objKey}
+              fluid={true}
+              value={stringArrStr as string}
+              onChange={this._handleTextboxChange}
+            />
+          );
+        }
 
         this.formComponentNames.push(propertyId);
-        this.formComponents.push(subForm);
+        this.formComponents.push(textElts);
 
         childElements.push(
           <div className="df-stringArray">
             <div className="df-stringArrayTitle">{title}</div>
-            <div className="df-stringArrayData">{subForm}</div>
+            <div className="df-stringArrayData">{textElts}</div>
           </div>
         );
       }
     }
 
+    let binClassName = "df-elementBin";
+
+    if (this.props.constrainHeight === false) {
+      binClassName = "df-elementBinNoScroll";
+    }
+
     fieldInterior.push(
       <div
-        className="df-elementBin"
+        className={binClassName}
         key="dfelb2"
         style={{
           backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
@@ -1643,7 +1758,6 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     formInterior.push(
       <div className="df-fieldWrap" key={"fw" + field.id}>
         {fieldInterior}
-        {descriptionElement}
       </div>
     );
   }
@@ -1665,6 +1779,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         this.formComponents.push(headerElement);
         fieldTopper.push(headerElement);
       }
+
+      fieldTopper.push(descriptionElement);
 
       if (!this.props.readOnly) {
         const toolbarItems = [];
@@ -1776,9 +1892,15 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       }
     }
 
+    let binClassName = "df-elementBin";
+
+    if (this.props.constrainHeight === false) {
+      binClassName = "df-elementBinNoScroll";
+    }
+
     fieldInterior.push(
       <div
-        className="df-elementBin"
+        className={binClassName}
         key="dfelf3"
         style={{
           backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
@@ -1793,7 +1915,6 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       <div className="df-fieldWrap" key={"fw" + field.id}>
         {fieldTopper}
         {fieldInterior}
-        {descriptionElement}
       </div>
     );
   }
@@ -1815,6 +1936,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         this.formComponents.push(headerElement);
         fieldTopper.push(headerElement);
       }
+
+      fieldTopper.push(descriptionElement);
 
       if (!this.props.readOnly) {
         const toolbarItems = [];
@@ -1928,9 +2051,15 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       }
     }
 
+    let binClassName = "df-elementBin";
+
+    if (this.props.constrainHeight === false) {
+      binClassName = "df-elementBinNoScroll";
+    }
+
     fieldInterior.push(
       <div
-        className="df-elementBin"
+        className={binClassName}
         key="dfelfb4"
         style={{
           backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
@@ -1943,9 +2072,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     formInterior.push(
       <div className="df-fieldWrap" key={"fw" + field.id}>
+        {descriptionElement}
         {fieldTopper}
         {fieldInterior}
-        {descriptionElement}
       </div>
     );
   }
@@ -2045,7 +2174,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     if (arrayOfDataVal !== undefined && field.subForm && arrayOfDataVal instanceof Array) {
       if (field.displayTitle !== false) {
-        const headerElement = <div className="df-elementBinTItle">{FieldUtilities.getFieldTitle(field)}</div>;
+        const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
         this.formComponentNames.push(field.id);
         this.formComponents.push(headerElement);
         fieldTopper.push(headerElement);
@@ -2133,6 +2262,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               defaultVisualExperience={field.visualExperience}
               displayTitle={true}
               indentLevel={indentLevel}
+              constrainHeight={this.props.constrainHeight}
               onClose={this._handleKeyedObjectArraySubFormClose}
               onPropertyChanged={this._handleKeyedObjectArraySubFormPropertyChange}
               definition={field.subForm}
@@ -2216,6 +2346,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               defaultVisualExperience={field.visualExperience}
               displayTitle={true}
               indentLevel={indentLevel}
+              constrainHeight={this.props.constrainHeight}
               onPropertyChanged={this._handleIndexedArraySubFormPropertyChange}
               onClose={this._handleIndexedArraySubFormClose}
               definition={field.subForm}
@@ -2232,9 +2363,15 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       }
     }
 
+    let binClassName = "df-elementBin";
+
+    if (this.props.constrainHeight === false) {
+      binClassName = "df-elementBinNoScroll";
+    }
+
     fieldInterior.push(
       <div
-        className="df-elementBin"
+        className={binClassName}
         key="dfelfb5"
         style={{
           backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
@@ -2331,8 +2468,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
     formInterior.push(
       <div className="df-fieldWrap" key={"fw" + field.id}>
-        {fieldInterior}
         {descriptionElement}
+        {fieldInterior}
       </div>
     );
   }
@@ -2350,6 +2487,15 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
       const propertyId = field.id;
 
+      if (field.displayTitle !== false) {
+        const headerElement = <div className="df-elementBinTitle">{FieldUtilities.getFieldTitle(field)}</div>;
+        this.formComponentNames.push(field.id);
+        this.formComponents.push(headerElement);
+        fieldInterior.push(headerElement);
+      }
+
+      fieldInterior.push(descriptionElement);
+
       const subForm = (
         <DataForm
           directObject={val}
@@ -2358,10 +2504,10 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           formId={propertyId}
           parentField={field}
           theme={this.props.theme}
-          title={FieldUtilities.getFieldTitle(field)}
           defaultVisualExperience={FieldVisualExperience.normal}
-          displayTitle={true}
+          displayTitle={false}
           indentLevel={0}
+          constrainHeight={this.props.constrainHeight}
           onPropertyChanged={this._handleObjectSubFormPropertyChange}
           definition={field.subForm}
           readOnly={this.props.readOnly}
@@ -2377,7 +2523,6 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     formInterior.push(
       <div className="df-fieldWrap" key={"fw" + field.id}>
         {fieldInterior}
-        {descriptionElement}
       </div>
     );
   }

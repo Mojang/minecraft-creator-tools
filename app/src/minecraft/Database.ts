@@ -102,6 +102,7 @@ export default class Database {
 
       Database.uxCatalog[name] = response.data;
       Database.loadedFormCount++;
+
       return response.data;
     } catch {
       Log.fail("Could not load UX file for '" + name + "'.");

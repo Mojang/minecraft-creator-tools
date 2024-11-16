@@ -9,7 +9,7 @@ import ProjectInfoSet from "./ProjectInfoSet";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
 import AddOnRequirementsGenerator from "./AddOnRequirementsGenerator";
-import ResourceRenderController from "../minecraft/ResourceRenderController";
+import RenderControllerSetDefinition from "../minecraft/RenderControllerSetDefinition";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 import ModelGeometryDefinition from "../minecraft/ModelGeometryDefinition";
@@ -268,10 +268,10 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
       await projectItem.ensureFileStorage();
 
       if (projectItem.file) {
-        const racManifest = await ResourceRenderController.ensureOnFile(projectItem.file);
+        const racManifest = await RenderControllerSetDefinition.ensureOnFile(projectItem.file);
 
-        if (racManifest && racManifest.definition && racManifest.definition.render_controllers) {
-          for (let rrcName in racManifest.definition.render_controllers) {
+        if (racManifest && racManifest.data && racManifest.data.render_controllers) {
+          for (let rrcName in racManifest.data.render_controllers) {
             let racNameBreak = rrcName.split(".");
 
             if (racNameBreak.length < 3 || racNameBreak[0] !== "controller" || racNameBreak[1] !== "render") {
