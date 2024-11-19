@@ -133,7 +133,7 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
             <img
               className="pact-icon"
               alt=""
-              src={CartoApp.contentRoot + "res/latest/van/resource_pack/textures/blocks/grass_path_side.png"}
+              src={CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_path_side.png"}
             />
             <div className="pact-label">Download flat world</div>
           </div>
@@ -156,7 +156,7 @@ export default class ProjectActions extends Component<IProjectActionsProps, IPro
             <img
               className="pact-icon"
               alt=""
-              src={CartoApp.contentRoot + "res/latest/van/resource_pack/textures/blocks/grass_side_carried.png"}
+              src={CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/blocks/grass_side_carried.png"}
             />
             <div className="pact-label">Download project world</div>
           </div>
