@@ -71,6 +71,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
   private formComponentNames: string[] = [];
   private formComponents: any[] = [];
 
+  private _workingValues: { [name: string]: string } = {};
+
   constructor(props: IDataFormProps) {
     super(props);
 
@@ -242,6 +244,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     const id = event.currentTarget.id;
 
     const field = this._getFieldById(id);
+
+    this._workingValues[id] = data;
 
     if (field === undefined) {
       Log.fail("Could not re-find field " + id);
@@ -1138,6 +1142,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                   key={"sarr" + seedId + field.id}
                   longForm={field.dataType === FieldDataType.longFormStringArray}
                   label={title}
+                  allowCreateDelete={field.allowCreateDelete}
                   onChange={this._handleStringArrayPropertyChange}
                   form={this.props.definition}
                   field={field}
@@ -1288,13 +1293,30 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                 </div>
               );
             } else {
+              let strVal = curVal ? String(curVal) : "";
+              let cssClass = "df-fieldWrap";
+
+              // if the user is dealing with floating point numbers and has typed in "3." on their way to
+              // typing in "3.5", using _workingValues to "remember" that and substitute it back in.
+              // otherwise we'd always replace "3." with "3" and you wouldn't be able to add decimal vals
+              if (field.dataType === FieldDataType.float || field.dataType === FieldDataType.number) {
+                cssClass += " df-fieldWrapNumber";
+                if (this._workingValues[field.id]) {
+                  const val = this._getTypedData(field, this._workingValues[field.id]);
+
+                  if (val === curVal) {
+                    strVal = this._workingValues[field.id];
+                  }
+                }
+              }
+
               formInterior.push(
-                <div className="df-fieldWrap" key={"fw" + field.id}>
+                <div className={cssClass} key={"fw" + field.id}>
                   <FormInput
                     label={title}
                     key={"fri" + seedId + field.id}
                     id={field.id}
-                    value={curVal as string}
+                    value={strVal}
                     defaultValue={defaultVal as string}
                     onChange={this._handleTextboxChange}
                   />
@@ -1537,7 +1559,6 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             displayTitle={true}
             indentLevel={indentLevel}
             constrainHeight={this.props.constrainHeight}
-            onPropertyChanged={this._handleIndexedArraySubFormPropertyChange}
             onClose={this._handleIndexedArraySubFormClose}
             definition={field.subForm}
             readOnly={this.props.readOnly}

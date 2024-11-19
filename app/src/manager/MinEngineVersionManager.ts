@@ -137,7 +137,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const infoItems: ProjectInfoItem[] = [];
 
-    const ver = await Database.getLatestVersionInfo(false);
+    const ver = await Database.getLatestVersionInfo(project.effectiveTrack);
     let foundBpManifest = false;
     let foundRpManifest = false;
     let foundError = false;
@@ -409,7 +409,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
   async updateMinEngineVersionToLatestVersion(project: Project) {
     const results: ProjectUpdateResult[] = [];
 
-    const ver = await Database.getLatestVersionInfo(false);
+    const ver = await Database.getLatestVersionInfo(project.effectiveTrack);
 
     if (!ver) {
       results.push(

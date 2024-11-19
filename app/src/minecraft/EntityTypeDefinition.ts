@@ -145,7 +145,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem {
   }
 
   getComponent(id: string) {
-    if (this.data === undefined) {
+    if (this.data === undefined || this.data.components === undefined) {
       return undefined;
     }
 

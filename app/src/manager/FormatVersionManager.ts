@@ -172,7 +172,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
   async generate(project: Project, content: ContentIndex): Promise<ProjectInfoItem[]> {
     const infoItems: ProjectInfoItem[] = [];
 
-    const ver = await Database.getLatestVersionInfo(false);
+    const ver = await Database.getLatestVersionInfo(project.effectiveTrack);
     let foundError = false;
 
     if (!ver) {
@@ -515,7 +515,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
   async updateBaseGameVersionToLatestVersion(project: Project) {
     const results: ProjectUpdateResult[] = [];
 
-    const ver = await Database.getLatestVersionInfo(false);
+    const ver = await Database.getLatestVersionInfo(project.effectiveTrack);
 
     if (!ver) {
       results.push(

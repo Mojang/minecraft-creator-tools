@@ -105,7 +105,7 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const infoItems: ProjectInfoItem[] = [];
 
-    const ver = await Database.getLatestVersionInfo(false);
+    const ver = await Database.getLatestVersionInfo(project.effectiveTrack);
     let foundWorldTemplate = false;
     let foundError = false;
 
@@ -374,7 +374,7 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
   async updateFormatVersionToLatestVersion(project: Project) {
     const results: ProjectUpdateResult[] = [];
 
-    const ver = await Database.getLatestVersionInfo(false);
+    const ver = await Database.getLatestVersionInfo(project.effectiveTrack);
 
     if (!ver) {
       results.push(

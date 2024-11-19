@@ -51,6 +51,12 @@ input[type="file"]:hover {
   max-width: calc(100vw - 8px);
   margin: 4px;
   width: calc(100vw - 40px) !important;
+  max-width: 900px !important;
+}
+
+.ui-dialog__content {
+  overflow-y: scroll;
+  max-height: calc(100vh - 200px);
 }
 
 BUTTON {

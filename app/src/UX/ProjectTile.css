@@ -53,6 +53,16 @@
   padding-right: 6px;
 }
 
+.pt-mainArea-long {
+  grid-row: 1;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  padding-top: 7px;
+  padding-bottom: 2px;
+  padding-left: 8px;
+  padding-right: 6px;
+}
+
 .pt-iconArea {
   grid-row: 1;
   grid-column-start: 1;
@@ -107,7 +117,7 @@
   grid-column-start: 1;
   grid-column-end: 3;
   min-height: 50px;
-  padding-left: 6px;
+  padding-left: 8px;
   padding-right: 6px;
 }
 
@@ -207,7 +217,7 @@
   grid-row: 1;
   grid-column: 1;
   padding: 3px;
-  padding-top: 1px;
+  padding-top: 3px;
   vertical-align: middle;
   word-wrap: break-word;
 }
@@ -228,8 +238,8 @@
   margin-top: 0px;
   margin-bottom: 0px;
   width: 320px;
-  padding-left: 3px;
-  padding-top: 3px;
+  padding-left: 5px;
+  padding-top: 8px;
   max-width: 320px;
 }
 
@@ -247,10 +257,9 @@
   grid-column-start: 1;
   grid-column-end: 3;
   padding: 3px;
-  margin-top: 4px;
   height: 60px;
   overflow: hidden;
-  padding-left: 8px;
+  padding-left: 5px;
   padding-right: 8px;
   font-size: small;
 }

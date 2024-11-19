@@ -1,6 +1,6 @@
 import { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
-import Project from "../app/Project";
+import Project, { ProjectTargetStrings } from "../app/Project";
 import "./ProjectPropertyEditor.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -26,6 +26,7 @@ import CartoApp, { HostType } from "../app/CartoApp";
 import ProjectUtilities from "../app/ProjectUtilities";
 import StatusList from "./StatusList";
 import { MinecraftTrack } from "../app/ICartoData";
+import { CartoTargetStrings } from "../app/Carto";
 
 interface IProjectPropertyEditorProps extends IAppProps {
   project: Project;
@@ -54,16 +55,11 @@ export enum GitHubPropertyType {
 
 export const ProjectFocusStrings = ["General", "GameTests", "World", "Sample Behavior", "Editor Extension"];
 
-export const ProjectTargetStrings = ["<default>", "Latest Minecraft release", "Latest Minecraft preview"];
-
 export default class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProjectPropertyEditorState> {
   private tentativeGitHubMode: string = "existing";
   private tentativeGitHubRepoName?: string;
   private tentativeGitHubOwner?: string;
-  private tentativeGitHubBranch?: string;
-  private tentativeGitHubFolder?: string;
   private tentativeGitHubNewDescription?: string;
-  private tentativeCommitMessage?: string;
 
   private editorPreferences = [
     "Simplified editor experience",
@@ -80,7 +76,6 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     this._createNewDataUniqueId = this._createNewDataUniqueId.bind(this);
     this._update = this._update.bind(this);
     this._githubProjectUpdated = this._githubProjectUpdated.bind(this);
-    this._githubPushUpdated = this._githubPushUpdated.bind(this);
     this._handleTitleChanged = this._handleTitleChanged.bind(this);
     this._handleNameChanged = this._handleNameChanged.bind(this);
     this._handleShortNameChanged = this._handleShortNameChanged.bind(this);
@@ -118,10 +113,6 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     };
   }
 
-  _githubPushUpdated(newCommitMessage: string) {
-    this.tentativeCommitMessage = newCommitMessage;
-  }
-
   _githubProjectUpdated(property: GitHubPropertyType, value: string) {
     switch (property) {
       case GitHubPropertyType.repoName:
@@ -130,14 +121,6 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
 
       case GitHubPropertyType.owner:
         this.tentativeGitHubOwner = value;
-        break;
-
-      case GitHubPropertyType.branch:
-        this.tentativeGitHubBranch = value;
-        break;
-
-      case GitHubPropertyType.folder:
-        this.tentativeGitHubFolder = value;
         break;
 
       case GitHubPropertyType.mode:
@@ -406,6 +389,10 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       this.props.project.track = MinecraftTrack.main;
     } else if (data.value === ProjectTargetStrings[2]) {
       this.props.project.track = MinecraftTrack.preview;
+    } else if (data.value === ProjectTargetStrings[3]) {
+      this.props.project.track = MinecraftTrack.edu;
+    } else if (data.value === ProjectTargetStrings[4]) {
+      this.props.project.track = MinecraftTrack.eduPreview;
     } else {
       this.props.project.track = undefined;
     }
@@ -433,6 +420,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
       if (data.value === str) {
         this.props.project.focus = i;
       }
+
       i++;
     }
   }
@@ -462,6 +450,16 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
 
     if (this.props === undefined) {
       return <></>;
+    }
+
+    const targetStrings = [];
+
+    const index = this.props.carto.track ? (this.props.carto.track as number) : 0;
+
+    targetStrings.push("<default to " + CartoTargetStrings[index] + ">");
+
+    for (const targetString of CartoTargetStrings) {
+      targetStrings.push(targetString);
     }
 
     let gitHubConnect = <></>;
@@ -565,24 +563,6 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
             trigger={<Button content="Connect to GitHub Project" iconPosition="before" primary />}
           />
         );
-
-        /* gitHubCommands.push(
-          <Dialog
-            key="ghCommandButton"
-            cancelButton="Cancel"
-            confirmButton="Push"
-            content={
-              <PushToGitHub
-                onGitHubCommitUpdated={this._githubPushUpdated}
-                project={this.props.project}
-                carto={this.props.carto}
-              />
-            }
-            onConfirm={this._handleCommitToGitHub}
-            header="Push to GitHub"
-            trigger={<Button content="Commit changes to GitHub" iconPosition="before" primary />}
-          />
-        );*/
       }
     }
 
@@ -654,8 +634,6 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     if (versionMajor === undefined) {
       versionMajor = 0;
     }
-
-    // <Button content="Convert Java to Bedrock" icon={<FontAwesomeIcon icon={faCogs} className="fa-lg" />} onClick={this._convertJavaToBedrock } iconPosition="before" primary />
 
     let versionMinor = this.props.project.versionMinor;
 
@@ -791,15 +769,9 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           <div className="ppe-label ppe-tracklabel">Target Minecraft</div>
           <div className="ppe-trackinput">
             <Dropdown
-              items={ProjectTargetStrings}
+              items={targetStrings}
               placeholder="Select which version of Minecraft to target"
-              defaultValue={
-                this.props.project.track === undefined
-                  ? ProjectTargetStrings[0]
-                  : this.props.project.track === MinecraftTrack.main
-                  ? ProjectTargetStrings[1]
-                  : ProjectTargetStrings[2]
-              }
+              defaultValue={targetStrings[this.props.project.track ? (this.props.project.track as number) + 1 : 0]}
               onChange={this._handleTrackChange}
             />
           </div>

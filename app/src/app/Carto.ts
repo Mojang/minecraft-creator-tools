@@ -71,6 +71,13 @@ export enum CartoMinecraftErrorStatus {
   configuration = 6,
 }
 
+export const CartoTargetStrings = [
+  "Latest Minecraft release",
+  "Latest Minecraft preview",
+  "Latest Education Edition",
+  "Latest Education Edition preview",
+];
+
 export const SidePaneMaxWidth = 880;
 export const SidePaneMinWidth = 280;
 

@@ -9,6 +9,7 @@ export interface IStringArrayProps extends IFormComponentProps {
   data: string[] | undefined;
   objectKey: string | undefined;
   label: string | undefined;
+  allowCreateDelete?: boolean | undefined;
   longForm: boolean;
   onChange?: (
     event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
@@ -111,6 +112,7 @@ export default class StringArray extends Component<IStringArrayProps, IStringArr
         field: this.props.field,
         label: this.props.label,
         longForm: this.props.longForm,
+        allowCreateDelete: this.props.allowCreateDelete,
         objectKey: this.props.objectKey,
       };
 
@@ -170,8 +172,10 @@ export default class StringArray extends Component<IStringArrayProps, IStringArr
       inputAreas.push(<div className="sarr-none">(No items.)</div>);
     }
 
-    return (
-      <div className="sarr-outer">
+    let addArea = <></>;
+
+    if (this.props.allowCreateDelete !== false) {
+      addArea = (
         <div className="sarr-add">
           <Button
             content={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
@@ -179,6 +183,12 @@ export default class StringArray extends Component<IStringArrayProps, IStringArr
             key="addString"
           />
         </div>
+      );
+    }
+
+    return (
+      <div className="sarr-outer">
+        {addArea}
         <div className="sarr-inner">{inputAreas}</div>
       </div>
     );

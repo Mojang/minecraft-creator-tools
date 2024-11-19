@@ -18,6 +18,8 @@ export enum CartoEditorViewMode {
 export enum MinecraftTrack {
   main = 0,
   preview = 1,
+  edu = 2,
+  eduPreview = 3,
 }
 
 export enum MinecraftFlavor {

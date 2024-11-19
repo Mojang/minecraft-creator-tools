@@ -79,7 +79,7 @@
   vertical-align: bottom;
   padding-right: 14px;
   display: inline-block !important;
-  min-width: 136px;
+  min-width: 189px;
 }
 
 .df-fieldWrap .ui-dropdown {
@@ -176,6 +176,7 @@
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row: 1;
+  font-size: large;
   padding-top: 3px;
   padding-bottom: 3px;
 }
@@ -259,4 +260,8 @@
 
 .df-keyedStringCollectionClose button {
   height: 30px;
+}
+
+.df-fieldWrapNumber input {
+  max-width: 72px;
 }

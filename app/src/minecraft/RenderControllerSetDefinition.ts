@@ -5,6 +5,7 @@ import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import IRenderControllerSetDefinition from "./IRenderControllerSet";
+import DataFormProcessor, { ProcessorFixupLevel } from "../dataform/DataFormProcessor";
 
 export default class RenderControllerSetDefinition {
   private _file?: IFile;
@@ -129,9 +130,13 @@ export default class RenderControllerSetDefinition {
     return rc;
   }
 
-  persist() {
+  async persist() {
     if (this._file === undefined) {
       return;
+    }
+
+    if (this._data) {
+      await DataFormProcessor.process(this._data, "render_controller_set", ProcessorFixupLevel.perField);
     }
 
     const pjString = JSON.stringify(this._data, null, 2);
@@ -153,7 +158,7 @@ export default class RenderControllerSetDefinition {
       return;
     }
 
-    this.persist();
+    await this.persist();
 
     await this._file.saveContent(false);
   }

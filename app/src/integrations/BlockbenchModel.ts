@@ -636,7 +636,15 @@ export default class BlockbenchModel {
                 rot[2] = -rot[2];
               }
             } else if (bone.bind_pose_rotation) {
-              rot = bone.bind_pose_rotation;
+              if (bone.bind_pose_rotation.length === 3) {
+                rot = [];
+
+                rot[0] = -bone.bind_pose_rotation[0];
+                rot[1] = -bone.bind_pose_rotation[1];
+                rot[2] = -bone.bind_pose_rotation[2];
+              } else {
+                rot = bone.bind_pose_rotation;
+              }
             } else {
               rot = [0, 0, 0];
             }

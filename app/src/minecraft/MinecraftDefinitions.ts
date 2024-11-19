@@ -21,7 +21,13 @@ export default class MinecraftDefinitions {
     if (!projectItem.file || !projectItem.file.content || typeof projectItem.file.content !== "string") {
       await projectItem.ensureFileStorage();
 
-      if (!projectItem.file || !projectItem.file.content || typeof projectItem.file.content !== "string") {
+      if (!projectItem.file) {
+        return;
+      }
+
+      await projectItem.file.loadContent();
+
+      if (!projectItem.file.content || typeof projectItem.file.content !== "string") {
         return undefined;
       }
     }

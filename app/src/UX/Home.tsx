@@ -4,9 +4,7 @@ import { AppMode } from "./App";
 import "./Home.css";
 import {
   List,
-  Button,
   Dialog,
-  Input,
   InputProps,
   ThemeInput,
   FormInput,
@@ -43,8 +41,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import WebUtilities from "./WebUtilities";
 import FileSystemFolder from "../storage/FileSystemFolder";
+import { MinecraftFlavor } from "../app/ICartoData";
 import IStorage from "../storage/IStorage";
 import MinecraftBox from "./MinecraftBox";
+import IProjectSeed from "../app/IProjectSeed";
+import NewProject from "./NewProject";
 
 enum HomeDialogMode {
   none = 0,
@@ -65,19 +66,10 @@ interface IHomeProps extends IAppProps {
   onProjectSelected?: (project: Project) => void;
   onLog: (message: string) => Promise<void>;
   onSetProject: (project: Project) => void;
-  onGalleryItemCommand: (
-    command: GalleryProjectCommand,
-    project: IGalleryItem,
-    name?: string,
-    creator?: string,
-    shortName?: string,
-    description?: string
-  ) => void;
+  onGalleryItemCommand: (command: GalleryProjectCommand, newProjectSeed: IProjectSeed) => void;
   onNewProjectSelected?: (
-    name: string,
+    newProjectSeed: IProjectSeed,
     newProjectType: NewProjectTemplateType,
-    creator?: string,
-    shortName?: string,
     path?: string,
     additionalFilePath?: string,
     additionalFile?: File,
@@ -101,14 +93,10 @@ interface IHomeState {
   selectedProject?: string;
   search?: string;
   errorMessage?: string;
-  inlineMessage?: string;
-  newProjectName?: string;
-  newProjectShortName?: string;
-  newProjectCreator?: string;
-  newProjectDescription?: string;
-  newProjectPath?: string;
+  inlineUpdateMessage?: string;
+  inlineLoadingMessage?: string;
+  newProjectSeed?: IProjectSeed;
   contextFocusedProject?: number;
-  newGalleryProject?: IGalleryItem;
 }
 
 export default class Home extends Component<IHomeProps, IHomeState> {
@@ -138,7 +126,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._onCartoLoaded = this._onCartoLoaded.bind(this);
     this._onDeploymentStorageChanged = this._onDeploymentStorageChanged.bind(this);
     this._onDeploymentStorageChanged = this._onDeploymentStorageChanged.bind(this);
-    this._handleNewProjectSelectedClick = this._handleNewProjectSelectedClick.bind(this);
     this._handleOpenFolderClick = this._handleOpenFolderClick.bind(this);
     this._handleOpenLocalFolderClick = this._handleOpenLocalFolderClick.bind(this);
     this._handleOpenWebLocalDeployClick = this._handleOpenWebLocalDeployClick.bind(this);
@@ -151,13 +138,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._handleNewProjectConfirm = this._handleNewProjectConfirm.bind(this);
     this._handleErrorMessageConfirm = this._handleErrorMessageConfirm.bind(this);
     this._handleDeleteProjectConfirm = this._handleDeleteProjectConfirm.bind(this);
-    this._handleNewProjectName = this._handleNewProjectName.bind(this);
     this._doManageConsent = this._doManageConsent.bind(this);
-    this._handleNewProjectNameChange = this._handleNewProjectNameChange.bind(this);
-    this._handleNewProjectShortNameChange = this._handleNewProjectShortNameChange.bind(this);
-    this._handleNewProjectCreatorChange = this._handleNewProjectCreatorChange.bind(this);
-    this._handleNewProjectDescriptionChange = this._handleNewProjectDescriptionChange.bind(this);
-    this._handleSelectFolderClick = this._handleSelectFolderClick.bind(this);
     this._handleExportAllKey = this._handleExportAllKey.bind(this);
     this._handleExportAllClick = this._handleExportAllClick.bind(this);
     this._handleNewSearch = this._handleNewSearch.bind(this);
@@ -171,6 +152,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._processIncomingFile = this._processIncomingFile.bind(this);
     this._startDelayLoadItems = this._startDelayLoadItems.bind(this);
     this._recentItemContextMenuClick = this._recentItemContextMenuClick.bind(this);
+    this._handleNewProjectSeedUpdate = this._handleNewProjectSeedUpdate.bind(this);
 
     if (typeof window !== "undefined") {
       window.setTimeout(this._startDelayLoadItems, 10);
@@ -201,8 +183,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
           search: this.state.search,
           effect: HomeEffect.none,
-          newProjectName: this.state.newProjectName,
-          newProjectPath: this.state.newProjectPath,
+          newProjectSeed: this.state.newProjectSeed,
         });
       }
     }
@@ -232,8 +213,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             dialogMode: this.state.dialogMode,
             isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
             effect: HomeEffect.dragOver,
-            newProjectName: this.state.newProjectName,
-            newProjectPath: this.state.newProjectPath,
+            newProjectSeed: this.state.newProjectSeed,
           });
         }
       }
@@ -265,6 +245,60 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
   }
 
+  private async _handleDirectoryHandle(dirHandle: FileSystemDirectoryHandle, isDocumentationProject?: boolean) {
+    const name = dirHandle.name.toLowerCase();
+
+    if (name === "mc_lnk" || name === "mcpvw_lnk" || name.indexOf("bds") >= 0 || name.indexOf("server") >= 0) {
+      let fss = new FileSystemStorage(dirHandle as FileSystemDirectoryHandle, dirHandle.name);
+
+      const safeMessage = await (fss.rootFolder as FileSystemFolder).getFirstUnsafeError();
+
+      if (safeMessage !== undefined) {
+        Log.debugAlert(safeMessage);
+        return false;
+      }
+
+      CartoApp.deploymentStorage = fss;
+
+      this.props.carto.isDeployingToComMojang = true;
+      this.props.carto.updateDeploymentStorage(fss);
+      this.props.carto.ensureMinecraft(MinecraftFlavor.deploymentStorage);
+      this.setState({
+        gallery: this.state.gallery,
+        search: this.state.search,
+        isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
+        newProjectSeed: this.state.newProjectSeed,
+        effect: HomeEffect.none,
+        dialogMode: HomeDialogMode.none,
+        inlineLoadingMessage: this.state.inlineLoadingMessage,
+        inlineUpdateMessage: "Set deployment folder as '" + name + "'.",
+      });
+
+      return true;
+    } else {
+      let fss = new FileSystemStorage(dirHandle as FileSystemDirectoryHandle, dirHandle.name);
+
+      const safeMessage = await (fss.rootFolder as FileSystemFolder).getFirstUnsafeError();
+
+      if (safeMessage !== undefined) {
+        this.setState({
+          errorMessage:
+            "Folder has unsupported files within it. Please choose a folder on your device that only has Minecraft asset files in it (.json, .png, .mcfunction, etc.)\r\n\r\nDetails: " +
+            safeMessage,
+          dialogMode: HomeDialogMode.errorMessage,
+          isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
+        });
+        return false;
+      }
+      if (this.props.onNewProjectFromFolderInstanceSelected) {
+        this.props.onNewProjectFromFolderInstanceSelected(fss.rootFolder, dirHandle.name, isDocumentationProject);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   private async _handleFileDrop(ev: DragEvent): Promise<any> {
     if (this.state && this.state.dialogMode !== HomeDialogMode.none) {
       return;
@@ -285,17 +319,31 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
         if (dtitem.webkitGetAsEntry) {
           entry = dtitem.webkitGetAsEntry();
+        } else if ((dtitem as any).getAsEntry) {
+          entry = (dtitem as any).getAsEntry();
         }
 
         if (entry && entry.isDirectory) {
-          const directoryReader = (entry as any).createReader();
-          const me = this;
+          const dirHandle = await dtitem.getAsFileSystemHandle();
 
-          directoryReader.readEntries(function (entries: any) {
-            entries.forEach((childEntry: any) => {
-              me._processInputtedEntry((entry as any).fullPath, childEntry);
+          if (dirHandle) {
+            const perm = await dirHandle.requestPermission({
+              mode: "readwrite",
             });
-          });
+
+            if (perm) {
+              await this._handleDirectoryHandle(dirHandle as FileSystemDirectoryHandle);
+            }
+          } else {
+            const directoryReader = (entry as any).createReader();
+            const me = this;
+
+            directoryReader.readEntries(function (entries: any) {
+              entries.forEach((childEntry: any) => {
+                me._processInputtedEntry((entry as any).fullPath, childEntry);
+              });
+            });
+          }
         } else if (dtitem.kind === "file") {
           const file = dtitem.getAsFile();
           if (file) {
@@ -327,10 +375,10 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       }
 
       this.props.onNewProjectSelected(
-        fileName,
+        {
+          name: fileName,
+        },
         NewProjectTemplateType.empty,
-        undefined,
-        undefined,
         undefined,
         path,
         file,
@@ -356,89 +404,8 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       dialogMode: this.state.dialogMode,
       effect: this.state.effect,
       isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-      newProjectName: this.state.newProjectName,
-      newProjectPath: this.state.newProjectPath,
-      newProjectShortName: this.state.newProjectShortName,
-      newProjectCreator: this.state.newProjectCreator,
-      newProjectDescription: this.state.newProjectDescription,
+      newProjectSeed: this.state.newProjectSeed,
     });
-  }
-
-  private _handleNewProjectNameChange(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.state == null) {
-      return;
-    }
-
-    this.setState({
-      gallery: this.state.gallery,
-      dialogMode: this.state.dialogMode,
-      effect: this.state.effect,
-      isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-      newProjectName: data.value,
-      newProjectPath: this.state.newProjectPath,
-      newProjectShortName: this.state.newProjectShortName,
-      newProjectCreator: this.state.newProjectCreator,
-      newProjectDescription: this.state.newProjectDescription,
-    });
-  }
-
-  private _handleNewProjectDescriptionChange(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.state == null) {
-      return;
-    }
-
-    this.setState({
-      gallery: this.state.gallery,
-      dialogMode: this.state.dialogMode,
-      effect: this.state.effect,
-      isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-      newProjectName: this.state.newProjectName,
-      newProjectPath: this.state.newProjectPath,
-      newProjectShortName: this.state.newProjectShortName,
-      newProjectCreator: this.state.newProjectCreator,
-      newProjectDescription: data.value,
-    });
-  }
-
-  private _handleNewProjectShortNameChange(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.state == null) {
-      return;
-    }
-
-    this.setState({
-      gallery: this.state.gallery,
-      dialogMode: this.state.dialogMode,
-      effect: this.state.effect,
-      isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-      newProjectName: this.state.newProjectName,
-      newProjectPath: this.state.newProjectPath,
-      newProjectShortName: data.value,
-      newProjectCreator: this.state.newProjectCreator,
-      newProjectDescription: this.state.newProjectDescription,
-    });
-  }
-
-  private _handleNewProjectCreatorChange(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.state == null) {
-      return;
-    }
-
-    this.setState({
-      gallery: this.state.gallery,
-      dialogMode: this.state.dialogMode,
-      effect: this.state.effect,
-      isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-      newProjectName: this.state.newProjectName,
-      newProjectPath: this.state.newProjectPath,
-      newProjectShortName: this.state.newProjectShortName,
-      newProjectCreator: data.value,
-      newProjectDescription: this.state.newProjectDescription,
-    });
-
-    if (this.props.carto) {
-      this.props.carto.creator = data.value;
-      this.props.carto.save();
-    }
   }
 
   componentDidUpdate(prevProps: IHomeProps, prevState: IHomeState) {
@@ -457,40 +424,37 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this.setState({
       gallery: this.state.gallery,
       search: this.state.search,
-      newProjectName: this.state.newProjectName,
+      newProjectSeed: this.state.newProjectSeed,
       isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-      newProjectCreator: this.state.newProjectCreator,
-      newProjectDescription: this.state.newProjectDescription,
-      newProjectPath: this.state.newProjectPath,
-      newGalleryProject: this.state.newGalleryProject,
       effect: HomeEffect.none,
       dialogMode: HomeDialogMode.none,
-      inlineMessage: "Downloading backup zip as '" + name + "'...",
+      inlineLoadingMessage: "Creating backup zip as '" + name + "'...",
+      inlineUpdateMessage: this.state.inlineUpdateMessage,
     });
 
-    const operId = await this.props.carto.notifyOperationStarted("Exporting all projects as zip.");
+    // give a pause for the state to update with the loading message.
+    window.setTimeout(async () => {
+      const operId = await this.props.carto.notifyOperationStarted("Exporting all projects as zip.");
 
-    const zipStorage = await this.props.carto.getExportZip();
+      const zipStorage = await this.props.carto.getExportZip();
 
-    const zipBinary = await zipStorage.generateBlobAsync();
+      const zipBinary = await zipStorage.generateBlobAsync();
 
-    await this.props.carto.notifyOperationEnded(operId, "Export of projects created; downloading");
+      await this.props.carto.notifyOperationEnded(operId, "Export of projects created; downloading");
 
-    saveAs(zipBinary, name);
+      saveAs(zipBinary, name);
 
-    this.setState({
-      gallery: this.state.gallery,
-      search: this.state.search,
-      newProjectName: this.state.newProjectName,
-      isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-      newProjectCreator: this.state.newProjectCreator,
-      newProjectDescription: this.state.newProjectDescription,
-      newProjectPath: this.state.newProjectPath,
-      newGalleryProject: this.state.newGalleryProject,
-      effect: HomeEffect.none,
-      dialogMode: HomeDialogMode.none,
-      inlineMessage: undefined,
-    });
+      this.setState({
+        gallery: this.state.gallery,
+        search: this.state.search,
+        newProjectSeed: this.state.newProjectSeed,
+        isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
+        effect: HomeEffect.none,
+        dialogMode: HomeDialogMode.none,
+        inlineLoadingMessage: undefined,
+        inlineUpdateMessage: this.state.inlineUpdateMessage,
+      });
+    }, 1);
   }
 
   async _updateCarto() {
@@ -532,11 +496,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       effect: this.state.effect,
       search: this.state.search,
       errorMessage: this.state.errorMessage,
-      newProjectName: this.state.newProjectName,
-      newProjectCreator: this.state.newProjectCreator,
-      newProjectDescription: this.state.newProjectDescription,
-      newProjectPath: this.state.newProjectPath,
-      newGalleryProject: this.state.newGalleryProject,
+      newProjectSeed: this.state.newProjectSeed,
       contextFocusedProject: this.state.contextFocusedProject,
     });
   }
@@ -549,45 +509,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
   private async _loadAsync() {
     // add any async loading code here.
     this.forceUpdate();
-  }
-
-  private async _handleSelectFolderClick() {
-    Log.debug("Opening folder via services.");
-
-    const result = await AppServiceProxy.sendAsync(AppServiceProxyCommands.openFolder, "");
-
-    if (result && result.length > 0) {
-      this.setState({
-        gallery: this.state.gallery,
-        dialogMode: this.state.dialogMode,
-        isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-        newProjectName: this.state.newProjectName,
-        newProjectPath: result,
-      });
-    }
-  }
-
-  private async _handleNewProjectSelectedClick() {
-    const projectName = await this.props.carto.getNewProjectName("Project");
-
-    this.setState({
-      gallery: this.state?.gallery,
-      dialogMode: HomeDialogMode.newProject,
-      isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-      newProjectName: projectName,
-      newProjectCreator: this.props.carto.creator,
-      newProjectDescription: this.state.newProjectDescription,
-    });
-  }
-
-  private async _handleNewProjectName() {
-    this.setState({
-      gallery: this.state?.gallery,
-      dialogMode: HomeDialogMode.newProject,
-      isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-      newProjectCreator: this.props.carto.creator,
-      newProjectDescription: this.state.newProjectDescription,
-    });
   }
 
   private _handleDialogCancel() {
@@ -612,11 +533,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             effect: this.state.effect,
             search: this.state.search,
             errorMessage: this.state.errorMessage,
-            newProjectName: this.state.newProjectName,
-            newProjectCreator: this.state.newProjectCreator,
-            newProjectDescription: this.state.newProjectDescription,
-            newProjectPath: this.state.newProjectPath,
-            newGalleryProject: this.state.newGalleryProject,
+            newProjectSeed: this.state.newProjectSeed,
             contextFocusedProject: curIndex,
           });
           e.preventDefault();
@@ -645,11 +562,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         search: this.state.search,
         isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
         errorMessage: this.state.errorMessage,
-        newProjectName: this.state.newProjectName,
-        newProjectCreator: this.state.newProjectCreator,
-        newProjectDescription: this.state.newProjectDescription,
-        newProjectPath: this.state.newProjectPath,
-        newGalleryProject: this.state.newGalleryProject,
+        newProjectSeed: this.state.newProjectSeed,
         contextFocusedProject: undefined,
       });
     }
@@ -683,27 +596,17 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     });
 
     if (
-      this.state.newGalleryProject &&
-      this.state.newProjectName !== undefined &&
+      this.state.newProjectSeed &&
+      this.state.newProjectSeed.name !== undefined &&
       this.props.onGalleryItemCommand !== undefined
     ) {
-      this.props.onGalleryItemCommand(
-        GalleryProjectCommand.newProject,
-        this.state.newGalleryProject,
-        this.state.newProjectName,
-        this.state.newProjectCreator,
-        this.state.newProjectShortName,
-        this.state.newProjectDescription
-      );
-    } else if (this.props.onNewProjectSelected && this.state?.newProjectName !== undefined) {
-      this.props.onNewProjectSelected(
-        this.state.newProjectName,
-        NewProjectTemplateType.gameTest,
-        this.state.newProjectCreator,
-        this.state.newProjectShortName,
-        this.state.newProjectPath,
-        this.state.newProjectDescription
-      );
+      this.props.onGalleryItemCommand(GalleryProjectCommand.newProject, this.state.newProjectSeed);
+    } else if (
+      this.props.onNewProjectSelected &&
+      this.state?.newProjectSeed &&
+      this.state.newProjectSeed.name !== undefined
+    ) {
+      this.props.onNewProjectSelected(this.state.newProjectSeed, NewProjectTemplateType.gameTest);
     }
   }
 
@@ -724,8 +627,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       search: this.state.search,
       effect: this.state.effect,
       isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-      newProjectName: this.state.newProjectName,
-      newProjectPath: this.state.newProjectPath,
+      newProjectSeed: this.state.newProjectSeed,
     });
   }
 
@@ -742,22 +644,8 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       mode: "readwrite",
     })) as FileSystemDirectoryHandle | undefined;
 
-    if (result && this.props.onNewProjectFromFolderInstanceSelected) {
-      const storage = new FileSystemStorage(result);
-
-      const safeMessage = await (storage.rootFolder as FileSystemFolder).getFirstUnsafeError();
-
-      if (safeMessage !== undefined) {
-        this.setState({
-          errorMessage:
-            "Folder has unsupported files within it. Please choose a folder on your device that only has Minecraft asset files in it (.json, .png, .mcfunction, etc.)\r\n\r\nDetails: " +
-            safeMessage,
-          dialogMode: HomeDialogMode.errorMessage,
-          isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-        });
-      } else {
-        this.props.onNewProjectFromFolderInstanceSelected(storage.rootFolder, result.name, isDocumentationProject);
-      }
+    if (result) {
+      await this._handleDirectoryHandle(result as FileSystemDirectoryHandle, isDocumentationProject);
     }
   }
 
@@ -795,18 +683,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
   }
 
-  private _handleToolTileMouseDown(event: MouseEvent) {
-    if (event.currentTarget && event.currentTarget.className.indexOf("tileDown") < 0) {
-      event.currentTarget.className = event.currentTarget.className + " home-tileDown";
-    }
-  }
-
-  private _handleToolTileMouseUp(event: MouseEvent) {
-    if (event.currentTarget && event.currentTarget.className.indexOf("tileDown") >= 0) {
-      event.currentTarget.className = event.currentTarget.className.replace(" home-tileDown", "");
-    }
-  }
-
   private _handleProjectGalleryCommand(command: GalleryProjectCommand, project: IGalleryItem) {
     if (command === GalleryProjectCommand.newProject) {
       this.setState({
@@ -816,11 +692,11 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         search: this.state.search,
         errorMessage: undefined,
         isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
-        newProjectName: ProjectUtilities.getSuggestedProjectName(project),
-        newProjectCreator: this.props.carto.creator,
-        newProjectPath: this.state.newProjectPath,
-        newGalleryProject: project,
-        newProjectDescription: this.state.newProjectDescription,
+        newProjectSeed: {
+          name: ProjectUtilities.getSuggestedProjectName(project),
+          creator: this.props.carto.creator,
+          galleryProject: project,
+        },
       });
     } else {
       if (this.props.onGalleryItemCommand !== undefined) {
@@ -904,8 +780,22 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       search: newSearch,
       isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
       effect: this.state.effect,
-      newProjectName: this.state.newProjectName,
-      newProjectPath: this.state.newProjectPath,
+      newProjectSeed: this.state.newProjectSeed,
+    });
+  }
+
+  private _handleNewProjectSeedUpdate(newSeed: IProjectSeed) {
+    if (this.state == null) {
+      return;
+    }
+
+    this.setState({
+      gallery: this.state.gallery,
+      dialogMode: this.state.dialogMode,
+      search: this.state.search,
+      isDeployingToComMojang: this.props.carto.isDeployingToComMojang,
+      effect: this.state.effect,
+      newProjectSeed: newSeed,
     });
   }
 
@@ -913,6 +803,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     const projectListItems: ShorthandValue<ListItemProps>[] = [];
 
     let dialogArea = <></>;
+    let localGallery = <></>;
     const webOnlyLinks: any[] = [];
     const browserWidth = WebUtilities.getWidth();
 
@@ -967,19 +858,34 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
     let gallery = [];
     let mainToolArea = [];
+    let messageArea = [];
     let toolBin: any[] = [];
 
-    gallery.push(
+    messageArea.push(
       <div className="home-areaLoading" key="loadingLabel">
         Loading...
       </div>
     );
 
     if (this.state !== null && this.state.gallery !== undefined) {
-      gallery = [];
+      messageArea = [];
 
-      if (this.state !== null && this.state.inlineMessage) {
-        gallery.push(
+      if (this.state !== null && this.state.inlineUpdateMessage) {
+        messageArea.push(
+          <div
+            className="home-inlineMessage"
+            key="loadingLabel"
+            style={{
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
+            }}
+          >
+            {this.state.inlineUpdateMessage}
+          </div>
+        );
+      }
+      if (this.state !== null && this.state.inlineLoadingMessage) {
+        messageArea.push(
           <div
             className="home-inlineMessage"
             key="loadingLabel"
@@ -989,7 +895,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             }}
           >
             <img className="home-loadingIcon" src="/loading.gif" alt="Waiting spinner" />
-            {this.state.inlineMessage}
+            {this.state.inlineLoadingMessage}
           </div>
         );
       }
@@ -1086,98 +992,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       }
     }
 
-    if (this.state?.dialogMode === HomeDialogMode.newProject) {
-      const additionalDialogButtons = [];
-
-      if (AppServiceProxy.hasAppServiceOrDebug) {
-        let path = this.state.newProjectPath;
-
-        if (path === undefined) {
-          let delimiter = "\\";
-
-          if (!AppServiceProxy.hasAppService) {
-            delimiter = "/";
-          }
-
-          path = this.carto?.projectsStorage.rootFolder.fullPath + delimiter + this.state.newProjectName;
-        }
-
-        additionalDialogButtons.push(
-          <div key="newFolderLabel" className="home-newFolder">
-            Store project at:
-          </div>
-        );
-
-        additionalDialogButtons.push(
-          <div className="home-newPath" key="newPath">
-            <div className="home-path">{path}</div>
-            <Button
-              onClick={this._handleSelectFolderClick}
-              content="Select Folder"
-              key="selectFolder"
-              icon={<LocalFolderLabel isCompact={true} />}
-              iconPosition="before"
-            />
-          </div>
-        );
-      }
-
-      const newDialogInnerContent = (
-        <div className="home-dialog">
-          <div className="home-newName">Title:</div>
-          <div className="home-newNameInput">
-            <Input
-              clearable
-              placeholder="Name"
-              key="newProjectName"
-              defaultValue={this.state.newProjectName}
-              onChange={this._handleNewProjectNameChange}
-            />
-          </div>
-          <div className="home-newCreator">Creator Name:</div>
-          <div className="home-newCreatorInput">
-            <Input
-              clearable
-              placeholder="Creator Name"
-              key="newCreatorName"
-              defaultValue={this.state.newProjectCreator}
-              onChange={this._handleNewProjectCreatorChange}
-            />
-          </div>
-          <div className="home-newShortName">Short Name:</div>
-          <div className="home-newShortNameInput">
-            <Input
-              clearable
-              placeholder={
-                this.state.newProjectCreator &&
-                this.state.newProjectCreator.length > 0 &&
-                this.state.newProjectName &&
-                this.state.newProjectName.length > 0
-                  ? ProjectUtilities.getSuggestedProjectShortName(
-                      this.state.newProjectCreator,
-                      this.state.newProjectName
-                    )
-                  : "short name"
-              }
-              key="newProjectShortName"
-              value={this.state.newProjectShortName !== "" ? this.state.newProjectShortName : undefined}
-              onChange={this._handleNewProjectShortNameChange}
-            />
-          </div>
-          <div className="home-newDescription">Description:</div>
-          <div className="home-newDescriptionInput">
-            <Input
-              clearable
-              placeholder={this.state.newProjectName ? this.state.newProjectName : "Description"}
-              key="newProjectDescription"
-              defaultValue={this.state.newProjectDescription}
-              onChange={this._handleNewProjectDescriptionChange}
-            />
-          </div>
-          {additionalDialogButtons}
-        </div>
-      );
-
+    if (this.state?.dialogMode === HomeDialogMode.newProject && this.state.newProjectSeed) {
       dialogArea = (
         <Dialog
           open={true}
@@ -1185,8 +1000,15 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           confirmButton="OK"
           onCancel={this._handleDialogCancel}
           onConfirm={this._handleNewProjectConfirm}
-          content={newDialogInnerContent}
-          header={"New Minecraft Project"}
+          content={
+            <NewProject
+              onNewProjectUpdated={this._handleNewProjectSeedUpdate}
+              projectSeed={this.state.newProjectSeed}
+              carto={this.props.carto}
+              theme={this.props.theme}
+            />
+          }
+          header={"New Minecraft " + this.state.newProjectSeed?.galleryProject?.title + " Project"}
         />
       );
     } else if (this.state?.dialogMode === HomeDialogMode.errorMessage) {
@@ -1551,7 +1373,9 @@ export default class Home extends Component<IHomeProps, IHomeState> {
                 height: browserWidth >= 800 ? "calc(100vh - " + (168 + this.props.heightOffset) + "px)" : "",
               }}
             >
+              {messageArea}
               {mainToolArea}
+              {localGallery}
               {gallery}
             </div>
           </div>

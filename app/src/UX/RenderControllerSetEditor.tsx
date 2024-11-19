@@ -8,12 +8,21 @@ import IProperty from "../dataform/IProperty";
 import RenderControllerSetDefinition from "../minecraft/RenderControllerSetDefinition";
 import IPersistable from "./IPersistable";
 import IFormDefinition from "../dataform/IFormDefinition";
+import DataFormProcessor from "../dataform/DataFormProcessor";
+
+export enum RenderControllerSetEditorFocus {
+  all,
+  geometry,
+  materials,
+  textures,
+}
 
 interface IRenderControllerSetEditorProps {
   heightOffset: number;
   readOnly: boolean;
   displayHeader?: boolean;
   isInline?: boolean;
+  focus: RenderControllerSetEditorFocus;
   theme: ThemeInput<any>;
   renderControllerSet?: RenderControllerSetDefinition;
   file?: IFile;
@@ -23,7 +32,11 @@ interface IRenderControllerSetEditorProps {
 interface IRenderControllerSetEditorState {
   fileToEdit?: IFile;
   renderControllerSet?: RenderControllerSetDefinition | undefined;
-  renderControllerForm?: IFormDefinition;
+  form?: IFormDefinition;
+  formMaterials?: IFormDefinition;
+  formTextures?: IFormDefinition;
+  formGeometry?: IFormDefinition;
+  formMisc?: IFormDefinition;
 }
 
 export default class RenderControllerSetEditor extends Component<
@@ -41,7 +54,7 @@ export default class RenderControllerSetEditor extends Component<
     this.state = {
       fileToEdit: props.file,
       renderControllerSet: undefined,
-      renderControllerForm: undefined,
+      form: undefined,
     };
 
     this._updateManager(true);
@@ -52,7 +65,7 @@ export default class RenderControllerSetEditor extends Component<
       state = {
         fileToEdit: props.file,
         renderControllerSet: undefined,
-        renderControllerForm: undefined,
+        form: undefined,
       };
 
       return state;
@@ -103,18 +116,30 @@ export default class RenderControllerSetEditor extends Component<
     }
 
     const form = await Database.ensureFormLoaded("render_controller_set");
+    const formMaterials = await Database.ensureFormLoaded("render_controller_set_materials");
+    const formTextures = await Database.ensureFormLoaded("render_controller_set_textures");
+    const formGeometry = await Database.ensureFormLoaded("render_controller_set_geometry");
+    const formMisc = await Database.ensureFormLoaded("render_controller_set_misc");
 
     if (setState) {
       this.setState({
         fileToEdit: this.props.file,
         renderControllerSet: selRenderControllerSet,
-        renderControllerForm: form,
+        form: form,
+        formMaterials: formMaterials,
+        formTextures: formTextures,
+        formGeometry: formGeometry,
+        formMisc: formMisc,
       });
     } else {
       this.state = {
         fileToEdit: this.props.file,
         renderControllerSet: selRenderControllerSet,
-        renderControllerForm: form,
+        form: form,
+        formMaterials: formMaterials,
+        formTextures: formTextures,
+        formGeometry: formGeometry,
+        formMisc: formMisc,
       };
     }
   }
@@ -126,16 +151,20 @@ export default class RenderControllerSetEditor extends Component<
       if (file.manager !== null) {
         const rcsd = file.manager as RenderControllerSetDefinition;
 
-        rcsd.persist();
+        await rcsd.persist();
       }
     } else if (this.state && this.state.renderControllerSet) {
-      this.state.renderControllerSet.persist();
+      await this.state.renderControllerSet.persist();
     }
   }
 
-  _handleDataFormPropertyChange(props: IDataFormProps, property: IProperty, newValue: any) {
+  async _handleDataFormPropertyChange(props: IDataFormProps, property: IProperty, newValue: any) {
     if (props.tagData && props.directObject) {
       const file = props.tagData as IFile;
+
+      if (this.state.form) {
+        await DataFormProcessor.process(props.directObject, this.state.form);
+      }
 
       const newData = JSON.stringify(props.directObject, null, 2);
 
@@ -146,7 +175,7 @@ export default class RenderControllerSetEditor extends Component<
   render() {
     const height = "calc(100vh - " + this.props.heightOffset + "px)";
 
-    if (this.state === null || !this.state.renderControllerSet || !this.state.renderControllerForm) {
+    if (this.state === null || !this.state.renderControllerSet || !this.state.form) {
       return <div>Loading...</div>;
     }
 
@@ -165,6 +194,26 @@ export default class RenderControllerSetEditor extends Component<
       outerClassName = "rencoe-inline";
     }
 
+    let form = this.state.form;
+
+    switch (this.props.focus) {
+      case RenderControllerSetEditorFocus.geometry:
+        if (this.state.formGeometry) {
+          form = this.state.formGeometry;
+        }
+        break;
+      case RenderControllerSetEditorFocus.materials:
+        if (this.state.formMaterials) {
+          form = this.state.formMaterials;
+        }
+        break;
+      case RenderControllerSetEditorFocus.textures:
+        if (this.state.formTextures) {
+          form = this.state.formTextures;
+        }
+        break;
+    }
+
     return (
       <div
         className={outerClassName}
@@ -177,7 +226,7 @@ export default class RenderControllerSetEditor extends Component<
         <div className="rencoe-mainArea">
           <div className="rencoe-form">
             <DataForm
-              definition={this.state.renderControllerForm}
+              definition={form}
               directObject={this.state.renderControllerSet.data}
               readOnly={false}
               theme={this.props.theme}

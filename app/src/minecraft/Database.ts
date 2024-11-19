@@ -26,6 +26,7 @@ import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from
 import StorageUtilities from "../storage/StorageUtilities";
 import ISnippet from "../app/ISnippet";
 import IGalleryItem from "../app/IGalleryItem";
+import { MinecraftTrack } from "../app/ICartoData";
 
 export default class Database {
   static isLoaded = false;
@@ -55,6 +56,9 @@ export default class Database {
   private static _pendingLoadVanillaRequests: ((value: unknown) => void)[] = [];
 
   static dataPath: string = "res/latest/";
+
+  static minecraftEduVersion = "1.21.0";
+  static minecraftEduPreviewVersion = "1.21.0";
 
   static minecraftModuleNames = [
     "@minecraft/server-gametest",
@@ -90,7 +94,7 @@ export default class Database {
     return Database._defaultBlockBaseType;
   }
 
-  static async ensureFormLoaded(name: string) {
+  static async ensureFormLoaded(name: string): Promise<IFormDefinition | undefined> {
     name = name.toLowerCase();
 
     if (Database.uxCatalog[name] !== undefined) {
@@ -103,10 +107,12 @@ export default class Database {
       Database.uxCatalog[name] = response.data;
       Database.loadedFormCount++;
 
-      return response.data;
+      return response.data as IFormDefinition;
     } catch {
       Log.fail("Could not load UX file for '" + name + "'.");
     }
+
+    return undefined;
   }
 
   static getForm(name: string) {
@@ -170,7 +176,7 @@ export default class Database {
       return false;
     }
 
-    const ver = await this.getLatestVersionInfo(false);
+    const ver = await this.getLatestVersionInfo(MinecraftTrack.main);
 
     if (!ver) {
       return false;
@@ -245,12 +251,20 @@ export default class Database {
     return undefined;
   }
 
-  static async getLatestVersionInfo(preview: boolean, force?: boolean) {
-    if (preview && Database.latestPreviewVersion && !force) {
+  static async getLatestVersionInfo(track: MinecraftTrack, force?: boolean) {
+    if (track === MinecraftTrack.edu) {
+      return Database.minecraftEduVersion;
+    }
+
+    if (track === MinecraftTrack.eduPreview) {
+      return Database.minecraftEduPreviewVersion;
+    }
+
+    if (track === MinecraftTrack.preview && Database.latestPreviewVersion && !force) {
       return Database.latestPreviewVersion;
     }
 
-    if (!preview && Database.latestVersion && !force) {
+    if (track === MinecraftTrack.main && Database.latestVersion && !force) {
       return Database.latestVersion;
     }
 
@@ -258,7 +272,7 @@ export default class Database {
 
     let versionUrl = "https://raw.githubusercontent.com/Mojang/bedrock-samples/main/version.json";
 
-    if (preview) {
+    if (track === MinecraftTrack.preview) {
       versionUrl = "https://raw.githubusercontent.com/Mojang/bedrock-samples/preview/version.json";
     }
 
@@ -290,7 +304,11 @@ export default class Database {
 
           const versionIndex = Database.getVersionIndexFromVersionStr(ver);
 
-          if (versionIndex > 0 && versionIndex > latestVersionIndex && isPreview === preview) {
+          if (
+            versionIndex > 0 &&
+            versionIndex > latestVersionIndex &&
+            ((isPreview && track === MinecraftTrack.preview) || (!isPreview && track === MinecraftTrack.main))
+          ) {
             latestVersionIndex = versionIndex;
 
             // re-constitute the version number ourselves
@@ -307,7 +325,7 @@ export default class Database {
     }
 
     if (latestVerStr && latestVerStr.length > 0) {
-      if (preview) {
+      if (track === MinecraftTrack.preview) {
         Database.latestPreviewVersion = latestVerStr;
       } else {
         Database.latestVersion = latestVerStr;

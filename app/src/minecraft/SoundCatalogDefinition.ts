@@ -5,10 +5,10 @@ import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import { ISoundCatalog } from "./ISoundCatalog";
+import { IEntitySounds, ISoundCatalog, ISoundEventCatalog, ISoundEventSet } from "./ISoundCatalog";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
-import { ProjectItemType } from "../app/IProjectItemData";
+import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition";
 import Database from "./Database";
 import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
@@ -30,8 +30,13 @@ export default class SoundCatalogDefinition {
   public get file() {
     return this._file;
   }
+
   public get onLoaded() {
     return this._onLoaded.asEvent();
+  }
+
+  public get data() {
+    return this._data;
   }
 
   public set file(newFile: IFile | undefined) {
@@ -152,6 +157,108 @@ export default class SoundCatalogDefinition {
     }
 
     return soundEventNameList;
+  }
+
+  public ensureEntityEvent(idSound: string) {
+    this.ensureDefault();
+
+    if (!this._data) {
+      return;
+    }
+
+    let es: IEntitySounds | undefined = this._data.entity_sounds;
+
+    if (es === undefined) {
+      es = {
+        entities: {},
+      };
+
+      this._data.entity_sounds = es;
+    }
+
+    let entities: ISoundEventCatalog | undefined = es.entities;
+
+    if (entities === undefined) {
+      entities = {};
+
+      es.entities = entities;
+    }
+
+    let elt: ISoundEventSet | undefined = entities[idSound];
+
+    if (!elt) {
+      if (idSound.startsWith("minecraft:")) {
+        elt = entities[idSound.substring(10)];
+      }
+
+      if (!elt) {
+        elt = {
+          events: {},
+        };
+      }
+
+      entities[idSound] = elt;
+
+      return elt;
+    }
+
+    return elt;
+  }
+
+  public ensureDefault() {
+    if (this._data === undefined) {
+      this._data = {};
+    }
+  }
+
+  static async ensureForProject(project: Project) {
+    const items = project.getItemsCopy();
+
+    for (const item of items) {
+      if (item.itemType === ProjectItemType.soundCatalog) {
+        await item.ensureFileStorage();
+
+        if (item.file) {
+          const soundCatalog = await SoundCatalogDefinition.ensureOnFile(item.file);
+
+          if (soundCatalog) {
+            return soundCatalog;
+          }
+        }
+      }
+    }
+
+    const defaultRpFolder = await project.getDefaultResourcePackFolder();
+
+    if (defaultRpFolder) {
+      const newFile = defaultRpFolder.ensureFile("sounds.json");
+
+      const soundGen = await SoundCatalogDefinition.ensureOnFile(newFile);
+
+      if (soundGen) {
+        soundGen.ensureDefault();
+
+        if (project.projectFolder) {
+          const projectPath = newFile.getFolderRelativePath(project.projectFolder);
+
+          if (projectPath) {
+            project.ensureItemByProjectPath(
+              projectPath,
+              ProjectItemStorageType.singleFile,
+              newFile.name,
+              ProjectItemType.soundCatalog,
+              undefined,
+              ProjectItemCreationType.normal,
+              newFile
+            );
+          }
+        }
+
+        return soundGen;
+      }
+    }
+
+    return undefined;
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<SoundCatalogDefinition, SoundCatalogDefinition>) {
