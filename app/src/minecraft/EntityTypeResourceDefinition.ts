@@ -73,7 +73,7 @@ export default class EntityTypeResourceDefinition {
       const texturePath = this._data.textures[key];
 
       if (texturePath) {
-        textureList.push(texturePath);
+        textureList.push(texturePath.toLowerCase());
       }
     }
 

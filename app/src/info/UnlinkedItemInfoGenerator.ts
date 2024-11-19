@@ -42,6 +42,7 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
             )
           );
         } else {
+          // UNLINK204
           items.push(
             new ProjectInfoItem(
               InfoItemType.error,
