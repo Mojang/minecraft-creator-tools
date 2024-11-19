@@ -700,7 +700,9 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       });
     } else {
       if (this.props.onGalleryItemCommand !== undefined) {
-        this.props.onGalleryItemCommand(command, project);
+        this.props.onGalleryItemCommand(command, {
+          galleryProject: project,
+        });
       }
     }
   }
