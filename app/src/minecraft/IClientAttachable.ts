@@ -13,7 +13,7 @@ export interface IClientAttachable {
 export interface IClientAttachableDescription {
   identifier: string;
   materials: { [identifier: string]: string };
-  textures: { [identifier: string]: string };
+  textures: { [identifier: string]: string | undefined };
 
   geometry: { [identifier: string]: string };
   particle_effects: { [identifier: string]: string };

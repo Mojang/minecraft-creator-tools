@@ -365,30 +365,14 @@ export default class EntityTypeResourceEditor extends Component<
       title: "Audio",
     });
 
-    const definitionFile = this.state.fileToEdit.manager as EntityTypeResourceDefinition;
-    const def = definitionFile._dataWrapper;
+    const resourceDefinition = this.state.fileToEdit.manager as EntityTypeResourceDefinition;
+    const def = resourceDefinition.dataWrapper;
 
     if (def === undefined) {
       return <div>Loading definition...</div>;
     }
 
-    let defInner = def["minecraft:client_entity"];
-    if (defInner === undefined) {
-      defInner = {
-        description: {
-          identifier: "",
-          materials: {},
-          textures: {},
-          geometry: {},
-          animation_controllers: {},
-          particle_effects: {},
-          animations: {},
-          render_controllers: [],
-          scripts: {},
-        },
-      };
-      def["minecraft:client_entity"] = defInner;
-    }
+    let resourceData = resourceDefinition.ensureData();
 
     let form = undefined;
     let focus = RenderControllerSetEditorFocus.all;
@@ -492,7 +476,7 @@ export default class EntityTypeResourceEditor extends Component<
       mainInterior = (
         <DataForm
           definition={form}
-          directObject={defInner.description}
+          directObject={resourceData}
           readOnly={false}
           theme={this.props.theme}
           objectKey={this.props.file.storageRelativePath}

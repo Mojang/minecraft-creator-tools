@@ -5,7 +5,7 @@ import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import { IEntityTypeResourceDescription, IEntityTypeResourceWrapper } from "./IEntityTypeResource";
+import { IEntityTypeResource, IEntityTypeResourceDescription, IEntityTypeResourceWrapper } from "./IEntityTypeResource";
 import Project from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
@@ -20,7 +20,7 @@ import IProjectItemRelationship from "../app/IProjectItemRelationship";
 import MinecraftDefinitions from "./MinecraftDefinitions";
 
 export default class EntityTypeResourceDefinition {
-  public _dataWrapper?: IEntityTypeResourceWrapper;
+  private _dataWrapper?: IEntityTypeResourceWrapper;
   private _file?: IFile;
   private _isLoaded: boolean = false;
   private _data?: IEntityTypeResourceDescription;
@@ -31,9 +31,18 @@ export default class EntityTypeResourceDefinition {
     return this._isLoaded;
   }
 
+  public get dataWrapper() {
+    return this._data;
+  }
+
+  public get data() {
+    return this._data;
+  }
+
   public get file() {
     return this._file;
   }
+
   public get onLoaded() {
     return this._onLoaded.asEvent();
   }
@@ -285,6 +294,42 @@ export default class EntityTypeResourceDefinition {
     }
 
     return et;
+  }
+
+  ensureData() {
+    if (this._data) {
+      return this._data;
+    }
+
+    const newDef: IEntityTypeResource = {
+      description: {
+        identifier: "",
+        materials: {},
+        textures: {},
+        geometry: {},
+        animation_controllers: {},
+        particle_effects: {},
+        animations: {},
+        render_controllers: [],
+        scripts: {},
+      },
+    };
+
+    if (!this._dataWrapper) {
+      this._dataWrapper = { format_version: "1.10.0", "minecraft:client_entity": newDef };
+      this._data = this._dataWrapper["minecraft:client_entity"].description;
+      return this._data;
+    }
+
+    if (
+      this._dataWrapper["minecraft:client_entity"] === undefined ||
+      this._dataWrapper["minecraft:client_entity"].description === undefined
+    ) {
+      this._dataWrapper["minecraft:client_entity"] = newDef;
+    }
+
+    this._data = this._dataWrapper["minecraft:client_entity"].description;
+    return this._data;
   }
 
   persist() {

@@ -147,6 +147,26 @@ export default class ContentIndex implements IContentIndex {
     this.#data = data;
   }
 
+  hasPathMatches(pathEnd: string) {
+    pathEnd = pathEnd.toLowerCase();
+
+    for (let path of this.data.items) {
+      if (path.startsWith("/")) {
+        const lastPeriod = path.lastIndexOf(".");
+
+        if (lastPeriod >= 0) {
+          path = path.substring(0, lastPeriod);
+        }
+
+        if (path.endsWith(pathEnd)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   async getMatches(searchString: string) {
     searchString = searchString.trim().toLowerCase();
 

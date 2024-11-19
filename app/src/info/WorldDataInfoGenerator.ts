@@ -62,6 +62,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     info.chunkCount = infoSet.getSummedNumberValue("WORLDDATA", 101);
 
     info.subchunkLessChunkCount = infoSet.getSummedNumberValue("WORLDDATA", 107);
+
     info.worldLoadErrors = infoSet.getCount("WORLDDATA", 400);
   }
 

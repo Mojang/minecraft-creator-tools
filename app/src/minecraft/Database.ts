@@ -624,7 +624,7 @@ export default class Database {
     return Database.defaultBehaviorPackFolder;
   }
 
-  static async loadDefaultResourcePack() {
+  static async getDefaultResourcePack() {
     if (Database.defaultResourcePackFolder !== null) {
       return Database.defaultResourcePackFolder;
     }
@@ -791,6 +791,60 @@ export default class Database {
     }
 
     return Database.libs;
+  }
+
+  static async matchesVanillaPath(path: string) {
+    const rpFolder = await Database.getDefaultResourcePack();
+
+    if (rpFolder && rpFolder.folderCount > 0) {
+      path = Utilities.ensureStartsWithSlash(path);
+
+      const folder = await rpFolder.getFolderFromRelativePath(StorageUtilities.getFolderPath(path));
+
+      if (!folder) {
+        return false;
+      }
+
+      const exists = await folder.exists();
+
+      if (!exists) {
+        return false;
+      }
+
+      const itemName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(path)).toLowerCase();
+
+      await folder.load();
+
+      for (let fileName in folder.files) {
+        if (fileName && StorageUtilities.getBaseFromName(fileName).toLowerCase() === itemName) {
+          return true;
+        }
+      }
+    } else {
+      let res = await Database.matchesVanillaPathFromIndex(path);
+
+      return res;
+    }
+
+    return false;
+  }
+
+  static async matchesVanillaPathFromIndex(path: string) {
+    if (!Database.vanillaContentIndex) {
+      await this.loadVanillaInfoData();
+    }
+
+    if (!Database.vanillaContentIndex) {
+      return false;
+    }
+
+    let result = Database.vanillaContentIndex.hasPathMatches(path);
+
+    if (!result) {
+      result = await Database.isVanillaToken(path);
+    }
+
+    return result;
   }
 
   static async isVanillaToken(path: string) {

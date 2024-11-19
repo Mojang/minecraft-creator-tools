@@ -1,8 +1,11 @@
+import AttachableResourceDefinition from "../minecraft/AttachableResourceDefinition";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
+import ItemTextureCatalogDefinition from "../minecraft/ItemTextureCatalogDefinition";
 import MusicDefinitionCatalogDefinition from "../minecraft/MusicDefinitionCatalogDefinition";
 import SoundCatalogDefinition from "../minecraft/SoundCatalogDefinition";
 import SoundDefinitionCatalogDefinition from "../minecraft/SoundDefinitionCatalogDefinition";
+import TerrainTextureCatalogDefinition from "../minecraft/TerrainTextureCatalogDefinition";
 import { ProjectItemType } from "./IProjectItemData";
 import Project from "./Project";
 import ProjectItem from "./ProjectItem";
@@ -36,6 +39,36 @@ export default class ProjectItemRelations {
 
           if (entityTypeResource) {
             await entityTypeResource.addChildItems(project, item);
+          }
+        }
+      } else if (item.itemType === ProjectItemType.attachableResourceJson) {
+        await item.ensureStorage();
+
+        if (item.file) {
+          const attachableResource = await AttachableResourceDefinition.ensureOnFile(item.file);
+
+          if (attachableResource) {
+            await attachableResource.addChildItems(project, item);
+          }
+        }
+      } else if (item.itemType === ProjectItemType.itemTextureJson) {
+        await item.ensureStorage();
+
+        if (item.file) {
+          const itemTextures = await ItemTextureCatalogDefinition.ensureOnFile(item.file);
+
+          if (itemTextures) {
+            await itemTextures.addChildItems(project, item);
+          }
+        }
+      } else if (item.itemType === ProjectItemType.terrainTextureCatalogResourceJson) {
+        await item.ensureStorage();
+
+        if (item.file) {
+          const terrainTexture = await TerrainTextureCatalogDefinition.ensureOnFile(item.file);
+
+          if (terrainTexture) {
+            await terrainTexture.addChildItems(project, item);
           }
         }
       } else if (item.itemType === ProjectItemType.soundDefinitionCatalog) {
@@ -87,6 +120,16 @@ export default class ProjectItemRelations {
 
             if (entityTypeResource) {
               await entityTypeResource.deleteLink(rel);
+            }
+          }
+        } else if (rel.parentItem.itemType === ProjectItemType.attachableResourceJson) {
+          await item.ensureStorage();
+
+          if (rel.parentItem.file) {
+            const attachableResource = await AttachableResourceDefinition.ensureOnFile(rel.parentItem.file);
+
+            if (attachableResource) {
+              await attachableResource.deleteLink(rel);
             }
           }
         } else if (rel.parentItem.itemType === ProjectItemType.soundCatalog) {

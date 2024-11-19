@@ -36,17 +36,29 @@ export default class SoundDefinitionCatalogDefinition {
   }
 
   public get soundDefinitionSoundInstanceList() {
-    if (!this._data || !this._data.sound_definitions) {
+    if (!this._data) {
       return undefined;
     }
 
     const soundList = [];
 
-    for (const key in this._data.sound_definitions) {
-      const soundDefSet = this._data.sound_definitions[key];
+    if (this._data.sound_definitions) {
+      for (const key in this._data.sound_definitions) {
+        const soundDefSet = this._data.sound_definitions[key];
 
-      for (const sound of soundDefSet.sounds) {
-        soundList.push(sound);
+        for (const sound of soundDefSet.sounds) {
+          soundList.push(sound);
+        }
+      }
+    } else {
+      for (const key in this._data) {
+        if (key !== "format_version" && key !== "sound_definitions") {
+          const soundDefSet = (this._data as any)[key] as ISoundDefinition;
+
+          for (const sound of soundDefSet.sounds) {
+            soundList.push(sound);
+          }
+        }
       }
     }
 
@@ -338,6 +350,7 @@ export default class SoundDefinitionCatalogDefinition {
 
     return retSoundDefs;
   }
+
   async addChildItems(project: Project, item: ProjectItem) {
     const itemsCopy = project.getItemsCopy();
 

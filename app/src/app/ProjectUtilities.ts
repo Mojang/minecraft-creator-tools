@@ -764,7 +764,7 @@ export default class ProjectUtilities {
 
     if (galleryProject.gitHubRepoName === "bedrock-samples") {
       sourceBpFolder = await Database.loadDefaultBehaviorPack();
-      sourceRpFolder = await Database.loadDefaultResourcePack();
+      sourceRpFolder = await Database.getDefaultResourcePack();
     } else {
       const gh = new HttpStorage(
         CartoApp.contentRoot +

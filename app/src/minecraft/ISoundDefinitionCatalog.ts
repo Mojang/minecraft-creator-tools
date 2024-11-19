@@ -4,6 +4,15 @@
 export interface ISoundDefinitionCatalog {
   format_version: string;
   sound_definitions: { [name: string]: ISoundDefinition };
+
+  // note there is a format that is just:
+  // {
+  //   "ns:mysound.foo" : {
+  //     "sounds": [
+  //        "name": "sounds/foo"
+  //     ]
+  //   }
+  // }
 }
 
 export interface ISoundDefinition {

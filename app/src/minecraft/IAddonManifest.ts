@@ -17,8 +17,15 @@ export interface IResourcePackManifest {
   header: IResourceAddonManifestHeader;
   modules: IAddonModule[];
   dependencies: IAddonDependency[];
+  subpacks?: IAddonSubpack[];
   metadata?: IAddonMetadata;
   capabilities?: string[];
+}
+
+export interface IAddonSubpack {
+  folder_name?: string;
+  name: string;
+  memory_tier: number;
 }
 
 export interface ISkinPackManifest {

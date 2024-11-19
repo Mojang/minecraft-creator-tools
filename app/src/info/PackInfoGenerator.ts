@@ -6,7 +6,7 @@ import Project from "../app/Project";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
-import IAddonManifest from "../minecraft/IAddonManifest";
+import IAddonManifest, { IResourcePackManifest } from "../minecraft/IAddonManifest";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import StorageUtilities from "../storage/StorageUtilities";
@@ -42,6 +42,13 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
     info.defaultResourcePackMinEngineVersion = infoSet.getFirstNumberArrayValue("PACK", 11);
     info.defaultResourcePackName = infoSet.getFirstNumberArrayValue("PACK", 14);
     info.defaultResourcePackDescription = infoSet.getFirstNumberArrayValue("PACK", 15);
+
+    info.subpackCount = infoSet.getFirstNumberValue("PACK", 18);
+
+    info.subpackTier1Count = infoSet.getCount("PACK", 41);
+    info.subpackTier2Count = infoSet.getCount("PACK", 42);
+    info.subpackTier3Count = infoSet.getCount("PACK", 43);
+    info.subpackTier4Count = infoSet.getCount("PACK", 44);
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
@@ -164,10 +171,31 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
           }
         }
       } else if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
-        const obj = (await pi.getJsonObject()) as IAddonManifest;
+        const obj = (await pi.getJsonObject()) as IResourcePackManifest;
 
         if (obj) {
           items.push(new ProjectInfoItem(InfoItemType.info, this.id, 13, "Resource pack manifest", pi, obj));
+
+          if (obj.subpacks) {
+            if (Array.isArray(obj.subpacks)) {
+              items.push(new ProjectInfoItem(InfoItemType.info, this.id, 18, "Subpacks", pi, obj.subpacks.length));
+
+              for (const sp of obj.subpacks) {
+                if (sp.memory_tier) {
+                  items.push(
+                    new ProjectInfoItem(
+                      InfoItemType.info,
+                      this.id,
+                      40 + sp.memory_tier,
+                      "Subpack Memory Tier",
+                      pi,
+                      sp.name
+                    )
+                  );
+                }
+              }
+            }
+          }
 
           if (obj.format_version) {
             items.push(

@@ -10,7 +10,6 @@ import Project from "../app/Project";
 import Database from "../minecraft/Database";
 import StorageUtilities from "../storage/StorageUtilities";
 import ContentIndex from "../core/ContentIndex";
-import TextureInfoGenerator from "./TextureInfoGenerator";
 import { Exifr } from "exifr";
 
 export default class TextureImageInfoGenerator implements IProjectInfoGenerator {
@@ -42,8 +41,6 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
     const textureImagePi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 1, "Texture Images");
     items.push(textureImagePi);
 
-    const rpFolder = await Database.loadDefaultResourcePack();
-
     const itemsCopy = project.getItemsCopy();
 
     for (const projectItem of itemsCopy) {
@@ -58,7 +55,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
 
           if (pathInRp) {
             pathInRp = StorageUtilities.getBaseFromName(StorageUtilities.ensureNotStartsWithDelimiter(pathInRp));
-            if (await TextureInfoGenerator.matchesVanillaPath(pathInRp, rpFolder)) {
+            if (await Database.matchesVanillaPath(pathInRp)) {
               textureImagePi.incrementFeature("Vanilla Override Texture");
               isVanilla = true;
             } else {

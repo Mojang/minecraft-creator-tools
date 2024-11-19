@@ -14,5 +14,10 @@ export interface ITextureDataSet {
 
 export interface ITextureDataItem {
   sound: string;
-  textures: string | string[];
+  textures: string | string[] | ITextureInstance[];
+}
+
+export interface ITextureInstance {
+  path: string;
+  overlay_color: string;
 }
