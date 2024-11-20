@@ -6,7 +6,6 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/addon_starter/start",
-      "localLogo": "blocks/barrel_bottom.png",
       "id": "addonStarter",
       "type": 0
     },
@@ -16,7 +15,6 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/ts-starter",
-      "localLogo": "blocks/cartography_table_side2.png",
       "id": "tsStarter",
       "type": 0
     },
@@ -26,7 +24,6 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/addon_starter/complete",
-      "localLogo": "blocks/cartography_table_side2.png",
       "id": "addonFull",
       "type": 0
     },
@@ -36,7 +33,6 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/script-box",
-      "localLogo": "blocks/cartography_table_side1.png",
       "id": "scriptBox",
       "type": 0
     },
@@ -46,7 +42,6 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/editor-script-box",
-      "localLogo": "map/map_background.png",
       "tags": ["editor"],
       "id": "editor-scriptBox",
       "type": 0
@@ -57,7 +52,6 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/editor-basics",
-      "localLogo": "map/map_background.png",
       "id": "editor-basics",
       "tags": ["editor"],
       "type": 0
@@ -68,7 +62,6 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/ts-starter-complete-cotta",
-      "localLogo": "blocks/glazed_terracotta_yellow.png",
       "id": "cottaGame",
       "type": 0
     },
@@ -78,7 +71,6 @@
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-scripting-samples",
       "gitHubFolder": "/custom-components",
-      "localLogo": "items/potion_bottle_damageBoost.png",
       "id": "registeringExampleCustomComponent",
       "type": 0
     },
@@ -1052,7 +1044,6 @@
       "description": "The tall and mysterious Enderman is a neutral mob that can be seen during late nights, standing in the distance while staring blindly into the horizon before teleporting away.",
       "gitHubOwner": "mojang",
       "gitHubRepoName": "bedrock-samples",
-      "localLogo": "entity/enderman/enderman.tga",
       "id": "enderman",
       "type": 4,
       "logoLocation": { "x": 28, "y": 46, "width": 8, "height": 8, "imageWidth": 64 },
@@ -1122,7 +1113,6 @@
       "description": "Sheep can provide you with wool, which is a useful material in many crafting recipes and can be dyed into different colors.",
       "gitHubOwner": "mojang",
       "gitHubRepoName": "bedrock-samples",
-      "localLogo": "entity/sheep/sheep.tga",
       "id": "sheep",
       "type": 4,
       "logoLocation": { "x": 28, "y": 46, "width": 8, "height": 8, "imageWidth": 64 },

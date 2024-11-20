@@ -710,6 +710,8 @@ export default class ProjectInfoSet {
       }
     }
 
+    Utilities.encodeObjectWithSequentialRunLengthEncodeUsingNegative(this.contentIndex.data.trie);
+
     return {
       info: this.info,
       items: items,
@@ -1753,8 +1755,9 @@ function _addReportJson(data) {
 
   getCount(validatorName: string, validatorId: number) {
     let sum = 0;
+
     for (const item of this.items) {
-      if (item.generatorId === validatorName && item.generatorIndex === validatorId && item.data) {
+      if (item.generatorId === validatorName && item.generatorIndex === validatorId) {
         sum++;
       }
     }

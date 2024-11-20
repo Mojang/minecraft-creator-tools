@@ -89,6 +89,7 @@ export default class BlockActorFactory {
       case "SuspiciousGravel":
       case "Piston":
       case "MovingBlock":
+      case "Vault":
         return new GenericBlockActor(rootTagIn);
 
       case "Bed":

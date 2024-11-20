@@ -50,7 +50,8 @@
     "threads": "^1.7.0",
     "trash": "^8.0.0",
     "tui-grid": "^4.18.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "waveform-playlist": "^4.3.3"
   },
   "scripts": {
     "devenv": "gulp devenv --max_old_space_size=16384",
@@ -59,7 +60,7 @@
     "webbuild": "cross-env CI=true react-scripts --max_old_space_size=16384 build",
     "jsnbuild": "gulp jsnbuild",
     "jsncorebuild": "gulp jsncorebuild",
-    "process": "npx ./toolbuild/jsn/ validate --force -ot noreports -i ./public/res/latest/van/ -o ./public/data && gulp copyjsnodedata",
+    "process": "npx ./toolbuild/jsn/ validate --force -ot noreports -i ./public/res/latest/van/release/ -o ./public/data && npx gulp copyjsnodedata",
     "all": "npm install && npm run-script allbuild",
     "allbuild": "npm run-script devenvandjsnbuild && npm run-script webbuild",
     "devenvandjsnbuild": "npm run-script devenv && npm run-script jsnbuild && npm run-script process",
@@ -119,6 +120,7 @@
     "@minecraft/server-ui": "^1.4.0-beta.1.21.30-preview.25",
     "@minecraft/vanilla-data": "^1.21.22",
     "@octokit/rest": "^18.5.2",
+    "@npm/types": "^1.0.2",
     "@octokit/types": "^6.13.0",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.1",

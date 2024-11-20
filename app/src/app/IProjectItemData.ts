@@ -44,7 +44,7 @@ export enum ProjectItemType {
   lootTableBehavior = 24,
   biomeResourceJson = 25,
   blocksCatalogResourceJson = 26,
-  soundsCatalogResourceJson = 27,
+  soundCatalog = 27,
   animationResourceJson = 28,
   animationControllerResourceJson = 29,
   entityTypeResource = 30,
@@ -68,7 +68,7 @@ export enum ProjectItemType {
   itemTypeResourceJson = 48,
   materialsResourceJson = 49,
   musicDefinitionJson = 50,
-  soundDefinitionJson = 51,
+  soundDefinitionCatalog = 51,
   blockTypeResourceJson = 52, // deprecated. Duplicate of blocksCatalogResourceJson
   MCAddon = 53,
   zip = 54,

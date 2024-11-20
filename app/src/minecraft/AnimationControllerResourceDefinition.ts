@@ -13,12 +13,16 @@ export default class AnimationControllerResourceDefinition {
   private _id?: string;
   private _isLoaded: boolean = false;
 
-  public data?: IResourceAnimationControllerDefinition;
+  private _data?: IResourceAnimationControllerDefinition;
 
   private _onLoaded = new EventDispatcher<
     AnimationControllerResourceDefinition,
     AnimationControllerResourceDefinition
   >();
+
+  public get data() {
+    return this._data;
+  }
 
   public get isLoaded() {
     return this._isLoaded;
@@ -44,6 +48,24 @@ export default class AnimationControllerResourceDefinition {
     this._id = newId;
   }
 
+  public get idList() {
+    if (!this._data || !this._data.animation_controllers) {
+      return undefined;
+    }
+
+    const idList = [];
+
+    for (const key in this._data.animation_controllers) {
+      const ac = this._data.animation_controllers[key];
+
+      if (key && ac) {
+        idList.push(key);
+      }
+    }
+
+    return idList;
+  }
+
   public get shortId() {
     if (this._id !== undefined) {
       if (this._id.startsWith("minecraft:")) {
@@ -67,24 +89,24 @@ export default class AnimationControllerResourceDefinition {
   }
 
   public getFormatVersion(): number[] | undefined {
-    if (!this.data || !this.data.format_version) {
+    if (!this._data || !this._data.format_version) {
       return undefined;
     }
 
-    return MinecraftUtilities.getVersionArrayFrom(this.data.format_version);
+    return MinecraftUtilities.getVersionArrayFrom(this._data.format_version);
   }
 
   setResourcePackFormatVersion(versionStr: string) {
     this._ensureDataInitialized();
 
-    if (this.data) {
-      this.data.format_version = versionStr;
+    if (this._data) {
+      this._data.format_version = versionStr;
     }
   }
 
   _ensureDataInitialized() {
-    if (this.data === undefined) {
-      this.data = {
+    if (this._data === undefined) {
+      this._data = {
         format_version: "1.12.0",
         animation_controllers: {},
       };
@@ -123,7 +145,7 @@ export default class AnimationControllerResourceDefinition {
       return;
     }
 
-    const bpString = JSON.stringify(this.data, null, 2);
+    const bpString = JSON.stringify(this._data, null, 2);
 
     this._file.setContent(bpString);
   }
@@ -139,7 +161,7 @@ export default class AnimationControllerResourceDefinition {
       return;
     }
 
-    this.data = StorageUtilities.getJsonObject(this._file);
+    this._data = StorageUtilities.getJsonObject(this._file);
 
     this._isLoaded = true;
   }

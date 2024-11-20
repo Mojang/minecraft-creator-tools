@@ -47,7 +47,12 @@ export default class BlockTypeTile extends Component<IBlockTypeTileProps, IBlock
         <img
           className="btt-icon"
           alt=""
-          src={CartoApp.contentRoot + "res/latest/van/resource_pack/textures/blocks/" + blockType.getIcon() + ".png"}
+          src={
+            CartoApp.contentRoot +
+            "res/latest/van/release/resource_pack/textures/blocks/" +
+            blockType.getIcon() +
+            ".png"
+          }
         />
       );
     }

@@ -27,7 +27,10 @@ import Project, { ProjectAutoDeploymentMode } from "../app/Project.js";
 import ProjectExporter from "../app/ProjectExporter.js";
 import Utilities from "../core/Utilities.js";
 import { ProjectInfoSuite } from "../info/IProjectInfoData.js";
-import NodeFolder from "../local/NodeFolder.js";
+import MinecraftUtilities from "../minecraft/MinecraftUtilities.js";
+import { IWorldSettings } from "../minecraft/IWorldSettings.js";
+import { IMinecraftStartMessage } from "../app/IMinecraftStartMessage.js";
+import ServerManager, { ServerManagerFeatures } from "../local/ServerManager.js";
 
 if (typeof btoa === "undefined") {
   // @ts-ignore
@@ -63,8 +66,20 @@ let newName: string | undefined;
 let newDescription: string | undefined;
 let template: string | undefined;
 let creator: string | undefined;
+let serverHostPort: number | undefined;
 let suite: string | undefined;
 let outputType: OutputType | undefined;
+let serverFeatures: ServerManagerFeatures | undefined;
+let serverTitle: string | undefined;
+let serverDomainName: string | undefined;
+let serverMessageOfTheDay: string | undefined;
+
+let serverCandidateAdminPasscode: string | undefined;
+let serverCandidateDisplayReadOnlyPasscode: string | undefined;
+let serverCandidateFullReadOnlyPasscode: string | undefined;
+let serverCandidateUpdateStatePasscode: string | undefined;
+let serverRunOnce: boolean | undefined;
+
 let aggregateReportsAfterValidation: boolean | undefined = false;
 let threads: number = 8;
 let errorLevel: number | undefined;
@@ -88,8 +103,10 @@ program
     "Path to the output project folder. If not specified, the current working directory + 'out' is used.",
     "out"
   )
+  .option("-afs, --additional-files [path to file]", "Comma-separated list of additional files to add to projects.")
   .option("-of, --output-file [path to file]", "Path to the export file, if applicable for the command you are using.")
   .option("-ot, --output-type [output type]", "Type of output, if applicable for the command you are using.")
+  .option("-updatepc, --update-passcode [update passcode]", "Sets update passcode.")
   .option(
     "-bp, --behavior-pack <behavior pack uuid>",
     "Adds a set of behavior pack UUIDs as references for any worlds that are updated."
@@ -101,7 +118,12 @@ program
   .option("-betaapis, --beta-apis", "Ensures that the Beta APIs experiment is set for any worlds that are updated.")
   .option("-no-betaapis, --no-beta-apis", "Removes the Beta APIs experiment if set.")
   .option("-f, --force", "Force any updates.")
+  .option(
+    "-single, --single",
+    "When pointed at at a folder via -i, force that folder to be processed as a single project."
+  )
   .option("-editor", "Ensures that the world is an Editor world.")
+  .option("-once", "When running as a server, only process one request and then shutdown.", false)
   .option("-no-editor", "Removes that the world is an editor.")
   .option("--threads [thread count]", "Targeted number of threads to use.")
   .option("-show, --display-only", "Whether to only show messages, vs. output report files.")
@@ -142,6 +164,69 @@ program
   });
 
 program
+  .command("minecrafteulaandprivacypolicy")
+  .alias("eula")
+  .description("See the Minecraft End User License Agreement.")
+  .action(() => {
+    executionTaskType = TaskType.minecraftEulaAndPrivacyPolicy;
+  });
+
+program
+  .command("serve")
+  .alias("srv")
+  .description("Hosts a web service and site that can manage a dedicated server and/or validation.")
+  .addArgument(
+    new Argument("[features]", "Specifies a title the Minecraft Http Server on.").choices([
+      "all",
+      "allwebservices",
+      "basicwebservices",
+      "dedicatedserver",
+    ])
+  )
+  .addArgument(new Argument("[domain]", "Specifies which URL domain this server is hosted on."))
+  .addArgument(new Argument("[host-port]", "Specifies which core port to host the Minecraft Http Server on."))
+  .addArgument(new Argument("[title]", "Specifies a title the Minecraft Http Server on."))
+  .addArgument(new Argument("[motd]", "Specifies a message of the day for the server."))
+  .action(async (features?: string, domain?: string, hostPort?: number, title?: string, motd?: string) => {
+    if (features) {
+      switch (features.toLowerCase()) {
+        case "all":
+          serverFeatures = ServerManagerFeatures.all;
+          break;
+        case "allwebservices":
+          serverFeatures = ServerManagerFeatures.allWebServices;
+          break;
+        case "basicwebservices":
+          serverFeatures = ServerManagerFeatures.basicWebServices;
+          break;
+      }
+    }
+
+    serverHostPort = hostPort;
+    serverTitle = title;
+    serverDomainName = domain;
+    serverMessageOfTheDay = motd;
+
+    executionTaskType = TaskType.serve;
+  });
+
+program
+  .command("setserverprops")
+  .alias("setsrv")
+  .description("Updates default properties for the Minecraft Http Server.")
+  .addArgument(new Argument("[domain]", "Specifies which URL domain this server is hosted on."))
+  .addArgument(new Argument("[host-port]", "Specifies which core port to host the Minecraft Http Server on."))
+  .addArgument(new Argument("[title]", "Specifies a title the Minecraft Http Server on."))
+  .addArgument(new Argument("[motd]", "Specifies a message of the day for the server."))
+  .action(async (domain?: string, hostPort?: number, title?: string, motd?: string) => {
+    serverHostPort = hostPort;
+    serverTitle = title;
+    serverDomainName = domain;
+    serverMessageOfTheDay = motd;
+    executionTaskType = TaskType.setServerProperties;
+  });
+
+program
   .command("info")
   .alias("i")
   .description("Displays information about the current project.")
@@ -155,7 +240,7 @@ program
   .description("Validate the current project.")
   .addArgument(
     new Argument("[suite]", "Specifies the type of validation suite to run.")
-      .choices(["addon", "currentplatform", "main"])
+      .choices(["all", "addon", "currentplatform", "main"])
       .default("main", "main - runs most available validation tests.")
   )
   .addArgument(
@@ -201,6 +286,8 @@ const options = program.opts();
 
 localEnv = new LocalEnvironment(true);
 
+let sm: ServerManager | undefined;
+
 if (options.force) {
   force = true;
 }
@@ -232,11 +319,30 @@ if (options.displayOnly) {
     options.outputFolder = undefined;
   }
 } else if (options.outputFolder === "out") {
-  if ((executionTaskType as any) !== TaskType.create) {
-    Log.message("Outputting results to the `out` folder.\r\n");
+  if ((executionTaskType as TaskType) !== TaskType.serve) {
+    Log.message("Outputting full results to the `out` folder.");
   }
 
   localEnv.displayInfo = true;
+}
+if (options.adminPasscode) {
+  serverCandidateAdminPasscode = options.adminPasscode;
+}
+
+if (options.updatePasscode) {
+  serverCandidateUpdateStatePasscode = options.updatePasscode;
+}
+
+if (options.displayPasscode) {
+  serverCandidateDisplayReadOnlyPasscode = options.displayPasscode;
+}
+
+if (options.once || options.Once) {
+  serverRunOnce = true;
+}
+
+if (options.fullReadOnlyPasscode) {
+  serverCandidateFullReadOnlyPasscode = options.fullReadOnlyPasscode;
 }
 
 if (options.logVerbose) {
@@ -250,11 +356,28 @@ if (options.logVerbose) {
     return;
   }
 
+  sm = new ServerManager(localEnv, carto);
+  sm.runOnce = serverRunOnce;
+
   await carto.load();
 
   carto.onStatusAdded.subscribe(ClUtils.handleStatusAdded);
 
   await loadProjects();
+
+  if (
+    serverCandidateDisplayReadOnlyPasscode ||
+    serverCandidateUpdateStatePasscode ||
+    serverCandidateAdminPasscode ||
+    serverCandidateFullReadOnlyPasscode
+  ) {
+    await setPasscode(
+      serverCandidateDisplayReadOnlyPasscode,
+      serverCandidateFullReadOnlyPasscode,
+      serverCandidateUpdateStatePasscode,
+      serverCandidateAdminPasscode
+    );
+  }
 
   switch (executionTaskType as TaskType) {
     case TaskType.info:
@@ -273,6 +396,12 @@ if (options.logVerbose) {
       await aggregateReports();
       break;
 
+    case TaskType.serve:
+      hookInput();
+      await applyServerProps();
+      await serve();
+      break;
+
     case TaskType.create:
       try {
         for (const projectStart of projectStarts) {
@@ -285,6 +414,11 @@ if (options.logVerbose) {
         console.error("Error creating a project. " + e.toString());
       }
       break;
+
+    case TaskType.minecraftEulaAndPrivacyPolicy:
+      await minecraftEulaAndPrivacyPolicy();
+      break;
+
     case TaskType.world:
       await setAndDisplayAllWorlds();
       break;
@@ -296,8 +430,18 @@ async function loadProjects() {
     throw new Error("Not properly configured.");
   }
 
+  const additionalFiles: string[] = [];
+
   if (options.inputFile && options.inputFolder) {
     throw new Error("Cannot specify both an input file and an input folder.");
+  }
+
+  if (options.additionalFiles && typeof options.additionalFiles === "string") {
+    const paths = options.additionalFiles.split(",");
+
+    for (const path of paths) {
+      additionalFiles.push(path);
+    }
   }
 
   if (options.inputFile) {
@@ -320,7 +464,11 @@ async function loadProjects() {
 
     const fileName = StorageUtilities.getLeafName(options.inputFile);
 
-    const mainProject: IProjectStartInfo = { ctorProjectName: fileName, localFilePath: options.inputFile };
+    const mainProject: IProjectStartInfo = {
+      ctorProjectName: fileName,
+      localFilePath: options.inputFile,
+      accessoryFiles: additionalFiles.slice(),
+    };
 
     projectStarts.push(mainProject);
 
@@ -355,161 +503,79 @@ async function loadProjects() {
     }
   }
 
-  if (isMultiLevelMultiProject) {
-    for (const subFolderName in workFolder.folders) {
-      const subFolder = workFolder.folders[subFolderName];
+  if (!options.single) {
+    if (isMultiLevelMultiProject) {
+      for (const subFolderName in workFolder.folders) {
+        const subFolder = workFolder.folders[subFolderName];
 
-      if (subFolder) {
-        await subFolder.load();
+        if (subFolder) {
+          await subFolder.load();
 
-        for (const subFileName in subFolder.files) {
-          const subFile = subFolder.files[subFileName];
+          for (const subFileName in subFolder.files) {
+            const subFile = subFolder.files[subFileName];
 
-          if (subFile) {
-            if (StorageUtilities.isFileStorageItem(subFile)) {
-              storageItemCount++;
-            }
+            if (subFile) {
+              if (StorageUtilities.isFileStorageItem(subFile)) {
+                storageItemCount++;
+              }
 
-            let typeFromName = StorageUtilities.getTypeFromName(subFileName);
+              let typeFromName = StorageUtilities.getTypeFromName(subFileName);
 
-            if (
-              !StorageUtilities.isFileStorageItem(subFile) &&
-              typeFromName !== "json" &&
-              typeFromName !== "csv" &&
-              typeFromName !== "" &&
-              typeFromName !== "html"
-            ) {
-              isMultiLevelMultiProject = false;
-              continue;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  if (storageItemCount < 2) {
-    isMultiLevelMultiProject = false;
-  }
-
-  if (isMultiLevelMultiProject) {
-    console.log("Working across subfolders with projects at '" + workFolder.fullPath + "'");
-
-    for (const subFolderName in workFolder.folders) {
-      const subFolder = workFolder.folders[subFolderName];
-
-      if (subFolder && !subFolder.errorStatus) {
-        await subFolder.load();
-
-        for (const fileName in subFolder.files) {
-          const file = subFolder.files[fileName];
-
-          if (file && StorageUtilities.isFileStorageItem(file)) {
-            const ps: IProjectStartInfo = { ctorProjectName: file.name };
-
-            let baseName = StorageUtilities.getBaseFromName(file.name);
-
-            if (subFolder.files[baseName + ".data.json"]) {
-              ps.accessoryFiles = [baseName + ".data.json"];
-            }
-
-            let lastDash = baseName.lastIndexOf("-");
-
-            if (lastDash > 0) {
-              baseName = baseName.substring(0, lastDash);
-
-              if (subFolder.files[baseName + ".data.json"]) {
-                ps.accessoryFiles = [baseName + ".data.json"];
+              if (
+                !StorageUtilities.isFileStorageItem(subFile) &&
+                typeFromName !== "json" &&
+                typeFromName !== "csv" &&
+                typeFromName !== "" &&
+                typeFromName !== "html"
+              ) {
+                isMultiLevelMultiProject = false;
+                continue;
               }
             }
-
-            ps.localFilePath = file.fullPath;
-
-            projectStarts.push(ps);
           }
         }
       }
     }
 
-    if (projectStarts.length > 0) {
-      return;
-    }
-  } else {
-    // "children of folder multi project" scans for either zip files in the root folder and/or
-    // every subfolder is a separate project
-
-    let isChildrenOfFolderMultiProject = true;
-
-    for (const fileName in workFolder.files) {
-      const file = workFolder.files[fileName];
-
-      if (file) {
-        if (!StorageUtilities.isFileStorageItem(file)) {
-          isChildrenOfFolderMultiProject = false;
-          continue;
-        } else {
-          foundASubProject = true;
-        }
-      }
+    if (storageItemCount < 2) {
+      isMultiLevelMultiProject = false;
     }
 
-    if (isChildrenOfFolderMultiProject) {
-      for (const folderName in workFolder.folders) {
-        const folder = workFolder.folders[folderName];
+    if (isMultiLevelMultiProject) {
+      console.log("Working across subfolders with projects at '" + workFolder.fullPath + "'");
 
-        if (folder && !folder.errorStatus) {
-          await folder.load(true);
+      for (const subFolderName in workFolder.folders) {
+        const subFolder = workFolder.folders[subFolderName];
 
-          if (
-            folder.files["manifest.json"] ||
-            folder.files["pack_manifest.json"] ||
-            folder.folders["content"] ||
-            folder.folders["Content"] ||
-            folder.folders["world_template"] ||
-            folder.folders["behavior_packs"]
-          ) {
-            foundASubProject = true;
-          }
+        if (subFolder && !subFolder.errorStatus) {
+          await subFolder.load();
 
-          if (StorageUtilities.isMinecraftInternalFolder(folder)) {
-            isChildrenOfFolderMultiProject = false;
-            continue;
-          }
-        }
-      }
-    }
+          for (const fileName in subFolder.files) {
+            const file = subFolder.files[fileName];
 
-    if (!foundASubProject) {
-      isChildrenOfFolderMultiProject = false;
-    }
+            if (file && StorageUtilities.isFileStorageItem(file)) {
+              const ps: IProjectStartInfo = { ctorProjectName: file.name, accessoryFiles: additionalFiles.slice() };
 
-    if (isChildrenOfFolderMultiProject) {
-      console.log("Working across subfolders/packages at '" + workFolder.fullPath + "'");
+              let baseName = StorageUtilities.getBaseFromName(file.name);
 
-      for (const fileName in workFolder.files) {
-        const file = workFolder.files[fileName];
+              if (subFolder.files[baseName + ".data.json"]) {
+                ps.accessoryFiles?.push(baseName + ".data.json");
+              }
 
-        if (file && StorageUtilities.isFileStorageItem(file)) {
-          const mainProject: IProjectStartInfo = { ctorProjectName: file.name };
+              let lastDash = baseName.lastIndexOf("-");
 
-          mainProject.localFilePath = file.fullPath;
+              if (lastDash > 0) {
+                baseName = baseName.substring(0, lastDash);
 
-          projectStarts.push(mainProject);
-        }
-      }
+                if (subFolder.files[baseName + ".data.json"]) {
+                  ps.accessoryFiles?.push(baseName + ".data.json");
+                }
+              }
 
-      for (const folderName in workFolder.folders) {
-        const folder = workFolder.folders[folderName];
+              ps.localFilePath = file.fullPath;
 
-        if (folder && !folder.errorStatus && folder.name !== "out") {
-          await folder.load();
-
-          if (folder.folderCount > 0) {
-            const mainProject: IProjectStartInfo = { ctorProjectName: folder.name };
-
-            mainProject.localFolderPath = folder.fullPath;
-
-            projectStarts.push(mainProject);
+              projectStarts.push(ps);
+            }
           }
         }
       }
@@ -517,15 +583,159 @@ async function loadProjects() {
       if (projectStarts.length > 0) {
         return;
       }
+    } else {
+      // "children of folder multi project" scans for either zip files in the root folder and/or
+      // every subfolder is a separate project
+
+      let isChildrenOfFolderMultiProject = true;
+
+      for (const fileName in workFolder.files) {
+        const file = workFolder.files[fileName];
+
+        if (file) {
+          if (!StorageUtilities.isFileStorageItem(file)) {
+            isChildrenOfFolderMultiProject = false;
+            continue;
+          } else {
+            foundASubProject = true;
+          }
+        }
+      }
+
+      for (const folderName in workFolder.folders) {
+        if (
+          MinecraftUtilities.pathLooksLikePackName(folderName) ||
+          MinecraftUtilities.pathLooksLikePackContainerName(folderName)
+        ) {
+          isChildrenOfFolderMultiProject = false;
+          continue;
+        }
+      }
+
+      if (isChildrenOfFolderMultiProject) {
+        for (const folderName in workFolder.folders) {
+          const folder = workFolder.folders[folderName];
+
+          if (folder && !folder.errorStatus) {
+            await folder.load(true);
+
+            if (
+              folder.files["manifest.json"] ||
+              folder.files["pack_manifest.json"] ||
+              folder.folders["content"] ||
+              folder.folders["Content"] ||
+              folder.folders["world_template"] ||
+              folder.folders["behavior_packs"]
+            ) {
+              foundASubProject = true;
+            }
+
+            if (StorageUtilities.isMinecraftInternalFolder(folder)) {
+              isChildrenOfFolderMultiProject = false;
+              continue;
+            }
+          }
+        }
+      }
+
+      if (!foundASubProject) {
+        isChildrenOfFolderMultiProject = false;
+      }
+
+      if (isChildrenOfFolderMultiProject) {
+        console.log("Working across subfolders/packages at '" + workFolder.fullPath + "'");
+
+        for (const fileName in workFolder.files) {
+          const file = workFolder.files[fileName];
+
+          if (file && StorageUtilities.isFileStorageItem(file)) {
+            const mainProject: IProjectStartInfo = {
+              ctorProjectName: file.name,
+              accessoryFiles: additionalFiles.slice(),
+            };
+
+            mainProject.localFilePath = file.fullPath;
+
+            projectStarts.push(mainProject);
+          }
+        }
+
+        for (const folderName in workFolder.folders) {
+          const folder = workFolder.folders[folderName];
+
+          if (folder && !folder.errorStatus && folder.name !== "out") {
+            await folder.load();
+
+            if (folder.folderCount > 0) {
+              const mainProject: IProjectStartInfo = {
+                ctorProjectName: folder.name,
+                accessoryFiles: additionalFiles.slice(),
+              };
+
+              mainProject.localFolderPath = folder.fullPath;
+
+              projectStarts.push(mainProject);
+            }
+          }
+        }
+
+        if (projectStarts.length > 0) {
+          return;
+        }
+      }
     }
   }
 
   // OK, just assume this folder is a big single project then.
-  const mainProject: IProjectStartInfo = { ctorProjectName: name };
+  const mainProject: IProjectStartInfo = { ctorProjectName: name, accessoryFiles: additionalFiles.slice() };
 
   mainProject.localFolderPath = workFolder.fullPath;
 
   projectStarts.push(mainProject);
+}
+
+async function applyServerProps() {
+  if (localEnv) {
+    await localEnv.load();
+
+    if (serverHostPort) {
+      localEnv.serverHostPort = serverHostPort;
+    }
+
+    if (serverTitle) {
+      localEnv.serverTitle = serverTitle;
+    }
+
+    if (serverDomainName) {
+      localEnv.serverDomainName = serverDomainName;
+    }
+
+    if (serverMessageOfTheDay) {
+      localEnv.serverMessageOfTheDay = serverMessageOfTheDay;
+    }
+
+    await localEnv.save();
+  }
+}
+
+async function doExit() {
+  if (sm) {
+    sm.stopWebServer();
+  }
+
+  if (!errorLevel) {
+    (process as any).exitCode = errorLevel;
+  }
+}
+
+function hookInput() {
+  process.stdin.setEncoding("utf-8");
+
+  process.stdin.on("data", async function (data: string) {
+    if (data.startsWith("exit") || data.startsWith("stop")) {
+      await doExit();
+    }
+  });
 }
 
 async function displayVersion() {
@@ -546,6 +756,92 @@ async function displayVersion() {
   console.log(constants.copyright);
   console.log(constants.disclaimer);
   console.log("\n");
+}
+
+async function setPasscode(
+  displayReadOnlyPasscode: string | undefined,
+  fullReadOnlyPasscode: string | undefined,
+  updateStatePasscode: string | undefined,
+  adminPasscode: string | undefined
+) {
+  if (localEnv === undefined) {
+    throw new Error();
+  }
+
+  await localEnv.load();
+
+  if (
+    localEnv.displayReadOnlyPasscode === undefined ||
+    localEnv.adminPasscode === undefined ||
+    localEnv.fullReadOnlyPasscode === undefined ||
+    localEnv.updateStatePasscode === undefined
+  ) {
+    await localEnv.setDefaults();
+  }
+
+  if (adminPasscode) {
+    localEnv.adminPasscode = adminPasscode;
+  }
+
+  if (displayReadOnlyPasscode) {
+    localEnv.displayReadOnlyPasscode = displayReadOnlyPasscode;
+  }
+
+  if (fullReadOnlyPasscode) {
+    localEnv.fullReadOnlyPasscode = fullReadOnlyPasscode;
+  }
+
+  if (updateStatePasscode) {
+    localEnv.updateStatePasscode = updateStatePasscode;
+  }
+
+  await localEnv.save();
+}
+
+function getFriendlyPasscode(str: string) {
+  if (str.length >= 4) {
+    str = str.toUpperCase();
+    return str.substring(0, 4) + "-" + str.substring(4);
+  }
+
+  return str;
+}
+
+async function stop() {
+  process.exit();
+}
+
+async function minecraftEulaAndPrivacyPolicy() {
+  if (!localEnv) {
+    throw new Error();
+  }
+
+  await localEnv.load();
+
+  const questions: inquirer.DistinctQuestion<any>[] = [];
+
+  console.log(
+    "To download the Minecraft Bedrock Dedicated Server, you must agree to the Minecraft End User License Agreement and Privacy Policy.\n"
+  );
+  console.log("    Minecraft End User License Agreement: https://minecraft.net/eula");
+  console.log("    Minecraft Privacy Policy: https://go.microsoft.com/fwlink/?LinkId=521839\n");
+
+  questions.push({
+    type: "confirm",
+    default: false,
+    name: "minecraftEulaAndPrivacyPolicy",
+    message: "I agree to the Minecraft End User License Agreement and Privacy Policy",
+  });
+
+  const answers = await inquirer.prompt(questions);
+
+  const iaccept = answers["minecraftEulaAndPrivacyPolicy"];
+
+  if (iaccept === true || iaccept === false) {
+    localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula = iaccept;
+
+    await localEnv.save();
+  }
 }
 
 async function displayInfo() {
@@ -573,8 +869,10 @@ async function displayInfo() {
         console.log("Default resource pack folder: " + rpFolder.storageRelativePath);
       }
 
-      for (let i = 0; i < project.items.length; i++) {
-        const item = project.items[i];
+      const itemsCopy = project.getItemsCopy();
+
+      for (let i = 0; i < itemsCopy.length; i++) {
+        const item = itemsCopy[i];
 
         console.log("=== " + item.typeTitle + ": " + item.projectPath);
 
@@ -617,7 +915,9 @@ async function setAndDisplayAllWorlds() {
 
       let setWorld = false;
 
-      for (const item of project.items) {
+      const itemsCopy = project.getItemsCopy();
+
+      for (const item of itemsCopy) {
         if (item.isWorld) {
           let shouldProcess = true;
 
@@ -746,6 +1046,41 @@ async function setAndDisplayWorld(item: ProjectItem, isSettable: boolean) {
       }
     }
   }
+}
+
+async function displayServerProps() {
+  if (!localEnv) {
+    return;
+  }
+
+  let domainName = localEnv.serverDomainName;
+
+  if (!domainName) {
+    domainName = "(unspecified; used for display purposes only)";
+  }
+
+  let port = localEnv.serverHostPort;
+
+  if (!port) {
+    port = 80;
+  }
+
+  let title = localEnv.serverTitle;
+
+  if (!title) {
+    title = "(unspecified; used for display purposes only)";
+  }
+
+  let motd = localEnv.serverMessageOfTheDay;
+
+  if (!motd) {
+    motd = "(unspecified; used for display purposes only)";
+  }
+
+  console.log("Server host domain name: " + domainName);
+  console.log("Server port: " + port);
+  console.log("Server title: " + title);
+  console.log("Server message of the day: " + motd);
 }
 
 async function validate() {
@@ -1243,18 +1578,16 @@ async function create(project: Project, isSingleFolder: boolean) {
 
     const folderNameAnswer = await inquirer.prompt(folderNameQuestions);
 
-    if (folderNameAnswer["folderName"]) {
+    if (folderNameAnswer["folderName"] && project.mainDeployFolderPath) {
       const folderName = folderNameAnswer["folderName"];
 
-      if (folderName) {
+      if (folderName && project.mainDeployFolderPath) {
         const path =
           NodeStorage.ensureEndsWithDelimiter(process.cwd()) + NodeStorage.ensureEndsWithDelimiter(folderName);
 
         const outputStorage = new NodeStorage(path, "");
         const outFolder = outputStorage.rootFolder;
         await outFolder.ensureExists();
-
-        //project = new Project(carto, project.name, null);
 
         project.localFolderPath = path;
 
@@ -1550,4 +1883,67 @@ function outputLogo(message: string) {
   console.log("\x1b[32m│ ┏▀┓ │\x1b[0m");
   console.log("\x1b[32m└─────┘\x1b[0m");
   console.log("");
+}
+
+async function serve() {
+  if (!carto || !carto.local || projectStarts.length === 0 || !localEnv || !sm) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to run a server.");
+    return;
+  }
+
+  if (serverFeatures !== undefined) {
+    sm.features = serverFeatures;
+  }
+
+  sm.onShutdown.subscribe((serverManager: ServerManager, reason: string) => {
+    stop();
+  });
+
+  sm.ensureHttpServer();
+
+  await sm.prepare();
+}
+
+function getStartInfoFromProject(project: Project): IMinecraftStartMessage | undefined {
+  if (!carto) {
+    console.log("Could not instantiate carto.");
+    return undefined;
+  }
+
+  let path = carto.dedicatedServerPath;
+
+  if (!path) {
+    path = "";
+  }
+
+  let worldSettings: IWorldSettings | undefined = carto.worldSettings;
+
+  if (project.worldSettings) {
+    if (project.worldSettings.useCustomSettings) {
+      worldSettings = project.worldSettings;
+    }
+  }
+
+  if (worldSettings && !worldSettings.name) {
+    worldSettings.name = "world";
+  }
+
+  let track = carto.track;
+
+  return {
+    path: Utilities.ensureEndsWithBackSlash(path),
+    iagree: carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula ? true : false,
+    mode: carto.dedicatedServerMode,
+    track: track,
+    projectKey: project.key,
+    backupContainerPath: "",
+    worldSettings: worldSettings,
+  };
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }

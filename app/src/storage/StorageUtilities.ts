@@ -38,6 +38,7 @@ const _allowedExtensions = [
   "wav",
   "tga",
   "old",
+  "mc",
   "",
   "zip",
   "mcstructure",
@@ -124,6 +125,8 @@ export default class StorageUtilities {
       case "jpeg":
       case "jpg":
       case "png":
+      case "mp3":
+      case "fsb":
       case "woff":
       case "woff2":
       case "ttf":
@@ -315,6 +318,20 @@ export default class StorageUtilities {
 
     return zipStorage.rootFolder;
   }
+
+  public static getContaineredFileLeafPath(path: string | null | undefined) {
+    if (!path) {
+      return;
+    }
+    const lastHash = path.lastIndexOf("#");
+
+    if (lastHash >= 0) {
+      path = path.substring(lastHash + 1);
+    }
+
+    return path;
+  }
+
   public static isMinecraftInternalFolder(folder: IFolder) {
     const nameCanon = folder.name.toLowerCase();
 
@@ -363,6 +380,10 @@ export default class StorageUtilities {
     name = name.replace(/%29/g, ")");
 
     return name;
+  }
+
+  public static isPathEqual(pathA: string, pathB: string) {
+    return StorageUtilities.canonicalizePath(pathA) === StorageUtilities.canonicalizePath(pathB);
   }
 
   public static canonicalizePath(path: string): string {
@@ -1047,6 +1068,23 @@ export default class StorageUtilities {
 
   public static isIgnorableFolder(folderName: string) {
     return folderName.startsWith(".") && !folderName.toLowerCase().startsWith(".vscode");
+  }
+
+  public static async getUniqueFileName(baseName: string, extension: string, folder: IFolder) {
+    let candFileName = baseName + "." + extension;
+
+    let exists = folder.fileExists(candFileName);
+    let increment = 0;
+
+    while (exists && increment < 99) {
+      increment++;
+
+      candFileName = baseName + " " + String(increment) + "." + extension;
+
+      exists = folder.fileExists(candFileName);
+    }
+
+    return candFileName;
   }
 
   public static async syncFolderTo(

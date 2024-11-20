@@ -112,7 +112,7 @@ export default abstract class FileBase implements IFile {
       Log.throwIsDisposed();
     }
 
-    const result = this.parentFolder.getFolderRelativePath(toFolder);
+    let result = this.parentFolder.getFolderRelativePath(toFolder);
 
     if (result === undefined) {
       return undefined;

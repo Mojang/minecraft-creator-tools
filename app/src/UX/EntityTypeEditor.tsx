@@ -606,6 +606,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               readOnly={this.props.readOnly}
               theme={this.props.theme}
               displayHeader={false}
+              projectItem={resourceItem}
               file={resourceItem.file}
               heightOffset={this.props.heightOffset + 170}
             />

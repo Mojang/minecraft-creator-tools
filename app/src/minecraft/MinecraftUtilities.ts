@@ -20,6 +20,169 @@ export default class MinecraftUtilities {
     return path;
   }
 
+  static pathLooksLikeSkinPackContainerName(path: string) {
+    let pathCanon = path.toLowerCase();
+
+    pathCanon = pathCanon.replace(/\\/gi, "/");
+    pathCanon = pathCanon.replace(/ /gi, "_");
+    pathCanon = Utilities.ensureEndsWithSlash(Utilities.ensureStartsWithSlash(pathCanon));
+
+    if (
+      pathCanon.indexOf("skin_packs") >= 0 ||
+      pathCanon.indexOf("_sps") >= 0 ||
+      pathCanon.indexOf("/sps_") >= 0 ||
+      pathCanon.endsWith("sps/") ||
+      pathCanon === "/sps/" ||
+      pathCanon === "/sp/"
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  static pathLooksLikeBehaviorPackContainerName(path: string) {
+    let pathCanon = path.toLowerCase();
+
+    pathCanon = pathCanon.replace(/\\/gi, "/");
+    pathCanon = pathCanon.replace(/ /gi, "_");
+    pathCanon = Utilities.ensureEndsWithSlash(Utilities.ensureStartsWithSlash(pathCanon));
+
+    if (
+      pathCanon.indexOf("behavior_packs") >= 0 ||
+      pathCanon.indexOf("_bps") >= 0 ||
+      pathCanon.indexOf("/bps_") >= 0 ||
+      pathCanon.endsWith("bps/") ||
+      pathCanon === "/bps/" ||
+      pathCanon === "/bp/"
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  static pathLooksLikeResourcePackContainerName(path: string) {
+    let pathCanon = path.toLowerCase();
+
+    pathCanon = pathCanon.replace(/\\/gi, "/");
+    pathCanon = pathCanon.replace(/ /gi, "_");
+
+    pathCanon = Utilities.ensureEndsWithSlash(Utilities.ensureStartsWithSlash(pathCanon));
+
+    if (
+      pathCanon.indexOf("resource_packs") >= 0 ||
+      pathCanon.indexOf("_rps") >= 0 ||
+      pathCanon.indexOf("/rps_") >= 0 ||
+      pathCanon.endsWith("rps/") ||
+      pathCanon === "/rps/" ||
+      pathCanon === "/rp/"
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  static pathLooksLikePackContainerName(path: string) {
+    return (
+      this.pathLooksLikeBehaviorPackContainerName(path) ||
+      this.pathLooksLikeResourcePackContainerName(path) ||
+      this.pathLooksLikeSkinPackContainerName(path)
+    );
+  }
+
+  static pathLooksLikeBehaviorPackName(path: string) {
+    let pathCanon = path.toLowerCase();
+
+    pathCanon = pathCanon.replace(/\\/gi, "/");
+    pathCanon = pathCanon.replace(/ /gi, "_");
+    pathCanon = Utilities.ensureEndsWithSlash(Utilities.ensureStartsWithSlash(pathCanon));
+
+    if (
+      pathCanon.indexOf("/behavior") >= 0 ||
+      pathCanon.indexOf("behavior_pack") >= 0 ||
+      pathCanon.indexOf("_bp") >= 0 || // bp is uncommon as the start of a word
+      pathCanon.indexOf("/bp_") >= 0 ||
+      pathCanon.indexOf("/bp/") >= 0
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  static pathLooksLikeResourcePackName(path: string) {
+    let pathCanon = path.toLowerCase();
+
+    pathCanon = pathCanon.replace(/\\/gi, "/");
+    pathCanon = pathCanon.replace(/ /gi, "_");
+    pathCanon = Utilities.ensureEndsWithSlash(Utilities.ensureStartsWithSlash(pathCanon));
+
+    if (
+      pathCanon.indexOf("/resource") >= 0 ||
+      pathCanon.indexOf("resource_pack") >= 0 ||
+      pathCanon.indexOf("_rp") >= 0 || // rp is uncommon as the start of a word
+      pathCanon.indexOf("/rp_") >= 0 ||
+      pathCanon.indexOf("/rp/") >= 0
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  static pathLooksLikeSkinPackName(path: string) {
+    let pathCanon = path.toLowerCase();
+
+    pathCanon = pathCanon.replace(/\\/gi, "/");
+    pathCanon = pathCanon.replace(/ /gi, "_");
+    pathCanon = Utilities.ensureEndsWithSlash(Utilities.ensureStartsWithSlash(pathCanon));
+
+    // because sp might common in english as an abbreviation, be less tolerant
+    // compared to behavior/resource packs in assuming "sp" means skin pack
+    if (pathCanon.indexOf("/skin") >= 0 || pathCanon.indexOf("skin_pack") >= 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  static pathLooksLikeWorldFolderName(path: string) {
+    let pathCanon = path.toLowerCase();
+
+    pathCanon = pathCanon.replace(/\\/gi, "/");
+    pathCanon = pathCanon.replace(/ /gi, "_");
+    pathCanon = Utilities.ensureEndsWithSlash(Utilities.ensureStartsWithSlash(pathCanon));
+
+    if (pathCanon.indexOf("/world") >= 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  static pathLooksLikeSubPacksFolderName(path: string) {
+    let pathCanon = path.toLowerCase();
+
+    pathCanon = pathCanon.replace(/\\/gi, "/");
+    pathCanon = pathCanon.replace(/ /gi, "_");
+    pathCanon = Utilities.ensureEndsWithSlash(Utilities.ensureStartsWithSlash(pathCanon));
+
+    if (pathCanon.indexOf("/subpacks") >= 0) {
+      return true;
+    }
+
+    return false;
+  }
+  static pathLooksLikePackName(path: string) {
+    return (
+      this.pathLooksLikeBehaviorPackName(path) ||
+      this.pathLooksLikeResourcePackName(path) ||
+      this.pathLooksLikeSkinPackName(path)
+    );
+  }
+
   static replaceMinecraftPathTokens(tokenizePath: string) {
     if (tokenizePath.startsWith("<RPME>")) {
       tokenizePath += ".geo.json";

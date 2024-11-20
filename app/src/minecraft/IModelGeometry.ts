@@ -29,13 +29,35 @@ export interface IGeometryDescription {
 export interface IGeometryBone {
   name: string;
   pivot: number[];
+  rotation?: number[];
+  parent?: string;
   bind_pose_rotation?: number[];
-  cubes: IGeometryBoneCube[];
-  locators: { [name: string]: number[] };
+  cubes?: IGeometryBoneCube[];
+  locators?: { [name: string]: number[] };
 }
 
 export interface IGeometryBoneCube {
-  origin: number[];
-  size: number[];
-  uv: number[];
+  origin: number[] /* should be three elements*/;
+  size: number[] /* should be three elements*/;
+  uv: number[] /* should be two elements */ | IGeometryUVFaces;
+  rotation?: number[] /* should be three elements*/;
+  pivot?: number[] /* should be three elements*/;
+  inflate?: number;
+  mirror?: boolean;
+}
+
+export interface IGeometryUVFaces {
+  north?: IGeometryUVFace;
+  east?: IGeometryUVFace;
+  south?: IGeometryUVFace;
+  west?: IGeometryUVFace;
+  up?: IGeometryUVFace;
+  down?: IGeometryUVFace;
+}
+
+export interface IGeometryUVFace {
+  uv: number[]; // should be 2 elements
+  uv_size: number[]; // should be 2 elements
+  uv_rotation?: number;
+  material_instance?: string;
 }

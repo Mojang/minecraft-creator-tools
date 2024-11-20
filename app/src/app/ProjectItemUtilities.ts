@@ -84,7 +84,7 @@ export default class ProjectItemUtilities {
     } else if (firstHundred.indexOf('"namespace"') >= 0) {
       return { itemType: ProjectItemType.uiJson, packType: PackType.resource };
     } else if (firstHundred.indexOf('"sound_definitions"') >= 0) {
-      return { itemType: ProjectItemType.soundDefinitionJson, packType: PackType.resource };
+      return { itemType: ProjectItemType.soundDefinitionCatalog, packType: PackType.resource };
     } else if (fileBaseName === "manifest") {
       const jsonO = Utilities.getJsonObject(jsonContent);
 
@@ -127,7 +127,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.tickJson:
         return 903;
 
-      case ProjectItemType.soundsCatalogResourceJson:
+      case ProjectItemType.soundCatalog:
         return 9901;
 
       case ProjectItemType.modelGeometryJson:
@@ -169,8 +169,8 @@ export default class ProjectItemUtilities {
       case ProjectItemType.marketingAssetImage:
       case ProjectItemType.uiTexture:
       case ProjectItemType.iconImage:
-      case ProjectItemType.soundDefinitionJson:
-      case ProjectItemType.soundsCatalogResourceJson:
+      case ProjectItemType.soundDefinitionCatalog:
+      case ProjectItemType.soundCatalog:
       case ProjectItemType.resourcePackManifestJson:
       case ProjectItemType.resourcePackListJson:
       case ProjectItemType.renderControllerJson:
@@ -329,7 +329,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.biomeResourceJson:
       case ProjectItemType.fileListArrayJson:
       case ProjectItemType.blocksCatalogResourceJson:
-      case ProjectItemType.soundsCatalogResourceJson:
+      case ProjectItemType.soundCatalog:
       case ProjectItemType.animationResourceJson:
       case ProjectItemType.animationControllerResourceJson:
       case ProjectItemType.entityTypeResource:
@@ -353,7 +353,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.itemTypeResourceJson:
       case ProjectItemType.materialsResourceJson:
       case ProjectItemType.musicDefinitionJson:
-      case ProjectItemType.soundDefinitionJson:
+      case ProjectItemType.soundDefinitionCatalog:
       case ProjectItemType.contentIndexJson:
       case ProjectItemType.contentReportJson:
       case ProjectItemType.tsconfigJson:
@@ -512,14 +512,14 @@ export default class ProjectItemUtilities {
         return "File list";
       case ProjectItemType.blocksCatalogResourceJson:
         return "Block resource catalog";
-      case ProjectItemType.soundsCatalogResourceJson:
+      case ProjectItemType.soundCatalog:
         return "Sound catalog";
       case ProjectItemType.animationResourceJson:
         return "Animation";
       case ProjectItemType.animationControllerResourceJson:
         return "Animation controller";
       case ProjectItemType.entityTypeResource:
-        return "Entity type resources";
+        return "Entity type visuals/audio";
       case ProjectItemType.fogResourceJson:
         return "Fog";
       case ProjectItemType.modelGeometryJson:
@@ -558,7 +558,7 @@ export default class ProjectItemUtilities {
         return "Materials";
       case ProjectItemType.musicDefinitionJson:
         return "Music catalog";
-      case ProjectItemType.soundDefinitionJson:
+      case ProjectItemType.soundDefinitionCatalog:
         return "Sound catalog";
       case ProjectItemType.audio:
         return "Audio";
@@ -656,7 +656,7 @@ export default class ProjectItemUtilities {
   }
 
   static getNewItemName(type: ProjectItemType) {
-    return "New " + ProjectItemUtilities.getDescriptionForType(type).toLowerCase();
+    return ProjectItemUtilities.getDescriptionForType(type).toLowerCase();
   }
 
   static getColorForType(type: ProjectItemType): IColor {
@@ -696,6 +696,8 @@ export default class ProjectItemUtilities {
   static getPluralDescriptionForType(type: ProjectItemType) {
     // override non-"plus s" plural-ifications here
     switch (type) {
+      case ProjectItemType.audio:
+        return "Audio";
       case ProjectItemType.ts:
         return "TypeScript files";
       case ProjectItemType.js:
@@ -707,11 +709,11 @@ export default class ProjectItemUtilities {
       case ProjectItemType.globalVariablesJson:
         return "UI global variable sets";
       case ProjectItemType.itemTypeResourceJson:
-        return "Item type resource sets";
-      case ProjectItemType.entityTypeResource:
-        return "Entity type resource sets";
+        return "Item type visuals and audio";
       case ProjectItemType.materialGeometry:
-        return "Geometries";
+        return "Model shapes";
+      case ProjectItemType.entityTypeResource:
+        return "Entity type visuals/audio";
       case ProjectItemType.catalogIndexJs:
         return "Catalog indexes";
       case ProjectItemType.behaviorPackHistoryListJson:
@@ -818,10 +820,12 @@ export default class ProjectItemUtilities {
         ];
       case ProjectItemType.modelGeometryJson:
         return ["models"];
-      case ProjectItemType.soundsCatalogResourceJson:
+      case ProjectItemType.soundCatalog:
         return ["resource_packs", "rps", "development_resource_packs"];
-      case ProjectItemType.soundDefinitionJson:
+      case ProjectItemType.soundDefinitionCatalog:
         return ["sounds"];
+      case ProjectItemType.entityTypeResource:
+        return ["entity"];
       case ProjectItemType.renderControllerJson:
         return ["render_controllers"];
       case ProjectItemType.attachableResourceJson:

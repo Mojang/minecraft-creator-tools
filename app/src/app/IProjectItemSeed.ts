@@ -17,5 +17,6 @@ export default interface IProjectItemSeed {
   folder?: IFolder;
   targetedItem?: ProjectItem;
   fileSource?: File;
+  fileContent?: Uint8Array | string | undefined;
   action?: ProjectItemSeedAction;
 }

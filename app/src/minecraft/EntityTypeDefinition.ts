@@ -76,6 +76,20 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem {
     this._id = newId;
   }
 
+  public get runtimeIdentifier() {
+    if (this.data && this.data.description) {
+      return this.data.description.runtime_identifier;
+    }
+
+    return undefined;
+  }
+
+  public set runtimeIdentifier(newId: string | undefined) {
+    if (this.data && this.data.description) {
+      this.data.description.runtime_identifier = newId;
+    }
+  }
+
   public get aliases() {
     if (!this.data || !this.data.description) {
       return undefined;
@@ -131,7 +145,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem {
   }
 
   getComponent(id: string) {
-    if (this.data === undefined) {
+    if (this.data === undefined || this.data.components === undefined) {
       return undefined;
     }
 

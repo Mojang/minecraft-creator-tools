@@ -5,6 +5,13 @@
   overflow-y: auto;
 }
 
+.etre-toolBarArea {
+  width: 100%;
+  padding-top: 3px;
+  padding-left: 29px;
+  height: 34px;
+}
+
 .etre-headerTransition {
   background-position-x: left;
   background-repeat: repeat-x;
@@ -19,6 +26,15 @@
 }
 
 .etre-form {
-  padding-top: 20px;
+  padding-top: 10px;
   padding-left: 20px;
+}
+
+.etre-rc-header {
+  padding-left: 20px;
+  padding-top: 10px;
+}
+
+.etre-header-interior {
+  font-size: large;
 }

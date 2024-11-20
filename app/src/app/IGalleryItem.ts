@@ -32,6 +32,7 @@ export default interface IGalleryItem {
   logoLocation?: LogoLocation;
   title: string;
   description: string;
+  targetRuntimeIdentifier?: string;
   containsStructures?: boolean;
   containsGameTests?: boolean;
   itemImages?: string[];

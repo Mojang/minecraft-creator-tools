@@ -4,23 +4,38 @@
 import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import IBlockbenchModel, { IBlockbenchTexture } from "./IBlockbenchModel";
+import IBlockbenchModel, {
+  IBlockbenchElement,
+  IBlockbenchFace,
+  IBlockbenchOutlineItem,
+  IBlockbenchTexture,
+} from "./IBlockbenchModel";
 import ProjectItem from "../app/ProjectItem";
 import ModelGeometryDefinition from "../minecraft/ModelGeometryDefinition";
-import { ProjectItemType } from "../app/IProjectItemData";
+import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
 import Utilities from "../core/Utilities";
-import { IGeometryBoneCube } from "../minecraft/IModelGeometry";
+import { IGeometry, IGeometryBone, IGeometryBoneCube, IGeometryUVFaces } from "../minecraft/IModelGeometry";
 import { Exifr } from "exifr";
+import Project from "../app/Project";
+import Log from "../core/Log";
 
 export default class BlockbenchModel {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
 
-  public definition?: IBlockbenchModel;
+  private _data?: IBlockbenchModel;
 
   private _onLoaded = new EventDispatcher<BlockbenchModel, BlockbenchModel>();
+
+  public get data() {
+    return this._data;
+  }
+
+  public set data(content: IBlockbenchModel | undefined) {
+    this._data = content;
+  }
 
   public get isLoaded() {
     return this._isLoaded;
@@ -39,19 +54,370 @@ export default class BlockbenchModel {
   }
 
   public get name() {
-    if (this.definition) {
-      return this.definition.name;
+    if (this._data) {
+      return this._data.name;
     }
 
     return undefined;
   }
 
   public get id() {
-    return this._id;
+    if (this._id) {
+      return this._id;
+    }
+
+    if (this._data && this._data.model_identifier) {
+      return this._data.model_identifier;
+    }
+
+    return undefined;
   }
 
   public set id(newId: string | undefined) {
     this._id = newId;
+
+    if (this._data && newId !== undefined) {
+      this._data.model_identifier = newId;
+    }
+  }
+
+  static ensureFromContent(content: string) {
+    const bd = new BlockbenchModel();
+
+    const obj = JSON.parse(content);
+
+    bd.data = obj;
+
+    return bd;
+  }
+
+  getMinecraftUVFace(face: IBlockbenchFace) {
+    if (face.uv.length >= 4) {
+      return {
+        uv: [face.uv[0], face.uv[1]],
+        uv_size: [Math.abs(face.uv[2] - face.uv[0]), Math.abs(face.uv[3] - face.uv[1])],
+      };
+    } else if (face.uv.length >= 2) {
+      return {
+        uv: [face.uv[0], face.uv[1]],
+        uv_size: [1, 1],
+      };
+    }
+
+    return { uv: [0, 0], uv_size: [1, 1] };
+  }
+
+  async updateGeometryFromModel(geo: IGeometry) {
+    if (this.data?.resolution) {
+      geo.textureheight = this.data.resolution.height;
+      geo.texturewidth = this.data.resolution.width;
+    }
+
+    if (this.data?.visible_box && this.data.visible_box.length === 3) {
+      geo.visible_bounds_width = this.data.visible_box[0];
+      geo.visible_bounds_height = this.data.visible_box[1];
+      geo.visible_bounds_offset = [0, this.data.visible_box[2], 0];
+    }
+    const bonesByName: { [name: string]: IGeometryBone } = {};
+    const cubesById: { [uuid: string]: IGeometryBoneCube } = {};
+    const locatorsById: { [uuid: string]: IBlockbenchElement } = {};
+
+    if (this.data?.elements) {
+      geo.bones = [];
+
+      for (const elt of this.data.elements) {
+        if (elt.type === "cube") {
+          if (elt.from && elt.from.length === 3 && elt.to && elt.to.length === 3) {
+            let uvTarg: number[] | IGeometryUVFaces | undefined = undefined;
+
+            if (elt.box_uv) {
+              uvTarg = elt.uv_offset;
+            } else if (elt.faces) {
+              uvTarg = {
+                north: this.getMinecraftUVFace(elt.faces.north),
+                east: this.getMinecraftUVFace(elt.faces.east),
+                south: this.getMinecraftUVFace(elt.faces.south),
+                west: this.getMinecraftUVFace(elt.faces.west),
+                up: this.getMinecraftUVFace(elt.faces.up),
+                down: this.getMinecraftUVFace(elt.faces.down),
+              };
+            }
+
+            let cube: IGeometryBoneCube = {
+              origin: elt.from,
+              size: [
+                Math.abs(elt.to[0] - elt.from[0]),
+                Math.abs(elt.to[1] - elt.from[1]),
+                Math.abs(elt.to[2] - elt.from[2]),
+              ],
+              uv: uvTarg as number[] | IGeometryUVFaces,
+            };
+
+            if (elt.rotation && elt.rotation.length === 3) {
+              cube.rotation = [-elt.rotation[0], -elt.rotation[1], -elt.rotation[2]];
+            }
+
+            if (elt.origin) {
+              cube.pivot = elt.origin;
+            }
+
+            cubesById[elt.uuid] = cube;
+          }
+        } else if (elt.type === "locator") {
+          locatorsById[elt.uuid] = elt;
+        }
+      }
+    }
+
+    if (this.data?.outliner) {
+      this.processOutlineItems(this.data.outliner, bonesByName, cubesById, locatorsById);
+    }
+
+    for (const boneName in bonesByName) {
+      const bone = bonesByName[boneName];
+
+      geo.bones.push(bone);
+    }
+  }
+
+  processOutlineItems(
+    outlineItems: (string | IBlockbenchOutlineItem)[],
+    bonesByName: { [name: string]: IGeometryBone },
+    cubesById: { [name: string]: IGeometryBoneCube },
+    locatorsById: { [name: string]: IBlockbenchElement },
+    parent?: IGeometryBone
+  ) {
+    for (const outlineItem of outlineItems) {
+      if (outlineItem && typeof outlineItem === "string" && parent) {
+        const elt = cubesById[outlineItem];
+
+        if (elt) {
+          if (!parent.cubes) {
+            parent.cubes = [];
+          }
+
+          parent.cubes.push(elt);
+        } else {
+          const lead = locatorsById[outlineItem];
+
+          if (lead && lead.name && lead.position) {
+            if (!parent.locators) {
+              parent.locators = {};
+            }
+
+            parent.locators[lead.name] = lead.position;
+          }
+        }
+      } else if (outlineItem && typeof outlineItem !== "string" && outlineItem.name) {
+        let bone = bonesByName[outlineItem.name];
+
+        if (!bone) {
+          bone = {
+            name: outlineItem.name,
+            pivot: [],
+            cubes: undefined,
+            locators: undefined,
+          };
+
+          bonesByName[outlineItem.name] = bone;
+        }
+
+        bone.pivot = outlineItem.origin;
+
+        if (parent) {
+          bone.parent = parent.name;
+        }
+
+        if (outlineItem.children) {
+          this.processOutlineItems(outlineItem.children, bonesByName, cubesById, locatorsById, bone);
+        }
+      }
+    }
+  }
+
+  async integrateIntoProject(project: Project) {
+    const modelId = this.id;
+
+    if (modelId) {
+      let geoToUpdate: IGeometry | undefined = undefined;
+
+      for (const item of project.items) {
+        if (item.itemType === ProjectItemType.modelGeometryJson && geoToUpdate === undefined) {
+          await item.ensureFileStorage();
+
+          if (item.file) {
+            const modelDefOuter = await ModelGeometryDefinition.ensureOnFile(item.file);
+
+            if (modelDefOuter && modelDefOuter.definitions) {
+              geoToUpdate = modelDefOuter.getById(modelId);
+            }
+          }
+        } else if (item.itemType === ProjectItemType.entityTypeResource) {
+          // ensure references to textures if an entiy exists
+          await item.ensureFileStorage();
+
+          if (item.file) {
+            const etrd = await EntityTypeResourceDefinition.ensureOnFile(item.file);
+
+            if (etrd && etrd.id === modelId) {
+              if (this.data && this.data.textures && etrd.textures) {
+                for (const texture of this.data.textures) {
+                  let path = texture.path ? texture.path : texture.name;
+
+                  path = StorageUtilities.canonicalizePath(path);
+                  let hasPath = false;
+                  let hasDefault = false;
+
+                  const texturesIndex = path.indexOf("textures/");
+
+                  if (texturesIndex >= 0) {
+                    path = path.substring(texturesIndex);
+
+                    for (const textureKey in etrd.textures) {
+                      const targetPath = etrd.textures[textureKey];
+
+                      if (textureKey === "default") {
+                        hasDefault = true;
+                      }
+                      if (targetPath && StorageUtilities.isPathEqual(targetPath, path)) {
+                        hasPath = true;
+                      }
+                    }
+
+                    if (!hasPath) {
+                      if (!hasDefault) {
+                        etrd.textures["default"] = path;
+                      } else {
+                        etrd.textures[texture.name] = path;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // a model file doesn't exist, so let's keep one.
+      if (!geoToUpdate && project.projectFolder) {
+        let modelName = this.data?.name;
+
+        if (modelName === undefined) {
+          modelName = modelId;
+
+          const colonNamespaceSep = modelName.lastIndexOf(":");
+
+          if (colonNamespaceSep >= 0) {
+            modelName = modelName.substring(colonNamespaceSep + 1);
+          }
+        }
+
+        const defaultRp = await project.getDefaultResourcePackFolder();
+
+        if (defaultRp) {
+          const modelsFolder = defaultRp.ensureFolder("models");
+          await modelsFolder.ensureExists();
+
+          const newFileName = await StorageUtilities.getUniqueFileName(modelName, "json", modelsFolder);
+
+          const newFile = modelsFolder.ensureFile(newFileName);
+
+          const modelGen = await ModelGeometryDefinition.ensureOnFile(newFile);
+
+          if (modelGen) {
+            modelGen.ensureDefault(modelId);
+
+            if (modelGen.definitions.length >= 0) {
+              geoToUpdate = modelGen.definitions[0];
+            }
+          }
+        }
+      }
+
+      if (geoToUpdate) {
+        this.updateGeometryFromModel(geoToUpdate);
+      }
+    }
+
+    if (this.data && this.data.textures) {
+      for (const texture of this.data.textures) {
+        let setItem = false;
+
+        if (texture.name) {
+          let path = texture.path ? texture.path : texture.name;
+          const bytes = Utilities.base64ToUint8Array(texture.source);
+
+          if (bytes && project.projectFolder) {
+            path = StorageUtilities.canonicalizePath(path);
+            const texturesIndex = path.indexOf("textures/");
+            if (texturesIndex >= 0) {
+              path = path.substring(texturesIndex);
+            }
+
+            // first, try to match an item by its path leaf
+            for (const item of project.items) {
+              if (item.itemType === ProjectItemType.texture && !setItem) {
+                await item.ensureFileStorage();
+
+                if (item.file) {
+                  const projectPath = item.file.getFolderRelativePath(project.projectFolder);
+
+                  if (projectPath && projectPath.endsWith(path)) {
+                    item.file.setContent(bytes);
+
+                    setItem = true;
+                  }
+                }
+              }
+            }
+
+            // we didn't match by path, but try to match by file name?
+            if (!setItem) {
+              for (const item of project.items) {
+                if (item.itemType === ProjectItemType.texture && !setItem) {
+                  if (item.file && item.file.name === texture.name) {
+                    item.file.setContent(bytes);
+
+                    setItem = true;
+                  }
+                }
+              }
+            }
+
+            // we didn't find a match, so create a new texture
+            if (!setItem) {
+              const defaultRp = await project.getDefaultResourcePackFolder();
+
+              if (defaultRp && project.projectFolder) {
+                // the path is not standard Minecraft, let's just create a new texture path in RP
+                if (!path.startsWith("textures/")) {
+                  path = "textures/" + texture.name;
+                }
+
+                const file = defaultRp.ensureFile(path);
+
+                file.setContent(bytes);
+
+                const projectPath = file.getFolderRelativePath(project.projectFolder);
+
+                if (projectPath) {
+                  project.ensureItemByProjectPath(
+                    projectPath,
+                    ProjectItemStorageType.singleFile,
+                    file.name,
+                    ProjectItemType.texture,
+                    undefined,
+                    ProjectItemCreationType.normal,
+                    file
+                  );
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<BlockbenchModel, BlockbenchModel>) {
@@ -85,7 +451,7 @@ export default class BlockbenchModel {
       return;
     }
 
-    const pjString = JSON.stringify(this.definition, null, 2);
+    const pjString = JSON.stringify(this._data, null, 2);
 
     this._file.setContent(pjString);
   }
@@ -113,7 +479,7 @@ export default class BlockbenchModel {
 
     this.id = this._file.name;
 
-    this.definition = StorageUtilities.getJsonObject(this._file);
+    this._data = StorageUtilities.getJsonObject(this._file);
 
     this._isLoaded = true;
   }
@@ -193,20 +559,109 @@ export default class BlockbenchModel {
     }
 
     const def = model.definitions[modelIndex];
+    const outlinerEltsByName: { [name: string]: IBlockbenchOutlineItem } = {};
+
+    let colorIndex = 0;
+    let rootBone: IGeometryBone | undefined = undefined;
+    let hasMultipleRoots = false;
 
     for (const bone of def.bones) {
-      if (bone.cubes.length >= 0) {
-        const childrenIds = [];
+      let rot = bone.rotation;
 
+      if (rot) {
+        if (rot.length === 3) {
+          rot[0] = -rot[0];
+          rot[1] = -rot[1];
+          rot[2] = -rot[2];
+        }
+      }
+
+      const outLinerElt: IBlockbenchOutlineItem = {
+        name: bone.name,
+        origin: bone.pivot,
+        rotation: rot,
+        bedrock_binding: "",
+        color: colorIndex,
+        uuid: Utilities.createUuid(),
+        export: true,
+        mirror_uv: false,
+        isOpen: false,
+        locked: false,
+        visibility: true,
+        autouv: 0,
+        children: [],
+      };
+
+      outlinerEltsByName[bone.name] = outLinerElt;
+
+      colorIndex++;
+      if (colorIndex > 7) {
+        colorIndex = 0;
+      }
+
+      if (bone.parent === undefined) {
+        bbmodel.outliner?.push(outLinerElt);
+
+        if (rootBone === undefined && !hasMultipleRoots) {
+          rootBone = bone;
+        } else if (rootBone) {
+          rootBone = undefined;
+          hasMultipleRoots = true;
+        }
+      }
+    }
+
+    for (const bone of def.bones) {
+      const thisOutlinerElt = outlinerEltsByName[bone.name];
+
+      if (bone.cubes && bone.cubes.length >= 0) {
         for (const cube of bone.cubes) {
           const id = Utilities.createUuid();
 
           if (cube.origin && cube.origin.length === 3 && cube.size && cube.size.length === 3) {
+            const cubeFrom = cube.origin;
+
             const cubeTo = new Array(3);
 
             cubeTo[0] = cube.origin[0] + cube.size[0];
             cubeTo[1] = cube.origin[1] + cube.size[1];
             cubeTo[2] = cube.origin[2] + cube.size[2];
+
+            let rot = cube.rotation;
+
+            if (rot) {
+              if (rot.length === 3) {
+                rot[0] = -rot[0];
+                rot[1] = -rot[1];
+                rot[2] = -rot[2];
+              }
+            } else if (bone.bind_pose_rotation) {
+              if (bone.bind_pose_rotation.length === 3) {
+                rot = [];
+
+                rot[0] = -bone.bind_pose_rotation[0];
+                rot[1] = -bone.bind_pose_rotation[1];
+                rot[2] = -bone.bind_pose_rotation[2];
+              } else {
+                rot = bone.bind_pose_rotation;
+              }
+            } else {
+              rot = [0, 0, 0];
+            }
+
+            let pivot = cube.pivot;
+
+            if (!pivot && bone.pivot) {
+              pivot = bone.pivot;
+            } else if (!pivot) {
+              pivot = [0, 0, 0];
+            }
+
+            let uvOffset = undefined;
+
+            if (Array.isArray(cube.uv)) {
+              uvOffset = cube.uv;
+            }
 
             bbmodel.elements?.push({
               name: bone.name,
@@ -216,13 +671,14 @@ export default class BlockbenchModel {
               light_emission: 0,
               render_order: "default",
               allow_mirror_modeling: true,
-              from: cube.origin,
+              from: cubeFrom,
               to: cubeTo,
+              inflate: cube.inflate,
               autouv: 0,
               color: 0,
-              rotation: bone.bind_pose_rotation ? bone.bind_pose_rotation : [0, 0, 0],
-              origin: bone.pivot,
-              uv_offset: cube.uv,
+              rotation: rot,
+              origin: pivot,
+              uv_offset: uvOffset,
               type: "cube",
               faces: {
                 north: { uv: BlockbenchModel.getNorthBoxUvCoordinates(cube), texture: 0 },
@@ -235,24 +691,38 @@ export default class BlockbenchModel {
               uuid: id,
             });
 
-            childrenIds.push(id);
+            thisOutlinerElt.children.push(id);
           }
         }
+      }
 
-        bbmodel.outliner?.push({
-          name: bone.name,
-          origin: bone.pivot,
-          bedrock_binding: "",
-          color: 0,
-          uuid: Utilities.createUuid(),
-          export: true,
-          mirror_uv: false,
-          isOpen: false,
-          locked: false,
-          visibility: true,
-          autouv: 0,
-          children: childrenIds,
-        });
+      if (bone.locators) {
+        for (const locatorName in bone.locators) {
+          const locator = bone.locators[locatorName];
+
+          if (Array.isArray(locator) && locator.length === 3) {
+            const id = Utilities.createUuid();
+
+            bbmodel.elements?.push({
+              name: locatorName,
+              locked: false,
+              position: locator,
+              rotation: [0, 0, 0],
+              type: "locator",
+              uuid: id,
+            });
+
+            thisOutlinerElt.children.push(id);
+          }
+        }
+      }
+
+      if (bone.parent !== undefined) {
+        const parentOutlinerElt = outlinerEltsByName[bone.parent];
+
+        if (parentOutlinerElt) {
+          parentOutlinerElt.children.push(thisOutlinerElt);
+        }
       }
     }
 
@@ -334,46 +804,107 @@ export default class BlockbenchModel {
   */
 
   static getUpBoxUvCoordinates(cube: IGeometryBoneCube) {
-    return [cube.uv[0] + cube.size[2], cube.uv[1], cube.uv[0] + cube.size[2] + cube.size[0], cube.uv[1] + cube.size[2]];
+    let uv = cube.uv;
+
+    if (Array.isArray(cube.uv)) {
+      uv = cube.uv;
+    } else if (cube.uv.up) {
+      uv = cube.uv.up.uv;
+    } else {
+      Log.unexpectedContentState("BBMGUB");
+      uv = [0, 0];
+    }
+
+    return [uv[0] + cube.size[2] + cube.size[0], uv[1] + cube.size[2], uv[0] + cube.size[2], uv[1]];
   }
 
   static getDownBoxUvCoordinates(cube: IGeometryBoneCube) {
-    return [
-      cube.uv[0] + cube.size[0] + cube.size[2],
-      cube.uv[1],
-      cube.uv[0] + cube.size[2] + cube.size[0] * 2,
-      cube.uv[1] + cube.size[2],
-    ];
+    let uv = cube.uv;
+
+    if (Array.isArray(cube.uv)) {
+      uv = cube.uv;
+    } else if (cube.uv.down) {
+      uv = cube.uv.down.uv;
+    } else {
+      Log.unexpectedContentState("BBMGDB");
+      uv = [0, 0];
+    }
+
+    return [uv[0] + cube.size[2] + cube.size[0] * 2, uv[1], uv[0] + cube.size[0] + cube.size[2], uv[1] + cube.size[2]];
   }
 
   static getEastBoxUvCoordinates(cube: IGeometryBoneCube) {
-    return [cube.uv[0], cube.uv[1] + cube.size[2], cube.uv[0] + cube.size[2], cube.uv[1] + cube.size[2] + cube.size[1]];
+    let uv = cube.uv;
+
+    if (Array.isArray(cube.uv)) {
+      uv = cube.uv;
+    } else if (cube.uv.east) {
+      uv = cube.uv.east.uv;
+    } else {
+      Log.unexpectedContentState("BBMGEB");
+      uv = [0, 0];
+    }
+
+    return [uv[0], uv[1] + cube.size[2], uv[0] + cube.size[2], uv[1] + cube.size[2] + cube.size[1]];
   }
 
   static getNorthBoxUvCoordinates(cube: IGeometryBoneCube) {
+    let uv = cube.uv;
+
+    if (Array.isArray(cube.uv)) {
+      uv = cube.uv;
+    } else if (cube.uv.north) {
+      uv = cube.uv.north.uv;
+    } else {
+      Log.unexpectedContentState("BBMGNB");
+      uv = [0, 0];
+    }
+
     return [
-      cube.uv[0] + cube.size[2],
-      cube.uv[1] + cube.size[2],
-      cube.uv[0] + cube.size[2] + cube.size[0],
-      cube.uv[1] + cube.size[2] + cube.size[1],
+      uv[0] + cube.size[2],
+      uv[1] + cube.size[2],
+      uv[0] + cube.size[2] + cube.size[0],
+      uv[1] + cube.size[2] + cube.size[1],
     ];
   }
 
   static getWestBoxUvCoordinates(cube: IGeometryBoneCube) {
+    let uv = cube.uv;
+
+    if (Array.isArray(cube.uv)) {
+      uv = cube.uv;
+    } else if (cube.uv.west) {
+      uv = cube.uv.west.uv;
+    } else {
+      Log.unexpectedContentState("BBMGWB");
+      uv = [0, 0];
+    }
+
     return [
-      cube.uv[0] + cube.size[2] + cube.size[0],
-      cube.uv[1] + cube.size[2],
-      cube.uv[0] + cube.size[2] * 2 + cube.size[0],
-      cube.uv[1] + cube.size[2] + cube.size[1],
+      uv[0] + cube.size[2] + cube.size[0],
+      uv[1] + cube.size[2],
+      uv[0] + cube.size[2] * 2 + cube.size[0],
+      uv[1] + cube.size[2] + cube.size[1],
     ];
   }
 
   static getSouthBoxUvCoordinates(cube: IGeometryBoneCube) {
+    let uv = cube.uv;
+
+    if (Array.isArray(cube.uv)) {
+      uv = cube.uv;
+    } else if (cube.uv.south) {
+      uv = cube.uv.south.uv;
+    } else {
+      Log.unexpectedContentState("BBMGWB");
+      uv = [0, 0];
+    }
+
     return [
-      cube.uv[0] + cube.size[2] * 2 + cube.size[0],
-      cube.uv[1] + cube.size[2],
-      cube.uv[0] + cube.size[2] * 2 + cube.size[0] * 2,
-      cube.uv[1] + cube.size[2] + cube.size[1],
+      uv[0] + cube.size[2] * 2 + cube.size[0],
+      uv[1] + cube.size[2],
+      uv[0] + cube.size[2] * 2 + cube.size[0] * 2,
+      uv[1] + cube.size[2] + cube.size[1],
     ];
   }
 }

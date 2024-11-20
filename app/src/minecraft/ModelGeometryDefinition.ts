@@ -7,6 +7,7 @@ import StorageUtilities from "../storage/StorageUtilities";
 import IModelGeometry, { IGeometry } from "./IModelGeometry";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
+import Log from "../core/Log";
 
 export default class ModelGeometryDefinition {
   private _file?: IFile;
@@ -58,6 +59,24 @@ export default class ModelGeometryDefinition {
     }
 
     return ids;
+  }
+
+  public getById(id: string): IGeometry | undefined {
+    Log.assert(id !== "minecraft:geometry");
+
+    let model = (this.wrapper as any)[id];
+
+    if (model) {
+      return model as IGeometry;
+    }
+
+    for (const def of this.definitions) {
+      if (def.description && def.description.identifier === id) {
+        return def;
+      }
+    }
+
+    return undefined;
   }
 
   public getVisibleBoundsWidth(defIndex: number): number | undefined {
@@ -122,6 +141,31 @@ export default class ModelGeometryDefinition {
     }
 
     return this.definitions[defIndex].texturewidth;
+  }
+
+  public ensureDefault(id: string) {
+    if (!this.wrapper) {
+      this.wrapper = {
+        format_version: "1.12.0",
+        "minecraft:geometry": [
+          {
+            description: {
+              identifier: id,
+              texture_width: 128,
+              texture_height: 64,
+              visible_bounds_width: 4,
+              visible_bounds_height: 3.5,
+              visible_bounds_offset: [0, 1.25, 0],
+            },
+            bones: [],
+          },
+        ],
+      };
+
+      this.persist();
+      this.populateDefsAndIds();
+      this._isLoaded = true;
+    }
   }
 
   public getTextureHeight(defIndex: number): number | undefined {
@@ -226,23 +270,16 @@ export default class ModelGeometryDefinition {
     await this._file.saveContent(false);
   }
 
-  async load() {
-    if (this._file === undefined || this._isLoaded) {
-      return;
-    }
-
-    await this._file.loadContent();
-
-    if (this._file.content === null || this._file.content instanceof Uint8Array) {
-      return;
-    }
-
-    this.wrapper = StorageUtilities.getJsonObject(this._file);
-
+  populateDefsAndIds() {
     this.definitions = [];
+    this._identifiers = [];
 
     if (this.wrapper && this.wrapper["minecraft:geometry"]) {
       for (const def of this.wrapper["minecraft:geometry"]) {
+        if (def.description && def.description.identifier) {
+          this._identifiers.push(def.description.identifier);
+        }
+
         this.definitions.push(def);
       }
     } else if (this.wrapper) {
@@ -260,6 +297,21 @@ export default class ModelGeometryDefinition {
         }
       }
     }
+  }
+  async load() {
+    if (this._file === undefined || this._isLoaded) {
+      return;
+    }
+
+    await this._file.loadContent();
+
+    if (this._file.content === null || this._file.content instanceof Uint8Array) {
+      return;
+    }
+
+    this.wrapper = StorageUtilities.getJsonObject(this._file);
+
+    this.populateDefsAndIds();
 
     this._isLoaded = true;
   }

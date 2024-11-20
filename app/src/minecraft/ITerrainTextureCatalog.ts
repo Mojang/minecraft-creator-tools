@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-export interface ITerrainTexture {
+export interface ITerrainTextureCatalog {
   num_mip_levels: number;
   padding: number;
   resource_pack_name: string;
@@ -14,5 +14,10 @@ export interface ITextureDataSet {
 
 export interface ITextureDataItem {
   sound: string;
-  textures: string | string[];
+  textures: string | string[] | ITextureInstance[];
+}
+
+export interface ITextureInstance {
+  path: string;
+  overlay_color: string;
 }

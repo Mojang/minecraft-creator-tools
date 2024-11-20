@@ -3,7 +3,7 @@
   "header": {
     "name": "testerName",
     "description": "testerDescription",
-    "uuid": "1d728d92-dfd8-4f90-8aac-176d6d0e00dc",
+    "uuid": "3b5298dc-d819-42c3-b2f1-2ab7d1c3510a",
     "version": [
       1,
       0,
@@ -12,14 +12,15 @@
     "min_engine_version": [
       1,
       21,
-      20
-    ]
+      40
+    ],
+    "pack_scope": "world"
   },
   "modules": [
     {
       "description": "Add-on Pack Resources",
       "type": "resources",
-      "uuid": "523d72d2-3ba9-498a-bc63-8beb5fe268cb",
+      "uuid": "4f1c4fec-e5a5-4e2c-8cbe-b7908613cc47",
       "version": [
         1,
         0,
@@ -29,12 +30,15 @@
   ],
   "dependencies": [
     {
-      "uuid": "9ec8af93-4b38-429f-a4bd-7e277a50d238",
+      "uuid": "ddadbe06-4ae7-4a9b-91d0-21f648b3e28e",
       "version": [
         1,
         0,
         0
       ]
     }
-  ]
+  ],
+  "metadata": {
+    "product_type": "addon"
+  }
 }

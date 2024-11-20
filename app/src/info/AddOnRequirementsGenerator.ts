@@ -208,6 +208,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       if (projectItem.file) {
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
           if (behaviorPackManifest) {
+            // ADDONREQ160
             items.push(
               new ProjectInfoItem(
                 InfoItemType.testCompleteFail,
@@ -225,6 +226,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
           await behaviorPackManifest?.load();
         } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
           if (resourcePackManifest) {
+            // ADDONREQ161
             items.push(
               new ProjectInfoItem(
                 InfoItemType.testCompleteFail,
@@ -246,6 +248,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
     if (!behaviorPackManifest || !behaviorPackManifest.definition) {
       items.push(
+        // ADDONREQ163
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
           this.id,
@@ -257,6 +260,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     }
 
     if (!resourcePackManifest || !resourcePackManifest.definition) {
+      //ADDONREQ164
       items.push(
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
@@ -280,6 +284,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
         !behaviorPackManifest.definition.dependencies ||
         behaviorPackManifest.getNonScriptModuleDependencyCount() !== 1
       ) {
+        // ADDONREQ165
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
@@ -295,6 +300,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
         !bpNonInternalDependency.uuid ||
         !Utilities.uuidEqual(bpNonInternalDependency.uuid, resourcePackManifest.definition.header.uuid)
       ) {
+        // ADDONREQ167
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
@@ -307,6 +313,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       }
 
       if (!resourcePackManifest.definition.dependencies || resourcePackManifest.definition.dependencies.length !== 1) {
+        // ADDONREQ168
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
@@ -323,6 +330,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
           behaviorPackManifest.definition.header.uuid
         )
       ) {
+        // ADDONREQ169
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
@@ -361,6 +369,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       const folderNameCanon = StorageUtilities.canonicalizeName(folderName);
 
       if (folderNameCanon === "features" || folderNameCanon === "feature_rules") {
+        // ADDONREQ130
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
@@ -373,6 +382,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       }
 
       if (folderNameCanon === "dimensions") {
+        // ADDONREQ131
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
@@ -484,11 +494,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     await folder.load();
 
     for (const fileName in folder.files) {
-      if (!this.isSpecialFile(folder.name, fileName)) {
+      if (!this.isPerPackCatalogFile(folder.name, fileName)) {
         const file = folder.files[fileName];
 
         const projectItem = file?.extendedPath ? project.getItemByExtendedOrProjectPath(file?.extendedPath) : undefined;
 
+        // ADDONREQ111
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
@@ -506,7 +517,9 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     for (const folderName in folder.folders) {
       const folderNameCanon = StorageUtilities.canonicalizeName(folderName);
       folderCount++;
+
       if (AddOnRequirementsGenerator.isUniqueNamespaceOrShortName(folderNameCanon)) {
+        // ADDONREQ109
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
@@ -521,6 +534,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     }
 
     if (folderCount > 1) {
+      // ADDONREQ110
       items.push(
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
@@ -534,7 +548,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     }
   }
 
-  isSpecialFile(folderName: string, fileName: string) {
+  isPerPackCatalogFile(folderName: string, fileName: string) {
     const fileNameCanon = StorageUtilities.canonicalizeName(fileName);
 
     if (
@@ -564,11 +578,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     await folder.load();
 
     for (const fileName in folder.files) {
-      if (!this.isSpecialFile(folder.name, fileName)) {
+      if (!this.isPerPackCatalogFile(folder.name, fileName)) {
         const file = folder.files[fileName];
 
         const projectItem = file?.extendedPath ? project.getItemByExtendedOrProjectPath(file?.extendedPath) : undefined;
 
+        // ADDONREQ101
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
@@ -585,6 +600,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     for (const folderName in folder.folders) {
       const folderNameCanon = StorageUtilities.canonicalizeName(folderName);
       if (AddOnRequirementsGenerator.isNameGenericTerm(folderNameCanon)) {
+        // ADDONREQ102
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,

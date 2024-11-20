@@ -1,6 +1,6 @@
 import { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
-import Carto from "./../app/Carto";
+import Carto, { CartoTargetStrings } from "./../app/Carto";
 import "./CartoSettingsPanel.css";
 import {
   Input,
@@ -27,8 +27,6 @@ interface ICartoSettingsPanelState {
   autoStartMinecraft: boolean | undefined;
   formatBeforeSave: boolean;
 }
-
-export const CartoTargetStrings = ["Latest Minecraft release", "Latest Minecraft preview"];
 
 export default class CartoSettingsPanel extends Component<ICartoSettingsPanelProps, ICartoSettingsPanelState> {
   private _activeEditorPersistable?: IPersistable;
@@ -96,6 +94,8 @@ export default class CartoSettingsPanel extends Component<ICartoSettingsPanelPro
     data: DropdownProps
   ) {
     if (data.value === CartoTargetStrings[1]) {
+      this.props.carto.track = MinecraftTrack.edu;
+    } else if (data.value === CartoTargetStrings[1]) {
       this.props.carto.track = MinecraftTrack.preview;
     } else {
       this.props.carto.track = MinecraftTrack.main;
@@ -156,9 +156,7 @@ export default class CartoSettingsPanel extends Component<ICartoSettingsPanelPro
         <Dropdown
           items={CartoTargetStrings}
           placeholder="Select which version of Minecraft to target"
-          defaultValue={
-            this.props.carto.track === MinecraftTrack.preview ? CartoTargetStrings[1] : CartoTargetStrings[0]
-          }
+          defaultValue={CartoTargetStrings[this.props.carto.track as number]}
           onChange={this._handleTrackChange}
         />
       </div>

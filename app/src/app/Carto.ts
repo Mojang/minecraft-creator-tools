@@ -38,6 +38,7 @@ import { MaxItemTypes, ProjectItemType } from "./IProjectItemData";
 import DeploymentStorageMinecraft from "./DeploymentStorageMinecraft";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import { GalleryItemType } from "./IGalleryItem";
+import ProjectItemRelations from "./ProjectItemRelations";
 
 export enum CartoMinecraftState {
   none = 0,
@@ -69,6 +70,13 @@ export enum CartoMinecraftErrorStatus {
   generalError = 5,
   configuration = 6,
 }
+
+export const CartoTargetStrings = [
+  "Latest Minecraft release",
+  "Latest Minecraft preview",
+  "Latest Education Edition",
+  "Latest Education Edition preview",
+];
 
 export const SidePaneMaxWidth = 880;
 export const SidePaneMinWidth = 280;
@@ -1339,6 +1347,7 @@ export default class Carto {
 
     await newProject.ensureProjectFolder();
 
+    await newProject.ensureInflated();
     await newProject.inferProjectItemsFromFiles();
 
     this.projects.push(newProject);
@@ -1465,6 +1474,8 @@ export default class Carto {
 
     await newProject.ensureProjectFolder();
 
+    await ProjectItemRelations.calculate(newProject);
+
     await newProject.inferProjectItemsFromFiles();
 
     this.projects.push(newProject);
@@ -1555,7 +1566,6 @@ export default class Carto {
     newProject.originalFullPath = folderPath;
 
     await newProject.ensureProjectFolder();
-
     await newProject.inferProjectItemsFromFiles();
 
     this.projects.push(newProject);

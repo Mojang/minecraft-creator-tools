@@ -26,6 +26,8 @@ import Pack from "../minecraft/Pack";
 import ProjectAutogeneration from "./ProjectAutogeneration";
 import ProjectItemRelationship from "./IProjectItemRelationship";
 import IProjectItemRelationship from "./IProjectItemRelationship";
+import IProjectItemUnfulfilledRelationship from "./IProjectItemUnfulfilledRelationship";
+import ProjectItemRelations from "./ProjectItemRelations";
 
 export default class ProjectItem {
   private _data: IProjectItemData;
@@ -44,6 +46,7 @@ export default class ProjectItem {
 
   public parentItems: ProjectItemRelationship[] | undefined;
   public childItems: ProjectItemRelationship[] | undefined;
+  public unfulfilledRelationships: IProjectItemUnfulfilledRelationship[] | undefined;
 
   constructor(parent: Project, incomingData?: IProjectItemData) {
     this._project = parent;
@@ -79,6 +82,14 @@ export default class ProjectItem {
     }
 
     return this.childItems.length;
+  }
+
+  public get unfulfilledRelationshipsCount() {
+    if (this.unfulfilledRelationships === undefined) {
+      return 0;
+    }
+
+    return this.unfulfilledRelationships.length;
   }
 
   public get isInWorld() {
@@ -184,6 +195,21 @@ export default class ProjectItem {
     return undefined;
   }
 
+  addUnfulfilledRelationship(path: string, itemType: ProjectItemType, isVanillaDependent?: boolean) {
+    let pir: IProjectItemUnfulfilledRelationship = {
+      parentItem: this,
+      path: path,
+      itemType: itemType,
+      isVanillaDependent: isVanillaDependent === true,
+    };
+
+    if (this.unfulfilledRelationships === undefined) {
+      this.unfulfilledRelationships = [];
+    }
+
+    this.unfulfilledRelationships.push(pir);
+  }
+
   addChildItem(childItem: ProjectItem) {
     let pir: IProjectItemRelationship = {
       parentItem: this,
@@ -254,6 +280,15 @@ export default class ProjectItem {
     this._project.notifyProjectItemChanged(this);
   }
 
+  get title() {
+    return (
+      StorageUtilities.getContaineredFileLeafPath(this.projectPath) +
+      " (" +
+      ProjectItemUtilities.getDescriptionForType(this._data.itemType).toLowerCase() +
+      ")"
+    );
+  }
+
   get typeTitle() {
     return ProjectItemUtilities.getDescriptionForType(this._data.itemType);
   }
@@ -315,7 +350,7 @@ export default class ProjectItem {
         return "behavior/entities/entities.json";
       case ProjectItemType.blocksCatalogResourceJson:
         return "resource/blocks.json";
-      case ProjectItemType.soundsCatalogResourceJson:
+      case ProjectItemType.soundCatalog:
         return "resource/sounds.json";
       case ProjectItemType.animationResourceJson:
         return "resource/animations/actor_animation.json";
@@ -357,7 +392,7 @@ export default class ProjectItem {
         return "resource/materials/materials.json";
       case ProjectItemType.musicDefinitionJson:
         return "resource/sounds/music_definitions.json";
-      case ProjectItemType.soundDefinitionJson:
+      case ProjectItemType.soundDefinitionCatalog:
         return "resource/sounds/sound_definitions.json";
       case ProjectItemType.blockTypeResourceJson:
         return "resource/blocks.json";
@@ -614,8 +649,10 @@ export default class ProjectItem {
   async deleteItem() {
     await this.load();
 
+    await ProjectItemRelations.deleteLinksFromParents(this);
+
     if (this._file !== null) {
-      this._file.deleteThisFile();
+      await this._file.deleteThisFile();
     }
 
     this._project.removeItem(this);

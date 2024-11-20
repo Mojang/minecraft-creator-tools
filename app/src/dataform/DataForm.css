@@ -17,7 +17,7 @@
 }
 
 .df-outer {
-  padding: 2px;
+  padding: 0px;
   vertical-align: top;
 }
 
@@ -79,7 +79,7 @@
   vertical-align: bottom;
   padding-right: 14px;
   display: inline-block !important;
-  min-width: 136px;
+  min-width: 189px;
 }
 
 .df-fieldWrap .ui-dropdown {
@@ -91,11 +91,23 @@
 }
 
 .df-elementBinTitle {
-  padding-bottom: 5px;
+  font-size: large;
+}
+
+.df-fieldWrap label {
+  font-size: large;
 }
 
 .df-cardWrapper {
   padding: 5px 10px 10px 10px;
+  border: outset 1px black;
+  margin-bottom: 4px;
+  margin-top: 4px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.2rem 0.4rem -0.075rem;
+}
+
+.df-arrayOfKeyedStringSet {
+  padding: 5px 10px 5px 10px;
   border: outset 1px black;
   margin-bottom: 4px;
   margin-top: 4px;
@@ -117,10 +129,18 @@
 
 .df-elementTitle {
   padding-bottom: 3px;
+  font-size: large;
+}
+
+.df-elementBinNoScroll {
+  padding: 6px 8px 6px 8px;
+  margin-left: 10px;
+  min-height: 121px;
+  border: inset 1px;
 }
 
 .df-elementBin {
-  padding: 10px;
+  padding: 6px 8px 6px 8px;
   margin-left: 10px;
   min-height: 121px;
   border: inset 1px;
@@ -156,6 +176,7 @@
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row: 1;
+  font-size: large;
   padding-top: 3px;
   padding-bottom: 3px;
 }
@@ -215,7 +236,8 @@
 
 .df-keyedStringCollection {
   display: grid;
-  grid-template-columns: 220px 1fr 100px;
+  grid-template-columns: 205px 1fr 100px;
+  max-width: 830px;
 }
 
 .df-keyedStringCollectionTitle {
@@ -234,4 +256,12 @@
 
 .df-keyedStringCollectionClose {
   grid-column: 3;
+}
+
+.df-keyedStringCollectionClose button {
+  height: 30px;
+}
+
+.df-fieldWrapNumber input {
+  max-width: 72px;
 }

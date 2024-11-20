@@ -6,9 +6,15 @@ import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IItemTexture } from "./IItemTexture";
+import IFolder from "../storage/IFolder";
+import Project from "../app/Project";
+import ProjectItem from "../app/ProjectItem";
+import { ProjectItemType } from "../app/IProjectItemData";
+import Utilities from "../core/Utilities";
+import Database from "./Database";
 
 export default class ItemTextureCatalogDefinition {
-  public itemTexture?: IItemTexture;
+  private _data?: IItemTexture;
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
@@ -21,12 +27,67 @@ export default class ItemTextureCatalogDefinition {
   public get file() {
     return this._file;
   }
+
+  public get data() {
+    return this._data;
+  }
+
   public get onLoaded() {
     return this._onLoaded.asEvent();
   }
 
   public set file(newFile: IFile | undefined) {
     this._file = newFile;
+  }
+
+  public get textureData() {
+    if (!this._data) {
+      return undefined;
+    }
+
+    if (this._data.texture_data === undefined) {
+      this._data.texture_data = {};
+    }
+
+    return this._data.texture_data;
+  }
+
+  public get texturePathList() {
+    if (!this._data || !this._data.texture_data) {
+      return undefined;
+    }
+
+    const textureList = [];
+
+    for (const key in this._data.texture_data) {
+      const texturePathArr = this._data.texture_data[key];
+
+      if (texturePathArr && texturePathArr.textures) {
+        if (typeof texturePathArr.textures === "string") {
+          textureList.push(texturePathArr.textures.toLowerCase());
+        } else if (Array.isArray(texturePathArr)) {
+          for (const texturePath of texturePathArr.textures) {
+            textureList.push(texturePath.toLowerCase());
+          }
+        }
+      }
+    }
+
+    return textureList;
+  }
+
+  public get texturesIdList() {
+    if (!this._data || !this._data.texture_data) {
+      return undefined;
+    }
+
+    const textureIdList = [];
+
+    for (const key in this._data.texture_data) {
+      textureIdList.push(key);
+    }
+
+    return textureIdList;
   }
 
   static async ensureOnFile(
@@ -61,9 +122,77 @@ export default class ItemTextureCatalogDefinition {
       return;
     }
 
-    const defString = JSON.stringify(this.itemTexture, null, 2);
+    const defString = JSON.stringify(this._data, null, 2);
 
     this._file.setContent(defString);
+  }
+
+  getPackRootFolder() {
+    let packRootFolder = undefined;
+    if (this.file && this.file.parentFolder) {
+      let parentFolder = this.file.parentFolder;
+
+      while (parentFolder.name !== "textures" && parentFolder.parentFolder) {
+        parentFolder = parentFolder.parentFolder;
+      }
+
+      if (parentFolder.parentFolder) {
+        packRootFolder = parentFolder.parentFolder;
+      }
+    }
+
+    return packRootFolder;
+  }
+
+  getRelativePath(file: IFile, packRootFolder: IFolder) {
+    let relativePath = file.getFolderRelativePath(packRootFolder);
+
+    if (relativePath) {
+      const lastPeriod = relativePath?.lastIndexOf(".");
+      if (lastPeriod >= 0) {
+        relativePath = relativePath?.substring(0, lastPeriod).toLowerCase();
+      }
+
+      relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
+    }
+
+    return relativePath;
+  }
+
+  async addChildItems(project: Project, item: ProjectItem) {
+    const itemsCopy = project.getItemsCopy();
+
+    let packRootFolder = this.getPackRootFolder();
+
+    let texturePathList = this.texturePathList;
+
+    for (const candItem of itemsCopy) {
+      if (candItem.itemType === ProjectItemType.texture && packRootFolder && texturePathList) {
+        await candItem.ensureStorage();
+
+        if (candItem.file) {
+          let relativePath = this.getRelativePath(candItem.file, packRootFolder);
+
+          if (relativePath) {
+            if (texturePathList && texturePathList.includes(relativePath)) {
+              item.addChildItem(candItem);
+
+              texturePathList = Utilities.removeItemInArray(relativePath, texturePathList);
+            }
+          }
+        }
+      }
+    }
+
+    if (texturePathList) {
+      for (const texturePath of texturePathList) {
+        item.addUnfulfilledRelationship(
+          texturePath,
+          ProjectItemType.texture,
+          await Database.isVanillaToken(texturePath)
+        );
+      }
+    }
   }
 
   async load() {
@@ -90,7 +219,7 @@ export default class ItemTextureCatalogDefinition {
       data = result;
     }
 
-    this.itemTexture = data;
+    this._data = data;
 
     this._isLoaded = true;
 

@@ -66,6 +66,8 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
     let summary = undefined;
     let tags = [];
 
+    let mainAreaClass = "pt-mainArea";
+
     const ghurl = "https://github.com/" + proj.gitHubOwner + "/" + proj.gitHubRepoName;
 
     if (this.props.displayOpenButton) {
@@ -153,12 +155,12 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
       let imagePath = proj.logoImage;
 
       if (imagePath === undefined) {
-        imagePath = CartoApp.contentRoot + "res/latest/van/resource_pack/textures/" + proj.localLogo;
+        imagePath = CartoApp.contentRoot + "res/latest/van/release/resource_pack/textures/" + proj.localLogo;
       }
 
       if (proj.logoImage !== undefined) {
         if (proj.gitHubRepoName === "bedrock-samples") {
-          imagePath = CartoApp.contentRoot + Utilities.ensureEndsWithSlash("res/latest/van/");
+          imagePath = CartoApp.contentRoot + Utilities.ensureEndsWithSlash("res/latest/van/release/");
         } else {
           imagePath = CartoApp.contentRoot + "res/samples/" + proj.gitHubOwner + "/" + proj.gitHubRepoName + "-";
 
@@ -211,6 +213,8 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
           </div>
         );
       }
+    } else {
+      mainAreaClass = "pt-mainArea-long";
     }
 
     if (this.props.displayMode === ProjectTileDisplayMode.smallCodeSample) {
@@ -298,7 +302,7 @@ export default class ProjectTile extends Component<IProjectTileProps, IProjectTi
             }}
           >
             <div className="pt-grid">
-              <div className="pt-mainArea">
+              <div className={mainAreaClass}>
                 <div className="pt-titleOuter">
                   <h3 className="pt-title">{proj.title}</h3>
                   {tags}

@@ -215,7 +215,8 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
       const tentativeLabel = ProjectEditorUtilities.getIntegrateBrowserFileDefaultActionDescription(
         this.props.project,
         "/" + this.props.data.fileSource.name,
-        this.props.data.fileSource
+        this.props.data.fileSource,
+        this.props.data.fileContent
       );
 
       if (tentativeLabel) {

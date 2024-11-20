@@ -25,7 +25,6 @@
   .home-main {
     grid-template-columns: 400px 1fr;
     display: grid;
-    width: 100vw;
   }
 
   .home-header {
@@ -96,7 +95,7 @@
   }
 
   .home-toolTile {
-    height: 120px;
+    height: 130px;
     display: inline-flex;
     margin-top: 10px;
     margin-left: 6px;
@@ -223,6 +222,7 @@
 
 .home-inlineMessage {
   padding: 20px;
+  margin-bottom: 10px;
 }
 
 .home-loadingIcon {
@@ -272,62 +272,6 @@
 .home-header-image {
   width: 266px;
   height: 60px;
-}
-
-.home-newCreator {
-  grid-row: 2;
-  grid-column: 1;
-  padding-top: 5px;
-}
-
-.home-newCreatorInput {
-  grid-row: 2;
-  grid-column: 2;
-}
-
-.home-newName {
-  grid-row: 1;
-  grid-column: 1;
-  padding-top: 5px;
-}
-
-.home-newNameInput {
-  grid-row: 1;
-  grid-column: 2;
-}
-
-.home-newShortName {
-  grid-row: 3;
-  grid-column: 1;
-  padding-top: 5px;
-}
-
-.home-newShortNameInput {
-  grid-row: 3;
-  grid-column: 2;
-}
-
-.home-newDescription {
-  grid-row: 4;
-  grid-column: 1;
-  padding-top: 5px;
-}
-
-.home-newDescriptionInput {
-  grid-row: 4;
-  grid-column: 2;
-}
-
-.home-newFolder {
-  padding-top: 35px;
-  grid-row: 5;
-  grid-column: 1;
-}
-
-.home-newPath {
-  padding-top: 35px;
-  grid-row: 5;
-  grid-column: 2;
 }
 
 .home-projects {

@@ -46,6 +46,8 @@ export enum FieldDataType {
   uuid = 26,
   keyedBooleanCollection = 27, // { "foo": true, "blah": false}
   keyedStringArrayCollection = 28, // { "foo": ["blah", "alpha"], "barg" : ["borg"] }
+  arrayOfKeyedStringCollection = 29, // [ { "blah": "alpha", "blaz": "blay" }, {"barg": "borg"} ]
+  keyedKeyedStringArrayCollection = 30, // { "alpha":  { "foo": ["blah", "alpha"], "barg" : ["borg"] } }
 }
 
 export default interface IField {
@@ -69,9 +71,11 @@ export default interface IField {
   noun?: string;
   allowCreateDelete?: boolean;
   readOnly?: boolean;
+  displayTitle?: boolean;
   forceString?: boolean;
   minValue?: number;
   maxValue?: number;
+  step?: number;
   suggestedMinValue?: number;
   suggestedMaxValue?: number;
   validity?: ICondition[];

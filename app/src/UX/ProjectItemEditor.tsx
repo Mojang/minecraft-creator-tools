@@ -15,21 +15,15 @@ import GitHubReferenceEditor from "./GitHubReferenceEditor";
 import "./ProjectItemEditor.css";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { ProjectEditPreference, ProjectScriptLanguage } from "../app/IProjectData";
-import DocumentedModuleEditor from "./DocumentedModuleEditor";
-import DocumentedCommandSetEditor from "./DocumentedCommandSetEditor";
 import Utilities from "../core/Utilities";
 import CartoApp, { HostType } from "../app/CartoApp";
 import TextEditor from "./TextEditor";
-import NpmPackageEditor from "./NpmPackageEditor";
-import BehaviorPackManifestJsonEditor from "./BehaviorPackManifestJsonEditor";
 import ImageEditor from "./ImageEditor";
 import DataFormEditor from "./DataFormEditor";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ProjectInfoDisplay from "./ProjectInfoDisplay";
-import EntityTypeEditor from "./EntityTypeEditor";
-import SpawnRulesEditor from "./SpawnRulesEditor";
-import LootTableEditor from "./LootTableEditor";
 import EntityTypeResourceEditor from "./EntityTypeResourceEditor";
+import AudioManager from "./AudioManager";
 
 enum ProjectItemEditorDirtyState {
   clean = 0,
@@ -280,92 +274,16 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               setActivePersistable={this._handleNewChildPersistable}
             />
           );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.entityTypeBehavior &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          Log.verbose("Showing entity type editor for '" + file.storageRelativePath + "'");
+        } else if (file.type === "mp3" || file.type === "ogg" || file.type === "wav") {
           interior = (
-            <EntityTypeEditor
+            <AudioManager
               readOnly={this.props.readOnly}
               heightOffset={this.props.heightOffset}
-              theme={this.props.theme}
-              file={file}
-              item={this.props.activeProjectItem}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.scriptTypesJson &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          interior = (
-            <DocumentedModuleEditor
+              visualSeed={this.props.visualSeed}
               carto={this.props.carto}
-              theme={this.props.theme}
-              typesReadOnly={true}
-              docsReadOnly={this.props.readOnly}
-              heightOffset={this.props.heightOffset}
-              file={file}
               project={this.props.project}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.packageJson &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          interior = (
-            <NpmPackageEditor
               theme={this.props.theme}
-              heightOffset={this.props.heightOffset}
               file={file}
-              readOnly={this.props.readOnly}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.behaviorPackManifestJson &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          interior = (
-            <BehaviorPackManifestJsonEditor
-              theme={this.props.theme}
-              heightOffset={this.props.heightOffset}
-              file={file}
-              readOnly={this.props.readOnly}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.spawnRuleBehavior &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          interior = (
-            <SpawnRulesEditor
-              theme={this.props.theme}
-              heightOffset={this.props.heightOffset}
-              file={file}
-              readOnly={this.props.readOnly}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.lootTableBehavior &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          interior = (
-            <LootTableEditor
-              theme={this.props.theme}
-              heightOffset={this.props.heightOffset}
-              file={file}
-              readOnly={this.props.readOnly}
               setActivePersistable={this._handleNewChildPersistable}
             />
           );
@@ -379,24 +297,8 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               theme={this.props.theme}
               heightOffset={this.props.heightOffset}
               file={file}
+              projectItem={this.props.activeProjectItem}
               readOnly={this.props.readOnly}
-              setActivePersistable={this._handleNewChildPersistable}
-            />
-          );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.commandSetDefinitionJson &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
-          interior = (
-            <DocumentedCommandSetEditor
-              carto={this.props.carto}
-              theme={this.props.theme}
-              typesReadOnly={true}
-              docsReadOnly={this.props.readOnly}
-              heightOffset={this.props.heightOffset}
-              file={file}
-              project={this.props.project}
               setActivePersistable={this._handleNewChildPersistable}
             />
           );

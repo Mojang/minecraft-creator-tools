@@ -31,13 +31,14 @@ export interface IBlockbenchOutlineItem {
   bedrock_binding: string;
   color: number;
   uuid: string;
+  rotation?: number[];
   export: boolean;
   mirror_uv: boolean;
   isOpen: boolean;
   locked: boolean;
   visibility: boolean;
   autouv: number;
-  children: string[];
+  children: (string | IBlockbenchOutlineItem)[];
 }
 
 export interface IBlockbenchTexture {
@@ -71,20 +72,23 @@ export interface IBlockbenchTexture {
 
 export interface IBlockbenchElement {
   name: string;
-  box_uv: boolean;
-  rescale: boolean;
+  box_uv?: boolean;
+  rescale?: boolean;
   locked: boolean;
-  render_order: string;
-  allow_mirror_modeling: boolean;
-  from: number[];
-  to: number[];
-  autouv: number;
-  color: number;
-  origin: number[];
-  uv_offset: number[];
+  render_order?: string;
+  allow_mirror_modeling?: boolean;
+  inflate?: number;
+  from?: number[];
+  to?: number[];
+  position?: number[];
+  ignore_inherited_scale?: boolean;
+  autouv?: number;
+  color?: number;
+  origin?: number[];
+  uv_offset?: number[];
   rotation: number[];
   light_emission?: number;
-  faces: IBlockbenchFaceSet;
+  faces?: IBlockbenchFaceSet;
   type: string;
   uuid: string;
 }
