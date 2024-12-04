@@ -7,13 +7,24 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IParticleEffectWrapper } from "./IParticleEffect";
 import MinecraftUtilities from "./MinecraftUtilities";
+import { ProjectItemType } from "../app/IProjectItemData";
+import IFolder from "../storage/IFolder";
+import ProjectItem from "../app/ProjectItem";
+import Project from "../app/Project";
+import Database from "./Database";
+import Utilities from "../core/Utilities";
+import IProjectItemRelationship from "../app/IProjectItemRelationship";
 
 export default class ParticleEffectResourceDefinition {
-  public wrapper?: IParticleEffectWrapper;
+  private _data?: IParticleEffectWrapper;
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
   private _onLoaded = new EventDispatcher<ParticleEffectResourceDefinition, ParticleEffectResourceDefinition>();
+
+  public get data() {
+    return this._data;
+  }
 
   public get isLoaded() {
     return this._isLoaded;
@@ -31,11 +42,31 @@ export default class ParticleEffectResourceDefinition {
   }
 
   public get id() {
-    if (!this.wrapper || !this.wrapper.particle_effect || !this.wrapper.particle_effect.description) {
+    if (!this._data || !this._data.particle_effect || !this._data.particle_effect.description) {
       return undefined;
     }
 
-    return this.wrapper.particle_effect.description.identifier;
+    return this._data.particle_effect.description.identifier;
+  }
+
+  public get description() {
+    if (!this._data || !this._data.particle_effect || !this._data.particle_effect.description) {
+      return undefined;
+    }
+
+    return this._data.particle_effect.description;
+  }
+
+  public get texturesList() {
+    if (
+      !this.description ||
+      !this.description.basic_render_parameters ||
+      !this.description.basic_render_parameters.texture
+    ) {
+      return undefined;
+    }
+
+    return [this.description.basic_render_parameters.texture];
   }
 
   public async getFormatVersionIsCurrent() {
@@ -49,19 +80,19 @@ export default class ParticleEffectResourceDefinition {
   }
 
   public getFormatVersion(): number[] | undefined {
-    if (!this.wrapper) {
+    if (!this._data) {
       return undefined;
     }
 
-    return MinecraftUtilities.getVersionArrayFrom(this.wrapper.format_version);
+    return MinecraftUtilities.getVersionArrayFrom(this._data.format_version);
   }
 
   get formatVersion() {
-    if (!this.wrapper || !this.wrapper.format_version) {
+    if (!this._data || !this._data.format_version) {
       return undefined;
     }
 
-    return this.wrapper.format_version;
+    return this._data.format_version;
   }
 
   static async ensureOnFile(
@@ -96,7 +127,7 @@ export default class ParticleEffectResourceDefinition {
       return;
     }
 
-    const defString = JSON.stringify(this.wrapper, null, 2);
+    const defString = JSON.stringify(this._data, null, 2);
 
     this._file.setContent(defString);
   }
@@ -125,10 +156,112 @@ export default class ParticleEffectResourceDefinition {
       data = result;
     }
 
-    this.wrapper = data;
+    this._data = data;
 
     this._isLoaded = true;
 
     this._onLoaded.dispatch(this, this);
+  }
+
+  async deleteLinkToChild(rel: IProjectItemRelationship) {
+    let packRootFolder = this.getPackRootFolder();
+
+    if (this._data === undefined) {
+      await this.load();
+    }
+
+    if (
+      !this.description ||
+      !this.description.basic_render_parameters ||
+      !this.description.basic_render_parameters.texture
+    ) {
+      return;
+    }
+
+    const basicTexture = this.description.basic_render_parameters.texture;
+
+    if (rel.childItem.itemType === ProjectItemType.texture) {
+      await rel.childItem.ensureStorage();
+
+      if (rel.childItem.file && packRootFolder) {
+        let relativePath = this.getRelativePath(rel.childItem.file, packRootFolder);
+
+        if (relativePath) {
+          if (basicTexture === relativePath) {
+            this.description.basic_render_parameters.texture = undefined;
+          }
+        }
+      }
+    }
+
+    this.persist();
+  }
+
+  getPackRootFolder() {
+    let packRootFolder = undefined;
+    if (this.file && this.file.parentFolder) {
+      let parentFolder = this.file.parentFolder;
+
+      while (parentFolder.name !== "particles" && parentFolder.parentFolder) {
+        parentFolder = parentFolder.parentFolder;
+      }
+
+      if (parentFolder.parentFolder) {
+        packRootFolder = parentFolder.parentFolder;
+      }
+    }
+
+    return packRootFolder;
+  }
+
+  getRelativePath(file: IFile, packRootFolder: IFolder) {
+    let relativePath = file.getFolderRelativePath(packRootFolder);
+
+    if (relativePath) {
+      const lastPeriod = relativePath?.lastIndexOf(".");
+      if (lastPeriod >= 0) {
+        relativePath = relativePath?.substring(0, lastPeriod).toLowerCase();
+      }
+
+      relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
+    }
+
+    return relativePath;
+  }
+
+  async addChildItems(project: Project, item: ProjectItem) {
+    const itemsCopy = project.getItemsCopy();
+
+    let packRootFolder = this.getPackRootFolder();
+
+    let textureList = this.texturesList;
+
+    for (const candItem of itemsCopy) {
+      if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
+        await candItem.ensureStorage();
+
+        if (candItem.file) {
+          let relativePath = this.getRelativePath(candItem.file, packRootFolder);
+
+          if (relativePath) {
+            if (textureList && textureList.includes(relativePath)) {
+              item.addChildItem(candItem);
+
+              textureList = Utilities.removeItemInArray(relativePath, textureList);
+            }
+          }
+        }
+      }
+    }
+
+    if (textureList) {
+      for (const texturePath of textureList) {
+        item.addUnfulfilledRelationship(
+          texturePath,
+          ProjectItemType.texture,
+          await Database.isVanillaToken(texturePath)
+        );
+      }
+    }
   }
 }

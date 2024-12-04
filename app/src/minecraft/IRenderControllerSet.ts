@@ -19,9 +19,9 @@ export interface IRenderController {
 }
 
 export interface RenderControllerArrayLists {
-  textures?: { [name: string]: string[] };
-  geometries?: { [name: string]: string[] };
-  materials?: { [name: string]: string[] };
+  textures?: { [name: string]: string[] | undefined };
+  geometries?: { [name: string]: string[] | undefined };
+  materials?: { [name: string]: string[] | undefined };
 }
 
 export interface IRenderControllerMaterial {

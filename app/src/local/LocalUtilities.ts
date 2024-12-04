@@ -12,6 +12,16 @@ import IConversionSettings from "../core/IConversionSettings";
 export default class LocalUtilities implements ILocalUtilities {
   #productNameSeed = "mctools";
 
+  #basePathAdjust: string | undefined = undefined;
+
+  get basePathAdjust() {
+    return this.#basePathAdjust;
+  }
+
+  set basePathAdjust(pathAdjust: string | undefined) {
+    this.#basePathAdjust = pathAdjust;
+  }
+
   get isWindows() {
     return os.platform() === "win32";
   }
@@ -257,6 +267,10 @@ export default class LocalUtilities implements ILocalUtilities {
 
     if (lastSlash >= 0) {
       fullPath = fullPath.substring(0, lastSlash + 1);
+    }
+
+    if (this.#basePathAdjust) {
+      fullPath += this.#basePathAdjust;
     }
 
     if (this.isWindows) {

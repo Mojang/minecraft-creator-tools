@@ -97,7 +97,7 @@ export default class ResourceManifestDefinition {
     }
   }
 
-  public get uuid() {
+  public get id() {
     if (this.definition && this.definition.header) {
       return this.definition.header.uuid;
     }
@@ -105,7 +105,7 @@ export default class ResourceManifestDefinition {
     return this._id;
   }
 
-  public set uuid(newId: string | undefined) {
+  public set id(newId: string | undefined) {
     if (this.definition && this.definition.header && newId) {
       this.definition.header.uuid = newId;
     }
@@ -114,9 +114,9 @@ export default class ResourceManifestDefinition {
   }
 
   public async setUuid(newId: string | undefined, project?: Project) {
-    const oldUuid = this.uuid;
+    const oldUuid = this.id;
 
-    this.uuid = newId;
+    this.id = newId;
 
     if (newId && oldUuid && project) {
       await ResourceManifestDefinition.setNewResourcePackId(project, newId, oldUuid);
@@ -153,8 +153,8 @@ export default class ResourceManifestDefinition {
           const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.file);
 
           if (rpManifestJson) {
-            if (rpManifestJson.uuid && Utilities.uuidEqual(rpManifestJson.uuid, oldResourcePackId)) {
-              rpManifestJson.uuid = newResourcePackId;
+            if (rpManifestJson.id && Utilities.uuidEqual(rpManifestJson.id, oldResourcePackId)) {
+              rpManifestJson.id = newResourcePackId;
               setResourcePack = true;
               await rpManifestJson.save();
             } else if (rpManifestJson.definition && rpManifestJson.definition.dependencies) {

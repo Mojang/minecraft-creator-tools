@@ -9,8 +9,9 @@ import MinecraftUtilities from "./MinecraftUtilities";
 import IAnimationControllerBehaviorWrapper, {
   IAnimationControllerBehaviorStateWrapper,
 } from "./IAnimationControllerBehavior";
+import IDefinition from "./IDefinition";
 
-export default class AnimationControllerBehaviorDefinition {
+export default class AnimationControllerBehaviorDefinition implements IDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;

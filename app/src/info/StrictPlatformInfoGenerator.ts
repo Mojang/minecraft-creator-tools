@@ -87,7 +87,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
             }
           }
         }
-      } else if (pi.itemType === ProjectItemType.itemTypeBehaviorJson) {
+      } else if (pi.itemType === ProjectItemType.itemTypeBehavior) {
         await pi.ensureFileStorage();
 
         if (pi.file) {

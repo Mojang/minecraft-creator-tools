@@ -21,8 +21,9 @@ import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
 import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
 import SpawnRulesBehaviorDefinition from "./SpawnRulesBehaviorDefinition";
+import IDefinition from "./IDefinition";
 
-export default class EntityTypeDefinition implements IManagedComponentSetItem {
+export default class EntityTypeDefinition implements IManagedComponentSetItem, IDefinition {
   public behaviorPackWrapper?: IEntityTypeWrapper;
   private _behaviorPackFile?: IFile;
   private _id?: string;

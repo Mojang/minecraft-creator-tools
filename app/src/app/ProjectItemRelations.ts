@@ -3,6 +3,7 @@ import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
 import ItemTextureCatalogDefinition from "../minecraft/ItemTextureCatalogDefinition";
 import MusicDefinitionCatalogDefinition from "../minecraft/MusicDefinitionCatalogDefinition";
+import ParticleEffectResourceDefinition from "../minecraft/ParticleEffectResourceDefinition";
 import SoundCatalogDefinition from "../minecraft/SoundCatalogDefinition";
 import SoundDefinitionCatalogDefinition from "../minecraft/SoundDefinitionCatalogDefinition";
 import TerrainTextureCatalogDefinition from "../minecraft/TerrainTextureCatalogDefinition";
@@ -39,6 +40,16 @@ export default class ProjectItemRelations {
 
           if (entityTypeResource) {
             await entityTypeResource.addChildItems(project, item);
+          }
+        }
+      } else if (item.itemType === ProjectItemType.particleJson) {
+        await item.ensureStorage();
+
+        if (item.file) {
+          const particleResource = await ParticleEffectResourceDefinition.ensureOnFile(item.file);
+
+          if (particleResource) {
+            await particleResource.addChildItems(project, item);
           }
         }
       } else if (item.itemType === ProjectItemType.attachableResourceJson) {
@@ -119,7 +130,17 @@ export default class ProjectItemRelations {
             const entityTypeResource = await EntityTypeResourceDefinition.ensureOnFile(rel.parentItem.file);
 
             if (entityTypeResource) {
-              await entityTypeResource.deleteLink(rel);
+              await entityTypeResource.deleteLinkToChild(rel);
+            }
+          }
+        } else if (rel.parentItem.itemType === ProjectItemType.particleJson) {
+          await item.ensureStorage();
+
+          if (rel.parentItem.file) {
+            const particleResource = await ParticleEffectResourceDefinition.ensureOnFile(rel.parentItem.file);
+
+            if (particleResource) {
+              await particleResource.deleteLinkToChild(rel);
             }
           }
         } else if (rel.parentItem.itemType === ProjectItemType.attachableResourceJson) {
@@ -129,7 +150,7 @@ export default class ProjectItemRelations {
             const attachableResource = await AttachableResourceDefinition.ensureOnFile(rel.parentItem.file);
 
             if (attachableResource) {
-              await attachableResource.deleteLink(rel);
+              await attachableResource.deleteLinkToChild(rel);
             }
           }
         } else if (rel.parentItem.itemType === ProjectItemType.soundCatalog) {
@@ -139,7 +160,7 @@ export default class ProjectItemRelations {
             const soundCat = await SoundDefinitionCatalogDefinition.ensureOnFile(rel.parentItem.file);
 
             if (soundCat) {
-              await soundCat.deleteLink(rel.childItem);
+              await soundCat.deleteLinkToChild(rel.childItem);
             }
           }
         }

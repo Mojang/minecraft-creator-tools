@@ -9,6 +9,7 @@ import BlockTypeBehaviorDefinition from "./BlockTypeBehaviorDefinition";
 import EntityTypeDefinition from "./EntityTypeDefinition";
 import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
 import FlipbookTextureCatalogDefinition from "./FlipbookTextureCatalogDefinition";
+import IDefinition from "./IDefinition";
 import ItemTypeBehaviorDefinition from "./ItemTypeBehaviorDefinition";
 import MusicDefinitionCatalogDefinition from "./MusicDefinitionCatalogDefinition";
 import RenderControllerSetDefinition from "./RenderControllerSetDefinition";
@@ -17,12 +18,12 @@ import SoundCatalogDefinition from "./SoundCatalogDefinition";
 import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition";
 
 export default class MinecraftDefinitions {
-  static async get(projectItem: ProjectItem) {
+  static async get(projectItem: ProjectItem): Promise<IDefinition | undefined> {
     if (!projectItem.file || !projectItem.file.content || typeof projectItem.file.content !== "string") {
       await projectItem.ensureFileStorage();
 
       if (!projectItem.file) {
-        return;
+        return undefined;
       }
 
       await projectItem.file.loadContent();
@@ -37,7 +38,7 @@ export default class MinecraftDefinitions {
         return await EntityTypeDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.entityTypeResource:
         return await EntityTypeResourceDefinition.ensureOnFile(projectItem.file);
-      case ProjectItemType.itemTypeBehaviorJson:
+      case ProjectItemType.itemTypeBehavior:
         return await ItemTypeBehaviorDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.blockTypeBehavior:
         return await BlockTypeBehaviorDefinition.ensureOnFile(projectItem.file);

@@ -325,6 +325,9 @@
         "minecraft:is_sheared": 1,
         "minecraft:behavior.melee_attack": 1
       },
+      "Sounds Entity sounds": {
+        "entities": 1
+      },
       "Animations Resource": {
         "Count": 8
       },
@@ -675,6 +678,10 @@
         "1": {
           "title": "Entity Type",
           "defaultMessage": "Entity file"
+        },
+        "8": {
+          "title": "Sounds",
+          "defaultMessage": "Sounds file"
         }
       },
       "SCRIPTMODULE": {
@@ -703,7 +710,7 @@
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.40)",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.50)",
           "recommendations": 3
         }
       },
@@ -727,7 +734,7 @@
         },
         "120": {
           "title": "Behavior Pack Entity Type Format Version Minor Version Lower than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.40.03)",
+          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.50.07)",
           "recommendations": 3
         }
       },
@@ -1738,6 +1745,18 @@
     },
     {
       "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 8,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "fs": {
+        "Entity sounds": {
+          "entities": 1
+        }
+      }
+    },
+    {
+      "iTp": 2,
       "gId": "SCRIPTMODULE",
       "gIx": 100,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
@@ -1810,7 +1829,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.40)",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.50)",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -3111,6 +3130,8 @@
       "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json",
       "entities/sheepomelon.behavior",
       "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json",
+      "sounds",
+      "/Content/resource_packs/aop_mobsrp/sounds.json",
       "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "/Content/behavior_packs/aop_mobsbp/pack_icon.png",
       "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
@@ -3126,7 +3147,6 @@
       "/Content/behavior_packs/aop_mobsbp/texts/languages.json",
       "/Content/resource_packs/aop_mobsrp/manifest.json",
       "/Content/resource_packs/aop_mobsrp/pack_icon.png",
-      "/Content/resource_packs/aop_mobsrp/sounds.json",
       "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json",
       "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json",
       "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json",
@@ -3147,11 +3167,11 @@
     "trie": {
       "9": {
         "ec8af93-4b38-429f-a4bd-7e277a50d238": [
-          6
+          8
         ],
         "d6dad89-6e29-46ba-83d5-490a4901caef": [
-          19,
-          6
+          21,
+          8
         ]
       },
       "h": {
@@ -3195,65 +3215,37 @@
                 }
               ],
               ".": {
-                "value": {
-                  "±": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 3,
-                      "a": "c"
-                    },
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ],
-                  "==": {
-                    "8": [
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ],
-                    "30": [
-                      {
-                        "n": 1,
-                        "a": "c"
-                      },
-                      {
-                        "n": 3,
-                        "a": "c"
-                      }
-                    ]
+                "value": [
+                  {
+                    "n": 1,
+                    "a": "c"
+                  },
+                  {
+                    "n": 3,
+                    "a": "c"
+                  },
+                  {
+                    "n": 5,
+                    "a": "c"
                   }
-                },
-                "max": {
-                  "±": [
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ],
-                  "==8": [
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ]
-                }
+                ],
+                "max": [
+                  {
+                    "n": 5,
+                    "a": "c"
+                  }
+                ]
               }
             },
             "d": {
               "er": [
-                19,
-                6
+                21,
+                8
               ],
               "±": [
-                22,
-                24,
-                28,
+                23,
+                25,
+                29,
                 -2
               ]
             }
@@ -3265,11 +3257,11 @@
               5
             ],
             "_filter": [
-              15
+              17
             ]
           },
           "rd": [
-            14,
+            16,
             -2
           ]
         },
@@ -3289,7 +3281,7 @@
               5
             ],
             "biome_tag": [
-              14,
+              16,
               -2
             ]
           }
@@ -3323,67 +3315,157 @@
                   "a": "c"
                 }
               ],
-              ".damage_conditions": [
-                {
-                  "n": 1,
-                  "a": "c"
-                },
-                {
-                  "n": 3,
-                  "a": "c"
-                },
-                {
-                  "n": 5,
-                  "a": "c"
+              ".damage_conditions": {
+                "±": [
+                  {
+                    "n": 1,
+                    "a": "c"
+                  },
+                  {
+                    "n": 3,
+                    "a": "c"
+                  },
+                  {
+                    "n": 5,
+                    "a": "c"
+                  }
+                ],
+                ".": {
+                  "filters": {
+                    "±": [
+                      {
+                        "n": 1,
+                        "a": "c"
+                      },
+                      {
+                        "n": 3,
+                        "a": "c"
+                      },
+                      {
+                        "n": 5,
+                        "a": "c"
+                      }
+                    ],
+                    ".": {
+                      "test": [
+                        {
+                          "n": 1,
+                          "a": "c"
+                        },
+                        {
+                          "n": 3,
+                          "a": "c"
+                        },
+                        {
+                          "n": 5,
+                          "a": "c"
+                        }
+                      ],
+                      "subject": [
+                        {
+                          "n": 1,
+                          "a": "c"
+                        },
+                        {
+                          "n": 3,
+                          "a": "c"
+                        },
+                        {
+                          "n": 5,
+                          "a": "c"
+                        }
+                      ],
+                      "operator": [
+                        {
+                          "n": 1,
+                          "a": "c"
+                        },
+                        {
+                          "n": 3,
+                          "a": "c"
+                        },
+                        {
+                          "n": 5,
+                          "a": "c"
+                        }
+                      ],
+                      "value": [
+                        {
+                          "n": 1,
+                          "a": "c"
+                        },
+                        {
+                          "n": 3,
+                          "a": "c"
+                        },
+                        {
+                          "n": 5,
+                          "a": "c"
+                        }
+                      ]
+                    }
+                  },
+                  "cause": {
+                    "±": [
+                      {
+                        "n": 1,
+                        "a": "c"
+                      },
+                      {
+                        "n": 3,
+                        "a": "c"
+                      },
+                      {
+                        "n": 5,
+                        "a": "c"
+                      }
+                    ],
+                    "==lava": [
+                      {
+                        "n": 1,
+                        "a": "c"
+                      },
+                      {
+                        "n": 3,
+                        "a": "c"
+                      },
+                      {
+                        "n": 5,
+                        "a": "c"
+                      }
+                    ]
+                  },
+                  "damage_per_tick": [
+                    {
+                      "n": 1,
+                      "a": "c"
+                    },
+                    {
+                      "n": 3,
+                      "a": "c"
+                    },
+                    {
+                      "n": 5,
+                      "a": "c"
+                    }
+                  ]
                 }
-              ]
+              }
             },
             "item": [
               5
             ]
           },
           "±": [
-            21
+            7
           ],
           ".in.water": [
-            21
+            7
           ]
         }
       },
       "c": {
         "o": {
-          "m": {
-            "ponent": {
-              "_groups": [
-                1,
-                3,
-                5
-              ],
-              "s": [
-                1,
-                3,
-                31,
-                -1,
-                5
-              ]
-            },
-            "mand_controller": [
-              5
-            ]
-          },
-          "oldown": [
-            5
-          ],
-          "unt": [
-            10,
-            -1
-          ],
-          "bblestone": [
-            {
-              "n": 12,
-              "a": "S"
-            }
-          ],
           "n": {
             "dition": {
               "al_bandwidth_optimization": [
@@ -3413,17 +3495,17 @@
                 }
               ],
               "s": [
-                10,
-                14,
+                12,
+                16,
                 -2
               ],
               "±": [
-                10
+                12
               ]
             },
             "sole": [
               {
-                "n": 12,
+                "n": 14,
                 "a": "S"
               }
             ],
@@ -3431,32 +3513,70 @@
               "animation.": {
                 "polarbear.": {
                   "move": [
-                    25
+                    26
                   ],
                   "baby": [
-                    25
+                    26
                   ]
                 },
                 "dolphin.general": [
-                  26
-                ],
-                "sheep.move": [
                   27
-                ]
+                ],
+                "sheep": {
+                  "omelon_commands": [
+                    11,
+                    5
+                  ],
+                  ".move": [
+                    28
+                  ]
+                }
               },
               "render.": {
                 "polarbear": [
-                  25
-                ],
-                "default": [
                   26
                 ],
-                "sheep": [
+                "default": [
                   27
+                ],
+                "sheep": [
+                  28
                 ]
               }
             }
           },
+          "m": {
+            "ponent": {
+              "_groups": [
+                1,
+                3,
+                5
+              ],
+              "s": [
+                1,
+                3,
+                32,
+                -1,
+                5
+              ]
+            },
+            "mand_controller": [
+              5
+            ]
+          },
+          "oldown": [
+            5
+          ],
+          "unt": [
+            12,
+            -1
+          ],
+          "bblestone": [
+            {
+              "n": 14,
+              "a": "S"
+            }
+          ],
           "l": {
             "lision_box": {
               "±": [
@@ -3486,74 +3606,38 @@
                 }
               ],
               ".": {
-                "width": {
-                  "±": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 3,
-                      "a": "g"
-                    },
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ],
-                  "==1": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 3,
-                      "a": "g"
-                    },
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ]
-                },
-                "height": {
-                  "±": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 3,
-                      "a": "g"
-                    },
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ],
-                  "==": {
-                    "0": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      }
-                    ],
-                    "1": [
-                      {
-                        "n": 1,
-                        "a": "c"
-                      },
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ]
+                "width": [
+                  {
+                    "n": 1,
+                    "a": "c"
+                  },
+                  {
+                    "n": 3,
+                    "a": "g"
+                  },
+                  {
+                    "n": 5,
+                    "a": "c"
                   }
-                }
+                ],
+                "height": [
+                  {
+                    "n": 1,
+                    "a": "c"
+                  },
+                  {
+                    "n": 3,
+                    "a": "g"
+                  },
+                  {
+                    "n": 5,
+                    "a": "c"
+                  }
+                ]
               }
             },
             "or": [
-              31,
+              32,
               -1
             ]
           }
@@ -3610,11 +3694,11 @@
           }
         },
         "lient_entity": [
-          25,
+          26,
           -2
         ],
         "ubes": [
-          28,
+          29,
           -2
         ]
       },
@@ -3631,28 +3715,20 @@
                 "a": "c"
               }
             ],
-            ".mass": {
-              "±": [
-                {
-                  "n": 5,
-                  "a": "c"
-                }
-              ],
-              "==1": [
-                {
-                  "n": 5,
-                  "a": "c"
-                }
-              ]
-            }
+            ".mass": [
+              {
+                "n": 5,
+                "a": "c"
+              }
+            ]
           },
           "hhhh": [
-            8
+            10
           ],
           "by": {
             "±": [
               1,
-              25,
+              26,
               3
             ],
             "_": {
@@ -3667,34 +3743,37 @@
               ],
               "t": {
                 "urtle": [
-                  3
+                  {
+                    "n": 3,
+                    "a": "g"
+                  }
                 ],
                 "ype": [
                   3,
                   5
                 ],
                 "ransform": [
-                  25,
-                  27
+                  26,
+                  28
                 ]
               }
             }
           },
           "ck_fin": [
-            29
+            30
           ],
           "s": {
             "ic_render_parameters": [
-              31,
+              32,
               -1
             ],
             "e_": {
               "color": [
-                25,
+                26,
                 -2
               ],
               "uv": [
-                31,
+                32,
                 -1
               ]
             }
@@ -3723,42 +3802,22 @@
                   }
                 ],
                 ".": {
-                  "require_tame": {
-                    "±": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      },
-                      {
-                        "n": 5,
-                        "a": "g"
-                      }
-                    ],
-                    "==f": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      },
-                      {
-                        "n": 5,
-                        "a": "g"
-                      }
-                    ]
-                  },
-                  "causes_pregnancy": {
-                    "±": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      }
-                    ],
-                    "==t": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      }
-                    ]
-                  },
+                  "require_tame": [
+                    {
+                      "n": 3,
+                      "a": "g"
+                    },
+                    {
+                      "n": 5,
+                      "a": "g"
+                    }
+                  ],
+                  "causes_pregnancy": [
+                    {
+                      "n": 3,
+                      "a": "g"
+                    }
+                  ],
                   "breed": {
                     "s_with": {
                       "±": [
@@ -3818,16 +3877,24 @@
                         }
                       }
                     },
-                    "_items": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      },
-                      {
-                        "n": 5,
-                        "a": "g"
-                      }
-                    ]
+                    "_items": {
+                      "±": [
+                        {
+                          "n": 3,
+                          "a": "g"
+                        },
+                        {
+                          "n": 5,
+                          "a": "g"
+                        }
+                      ],
+                      ".seagrass": [
+                        {
+                          "n": 3,
+                          "a": "g"
+                        }
+                      ]
+                    }
                   }
                 }
               },
@@ -3874,110 +3941,54 @@
                   }
                 ],
                 ".": {
-                  "total_supply": {
-                    "±": [
-                      {
-                        "n": 1,
-                        "a": "c"
-                      },
-                      {
-                        "n": 3,
-                        "a": "c"
-                      },
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ],
-                    "==15": [
-                      {
-                        "n": 1,
-                        "a": "c"
-                      },
-                      {
-                        "n": 3,
-                        "a": "c"
-                      },
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ]
-                  },
-                  "suffocate_time": {
-                    "±": [
-                      {
-                        "n": 1,
-                        "a": "c"
-                      },
-                      {
-                        "n": 3,
-                        "a": "c"
-                      },
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ],
-                    "==0": [
-                      {
-                        "n": 1,
-                        "a": "c"
-                      },
-                      {
-                        "n": 3,
-                        "a": "c"
-                      },
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ]
-                  },
-                  "breathes_": {
-                    "water": {
-                      "±": [
-                        {
-                          "n": 3,
-                          "a": "c"
-                        }
-                      ],
-                      "==t": [
-                        {
-                          "n": 3,
-                          "a": "c"
-                        }
-                      ]
+                  "total_supply": [
+                    {
+                      "n": 1,
+                      "a": "c"
                     },
-                    "air": {
-                      "±": [
-                        {
-                          "n": 3,
-                          "a": "c"
-                        }
-                      ],
-                      "==t": [
-                        {
-                          "n": 3,
-                          "a": "c"
-                        }
-                      ]
+                    {
+                      "n": 3,
+                      "a": "c"
+                    },
+                    {
+                      "n": 5,
+                      "a": "c"
                     }
-                  },
-                  "generates_bubbles": {
-                    "±": [
+                  ],
+                  "suffocate_time": [
+                    {
+                      "n": 1,
+                      "a": "c"
+                    },
+                    {
+                      "n": 3,
+                      "a": "c"
+                    },
+                    {
+                      "n": 5,
+                      "a": "c"
+                    }
+                  ],
+                  "breathes_": {
+                    "water": [
                       {
                         "n": 3,
                         "a": "c"
                       }
                     ],
-                    "==f": [
+                    "air": [
                       {
                         "n": 3,
                         "a": "c"
                       }
                     ]
-                  }
+                  },
+                  "generates_bubbles": [
+                    {
+                      "n": 3,
+                      "a": "c"
+                    }
+                  ]
                 }
               },
               "e": {
@@ -3990,7 +4001,7 @@
                   ]
                 },
                 "±": [
-                  21
+                  7
                 ]
               }
             }
@@ -4004,8 +4015,8 @@
             ]
           },
           "ightness_filter": [
-            14,
-            16
+            16,
+            18
           ]
         },
         "e": {
@@ -4030,28 +4041,16 @@
                     "a": "c"
                   }
                 ],
-                ".priority": {
-                  "±": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 3,
-                      "a": "c"
-                    }
-                  ],
-                  "==1": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 3,
-                      "a": "c"
-                    }
-                  ]
-                }
+                ".priority": [
+                  {
+                    "n": 1,
+                    "a": "c"
+                  },
+                  {
+                    "n": 3,
+                    "a": "c"
+                  }
+                ]
               },
               "random_": {
                 "look_around": {
@@ -4073,32 +4072,16 @@
                       "a": "c"
                     }
                   ],
-                  ".priority": {
-                    "±": [
-                      {
-                        "n": 1,
-                        "a": "c"
-                      },
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ],
-                    "==": {
-                      "7": [
-                        {
-                          "n": 1,
-                          "a": "c"
-                        }
-                      ],
-                      "9": [
-                        {
-                          "n": 5,
-                          "a": "c"
-                        }
-                      ]
+                  ".priority": [
+                    {
+                      "n": 1,
+                      "a": "c"
+                    },
+                    {
+                      "n": 5,
+                      "a": "c"
                     }
-                  }
+                  ]
                 },
                 "s": {
                   "troll": {
@@ -4129,56 +4112,26 @@
                       }
                     ],
                     ".": {
-                      "priority": {
-                        "±": [
-                          {
-                            "n": 1,
-                            "a": "c"
-                          },
-                          {
-                            "n": 3,
-                            "a": "g"
-                          },
-                          {
-                            "n": 5,
-                            "a": "c"
-                          }
-                        ],
-                        "==": {
-                          "5": [
-                            {
-                              "n": 1,
-                              "a": "c"
-                            }
-                          ],
-                          "7": [
-                            {
-                              "n": 5,
-                              "a": "c"
-                            }
-                          ],
-                          "9": [
-                            {
-                              "n": 3,
-                              "a": "g"
-                            }
-                          ]
+                      "priority": [
+                        {
+                          "n": 1,
+                          "a": "c"
+                        },
+                        {
+                          "n": 3,
+                          "a": "g"
+                        },
+                        {
+                          "n": 5,
+                          "a": "c"
                         }
-                      },
-                      "interval": {
-                        "±": [
-                          {
-                            "n": 3,
-                            "a": "g"
-                          }
-                        ],
-                        "==100": [
-                          {
-                            "n": 3,
-                            "a": "g"
-                          }
-                        ]
-                      },
+                      ],
+                      "interval": [
+                        {
+                          "n": 3,
+                          "a": "g"
+                        }
+                      ],
                       "speed_multiplier": [
                         {
                           "n": 5,
@@ -4199,62 +4152,30 @@
                       }
                     ],
                     ".": {
-                      "priority": {
-                        "±": [
-                          {
-                            "n": 3,
-                            "a": "c"
-                          }
-                        ],
-                        "==7": [
-                          {
-                            "n": 3,
-                            "a": "c"
-                          }
-                        ]
-                      },
-                      "interval": {
-                        "±": [
-                          {
-                            "n": 3,
-                            "a": "c"
-                          }
-                        ],
-                        "==0": [
-                          {
-                            "n": 3,
-                            "a": "c"
-                          }
-                        ]
-                      },
-                      "xz_dist": {
-                        "±": [
-                          {
-                            "n": 3,
-                            "a": "c"
-                          }
-                        ],
-                        "==30": [
-                          {
-                            "n": 3,
-                            "a": "c"
-                          }
-                        ]
-                      },
-                      "y_dist": {
-                        "±": [
-                          {
-                            "n": 3,
-                            "a": "c"
-                          }
-                        ],
-                        "==15": [
-                          {
-                            "n": 3,
-                            "a": "c"
-                          }
-                        ]
-                      }
+                      "priority": [
+                        {
+                          "n": 3,
+                          "a": "c"
+                        }
+                      ],
+                      "interval": [
+                        {
+                          "n": 3,
+                          "a": "c"
+                        }
+                      ],
+                      "xz_dist": [
+                        {
+                          "n": 3,
+                          "a": "c"
+                        }
+                      ],
+                      "y_dist": [
+                        {
+                          "n": 3,
+                          "a": "c"
+                        }
+                      ]
                     }
                   }
                 }
@@ -4287,8 +4208,22 @@
                   }
                 ],
                 ".": {
-                  "speed_multiplier": {
-                    "±": [
+                  "speed_multiplier": [
+                    {
+                      "n": 1,
+                      "a": "c"
+                    },
+                    {
+                      "n": 3,
+                      "a": "c"
+                    },
+                    {
+                      "n": 5,
+                      "a": "c"
+                    }
+                  ],
+                  "pr": {
+                    "iority": [
                       {
                         "n": 1,
                         "a": "c"
@@ -4302,74 +4237,12 @@
                         "a": "c"
                       }
                     ],
-                    "==": {
-                      "1": [
-                        {
-                          "n": 3,
-                          "a": "c"
-                        },
-                        {
-                          "n": 5,
-                          "a": "c"
-                        }
-                      ],
-                      "2": [
-                        {
-                          "n": 1,
-                          "a": "c"
-                        }
-                      ]
-                    }
-                  },
-                  "pr": {
-                    "iority": {
-                      "±": [
-                        {
-                          "n": 1,
-                          "a": "c"
-                        },
-                        {
-                          "n": 3,
-                          "a": "c"
-                        },
-                        {
-                          "n": 5,
-                          "a": "c"
-                        }
-                      ],
-                      "==": {
-                        "0": [
-                          {
-                            "n": 3,
-                            "a": "c"
-                          }
-                        ],
-                        "2": [
-                          {
-                            "n": 1,
-                            "a": "c"
-                          },
-                          {
-                            "n": 5,
-                            "a": "c"
-                          }
-                        ]
+                    "efer_water": [
+                      {
+                        "n": 3,
+                        "a": "c"
                       }
-                    },
-                    "efer_water": {
-                      "±": [
-                        {
-                          "n": 3,
-                          "a": "c"
-                        }
-                      ],
-                      "==t": [
-                        {
-                          "n": 3,
-                          "a": "c"
-                        }
-                      ]
-                    }
+                    ]
                   }
                 }
               },
@@ -4393,28 +4266,16 @@
                       "a": "c"
                     }
                   ],
-                  ".priority": {
-                    "±": [
-                      {
-                        "n": 1,
-                        "a": "c"
-                      },
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ],
-                    "==0": [
-                      {
-                        "n": 1,
-                        "a": "c"
-                      },
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ]
-                  }
+                  ".priority": [
+                    {
+                      "n": 1,
+                      "a": "c"
+                    },
+                    {
+                      "n": 5,
+                      "a": "c"
+                    }
+                  ]
                 },
                 "ollow_parent": {
                   "±": [
@@ -4436,38 +4297,16 @@
                     }
                   ],
                   ".": {
-                    "priority": {
-                      "±": [
-                        {
-                          "n": 1,
-                          "a": "g"
-                        },
-                        {
-                          "n": 5,
-                          "a": "cg"
-                        }
-                      ],
-                      "==": {
-                        "4": [
-                          {
-                            "n": 1,
-                            "a": "g"
-                          }
-                        ],
-                        "5": [
-                          {
-                            "n": 5,
-                            "a": "c"
-                          }
-                        ],
-                        "6": [
-                          {
-                            "n": 5,
-                            "a": "g"
-                          }
-                        ]
+                    "priority": [
+                      {
+                        "n": 1,
+                        "a": "g"
+                      },
+                      {
+                        "n": 5,
+                        "a": "cg"
                       }
-                    },
+                    ],
                     "speed_multiplier": [
                       {
                         "n": 1,
@@ -4481,24 +4320,128 @@
                   }
                 }
               },
-              "nearest_attackable_target": [
-                {
-                  "n": 0,
-                  "a": "g"
-                },
-                {
-                  "n": 1,
-                  "a": "g"
-                },
-                {
-                  "n": 4,
-                  "a": "g"
-                },
-                {
-                  "n": 5,
-                  "a": "g"
+              "nearest_attackable_target": {
+                "±": [
+                  {
+                    "n": 0,
+                    "a": "g"
+                  },
+                  {
+                    "n": 1,
+                    "a": "g"
+                  },
+                  {
+                    "n": 4,
+                    "a": "g"
+                  },
+                  {
+                    "n": 5,
+                    "a": "g"
+                  }
+                ],
+                ".": {
+                  "priority": [
+                    {
+                      "n": 1,
+                      "a": "g"
+                    },
+                    {
+                      "n": 5,
+                      "a": "g"
+                    }
+                  ],
+                  "entity_types": {
+                    "±": [
+                      {
+                        "n": 1,
+                        "a": "g"
+                      },
+                      {
+                        "n": 5,
+                        "a": "g"
+                      }
+                    ],
+                    ".": {
+                      "filters": {
+                        "±": [
+                          {
+                            "n": 1,
+                            "a": "g"
+                          },
+                          {
+                            "n": 5,
+                            "a": "g"
+                          }
+                        ],
+                        ".": {
+                          "test": [
+                            {
+                              "n": 1,
+                              "a": "g"
+                            },
+                            {
+                              "n": 5,
+                              "a": "g"
+                            }
+                          ],
+                          "subject": [
+                            {
+                              "n": 1,
+                              "a": "g"
+                            },
+                            {
+                              "n": 5,
+                              "a": "g"
+                            }
+                          ],
+                          "value": [
+                            {
+                              "n": 1,
+                              "a": "g"
+                            },
+                            {
+                              "n": 5,
+                              "a": "g"
+                            }
+                          ]
+                        }
+                      },
+                      "max_dist": [
+                        {
+                          "n": 1,
+                          "a": "g"
+                        },
+                        {
+                          "n": 5,
+                          "a": "g"
+                        }
+                      ]
+                    }
+                  },
+                  "must_see": [
+                    {
+                      "n": 1,
+                      "a": "g"
+                    },
+                    {
+                      "n": 5,
+                      "a": "g"
+                    }
+                  ],
+                  "reselect_targets": [
+                    {
+                      "n": 5,
+                      "a": "g"
+                    }
+                  ],
+                  "within_radius": [
+                    {
+                      "n": 5,
+                      "a": "g"
+                    }
+                  ]
                 }
-              ],
+              },
               "stomp_attack": {
                 "±": [
                   {
@@ -4511,34 +4454,36 @@
                   }
                 ],
                 ".": {
-                  "priority": {
-                    "±": [
-                      {
-                        "n": 1,
-                        "a": "g"
-                      }
-                    ],
-                    "==1": [
-                      {
-                        "n": 1,
-                        "a": "g"
-                      }
-                    ]
-                  },
-                  "track_target": {
-                    "±": [
-                      {
-                        "n": 1,
-                        "a": "g"
-                      }
-                    ],
-                    "==t": [
-                      {
-                        "n": 1,
-                        "a": "g"
-                      }
-                    ]
-                  }
+                  "priority": [
+                    {
+                      "n": 1,
+                      "a": "g"
+                    }
+                  ],
+                  "track_target": [
+                    {
+                      "n": 1,
+                      "a": "g"
+                    }
+                  ],
+                  "require_complete_path": [
+                    {
+                      "n": 1,
+                      "a": "g"
+                    }
+                  ],
+                  "stomp_range_multiplier": [
+                    {
+                      "n": 1,
+                      "a": "g"
+                    }
+                  ],
+                  "no_damage_range_multiplier": [
+                    {
+                      "n": 1,
+                      "a": "g"
+                    }
+                  ]
                 }
               },
               "tempt": {
@@ -4561,55 +4506,7 @@
                   }
                 ],
                 ".": {
-                  "priority": {
-                    "±": [
-                      {
-                        "n": 3,
-                        "a": "c"
-                      },
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ],
-                    "==": {
-                      "3": [
-                        {
-                          "n": 3,
-                          "a": "c"
-                        }
-                      ],
-                      "4": [
-                        {
-                          "n": 5,
-                          "a": "c"
-                        }
-                      ]
-                    }
-                  },
-                  "speed_multiplier": {
-                    "±": [
-                      {
-                        "n": 3,
-                        "a": "c"
-                      },
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ],
-                    "==1": [
-                      {
-                        "n": 3,
-                        "a": "c"
-                      },
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ]
-                  },
-                  "items": [
+                  "priority": [
                     {
                       "n": 3,
                       "a": "c"
@@ -4618,7 +4515,43 @@
                       "n": 5,
                       "a": "c"
                     }
-                  ]
+                  ],
+                  "speed_multiplier": [
+                    {
+                      "n": 3,
+                      "a": "c"
+                    },
+                    {
+                      "n": 5,
+                      "a": "c"
+                    }
+                  ],
+                  "items": {
+                    "±": [
+                      {
+                        "n": 3,
+                        "a": "c"
+                      },
+                      {
+                        "n": 5,
+                        "a": "c"
+                      }
+                    ],
+                    ".": {
+                      "seagrass": [
+                        {
+                          "n": 3,
+                          "a": "c"
+                        }
+                      ],
+                      "melon_slice": [
+                        {
+                          "n": 5,
+                          "a": "c"
+                        }
+                      ]
+                    }
+                  }
                 }
               },
               "breed": {
@@ -4641,54 +4574,26 @@
                   }
                 ],
                 ".": {
-                  "priority": {
-                    "±": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      },
-                      {
-                        "n": 5,
-                        "a": "g"
-                      }
-                    ],
-                    "==": {
-                      "2": [
-                        {
-                          "n": 3,
-                          "a": "g"
-                        }
-                      ],
-                      "3": [
-                        {
-                          "n": 5,
-                          "a": "g"
-                        }
-                      ]
+                  "priority": [
+                    {
+                      "n": 3,
+                      "a": "g"
+                    },
+                    {
+                      "n": 5,
+                      "a": "g"
                     }
-                  },
-                  "speed_multiplier": {
-                    "±": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      },
-                      {
-                        "n": 5,
-                        "a": "g"
-                      }
-                    ],
-                    "==1": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      },
-                      {
-                        "n": 5,
-                        "a": "g"
-                      }
-                    ]
-                  }
+                  ],
+                  "speed_multiplier": [
+                    {
+                      "n": 3,
+                      "a": "g"
+                    },
+                    {
+                      "n": 5,
+                      "a": "g"
+                    }
+                  ]
                 }
               },
               "go_home": {
@@ -4703,62 +4608,30 @@
                   }
                 ],
                 ".": {
-                  "priority": {
-                    "±": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      }
-                    ],
-                    "==1": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      }
-                    ]
-                  },
-                  "speed_multiplier": {
-                    "±": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      }
-                    ],
-                    "==1": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      }
-                    ]
-                  },
-                  "interval": {
-                    "±": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      }
-                    ],
-                    "==700": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      }
-                    ]
-                  },
-                  "goal_radius": {
-                    "±": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      }
-                    ],
-                    "==4": [
-                      {
-                        "n": 3,
-                        "a": "g"
-                      }
-                    ]
-                  },
+                  "priority": [
+                    {
+                      "n": 3,
+                      "a": "g"
+                    }
+                  ],
+                  "speed_multiplier": [
+                    {
+                      "n": 3,
+                      "a": "g"
+                    }
+                  ],
+                  "interval": [
+                    {
+                      "n": 3,
+                      "a": "g"
+                    }
+                  ],
+                  "goal_radius": [
+                    {
+                      "n": 3,
+                      "a": "g"
+                    }
+                  ],
                   "on_home": {
                     "±": [
                       {
@@ -4823,85 +4696,41 @@
                       }
                     ],
                     "pr": {
-                      "iority": {
-                        "±": [
-                          {
-                            "n": 1,
-                            "a": "c"
-                          },
-                          {
-                            "n": 3,
-                            "a": "c"
-                          },
-                          {
-                            "n": 5,
-                            "a": "c"
-                          }
-                        ],
-                        "==": {
-                          "6": [
-                            {
-                              "n": 1,
-                              "a": "c"
-                            }
-                          ],
-                          "8": [
-                            {
-                              "n": 3,
-                              "a": "c"
-                            },
-                            {
-                              "n": 5,
-                              "a": "c"
-                            }
-                          ]
-                        }
-                      },
-                      "obability": {
-                        "±": [
-                          {
-                            "n": 1,
-                            "a": "c"
-                          },
-                          {
-                            "n": 3,
-                            "a": "c"
-                          },
-                          {
-                            "n": 5,
-                            "a": "c"
-                          }
-                        ],
-                        "==0": [
-                          {
-                            "n": 1,
-                            "a": "c"
-                          },
-                          {
-                            "n": 3,
-                            "a": "c"
-                          },
-                          {
-                            "n": 5,
-                            "a": "c"
-                          }
-                        ]
-                      }
-                    },
-                    "look_distance": {
-                      "±": [
+                      "iority": [
+                        {
+                          "n": 1,
+                          "a": "c"
+                        },
+                        {
+                          "n": 3,
+                          "a": "c"
+                        },
                         {
                           "n": 5,
                           "a": "c"
                         }
                       ],
-                      "==6": [
+                      "obability": [
+                        {
+                          "n": 1,
+                          "a": "c"
+                        },
+                        {
+                          "n": 3,
+                          "a": "c"
+                        },
                         {
                           "n": 5,
                           "a": "c"
                         }
                       ]
-                    }
+                    },
+                    "look_distance": [
+                      {
+                        "n": 5,
+                        "a": "c"
+                      }
+                    ]
                   }
                 },
                 "ay_egg": {
@@ -4916,80 +4745,40 @@
                     }
                   ],
                   ".": {
-                    "priority": {
-                      "±": [
+                    "priority": [
+                      {
+                        "n": 3,
+                        "a": "g"
+                      }
+                    ],
+                    "s": {
+                      "peed_multiplier": [
                         {
                           "n": 3,
                           "a": "g"
                         }
                       ],
-                      "==1": [
-                        {
-                          "n": 3,
-                          "a": "g"
-                        }
-                      ]
-                    },
-                    "s": {
-                      "peed_multiplier": {
-                        "±": [
+                      "earch_": {
+                        "range": [
                           {
                             "n": 3,
                             "a": "g"
                           }
                         ],
-                        "==1": [
+                        "height": [
                           {
                             "n": 3,
                             "a": "g"
                           }
                         ]
-                      },
-                      "earch_": {
-                        "range": {
-                          "±": [
-                            {
-                              "n": 3,
-                              "a": "g"
-                            }
-                          ],
-                          "==16": [
-                            {
-                              "n": 3,
-                              "a": "g"
-                            }
-                          ]
-                        },
-                        "height": {
-                          "±": [
-                            {
-                              "n": 3,
-                              "a": "g"
-                            }
-                          ],
-                          "==4": [
-                            {
-                              "n": 3,
-                              "a": "g"
-                            }
-                          ]
-                        }
                       }
                     },
-                    "goal_radius": {
-                      "±": [
-                        {
-                          "n": 3,
-                          "a": "g"
-                        }
-                      ],
-                      "==2": [
-                        {
-                          "n": 3,
-                          "a": "g"
-                        }
-                      ]
-                    },
+                    "goal_radius": [
+                      {
+                        "n": 3,
+                        "a": "g"
+                      }
+                    ],
                     "on_lay": {
                       "±": [
                         {
@@ -5027,39 +4816,45 @@
                   }
                 ],
                 ".": {
-                  "priority": {
-                    "±": [
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ],
-                    "==6": [
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ]
-                  },
+                  "priority": [
+                    {
+                      "n": 5,
+                      "a": "c"
+                    }
+                  ],
                   "success_chance": [
                     {
                       "n": 5,
                       "a": "c"
                     }
                   ],
-                  "time_until_eat": {
+                  "time_until_eat": [
+                    {
+                      "n": 5,
+                      "a": "c"
+                    }
+                  ],
+                  "eat_and_replace_block_pairs": {
                     "±": [
                       {
                         "n": 5,
                         "a": "c"
                       }
                     ],
-                    "==2": [
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ]
+                    ".": {
+                      "eat_block": [
+                        {
+                          "n": 5,
+                          "a": "c"
+                        }
+                      ],
+                      "replace_block": [
+                        {
+                          "n": 5,
+                          "a": "c"
+                        }
+                      ]
+                    }
                   },
                   "on_eat": {
                     "±": [
@@ -5100,88 +4895,32 @@
                         }
                       ],
                       ".": {
-                        "priority": {
-                          "±": [
-                            {
-                              "n": 3,
-                              "a": "cg"
-                            }
-                          ],
-                          "==": {
-                            "1": [
-                              {
-                                "n": 3,
-                                "a": "g"
-                              }
-                            ],
-                            "4": [
-                              {
-                                "n": 3,
-                                "a": "c"
-                              }
-                            ]
+                        "priority": [
+                          {
+                            "n": 3,
+                            "a": "cg"
                           }
-                        },
+                        ],
                         "search_": {
-                          "range": {
-                            "±": [
-                              {
-                                "n": 3,
-                                "a": "cg"
-                              }
-                            ],
-                            "==1": {
-                              "5": [
-                                {
-                                  "n": 3,
-                                  "a": "g"
-                                }
-                              ],
-                              "6": [
-                                {
-                                  "n": 3,
-                                  "a": "c"
-                                }
-                              ]
-                            }
-                          },
-                          "height": {
-                            "±": [
-                              {
-                                "n": 3,
-                                "a": "cg"
-                              }
-                            ],
-                            "==5": [
-                              {
-                                "n": 3,
-                                "a": "cg"
-                              }
-                            ]
-                          }
-                        },
-                        "goal_radius": {
-                          "±": [
+                          "range": [
                             {
                               "n": 3,
                               "a": "cg"
                             }
                           ],
-                          "==": {
-                            "0": [
-                              {
-                                "n": 3,
-                                "a": "g"
-                              }
-                            ],
-                            "2": [
-                              {
-                                "n": 3,
-                                "a": "c"
-                              }
-                            ]
+                          "height": [
+                            {
+                              "n": 3,
+                              "a": "cg"
+                            }
+                          ]
+                        },
+                        "goal_radius": [
+                          {
+                            "n": 3,
+                            "a": "cg"
                           }
-                        }
+                        ]
                       }
                     },
                     "land": {
@@ -5196,64 +4935,32 @@
                         }
                       ],
                       ".": {
-                        "priority": {
-                          "±": [
-                            {
-                              "n": 3,
-                              "a": "g"
-                            }
-                          ],
-                          "==6": [
-                            {
-                              "n": 3,
-                              "a": "g"
-                            }
-                          ]
-                        },
-                        "search_": {
-                          "range": {
-                            "±": [
-                              {
-                                "n": 3,
-                                "a": "g"
-                              }
-                            ],
-                            "==16": [
-                              {
-                                "n": 3,
-                                "a": "g"
-                              }
-                            ]
-                          },
-                          "height": {
-                            "±": [
-                              {
-                                "n": 3,
-                                "a": "g"
-                              }
-                            ],
-                            "==5": [
-                              {
-                                "n": 3,
-                                "a": "g"
-                              }
-                            ]
+                        "priority": [
+                          {
+                            "n": 3,
+                            "a": "g"
                           }
-                        },
-                        "goal_radius": {
-                          "±": [
+                        ],
+                        "search_": {
+                          "range": [
                             {
                               "n": 3,
                               "a": "g"
                             }
                           ],
-                          "==1": [
+                          "height": [
                             {
                               "n": 3,
                               "a": "g"
                             }
                           ]
-                        }
+                        },
+                        "goal_radius": [
+                          {
+                            "n": 3,
+                            "a": "g"
+                          }
+                        ]
                       }
                     }
                   },
@@ -5269,20 +4976,12 @@
                       }
                     ],
                     ".": {
-                      "priority": {
-                        "±": [
-                          {
-                            "n": 5,
-                            "a": "c"
-                          }
-                        ],
-                        "==3": [
-                          {
-                            "n": 5,
-                            "a": "c"
-                          }
-                        ]
-                      },
+                      "priority": [
+                        {
+                          "n": 5,
+                          "a": "c"
+                        }
+                      ],
                       "speed_multiplier": [
                         {
                           "n": 5,
@@ -5290,34 +4989,18 @@
                         }
                       ],
                       "t": {
-                        "arget_dist": {
-                          "±": [
-                            {
-                              "n": 5,
-                              "a": "c"
-                            }
-                          ],
-                          "==0": [
-                            {
-                              "n": 5,
-                              "a": "c"
-                            }
-                          ]
-                        },
-                        "rack_target": {
-                          "±": [
-                            {
-                              "n": 5,
-                              "a": "c"
-                            }
-                          ],
-                          "==t": [
-                            {
-                              "n": 5,
-                              "a": "c"
-                            }
-                          ]
-                        }
+                        "arget_dist": [
+                          {
+                            "n": 5,
+                            "a": "c"
+                          }
+                        ],
+                        "rack_target": [
+                          {
+                            "n": 5,
+                            "a": "c"
+                          }
+                        ]
                       }
                     }
                   }
@@ -5333,25 +5016,17 @@
                       "a": "g"
                     }
                   ],
-                  ".priority": {
-                    "±": [
-                      {
-                        "n": 5,
-                        "a": "g"
-                      }
-                    ],
-                    "==2": [
-                      {
-                        "n": 5,
-                        "a": "g"
-                      }
-                    ]
-                  }
+                  ".priority": [
+                    {
+                      "n": 5,
+                      "a": "g"
+                    }
+                  ]
                 }
               }
             },
             "±": [
-              6
+              8
             ]
           },
           "come_pregnant": [
@@ -5361,20 +5036,20 @@
         "lock": {
           "±": [
             {
-              "n": 12,
+              "n": 14,
               "a": "S"
             }
           ],
           "perm": {
             "utation": [
               {
-                "n": 12,
+                "n": 14,
                 "a": "S"
               }
             ],
             "±": [
               {
-                "n": 13,
+                "n": 15,
                 "a": "S"
               }
             ]
@@ -5383,13 +5058,13 @@
         "utton": {
           "±": [
             {
-              "n": 12,
+              "n": 14,
               "a": "S"
             }
           ],
           "push": [
             {
-              "n": 12,
+              "n": 14,
               "a": "S"
             }
           ]
@@ -5398,42 +5073,42 @@
           "ceson": {
             "±": [
               1,
-              14,
-              21,
-              25,
-              35
+              16,
+              26,
+              36,
+              7
             ],
             ".": {
               "behavior": [
                 1
               ],
               "animation": [
-                22
+                23
               ],
               "entity": [
-                25
+                26
               ],
               "geometry": [
-                28
+                29
               ]
             }
           },
           "ome_filter": [
-            14,
+            16,
             -2
           ]
         },
         "o": {
           "nes": [
-            22,
+            23,
             -2,
-            28,
+            29,
             -2
           ],
           "dy": [
-            22,
+            23,
             -2,
-            28,
+            29,
             -2
           ]
         }
@@ -5507,7 +5182,7 @@
                 "a": "c"
               }
             ],
-            "==t": [
+            "_by_piston": [
               {
                 "n": 1,
                 "a": "c"
@@ -5520,37 +5195,7 @@
                 "n": 5,
                 "a": "c"
               }
-            ],
-            "_by_piston": {
-              "±": [
-                {
-                  "n": 1,
-                  "a": "c"
-                },
-                {
-                  "n": 3,
-                  "a": "c"
-                },
-                {
-                  "n": 5,
-                  "a": "c"
-                }
-              ],
-              "==t": [
-                {
-                  "n": 1,
-                  "a": "c"
-                },
-                {
-                  "n": 3,
-                  "a": "c"
-                },
-                {
-                  "n": 5,
-                  "a": "c"
-                }
-              ]
-            }
+            ]
           }
         },
         "r": {
@@ -5574,48 +5219,51 @@
               5
             ],
             "perties": [
-              10
+              12
             ]
           }
         },
         "o": {
           "ols": [
-            10,
+            12,
             -1
           ],
           "pulation_control": [
-            14,
+            16,
             -2
           ],
           "s": {
             "ition": [
-              22,
-              24,
+              23,
+              25,
               5
             ],
             "t": [
-              24
+              25
             ]
           },
           "lar": {
             "bear": [
-              1
+              {
+                "n": 1,
+                "a": "c"
+              }
             ],
             "_bear": [
-              25
+              26
             ]
           }
         },
         "erm": {
           "utation": [
             {
-              "n": 12,
+              "n": 14,
               "a": "S"
             }
           ],
           "±": [
             {
-              "n": 13,
+              "n": 15,
               "a": "S"
             }
           ]
@@ -5629,7 +5277,7 @@
               ],
               "s": [
                 {
-                  "n": 12,
+                  "n": 14,
                   "a": "S"
                 }
               ]
@@ -5639,16 +5287,16 @@
             ]
           },
           "ins": [
-            14,
-            16
+            16,
+            18
           ]
         },
         "i": {
           "tch": [
-            21
+            7
           ],
           "vot": [
-            28,
+            29,
             -2
           ]
         },
@@ -5656,74 +5304,74 @@
           "ck": {
             ".": {
               "name": [
-                19,
-                6
+                21,
+                8
               ],
               "description": [
-                19,
-                6
+                21,
+                8
               ]
             },
             "_icon": [
-              20,
-              7
+              22,
+              9
             ],
             "±": [
-              19
+              21
             ]
           },
           "r": {
             "ent": [
-              28,
+              29,
               -2
             ],
             "ticle": {
               "s_alpha": [
-                31,
+                32,
                 -1
               ],
               "_": {
                 "effect": [
-                  31,
+                  32,
                   -1
                 ],
                 "with_velocity": [
-                  31
+                  32
                 ],
                 "initial_sp": {
                   "eed": [
-                    31,
+                    32,
                     -1
                   ],
                   "in": [
-                    31,
+                    32,
                     -1
                   ]
                 },
                 "lifetime_e": {
                   "xpression": [
-                    31,
+                    32,
                     -1
                   ],
                   "vents": [
-                    31
+                    32
                   ]
                 },
                 "motion_dynamic": [
-                  31,
+                  32,
                   -1
                 ],
                 "appearance_": {
                   "billboard": [
-                    31,
+                    32,
                     -1
                   ],
                   "tinting": [
-                    31,
+                    32,
                     -1
                   ],
                   "lighting": [
-                    32
+                    33
                   ]
                 }
               }
@@ -5806,53 +5454,53 @@
                 ]
               }
             },
-            "feed_items": [
-              {
-                "n": 3,
-                "a": "g"
-              },
-              {
-                "n": 5,
-                "a": "g"
-              }
-            ],
-            "d": {
-              "uration": {
-                "±": [
-                  {
-                    "n": 1,
-                    "a": "g"
-                  },
-                  {
-                    "n": 3,
-                    "a": "g"
-                  },
-                  {
-                    "n": 5,
-                    "a": "g"
-                  }
-                ],
-                "==1200": [
-                  {
-                    "n": 1,
-                    "a": "g"
-                  },
-                  {
-                    "n": 3,
-                    "a": "g"
-                  },
-                  {
-                    "n": 5,
-                    "a": "g"
-                  }
-                ]
-              },
-              "rop_items": [
+            "feed_items": {
+              "±": [
+                {
+                  "n": 3,
+                  "a": "g"
+                },
+                {
+                  "n": 5,
+                  "a": "g"
+                }
+              ],
+              ".seagrass": [
                 {
                   "n": 3,
                   "a": "g"
                 }
               ]
+            },
+            "d": {
+              "uration": [
+                {
+                  "n": 1,
+                  "a": "g"
+                },
+                {
+                  "n": 3,
+                  "a": "g"
+                },
+                {
+                  "n": 5,
+                  "a": "g"
+                }
+              ],
+              "rop_items": {
+                "±": [
+                  {
+                    "n": 3,
+                    "a": "g"
+                  }
+                ],
+                ".turtle_shell_piece": [
+                  {
+                    "n": 3,
+                    "a": "g"
+                  }
+                ]
+              }
             }
           },
           "_grow_up": [
@@ -5879,34 +5527,18 @@
               "n": 5,
               "a": "g"
             },
-            21
+            7
           ],
-          ".damage": {
-            "±": [
-              {
-                "n": 1,
-                "a": "g"
-              },
-              {
-                "n": 5,
-                "a": "g"
-              }
-            ],
-            "==": {
-              "3": [
-                {
-                  "n": 5,
-                  "a": "g"
-                }
-              ],
-              "6": [
-                {
-                  "n": 1,
-                  "a": "g"
-                }
-              ]
+          ".damage": [
+            {
+              "n": 1,
+              "a": "g"
+            },
+            {
+              "n": 5,
+              "a": "g"
             }
-          }
+          ]
         },
         "n": {
           "gry": {
@@ -5921,73 +5553,25 @@
               }
             ],
             ".": {
-              "duration": {
-                "±": [
+              "duration": [
+                {
+                  "n": 1,
+                  "a": "g"
+                }
+              ],
+              "broadcast_": {
+                "anger": [
                   {
                     "n": 1,
                     "a": "g"
                   }
                 ],
-                "==": {
-                  "1": [
-                    {
-                      "n": 1,
-                      "a": "g"
-                    }
-                  ],
-                  "500": [
-                    {
-                      "n": 1,
-                      "a": "g"
-                    }
-                  ]
-                }
-              },
-              "broadcast_": {
-                "anger": {
-                  "±": [
-                    {
-                      "n": 1,
-                      "a": "g"
-                    }
-                  ],
-                  "==": {
-                    "t": [
-                      {
-                        "n": 1,
-                        "a": "g"
-                      }
-                    ],
-                    "f": [
-                      {
-                        "n": 1,
-                        "a": "g"
-                      }
-                    ]
+                "range": [
+                  {
+                    "n": 1,
+                    "a": "g"
                   }
-                },
-                "range": {
-                  "±": [
-                    {
-                      "n": 1,
-                      "a": "g"
-                    }
-                  ],
-                  "==": {
-                    "20": [
-                      {
-                        "n": 1,
-                        "a": "g"
-                      }
-                    ],
-                    "41": [
-                      {
-                        "n": 1,
-                        "a": "g"
-                      }
-                    ]
-                  }
-                }
+                ]
               },
               "calm_event": {
                 "±": [
@@ -6017,110 +5601,110 @@
             3
           ],
           "y_of": [
-            15
+            17
           ],
           "im": {
             "a": {
               "t": {
                 "ion": {
                   "s": [
-                    22,
+                    10,
+                    -1,
+                    23,
                     -5,
-                    5,
-                    8,
-                    -1
+                    5
                   ],
                   "_": {
                     "length": [
-                      24,
-                      8
+                      10,
+                      25
                     ],
                     "controllers": [
-                      25,
-                      -1,
-                      9
+                      11,
+                      26,
+                      -1
                     ]
                   },
                   ".": {
                     "biceson.": {
                       "baby_transform": [
-                        22,
-                        25
+                        23,
+                        26
                       ],
                       "move": [
-                        22,
-                        25
+                        23,
+                        26
                       ],
                       "walk": [
-                        22,
-                        25
+                        23,
+                        26
                       ]
                     },
                     "nardolphle.move": [
-                      23,
-                      26
+                      24,
+                      27
                     ],
                     "sheepomelon.": {
                       "s": {
                         "pawn": [
-                          5,
-                          8
+                          10,
+                          5
                         ],
                         "heared": [
-                          5,
-                          8
+                          10,
+                          5
                         ],
                         "etup": [
-                          24,
-                          27
+                          25,
+                          28
                         ]
                       },
                       "baby_transform": [
-                        24,
-                        27
+                        25,
+                        28
                       ],
                       "grazing": [
-                        24,
-                        27
+                        25,
+                        28
                       ],
                       "walk": [
-                        24,
-                        27
+                        25,
+                        28
                       ]
                     },
                     "common.look_at_target": [
-                      25,
-                      27
+                      26,
+                      28
                     ]
                   }
                 },
                 "e": [
-                  27,
+                  28,
                   5
                 ]
               },
               "l": [
-                14,
-                16
+                16,
+                18
               ]
             },
             "_time_update": [
-              22,
-              24
+              23,
+              25
             ]
           }
         },
         "op_mobs": [
           1,
-          14,
+          16,
           -2,
-          21,
-          25,
+          26,
           -2,
           3,
-          31,
+          32,
           -1,
-          5
+          5,
+          7
         ],
         "void_": {
           "damage_blocks": [
@@ -6136,7 +5720,7 @@
         ],
         "fterevents": [
           {
-            "n": 12,
+            "n": 14,
             "a": "S"
           }
         ],
@@ -6156,23 +5740,23 @@
             }
           },
           "just_for_weather": [
-            14,
-            16
+            16,
+            18
           ],
           "d-on": [
-            19
+            21
           ]
         },
         "mbient": {
           "±": [
-            21
+            7
           ],
           ".": {
             "in.water": [
-              21
+              7
             ],
             "baby": [
-              21
+              7
             ]
           }
         },
@@ -6181,7 +5765,7 @@
             5
           ],
           "ve_time": [
-            31,
+            32,
             -1
           ]
         }
@@ -6190,11 +5774,11 @@
         "a": {
           "nguage": {
             "±": [
-              6
+              8
             ],
             "s": [
-              18,
-              34
+              20,
+              35
             ]
           },
           "va": [
@@ -6209,39 +5793,39 @@
         "e": {
           "ngth": [
             {
-              "n": 12,
+              "n": 14,
               "a": "S"
             }
           ],
           "g": {
             "0": [
-              22,
-              24,
-              28,
-              30
+              23,
+              25,
+              29,
+              31
             ],
             "1": [
-              22,
-              24,
-              28,
-              30
+              23,
+              25,
+              29,
+              31
             ],
             "2": [
-              22,
-              24,
-              28,
-              30
+              23,
+              25,
+              29,
+              31
             ],
             "3": [
-              22,
-              24,
-              28,
-              30
+              23,
+              25,
+              29,
+              31
             ]
           },
           "ft_fin": [
-            23,
-            29
+            24,
+            30
           ],
           "a": {
             "shable": {
@@ -6264,76 +5848,40 @@
                 }
               ],
               ".": {
-                "soft_distance": {
-                  "±": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ],
-                  "==4": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ]
-                },
-                "hard_distance": {
-                  "±": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ],
-                  "==6": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ]
-                },
-                "max_distance": {
-                  "±": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ],
-                  "==10": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ]
-                }
+                "soft_distance": [
+                  {
+                    "n": 1,
+                    "a": "c"
+                  },
+                  {
+                    "n": 5,
+                    "a": "c"
+                  }
+                ],
+                "hard_distance": [
+                  {
+                    "n": 1,
+                    "a": "c"
+                  },
+                  {
+                    "n": 5,
+                    "a": "c"
+                  }
+                ],
+                "max_distance": [
+                  {
+                    "n": 1,
+                    "a": "c"
+                  },
+                  {
+                    "n": 5,
+                    "a": "c"
+                  }
+                ]
               }
             },
             "d": [
-              28,
+              29,
               -2
             ]
           }
@@ -6394,9 +5942,14 @@
                       "_sheared.json": [
                         5
                       ],
-                      "omelon.json": [
-                        5
-                      ]
+                      "omelon": {
+                        ".json": [
+                          5
+                        ],
+                        "_shear.json": [
+                          5
+                        ]
+                      }
                     }
                   }
                 },
@@ -6408,15 +5961,15 @@
                 ]
               },
               "ing_enchant": [
-                10
+                12
               ]
             },
             "p": [
-              22,
+              10,
+              23,
               -2,
-              31,
-              -1,
-              8
+              32,
+              -1
             ],
             "k": {
               "_": {
@@ -6424,12 +5977,12 @@
                   5
                 ],
                 "at_target": [
-                  25,
-                  27
+                  26,
+                  28
                 ]
               },
               "at_xyz": [
-                31,
+                32,
                 -1
               ]
             }
@@ -6437,22 +5990,22 @@
           "cat": {
             "ion": [
               {
-                "n": 12,
+                "n": 14,
                 "a": "S"
               }
             ],
             "ors": [
-              28,
+              29,
               -2
             ]
           }
         },
         "u": {
           "kewarm": [
-            15
+            17
           ],
           "sh_caves": [
-            15
+            17
           ]
         },
         "i": {
@@ -6461,11 +6014,11 @@
           ],
           "near_": {
             "acceleration": [
-              31,
+              32,
               -1
             ],
             "drag_coefficient": [
-              31,
+              32,
               -1
             ]
           }
@@ -6474,7 +6027,7 @@
       "d": {
         "a": {
           "ta": [
-            6
+            8
           ],
           "mage": {
             "±": [
@@ -6516,20 +6069,12 @@
                       ]
                     },
                     "d": {
-                      "eals_damage": {
-                        "±": [
-                          {
-                            "n": 3,
-                            "a": "c"
-                          }
-                        ],
-                        "==t": [
-                          {
-                            "n": 3,
-                            "a": "c"
-                          }
-                        ]
-                      },
+                      "eals_damage": [
+                        {
+                          "n": 3,
+                          "a": "c"
+                        }
+                      ],
                       "amage_multiplier": [
                         {
                           "n": 3,
@@ -6607,30 +6152,30 @@
             },
             "cription": [
               1,
-              14,
+              16,
               -2,
-              19,
-              25,
+              21,
+              26,
               -3,
               3,
-              30,
+              31,
               -2,
               5,
-              -1
+              8
             ]
           },
           "pendencies": [
-            6
+            8
           ],
           "fault": [
-            14,
+            11,
+            16,
             -2,
-            25,
-            -2,
-            9
+            26,
+            -2
           ],
           "nsity_limit": [
-            15
+            17
           ],
           "a": {
             "ls_damage": [
@@ -6638,10 +6183,10 @@
             ],
             "th": {
               "±": [
-                21
+                7
               ],
               ".in.water": [
-                21
+                7
               ]
             }
           }
@@ -6665,18 +6210,656 @@
             5
           ],
           "lphin": [
-            26
+            27
           ]
         },
         "i": {
           "stance_filter": [
-            15
+            17
           ],
           "rection": [
-            31,
+            32,
             -1
           ]
         }
+      },
+      "s": {
+        "c": {
+          "ale": {
+            "±": [
+              {
+                "n": 0,
+                "a": "g"
+              },
+              {
+                "n": 1,
+                "a": "g"
+              },
+              {
+                "n": 2,
+                "a": "g"
+              },
+              {
+                "n": 3,
+                "a": "g"
+              },
+              {
+                "n": 4,
+                "a": "g"
+              },
+              {
+                "n": 5,
+                "a": "g"
+              },
+              23,
+              25,
+              26
+            ],
+            ".value": [
+              {
+                "n": 1,
+                "a": "g"
+              },
+              {
+                "n": 3,
+                "a": "g"
+              },
+              {
+                "n": 5,
+                "a": "g"
+              }
+            ]
+          },
+          "ript": {
+            "±": [
+              8
+            ],
+            "s": {
+              "/main.js": [
+                8
+              ],
+              "±": [
+                26,
+                28,
+                5
+              ]
+            }
+          }
+        },
+        "he": {
+          "ep": {
+            "±": [
+              {
+                "n": 5,
+                "a": "c"
+              },
+              28
+            ],
+            "omelon": {
+              "±": [
+                12,
+                18,
+                28,
+                38,
+                5,
+                7
+              ],
+              "_shear": [
+                13
+              ],
+              ".": {
+                "b": {
+                  "p_a": {
+                    "nims": [
+                      10
+                    ],
+                    "c": [
+                      11
+                    ]
+                  },
+                  "ehavior": [
+                    5
+                  ]
+                },
+                "animation": [
+                  25
+                ],
+                "entity": [
+                  28
+                ],
+                "geometry": [
+                  31
+                ]
+              }
+            },
+            "_": {
+              "baby": [
+                5
+              ],
+              "adult": [
+                5
+              ],
+              "sheared": [
+                5
+              ]
+            }
+          },
+          "ar": {
+            "ed": [
+              11,
+              28,
+              5
+            ],
+            "±": [
+              5
+            ],
+            "s": [
+              5
+            ]
+          }
+        },
+        "e": {
+          "lf": [
+            1,
+            3,
+            5
+          ],
+          "a": {
+            "grass": [
+              {
+                "n": 3,
+                "a": "cg"
+              }
+            ],
+            "rch_": {
+              "range": [
+                3
+              ],
+              "height": [
+                3
+              ]
+            },
+            "t": {
+              "_count": [
+                5
+              ],
+              "s": [
+                5
+              ]
+            }
+          },
+          "quence": [
+            5
+          ],
+          "ndmessage": [
+            {
+              "n": 14,
+              "a": "S"
+            }
+          ],
+          "t": {
+            "_count": [
+              12,
+              -1
+            ],
+            "permutation": [
+              {
+                "n": 14,
+                "a": "S"
+              },
+              {
+                "n": 15,
+                "a": "S"
+              }
+            ],
+            "up": [
+              28
+            ]
+          }
+        },
+        "p": {
+          "awn": {
+            "±": [
+              11,
+              5
+            ],
+            "_": {
+              "items": [
+                5
+              ],
+              "adult": [
+                5
+              ],
+              "baby": [
+                5
+              ],
+              "rules": [
+                16,
+                -2
+              ],
+              "egg": [
+                26,
+                -2
+              ]
+            },
+            "loc": [
+              {
+                "n": 14,
+                "a": "S"
+              }
+            ],
+            "zoo": [
+              {
+                "n": 14,
+                "a": "S"
+              }
+            ],
+            "entity": [
+              {
+                "n": 14,
+                "a": "S"
+              }
+            ],
+            "s_": {
+              "on_": {
+                "surface": [
+                  16,
+                  -2
+                ],
+                "block_filter": [
+                  16,
+                  18
+                ]
+              },
+              "under": {
+                "water": [
+                  17
+                ],
+                "ground": [
+                  17
+                ]
+              }
+            }
+          },
+          "eed_multiplier": [
+            1,
+            3,
+            5
+          ],
+          "lash": [
+            7
+          ]
+        },
+        "t": {
+          "omp_range_multiplier": [
+            1
+          ],
+          "at": {
+            "es": [
+              11
+            ],
+            "ic": [
+              {
+                "n": 15,
+                "a": "S"
+              }
+            ]
+          },
+          "ep": {
+            "±": [
+              7
+            ],
+            "_uv": [
+              32,
+              -1
+            ]
+          },
+          "retch_to_lifetime": [
+            32,
+            -1
+          ]
+        },
+        "u": {
+          "ffocate_time": [
+            1,
+            3,
+            5
+          ],
+          "ccess_chance": [
+            5
+          ],
+          "b": {
+            "ject": [
+              1,
+              3,
+              5
+            ],
+            "scribe": [
+              {
+                "n": 14,
+                "a": "S"
+              }
+            ]
+          },
+          "rface": [
+            17
+          ]
+        },
+        "ystem": [
+          {
+            "n": 14,
+            "a": "S"
+          }
+        ],
+        "a": {
+          "lmon": [
+            10
+          ],
+          "vanna": [
+            16,
+            18
+          ]
+        },
+        "o": {
+          "ft_distance": [
+            1,
+            5
+          ],
+          "und": {
+            "s": [
+              7
+            ],
+            "±": [
+              7
+            ]
+          }
+        },
+        "wim": [
+          7
+        ],
+        "ize": {
+          "±": [
+            29,
+            -4
+          ],
+          "_uv": [
+            32,
+            -1
+          ]
+        },
+        "moke_puff": [
+          33
+        ]
+      },
+      "t": {
+        "urtle": {
+          "±": [
+            {
+              "n": 3,
+              "a": "g"
+            }
+          ],
+          "_shell_piece": [
+            {
+              "n": 3,
+              "a": "g"
+            }
+          ]
+        },
+        "ype": {
+          "_family": {
+            "±": [
+              {
+                "n": 0,
+                "a": "c"
+              },
+              {
+                "n": 1,
+                "a": "c"
+              },
+              {
+                "n": 2,
+                "a": "g"
+              },
+              {
+                "n": 3,
+                "a": "g"
+              },
+              {
+                "n": 4,
+                "a": "c"
+              },
+              {
+                "n": 5,
+                "a": "c"
+              }
+            ],
+            ".family": {
+              "±": [
+                {
+                  "n": 1,
+                  "a": "c"
+                },
+                {
+                  "n": 3,
+                  "a": "g"
+                },
+                {
+                  "n": 5,
+                  "a": "c"
+                }
+              ],
+              ".": {
+                "polarbear": [
+                  {
+                    "n": 1,
+                    "a": "c"
+                  }
+                ],
+                "mob": [
+                  {
+                    "n": 1,
+                    "a": "c"
+                  },
+                  {
+                    "n": 3,
+                    "a": "g"
+                  },
+                  {
+                    "n": 5,
+                    "a": "c"
+                  }
+                ],
+                "turtle": [
+                  {
+                    "n": 3,
+                    "a": "g"
+                  }
+                ],
+                "baby_turtle": [
+                  {
+                    "n": 3,
+                    "a": "g"
+                  }
+                ],
+                "sheep": [
+                  {
+                    "n": 5,
+                    "a": "c"
+                  }
+                ]
+              }
+            }
+          },
+          "±": [
+            12,
+            -1,
+            21,
+            32,
+            8
+          ]
+        },
+        "r": {
+          "a": {
+            "nsitions": [
+              11
+            ],
+            "ck_target": [
+              1,
+              5
+            ]
+          },
+          "ue": {
+            ",": [
+              1,
+              23,
+              -2,
+              29,
+              3,
+              32,
+              -1,
+              5
+            ],
+            "±": [
+              1,
+              12,
+              3,
+              5
+            ]
+          },
+          "igger": {
+            "s": [
+              3
+            ],
+            "±": [
+              5
+            ],
+            "loc": [
+              {
+                "n": 14,
+                "a": "S"
+              }
+            ]
+          }
+        },
+        "a": {
+          "rget": {
+            "±": [
+              1,
+              3,
+              5
+            ],
+            "_dist": {
+              "ance": [
+                1,
+                3
+              ],
+              "±": [
+                5
+              ]
+            }
+          },
+          "ble": [
+            1,
+            3,
+            5
+          ],
+          "il": {
+            "±": [
+              24,
+              30
+            ],
+            "_fin": [
+              24,
+              30
+            ]
+          }
+        },
+        "otal_supply": [
+          1,
+          3,
+          5
+        ],
+        "his": [
+          12,
+          23,
+          25
+        ],
+        "i": {
+          "me": {
+            "line": [
+              10
+            ],
+            "_until_eat": [
+              5
+            ]
+          },
+          "ckssinceload": [
+            {
+              "n": 14,
+              "a": "S"
+            }
+          ]
+        },
+        "e": {
+          "st": [
+            1,
+            16,
+            -2,
+            3,
+            5
+          ],
+          "xture": {
+            "s": {
+              "±": [
+                26,
+                -2
+              ],
+              "/": {
+                "entity/": {
+                  "biceson": [
+                    26
+                  ],
+                  "nardolphle": [
+                    27
+                  ],
+                  "sheepomelon": [
+                    28
+                  ]
+                },
+                "particle/particles": [
+                  32,
+                  -1
+                ]
+              }
+            },
+            "_": {
+              "width": [
+                29,
+                31,
+                -2
+              ],
+              "height": [
+                29,
+                31,
+                -2
+              ]
+            },
+            "width": [
+              30
+            ],
+            "height": [
+              30
+            ],
+            "±": [
+              32,
+              -1
+            ]
+          }
+        },
+        "winkle": [
+          32
+        ]
       },
       "i": {
         "s_": {
@@ -6755,12 +6938,12 @@
         },
         "dentifier": [
           1,
-          14,
+          16,
           -2,
-          25,
+          26,
           -3,
           3,
-          30,
+          31,
           -2,
           5
         ],
@@ -6782,12 +6965,130 @@
                   "a": "c"
                 }
               ],
-              ".interactions": [
-                {
-                  "n": 5,
-                  "a": "c"
+              ".interactions": {
+                "±": [
+                  {
+                    "n": 5,
+                    "a": "c"
+                  }
+                ],
+                ".": {
+                  "cooldown": [
+                    {
+                      "n": 5,
+                      "a": "c"
+                    }
+                  ],
+                  "use_item": [
+                    {
+                      "n": 5,
+                      "a": "c"
+                    }
+                  ],
+                  "hurt_item": [
+                    {
+                      "n": 5,
+                      "a": "c"
+                    }
+                  ],
+                  "spawn_items": {
+                    "±": [
+                      {
+                        "n": 5,
+                        "a": "c"
+                      }
+                    ],
+                    ".table": [
+                      {
+                        "n": 5,
+                        "a": "c"
+                      }
+                    ]
+                  },
+                  "play_sounds": [
+                    {
+                      "n": 5,
+                      "a": "c"
+                    }
+                  ],
+                  "interact_text": [
+                    {
+                      "n": 5,
+                      "a": "c"
+                    }
+                  ],
+                  "on_interact": {
+                    "±": [
+                      {
+                        "n": 5,
+                        "a": "c"
+                      }
+                    ],
+                    ".": {
+                      "filters": {
+                        "±": [
+                          {
+                            "n": 5,
+                            "a": "c"
+                          }
+                        ],
+                        ".all_of": {
+                          "±": [
+                            {
+                              "n": 5,
+                              "a": "c"
+                            }
+                          ],
+                          ".": {
+                            "test": [
+                              {
+                                "n": 5,
+                                "a": "c"
+                              }
+                            ],
+                            "subject": [
+                              {
+                                "n": 5,
+                                "a": "c"
+                              }
+                            ],
+                            "domain": [
+                              {
+                                "n": 5,
+                                "a": "c"
+                              }
+                            ],
+                            "value": [
+                              {
+                                "n": 5,
+                                "a": "c"
+                              }
+                            ],
+                            "operator": [
+                              {
+                                "n": 5,
+                                "a": "c"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "event": [
+                        {
+                          "n": 5,
+                          "a": "c"
+                        }
+                      ],
+                      "target": [
+                        {
+                          "n": 5,
+                          "a": "c"
+                        }
+                      ]
+                    }
+                  }
                 }
-              ],
+              },
               "ions": [
                 5
               ],
@@ -6799,17 +7100,17 @@
               3
             ],
             "polant": [
-              31
+              32
             ]
           },
           "itialize": [
             {
-              "n": 12,
+              "n": 14,
               "a": "S"
             }
           ],
           "flate": [
-            30
+            31
           ]
         },
         "tem": {
@@ -6818,26 +7119,31 @@
             5
           ],
           "±": [
-            10,
+            12,
             -1
           ]
         }
       },
       "m": {
         "o": {
-          "dule": {
-            "s": [
-              19,
-              6
-            ],
-            "_name": [
-              6
-            ]
-          },
           "b": {
+            "±": [
+              {
+                "n": 1,
+                "a": "c"
+              },
+              {
+                "n": 3,
+                "a": "g"
+              },
+              {
+                "n": 5,
+                "a": "c"
+              }
+            ],
             "loc": [
               {
-                "n": 12,
+                "n": 14,
                 "a": "S"
               }
             ],
@@ -6845,89 +7151,98 @@
               "dolphin.": {
                 "idle": {
                   "±": [
-                    21
+                    7
                   ],
                   "_water": [
-                    21
+                    7
                   ]
                 },
                 "attack": [
-                  21
+                  7
                 ],
                 "blowhole": [
-                  21
+                  7
                 ],
                 "death": [
-                  21
+                  7
                 ],
                 "eat": [
-                  21
+                  7
                 ],
                 "hurt": [
-                  21
+                  7
                 ],
                 "jump": [
-                  21
+                  7
                 ],
                 "s": {
                   "plash": [
-                    21
+                    7
                   ],
                   "wim": [
-                    21
+                    7
                   ]
                 }
               },
               "polarbear": {
                 "_baby.idle": [
-                  21
+                  7
                 ],
                 ".": {
                   "idle": [
-                    21
+                    7
                   ],
                   "death": [
-                    21
+                    7
                   ],
                   "hurt": [
-                    21
+                    7
                   ],
                   "warning": [
-                    21
+                    7
                   ],
                   "step": [
-                    21
+                    7
                   ]
                 }
               },
               "warning": [
-                21
+                7
               ],
               "sheep.s": {
                 "ay": [
-                  21
+                  7
                 ],
                 "tep": [
-                  21
+                  7
                 ]
               },
               "zombie.": {
                 "death": [
-                  21
+                  7
                 ],
                 "hurt": [
-                  21
+                  7
                 ],
                 "s": {
                   "ay": [
-                    21
+                    7
                   ],
                   "tep": [
-                    21
+                    7
                   ]
                 }
               }
             }
+          },
+          "dule": {
+            "s": [
+              21,
+              8
+            ],
+            "_name": [
+              8
+            ]
           },
           "ve": {
             "ment": {
@@ -6958,36 +7273,20 @@
                 }
               ],
               ".": {
-                "value": {
-                  "±": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 3,
-                      "a": "c"
-                    },
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ],
-                  "==0": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 3,
-                      "a": "c"
-                    },
-                    {
-                      "n": 5,
-                      "a": "c"
-                    }
-                  ]
-                },
+                "value": [
+                  {
+                    "n": 1,
+                    "a": "c"
+                  },
+                  {
+                    "n": 3,
+                    "a": "c"
+                  },
+                  {
+                    "n": 5,
+                    "a": "c"
+                  }
+                ],
                 "basic": [
                   {
                     "n": 0,
@@ -7017,25 +7316,17 @@
                       "a": "c"
                     }
                   ],
-                  ".max_turn": {
-                    "±": [
-                      {
-                        "n": 3,
-                        "a": "c"
-                      }
-                    ],
-                    "==5": [
-                      {
-                        "n": 3,
-                        "a": "c"
-                      }
-                    ]
-                  }
+                  ".max_turn": [
+                    {
+                      "n": 3,
+                      "a": "c"
+                    }
+                  ]
                 }
               }
             },
             "±": [
-              25,
+              26,
               -2
             ]
           }
@@ -7043,12 +7334,15 @@
         "elon": {
           "±": [
             10,
-            -1,
-            8
+            12,
+            -1
           ],
           "_": {
             "slice": [
-              5
+              {
+                "n": 5,
+                "a": "c"
+              }
             ],
             "block": [
               5
@@ -7060,11 +7354,11 @@
             "h": {
               "±": [
                 {
-                  "n": 12,
+                  "n": 14,
                   "a": "S"
                 },
                 {
-                  "n": 13,
+                  "n": 15,
                   "a": "S"
                 }
               ],
@@ -7072,22 +7366,22 @@
                 "random": [
                   1,
                   3,
-                  31,
+                  32,
                   -1,
                   5
                 ],
                 "cos": [
-                  22,
+                  23,
                   -2
                 ],
                 "sin": [
-                  24
+                  25
                 ]
               }
             },
             "ches": [
               {
-                "n": 12,
+                "n": 14,
                 "a": "S"
               }
             ],
@@ -7098,11 +7392,11 @@
               ],
               "rial": {
                 "s": [
-                  25,
+                  26,
                   -2
                 ],
                 "±": [
-                  31,
+                  32,
                   -1
                 ]
               }
@@ -7123,15 +7417,15 @@
               3
             ],
             "size": [
-              14,
+              16,
               -2
             ],
             "lifetime": [
-              31,
+              32,
               -1
             ],
             "frame": [
-              31,
+              32,
               -1
             ]
           },
@@ -7140,22 +7434,22 @@
           ],
           "in": {
             "±": [
-              12
+              14
             ],
             "tick": [
               {
-                "n": 12,
+                "n": 14,
                 "a": "S"
               }
             ]
           },
           "n": {
             "ifest": [
-              19,
-              6
+              21,
+              8
             ],
             "grove_swamp": [
-              15
+              17
             ]
           }
         },
@@ -7165,456 +7459,40 @@
             5
           ],
           "ttonraw": [
-            10
+            12
           ]
         },
         "i": {
           "n": {
             "ecraft": [
               1,
-              10,
+              12,
               -1,
-              14,
+              16,
               -2,
-              25,
+              26,
               -3,
               3,
-              30,
+              31,
               -2,
               5
             ],
             "_": {
               "engine_version": [
-                19,
-                27,
-                6
+                21,
+                28,
+                8
               ],
               "size": [
-                14,
+                16,
                 -2
               ]
             }
           },
           "rror": [
-            28
-          ]
-        }
-      },
-      "u": {
-        "uid": [
-          19,
-          6
-        ],
-        "se_item": [
-          5
-        ],
-        "tilities": [
-          {
-            "n": 12,
-            "a": "S"
-          },
-          {
-            "n": 13,
-            "a": "S"
-          }
-        ],
-        "nde": {
-          "fined": [
-            {
-              "n": 12,
-              "a": "S"
-            }
-          ],
-          "r": {
-            "water_movement": {
-              "±": [
-                {
-                  "n": 2,
-                  "a": "g"
-                },
-                {
-                  "n": 3,
-                  "a": "g"
-                }
-              ],
-              ".value": {
-                "±": [
-                  {
-                    "n": 3,
-                    "a": "g"
-                  }
-                ],
-                "==0": [
-                  {
-                    "n": 3,
-                    "a": "g"
-                  }
-                ]
-              }
-            },
-            "ground": [
-              15
-            ]
-          }
-        }
-      },
-      "2d59a3f6-d348-496d-a0c7-6d59ddb05c5e": [
-        6
-      ],
-      "r": {
-        "e": {
-          "move": [
-            1,
-            3,
-            5
-          ],
-          "quire_": {
-            "complete_path": [
-              1
-            ],
-            "tame": [
-              3,
-              5
-            ]
-          },
-          "s": {
-            "elect_targets": [
-              5
-            ],
-            "o": {
-              "urces": [
-                19,
-                6
-              ],
-              "lve": [
-                {
-                  "n": 12,
-                  "a": "S"
-                }
-              ]
-            }
-          },
-          "place_block": [
-            5
-          ],
-          "nder_controllers": [
-            25,
-            -2
-          ]
-        },
-        "o": {
-          "lls": [
-            10,
-            -1
-          ],
-          "bot": [
-            21
-          ],
-          "tation": {
-            "±": [
-              22,
-              -2,
-              28,
-              -4
-            ],
-            "_": {
-              "rate": [
-                31,
-                -1
-              ],
-              "drag_coefficient": [
-                31,
-                -1
-              ]
-            }
-          }
-        },
-        "i": {
-          "deable": {
-            "±": [
-              {
-                "n": 4,
-                "a": "g"
-              },
-              {
-                "n": 5,
-                "a": "g"
-              }
-            ],
-            ".": {
-              "family_types": [
-                {
-                  "n": 5,
-                  "a": "g"
-                }
-              ],
-              "seat": {
-                "_count": {
-                  "±": [
-                    {
-                      "n": 5,
-                      "a": "g"
-                    }
-                  ],
-                  "==1": [
-                    {
-                      "n": 5,
-                      "a": "g"
-                    }
-                  ]
-                },
-                "s": {
-                  "±": [
-                    {
-                      "n": 5,
-                      "a": "g"
-                    }
-                  ],
-                  ".position": [
-                    {
-                      "n": 5,
-                      "a": "g"
-                    }
-                  ]
-                }
-              }
-            },
-            "_": {
-              "sheared": [
-                5
-              ],
-              "wooly": [
-                5
-              ]
-            }
-          },
-          "ght_fin": [
-            23,
             29
           ]
-        },
-        "a": {
-          "ndomize": [
-            1,
-            3,
-            5
-          ],
-          "dius": [
-            31,
-            -1
-          ]
         }
-      },
-      "j": {
-        "avascript": [
-          6
-        ],
-        "ump": {
-          ".static": [
-            {
-              "n": 0,
-              "a": "c"
-            },
-            {
-              "n": 1,
-              "a": "c"
-            },
-            {
-              "n": 2,
-              "a": "c"
-            },
-            {
-              "n": 3,
-              "a": "c"
-            },
-            {
-              "n": 4,
-              "a": "c"
-            },
-            {
-              "n": 5,
-              "a": "c"
-            }
-          ],
-          "±": [
-            21
-          ]
-        }
-      },
-      "f": {
-        "o": {
-          "llow_range": {
-            "±": [
-              {
-                "n": 0,
-                "a": "c"
-              },
-              {
-                "n": 1,
-                "a": "c"
-              },
-              {
-                "n": 2,
-                "a": "c"
-              },
-              {
-                "n": 3,
-                "a": "c"
-              }
-            ],
-            ".value": {
-              "±": [
-                {
-                  "n": 1,
-                  "a": "c"
-                },
-                {
-                  "n": 3,
-                  "a": "c"
-                }
-              ],
-              "==": {
-                "48": [
-                  {
-                    "n": 1,
-                    "a": "c"
-                  }
-                ],
-                "1024": [
-                  {
-                    "n": 3,
-                    "a": "c"
-                  }
-                ]
-              }
-            }
-          },
-          "rmat_version": [
-            1,
-            14,
-            -2,
-            19,
-            22,
-            -7,
-            3,
-            30,
-            -2,
-            5,
-            -1,
-            8,
-            -1
-          ],
-          "urwalls": [
-            {
-              "n": 12,
-              "a": "S"
-            },
-            {
-              "n": 13,
-              "a": "S"
-            }
-          ]
-        },
-        "43bb32a-c814-45e4-a428-3f4f1f59b2a3": [
-          6
-        ],
-        "a": {
-          "lse": {
-            ",": [
-              1,
-              3,
-              5,
-              8
-            ],
-            "±": [
-              1,
-              14,
-              16,
-              28,
-              3,
-              31,
-              -1
-            ]
-          },
-          "mily": {
-            "±": [
-              1,
-              3,
-              5
-            ],
-            "_types": [
-              5
-            ]
-          },
-          "cing_": {
-            "direction": [
-              {
-                "n": 12,
-                "a": "S"
-              }
-            ],
-            "camera_mode": [
-              31,
-              -1
-            ]
-          }
-        },
-        "eed_items": [
-          3,
-          5
-        ],
-        "u": {
-          "nction": {
-            "s": [
-              10,
-              -1
-            ],
-            "±": [
-              10,
-              -1
-            ]
-          },
-          "rnace_smelt": [
-            10
-          ]
-        },
-        "i": {
-          "ndtopmostblockusingplayer": [
-            {
-              "n": 12,
-              "a": "S"
-            }
-          ],
-          "l": {
-            "ters": [
-              1,
-              3,
-              5
-            ],
-            "lblock": [
-              {
-                "n": 13,
-                "a": "S"
-              }
-            ]
-          },
-          "reworks_": {
-            "pop": [
-              31
-            ],
-            "twinkles": [
-              31
-            ]
-          }
-        },
-        "lipbook": [
-          31,
-          -1
-        ],
-        "rames_per_second": [
-          31,
-          -1
-        ]
       },
       "e": {
         "vent": {
@@ -7625,10 +7503,10 @@
           ],
           "s": [
             1,
-            21,
             3,
-            31,
-            5
+            32,
+            5,
+            7
           ]
         },
         "at_": {
@@ -7641,20 +7519,49 @@
         },
         "n": {
           "t": {
-            "r": {
-              "y": [
-                6
-              ],
-              "ies": [
-                10,
-                -1
-              ]
-            },
             "it": {
+              "ies": {
+                "±": [
+                  {
+                    "n": 6,
+                    "a": "N"
+                  },
+                  {
+                    "n": 7,
+                    "a": "N"
+                  }
+                ],
+                ".aop_mobs:": {
+                  "nardolphle": [
+                    {
+                      "n": 7,
+                      "a": "N"
+                    }
+                  ],
+                  "biceson": [
+                    {
+                      "n": 7,
+                      "a": "N"
+                    }
+                  ],
+                  "sheepomelon": [
+                    {
+                      "n": 7,
+                      "a": "N"
+                    }
+                  ],
+                  "robot": [
+                    {
+                      "n": 7,
+                      "a": "N"
+                    }
+                  ]
+                }
+              },
               "y": {
                 "±": [
                   1,
-                  10,
+                  12,
                   3,
                   5
                 ],
@@ -7669,7 +7576,7 @@
                     5
                   ],
                   "properties": [
-                    10
+                    12
                   ],
                   "s": {
                     "pawned": [
@@ -7678,37 +7585,43 @@
                       5
                     ],
                     "ounds": [
-                      21
+                      7
                     ]
                   }
                 }
-              },
+              }
+            },
+            "r": {
+              "y": [
+                8
+              ],
               "ies": [
-                21
+                12,
+                -1
               ]
             }
           },
           "_us": [
-            17,
+            19,
             -1,
-            33,
+            34,
             -1
           ]
         },
         "ffect": [
-          31
+          32
         ],
         "mitter_": {
           "rate_instant": [
-            31,
+            32,
             -1
           ],
           "lifetime_once": [
-            31,
+            32,
             -1
           ],
           "shape_sphere": [
-            31,
+            32,
             -1
           ]
         },
@@ -7768,403 +7681,246 @@
             }
           },
           "iration_event": [
-            31
+            32
           ]
         }
       },
-      "@minecraft/server": {
-        "±": [
-          6
+      "u": {
+        "uid": [
+          21,
+          8
         ],
-        "-ui": [
-          6
-        ]
-      },
-      "s": {
-        "c": {
-          "ale": {
-            "±": [
-              {
-                "n": 0,
-                "a": "g"
-              },
-              {
-                "n": 1,
-                "a": "g"
-              },
-              {
-                "n": 2,
-                "a": "g"
-              },
-              {
-                "n": 3,
-                "a": "g"
-              },
-              {
-                "n": 4,
-                "a": "g"
-              },
-              {
-                "n": 5,
-                "a": "g"
-              },
-              22,
-              24,
-              25
-            ],
-            ".value": {
+        "se_item": [
+          5
+        ],
+        "tilities": [
+          {
+            "n": 14,
+            "a": "S"
+          },
+          {
+            "n": 15,
+            "a": "S"
+          }
+        ],
+        "nde": {
+          "fined": [
+            {
+              "n": 14,
+              "a": "S"
+            }
+          ],
+          "r": {
+            "water_movement": {
               "±": [
                 {
-                  "n": 1,
+                  "n": 2,
                   "a": "g"
                 },
                 {
                   "n": 3,
                   "a": "g"
-                },
-                {
-                  "n": 5,
-                  "a": "g"
                 }
               ],
-              "==": {
-                "0": [
+              ".value": [
+                {
+                  "n": 3,
+                  "a": "g"
+                }
+              ]
+            },
+            "ground": [
+              17
+            ]
+          }
+        }
+      },
+      "2d59a3f6-d348-496d-a0c7-6d59ddb05c5e": [
+        8
+      ],
+      "r": {
+        "e": {
+          "move": [
+            1,
+            3,
+            5
+          ],
+          "quire_": {
+            "complete_path": [
+              1
+            ],
+            "tame": [
+              3,
+              5
+            ]
+          },
+          "s": {
+            "elect_targets": [
+              5
+            ],
+            "o": {
+              "urces": [
+                21,
+                8
+              ],
+              "lve": [
+                {
+                  "n": 14,
+                  "a": "S"
+                }
+              ]
+            }
+          },
+          "place_block": [
+            5
+          ],
+          "nder_controllers": [
+            26,
+            -2
+          ]
+        },
+        "o": {
+          "lls": [
+            12,
+            -1
+          ],
+          "bot": [
+            7
+          ],
+          "tation": {
+            "±": [
+              23,
+              -2,
+              29,
+              -4
+            ],
+            "_": {
+              "rate": [
+                32,
+                -1
+              ],
+              "drag_coefficient": [
+                32,
+                -1
+              ]
+            }
+          }
+        },
+        "i": {
+          "deable": {
+            "±": [
+              {
+                "n": 4,
+                "a": "g"
+              },
+              {
+                "n": 5,
+                "a": "g"
+              }
+            ],
+            ".": {
+              "family_types": {
+                "±": [
                   {
-                    "n": 3,
+                    "n": 5,
                     "a": "g"
                   }
                 ],
-                "1": [
-                  {
-                    "n": 1,
-                    "a": "g"
-                  },
+                ".zombie": [
                   {
                     "n": 5,
                     "a": "g"
                   }
                 ]
-              }
-            }
-          },
-          "ript": {
-            "±": [
-              6
-            ],
-            "s": {
-              "/main.js": [
-                6
-              ],
-              "±": [
-                25,
-                27,
-                5
-              ]
-            }
-          }
-        },
-        "he": {
-          "ep": {
-            "omelon": {
-              "±": [
-                10,
-                16,
-                21,
-                27,
-                37,
-                5
-              ],
-              "_shear": [
-                11
-              ],
-              ".": {
-                "b": {
-                  "p_a": {
-                    "nims": [
-                      8
-                    ],
-                    "c": [
-                      9
-                    ]
-                  },
-                  "ehavior": [
-                    5
+              },
+              "seat": {
+                "_count": [
+                  {
+                    "n": 5,
+                    "a": "g"
+                  }
+                ],
+                "s": {
+                  "±": [
+                    {
+                      "n": 5,
+                      "a": "g"
+                    }
+                  ],
+                  ".position": [
+                    {
+                      "n": 5,
+                      "a": "g"
+                    }
                   ]
-                },
-                "animation": [
-                  24
-                ],
-                "entity": [
-                  27
-                ],
-                "geometry": [
-                  30
-                ]
+                }
               }
             },
             "_": {
-              "baby": [
-                5
-              ],
-              "adult": [
-                5
-              ],
               "sheared": [
                 5
-              ]
-            },
-            "±": [
-              27,
-              5
-            ]
-          },
-          "ar": {
-            "ed": [
-              27,
-              5,
-              9
-            ],
-            "±": [
-              5
-            ],
-            "s": [
-              5
-            ]
-          }
-        },
-        "p": {
-          "awn": {
-            "±": [
-              5,
-              9
-            ],
-            "_": {
-              "items": [
-                5
               ],
-              "adult": [
-                5
-              ],
-              "baby": [
-                5
-              ],
-              "rules": [
-                14,
-                -2
-              ],
-              "egg": [
-                25,
-                -2
-              ]
-            },
-            "loc": [
-              {
-                "n": 12,
-                "a": "S"
-              }
-            ],
-            "zoo": [
-              {
-                "n": 12,
-                "a": "S"
-              }
-            ],
-            "entity": [
-              {
-                "n": 12,
-                "a": "S"
-              }
-            ],
-            "s_": {
-              "on_": {
-                "surface": [
-                  14,
-                  -2
-                ],
-                "block_filter": [
-                  14,
-                  16
-                ]
-              },
-              "under": {
-                "water": [
-                  15
-                ],
-                "ground": [
-                  15
-                ]
-              }
-            }
-          },
-          "eed_multiplier": [
-            1,
-            3,
-            5
-          ],
-          "lash": [
-            21
-          ]
-        },
-        "t": {
-          "omp_range_multiplier": [
-            1
-          ],
-          "at": {
-            "es": [
-              9
-            ],
-            "ic": [
-              {
-                "n": 13,
-                "a": "S"
-              }
-            ]
-          },
-          "ep": {
-            "±": [
-              21
-            ],
-            "_uv": [
-              31,
-              -1
-            ]
-          },
-          "retch_to_lifetime": [
-            31,
-            -1
-          ]
-        },
-        "u": {
-          "ffocate_time": [
-            1,
-            3,
-            5
-          ],
-          "ccess_chance": [
-            5
-          ],
-          "b": {
-            "ject": [
-              1,
-              3,
-              5
-            ],
-            "scribe": [
-              {
-                "n": 12,
-                "a": "S"
-              }
-            ]
-          },
-          "rface": [
-            15
-          ]
-        },
-        "e": {
-          "lf": [
-            1,
-            3,
-            5
-          ],
-          "a": {
-            "rch_": {
-              "range": [
-                3
-              ],
-              "height": [
-                3
-              ]
-            },
-            "grass": [
-              3
-            ],
-            "t": {
-              "_count": [
-                5
-              ],
-              "s": [
+              "wooly": [
                 5
               ]
             }
           },
-          "quence": [
-            5
-          ],
-          "ndmessage": [
-            {
-              "n": 12,
-              "a": "S"
-            }
-          ],
-          "t": {
-            "_count": [
-              10,
-              -1
-            ],
-            "permutation": [
-              {
-                "n": 12,
-                "a": "S"
-              },
-              {
-                "n": 13,
-                "a": "S"
-              }
-            ],
-            "up": [
-              27
-            ]
-          }
+          "ght_fin": [
+            24,
+            30
+          ]
         },
-        "ystem": [
-          {
-            "n": 12,
-            "a": "S"
-          }
-        ],
         "a": {
-          "lmon": [
-            8
-          ],
-          "vanna": [
-            14,
-            16
-          ]
-        },
-        "o": {
-          "ft_distance": [
+          "ndomize": [
             1,
+            3,
             5
           ],
-          "und": {
-            "s": [
-              21
-            ],
-            "±": [
-              21
-            ]
-          }
-        },
-        "wim": [
-          21
-        ],
-        "ize": {
-          "±": [
-            28,
-            -4
-          ],
-          "_uv": [
-            31,
+          "dius": [
+            32,
             -1
           ]
-        },
-        "moke_puff": [
-          32
-        ]
+        }
       },
-      "t": {
-        "ype": {
-          "_family": {
+      "j": {
+        "avascript": [
+          8
+        ],
+        "ump": {
+          ".static": [
+            {
+              "n": 0,
+              "a": "c"
+            },
+            {
+              "n": 1,
+              "a": "c"
+            },
+            {
+              "n": 2,
+              "a": "c"
+            },
+            {
+              "n": 3,
+              "a": "c"
+            },
+            {
+              "n": 4,
+              "a": "c"
+            },
+            {
+              "n": 5,
+              "a": "c"
+            }
+          ],
+          "±": [
+            7
+          ]
+        }
+      },
+      "f": {
+        "o": {
+          "llow_range": {
             "±": [
               {
                 "n": 0,
@@ -8176,263 +7932,309 @@
               },
               {
                 "n": 2,
-                "a": "g"
+                "a": "c"
               },
               {
                 "n": 3,
-                "a": "g"
-              },
-              {
-                "n": 4,
-                "a": "c"
-              },
-              {
-                "n": 5,
                 "a": "c"
               }
             ],
-            ".family": [
+            ".value": [
               {
                 "n": 1,
                 "a": "c"
               },
               {
                 "n": 3,
-                "a": "g"
-              },
-              {
-                "n": 5,
                 "a": "c"
               }
             ]
           },
-          "±": [
+          "rmat_version": [
+            1,
             10,
             -1,
-            19,
-            31,
-            6
-          ]
-        },
-        "r": {
-          "a": {
-            "nsitions": [
-              9
-            ],
-            "ck_target": [
-              1,
-              5
-            ]
-          },
-          "ue": {
-            ",": [
-              1,
-              22,
-              -2,
-              28,
-              3,
-              31,
-              -1,
-              5
-            ],
-            "±": [
-              1,
-              10,
-              3,
-              5
-            ]
-          },
-          "igger": {
-            "s": [
-              3
-            ],
-            "±": [
-              5
-            ],
-            "loc": [
-              {
-                "n": 12,
-                "a": "S"
-              }
-            ]
-          }
-        },
-        "a": {
-          "rget": {
-            "±": [
-              1,
-              3,
-              5
-            ],
-            "_dist": {
-              "ance": [
-                1,
-                3
-              ],
-              "±": [
-                5
-              ]
-            }
-          },
-          "ble": [
-            1,
+            16,
+            -2,
+            21,
+            23,
+            -6,
             3,
-            5
+            30,
+            -3,
+            5,
+            8
           ],
-          "il": {
-            "±": [
-              23,
-              29
-            ],
-            "_fin": [
-              23,
-              29
-            ]
-          }
-        },
-        "otal_supply": [
-          1,
-          3,
-          5
-        ],
-        "urtle": {
-          "±": [
-            3
-          ],
-          "_shell_piece": [
-            3
-          ]
-        },
-        "his": [
-          10,
-          22,
-          24
-        ],
-        "i": {
-          "me": {
-            "line": [
-              8
-            ],
-            "_until_eat": [
-              5
-            ]
-          },
-          "ckssinceload": [
+          "urwalls": [
             {
-              "n": 12,
+              "n": 14,
+              "a": "S"
+            },
+            {
+              "n": 15,
               "a": "S"
             }
           ]
         },
-        "e": {
-          "st": [
-            1,
-            14,
-            -2,
-            3,
-            5
-          ],
-          "xture": {
-            "s": {
-              "±": [
-                25,
-                -2
-              ],
-              "/": {
-                "entity/": {
-                  "biceson": [
-                    25
-                  ],
-                  "nardolphle": [
-                    26
-                  ],
-                  "sheepomelon": [
-                    27
-                  ]
-                },
-                "particle/particles": [
-                  31,
-                  -1
-                ]
-              }
-            },
-            "_": {
-              "width": [
-                28,
-                30,
-                -2
-              ],
-              "height": [
-                28,
-                30,
-                -2
-              ]
-            },
-            "width": [
-              29
-            ],
-            "height": [
-              29
+        "43bb32a-c814-45e4-a428-3f4f1f59b2a3": [
+          8
+        ],
+        "a": {
+          "lse": {
+            ",": [
+              1,
+              10,
+              3,
+              5
             ],
             "±": [
-              31,
+              1,
+              16,
+              18,
+              29,
+              3,
+              32,
+              -1
+            ]
+          },
+          "mily": {
+            "±": [
+              1,
+              3,
+              5
+            ],
+            "_types": [
+              5
+            ]
+          },
+          "cing_": {
+            "direction": [
+              {
+                "n": 14,
+                "a": "S"
+              }
+            ],
+            "camera_mode": [
+              32,
               -1
             ]
           }
         },
-        "winkle": [
-          31
+        "eed_items": [
+          3,
+          5
+        ],
+        "u": {
+          "nction": {
+            "s": [
+              12,
+              -1
+            ],
+            "±": [
+              12,
+              -1
+            ]
+          },
+          "rnace_smelt": [
+            12
+          ]
+        },
+        "i": {
+          "ndtopmostblockusingplayer": [
+            {
+              "n": 14,
+              "a": "S"
+            }
+          ],
+          "l": {
+            "ters": [
+              1,
+              3,
+              5
+            ],
+            "lblock": [
+              {
+                "n": 15,
+                "a": "S"
+              }
+            ]
+          },
+          "reworks_": {
+            "pop": [
+              32
+            ],
+            "twinkles": [
+              32
+            ]
+          }
+        },
+        "lipbook": [
+          32,
+          -1
+        ],
+        "rames_per_second": [
+          32,
+          -1
+        ]
+      },
+      "@minecraft/server": {
+        "±": [
+          8
+        ],
+        "-ui": [
+          8
         ]
       },
       "/": {
         "s": {
           "ay": [
-            8
+            10
           ],
           "ummon": [
-            8
+            10
           ]
         },
         "content/": {
-          "behavior_packs/aop_mobsbp/": [
-            6,
-            -1
-          ],
-          "resource_packs/aop_mobsrp/": [
-            19,
-            -2
-          ]
+          "behavior_packs/aop_mobsbp/": {
+            "manifest.json": [
+              8
+            ],
+            "pack_icon.png": [
+              9
+            ],
+            "entities/": {
+              "biceson.behavior.json": [
+                1
+              ],
+              "nardolphle.behavior.json": [
+                3
+              ],
+              "sheepomelon.behavior.json": [
+                5
+              ]
+            },
+            "s": {
+              "cripts/": {
+                "main.js": [
+                  14
+                ],
+                "utilities.js": [
+                  15
+                ]
+              },
+              "pawn_rules/": {
+                "biceson.json": [
+                  16
+                ],
+                "nardolphle.json": [
+                  17
+                ],
+                "sheepomelon.json": [
+                  18
+                ]
+              }
+            },
+            "texts/": {
+              "en_us.lang": [
+                19
+              ],
+              "languages.json": [
+                20
+              ]
+            }
+          },
+          "resource_packs/aop_mobsrp/": {
+            "sounds.json": [
+              7
+            ],
+            "animations/biceson.animation.json": [
+              23
+            ],
+            "entity/": {
+              "biceson.entity.json": [
+                26
+              ],
+              "nardolphle.entity.json": [
+                27
+              ],
+              "sheepomelon.entity.json": [
+                28
+              ]
+            },
+            "m": {
+              "anifest.json": [
+                21
+              ],
+              "odels/entity/biceson.geometry.json": [
+                29
+              ]
+            },
+            "pa": {
+              "ck_icon.png": [
+                22
+              ],
+              "rticles/": {
+                "fireworks_pop.json": [
+                  32
+                ],
+                "smoke_puff.json": [
+                  33
+                ]
+              }
+            },
+            "text": {
+              "s/": {
+                "en_us.lang": [
+                  34
+                ],
+                "languages.json": [
+                  35
+                ]
+              },
+              "ures/entity/": {
+                "biceson.png": [
+                  36
+                ],
+                "nardolphle.png": [
+                  37
+                ],
+                "sheepomelon.png": [
+                  38
+                ]
+              }
+            }
+          }
         }
       },
       "!query.is_sheared": [
-        9
+        11
       ],
       "v": {
         "ersion": [
-          19,
-          6
+          21,
+          8
         ],
         "olume": [
-          21
+          7
         ],
         "isible_bounds_": {
           "width": [
-            28,
+            29,
             -2
           ],
           "height": [
-            28,
+            29,
             -2
           ],
           "offset": [
-            28,
+            29,
             -2
           ]
         },
         "a": {
           "lue": [
             1,
-            14,
+            16,
             -2,
             3,
             5
@@ -8440,14 +8242,14 @@
           "riable.particle_": {
             "random_1": {
               "±": [
-                31
+                32
               ],
               "*0.5": [
-                32
+                33
               ]
             },
             "age": [
-              31,
+              32,
               -1
             ]
           }
@@ -8549,7 +8351,7 @@
               }
             },
             "ire": [
-              10
+              12
             ]
           }
         },
@@ -8559,59 +8361,59 @@
         ],
         "perator": [
           1,
-          14,
+          16,
           -2,
           3,
           5
         ],
         "cean": [
-          15
+          17
         ],
         "ver": {
           "world": [
             {
-              "n": 12,
+              "n": 14,
               "a": "S"
             },
             {
-              "n": 13,
+              "n": 15,
               "a": "S"
             }
           ],
           "lay_color": [
-            25,
+            26,
             -2
           ]
         },
         "rigin": [
-          28,
+          29,
           -2
         ],
         "utwards": [
-          31,
+          32,
           -1
         ]
       },
       "query.": {
         "is_": {
           "sheared": [
-            9
+            11
           ],
           "baby": [
-            27,
+            28,
             5
           ]
         },
         "standing_scale": [
-          22
+          23
         ],
         "modified_distance_moved": [
-          22,
-          24
+          23,
+          25
         ],
         "anim_time": [
-          22,
-          24
+          23,
+          25
         ],
         "l": {
           "ast_hit_by_player": [
@@ -8620,19 +8422,19 @@
             5
           ],
           "ife_time": [
-            23
+            24
           ]
         },
         "target_": {
           "x_rotation": [
-            23
+            24
           ],
           "y_rotation": [
-            23
+            24
           ]
         },
         "key_frame_lerp_time": [
-          24
+          25
         ]
       },
       "n": {
@@ -8658,57 +8460,29 @@
                 }
               ],
               ".": {
-                "can_path_over_water": {
-                  "±": [
+                "can_path_over_water": [
+                  {
+                    "n": 1,
+                    "a": "c"
+                  },
+                  {
+                    "n": 5,
+                    "a": "c"
+                  }
+                ],
+                "avoid_": {
+                  "damage_blocks": [
                     {
                       "n": 1,
-                      "a": "c"
-                    },
-                    {
-                      "n": 5,
                       "a": "c"
                     }
                   ],
-                  "==t": [
-                    {
-                      "n": 1,
-                      "a": "c"
-                    },
+                  "water": [
                     {
                       "n": 5,
                       "a": "c"
                     }
                   ]
-                },
-                "avoid_": {
-                  "damage_blocks": {
-                    "±": [
-                      {
-                        "n": 1,
-                        "a": "c"
-                      }
-                    ],
-                    "==t": [
-                      {
-                        "n": 1,
-                        "a": "c"
-                      }
-                    ]
-                  },
-                  "water": {
-                    "±": [
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ],
-                    "==t": [
-                      {
-                        "n": 5,
-                        "a": "c"
-                      }
-                    ]
-                  }
                 }
               }
             },
@@ -8724,20 +8498,12 @@
                 }
               ],
               ".": {
-                "is_amphibious": {
-                  "±": [
-                    {
-                      "n": 3,
-                      "a": "c"
-                    }
-                  ],
-                  "==t": [
-                    {
-                      "n": 3,
-                      "a": "c"
-                    }
-                  ]
-                },
+                "is_amphibious": [
+                  {
+                    "n": 3,
+                    "a": "c"
+                  }
+                ],
                 "can_": {
                   "path_over_water": [
                     {
@@ -8745,49 +8511,25 @@
                       "a": "c"
                     }
                   ],
-                  "walk": {
-                    "±": [
+                  "walk": [
+                    {
+                      "n": 3,
+                      "a": "c"
+                    }
+                  ],
+                  "s": {
+                    "wim": [
                       {
                         "n": 3,
                         "a": "c"
                       }
                     ],
-                    "==t": [
+                    "ink": [
                       {
                         "n": 3,
                         "a": "c"
                       }
                     ]
-                  },
-                  "s": {
-                    "wim": {
-                      "±": [
-                        {
-                          "n": 3,
-                          "a": "c"
-                        }
-                      ],
-                      "==t": [
-                        {
-                          "n": 3,
-                          "a": "c"
-                        }
-                      ]
-                    },
-                    "ink": {
-                      "±": [
-                        {
-                          "n": 3,
-                          "a": "c"
-                        }
-                      ],
-                      "==f": [
-                        {
-                          "n": 3,
-                          "a": "c"
-                        }
-                      ]
-                    }
                   }
                 },
                 "avoid_damage_blocks": [
@@ -8827,34 +8569,34 @@
               }
             ],
             "±": [
-              10,
+              12,
               -1,
-              19,
-              28,
+              21,
+              29,
               -2,
-              6
+              8
             ]
           },
           "rdolphle": {
             "±": [
-              15,
-              21,
-              26,
+              17,
+              27,
               3,
-              36
+              37,
+              7
             ],
             ".": {
               "behavior": [
                 3
               ],
               "animation": [
-                23
+                24
               ],
               "entity": [
-                26
+                27
               ],
               "geometry": [
-                29
+                30
               ]
             }
           }
@@ -8864,20 +8606,20 @@
             1
           ],
           "se": [
-            29
+            30
           ]
         },
         "um_particles": [
-          31,
+          32,
           -1
         ]
       },
       "w": {
         "eight": [
           1,
-          10,
+          12,
           -1,
-          14,
+          16,
           -2,
           3,
           5
@@ -8906,47 +8648,35 @@
                   "a": "c"
                 }
               ],
-              ".drag_factor": {
-                "±": [
-                  {
-                    "n": 1,
-                    "a": "c"
-                  },
-                  {
-                    "n": 3,
-                    "a": "c"
-                  }
-                ],
-                "==1": [
-                  {
-                    "n": 1,
-                    "a": "c"
-                  },
-                  {
-                    "n": 3,
-                    "a": "c"
-                  }
-                ]
-              }
+              ".drag_factor": [
+                {
+                  "n": 1,
+                  "a": "c"
+                },
+                {
+                  "n": 3,
+                  "a": "c"
+                }
+              ]
             },
             "animal": [
-              15
+              17
             ]
           },
           "r": {
             "n": [
               {
-                "n": 12,
+                "n": 14,
                 "a": "S"
               }
             ],
             "m": [
-              15
+              17
             ]
           },
           "lk": [
-            25,
-            27
+            26,
+            28
           ]
         },
         "i": {
@@ -8961,11 +8691,11 @@
         },
         "orld": [
           {
-            "n": 12,
+            "n": 14,
             "a": "S"
           },
           {
-            "n": 13,
+            "n": 15,
             "a": "S"
           }
         ]
@@ -8983,74 +8713,74 @@
           "t": {
             "triggerloc": [
               {
-                "n": 12,
+                "n": 14,
                 "a": "S"
               }
             ],
             "zooloc": [
               {
-                "n": 12,
+                "n": 14,
                 "a": "S"
               }
             ],
             "d": {
               "efaultspawnlocation": [
                 {
-                  "n": 12,
+                  "n": 14,
                   "a": "S"
                 }
               ],
               "imension": [
                 {
-                  "n": 12,
+                  "n": 14,
                   "a": "S"
                 },
                 {
-                  "n": 13,
+                  "n": 15,
                   "a": "S"
                 }
               ]
             },
             "players": [
               {
-                "n": 12,
+                "n": 14,
                 "a": "S"
               }
             ],
             "block": [
               {
-                "n": 12,
+                "n": 14,
                 "a": "S"
               },
               {
-                "n": 13,
+                "n": 15,
                 "a": "S"
               }
             ]
           },
           "ometry": {
             "±": [
-              25,
+              26,
               -3,
-              30
+              31
             ],
             ".": {
               "aop_mobs.": {
                 "biceson": [
-                  25,
-                  28
-                ],
-                "nardolphle": [
                   26,
                   29
                 ],
-                "sheepomelon": [
+                "nardolphle": [
                   27,
                   30
+                ],
+                "sheepomelon": [
+                  28,
+                  31
                 ]
               },
               "sheep.sheared.v1.8": [
-                27
+                28
               ]
             }
           },
@@ -9059,7 +8789,7 @@
               3
             ],
             "l": [
-              26
+              27
             ]
           }
         },
@@ -9071,14 +8801,14 @@
           ],
           "a": {
             "ss": [
-              14,
-              16
+              16,
+              18
             ],
             "zing": [
-              27
+              28
             ],
             "dient": [
-              31
+              32
             ]
           }
         }
@@ -9090,20 +8820,20 @@
         "from": {
           "±": [
             {
-              "n": 13,
+              "n": 15,
               "a": "S"
             }
           ],
           "p": [
             {
-              "n": 13,
+              "n": 15,
               "a": "S"
             }
           ]
         },
         "top": [
           {
-            "n": 13,
+            "n": 15,
             "a": "S"
           }
         ]
@@ -9115,20 +8845,20 @@
         "from": {
           "±": [
             {
-              "n": 13,
+              "n": 15,
               "a": "S"
             }
           ],
           "p": [
             {
-              "n": 13,
+              "n": 15,
               "a": "S"
             }
           ]
         },
         "top": [
           {
-            "n": 13,
+            "n": 15,
             "a": "S"
           }
         ]
@@ -9136,18 +8866,21 @@
       "z": {
         "o": {
           "mbie": [
-            5
+            {
+              "n": 5,
+              "a": "g"
+            }
           ],
           "o": {
             "moblist": [
               {
-                "n": 12,
+                "n": 14,
                 "a": "S"
               }
             ],
             "loc": [
               {
-                "n": 12,
+                "n": 14,
                 "a": "S"
               }
             ]
@@ -9156,52 +8889,52 @@
         "from": {
           "±": [
             {
-              "n": 13,
+              "n": 15,
               "a": "S"
             }
           ],
           "p": [
             {
-              "n": 13,
+              "n": 15,
               "a": "S"
             }
           ]
         },
         "top": [
           {
-            "n": 13,
+            "n": 15,
             "a": "S"
           }
         ]
       },
       "523d72d2-3ba9-498a-bc63-8beb5fe268cb": [
-        19
+        21
       ],
       "-this": [
-        24
+        25
       ],
       "#": {
         "00a4ff": [
-          25
+          26
         ],
         "4b95c6": [
-          25
+          26
         ],
         "b421d1": [
-          26
+          27
         ],
         "f407b1": [
-          26
+          27
         ],
         "5e9e13": [
-          27
+          28
         ],
         "e06b77": [
-          27
+          28
         ]
       },
       "0.3f": [
-        31,
+        32,
         -1
       ]
     }

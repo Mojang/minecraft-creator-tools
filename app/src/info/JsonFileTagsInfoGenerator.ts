@@ -12,8 +12,9 @@ import ZipStorage from "../storage/ZipStorage";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex, { AnnotationCategories } from "../core/ContentIndex";
 
-const tagAllowList = ["render_method", "min_difficulty", "cause", "effect_name"];
-const tagMinecraftAllowList = ["entity_type", "event_name"];
+const tagAllowList = ["render_method", "min_difficulty", "cause", "effect_name", "entity_type", "event_name"];
+const numericAllowList: string[] = ["max_stack_size"];
+const boolAllowList: string[] = ["fire_immune", "burns_in_daylight", "hand_equipped", "stacked_by_data"];
 
 export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator {
   id = "JSONTAGS";
@@ -27,6 +28,16 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         return { title: "Block Type" };
       case 3:
         return { title: "Item Type" };
+      case 4:
+        return { title: "Terrain Type" };
+      case 5:
+        return { title: "Item Type" };
+      case 6:
+        return { title: "Sound definitions" };
+      case 7:
+        return { title: "Music definitions" };
+      case 8:
+        return { title: "Sounds" };
     }
     return { title: topicId.toString() };
   }
@@ -230,6 +241,131 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
       items.push(pi);
     }
+
+    if (srPath.indexOf("/textures/terrain_texture.json") >= 0) {
+      const pi = new ProjectInfoItem(
+        InfoItemType.info,
+        this.id,
+        4,
+        "Terrrain texture file",
+        project.getItemByProjectPath(file.storageRelativePath),
+        file.storageRelativePath
+      );
+
+      await file.loadContent(false);
+
+      const jsonO = StorageUtilities.getJsonObject(file);
+
+      if (jsonO) {
+        this.addSubTags(pi, "Terrain Texture Elements", index, AnnotationCategories.terrainTextureSource, jsonO);
+      }
+
+      items.push(pi);
+    } else if (srPath.indexOf("/textures/item_texture.json") >= 0) {
+      const pi = new ProjectInfoItem(
+        InfoItemType.info,
+        this.id,
+        5,
+        "Item texture file",
+        project.getItemByProjectPath(file.storageRelativePath),
+        file.storageRelativePath
+      );
+
+      await file.loadContent(false);
+
+      const jsonO = StorageUtilities.getJsonObject(file);
+
+      if (jsonO) {
+        this.addSubTags(pi, "Item Texture Elements", index, AnnotationCategories.itemTextureSource, jsonO);
+      }
+
+      items.push(pi);
+    } else if (srPath.indexOf("/sounds/sound_definitions.json") >= 0) {
+      const pi = new ProjectInfoItem(
+        InfoItemType.info,
+        this.id,
+        6,
+        "Sound definitions file",
+        project.getItemByProjectPath(file.storageRelativePath),
+        file.storageRelativePath
+      );
+
+      await file.loadContent(false);
+
+      const jsonO = StorageUtilities.getJsonObject(file);
+
+      if (jsonO) {
+        const soundDef = jsonO["sound_definitions"];
+
+        if (soundDef) {
+          this.addSubTags(pi, "Sound definition elements", index, AnnotationCategories.soundDefinitionSource, soundDef);
+        }
+      }
+
+      items.push(pi);
+    } else if (srPath.indexOf("/sounds/music_definitions.json") >= 0) {
+      const pi = new ProjectInfoItem(
+        InfoItemType.info,
+        this.id,
+        7,
+        "Music definitions file",
+        project.getItemByProjectPath(file.storageRelativePath),
+        file.storageRelativePath
+      );
+
+      await file.loadContent(false);
+
+      const jsonO = StorageUtilities.getJsonObject(file);
+
+      if (jsonO) {
+        this.addSubTags(pi, "Music definition elements", index, AnnotationCategories.musicDefinitionSource, jsonO);
+      }
+
+      items.push(pi);
+    } else if (srPath.indexOf("/sounds.json") >= 0) {
+      const pi = new ProjectInfoItem(
+        InfoItemType.info,
+        this.id,
+        8,
+        "Sounds file",
+        project.getItemByProjectPath(file.storageRelativePath),
+        file.storageRelativePath
+      );
+
+      await file.loadContent(false);
+
+      const jsonO = StorageUtilities.getJsonObject(file);
+
+      if (jsonO) {
+        const blockSounds = jsonO["block_sounds"];
+        if (blockSounds) {
+          this.addSubTags(pi, "Block sounds", index, AnnotationCategories.blockSounds, blockSounds);
+        }
+
+        const entitySounds = jsonO["entity_sounds"];
+        if (entitySounds) {
+          this.addSubTags(pi, "Entity sounds", index, AnnotationCategories.entitySounds, entitySounds);
+        }
+
+        const individualEventSounds = jsonO["individual_event_sounds"];
+        if (individualEventSounds) {
+          this.addSubTags(
+            pi,
+            "Individual sounds",
+            index,
+            AnnotationCategories.individualEventSoundsSource,
+            individualEventSounds
+          );
+        }
+
+        const interactiveSounds = jsonO["interactive_sounds"];
+        if (interactiveSounds) {
+          this.addSubTags(pi, "Interactive sounds", index, AnnotationCategories.interactiveSounds, interactiveSounds);
+        }
+      }
+
+      items.push(pi);
+    }
   }
 
   addSubTags(pi: ProjectInfoItem, prefix: string, index: ContentIndex, annotation: string, rootTag?: any) {
@@ -240,7 +376,6 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
     for (const childEltName in rootTag) {
       if (childEltName) {
         let colon = childEltName.indexOf(":");
-
         const childObj: any = rootTag[childEltName];
 
         if (colon <= 0 || childEltName.substring(0, colon) === "minecraft") {
@@ -248,8 +383,8 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
           let bareTag = childEltName;
 
-          if (colon === 9) {
-            bareTag = childEltName.substring(10);
+          if (colon > 1 && colon < childEltName.length - 2) {
+            bareTag = childEltName.substring(colon + 1);
           }
 
           if (pi.projectItem && pi.projectItem.projectPath) {
@@ -266,15 +401,19 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
             index.insert(bareTag, pi.projectItem.projectPath, annotation);
 
             if (typeof childObj === "number") {
-              index.insert(bareTag + "==" + Math.round(childObj), pi.projectItem.projectPath, annotation);
+              if (numericAllowList.includes(bareTag)) {
+                index.insert(bareTag + "==" + Math.round(childObj), pi.projectItem.projectPath, annotation);
+              }
             } else if (typeof childObj === "boolean") {
-              index.insert(bareTag + "==" + (childObj ? "t" : "f"), pi.projectItem.projectPath, annotation);
-            } else if (typeof childObj === "string") {
-              if (
-                tagAllowList.includes(childEltName) ||
-                (childEltName.startsWith("minecraft:") && tagMinecraftAllowList.includes(childEltName))
-              ) {
+              if (boolAllowList.includes(bareTag)) {
+                index.insert(bareTag + "==" + (childObj ? "t" : "f"), pi.projectItem.projectPath, annotation);
+              }
+            } else if (Array.isArray(childObj)) {
+              this.addSubTagsForArray(pi, bareTag, index, annotation, childObj);
+            } else if (typeof childObj === "string" && childObj.length > 0) {
+              if (tagAllowList.includes(bareTag)) {
                 index.insert(bareTag + "==" + childObj, pi.projectItem.projectPath, annotation);
+                index.insert(childObj, pi.projectItem.projectPath, annotation);
               }
             } else {
               if (childObj && childObj.constructor !== Array) {
@@ -282,6 +421,30 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
               }
             }
           }
+        }
+      }
+    }
+  }
+
+  addSubTagsForArray(pi: ProjectInfoItem, prefix: string, index: ContentIndex, annotation: string, rootArr?: any[]) {
+    if (!rootArr) {
+      return;
+    }
+
+    for (const childObj of rootArr) {
+      if (typeof childObj === "string" && childObj.length > 0) {
+        if (pi && pi.projectItem && pi.projectItem.projectPath) {
+          index.insert(prefix + "." + childObj, pi.projectItem.projectPath, annotation);
+          index.insert(childObj, pi.projectItem.projectPath, annotation);
+        }
+      } else {
+        if (
+          childObj &&
+          typeof childObj !== "number" &&
+          typeof childObj !== "boolean" &&
+          childObj.constructor !== Array
+        ) {
+          this.addDescendentSubTags(pi, prefix, index, annotation, childObj);
         }
       }
     }
@@ -298,25 +461,32 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
         if (pi.projectItem && pi.projectItem.projectPath) {
           index.insert(prefix + "." + childEltName, pi.projectItem?.projectPath, annotation);
+          let bareTag = childEltName;
+          let colon = childEltName.indexOf(":");
 
-          if (typeof obj === "number") {
-            index.insert(prefix + "." + childEltName + "==" + Math.round(obj), pi.projectItem.projectPath, annotation);
-          } else if (typeof obj === "boolean") {
-            index.insert(
-              prefix + "." + childEltName + "==" + (obj ? "t" : "f"),
-              pi.projectItem.projectPath,
-              annotation
-            );
-          } else if (typeof obj === "string") {
-            if (
-              tagAllowList.includes(childEltName) ||
-              (childEltName.startsWith("minecraft:") && tagMinecraftAllowList.includes(childEltName))
-            ) {
-              index.insert(prefix + "." + childEltName + "==" + obj, pi.projectItem.projectPath, annotation);
+          if (colon <= 0 || childEltName.substring(0, colon) === "minecraft") {
+            if (colon > 1 && colon < childEltName.length - 2) {
+              bareTag = childEltName.substring(colon + 1);
             }
-          } else {
-            if (obj && obj.constructor !== Array) {
-              this.addDescendentSubTags(pi, prefix + "." + childEltName, index, annotation, obj);
+
+            if (typeof obj === "number") {
+              if (numericAllowList.includes(bareTag)) {
+                index.insert(prefix + "." + bareTag + "==" + Math.round(obj), pi.projectItem.projectPath, annotation);
+              }
+            } else if (typeof obj === "boolean") {
+              if (boolAllowList.includes(bareTag)) {
+                index.insert(prefix + "." + bareTag + "==" + (obj ? "t" : "f"), pi.projectItem.projectPath, annotation);
+              }
+            } else if (typeof obj === "string") {
+              if (tagAllowList.includes(bareTag)) {
+                index.insert(prefix + "." + bareTag + "==" + obj, pi.projectItem.projectPath, annotation);
+              }
+            } else if (Array.isArray(obj)) {
+              this.addSubTagsForArray(pi, prefix + "." + bareTag, index, annotation, obj);
+            } else {
+              if (obj && obj.constructor !== Array) {
+                this.addDescendentSubTags(pi, prefix + "." + bareTag, index, annotation, obj);
+              }
             }
           }
         }

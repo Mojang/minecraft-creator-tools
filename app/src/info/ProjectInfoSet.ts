@@ -1503,7 +1503,7 @@ function _addReportJson(data) {
         const projectItem = project.getItemByFile(file);
         if (projectItem && projectItem.projectPath) {
           genContentIndex.insert(StorageUtilities.getBaseFromName(fileName), projectItem.projectPath);
-          genContentIndex.insert(folder.storageRelativePath, projectItem.projectPath);
+          genContentIndex.insert(file.storageRelativePath, projectItem.projectPath);
 
           await file.loadContent();
 

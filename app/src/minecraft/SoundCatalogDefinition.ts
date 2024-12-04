@@ -15,13 +15,16 @@ import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
 import Utilities from "../core/Utilities";
 import MinecraftDefinitions from "./MinecraftDefinitions";
 import EntityTypeDefinition from "./EntityTypeDefinition";
+import IDefinition from "./IDefinition";
 
-export default class SoundCatalogDefinition {
+export default class SoundCatalogDefinition implements IDefinition {
   private _data?: ISoundCatalog;
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
   private _onLoaded = new EventDispatcher<SoundCatalogDefinition, SoundCatalogDefinition>();
+
+  public id: string | undefined;
 
   public get isLoaded() {
     return this._isLoaded;

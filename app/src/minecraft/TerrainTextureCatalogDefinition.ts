@@ -12,11 +12,14 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import Utilities from "../core/Utilities";
 import Database from "./Database";
 import IFolder from "../storage/IFolder";
+import IDefinition from "./IDefinition";
 
-export default class TerrainTextureCatalogDefinition {
+export default class TerrainTextureCatalogDefinition implements IDefinition {
   private _data?: ITerrainTextureCatalog;
   private _file?: IFile;
   private _isLoaded: boolean = false;
+
+  public id: string | undefined;
 
   private _onLoaded = new EventDispatcher<TerrainTextureCatalogDefinition, TerrainTextureCatalogDefinition>();
 

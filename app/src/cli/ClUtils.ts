@@ -4,6 +4,7 @@ import Project, { ProjectAutoDeploymentMode } from "../app/Project";
 import IStatus, { StatusType } from "../app/Status";
 import Log from "../core/Log";
 import LocalEnvironment, { OperationColors, consoleText_reset } from "../local/LocalEnvironment";
+import LocalUtilities from "../local/LocalUtilities";
 import NodeStorage from "../local/NodeStorage";
 import Database from "../minecraft/Database";
 import IFolder from "../storage/IFolder";
@@ -143,7 +144,7 @@ export default class ClUtils {
     return workFolder;
   }
 
-  static getCarto(localEnv: LocalEnvironment) {
+  static getCarto(localEnv: LocalEnvironment, basePath?: string) {
     CartoApp.localFolderExists = ClUtils.localFolderExists;
     CartoApp.localFileExists = ClUtils.localFileExists;
     CartoApp.ensureLocalFolder = ClUtils.ensureLocalFolder;
@@ -172,6 +173,10 @@ export default class ClUtils {
       localEnv.utilities.cliWorkingPath + "working" + NodeStorage.platformFolderDelimiter,
       ""
     );
+
+    if (localEnv.utilities && basePath) {
+      (localEnv.utilities as LocalUtilities).basePathAdjust = basePath;
+    }
 
     const coreStorage = new NodeStorage(__dirname + "/../data/content/", "");
     Database.contentFolder = coreStorage.rootFolder;

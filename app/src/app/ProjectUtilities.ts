@@ -667,8 +667,8 @@ export default class ProjectUtilities {
             );
 
             if (
-              bpManifestJson.uuid !== oldUids["defaultBehaviorPack"] &&
-              bpManifestJson.uuid !== project.defaultBehaviorPackUniqueId
+              bpManifestJson.id !== oldUids["defaultBehaviorPack"] &&
+              bpManifestJson.id !== project.defaultBehaviorPackUniqueId
             ) {
               await bpManifestJson.setUuid(Utilities.createUuid(), project);
             }
@@ -680,8 +680,8 @@ export default class ProjectUtilities {
             rpManifestJson.randomizeModuleUuids(project.defaultDataUniqueId, oldUids["defaultDataModulePack"]);
 
             if (
-              rpManifestJson.uuid !== oldUids["defaultResourcePack"] &&
-              rpManifestJson.uuid !== project.defaultResourcePackUniqueId
+              rpManifestJson.id !== oldUids["defaultResourcePack"] &&
+              rpManifestJson.id !== project.defaultResourcePackUniqueId
             ) {
               await rpManifestJson.setUuid(Utilities.createUuid(), project);
             }
@@ -925,7 +925,10 @@ export default class ProjectUtilities {
   }
 
   static replaceNamesInPath(path: string, project: Project, entityTypeProject: IGalleryItem, newName: string) {
-    path = Utilities.replaceAll(path, entityTypeProject.id, newName);
+    path = Utilities.replaceAll(path, "/" + entityTypeProject.id + ".", "/" + newName + ".");
+    path = Utilities.replaceAll(path, "\\" + entityTypeProject.id + ".", "\\" + newName + ".");
+    path = Utilities.replaceAll(path, "/" + entityTypeProject.id + "/", "/" + newName + "/");
+    path = Utilities.replaceAll(path, "\\" + entityTypeProject.id + "\\", "\\" + newName + "\\");
 
     return path;
   }

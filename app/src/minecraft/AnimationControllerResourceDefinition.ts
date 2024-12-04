@@ -7,8 +7,9 @@ import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 import IResourceAnimationControllerDefinition from "./IAnimationControllerResource";
+import IDefinition from "./IDefinition";
 
-export default class AnimationControllerResourceDefinition {
+export default class AnimationControllerResourceDefinition implements IDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;

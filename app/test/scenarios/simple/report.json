@@ -828,10 +828,6 @@
       "/behavior_packs/StarterTestsTutorial/structures/starttests/mediumglass.mcstructure"
     ],
     "trie": {
-      "/behavior_packs/starterteststutorial/": [
-        0,
-        -1
-      ],
       "__comment__": [
         0
       ],
@@ -977,6 +973,22 @@
       "pack_icon": [
         1
       ],
+      "/behavior_packs/starterteststutorial/": {
+        "manifest.json": [
+          0
+        ],
+        "pack_icon.png": [
+          1
+        ],
+        "scripts/": {
+          "index.js": [
+            2
+          ],
+          "starttests.js": [
+            3
+          ]
+        }
+      },
       "in": {
         "troductory": [
           0
