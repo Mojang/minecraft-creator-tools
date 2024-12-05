@@ -165,7 +165,7 @@ export default class WorldChunk {
         case 43:
           Log.assert(
             keyValue.value !== undefined && keyValue.value.length > 512,
-            "Unexpected length for a type 43 recrod."
+            "Unexpected length for a type 43 record."
           );
 
           if (keyValue.value) {
