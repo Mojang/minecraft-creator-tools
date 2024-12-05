@@ -56,8 +56,6 @@ export default class RenderControllerSetEditor extends Component<
       renderControllerSet: undefined,
       form: undefined,
     };
-
-    this._updateManager(true);
   }
 
   static getDerivedStateFromProps(props: IRenderControllerSetEditorProps, state: IRenderControllerSetEditorState) {
@@ -81,10 +79,10 @@ export default class RenderControllerSetEditor extends Component<
   }
 
   componentDidMount(): void {
-    this._updateManager(true);
+    this._updateManager();
   }
 
-  async _updateManager(setState: boolean) {
+  async _updateManager() {
     if (this.state !== undefined && this.state.fileToEdit !== undefined) {
       if (this.state.fileToEdit !== this._lastFileEdited) {
         this._lastFileEdited = this.state.fileToEdit;
@@ -100,15 +98,15 @@ export default class RenderControllerSetEditor extends Component<
         this.state.fileToEdit.manager instanceof RenderControllerSetDefinition &&
         (this.state.fileToEdit.manager as RenderControllerSetDefinition).isLoaded)
     ) {
-      this._doUpdate(setState);
+      this._doUpdate();
     }
   }
 
   _definitionLoaded(defA: RenderControllerSetDefinition, defB: RenderControllerSetDefinition) {
-    this._doUpdate(true);
+    this._doUpdate();
   }
 
-  async _doUpdate(setState: boolean) {
+  async _doUpdate() {
     let selRenderControllerSet = this.props.renderControllerSet;
 
     if (selRenderControllerSet === undefined && this.state && this.state.fileToEdit && this.state.fileToEdit.manager) {
@@ -120,28 +118,15 @@ export default class RenderControllerSetEditor extends Component<
     const formTextures = await Database.ensureFormLoaded("render_controller_set_textures");
     const formGeometry = await Database.ensureFormLoaded("render_controller_set_geometry");
     const formMisc = await Database.ensureFormLoaded("render_controller_set_misc");
-
-    if (setState) {
-      this.setState({
-        fileToEdit: this.props.file,
-        renderControllerSet: selRenderControllerSet,
-        form: form,
-        formMaterials: formMaterials,
-        formTextures: formTextures,
-        formGeometry: formGeometry,
-        formMisc: formMisc,
-      });
-    } else {
-      this.state = {
-        fileToEdit: this.props.file,
-        renderControllerSet: selRenderControllerSet,
-        form: form,
-        formMaterials: formMaterials,
-        formTextures: formTextures,
-        formGeometry: formGeometry,
-        formMisc: formMisc,
-      };
-    }
+    this.setState({
+      fileToEdit: this.props.file,
+      renderControllerSet: selRenderControllerSet,
+      form: form,
+      formMaterials: formMaterials,
+      formTextures: formTextures,
+      formGeometry: formGeometry,
+      formMisc: formMisc,
+    });
   }
 
   async persist() {

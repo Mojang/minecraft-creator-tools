@@ -11,13 +11,16 @@ import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
 import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition";
 import Database from "./Database";
+import IDefinition from "./IDefinition";
 
-export default class MusicDefinitionCatalogDefinition {
+export default class MusicDefinitionCatalogDefinition implements IDefinition {
   private _data?: IMusicDefinitionCatalog;
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
   private _onLoaded = new EventDispatcher<MusicDefinitionCatalogDefinition, MusicDefinitionCatalogDefinition>();
+
+  public id: string | undefined;
 
   public get isLoaded() {
     return this._isLoaded;

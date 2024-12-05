@@ -65,10 +65,10 @@
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
     "testSuccessCount": 1,
-    "testFailCount": 10,
+    "testFailCount": 6,
     "errorSummary": "ERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp/manifest.json) Behavior pack manifest does not define a header/min_engine_version.\r\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Behavior pack manifest does not define a header/min_engine_version.",
     "internalProcessingErrorSummary": "",
-    "testFailSummary": "TESTFAIL: [MINENGINEVER261] Errors found with minimum engine version check.\r\nTESTFAIL: [ADDONREQ160] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Found more than one behavior pack manifest, which is not supported\r\nTESTFAIL: [ADDONREQ169] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Resource pack manifest does not have a proper dependency on the behavior pack identifier.\r\nTESTFAIL: [ADDONREQ130] Found feature or feature_rules in an add-on, which is not supported\r\nTESTFAIL: [ADDONREQ101] Found a loose file in the features folder. Should only see files in the folder features\\creatorshortname\\gamename\\: aggregate2.json\r\nTESTFAIL: [ADDONREQ101] Found a loose file in the font folder. Should only see files in the folder font\\creatorshortname\\gamename\\: glyph_E0.png\r\nTESTFAIL: [ADDONIREQ192] (/Content/behavior_packs/aop_mobsbp/features/aggregate.json) Feature definition resources are not permitted in an add-on targeted behavior pack\r\nTESTFAIL: [ADDONIREQ192] (/Content/behavior_packs/aop_mobsbp_2/features/aggregate2.json) Feature definition resources are not permitted in an add-on targeted behavior pack\r\nTESTFAIL: [ADDONIREQ161] (/Content/resource_packs/aop_mobsrp/materials/entity.material) First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem: entity_static\r\nTESTFAIL: [ADDONIREQ161] (/Content/resource_packs/aop_mobsrp/materials/entity.material) First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem: aopthisisnotagoodname:entity_flat_color_line",
+    "testFailSummary": "TESTFAIL: [MINENGINEVER261] Errors found with minimum engine version check.\r\nTESTFAIL: [ADDONREQ160] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Found more than one behavior pack manifest, which is not supported\r\nTESTFAIL: [ADDONREQ169] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Resource pack manifest does not have a proper dependency on the behavior pack identifier.\r\nTESTFAIL: [ADDONREQ101] Found a loose file in the font folder. Should only see files in the folder font\\creatorshortname\\gamename\\: glyph_E0.png\r\nTESTFAIL: [ADDONIREQ161] (/Content/resource_packs/aop_mobsrp/materials/entity.material) First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem: entity_static\r\nTESTFAIL: [ADDONIREQ161] (/Content/resource_packs/aop_mobsrp/materials/entity.material) First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem: aopthisisnotagoodname:entity_flat_color_line",
     "summary": {
       "PACKSIZE": {
         "1": {
@@ -109,12 +109,7 @@
       "ADDONREQ": {
         "101": {
           "title": "101",
-          "defaultMessage": "Found a loose file in the features folder. Should only see files in the folder features\\creatorshortname\\gamename\\",
-          "testCompleteFails": 2
-        },
-        "130": {
-          "title": "130",
-          "defaultMessage": "Found feature or feature_rules in an add-on, which is not supported",
+          "defaultMessage": "Found a loose file in the font folder. Should only see files in the folder font\\creatorshortname\\gamename\\",
           "testCompleteFails": 1
         },
         "160": {
@@ -157,10 +152,6 @@
       "ADDONIREQ": {
         "161": {
           "defaultMessage": "First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem",
-          "testCompleteFails": 2
-        },
-        "192": {
-          "defaultMessage": "Feature definition resources are not permitted in an add-on targeted behavior pack",
           "testCompleteFails": 2
         }
       }
@@ -235,19 +226,7 @@
     {
       "iTp": 1,
       "gId": "ADDONREQ",
-      "gIx": 130
-    },
-    {
-      "iTp": 1,
-      "gId": "ADDONREQ",
       "gIx": 101,
-      "d": "aggregate2.json"
-    },
-    {
-      "iTp": 1,
-      "gId": "ADDONREQ",
-      "gIx": 101,
-      "m": "Found a loose file in the font folder. Should only see files in the folder font\\creatorshortname\\gamename\\",
       "d": "glyph_E0.png"
     },
     {
@@ -581,12 +560,6 @@
       "p": "/Content/behavior_packs/aop_mobsbp/features/aggregate.json"
     },
     {
-      "iTp": 1,
-      "gId": "ADDONIREQ",
-      "gIx": 192,
-      "p": "/Content/behavior_packs/aop_mobsbp/features/aggregate.json"
-    },
-    {
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 1,
@@ -980,12 +953,6 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp_2/features/aggregate2.json"
-    },
-    {
-      "iTp": 1,
-      "gId": "ADDONIREQ",
-      "gIx": 192,
       "p": "/Content/behavior_packs/aop_mobsbp_2/features/aggregate2.json"
     },
     {

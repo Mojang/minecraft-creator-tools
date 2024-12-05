@@ -6,13 +6,45 @@ import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IFlipbookTexture } from "./IFlipbookTexture";
+import { ProjectItemType } from "../app/IProjectItemData";
+import Utilities from "../core/Utilities";
+import Database from "./Database";
+import IProjectItemRelationship from "../app/IProjectItemRelationship";
+import Project from "../app/Project";
+import ProjectItem from "../app/ProjectItem";
+import IFolder from "../storage/IFolder";
+import IDefinition from "./IDefinition";
 
-export default class FlipbookTextureCatalogDefinition {
-  public flipbookTextures?: IFlipbookTexture[];
+export default class FlipbookTextureCatalogDefinition implements IDefinition {
+  private _data?: IFlipbookTexture[];
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
   private _onLoaded = new EventDispatcher<FlipbookTextureCatalogDefinition, FlipbookTextureCatalogDefinition>();
+
+  public id: string | undefined;
+
+  public get data() {
+    return this._data;
+  }
+
+  public get texturesList() {
+    if (!this._data) {
+      return undefined;
+    }
+
+    const textureList = [];
+
+    for (const flipbookTexture of this._data) {
+      const texturePath = flipbookTexture.flipbook_texture;
+
+      if (texturePath) {
+        textureList.push(texturePath.toLowerCase());
+      }
+    }
+
+    return textureList;
+  }
 
   public get isLoaded() {
     return this._isLoaded;
@@ -61,7 +93,7 @@ export default class FlipbookTextureCatalogDefinition {
       return;
     }
 
-    const defString = JSON.stringify(this.flipbookTextures, null, 2);
+    const defString = JSON.stringify(this._data, null, 2);
 
     this._file.setContent(defString);
   }
@@ -90,10 +122,111 @@ export default class FlipbookTextureCatalogDefinition {
       data = result;
     }
 
-    this.flipbookTextures = data;
+    this._data = data;
 
     this._isLoaded = true;
 
     this._onLoaded.dispatch(this, this);
+  }
+
+  async deleteLinkToChild(rel: IProjectItemRelationship) {
+    let packRootFolder = this.getPackRootFolder();
+
+    if (this._data === undefined) {
+      await this.load();
+    }
+
+    if (!this._data) {
+      return;
+    }
+    if (rel.childItem.itemType === ProjectItemType.texture) {
+      await rel.childItem.ensureStorage();
+
+      if (rel.childItem.file && packRootFolder) {
+        let relativePath = this.getRelativePath(rel.childItem.file, packRootFolder);
+
+        if (relativePath) {
+          let newFlipbookTextures: IFlipbookTexture[] = [];
+
+          for (const flipbookTexture of this._data) {
+            if (flipbookTexture.flipbook_texture !== relativePath) {
+              newFlipbookTextures.push(flipbookTexture);
+            }
+          }
+
+          this._data = newFlipbookTextures;
+        }
+      }
+    }
+
+    this.persist();
+  }
+
+  getPackRootFolder() {
+    let packRootFolder = undefined;
+    if (this.file && this.file.parentFolder) {
+      let parentFolder = this.file.parentFolder;
+
+      while (parentFolder.name !== "textures" && parentFolder.parentFolder) {
+        parentFolder = parentFolder.parentFolder;
+      }
+
+      if (parentFolder.parentFolder) {
+        packRootFolder = parentFolder.parentFolder;
+      }
+    }
+
+    return packRootFolder;
+  }
+
+  getRelativePath(file: IFile, packRootFolder: IFolder) {
+    let relativePath = file.getFolderRelativePath(packRootFolder);
+
+    if (relativePath) {
+      const lastPeriod = relativePath?.lastIndexOf(".");
+      if (lastPeriod >= 0) {
+        relativePath = relativePath?.substring(0, lastPeriod).toLowerCase();
+      }
+
+      relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
+    }
+
+    return relativePath;
+  }
+
+  async addChildItems(project: Project, item: ProjectItem) {
+    const itemsCopy = project.getItemsCopy();
+
+    let packRootFolder = this.getPackRootFolder();
+
+    let textureList = this.texturesList;
+
+    for (const candItem of itemsCopy) {
+      if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
+        await candItem.ensureStorage();
+
+        if (candItem.file) {
+          let relativePath = this.getRelativePath(candItem.file, packRootFolder);
+
+          if (relativePath) {
+            if (textureList && textureList.includes(relativePath)) {
+              item.addChildItem(candItem);
+
+              textureList = Utilities.removeItemInArray(relativePath, textureList);
+            }
+          }
+        }
+      }
+    }
+
+    if (textureList) {
+      for (const texturePath of textureList) {
+        item.addUnfulfilledRelationship(
+          texturePath,
+          ProjectItemType.texture,
+          await Database.matchesVanillaPath(texturePath)
+        );
+      }
+    }
   }
 }

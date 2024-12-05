@@ -338,7 +338,7 @@ export default class ProjectItem {
         return "behavior/animations/animations.json";
       case ProjectItemType.blockTypeBehavior:
         return "behavior/blocks/blocks.json";
-      case ProjectItemType.itemTypeBehaviorJson:
+      case ProjectItemType.itemTypeBehavior:
         return "behavior/items/items.json";
       case ProjectItemType.lootTableBehavior:
         return "behavior/loot_tables/loot_tables.json";
@@ -378,7 +378,7 @@ export default class ProjectItem {
         return "behavior/feature_rules/feature_rules.json";
       case ProjectItemType.functionEventJson:
         return "behavior/functions/tick.json";
-      case ProjectItemType.recipeBehaviorJson:
+      case ProjectItemType.recipeBehavior:
         return "behavior/recipes/recipes.json";
       case ProjectItemType.spawnRuleBehavior:
         return "behavior/spawn_rules/spawn_rules.json";

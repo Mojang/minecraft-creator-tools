@@ -33,7 +33,7 @@ export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
     );
     info.unknownJsonCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.json);
     info.entityTypeManifestCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.entityTypeBehavior);
-    info.itemTypeManifestCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.itemTypeBehaviorJson);
+    info.itemTypeManifestCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.itemTypeBehavior);
     info.blockTypeManifestCount = infoSet.getFirstNumberValue("ITEMS", 100 + ProjectItemType.blockTypeBehavior);
     info.resourcePackManifestCount = infoSet.getFirstNumberValue(
       "ITEMS",

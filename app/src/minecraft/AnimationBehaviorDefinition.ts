@@ -7,8 +7,9 @@ import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 import IAnimationBehaviorWrapper, { IAnimationBehaviorTimelineWrapper } from "./IAnimationBehavior";
+import IDefinition from "./IDefinition";
 
-export default class AnimationBehaviorDefinition {
+export default class AnimationBehaviorDefinition implements IDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;

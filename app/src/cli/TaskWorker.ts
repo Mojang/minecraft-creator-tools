@@ -180,21 +180,30 @@ async function validateAndDisposeProject(
   pis.disconnectFromProject();
 
   if (localEnv?.displayInfo || localEnv?.displayVerbose) {
+    let lastMessage: string | undefined;
+
     for (let k = 0; k < pis.items.length; k++) {
       const item = pis.items[k];
 
-      if (
-        (localEnv.displayInfo || localEnv.displayVerbose) &&
-        item.itemType !== InfoItemType.info &&
-        item.itemType !== InfoItemType.featureAggregate
-      ) {
-        if (item.itemType === InfoItemType.error || item.itemType === InfoItemType.testCompleteFail) {
-          Log.error(pis.itemToString(item));
-        } else {
-          Log.message(pis.itemToString(item));
+      const message = pis.itemToString(item);
+
+      if (message !== lastMessage) {
+        if (
+          (localEnv.displayInfo || localEnv.displayVerbose) &&
+          item.itemType !== InfoItemType.info &&
+          item.itemType !== InfoItemType.featureAggregate
+        ) {
+          if (item.itemType === InfoItemType.error || item.itemType === InfoItemType.testCompleteFail) {
+            Log.error(message);
+            lastMessage = message;
+          } else {
+            Log.message(message);
+            lastMessage = message;
+          }
+        } else if (localEnv.displayVerbose) {
+          Log.verbose(message);
+          lastMessage = message;
         }
-      } else if (localEnv.displayVerbose) {
-        Log.verbose(pis.itemToString(item));
       }
     }
   }

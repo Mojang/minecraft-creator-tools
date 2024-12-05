@@ -10,8 +10,9 @@ import StorageUtilities from "../storage/StorageUtilities";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { ProjectFocus } from "../app/IProjectData";
 import ResourceManifestDefinition from "./ResourceManifestDefinition";
+import IDefinition from "./IDefinition";
 
-export default class BehaviorManifestDefinition {
+export default class BehaviorManifestDefinition implements IDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
@@ -82,7 +83,7 @@ export default class BehaviorManifestDefinition {
     }
   }
 
-  public get uuid() {
+  public get id() {
     if (this.definition && this.definition.header) {
       return this.definition.header.uuid;
     }
@@ -90,7 +91,7 @@ export default class BehaviorManifestDefinition {
     return this._id;
   }
 
-  public set uuid(newId: string | undefined) {
+  public set id(newId: string | undefined) {
     if (this.definition && this.definition.header && newId) {
       this.definition.header.uuid = newId;
     }
@@ -99,9 +100,9 @@ export default class BehaviorManifestDefinition {
   }
 
   public async setUuid(newId: string | undefined, project?: Project) {
-    const oldId = this.uuid;
+    const oldId = this.id;
 
-    this.uuid = newId;
+    this.id = newId;
 
     if (newId && oldId && project) {
       await BehaviorManifestDefinition.setNewBehaviorPackId(project, newId, oldId);
@@ -120,8 +121,8 @@ export default class BehaviorManifestDefinition {
           const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.file);
 
           if (bpManifestJson) {
-            if (bpManifestJson.uuid && Utilities.uuidEqual(bpManifestJson.uuid, oldBehaviorPackId)) {
-              bpManifestJson.uuid = newBehaviorPackId;
+            if (bpManifestJson.id && Utilities.uuidEqual(bpManifestJson.id, oldBehaviorPackId)) {
+              bpManifestJson.id = newBehaviorPackId;
               setBehaviorPack = true;
 
               await bpManifestJson.save();

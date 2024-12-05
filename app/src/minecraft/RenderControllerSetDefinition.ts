@@ -6,14 +6,17 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import IRenderControllerSetDefinition from "./IRenderControllerSet";
 import DataFormProcessor, { ProcessorFixupLevel } from "../dataform/DataFormProcessor";
+import IDefinition from "./IDefinition";
 
-export default class RenderControllerSetDefinition {
+export default class RenderControllerSetDefinition implements IDefinition {
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
   private _data?: IRenderControllerSetDefinition;
 
   private _onLoaded = new EventDispatcher<RenderControllerSetDefinition, RenderControllerSetDefinition>();
+
+  public id: string | undefined;
 
   public get data() {
     return this._data;
@@ -88,12 +91,18 @@ export default class RenderControllerSetDefinition {
           for (const textureListName in rc.arrays.textures) {
             const textureList = rc.arrays.textures[textureListName];
 
-            const newTextureList = [];
+            let newTextureList: string[] | undefined = [];
 
-            for (const textureStr of textureList) {
-              if (textureStr !== textureId && textureStr !== "Texture." + textureId) {
-                newTextureList.push(textureStr);
+            if (textureList) {
+              for (const textureStr of textureList) {
+                if (textureStr !== textureId && textureStr !== "Texture." + textureId) {
+                  newTextureList.push(textureStr);
+                }
               }
+            }
+
+            if (newTextureList.length === 0) {
+              newTextureList = undefined;
             }
 
             rc.arrays.textures[textureListName] = newTextureList;

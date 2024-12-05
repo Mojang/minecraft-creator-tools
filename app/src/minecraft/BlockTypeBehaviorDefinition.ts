@@ -17,8 +17,9 @@ import IManagedComponentSetItem from "./IManagedComponentSetItem";
 import IManagedComponent from "./IManagedComponent";
 import { ManagedComponent } from "./ManagedComponent";
 import StorageUtilities from "../storage/StorageUtilities";
+import IDefinition from "./IDefinition";
 
-export default class BlockTypeBehaviorDefinition implements IManagedComponentSetItem {
+export default class BlockTypeBehaviorDefinition implements IManagedComponentSetItem, IDefinition {
   private _typeId = "";
 
   public data: IBlockTypeData;

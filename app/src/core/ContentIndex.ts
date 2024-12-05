@@ -12,17 +12,25 @@ export enum AnnotationCategories {
   entityComponentDependent = "c",
   blockComponentDependent = "d",
   entityTypeDependent = "e",
-  experiment = "E",
+  entityComponentDependentInGroup = "g",
   itemTypeDependent = "i",
   itemComponentDependent = "j",
-  entityComponentDependentInGroup = "g",
   blockComponentDependentInPermutation = "p",
   storagePathDependent = "s",
-  entityTypeSource = "E",
   blockTypeSource = "B",
+  entityTypeSource = "E",
   itemTypeSource = "I",
+  itemTextureSource = "J",
+  blockSounds = "L",
+  musicDefinitionSource = "M",
+  entitySounds = "N",
+  interactiveSounds = "R",
   jsSource = "S",
+  terrainTextureSource = "T",
+  soundDefinitionSource = "U",
+  individualEventSoundsSource = "V",
   worldProperty = "W",
+  experiment = "X",
 }
 
 const AvoidTermList = ["__proto__", "prototype", "[[Prototype]]"];
@@ -334,7 +342,7 @@ export default class ContentIndex implements IContentIndex {
         for (const item in curNode) {
           // we've found part of our string in this node
 
-          if (item.startsWith(nextStart) && curNode[item] !== undefined) {
+          if (item.startsWith(nextStart) && curNode[item] !== undefined && !hasAdvanced) {
             let itemIndex = 0;
             hasAdvanced = true;
             curNode = curNode[item];
@@ -396,7 +404,7 @@ export default class ContentIndex implements IContentIndex {
   }
 
   insert(key: string, item: string, annotationChar?: string) {
-    if (Utilities.isNumericIsh(key) || key.length > 40) {
+    if (Utilities.isNumericIsh(key) || key.length > 70) {
       return;
     }
 

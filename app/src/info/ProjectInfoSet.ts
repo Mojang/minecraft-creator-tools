@@ -615,13 +615,17 @@ export default class ProjectInfoSet {
   itemToString(item: ProjectInfoItem) {
     let summaryString = item.typeSummaryShort + ": ";
 
-    summaryString += "[" + item.generatorId + Utilities.frontPadToLength(item.generatorIndex, 3, "0") + "] ";
+    summaryString += "[" + item.generatorId + Utilities.frontPadToLength(item.generatorIndex, 3, "0") + "]";
 
     if (item.shortProjectItemPath) {
-      summaryString += "(" + item.shortProjectItemPath + ") ";
+      summaryString += " (" + item.shortProjectItemPath + ")";
     }
 
-    summaryString += this.getEffectiveMessage(item);
+    let effectiveMessage = this.getEffectiveMessage(item);
+
+    if (effectiveMessage.length > 0) {
+      summaryString += " " + effectiveMessage;
+    }
 
     if (item.data) {
       summaryString += ": " + item.data;
@@ -666,22 +670,22 @@ export default class ProjectInfoSet {
     }
 
     if (this.info === undefined || this.info.summary === undefined) {
-      return undefined;
+      return "";
     }
 
     let gen = this.info.summary[item.generatorId];
 
     if (gen === undefined) {
-      return undefined;
+      return "";
     }
 
     let genI = gen[item.generatorIndex];
 
     if (genI === undefined) {
-      return undefined;
+      return "";
     }
 
-    return genI.defaultMessage;
+    return genI.defaultMessage ? genI.defaultMessage : "";
   }
 
   shouldIncludeInIndex(data: IInfoItemData) {
@@ -1503,7 +1507,7 @@ function _addReportJson(data) {
         const projectItem = project.getItemByFile(file);
         if (projectItem && projectItem.projectPath) {
           genContentIndex.insert(StorageUtilities.getBaseFromName(fileName), projectItem.projectPath);
-          genContentIndex.insert(folder.storageRelativePath, projectItem.projectPath);
+          genContentIndex.insert(file.storageRelativePath, projectItem.projectPath);
 
           await file.loadContent();
 

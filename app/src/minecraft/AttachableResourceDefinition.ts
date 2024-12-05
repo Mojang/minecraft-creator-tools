@@ -303,7 +303,7 @@ export default class AttachableResourceDefinition {
     this._onLoaded.dispatch(this, this);
   }
 
-  async deleteLink(rel: IProjectItemRelationship) {
+  async deleteLinkToChild(rel: IProjectItemRelationship) {
     let packRootFolder = this.getPackRootFolder();
 
     if (this._data === undefined) {

@@ -101,7 +101,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         if (projectItem.file) {
           const particleEffect = await ParticleEffectResourceDefinition.ensureOnFile(projectItem.file);
 
-          const desc = particleEffect?.wrapper?.particle_effect?.description;
+          const desc = particleEffect?.data?.particle_effect?.description;
 
           if (desc) {
             if (desc.identifier && desc.basic_render_parameters?.texture) {
@@ -207,14 +207,14 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         if (projectItem.file) {
           const flipbookTexturesCat = await FlipbookTextureCatalogDefinition.ensureOnFile(projectItem.file);
 
-          if (flipbookTexturesCat && flipbookTexturesCat && flipbookTexturesCat.flipbookTextures) {
+          if (flipbookTexturesCat && flipbookTexturesCat && flipbookTexturesCat.data) {
             const pathId = projectItem.file.storageRelativePath + "_flipbooktextures";
 
             if (!allTexturePaths.includes(pathId)) {
               allTexturePaths.push(pathId);
             }
 
-            for (const flipbookTexture of flipbookTexturesCat.flipbookTextures) {
+            for (const flipbookTexture of flipbookTexturesCat.data) {
               if (flipbookTexture && flipbookTexture.flipbook_texture) {
                 textureCountPi.incrementFeature("Flipbook Texture Resource Count");
 

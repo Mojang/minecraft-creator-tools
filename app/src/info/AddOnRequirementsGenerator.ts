@@ -368,19 +368,6 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
       const folderNameCanon = StorageUtilities.canonicalizeName(folderName);
 
-      if (folderNameCanon === "features" || folderNameCanon === "feature_rules") {
-        // ADDONREQ130
-        items.push(
-          new ProjectInfoItem(
-            InfoItemType.testCompleteFail,
-            this.id,
-            130,
-            `Found feature or feature_rules in an add-on, which is not supported`,
-            undefined
-          )
-        );
-      }
-
       if (folderNameCanon === "dimensions") {
         // ADDONREQ131
         items.push(
@@ -400,6 +387,8 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
         } else if (
           folderNameCanon !== "texts" &&
           folderNameCanon !== "entities" &&
+          folderNameCanon !== "features" &&
+          folderNameCanon !== "feature_rules" &&
           folderNameCanon !== "particles" &&
           folderNameCanon !== "items" &&
           folderNameCanon !== "scripts" &&
@@ -415,6 +404,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       }
     }
   }
+
   async generateFromResourcePackFolder(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
     await folder.load();
 
@@ -459,6 +449,20 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     name = StorageUtilities.canonicalizeName(name);
 
     return GenericTermList.includes(name);
+  }
+
+  static isNamespacedIdentifier(id: string) {
+    let identifierSplit = id.split(":");
+
+    if (identifierSplit.length !== 2) {
+      return false;
+    }
+
+    if (identifierSplit[0].length < 2 || identifierSplit[1].length < 2) {
+      return false;
+    }
+
+    return this.isNamespacedString(identifierSplit[0]);
   }
 
   static isNamespacedString(name: string) {

@@ -216,7 +216,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             }
           }
         }
-      } else if (pi.itemType === ProjectItemType.itemTypeBehaviorJson) {
+      } else if (pi.itemType === ProjectItemType.itemTypeBehavior) {
         await pi.ensureFileStorage();
 
         if (pi.file) {
@@ -230,7 +230,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             }
           }
         }
-      } else if (pi.itemType === ProjectItemType.recipeBehaviorJson) {
+      } else if (pi.itemType === ProjectItemType.recipeBehavior) {
         await pi.ensureFileStorage();
 
         if (pi.file) {

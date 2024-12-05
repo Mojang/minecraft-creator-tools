@@ -81,8 +81,6 @@ export default class EntityTypeResourceEditor extends Component<
     };
 
     this._childPersistables = [];
-
-    this._updateManager(true);
   }
 
   static getDerivedStateFromProps(props: IEntityTypeResourceEditorProps, state: IEntityTypeResourceEditorState) {
@@ -110,10 +108,11 @@ export default class EntityTypeResourceEditor extends Component<
 
   componentDidMount(): void {
     this._childPersistables = [];
-    this._updateManager(true);
+
+    this._updateManager();
   }
 
-  async _updateManager(setState: boolean) {
+  async _updateManager() {
     if (this.state !== undefined && this.state.fileToEdit !== undefined) {
       if (this.state.fileToEdit !== this._lastFileEdited) {
         this._lastFileEdited = this.state.fileToEdit;
@@ -133,15 +132,15 @@ export default class EntityTypeResourceEditor extends Component<
       (this.state.fileToEdit.manager as EntityTypeResourceDefinition).isLoaded &&
       !this.state.isLoaded
     ) {
-      this._doUpdate(setState);
+      this._doUpdate();
     }
   }
 
   _definitionLoaded(defA: EntityTypeResourceDefinition, defB: EntityTypeResourceDefinition) {
-    this._doUpdate(true);
+    this._doUpdate();
   }
 
-  async _doUpdate(setState: boolean) {
+  async _doUpdate() {
     let selItem = this.state.entityTypeResource;
 
     if (selItem === undefined && this.state && this.state.fileToEdit && this.state.fileToEdit.manager) {
@@ -182,25 +181,14 @@ export default class EntityTypeResourceEditor extends Component<
       }
     }
 
-    if (setState) {
-      this.setState({
-        fileToEdit: this.state.fileToEdit,
-        isLoaded: true,
-        mode: this.state.mode,
-        sound: soundEvent,
-        entityTypeResource: etrd,
-        renderControllerSets: renderControllerSets,
-      });
-    } else {
-      this.state = {
-        fileToEdit: this.props.file,
-        isLoaded: true,
-        mode: this.state.mode,
-        sound: soundEvent,
-        entityTypeResource: etrd,
-        renderControllerSets: renderControllerSets,
-      };
-    }
+    this.setState({
+      fileToEdit: this.state.fileToEdit,
+      isLoaded: true,
+      mode: this.state.mode,
+      sound: soundEvent,
+      entityTypeResource: etrd,
+      renderControllerSets: renderControllerSets,
+    });
   }
 
   async persist() {
@@ -275,12 +263,6 @@ export default class EntityTypeResourceEditor extends Component<
       this.state.fileToEdit.manager === undefined ||
       Database.uxCatalog === null
     ) {
-      if (this.state.fileToEdit !== null) {
-        if (this.state.fileToEdit.manager === undefined) {
-          this._updateManager(true);
-        }
-      }
-
       return <div>Loading...</div>;
     }
 
@@ -395,6 +377,7 @@ export default class EntityTypeResourceEditor extends Component<
       header = (
         <div
           className="etre-header"
+          key="etrehd"
           style={{
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
@@ -434,17 +417,19 @@ export default class EntityTypeResourceEditor extends Component<
       }
 
       renderControllerHeader = (
-        <div className="etre-rc-header">
+        <div className="etre-rc-header" key="rch">
           <div className="etre-header-interior">{rcTitle}</div>
           <div>{rcDescrip}</div>
         </div>
       );
 
+      let i = 0;
       for (const renderControllerSet of this.state.renderControllerSets) {
         renderControllerEditors.push(
           <RenderControllerSetEditor
             theme={this.props.theme}
             displayHeader={false}
+            key={"etrscrc" + i}
             heightOffset={this.props.heightOffset}
             readOnly={this.props.readOnly}
             isInline={true}
@@ -453,6 +438,7 @@ export default class EntityTypeResourceEditor extends Component<
             setActivePersistable={this._handleNewChildPersistable}
           />
         );
+        i++;
       }
     }
 
@@ -464,6 +450,7 @@ export default class EntityTypeResourceEditor extends Component<
           <SoundEventSetEditor
             readOnly={this.props.readOnly}
             displayHeader={false}
+            key={"sevse"}
             typeId={this.state.entityTypeResource?.id}
             eventType={SoundEventSetType.entity}
             project={this.props.projectItem.project}
@@ -476,6 +463,7 @@ export default class EntityTypeResourceEditor extends Component<
       mainInterior = (
         <DataForm
           definition={form}
+          key={"sevdf"}
           directObject={resourceData}
           readOnly={false}
           theme={this.props.theme}

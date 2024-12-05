@@ -12,10 +12,10 @@ export interface IParticleEffect {
 
 export interface IParticleEffectDescription {
   identifier: string;
-  basic_render_parameters: { [identifier: string]: string };
+  basic_render_parameters: IParticleEffectBasicRenderParameters;
 }
 
 export interface IParticleEffectBasicRenderParameters {
-  material: string;
-  texture: string;
+  material?: string;
+  texture?: string;
 }

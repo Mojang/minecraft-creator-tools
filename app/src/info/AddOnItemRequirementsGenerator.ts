@@ -19,6 +19,7 @@ import AnimationResourceDefinition from "../minecraft/AnimationResourceDefinitio
 import AnimationBehaviorDefinition from "../minecraft/AnimationBehaviorDefinition";
 import AnimationControllerBehaviorDefinition from "../minecraft/AnimationControllerBehaviorDefinition";
 import AnimationControllerResourceDefinition from "../minecraft/AnimationControllerResourceDefinition";
+import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
 
 export default class AddOnItemRequirementsGenerator implements IProjectInfoItemGenerator {
   id = "ADDONIREQ";
@@ -42,26 +43,6 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
           this.id,
           191,
           `Dimension definition resources are not permitted in an add-on targeted behavior pack`,
-          projectItem
-        )
-      );
-    } else if (projectItem.itemType === ProjectItemType.featureBehavior) {
-      items.push(
-        new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
-          this.id,
-          192,
-          `Feature definition resources are not permitted in an add-on targeted behavior pack`,
-          projectItem
-        )
-      );
-    } else if (projectItem.itemType === ProjectItemType.featureRuleBehaviorJson) {
-      items.push(
-        new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
-          this.id,
-          193,
-          `Feature rule definition resources are not permitted in an add-on targeted behavior pack`,
           projectItem
         )
       );
@@ -335,6 +316,32 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
                 );
               }
             }
+          }
+        }
+      }
+    } else if (
+      projectItem.itemType === ProjectItemType.recipeBehavior ||
+      projectItem.itemType === ProjectItemType.entityTypeBehavior ||
+      projectItem.itemType === ProjectItemType.blockTypeBehavior ||
+      projectItem.itemType === ProjectItemType.itemTypeBehavior
+    ) {
+      await projectItem.ensureFileStorage();
+
+      if (projectItem.file) {
+        const projectItemDef = await MinecraftDefinitions.get(projectItem);
+
+        if (projectItemDef && projectItemDef.id) {
+          if (!AddOnRequirementsGenerator.isNamespacedString(projectItemDef.id)) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.testCompleteFail,
+                this.id,
+                112,
+                `JSON namespaced identifier is not in expected form of creatorshortname_projectshortname:myitem`,
+                projectItem,
+                projectItemDef.id
+              )
+            );
           }
         }
       }

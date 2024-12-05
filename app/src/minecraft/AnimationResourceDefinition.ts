@@ -7,8 +7,9 @@ import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 import IResourceAnimationWrapper from "./IAnimationResource";
+import IDefinition from "./IDefinition";
 
-export default class AnimationResourceDefinition {
+export default class AnimationResourceDefinition implements IDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;

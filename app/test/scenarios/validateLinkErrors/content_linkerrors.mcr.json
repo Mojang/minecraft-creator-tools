@@ -360,6 +360,20 @@
         "minecraft:is_sheared": 1,
         "minecraft:behavior.melee_attack": 1
       },
+      "Sounds Entity sounds": {
+        "entities": 1
+      },
+      "Sounds Individual sounds": {
+        "events": 1
+      },
+      "Music definitions Music definition elements": {
+        "co2": 1,
+        "cofoo_doesnotexist": 1
+      },
+      "Sound definitions Sound definition elements": {
+        "ambientsounds.co2": 1,
+        "ambientsounds.co_doesnotexist": 1
+      },
       "Animations Resource": {
         "Count": 8
       },
@@ -742,6 +756,18 @@
         "1": {
           "title": "Entity Type",
           "defaultMessage": "Entity file"
+        },
+        "6": {
+          "title": "Sound definitions",
+          "defaultMessage": "Sound definitions file"
+        },
+        "7": {
+          "title": "Music definitions",
+          "defaultMessage": "Music definitions file"
+        },
+        "8": {
+          "title": "Sounds",
+          "defaultMessage": "Sounds file"
         }
       },
       "SCRIPTMODULE": {
@@ -770,7 +796,7 @@
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.40)",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.50)",
           "recommendations": 3
         }
       },
@@ -794,7 +820,7 @@
         },
         "120": {
           "title": "Behavior Pack Entity Type Format Version Minor Version Lower than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.40.03)",
+          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.50.07)",
           "recommendations": 3
         }
       },
@@ -1927,6 +1953,47 @@
     },
     {
       "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 8,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "fs": {
+        "Entity sounds": {
+          "entities": 1
+        },
+        "Individual sounds": {
+          "events": 1
+        }
+      }
+    },
+    {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 7,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json",
+      "d": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json",
+      "fs": {
+        "Music definition elements": {
+          "co2": 1,
+          "cofoo_doesnotexist": 1
+        }
+      }
+    },
+    {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 6,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json",
+      "d": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json",
+      "fs": {
+        "Sound definition elements": {
+          "ambientsounds.co2": 1,
+          "ambientsounds.co_doesnotexist": 1
+        }
+      }
+    },
+    {
+      "iTp": 2,
       "gId": "SCRIPTMODULE",
       "gIx": 100,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
@@ -1999,7 +2066,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.40)",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.50)",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {

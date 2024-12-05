@@ -140,7 +140,7 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
 
-      if (pi.itemType === ProjectItemType.itemTypeBehaviorJson) {
+      if (pi.itemType === ProjectItemType.itemTypeBehavior) {
         await pi.ensureFileStorage();
 
         if (pi.file) {

@@ -138,7 +138,7 @@ export default class StringArray extends Component<IStringArrayProps, IStringArr
 
       if (this.props.longForm) {
         const ta = (
-          <div className="sarr-input">
+          <div className="sarr-input" key={"si" + i}>
             <TextArea
               fluid={true}
               key={"inpt" + i.toString()}
@@ -154,7 +154,7 @@ export default class StringArray extends Component<IStringArrayProps, IStringArr
         inputAreas.push(ta);
       } else {
         inputAreas.push(
-          <div className="sarr-input">
+          <div className="sarr-input" key={"sj" + i}>
             <FormInput
               id={i.toString()}
               key={"inpt" + i.toString()}
@@ -169,14 +169,18 @@ export default class StringArray extends Component<IStringArrayProps, IStringArr
     }
 
     if (inputAreas.length === 0) {
-      inputAreas.push(<div className="sarr-none">(No items.)</div>);
+      inputAreas.push(
+        <div className="sarr-none" key={"sjn"}>
+          (No items.)
+        </div>
+      );
     }
 
     let addArea = <></>;
 
     if (this.props.allowCreateDelete !== false) {
       addArea = (
-        <div className="sarr-add">
+        <div className="sarr-add" key={"sjn-add"}>
           <Button
             content={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
             onClick={this._handleAddItemButton}

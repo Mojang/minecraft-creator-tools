@@ -52,13 +52,13 @@ export default class ProjectItemUtilities {
       firstHundred.indexOf('"minecraft:recipe_shaped"') >= 0 ||
       firstHundred.indexOf('"minecraft:recipe_shapeless"') >= 0
     ) {
-      return { itemType: ProjectItemType.recipeBehaviorJson };
+      return { itemType: ProjectItemType.recipeBehavior };
     } else if (firstHundred.indexOf('"minecraft:entity"') >= 0) {
       return { itemType: ProjectItemType.entityTypeBehavior };
     } else if (firstHundred.indexOf('"minecraft:item"') >= 0) {
-      return { itemType: ProjectItemType.itemTypeBehaviorJson };
+      return { itemType: ProjectItemType.itemTypeBehavior };
     } else if (firstHundred.indexOf('"pools"') >= 0) {
-      return { itemType: ProjectItemType.itemTypeBehaviorJson };
+      return { itemType: ProjectItemType.itemTypeBehavior };
     } else if (firstHundred.indexOf('"minecraft:spawn_rules"') >= 0) {
       return { itemType: ProjectItemType.spawnRuleBehavior };
     } else if (firstHundred.indexOf('"tiers"') >= 0) {
@@ -118,9 +118,9 @@ export default class ProjectItemUtilities {
       case ProjectItemType.blockTypeBehavior:
         return 1852;
 
-      case ProjectItemType.itemTypeBehaviorJson:
+      case ProjectItemType.itemTypeBehavior:
         return 1853;
-      case ProjectItemType.recipeBehaviorJson:
+      case ProjectItemType.recipeBehavior:
         return 1860;
       case ProjectItemType.particleJson:
         return 1870;
@@ -200,12 +200,12 @@ export default class ProjectItemUtilities {
       case ProjectItemType.blockTypeBehavior:
       case ProjectItemType.blocksCatalogResourceJson:
       case ProjectItemType.blockTypeResourceJson:
-      case ProjectItemType.itemTypeBehaviorJson:
+      case ProjectItemType.itemTypeBehavior:
       case ProjectItemType.fogResourceJson:
       case ProjectItemType.tradingBehaviorJson:
       case ProjectItemType.particleJson:
       case ProjectItemType.structure:
-      case ProjectItemType.recipeBehaviorJson:
+      case ProjectItemType.recipeBehavior:
       case ProjectItemType.biomeBehaviorJson:
       case ProjectItemType.biomeResourceJson:
       case ProjectItemType.lootTableBehavior:
@@ -324,7 +324,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.animationControllerBehaviorJson:
       case ProjectItemType.blockTypeBehavior:
       case ProjectItemType.blockMaterialsBehaviorJson:
-      case ProjectItemType.itemTypeBehaviorJson:
+      case ProjectItemType.itemTypeBehavior:
       case ProjectItemType.lootTableBehavior:
       case ProjectItemType.biomeResourceJson:
       case ProjectItemType.fileListArrayJson:
@@ -345,7 +345,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.featureRuleBehaviorJson:
       case ProjectItemType.featureBehavior:
       case ProjectItemType.functionEventJson:
-      case ProjectItemType.recipeBehaviorJson:
+      case ProjectItemType.recipeBehavior:
       case ProjectItemType.spawnRuleBehavior:
       case ProjectItemType.tradingBehaviorJson:
       case ProjectItemType.volumeBehaviorJson:
@@ -502,7 +502,7 @@ export default class ProjectItemUtilities {
         return "Block type";
       case ProjectItemType.blockMaterialsBehaviorJson:
         return "Block type materials";
-      case ProjectItemType.itemTypeBehaviorJson:
+      case ProjectItemType.itemTypeBehavior:
         return "Item type";
       case ProjectItemType.lootTableBehavior:
         return "Loot table";
@@ -542,7 +542,7 @@ export default class ProjectItemUtilities {
         return "Feature";
       case ProjectItemType.functionEventJson:
         return "Function event";
-      case ProjectItemType.recipeBehaviorJson:
+      case ProjectItemType.recipeBehavior:
         return "Recipe";
       case ProjectItemType.spawnRuleBehavior:
         return "Spawn rule";
@@ -832,7 +832,7 @@ export default class ProjectItemUtilities {
         return ["attachables"];
       case ProjectItemType.entityTypeBehavior:
         return ["entities"];
-      case ProjectItemType.itemTypeBehaviorJson:
+      case ProjectItemType.itemTypeBehavior:
       case ProjectItemType.itemTypeResourceJson:
         return ["items"];
       case ProjectItemType.blockTypeBehavior:
@@ -843,7 +843,7 @@ export default class ProjectItemUtilities {
         return ["command_modules"];
       case ProjectItemType.lootTableBehavior:
         return ["loot_tables"];
-      case ProjectItemType.recipeBehaviorJson:
+      case ProjectItemType.recipeBehavior:
         return ["recipes"];
       case ProjectItemType.spawnRuleBehavior:
         return ["spawn_rules"];

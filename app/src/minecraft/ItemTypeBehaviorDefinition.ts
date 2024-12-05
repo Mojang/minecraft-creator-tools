@@ -13,8 +13,9 @@ import IManagedComponent from "./IManagedComponent";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
+import IDefinition from "./IDefinition";
 
-export default class ItemTypeBehaviorDefinition implements IManagedComponentSetItem {
+export default class ItemTypeBehaviorDefinition implements IManagedComponentSetItem, IDefinition {
   public wrapper: IItemTypeWrapper | null = null;
   private _behaviorPackFile?: IFile;
   private _id?: string;

@@ -6,16 +6,34 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
-import IRecipeBehavior from "./IRecipeBehavior";
+import IRecipeBehavior, { IRecipeShaped, IRecipeShapeless } from "./IRecipeBehavior";
+import IDefinition from "./IDefinition";
 
-export default class RecipeBehaviorDefinition {
+export default class RecipeBehaviorDefinition implements IDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
 
-  public data?: IRecipeBehavior;
+  private _data?: IRecipeBehavior;
+  private _interior?: IRecipeShaped | IRecipeShapeless;
 
   private _onLoaded = new EventDispatcher<RecipeBehaviorDefinition, RecipeBehaviorDefinition>();
+
+  public get data() {
+    return this._data;
+  }
+
+  public set data(newData: IRecipeBehavior | undefined) {
+    this._data = newData;
+
+    if (this._data && this._data["minecraft:recipe_shaped"]) {
+      this._interior = this._data["minecraft:recipe_shaped"];
+    } else if (this._data && this._data["minecraft:recipe_shapeless"]) {
+      this._interior = this._data["minecraft:recipe_shapeless"];
+    } else {
+      this._interior = undefined;
+    }
+  }
 
   public get isLoaded() {
     return this._isLoaded;
@@ -34,10 +52,18 @@ export default class RecipeBehaviorDefinition {
   }
 
   public get id() {
+    if (this._interior && this._interior.description && this._interior.description.identifier) {
+      return this._interior.description.identifier;
+    }
+
     return this._id;
   }
 
   public set id(newId: string | undefined) {
+    if (this._interior && this._interior.description) {
+      this._interior.description.identifier = newId;
+    }
+
     this._id = newId;
   }
 
@@ -64,24 +90,24 @@ export default class RecipeBehaviorDefinition {
   }
 
   public getFormatVersion(): number[] | undefined {
-    if (!this.data || !this.data.format_version) {
+    if (!this._data || !this._data.format_version) {
       return undefined;
     }
 
-    return MinecraftUtilities.getVersionArrayFrom(this.data.format_version);
+    return MinecraftUtilities.getVersionArrayFrom(this._data.format_version);
   }
 
   setBehaviorPackFormatVersion(versionStr: string) {
     this._ensureDataInitialized();
 
-    if (this.data) {
-      this.data.format_version = versionStr;
+    if (this._data) {
+      this._data.format_version = versionStr;
     }
   }
 
   _ensureDataInitialized() {
-    if (this.data === undefined) {
-      this.data = {};
+    if (this._data === undefined) {
+      this._data = {};
     }
   }
 
@@ -117,7 +143,7 @@ export default class RecipeBehaviorDefinition {
       return;
     }
 
-    const bpString = JSON.stringify(this.data, null, 2);
+    const bpString = JSON.stringify(this._data, null, 2);
 
     this._file.setContent(bpString);
   }

@@ -40,7 +40,8 @@ export default class Database {
   static stableTypeDefs: ITypeDefCatalog | null = null;
   static contentFolder: IFolder | null = null;
   static snippetsFolder: IFolder | null = null;
-  static metadataFolder: IFolder | null = null;
+  static previewMetadataFolder: IFolder | null = null;
+  static releaseMetadataFolder: IFolder | null = null;
   static defaultBehaviorPackFolder: IFolder | null = null;
   static defaultResourcePackFolder: IFolder | null = null;
   static local: ILocalUtilities | null = null;
@@ -589,15 +590,35 @@ export default class Database {
   }
 
   static async loadPreviewMetadataFolder() {
-    if (!this.metadataFolder) {
+    if (!this.previewMetadataFolder) {
       const metadataStorage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/preview/metadata/");
 
       await metadataStorage.rootFolder.load();
 
-      this.metadataFolder = metadataStorage.rootFolder;
+      this.previewMetadataFolder = metadataStorage.rootFolder;
     }
 
-    return this.metadataFolder;
+    return this.previewMetadataFolder;
+  }
+
+  static async loadReleaseMetadataFolder() {
+    if (!this.releaseMetadataFolder) {
+      if (Database.local) {
+        const storage = await Database.local.createStorage("res/latest/van/release/metadata/");
+
+        if (storage) {
+          this.releaseMetadataFolder = storage.rootFolder;
+        }
+      } else {
+        const metadataStorage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/release/metadata/");
+
+        await metadataStorage.rootFolder.load();
+
+        this.releaseMetadataFolder = metadataStorage.rootFolder;
+      }
+    }
+
+    return this.releaseMetadataFolder;
   }
 
   static async loadDefaultBehaviorPack() {

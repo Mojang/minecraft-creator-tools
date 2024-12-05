@@ -18,6 +18,8 @@ export default class SoundDefinitionCatalogDefinition {
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
+  public id: string | undefined;
+
   private _onLoaded = new EventDispatcher<SoundDefinitionCatalogDefinition, SoundDefinitionCatalogDefinition>();
 
   public get isLoaded() {
@@ -169,7 +171,7 @@ export default class SoundDefinitionCatalogDefinition {
     this._onLoaded.dispatch(this, this);
   }
 
-  async deleteLink(childItem: ProjectItem) {
+  async deleteLinkToChild(childItem: ProjectItem) {
     let packRootFolder = this.getPackRootFolder();
 
     if (this._data === undefined) {
