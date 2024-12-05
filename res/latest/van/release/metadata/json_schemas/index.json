@@ -1,0 +1,15 @@
+{
+  "files": [
+    "Camera Aim-Assist Categories v1.21.50.json",
+    "Camera Aim-Assist Preset v1.21.50.json",
+    "Jigsaw Joint Type v1.21.50.json",
+    "Jigsaw Structure Metadata v1.21.50.json"
+  ],
+  "folders": [
+    "block",
+    "common",
+    "entity",
+    "item",
+    "world"
+  ]
+}

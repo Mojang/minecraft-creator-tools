@@ -1,0 +1,11 @@
+{
+  "files": [
+    "server.json",
+    "server-ui.json",
+    "editor.json",
+    "server-admin-beta.json",
+    "server-gametest-beta.json",
+    "server-net-beta.json",
+    "server-beta.json"
+  ]
+}

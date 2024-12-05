@@ -1,0 +1,28 @@
+{
+  "title": "Ageable",
+  "description": "Adds a timer for the entity to grow up. It can be accelerated by giving the entity the items it likes as defined by feed_items.",
+  "fields": [
+    {
+      "id": "duration",
+      "description": "Length of time before an entity grows up (-1 to always stay a baby)",
+      "dataType": 0
+    },
+    {
+      "id": "feedItems",
+      "desciption": "List of items that can be fed to an entity to age them up",
+      "dataType": 17
+    },
+    {
+      "id": "drop_items",
+      "desciption": "List of items that are dropped when an entity grows up",
+      "dataType": 17
+    },
+    {
+      "id": "grow_up",
+      "title": "Grow up event",
+      "desciption": "Event to fire when an entity grows up",
+      "dataType": 7,
+      "lookupId": "entityTypeEvents"
+    }
+  ]
+}

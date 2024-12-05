@@ -1,0 +1,23 @@
+{
+  "files": [
+    "Animation v1.20.50.json",
+    "Camera Aim-Assist Categories v1.21.50.json",
+    "Camera Aim-Assist Preset v1.21.50.json",
+    "Crafting Catalog Category v1.21.60.json",
+    "Crafting Catalog Document v1.21.60.json",
+    "Crafting Catalog Group Identifier v1.21.60.json",
+    "Crafting Catalog Group v1.21.60.json",
+    "Crafting Catalog Item v1.21.60.json",
+    "Jigsaw Joint Type v1.21.50.json",
+    "Jigsaw Structure Metadata v1.21.50.json",
+    "SpawnDifficulty Legacy.json"
+  ],
+  "folders": [
+    "block",
+    "common",
+    "entity",
+    "item",
+    "spawn",
+    "world"
+  ]
+}
