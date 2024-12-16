@@ -9,6 +9,12 @@ import IProjectInfoGenerator from "./IProjectInfoGenerator";
 import Project from "../app/Project";
 import ContentIndex from "../core/ContentIndex";
 import AnimationResourceDefinition from "../minecraft/AnimationResourceDefinition";
+import ProjectInfoUtilities from "./ProjectInfoUtilities";
+
+export enum AnimationResourceInfoGeneratorTest {
+  animations = 1,
+  bones = 2,
+}
 
 export default class AnimationResourceInfoGenerator implements IProjectInfoGenerator {
   id = "RESOURCEANIMATION";
@@ -17,16 +23,9 @@ export default class AnimationResourceInfoGenerator implements IProjectInfoGener
   performAddOnValidations = false;
 
   getTopicData(topicId: number) {
-    switch (topicId) {
-      case 1:
-        return { title: "Animations" };
-
-      case 2:
-        return { title: "Bones" };
-
-      default:
-        return { title: topicId.toString() };
-    }
+    return {
+      title: ProjectInfoUtilities.getTitleFromEnum(AnimationResourceInfoGeneratorTest, topicId),
+    };
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
@@ -36,10 +35,26 @@ export default class AnimationResourceInfoGenerator implements IProjectInfoGener
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
-    const animationCountPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 1, "Animations");
+    const animationCountPi = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      AnimationResourceInfoGeneratorTest.animations,
+      ProjectInfoUtilities.getTitleFromEnum(
+        AnimationResourceInfoGeneratorTest,
+        AnimationResourceInfoGeneratorTest.animations
+      )
+    );
     items.push(animationCountPi);
 
-    const boneCountPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 2, "Bones");
+    const boneCountPi = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      AnimationResourceInfoGeneratorTest.bones,
+      ProjectInfoUtilities.getTitleFromEnum(
+        AnimationResourceInfoGeneratorTest,
+        AnimationResourceInfoGeneratorTest.bones
+      )
+    );
     items.push(boneCountPi);
 
     const itemsCopy = project.getItemsCopy();

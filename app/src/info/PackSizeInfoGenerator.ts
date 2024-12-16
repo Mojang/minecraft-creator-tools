@@ -9,6 +9,18 @@ import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
+import ProjectInfoUtilities from "./ProjectInfoUtilities";
+
+export enum PackSizeInfoGeneratorTest {
+  overallSize = 1,
+  fileCount = 2,
+  folderCount = 3,
+  contentSize = 4,
+  contentFileCount = 5,
+  contentFolderCount = 6,
+  exceedsRecommendedAddonSize = 401,
+  exceedsRecommendedPackageSize = 402,
+}
 
 export interface IPackSizeInfoGeneratorResults {
   size: number;
@@ -26,45 +38,18 @@ export default class PackSizeInfoGenerator implements IProjectInfoGenerator {
   performAddOnValidations = false;
 
   getTopicData(topicId: number) {
-    switch (topicId) {
-      case 1:
-        return {
-          title: "Overall Size",
-        };
-      case 2:
-        return {
-          title: "Overall File Count",
-        };
-      case 3:
-        return {
-          title: "Overall Folder Count",
-        };
-      case 4:
-        return {
-          title: "Content Size",
-        };
-      case 5:
-        return {
-          title: "Content File Count",
-        };
-      case 6:
-        return {
-          title: "Content Folder Count",
-        };
-    }
-
     return {
-      title: topicId.toString(),
+      title: ProjectInfoUtilities.getTitleFromEnum(PackSizeInfoGeneratorTest, topicId),
     };
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
-    info.overallSize = infoSet.getFirstNumberValue(this.id, 1);
-    info.fileCounts = infoSet.getFirstNumberValue(this.id, 2);
-    info.folderCounts = infoSet.getFirstNumberValue(this.id, 3);
-    info.contentSize = infoSet.getFirstNumberValue(this.id, 4);
-    info.contentFileCounts = infoSet.getFirstNumberValue(this.id, 5);
-    info.contentFolderCounts = infoSet.getFirstNumberValue(this.id, 6);
+    info.overallSize = infoSet.getFirstNumberValue(this.id, PackSizeInfoGeneratorTest.overallSize);
+    info.fileCounts = infoSet.getFirstNumberValue(this.id, PackSizeInfoGeneratorTest.fileCount);
+    info.folderCounts = infoSet.getFirstNumberValue(this.id, PackSizeInfoGeneratorTest.folderCount);
+    info.contentSize = infoSet.getFirstNumberValue(this.id, PackSizeInfoGeneratorTest.contentSize);
+    info.contentFileCounts = infoSet.getFirstNumberValue(this.id, PackSizeInfoGeneratorTest.contentFileCount);
+    info.contentFolderCounts = infoSet.getFirstNumberValue(this.id, PackSizeInfoGeneratorTest.contentFolderCount);
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
@@ -81,27 +66,55 @@ export default class PackSizeInfoGenerator implements IProjectInfoGenerator {
     await this.processFolder(project, await project.ensureProjectFolder(), genItems, contentIndex, results, 0, false);
 
     genItems.push(
-      new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 1, "Overall Size", undefined, results.size)
-    );
-
-    genItems.push(
-      new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 2, "File Counts", undefined, results.fileCounts)
-    );
-
-    genItems.push(
-      new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 3, "Folder Counts", undefined, results.folderCounts)
-    );
-
-    genItems.push(
-      new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 4, "Content Size", undefined, results.contentSize)
+      new ProjectInfoItem(
+        InfoItemType.featureAggregate,
+        this.id,
+        PackSizeInfoGeneratorTest.overallSize,
+        ProjectInfoUtilities.getTitleFromEnum(PackSizeInfoGeneratorTest, PackSizeInfoGeneratorTest.overallSize),
+        undefined,
+        results.size
+      )
     );
 
     genItems.push(
       new ProjectInfoItem(
         InfoItemType.featureAggregate,
         this.id,
-        5,
-        "Content File Counts",
+        PackSizeInfoGeneratorTest.fileCount,
+        ProjectInfoUtilities.getTitleFromEnum(PackSizeInfoGeneratorTest, PackSizeInfoGeneratorTest.fileCount),
+        undefined,
+        results.fileCounts
+      )
+    );
+
+    genItems.push(
+      new ProjectInfoItem(
+        InfoItemType.featureAggregate,
+        this.id,
+        PackSizeInfoGeneratorTest.folderCount,
+        ProjectInfoUtilities.getTitleFromEnum(PackSizeInfoGeneratorTest, PackSizeInfoGeneratorTest.folderCount),
+        undefined,
+        results.folderCounts
+      )
+    );
+
+    genItems.push(
+      new ProjectInfoItem(
+        InfoItemType.featureAggregate,
+        this.id,
+        PackSizeInfoGeneratorTest.contentSize,
+        ProjectInfoUtilities.getTitleFromEnum(PackSizeInfoGeneratorTest, PackSizeInfoGeneratorTest.contentSize),
+        undefined,
+        results.contentSize
+      )
+    );
+
+    genItems.push(
+      new ProjectInfoItem(
+        InfoItemType.featureAggregate,
+        this.id,
+        PackSizeInfoGeneratorTest.contentFileCount,
+        ProjectInfoUtilities.getTitleFromEnum(PackSizeInfoGeneratorTest, PackSizeInfoGeneratorTest.contentFileCount),
         undefined,
         results.contentFileCounts
       )
@@ -111,8 +124,8 @@ export default class PackSizeInfoGenerator implements IProjectInfoGenerator {
       new ProjectInfoItem(
         InfoItemType.featureAggregate,
         this.id,
-        6,
-        "Content Folder Counts",
+        PackSizeInfoGeneratorTest.contentFolderCount,
+        ProjectInfoUtilities.getTitleFromEnum(PackSizeInfoGeneratorTest, PackSizeInfoGeneratorTest.contentFolderCount),
         undefined,
         results.contentFolderCounts
       )
@@ -123,8 +136,11 @@ export default class PackSizeInfoGenerator implements IProjectInfoGenerator {
         new ProjectInfoItem(
           InfoItemType.error,
           this.id,
-          401,
-          "Exceeds recommended addon size",
+          PackSizeInfoGeneratorTest.exceedsRecommendedAddonSize,
+          ProjectInfoUtilities.getTitleFromEnum(
+            PackSizeInfoGeneratorTest,
+            PackSizeInfoGeneratorTest.exceedsRecommendedAddonSize
+          ),
           undefined,
           results.contentSize
         )
@@ -134,8 +150,11 @@ export default class PackSizeInfoGenerator implements IProjectInfoGenerator {
         new ProjectInfoItem(
           InfoItemType.error,
           this.id,
-          402,
-          "Exceeds recommended package size",
+          PackSizeInfoGeneratorTest.exceedsRecommendedPackageSize,
+          ProjectInfoUtilities.getTitleFromEnum(
+            PackSizeInfoGeneratorTest,
+            PackSizeInfoGeneratorTest.exceedsRecommendedPackageSize
+          ),
           undefined,
           results.contentSize
         )

@@ -6,6 +6,7 @@ import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ProjectUtilities from "../app/ProjectUtilities";
 import Utilities from "../core/Utilities";
 import BlockbenchModel from "../integrations/BlockbenchModel";
+import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
 import { PackType } from "../minecraft/Pack";
 import FileSystemFolder from "../storage/FileSystemFolder";
 import FileSystemStorage from "../storage/FileSystemStorage";
@@ -540,7 +541,7 @@ export default class ProjectEditorUtilities {
       const relPath = contentFile.getFolderRelativePath(project.projectFolder as IFolder);
 
       if (relPath !== undefined) {
-        project.ensureItemByProjectPath(
+        const item = project.ensureItemByProjectPath(
           relPath,
           ProjectItemStorageType.singleFile,
           file.name,
@@ -548,6 +549,8 @@ export default class ProjectEditorUtilities {
           undefined,
           ProjectItemCreationType.normal
         );
+
+        await MinecraftDefinitions.ensureFoundationalDependencies(item);
       }
 
       await project.carto.notifyOperationEnded(operId, "New audio file '" + file.name + "' added");

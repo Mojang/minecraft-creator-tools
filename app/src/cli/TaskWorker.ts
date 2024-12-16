@@ -219,7 +219,7 @@ async function validateAndDisposeProject(
     const isAddon = await ProjectUtilities.getIsAddon(project);
 
     if (isAddon) {
-      pis = new ProjectInfoSet(project, ProjectInfoSuite.addOn);
+      pis = new ProjectInfoSet(project, ProjectInfoSuite.cooperativeAddOn);
 
       await pis.generateForProject();
 
@@ -229,7 +229,7 @@ async function validateAndDisposeProject(
         projectName: project.name,
         projectTitle: project.title,
         infoSetData: pis.getDataObject(),
-        suite: ProjectInfoSuite.addOn,
+        suite: ProjectInfoSuite.cooperativeAddOn,
       };
 
       metaStates.push(projectSet);

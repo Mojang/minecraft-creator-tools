@@ -865,6 +865,26 @@ export default class Database {
       result = await Database.isVanillaToken(path);
     }
 
+    if (!result) {
+      if (!path.startsWith("/resource_pack/") && path.startsWith("/")) {
+        result = Database.vanillaContentIndex.hasPathMatches("/resource_pack" + path);
+
+        if (!result) {
+          result = await Database.isVanillaToken("/resource_pack" + path);
+
+          if (!result) {
+            if (!path.startsWith("/behavior_pack/")) {
+              result = Database.vanillaContentIndex.hasPathMatches("/behavior_pack" + path);
+
+              if (!result) {
+                result = await Database.isVanillaToken("/behavior_pack" + path);
+              }
+            }
+          }
+        }
+      }
+    }
+
     return result;
   }
 

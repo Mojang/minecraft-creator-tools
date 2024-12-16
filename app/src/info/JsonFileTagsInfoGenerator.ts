@@ -11,35 +11,31 @@ import IFile from "../storage/IFile";
 import ZipStorage from "../storage/ZipStorage";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex, { AnnotationCategories } from "../core/ContentIndex";
+import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
 const tagAllowList = ["render_method", "min_difficulty", "cause", "effect_name", "entity_type", "event_name"];
 const numericAllowList: string[] = ["max_stack_size"];
 const boolAllowList: string[] = ["fire_immune", "burns_in_daylight", "hand_equipped", "stacked_by_data"];
+
+export enum JsonFileTagsInfoGeneratorTest {
+  entityType = 1,
+  blockType = 2,
+  itemType = 3,
+  terrainTexture = 4,
+  itemTexture = 5,
+  soundDefinition = 6,
+  musicDefinition = 7,
+  sound = 8,
+}
 
 export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator {
   id = "JSONTAGS";
   title = "JSON Tags";
 
   getTopicData(topicId: number) {
-    switch (topicId) {
-      case 1:
-        return { title: "Entity Type" };
-      case 2:
-        return { title: "Block Type" };
-      case 3:
-        return { title: "Item Type" };
-      case 4:
-        return { title: "Terrain Type" };
-      case 5:
-        return { title: "Item Type" };
-      case 6:
-        return { title: "Sound definitions" };
-      case 7:
-        return { title: "Music definitions" };
-      case 8:
-        return { title: "Sounds" };
-    }
-    return { title: topicId.toString() };
+    return {
+      title: ProjectInfoUtilities.getTitleFromEnum(JsonFileTagsInfoGeneratorTest, topicId),
+    };
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
@@ -100,7 +96,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       const pi = new ProjectInfoItem(
         InfoItemType.info,
         this.id,
-        1,
+        JsonFileTagsInfoGeneratorTest.entityType,
         "Entity file",
         project.getItemByProjectPath(file.storageRelativePath),
         file.storageRelativePath
@@ -145,7 +141,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       const pi = new ProjectInfoItem(
         InfoItemType.info,
         this.id,
-        3,
+        JsonFileTagsInfoGeneratorTest.itemType,
         "Item file",
         project.getItemByProjectPath(file.storageRelativePath),
         file.storageRelativePath
@@ -170,7 +166,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       const pi = new ProjectInfoItem(
         InfoItemType.info,
         this.id,
-        2,
+        JsonFileTagsInfoGeneratorTest.blockType,
         "Block file",
         project.getItemByProjectPath(file.storageRelativePath),
         file.storageRelativePath
@@ -246,7 +242,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       const pi = new ProjectInfoItem(
         InfoItemType.info,
         this.id,
-        4,
+        JsonFileTagsInfoGeneratorTest.terrainTexture,
         "Terrrain texture file",
         project.getItemByProjectPath(file.storageRelativePath),
         file.storageRelativePath
@@ -265,7 +261,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       const pi = new ProjectInfoItem(
         InfoItemType.info,
         this.id,
-        5,
+        JsonFileTagsInfoGeneratorTest.itemTexture,
         "Item texture file",
         project.getItemByProjectPath(file.storageRelativePath),
         file.storageRelativePath
@@ -284,7 +280,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       const pi = new ProjectInfoItem(
         InfoItemType.info,
         this.id,
-        6,
+        JsonFileTagsInfoGeneratorTest.soundDefinition,
         "Sound definitions file",
         project.getItemByProjectPath(file.storageRelativePath),
         file.storageRelativePath
@@ -307,7 +303,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       const pi = new ProjectInfoItem(
         InfoItemType.info,
         this.id,
-        7,
+        JsonFileTagsInfoGeneratorTest.musicDefinition,
         "Music definitions file",
         project.getItemByProjectPath(file.storageRelativePath),
         file.storageRelativePath
@@ -326,7 +322,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       const pi = new ProjectInfoItem(
         InfoItemType.info,
         this.id,
-        8,
+        JsonFileTagsInfoGeneratorTest.sound,
         "Sounds file",
         project.getItemByProjectPath(file.storageRelativePath),
         file.storageRelativePath

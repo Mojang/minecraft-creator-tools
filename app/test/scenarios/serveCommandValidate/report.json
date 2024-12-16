@@ -325,7 +325,7 @@
         "minecraft:is_sheared": 1,
         "minecraft:behavior.melee_attack": 1
       },
-      "Sounds Entity sounds": {
+      "Sound Entity sounds": {
         "entities": 1
       },
       "Animations Resource": {
@@ -601,77 +601,73 @@
           "title": "Overall Size"
         },
         "2": {
-          "title": "Overall File Count",
-          "defaultMessage": "File Counts"
+          "title": "File Count"
         },
         "3": {
-          "title": "Overall Folder Count",
-          "defaultMessage": "Folder Counts"
+          "title": "Folder Count"
         },
         "4": {
           "title": "Content Size"
         },
         "5": {
-          "title": "Content File Count",
-          "defaultMessage": "Content File Counts"
+          "title": "Content File Count"
         },
         "6": {
-          "title": "Content Folder Count",
-          "defaultMessage": "Content Folder Counts"
+          "title": "Content Folder Count"
         }
       },
       "PACK": {
         "1": {
           "title": "1",
-          "defaultMessage": "Behavior pack format version"
+          "defaultMessage": "Behavior Pack Min Engine Version"
         },
         "2": {
           "title": "2",
-          "defaultMessage": "Behavior pack UUID"
+          "defaultMessage": "Behavior Pack Uuid"
         },
         "3": {
           "title": "3",
-          "defaultMessage": "Behavior pack manifest"
+          "defaultMessage": "Behavior Pack Manfiest"
         },
         "4": {
           "title": "4",
-          "defaultMessage": "Behavior pack name"
+          "defaultMessage": "Behavior Pack Name"
         },
         "5": {
           "title": "5",
-          "defaultMessage": "Behavior pack description"
+          "defaultMessage": "Behavior Pack Description"
         },
         "6": {
           "title": "6",
-          "defaultMessage": "Behavior pack Id"
-        },
-        "10": {
-          "title": "10",
-          "defaultMessage": "Resource pack format version"
+          "defaultMessage": "Behavior Pack Id"
         },
         "11": {
           "title": "11",
-          "defaultMessage": "Behavior pack min_engine version"
+          "defaultMessage": "Resource Pack Min Engine Version"
         },
         "12": {
           "title": "12",
-          "defaultMessage": "Resource pack UUID"
+          "defaultMessage": "Resource Pack Uuid"
         },
         "13": {
           "title": "13",
-          "defaultMessage": "Resource pack manifest"
+          "defaultMessage": "Resource Pack Manifest"
         },
         "14": {
           "title": "14",
-          "defaultMessage": "Resource pack name"
+          "defaultMessage": "Resource Pack Name"
         },
         "15": {
           "title": "15",
-          "defaultMessage": "Resource pack description"
+          "defaultMessage": "Resource Pack Description"
         },
         "16": {
           "title": "16",
-          "defaultMessage": "Resource pack Id"
+          "defaultMessage": "Resource Pack Id"
+        },
+        "17": {
+          "title": "17",
+          "defaultMessage": "Resource Pack Format Version"
         }
       },
       "JSONTAGS": {
@@ -680,7 +676,7 @@
           "defaultMessage": "Entity file"
         },
         "8": {
-          "title": "Sounds",
+          "title": "Sound",
           "defaultMessage": "Sounds file"
         }
       },
@@ -761,33 +757,6 @@
           "title": "Texture Images"
         }
       },
-      "ESLINT": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "JS file: /Content/behavior_packs/aop_mobsbp/scripts/main.js"
-        }
-      },
-      "WORLDDATA": {
-        "1": {
-          "defaultMessage": "Blocks",
-          "testCompleteSuccesses": 1
-        },
-        "2": {
-          "defaultMessage": "Block Data"
-        },
-        "3": {
-          "defaultMessage": "Commands"
-        },
-        "4": {
-          "defaultMessage": "Execute Sub Commands"
-        },
-        "5": {
-          "defaultMessage": "NBT Tags"
-        },
-        "6": {
-          "defaultMessage": "NBT Experiment Tags"
-        }
-      },
       "JSON": {
         "1": {
           "defaultMessage": "Test JSON Schema Validation completed successfully.",
@@ -813,6 +782,27 @@
         },
         "1128": {
           "defaultMessage": "Animation is not at a current format version (is at 1.8.0)"
+        }
+      },
+      "WORLDDATA": {
+        "1": {
+          "defaultMessage": "Blocks",
+          "testCompleteSuccesses": 1
+        },
+        "2": {
+          "defaultMessage": "Block Data"
+        },
+        "3": {
+          "defaultMessage": "Command"
+        },
+        "4": {
+          "defaultMessage": "Execute Sub Command"
+        },
+        "5": {
+          "defaultMessage": "Level Dat"
+        },
+        "6": {
+          "defaultMessage": "Level Dat Experiments"
         }
       },
       "UNKFILE": {
@@ -1487,7 +1477,6 @@
       "iTp": 2,
       "gId": "PACK",
       "gIx": 1,
-      "m": "Behavior pack min_engine version",
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": [
         1,
@@ -1534,7 +1523,7 @@
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 10,
+      "gIx": 17,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
       "d": 2
     },
@@ -2006,78 +1995,6 @@
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
@@ -2153,942 +2070,6 @@
       "gId": "WORLDDATA",
       "gIx": 6,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
     },
     {
       "iTp": 0,

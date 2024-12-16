@@ -94,6 +94,7 @@ export default class AnimationControllerBehaviorDefinition implements IDefinitio
 
     return states;
   }
+
   public getFormatVersion(): number[] | undefined {
     if (!this.data || !this.data.format_version) {
       return undefined;

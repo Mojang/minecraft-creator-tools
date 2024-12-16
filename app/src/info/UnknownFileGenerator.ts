@@ -10,6 +10,10 @@ import ProjectInfoSet from "./ProjectInfoSet";
 import Project from "../app/Project";
 import ContentIndex from "../core/ContentIndex";
 
+export enum UnknownFileGeneratorTest {
+  unknownTypeFileFound = 2,
+}
+
 export default class UnknownFileGenerator implements IProjectFileInfoGenerator {
   id = "UNKFILE";
   title = "Unknown files";
@@ -32,8 +36,8 @@ export default class UnknownFileGenerator implements IProjectFileInfoGenerator {
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
           this.id,
-          2,
-          `Unknown type ${ext} file ${file.storageRelativePath} found`,
+          UnknownFileGeneratorTest.unknownTypeFileFound,
+          `Unknown type ${ext} file found`,
           project.getItemByExtendedOrProjectPath(file.extendedPath),
           file.extendedPath
         )

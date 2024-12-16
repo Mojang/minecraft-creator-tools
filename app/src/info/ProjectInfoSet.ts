@@ -40,19 +40,19 @@ export default class ProjectInfoSet {
     switch (suiteName.toLowerCase()) {
       case "addon":
       case "addons":
-        return ProjectInfoSuite.addOn;
+        return ProjectInfoSuite.cooperativeAddOn;
 
       case "currentplatform":
         return ProjectInfoSuite.currentPlatformVersions;
 
       default:
-        return ProjectInfoSuite.allExceptAddOn;
+        return ProjectInfoSuite.default; // default is all except cooperative add-on
     }
   }
 
   static getSuiteString(suite: ProjectInfoSuite) {
     switch (suite) {
-      case ProjectInfoSuite.addOn:
+      case ProjectInfoSuite.cooperativeAddOn:
         return "addon";
 
       case ProjectInfoSuite.currentPlatformVersions:
@@ -167,7 +167,7 @@ export default class ProjectInfoSet {
     if (suite) {
       this.suite = suite;
     } else {
-      this.suite = ProjectInfoSuite.allExceptAddOn;
+      this.suite = ProjectInfoSuite.default;
     }
 
     if (index) {
@@ -232,7 +232,7 @@ export default class ProjectInfoSet {
   matchesSuite(
     generator: IProjectFileInfoGenerator | IProjectInfoGenerator | IProjectItemInfoGenerator | IProjectInfoGeneratorBase
   ) {
-    if (this.suite === ProjectInfoSuite.allExceptAddOn && generator.id.indexOf("ADDON") < 0) {
+    if (this.suite === ProjectInfoSuite.default && generator.id.indexOf("CADDON") < 0) {
       return true;
     }
 
@@ -247,9 +247,9 @@ export default class ProjectInfoSet {
       }
     }
 
-    if (this.suite === ProjectInfoSuite.addOn) {
+    if (this.suite === ProjectInfoSuite.cooperativeAddOn) {
       if (
-        generator.id.indexOf("ADDON") >= 0 ||
+        generator.id.indexOf("CADDON") >= 0 ||
         generator.id === "PACKSIZE" ||
         generator.id === "STRICT" ||
         generator.id === "TEXTURE" ||

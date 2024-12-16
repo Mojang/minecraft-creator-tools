@@ -5,6 +5,11 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
+import ProjectInfoUtilities from "./ProjectInfoUtilities";
+
+export enum UnknownItemGeneratorTest {
+  unknownItemTypeFound,
+}
 
 export default class UnknownFileGenerator implements IProjectInfoItemGenerator {
   id = "UNKJSON";
@@ -12,7 +17,7 @@ export default class UnknownFileGenerator implements IProjectInfoItemGenerator {
 
   getTopicData(topicId: number) {
     return {
-      title: topicId.toString(),
+      title: ProjectInfoUtilities.getTitleFromEnum(UnknownItemGeneratorTest, topicId),
     };
   }
 
@@ -23,7 +28,13 @@ export default class UnknownFileGenerator implements IProjectInfoItemGenerator {
 
     if (projectItem.itemType === ProjectItemType.json) {
       items.push(
-        new ProjectInfoItem(InfoItemType.testCompleteFail, this.id, 0, "Unknown JSON file found", projectItem)
+        new ProjectInfoItem(
+          InfoItemType.testCompleteFail,
+          this.id,
+          UnknownItemGeneratorTest.unknownItemTypeFound,
+          "Unknown JSON file found",
+          projectItem
+        )
       );
     }
 

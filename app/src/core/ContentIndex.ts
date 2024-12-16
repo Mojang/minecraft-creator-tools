@@ -158,6 +158,12 @@ export default class ContentIndex implements IContentIndex {
   hasPathMatches(pathEnd: string) {
     pathEnd = pathEnd.toLowerCase();
 
+    const lastPeriodEnd = pathEnd.lastIndexOf(".");
+
+    if (lastPeriodEnd >= 0) {
+      pathEnd = pathEnd.substring(0, lastPeriodEnd);
+    }
+
     for (let path of this.data.items) {
       if (path.startsWith("/")) {
         const lastPeriod = path.lastIndexOf(".");

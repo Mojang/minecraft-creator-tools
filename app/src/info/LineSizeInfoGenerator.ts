@@ -12,14 +12,16 @@ import ProjectInfoSet from "./ProjectInfoSet";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ContentIndex from "../core/ContentIndex";
 
+const TopicTestIdBase = 100;
+
 export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
   id = "LINESIZE";
   title = "File Line/Size Information";
 
   getTopicData(topicId: number) {
-    if (topicId >= 100) {
+    if (topicId >= TopicTestIdBase) {
       return {
-        title: ProjectItemUtilities.getDescriptionForType(topicId - 100),
+        title: ProjectItemUtilities.getDescriptionForType(topicId - TopicTestIdBase),
       };
     }
 
@@ -53,7 +55,13 @@ export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
           " file " +
           (ProjectItemUtilities.isBinaryType(pi.itemType) ? "size" : "lines");
 
-        projInfoItem = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 100 + pi.itemType, name, pi);
+        projInfoItem = new ProjectInfoItem(
+          InfoItemType.featureAggregate,
+          this.id,
+          TopicTestIdBase + pi.itemType,
+          name,
+          pi
+        );
         itemsByType[pi.itemType] = projInfoItem;
         items.push(projInfoItem);
       }

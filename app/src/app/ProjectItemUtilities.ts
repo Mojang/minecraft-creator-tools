@@ -120,10 +120,13 @@ export default class ProjectItemUtilities {
 
       case ProjectItemType.itemTypeBehavior:
         return 1853;
+
       case ProjectItemType.recipeBehavior:
         return 1860;
+
       case ProjectItemType.particleJson:
         return 1870;
+
       case ProjectItemType.tickJson:
         return 903;
 

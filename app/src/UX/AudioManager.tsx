@@ -826,11 +826,11 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
           }}
         >
           <div
-            className={"aum-contents " + (CartoApp.theme === CartoThemeStyle.dark ? "playlist-dark" : "playlist-loght")}
+            className={"aum-contents " + (CartoApp.theme === CartoThemeStyle.dark ? "playlist-dark" : "playlist-light")}
             ref={this.rootElt}
           ></div>
           <div
-            className={"aum-status " + (CartoApp.theme === CartoThemeStyle.dark ? "playlist-dark" : "playlist-loght")}
+            className={"aum-status " + (CartoApp.theme === CartoThemeStyle.dark ? "playlist-dark" : "playlist-light")}
             ref={this.statusElt}
           ></div>
           {audioItemProps}

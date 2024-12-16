@@ -13,12 +13,20 @@ export default class ModelGeometryDefinition {
   private _file?: IFile;
   private _isLoaded: boolean = false;
 
-  public wrapper?: IModelGeometry;
+  private _data?: IModelGeometry;
   public definitions: IGeometry[] = [];
 
   private _identifiers: string[] = [];
 
   private _onLoaded = new EventDispatcher<ModelGeometryDefinition, ModelGeometryDefinition>();
+
+  public get data() {
+    return this._data;
+  }
+
+  public get formatVersion() {
+    return this._data?.format_version;
+  }
 
   public get isLoaded() {
     return this._isLoaded;
@@ -42,10 +50,10 @@ export default class ModelGeometryDefinition {
     }
 
     if (
-      !this.wrapper ||
-      !this.wrapper["minecraft:geometry"] ||
-      this.wrapper["minecraft:geometry"].length !== 1 ||
-      !this.wrapper["minecraft:geometry"][0].description
+      !this._data ||
+      !this._data["minecraft:geometry"] ||
+      this._data["minecraft:geometry"].length !== 1 ||
+      !this._data["minecraft:geometry"][0].description
     ) {
       return [];
     }
@@ -64,7 +72,7 @@ export default class ModelGeometryDefinition {
   public getById(id: string): IGeometry | undefined {
     Log.assert(id !== "minecraft:geometry");
 
-    let model = (this.wrapper as any)[id];
+    let model = (this._data as any)[id];
 
     if (model) {
       return model as IGeometry;
@@ -144,8 +152,8 @@ export default class ModelGeometryDefinition {
   }
 
   public ensureDefault(id: string) {
-    if (!this.wrapper) {
-      this.wrapper = {
+    if (!this._data) {
+      this._data = {
         format_version: "1.12.0",
         "minecraft:geometry": [
           {
@@ -221,12 +229,12 @@ export default class ModelGeometryDefinition {
     return await Database.isRecentVersionFromVersionArray(fv);
   }
 
-  public getFormatVersion(): number[] | undefined {
-    if (!this.wrapper || !this.wrapper.format_version) {
-      return undefined;
+  public getFormatVersion(): number[] {
+    if (!this._data || !this._data.format_version) {
+      return [0, 0, 0];
     }
 
-    return MinecraftUtilities.getVersionArrayFrom(this.wrapper.format_version);
+    return MinecraftUtilities.getVersionArrayFrom(this._data.format_version);
   }
 
   persist() {
@@ -234,14 +242,14 @@ export default class ModelGeometryDefinition {
       return;
     }
 
-    const pjString = JSON.stringify(this.wrapper, null, 2);
+    const pjString = JSON.stringify(this._data, null, 2);
 
     this._file.setContent(pjString);
   }
 
   public ensureDefinition(name: string) {
-    if (!this.wrapper) {
-      this.wrapper = {
+    if (!this._data) {
+      this._data = {
         format_version: "1.12.0",
         "minecraft:geometry": [
           {
@@ -274,26 +282,26 @@ export default class ModelGeometryDefinition {
     this.definitions = [];
     this._identifiers = [];
 
-    if (this.wrapper && this.wrapper["minecraft:geometry"]) {
-      for (const def of this.wrapper["minecraft:geometry"]) {
+    if (this._data && this._data["minecraft:geometry"]) {
+      for (const def of this._data["minecraft:geometry"]) {
         if (def.description && def.description.identifier) {
           this._identifiers.push(def.description.identifier);
         }
 
         this.definitions.push(def);
       }
-    } else if (this.wrapper) {
+    } else if (this._data) {
       // look for 1.8.0 style geometries:
       // {
       //   "format_version": ...
       //   "geometry.foobar": {}
       // }
 
-      for (const elt in this.wrapper) {
-        if (elt !== "format_version" && elt.startsWith("geometry.") && (this.wrapper as any)[elt]) {
+      for (const elt in this._data) {
+        if (elt !== "format_version" && elt.startsWith("geometry.") && (this._data as any)[elt]) {
           this._identifiers.push(elt);
 
-          this.definitions.push((this.wrapper as any)[elt]);
+          this.definitions.push((this._data as any)[elt]);
         }
       }
     }
@@ -309,7 +317,7 @@ export default class ModelGeometryDefinition {
       return;
     }
 
-    this.wrapper = StorageUtilities.getJsonObject(this._file);
+    this._data = StorageUtilities.getJsonObject(this._file);
 
     this.populateDefsAndIds();
 

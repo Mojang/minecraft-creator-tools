@@ -6,9 +6,9 @@ import IInfoItemData from "./IInfoItemData";
 import IProjectInfo from "./IProjectInfo";
 
 export enum ProjectInfoSuite {
-  allExceptAddOn = 0,
+  default = 0,
   currentPlatformVersions = 1,
-  addOn = 2,
+  cooperativeAddOn = 2,
 }
 
 export default interface IProjectInfoData {

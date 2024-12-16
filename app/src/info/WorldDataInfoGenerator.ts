@@ -14,11 +14,31 @@ import CommandStructure from "../app/CommandStructure";
 import ProjectInfoSet from "./ProjectInfoSet";
 import CommandRegistry from "../app/CommandRegistry";
 import Dialogue from "../minecraft/Dialogue";
-import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ContentIndex, { AnnotationCategories } from "../core/ContentIndex";
 import { NbtTagType } from "../minecraft/NbtBinaryTag";
 import AnimationControllerBehaviorDefinition from "../minecraft/AnimationControllerBehaviorDefinition";
 import AnimationBehaviorDefinition from "../minecraft/AnimationBehaviorDefinition";
+import ProjectInfoUtilities from "./ProjectInfoUtilities";
+
+export enum WorldDataInfoGeneratorTest {
+  blocks = 1,
+  blockData = 2,
+  command = 3,
+  executeSubCommand = 4,
+  levelDat = 5,
+  levelDatExperiments = 6,
+  subchunklessChunks = 7,
+  chunks = 8,
+  unexpectedCommandInMCFunction = 101,
+  minX = 103,
+  minZ = 104,
+  maxX = 105,
+  maxZ = 106,
+  unexpectedCommandInCommandBlock = 102,
+  containsWorldImpactingCommand = 112,
+  commandIsFromOlderMinecraftVersion = 212,
+  errorProcessingWorld = 400,
+}
 
 export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator {
   id = "WORLDDATA";
@@ -30,40 +50,23 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
   performPlatformVersionValidations: boolean = false;
 
   getTopicData(topicId: number) {
-    switch (topicId) {
-      case 1:
-        return { title: "Block" };
-      case 2:
-        return { title: "Block Data" };
-      case 3:
-        return { title: "Command" };
-      case 4:
-        return { title: "Execute Sub Command" };
-      case 5:
-        return { title: "Level.dat" };
-      case 6:
-        return { title: "Level.dat Experiments" };
-      case 7:
-        return { title: "Subchunkless Chunks" };
-      case 101:
-        return { title: "Unexpected command in MCFunction" };
-      case 102:
-        return { title: "Unexpected command in Command Block" };
-      case 400:
-        return { title: "Error processing world" };
-    }
-
     return {
-      title: topicId.toString(),
+      title: ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, topicId),
     };
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
-    info.chunkCount = infoSet.getSummedNumberValue("WORLDDATA", 101);
+    info.chunkCount = infoSet.getSummedNumberValue(
+      "WORLDDATA",
+      WorldDataInfoGeneratorTest.unexpectedCommandInMCFunction
+    );
 
-    info.subchunkLessChunkCount = infoSet.getSummedNumberValue("WORLDDATA", 107);
+    info.subchunkLessChunkCount = infoSet.getSummedNumberValue(
+      "WORLDDATA",
+      WorldDataInfoGeneratorTest.subchunklessChunks
+    );
 
-    info.worldLoadErrors = infoSet.getCount("WORLDDATA", 400);
+    info.worldLoadErrors = infoSet.getCount("WORLDDATA", WorldDataInfoGeneratorTest.errorProcessingWorld);
   }
 
   processListOfCommands(
@@ -84,7 +87,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
               new ProjectInfoItem(
                 InfoItemType.warning,
                 this.id,
-                112,
+                WorldDataInfoGeneratorTest.containsWorldImpactingCommand,
                 "Contains command '" +
                   command.name +
                   "' which is impacts the state of the entire world, and generally shouldn't be used in an add-on",
@@ -130,44 +133,67 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     const items: ProjectInfoItem[] = [];
 
     if (
-      projectItem.itemType === ProjectItemType.MCAddon ||
-      projectItem.itemType === ProjectItemType.MCPack ||
-      projectItem.itemType === ProjectItemType.MCProject ||
-      projectItem.itemType === ProjectItemType.js ||
-      projectItem.itemType === ProjectItemType.ts ||
-      projectItem.itemType === ProjectItemType.testJs ||
-      projectItem.itemType === ProjectItemType.structure ||
-      ProjectItemUtilities.isImageType(projectItem.itemType)
+      projectItem.itemType !== ProjectItemType.MCWorld &&
+      projectItem.itemType !== ProjectItemType.MCTemplate &&
+      projectItem.itemType !== ProjectItemType.worldFolder &&
+      projectItem.itemType !== ProjectItemType.dialogueBehaviorJson &&
+      projectItem.itemType !== ProjectItemType.animationControllerBehaviorJson &&
+      projectItem.itemType !== ProjectItemType.animationBehaviorJson &&
+      projectItem.itemType !== ProjectItemType.MCFunction
     ) {
       return items;
     }
 
-    const blocksPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 1, "Blocks", projectItem);
+    const blocksPi = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      WorldDataInfoGeneratorTest.blocks,
+      ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.blocks),
+      projectItem
+    );
     items.push(blocksPi);
 
-    const blockActorsPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 2, "Block Data", projectItem);
+    const blockActorsPi = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      WorldDataInfoGeneratorTest.blockData,
+      ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.blockData),
+      projectItem
+    );
     items.push(blockActorsPi);
 
-    const commandsPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 3, "Commands", projectItem);
+    const commandsPi = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      WorldDataInfoGeneratorTest.command,
+      ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.command),
+      projectItem
+    );
     items.push(commandsPi);
 
     const subCommandsPi = new ProjectInfoItem(
       InfoItemType.featureAggregate,
       this.id,
-      4,
-      "Execute Sub Commands",
+      WorldDataInfoGeneratorTest.executeSubCommand,
+      ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.executeSubCommand),
       projectItem
     );
     items.push(subCommandsPi);
 
-    const nbtPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 5, "NBT Tags", projectItem);
+    const nbtPi = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      WorldDataInfoGeneratorTest.levelDat,
+      ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.levelDat),
+      projectItem
+    );
     items.push(nbtPi);
 
     const nbtExperimentsPi = new ProjectInfoItem(
       InfoItemType.featureAggregate,
       this.id,
-      6,
-      "NBT Experiment Tags",
+      WorldDataInfoGeneratorTest.levelDatExperiments,
+      ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.levelDatExperiments),
       projectItem
     );
     items.push(nbtExperimentsPi);
@@ -271,8 +297,11 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
             new ProjectInfoItem(
               InfoItemType.error,
               this.id,
-              400,
-              "World processing error",
+              WorldDataInfoGeneratorTest.errorProcessingWorld,
+              ProjectInfoUtilities.getTitleFromEnum(
+                WorldDataInfoGeneratorTest,
+                WorldDataInfoGeneratorTest.errorProcessingWorld
+              ),
               projectItem,
               err.message + (err.context ? " - " + err.context : ""),
               mcworld.name
@@ -342,7 +371,15 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       }
 
       items.push(
-        new ProjectInfoItem(InfoItemType.info, this.id, 101, "Chunks", projectItem, mcworld.chunkCount, mcworld.name)
+        new ProjectInfoItem(
+          InfoItemType.info,
+          this.id,
+          WorldDataInfoGeneratorTest.chunks,
+          ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.chunks),
+          projectItem,
+          mcworld.chunkCount,
+          mcworld.name
+        )
       );
 
       let blockCount = 0;
@@ -398,7 +435,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                         new ProjectInfoItem(
                           InfoItemType.recommendation,
                           this.id,
-                          212,
+                          WorldDataInfoGeneratorTest.commandIsFromOlderMinecraftVersion,
                           "Command '" + cba.command + "' is from an older Minecraft version (" + cba.version + ") ",
                           projectItem,
                           "(Command at location " + cba.x + ", " + cba.y + ", " + cba.z + ")",
@@ -417,7 +454,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                             new ProjectInfoItem(
                               InfoItemType.warning,
                               this.id,
-                              112,
+                              WorldDataInfoGeneratorTest.containsWorldImpactingCommand,
                               "Contains command '" +
                                 command.name +
                                 "' which is impacts the state of the entire world, and generally shouldn't be used in an add-on",
@@ -447,7 +484,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                           new ProjectInfoItem(
                             InfoItemType.error,
                             this.id,
-                            102,
+                            WorldDataInfoGeneratorTest.unexpectedCommandInCommandBlock,
                             "Unexpected command '" + command.name + "'",
                             projectItem,
                             command.name,
@@ -489,22 +526,54 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
       blocksPi.data = blockCount;
 
       items.push(
-        new ProjectInfoItem(InfoItemType.info, this.id, 103, "Min X", projectItem, mcworld.minX, mcworld.name)
-      );
-      items.push(
-        new ProjectInfoItem(InfoItemType.info, this.id, 104, "Min Z", projectItem, mcworld.minZ, mcworld.name)
-      );
-      items.push(
-        new ProjectInfoItem(InfoItemType.info, this.id, 105, "Max X", projectItem, mcworld.maxX, mcworld.name)
-      );
-      items.push(
-        new ProjectInfoItem(InfoItemType.info, this.id, 106, "Max Z", projectItem, mcworld.maxZ, mcworld.name)
+        new ProjectInfoItem(
+          InfoItemType.info,
+          this.id,
+          WorldDataInfoGeneratorTest.minX,
+          ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.minX),
+          projectItem,
+          mcworld.minX,
+          mcworld.name
+        )
       );
       items.push(
         new ProjectInfoItem(
           InfoItemType.info,
           this.id,
-          107,
+          WorldDataInfoGeneratorTest.minZ,
+          ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.minZ),
+          projectItem,
+          mcworld.minZ,
+          mcworld.name
+        )
+      );
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.info,
+          this.id,
+          WorldDataInfoGeneratorTest.maxX,
+          ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.maxX),
+          projectItem,
+          mcworld.maxX,
+          mcworld.name
+        )
+      );
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.info,
+          this.id,
+          WorldDataInfoGeneratorTest.maxZ,
+          ProjectInfoUtilities.getTitleFromEnum(WorldDataInfoGeneratorTest, WorldDataInfoGeneratorTest.maxZ),
+          projectItem,
+          mcworld.maxZ,
+          mcworld.name
+        )
+      );
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.info,
+          this.id,
+          WorldDataInfoGeneratorTest.subchunklessChunks,
           "Subchunkless Chunks",
           projectItem,
           subchunkLessChunkCount,

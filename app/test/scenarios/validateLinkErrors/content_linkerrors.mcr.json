@@ -360,17 +360,17 @@
         "minecraft:is_sheared": 1,
         "minecraft:behavior.melee_attack": 1
       },
-      "Sounds Entity sounds": {
+      "Sound Entity sounds": {
         "entities": 1
       },
-      "Sounds Individual sounds": {
+      "Sound Individual sounds": {
         "events": 1
       },
-      "Music definitions Music definition elements": {
+      "Music Definition Music definition elements": {
         "co2": 1,
         "cofoo_doesnotexist": 1
       },
-      "Sound definitions Sound definition elements": {
+      "Sound Definition Sound definition elements": {
         "ambientsounds.co2": 1,
         "ambientsounds.co_doesnotexist": 1
       },
@@ -679,77 +679,73 @@
           "title": "Overall Size"
         },
         "2": {
-          "title": "Overall File Count",
-          "defaultMessage": "File Counts"
+          "title": "File Count"
         },
         "3": {
-          "title": "Overall Folder Count",
-          "defaultMessage": "Folder Counts"
+          "title": "Folder Count"
         },
         "4": {
           "title": "Content Size"
         },
         "5": {
-          "title": "Content File Count",
-          "defaultMessage": "Content File Counts"
+          "title": "Content File Count"
         },
         "6": {
-          "title": "Content Folder Count",
-          "defaultMessage": "Content Folder Counts"
+          "title": "Content Folder Count"
         }
       },
       "PACK": {
         "1": {
           "title": "1",
-          "defaultMessage": "Behavior pack format version"
+          "defaultMessage": "Behavior Pack Min Engine Version"
         },
         "2": {
           "title": "2",
-          "defaultMessage": "Behavior pack UUID"
+          "defaultMessage": "Behavior Pack Uuid"
         },
         "3": {
           "title": "3",
-          "defaultMessage": "Behavior pack manifest"
+          "defaultMessage": "Behavior Pack Manfiest"
         },
         "4": {
           "title": "4",
-          "defaultMessage": "Behavior pack name"
+          "defaultMessage": "Behavior Pack Name"
         },
         "5": {
           "title": "5",
-          "defaultMessage": "Behavior pack description"
+          "defaultMessage": "Behavior Pack Description"
         },
         "6": {
           "title": "6",
-          "defaultMessage": "Behavior pack Id"
-        },
-        "10": {
-          "title": "10",
-          "defaultMessage": "Resource pack format version"
+          "defaultMessage": "Behavior Pack Id"
         },
         "11": {
           "title": "11",
-          "defaultMessage": "Behavior pack min_engine version"
+          "defaultMessage": "Resource Pack Min Engine Version"
         },
         "12": {
           "title": "12",
-          "defaultMessage": "Resource pack UUID"
+          "defaultMessage": "Resource Pack Uuid"
         },
         "13": {
           "title": "13",
-          "defaultMessage": "Resource pack manifest"
+          "defaultMessage": "Resource Pack Manifest"
         },
         "14": {
           "title": "14",
-          "defaultMessage": "Resource pack name"
+          "defaultMessage": "Resource Pack Name"
         },
         "15": {
           "title": "15",
-          "defaultMessage": "Resource pack description"
+          "defaultMessage": "Resource Pack Description"
         },
         "16": {
           "title": "16",
-          "defaultMessage": "Resource pack Id"
+          "defaultMessage": "Resource Pack Id"
+        },
+        "17": {
+          "title": "17",
+          "defaultMessage": "Resource Pack Format Version"
         }
       },
       "JSONTAGS": {
@@ -758,15 +754,15 @@
           "defaultMessage": "Entity file"
         },
         "6": {
-          "title": "Sound definitions",
+          "title": "Sound Definition",
           "defaultMessage": "Sound definitions file"
         },
         "7": {
-          "title": "Music definitions",
+          "title": "Music Definition",
           "defaultMessage": "Music definitions file"
         },
         "8": {
-          "title": "Sounds",
+          "title": "Sound",
           "defaultMessage": "Sounds file"
         }
       },
@@ -847,33 +843,6 @@
           "title": "Texture Images"
         }
       },
-      "ESLINT": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "JS file: /Content/behavior_packs/aop_mobsbp/scripts/main.js"
-        }
-      },
-      "WORLDDATA": {
-        "1": {
-          "defaultMessage": "Blocks",
-          "testCompleteSuccesses": 1
-        },
-        "2": {
-          "defaultMessage": "Block Data"
-        },
-        "3": {
-          "defaultMessage": "Commands"
-        },
-        "4": {
-          "defaultMessage": "Execute Sub Commands"
-        },
-        "5": {
-          "defaultMessage": "NBT Tags"
-        },
-        "6": {
-          "defaultMessage": "NBT Experiment Tags"
-        }
-      },
       "JSON": {
         "1": {
           "defaultMessage": "Test JSON Schema Validation completed successfully.",
@@ -899,6 +868,27 @@
         },
         "1128": {
           "defaultMessage": "Animation is not at a current format version (is at 1.8.0)"
+        }
+      },
+      "WORLDDATA": {
+        "1": {
+          "defaultMessage": "Blocks",
+          "testCompleteSuccesses": 1
+        },
+        "2": {
+          "defaultMessage": "Block Data"
+        },
+        "3": {
+          "defaultMessage": "Command"
+        },
+        "4": {
+          "defaultMessage": "Execute Sub Command"
+        },
+        "5": {
+          "defaultMessage": "Level Dat"
+        },
+        "6": {
+          "defaultMessage": "Level Dat Experiments"
         }
       },
       "UNKFILE": {
@@ -1681,7 +1671,6 @@
       "iTp": 2,
       "gId": "PACK",
       "gIx": 1,
-      "m": "Behavior pack min_engine version",
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": [
         1,
@@ -1742,7 +1731,7 @@
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 10,
+      "gIx": 17,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
       "d": 2
     },
@@ -2241,89 +2230,6 @@
     },
     {
       "iTp": 2,
-      "gId": "ESLINT",
-      "gIx": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ESLINT",
-      "gIx": 1,
-      "m": "JS file: /Content/behavior_packs/aop_mobsbp/scripts/Utilities.js"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
-    },
-    {
-      "iTp": 2,
       "gId": "JSON",
       "gIx": 1119,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
@@ -2415,81 +2321,9 @@
       "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
     },
     {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
       "iTp": 2,
       "gId": "JSON",
       "gIx": 1110,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
     },
     {
@@ -2497,150 +2331,6 @@
       "gId": "JSON",
       "gIx": 1110,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
     },
     {
       "iTp": 4,
@@ -2677,297 +2367,9 @@
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
     },
     {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/behavior_packs/aop_mobsbp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json"
-    },
-    {
       "iTp": 2,
       "gId": "JSON",
       "gIx": 1128,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
     },
     {
@@ -2977,269 +2379,17 @@
       "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
     },
     {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
-    },
-    {
       "iTp": 2,
       "gId": "JSON",
       "gIx": 1128,
       "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json"
     },
     {
       "iTp": 4,
       "gId": "JSON",
       "gIx": 132,
       "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
-      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"textureheight\": 64,\n    \"visible_bounds_width\": 5,\n    \"visible_bounds_height\": 2.5,\n    \"visible_bounds_offset\": [\n      0,\n      0.75,\n      0\n    ],\n    \"bones\": [\n      {\n        \"name\": \"body\",\n        \"pivot\": [\n          0,\n          0,\n          -3\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -4,\n              0,\n              -3\n            ],\n            \"size\": [\n              8,\n              7,\n              13\n            ],\n            \"uv\": [\n              0,\n              13\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"head\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          0,\n          0,\n          -3\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -4,\n              0,\n              -9\n            ],\n            \"size\": [\n              8,\n              7,\n              6\n            ],\n            \"uv\": [\n              0,\n              0\n            ]\n          }\n        ],\n        \"locators\": {\n          \"lead\": [\n            0,\n            0,\n            0\n          ]\n        }\n      },\n      {\n        \"name\": \"nose\",\n        \"parent\": \"head\",\n        \"pivot\": [\n          0,\n          0,\n          -13\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -1,\n              0,\n              -20\n            ],\n            \"size\": [\n              2,\n              2,\n              11\n            ],\n            \"uv\": [\n              0,\n              13\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"tail\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          0,\n          2.5,\n          11\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -2,\n              0,\n              10\n            ],\n            \"size\": [\n              4,\n              5,\n              11\n            ],\n            \"uv\": [\n              0,\n              33\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"tail_fin\",\n        \"parent\": \"tail\",\n        \"pivot\": [\n          0,\n          2.5,\n          20\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -5,\n              2,\n              19\n            ],\n            \"size\": [\n              10,\n              1,\n              6\n            ],\n            \"uv\": [\n              0,\n              49\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"back_fin\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          0,\n          7,\n          2\n        ],\n        \"rotation\": [\n          -30,\n          0,\n          0\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -0.5,\n              6.25,\n              1\n            ],\n            \"size\": [\n              1,\n              5,\n              4\n            ],\n            \"uv\": [\n              29,\n              0\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"left_fin\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          3,\n          1,\n          -1\n        ],\n        \"rotation\": [\n          0,\n          -25,\n          20\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              3,\n              1,\n              -2.5\n            ],\n            \"size\": [\n              8,\n              1,\n              4\n            ],\n            \"uv\": [\n              40,\n              0\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"right_fin\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          -3,\n          1,\n          -1\n        ],\n        \"rotation\": [\n          0,\n          25,\n          -20\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -11,\n              1,\n              -2.5\n            ],\n            \"size\": [\n              8,\n              1,\n              4\n            ],\n            \"uv\": [\n              40,\n              6\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}"
+      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"te"
     },
     {
       "iTp": 4,
@@ -3248,7 +2398,7 @@
       "m": "additionalProperties  must NOT have additional properties",
       "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
       "d": "(additionalProperty: geometry.aop_mobs.nardolphle)",
-      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"textureheight\": 64,\n    \"visible_bounds_width\": 5,\n    \"visible_bounds_height\": 2.5,\n    \"visible_bounds_offset\": [\n      0,\n      0.75,\n      0\n    ],\n    \"bones\": [\n      {\n        \"name\": \"body\",\n        \"pivot\": [\n          0,\n          0,\n          -3\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -4,\n              0,\n              -3\n            ],\n            \"size\": [\n              8,\n              7,\n              13\n            ],\n            \"uv\": [\n              0,\n              13\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"head\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          0,\n          0,\n          -3\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -4,\n              0,\n              -9\n            ],\n            \"size\": [\n              8,\n              7,\n              6\n            ],\n            \"uv\": [\n              0,\n              0\n            ]\n          }\n        ],\n        \"locators\": {\n          \"lead\": [\n            0,\n            0,\n            0\n          ]\n        }\n      },\n      {\n        \"name\": \"nose\",\n        \"parent\": \"head\",\n        \"pivot\": [\n          0,\n          0,\n          -13\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -1,\n              0,\n              -20\n            ],\n            \"size\": [\n              2,\n              2,\n              11\n            ],\n            \"uv\": [\n              0,\n              13\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"tail\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          0,\n          2.5,\n          11\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -2,\n              0,\n              10\n            ],\n            \"size\": [\n              4,\n              5,\n              11\n            ],\n            \"uv\": [\n              0,\n              33\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"tail_fin\",\n        \"parent\": \"tail\",\n        \"pivot\": [\n          0,\n          2.5,\n          20\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -5,\n              2,\n              19\n            ],\n            \"size\": [\n              10,\n              1,\n              6\n            ],\n            \"uv\": [\n              0,\n              49\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"back_fin\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          0,\n          7,\n          2\n        ],\n        \"rotation\": [\n          -30,\n          0,\n          0\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -0.5,\n              6.25,\n              1\n            ],\n            \"size\": [\n              1,\n              5,\n              4\n            ],\n            \"uv\": [\n              29,\n              0\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"left_fin\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          3,\n          1,\n          -1\n        ],\n        \"rotation\": [\n          0,\n          -25,\n          20\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              3,\n              1,\n              -2.5\n            ],\n            \"size\": [\n              8,\n              1,\n              4\n            ],\n            \"uv\": [\n              40,\n              0\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"right_fin\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          -3,\n          1,\n          -1\n        ],\n        \"rotation\": [\n          0,\n          25,\n          -20\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -11,\n              1,\n              -2.5\n            ],\n            \"size\": [\n              8,\n              1,\n              4\n            ],\n            \"uv\": [\n              40,\n              6\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}"
+      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"te"
     },
     {
       "iTp": 4,
@@ -3256,7 +2406,7 @@
       "gIx": 132,
       "m": "if  must match \"else\" schema",
       "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
-      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"textureheight\": 64,\n    \"visible_bounds_width\": 5,\n    \"visible_bounds_height\": 2.5,\n    \"visible_bounds_offset\": [\n      0,\n      0.75,\n      0\n    ],\n    \"bones\": [\n      {\n        \"name\": \"body\",\n        \"pivot\": [\n          0,\n          0,\n          -3\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -4,\n              0,\n              -3\n            ],\n            \"size\": [\n              8,\n              7,\n              13\n            ],\n            \"uv\": [\n              0,\n              13\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"head\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          0,\n          0,\n          -3\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -4,\n              0,\n              -9\n            ],\n            \"size\": [\n              8,\n              7,\n              6\n            ],\n            \"uv\": [\n              0,\n              0\n            ]\n          }\n        ],\n        \"locators\": {\n          \"lead\": [\n            0,\n            0,\n            0\n          ]\n        }\n      },\n      {\n        \"name\": \"nose\",\n        \"parent\": \"head\",\n        \"pivot\": [\n          0,\n          0,\n          -13\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -1,\n              0,\n              -20\n            ],\n            \"size\": [\n              2,\n              2,\n              11\n            ],\n            \"uv\": [\n              0,\n              13\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"tail\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          0,\n          2.5,\n          11\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -2,\n              0,\n              10\n            ],\n            \"size\": [\n              4,\n              5,\n              11\n            ],\n            \"uv\": [\n              0,\n              33\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"tail_fin\",\n        \"parent\": \"tail\",\n        \"pivot\": [\n          0,\n          2.5,\n          20\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -5,\n              2,\n              19\n            ],\n            \"size\": [\n              10,\n              1,\n              6\n            ],\n            \"uv\": [\n              0,\n              49\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"back_fin\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          0,\n          7,\n          2\n        ],\n        \"rotation\": [\n          -30,\n          0,\n          0\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -0.5,\n              6.25,\n              1\n            ],\n            \"size\": [\n              1,\n              5,\n              4\n            ],\n            \"uv\": [\n              29,\n              0\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"left_fin\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          3,\n          1,\n          -1\n        ],\n        \"rotation\": [\n          0,\n          -25,\n          20\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              3,\n              1,\n              -2.5\n            ],\n            \"size\": [\n              8,\n              1,\n              4\n            ],\n            \"uv\": [\n              40,\n              0\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"right_fin\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          -3,\n          1,\n          -1\n        ],\n        \"rotation\": [\n          0,\n          25,\n          -20\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -11,\n              1,\n              -2.5\n            ],\n            \"size\": [\n              8,\n              1,\n              4\n            ],\n            \"uv\": [\n              40,\n              6\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}"
+      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"te"
     },
     {
       "iTp": 4,
@@ -3264,86 +2414,14 @@
       "gIx": 132,
       "m": "if  must match \"else\" schema",
       "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
-      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"textureheight\": 64,\n    \"visible_bounds_width\": 5,\n    \"visible_bounds_height\": 2.5,\n    \"visible_bounds_offset\": [\n      0,\n      0.75,\n      0\n    ],\n    \"bones\": [\n      {\n        \"name\": \"body\",\n        \"pivot\": [\n          0,\n          0,\n          -3\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -4,\n              0,\n              -3\n            ],\n            \"size\": [\n              8,\n              7,\n              13\n            ],\n            \"uv\": [\n              0,\n              13\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"head\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          0,\n          0,\n          -3\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -4,\n              0,\n              -9\n            ],\n            \"size\": [\n              8,\n              7,\n              6\n            ],\n            \"uv\": [\n              0,\n              0\n            ]\n          }\n        ],\n        \"locators\": {\n          \"lead\": [\n            0,\n            0,\n            0\n          ]\n        }\n      },\n      {\n        \"name\": \"nose\",\n        \"parent\": \"head\",\n        \"pivot\": [\n          0,\n          0,\n          -13\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -1,\n              0,\n              -20\n            ],\n            \"size\": [\n              2,\n              2,\n              11\n            ],\n            \"uv\": [\n              0,\n              13\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"tail\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          0,\n          2.5,\n          11\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -2,\n              0,\n              10\n            ],\n            \"size\": [\n              4,\n              5,\n              11\n            ],\n            \"uv\": [\n              0,\n              33\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"tail_fin\",\n        \"parent\": \"tail\",\n        \"pivot\": [\n          0,\n          2.5,\n          20\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -5,\n              2,\n              19\n            ],\n            \"size\": [\n              10,\n              1,\n              6\n            ],\n            \"uv\": [\n              0,\n              49\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"back_fin\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          0,\n          7,\n          2\n        ],\n        \"rotation\": [\n          -30,\n          0,\n          0\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -0.5,\n              6.25,\n              1\n            ],\n            \"size\": [\n              1,\n              5,\n              4\n            ],\n            \"uv\": [\n              29,\n              0\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"left_fin\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          3,\n          1,\n          -1\n        ],\n        \"rotation\": [\n          0,\n          -25,\n          20\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              3,\n              1,\n              -2.5\n            ],\n            \"size\": [\n              8,\n              1,\n              4\n            ],\n            \"uv\": [\n              40,\n              0\n            ]\n          }\n        ]\n      },\n      {\n        \"name\": \"right_fin\",\n        \"parent\": \"body\",\n        \"pivot\": [\n          -3,\n          1,\n          -1\n        ],\n        \"rotation\": [\n          0,\n          25,\n          -20\n        ],\n        \"cubes\": [\n          {\n            \"origin\": [\n              -11,\n              1,\n              -2.5\n            ],\n            \"size\": [\n              8,\n              1,\n              4\n            ],\n            \"uv\": [\n              40,\n              6\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json"
+      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"te"
     },
     {
       "iTp": 4,
       "gId": "JSON",
       "gIx": 133,
       "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n      0\n    ],\n    \"0.5\": [\n      0,\n      1,\n      0\n    ],\n    \"1.0\": [\n      0,\n      0,\n      1\n    ]\n  },\n  \"interpolant\": \"variable.particle_age\"\n}"
+      "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n   "
     },
     {
       "iTp": 4,
@@ -3351,7 +2429,7 @@
       "gIx": 133,
       "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color type must be string",
       "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n      0\n    ],\n    \"0.5\": [\n      0,\n      1,\n      0\n    ],\n    \"1.0\": [\n      0,\n      0,\n      1\n    ]\n  },\n  \"interpolant\": \"variable.particle_age\"\n}"
+      "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n   "
     },
     {
       "iTp": 4,
@@ -3359,7 +2437,7 @@
       "gIx": 133,
       "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient type must be array",
       "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "{\n  \"0.0\": [\n    1,\n    0,\n    0\n  ],\n  \"0.25\": [\n    1,\n    0,\n    0\n  ],\n  \"0.5\": [\n    0,\n    1,\n    0\n  ],\n  \"1.0\": [\n    0,\n    0,\n    1\n  ]\n}"
+      "c": "{\n  \"0.0\": [\n    1,\n    0,\n    0\n  ],\n  \"0.25\": [\n    1,\n    0,\n    0\n  ],\n  \"0.5\": [\n    0,\n    1,"
     },
     {
       "iTp": 4,
@@ -3399,7 +2477,7 @@
       "gIx": 133,
       "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient type must be array",
       "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "{\n  \"0.0\": [\n    1,\n    0,\n    0\n  ],\n  \"0.25\": [\n    1,\n    0,\n    0\n  ],\n  \"0.5\": [\n    0,\n    1,\n    0\n  ],\n  \"1.0\": [\n    0,\n    0,\n    1\n  ]\n}"
+      "c": "{\n  \"0.0\": [\n    1,\n    0,\n    0\n  ],\n  \"0.25\": [\n    1,\n    0,\n    0\n  ],\n  \"0.5\": [\n    0,\n    1,"
     },
     {
       "iTp": 4,
@@ -3407,7 +2485,7 @@
       "gIx": 133,
       "m": "oneOf /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient must match exactly one schema in oneOf",
       "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "{\n  \"0.0\": [\n    1,\n    0,\n    0\n  ],\n  \"0.25\": [\n    1,\n    0,\n    0\n  ],\n  \"0.5\": [\n    0,\n    1,\n    0\n  ],\n  \"1.0\": [\n    0,\n    0,\n    1\n  ]\n}"
+      "c": "{\n  \"0.0\": [\n    1,\n    0,\n    0\n  ],\n  \"0.25\": [\n    1,\n    0,\n    0\n  ],\n  \"0.5\": [\n    0,\n    1,"
     },
     {
       "iTp": 4,
@@ -3415,295 +2493,7 @@
       "gIx": 133,
       "m": "anyOf /particle_effect/components/minecraft:particle_appearance_tinting/color must match a schema in anyOf",
       "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n      0\n    ],\n    \"0.5\": [\n      0,\n      1,\n      0\n    ],\n    \"1.0\": [\n      0,\n      0,\n      1\n    ]\n  },\n  \"interpolant\": \"variable.particle_age\"\n}"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co2.ogg"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co2.ogg"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co2.ogg"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co2.ogg"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co2.ogg"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co2.ogg"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/en_US.lang"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/Content/resource_packs/aop_mobsrp/texts/languages.json"
+      "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n   "
     },
     {
       "iTp": 0,
