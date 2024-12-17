@@ -34,6 +34,10 @@ export enum PackInfoGeneratorTest {
   resourcePackIcon = 21,
   behaviorPackIcon = 22,
   skinPackIcon = 23,
+  subpackTier1Count = 41,
+  subpackTier2Count = 42,
+  subpackTier3Count = 43,
+  subpackTier4Count = 44,
 }
 
 export default class PackInfoGenerator implements IProjectInfoGenerator {
@@ -49,15 +53,15 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
   summarize(info: any, infoSet: ProjectInfoSet) {
     info.defaultBehaviorPackUuid = infoSet.getFirstStringValue(this.id, PackInfoGeneratorTest.behaviorPackUuid);
 
-    info.defaultIcon = infoSet.getFirstStringValue(this.id, 21);
+    info.defaultIcon = infoSet.getFirstStringValue(this.id, PackInfoGeneratorTest.resourcePackIcon);
 
     if (info.defaultIcon === undefined) {
-      info.defaultIcon = infoSet.getFirstStringValue(this.id, 22);
+      info.defaultIcon = infoSet.getFirstStringValue(this.id, PackInfoGeneratorTest.behaviorPackIcon);
     }
 
     // because it's heavy, remove pack icon from this list of issues. Though the summarize op is probably
     // the wrong place to do this.
-    infoSet.removeItems(this.id, [21, 22]);
+    infoSet.removeItems(this.id, [PackInfoGeneratorTest.resourcePackIcon, PackInfoGeneratorTest.behaviorPackIcon]);
 
     info.defaultBehaviorPackMinEngineVersion = infoSet.getFirstNumberArrayValue(
       this.id,
@@ -79,12 +83,12 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
       PackInfoGeneratorTest.resourcePackDescription
     );
 
-    info.subpackCount = infoSet.getFirstNumberValue(this.id, 18);
+    info.subpackCount = infoSet.getFirstNumberValue(this.id, PackInfoGeneratorTest.subPacks);
 
-    info.subpackTier1Count = infoSet.getCount(this.id, 41);
-    info.subpackTier2Count = infoSet.getCount(this.id, 42);
-    info.subpackTier3Count = infoSet.getCount(this.id, 43);
-    info.subpackTier4Count = infoSet.getCount(this.id, 44);
+    info.subpackTier1Count = infoSet.getCount(this.id, PackInfoGeneratorTest.subpackTier1Count);
+    info.subpackTier2Count = infoSet.getCount(this.id, PackInfoGeneratorTest.subpackTier2Count);
+    info.subpackTier3Count = infoSet.getCount(this.id, PackInfoGeneratorTest.subpackTier3Count);
+    info.subpackTier4Count = infoSet.getCount(this.id, PackInfoGeneratorTest.subpackTier4Count);
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {

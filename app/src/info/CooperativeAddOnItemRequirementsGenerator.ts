@@ -157,7 +157,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
-                  CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationControllerNameNotInExpectedForm,
+                  CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationNameNotInExpectedForm,
                   `Behavior pack animation name section is not in expected form of animation.creatorshortname_projectshortname.animation_name`,
                   projectItem,
                   aName
