@@ -1,0 +1,133 @@
+{
+  "pools": [
+    {
+      "rolls": {
+        "min": 3,
+        "max": 8
+      },
+      "entries": [
+        {
+          "type": "item",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 5
+              }
+            }
+          ],
+          "name": "minecraft:iron_nugget"
+        },
+        {
+          "type": "item",
+          "weight": 2,
+          "name": "minecraft:fern"
+        },
+        {
+          "type": "item",
+          "weight": 2,
+          "name": "minecraft:large_fern"
+        },
+        {
+          "type": "item",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 7
+              }
+            }
+          ],
+          "name": "minecraft:potato"
+        },
+        {
+          "type": "item",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              }
+            }
+          ],
+          "name": "minecraft:bread"
+        },
+        {
+          "type": "item",
+          "weight": 5,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 5
+              }
+            }
+          ],
+          "name": "minecraft:pumpkin_seeds"
+        },
+        {
+          "type": "item",
+          "name": "minecraft:pumpkin_pie"
+        },
+        {
+          "type": "item",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              }
+            }
+          ],
+          "name": "minecraft:emerald"
+        },
+        {
+          "type": "item",
+          "weight": 5,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 5
+              }
+            }
+          ],
+          "name": "minecraft:spruce_sapling"
+        },
+        {
+          "type": "item",
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 1
+            }
+          ],
+          "name": "minecraft:sign"
+        },
+        {
+          "type": "item",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 5
+              }
+            }
+          ],
+          "name": "minecraft:spruce_log"
+        }
+      ]
+    }
+  ]
+}
