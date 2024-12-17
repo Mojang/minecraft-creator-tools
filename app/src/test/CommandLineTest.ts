@@ -320,9 +320,9 @@ describe("createCommandAddonStarter", async () => {
 
       // exclude eslint because we know the .ts comes with some warnings due to
       // the starter TS having some unused variables.
-      allProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.allExceptAddOn, ["ESLINT"]);
+      allProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.default, ["ESLINT"]);
 
-      addonProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.addOn);
+      addonProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.cooperativeAddOn);
 
       project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
       project.localFolderPath = __dirname + "/../../test/results/createCommandAddonStarter/";

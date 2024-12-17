@@ -1213,7 +1213,7 @@ async function aggregateReports() {
         }
 
         if (baseName.endsWith("addon")) {
-          suite = ProjectInfoSuite.addOn;
+          suite = ProjectInfoSuite.cooperativeAddOn;
           baseName = baseName.substring(0, baseName.length - 6);
         }
 
@@ -1381,7 +1381,7 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
 
     sampleProjectInfoSets[suiteName] = pis;
 
-    if (projectSet.suite === undefined || projectSet.suite === ProjectInfoSuite.allExceptAddOn) {
+    if (projectSet.suite === undefined || projectSet.suite === ProjectInfoSuite.default) {
       if (projectSet.infoSetData.info) {
         for (const memberName in projectSet.infoSetData.info) {
           if (ProjectInfoSet.isAggregableFieldName(memberName)) {

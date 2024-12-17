@@ -11,6 +11,12 @@ import Database from "../minecraft/Database";
 import StorageUtilities from "../storage/StorageUtilities";
 import ContentIndex from "../core/ContentIndex";
 import { Exifr } from "exifr";
+import ProjectInfoUtilities from "./ProjectInfoUtilities";
+
+export enum TextureImageInfoGeneratorTest {
+  textureImages = 1,
+  imageProcessingError = 401,
+}
 
 export default class TextureImageInfoGenerator implements IProjectInfoGenerator {
   id = "TEXTUREIMAGE";
@@ -19,16 +25,9 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
   performAddOnValidations = false;
 
   getTopicData(topicId: number) {
-    switch (topicId) {
-      case 1:
-        return { title: "Texture Images" };
-
-      case 401:
-        return { title: "Image Processing Error" };
-
-      default:
-        return { title: topicId.toString() };
-    }
+    return {
+      title: ProjectInfoUtilities.getTitleFromEnum(TextureImageInfoGeneratorTest, topicId),
+    };
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
@@ -38,7 +37,13 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
-    const textureImagePi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 1, "Texture Images");
+    const textureImagePi = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      TextureImageInfoGeneratorTest.textureImages,
+      "Texture Images"
+    );
+
     items.push(textureImagePi);
 
     const itemsCopy = project.getItemsCopy();
@@ -65,41 +70,41 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
             textureImagePi.incrementFeature("Custom Texture");
           }
 
-          await projectItem.file.loadContent();
+          if (projectItem.file.type !== "tga") {
+            await projectItem.file.loadContent();
 
-          if (
-            projectItem.file.content &&
-            projectItem.file.content instanceof Uint8Array &&
-            projectItem.file.type !== "tga"
-          ) {
-            const exifr = new Exifr({});
+            if (projectItem.file.content && projectItem.file.content instanceof Uint8Array) {
+              const exifr = new Exifr({});
 
-            try {
-              await exifr.read(projectItem.file.content);
+              try {
+                await exifr.read(projectItem.file.content);
 
-              const results = await exifr.parse();
+                const results = await exifr.parse();
 
-              if (results.ImageWidth && results.ImageHeight) {
-                textureImagePi.spectrumIntFeature("ImageWidth", results.ImageWidth);
-                textureImagePi.spectrumIntFeature("ImageHeight", results.ImageHeight);
-                textureImagePi.spectrumIntFeature("ImageSize", results.ImageWidth * results.ImageHeight);
+                if (results.ImageWidth && results.ImageHeight) {
+                  textureImagePi.spectrumIntFeature("ImageWidth", results.ImageWidth);
+                  textureImagePi.spectrumIntFeature("ImageHeight", results.ImageHeight);
+                  textureImagePi.spectrumIntFeature("ImageSize", results.ImageWidth * results.ImageHeight);
 
-                if (!isVanilla) {
-                  textureImagePi.spectrumIntFeature("NonVanillaImageSize", results.ImageWidth * results.ImageHeight);
+                  if (!isVanilla) {
+                    textureImagePi.spectrumIntFeature("NonVanillaImageSize", results.ImageWidth * results.ImageHeight);
+                  }
                 }
+              } catch (e: any) {
+                items.push(
+                  new ProjectInfoItem(
+                    InfoItemType.error,
+                    this.id,
+                    TextureImageInfoGeneratorTest.imageProcessingError,
+                    `Error processing image`,
+                    projectItem,
+                    e.toString()
+                  )
+                );
               }
-            } catch (e: any) {
-              items.push(
-                new ProjectInfoItem(
-                  InfoItemType.error,
-                  this.id,
-                  401,
-                  `Error processing image`,
-                  projectItem,
-                  e.toString()
-                )
-              );
             }
+
+            projectItem.file.unload();
           }
         }
       }

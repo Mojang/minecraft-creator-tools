@@ -17,6 +17,13 @@ import ContentIndex from "../core/ContentIndex";
 import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 
+const JsonSchemaErrorBase = 100;
+const NotCurrentFormatVersionBase = 1100;
+
+export enum SchemaItemInfoGeneratorTest {
+  couldNotParseJson = 1,
+}
+
 export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "JSON";
   title = "JSON Schema Validation";
@@ -101,7 +108,13 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
               }
 
               items.push(
-                new ProjectInfoItem(InfoItemType.error, this.id, 1, "Could not parse JSON - " + errorMess, projectItem)
+                new ProjectInfoItem(
+                  InfoItemType.error,
+                  this.id,
+                  SchemaItemInfoGeneratorTest.couldNotParseJson,
+                  "Could not parse JSON - " + errorMess,
+                  projectItem
+                )
               );
             }
 
@@ -130,7 +143,7 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
             new ProjectInfoItem(
               InfoItemType.info,
               this.id,
-              1100 + projectItem.itemType,
+              NotCurrentFormatVersionBase + projectItem.itemType,
               ProjectItemUtilities.getDescriptionForType(projectItem.itemType) +
                 " is not at a current format version" +
                 fvStr,
@@ -177,6 +190,10 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
       errorContent = serial;
     }
 
+    if (errorContent && errorContent.length > 100) {
+      errorContent = errorContent.substring(0, 99);
+    }
+
     let data = undefined;
 
     if (error.params) {
@@ -202,7 +219,9 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
             data += " ";
           }
 
-          data += "(" + key + ": " + val + ")";
+          if (data.length < 100 && val.length < 100 && key.length < 100) {
+            data += "(" + key + ": " + val + ")";
+          }
         }
       }
     }
@@ -211,7 +230,7 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
       new ProjectInfoItem(
         InfoItemType.warning,
         this.id,
-        100 + projectItem.itemType,
+        JsonSchemaErrorBase + projectItem.itemType,
         message,
         projectItem,
         data,

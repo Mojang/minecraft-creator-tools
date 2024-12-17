@@ -107,7 +107,7 @@ export default class BlockbenchModel {
     return { uv: [0, 0], uv_size: [1, 1] };
   }
 
-  async updateGeometryFromModel(geo: IGeometry) {
+  async updateGeometryFromModel(geo: IGeometry, formatVersion: number[]) {
     if (this.data?.resolution) {
       geo.textureheight = this.data.resolution.height;
       geo.texturewidth = this.data.resolution.width;
@@ -131,7 +131,21 @@ export default class BlockbenchModel {
             let uvTarg: number[] | IGeometryUVFaces | undefined = undefined;
 
             if (elt.box_uv) {
-              uvTarg = elt.uv_offset;
+              if (!elt.uv_offset) {
+                if (
+                  elt.faces &&
+                  elt.faces.east &&
+                  elt.faces.east.uv &&
+                  elt.faces.east.uv.length >= 1 &&
+                  elt.faces.down &&
+                  elt.faces.down.uv &&
+                  elt.faces.down.uv.length >= 1
+                ) {
+                  uvTarg = [elt.faces.east.uv[0], elt.faces.down.uv[1]];
+                }
+              } else {
+                uvTarg = elt.uv_offset;
+              }
             } else if (elt.faces) {
               uvTarg = {
                 north: this.getMinecraftUVFace(elt.faces.north),
@@ -153,6 +167,8 @@ export default class BlockbenchModel {
               uv: uvTarg as number[] | IGeometryUVFaces,
             };
 
+            (cube as any).name = elt.name;
+
             if (elt.rotation && elt.rotation.length === 3) {
               cube.rotation = [-elt.rotation[0], -elt.rotation[1], -elt.rotation[2]];
             }
@@ -170,7 +186,7 @@ export default class BlockbenchModel {
     }
 
     if (this.data?.outliner) {
-      this.processOutlineItems(this.data.outliner, bonesByName, cubesById, locatorsById);
+      this.processOutlineItems(this.data.outliner, bonesByName, cubesById, locatorsById, formatVersion);
     }
 
     for (const boneName in bonesByName) {
@@ -185,6 +201,7 @@ export default class BlockbenchModel {
     bonesByName: { [name: string]: IGeometryBone },
     cubesById: { [name: string]: IGeometryBoneCube },
     locatorsById: { [name: string]: IBlockbenchElement },
+    formatVersion: number[],
     parent?: IGeometryBone
   ) {
     for (const outlineItem of outlineItems) {
@@ -229,7 +246,122 @@ export default class BlockbenchModel {
         }
 
         if (outlineItem.children) {
-          this.processOutlineItems(outlineItem.children, bonesByName, cubesById, locatorsById, bone);
+          this.processOutlineItems(outlineItem.children, bonesByName, cubesById, locatorsById, formatVersion, bone);
+        }
+
+        if (bone.cubes) {
+          // geo fv of 1.8 uses bind_pose_rotation at the bone level rather than per-cube rotation
+          // also it manages pivot at the bone level
+          // so "pull up" rotation -> bind_pose_rotation or create new bones
+          if (formatVersion[0] === 1 && formatVersion[1] === 8 && bone.cubes) {
+            const newCubesPivot: IGeometryBoneCube[] = [];
+            let i = 0;
+
+            // promote cubes to their own bones if they have a separate pivot than the governing bone
+            for (const cube of bone.cubes) {
+              i++;
+              let addCube = true;
+
+              if (cube.pivot && bone.pivot && cube.pivot.length === 3 && bone.pivot.length === 3) {
+                if (
+                  cube.pivot[0] === bone.pivot[0] &&
+                  cube.pivot[1] === bone.pivot[1] &&
+                  cube.pivot[2] === bone.pivot[2]
+                ) {
+                  cube.pivot = undefined;
+                } else {
+                  addCube = false;
+
+                  const newBone: IGeometryBone = {
+                    pivot: cube.pivot,
+                    bind_pose_rotation: cube.rotation,
+                    cubes: [cube],
+                    name: (cube as any).name ? (cube as any).name : bone.name + i.toString(),
+                    parent: bone.parent,
+                  };
+
+                  (cube as any).name = undefined;
+                  cube.pivot = undefined;
+                  cube.rotation = undefined;
+
+                  bonesByName[newBone.name] = newBone;
+                }
+              }
+
+              if (addCube) {
+                newCubesPivot.push(cube);
+              }
+            }
+
+            i = 0;
+            const newCubesRotation: IGeometryBoneCube[] = [];
+            for (const cube of newCubesPivot) {
+              i++;
+              let addCube = true;
+
+              if (cube.rotation) {
+                if (bone.bind_pose_rotation) {
+                  if (
+                    cube.rotation.length !== 3 ||
+                    bone.bind_pose_rotation.length !== 3 ||
+                    cube.rotation[0] !== bone.bind_pose_rotation[0] ||
+                    cube.rotation[1] !== bone.bind_pose_rotation[1] ||
+                    cube.rotation[2] !== bone.bind_pose_rotation[2]
+                  ) {
+                    addCube = false;
+
+                    const newBone: IGeometryBone = {
+                      pivot: bone.pivot,
+                      bind_pose_rotation: cube.rotation,
+                      cubes: [cube],
+                      name: (cube as any).name ? (cube as any).name : bone.name + i.toString(),
+                      parent: bone.parent,
+                    };
+
+                    cube.rotation = undefined;
+                    (cube as any).name = undefined;
+
+                    bonesByName[newBone.name] = newBone;
+                  }
+                } else {
+                  bone.bind_pose_rotation = cube.rotation;
+                  cube.rotation = undefined;
+                }
+              } else {
+                if (
+                  // if the parent has a nontrivial bind pose rotation and this cube has no rotation, put it under its own bone
+                  bone.bind_pose_rotation &&
+                  bone.bind_pose_rotation.length === 3 &&
+                  (bone.bind_pose_rotation[0] !== 0 ||
+                    bone.bind_pose_rotation[1] !== 0 ||
+                    bone.bind_pose_rotation[2] !== 0)
+                ) {
+                  addCube = false;
+
+                  const newBone: IGeometryBone = {
+                    pivot: bone.pivot,
+                    cubes: [cube],
+                    name: (cube as any).name ? (cube as any).name : bone.name + i.toString(),
+                    parent: bone.parent,
+                  };
+
+                  (cube as any).name = undefined;
+
+                  bonesByName[newBone.name] = newBone;
+                }
+              }
+
+              if (addCube) {
+                newCubesRotation.push(cube);
+              }
+            }
+
+            bone.cubes = newCubesRotation;
+          }
+
+          for (const cube of bone.cubes) {
+            (cube as any).name = undefined;
+          }
         }
       }
     }
@@ -240,6 +372,7 @@ export default class BlockbenchModel {
 
     if (modelId) {
       let geoToUpdate: IGeometry | undefined = undefined;
+      let modelGeometryDefinitionToUpdate: ModelGeometryDefinition | undefined = undefined;
 
       for (const item of project.items) {
         if (item.itemType === ProjectItemType.modelGeometryJson && geoToUpdate === undefined) {
@@ -250,6 +383,7 @@ export default class BlockbenchModel {
 
             if (modelDefOuter && modelDefOuter.definitions) {
               geoToUpdate = modelDefOuter.getById(modelId);
+              modelGeometryDefinitionToUpdate = modelDefOuter;
             }
           }
         } else if (item.itemType === ProjectItemType.entityTypeResource) {
@@ -330,13 +464,19 @@ export default class BlockbenchModel {
 
             if (modelGen.definitions.length >= 0) {
               geoToUpdate = modelGen.definitions[0];
+
+              modelGeometryDefinitionToUpdate = modelGen;
             }
           }
         }
       }
 
-      if (geoToUpdate) {
-        this.updateGeometryFromModel(geoToUpdate);
+      if (geoToUpdate && modelGeometryDefinitionToUpdate) {
+        const fv = modelGeometryDefinitionToUpdate?.getFormatVersion();
+
+        this.updateGeometryFromModel(geoToUpdate, fv);
+
+        modelGeometryDefinitionToUpdate?.persist();
       }
     }
 
@@ -531,7 +671,7 @@ export default class BlockbenchModel {
       }
     }
 
-    if (!model || model.identifiers.length === 0 || !model.file || !model.wrapper || model.definitions.length === 0) {
+    if (!model || model.identifiers.length === 0 || !model.file || !model.data || model.definitions.length === 0) {
       return undefined;
     }
 
@@ -838,7 +978,7 @@ export default class BlockbenchModel {
 
     if (Array.isArray(cube.uv)) {
       uv = cube.uv;
-    } else if (cube.uv.east) {
+    } else if (cube.uv && cube.uv.east) {
       uv = cube.uv.east.uv;
     } else {
       Log.unexpectedContentState("BBMGEB");
@@ -853,7 +993,7 @@ export default class BlockbenchModel {
 
     if (Array.isArray(cube.uv)) {
       uv = cube.uv;
-    } else if (cube.uv.north) {
+    } else if (cube.uv && cube.uv.north) {
       uv = cube.uv.north.uv;
     } else {
       Log.unexpectedContentState("BBMGNB");
@@ -873,7 +1013,7 @@ export default class BlockbenchModel {
 
     if (Array.isArray(cube.uv)) {
       uv = cube.uv;
-    } else if (cube.uv.west) {
+    } else if (cube.uv && cube.uv.west) {
       uv = cube.uv.west.uv;
     } else {
       Log.unexpectedContentState("BBMGWB");
@@ -893,7 +1033,7 @@ export default class BlockbenchModel {
 
     if (Array.isArray(cube.uv)) {
       uv = cube.uv;
-    } else if (cube.uv.south) {
+    } else if (cube.uv && cube.uv.south) {
       uv = cube.uv.south.uv;
     } else {
       Log.unexpectedContentState("BBMGWB");

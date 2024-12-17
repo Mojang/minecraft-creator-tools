@@ -4,6 +4,7 @@ import AnimationBehaviorDefinition from "./AnimationBehaviorDefinition";
 import AnimationControllerBehaviorDefinition from "./AnimationControllerBehaviorDefinition";
 import AnimationControllerResourceDefinition from "./AnimationControllerResourceDefinition";
 import AnimationResourceDefinition from "./AnimationResourceDefinition";
+import AudioFileDefinition from "./AudioFileDefinition";
 import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
 import BlockTypeBehaviorDefinition from "./BlockTypeBehaviorDefinition";
 import EntityTypeDefinition from "./EntityTypeDefinition";
@@ -67,6 +68,20 @@ export default class MinecraftDefinitions {
     }
 
     return undefined;
+  }
+
+  static async ensureFoundationalDependencies(item: ProjectItem) {
+    if (item.itemType === ProjectItemType.audio) {
+      await item.ensureStorage();
+
+      if (item.file) {
+        const audioFile = await AudioFileDefinition.ensureOnFile(item.file);
+
+        if (audioFile) {
+          await audioFile.ensureSoundDefinitionsForFile(item.project);
+        }
+      }
+    }
   }
 
   static async formatVersionIsCurrent(projectItem: ProjectItem) {

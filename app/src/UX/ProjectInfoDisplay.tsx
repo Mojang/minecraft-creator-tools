@@ -73,7 +73,7 @@ export enum ProjectInfoDisplayMenuState {
   exportMenu,
 }
 
-export const SuiteTitles = ["All", "Current Platform Versions", "Add-On Best Practices"];
+export const SuiteTitles = ["All", "Current Platform Versions", "Cooperative Add-On Best Practices"];
 
 export enum InfoItemCommand {
   itemSelect,
@@ -107,7 +107,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     let suite = this.props.carto.preferredSuite;
 
     if (suite === undefined) {
-      suite = ProjectInfoSuite.allExceptAddOn;
+      suite = ProjectInfoSuite.default;
     }
 
     this.state = {
@@ -208,7 +208,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           contentIndex
         );
       }
-    } else if (this.props.project && this.state.activeSuite === ProjectInfoSuite.allExceptAddOn) {
+    } else if (this.props.project && this.state.activeSuite === ProjectInfoSuite.default) {
       newInfoSet = this.props.project.infoSet;
     } else if (this.props.project) {
       newInfoSet = new ProjectInfoSet(this.props.project, this.state.activeSuite);
@@ -223,7 +223,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     if (!this.props.file && !this.props.data) {
       await newInfoSet.generateForProject(force);
 
-      if (this.state.activeSuite === ProjectInfoSuite.allExceptAddOn && this.props.onNotifyInfoSetLoaded) {
+      if (this.state.activeSuite === ProjectInfoSuite.default && this.props.onNotifyInfoSetLoaded) {
         this.props.onNotifyInfoSetLoaded(newInfoSet);
       }
     }
@@ -421,12 +421,12 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
     data: DropdownProps
   ) {
-    let targetedSuite = ProjectInfoSuite.allExceptAddOn;
+    let targetedSuite = ProjectInfoSuite.default;
 
     if (data.value === SuiteTitles[1]) {
       targetedSuite = ProjectInfoSuite.currentPlatformVersions;
     } else if (data.value === SuiteTitles[2]) {
-      targetedSuite = ProjectInfoSuite.addOn;
+      targetedSuite = ProjectInfoSuite.cooperativeAddOn;
     }
 
     if (targetedSuite !== this.props.carto.preferredSuite) {

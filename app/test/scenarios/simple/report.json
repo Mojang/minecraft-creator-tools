@@ -92,7 +92,7 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
-    "testSuccessCount": 10,
+    "testSuccessCount": 11,
     "testFailCount": 1,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
@@ -159,49 +159,45 @@
           "title": "Overall Size"
         },
         "2": {
-          "title": "Overall File Count",
-          "defaultMessage": "File Counts"
+          "title": "File Count"
         },
         "3": {
-          "title": "Overall Folder Count",
-          "defaultMessage": "Folder Counts"
+          "title": "Folder Count"
         },
         "4": {
           "title": "Content Size"
         },
         "5": {
-          "title": "Content File Count",
-          "defaultMessage": "Content File Counts"
+          "title": "Content File Count"
         },
         "6": {
-          "title": "Content Folder Count",
-          "defaultMessage": "Content Folder Counts"
+          "title": "Content Folder Count"
         }
       },
       "PACK": {
         "1": {
           "title": "1",
-          "defaultMessage": "Behavior pack format version"
+          "defaultMessage": "Behavior Pack Min Engine Version"
         },
         "2": {
           "title": "2",
-          "defaultMessage": "Behavior pack UUID"
+          "defaultMessage": "Behavior Pack Uuid"
         },
         "3": {
           "title": "3",
-          "defaultMessage": "Behavior pack manifest"
+          "defaultMessage": "Behavior Pack Manfiest"
         },
         "4": {
           "title": "4",
-          "defaultMessage": "Behavior pack name"
+          "defaultMessage": "Behavior Pack Name"
         },
         "5": {
           "title": "5",
-          "defaultMessage": "Behavior pack description"
+          "defaultMessage": "Behavior Pack Description"
         },
         "6": {
           "title": "6",
-          "defaultMessage": "Behavior pack Id"
+          "defaultMessage": "Behavior Pack Id"
         }
       },
       "SCRIPTMODULE": {
@@ -272,33 +268,6 @@
           "title": "Texture Images"
         }
       },
-      "ESLINT": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "JS file: /behavior_packs/StarterTestsTutorial/scripts/index.js"
-        }
-      },
-      "WORLDDATA": {
-        "1": {
-          "defaultMessage": "Blocks",
-          "testCompleteSuccesses": 1
-        },
-        "2": {
-          "defaultMessage": "Block Data"
-        },
-        "3": {
-          "defaultMessage": "Commands"
-        },
-        "4": {
-          "defaultMessage": "Execute Sub Commands"
-        },
-        "5": {
-          "defaultMessage": "NBT Tags"
-        },
-        "6": {
-          "defaultMessage": "NBT Experiment Tags"
-        }
-      },
       "PATHLENGTH": {
         "3": {
           "defaultMessage": "File path contains more than 80 characters, and may not run on all devices",
@@ -317,9 +286,21 @@
           "testCompleteSuccesses": 1
         }
       },
+      "JSON": {
+        "1": {
+          "defaultMessage": "Test JSON Schema Validation completed successfully.",
+          "testCompleteSuccesses": 1
+        }
+      },
       "WORLD": {
         "1": {
           "defaultMessage": "Test World Validation completed successfully.",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "WORLDDATA": {
+        "1": {
+          "defaultMessage": "Test World Data Validation completed successfully.",
           "testCompleteSuccesses": 1
         }
       },
@@ -578,7 +559,6 @@
       "iTp": 2,
       "gId": "PACK",
       "gIx": 1,
-      "m": "Behavior pack min_engine version",
       "p": "/behavior_packs/StarterTestsTutorial/manifest.json",
       "d": [
         1,
@@ -657,136 +637,6 @@
       "gIx": 1
     },
     {
-      "iTp": 2,
-      "gId": "ESLINT",
-      "gIx": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ESLINT",
-      "gIx": 1,
-      "m": "JS file: /behavior_packs/StarterTestsTutorial/scripts/starttests.js"
-    },
-    {
-      "iTp": 2,
-      "gId": "ESLINT",
-      "gIx": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ESLINT",
-      "gIx": 1,
-      "m": "JS file: /behavior_packs/StarterTestsTutorial/scripts/starttests.js"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/behavior_packs/StarterTestsTutorial/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/behavior_packs/StarterTestsTutorial/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/behavior_packs/StarterTestsTutorial/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/behavior_packs/StarterTestsTutorial/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/behavior_packs/StarterTestsTutorial/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/behavior_packs/StarterTestsTutorial/"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/behavior_packs/StarterTestsTutorial/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/behavior_packs/StarterTestsTutorial/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/behavior_packs/StarterTestsTutorial/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/behavior_packs/StarterTestsTutorial/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/behavior_packs/StarterTestsTutorial/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/behavior_packs/StarterTestsTutorial/manifest.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 1,
-      "p": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 2,
-      "p": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 3,
-      "p": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 4,
-      "p": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 5,
-      "p": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
-    },
-    {
-      "iTp": 7,
-      "gId": "WORLDDATA",
-      "gIx": 6,
-      "p": "/behavior_packs/StarterTestsTutorial/scripts/index.js"
-    },
-    {
       "iTp": 1,
       "gId": "PATHLENGTH",
       "gIx": 3,
@@ -804,14 +654,18 @@
     },
     {
       "iTp": 0,
+      "gId": "JSON",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
       "gId": "WORLD",
       "gIx": 1
     },
     {
       "iTp": 0,
       "gId": "WORLDDATA",
-      "gIx": 1,
-      "m": "Test World Data Validation completed successfully."
+      "gIx": 1
     },
     {
       "iTp": 0,

@@ -18,6 +18,11 @@ import Database from "../minecraft/Database";
 import JsonUIResourceDefinition from "../minecraft/JsonUIResourceDefinition";
 import { IJsonUIControl } from "../minecraft/IJsonUIScreen";
 import ContentIndex from "../core/ContentIndex";
+import ProjectInfoUtilities from "./ProjectInfoUtilities";
+
+export enum TextureInfoGeneratorTest {
+  textures = 1,
+}
 
 export default class TextureInfoGenerator implements IProjectInfoGenerator {
   id = "TEXTURE";
@@ -26,17 +31,13 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
   performAddOnValidations = false;
 
   getTopicData(topicId: number) {
-    switch (topicId) {
-      case 1:
-        return { title: "Textures" };
-
-      default:
-        return { title: topicId.toString() };
-    }
+    return {
+      title: ProjectInfoUtilities.getTitleFromEnum(TextureInfoGeneratorTest, topicId),
+    };
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
-    info.textureCount = infoSet.getSummedNumberValue("TEXTURE", 1);
+    info.textureCount = infoSet.getSummedNumberValue("TEXTURE", TextureInfoGeneratorTest.textures);
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {

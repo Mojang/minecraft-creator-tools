@@ -6,30 +6,25 @@ import Project from "../app/Project";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
-import { IProjectInfoTopicData } from "./IProjectInfoGeneratorBase";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
+import ProjectInfoUtilities from "./ProjectInfoUtilities";
+
+export enum StrictPlatformInfoGeneratorTest {
+  entityTypeUsesAMinecraftIdentifier = 100,
+  entityTypeUsesAMinecraftRuntimeIdentifier = 101,
+  itemTypeUsesAMinecraftIdentifier = 104,
+}
 
 export default class StrictPlatformInfoGenerator implements IProjectInfoGenerator {
   id = "STRICT";
   title = "Strict Platform Info Generator";
 
-  getTopicData(topicId: number): IProjectInfoTopicData | undefined {
-    switch (topicId) {
-      case 100:
-        return {
-          title: "Uses a minecraft identifier",
-        };
-
-      case 101:
-        return {
-          title: "Uses a minecraft runtime identifier",
-        };
-    }
+  getTopicData(topicId: number) {
     return {
-      title: topicId.toString(),
+      title: ProjectInfoUtilities.getTitleFromEnum(StrictPlatformInfoGeneratorTest, topicId),
     };
   }
 
@@ -60,7 +55,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
                   new ProjectInfoItem(
                     InfoItemType.testCompleteFail,
                     this.id,
-                    100,
+                    StrictPlatformInfoGeneratorTest.entityTypeUsesAMinecraftIdentifier,
                     `Uses a minecraft: identifier override`,
                     pi,
                     desc.identifier
@@ -77,7 +72,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
                   new ProjectInfoItem(
                     InfoItemType.testCompleteFail,
                     this.id,
-                    101,
+                    StrictPlatformInfoGeneratorTest.entityTypeUsesAMinecraftRuntimeIdentifier,
                     `Uses a runtime_identifier override`,
                     pi,
                     desc.runtime_identifier
@@ -104,7 +99,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
                   new ProjectInfoItem(
                     InfoItemType.testCompleteFail,
                     this.id,
-                    104,
+                    StrictPlatformInfoGeneratorTest.itemTypeUsesAMinecraftIdentifier,
                     `Uses a minecraft: identifier override`,
                     pi,
                     desc.identifier

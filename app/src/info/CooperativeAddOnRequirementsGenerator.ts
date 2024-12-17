@@ -14,6 +14,7 @@ import ProjectItem from "../app/ProjectItem";
 import Utilities from "../core/Utilities";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import ContentIndex from "../core/ContentIndex";
+import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
 const UniqueRegEx = new RegExp(/[a-zA-Z0-9]{2,}_[a-zA-Z0-9]{2,}:[\w]+/);
 
@@ -186,12 +187,35 @@ const GenericTermList = [
   "axolotl",
 ];
 
-export default class AddOnRequirementsGenerator implements IProjectInfoGenerator {
-  id = "ADDONREQ";
-  title = "AddOn Requirements";
+// rule name/check. For validation errors, name should be a terse description of "your problem"
+export enum CooperativeAddOnRequirementsGeneratorTest {
+  NoLooseFileInTypeFolder = 101,
+  NoCommonNamesInCreatorFolderName = 102,
+  NoLooseFileInCreatorFolder = 104,
+  MoreThanOneFolderInCreatorFolderBesidesMaybeCommon = 108,
+  NoUnsupportedFolderNameInTypeFolder = 109,
+  MoreThanOneFolderInTypeFolder = 110,
+  NoLooseFilesInTypeFolder = 111,
+  NoDimensionElements = 131,
+  NoUiElements = 133,
+  NotOneBehaviorPackManifest = 160,
+  NotOneResourcePackManifest = 161,
+  BehaviorPackManifestNotValid = 163,
+  ResourcePackManifestNotValid = 164,
+  NotOneDependencyFromBehaviorPackToResourcePack = 165,
+  DependencyFromBehaviorPackToResourcePackNotValid = 166,
+  NotOneDependencyFromResourcePackToBehaviorPack = 168,
+  DependencyFromResourcePackToBehaviorPackNotValid = 169,
+}
+
+export default class CooperativeAddOnRequirementsGenerator implements IProjectInfoGenerator {
+  id = "CADDONREQ";
+  title = "Cooperative Add-On Requirements";
 
   getTopicData(topicId: number) {
-    return { title: topicId.toString() };
+    return {
+      title: ProjectInfoUtilities.getTitleFromEnum(CooperativeAddOnRequirementsGeneratorTest, topicId),
+    };
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
@@ -208,13 +232,13 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       if (projectItem.file) {
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
           if (behaviorPackManifest) {
-            // ADDONREQ160
+            // CADDONREQ160
             items.push(
               new ProjectInfoItem(
                 InfoItemType.testCompleteFail,
                 this.id,
-                160,
-                `Found more than one behavior pack manifest, which is not supported`,
+                CooperativeAddOnRequirementsGeneratorTest.NotOneBehaviorPackManifest,
+                `Found more than one behavior pack manifest in a cooperative add-on, which is not a best practice`,
                 projectItem
               )
             );
@@ -226,13 +250,13 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
           await behaviorPackManifest?.load();
         } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
           if (resourcePackManifest) {
-            // ADDONREQ161
+            // CADDONREQ161
             items.push(
               new ProjectInfoItem(
                 InfoItemType.testCompleteFail,
                 this.id,
-                161,
-                `Found more than one resource pack manifest, which is not supported`,
+                CooperativeAddOnRequirementsGeneratorTest.NotOneResourcePackManifest,
+                `Found more than one resource pack manifest in a cooperative add-on, which is not a best practice`,
                 projectItem
               )
             );
@@ -247,12 +271,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     }
 
     if (!behaviorPackManifest || !behaviorPackManifest.definition) {
+      // CADDONREQ163
       items.push(
-        // ADDONREQ163
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
           this.id,
-          163,
+          CooperativeAddOnRequirementsGeneratorTest.BehaviorPackManifestNotValid,
           `Did not find a valid behavior pack manifest.`,
           undefined
         )
@@ -260,12 +284,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     }
 
     if (!resourcePackManifest || !resourcePackManifest.definition) {
-      //ADDONREQ164
+      //CADDONREQ164
       items.push(
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
           this.id,
-          164,
+          CooperativeAddOnRequirementsGeneratorTest.ResourcePackManifestNotValid,
           `Did not find a valid resource pack manifest.`,
           undefined
         )
@@ -284,12 +308,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
         !behaviorPackManifest.definition.dependencies ||
         behaviorPackManifest.getNonScriptModuleDependencyCount() !== 1
       ) {
-        // ADDONREQ165
+        // CADDONREQ165
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
-            165,
+            CooperativeAddOnRequirementsGeneratorTest.NotOneDependencyFromBehaviorPackToResourcePack,
             `Did not find exactly one dependency on the corresponding resource pack in the behavior pack manifest.`,
             behaviorPackItem,
             behaviorPackManifest.getNonScriptModuleDependencyCount()
@@ -300,12 +324,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
         !bpNonInternalDependency.uuid ||
         !Utilities.uuidEqual(bpNonInternalDependency.uuid, resourcePackManifest.definition.header.uuid)
       ) {
-        // ADDONREQ167
+        // CADDONREQ166
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
-            167,
+            CooperativeAddOnRequirementsGeneratorTest.DependencyFromBehaviorPackToResourcePackNotValid,
             `Behavior pack manifest does not have a proper dependency on the resource pack identifier.`,
             behaviorPackItem
           )
@@ -313,12 +337,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       }
 
       if (!resourcePackManifest.definition.dependencies || resourcePackManifest.definition.dependencies.length !== 1) {
-        // ADDONREQ168
+        // CADDONREQ168
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
-            168,
+            CooperativeAddOnRequirementsGeneratorTest.NotOneDependencyFromResourcePackToBehaviorPack,
             `Did not find exactly one dependency on the corresponding behavior pack in the resource pack manifest.`,
             resourcePackItem
           )
@@ -330,12 +354,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
           behaviorPackManifest.definition.header.uuid
         )
       ) {
-        // ADDONREQ169
+        // CADDONREQ169
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
-            169,
+            CooperativeAddOnRequirementsGeneratorTest.DependencyFromResourcePackToBehaviorPackNotValid,
             `Resource pack manifest does not have a proper dependency on the behavior pack identifier.`,
             behaviorPackItem
           )
@@ -369,13 +393,13 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       const folderNameCanon = StorageUtilities.canonicalizeName(folderName);
 
       if (folderNameCanon === "dimensions") {
-        // ADDONREQ131
+        // CADDONREQ131
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
-            131,
-            `Found dimensions in an add-on, which is not supported`,
+            CooperativeAddOnRequirementsGeneratorTest.NoDimensionElements,
+            `Found dimensions in a cooperative add-on, which is not a best practice.`,
             undefined
           )
         );
@@ -414,12 +438,13 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       const folderNameCanon = StorageUtilities.canonicalizeName(folderName);
 
       if (folderNameCanon === "ui") {
+        // CADDONREQ133
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
-            133,
-            `Found ui elements in an add-on, which is not supported`,
+            CooperativeAddOnRequirementsGeneratorTest.NoUiElements,
+            `Found ui elements in a cooperative add-on, which is not supported`,
             undefined
           )
         );
@@ -494,6 +519,7 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
     return UniqueRegEx.test(name);
   }
+
   async generateFromFirstLevelFolderCreator_Game(project: Project, folder: IFolder, items: ProjectInfoItem[]) {
     await folder.load();
 
@@ -503,12 +529,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
         const projectItem = file?.extendedPath ? project.getItemByExtendedOrProjectPath(file?.extendedPath) : undefined;
 
-        // ADDONREQ111
+        // CADDONREQ111
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
-            111,
+            CooperativeAddOnRequirementsGeneratorTest.NoLooseFilesInTypeFolder,
             `Found a loose file in the ${folder.name} folder. Should only see files in the folder ${folder.name}\\creatorshortname_gamename\\`,
             projectItem,
             fileName
@@ -522,13 +548,13 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
       const folderNameCanon = StorageUtilities.canonicalizeName(folderName);
       folderCount++;
 
-      if (AddOnRequirementsGenerator.isUniqueNamespaceOrShortName(folderNameCanon)) {
-        // ADDONREQ109
+      if (CooperativeAddOnRequirementsGenerator.isUniqueNamespaceOrShortName(folderNameCanon)) {
+        // CADDONREQ109
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
-            109,
+            CooperativeAddOnRequirementsGeneratorTest.NoUnsupportedFolderNameInTypeFolder,
             `Found an add-on-blocked folder '${folderName}' in a parent folder pack\\${folder.name}. Should be named 'creatorshortname' and not a common term`,
             undefined,
             folderName
@@ -538,12 +564,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     }
 
     if (folderCount > 1) {
-      // ADDONREQ110
+      // CADDONREQ110
       items.push(
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
           this.id,
-          110,
+          CooperativeAddOnRequirementsGeneratorTest.MoreThanOneFolderInTypeFolder,
           `Folder '${folder.name}' has more than one subfolder, which is not supported. There should only be one folder in pack\\${folder.name}\\<studioname>_<mygamename>`,
           undefined,
           folder.name
@@ -587,12 +613,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
         const projectItem = file?.extendedPath ? project.getItemByExtendedOrProjectPath(file?.extendedPath) : undefined;
 
-        // ADDONREQ101
+        // CADDONREQ101
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
-            101,
+            CooperativeAddOnRequirementsGeneratorTest.NoLooseFileInTypeFolder,
             `Found a loose file in the ${folder.name} folder. Should only see files in the folder ${folder.name}\\creatorshortname\\gamename\\`,
             projectItem,
             fileName
@@ -603,14 +629,14 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
     for (const folderName in folder.folders) {
       const folderNameCanon = StorageUtilities.canonicalizeName(folderName);
-      if (AddOnRequirementsGenerator.isNameGenericTerm(folderNameCanon)) {
-        // ADDONREQ102
+      if (CooperativeAddOnRequirementsGenerator.isNameGenericTerm(folderNameCanon)) {
+        // CADDONREQ102
         items.push(
           new ProjectInfoItem(
             InfoItemType.testCompleteFail,
             this.id,
-            102,
-            `Found an add-on-blocked folder '${folderName}' in a parent folder pack\\${folder.name}. Should be named 'creatorshortname' and not a common term`,
+            CooperativeAddOnRequirementsGeneratorTest.NoCommonNamesInCreatorFolderName,
+            `Found an cooperative add-on common name folder '${folderName}' in a parent folder pack\\${folder.name}. Should be named 'creatorshortname' and not a common term`,
             undefined,
             folderName
           )
@@ -638,11 +664,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
 
       const projectItem = file?.extendedPath ? project.getItemByExtendedOrProjectPath(file.extendedPath) : undefined;
 
+      // CADDONREQ104
       items.push(
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
           this.id,
-          104,
+          CooperativeAddOnRequirementsGeneratorTest.NoLooseFileInCreatorFolder,
           `Found a loose file '${fileName}' in ${parentFolderName}\\${folder.name}. Files should only be in the folder ${parentFolderName}\\${folder.name}\\<mygamename>`,
           projectItem,
           fileName
@@ -661,11 +688,12 @@ export default class AddOnRequirementsGenerator implements IProjectInfoGenerator
     }
 
     if (folderCount > 1) {
+      // CADDONREQ108
       items.push(
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
           this.id,
-          108,
+          CooperativeAddOnRequirementsGeneratorTest.MoreThanOneFolderInCreatorFolderBesidesMaybeCommon,
           `Secondary folder '${folder.name}' in ${parentFolderName} has more than one subfolder (besides 'common'), which is not supported. There should only be one folder (plus optionally 'common') in pack\\${parentFolderName}\\${folder.name}\\<mygamename>`,
           undefined,
           folder.name

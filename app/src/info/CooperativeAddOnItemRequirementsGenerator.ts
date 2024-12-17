@@ -8,10 +8,9 @@ import IProjectInfoItemGenerator from "./IProjectItemInfoGenerator";
 import ProjectInfoSet from "./ProjectInfoSet";
 import { ProjectItemType } from "../app/IProjectItemData";
 import { InfoItemType } from "./IInfoItemData";
-import AddOnRequirementsGenerator from "./AddOnRequirementsGenerator";
+import CooperativeAddOnRequirementsGenerator from "./CooperativeAddOnRequirementsGenerator";
 import RenderControllerSetDefinition from "../minecraft/RenderControllerSetDefinition";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
-import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 import ModelGeometryDefinition from "../minecraft/ModelGeometryDefinition";
 import Material from "../minecraft/Material";
 import ContentIndex from "../core/ContentIndex";
@@ -20,14 +19,36 @@ import AnimationBehaviorDefinition from "../minecraft/AnimationBehaviorDefinitio
 import AnimationControllerBehaviorDefinition from "../minecraft/AnimationControllerBehaviorDefinition";
 import AnimationControllerResourceDefinition from "../minecraft/AnimationControllerResourceDefinition";
 import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
+import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
-export default class AddOnItemRequirementsGenerator implements IProjectInfoItemGenerator {
-  id = "ADDONIREQ";
-  title = "Addon Item Requirements Generator";
+// rule name/check. For validation errors, name should be a terse description of "your problem"
+export enum CooperativeAddOnItemRequirementsGeneratorTest {
+  BehaviorAnimationControllerIdNotInExpectedForm = 100,
+  BehaviorAnimationControllerNameNotInExpectedForm = 101,
+  BehaviorAnimationIdNotInExpectedForm = 110,
+  BehaviorAnimationNameNotInExpectedForm = 111,
+  JsonIdentifierNotInExpectedForm = 112,
+  ResourceAnimationControllerIdNotInExpectedForm = 120,
+  ResourceAnimationControllerNameNotInExpectedForm = 121,
+  ResourceAnimationIdNotInExpectedForm = 130,
+  ResourceAnimationNameNotInExpectedForm = 131,
+  RenderControllerIdNotInExpectedForm = 140,
+  RenderControllerNameNotInExpectedForm = 141,
+  GeometryIdNotInExpectedForm = 150,
+  GeometryNameNotInExpectedForm = 151,
+  MaterialsIdentifierNotInExpectedForm = 160,
+  MaterialsFirstSegmentNotInExpectedForm = 161,
+  ResourcePackDoesNotHavePackScopeWorld = 170,
+  NoDimensionJson = 191,
+}
+
+export default class CooperativeAddOnItemRequirementsGenerator implements IProjectInfoItemGenerator {
+  id = "CADDONIREQ";
+  title = "Cooperative Add-On Item Requirements Generator";
 
   getTopicData(topicId: number) {
     return {
-      title: topicId.toString(),
+      title: ProjectInfoUtilities.getTitleFromEnum(CooperativeAddOnItemRequirementsGeneratorTest, topicId),
     };
   }
 
@@ -37,11 +58,12 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
     const items: ProjectInfoItem[] = [];
 
     if (projectItem.itemType === ProjectItemType.dimensionJson) {
+      // CADDONIREQ191
       items.push(
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
           this.id,
-          191,
+          CooperativeAddOnItemRequirementsGeneratorTest.NoDimensionJson,
           `Dimension definition resources are not permitted in an add-on targeted behavior pack`,
           projectItem
         )
@@ -56,45 +78,13 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
           await rpManifest.load();
 
           if (!rpManifest.packScope) {
+            // CADDONIREQ170
             items.push(
               new ProjectInfoItem(
                 InfoItemType.testCompleteFail,
                 this.id,
-                140,
+                CooperativeAddOnItemRequirementsGeneratorTest.ResourcePackDoesNotHavePackScopeWorld,
                 `Resource pack manifest does not specify that header/pack_scope that should be 'world'`,
-                projectItem
-              )
-            );
-          }
-          if (!rpManifest.productType) {
-            items.push(
-              new ProjectInfoItem(
-                InfoItemType.testCompleteFail,
-                this.id,
-                141,
-                `Resource pack manifest does not specify a metadata/product_type that should be 'addon'`,
-                projectItem
-              )
-            );
-          }
-        }
-      }
-    } else if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-      await projectItem.ensureFileStorage();
-
-      if (projectItem.file) {
-        const bpManifest = await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
-
-        if (bpManifest) {
-          await bpManifest.load();
-
-          if (!bpManifest.productType) {
-            items.push(
-              new ProjectInfoItem(
-                InfoItemType.testCompleteFail,
-                this.id,
-                142,
-                `Behavior pack manifest does not specify a metadata/product_type that should be 'addon'`,
                 projectItem
               )
             );
@@ -112,22 +102,24 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
             let bacNameBreak = bacName.split(".");
 
             if (bacNameBreak.length < 3 || bacNameBreak[0] !== "controller" || bacNameBreak[1] !== "animation") {
+              // CADDONIREQ100
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
-                  100,
+                  CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationControllerIdNotInExpectedForm,
                   `Behavior pack animation controller identifier is not in expected form of controller.animation.xyz`,
                   projectItem,
                   bacName
                 )
               );
-            } else if (!AddOnRequirementsGenerator.isNamespacedString(bacNameBreak[2])) {
+            } else if (!CooperativeAddOnRequirementsGenerator.isNamespacedString(bacNameBreak[2])) {
+              // CADDONIREQ101
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
-                  101,
+                  CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationControllerNameNotInExpectedForm,
                   `Behavior pack animation controller name section is not in expected form of controller.animation.creatorshortname_projectshortname`,
                   projectItem,
                   bacName
@@ -148,22 +140,24 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
             let baNameBreak = aName.split(".");
 
             if (baNameBreak.length < 2 || baNameBreak[0] !== "animation") {
+              // CADDONIREQ110
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
-                  110,
+                  CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationIdNotInExpectedForm,
                   `Behavior animation identifier is not in expected form of animation.xyz.animation_name`,
                   projectItem,
                   aName
                 )
               );
-            } else if (!AddOnRequirementsGenerator.isNamespacedString(baNameBreak[1])) {
+            } else if (!CooperativeAddOnRequirementsGenerator.isNamespacedString(baNameBreak[1])) {
+              // CADDONIREQ111
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
-                  111,
+                  CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationNameNotInExpectedForm,
                   `Behavior pack animation name section is not in expected form of animation.creatorshortname_projectshortname.animation_name`,
                   projectItem,
                   aName
@@ -184,22 +178,24 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
             let racNameBreak = racName.split(".");
 
             if (racNameBreak.length < 3 || racNameBreak[0] !== "controller" || racNameBreak[1] !== "animation") {
+              // CADDONIREQ120
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
-                  120,
+                  CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationControllerIdNotInExpectedForm,
                   `Resource pack animation controller identifier is not in expected form of controller.animation.xyz`,
                   projectItem,
                   racName
                 )
               );
-            } else if (!AddOnRequirementsGenerator.isNamespacedString(racNameBreak[2])) {
+            } else if (!CooperativeAddOnRequirementsGenerator.isNamespacedString(racNameBreak[2])) {
+              // CADDONIREQ121
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
-                  121,
+                  CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationControllerNameNotInExpectedForm,
                   `Resource pack animation controller name section is not in expected form of controller.animation.creatorshortname_projectshortname`,
                   projectItem,
                   racName
@@ -220,22 +216,24 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
             let raNameBreak = aName.split(".");
 
             if (raNameBreak.length < 2 || raNameBreak[0] !== "animation") {
+              // CADDONIREQ130
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
-                  130,
+                  CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationIdNotInExpectedForm,
                   `Resource animation identifier is not in expected form of animation.xyz.animation_name`,
                   projectItem,
                   aName
                 )
               );
-            } else if (!AddOnRequirementsGenerator.isNamespacedString(raNameBreak[1])) {
+            } else if (!CooperativeAddOnRequirementsGenerator.isNamespacedString(raNameBreak[1])) {
+              // CADDONIREQ131
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
-                  131,
+                  CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationNameNotInExpectedForm,
                   `Resource animation name section is not in expected form of animation.creatorshortname_projectshortname.animation_name`,
                   projectItem,
                   aName
@@ -256,22 +254,24 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
             let racNameBreak = rrcName.split(".");
 
             if (racNameBreak.length < 3 || racNameBreak[0] !== "controller" || racNameBreak[1] !== "render") {
+              // CADDONIREQ140
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
-                  140,
+                  CooperativeAddOnItemRequirementsGeneratorTest.RenderControllerIdNotInExpectedForm,
                   `Resource pack render controller identifier is not in expected form of controller.render.creatorshortname_projectshortname.other`,
                   projectItem,
                   rrcName
                 )
               );
-            } else if (!AddOnRequirementsGenerator.isNamespacedString(racNameBreak[2])) {
+            } else if (!CooperativeAddOnRequirementsGenerator.isNamespacedString(racNameBreak[2])) {
+              // CADDONIREQ141
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
-                  141,
+                  CooperativeAddOnItemRequirementsGeneratorTest.RenderControllerNameNotInExpectedForm,
                   `Resource pack render controller name section is not in expected form of controller.render.creatorshortname_projectshortname`,
                   projectItem,
                   rrcName
@@ -293,22 +293,24 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
               let modGeoBreaks = modId.split(".");
 
               if (modGeoBreaks.length < 2 || modGeoBreaks[0] !== "geometry") {
+                // CADDONIREQ150
                 items.push(
                   new ProjectInfoItem(
                     InfoItemType.testCompleteFail,
                     this.id,
-                    150,
+                    CooperativeAddOnItemRequirementsGeneratorTest.GeometryIdNotInExpectedForm,
                     `Geometry is not in expected form of geometry.creatorshortname_projectshortname.other`,
                     projectItem,
                     modId
                   )
                 );
-              } else if (!AddOnRequirementsGenerator.isNamespacedString(modGeoBreaks[1])) {
+              } else if (!CooperativeAddOnRequirementsGenerator.isNamespacedString(modGeoBreaks[1])) {
+                // CADDONIREQ151
                 items.push(
                   new ProjectInfoItem(
                     InfoItemType.testCompleteFail,
                     this.id,
-                    151,
+                    CooperativeAddOnItemRequirementsGeneratorTest.GeometryNameNotInExpectedForm,
                     `Geometry identifier section is not in expected form of geometry.creatorshortname_projectshortname`,
                     projectItem,
                     modId
@@ -331,12 +333,13 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
         const projectItemDef = await MinecraftDefinitions.get(projectItem);
 
         if (projectItemDef && projectItemDef.id) {
-          if (!AddOnRequirementsGenerator.isNamespacedString(projectItemDef.id)) {
+          if (!CooperativeAddOnRequirementsGenerator.isNamespacedString(projectItemDef.id)) {
+            // CADDONIREQ112
             items.push(
               new ProjectInfoItem(
                 InfoItemType.testCompleteFail,
                 this.id,
-                112,
+                CooperativeAddOnItemRequirementsGeneratorTest.JsonIdentifierNotInExpectedForm,
                 `JSON namespaced identifier is not in expected form of creatorshortname_projectshortname:myitem`,
                 projectItem,
                 projectItemDef.id
@@ -354,13 +357,13 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
         if (mat && mat.definition && mat.definition.materials) {
           for (const modId in mat.definition.materials) {
             let modIdBreaks = modId.split(":");
-
+            // CADDONIREQ160
             if (modIdBreaks.length < 1) {
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
-                  160,
+                  CooperativeAddOnItemRequirementsGeneratorTest.MaterialsIdentifierNotInExpectedForm,
                   `Materials section identifier is not in expected form of creatorshortname_projectshortname:other`,
                   projectItem,
                   modId
@@ -368,14 +371,15 @@ export default class AddOnItemRequirementsGenerator implements IProjectInfoItemG
               );
             } else if (
               modIdBreaks[0] !== "version" &&
-              (!AddOnRequirementsGenerator.isNamespacedString(modIdBreaks[0]) ||
-                AddOnRequirementsGenerator.isCommonMaterialName(modIdBreaks[0]))
+              (!CooperativeAddOnRequirementsGenerator.isNamespacedString(modIdBreaks[0]) ||
+                CooperativeAddOnRequirementsGenerator.isCommonMaterialName(modIdBreaks[0]))
             ) {
+              // CADDONIREQ161
               items.push(
                 new ProjectInfoItem(
                   InfoItemType.testCompleteFail,
                   this.id,
-                  161,
+                  CooperativeAddOnItemRequirementsGeneratorTest.MaterialsFirstSegmentNotInExpectedForm,
                   `First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem`,
                   projectItem,
                   modId

@@ -244,7 +244,11 @@ export default class MinecraftUtilities {
 
   static getVersionArrayFrom(ver: string | number | number[] | undefined) {
     if (typeof ver === "number") {
-      return [ver];
+      return [ver, 0, 0];
+    }
+
+    if (ver === undefined) {
+      return [0, 0, 0];
     }
 
     if (typeof ver === "string") {
@@ -256,11 +260,15 @@ export default class MinecraftUtilities {
           const num = parseInt(fvArr[i]);
 
           if (isNaN(num)) {
-            return undefined;
+            return [0, 0, 0];
           }
 
           fvArrInt.push(num);
         } catch (e) {}
+      }
+
+      while (fvArrInt.length < 3) {
+        fvArrInt.push(0);
       }
 
       return fvArrInt;

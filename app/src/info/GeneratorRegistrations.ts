@@ -7,12 +7,12 @@ import MinEngineVersionManager from "../manager/MinEngineVersionManager";
 import BaseGameVersionManager from "../manager/BaseGameVersionManager";
 import BehaviorPackEntityTypeManager from "../manager/BehaviorPackEntityTypeManager";
 import PackMetaDataInformationGenerator from "./PackMetaDataInfoGenerator";
-import AddOnRequirementsGenerator from "./AddOnRequirementsGenerator";
+import CooperativeAddOnRequirementsGenerator from "./CooperativeAddOnRequirementsGenerator";
 import StrictPlatformInfoGenerator from "./StrictPlatformInfoGenerator";
-import AddOnItemRequirementsGenerator from "./AddOnItemRequirementsGenerator";
+import CooperativeAddOnItemRequirementsGenerator from "./CooperativeAddOnItemRequirementsGenerator";
 import PathLengthFileGenerator from "./PathLengthFileGenerator";
 import ItemCountsInfoGenerator from "./ItemCountsInfoGenerator";
-import PackInformationGenerator from "./PackInfoGenerator";
+import PackInfoGenerator from "./PackInfoGenerator";
 import LineSizeInfoGenerator from "./LineSizeInfoGenerator";
 import SchemaItemInfoGenerator from "./SchemaItemInfoGenerator";
 import UnknownItemGenerator from "./UnknownItemGenerator";
@@ -38,7 +38,7 @@ export default class GeneratorRegistrations {
     new ItemCountsInfoGenerator(),
     new LineSizeInfoGenerator(),
     new PackSizeInfoGenerator(),
-    new PackInformationGenerator(),
+    new PackInfoGenerator(),
     new JsonFileTagsInfoGenerator(),
     new ScriptModuleManager(),
     new VsCodeFileManager(),
@@ -49,7 +49,7 @@ export default class GeneratorRegistrations {
     new AnimationResourceInfoGenerator(),
     new BehaviorPackEntityTypeManager(),
     new BehaviorPackItemTypeManager(),
-    new AddOnRequirementsGenerator(),
+    new CooperativeAddOnRequirementsGenerator(),
     new StrictPlatformInfoGenerator(),
     new TextureInfoGenerator(),
     new TextureImageInfoGenerator(),
@@ -60,7 +60,7 @@ export default class GeneratorRegistrations {
     new SchemaItemInfoGenerator(),
     new WorldItemInfoGenerator(),
     new WorldDataInfoGenerator(),
-    new AddOnItemRequirementsGenerator(),
+    new CooperativeAddOnItemRequirementsGenerator(),
     new UnlinkedItemInfoGenerator(),
   ];
 
@@ -74,7 +74,7 @@ export default class GeneratorRegistrations {
       | IProjectInfoGeneratorBase,
     suite: ProjectInfoSuite
   ) {
-    if (suite === ProjectInfoSuite.addOn) {
+    if (suite === ProjectInfoSuite.cooperativeAddOn) {
       if (generator.id === "WORLDDATA") {
         (generator as WorldDataInfoGenerator).performAddOnValidations = true;
       } else if (generator.id === "TEXTURE") {

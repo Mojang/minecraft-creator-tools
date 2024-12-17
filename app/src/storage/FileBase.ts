@@ -162,9 +162,15 @@ export default abstract class FileBase implements IFile {
     return md5.base64(this._content);
   }
 
+  unload() {
+    this._content = null;
+    this.lastLoadedOrSaved = null;
+  }
+
   dispose() {
     this.manager = undefined;
     this._content = null;
+    this.lastLoadedOrSaved = null;
 
     this.isDisposed = true;
   }

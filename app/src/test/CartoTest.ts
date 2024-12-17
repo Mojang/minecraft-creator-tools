@@ -161,7 +161,7 @@ describe("simple", async () => {
   it("report file matches", async () => {
     const project = await _loadProject("simple");
 
-    const pis = new ProjectInfoSet(project, ProjectInfoSuite.allExceptAddOn, ["JSON"]); // don't do schema tests as results may change via network'ed schema def changes over time.
+    const pis = new ProjectInfoSet(project, ProjectInfoSuite.default);
 
     await pis.generateForProject();
 

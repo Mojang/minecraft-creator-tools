@@ -9,6 +9,11 @@ import ProjectInfoSet from "./ProjectInfoSet";
 import Project from "../app/Project";
 import ContentIndex from "../core/ContentIndex";
 
+export enum PathLengthFileGeneratorTest {
+  filePathExceeds8DirectorySegments = 2,
+  filePathExceeds80Characters = 3,
+}
+
 export default class PathLengthFileGenerator implements IProjectFileInfoGenerator {
   id = "PATHLENGTH";
   title = "Path Length";
@@ -65,7 +70,7 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
           this.id,
-          2,
+          PathLengthFileGeneratorTest.filePathExceeds8DirectorySegments,
           `File path contains 8 or more directory segments, and may not run on all devices`,
           project.getItemByExtendedOrProjectPath(file.extendedPath),
           path
@@ -78,7 +83,7 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
           this.id,
-          3,
+          PathLengthFileGeneratorTest.filePathExceeds80Characters,
           `File path contains more than 80 characters, and may not run on all devices`,
           project.getItemByExtendedOrProjectPath(file.extendedPath),
           path

@@ -12,8 +12,35 @@ import ContentIndex from "../core/ContentIndex";
 import StorageUtilities from "../storage/StorageUtilities";
 import Utilities from "../core/Utilities";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
+import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
-export default class PackInformationGenerator implements IProjectInfoGenerator {
+const MemoryTierBase = 40;
+
+export enum PackInfoGeneratorTest {
+  behaviorPackMinEngineVersion = 1,
+  behaviorPackUuid = 2,
+  behaviorPackManfiest = 3,
+  behaviorPackName = 4,
+  behaviorPackDescription = 5,
+  behaviorPackId = 6,
+  resourcePackMinEngineVersion = 11,
+  resourcePackUuid = 12,
+  resourcePackManifest = 13,
+  resourcePackName = 14,
+  resourcePackDescription = 15,
+  resourcePackId = 16,
+  resourcePackFormatVersion = 17,
+  subPacks = 18,
+  resourcePackIcon = 21,
+  behaviorPackIcon = 22,
+  skinPackIcon = 23,
+  subpackTier1Count = 41,
+  subpackTier2Count = 42,
+  subpackTier3Count = 43,
+  subpackTier4Count = 44,
+}
+
+export default class PackInfoGenerator implements IProjectInfoGenerator {
   id = "PACK";
   title = "General info";
 
@@ -24,31 +51,44 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
-    info.defaultBehaviorPackUuid = infoSet.getFirstStringValue("PACK", 2);
-    info.defaultIcon = infoSet.getFirstStringValue("PACK", 21);
+    info.defaultBehaviorPackUuid = infoSet.getFirstStringValue(this.id, PackInfoGeneratorTest.behaviorPackUuid);
+
+    info.defaultIcon = infoSet.getFirstStringValue(this.id, PackInfoGeneratorTest.resourcePackIcon);
 
     if (info.defaultIcon === undefined) {
-      info.defaultIcon = infoSet.getFirstStringValue("PACK", 22);
+      info.defaultIcon = infoSet.getFirstStringValue(this.id, PackInfoGeneratorTest.behaviorPackIcon);
     }
 
     // because it's heavy, remove pack icon from this list of issues. Though the summarize op is probably
     // the wrong place to do this.
-    infoSet.removeItems("PACK", [21, 22]);
+    infoSet.removeItems(this.id, [PackInfoGeneratorTest.resourcePackIcon, PackInfoGeneratorTest.behaviorPackIcon]);
 
-    info.defaultBehaviorPackMinEngineVersion = infoSet.getFirstNumberArrayValue("PACK", 1);
-    info.defaultBehaviorPackName = infoSet.getFirstNumberArrayValue("PACK", 4);
-    info.defaultBehaviorPackDescription = infoSet.getFirstNumberArrayValue("PACK", 5);
-    info.defaultResourcePackUuid = infoSet.getFirstStringValue("PACK", 12);
-    info.defaultResourcePackMinEngineVersion = infoSet.getFirstNumberArrayValue("PACK", 11);
-    info.defaultResourcePackName = infoSet.getFirstNumberArrayValue("PACK", 14);
-    info.defaultResourcePackDescription = infoSet.getFirstNumberArrayValue("PACK", 15);
+    info.defaultBehaviorPackMinEngineVersion = infoSet.getFirstNumberArrayValue(
+      this.id,
+      PackInfoGeneratorTest.behaviorPackMinEngineVersion
+    );
+    info.defaultBehaviorPackName = infoSet.getFirstNumberArrayValue(this.id, PackInfoGeneratorTest.behaviorPackName);
+    info.defaultBehaviorPackDescription = infoSet.getFirstNumberArrayValue(
+      this.id,
+      PackInfoGeneratorTest.behaviorPackDescription
+    );
+    info.defaultResourcePackUuid = infoSet.getFirstStringValue(this.id, PackInfoGeneratorTest.resourcePackUuid);
+    info.defaultResourcePackMinEngineVersion = infoSet.getFirstNumberArrayValue(
+      this.id,
+      PackInfoGeneratorTest.resourcePackMinEngineVersion
+    );
+    info.defaultResourcePackName = infoSet.getFirstNumberArrayValue(this.id, PackInfoGeneratorTest.resourcePackName);
+    info.defaultResourcePackDescription = infoSet.getFirstNumberArrayValue(
+      this.id,
+      PackInfoGeneratorTest.resourcePackDescription
+    );
 
-    info.subpackCount = infoSet.getFirstNumberValue("PACK", 18);
+    info.subpackCount = infoSet.getFirstNumberValue(this.id, PackInfoGeneratorTest.subPacks);
 
-    info.subpackTier1Count = infoSet.getCount("PACK", 41);
-    info.subpackTier2Count = infoSet.getCount("PACK", 42);
-    info.subpackTier3Count = infoSet.getCount("PACK", 43);
-    info.subpackTier4Count = infoSet.getCount("PACK", 44);
+    info.subpackTier1Count = infoSet.getCount(this.id, PackInfoGeneratorTest.subpackTier1Count);
+    info.subpackTier2Count = infoSet.getCount(this.id, PackInfoGeneratorTest.subpackTier2Count);
+    info.subpackTier3Count = infoSet.getCount(this.id, PackInfoGeneratorTest.subpackTier3Count);
+    info.subpackTier4Count = infoSet.getCount(this.id, PackInfoGeneratorTest.subpackTier4Count);
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
@@ -68,15 +108,12 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
             await pi.file.loadContent(false);
 
             if (pi.file.content && typeof pi.file.content !== "string") {
-              let index = 21;
-              let description = "Resource pack icon";
+              let index = PackInfoGeneratorTest.resourcePackIcon;
 
               if (MinecraftUtilities.pathLooksLikeBehaviorPackName(pi.file.storageRelativePath)) {
-                index = 22;
-                description = "Behavior pack icon";
+                index = PackInfoGeneratorTest.behaviorPackIcon;
               } else if (MinecraftUtilities.pathLooksLikeSkinPackName(pi.file.storageRelativePath)) {
-                index = 23;
-                description = "Skin pack icon";
+                index = PackInfoGeneratorTest.skinPackIcon;
               }
 
               items.push(
@@ -84,7 +121,7 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
                   InfoItemType.info,
                   this.id,
                   index,
-                  description,
+                  ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, index),
                   pi,
                   Utilities.uint8ArrayToBase64(pi.file.content)
                 )
@@ -96,17 +133,45 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
         const obj = (await pi.getJsonObject()) as IAddonManifest;
 
         if (obj) {
-          items.push(new ProjectInfoItem(InfoItemType.info, this.id, 3, "Behavior pack manifest", pi, obj));
+          items.push(
+            new ProjectInfoItem(
+              InfoItemType.info,
+              this.id,
+              PackInfoGeneratorTest.behaviorPackManfiest,
+              ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, PackInfoGeneratorTest.behaviorPackManfiest),
+              pi,
+              obj
+            )
+          );
 
           if (obj.format_version) {
             items.push(
-              new ProjectInfoItem(InfoItemType.info, this.id, 1, "Behavior pack format version", pi, obj.format_version)
+              new ProjectInfoItem(
+                InfoItemType.info,
+                this.id,
+                PackInfoGeneratorTest.behaviorPackMinEngineVersion,
+                ProjectInfoUtilities.getTitleFromEnum(
+                  PackInfoGeneratorTest,
+                  PackInfoGeneratorTest.behaviorPackMinEngineVersion
+                ),
+                pi,
+                obj.format_version
+              )
             );
           }
 
           if (obj.header) {
             if (obj.header.uuid) {
-              items.push(new ProjectInfoItem(InfoItemType.info, this.id, 2, "Behavior pack UUID", pi, obj.header.uuid));
+              items.push(
+                new ProjectInfoItem(
+                  InfoItemType.info,
+                  this.id,
+                  PackInfoGeneratorTest.behaviorPackUuid,
+                  ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, PackInfoGeneratorTest.behaviorPackUuid),
+                  pi,
+                  obj.header.uuid
+                )
+              );
             }
 
             if (obj.header.uuid && obj.header.version) {
@@ -115,8 +180,8 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
                   new ProjectInfoItem(
                     InfoItemType.info,
                     this.id,
-                    6,
-                    "Behavior pack Id",
+                    PackInfoGeneratorTest.behaviorPackId,
+                    ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, PackInfoGeneratorTest.behaviorPackId),
                     pi,
                     obj.header.uuid +
                       "|" +
@@ -135,8 +200,8 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
                 new ProjectInfoItem(
                   InfoItemType.info,
                   this.id,
-                  4,
-                  "Behavior pack name",
+                  PackInfoGeneratorTest.behaviorPackName,
+                  ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, PackInfoGeneratorTest.behaviorPackName),
                   pi,
                   project.loc.getExpandedValue(obj.header.name)
                 )
@@ -148,8 +213,11 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
                 new ProjectInfoItem(
                   InfoItemType.info,
                   this.id,
-                  5,
-                  "Behavior pack description",
+                  PackInfoGeneratorTest.behaviorPackDescription,
+                  ProjectInfoUtilities.getTitleFromEnum(
+                    PackInfoGeneratorTest,
+                    PackInfoGeneratorTest.behaviorPackDescription
+                  ),
                   pi,
                   project.loc.getExpandedValue(obj.header.description)
                 )
@@ -161,8 +229,11 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
                 new ProjectInfoItem(
                   InfoItemType.info,
                   this.id,
-                  1,
-                  "Behavior pack min_engine version",
+                  PackInfoGeneratorTest.behaviorPackMinEngineVersion,
+                  ProjectInfoUtilities.getTitleFromEnum(
+                    PackInfoGeneratorTest,
+                    PackInfoGeneratorTest.behaviorPackMinEngineVersion
+                  ),
                   pi,
                   obj.header.min_engine_version
                 )
@@ -174,7 +245,16 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
         const obj = (await pi.getJsonObject()) as IResourcePackManifest;
 
         if (obj) {
-          items.push(new ProjectInfoItem(InfoItemType.info, this.id, 13, "Resource pack manifest", pi, obj));
+          items.push(
+            new ProjectInfoItem(
+              InfoItemType.info,
+              this.id,
+              PackInfoGeneratorTest.resourcePackManifest,
+              ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, PackInfoGeneratorTest.resourcePackManifest),
+              pi,
+              obj
+            )
+          );
 
           if (obj.subpacks) {
             if (Array.isArray(obj.subpacks)) {
@@ -186,8 +266,8 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
                     new ProjectInfoItem(
                       InfoItemType.info,
                       this.id,
-                      40 + sp.memory_tier,
-                      "Subpack Memory Tier",
+                      MemoryTierBase + sp.memory_tier,
+                      "Subpack Memory Tier " + sp.memory_tier,
                       pi,
                       sp.name
                     )
@@ -202,8 +282,11 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
               new ProjectInfoItem(
                 InfoItemType.info,
                 this.id,
-                10,
-                "Resource pack format version",
+                PackInfoGeneratorTest.resourcePackFormatVersion,
+                ProjectInfoUtilities.getTitleFromEnum(
+                  PackInfoGeneratorTest,
+                  PackInfoGeneratorTest.resourcePackFormatVersion
+                ),
                 pi,
                 obj.format_version
               )
@@ -213,7 +296,14 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
           if (obj.header) {
             if (obj.header.uuid) {
               items.push(
-                new ProjectInfoItem(InfoItemType.info, this.id, 12, "Resource pack UUID", pi, obj.header.uuid)
+                new ProjectInfoItem(
+                  InfoItemType.info,
+                  this.id,
+                  PackInfoGeneratorTest.resourcePackUuid,
+                  ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, PackInfoGeneratorTest.resourcePackUuid),
+                  pi,
+                  obj.header.uuid
+                )
               );
             }
             if (obj.header.uuid && obj.header.version) {
@@ -222,8 +312,8 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
                   new ProjectInfoItem(
                     InfoItemType.info,
                     this.id,
-                    16,
-                    "Resource pack Id",
+                    PackInfoGeneratorTest.resourcePackId,
+                    ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, PackInfoGeneratorTest.resourcePackId),
                     pi,
                     obj.header.uuid +
                       "|" +
@@ -242,8 +332,8 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
                 new ProjectInfoItem(
                   InfoItemType.info,
                   this.id,
-                  14,
-                  "Resource pack name",
+                  PackInfoGeneratorTest.resourcePackName,
+                  ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, PackInfoGeneratorTest.resourcePackName),
                   pi,
                   project.loc.getExpandedValue(obj.header.name)
                 )
@@ -255,8 +345,11 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
                 new ProjectInfoItem(
                   InfoItemType.info,
                   this.id,
-                  15,
-                  "Resource pack description",
+                  PackInfoGeneratorTest.resourcePackDescription,
+                  ProjectInfoUtilities.getTitleFromEnum(
+                    PackInfoGeneratorTest,
+                    PackInfoGeneratorTest.resourcePackDescription
+                  ),
                   pi,
                   project.loc.getExpandedValue(obj.header.description)
                 )
@@ -268,8 +361,11 @@ export default class PackInformationGenerator implements IProjectInfoGenerator {
                 new ProjectInfoItem(
                   InfoItemType.info,
                   this.id,
-                  11,
-                  "Behavior pack min_engine version",
+                  PackInfoGeneratorTest.resourcePackMinEngineVersion,
+                  ProjectInfoUtilities.getTitleFromEnum(
+                    PackInfoGeneratorTest,
+                    PackInfoGeneratorTest.resourcePackMinEngineVersion
+                  ),
                   pi,
                   obj.header.min_engine_version
                 )

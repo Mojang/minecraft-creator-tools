@@ -9,6 +9,15 @@ import MCWorld from "../minecraft/MCWorld";
 import Log from "../core/Log";
 import { InfoItemType } from "./IInfoItemData";
 import ProjectInfoSet from "./ProjectInfoSet";
+import ProjectInfoUtilities from "./ProjectInfoUtilities";
+
+export enum WorldItemInfoGeneratorTest {
+  betaApisExperiment = 101,
+  dataDrivenItemsExperiment = 102,
+  deferredTechnicalPreviewExperiment = 103,
+  worldName = 108,
+  worldDescription = 109,
+}
 
 export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "WORLD";
@@ -45,8 +54,11 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
         new ProjectInfoItem(
           InfoItemType.info,
           this.id,
-          101,
-          "Beta APIs experiment",
+          WorldItemInfoGeneratorTest.betaApisExperiment,
+          ProjectInfoUtilities.getTitleFromEnum(
+            WorldItemInfoGeneratorTest,
+            WorldItemInfoGeneratorTest.betaApisExperiment
+          ),
           projectItem,
           mcworld.betaApisExperiment,
           mcworld.name
@@ -57,8 +69,11 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
         new ProjectInfoItem(
           InfoItemType.info,
           this.id,
-          102,
-          "Data Driven Items experiment",
+          WorldItemInfoGeneratorTest.dataDrivenItemsExperiment,
+          ProjectInfoUtilities.getTitleFromEnum(
+            WorldItemInfoGeneratorTest,
+            WorldItemInfoGeneratorTest.dataDrivenItemsExperiment
+          ),
           projectItem,
           mcworld.dataDrivenItemsExperiment,
           mcworld.name
@@ -69,8 +84,11 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
         new ProjectInfoItem(
           InfoItemType.info,
           this.id,
-          103,
-          "Deferred Technical Preview experiment",
+          WorldItemInfoGeneratorTest.deferredTechnicalPreviewExperiment,
+          ProjectInfoUtilities.getTitleFromEnum(
+            WorldItemInfoGeneratorTest,
+            WorldItemInfoGeneratorTest.deferredTechnicalPreviewExperiment
+          ),
           projectItem,
           mcworld.deferredTechnicalPreviewExperiment,
           mcworld.name
@@ -94,8 +112,8 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
           new ProjectInfoItem(
             InfoItemType.info,
             "WORLD",
-            108,
-            "Name",
+            WorldItemInfoGeneratorTest.worldName,
+            ProjectInfoUtilities.getTitleFromEnum(WorldItemInfoGeneratorTest, WorldItemInfoGeneratorTest.worldName),
             projectItem,
             mcworld.manifest.header.name,
             mcworld.name
@@ -106,8 +124,11 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
           new ProjectInfoItem(
             InfoItemType.info,
             "WORLD",
-            109,
-            "Description",
+            WorldItemInfoGeneratorTest.worldDescription,
+            ProjectInfoUtilities.getTitleFromEnum(
+              WorldItemInfoGeneratorTest,
+              WorldItemInfoGeneratorTest.worldDescription
+            ),
             projectItem,
             mcworld.manifest.header.description,
             mcworld.name

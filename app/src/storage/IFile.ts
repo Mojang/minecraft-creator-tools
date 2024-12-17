@@ -26,6 +26,7 @@ export default interface IFile extends IStorageObject {
   type: string;
 
   dispose(): void;
+  unload(): void;
 
   getHash(): Promise<string | undefined>;
   getRelativePathFor(file: IFile): string | undefined;

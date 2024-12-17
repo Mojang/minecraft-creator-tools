@@ -11,8 +11,6 @@ import Utilities from "../core/Utilities";
 import * as crypto from "crypto";
 import { threadId } from "worker_threads";
 import Log, { LogItem, LogItemLevel } from "../core/Log";
-import JsEslintInfoGenerator from "./JsEslintInfoGenerator";
-import GeneratorRegistrations from "../info/GeneratorRegistrations";
 
 export const consoleText_reset = "\x1b[0m";
 export const consoleText_bright = "\x1b[1m";
@@ -245,8 +243,6 @@ export default class LocalEnvironment {
     this.save = this.save.bind(this);
 
     this.utilities = new LocalUtilities();
-
-    GeneratorRegistrations.projectGenerators.push(new JsEslintInfoGenerator());
 
     this.handleNewLogMessage = this.handleNewLogMessage.bind(this);
 

@@ -236,7 +236,7 @@ export default class Project {
 
   public get infoSet() {
     if (!this.#infoSet) {
-      this.#infoSet = new ProjectInfoSet(this, ProjectInfoSuite.allExceptAddOn);
+      this.#infoSet = new ProjectInfoSet(this, ProjectInfoSuite.default);
     }
 
     return this.#infoSet;
@@ -2361,11 +2361,6 @@ export default class Project {
                 folderPathLower.indexOf("/attachables/") >= 0
               ) {
                 newJsonType = ProjectItemType.attachableResourceJson;
-              } else if (
-                folderContext === FolderContext.resourcePack &&
-                (folderPathLower.indexOf("/entities/") >= 0 || folderPathLower.indexOf("/entity/") >= 0)
-              ) {
-                newJsonType = ProjectItemType.entityTypeResource;
               } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/fogs/") >= 0) {
                 newJsonType = ProjectItemType.fogResourceJson;
               } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/particles/") >= 0) {
@@ -2475,15 +2470,6 @@ export default class Project {
                 newJsonType = ProjectItemType.packageLockJson;
               } else if (baseName === ".prettierrc") {
                 newJsonType = ProjectItemType.prettierRcJson;
-              } else if (
-                folderContext === FolderContext.behaviorPack &&
-                (folderPathLower.indexOf("/entities/") >= 0 || folderPathLower.indexOf("/entity/") >= 0)
-              ) {
-                newJsonType = ProjectItemType.entityTypeBehavior;
-              } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/items/") >= 0) {
-                newJsonType = ProjectItemType.itemTypeBehavior;
-              } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/blocks/") >= 0) {
-                newJsonType = ProjectItemType.blockTypeBehavior;
               } else if (folderContext === FolderContext.docs && baseName === "info") {
                 newJsonType = ProjectItemType.docInfoJson;
                 this.role = ProjectRole.documentation;
@@ -2523,6 +2509,22 @@ export default class Project {
               } else if (folderContext === FolderContext.typeDefs && folderPathLower.indexOf("/engine_modules") >= 0) {
                 newJsonType = ProjectItemType.engineOrderingJson;
                 this.role = ProjectRole.documentation;
+              }
+              // these need to be near the bottom since URL segments like /items/, /blocks/, /entities etc. could theoretically be used in loot_tables, etc. and that should take precedence in detection
+              else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/items/") >= 0) {
+                newJsonType = ProjectItemType.itemTypeBehavior;
+              } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/blocks/") >= 0) {
+                newJsonType = ProjectItemType.blockTypeBehavior;
+              } else if (
+                folderContext === FolderContext.resourcePack &&
+                (folderPathLower.indexOf("/entities/") >= 0 || folderPathLower.indexOf("/entity/") >= 0)
+              ) {
+                newJsonType = ProjectItemType.entityTypeResource;
+              } else if (
+                folderContext === FolderContext.behaviorPack &&
+                (folderPathLower.indexOf("/entities/") >= 0 || folderPathLower.indexOf("/entity/") >= 0)
+              ) {
+                newJsonType = ProjectItemType.entityTypeBehavior;
               } else {
                 // Log.debugAlert("General JSON file found: " + projectPath);
               }
