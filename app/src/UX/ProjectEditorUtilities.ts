@@ -97,35 +97,22 @@ export default class ProjectEditorUtilities {
     }
   }
 
-  static getItemActionFromCaption(caption: string) {
-    switch (caption.toLowerCase()) {
-      case "download blockbench model":
-        return ProjectEditorItemAction.downloadBlockbenchModel;
-      case "delete":
-        return ProjectEditorItemAction.deleteItem;
-      case "rename":
-        return ProjectEditorItemAction.renameItem;
-    }
-
-    return ProjectEditorItemAction.download;
-  }
-
   static getItemMenuItems(projectItem: ProjectItem) {
     const itemMenu = [
       {
         key: "download",
         content: "Download",
-        tag: projectItem.projectPath,
+        tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.download },
       },
       {
         key: "rename",
         content: "Rename",
-        tag: projectItem.projectPath,
+        tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.renameItem },
       },
       {
         key: "delete",
         content: "Delete",
-        tag: projectItem.projectPath,
+        tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.deleteItem },
       },
     ];
 
@@ -133,7 +120,7 @@ export default class ProjectEditorUtilities {
       itemMenu.push({
         key: "downloadBbmodel",
         content: "Download Blockbench Model",
-        tag: projectItem.projectPath,
+        tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.downloadBlockbenchModel },
       });
     }
 
@@ -147,7 +134,7 @@ export default class ProjectEditorUtilities {
       itemMenu.push({
         key: "viewAsJson" + projectItem.projectPath,
         content: "View as JSON",
-        tag: projectItem.projectPath,
+        tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.viewAsJson },
       });
     }
 

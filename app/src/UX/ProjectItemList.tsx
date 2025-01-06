@@ -592,12 +592,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   }
 
   _contextMenuClick(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
-    if (data !== undefined && data.tag !== undefined && this.props.project !== null && this.props.onProjectItemAction) {
-      const action = ProjectEditorUtilities.getItemActionFromCaption(data.content);
-
-      if (action !== undefined) {
-        this.props.onProjectItemAction(data.tag, action);
-      }
+    if (
+      data !== undefined &&
+      data.tag !== undefined &&
+      this.props.project !== null &&
+      this.props.onProjectItemAction &&
+      data.tag.action !== undefined &&
+      data.tag.path !== undefined
+    ) {
+      this.props.onProjectItemAction(data.tag.path, data.tag.action);
     }
 
     e.stopPropagation();

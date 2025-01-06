@@ -2364,16 +2364,18 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   _itemMenuClick(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
-    if (data !== undefined && data.tag !== undefined && this.props.project !== null) {
-      const action = ProjectEditorUtilities.getItemActionFromCaption(data.content);
+    if (
+      data !== undefined &&
+      data.tag !== undefined &&
+      this.props.project !== null &&
+      data.tag.action !== undefined &&
+      data.tag.path !== undefined
+    ) {
+      const me = this;
 
-      if (action !== undefined) {
-        const me = this;
-
-        window.setTimeout(() => {
-          me.handleProjectItemAction(data.tag, action);
-        }, 1);
-      }
+      window.setTimeout(() => {
+        me.handleProjectItemAction(data.tag.path, data.tag.action);
+      }, 1);
     }
 
     e.stopPropagation();
