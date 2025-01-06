@@ -469,7 +469,7 @@ export default class Project {
   }
 
   public get onInflated() {
-    return this._onLoaded.asEvent();
+    return this._onInflated.asEvent();
   }
 
   public get onSaved() {
@@ -2370,6 +2370,11 @@ export default class Project {
                 folderPathLower.indexOf("/render_controllers/") >= 0
               ) {
                 newJsonType = ProjectItemType.renderControllerJson;
+              } else if (
+                folderContext === FolderContext.resourcePack &&
+                folderPathLower.indexOf("/block_culling/") >= 0
+              ) {
+                newJsonType = ProjectItemType.blockCulling;
               } else if (
                 (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
                 (projectPath.endsWith("terrain_texture.json") || projectPath.endsWith("terrain_textures.json"))

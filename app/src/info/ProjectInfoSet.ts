@@ -184,7 +184,23 @@ export default class ProjectInfoSet {
       }
     }
 
-    this._excludeTests = excludeTests;
+    if (excludeTests) {
+      const excludeTestList = [];
+
+      for (const excludeTest of excludeTests) {
+        const vals = excludeTest.trim().split(",");
+
+        for (const val of vals) {
+          const valD = val.toUpperCase().trim();
+
+          if (valD.length > 0) {
+            excludeTestList.push(valD);
+          }
+        }
+      }
+
+      this._excludeTests = excludeTestList;
+    }
   }
 
   static getTopicData(id: string, index: number): IProjectInfoTopicData | undefined {

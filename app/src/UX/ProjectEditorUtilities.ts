@@ -2,6 +2,7 @@ import Carto from "../app/Carto";
 import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 import Project from "../app/Project";
 import ProjectExporter from "../app/ProjectExporter";
+import ProjectItem from "../app/ProjectItem";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ProjectUtilities from "../app/ProjectUtilities";
 import Utilities from "../core/Utilities";
@@ -15,6 +16,15 @@ import StorageUtilities from "../storage/StorageUtilities";
 import ZipStorage from "../storage/ZipStorage";
 
 export const MaxModeActions = 7;
+
+export enum ProjectEditorItemAction {
+  downloadBlockbenchModel,
+  deleteItem,
+  renameItem,
+  viewAsJson,
+  download,
+}
+
 export enum ProjectEditorMode {
   properties,
   inspector,
@@ -85,6 +95,63 @@ export default class ProjectEditorUtilities {
       default:
         return undefined;
     }
+  }
+
+  static getItemActionFromCaption(caption: string) {
+    switch (caption.toLowerCase()) {
+      case "download blockbench model":
+        return ProjectEditorItemAction.downloadBlockbenchModel;
+      case "delete":
+        return ProjectEditorItemAction.deleteItem;
+      case "rename":
+        return ProjectEditorItemAction.renameItem;
+    }
+
+    return ProjectEditorItemAction.download;
+  }
+
+  static getItemMenuItems(projectItem: ProjectItem) {
+    const itemMenu = [
+      {
+        key: "download",
+        content: "Download",
+        tag: projectItem.projectPath,
+      },
+      {
+        key: "rename",
+        content: "Rename",
+        tag: projectItem.projectPath,
+      },
+      {
+        key: "delete",
+        content: "Delete",
+        tag: projectItem.projectPath,
+      },
+    ];
+
+    if (projectItem.itemType === ProjectItemType.modelGeometryJson) {
+      itemMenu.push({
+        key: "downloadBbmodel",
+        content: "Download Blockbench Model",
+        tag: projectItem.projectPath,
+      });
+    }
+
+    let path = "";
+
+    if (projectItem.projectPath !== null && projectItem.projectPath !== undefined) {
+      path = projectItem.projectPath;
+    }
+
+    if (StorageUtilities.getTypeFromName(path) === "json") {
+      itemMenu.push({
+        key: "viewAsJson" + projectItem.projectPath,
+        content: "View as JSON",
+        tag: projectItem.projectPath,
+      });
+    }
+
+    return itemMenu;
   }
 
   static getIsLinkShareable(proj: Project) {

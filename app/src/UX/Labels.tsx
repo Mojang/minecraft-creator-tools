@@ -327,6 +327,16 @@ export const ViewLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompac
   </span>
 );
 
+export const ItemActionsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICustomLabelProps> = (
+  props: ICustomLabelProps
+) => (
+  <span className="label label-toolbar3">
+    <FontAwesomeIcon icon={props.icon as IconProp} className="fa-lg" />
+    {!props.isCompact ? <span className="label-text">{props.text}</span> : <></>}
+    <FontAwesomeIcon icon={faSortDown} className="fa-lg label-arrow" />
+  </span>
+);
+
 export const ConnectLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (
   props: ICompactableLabelProps
 ) => (

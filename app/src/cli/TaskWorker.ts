@@ -67,6 +67,7 @@ async function executeTask(task: ITask) {
           carto,
           task.project,
           task.arguments["suite"] as string | undefined,
+          task.arguments["exclusionList"] as string | undefined,
           task.arguments["outputMci"] === true,
           task.arguments["outputType"] as number | undefined,
           task.displayInfo,
@@ -86,6 +87,7 @@ async function validate(
   carto: Carto,
   projectStart: IProjectStartInfo,
   suite?: string,
+  exclusionList?: string,
   outputMci?: boolean,
   outputType?: OutputType,
   displayInfo?: boolean,
@@ -129,7 +131,15 @@ async function validate(
   }
 
   if (!jsonFileExists || force || displayInfo || outputType === OutputType.noReports) {
-    return await validateAndDisposeProject(project, outputStorage, jsonFile, suite, outputMci, outputType);
+    return await validateAndDisposeProject(
+      project,
+      outputStorage,
+      jsonFile,
+      suite,
+      exclusionList,
+      outputMci,
+      outputType
+    );
   } else {
     Log.message("'" + project.name + "' has already been validated; skipping. Use --force to re-validate.");
   }
@@ -142,6 +152,7 @@ async function validateAndDisposeProject(
   outputStorage: NodeStorage | undefined,
   mcrJsonFile: NodeFile | undefined,
   suite?: string,
+  exclusionList?: string,
   outputMci?: boolean,
   outputType?: OutputType
 ): Promise<IProjectMetaState[]> {
@@ -153,11 +164,11 @@ async function validateAndDisposeProject(
 
   let suiteInst: ProjectInfoSuite | undefined;
 
-  if (!suite) {
+  if (!suite && !exclusionList) {
     pis = project.infoSet;
   } else {
-    suiteInst = ProjectInfoSet.getSuiteFromString(suite);
-    pis = new ProjectInfoSet(project, suiteInst);
+    suiteInst = ProjectInfoSet.getSuiteFromString(suite ? suite : "default");
+    pis = new ProjectInfoSet(project, suiteInst, exclusionList ? [exclusionList] : undefined);
   }
 
   await pis.generateForProject();

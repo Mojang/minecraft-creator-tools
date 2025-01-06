@@ -55,7 +55,7 @@ export default class ProjectItem {
     this._isFileContentProcessed = false;
     this._handleMCWorldLoaded = this._handleMCWorldLoaded.bind(this);
 
-    if (incomingData !== undefined && incomingData !== null) {
+    if (incomingData) {
       this._data = incomingData;
     } else {
       this._data = {
@@ -368,6 +368,8 @@ export default class ProjectItem {
         return "resource/particles/particles.json";
       case ProjectItemType.renderControllerJson:
         return "resource/render_controllers/render_controllers.json";
+      case ProjectItemType.blockCulling:
+        return "resource/block_culling/block_culling.json";
       //     case ProjectItemType.uiTextureJson:
       //        return "resource/textures/ui_texture_definition.json";
       case ProjectItemType.languagesCatalogResourceJson:

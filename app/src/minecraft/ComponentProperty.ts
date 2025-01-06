@@ -90,8 +90,9 @@ export default class ComponentProperty implements IProperty {
           return val;
         }
       }
-    } else if (!this.isCoreProp && this._form !== undefined && this._field !== undefined) {
+    } else if (!this.isCoreProp && this._form !== undefined && this._field !== undefined && this._form.id) {
       const componentId = this._form.id;
+
       const component = this._item.getComponent(componentId);
       if (component !== undefined && typeof component !== "object") {
         return component[this._field.id];

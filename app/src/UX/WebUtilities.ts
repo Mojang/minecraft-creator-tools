@@ -30,6 +30,12 @@ export default class WebUtilities {
     return left;
   }
 
+  static getElementRight(element: any) {
+    let left = this.getElementLeft(element);
+
+    return left + element.offsetWidth;
+  }
+
   static async requestPersistence() {
     if (!navigator.storage || !navigator.storage.persist) {
       return false;
