@@ -1,0 +1,22 @@
+{
+  "files": [],
+  "folders": [
+    "animation_controllers",
+    "animations",
+    "biomes",
+    "blocks",
+    "cameras",
+    "dialogue",
+    "entities",
+    "feature_rules",
+    "features",
+    "functions",
+    "items",
+    "lighting",
+    "loot_tables",
+    "recipes",
+    "spawn_rules",
+    "trading",
+    "volumes"
+  ]
+}
