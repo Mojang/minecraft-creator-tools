@@ -153,7 +153,7 @@
       "request": "launch",
       "name": "Mocha tests",
       "program": "${workspaceFolder}/node_modules/ts-mocha/bin/ts-mocha",
-      "preLaunchTask": "gulp: jsncorebuild",
+      "preLaunchTask": "npm: jsncorebuild",
       "args": [
         "-p", "tsconfig.test.json",
         "-delay",

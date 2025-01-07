@@ -141,6 +141,7 @@ export enum ProjectItemType {
   prettierRcJson = 122,
   skinCatalogJson = 123,
   tagsMetadata = 124,
+  blockCulling = 125,
 }
 
 export enum ProjectItemStorageType {

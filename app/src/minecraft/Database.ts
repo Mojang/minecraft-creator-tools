@@ -591,11 +591,19 @@ export default class Database {
 
   static async loadPreviewMetadataFolder() {
     if (!this.previewMetadataFolder) {
-      const metadataStorage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/preview/metadata/");
+      if (Database.local) {
+        const storage = await Database.local.createStorage("res/latest/van/preview/metadata/");
 
-      await metadataStorage.rootFolder.load();
+        if (storage) {
+          this.previewMetadataFolder = storage.rootFolder;
+        }
+      } else {
+        const metadataStorage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/preview/metadata/");
 
-      this.previewMetadataFolder = metadataStorage.rootFolder;
+        await metadataStorage.rootFolder.load();
+
+        this.previewMetadataFolder = metadataStorage.rootFolder;
+      }
     }
 
     return this.previewMetadataFolder;

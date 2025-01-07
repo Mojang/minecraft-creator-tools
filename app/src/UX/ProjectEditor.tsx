@@ -21,8 +21,9 @@ import {
   faComputer,
   faFolderTree,
   faList,
+  faWandMagicSparkles,
 } from "@fortawesome/free-solid-svg-icons";
-import { Toolbar, Text, MenuItemProps, ThemeInput, Dialog } from "@fluentui/react-northstar";
+import { Toolbar, Text, MenuItemProps, ThemeInput, Dialog, Input, InputProps } from "@fluentui/react-northstar";
 
 import {
   ViewLabel,
@@ -35,6 +36,7 @@ import {
   DownArrowLabel,
   CustomLabel,
   OpenInExplorerLabel,
+  ItemActionsLabel,
 } from "./Labels";
 
 import "./ProjectEditor.css";
@@ -67,6 +69,7 @@ import ProjectEditorUtilities, {
   ProjectEditorMode,
   ProjectEditorAction,
   MaxModeActions,
+  ProjectEditorItemAction,
 } from "./ProjectEditorUtilities";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
 import WorldSettingsArea from "../UX/WorldSettingsArea";
@@ -83,6 +86,7 @@ import IProjectItemSeed, { ProjectItemSeedAction } from "../app/IProjectItemSeed
 import ProjectStandard from "../app/ProjectStandard";
 import ProjectAutogeneration from "../app/ProjectAutogeneration";
 import BrowserFolder from "../storage/BrowserFolder";
+import BlockbenchModel from "../integrations/BlockbenchModel";
 
 interface IProjectEditorProps extends IAppProps {
   onModeChangeRequested?: (mode: AppMode) => void;
@@ -136,6 +140,7 @@ export enum ProjectEditorMenuState {
   viewMenu = 1,
   exportMenu = 2,
   deployMenu = 3,
+  itemMenu = 4,
 }
 
 export enum ProjectEditorTab {
@@ -159,6 +164,8 @@ export enum ProjectEditorDialog {
   worldSettings = 2,
   convertTo = 4,
   integrateItem = 5,
+  deleteItem = 6,
+  renameItem = 7,
 }
 
 export enum ProjectStatusAreaMode {
@@ -175,6 +182,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private gridElt: React.RefObject<HTMLDivElement>;
   private _splitterDrag: number | undefined;
   private _asyncLoadAttempts: number = 0;
+  private _newItemName?: string;
 
   constructor(props: IProjectEditorProps) {
     super(props);
@@ -183,9 +191,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this.getProjectTitle = this.getProjectTitle.bind(this);
 
+    this._handleNewProjectItemName = this._handleNewProjectItemName.bind(this);
     this._handleExportMCAddonClick = this._handleExportMCAddonClick.bind(this);
     this._handleExportToLocalFolderClick = this._handleExportToLocalFolderClick.bind(this);
     this._handleConvertToClick = this._handleConvertToClick.bind(this);
+    this._handleConfirmRename = this._handleConfirmRename.bind(this);
+    this._handleConfirmDelete = this._handleConfirmDelete.bind(this);
     this._handleDialogDataUpdated = this._handleDialogDataUpdated.bind(this);
     this._handleGetShareableLinkClick = this._handleGetShareableLinkClick.bind(this);
     this._handleChangeWorldSettingsClick = this._handleChangeWorldSettingsClick.bind(this);
@@ -199,6 +210,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleHashChange = this._handleHashChange.bind(this);
     this._setProjectStatusMode = this._setProjectStatusMode.bind(this);
     this._doUpdate = this._doUpdate.bind(this);
+    this._itemMenuClick = this._itemMenuClick.bind(this);
     this._handleInfoItemCommand = this._handleInfoItemCommand.bind(this);
     this._handleDialogDone = this._handleDialogDone.bind(this);
     this._handleFilterTextChanged = this._handleFilterTextChanged.bind(this);
@@ -224,6 +236,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleExportMenuOpen = this._handleExportMenuOpen.bind(this);
     this._handleDeployMenuOpen = this._handleDeployMenuOpen.bind(this);
     this._handleViewMenuOpen = this._handleViewMenuOpen.bind(this);
+    this._handleItemMenuOpen = this._handleItemMenuOpen.bind(this);
     this._handleConvertOK = this._handleConvertOK.bind(this);
     this._handleIntegrateItemOK = this._handleIntegrateItemOK.bind(this);
     this._handleDeployWorldAndTestAssetsPackClick = this._handleDeployWorldAndTestAssetsPackClick.bind(this);
@@ -232,6 +245,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleExportFlatWorldWithPacks = this._handleExportFlatWorldWithPacks.bind(this);
     this._handleDeployToRemoteServerClick = this._handleDeployToRemoteServerClick.bind(this);
     this._handleDeployPacksToMinecraftGameClick = this._handleDeployPacksToMinecraftGameClick.bind(this);
+    this.handleProjectItemAction = this.handleProjectItemAction.bind(this);
     this._handleDeployPacksAndWorldsToMinecraftGameClick =
       this._handleDeployPacksAndWorldsToMinecraftGameClick.bind(this);
     this._handleDeployPacksAndWorldsToMinecraftGameAndOpenClick =
@@ -647,15 +661,19 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _handleDialogDone() {
+    this._handleDialogDoneAndClear();
+  }
+
+  private _handleDialogDoneAndClear(clearActiveProjectItem?: boolean, dialog?: ProjectEditorDialog) {
     if (this.state !== undefined) {
       this.setState({
-        activeProjectItem: this.state.activeProjectItem,
+        activeProjectItem: clearActiveProjectItem ? null : this.state.activeProjectItem,
         tentativeProjectItem: this.state.tentativeProjectItem,
         activeReference: this.state.activeReference,
         mode: this.state.mode,
         effectMode: undefined,
         dragStyle: undefined,
-        dialog: undefined,
+        dialog: dialog,
         dialogData: this.state.dialogData,
         dialogActiveItem: this.state.dialogActiveItem,
         viewMode: this.state.viewMode,
@@ -1589,6 +1607,36 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     });
   }
 
+  private _handleItemMenuOpen() {
+    let menuVal = ProjectEditorMenuState.noMenu;
+
+    if (this.state.menuState === ProjectEditorMenuState.noMenu) {
+      menuVal = ProjectEditorMenuState.itemMenu;
+    }
+
+    this.setState({
+      activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
+      mode: this.state.mode,
+      viewMode: this.state.viewMode,
+      menuState: menuVal,
+      forceRawView: this.state.forceRawView,
+      filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
+      displayFileView: this.state.displayFileView,
+      statusAreaMode: this.state.statusAreaMode,
+      lastDeployKey: this.state.lastDeployKey,
+      dialog: this.state.dialog,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
+      lastExportKey: this.state.lastExportKey,
+      lastDeployFunction: this.state.lastDeployFunction,
+      lastExportFunction: this.state.lastExportFunction,
+      lastDeployData: this.state.lastDeployData,
+      lastExportData: this.state.lastExportData,
+    });
+  }
+
   private async _handleGetShareableLinkClick(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
     if (this.props.project == null || !data || !data.icon) {
       return;
@@ -2315,6 +2363,25 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
+  _itemMenuClick(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
+    if (
+      data !== undefined &&
+      data.tag !== undefined &&
+      this.props.project !== null &&
+      data.tag.action !== undefined &&
+      data.tag.path !== undefined
+    ) {
+      const me = this;
+
+      window.setTimeout(() => {
+        me.handleProjectItemAction(data.tag.path, data.tag.action);
+      }, 1);
+    }
+
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
   private async _handleDownloadMCWorldWithPacks(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
     if (data === undefined || typeof data.content !== "string") {
       return;
@@ -2717,6 +2784,91 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       window.location.hash = "#" + newHash;
     }
   }
+
+  handleProjectItemAction(projectPath: string, projectAction: ProjectEditorItemAction) {
+    const projectItem = this.props.project.getItemByProjectPath(projectPath);
+
+    if (projectItem) {
+      switch (projectAction) {
+        case ProjectEditorItemAction.download:
+          this.downloadProjectItem(projectItem);
+          break;
+        case ProjectEditorItemAction.downloadBlockbenchModel:
+          this.downloadBbmodel(projectItem);
+          break;
+        case ProjectEditorItemAction.viewAsJson:
+          if (this.state.activeProjectItem) {
+            this._handleProjectItemSelected(this.state.activeProjectItem, true);
+          }
+          break;
+        case ProjectEditorItemAction.deleteItem:
+          this._handleDialogDoneAndClear(false, ProjectEditorDialog.deleteItem);
+          break;
+        case ProjectEditorItemAction.renameItem:
+          this._handleDialogDoneAndClear(false, ProjectEditorDialog.renameItem);
+          break;
+      }
+    }
+  }
+
+  async downloadProjectItem(projectItem: ProjectItem) {
+    if (projectItem.storageType === ProjectItemStorageType.singleFile) {
+      const file = projectItem.file;
+
+      if (file) {
+        await file.loadContent();
+
+        if (file.content) {
+          const mimeType = ProjectItemUtilities.getMimeTypes(projectItem);
+
+          if (mimeType.length > 0) {
+            saveAs(new Blob([file.content], { type: mimeType[0] }), projectItem.name);
+          }
+        }
+      }
+    }
+  }
+
+  async downloadBbmodel(projectItem: ProjectItem) {
+    if (projectItem.storageType === ProjectItemStorageType.singleFile) {
+      const file = projectItem.file;
+
+      if (file) {
+        await file.loadContent();
+
+        if (file.content) {
+          const def = await BlockbenchModel.exportModel(projectItem);
+
+          if (def) {
+            const defStr = JSON.stringify(def);
+            if (defStr) {
+              saveAs(
+                new Blob([defStr], { type: "application/json" }),
+                StorageUtilities.getBaseFromName(projectItem.name) + ".bbmodel"
+              );
+
+              return;
+            }
+          }
+        }
+      }
+    }
+
+    await this.props.carto.notifyStatusUpdate(
+      "Could not export a Blockbench model for '" + projectItem.projectPath + "'"
+    );
+  }
+
+  _handleConfirmRename() {
+    if (this.state === null || !this.state.activeProjectItem || this._newItemName === undefined) {
+      return;
+    }
+
+    this.state.activeProjectItem.rename(this._newItemName);
+
+    this._handleDialogDoneAndClear(true);
+  }
+
   async commitTentativeItem() {
     this.setState({
       activeProjectItem: this.state.tentativeProjectItem,
@@ -2891,6 +3043,26 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
 
     return gridTemplateColumns;
+  }
+
+  private _handleNewProjectItemName(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
+    if (data === undefined || this.props.project === null || this.state == null) {
+      return;
+    }
+
+    this._newItemName = data.value;
+  }
+
+  async _handleConfirmDelete() {
+    if (this.state === null || !this.state.activeProjectItem) {
+      return;
+    }
+
+    await this.state.activeProjectItem.deleteItem();
+
+    this._handleDialogDoneAndClear(true);
+
+    this._incrementVisualSeed();
   }
 
   render() {
@@ -3475,11 +3647,35 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         icon: <ViewLabel isCompact={isButtonCompact} />,
         key: "more",
         active: this.state.menuState === ProjectEditorMenuState.viewMenu,
-        title: "More",
+        title: "View",
         menu: viewMenuItems,
         menuOpen: this.state.menuState === ProjectEditorMenuState.viewMenu,
         onMenuOpenChange: this._handleViewMenuOpen,
       });
+
+      if (this.state.activeProjectItem) {
+        const itemMenuItems = ProjectEditorUtilities.getItemMenuItems(this.state.activeProjectItem);
+
+        for (const item of itemMenuItems) {
+          (item as any).onClick = this._itemMenuClick;
+        }
+
+        toolbarItems.push({
+          icon: (
+            <ItemActionsLabel
+              isCompact={isButtonCompact}
+              icon={faWandMagicSparkles}
+              text={this.state.activeProjectItem.name}
+            />
+          ),
+          key: "itemActions",
+          active: this.state.menuState === ProjectEditorMenuState.itemMenu,
+          title: "Item Actions",
+          menu: itemMenuItems,
+          menuOpen: this.state.menuState === ProjectEditorMenuState.itemMenu,
+          onMenuOpenChange: this._handleItemMenuOpen,
+        });
+      }
     } else {
       toolbarItems.push({
         key: "itemsFocus",
@@ -3496,24 +3692,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         title: "Items",
         onClick: this._setItemsFocus,
       });
-      /*
-      viewMenuItems.push({
-        key: "minecraftToolboxFocus",
-        content: "Minecraft Toolbox",
-        icon: <FontAwesomeIcon icon={faGithub} className="fa-lg" />,
-        title: "Minecraft Toolbox",
-        onClick: this._setToolboxFocus,
-      });
-
-      toolbarItems.push({
-        icon: <ViewLabel isCompact={isButtonCompact} />,
-        key: "more",
-        active: this.state.menuState === ProjectEditorMenuState.viewMenu,
-        title: "More",
-        menu: viewMenuItems,
-        menuOpen: this.state.menuState === ProjectEditorMenuState.viewMenu,
-        onMenuOpenChange: this._handleViewMenuOpen,
-      });*/
     }
 
     toolbarItems.push({
@@ -3748,7 +3926,92 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       }
     }
 
-    if (this.state.dialog === ProjectEditorDialog.shareableLink) {
+    if (this.state !== null && this.state.dialog === ProjectEditorDialog.renameItem && this.state.activeProjectItem) {
+      effectArea = (
+        <Dialog
+          open={true}
+          cancelButton="Cancel"
+          confirmButton="Rename"
+          key="pil-renameOuter"
+          onCancel={this._handleDialogDone}
+          onConfirm={this._handleConfirmRename}
+          content={
+            <div className="pil-dialog" key="pil-renameDia">
+              <Input clearable placeholder="new name" onChange={this._handleNewProjectItemName} />
+              <span className="pil-extension">
+                .{StorageUtilities.getTypeFromName(this.state.activeProjectItem.name)}
+              </span>
+            </div>
+          }
+          header={"Rename " + this.state.activeProjectItem.name}
+        />
+      );
+    } else if (
+      this.state !== null &&
+      this.state.dialog === ProjectEditorDialog.deleteItem &&
+      this.state.activeProjectItem
+    ) {
+      let warnings = <></>;
+
+      if (this.state.activeProjectItem.parentItems) {
+        let warningItems = [];
+
+        for (const item of this.state.activeProjectItem.parentItems) {
+          warningItems.push(
+            <li>
+              <span
+                className="pil-inlineSource"
+                style={{ backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3 }}
+              >
+                {item.parentItem.title}
+              </span>
+            </li>
+          );
+        }
+
+        if (warningItems.length === 1) {
+          warnings = (
+            <div className="pil-deleteWarning">
+              <div>The following item is using this. Deleting will remove any associated links from:</div>
+              <ul>{warningItems}</ul>
+            </div>
+          );
+        } else if (warningItems.length > 1) {
+          warnings = (
+            <div className="pil-deleteWarning">
+              <div>
+                The following items are using this. Deleting will remove any associated links in the following items:
+              </div>
+              <ul>{warningItems}</ul>
+            </div>
+          );
+        }
+      }
+
+      effectArea = (
+        <Dialog
+          open={true}
+          cancelButton="Cancel"
+          confirmButton="OK"
+          key="pil-deleteOuter"
+          onCancel={this._handleDialogDone}
+          onConfirm={this._handleConfirmDelete}
+          content={
+            <div className="pil-dialog" key="pil-deleteConfirmDia">
+              Are you sure you wish to delete{" "}
+              <span
+                className="pil-inlineSource"
+                style={{ backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3 }}
+              >
+                {this.state.activeProjectItem.title}
+              </span>
+              ?{warnings}
+            </div>
+          }
+          header={"Delete " + this.state.activeProjectItem.name + "?"}
+        />
+      );
+    } else if (this.state.dialog === ProjectEditorDialog.shareableLink) {
       const dialogContent = <ShareProject carto={this.props.carto} project={this.props.project} />;
       effectArea = (
         <Dialog
@@ -3851,6 +4114,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           searchFilter={this.state.searchFilter}
           allInfoSet={this.state.allInfoSet}
           allInfoSetGenerated={this.state.allInfoSetGenerated}
+          onProjectItemAction={this.handleProjectItemAction}
           onModeChangeRequested={this._handleModeChangeRequested}
           onActiveProjectItemChangeRequested={this._handleProjectItemSelected}
           onActiveReferenceChangeRequested={this._handleReferenceSelected}

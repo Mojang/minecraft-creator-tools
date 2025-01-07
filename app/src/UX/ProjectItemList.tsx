@@ -6,22 +6,18 @@ import {
   ProjectItemCategory,
   ProjectItemCreationType,
   ProjectItemErrorStatus,
-  ProjectItemStorageType,
   ProjectItemType,
 } from "./../app/IProjectItemData";
 import ProjectItem from "./../app/ProjectItem";
-import { ProjectEditorMode } from "./ProjectEditorUtilities";
+import ProjectEditorUtilities, { ProjectEditorItemAction, ProjectEditorMode } from "./ProjectEditorUtilities";
 import StorageUtilities from "./../storage/StorageUtilities";
 import {
-  Dialog,
   Toolbar,
   List,
   ListProps,
   ListItemProps,
   MenuButton,
   Button,
-  Input,
-  InputProps,
   ThemeInput,
   selectableListBehavior,
   selectableListItemBehavior,
@@ -46,8 +42,8 @@ import ProjectInfoSet from "../info/ProjectInfoSet";
 import IProjectItemSeed from "../app/IProjectItemSeed";
 import ProjectInfoItem from "../info/ProjectInfoItem";
 import { AnnotatedValueSet, IAnnotatedValue } from "../core/AnnotatedValue";
-import BlockbenchModel from "./../integrations/BlockbenchModel";
 import ProjectAddButton from "./ProjectAddButton";
+import WebUtilities from "./WebUtilities";
 
 export enum EntityTypeCommand {
   select,
@@ -68,6 +64,7 @@ interface IProjectItemListProps extends IAppProps {
   theme: ThemeInput<any>;
   onActiveProjectItemChangeRequested?: (projectItem: ProjectItem, forceRawView: boolean) => void;
   onActiveReferenceChangeRequested?: (reference: IGitHubInfo) => void;
+  onProjectItemAction?: (projectPath: string, itemAction: ProjectEditorItemAction) => void;
   onModeChangeRequested?: (mode: ProjectEditorMode) => void;
   onVisualSeedUpdateRequested: () => void;
   filteredItems?: IAnnotatedValue[];
@@ -96,8 +93,6 @@ interface IProjectItemListState {
 
 export enum ProjectItemListDialogType {
   noDialog = 0,
-  renameDialog = 1,
-  deleteConfirmDialog = 2,
   newEntityTypeDialog = 3,
   addGitHubReferenceDialog = 4,
   newBlockTypeDialog = 5,
@@ -109,7 +104,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   private _projectListItems: ListItemProps[] = [];
   private _itemIndices: any[] = [];
   private _itemTypes: any[] = [];
-  private _newItemName?: string;
   private _updatePending: boolean = false;
   private _isMountedInternal: boolean = false;
   private _lastSelectedAsMenuItem: number = 0;
@@ -146,9 +140,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._itemContextBlurred = this._itemContextBlurred.bind(this);
     this._contextMenuClick = this._contextMenuClick.bind(this);
     this._getSortedItems = this._getSortedItems.bind(this);
-    this._handleNewProjectItemName = this._handleNewProjectItemName.bind(this);
-    this._handleConfirmRename = this._handleConfirmRename.bind(this);
-    this._handleConfirmDelete = this._handleConfirmDelete.bind(this);
     this._handleCancel = this._handleCancel.bind(this);
     this._handleItemTypeToggle = this._handleItemTypeToggle.bind(this);
     this._handleItemTypeDoubleClick = this._handleItemTypeDoubleClick.bind(this);
@@ -329,14 +320,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._loadItems();
   }
 
-  private _handleNewProjectItemName(e: SyntheticEvent, data: (InputProps & { value: string }) | undefined) {
-    if (data === undefined || this.props.project === null || this.state == null) {
-      return;
-    }
-
-    this._newItemName = data.value;
-  }
-
   private _handleItemSelected(elt: any, event: ListProps | undefined) {
     if (
       event === undefined ||
@@ -345,6 +328,18 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       this.props.onActiveProjectItemChangeRequested === undefined
     ) {
       return;
+    }
+
+    // this is suboptimal, but based on the ordering of events it doesn't seem striaghtforward
+    // to have the context menu click event mute the selection event.
+    let isContextMenuAreaClick = false;
+
+    if (elt && elt.currentTarget && elt.pageX !== undefined) {
+      const rightExtent = WebUtilities.getElementRight(elt.currentTarget);
+
+      if (rightExtent && elt.pageX >= rightExtent - 80 && elt.pageX < rightExtent) {
+        isContextMenuAreaClick = true;
+      }
     }
 
     if (this.props.filteredItems === undefined && event.selectedIndex === 1) {
@@ -362,7 +357,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     } else if (this._itemTypes[event.selectedIndex] === ListItemType.item) {
       const newItem = this.props.project.items[this._itemIndices[event.selectedIndex]];
 
-      if (newItem) {
+      if (newItem && (newItem !== this.props.activeProjectItem || !isContextMenuAreaClick)) {
         if (
           this.props &&
           this.props.onActiveProjectItemChangeRequested !== undefined &&
@@ -380,23 +375,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         this.props.onActiveReferenceChangeRequested(newRef as IGitHubInfo);
       }
     }
-  }
-
-  _handleConfirmRename() {
-    if (this.state === null || this.state.activeItem === undefined || this._newItemName === undefined) {
-      return;
-    }
-
-    this.state.activeItem.rename(this._newItemName);
-
-    this.setState({
-      activeItem: undefined,
-      dialogMode: ProjectItemListDialogType.noDialog,
-      maxItemsToShow: this.state.maxItemsToShow,
-      contextFocusedItem: this.state.contextFocusedItem,
-      collapsedItemTypes: this.state.collapsedItemTypes,
-      collapsedStoragePaths: this.state.collapsedStoragePaths,
-    });
   }
 
   async _handleNewBlockType() {
@@ -480,31 +458,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     if (projectItem && this.props.onActiveProjectItemChangeRequested) {
       this.props.onActiveProjectItemChangeRequested(projectItem, false);
-    }
-  }
-
-  async _handleConfirmDelete() {
-    if (this.state === null || this.state.activeItem === undefined) {
-      return;
-    }
-
-    if (this.state.activeItem === this.props.activeProjectItem && this.props.onModeChangeRequested !== undefined) {
-      this.props.onModeChangeRequested(ProjectEditorMode.properties);
-    }
-
-    await this.state.activeItem.deleteItem();
-
-    this.setState({
-      activeItem: undefined,
-      dialogMode: ProjectItemListDialogType.noDialog,
-      maxItemsToShow: this.state.maxItemsToShow,
-      contextFocusedItem: this.state.contextFocusedItem,
-      collapsedItemTypes: this.state.collapsedItemTypes,
-      collapsedStoragePaths: this.state.collapsedStoragePaths,
-    });
-
-    if (this.props.onVisualSeedUpdateRequested) {
-      this.props.onVisualSeedUpdateRequested();
     }
   }
 
@@ -638,87 +591,16 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
   }
 
-  async downloadProjectItem(projectItem: ProjectItem) {
-    if (projectItem.storageType === ProjectItemStorageType.singleFile) {
-      const file = projectItem.file;
-
-      if (file) {
-        await file.loadContent();
-
-        if (file.content) {
-          const mimeType = ProjectItemUtilities.getMimeTypes(projectItem);
-
-          if (mimeType.length > 0) {
-            saveAs(new Blob([file.content], { type: mimeType[0] }), projectItem.name);
-          }
-        }
-      }
-    }
-  }
-
-  async downloadBbmodel(projectItem: ProjectItem) {
-    if (projectItem.storageType === ProjectItemStorageType.singleFile) {
-      const file = projectItem.file;
-
-      if (file) {
-        await file.loadContent();
-
-        if (file.content) {
-          const def = await BlockbenchModel.exportModel(projectItem);
-
-          if (def) {
-            const defStr = JSON.stringify(def);
-            if (defStr) {
-              saveAs(
-                new Blob([defStr], { type: "application/json" }),
-                StorageUtilities.getBaseFromName(projectItem.name) + ".bbmodel"
-              );
-
-              return;
-            }
-          }
-        }
-      }
-    }
-
-    await this.props.carto.notifyStatusUpdate(
-      "Could not export a Blockbench model for '" + projectItem.projectPath + "'"
-    );
-  }
-
   _contextMenuClick(e: SyntheticEvent<HTMLElement, Event>, data?: any | undefined) {
-    if (data !== undefined && data.tag !== undefined && this.props.project !== null) {
-      const projectItem = this.props.project.getItemByProjectPath(data.tag);
-
-      if (projectItem) {
-        if (data.content === "Download") {
-          this.downloadProjectItem(projectItem);
-        }
-        if (data.content === "Download Blockbench Model") {
-          this.downloadBbmodel(projectItem);
-        } else if (data.content === "Rename") {
-          this.setState({
-            activeItem: projectItem,
-            dialogMode: ProjectItemListDialogType.renameDialog,
-            maxItemsToShow: this.state.maxItemsToShow,
-            contextFocusedItem: this.state.contextFocusedItem,
-            collapsedItemTypes: this.state.collapsedItemTypes,
-            collapsedStoragePaths: this.state.collapsedStoragePaths,
-          });
-        } else if (data.content === "Delete") {
-          this.setState({
-            activeItem: projectItem,
-            dialogMode: ProjectItemListDialogType.deleteConfirmDialog,
-            maxItemsToShow: this.state.maxItemsToShow,
-            contextFocusedItem: this.state.contextFocusedItem,
-            collapsedItemTypes: this.state.collapsedItemTypes,
-            collapsedStoragePaths: this.state.collapsedStoragePaths,
-          });
-        } else if (data.content === "View as JSON" && this.props.onActiveProjectItemChangeRequested) {
-          this._lastSelectedAsMenuItem = 1;
-          this.props.onActiveProjectItemChangeRequested(projectItem as ProjectItem, true);
-        }
-      }
+    if (
+      data !== undefined &&
+      data.tag !== undefined &&
+      this.props.project !== null &&
+      this.props.onProjectItemAction &&
+      data.tag.action !== undefined &&
+      data.tag.path !== undefined
+    ) {
+      this.props.onProjectItemAction(data.tag.path, data.tag.action);
     }
 
     e.stopPropagation();
@@ -997,44 +879,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         ),
       });
     } else {
-      const itemMenu = [
-        {
-          key: "download",
-          content: "Download",
-          tag: projectItem.projectPath,
-        },
-        {
-          key: "rename",
-          content: "Rename",
-          tag: projectItem.projectPath,
-        },
-        {
-          key: "delete",
-          content: "Delete",
-          tag: projectItem.projectPath,
-        },
-      ];
-
-      if (projectItem.itemType === ProjectItemType.modelGeometryJson) {
-        itemMenu.push({
-          key: "downloadBbmodel",
-          content: "Download Blockbench Model",
-          tag: projectItem.projectPath,
-        });
-      }
+      const itemMenu = ProjectEditorUtilities.getItemMenuItems(projectItem);
 
       let path = "";
 
       if (projectItem.projectPath !== null && projectItem.projectPath !== undefined) {
         path = projectItem.projectPath;
-      }
-
-      if (StorageUtilities.getTypeFromName(path) === "json") {
-        itemMenu.push({
-          key: "viewAsJson" + projectItem.projectPath,
-          content: "View as JSON",
-          tag: projectItem.projectPath,
-        });
       }
 
       let nameCss = "pil-name";
@@ -1403,6 +1253,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       projectItem.itemType === ProjectItemType.animationBehaviorJson || // this should be rendered by entity type editor
       projectItem.itemType === ProjectItemType.animationResourceJson || // this should be model editor
       projectItem.itemType === ProjectItemType.renderControllerJson || // this should be model editor
+      projectItem.itemType === ProjectItemType.blockCulling || // this should be model editor
       projectItem.itemType === ProjectItemType.animationControllerResourceJson || // this should be model editor
       projectItem.itemType === ProjectItemType.docInfoJson
     ) {
@@ -1675,97 +1526,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       });
     }
 
-    let dialogArea = <></>;
-
-    if (
-      this.state !== null &&
-      this.state.dialogMode === ProjectItemListDialogType.renameDialog &&
-      this.state.activeItem !== undefined
-    ) {
-      dialogArea = (
-        <Dialog
-          open={true}
-          cancelButton="Cancel"
-          confirmButton="Rename"
-          key="pil-renameOuter"
-          onCancel={this._handleCancel}
-          onConfirm={this._handleConfirmRename}
-          content={
-            <div className="pil-dialog" key="pil-renameDia">
-              <Input clearable placeholder="new name" onChange={this._handleNewProjectItemName} />
-              <span className="pil-extension">.{StorageUtilities.getTypeFromName(this.state.activeItem.name)}</span>
-            </div>
-          }
-          header={"Rename " + this.state.activeItem.name}
-        />
-      );
-    } else if (
-      this.state !== null &&
-      this.state.dialogMode === ProjectItemListDialogType.deleteConfirmDialog &&
-      this.state.activeItem !== undefined
-    ) {
-      let warnings = <></>;
-
-      if (this.state.activeItem.parentItems) {
-        let warningItems = [];
-
-        for (const item of this.state.activeItem.parentItems) {
-          warningItems.push(
-            <li>
-              <span
-                className="pil-inlineSource"
-                style={{ backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3 }}
-              >
-                {item.parentItem.title}
-              </span>
-            </li>
-          );
-        }
-
-        if (warningItems.length === 1) {
-          warnings = (
-            <div className="pil-deleteWarning">
-              <div>The following item is using this. Deleting will remove any associated links from:</div>
-              <ul>{warningItems}</ul>
-            </div>
-          );
-        } else if (warningItems.length > 1) {
-          warnings = (
-            <div className="pil-deleteWarning">
-              <div>
-                The following items are using this. Deleting will remove any associated links in the following items:
-              </div>
-              <ul>{warningItems}</ul>
-            </div>
-          );
-        }
-      }
-
-      dialogArea = (
-        <Dialog
-          open={true}
-          cancelButton="Cancel"
-          confirmButton="OK"
-          key="pil-deleteOuter"
-          onCancel={this._handleCancel}
-          onConfirm={this._handleConfirmDelete}
-          content={
-            <div className="pil-dialog" key="pil-deleteConfirmDia">
-              Are you sure you wish to delete{" "}
-              <span
-                className="pil-inlineSource"
-                style={{ backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3 }}
-              >
-                {this.state.activeItem.title}
-              </span>
-              ?{warnings}
-            </div>
-          }
-          header={"Delete " + this.state.activeItem.name + "?"}
-        />
-      );
-    }
-
     let splitButton = <></>;
 
     if (this.props.project && !this.props.readOnly && this.props.project.role !== ProjectRole.explorer) {
@@ -1825,7 +1585,6 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
               onSelectedIndexChange={this._handleItemSelected}
             />
           </div>
-          {dialogArea}
         </div>
       </div>
     );

@@ -68,6 +68,7 @@ let template: string | undefined;
 let creator: string | undefined;
 let serverHostPort: number | undefined;
 let suite: string | undefined;
+let exclusionList: string | undefined;
 let outputType: OutputType | undefined;
 let serverFeatures: ServerManagerFeatures | undefined;
 let serverTitle: string | undefined;
@@ -240,16 +241,20 @@ program
   .description("Validate the current project.")
   .addArgument(
     new Argument("[suite]", "Specifies the type of validation suite to run.")
-      .choices(["all", "addon", "currentplatform", "main"])
-      .default("main", "main - runs most available validation tests.")
+      .choices(["all", "default", "addon", "currentplatform", "main"])
+      .default("main", "main (same as default) - runs most available validation tests.")
+  )
+  .addArgument(
+    new Argument("[exclusions]", "Specifies a comma-separated list of tests to exclude, e.g., PATHLENGTH,PACKSIZE")
   )
   .addArgument(
     new Argument("[aggregateReports]", "Whether to aggregate reports across projects at the end of the run.")
       .choices(["true", "false"])
       .default("false", "false - does not aggregate reports at the end of processing.")
   )
-  .action((suiteIn?: string, aggregateReportsIn?: string) => {
+  .action((suiteIn?: string, exclusionListIn?: string, aggregateReportsIn?: string) => {
     suite = suiteIn;
+    exclusionList = exclusionListIn;
     executionTaskType = TaskType.validate;
 
     if (
@@ -1098,6 +1103,7 @@ async function validate() {
   );
 
   const suiteConst = suite;
+  const exclusionListConst = exclusionList;
   const aggregateReportsAfterValidationConst = aggregateReportsAfterValidation;
   const localEnvConst = localEnv;
 
@@ -1110,6 +1116,7 @@ async function validate() {
         project: ps,
         arguments: {
           suite: suiteConst,
+          exclusionList: exclusionListConst,
           outputMci: aggregateReportsAfterValidationConst || outputType === OutputType.noReports ? true : false,
           outputType: outputType,
         },

@@ -159,7 +159,11 @@ export default class ProjectUtilities {
       return;
     }
 
-    project.accessoryFolders = [await Database.loadPreviewMetadataFolder()];
+    const result = await Database.loadPreviewMetadataFolder();
+
+    if (result) {
+      project.accessoryFolders = [result];
+    }
   }
 
   static async getBaseBehaviorPackPath(project: Project) {

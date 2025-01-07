@@ -17,13 +17,12 @@ export default interface IFile extends IStorageObject {
   fileContainerStorage: IStorage | null;
   extendedPath: string;
   readonly coreContentLength: number;
+  readonly type: string;
 
   isBinary: boolean;
   isString: boolean;
 
   parentFolder: IFolder;
-
-  type: string;
 
   dispose(): void;
   unload(): void;

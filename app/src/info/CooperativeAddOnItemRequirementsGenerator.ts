@@ -108,7 +108,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                   InfoItemType.testCompleteFail,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationControllerIdNotInExpectedForm,
-                  `Behavior pack animation controller identifier is not in expected form of controller.animation.xyz`,
+                  `Behavior pack animation controller identifier is not in the expected form of controller.animation.xyz`,
                   projectItem,
                   bacName
                 )
@@ -120,7 +120,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                   InfoItemType.testCompleteFail,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationControllerNameNotInExpectedForm,
-                  `Behavior pack animation controller name section is not in expected form of controller.animation.creatorshortname_projectshortname`,
+                  `Behavior pack animation controller name section is not in the expected form of controller.animation.creatorshortname_projectshortname`,
                   projectItem,
                   bacName
                 )
@@ -146,7 +146,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                   InfoItemType.testCompleteFail,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationIdNotInExpectedForm,
-                  `Behavior animation identifier is not in expected form of animation.xyz.animation_name`,
+                  `Behavior animation identifier is not in the expected form of animation.xyz.animation_name`,
                   projectItem,
                   aName
                 )
@@ -158,7 +158,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                   InfoItemType.testCompleteFail,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationNameNotInExpectedForm,
-                  `Behavior pack animation name section is not in expected form of animation.creatorshortname_projectshortname.animation_name`,
+                  `Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name`,
                   projectItem,
                   aName
                 )
@@ -184,7 +184,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                   InfoItemType.testCompleteFail,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationControllerIdNotInExpectedForm,
-                  `Resource pack animation controller identifier is not in expected form of controller.animation.xyz`,
+                  `Resource pack animation controller identifier is not in the expected form of controller.animation.xyz`,
                   projectItem,
                   racName
                 )
@@ -196,7 +196,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                   InfoItemType.testCompleteFail,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationControllerNameNotInExpectedForm,
-                  `Resource pack animation controller name section is not in expected form of controller.animation.creatorshortname_projectshortname`,
+                  `Resource pack animation controller name section is not in the expected form of controller.animation.creatorshortname_projectshortname`,
                   projectItem,
                   racName
                 )
@@ -222,7 +222,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                   InfoItemType.testCompleteFail,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationIdNotInExpectedForm,
-                  `Resource animation identifier is not in expected form of animation.xyz.animation_name`,
+                  `Resource animation identifier is not in the expected form of animation.xyz.animation_name`,
                   projectItem,
                   aName
                 )
@@ -234,7 +234,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                   InfoItemType.testCompleteFail,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationNameNotInExpectedForm,
-                  `Resource animation name section is not in expected form of animation.creatorshortname_projectshortname.animation_name`,
+                  `Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name`,
                   projectItem,
                   aName
                 )
@@ -260,7 +260,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                   InfoItemType.testCompleteFail,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.RenderControllerIdNotInExpectedForm,
-                  `Resource pack render controller identifier is not in expected form of controller.render.creatorshortname_projectshortname.other`,
+                  `Resource pack render controller identifier is not in the expected form of controller.render.creatorshortname_projectshortname.other`,
                   projectItem,
                   rrcName
                 )
@@ -272,7 +272,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                   InfoItemType.testCompleteFail,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.RenderControllerNameNotInExpectedForm,
-                  `Resource pack render controller name section is not in expected form of controller.render.creatorshortname_projectshortname`,
+                  `Resource pack render controller name section is not in the expected form of controller.render.creatorshortname_projectshortname`,
                   projectItem,
                   rrcName
                 )
@@ -299,7 +299,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                     InfoItemType.testCompleteFail,
                     this.id,
                     CooperativeAddOnItemRequirementsGeneratorTest.GeometryIdNotInExpectedForm,
-                    `Geometry is not in expected form of geometry.creatorshortname_projectshortname.other`,
+                    `Geometry is not in the expected form of geometry.creatorshortname_projectshortname.other`,
                     projectItem,
                     modId
                   )
@@ -311,7 +311,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                     InfoItemType.testCompleteFail,
                     this.id,
                     CooperativeAddOnItemRequirementsGeneratorTest.GeometryNameNotInExpectedForm,
-                    `Geometry identifier section is not in expected form of geometry.creatorshortname_projectshortname`,
+                    `Geometry identifier section is not in the expected form of geometry.creatorshortname_projectshortname`,
                     projectItem,
                     modId
                   )
@@ -340,7 +340,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 InfoItemType.testCompleteFail,
                 this.id,
                 CooperativeAddOnItemRequirementsGeneratorTest.JsonIdentifierNotInExpectedForm,
-                `JSON namespaced identifier is not in expected form of creatorshortname_projectshortname:myitem`,
+                `JSON namespaced identifier is not in the expected form of creatorshortname_projectshortname:myitem`,
                 projectItem,
                 projectItemDef.id
               )
@@ -364,7 +364,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                   InfoItemType.testCompleteFail,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.MaterialsIdentifierNotInExpectedForm,
-                  `Materials section identifier is not in expected form of creatorshortname_projectshortname:other`,
+                  `Materials section identifier is not in the expected form of creatorshortname_projectshortname:other`,
                   projectItem,
                   modId
                 )
