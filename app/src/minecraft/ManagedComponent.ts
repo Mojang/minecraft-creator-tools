@@ -25,16 +25,10 @@ export class ManagedComponent implements IManagedComponent {
   }
 
   getProperty(id: string) {
-    if (!this._data) {
-      return undefined;
-    }
-
     return (this._data as any)[id] as any;
   }
 
   setProperty(id: string, value: any) {
-    if (this._data && typeof this._data !== "string") {
-      (this._data as any)[id] = value;
-    }
+    (this._data as any)[id] = value;
   }
 }

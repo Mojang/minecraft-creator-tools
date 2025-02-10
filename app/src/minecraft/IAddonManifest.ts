@@ -28,6 +28,16 @@ export interface IAddonSubpack {
   memory_tier: number;
 }
 
+export interface IPersonaManifest {
+  format_version: number;
+  __comment__?: string;
+  header: IResourceAddonManifestHeader;
+  modules: IAddonModule[];
+  dependencies: IAddonDependency[];
+  metadata?: IAddonMetadata;
+  capabilities?: string[];
+}
+
 export interface ISkinPackManifest {
   format_version: number;
   __comment__?: string;

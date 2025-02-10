@@ -15,6 +15,30 @@ import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
+import SkinManifestDefinition from "../minecraft/SkinManifestDefinition";
+import WorldTemplateManifestDefinition from "../minecraft/WorldTemplateManifestDefinition";
+import PersonaManifestDefinition from "../minecraft/PersonaManifestDefinition";
+
+export enum MinEngineVersionManagerTest {
+  behaviorPackMinEngineVersion = 100,
+  behaviorPackMinEngineVersionMajorLowerThanCurrent = 110,
+  behaviorPackMinEngineVersionMajorHigherThanCurrent = 111,
+  behaviorPackMinEngineVersionMinorLowerThanCurrent = 120,
+  behaviorPackMinEngineVersionMinorHigherThanCurrent = 121,
+  behaviorPackMinEngineVersionPatchLowerThanCurrent = 130,
+  behaviorPackMinEngineVersionPatchHigherThanCurrent = 131,
+  noPackManifestFound = 180,
+  versionProcessingErrorsFound = 181,
+  resourcePackMinEngineVersion = 200,
+  resourcePackMinEngineVersionMajorLowerThanCurrent = 210,
+  resourcePackMinEngineVersionMajorHigherThanCurrent = 211,
+  resourcePackMinEngineVersionMinorLowerThanCurrent = 220,
+  resourcePackMinEngineVersionMinorHigherThanCurrent = 221,
+  resourcePackMinEngineVersionPatchLowerThanCurrent = 230,
+  resourcePackMinEngineVersionPatchHigherThanCurrent = 231,
+  retrieveLatestMinecraftVersion = 500,
+  parseLatestMinecraftVersion = 501,
+}
 
 export default class MinEngineVersionManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "MINENGINEVER";
@@ -30,93 +54,94 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
     };
 
     switch (topicId) {
-      case 100:
+      case MinEngineVersionManagerTest.behaviorPackMinEngineVersion:
         return {
           title: "Behavior Pack Min Engine Version Defined",
         };
 
-      case 110:
+      case MinEngineVersionManagerTest.behaviorPackMinEngineVersionMajorLowerThanCurrent:
         return {
           title: "Behavior Pack Min Engine Version Major Version Lower than Current",
           updaters: [updateMinEngineVersion],
         };
 
-      case 111:
+      case MinEngineVersionManagerTest.behaviorPackMinEngineVersionMajorHigherThanCurrent:
         return {
           title: "Behavior Pack Min Engine Version Major Version Higher than Current",
           updaters: [updateMinEngineVersion],
         };
 
-      case 120:
+      case MinEngineVersionManagerTest.behaviorPackMinEngineVersionMinorLowerThanCurrent:
         return {
           title: "Behavior Pack Min Engine Version Minor Version Lower than Current",
           updaters: [updateMinEngineVersion],
         };
 
-      case 121:
+      case MinEngineVersionManagerTest.behaviorPackMinEngineVersionMinorHigherThanCurrent:
         return {
           title: "Behavior Pack Min Engine Version Minor Version Higher than Current",
           updaters: [updateMinEngineVersion],
         };
 
-      case 130:
+      case MinEngineVersionManagerTest.behaviorPackMinEngineVersionPatchLowerThanCurrent:
         return {
           title: "Behavior Pack Min Engine Version Patch Version Lower than Current",
           updaters: [updateMinEngineVersion],
         };
 
-      case 131:
+      case MinEngineVersionManagerTest.behaviorPackMinEngineVersionPatchHigherThanCurrent:
         return {
           title: "Behavior Pack Min Engine Version Patch Version Higher than Current",
           updaters: [updateMinEngineVersion],
         };
 
-      case 200:
+      case MinEngineVersionManagerTest.resourcePackMinEngineVersion:
         return {
           title: "Resource Pack Min Engine Version Defined",
         };
 
-      case 210:
+      case MinEngineVersionManagerTest.resourcePackMinEngineVersionMajorLowerThanCurrent:
         return {
           title: "Resource Pack Min Engine Version Major Version Lower than Current",
           updaters: [updateMinEngineVersion],
         };
 
-      case 211:
+      case MinEngineVersionManagerTest.resourcePackMinEngineVersionMajorHigherThanCurrent:
         return {
           title: "Resource Pack Min Engine Version Major Version Higher than Current",
           updaters: [updateMinEngineVersion],
         };
 
-      case 220:
+      case MinEngineVersionManagerTest.resourcePackMinEngineVersionMinorLowerThanCurrent:
         return {
           title: "Resource Pack Min Engine Version Minor Version Lower than Current",
           updaters: [updateMinEngineVersion],
         };
 
-      case 221:
+      case MinEngineVersionManagerTest.resourcePackMinEngineVersionMinorHigherThanCurrent:
         return {
           title: "Resource Pack Min Engine Version Minor Version Higher than Current",
           updaters: [updateMinEngineVersion],
         };
 
-      case 230:
+      case MinEngineVersionManagerTest.resourcePackMinEngineVersionPatchLowerThanCurrent:
         return {
           title: "Resource Pack Min Engine Version Patch Version Lower than Current",
           updaters: [updateMinEngineVersion],
         };
 
-      case 231:
+      case MinEngineVersionManagerTest.resourcePackMinEngineVersionPatchHigherThanCurrent:
         return {
           title: "Resource Pack Min Engine Version Patch Version Higher than Current",
           updaters: [updateMinEngineVersion],
         };
 
-      case 500:
+      case MinEngineVersionManagerTest.retrieveLatestMinecraftVersion:
         return {
           title: "Retrieve Latest Minecraft Version",
         };
-      case 501:
+
+      case MinEngineVersionManagerTest.parseLatestMinecraftVersion:
         return {
           title: "Parse Latest Minecraft Version",
         };
@@ -140,11 +165,20 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
     const ver = await Database.getLatestVersionInfo(project.effectiveTrack);
     let foundBpManifest = false;
     let foundRpManifest = false;
+    let foundSpManifest = false;
+    let foundWorldTemplateManifest = false;
+    let foundPersonaManifest = false;
+
     let foundError = false;
 
     if (!ver) {
       infoItems.push(
-        new ProjectInfoItem(InfoItemType.internalProcessingError, this.id, 500, "Could not retrieve version.")
+        new ProjectInfoItem(
+          InfoItemType.internalProcessingError,
+          this.id,
+          MinEngineVersionManagerTest.retrieveLatestMinecraftVersion,
+          "Could not retrieve version."
+        )
       );
       return infoItems;
     }
@@ -155,8 +189,8 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
         new ProjectInfoItem(
           InfoItemType.internalProcessingError,
           this.id,
-          501,
-          "Could not latest product retrieve version.",
+          MinEngineVersionManagerTest.parseLatestMinecraftVersion,
+          "Could not process latest product version.",
           undefined,
           ver
         )
@@ -188,7 +222,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  100,
+                  MinEngineVersionManagerTest.behaviorPackMinEngineVersion,
                   "Behavior pack manifest does not define a header/min_engine_version.",
                   pi
                 )
@@ -202,7 +236,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                   new ProjectInfoItem(
                     this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
                     this.id,
-                    110,
+                    MinEngineVersionManagerTest.behaviorPackMinEngineVersionMajorLowerThanCurrent,
                     "Behavior pack manifest (" +
                       bpVer.join(".") +
                       ") has a lower major version number compared to current version (" +
@@ -216,7 +250,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
-                    111,
+                    MinEngineVersionManagerTest.behaviorPackMinEngineVersionMajorHigherThanCurrent,
                     "Behavior pack manifest (" +
                       bpVer.join(".") +
                       ") has a higher major version number compared to current version (" +
@@ -231,7 +265,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                   new ProjectInfoItem(
                     this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
                     this.id,
-                    120,
+                    MinEngineVersionManagerTest.behaviorPackMinEngineVersionMinorLowerThanCurrent,
                     "Behavior pack manifest (" +
                       bpVer.join(".") +
                       ") has a lower minor version number compared to the current version or the previous current minor version (" +
@@ -245,7 +279,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
-                    121,
+                    MinEngineVersionManagerTest.behaviorPackMinEngineVersionMinorHigherThanCurrent,
                     "Behavior pack manifest (" +
                       bpVer.join(".") +
                       ") has a higher minor version number compared to current version (" +
@@ -259,9 +293,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
             }
           }
         }
-      }
-
-      if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
+      } else if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
         await pi.ensureFileStorage();
 
         if (pi.file) {
@@ -277,7 +309,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  200,
+                  MinEngineVersionManagerTest.resourcePackMinEngineVersion,
                   "Resource pack manifest does not define a header/min_engine_version.",
                   pi
                 )
@@ -290,7 +322,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
-                    210,
+                    MinEngineVersionManagerTest.resourcePackMinEngineVersionMajorLowerThanCurrent,
                     "Resource pack manifest (" +
                       rpVer.join(".") +
                       ") has a lower major version number compared to current version (" +
@@ -304,7 +336,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
-                    211,
+                    MinEngineVersionManagerTest.resourcePackMinEngineVersionMajorHigherThanCurrent,
                     "Resource pack manifest (" +
                       rpVer.join(".") +
                       ") has a higher major version number compared to current version (" +
@@ -318,7 +350,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                   new ProjectInfoItem(
                     this.performPlatformVersionValidations ? InfoItemType.error : InfoItemType.recommendation,
                     this.id,
-                    220,
+                    MinEngineVersionManagerTest.resourcePackMinEngineVersionMinorLowerThanCurrent,
                     "Resource pack manifest (" +
                       rpVer.join(".") +
                       ") has a lower minor version number compared to current version or the previous current minor version (" +
@@ -332,7 +364,7 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
-                    221,
+                    MinEngineVersionManagerTest.resourcePackMinEngineVersionMinorHigherThanCurrent,
                     "Resource pack manifest (" +
                       rpVer.join(".") +
                       ") has a higher minor version number compared to current version (" +
@@ -345,27 +377,52 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
             }
           }
         }
+      } else if (pi.itemType === ProjectItemType.skinPackManifestJson) {
+        await pi.ensureFileStorage();
+
+        if (pi.file) {
+          const spManifest = await SkinManifestDefinition.ensureOnFile(pi.file);
+
+          if (spManifest) {
+            foundSpManifest = true;
+          }
+        }
+      } else if (pi.itemType === ProjectItemType.worldTemplateManifestJson) {
+        await pi.ensureFileStorage();
+
+        if (pi.file) {
+          const wtManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.file);
+
+          if (wtManifest) {
+            foundWorldTemplateManifest = true;
+          }
+        }
+      } else if (pi.itemType === ProjectItemType.personaManifestJson) {
+        await pi.ensureFileStorage();
+
+        if (pi.file) {
+          const paManifest = await PersonaManifestDefinition.ensureOnFile(pi.file);
+
+          if (paManifest) {
+            foundPersonaManifest = true;
+          }
+        }
       }
     }
 
-    if (!foundBpManifest) {
+    if (
+      !foundBpManifest &&
+      !foundRpManifest &&
+      !foundSpManifest &&
+      !foundWorldTemplateManifest &&
+      !foundPersonaManifest
+    ) {
       infoItems.push(
         new ProjectInfoItem(
-          InfoItemType.testCompleteSuccess,
+          InfoItemType.testCompleteFail,
           this.id,
-          260,
-          "No behavior pack manifest was found; min engine version check for BP manifests passes."
-        )
-      );
-    }
-
-    if (!foundRpManifest) {
-      infoItems.push(
-        new ProjectInfoItem(
-          InfoItemType.testCompleteSuccess,
-          this.id,
-          263,
-          "No resource pack manifest was found; min engine version check for RP manifests passes."
+          MinEngineVersionManagerTest.noPackManifestFound,
+          "No resource/behavior/skin pack manifest or world template manifest was found."
         )
       );
     }
@@ -375,13 +432,13 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
         new ProjectInfoItem(
           InfoItemType.testCompleteFail,
           this.id,
-          261,
+          MinEngineVersionManagerTest.versionProcessingErrorsFound,
           "Errors found with minimum engine version check."
         )
       );
     } else if (foundError) {
       infoItems.push(
-        new ProjectInfoItem(InfoItemType.testCompleteSuccess, this.id, 262, "Min engine version check passes.")
+        new ProjectInfoItem(InfoItemType.testCompleteSuccess, this.id, 262, "Pack manifest/version checks passes.")
       );
     }
 

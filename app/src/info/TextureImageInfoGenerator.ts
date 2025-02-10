@@ -16,6 +16,8 @@ import ProjectInfoUtilities from "./ProjectInfoUtilities";
 export enum TextureImageInfoGeneratorTest {
   textureImages = 1,
   imageProcessingError = 401,
+  individualTextureMemoryExceedsBudget = 402,
+  totalTextureMemoryExceedsBudget = 403,
 }
 
 export default class TextureImageInfoGenerator implements IProjectInfoGenerator {
@@ -48,6 +50,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
 
     const itemsCopy = project.getItemsCopy();
 
+    let totalTextureMemory = 0;
     for (const projectItem of itemsCopy) {
       if (projectItem.itemType === ProjectItemType.texture) {
         await projectItem.ensureFileStorage();
@@ -82,12 +85,46 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
                 const results = await exifr.parse();
 
                 if (results.ImageWidth && results.ImageHeight) {
+                  const textureMem = Math.pow(2, Math.ceil(Math.log2(results.ImageWidth * results.ImageHeight * 4)));
+
                   textureImagePi.spectrumIntFeature("ImageWidth", results.ImageWidth);
                   textureImagePi.spectrumIntFeature("ImageHeight", results.ImageHeight);
                   textureImagePi.spectrumIntFeature("ImageSize", results.ImageWidth * results.ImageHeight);
+                  textureImagePi.spectrumIntFeature("EstimatedTextureMemory", textureMem);
 
                   if (!isVanilla) {
                     textureImagePi.spectrumIntFeature("NonVanillaImageSize", results.ImageWidth * results.ImageHeight);
+                  }
+
+                  totalTextureMemory += textureMem;
+
+                  // Empirical threshold for loose textures set below 2048*2048 per texture
+                  let individualMemoryBudget = 16000000;
+
+                  if (projectItem.parentItems) {
+                    for (const itemRelationship of projectItem.parentItems) {
+                      if (
+                        itemRelationship.parentItem.itemType === ProjectItemType.terrainTextureCatalogResourceJson ||
+                        itemRelationship.parentItem.itemType === ProjectItemType.itemTextureJson
+                      ) {
+                        // Empirical threshold for atlas textures set below 256*256 per texture
+                        individualMemoryBudget = 200000;
+                        break;
+                      }
+                    }
+                  }
+
+                  if (textureMem > individualMemoryBudget) {
+                    items.push(
+                      new ProjectInfoItem(
+                        InfoItemType.warning,
+                        this.id,
+                        TextureImageInfoGeneratorTest.individualTextureMemoryExceedsBudget,
+                        `Individual texture memory exceeds budget`,
+                        projectItem,
+                        textureMem
+                      )
+                    );
                   }
                 }
               } catch (e: any) {
@@ -108,6 +145,19 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
           }
         }
       }
+    }
+
+    if (totalTextureMemory > 100000000) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.error,
+          this.id,
+          TextureImageInfoGeneratorTest.totalTextureMemoryExceedsBudget,
+          `Total texture memory exceeds budget`,
+          undefined,
+          totalTextureMemory
+        )
+      );
     }
 
     return items;

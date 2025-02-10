@@ -148,6 +148,20 @@ export default class MinecraftUtilities {
     return false;
   }
 
+  static pathLooksLikePersonaPackName(path: string) {
+    let pathCanon = path.toLowerCase();
+
+    pathCanon = pathCanon.replace(/\\/gi, "/");
+    pathCanon = pathCanon.replace(/ /gi, "_");
+    pathCanon = Utilities.ensureEndsWithSlash(Utilities.ensureStartsWithSlash(pathCanon));
+
+    if (pathCanon.indexOf("/persona/") >= 0) {
+      return true;
+    }
+
+    return false;
+  }
+
   static pathLooksLikeWorldFolderName(path: string) {
     let pathCanon = path.toLowerCase();
 
@@ -244,7 +258,12 @@ export default class MinecraftUtilities {
 
   static getVersionArrayFrom(ver: string | number | number[] | undefined) {
     if (typeof ver === "number") {
-      return [ver, 0, 0];
+      if (Math.floor(ver) !== ver) {
+        // deal with decimal numbers that have been observed, e.g., 1.1
+        return [Math.floor(ver), Math.floor((ver - Math.floor(ver)) * 10), 0];
+      } else {
+        return [ver, 0, 0];
+      }
     }
 
     if (ver === undefined) {
