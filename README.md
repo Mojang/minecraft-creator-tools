@@ -8,6 +8,8 @@ See the [changelog](CHANGELOG.md) for detailed updates and notes. If you have is
 
 See the [Project Structure](ProjectStructure.md) file for a look at the structure of the codebase including a tour of major types.
 
+Note that commonly, while working on this, most work is done from the "app" folder; all the default project settings are opened from there.
+
 Please note that, at this time, we are not able to accept pull request contributions from the broader community.
 
 ## Using Creator Tools
