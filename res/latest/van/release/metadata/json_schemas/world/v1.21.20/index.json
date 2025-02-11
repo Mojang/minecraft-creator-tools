@@ -1,0 +1,13 @@
+{
+  "files": [
+    "Feature Rule v1.21.20.json",
+    "Jigsaw v1.21.20.json",
+    "Processor List v1.21.20.json",
+    "Processor Rule v1.21.20.json",
+    "Structure Set v1.21.20.json",
+    "Template Pool v1.21.20.json"
+  ],
+  "folders": [
+    "common"
+  ]
+}

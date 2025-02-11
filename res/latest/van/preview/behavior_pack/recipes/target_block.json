@@ -1,0 +1,33 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:target"
+    },
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      " . ",
+      ".#.",
+      " . "
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:hay_block"
+      },
+      ".": {
+        "item": "minecraft:redstone"
+      }
+    },
+    "unlock": [
+      {
+        "item": "minecraft:redstone"
+      },
+      {
+        "item": "minecraft:hay_block"
+      }
+    ],
+    "result": {
+      "item": "minecraft:target"
+    }
+  }
+}

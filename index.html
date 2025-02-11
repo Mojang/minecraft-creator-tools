@@ -1,0 +1,70 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="./favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#000000"/><meta name="description" content="Minecraft Creator Tools"/><link rel="apple-touch-icon" href="./logo192.png"/><link rel="manifest" href="./manifest.json"/><title>Minecraft Creator Tools</title><script defer="defer" src="./static/js/main.73e52187.js"></script><link href="./static/css/main.c81b41bc.css" rel="stylesheet">  <script type="text/javascript" src="https://js.monitor.azure.com/scripts/c/ms.analytics-web-4.min.js"></script>
+  <script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
+</head>
+<body><noscript>You need to enable JavaScript to run this app.</noscript><div id="cookie-banner"></div>
+    <div id="root"></div>
+    <script>
+        window.creatorToolsSite = {
+          termsOfUseUrl: "https://minecraft.net/eula",
+          privacyUrl: "https://go.microsoft.com/fwlink/?linkid=521839",
+          trademarksUrl: "https://www.microsoft.com/trademarks"
+        };
+
+var siteConsent = null;
+
+window.getUserConsentDetails = function() {
+  if (siteConsent) {
+    return siteConsent.getConsent();
+  }
+
+  return {
+    Required: true,
+    Analytics: true,
+    SocialMedia: false,
+    Advertising: false
+  };
+}
+
+if (WcpConsent) {
+  WcpConsent.init("en-US", "cookie-banner", function (err, _siteConsent) {
+    if (err != undefined) {
+      return error;
+    } else {
+      siteConsent = _siteConsent;    
+      
+      if (oneDS && oneDS.ApplicationInsights && !navigator.globalPrivacyControl) {
+        const analytics = new oneDS.ApplicationInsights();
+
+        analytics.initialize({
+          instrumentationKey: "1e1425454dbc4c25b1be2762598df0b6-7f4669a7-d9f8-4e51-9bba-266dcfc0dc00-7638",
+          disableCookiesUsage: !siteConsent || !siteConsent.getConsent || (siteConsent.isConsentRequired && !siteConsent.getConsent().Analytics),
+          propertyConfiguration: {
+            gpcDataSharingOptIn: false,
+            callback: {
+              userConsentDetails: window.getUserConsentDetails
+            },
+          },
+          webAnalyticsConfiguration: {
+            autoCapture: {
+              scroll: true,
+              pageView: true,
+              onLoad: true,
+              onUnload: true,
+              click: true,
+              scroll: true,
+              resize: true,
+              jsError: true
+            }
+          }
+        }, []);
+      }      
+    }
+  });
+}
+
+window.manageConsent = function() {
+  if(siteConsent && siteConsent.isConsentRequired){
+    siteConsent.manageConsent();
+  }
+}
+    </script></body></html>

@@ -1,0 +1,21 @@
+{
+  "files": [
+    "LICENSE",
+    "README.md"
+  ],
+  "folders": [
+    "addon_starter",
+    "behavior_pack_sample",
+    "custom_blocks",
+    "custom_features",
+    "custom_items",
+    "custom_sounds",
+    "jigsaws",
+    "npc_dialogue_sample",
+    "palm_tree_blocks_and_features",
+    "particles_examples_1.19",
+    "resource_pack_sample",
+    "skinpack",
+    "structure_blocks_sample_behavior_pack"
+  ]
+}

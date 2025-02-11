@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "folders": [
+    "entities",
+    "items",
+    "loot_tables",
+    "recipes",
+    "spawn_rules"
+  ]
+}
