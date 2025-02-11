@@ -102,6 +102,7 @@ export default class BlockActorFactory {
       case "Beehive":
         return new BeehiveBlockActor(rootTagIn);
 
+      case "minecraft:chain_command_block":
       case "CommandBlock":
         return new CommandBlockActor(rootTagIn);
 

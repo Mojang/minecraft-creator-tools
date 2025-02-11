@@ -8,11 +8,13 @@ import ProjectItem from "../app/ProjectItem";
 import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
 import ResourceManifestDefinition from "./ResourceManifestDefinition";
 import SkinManifestDefinition from "./SkinManifestDefinition";
+import PersonaManifestDefinition from "./PersonaManifestDefinition";
 
 export enum PackType {
   resource = 0,
   behavior = 1,
   skin = 2,
+  persona = 3,
 }
 
 export default class Pack {
@@ -21,7 +23,12 @@ export default class Pack {
   folder: IFolder;
   project?: Project;
   projectItem?: ProjectItem;
-  manifest?: BehaviorManifestDefinition | ResourceManifestDefinition | SkinManifestDefinition | undefined;
+  manifest?:
+    | BehaviorManifestDefinition
+    | ResourceManifestDefinition
+    | SkinManifestDefinition
+    | PersonaManifestDefinition
+    | undefined;
 
   constructor(folderIn: IFolder, packTypeIn: PackType) {
     this.folder = folderIn;
@@ -47,6 +54,8 @@ export default class Pack {
       this.manifest = await BehaviorManifestDefinition.ensureOnFile(this.manifestFile);
     } else if (this.type === PackType.skin) {
       this.manifest = await SkinManifestDefinition.ensureOnFile(this.manifestFile);
+    } else if (this.type === PackType.persona) {
+      this.manifest = await PersonaManifestDefinition.ensureOnFile(this.manifestFile);
     } else {
       this.manifest = await ResourceManifestDefinition.ensureOnFile(this.manifestFile);
     }

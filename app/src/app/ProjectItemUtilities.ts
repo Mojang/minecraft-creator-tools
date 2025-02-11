@@ -81,8 +81,6 @@ export default class ProjectItemUtilities {
       return { itemType: ProjectItemType.particleJson, packType: PackType.resource };
     } else if (firstHundred.indexOf('"render_controllers"') >= 0) {
       return { itemType: ProjectItemType.renderControllerJson, packType: PackType.resource };
-    } else if (firstHundred.indexOf('"block_culling"') >= 0) {
-      return { itemType: ProjectItemType.blockCulling, packType: PackType.resource };
     } else if (firstHundred.indexOf('"namespace"') >= 0) {
       return { itemType: ProjectItemType.uiJson, packType: PackType.resource };
     } else if (firstHundred.indexOf('"sound_definitions"') >= 0) {
@@ -374,7 +372,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.engineOrderingJson:
       case ProjectItemType.commandSetDefinitionJson:
       case ProjectItemType.skinPackManifestJson:
-      case ProjectItemType.blockCulling:
+      case ProjectItemType.personaManifestJson:
       case ProjectItemType.vsCodeLaunchJson:
       case ProjectItemType.vsCodeTasksJson:
       case ProjectItemType.vsCodeSettingsJson:
@@ -534,8 +532,6 @@ export default class ProjectItemUtilities {
         return "Particle";
       case ProjectItemType.renderControllerJson:
         return "Render controller";
-      case ProjectItemType.blockCulling:
-        return "Block culling";
       case ProjectItemType.uiJson:
         return "User interface";
       case ProjectItemType.languagesCatalogResourceJson:
@@ -608,6 +604,8 @@ export default class ProjectItemUtilities {
         return "Command definition";
       case ProjectItemType.skinPackManifestJson:
         return "Skin pack manifest";
+      case ProjectItemType.personaManifestJson:
+        return "Persona manifest";
       case ProjectItemType.blockTypeBaseJs:
         return "Block type base JavaScript";
       case ProjectItemType.blockTypeBaseTs:

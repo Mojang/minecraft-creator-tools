@@ -92,7 +92,7 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
-    "testSuccessCount": 11,
+    "testSuccessCount": 10,
     "testFailCount": 1,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
@@ -204,13 +204,6 @@
         "260": {
           "title": "260",
           "defaultMessage": "No script module was found; script module version check passes.",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "MINENGINEVER": {
-        "263": {
-          "title": "263",
-          "defaultMessage": "No resource pack manifest was found; min engine version check for RP manifests passes.",
           "testCompleteSuccesses": 1
         }
       },
@@ -570,11 +563,6 @@
       "iTp": 0,
       "gId": "SCRIPTMODULE",
       "gIx": 260
-    },
-    {
-      "iTp": 0,
-      "gId": "MINENGINEVER",
-      "gIx": 263
     },
     {
       "iTp": 0,

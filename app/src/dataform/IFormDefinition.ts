@@ -4,7 +4,7 @@
 import IField from "./IField";
 
 export default interface IFormDefinition {
-  id?: string;
+  id: string;
   title?: string;
   description?: string;
   fields: IField[];

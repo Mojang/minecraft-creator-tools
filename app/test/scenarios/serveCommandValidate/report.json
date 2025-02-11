@@ -409,6 +409,13 @@
         "Min": 4096,
         "Average": 5461
       },
+      "Texture Images EstimatedTextureMemory": {
+        "Instance Count": 3,
+        "Total": 65536,
+        "Max": 32768,
+        "Min": 16384,
+        "Average": 21845
+      },
       "Texture Images NonVanillaImageSize": {
         "Instance Count": 3,
         "Total": 16384,
@@ -1981,6 +1988,13 @@
           "Max": 8192,
           "Min": 4096,
           "Average": 5461
+        },
+        "EstimatedTextureMemory": {
+          "Instance Count": 3,
+          "Total": 65536,
+          "Max": 32768,
+          "Min": 16384,
+          "Average": 21845
         },
         "NonVanillaImageSize": {
           "Instance Count": 3,

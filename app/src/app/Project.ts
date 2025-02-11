@@ -64,6 +64,7 @@ export enum FolderContext {
   resourcePackSubPack = 9,
   metaData = 10,
   libFolder = 11,
+  persona = 12,
 }
 
 export const ProjectTargetStrings = [
@@ -1748,6 +1749,11 @@ export default class Project {
     } else if (MinecraftUtilities.pathLooksLikeSkinPackName(folderPathA) && folderContext === FolderContext.unknown) {
       folderContext = FolderContext.skinPack;
     } else if (
+      MinecraftUtilities.pathLooksLikePersonaPackName(folderPathA) &&
+      folderContext === FolderContext.unknown
+    ) {
+      folderContext = FolderContext.persona;
+    } else if (
       MinecraftUtilities.pathLooksLikeWorldFolderName(folderPathA) &&
       folderContext === FolderContext.unknown
     ) {
@@ -1763,6 +1769,21 @@ export default class Project {
 
       if (this.#docsContainer === null) {
         this.#docsContainer = folder.parentFolder;
+      }
+    }
+
+    if (
+      folderContext === FolderContext.unknown &&
+      (folder.files["manifest.json"] || folder.files["pack_manifest.json"]) &&
+      !folder.files["level.dat"] &&
+      !folder.files["levelname.txt"]
+    ) {
+      for (const folderName in folder.folders) {
+        if (folderName) {
+          if (folderName.toLowerCase() === "persona" || folderName.toLowerCase().startsWith("persona_")) {
+            folderContext = FolderContext.persona;
+          }
+        }
       }
     }
 
@@ -1912,6 +1933,9 @@ export default class Project {
               } else if (folderContext === FolderContext.skinPack) {
                 newPiType = ProjectItemType.skinPackManifestJson;
                 tag = "skinpackmanifest";
+              } else if (folderContext === FolderContext.persona) {
+                newPiType = ProjectItemType.personaManifestJson;
+                tag = "personapackmanifest";
               } else if (folderContext === FolderContext.world) {
                 newPiType = ProjectItemType.worldTemplateManifestJson;
                 tag = "worldtemplatemanifest";
@@ -3822,6 +3846,12 @@ export default class Project {
         if (file && file.parentFolder) {
           this.ensurePackByFolder(file.parentFolder, PackType.skin);
         }
+      } else if (item.itemType === ProjectItemType.personaManifestJson) {
+        const file = item.file;
+
+        if (file && file.parentFolder) {
+          this.ensurePackByFolder(file.parentFolder, PackType.persona);
+        }
       }
     }
   }
@@ -3935,6 +3965,8 @@ export default class Project {
       itemType = ProjectItemType.resourcePackFolder;
     } else if (packType === PackType.skin) {
       itemType = ProjectItemType.skinPackFolder;
+    } else if (packType === PackType.persona) {
+      itemType = ProjectItemType.personaPackFolder;
     }
 
     const folderPath = folder.getFolderRelativePath(this.projectFolder);

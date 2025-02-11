@@ -3,7 +3,7 @@
 
 import IGitHubInfo from "./IGitHubInfo";
 
-export const MaxItemTypes = 125;
+export const MaxItemTypes = 128;
 
 export enum ProjectItemCategory {
   assets,
@@ -141,7 +141,9 @@ export enum ProjectItemType {
   prettierRcJson = 122,
   skinCatalogJson = 123,
   tagsMetadata = 124,
-  blockCulling = 125,
+  personaManifestJson = 125,
+  personaPackFolder = 126,
+  blockCulling = 127,
 }
 
 export enum ProjectItemStorageType {
