@@ -7,10 +7,6 @@ import IProjectInfoItemGenerator from "./IProjectItemInfoGenerator";
 
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
-import ProjectItemUtilities from "../app/ProjectItemUtilities";
-import { InfoItemType } from "./IInfoItemData";
-import Database from "../minecraft/Database";
-import { ProjectItemType } from "../app/IProjectItemData";
 
 export enum UnlinkedItemInfoGeneratorTest {
   unlinkedItemIsNotUsed = 191,
@@ -32,6 +28,8 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
 
   async generate(projectItem: ProjectItem, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
+    /*
+    Not comprehensive enough to cover all the cases... yet.
 
     if (projectItem.unfulfilledRelationships) {
       for (const rel of projectItem.unfulfilledRelationships) {
@@ -53,7 +51,7 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
           // UNLINK204
           items.push(
             new ProjectInfoItem(
-              InfoItemType.error,
+              InfoItemType.warning,
               this.id,
               UnlinkedItemInfoGeneratorTest.itemNotFoundInPack,
               `Link to ` +
@@ -78,7 +76,7 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
             // UNLINK191
             items.push(
               new ProjectInfoItem(
-                InfoItemType.error,
+                InfoItemType.warning,
                 this.id,
                 UnlinkedItemInfoGeneratorTest.unlinkedItemIsNotUsed,
                 ProjectItemUtilities.getDescriptionForType(projectItem.itemType) +
@@ -90,6 +88,7 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
         }
       }
     }
+    */
 
     return items;
   }
