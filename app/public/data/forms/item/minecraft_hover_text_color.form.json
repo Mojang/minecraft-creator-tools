@@ -1,0 +1,12 @@
+{
+  "description": "Determines the color of the item name when hovering over it.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "value",
+      "description": "The color of the item hover text.",
+      "dataType": 2
+    }
+  ],
+  "title": "Hover Text Color"
+}

@@ -1,0 +1,12 @@
+{
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "identifier",
+      "description": "Identifier of the Jigsaw Structure.",
+      "dataType": 2
+    }
+  ],
+  "description": "JigsawStructureDefinition Description",
+  "title": "JigsawStructureDefinition Description"
+}

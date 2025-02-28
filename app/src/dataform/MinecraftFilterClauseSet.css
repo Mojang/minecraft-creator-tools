@@ -1,0 +1,59 @@
+.mifics-outer {
+  display: table;
+  margin-top: 2px !important;
+}
+
+.mifics-inner {
+  display: table-row;
+}
+
+.mifics-cell {
+  display: table-cell;
+}
+
+.mifics-input {
+  width: 60px;
+  max-width: 60px;
+}
+
+.mifics-input input {
+  min-width: 55px;
+  width: 52px;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+}
+
+.mifics-ambient {
+  display: table-cell;
+  width: 50px;
+  max-width: 50px;
+}
+
+.mifics-ambient button {
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  padding: 0px;
+}
+
+.mifics-toggledExtendedButton {
+  border: solid 1px #606060;
+  background-color: #b0b0b0;
+  padding: 2px;
+  margin-top: 2px;
+  margin-left: 3px;
+  margin-right: 1px;
+}
+
+.mifics-extendedButton {
+  border: solid 1px #606060;
+  padding: 2px;
+  margin-top: 2px;
+  margin-left: 3px;
+  margin-right: 1px;
+}
+
+.mifics-buttonLabel {
+  padding-left: 6px;
+  padding-right: 2px;
+}

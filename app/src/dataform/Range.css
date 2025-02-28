@@ -8,6 +8,10 @@
   display: table-row;
 }
 
+.rng-label {
+  font-size: large;
+}
+
 .rng-cell {
   display: table-cell;
 }

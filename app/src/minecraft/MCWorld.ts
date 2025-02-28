@@ -1711,6 +1711,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       } else if (keyname.startsWith("InvasionRuntime")) {
       } else if (keyname.startsWith("MapRevealRuntime")) {
       } else if (keyname.startsWith("~local_player")) {
+      } else if (keyname.startsWith("RealmsStoriesData")) {
       } else if (keyname.startsWith("mobevents")) {
       } else if (keyname.startsWith("game_flatworldlayers")) {
       } else if (keyname.startsWith("dimension")) {
@@ -1843,9 +1844,9 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       } else if (keyValue === false) {
         // console.log("Nulling record '" + keyname + "'");
       } else if (keyValue !== undefined) {
-        this._pushError("Unknown record type: '" + keyname + "'", this.name);
+        // this._pushError("Unknown record type: '" + keyname + "'", this.name);
       } else {
-        this._pushError("Unknown record.", this.name);
+        // this._pushError("Unknown record.", this.name);
       }
     }
 

@@ -97,7 +97,7 @@ export default class AudioItemProperties extends Component<IAudioItemPropertiesP
   }
 
   async _updateManager(setState: boolean) {
-    await Database.ensureFormLoaded("audio_item_properties");
+    await Database.ensureFormLoaded("resource", "audio_item_properties");
 
     this._doUpdate(setState);
   }
@@ -184,7 +184,7 @@ export default class AudioItemProperties extends Component<IAudioItemPropertiesP
       return <div>Loading...</div>;
     }
 
-    const form = Database.getForm("audio_item_properties");
+    const form = Database.getForm("resource", "audio_item_properties");
 
     return (
       <div className="aipro-area">

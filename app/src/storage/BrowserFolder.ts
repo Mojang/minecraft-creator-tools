@@ -97,6 +97,10 @@ export default class BrowserFolder extends FolderBase implements IFolder {
     return result;
   }
 
+  async deleteAllFolderContents(): Promise<boolean> {
+    throw new Error("Deletion of all folder contents at " + this.fullPath + " is not supported.");
+  }
+
   ensureFolder(name: string): BrowserFolder {
     const nameCanon = StorageUtilities.canonicalizeName(name);
 

@@ -1,0 +1,19 @@
+{
+  "fields": [],
+  "restrictions": [
+    {
+      "id": "minecraft:wandering_trader",
+      "type": "entity_type"
+    }
+  ],
+  "description": "Manages the entity's ability to trade.",
+  "title": "Managed Wandering Trader",
+  "samples": {
+    "/vanilla/behavior_pack/entities/wandering_trader.json": [
+      {
+        "path": "/minecraft:entity/component_groups/managed/minecraft:managed_wandering_trader/",
+        "content": {}
+      }
+    ]
+  }
+}

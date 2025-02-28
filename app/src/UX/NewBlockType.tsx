@@ -37,14 +37,14 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
   }
 
   async _ensureLoaded() {
-    await Database.loadDefaultBehaviorPack();
+    await Database.getReleaseVanillaBehaviorPackFolder();
 
-    if (Database.defaultBehaviorPackFolder === undefined || Database.defaultBehaviorPackFolder === null) {
+    if (Database.releaseVanillaBehaviorPackFolder === undefined || Database.releaseVanillaBehaviorPackFolder === null) {
       Log.fail("Unexpectedly could not load default BP folder.");
       return;
     }
 
-    const blocksFolder = Database.defaultBehaviorPackFolder.ensureFolder("blocks");
+    const blocksFolder = Database.releaseVanillaBehaviorPackFolder.ensureFolder("blocks");
 
     await blocksFolder.load();
 
@@ -91,7 +91,7 @@ export default class NewBlockType extends Component<INewBlockTypeProps, INewBloc
   render() {
     if (
       this.state === null ||
-      Database.defaultBehaviorPackFolder === null ||
+      Database.releaseVanillaBehaviorPackFolder === null ||
       this.state.blockTypesFolder === undefined ||
       this.props.carto.gallery === undefined
     ) {

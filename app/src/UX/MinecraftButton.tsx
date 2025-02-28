@@ -5,7 +5,7 @@ import { Button, ButtonProps, ComponentEventHandler, ThemeInput } from "@fluentu
 interface IMinecraftButtonProps {
   theme: ThemeInput<any>;
   className?: string;
-  onClick: ComponentEventHandler<IMinecraftButtonProps>;
+  onClick?: ComponentEventHandler<IMinecraftButtonProps>;
   children: ReactChild[] | ReactChild;
 }
 

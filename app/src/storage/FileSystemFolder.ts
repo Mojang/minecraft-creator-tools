@@ -190,6 +190,10 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
     throw new Error("Deletion of this folder " + this.fullPath + " is not supported.");
   }
 
+  async deleteAllFolderContents(): Promise<boolean> {
+    throw new Error("Deletion of all folder contents at " + this.fullPath + " is not supported.");
+  }
+
   async _removeFileExistence(fileName: string) {
     const handle = await this.getHandle();
 

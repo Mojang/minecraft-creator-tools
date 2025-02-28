@@ -1,8 +1,8 @@
-.cose-area {
+.bcose-area {
   width: calc(100% - 2px);
   min-width: calc(100% - 2px);
   max-width: calc(100% - 2px);
-  padding-top: 12px;
+  padding-top: 2px;
   padding-bottom: 12px;
   padding-right: 12px;
   display: grid;
@@ -10,12 +10,12 @@
   grid-template-columns: 280px 1fr;
 }
 
-.cose-header {
+.bcose-header {
   font-size: 12pt;
   font-size: 17pt;
 }
 
-.cose-componentForm {
+.bcose-componentForm {
   margin-bottom: 12px;
   padding: 3px;
   padding-left: 10px;
@@ -23,7 +23,7 @@
   min-height: 220px;
 }
 
-.cose-componentWrapper {
+.bcose-componentWrapper {
   margin-top: 1px;
   margin-bottom: 1px;
 
@@ -32,43 +32,44 @@
   font-size: small;
 }
 
-.cose-componentForm .ui-form__input {
+.bcose-componentForm .ui-form__input {
   padding-top: 3px;
   margin-bottom: 4px;
 }
 
-.cose-componentForm .ui-form__checkbox {
+.bcose-componentForm .ui-form__checkbox {
   padding-top: 3px;
   margin-top: 0px !important;
   margin-bottom: 0px !important;
 }
 
-.cose-componentForm .pu > :last-child {
+.bcose-componentForm .pu > :last-child {
   margin-top: 0px;
 }
-.cose-componentForm .pt > :not(:last-child) {
+
+.bcose-componentForm .pt > :not(:last-child) {
   margin-bottom: 0px;
 }
 
-.cose-componentHeader {
+.bcose-componentHeader {
   padding-top: 20px;
   font-size: 11pt;
   padding-bottom: 14px;
 }
 
-.cose-noeditor {
+.bcose-noeditor {
   padding: 10px;
 }
 
-.cose-title {
+.bcose-title {
   width: 200px;
 }
 
-.cose-extraArea {
+.bcose-extraArea {
   margin-bottom: 5px;
 }
 
-.cose-componentList {
+.bcose-componentList {
   grid-column: 1;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -77,16 +78,16 @@
   border-top: solid 1px;
 }
 
-.cose-componentList li {
+.bcose-componentList li {
   padding-left: 5px;
   padding-right: 2px;
 }
 
-.cose-componentList .ui-list__itemcontent {
+.bcose-componentList .ui-list__itemcontent {
   margin-right: 3px;
 }
 
-.cose-componentBin {
+.bcose-componentBin {
   padding: 4px;
   height: 100%;
   min-height: 200px;
@@ -99,11 +100,11 @@
   border-top: solid 1px;
 }
 
-.cose-componentBin:first-child {
+.bcose-componentBin:first-child {
   margin-top: 1px;
 }
 
-.cose-componentArea {
+.bcose-componentArea {
   display: grid;
   padding: 3px;
   grid-column-start: 1;
@@ -111,18 +112,18 @@
   grid-template-columns: 190px 1fr 100px;
 }
 
-.cose-titleArea {
+.bcose-titleArea {
   grid-column: 2;
   grid-row: 1;
   padding-top: 5px;
 }
 
-.cose-toolBarArea {
+.bcose-toolBarArea {
   grid-column: 3;
   grid-row: 1;
 }
 
-.cose-extraArea {
+.bcose-extraArea {
   grid-column: 1;
   grid-row: 1;
   padding-left: 5px;

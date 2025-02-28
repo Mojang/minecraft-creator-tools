@@ -1,0 +1,24 @@
+{
+  "fields": [
+    {
+      "id": "event",
+      "title": "event",
+      "description": "event",
+      "dataType": 2
+    },
+    {
+      "id": "target",
+      "title": "enum SharedTypes_Legacy_FilterSubject",
+      "description": "enum SharedTypes_Legacy_FilterSubject",
+      "dataType": 2
+    },
+    {
+      "id": "condition",
+      "title": "condition",
+      "description": "condition",
+      "dataType": 16
+    }
+  ],
+  "description": "Trigger",
+  "title": "Trigger"
+}

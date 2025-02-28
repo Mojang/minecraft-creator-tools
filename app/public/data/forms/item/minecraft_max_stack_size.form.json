@@ -1,0 +1,189 @@
+{
+  "title": "Max Stack Size",
+  "description": "Determines how many of an item can be stacked together.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "value",
+      "description": "How many of an item that can be stacked together.",
+      "defaultValue": 64,
+      "dataType": 0
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/items/beetroot_soup.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/black_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/blue_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/brown_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/cyan_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/gray_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/green_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/honey_bottle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 16
+      }
+    ],
+    "/vanilla/behavior_pack/items/light_blue_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/light_gray_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/lime_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/magenta_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/mushroom_stew.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/orange_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/pink_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/purple_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/rabbit_stew.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/red_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/suspicious_stew.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/white_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/vanilla/behavior_pack/items/yellow_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/crown.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/goo.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 16
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_boots.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_helm.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_leggings.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 1
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/wrench.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:max_stack_size/",
+        "content": 16
+      }
+    ]
+  }
+}

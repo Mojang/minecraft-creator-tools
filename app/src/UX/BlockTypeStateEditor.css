@@ -1,0 +1,129 @@
+.btse-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-right: 12px;
+  display: grid;
+  max-width: 590px;
+  grid-template-columns: 280px 1fr;
+}
+
+.btse-header {
+  font-size: 12pt;
+  font-size: 17pt;
+}
+
+.btse-componentForm {
+  margin-bottom: 12px;
+  padding: 3px;
+  padding-left: 10px;
+  display: inline-grid;
+  min-height: 220px;
+}
+
+.btse-componentWrapper {
+  margin-top: 1px;
+  margin-bottom: 1px;
+
+  padding: 10px 6px 10px 6px;
+  border: 2px outset;
+  font-size: small;
+}
+
+.btse-componentForm .ui-form__input {
+  padding-top: 3px;
+  margin-bottom: 4px;
+}
+
+.btse-componentForm .ui-form__checkbox {
+  padding-top: 3px;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+.btse-componentForm .pu > :last-child {
+  margin-top: 0px;
+}
+.btse-componentForm .pt > :not(:last-child) {
+  margin-bottom: 0px;
+}
+
+.btse-componentHeader {
+  padding-top: 20px;
+  font-size: 11pt;
+  padding-bottom: 14px;
+}
+
+.btse-noeditor {
+  padding: 10px;
+}
+
+.btse-title {
+  width: 200px;
+}
+
+.btse-extraArea {
+  margin-bottom: 5px;
+}
+
+.btse-componentList {
+  grid-column: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border-left: solid 1px;
+  border-bottom: solid 1px;
+  border-top: solid 1px;
+}
+
+.btse-componentList li {
+  padding-left: 5px;
+  padding-right: 2px;
+}
+
+.btse-componentList .ui-list__itemcontent {
+  margin-right: 3px;
+}
+
+.btse-componentBin {
+  padding: 4px;
+  height: 100%;
+  min-height: 200px;
+  vertical-align: top;
+  grid-column: 2;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border-right: solid 1px;
+  border-bottom: solid 1px;
+  border-top: solid 1px;
+}
+
+.btse-componentBin:first-child {
+  margin-top: 1px;
+}
+
+.btse-componentArea {
+  display: grid;
+  padding: 3px;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-template-columns: 190px 1fr 100px;
+}
+
+.btse-titleArea {
+  grid-column: 2;
+  grid-row: 1;
+  padding-top: 5px;
+}
+
+.btse-toolBarArea {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.btse-extraArea {
+  grid-column: 1;
+  grid-row: 1;
+  padding-left: 5px;
+}

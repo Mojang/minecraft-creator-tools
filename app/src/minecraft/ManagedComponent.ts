@@ -25,10 +25,28 @@ export class ManagedComponent implements IManagedComponent {
   }
 
   getProperty(id: string) {
+    if (!this._data) {
+      return undefined;
+    }
+
     return (this._data as any)[id] as any;
   }
 
-  setProperty(id: string, value: any) {
-    (this._data as any)[id] = value;
+  setProperty(propertyId: string, value: any) {
+    if (typeof this._data === "string") {
+      if (this.id === "minecraft:geometry") {
+        this._data = {
+          identifier: this._data,
+        };
+      } else {
+        this._data = {
+          value: this._data,
+        };
+      }
+    }
+
+    if (this._data && typeof this._data !== "string") {
+      (this._data as any)[propertyId] = value;
+    }
   }
 }

@@ -103,6 +103,10 @@ export default class Folder extends FolderBase implements IFolder {
     throw new Error("Deletion of this folder " + this.fullPath + " is not supported.");
   }
 
+  async deleteAllFolderContents(): Promise<boolean> {
+    throw new Error("Deletion of all folder contents at " + this.fullPath + " is not supported.");
+  }
+
   _addExistingFolder(folder: Folder) {
     const nameCanon = StorageUtilities.canonicalizeName(folder.name);
 

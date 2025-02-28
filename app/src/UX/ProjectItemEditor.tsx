@@ -24,6 +24,9 @@ import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ProjectInfoDisplay from "./ProjectInfoDisplay";
 import EntityTypeResourceEditor from "./EntityTypeResourceEditor";
 import AudioManager from "./AudioManager";
+import EntityTypeEditor from "./EntityTypeEditor";
+import BlockTypeEditor from "./BlockTypeEditor";
+import ItemTypeEditor from "./ItemTypeEditor";
 
 enum ProjectItemEditorDirtyState {
   clean = 0,
@@ -182,6 +185,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         }
 
         const projItem = this.props.activeProjectItem;
+        const showRaw = this.props.forceRawView || ep === ProjectEditPreference.raw;
 
         if (file.type === "js" || file.type === "ts" || file.type === "mjs") {
           let pref = this.props.project.preferredScriptLanguage;
@@ -287,6 +291,45 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               setActivePersistable={this._handleNewChildPersistable}
             />
           );
+        } else if (file.type === "json" && projItem.itemType === ProjectItemType.entityTypeBehavior && !showRaw) {
+          interior = (
+            <EntityTypeEditor
+              project={this.props.project}
+              carto={this.props.carto}
+              readOnly={this.props.readOnly}
+              heightOffset={this.props.heightOffset}
+              theme={this.props.theme}
+              file={file}
+              item={this.props.activeProjectItem}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
+        } else if (file.type === "json" && projItem.itemType === ProjectItemType.blockTypeBehavior && !showRaw) {
+          interior = (
+            <BlockTypeEditor
+              project={this.props.project}
+              carto={this.props.carto}
+              readOnly={this.props.readOnly}
+              heightOffset={this.props.heightOffset}
+              theme={this.props.theme}
+              file={file}
+              item={this.props.activeProjectItem}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
+        } else if (file.type === "json" && projItem.itemType === ProjectItemType.itemTypeBehavior && !showRaw) {
+          interior = (
+            <ItemTypeEditor
+              project={this.props.project}
+              carto={this.props.carto}
+              readOnly={this.props.readOnly}
+              heightOffset={this.props.heightOffset}
+              theme={this.props.theme}
+              file={file}
+              item={this.props.activeProjectItem}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
         } else if (
           file.type === "json" &&
           projItem.itemType === ProjectItemType.entityTypeResource &&
@@ -306,7 +349,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           file.type === "json" &&
           (projItem.itemType === ProjectItemType.contentIndexJson ||
             projItem.itemType === ProjectItemType.contentReportJson) &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
+          !showRaw
         ) {
           interior = (
             <ProjectInfoDisplay
@@ -319,11 +362,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               allInfoSetGenerated={this.props.project.infoSet.completedGeneration}
             />
           );
-        } else if (
-          file.type === "json" &&
-          projItem.itemType === ProjectItemType.dataForm &&
-          !(this.props.forceRawView || ep === ProjectEditPreference.raw)
-        ) {
+        } else if (file.type === "json" && projItem.itemType === ProjectItemType.dataForm && !showRaw) {
           interior = (
             <DataFormEditor
               carto={this.props.carto}

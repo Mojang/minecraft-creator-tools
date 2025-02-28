@@ -2,15 +2,20 @@ import { Component } from "react";
 import IFileProps from "./IFileProps";
 import IFile from "../storage/IFile";
 import "./ItemTypeEditor.css";
-import IPersistable from "./IPersistable";
 import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
 import Database from "../minecraft/Database";
-import EntityTypeComponentSetEditor from "./EntityTypeComponentSetEditor";
 import { ThemeInput } from "@fluentui/styles";
+import ProjectItem from "../app/ProjectItem";
+import ItemTypeComponentSetEditor from "./ItemTypeComponentSetEditor";
+import Project from "../app/Project";
+import Carto from "../app/Carto";
 
 interface IItemTypeEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
+  item: ProjectItem;
+  project: Project;
+  carto: Carto;
   theme: ThemeInput<any>;
 }
 
@@ -131,10 +136,10 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
       this.props.setActivePersistable(this);
     }
 
-    const et = this.state.fileToEdit.manager as ItemTypeBehaviorDefinition;
+    const itbd = this.state.fileToEdit.manager as ItemTypeBehaviorDefinition;
 
-    if (et.data === undefined) {
-      return <div>Loading behavior pack...</div>;
+    if (itbd.data === undefined) {
+      return <div className="ite-loading">Loading...</div>;
     }
 
     return (
@@ -145,14 +150,16 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
           maxHeight: height,
         }}
       >
-        <div className="ite-header">{et.id}</div>
+        <div className="ite-header">{itbd.id}</div>
 
-        <div className="ite-componentHeader">default components:</div>
         <div>
-          <EntityTypeComponentSetEditor
-            componentSetItem={et}
+          <ItemTypeComponentSetEditor
+            itemTypeItem={itbd}
             theme={this.props.theme}
             isDefault={true}
+            project={this.props.project}
+            carto={this.props.carto}
+            isVisualsMode={false}
             heightOffset={this.props.heightOffset + 80}
           />
         </div>

@@ -71,10 +71,10 @@ export default class DocumentedCommandEditor extends Component<
   async doLoad() {
     await this.props.docCommand.load();
 
-    await Database.ensureFormLoaded("documented_command");
-    await Database.ensureFormLoaded("command_overload");
-    await Database.ensureFormLoaded("command_argument");
-    await Database.ensureFormLoaded("command_value");
+    await Database.ensureFormLoaded("documentation", "documented_command");
+    await Database.ensureFormLoaded("command", "overload");
+    await Database.ensureFormLoaded("command", "argument");
+    await Database.ensureFormLoaded("command", "value");
 
     this.setState({
       docCommandToEdit: this.state.docCommandToEdit,
@@ -106,7 +106,7 @@ export default class DocumentedCommandEditor extends Component<
     }
 
     const dcommand = this.props.docCommand;
-    const form = Database.getForm("documented_command");
+    const form = Database.getForm("documentation", "command");
 
     const coreForms: any[] = [];
     const localEnumForms: any[] = [];
@@ -189,7 +189,7 @@ export default class DocumentedCommandEditor extends Component<
             id: "overloads",
             title: "Overloads",
             allowCreateDelete: false,
-            subForm: Database.getForm("command_overload"),
+            subForm: Database.getForm("command", "overload"),
             subFields: overloadSubfields,
             objectArrayToSubFieldKey: "id",
             matchObjectArrayToSubFieldKey: true,
@@ -199,7 +199,7 @@ export default class DocumentedCommandEditor extends Component<
           infoForm.fields.push({
             id: "arguments",
             title: "Arguments",
-            subForm: Database.getForm("command_argument"),
+            subForm: Database.getForm("command", "argument"),
             subFields: argumentSubfields,
             objectArrayToSubFieldKey: "name",
             matchObjectArrayToSubFieldKey: true,
@@ -233,7 +233,7 @@ export default class DocumentedCommandEditor extends Component<
             infoForm.fields.push({
               id: "values",
               title: "Values",
-              subForm: Database.getForm("command_value"),
+              subForm: Database.getForm("command", "value"),
               subFields: valueSubfields,
               objectArrayToSubFieldKey: "name",
               matchObjectArrayToSubFieldKey: true,

@@ -1042,6 +1042,17 @@ export default class StorageUtilities {
     }
   }
 
+  public static isPathRiskyForDelete(path: string) {
+    path = path.toLowerCase().trim();
+
+    if (path.indexOf("system32") >= 0 || path.indexOf("program files") >= 0 || path.indexOf("programdata") >= 0) {
+      return true;
+    }
+
+    // a very crude way to ensure this code never removes c:\ or c:\my documents or whatever or something elemental.
+    return Utilities.countChar(path, "/") + Utilities.countChar(path, "\\") < 4;
+  }
+
   public static getJsonObject(file: IFile): any | undefined {
     if (!file.content) {
       return undefined;
@@ -1275,7 +1286,9 @@ export default class StorageUtilities {
 
     let utf8Encode = new TextEncoder();
 
-    const base64 = Utilities.arrayBufferToBase64(utf8Encode.encode(path)).replace(/\//gi, " ").replace(/=/gi, "_");
+    const base64 = Utilities.arrayBufferToBase64((utf8Encode as any).encode(path))
+      .replace(/\//gi, " ")
+      .replace(/=/gi, "_");
 
     return base64;
   }

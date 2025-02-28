@@ -2400,6 +2400,11 @@ export default class Project {
               ) {
                 newJsonType = ProjectItemType.blockCulling;
               } else if (
+                folderContext === FolderContext.behaviorPack &&
+                folderPathLower.indexOf("/item_catalog/crafting_item_catalog") >= 0
+              ) {
+                newJsonType = ProjectItemType.craftingItemCatalog;
+              } else if (
                 (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
                 (projectPath.endsWith("terrain_texture.json") || projectPath.endsWith("terrain_textures.json"))
               ) {

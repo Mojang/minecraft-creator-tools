@@ -28,7 +28,7 @@ interface IFunctionEditorProps {
   readOnly: boolean;
   preferredTextSize: number;
   carto: Carto;
-  onFilterTextChanged?: (newFilterText: string) => void;
+  onCommandTextChanged?: (newCommandText: string) => void;
   onUpdatePreferredTextSize?: (newSize: number) => void;
   onUpdateContent?: (newContent: string) => void;
 }
@@ -177,9 +177,9 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
 
     newValue = newValue.trim();
 
-    if (this.props.onFilterTextChanged) {
+    if (this.props.onCommandTextChanged) {
       if (!newValue.startsWith("/")) {
-        this.props.onFilterTextChanged(newValue);
+        this.props.onCommandTextChanged(newValue);
       }
     }
   }

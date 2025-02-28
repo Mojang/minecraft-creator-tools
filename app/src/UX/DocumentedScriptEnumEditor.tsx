@@ -73,7 +73,7 @@ export default class DocumentedScriptEnumEditor extends Component<
   async doLoad() {
     await this.props.docScriptEnum.load();
 
-    await Database.ensureFormLoaded("documented_script_enum");
+    await Database.ensureFormLoaded("documentation", "script_enum");
 
     this.setState({
       docScriptEnumToEdit: this.state.docScriptEnumToEdit,
@@ -107,7 +107,7 @@ export default class DocumentedScriptEnumEditor extends Component<
       return <div>Loading...</div>;
     }
 
-    const form = Database.getForm("documented_script_enum");
+    const form = Database.getForm("documentation", "script_enum");
 
     if (!form) {
       return <div>Loading...</div>;

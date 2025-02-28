@@ -1,0 +1,20 @@
+.btac-area {
+  height: 400px;
+}
+
+.btac-mainArea {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+}
+
+.btac-list {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: solid 1px;
+}
+
+.btac-description {
+  grid-column: 2;
+  padding: 8px;
+}

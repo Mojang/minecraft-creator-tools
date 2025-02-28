@@ -5,6 +5,10 @@
   overflow-y: auto;
 }
 
+.ite-loading {
+  padding: 10px;
+}
+
 .ite-headerTransition {
   background-position-x: left;
   background-repeat: repeat-x;

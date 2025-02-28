@@ -12,7 +12,8 @@ import ScriptGen from "../script/ScriptGen";
 import ManagedComponentGroup from "./ManagedComponentGroup";
 import IManagedComponent from "./IManagedComponent";
 import { ManagedComponent } from "./ManagedComponent";
-import ManagedEvent from "./ManagedEvent";
+import IEventAction from "./IEventAction";
+import IEventActionSet from "./IEventActionSet";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
@@ -22,6 +23,74 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
 import SpawnRulesBehaviorDefinition from "./SpawnRulesBehaviorDefinition";
 import IDefinition from "./IDefinition";
+import IEventWrapper from "./IEventWrapper";
+
+export enum EntityTypeComponentCategory {
+  attribute = 0,
+  complex = 1,
+  behavior = 2,
+  trigger = 3,
+}
+
+export enum EntityTypeComponentExtendedCategory {
+  attribute = 0,
+  complex = 1,
+  behavior = 2,
+  trigger = 3,
+  movementBehavior = 4,
+  mobSpecificBehavior = 5,
+  movementComplex = 6,
+  combatAndHealthComplex = 7,
+  sensorComponents = 8,
+}
+
+export const AttributeComponents: { [id: string]: string } = {
+  "minecraft:body_rotation_blocked": "b",
+  "minecraft:can_climb": "b",
+  "minecraft:can_fly": "b",
+  "minecraft:can_power_jump": "b",
+  "minecraft:cannot_be_attacked": "b",
+  "minecraft:color": "s",
+  "minecraft:color2": "s",
+  "minecraft:default_look_angle": "f",
+  "minecraft:fire_immune": "b",
+  "minecraft:floats_in_liquid": "b",
+  "minecraft:flying_speed": "f",
+  "minecraft:friction_modifier": "f",
+  "minecraft:ground_offset": "f",
+  "minecraft:ignore_cannot_be_attacked": "b",
+  "minecraft:input_ground_controlled": "b",
+  "minecraft:is_baby": "b",
+  "minecraft:is_charged": "b",
+  "minecraft:is_chested": "b",
+  "minecraft:is_dyeable": "b",
+  "minecraft:is_hidden_when_invisible": "b",
+  "minecraft:is_ignited": "b",
+  "minecraft:is_illager_captain": "b",
+  "minecraft:is_pregnant": "b",
+  "minecraft:is_saddled": "b",
+  "minecraft:is_sheared": "b",
+  "minecraft:is_stackable": "b",
+  "minecraft:is_stunned": "b",
+  "minecraft:is_tamed": "b",
+  "minecraft:mark_variant": "i",
+  "minecraft:movement_sound_distance_offset": "f",
+  "minecraft:push_through": "f",
+  "minecraft:renders_when_invisible": "b",
+  "minecraft:scale": "f",
+  "minecraft:skin_id": "i",
+  "minecraft:sound_volume": "f",
+  "minecraft:type_family": "family",
+  "minecraft:variant": "i",
+  "minecraft:walk_animation_speed": "f",
+  "minecraft:wants_jockey": "b",
+};
+
+export enum EntityPropertyType {
+  string = 0,
+  boolean = 1,
+  number = 2,
+}
 
 export default class EntityTypeDefinition implements IManagedComponentSetItem, IDefinition {
   public behaviorPackWrapper?: IEntityTypeWrapper;
@@ -31,16 +100,140 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
 
   private _managedComponents: { [id: string]: IManagedComponent | undefined } = {};
 
-  public data?: IEntityTypeBehaviorPack;
+  public _data?: IEntityTypeBehaviorPack;
 
   public _componentGroups: { [name: string]: ManagedComponentGroup } = {};
-  public _events: { [name: string]: ManagedEvent } = {};
+  public _events: { [name: string]: IEventAction | IEventActionSet } = {};
 
   private _onLoaded = new EventDispatcher<EntityTypeDefinition, EntityTypeDefinition>();
 
   private _onComponentAdded = new EventDispatcher<EntityTypeDefinition, IManagedComponent>();
   private _onComponentRemoved = new EventDispatcher<EntityTypeDefinition, string>();
   private _onComponentChanged = new EventDispatcher<EntityTypeDefinition, IManagedComponent>();
+
+  public get data() {
+    return this._data;
+  }
+
+  public static getFormIdFromComponentId(componentId: string) {
+    return componentId.replace(/:/gi, "_").replace(/\./gi, "_");
+  }
+
+  public static getComponentCategory(id: string) {
+    if (id.startsWith("minecraft:behavior")) {
+      return EntityTypeComponentCategory.behavior;
+    } else if (id.startsWith("minecraft:on_")) {
+      return EntityTypeComponentCategory.trigger;
+    } else if (AttributeComponents[id] !== undefined) {
+      return EntityTypeComponentCategory.attribute;
+    }
+
+    return EntityTypeComponentCategory.complex;
+  }
+
+  public static getExtendedComponentCategory(id: string) {
+    if (
+      id.startsWith("minecraft:behavior.move") ||
+      id.startsWith("minecraft:behavior.jump") ||
+      id.startsWith("minecraft:behavior.go") ||
+      id.startsWith("minecraft:behavior.follow") ||
+      id.startsWith("minecraft:behavior.circle")
+    ) {
+      return EntityTypeComponentExtendedCategory.movementBehavior;
+    } else if (
+      id.startsWith("minecraft:behavior.dragon") ||
+      id.startsWith("minecraft:behavior.enderman") ||
+      id.startsWith("minecraft:behavior.guardian") ||
+      id.startsWith("minecraft:behavior.ocelot") ||
+      id.startsWith("minecraft:behavior.silverfish") ||
+      id.startsWith("minecraft:behavior.skeleton") ||
+      id.startsWith("minecraft:behavior.slime") ||
+      id.startsWith("minecraft:behavior.squid") ||
+      id.startsWith("minecraft:behavior.vex") ||
+      id.startsWith("minecraft:behavior.wither")
+    ) {
+      return EntityTypeComponentExtendedCategory.mobSpecificBehavior;
+    } else if (id.startsWith("minecraft:behavior")) {
+      return EntityTypeComponentExtendedCategory.behavior;
+    } else if (id.startsWith("minecraft:on_")) {
+      return EntityTypeComponentExtendedCategory.trigger;
+    } else if (AttributeComponents[id] !== undefined) {
+      return EntityTypeComponentExtendedCategory.attribute;
+    } else if (id.indexOf("sensor") >= 0) {
+      return EntityTypeComponentExtendedCategory.sensorComponents;
+    } else if (
+      id.indexOf("jump") >= 0 ||
+      id.indexOf("climb") >= 0 ||
+      id.indexOf("move") >= 0 ||
+      id.startsWith("minecraft:navigation") ||
+      id.startsWith("minecraft:flying") ||
+      id.startsWith("minecraft:friction") ||
+      id.startsWith("minecraft:walk_animation")
+    ) {
+      return EntityTypeComponentExtendedCategory.movementComplex;
+    } else if (
+      id.indexOf("attack") >= 0 ||
+      id.indexOf("combat") >= 0 ||
+      id.indexOf("damage") >= 0 ||
+      id.startsWith("minecraft:health") ||
+      id.startsWith("minecraft:healable") ||
+      id.startsWith("minecraft:hurt_on")
+    ) {
+      return EntityTypeComponentExtendedCategory.combatAndHealthComplex;
+    }
+    return EntityTypeComponentExtendedCategory.complex;
+  }
+
+  static getComponentFromBaseFileName(name: string) {
+    let canonName = name;
+
+    if (canonName.startsWith("minecraft_")) {
+      canonName = canonName.substring(10);
+      if (canonName.startsWith("behavior_")) {
+        canonName = "behavior." + canonName.substring(9);
+      }
+      if (canonName.startsWith("movement_")) {
+        canonName = "movement." + canonName.substring(9);
+      }
+      if (canonName.startsWith("navigation_")) {
+        canonName = "navigation." + canonName.substring(11);
+      }
+      if (canonName.startsWith("player_")) {
+        canonName = "player." + canonName.substring(8);
+      }
+      if (canonName.startsWith("jump_")) {
+        canonName = "jump." + canonName.substring(5);
+      }
+    }
+
+    return canonName;
+  }
+
+  public static getComponentCategoryDescription(category: EntityTypeComponentCategory) {
+    switch (category) {
+      case EntityTypeComponentCategory.behavior:
+        return "Behavior";
+      case EntityTypeComponentCategory.attribute:
+        return "Attribute";
+      case EntityTypeComponentCategory.trigger:
+        return "Trigger";
+      default:
+        return "Component";
+    }
+  }
+
+  public static getPluralComponentCategoryDescription(category: EntityTypeComponentCategory) {
+    switch (category) {
+      case EntityTypeComponentCategory.behavior:
+        return "Behaviors (AI)";
+      case EntityTypeComponentCategory.attribute:
+        return "Attributes";
+      case EntityTypeComponentCategory.trigger:
+        return "Triggers";
+      default:
+        return "Components";
+    }
+  }
 
   public get onComponentAdded() {
     return this._onComponentAdded.asEvent();
@@ -78,33 +271,33 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   }
 
   public get runtimeIdentifier() {
-    if (this.data && this.data.description) {
-      return this.data.description.runtime_identifier;
+    if (this._data && this._data.description) {
+      return this._data.description.runtime_identifier;
     }
 
     return undefined;
   }
 
   public set runtimeIdentifier(newId: string | undefined) {
-    if (this.data && this.data.description) {
-      this.data.description.runtime_identifier = newId;
+    if (this._data && this._data.description) {
+      this._data.description.runtime_identifier = newId;
     }
   }
 
   public get aliases() {
-    if (!this.data || !this.data.description) {
+    if (!this._data || !this._data.description) {
       return undefined;
     }
 
-    return this.data.description.aliases;
+    return this._data.description.aliases;
   }
 
   public get properties() {
-    if (!this.data || !this.data.description) {
+    if (!this._data || !this._data.description) {
       return undefined;
     }
 
-    return this.data.description.properties;
+    return this._data.description.properties;
   }
 
   public async getFormatVersionIsCurrent() {
@@ -123,6 +316,12 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     }
 
     return MinecraftUtilities.getVersionArrayFrom(this.behaviorPackWrapper.format_version);
+  }
+
+  public removeProperty(propertyName: string) {
+    if (this._data?.description?.properties) {
+      this._data.description.properties[propertyName] = undefined;
+    }
   }
 
   public get shortId() {
@@ -146,12 +345,12 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   }
 
   getComponent(id: string) {
-    if (this.data === undefined || this.data.components === undefined) {
+    if (this._data === undefined || this._data.components === undefined) {
       return undefined;
     }
 
     if (!this._managedComponents[id]) {
-      const comp = this.data.components[id];
+      const comp = this._data.components[id];
 
       if (comp) {
         this._managedComponents[id] = new ManagedComponent(id, comp);
@@ -162,7 +361,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   }
 
   getComponentsInBaseAndGroups(id: string): IManagedComponent[] {
-    if (this.data === undefined) {
+    if (this._data === undefined) {
       return [];
     }
 
@@ -181,6 +380,27 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
 
         if (comp) {
           results.push(comp);
+        }
+      }
+    }
+
+    return results;
+  }
+
+  getAllComponents(): IManagedComponent[] {
+    if (this._data === undefined) {
+      return [];
+    }
+
+    let results: IManagedComponent[] = this.getComponents();
+
+    for (const componentGroupName in this._componentGroups) {
+      const group = this._componentGroups[componentGroupName];
+      if (group) {
+        for (const comp of group.getComponents()) {
+          if (comp) {
+            results.push(comp);
+          }
         }
       }
     }
@@ -217,8 +437,8 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   getComponents(): IManagedComponent[] {
     const componentSet: IManagedComponent[] = [];
 
-    if (this.data !== undefined) {
-      for (const componentName in this.data.components) {
+    if (this._data !== undefined) {
+      for (const componentName in this._data.components) {
         const component = this.getComponent(componentName);
 
         if (component !== undefined) {
@@ -231,9 +451,9 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   }
 
   getComponentGroup(componentGroupName: string): ManagedComponentGroup | undefined {
-    if (this.data !== undefined) {
+    if (this._data !== undefined) {
       if (!this._componentGroups[componentGroupName]) {
-        const componentGroupData = this.data.component_groups[componentGroupName];
+        const componentGroupData = this._data.component_groups[componentGroupName];
 
         const cg = new ManagedComponentGroup(componentGroupData, componentGroupName);
 
@@ -249,10 +469,10 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   getComponentGroups(): ManagedComponentGroup[] {
     const componentGroups: ManagedComponentGroup[] = [];
 
-    if (this.data !== undefined) {
-      for (const componentGroupName in this.data.component_groups) {
+    if (this._data !== undefined) {
+      for (const componentGroupName in this._data.component_groups) {
         if (!this._componentGroups[componentGroupName]) {
-          const componentGroupData = this.data.component_groups[componentGroupName];
+          const componentGroupData = this._data.component_groups[componentGroupName];
 
           const cg = new ManagedComponentGroup(componentGroupData, componentGroupName);
 
@@ -268,14 +488,12 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     return componentGroups;
   }
 
-  getEvent(eventName: string): ManagedEvent | undefined {
-    if (this.data !== undefined) {
+  getEvent(eventName: string): IEventActionSet | IEventAction | undefined {
+    if (this._data !== undefined) {
       if (!this._events[eventName]) {
-        const eventData = this.data.events[eventName];
+        const eventData = this._data.events[eventName];
 
-        const evt = new ManagedEvent(eventData, eventName);
-
-        this._events[eventName] = evt;
+        this._events[eventName] = eventData;
       }
 
       return this._events[eventName];
@@ -284,20 +502,19 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     return undefined;
   }
 
-  getEvents(): ManagedEvent[] {
-    const events: ManagedEvent[] = [];
+  getEvents(): IEventWrapper[] {
+    const events: IEventWrapper[] = [];
 
-    if (this.data !== undefined) {
-      for (const eventName in this.data.events) {
+    if (this._data !== undefined) {
+      for (const eventName in this._data.events) {
         if (!this._events[eventName]) {
-          const eventData = this.data.events[eventName];
+          const eventData = this._data.events[eventName];
 
-          const ev = new ManagedEvent(eventData, eventName);
+          this._events[eventName] = eventData;
 
-          this._events[eventName] = ev;
-          events.push(ev);
+          events.push({ id: eventName, event: eventData });
         } else {
-          events.push(this._events[eventName]);
+          events.push({ id: eventName, event: this._events[eventName] });
         }
       }
     }
@@ -305,28 +522,30 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     return events;
   }
 
-  addComponent(id: string, component: IManagedComponent) {
+  addComponent(id: string, component: any) {
     this._ensureBehaviorPackDataInitialized();
 
-    const bpData = this.data as IEntityTypeBehaviorPack;
+    const mc = new ManagedComponent(id, component);
 
-    bpData.components[id] = component.getData();
-    this._managedComponents[id] = component;
+    const bpData = this._data as IEntityTypeBehaviorPack;
 
-    this._onComponentAdded.dispatch(this, component);
+    bpData.components[id] = component;
+    this._managedComponents[id] = mc;
+
+    this._onComponentAdded.dispatch(this, mc);
   }
 
   removeComponent(id: string) {
-    if (this.data === undefined) {
+    if (this._data === undefined) {
       return;
     }
 
     const newBehaviorPacks: { [name: string]: string | number | IComponent | undefined } = {};
     const newManagedComponents: { [name: string]: IManagedComponent | undefined } = {};
 
-    for (const name in this.data.components) {
+    for (const name in this._data.components) {
       if (name !== id) {
-        const component = this.data.components[name];
+        const component = this._data.components[name];
 
         newBehaviorPacks[name] = component;
       }
@@ -338,7 +557,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       }
     }
 
-    this.data.components = newBehaviorPacks;
+    this._data.components = newBehaviorPacks;
     this._managedComponents = newManagedComponents;
   }
 
@@ -348,8 +567,8 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
         format_version: "1.20.0",
       };
     }
-    if (this.data === undefined) {
-      this.data = {
+    if (this._data === undefined) {
+      this._data = {
         description: {
           identifier: "unknown",
           is_experimental: false,
@@ -363,9 +582,69 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
 
       if (this.behaviorPackWrapper) {
         //@ts-ignore
-        this.behaviorPackWrapper["minecraft:entity"] = this.data;
+        this.behaviorPackWrapper["minecraft:entity"] = this._data;
       }
     }
+  }
+
+  public getProperties() {
+    if (!this._data || !this._data?.description) {
+      return undefined;
+    }
+
+    return this._data.description.properties;
+  }
+
+  public getPropertyList() {
+    const props = this.getProperties();
+
+    if (!props) {
+      return [];
+    }
+
+    const propertyList = [];
+
+    for (const propName in props) {
+      if (props[propName] !== undefined) {
+        propertyList.push(propName);
+      }
+    }
+
+    return propertyList;
+  }
+
+  public addProperty(propertyName: string, stateType: EntityPropertyType) {
+    if (!this._data || !this._data.description) {
+      return;
+    }
+
+    let dataArr: string[] | number[] | boolean[] = [];
+
+    if (stateType === EntityPropertyType.boolean) {
+      dataArr = [false, true];
+    } else if (stateType === EntityPropertyType.number) {
+      dataArr = [0, 1, 2];
+    } else if (stateType === EntityPropertyType.string) {
+      dataArr = ["value1", "value2"];
+    }
+
+    if (!this._data.description.properties) {
+      this._data.description.properties = {};
+    }
+
+    this._data.description.properties[propertyName] = dataArr;
+  }
+
+  public addEvent(eventName: string) {
+    if (!this._data) {
+      return;
+    }
+
+    if (!this._data.events) {
+      this._data.events = {};
+    }
+
+    this._data.events[eventName] = {};
   }
 
   async addChildItems(project: Project, item: ProjectItem) {
@@ -484,8 +763,8 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     results.push("    return " + ScriptGen.getInstanceName(this.shortId) + ";");
     results.push("  }\r\n");
 
-    if (this.data !== undefined) {
-      const healthC = this.data.components["minecraft:health"];
+    if (this._data !== undefined) {
+      const healthC = this._data.components["minecraft:health"];
 
       if (healthC !== undefined) {
         results.push("  fullyHeal() {");
@@ -501,7 +780,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
         results.push("  }\r\n");
       }
 
-      const rideableC = this.data.components["minecraft:rideable"];
+      const rideableC = this._data.components["minecraft:rideable"];
       if (rideableC !== undefined) {
         if (isTypeScript) {
           results.push("  addRider(newRider : mc.Entity) {");
@@ -521,7 +800,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
         results.push("  }\r\n");
       }
 
-      const tameableC = this.data.components["minecraft:tameable"];
+      const tameableC = this._data.components["minecraft:tameable"];
       if (tameableC !== undefined) {
         results.push("  tame() {");
         results.push('    return this._entity.getComponent("minecraft:tameable").tame();');
@@ -576,21 +855,21 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       this.id = entity.description.identifier;
     }
 
-    this.data = entity;
+    this._data = entity;
 
-    if (this.data) {
-      if (this.data.components) {
-        for (const compName in this.data.components) {
-          const comp = this.data.components[compName];
+    if (this._data) {
+      if (this._data.components) {
+        for (const compName in this._data.components) {
+          const comp = this._data.components[compName];
 
           if (comp) {
             this._managedComponents[compName] = new ManagedComponent(compName, comp);
           }
         }
       }
-      if (this.data.component_groups) {
-        for (const compGroupName in this.data.component_groups) {
-          const compGroup = this.data.component_groups[compGroupName];
+      if (this._data.component_groups) {
+        for (const compGroupName in this._data.component_groups) {
+          const compGroup = this._data.component_groups[compGroupName];
 
           if (compGroup) {
             this._componentGroups[compGroupName] = new ManagedComponentGroup(compGroup, compGroupName);

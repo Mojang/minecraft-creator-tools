@@ -1,0 +1,10 @@
+{
+  "fields": [],
+  "description": "The amount of light this block will emit in a range (0-15). Higher value means more light will be emitted.",
+  "title": "Light Emission",
+  "scalarField": {
+    "id": "integer",
+    "title": "Integer",
+    "dataType": 0
+  }
+}

@@ -30,6 +30,42 @@
     "subpackTier2Count": 0,
     "subpackTier3Count": 0,
     "subpackTier4Count": 0,
+    "subpackTier5Count": 0,
+    "subpackTier6Count": 0,
+    "subpackTier7Count": 0,
+    "subpackTier8Count": 0,
+    "subpackTier9Count": 0,
+    "subpackTier10Count": 0,
+    "subpackTier11Count": 0,
+    "subpackTier12Count": 0,
+    "subpackTier13Count": 0,
+    "subpackTier14Count": 0,
+    "subpackTier15Count": 0,
+    "subpackTier16Count": 0,
+    "subpackTier17Count": 0,
+    "subpackTier18Count": 0,
+    "subpackTier19Count": 0,
+    "subpackTier20Count": 0,
+    "subpackTier21Count": 0,
+    "subpackTier22Count": 0,
+    "subpackTier23Count": 0,
+    "subpackTier24Count": 0,
+    "subpackTier25Count": 0,
+    "subpackTier26Count": 0,
+    "subpackTier27Count": 0,
+    "subpackTier28Count": 0,
+    "subpackTier29Count": 0,
+    "subpackTier30Count": 0,
+    "subpackTier31Count": 0,
+    "subpackTier32Count": 0,
+    "subpackTier33Count": 0,
+    "subpackTier34Count": 0,
+    "subpackTier35Count": 0,
+    "subpackTier36Count": 0,
+    "subpackTier37Count": 0,
+    "subpackTier38Count": 0,
+    "subpackTier39Count": 0,
+    "subpackTier40Count": 0,
     "animationCount": 0,
     "textureCount": 0,
     "chunkCount": 0,
@@ -360,6 +396,12 @@
         "minecraft:is_sheared": 1,
         "minecraft:behavior.melee_attack": 1
       },
+      "Entity Type Entity Events": {
+        "randomize": 2,
+        "add": 15,
+        "remove": 11,
+        "sequence": 2
+      },
       "Sound Entity sounds": {
         "entities": 1
       },
@@ -434,40 +476,54 @@
       "Texture Images Custom Texture": {
         "Count": 4
       },
-      "Texture Images ImageWidth": {
+      "Texture Images Image Width": {
         "Instance Count": 4,
         "Total": 320,
         "Max": 128,
         "Min": 64,
         "Average": 80
       },
-      "Texture Images ImageHeight": {
+      "Texture Images Image Height": {
         "Instance Count": 4,
         "Total": 256,
         "Max": 64,
         "Min": 64,
         "Average": 64
       },
-      "Texture Images ImageSize": {
+      "Texture Images Image Texels": {
         "Instance Count": 4,
         "Total": 20480,
         "Max": 8192,
         "Min": 4096,
         "Average": 5120
       },
-      "Texture Images EstimatedTextureMemory": {
+      "Texture Images Texture Memory": {
         "Instance Count": 4,
         "Total": 81920,
         "Max": 32768,
         "Min": 16384,
         "Average": 20480
       },
-      "Texture Images NonVanillaImageSize": {
+      "Texture Images Non-Vanilla Image Texels": {
         "Instance Count": 4,
         "Total": 20480,
         "Max": 8192,
         "Min": 4096,
         "Average": 5120
+      },
+      "Texture Images Non-Vanilla Texture Memory": {
+        "Instance Count": 4,
+        "Total": 81920,
+        "Max": 32768,
+        "Min": 16384,
+        "Average": 20480
+      },
+      "Entity Geometry Cubes": {
+        "Instance Count": 3,
+        "Total": 34,
+        "Max": 14,
+        "Min": 8,
+        "Average": 11
       },
       "Command say": {
         "Count": 1
@@ -476,12 +532,12 @@
         "Count": 1
       }
     },
-    "errorCount": 0,
+    "errorCount": 17,
     "internalProcessingErrorCount": 0,
     "warningCount": 19,
     "testSuccessCount": 9,
     "testFailCount": 0,
-    "errorSummary": "",
+    "errorSummary": "ERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: ambientsounds.co2_notexists\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: ambientsounds.co2_extranotexists\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: individual_event_sound_that_does_not_exist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: aop_mobs:mob_that_does_not_exist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: ambientsounds.co2_notexists\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: ambientsounds.co2_extranotexists\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: individual_event_sound_that_does_not_exist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: aop_mobs:mob_that_does_not_exist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Link to texture is not found in this pack: textures/aop/moremobs/biceson_filethatdoesnotexist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Link to texture is not found in this pack: textures/aop/moremobs/biceson_filethatdoesnotexist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json) Link to sound catalog is not found in this pack: ambientsounds.cofoo_doesnotexist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json) Link to sound catalog is not found in this pack: ambientsounds.cofoo_doesnotexist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json) Link to audio is not found in this pack: sounds/ambientsounds/co_doesnotexist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json) Link to audio is not found in this pack: sounds/ambientsounds/co_doesnotexist\r\nERROR: [UNLINK191] (/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg) Audio does not have any items in this pack that are using this.\r\nERROR: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png) Texture does not have any items in this pack that are using this.\r\nERROR: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png) Texture does not have any items in this pack that are using this.",
     "internalProcessingErrorSummary": "",
     "testFailSummary": "",
     "summary": {
@@ -753,6 +809,10 @@
         "17": {
           "title": "17",
           "defaultMessage": "Resource Pack Format Version"
+        },
+        "145": {
+          "title": "145",
+          "defaultMessage": "Entity Geometry"
         }
       },
       "JSONTAGS": {
@@ -799,7 +859,7 @@
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.50)",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.60)",
           "recommendations": 3
         }
       },
@@ -823,7 +883,7 @@
         },
         "120": {
           "title": "Behavior Pack Entity Type Format Version Minor Version Lower than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.50.07)",
+          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.60.10)",
           "recommendations": 3
         }
       },
@@ -848,6 +908,18 @@
       "TEXTUREIMAGE": {
         "1": {
           "title": "Texture Images"
+        }
+      },
+      "GEOMETRY": {
+        "1": {
+          "title": "Block Geometry"
+        },
+        "2": {
+          "title": "Entity Geometry"
+        },
+        "3": {
+          "title": "Item Geometry",
+          "defaultMessage": "Items Geometry"
         }
       },
       "JSON": {
@@ -898,6 +970,24 @@
           "defaultMessage": "Level Dat Experiments"
         }
       },
+      "UNLINK": {
+        "1": {
+          "defaultMessage": "Test Unlinked item info generator completed successfully.",
+          "testCompleteSuccesses": 1
+        },
+        "191": {
+          "defaultMessage": "Audio does not have any items in this pack that are using this.",
+          "errors": 3
+        },
+        "204": {
+          "defaultMessage": "Link to sound catalog is not found in this pack",
+          "errors": 14
+        },
+        "205": {
+          "defaultMessage": "Link to vanilla Model item; avoid if possible",
+          "recommendations": 6
+        }
+      },
       "UNKFILE": {
         "1": {
           "defaultMessage": "Test Unknown files completed successfully.",
@@ -919,12 +1009,6 @@
       "WORLD": {
         "1": {
           "defaultMessage": "Test World Validation completed successfully.",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "UNLINK": {
-        "1": {
-          "defaultMessage": "Test Unlinked item info generator completed successfully.",
           "testCompleteSuccesses": 1
         }
       }
@@ -1571,6 +1655,11 @@
       "d": 20
     },
     {
+      "iTp": 7,
+      "gId": "PACK",
+      "gIx": 145
+    },
+    {
       "iTp": 2,
       "gId": "PACK",
       "gIx": 3,
@@ -1827,6 +1916,11 @@
           "minecraft:on_friendly_anger": 1,
           "minecraft:attack": 1,
           "minecraft:behavior.stomp_attack": 1
+        },
+        "Entity Events": {
+          "randomize": 1,
+          "add": 6,
+          "remove": 5
         }
       }
     },
@@ -1877,6 +1971,11 @@
           "minecraft:behavior.random_stroll": 1,
           "minecraft:behavior.go_home": 1,
           "minecraft:behavior.lay_egg": 1
+        },
+        "Entity Events": {
+          "randomize": 1,
+          "add": 4,
+          "remove": 3
         }
       }
     },
@@ -1930,6 +2029,11 @@
           "minecraft:behavior.nearest_attackable_target": 1,
           "minecraft:behavior.melee_attack": 1,
           "minecraft:attack": 1
+        },
+        "Entity Events": {
+          "sequence": 2,
+          "add": 5,
+          "remove": 3
         }
       }
     },
@@ -2062,7 +2166,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.50)",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.60)",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -2205,42 +2309,73 @@
         "Custom Texture": {
           "Count": 4
         },
-        "ImageWidth": {
+        "Image Width": {
           "Instance Count": 4,
           "Total": 320,
           "Max": 128,
           "Min": 64,
           "Average": 80
         },
-        "ImageHeight": {
+        "Image Height": {
           "Instance Count": 4,
           "Total": 256,
           "Max": 64,
           "Min": 64,
           "Average": 64
         },
-        "ImageSize": {
+        "Image Texels": {
           "Instance Count": 4,
           "Total": 20480,
           "Max": 8192,
           "Min": 4096,
           "Average": 5120
         },
-        "EstimatedTextureMemory": {
+        "Texture Memory": {
           "Instance Count": 4,
           "Total": 81920,
           "Max": 32768,
           "Min": 16384,
           "Average": 20480
         },
-        "NonVanillaImageSize": {
+        "Non-Vanilla Image Texels": {
           "Instance Count": 4,
           "Total": 20480,
           "Max": 8192,
           "Min": 4096,
           "Average": 5120
+        },
+        "Non-Vanilla Texture Memory": {
+          "Instance Count": 4,
+          "Total": 81920,
+          "Max": 32768,
+          "Min": 16384,
+          "Average": 20480
         }
       }
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 2,
+      "fs": {
+        "Cubes": {
+          "Instance Count": 3,
+          "Total": 34,
+          "Max": 14,
+          "Min": 8,
+          "Average": 11
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 3
     },
     {
       "iTp": 2,
@@ -2381,6 +2516,64 @@
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
     },
     {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "ambientsounds.co2_notexists"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "ambientsounds.co2_extranotexists"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "individual_event_sound_that_does_not_exist"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "m": "Link to entity type is not found in this pack",
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "aop_mobs:mob_that_does_not_exist"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "ambientsounds.co2_notexists"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "ambientsounds.co2_extranotexists"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "individual_event_sound_that_does_not_exist"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "m": "Link to entity type is not found in this pack",
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "aop_mobs:mob_that_does_not_exist"
+    },
+    {
       "iTp": 2,
       "gId": "JSON",
       "gIx": 1128,
@@ -2397,6 +2590,36 @@
       "gId": "JSON",
       "gIx": 1128,
       "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "m": "Link to texture is not found in this pack",
+      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
+      "d": "textures/aop/moremobs/biceson_filethatdoesnotexist"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "m": "Link to texture is not found in this pack",
+      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
+      "d": "textures/aop/moremobs/biceson_filethatdoesnotexist"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
+      "d": "geometry.sheep.sheared.v1.8"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
+      "d": "geometry.sheep.sheared.v1.8"
     },
     {
       "iTp": 4,
@@ -2508,6 +2731,88 @@
       "m": "anyOf /particle_effect/components/minecraft:particle_appearance_tinting/color must match a schema in anyOf",
       "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
       "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n   "
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "m": "Link to vanilla Texture item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "d": "textures/particle/particles"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "m": "Link to vanilla Texture item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "d": "textures/particle/particles"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "m": "Link to vanilla Texture item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
+      "d": "textures/particle/particles"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "m": "Link to vanilla Texture item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
+      "d": "textures/particle/particles"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json",
+      "d": "ambientsounds.cofoo_doesnotexist"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json",
+      "d": "ambientsounds.cofoo_doesnotexist"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "m": "Link to audio is not found in this pack",
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json",
+      "d": "sounds/ambientsounds/co_doesnotexist"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "m": "Link to audio is not found in this pack",
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json",
+      "d": "sounds/ambientsounds/co_doesnotexist"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 191,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 191,
+      "m": "Texture does not have any items in this pack that are using this.",
+      "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png"
+    },
+    {
+      "iTp": 3,
+      "gId": "UNLINK",
+      "gIx": 191,
+      "m": "Texture does not have any items in this pack that are using this.",
+      "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png"
     },
     {
       "iTp": 0,

@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import IEntityEvent from "./IEntityEvent";
+import IEntityActionSet from "./IEventActionSet";
 
 export default class EntityEvent {
-  #data: IEntityEvent;
+  #data: IEntityActionSet;
 
-  constructor(entityEvent: IEntityEvent) {
+  constructor(entityEvent: IEntityActionSet) {
     this.#data = entityEvent;
   }
 }

@@ -3,6 +3,7 @@
   min-width: calc(100% - 2px);
   max-width: calc(100% - 2px);
   overflow-y: auto;
+  display: grid;
 }
 
 .dfe-headerTransition {
@@ -16,9 +17,20 @@
   padding-top: 12px;
   padding-left: 12px;
   padding-bottom: 12px;
+  grid-column-start: 1;
+  grid-column-end: 3;
 }
 
 .dfe-form {
   padding-left: 4px;
   padding-top: 4px;
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.dfe-sourceFormform {
+  padding-left: 4px;
+  padding-top: 4px;
+  grid-column: 2;
+  grid-row: 2;
 }

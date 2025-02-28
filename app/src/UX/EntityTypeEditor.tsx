@@ -14,27 +14,34 @@ import { faBolt, faBone, faCow, faEgg, faSliders } from "@fortawesome/free-solid
 import WebUtilities from "./WebUtilities";
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
-import ManagedEvent from "../minecraft/ManagedEvent";
 import EventActionDesign from "./EventActionDesign";
 import SpawnRulesEditor from "./SpawnRulesEditor";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
 import LootTableEditor from "./LootTableEditor";
 import EntityTypeResourceEditor from "./EntityTypeResourceEditor";
+import EntityTypePropertyEditor from "./EntityTypePropertyEditor";
+import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
+import Carto from "../app/Carto";
+import Project from "../app/Project";
+import IEventWrapper from "../minecraft/IEventWrapper";
 
 export enum EntityTypeEditorMode {
   properties = 0,
-  actions = 1,
-  visuals = 2,
-  audio = 3,
-  spawnRules = 4,
-  loot = 5,
+  components = 1,
+  actions = 2,
+  visuals = 3,
+  audio = 4,
+  spawnRules = 5,
+  loot = 6,
 }
 
 interface IEntityTypeEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
   item: ProjectItem;
+  project: Project;
+  carto: Carto;
   theme: ThemeInput<any>;
 }
 
@@ -42,7 +49,7 @@ interface IEntityTypeEditorState {
   fileToEdit: IFile;
   isLoaded: boolean;
   mode: EntityTypeEditorMode;
-  selectedItem: EntityTypeDefinition | ManagedComponentGroup | ManagedEvent | undefined;
+  selectedItem: EntityTypeDefinition | ManagedComponentGroup | IEventWrapper | undefined;
 }
 
 export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, IEntityTypeEditorState> {
@@ -52,7 +59,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     this._handleEntityTypeLoaded = this._handleEntityTypeLoaded.bind(this);
     this._handleItemSelected = this._handleItemSelected.bind(this);
     this._setActionsMode = this._setActionsMode.bind(this);
-    this._setPropertiesMode = this._setPropertiesMode.bind(this);
+    this._setComponentsMode = this._setComponentsMode.bind(this);
     this._updateManager = this._updateManager.bind(this);
     this._doUpdate = this._doUpdate.bind(this);
 
@@ -60,11 +67,12 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     this._setVisualsMode = this._setVisualsMode.bind(this);
     this._setSpawnRulesMode = this._setSpawnRulesMode.bind(this);
     this._setLootMode = this._setLootMode.bind(this);
+    this._setPropertiesMode = this._setPropertiesMode.bind(this);
 
     this.state = {
       fileToEdit: props.file,
       isLoaded: false,
-      mode: EntityTypeEditorMode.properties,
+      mode: EntityTypeEditorMode.components,
       selectedItem: undefined,
     };
 
@@ -76,7 +84,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       state = {
         fileToEdit: props.file,
         isLoaded: false,
-        mode: EntityTypeEditorMode.properties,
+        mode: EntityTypeEditorMode.components,
         selectedItem: undefined,
       };
 
@@ -160,6 +168,10 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     this._setMode(EntityTypeEditorMode.properties);
   }
 
+  _setComponentsMode() {
+    this._setMode(EntityTypeEditorMode.components);
+  }
+
   _setActionsMode() {
     this._setMode(EntityTypeEditorMode.actions);
   }
@@ -203,7 +215,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     const et = this.state.fileToEdit.manager as EntityTypeDefinition;
     let itemListings = undefined;
 
-    if (this.state.mode === EntityTypeEditorMode.properties) {
+    if (this.state.mode === EntityTypeEditorMode.components) {
       itemListings = this.getComponentGroupListings();
     } else {
       itemListings = this.getEventListings();
@@ -230,15 +242,19 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           });
         }
       } else if (key.startsWith("evt.")) {
-        const evt = et.getEvent(key.substring(4));
+        let evtD = et.getEvent(key.substring(4));
 
-        if (evt) {
-          this.setState({
-            fileToEdit: this.state.fileToEdit,
-            isLoaded: this.state.isLoaded,
-            mode: this.state.mode,
-            selectedItem: evt,
-          });
+        if (evtD) {
+          const evt: IEventWrapper = { id: key.substring(4), event: evtD };
+
+          if (evt) {
+            this.setState({
+              fileToEdit: this.state.fileToEdit,
+              isLoaded: this.state.isLoaded,
+              mode: this.state.mode,
+              selectedItem: evt,
+            });
+          }
         }
       }
     }
@@ -263,7 +279,15 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     const componentGroups = et.getComponentGroups();
 
     for (const compGroup of componentGroups) {
-      const header = Utilities.humanifyMinecraftName(compGroup.id);
+      let id = compGroup.id;
+
+      let colon = id.indexOf(":");
+
+      if (colon >= 0) {
+        id = id.substring(colon + 1);
+      }
+
+      const header = Utilities.humanifyMinecraftName(id);
 
       itemListings.push({
         key: "cg." + compGroup.id,
@@ -288,10 +312,16 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     const events = et.getEvents();
 
     for (const evt of events) {
-      const header = Utilities.humanifyMinecraftName(evt.id);
+      let id = "";
+
+      if (evt.id) {
+        id = evt.id;
+      }
+
+      const header = Utilities.humanifyMinecraftName(id);
 
       itemListings.push({
-        key: "evt." + evt.id,
+        key: "evt." + id,
         header: header,
         headerMedia: " ",
         content: " ",
@@ -337,9 +367,24 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           theme={this.props.theme}
         />
       ),
-      key: "etePropertiesTab",
+      key: "eteProprertiesTab",
       onClick: this._setPropertiesMode,
-      title: "Edit documentation by types",
+      title: "Edit properties",
+    });
+
+    toolbarItems.push({
+      icon: (
+        <CustomTabLabel
+          icon={<FontAwesomeIcon icon={faSquarePlus} className="fa-lg" />}
+          text={"Components"}
+          isCompact={isButtonCompact}
+          isSelected={this.state.mode === EntityTypeEditorMode.components}
+          theme={this.props.theme}
+        />
+      ),
+      key: "eteComponentsTab",
+      onClick: this._setComponentsMode,
+      title: "Edit components and properties",
     });
 
     toolbarItems.push({
@@ -404,13 +449,35 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
 
     const et = this.state.fileToEdit.manager as EntityTypeDefinition;
 
-    if (et.data === undefined) {
+    if (et._data === undefined) {
       return <div className="ete-message">Loading mob definition...</div>;
     }
 
     let modeArea = <></>;
 
     if (this.state.mode === EntityTypeEditorMode.properties) {
+      let selItem = undefined;
+      if (this.state.fileToEdit && this.state.fileToEdit.manager) {
+        selItem = this.state.fileToEdit.manager as EntityTypeDefinition;
+      }
+
+      if (selItem) {
+        modeArea = (
+          <div
+            className="ete-componentEditorInteriorFull"
+            style={{
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            }}
+          >
+            <EntityTypePropertyEditor
+              theme={this.props.theme}
+              entityTypeItem={selItem}
+              heightOffset={this.props.heightOffset}
+            />
+          </div>
+        );
+      }
+    } else if (this.state.mode === EntityTypeEditorMode.components) {
       const items = this.getComponentGroupListings();
 
       const cgs = et.getComponentGroups();
@@ -422,34 +489,39 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
         }
         index++;
       }
-      const componentListHeight = "calc(100vh - " + String(this.props.heightOffset + topHeight + 30) + "px)";
+      const componentListHeight = "calc(100vh - " + String(this.props.heightOffset + topHeight) + "px)";
 
       let itemInterior = <></>;
 
       if (this.state) {
         let selItem = this.state.selectedItem;
-        if (
-          selItem === undefined &&
-          items &&
-          items.length > 0 &&
-          this.state.fileToEdit &&
-          this.state.fileToEdit.manager
-        ) {
-          selItem = this.state.fileToEdit.manager as EntityTypeDefinition;
+        let entityTypeDefinition = undefined;
+        if (this.state.fileToEdit && this.state.fileToEdit.manager) {
+          entityTypeDefinition = this.state.fileToEdit.manager as EntityTypeDefinition;
+
+          if (selItem === undefined && items && items.length > 0) {
+            selItem = entityTypeDefinition;
+          }
         }
 
-        if (selItem instanceof EntityTypeDefinition || selItem instanceof ManagedComponentGroup) {
+        if (
+          (selItem instanceof EntityTypeDefinition || selItem instanceof ManagedComponentGroup) &&
+          entityTypeDefinition
+        ) {
           itemInterior = (
             <EntityTypeComponentSetEditor
               componentSetItem={selItem}
+              entityTypeItem={entityTypeDefinition}
+              carto={this.props.carto}
+              project={this.props.project}
               theme={this.props.theme}
               title={selItem.id}
               isDefault={true}
-              heightOffset={this.props.heightOffset + 170}
+              heightOffset={this.props.heightOffset + 115}
             />
           );
         } else {
-          itemInterior = <div className="ete-select">Select a group to edit properties.</div>;
+          itemInterior = <div className="ete-select">Select a group to edit components.</div>;
         }
       }
 
@@ -464,7 +536,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           <div className="ete-componentListHeader">Groups:</div>
           <div className="ete-componentList">
             <div
-              className="ete-componentListInterior"
+              className="ete-listInterior"
               style={{ minHeight: componentListHeight, maxHeight: componentListHeight }}
             >
               <List
@@ -502,17 +574,23 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           et = this.state.fileToEdit.manager as EntityTypeDefinition;
         }
 
-        if (et && selItem instanceof ManagedEvent) {
+        if (
+          et &&
+          selItem &&
+          !(selItem instanceof ManagedComponentGroup) &&
+          !(selItem instanceof EntityTypeDefinition)
+        ) {
           itemInterior = (
             <div>
               <EventActionDesign
-                item={this.props.item}
+                carto={this.props.carto}
+                displayTriggers={true}
                 readOnly={this.props.readOnly}
-                file={this.props.file}
                 theme={this.props.theme}
-                heightOffset={this.props.heightOffset + topHeight}
+                heightOffset={this.props.heightOffset + 115}
                 entityType={et}
-                event={selItem}
+                event={selItem.event}
+                id={selItem.id}
               />
             </div>
           );
@@ -532,7 +610,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           <div className="ete-eventListHeader">Actions:</div>
           <div className="ete-eventList">
             <div
-              className="ete-eventListInterior"
+              className="ete-listInterior"
               style={{ minHeight: componentListHeight, maxHeight: componentListHeight }}
             >
               <List

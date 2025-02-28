@@ -96,6 +96,10 @@ export default class FieldUtilities {
       title = Utilities.humanifyMinecraftName(title);
     }
 
+    if (title === undefined) {
+      title = "Untitled";
+    }
+
     return title;
   }
 

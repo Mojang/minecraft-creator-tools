@@ -3,7 +3,7 @@
 
 import ISimpleReference from "../core/ISimpleReference";
 import ICondition from "./ICondition";
-import IFormDefinition from "./IFormDefinition";
+import IFormDefinition, { IFormSample } from "./IFormDefinition";
 
 export enum FieldExperienceType {
   text = 1,
@@ -48,16 +48,27 @@ export enum FieldDataType {
   keyedStringArrayCollection = 28, // { "foo": ["blah", "alpha"], "barg" : ["borg"] }
   arrayOfKeyedStringCollection = 29, // [ { "blah": "alpha", "blaz": "blay" }, {"barg": "borg"} ]
   keyedKeyedStringArrayCollection = 30, // { "alpha":  { "foo": ["blah", "alpha"], "barg" : ["borg"] } }
+  keyedNumberCollection = 31, // { "foo": 17, "blah": 43 }
+  numberArray = 32,
+  checkboxListAsStringArray = 33,
+  molang = 34,
+  molangArray = 35,
+  point2 = 36,
+  localizableString = 37,
 }
 
 export default interface IField {
   id: string;
   altId?: string;
   groupId?: string;
-  title: string;
+  title?: string;
   description?: string;
+  note?: string;
+  note2?: string;
+  note3?: string;
   undefinedIfEmpty?: boolean;
   subForm?: IFormDefinition;
+  subFormId?: string;
   allowedKeys?: string[];
   subFields?: { [keyName: string]: IField };
   objectArrayToSubFieldKey?: string;
@@ -65,6 +76,7 @@ export default interface IField {
   matchObjectArrayLengthToSubFieldLength?: boolean;
   matchObjectArrayToSubFieldKey?: boolean;
   fixedLength?: number;
+  keyDescription?: string;
   lookupId?: string;
   maxLength?: number;
   newItemPrototype?: any;
@@ -76,14 +88,19 @@ export default interface IField {
   minValue?: number;
   maxValue?: number;
   step?: number;
+  hideSamples?: boolean;
   suggestedMinValue?: number;
   suggestedMaxValue?: number;
+  tags?: string[];
+  isRequired?: boolean;
   validity?: ICondition[];
   visibility?: ICondition[];
-  defaultValue?: string | number | boolean;
+  defaultValue?: string | number | boolean | number[] | string[];
   additionalIndent?: number;
   visualExperience?: FieldVisualExperience;
   experienceType?: FieldExperienceType;
   dataType: FieldDataType;
+  alternates?: IField[];
   choices?: ISimpleReference[];
+  samples?: { [path: string]: IFormSample[] };
 }

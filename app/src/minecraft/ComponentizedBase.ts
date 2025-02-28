@@ -71,6 +71,10 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
     }
   }
 
+  getAllComponents() {
+    return this.getComponents();
+  }
+
   getComponents(): IManagedComponent[] {
     const componentSet: IManagedComponent[] = [];
 

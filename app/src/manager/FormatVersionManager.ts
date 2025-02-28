@@ -13,7 +13,7 @@ import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData, IProjectUpdaterReference } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
-import BlockTypeBehaviorDefinition from "../minecraft/BlockTypeBehaviorDefinition";
+import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import ProjectItem from "../app/ProjectItem";
 import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
 import RecipeBehaviorDefinition from "../minecraft/RecipeBehaviorDefinition";
@@ -206,7 +206,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          const btdef = await BlockTypeBehaviorDefinition.ensureOnFile(pi.file);
+          const btdef = await BlockTypeDefinition.ensureOnFile(pi.file);
 
           if (btdef) {
             const ver = btdef.getFormatVersion();

@@ -4,6 +4,7 @@
 import IContextIndexData from "../core/IContentIndexData";
 import IInfoItemData from "./IInfoItemData";
 import IProjectInfo from "./IProjectInfo";
+import IProjectMetaState from "./IProjectMetaState";
 
 export enum ProjectInfoSuite {
   default = 0,
@@ -18,6 +19,7 @@ export default interface IProjectInfoData {
   sourceHash?: string;
   sourceName?: string;
   suite?: number;
+  subsetReports?: IProjectMetaState[];
   index?: IContextIndexData;
   generatorName?: string;
   generatorVersion?: string;

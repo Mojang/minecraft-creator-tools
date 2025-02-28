@@ -801,7 +801,11 @@ export default class App extends Component<AppProps, AppState> {
     if (gitHubOwner !== undefined && gitHubRepoName !== undefined) {
       let gh = undefined;
 
-      if (galleryType === GalleryItemType.entityType || galleryType === GalleryItemType.blockType) {
+      if (
+        galleryType === GalleryItemType.entityType ||
+        galleryType === GalleryItemType.blockType ||
+        galleryType === GalleryItemType.itemType
+      ) {
         gh = new HttpStorage(
           CartoApp.contentRoot + "res/samples/microsoft/minecraft-samples-main/addon_starter/start/"
         );
@@ -875,7 +879,12 @@ export default class App extends Component<AppProps, AppState> {
       newProject.shortName = suggestedShortName;
       newProject.track = projectSeed?.track;
 
-      if ((galleryType === GalleryItemType.entityType || galleryType === GalleryItemType.blockType) && galleryId) {
+      if (
+        (galleryType === GalleryItemType.entityType ||
+          galleryType === GalleryItemType.blockType ||
+          galleryType === GalleryItemType.itemType) &&
+        galleryId
+      ) {
         const galleryProject = await carto.getGalleryProjectById(galleryId);
 
         if (galleryProject) {
@@ -883,6 +892,8 @@ export default class App extends Component<AppProps, AppState> {
             await ProjectUtilities.addEntityTypeFromGallery(newProject, galleryProject, suggestedName);
           } else if (galleryType === GalleryItemType.blockType) {
             await ProjectUtilities.addBlockTypeFromGallery(newProject, galleryProject, suggestedName);
+          } else if (galleryType === GalleryItemType.itemType) {
+            await ProjectUtilities.addItemTypeFromGallery(newProject, galleryProject, suggestedName);
           }
         }
       }

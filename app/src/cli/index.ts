@@ -14,7 +14,6 @@ import { ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData
 import MCWorld from "../minecraft/MCWorld.js";
 import ProjectItem from "../app/ProjectItem.js";
 import Log from "../core/Log.js";
-import IProjectMetaState from "./IProjectMetaState.js";
 import IProjectStartInfo from "./IProjectStartInfo.js";
 import ClUtils, { OutputType, TaskType } from "./ClUtils.js";
 import { spawn, Pool, Worker } from "threads";
@@ -31,6 +30,7 @@ import MinecraftUtilities from "../minecraft/MinecraftUtilities.js";
 import { IWorldSettings } from "../minecraft/IWorldSettings.js";
 import { IMinecraftStartMessage } from "../app/IMinecraftStartMessage.js";
 import ServerManager, { ServerManagerFeatures } from "../local/ServerManager.js";
+import IProjectMetaState from "../info/IProjectMetaState.js";
 
 if (typeof btoa === "undefined") {
   // @ts-ignore

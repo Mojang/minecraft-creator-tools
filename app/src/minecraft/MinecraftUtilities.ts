@@ -10,6 +10,15 @@ export default class MinecraftUtilities {
     return differenceSet.hasFileOnlyOfExtension("js", "ts", "map") && !differenceSet.getHasDeletions();
   }
 
+  static getIsBuiltIn(eventId: string) {
+    return (
+      eventId === "minecraft:entity_spawned" ||
+      eventId === "minecraft:entity_born" ||
+      eventId === "minecraft:transformed" ||
+      eventId === "minecraft:on_prime"
+    );
+  }
+
   static getAfterPackPath(path: string) {
     const hashIndex = path.indexOf("#");
 
@@ -110,6 +119,24 @@ export default class MinecraftUtilities {
     }
 
     return false;
+  }
+
+  static shortenFilterDescription(descript: string) {
+    descript = descript.replace("Returns true if ", "");
+    descript = descript.replace("True if ", "");
+    descript = descript.replace("Returns true when ", "");
+    descript = descript.replace("Tests the ", "");
+    descript = descript.replace("Tests if ", "");
+    descript = descript.replace("Tests whether ", "");
+    descript = descript.replace("Tests for ", "");
+    descript = descript.replace("Returns ", "");
+    if (descript.startsWith("the ")) {
+      descript = descript.substring(4);
+    }
+
+    descript = Utilities.ensureLooksLikeSentence(descript);
+
+    return descript;
   }
 
   static pathLooksLikeResourcePackName(path: string) {

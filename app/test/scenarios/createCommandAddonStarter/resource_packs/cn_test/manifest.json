@@ -3,7 +3,7 @@
   "header": {
     "name": "testerName",
     "description": "testerDescription",
-    "uuid": "ab5dbaa1-eba6-48a3-a45f-0c9527f7cfb8",
+    "uuid": "3ac86a66-e788-4d32-ae8e-a71c6df1efb6",
     "version": [
       1,
       0,
@@ -12,7 +12,7 @@
     "min_engine_version": [
       1,
       21,
-      50
+      60
     ],
     "pack_scope": "world"
   },
@@ -20,7 +20,7 @@
     {
       "description": "Add-on Pack Resources",
       "type": "resources",
-      "uuid": "18bbcfb0-17e7-4085-aca6-acfbe4ae89b8",
+      "uuid": "ba06f26b-f529-4bc3-ba51-2a74efa812a9",
       "version": [
         1,
         0,
@@ -30,7 +30,7 @@
   ],
   "dependencies": [
     {
-      "uuid": "3e1d3730-cc8e-4b8c-913a-e8351585e86e",
+      "uuid": "79e024ad-80e6-4ce0-b783-bb822c8ecbb1",
       "version": [
         1,
         0,

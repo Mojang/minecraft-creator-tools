@@ -200,7 +200,9 @@ export default class ItemGallery extends Component<IItemGalleryProps, IItemGalle
         if (
           Database.itemMatchesSearch(galItem, this.props.search) &&
           (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
-          (galItem.type === GalleryItemType.blockType || galItem.type === GalleryItemType.entityType)
+          (galItem.type === GalleryItemType.blockType ||
+            galItem.type === GalleryItemType.entityType ||
+            galItem.type === GalleryItemType.itemType)
         ) {
           const displayOpen = this.state.loadedProjectHash.indexOf("[" + this.getGalleryHash(galItem) + "]") >= 0;
 

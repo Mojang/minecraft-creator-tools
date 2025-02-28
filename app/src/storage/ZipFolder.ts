@@ -146,6 +146,9 @@ export default class ZipFolder extends FolderBase implements IFolder {
   async deleteThisFolder(): Promise<boolean> {
     throw new Error("Deletion of this folder " + this.fullPath + " is not supported.");
   }
+  async deleteAllFolderContents(): Promise<boolean> {
+    throw new Error("Deletion of all folder contents at " + this.fullPath + " is not supported.");
+  }
 
   async createFile(name: string): Promise<IFile> {
     return this.ensureFile(name);

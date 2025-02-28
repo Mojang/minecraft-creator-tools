@@ -1,0 +1,13 @@
+{
+  "fields": [],
+  "description": "When set, blocks entities from attacking the owner entity unless they have the \"minecraft:ignore_cannot_be_attacked\" component.",
+  "title": "Cannot Be Attacked",
+  "samples": {
+    "/vanilla/behavior_pack/entities/ghast.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:cannot_be_attacked/",
+        "content": {}
+      }
+    ]
+  }
+}

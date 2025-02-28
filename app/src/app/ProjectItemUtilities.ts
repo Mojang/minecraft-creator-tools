@@ -81,6 +81,10 @@ export default class ProjectItemUtilities {
       return { itemType: ProjectItemType.particleJson, packType: PackType.resource };
     } else if (firstHundred.indexOf('"render_controllers"') >= 0) {
       return { itemType: ProjectItemType.renderControllerJson, packType: PackType.resource };
+    } else if (firstHundred.indexOf('"block_culling"') >= 0) {
+      return { itemType: ProjectItemType.blockCulling, packType: PackType.resource };
+    } else if (firstHundred.indexOf('"item_catalog"') >= 0) {
+      return { itemType: ProjectItemType.craftingItemCatalog, packType: PackType.behavior };
     } else if (firstHundred.indexOf('"namespace"') >= 0) {
       return { itemType: ProjectItemType.uiJson, packType: PackType.resource };
     } else if (firstHundred.indexOf('"sound_definitions"') >= 0) {
@@ -372,6 +376,8 @@ export default class ProjectItemUtilities {
       case ProjectItemType.engineOrderingJson:
       case ProjectItemType.commandSetDefinitionJson:
       case ProjectItemType.skinPackManifestJson:
+      case ProjectItemType.blockCulling:
+      case ProjectItemType.craftingItemCatalog:
       case ProjectItemType.personaManifestJson:
       case ProjectItemType.vsCodeLaunchJson:
       case ProjectItemType.vsCodeTasksJson:
@@ -514,6 +520,8 @@ export default class ProjectItemUtilities {
         return "Biome resources";
       case ProjectItemType.fileListArrayJson:
         return "File list";
+      case ProjectItemType.craftingItemCatalog:
+        return "Crafting Item catalog";
       case ProjectItemType.blocksCatalogResourceJson:
         return "Block resource catalog";
       case ProjectItemType.soundCatalog:
@@ -532,6 +540,8 @@ export default class ProjectItemUtilities {
         return "Particle";
       case ProjectItemType.renderControllerJson:
         return "Render controller";
+      case ProjectItemType.blockCulling:
+        return "Block culling";
       case ProjectItemType.uiJson:
         return "User interface";
       case ProjectItemType.languagesCatalogResourceJson:

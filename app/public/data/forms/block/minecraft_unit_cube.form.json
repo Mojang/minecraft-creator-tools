@@ -1,0 +1,6 @@
+{
+  "fields": [],
+  "isDeprecated": true,
+  "description": "Specifies that a unit cube is to be used with tessellation.",
+  "title": "Unit Cube"
+}

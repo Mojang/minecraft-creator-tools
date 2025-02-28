@@ -7,6 +7,16 @@ import IProjectInfoItemGenerator from "./IProjectItemInfoGenerator";
 
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
+import ProjectItemUtilities from "../app/ProjectItemUtilities";
+import { InfoItemType } from "./IInfoItemData";
+import Database from "../minecraft/Database";
+import { ProjectItemType } from "../app/IProjectItemData";
+
+export enum UnlinkedItemInfoGeneratorTest {
+  unlinkedItemIsNotUsed = 191,
+  itemNotFoundInPack = 204,
+  avoidLinksToVanillaItems = 205,
+}
 
 export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "UNLINK";
@@ -23,9 +33,6 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
   async generate(projectItem: ProjectItem, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
-    /*
-    Not comprehensive enough to cover all the cases... yet.
-
     if (projectItem.unfulfilledRelationships) {
       for (const rel of projectItem.unfulfilledRelationships) {
         if (rel.isVanillaDependent) {
@@ -34,7 +41,7 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
             new ProjectInfoItem(
               InfoItemType.recommendation,
               this.id,
-              205,
+              UnlinkedItemInfoGeneratorTest.avoidLinksToVanillaItems,
               `Link to vanilla ` +
                 ProjectItemUtilities.getDescriptionForType(rel.itemType) +
                 ` item; avoid if possible`,
@@ -48,7 +55,7 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
             new ProjectInfoItem(
               InfoItemType.error,
               this.id,
-              204,
+              UnlinkedItemInfoGeneratorTest.itemNotFoundInPack,
               `Link to ` +
                 ProjectItemUtilities.getDescriptionForType(rel.itemType).toLowerCase() +
                 ` is not found in this pack`,
@@ -73,7 +80,7 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
               new ProjectInfoItem(
                 InfoItemType.error,
                 this.id,
-                191,
+                UnlinkedItemInfoGeneratorTest.unlinkedItemIsNotUsed,
                 ProjectItemUtilities.getDescriptionForType(projectItem.itemType) +
                   ` does not have any items in this pack that are using this.`,
                 projectItem
@@ -83,7 +90,6 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
         }
       }
     }
-    */
 
     return items;
   }

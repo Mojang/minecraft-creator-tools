@@ -93,7 +93,7 @@ export default class DocumentedModuleEditor extends Component<
       if (!this.state.isLoaded) {
         await this.props.project.inferProjectItemsFromFiles();
 
-        await Database.ensureFormLoaded("documented_module");
+        await Database.ensureFormLoaded("documentation", "module");
 
         const docsFolder = await this.props.project.ensureDocsFolder();
 
@@ -415,7 +415,7 @@ export default class DocumentedModuleEditor extends Component<
     }
 
     const dm = this.state.fileToEdit.manager as DocumentedModule;
-    const form = Database.getForm("documented_module");
+    const form = Database.getForm("documentation", "module");
 
     let docItemEditor = <div>&#160;</div>;
 

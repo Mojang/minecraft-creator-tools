@@ -49,7 +49,7 @@ export default class SoundEventSetEditor extends Component<ISoundEventSetSoundEd
   }
 
   async _updateManager(setState: boolean) {
-    await Database.ensureFormLoaded("entity_sound_event");
+    await Database.ensureFormLoaded("entity", "sound_event");
 
     if (!this.state.isLoaded) {
       this._doUpdate(setState);
@@ -92,7 +92,7 @@ export default class SoundEventSetEditor extends Component<ISoundEventSetSoundEd
       return <div>Loading definition...</div>;
     }
 
-    const form = Database.getForm("entity_sound_event");
+    const form = Database.getForm("entity", "sound_event");
 
     let header = <></>;
     if (this.props.displayHeader === undefined || this.props.displayHeader) {

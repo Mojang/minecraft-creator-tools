@@ -1,0 +1,129 @@
+.etpe-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-right: 12px;
+  display: grid;
+  max-width: 590px;
+  grid-template-columns: 280px 1fr;
+}
+
+.etpe-header {
+  font-size: 12pt;
+  font-size: 17pt;
+}
+
+.etpe-componentForm {
+  margin-bottom: 12px;
+  padding: 3px;
+  padding-left: 10px;
+  display: inline-grid;
+  min-height: 220px;
+}
+
+.etpe-componentWrapper {
+  margin-top: 1px;
+  margin-bottom: 1px;
+
+  padding: 10px 6px 10px 6px;
+  border: 2px outset;
+  font-size: small;
+}
+
+.etpe-componentForm .ui-form__input {
+  padding-top: 3px;
+  margin-bottom: 4px;
+}
+
+.etpe-componentForm .ui-form__checkbox {
+  padding-top: 3px;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+.etpe-componentForm .pu > :last-child {
+  margin-top: 0px;
+}
+.etpe-componentForm .pt > :not(:last-child) {
+  margin-bottom: 0px;
+}
+
+.etpe-componentHeader {
+  padding-top: 20px;
+  font-size: 11pt;
+  padding-bottom: 14px;
+}
+
+.etpe-noeditor {
+  padding: 10px;
+}
+
+.etpe-title {
+  width: 200px;
+}
+
+.etpe-extraArea {
+  margin-bottom: 5px;
+}
+
+.etpe-componentList {
+  grid-column: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border-left: solid 1px;
+  border-bottom: solid 1px;
+  border-top: solid 1px;
+}
+
+.etpe-componentList li {
+  padding-left: 5px;
+  padding-right: 2px;
+}
+
+.etpe-componentList .ui-list__itemcontent {
+  margin-right: 3px;
+}
+
+.etpe-componentBin {
+  padding: 4px;
+  height: 100%;
+  min-height: 200px;
+  vertical-align: top;
+  grid-column: 2;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border-right: solid 1px;
+  border-bottom: solid 1px;
+  border-top: solid 1px;
+}
+
+.etpe-componentBin:first-child {
+  margin-top: 1px;
+}
+
+.etpe-componentArea {
+  display: grid;
+  padding: 3px;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-template-columns: 190px 1fr 100px;
+}
+
+.etpe-titleArea {
+  grid-column: 2;
+  grid-row: 1;
+  padding-top: 5px;
+}
+
+.etpe-toolBarArea {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.etpe-extraArea {
+  grid-column: 1;
+  grid-row: 1;
+  padding-left: 5px;
+}

@@ -1,0 +1,13 @@
+{
+  "fields": [],
+  "description": "Vibrations emitted by this entity will be ignored.",
+  "title": "Vibration Damper",
+  "samples": {
+    "/vanilla/behavior_pack/entities/warden.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:vibration_damper/",
+        "content": {}
+      }
+    ]
+  }
+}

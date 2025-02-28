@@ -13,11 +13,11 @@ import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition"
 import NpmPackageDefinition from "../devproject/NpmPackageDefinition";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import ISnippet from "./ISnippet";
-import IGalleryItem from "./IGalleryItem";
+import IGalleryItem, { GalleryItemType } from "./IGalleryItem";
 import IFolder from "../storage/IFolder";
 import ProjectItemUtilities from "./ProjectItemUtilities";
 import { PackType } from "../minecraft/Pack";
-import BlockTypeBehaviorDefinition from "../minecraft/BlockTypeBehaviorDefinition";
+import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import { IAnnotatedValue } from "../core/AnnotatedValue";
 import ProjectItem from "./ProjectItem";
 import HttpStorage from "../storage/HttpStorage";
@@ -746,6 +746,14 @@ export default class ProjectUtilities {
     await project.save();
   }
 
+  static async addItemTypeFromGallery(project: Project, blockTypeProject: IGalleryItem, blockTypeName?: string) {
+    await ProjectUtilities.copyGalleryPackFilesAndFixupIds(project, blockTypeProject, blockTypeName);
+
+    await project.inferProjectItemsFromFiles(true);
+
+    await project.save();
+  }
+
   static async copyGalleryPackFilesAndFixupIds(
     project: Project,
     galleryProject: IGalleryItem,
@@ -767,8 +775,8 @@ export default class ProjectUtilities {
     let sourceRpFolder = undefined;
 
     if (galleryProject.gitHubRepoName === "bedrock-samples") {
-      sourceBpFolder = await Database.loadDefaultBehaviorPack();
-      sourceRpFolder = await Database.getDefaultResourcePack();
+      sourceBpFolder = await Database.getReleaseVanillaBehaviorPackFolder();
+      sourceRpFolder = await Database.getReleaseVanillaResourcePackFolder();
     } else {
       const gh = new HttpStorage(
         CartoApp.contentRoot +
@@ -819,6 +827,12 @@ export default class ProjectUtilities {
       return;
     }
 
+    let contentReplacements = ['"identifier"', '"materials"'];
+
+    if (galleryProject.type === GalleryItemType.itemType) {
+      contentReplacements = ['"materials"'];
+    }
+
     for (const filePath of files) {
       if (filePath.startsWith("/behavior_pack")) {
         let subPath = undefined;
@@ -860,7 +874,13 @@ export default class ProjectUtilities {
             let content = sourceFile.content;
 
             if (typeof content === "string") {
-              content = ProjectUtilities.replaceNamesInContent(content, project, galleryProject, newTypeName);
+              content = ProjectUtilities.replaceNamesInContent(
+                content,
+                project,
+                galleryProject,
+                newTypeName,
+                contentReplacements
+              );
             }
 
             if (content !== null) {
@@ -912,7 +932,13 @@ export default class ProjectUtilities {
             let content = sourceFile.content;
 
             if (typeof content === "string") {
-              content = ProjectUtilities.replaceNamesInContent(content, project, galleryProject, newTypeName);
+              content = ProjectUtilities.replaceNamesInContent(
+                content,
+                project,
+                galleryProject,
+                newTypeName,
+                contentReplacements
+              );
             }
 
             if (content !== null) {
@@ -934,17 +960,27 @@ export default class ProjectUtilities {
     path = Utilities.replaceAll(path, "/" + entityTypeProject.id + "/", "/" + newName + "/");
     path = Utilities.replaceAll(path, "\\" + entityTypeProject.id + "\\", "\\" + newName + "\\");
 
+    path = Utilities.replaceAll(path, "/" + entityTypeProject.id + "_ico.", "/" + newName + "_ico.");
+    path = Utilities.replaceAll(path, "\\" + entityTypeProject.id + "_ico.", "\\" + newName + "_ico.");
+    path = Utilities.replaceAll(path, "/" + entityTypeProject.id + "_ico/", "/" + newName + "_ico/");
+    path = Utilities.replaceAll(path, "\\" + entityTypeProject.id + "_ico\\", "\\" + newName + "_ico\\");
+
     return path;
   }
 
-  static replaceNamesInContent(content: string, project: Project, entityTypeProject: IGalleryItem, newName: string) {
+  static replaceNamesInContent(
+    content: string,
+    project: Project,
+    entityTypeProject: IGalleryItem,
+    newName: string,
+    replaceAllExclusions: string[]
+  ) {
     content = Utilities.replaceAll(
       content,
       "minecraft:" + entityTypeProject.id,
       project.effectiveDefaultNamespace + ":" + newName
     );
 
-    const replaceAllExclusions = ['"identifier"', '"materials"'];
     content = Utilities.replaceAllExceptInLines(
       content,
       ":" + entityTypeProject.id,
@@ -1290,14 +1326,16 @@ export default class ProjectUtilities {
       return;
     }
 
-    await Database.loadDefaultBehaviorPack();
+    await Database.getReleaseVanillaBehaviorPackFolder();
 
-    if (Database.defaultBehaviorPackFolder === null) {
+    if (Database.releaseVanillaBehaviorPackFolder === null) {
       Log.fail("Could not find default behavior pack folder");
       return;
     }
 
-    const sourceFile = Database.defaultBehaviorPackFolder.ensureFolder("blocks").ensureFile(blockTypeId + ".json");
+    const sourceFile = Database.releaseVanillaBehaviorPackFolder
+      .ensureFolder("blocks")
+      .ensureFile(blockTypeId + ".json");
 
     await sourceFile.loadContent(true);
 
@@ -1343,7 +1381,7 @@ export default class ProjectUtilities {
 
       file.setContent(content);
 
-      const bt = await BlockTypeBehaviorDefinition.ensureOnFile(file, undefined);
+      const bt = await BlockTypeDefinition.ensureOnFile(file, undefined);
 
       if (bt) {
         bt.id =

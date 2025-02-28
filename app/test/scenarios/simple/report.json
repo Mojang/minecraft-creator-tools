@@ -26,6 +26,42 @@
     "subpackTier2Count": 0,
     "subpackTier3Count": 0,
     "subpackTier4Count": 0,
+    "subpackTier5Count": 0,
+    "subpackTier6Count": 0,
+    "subpackTier7Count": 0,
+    "subpackTier8Count": 0,
+    "subpackTier9Count": 0,
+    "subpackTier10Count": 0,
+    "subpackTier11Count": 0,
+    "subpackTier12Count": 0,
+    "subpackTier13Count": 0,
+    "subpackTier14Count": 0,
+    "subpackTier15Count": 0,
+    "subpackTier16Count": 0,
+    "subpackTier17Count": 0,
+    "subpackTier18Count": 0,
+    "subpackTier19Count": 0,
+    "subpackTier20Count": 0,
+    "subpackTier21Count": 0,
+    "subpackTier22Count": 0,
+    "subpackTier23Count": 0,
+    "subpackTier24Count": 0,
+    "subpackTier25Count": 0,
+    "subpackTier26Count": 0,
+    "subpackTier27Count": 0,
+    "subpackTier28Count": 0,
+    "subpackTier29Count": 0,
+    "subpackTier30Count": 0,
+    "subpackTier31Count": 0,
+    "subpackTier32Count": 0,
+    "subpackTier33Count": 0,
+    "subpackTier34Count": 0,
+    "subpackTier35Count": 0,
+    "subpackTier36Count": 0,
+    "subpackTier37Count": 0,
+    "subpackTier38Count": 0,
+    "subpackTier39Count": 0,
+    "subpackTier40Count": 0,
     "animationCount": 0,
     "textureCount": 0,
     "chunkCount": 0,
@@ -198,6 +234,10 @@
         "6": {
           "title": "6",
           "defaultMessage": "Behavior Pack Id"
+        },
+        "145": {
+          "title": "145",
+          "defaultMessage": "Entity Geometry"
         }
       },
       "SCRIPTMODULE": {
@@ -259,6 +299,18 @@
       "TEXTUREIMAGE": {
         "1": {
           "title": "Texture Images"
+        }
+      },
+      "GEOMETRY": {
+        "1": {
+          "title": "Block Geometry"
+        },
+        "2": {
+          "title": "Entity Geometry"
+        },
+        "3": {
+          "title": "Item Geometry",
+          "defaultMessage": "Items Geometry"
         }
       },
       "PATHLENGTH": {
@@ -487,6 +539,11 @@
       "d": 3
     },
     {
+      "iTp": 7,
+      "gId": "PACK",
+      "gIx": 145
+    },
+    {
       "iTp": 2,
       "gId": "PACK",
       "gIx": 3,
@@ -623,6 +680,21 @@
       "iTp": 7,
       "gId": "TEXTUREIMAGE",
       "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 2
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 3
     },
     {
       "iTp": 1,

@@ -9,6 +9,7 @@ import StorageUtilities, { EncodingType } from "../storage/StorageUtilities";
 import FolderBase from "../storage/FolderBase";
 import Log from "./../core/Log";
 import * as fs from "fs";
+import * as path from "path";
 import * as crypto from "crypto";
 
 export interface IFilePathAndSize {
@@ -104,7 +105,38 @@ export default class NodeFolder extends FolderBase implements IFolder {
   }
 
   async deleteThisFolder(): Promise<boolean> {
-    throw new Error("Deletion of this folder " + this.fullPath + " is not supported.");
+    if (this.storage.readOnly) {
+      throw new Error("Deletion of this folder " + this.fullPath + " is not supported in read only mode.");
+    }
+
+    let absPath = path.resolve(this.fullPath);
+    if (StorageUtilities.isPathRiskyForDelete(absPath)) {
+      throw new Error("Deletion of this folder " + absPath + " is not supported because it seems too basic.");
+    }
+
+    let isSuccess = true;
+
+    if (fs.existsSync(this.fullPath)) {
+      try {
+        fs.rmdirSync(this.fullPath, {
+          recursive: true,
+        });
+      } catch (e) {
+        isSuccess = false;
+      }
+    }
+
+    this.removeMeFromParent();
+
+    return isSuccess;
+  }
+
+  async deleteAllFolderContents(): Promise<boolean> {
+    if (this.storage.readOnly) {
+      throw new Error("Deletion of folder contents at " + this.fullPath + " is not supported in read only mode.");
+    }
+
+    return await this.recursiveDeleteContentsOfThisFolder();
   }
 
   ensureFolder(name: string): NodeFolder {

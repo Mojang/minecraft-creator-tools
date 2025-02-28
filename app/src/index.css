@@ -54,6 +54,13 @@ input[type="file"]:hover {
   max-width: 900px !important;
 }
 
+.ui-menu__item__submenu__submenu {
+  max-height: 400px;
+  max-width: 100vw;
+  width: 400px;
+  overflow: auto;
+}
+
 .ui-dialog__content {
   overflow-y: scroll;
   max-height: calc(100vh - 200px);

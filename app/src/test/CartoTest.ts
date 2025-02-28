@@ -137,7 +137,7 @@ function removeResultFolder(scenarioName: string) {
       StorageUtilities.ensureEndsWithDelimiter(scenarioName);
 
     // guard against being called at a "more root" file path
-    if (fs.existsSync(path) && Utilities.countChar(path, NodeStorage.platformFolderDelimiter) > 5) {
+    if (fs.existsSync(path) && !StorageUtilities.isPathRiskyForDelete(path)) {
       try {
         fs.rmSync(path, {
           recursive: true,

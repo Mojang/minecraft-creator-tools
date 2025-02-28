@@ -113,11 +113,11 @@ export default class RenderControllerSetEditor extends Component<
       selRenderControllerSet = this.state.fileToEdit.manager as RenderControllerSetDefinition;
     }
 
-    const form = await Database.ensureFormLoaded("render_controller_set");
-    const formMaterials = await Database.ensureFormLoaded("render_controller_set_materials");
-    const formTextures = await Database.ensureFormLoaded("render_controller_set_textures");
-    const formGeometry = await Database.ensureFormLoaded("render_controller_set_geometry");
-    const formMisc = await Database.ensureFormLoaded("render_controller_set_misc");
+    const form = await Database.ensureFormLoaded("resource", "render_controller_set");
+    const formMaterials = await Database.ensureFormLoaded("resource", "render_controller_set_materials");
+    const formTextures = await Database.ensureFormLoaded("resource", "render_controller_set_textures");
+    const formGeometry = await Database.ensureFormLoaded("resource", "render_controller_set_geometry");
+    const formMisc = await Database.ensureFormLoaded("resource", "render_controller_set_misc");
     this.setState({
       fileToEdit: this.props.file,
       renderControllerSet: selRenderControllerSet,

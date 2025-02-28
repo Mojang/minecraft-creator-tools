@@ -144,6 +144,7 @@ export enum ProjectItemType {
   personaManifestJson = 125,
   personaPackFolder = 126,
   blockCulling = 127,
+  craftingItemCatalog = 128,
 }
 
 export enum ProjectItemStorageType {

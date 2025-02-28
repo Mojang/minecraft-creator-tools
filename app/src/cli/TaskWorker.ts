@@ -8,7 +8,7 @@ import StorageUtilities from "../storage/StorageUtilities";
 import NodeStorage from "../local/NodeStorage";
 import IProjectInfoData, { ProjectInfoSuite } from "../info/IProjectInfoData";
 import Project from "../app/Project";
-import IProjectMetaState from "./IProjectMetaState";
+import IProjectMetaState from "../info/IProjectMetaState";
 import { expose } from "threads/worker";
 import CartoApp, { HostType } from "../app/CartoApp";
 import ProjectInfoSet from "../info/ProjectInfoSet";
@@ -175,7 +175,7 @@ async function validateAndDisposeProject(
 
   const pisData = pis.getDataObject();
 
-  const metaStates: IProjectMetaState[] = [];
+  const resultStates: IProjectMetaState[] = [];
 
   const projectSet = {
     projectContainerName: project.containerName,
@@ -186,7 +186,7 @@ async function validateAndDisposeProject(
     suite: suiteInst,
   };
 
-  metaStates.push(projectSet);
+  resultStates.push(projectSet);
 
   pis.disconnectFromProject();
 
@@ -243,7 +243,7 @@ async function validateAndDisposeProject(
         suite: ProjectInfoSuite.cooperativeAddOn,
       };
 
-      metaStates.push(projectSet);
+      resultStates.push(projectSet);
 
       await outputResults(projectSet, pis, "addon", outputStorage, undefined);
     }
@@ -264,7 +264,7 @@ async function validateAndDisposeProject(
         suite: ProjectInfoSuite.currentPlatformVersions,
       };
 
-      metaStates.push(projectSet);
+      resultStates.push(projectSet);
 
       await outputResults(projectSet, pis, "currentplatform", outputStorage, undefined);
     }
@@ -272,7 +272,7 @@ async function validateAndDisposeProject(
 
   project.dispose();
 
-  return metaStates;
+  return resultStates;
 }
 
 async function outputResults(

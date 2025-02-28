@@ -43,6 +43,13 @@
   padding-top: 24px;
 }
 
+.ete-componentEditorInterior .ui-list__itemheader {
+  white-space: nowrap;
+  max-width: 200px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
 .ete-eventList {
   grid-column: 1;
   grid-row: 2;
@@ -67,7 +74,7 @@
   grid-row: 2;
 }
 
-.ete-componentListInterior {
+.ete-listInterior {
   overflow-y: scroll;
   overflow-x: hidden;
 }
