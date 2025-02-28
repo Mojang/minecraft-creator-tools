@@ -532,12 +532,12 @@
         "Count": 1
       }
     },
-    "errorCount": 17,
+    "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 19,
     "testSuccessCount": 9,
     "testFailCount": 0,
-    "errorSummary": "ERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: ambientsounds.co2_notexists\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: ambientsounds.co2_extranotexists\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: individual_event_sound_that_does_not_exist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: aop_mobs:mob_that_does_not_exist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: ambientsounds.co2_notexists\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: ambientsounds.co2_extranotexists\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: individual_event_sound_that_does_not_exist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: aop_mobs:mob_that_does_not_exist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Link to texture is not found in this pack: textures/aop/moremobs/biceson_filethatdoesnotexist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Link to texture is not found in this pack: textures/aop/moremobs/biceson_filethatdoesnotexist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json) Link to sound catalog is not found in this pack: ambientsounds.cofoo_doesnotexist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json) Link to sound catalog is not found in this pack: ambientsounds.cofoo_doesnotexist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json) Link to audio is not found in this pack: sounds/ambientsounds/co_doesnotexist\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json) Link to audio is not found in this pack: sounds/ambientsounds/co_doesnotexist\r\nERROR: [UNLINK191] (/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg) Audio does not have any items in this pack that are using this.\r\nERROR: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png) Texture does not have any items in this pack that are using this.\r\nERROR: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png) Texture does not have any items in this pack that are using this.",
+    "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "testFailSummary": "",
     "summary": {
@@ -970,24 +970,6 @@
           "defaultMessage": "Level Dat Experiments"
         }
       },
-      "UNLINK": {
-        "1": {
-          "defaultMessage": "Test Unlinked item info generator completed successfully.",
-          "testCompleteSuccesses": 1
-        },
-        "191": {
-          "defaultMessage": "Audio does not have any items in this pack that are using this.",
-          "errors": 3
-        },
-        "204": {
-          "defaultMessage": "Link to sound catalog is not found in this pack",
-          "errors": 14
-        },
-        "205": {
-          "defaultMessage": "Link to vanilla Model item; avoid if possible",
-          "recommendations": 6
-        }
-      },
       "UNKFILE": {
         "1": {
           "defaultMessage": "Test Unknown files completed successfully.",
@@ -1009,6 +991,12 @@
       "WORLD": {
         "1": {
           "defaultMessage": "Test World Validation completed successfully.",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "UNLINK": {
+        "1": {
+          "defaultMessage": "Test Unlinked item info generator completed successfully.",
           "testCompleteSuccesses": 1
         }
       }
@@ -2516,64 +2504,6 @@
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
     },
     {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "ambientsounds.co2_notexists"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "ambientsounds.co2_extranotexists"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "individual_event_sound_that_does_not_exist"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "m": "Link to entity type is not found in this pack",
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "aop_mobs:mob_that_does_not_exist"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "ambientsounds.co2_notexists"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "ambientsounds.co2_extranotexists"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "individual_event_sound_that_does_not_exist"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "m": "Link to entity type is not found in this pack",
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "aop_mobs:mob_that_does_not_exist"
-    },
-    {
       "iTp": 2,
       "gId": "JSON",
       "gIx": 1128,
@@ -2590,36 +2520,6 @@
       "gId": "JSON",
       "gIx": 1128,
       "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "m": "Link to texture is not found in this pack",
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
-      "d": "textures/aop/moremobs/biceson_filethatdoesnotexist"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "m": "Link to texture is not found in this pack",
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
-      "d": "textures/aop/moremobs/biceson_filethatdoesnotexist"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
-      "d": "geometry.sheep.sheared.v1.8"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
-      "d": "geometry.sheep.sheared.v1.8"
     },
     {
       "iTp": 4,
@@ -2731,88 +2631,6 @@
       "m": "anyOf /particle_effect/components/minecraft:particle_appearance_tinting/color must match a schema in anyOf",
       "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
       "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n   "
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla Texture item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "d": "textures/particle/particles"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla Texture item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "d": "textures/particle/particles"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla Texture item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
-      "d": "textures/particle/particles"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla Texture item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
-      "d": "textures/particle/particles"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json",
-      "d": "ambientsounds.cofoo_doesnotexist"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json",
-      "d": "ambientsounds.cofoo_doesnotexist"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "m": "Link to audio is not found in this pack",
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json",
-      "d": "sounds/ambientsounds/co_doesnotexist"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "m": "Link to audio is not found in this pack",
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json",
-      "d": "sounds/ambientsounds/co_doesnotexist"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 191,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 191,
-      "m": "Texture does not have any items in this pack that are using this.",
-      "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 191,
-      "m": "Texture does not have any items in this pack that are using this.",
-      "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png"
     },
     {
       "iTp": 0,

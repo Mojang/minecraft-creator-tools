@@ -486,12 +486,12 @@
         "Count": 1
       }
     },
-    "errorCount": 2,
+    "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 19,
     "testSuccessCount": 9,
     "testFailCount": 0,
-    "errorSummary": "ERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: aop_mobs:robot\r\nERROR: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: aop_mobs:robot",
+    "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "testFailSummary": "",
     "summary": {
@@ -884,20 +884,6 @@
           "defaultMessage": "Level Dat Experiments"
         }
       },
-      "UNLINK": {
-        "1": {
-          "defaultMessage": "Test Unlinked item info generator completed successfully.",
-          "testCompleteSuccesses": 1
-        },
-        "204": {
-          "defaultMessage": "Link to entity type is not found in this pack",
-          "errors": 2
-        },
-        "205": {
-          "defaultMessage": "Link to vanilla Sound catalog item; avoid if possible",
-          "recommendations": 50
-        }
-      },
       "UNKFILE": {
         "1": {
           "defaultMessage": "Test Unknown files completed successfully.",
@@ -919,6 +905,12 @@
       "WORLD": {
         "1": {
           "defaultMessage": "Test World Validation completed successfully.",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "UNLINK": {
+        "1": {
+          "defaultMessage": "Test Unlinked item info generator completed successfully.",
           "testCompleteSuccesses": 1
         }
       }
@@ -2275,328 +2267,6 @@
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
     },
     {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.idle"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.idle_water"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.attack"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.blowhole"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.death"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.eat"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.hurt"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.jump"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.splash"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.swim"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear.idle"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear_baby.idle"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear.death"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear.hurt"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear.warning"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear.step"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.sheep.say"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.sheep.step"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.zombie.say"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.zombie.death"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.zombie.hurt"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.zombie.step"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "aop_mobs:robot"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.idle"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.idle_water"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.attack"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.blowhole"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.death"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.eat"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.hurt"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.jump"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.splash"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.dolphin.swim"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear.idle"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear_baby.idle"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear.death"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear.hurt"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear.warning"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.polarbear.step"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.sheep.say"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.sheep.step"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.zombie.say"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.zombie.death"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.zombie.hurt"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "mob.zombie.step"
-    },
-    {
-      "iTp": 3,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "aop_mobs:robot"
-    },
-    {
       "iTp": 2,
       "gId": "JSON",
       "gIx": 1128,
@@ -2613,22 +2283,6 @@
       "gId": "JSON",
       "gIx": 1128,
       "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla Model item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
-      "d": "geometry.sheep.sheared.v1.8"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla Model item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
-      "d": "geometry.sheep.sheared.v1.8"
     },
     {
       "iTp": 4,
@@ -2740,38 +2394,6 @@
       "m": "anyOf /particle_effect/components/minecraft:particle_appearance_tinting/color must match a schema in anyOf",
       "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
       "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n   "
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla Texture item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "d": "textures/particle/particles"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla Texture item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "d": "textures/particle/particles"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla Texture item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
-      "d": "textures/particle/particles"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla Texture item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
-      "d": "textures/particle/particles"
     },
     {
       "iTp": 0,
