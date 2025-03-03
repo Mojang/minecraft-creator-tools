@@ -1,0 +1,20 @@
+{
+  "fields": [
+    {
+      "id": "jump_delay",
+      "title": "Jump Delay",
+      "description": "Delay after landing when using the slime move control.",
+      "dataType": 18
+    },
+    {
+      "id": "max_turn",
+      "title": "Max Turn",
+      "description": "The maximum number in degrees the mob can turn per tick.",
+      "defaultValue": 30,
+      "dataType": 3
+    }
+  ],
+  "note": "In order to follow targets, this entity must have the `minecraft:behavior.slime_attack` component, otherwise the entity will jump in the direction it's looking in.",
+  "description": "Move control that causes the mob to jump as it moves with a specified delay between jumps.",
+  "title": "Jump Movement"
+}

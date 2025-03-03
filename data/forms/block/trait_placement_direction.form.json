@@ -1,0 +1,5 @@
+{
+  "fields": [],
+  "title": "Placement Direction",
+  "description": "Add states containing information about the player's rotation when the block is placed. For example, if a block using placement_direction is placed while the player is facing south, the state value will be 'south'. This will allow a data-driven block to replicate the rotation behavior of a furnace, pumpkin, or terracotta block."
+}

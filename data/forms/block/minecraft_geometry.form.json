@@ -1,0 +1,175 @@
+{
+  "title": "Geometry",
+  "fields": [
+    {
+      "id": "bone_visibility",
+      "title": "Bone Visibility",
+      "dataType": 27,
+      "hideSamples": true,
+      "samples": {
+        "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/blue_bubble_fish.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:geometry/",
+            "content": {
+              "bb_main": true,
+              "fish": true
+            }
+          }
+        ],
+        "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/green_bubble_fish.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:geometry/",
+            "content": {
+              "bb_main": true,
+              "fish": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "dataType": 2,
+      "samples": {
+        "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/blue_bubble_fish.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:geometry/",
+            "content": "geometry.bubble_fish"
+          }
+        ],
+        "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/die.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:geometry/",
+            "content": "minecraft:geometry.full_block"
+          }
+        ],
+        "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/green_bubble_fish.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:geometry/",
+            "content": "geometry.bubble_fish"
+          }
+        ]
+      }
+    }
+  ],
+  "scalarFieldUpgradeName": "identifier",
+  "description": "The description identifier of the geometry to use to render this block. This identifier must either match an existing geometry identifier in any of the loaded resource packs or be one of the currently supported Vanilla identifiers: \"minecraft:geometry.full_block\" or \"minecraft:geometry.cross\".",
+  "samples": {
+    "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/blue_bubble_fish.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": {
+          "identifier": "geometry.bubble_fish",
+          "bone_visibility": {
+            "bb_main": true,
+            "fish": true
+          }
+        }
+      }
+    ],
+    "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/california_roll.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.sushi"
+      }
+    ],
+    "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/die.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": {
+          "identifier": "minecraft:geometry.full_block"
+        }
+      }
+    ],
+    "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/green_bubble_fish.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": {
+          "identifier": "geometry.bubble_fish",
+          "bone_visibility": {
+            "bb_main": true,
+            "fish": true
+          }
+        }
+      }
+    ],
+    "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/orange_bubble_fish.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": {
+          "identifier": "geometry.bubble_fish",
+          "bone_visibility": {
+            "bb_main": true,
+            "fish": true
+          }
+        }
+      }
+    ],
+    "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/salmon_roll.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.sushi"
+      }
+    ],
+    "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/tuna_roll.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.sushi"
+      }
+    ],
+    "/samples/custom_features/basic_orange_ore/behavior_packs/basic_orange_ore/blocks/orange_ore.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.orange_ore"
+      }
+    ],
+    "/samples/custom_features/example_feature_set/behavior_packs/example_feature_set/blocks/apple_block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.apple_block"
+      }
+    ],
+    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/frond_top.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.frond_top"
+      }
+    ],
+    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_leave_corner.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.palm_leave_corner"
+      }
+    ],
+    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_leave_tip.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.palm_leave_tip"
+      }
+    ],
+    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_leave.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.palm_leave"
+      }
+    ],
+    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_tree_top.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.palm_tree_top"
+      }
+    ],
+    "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_trunk.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.palm_trunk"
+      }
+    ]
+  },
+  "scalarField": {
+    "id": "string",
+    "title": "String",
+    "dataType": 2
+  }
+}

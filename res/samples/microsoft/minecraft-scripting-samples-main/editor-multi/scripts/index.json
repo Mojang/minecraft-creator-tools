@@ -1,0 +1,14 @@
+{
+  "files": [
+    "camera-grapple.ts",
+    "dye-brush.ts",
+    "farm-generator.ts",
+    "goto-mark.ts",
+    "main.ts",
+    "portal-generator.ts",
+    "simple-locate-biome.ts",
+    "star-brush-shape.ts",
+    "tree-generator.ts"
+  ],
+  "folders": []
+}

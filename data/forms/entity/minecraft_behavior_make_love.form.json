@@ -1,0 +1,51 @@
+{
+  "fields": [
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/villager_v2.json": [
+          {
+            "path": "/minecraft:entity/component_groups/make_and_receive_love/minecraft:behavior.make_love/",
+            "content": 5
+          }
+        ],
+        "/vanilla/behavior_pack/entities/villager.json": [
+          {
+            "path": "/minecraft:entity/component_groups/adult/minecraft:behavior.make_love/",
+            "content": 6
+          }
+        ]
+      }
+    }
+  ],
+  "restrictions": [
+    {
+      "id": "minecraft:villager",
+      "type": "entity_type"
+    }
+  ],
+  "description": "Allows the villager to look for a mate to spawn other villagers with.",
+  "title": "Make Love Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/villager_v2.json": [
+      {
+        "path": "/minecraft:entity/component_groups/make_and_receive_love/minecraft:behavior.make_love/",
+        "content": {
+          "priority": 5
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/villager.json": [
+      {
+        "path": "/minecraft:entity/component_groups/adult/minecraft:behavior.make_love/",
+        "content": {
+          "priority": 6
+        }
+      }
+    ]
+  }
+}

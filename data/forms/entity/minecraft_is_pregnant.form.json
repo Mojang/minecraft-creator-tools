@@ -1,0 +1,13 @@
+{
+  "fields": [],
+  "description": "Sets that this entity is currently pregnant.",
+  "title": "Is Pregnant",
+  "samples": {
+    "/vanilla/behavior_pack/entities/sniffer.json": [
+      {
+        "path": "/minecraft:entity/component_groups/sniffer_pregnant/minecraft:is_pregnant/",
+        "content": {}
+      }
+    ]
+  }
+}

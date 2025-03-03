@@ -1,0 +1,18 @@
+{
+  "fields": [
+    {
+      "id": "min",
+      "title": "min",
+      "description": "min",
+      "dataType": 0
+    },
+    {
+      "id": "max",
+      "title": "max",
+      "description": "max",
+      "dataType": 0
+    }
+  ],
+  "description": "SharedTypes IntRange",
+  "title": "SharedTypes IntRange"
+}

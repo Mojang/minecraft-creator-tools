@@ -1,0 +1,13 @@
+{
+  "fields": [],
+  "description": "Determines that this entity is an item hopper.",
+  "title": "Item Hopper",
+  "samples": {
+    "/vanilla/behavior_pack/entities/hopper_minecart.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:hopper_active/minecraft:item_hopper/",
+        "content": {}
+      }
+    ]
+  }
+}

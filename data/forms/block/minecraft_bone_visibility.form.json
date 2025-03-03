@@ -1,0 +1,6 @@
+{
+  "fields": [],
+  "isDeprecated": true,
+  "description": "A JSON object that contains a list of key/value pairs that map from bone name in the specified geometry file (key) to a boolean that tells whether the bone should be visible or not (value).",
+  "title": "Bone Visibility"
+}

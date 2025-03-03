@@ -1,0 +1,18 @@
+{
+  "fields": [
+    {
+      "id": "texture",
+      "title": "Texture",
+      "description": "The texture name used for the particle.",
+      "dataType": 2
+    },
+    {
+      "id": "tint_method",
+      "title": "Tint Method",
+      "description": "Optional, tint multiplied to the color. Tint method logic varies, but often refers to the \"rain\" and \"temperature\" of the biome the block is placed in to compute the tint. Supported tint methods are \"none\", \"default_foliage\", \"birch_foliage\", \"evergreen_foliage\", \"dry_foliage\", \"grass\" and \"water\"",
+      "dataType": 2
+    }
+  ],
+  "description": "[Note: This component is currently experimental]. Sets the particles that will be used when block is destroyed. This component can be omitted.",
+  "title": "Destruction Particles"
+}

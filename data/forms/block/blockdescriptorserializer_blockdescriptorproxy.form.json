@@ -1,0 +1,24 @@
+{
+  "fields": [
+    {
+      "id": "name",
+      "title": "name",
+      "description": "name",
+      "dataType": 2
+    },
+    {
+      "id": "tags",
+      "title": "tags",
+      "description": "tags",
+      "dataType": 2
+    },
+    {
+      "id": "states",
+      "title": "states",
+      "description": "states",
+      "dataType": 16
+    }
+  ],
+  "description": "BlockDescriptorSerializer BlockDescriptorProxy",
+  "title": "BlockDescriptorSerializer BlockDescriptorProxy"
+}

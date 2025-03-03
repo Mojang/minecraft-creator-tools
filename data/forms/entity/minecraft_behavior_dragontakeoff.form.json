@@ -1,0 +1,29 @@
+{
+  "fields": [
+    {
+      "id": "priority",
+      "title": "Priority",
+      "hideSamples": true,
+      "description": "As priority approaches 0, the priority is increased. The higher the priority, the sooner this behavior will be executed as a goal.",
+      "dataType": 0
+    }
+  ],
+  "restrictions": [
+    {
+      "id": "minecraft:ender_dragon",
+      "type": "entity_type"
+    }
+  ],
+  "description": "Allows the dragon to leave perch mode and go back to flying around.",
+  "title": "Dragontakeoff Behavior",
+  "samples": {
+    "/vanilla/behavior_pack/entities/ender_dragon.json": [
+      {
+        "path": "/minecraft:entity/component_groups/dragon_flying/minecraft:behavior.dragontakeoff/",
+        "content": {
+          "priority": 0
+        }
+      }
+    ]
+  }
+}

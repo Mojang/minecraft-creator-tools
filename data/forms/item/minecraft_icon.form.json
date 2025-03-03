@@ -1,0 +1,565 @@
+{
+  "title": "Icon",
+  "description": "Determines the icon to represent the item in the UI and elsewhere.",
+  "fields": [
+    {
+      "id": "textures",
+      "title": "textures",
+      "description": "This map contains the different textures that can be used for the item's icon. Default will contain the actual icon texture. Armor trim textures and palettes can be specified here as well. The icon textures are the keys from the resource_pack/textures/item_texture.json 'texture_data' object associated with the texture file.",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/items/black_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_black"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/blue_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_blue"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/brown_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_brown"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/cyan_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_cyan"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/gray_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_gray"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/green_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_green"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/light_blue_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_light_blue"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/light_gray_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_light_gray"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/lime_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_lime"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/magenta_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_magenta"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/orange_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_orange"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/pink_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_pink"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/purple_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_purple"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/red_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_red"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/white_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_white"
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/items/yellow_bundle.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": {
+              "default": "bundle_yellow"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "texture",
+      "title": "Texture",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/items/apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "apple"
+          }
+        ],
+        "/vanilla/behavior_pack/items/breeze_rod.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "breeze_rod"
+          }
+        ],
+        "/vanilla/behavior_pack/items/ominous_trial_key.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "ominous_trial_key"
+          }
+        ],
+        "/vanilla/behavior_pack/items/trial_key.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "trial_key"
+          }
+        ],
+        "/vanilla/behavior_pack/items/wind_charge.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "wind_charge"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "demo:chestplate"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/crown.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "demo:crown"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/goo.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "demo:goo"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_boots.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "demo:my_boots"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_helm.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "demo:my_helm"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_leggings.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "demo:my_leggings"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "demo:my_sword"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "demo:my_sword"
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/wrench.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:icon/",
+            "content": "demo:wrench"
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "sample": [
+      {
+        "path": "sample",
+        "content": {
+          "textures": "oak_slab"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/apple.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "apple"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/black_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_black"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/blue_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_blue"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/breeze_rod.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "breeze_rod"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/brown_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_brown"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/cyan_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_cyan"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/gray_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_gray"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/green_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_green"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/light_blue_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_light_blue"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/light_gray_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_light_gray"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/lime_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_lime"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/magenta_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_magenta"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/ominous_trial_key.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "ominous_trial_key"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/orange_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_orange"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/pink_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_pink"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/purple_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_purple"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/red_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_red"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/trial_key.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "trial_key"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/white_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_white"
+          }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/wind_charge.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "wind_charge"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/items/yellow_bundle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "textures": {
+            "default": "bundle_yellow"
+          }
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "demo:chestplate"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/crown.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "demo:crown"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/goo.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "demo:goo"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_boots.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "demo:my_boots"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_helm.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "demo:my_helm"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_leggings.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "demo:my_leggings"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "demo:my_sword"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "demo:my_sword"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword_singing.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "demo:my_sword"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword_turtle.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "demo:my_sword"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword_weak.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "demo:my_sword"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "demo:my_sword"
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/wrench.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "demo:wrench"
+        }
+      }
+    ]
+  }
+}
