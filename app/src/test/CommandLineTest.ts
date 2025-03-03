@@ -117,8 +117,9 @@ function removeResultFolder(scenarioName: string) {
       StorageUtilities.ensureEndsWithDelimiter(resultsFolder.fullPath) +
       StorageUtilities.ensureEndsWithDelimiter(scenarioName);
 
-    // guard against being called at a "more root" file path
-    if (fs.existsSync(path) && Utilities.countChar(path, NodeStorage.platformFolderDelimiter) > 5)
+    const exists = fs.existsSync(path);
+
+    if (exists && !StorageUtilities.isPathRiskyForDelete(path))
       try {
         fs.rmSync(path, {
           recursive: true,
@@ -213,6 +214,8 @@ describe("serveCommandValidate", async () => {
           " ./../toolbuild/jsn/cli",
           "serve",
           "basicwebservices",
+          "localhost",
+          "6126",
           "-lv",
           "-once",
           "-updatepc",
@@ -277,7 +280,105 @@ describe("serveCommandValidate", async () => {
 
   after(function () {
     if (process) {
-      console.log("Ending web process in after function.");
+      console.log("Ending web process in serverCommandValidate after function.");
+      process.kill();
+      process = null;
+    }
+  });
+});
+
+describe("serveCommandValidateAddon", async () => {
+  let exitCode: number | null = null;
+  const stdoutLines: string[] = [];
+  const stderrLines: string[] = [];
+  let process: ChildProcessWithoutNullStreams | null = null;
+
+  before(function (done) {
+    this.timeout(20000);
+
+    removeResultFolder("serveCommandValidateAddon");
+    const passcode = Utilities.createUuid().substring(0, 8);
+
+    if (!sampleFolder) {
+      throw new Error("Sample folder does not exist.");
+    }
+
+    sampleFolder
+      .ensureFileFromRelativePath("/addon/build/packages/aop_moremobs_animationmanifesterrors.zip")
+      .then((sampleFile: IFile) => {
+        console.log("Starting web server.");
+
+        process = spawn("node", [
+          " ./../toolbuild/jsn/cli",
+          "serve",
+          "basicwebservices",
+          "localhost",
+          "6126",
+          "-lv",
+          "-once",
+          "-updatepc",
+          passcode,
+        ]);
+
+        collectLines(process.stdout, stdoutLines);
+        collectLines(process.stderr, stderrLines);
+
+        sampleFile.loadContent().then(() => {
+          const content = sampleFile.content;
+
+          Utilities.sleep(3000).then(() => {
+            console.log(
+              "Making validation web request to http://localhost:6126/api/validate/ " + content?.length + " bytes"
+            );
+
+            axios
+              .post("http://localhost:6126/api/validate/", content, {
+                headers: { mctpc: passcode, "content-type": "application/zip", mctsuite: "addon" },
+                method: "POST",
+              })
+              .then((response: AxiosResponse) => {
+                ensureJsonMatchesScenario(response.data, "serveCommandValidateAddon");
+
+                if (response === undefined) {
+                  throw new Error("Could not connect to server.");
+                }
+
+                if (process) {
+                  process.on("exit", (code) => {
+                    exitCode = code;
+                    process = null;
+                    done();
+                  });
+                }
+              });
+          });
+        });
+      });
+  });
+
+  it("should have no stderr lines", async () => {
+    if (process) {
+      process.kill();
+      process = null;
+    }
+    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+  }).timeout(10000);
+
+  it("exit code should be zero", async () => {
+    if (process) {
+      process.kill();
+      process = null;
+    }
+    assert.equal(exitCode, 0);
+  }).timeout(10000);
+
+  it("output matches", async () => {
+    await folderMatches("serveCommandValidateAddon");
+  });
+
+  after(function () {
+    if (process) {
+      console.log("Ending web process in serverCommandValidateAddon after function.");
       process.kill();
       process = null;
     }
@@ -318,9 +419,7 @@ describe("createCommandAddonStarter", async () => {
 
       project = new Project(carto, "createCommandAddonStarter", null);
 
-      // exclude eslint because we know the .ts comes with some warnings due to
-      // the starter TS having some unused variables.
-      allProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.default, ["ESLINT"]);
+      allProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.default);
 
       addonProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.cooperativeAddOn);
 

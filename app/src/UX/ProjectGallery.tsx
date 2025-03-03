@@ -350,7 +350,8 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
           (this.props.filterOn === undefined || this.props.filterOn.includes(galItem.type)) &&
           (galItem.type === GalleryItemType.project ||
             galItem.type === GalleryItemType.editorProject ||
-            galItem.type === GalleryItemType.blockType)
+            galItem.type === GalleryItemType.blockType ||
+            galItem.type === GalleryItemType.itemType)
         ) {
           const displayOpen = this.state.loadedProjectHash.indexOf("[" + this.getGalleryHash(galItem) + "]") >= 0;
 

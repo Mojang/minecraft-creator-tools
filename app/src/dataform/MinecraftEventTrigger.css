@@ -1,0 +1,62 @@
+.miet-outer {
+  display: table;
+  margin-top: 2px !important;
+  min-width: 300px;
+  width: 100%;
+}
+
+.miet-actionList {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.miet-actionListLabel {
+  grid-column: 1;
+  padding-top: 7px;
+}
+
+.miet-actionListDropdown {
+  grid-column: 2;
+}
+
+.miet-inner {
+  display: table-row;
+}
+
+.miet-cell {
+  display: table-cell;
+}
+
+.miet-input {
+  width: 60px;
+  max-width: 60px;
+}
+
+.miet-input input {
+  min-width: 55px;
+  width: 52px;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+}
+
+.miet-toolBarArea {
+  margin-top: 8px;
+  padding-top: 4px;
+  padding-left: 4px;
+  padding-bottom: 3px;
+}
+
+.miet-ambient {
+  display: table-cell;
+  width: 50px;
+  max-width: 50px;
+}
+
+.miet-ambient button {
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  padding: 0px;
+}

@@ -424,6 +424,10 @@ export default class BlockType implements IManagedComponentSetItem {
     }
   }
 
+  getAllComponents() {
+    return this.getComponents();
+  }
+
   getComponents(): IManagedComponent[] {
     const componentSet: IManagedComponent[] = [];
 

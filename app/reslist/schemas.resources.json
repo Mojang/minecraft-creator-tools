@@ -1,5 +1,5 @@
 {
-  "url": "https://github.com/Blockception/Minecraft-bedrock-json-schemas/archive/31ad665f0774ad56449164ff29ff9a96c0b7e694.zip",
+  "url": "https://github.com/Blockception/Minecraft-bedrock-json-schemas/archive/98fda1fd410faee18e57f197974cd0f4ccc5540e.zip",
   "replaceFirstFolderWith": "schemas",
   "exclude": [
     ".git",
@@ -13,6 +13,7 @@
     "package.json",
     "package-lock.json",
     ".code-workspace",
+    "jest.config.ts",
     "/tools/",
     ".xlsm",
     "/scripts/",

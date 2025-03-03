@@ -77,6 +77,10 @@ export default class ManagedComponentGroup implements IManagedComponentSetItem {
     return this._managed[id];
   }
 
+  getAllComponents() {
+    return this.getComponents();
+  }
+
   getComponents(): IManagedComponent[] {
     if (!this._data) {
       return [];

@@ -19,7 +19,7 @@ import Utilities from "../core/Utilities";
 import NpmModule from "../devproject/NpmModule";
 import IMainInfoVersions from "./IMainInfoVersions";
 import IFormDefinition from "../dataform/IFormDefinition";
-import ContentIndex from "../core/ContentIndex";
+import ContentIndex, { AnnotationCategories } from "../core/ContentIndex";
 import IProjectInfoData from "../info/IProjectInfoData";
 import Project from "../app/Project";
 import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
@@ -27,6 +27,9 @@ import StorageUtilities from "../storage/StorageUtilities";
 import ISnippet from "../app/ISnippet";
 import IGalleryItem from "../app/IGalleryItem";
 import { MinecraftTrack } from "../app/ICartoData";
+import IBiomesMetadata from "./IBiomesMetadata";
+import IBlocksMetadata from "./IBlocksMetadata";
+import ILegacyDocumentationNode from "./docs/ILegacyDocumentation";
 
 export default class Database {
   static isLoaded = false;
@@ -35,6 +38,7 @@ export default class Database {
   static loadedFormCount = 0;
   static _creatorToolsIngameProject: Project | null = null;
   static uxCatalog: { [formName: string]: IFormDefinition } = {};
+  static formsFolders: { [folderName: string]: IFolder } = {};
   static betaTypeDefs: ITypeDefCatalog | null = null;
   static libs: ITypeDefCatalog | null = null;
   static stableTypeDefs: ITypeDefCatalog | null = null;
@@ -42,11 +46,21 @@ export default class Database {
   static snippetsFolder: IFolder | null = null;
   static previewMetadataFolder: IFolder | null = null;
   static releaseMetadataFolder: IFolder | null = null;
-  static defaultBehaviorPackFolder: IFolder | null = null;
-  static defaultResourcePackFolder: IFolder | null = null;
+  static previewVanillaFolder: IFolder | null = null;
+  static releaseVanillaFolder: IFolder | null = null;
+  static samplesFolder: IFolder | null = null;
+  static releaseVanillaBehaviorPackFolder: IFolder | null = null;
+  static releaseVanillaResourcePackFolder: IFolder | null = null;
   static local: ILocalUtilities | null = null;
   static vanillaInfoData: IProjectInfoData | null = null;
   static vanillaContentIndex: ContentIndex | null = null;
+  static previewVanillaInfoData: IProjectInfoData | null = null;
+  static previewVanillaContentIndex: ContentIndex | null = null;
+  static samplesInfoData: IProjectInfoData | null = null;
+  static samplesContentIndex: ContentIndex | null = null;
+  static addonsDocs: ILegacyDocumentationNode | null = null;
+  static biomesMetadata: IBiomesMetadata | null = null;
+  static blocksMetadata: IBlocksMetadata | null = null;
 
   static latestVersion: string | undefined;
   static latestPreviewVersion: string | undefined;
@@ -55,6 +69,10 @@ export default class Database {
   private static _pendingLoadSnippetsRequests: ((value: unknown) => void)[] = [];
   private static _isLoadingVanilla: boolean = false;
   private static _pendingLoadVanillaRequests: ((value: unknown) => void)[] = [];
+  private static _isLoadingPreviewVanilla: boolean = false;
+  private static _pendingLoadPreviewVanillaRequests: ((value: unknown) => void)[] = [];
+  private static _isLoadingSamples: boolean = false;
+  private static _pendingLoadSamplesRequests: ((value: unknown) => void)[] = [];
 
   static dataPath: string = "res/latest/";
 
@@ -95,31 +113,101 @@ export default class Database {
     return Database._defaultBlockBaseType;
   }
 
-  static async ensureFormLoaded(name: string): Promise<IFormDefinition | undefined> {
+  static async ensureFormLoadedByPath(path: string): Promise<IFormDefinition | undefined> {
+    const lastSlash = path.lastIndexOf("/");
+
+    if (lastSlash >= 0) {
+      return await Database.ensureFormLoaded(path.substring(0, lastSlash), path.substring(lastSlash + 1));
+    }
+
+    return undefined;
+  }
+
+  static async ensureFormLoaded(subFolder: string, name: string): Promise<IFormDefinition | undefined> {
     name = name.toLowerCase();
 
     if (Database.uxCatalog[name] !== undefined) {
       return Database.uxCatalog[name];
     }
 
-    try {
-      const response = await axios.get(CartoApp.contentRoot + "data/forms/" + name + ".form.json");
+    let path = CartoApp.contentRoot + "data/forms/";
 
-      Database.uxCatalog[name] = response.data;
-      Database.loadedFormCount++;
+    if (subFolder) {
+      path += subFolder + "/";
+    }
 
-      return response.data as IFormDefinition;
-    } catch {
-      Log.fail("Could not load UX file for '" + name + "'.");
+    if (Database.local) {
+      const storage = await Database.local.createStorage(path);
+
+      if (storage) {
+        await storage.rootFolder.load();
+
+        const file = storage.rootFolder.files[name + ".form.json"];
+        if (file) {
+          await file.loadContent();
+
+          return StorageUtilities.getJsonObject(file) as IFormDefinition;
+        }
+
+        Log.fail("Could not load file locally for '" + (subFolder ? subFolder + "/" : "") + name + "'.");
+        return undefined;
+      }
+    } else {
+      try {
+        const response = await axios.get(path + name + ".form.json");
+
+        Database.uxCatalog[(subFolder ? subFolder + "." : "") + name] = response.data;
+        Database.loadedFormCount++;
+
+        return response.data as IFormDefinition;
+      } catch {
+        Log.fail("Could not load UX file for '" + (subFolder ? subFolder + "/" : "") + name + "'.");
+      }
     }
 
     return undefined;
   }
 
-  static getForm(name: string) {
+  static async getFormsFolder(subFolder: string) {
+    if (this.formsFolders[subFolder]) {
+      return this.formsFolders[subFolder];
+    }
+
+    const folderPath = "data/forms/" + subFolder + "/";
+
+    if (Database.local) {
+      const storage = await Database.local.createStorage(folderPath);
+
+      if (storage) {
+        await storage.rootFolder.load();
+
+        this.formsFolders[subFolder] = storage.rootFolder;
+      }
+    } else {
+      const storage = new HttpStorage(CartoApp.contentRoot + folderPath);
+
+      await storage.rootFolder.load();
+
+      this.formsFolders[subFolder] = storage.rootFolder;
+    }
+
+    return this.formsFolders[subFolder];
+  }
+
+  static getFormByPath(path: string): IFormDefinition | undefined {
+    const lastSlash = path.lastIndexOf("/");
+
+    if (lastSlash >= 0) {
+      return Database.getForm(path.substring(0, lastSlash), path.substring(lastSlash + 1));
+    }
+
+    return undefined;
+  }
+
+  static getForm(subFolder: string, name: string) {
     name = name.toLowerCase();
 
-    return Database.uxCatalog[name];
+    return Database.uxCatalog[(subFolder ? subFolder + "." : "") + name];
   }
 
   static getBlockType(name: string) {
@@ -589,6 +677,56 @@ export default class Database {
     return undefined;
   }
 
+  static async getAddonsDocs() {
+    if (!Database.addonsDocs) {
+      Database.addonsDocs = await Database.getMetadataObject("/doc_modules/addons.json");
+    }
+
+    return Database.addonsDocs;
+  }
+
+  static async getBiomesMetadata() {
+    if (!Database.biomesMetadata) {
+      Database.biomesMetadata = await Database.getMetadataObject("/vanilladata_modules/mojang-biomes.json");
+    }
+
+    return Database.biomesMetadata;
+  }
+
+  static async getBlocksMetadata() {
+    if (!Database.blocksMetadata) {
+      Database.blocksMetadata = await Database.getMetadataObject("/vanilladata_modules/mojang-blocks.json");
+    }
+
+    return Database.blocksMetadata;
+  }
+
+  static async getMetadataObject(metaPath: string) {
+    await Database.loadPreviewMetadataFolder();
+
+    if (!Database.previewMetadataFolder) {
+      return null;
+    }
+
+    const jsonFile = await Database.previewMetadataFolder.getFileFromRelativePath(metaPath);
+
+    if (!jsonFile) {
+      Log.unexpectedUndefined();
+      return null;
+    }
+
+    await jsonFile.loadContent();
+
+    const jsonObj = StorageUtilities.getJsonObject(jsonFile);
+
+    if (!jsonObj) {
+      Log.unexpectedUndefined();
+      return null;
+    }
+
+    return jsonObj;
+  }
+
   static async loadPreviewMetadataFolder() {
     if (!this.previewMetadataFolder) {
       if (Database.local) {
@@ -629,52 +767,124 @@ export default class Database {
     return this.releaseMetadataFolder;
   }
 
-  static async loadDefaultBehaviorPack() {
-    if (Database.defaultBehaviorPackFolder !== null) {
-      return Database.defaultBehaviorPackFolder;
+  static async getReleaseVanillaFolder() {
+    if (Database.releaseVanillaFolder !== null) {
+      return Database.releaseVanillaFolder;
+    }
+
+    if (Database.local) {
+      const storage = await Database.local.createStorage("res/latest/van/release/");
+
+      if (storage) {
+        Database.releaseVanillaFolder = storage.rootFolder;
+      }
+    } else {
+      const storage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/release/");
+
+      Database.releaseVanillaFolder = storage.rootFolder;
+    }
+
+    if (Database.releaseVanillaFolder) {
+      await Database.releaseVanillaFolder.load();
+    }
+
+    return Database.releaseVanillaFolder;
+  }
+
+  static async getPreviewVanillaFolder() {
+    if (Database.previewVanillaFolder !== null) {
+      return Database.previewVanillaFolder;
+    }
+
+    if (Database.local) {
+      const storage = await Database.local.createStorage("res/latest/van/preview/");
+
+      if (storage) {
+        Database.previewVanillaFolder = storage.rootFolder;
+      }
+    } else {
+      const storage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/preview/");
+
+      Database.previewVanillaFolder = storage.rootFolder;
+    }
+
+    if (Database.previewVanillaFolder) {
+      await Database.previewVanillaFolder.load();
+    }
+
+    return Database.previewVanillaFolder;
+  }
+
+  static async getSamplesFolder() {
+    if (Database.samplesFolder !== null) {
+      return Database.samplesFolder;
+    }
+
+    if (Database.local) {
+      const storage = await Database.local.createStorage("res/samples/microsoft/minecraft-samples-main/");
+
+      if (storage) {
+        Database.samplesFolder = storage.rootFolder;
+      }
+    } else {
+      const storage = new HttpStorage(CartoApp.contentRoot + "res/samples/microsoft/minecraft-samples-main/");
+
+      Database.samplesFolder = storage.rootFolder;
+    }
+
+    if (Database.samplesFolder) {
+      await Database.samplesFolder.load();
+    }
+
+    return Database.samplesFolder;
+  }
+
+  static async getReleaseVanillaBehaviorPackFolder() {
+    if (Database.releaseVanillaBehaviorPackFolder !== null) {
+      return Database.releaseVanillaBehaviorPackFolder;
     }
 
     if (Database.local) {
       const storage = await Database.local.createStorage("res/latest/van/release/behavior_pack/");
 
       if (storage) {
-        Database.defaultBehaviorPackFolder = storage.rootFolder;
+        Database.releaseVanillaBehaviorPackFolder = storage.rootFolder;
       }
     } else {
       const storage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/release/behavior_pack/");
 
-      Database.defaultBehaviorPackFolder = storage.rootFolder;
+      Database.releaseVanillaBehaviorPackFolder = storage.rootFolder;
     }
 
-    if (Database.defaultBehaviorPackFolder) {
-      await Database.defaultBehaviorPackFolder.load();
+    if (Database.releaseVanillaBehaviorPackFolder) {
+      await Database.releaseVanillaBehaviorPackFolder.load();
     }
 
-    return Database.defaultBehaviorPackFolder;
+    return Database.releaseVanillaBehaviorPackFolder;
   }
 
-  static async getDefaultResourcePack() {
-    if (Database.defaultResourcePackFolder !== null) {
-      return Database.defaultResourcePackFolder;
+  static async getReleaseVanillaResourcePackFolder() {
+    if (Database.releaseVanillaResourcePackFolder !== null) {
+      return Database.releaseVanillaResourcePackFolder;
     }
 
     if (Database.local) {
       const storage = await Database.local.createStorage("res/latest/van/release/resource_pack/");
 
       if (storage) {
-        Database.defaultResourcePackFolder = storage.rootFolder;
+        Database.releaseVanillaResourcePackFolder = storage.rootFolder;
       }
     } else {
       const storage = new HttpStorage(CartoApp.contentRoot + "res/latest/van/release/resource_pack/");
 
-      Database.defaultResourcePackFolder = storage.rootFolder;
+      Database.releaseVanillaResourcePackFolder = storage.rootFolder;
     }
 
-    if (Database.defaultResourcePackFolder) {
-      await Database.defaultResourcePackFolder.load();
+    if (Database.releaseVanillaResourcePackFolder) {
+      await Database.releaseVanillaResourcePackFolder.load();
     }
 
-    return Database.defaultResourcePackFolder;
+    return Database.releaseVanillaResourcePackFolder;
   }
 
   static async loadUx() {}
@@ -823,7 +1033,7 @@ export default class Database {
   }
 
   static async matchesVanillaPath(path: string) {
-    const rpFolder = await Database.getDefaultResourcePack();
+    const rpFolder = await Database.getReleaseVanillaResourcePackFolder();
 
     if (rpFolder && rpFolder.folderCount > 0) {
       path = Utilities.ensureStartsWithSlash(path);
@@ -897,20 +1107,49 @@ export default class Database {
   }
 
   static async isVanillaToken(path: string) {
+    const matches = await Database.getVanillaMatches(path);
+
+    if (matches && matches.length > 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  static async getVanillaMatches(path: string, withAnnotation?: AnnotationCategories[]) {
     if (!Database.vanillaContentIndex) {
       await this.loadVanillaInfoData();
     }
 
     if (!Database.vanillaContentIndex) {
-      return false;
+      return undefined;
     }
 
-    const matches = await Database.vanillaContentIndex.getMatches(path);
+    return await Database.vanillaContentIndex.getMatches(path, withAnnotation);
+  }
 
-    if (matches && matches.length > 0) {
-      return true;
+  static async getPreviewVanillaMatches(path: string, withAnnotation?: AnnotationCategories[]) {
+    if (!Database.previewVanillaContentIndex) {
+      await this.loadPreviewVanillaInfoData();
     }
-    return false;
+
+    if (!Database.previewVanillaContentIndex) {
+      return undefined;
+    }
+
+    return await Database.previewVanillaContentIndex.getMatches(path, withAnnotation);
+  }
+
+  static async getSamplesMatches(path: string, withAnnotation?: AnnotationCategories[]) {
+    if (!Database.samplesContentIndex) {
+      await this.loadSampleInfoData();
+    }
+
+    if (!Database.samplesContentIndex) {
+      return undefined;
+    }
+
+    return await Database.samplesContentIndex.getMatches(path, withAnnotation);
   }
 
   static async loadVanillaInfoData() {
@@ -954,6 +1193,107 @@ export default class Database {
 
       const pendingLoad = this._pendingLoadVanillaRequests;
       this._pendingLoadVanillaRequests = [];
+
+      for (const prom of pendingLoad) {
+        prom(undefined);
+      }
+    }
+  }
+
+  static async loadPreviewVanillaInfoData() {
+    if (Database.previewVanillaContentIndex) {
+      return;
+    }
+
+    if (this._isLoadingPreviewVanilla) {
+      const pendingLoad = this._pendingLoadPreviewVanillaRequests;
+
+      const prom = (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
+        pendingLoad.push(resolve);
+      };
+
+      await new Promise(prom);
+    } else {
+      this._isLoadingPreviewVanilla = true;
+
+      try {
+        // @ts-ignore
+        if (typeof window !== "undefined") {
+          const response = await axios.get(CartoApp.contentRoot + "data/mci/preview.mci.json");
+
+          Database.previewVanillaInfoData = response.data;
+        } else if (Database.local) {
+          const result = await Database.local.readJsonFile("data/mci/preview.mci.json");
+          if (result !== null) {
+            Database.previewVanillaInfoData = result as IProjectInfoData;
+          }
+        }
+
+        if (
+          Database.previewVanillaInfoData &&
+          Database.previewVanillaInfoData.index &&
+          !Database.previewVanillaContentIndex
+        ) {
+          Database.previewVanillaContentIndex = new ContentIndex();
+          Database.previewVanillaContentIndex.loadFromData(Database.previewVanillaInfoData.index);
+        }
+      } catch {
+        // Log.fail("Could not load preview vanilla metadata.");
+      }
+
+      this._isLoadingVanilla = false;
+
+      const pendingLoad = this._pendingLoadPreviewVanillaRequests;
+      this._pendingLoadPreviewVanillaRequests = [];
+
+      for (const prom of pendingLoad) {
+        prom(undefined);
+      }
+    }
+  }
+
+  static async loadSampleInfoData() {
+    if (Database.samplesContentIndex) {
+      return;
+    }
+
+    if (this._isLoadingSamples) {
+      const pendingLoad = this._pendingLoadSamplesRequests;
+
+      const prom = (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
+        pendingLoad.push(resolve);
+      };
+
+      await new Promise(prom);
+    } else {
+      this._isLoadingSamples = true;
+
+      try {
+        // @ts-ignore
+        if (typeof window !== "undefined") {
+          const response = await axios.get(CartoApp.contentRoot + "data/mci/minecraft-samples-main.mci.json");
+
+          Database.samplesInfoData = response.data;
+        } else if (Database.local) {
+          const result = await Database.local.readJsonFile("data/mci/minecraft-samples-main.mci.json");
+
+          if (result !== null) {
+            Database.samplesInfoData = result as IProjectInfoData;
+          }
+        }
+
+        if (Database.samplesInfoData && Database.samplesInfoData.index && !Database.samplesContentIndex) {
+          Database.samplesContentIndex = new ContentIndex();
+          Database.samplesContentIndex.loadFromData(Database.samplesInfoData.index);
+        }
+      } catch {
+        // Log.fail("Could not load preview vanilla metadata.");
+      }
+
+      this._isLoadingSamples = false;
+
+      const pendingLoad = this._pendingLoadSamplesRequests;
+      this._pendingLoadSamplesRequests = [];
 
       for (const prom of pendingLoad) {
         prom(undefined);

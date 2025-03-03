@@ -1,0 +1,13 @@
+{
+  "fields": [],
+  "description": "Sets that this entity is currently stunned.",
+  "title": "Is Stunned",
+  "samples": {
+    "/vanilla/behavior_pack/entities/ravager.json": [
+      {
+        "path": "/minecraft:entity/component_groups/stunned/minecraft:is_stunned/",
+        "content": {}
+      }
+    ]
+  }
+}

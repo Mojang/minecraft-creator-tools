@@ -1,0 +1,13 @@
+{
+  "fields": [],
+  "description": "Sets the value of an entity property. The property must be defined in the 'properties' section of the file. ",
+  "title": "Set Entity Property",
+  "samples": {
+    "samples": [
+      {
+        "path": "Example:",
+        "content": "\t\t\"set_property\": {\r\n\t\t\t\"minecraft:has_nectar\": false\r\n\t\t}\r\n\t"
+      }
+    ]
+  }
+}

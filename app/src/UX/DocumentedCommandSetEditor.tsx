@@ -74,7 +74,7 @@ export default class DocumentedCommandSetEditor extends Component<
           this._handleDocumentedCommandSetLoaded
         );
 
-        await Database.ensureFormLoaded("documented_command_set");
+        await Database.ensureFormLoaded("documentation", "command_set");
 
         this._handleDocumentedCommandSetLoaded();
       }
@@ -170,7 +170,7 @@ export default class DocumentedCommandSetEditor extends Component<
     }
 
     const dcs = this.state.fileToEdit.manager as DocumentedCommandSet;
-    const form = Database.getForm("documented_command_set");
+    const form = Database.getForm("documentation", "command_set");
 
     const commandListing = this.getCommandListing();
 

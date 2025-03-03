@@ -12,11 +12,13 @@ export enum AnnotationCategories {
   entityComponentDependent = "c",
   blockComponentDependent = "d",
   entityTypeDependent = "e",
+  entityFilter = "f",
   entityComponentDependentInGroup = "g",
   itemTypeDependent = "i",
   itemComponentDependent = "j",
   blockComponentDependentInPermutation = "p",
   storagePathDependent = "s",
+  entityEvent = "v",
   blockTypeSource = "B",
   entityTypeSource = "E",
   itemTypeSource = "I",
@@ -42,7 +44,7 @@ export interface IAnnotatedIndexData {
 
 export interface IContentIndex {
   getDescendentStrings(term: string): Promise<{ [fullKey: string]: IAnnotatedValue[] } | undefined>;
-  getMatches(searchString: string): Promise<IAnnotatedValue[] | undefined>;
+  getMatches(searchString: string, withAnnotation?: AnnotationCategories[]): Promise<IAnnotatedValue[] | undefined>;
   startLength: number;
 }
 
@@ -126,7 +128,23 @@ export default class ContentIndex implements IContentIndex {
     }
   }
 
-  getValuesFromIndexArray(indices: (IAnnotatedIndexData | number)[]) {
+  static processResultValues(annotatedValues: IAnnotatedValue[], withAnyAnnotation?: AnnotationCategories[]) {
+    if (withAnyAnnotation) {
+      let newAnnotatedValues: IAnnotatedValue[] = [];
+
+      for (const annV of annotatedValues) {
+        if (annV.annotation && withAnyAnnotation.includes(annV.annotation as AnnotationCategories)) {
+          newAnnotatedValues.push(annV);
+        }
+      }
+
+      annotatedValues = newAnnotatedValues;
+    }
+
+    return annotatedValues;
+  }
+
+  getValuesFromIndexArray(indices: (IAnnotatedIndexData | number)[]): IAnnotatedValue[] {
     const results: IAnnotatedValue[] = [];
 
     if (!indices) {
@@ -181,7 +199,7 @@ export default class ContentIndex implements IContentIndex {
     return false;
   }
 
-  async getMatches(searchString: string) {
+  async getMatches(searchString: string, withAnyAnnotation?: AnnotationCategories[]) {
     searchString = searchString.trim().toLowerCase();
 
     const terms = searchString.split(" ");
@@ -218,7 +236,7 @@ export default class ContentIndex implements IContentIndex {
       return undefined;
     }
 
-    let annotatedValues = this.getValuesFromIndexArray(andResults);
+    let annotatedValues = ContentIndex.processResultValues(this.getValuesFromIndexArray(andResults), withAnyAnnotation);
 
     return annotatedValues.sort((a: IAnnotatedValue, b: IAnnotatedValue) => {
       let aTermMatches = 0;

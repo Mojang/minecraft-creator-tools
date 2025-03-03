@@ -5,7 +5,6 @@ import "./BehaviorPackManifestJsonEditor.css";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
 import { ListProps } from "@fluentui/react-northstar";
-import ManagedComponentGroup from "../minecraft/ManagedComponentGroup";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import IProperty from "../dataform/IProperty";
 import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
@@ -21,7 +20,7 @@ interface IBehaviorPackManifestJsonEditorProps extends IFileProps {
 interface IBehaviorPackManifestJsonEditorState {
   fileToEdit: IFile;
   isLoaded: boolean;
-  selectedItem: BehaviorManifestDefinition | ManagedComponentGroup | undefined;
+  selectedItem: BehaviorManifestDefinition | undefined;
 }
 
 export default class BehaviorPackManifestJsonEditor extends Component<
@@ -83,8 +82,8 @@ export default class BehaviorPackManifestJsonEditor extends Component<
       }
     }
 
-    await Database.ensureFormLoaded("behavior_pack_header_json");
-    await Database.ensureFormLoaded("behavior_pack_rest_of_file");
+    await Database.ensureFormLoaded("pack", "behavior_pack_header_json");
+    await Database.ensureFormLoaded("pack", "behavior_pack_rest_of_file");
 
     if (
       this.state.fileToEdit &&
@@ -237,8 +236,8 @@ export default class BehaviorPackManifestJsonEditor extends Component<
       return <div>Loading definition...</div>;
     }
 
-    const headerForm = Database.getForm("behavior_pack_header_json");
-    const restOfForm = Database.getForm("behavior_pack_rest_of_file");
+    const headerForm = Database.getForm("pack", "behavior_pack_header_json");
+    const restOfForm = Database.getForm("pack", "behavior_pack_rest_of_file");
 
     let behaviorPackTitle = "Behavior Pack";
 

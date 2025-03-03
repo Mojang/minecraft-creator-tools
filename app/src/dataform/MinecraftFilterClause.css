@@ -1,38 +1,39 @@
-.rng-outer {
-  display: table;
-  max-width: 170px;
+.mificl-outer {
+  display: block;
+  width: 100%;
   margin-top: 2px !important;
 }
 
-.rng-inner {
-  display: table-row;
+.mificl-inner {
+  display: flex;
 }
 
-.rng-cell {
-  display: table-cell;
+.mificl-cell {
+  display: inline-block;
+  padding-right: 4px;
 }
 
-.rng-input {
+.mificl-inner .ui-dropdown__container {
+  width: 160px;
+}
+
+.mificl-input .ui-form__input {
+  padding-top: 0px !important;
+}
+
+.mificl-input {
+  padding-top: 0px !important;
   width: 60px;
   max-width: 60px;
 }
 
-.rng-input input {
+.mificl-input input {
   min-width: 55px;
   width: 52px;
   padding-left: 6px !important;
   padding-right: 6px !important;
 }
 
-.rng-ambient {
-  display: table-cell;
-  width: 50px;
-  max-width: 50px;
-}
-
-.rng-ambient button {
-  width: 40px;
-  min-width: 40px;
-  max-width: 40px;
-  padding: 0px;
+.mificl-test .ui-dropdown__container {
+  width: 205px;
 }

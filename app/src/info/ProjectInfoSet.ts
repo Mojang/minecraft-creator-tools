@@ -19,6 +19,7 @@ import { StatusTopic } from "../app/Status";
 import GeneratorRegistrations from "./GeneratorRegistrations";
 import StorageUtilities from "../storage/StorageUtilities";
 import ContentIndex from "../core/ContentIndex";
+import IProjectMetaState from "./IProjectMetaState";
 
 export default class ProjectInfoSet {
   project?: Project;
@@ -716,7 +717,8 @@ export default class ProjectInfoSet {
     sourceName?: string,
     sourcePath?: string,
     sourceHash?: string,
-    isIndexOnly?: boolean
+    isIndexOnly?: boolean,
+    subsetReports?: IProjectMetaState[]
   ): IProjectInfoData {
     const items: IInfoItemData[] = [];
 
@@ -738,6 +740,7 @@ export default class ProjectInfoSet {
       index: this.contentIndex.data,
       generatorName: constants.name,
       suite: this.suite,
+      subsetReports: subsetReports,
       generatorVersion: constants.version,
       sourceName: sourceName,
       sourcePath: sourcePath,

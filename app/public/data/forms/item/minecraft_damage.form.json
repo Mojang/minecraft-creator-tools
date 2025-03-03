@@ -1,0 +1,22 @@
+{
+  "fields": [
+    {
+      "id": "value",
+      "title": "value",
+      "description": "Specifies how much extra damage the item does, must be a positive number.",
+      "dataType": 0
+    }
+  ],
+  "samples": {
+    "sample": [
+      {
+        "path": "sample",
+        "content": {
+          "minecraft:damage": 2
+        }
+      }
+    ]
+  },
+  "description": "The damage component determines how much extra damage the item does on attack.",
+  "title": "Damage"
+}

@@ -160,7 +160,7 @@ export default class Range extends Component<IRangeProps, IRangeState> {
     let header = <></>;
 
     if (this.props.label) {
-      header = <div>{this.props.label}</div>;
+      header = <div className="rng-label">{this.props.label}</div>;
     }
 
     return (

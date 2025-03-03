@@ -119,11 +119,11 @@ export default class EntityTypeResourceEditor extends Component<
       }
     }
 
-    await Database.ensureFormLoaded("entity_type_resource_animations");
-    await Database.ensureFormLoaded("entity_type_resource_geometry");
-    await Database.ensureFormLoaded("entity_type_resource_materials");
-    await Database.ensureFormLoaded("entity_type_resource_textures");
-    await Database.ensureFormLoaded("entity_sound_event");
+    await Database.ensureFormLoaded("entity", "resource_animations");
+    await Database.ensureFormLoaded("entity", "resource_geometry");
+    await Database.ensureFormLoaded("entity", "resource_materials");
+    await Database.ensureFormLoaded("entity", "resource_textures");
+    await Database.ensureFormLoaded("entity", "sound_event");
 
     if (
       this.state.fileToEdit &&
@@ -360,16 +360,16 @@ export default class EntityTypeResourceEditor extends Component<
     let focus = RenderControllerSetEditorFocus.all;
 
     if (this.state.mode === EntityTypeResourceEditorMode.textures) {
-      form = Database.getForm("entity_type_resource_textures");
+      form = Database.getForm("entity", "resource_textures");
       focus = RenderControllerSetEditorFocus.textures;
     } else if (this.state.mode === EntityTypeResourceEditorMode.geometry) {
-      form = Database.getForm("entity_type_resource_geometry");
+      form = Database.getForm("entity", "resource_geometry");
       focus = RenderControllerSetEditorFocus.geometry;
     } else if (this.state.mode === EntityTypeResourceEditorMode.materials) {
-      form = Database.getForm("entity_type_resource_materials");
+      form = Database.getForm("entity", "resource_materials");
       focus = RenderControllerSetEditorFocus.materials;
     } else if (this.state.mode === EntityTypeResourceEditorMode.animations) {
-      form = Database.getForm("entity_type_resource_animations");
+      form = Database.getForm("entity", "resource_animations");
     }
 
     let header = <></>;

@@ -8,6 +8,12 @@ import IProjectInfoItemGenerator from "./IProjectItemInfoGenerator";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 
+export enum UnlinkedItemInfoGeneratorTest {
+  unlinkedItemIsNotUsed = 191,
+  itemNotFoundInPack = 204,
+  avoidLinksToVanillaItems = 205,
+}
+
 export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "UNLINK";
   title = "Unlinked item info generator";
@@ -22,7 +28,6 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
 
   async generate(projectItem: ProjectItem, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
-
     /*
     Not comprehensive enough to cover all the cases... yet.
 
@@ -34,7 +39,7 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
             new ProjectInfoItem(
               InfoItemType.recommendation,
               this.id,
-              205,
+              UnlinkedItemInfoGeneratorTest.avoidLinksToVanillaItems,
               `Link to vanilla ` +
                 ProjectItemUtilities.getDescriptionForType(rel.itemType) +
                 ` item; avoid if possible`,
@@ -46,9 +51,9 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
           // UNLINK204
           items.push(
             new ProjectInfoItem(
-              InfoItemType.error,
+              InfoItemType.warning,
               this.id,
-              204,
+              UnlinkedItemInfoGeneratorTest.itemNotFoundInPack,
               `Link to ` +
                 ProjectItemUtilities.getDescriptionForType(rel.itemType).toLowerCase() +
                 ` is not found in this pack`,
@@ -71,9 +76,9 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
             // UNLINK191
             items.push(
               new ProjectInfoItem(
-                InfoItemType.error,
+                InfoItemType.warning,
                 this.id,
-                191,
+                UnlinkedItemInfoGeneratorTest.unlinkedItemIsNotUsed,
                 ProjectItemUtilities.getDescriptionForType(projectItem.itemType) +
                   ` does not have any items in this pack that are using this.`,
                 projectItem

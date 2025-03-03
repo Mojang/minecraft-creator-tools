@@ -9,6 +9,7 @@ export enum GalleryItemType {
   entityType = 4,
   editorCodeSample = 5,
   editorProject = 6,
+  itemType = 7,
 }
 
 export interface LogoLocation {

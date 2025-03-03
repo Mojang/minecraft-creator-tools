@@ -38,14 +38,14 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
   }
 
   async _ensureLoaded() {
-    await Database.loadDefaultBehaviorPack();
+    await Database.getReleaseVanillaBehaviorPackFolder();
 
-    if (Database.defaultBehaviorPackFolder === undefined || Database.defaultBehaviorPackFolder === null) {
+    if (Database.releaseVanillaBehaviorPackFolder === undefined || Database.releaseVanillaBehaviorPackFolder === null) {
       Log.fail("Unexpectedly could not load default BP folder.");
       return;
     }
 
-    const entitiesFolder = Database.defaultBehaviorPackFolder.ensureFolder("entities");
+    const entitiesFolder = Database.releaseVanillaBehaviorPackFolder.ensureFolder("entities");
 
     await entitiesFolder.load();
 
@@ -103,7 +103,7 @@ export default class NewEntityType extends Component<INewEntityTypeProps, INewEn
   render() {
     if (
       this.state === null ||
-      Database.defaultBehaviorPackFolder === null ||
+      Database.releaseVanillaBehaviorPackFolder === null ||
       this.state.entitiesFolder === undefined ||
       this.props.carto.gallery === undefined
     ) {

@@ -1,0 +1,13 @@
+{
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The higher the number, the less often the movement sound will be played.",
+      "defaultValue": 1,
+      "dataType": 3
+    }
+  ],
+  "description": "Sets the offset used to determine the next step distance for playing a movement sound.",
+  "title": "Movement Sound Distance Offset"
+}

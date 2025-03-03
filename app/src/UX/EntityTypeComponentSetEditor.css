@@ -1,4 +1,4 @@
-.cose-area {
+.etcse-area {
   width: calc(100% - 2px);
   min-width: calc(100% - 2px);
   max-width: calc(100% - 2px);
@@ -10,65 +10,66 @@
   grid-template-columns: 280px 1fr;
 }
 
-.cose-header {
+.etcse-header {
   font-size: 12pt;
   font-size: 17pt;
 }
 
-.cose-componentForm {
+.etcse-componentForm {
   margin-bottom: 12px;
   padding: 3px;
-  padding-left: 10px;
+  width: 100%;
+  padding-left: 0px;
   display: inline-grid;
   min-height: 220px;
 }
 
-.cose-componentWrapper {
+.etcse-componentWrapper {
   margin-top: 1px;
   margin-bottom: 1px;
-
-  padding: 10px 6px 10px 6px;
-  border: 2px outset;
   font-size: small;
 }
-
-.cose-componentForm .ui-form__input {
+.etcse-componentWrapperInner {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.etcse-componentForm .ui-form__input {
   padding-top: 3px;
   margin-bottom: 4px;
 }
 
-.cose-componentForm .ui-form__checkbox {
+.etcse-componentForm .ui-form__checkbox {
   padding-top: 3px;
   margin-top: 0px !important;
   margin-bottom: 0px !important;
 }
 
-.cose-componentForm .pu > :last-child {
+.etcse-componentForm .pu > :last-child {
   margin-top: 0px;
 }
-.cose-componentForm .pt > :not(:last-child) {
+.etcse-componentForm .pt > :not(:last-child) {
   margin-bottom: 0px;
 }
 
-.cose-componentHeader {
+.etcse-componentHeader {
   padding-top: 20px;
   font-size: 11pt;
   padding-bottom: 14px;
 }
 
-.cose-noeditor {
+.etcse-noeditor {
   padding: 10px;
 }
 
-.cose-title {
+.etcse-title {
   width: 200px;
 }
 
-.cose-extraArea {
+.etcse-extraArea {
   margin-bottom: 5px;
 }
 
-.cose-componentList {
+.etcse-componentList {
   grid-column: 1;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -77,33 +78,33 @@
   border-top: solid 1px;
 }
 
-.cose-componentList li {
+.etcse-componentList li {
   padding-left: 5px;
   padding-right: 2px;
 }
 
-.cose-componentList .ui-list__itemcontent {
+.etcse-componentList .ui-list__itemcontent {
   margin-right: 3px;
 }
 
-.cose-componentBin {
+.etcse-componentBin {
   padding: 4px;
   height: 100%;
   min-height: 200px;
   vertical-align: top;
   grid-column: 2;
   overflow-y: scroll;
-  overflow-x: hidden;
+  overflow-x: auto;
   border-right: solid 1px;
   border-bottom: solid 1px;
   border-top: solid 1px;
 }
 
-.cose-componentBin:first-child {
+.etcse-componentBin:first-child {
   margin-top: 1px;
 }
 
-.cose-componentArea {
+.etcse-componentArea {
   display: grid;
   padding: 3px;
   grid-column-start: 1;
@@ -111,19 +112,24 @@
   grid-template-columns: 190px 1fr 100px;
 }
 
-.cose-titleArea {
+.etcse-titleArea {
   grid-column: 2;
   grid-row: 1;
   padding-top: 5px;
 }
 
-.cose-toolBarArea {
+.etcse-toolBarArea {
   grid-column: 3;
   grid-row: 1;
 }
 
-.cose-extraArea {
+.etcse-extraArea {
   grid-column: 1;
   grid-row: 1;
   padding-left: 5px;
+}
+
+.etcse-loading {
+  padding-left: 8px;
+  padding-top: 8px;
 }

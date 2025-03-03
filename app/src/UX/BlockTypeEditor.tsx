@@ -5,7 +5,7 @@ import "./BlockTypeEditor.css";
 import Database from "../minecraft/Database";
 import DataFormUtilities from "../dataform/DataFormUtilities";
 import { ThemeInput } from "@fluentui/styles";
-import BlockTypeBehaviorDefinition from "../minecraft/BlockTypeBehaviorDefinition";
+import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import ProjectItem from "../app/ProjectItem";
 import BlockTypeComponentSetEditor from "./BlockTypeComponentSetEditor";
 import { CustomTabLabel } from "./Labels";
@@ -13,12 +13,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import WebUtilities from "./WebUtilities";
 import { faBolt, faBone, faCow, faSliders } from "@fortawesome/free-solid-svg-icons";
 import { Toolbar } from "@fluentui/react-northstar";
+import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
+import BlockTypeStateEditor from "./BlockTypeStateEditor";
+import Carto from "../app/Carto";
+import Project from "../app/Project";
 
 export enum BlockTypeEditorMode {
-  properties = 0,
-  actions = 1,
-  visuals = 2,
-  audio = 3,
+  states = 0,
+  properties = 1,
+  actions = 2,
+  visuals = 3,
+  audio = 4,
   loot = 5,
 }
 
@@ -26,6 +31,8 @@ interface IBlockTypeEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
   item: ProjectItem;
+  project: Project;
+  carto: Carto;
   theme: ThemeInput<any>;
 }
 
@@ -49,10 +56,11 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
     this._setAudioMode = this._setAudioMode.bind(this);
     this._setLootMode = this._setLootMode.bind(this);
     this._setVisualsMode = this._setVisualsMode.bind(this);
+    this._setStatesMode = this._setStatesMode.bind(this);
 
     this.state = {
       fileToEdit: props.file,
-      mode: BlockTypeEditorMode.properties,
+      mode: BlockTypeEditorMode.states,
       isLoaded: false,
     };
 
@@ -63,7 +71,7 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
     if (state === undefined || state === null) {
       state = {
         fileToEdit: props.file,
-        mode: BlockTypeEditorMode.properties,
+        mode: BlockTypeEditorMode.states,
         isLoaded: false,
       };
 
@@ -89,22 +97,22 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
       if (this.state.fileToEdit !== this._lastFileEdited) {
         this._lastFileEdited = this.state.fileToEdit;
 
-        await BlockTypeBehaviorDefinition.ensureOnFile(this.state.fileToEdit, this._handleBlockTypeLoaded);
+        await BlockTypeDefinition.ensureOnFile(this.state.fileToEdit, this._handleBlockTypeLoaded);
       }
     }
 
     if (
       this.state.fileToEdit &&
       this.state.fileToEdit.manager !== undefined &&
-      this.state.fileToEdit.manager instanceof BlockTypeBehaviorDefinition &&
-      (this.state.fileToEdit.manager as BlockTypeBehaviorDefinition).isLoaded &&
+      this.state.fileToEdit.manager instanceof BlockTypeDefinition &&
+      (this.state.fileToEdit.manager as BlockTypeDefinition).isLoaded &&
       !this.state.isLoaded
     ) {
       this._doUpdate(setState);
     }
   }
 
-  _handleBlockTypeLoaded(blockType: BlockTypeBehaviorDefinition, typeA: BlockTypeBehaviorDefinition) {
+  _handleBlockTypeLoaded(blockType: BlockTypeDefinition, typeA: BlockTypeDefinition) {
     this._doUpdate(true);
   }
 
@@ -128,11 +136,15 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
       const file = this.state.fileToEdit;
 
       if (file.manager !== null) {
-        const bt = file.manager as BlockTypeBehaviorDefinition;
+        const bt = file.manager as BlockTypeDefinition;
 
         bt.persist();
       }
     }
+  }
+
+  _setStatesMode() {
+    this._setMode(BlockTypeEditorMode.states);
   }
 
   _setPropertiesMode() {
@@ -174,18 +186,18 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
       return;
     }
 
-    const form = await Database.ensureFormLoaded(name);
+    const form = await Database.ensureFormLoaded("block", name);
 
     if (form !== undefined) {
       const newDataObject = DataFormUtilities.generateDefaultItem(form);
 
-      const bt = this.state.fileToEdit.manager as BlockTypeBehaviorDefinition;
+      const bt = this.state.fileToEdit.manager as BlockTypeDefinition;
 
-      if (bt.behaviorPackBlockTypeDef === undefined) {
+      if (bt._data === undefined) {
         return;
       }
 
-      bt.behaviorPackBlockTypeDef.components[name] = newDataObject;
+      bt._data.components[name] = newDataObject;
     }
   }
 
@@ -222,13 +234,28 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
       icon: (
         <CustomTabLabel
           icon={<FontAwesomeIcon icon={faSliders} className="fa-lg" />}
-          text={"Properties"}
+          text={"States"}
+          isCompact={isButtonCompact}
+          isSelected={this.state.mode === BlockTypeEditorMode.states}
+          theme={this.props.theme}
+        />
+      ),
+      key: "btePropertiesTab",
+      onClick: this._setStatesMode,
+      title: "Edit documentation by types",
+    });
+
+    toolbarItems.push({
+      icon: (
+        <CustomTabLabel
+          icon={<FontAwesomeIcon icon={faSquarePlus} className="fa-lg" />}
+          text={"Components"}
           isCompact={isButtonCompact}
           isSelected={this.state.mode === BlockTypeEditorMode.properties}
           theme={this.props.theme}
         />
       ),
-      key: "btePropertiesTab",
+      key: "bteComponentsTab",
       onClick: this._setPropertiesMode,
       title: "Edit documentation by types",
     });
@@ -278,18 +305,41 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
       title: "Loot",
     });
 
-    const bt = this.state.fileToEdit.manager as BlockTypeBehaviorDefinition;
+    const bt = this.state.fileToEdit.manager as BlockTypeDefinition;
 
-    if (bt.behaviorPackBlockTypeDef === undefined) {
+    if (bt._data === undefined) {
       return <div>Loading behavior pack...</div>;
     }
 
     let mode = <></>;
 
-    if (this.state.mode === BlockTypeEditorMode.properties) {
+    if (this.state.mode === BlockTypeEditorMode.states) {
+      mode = (
+        <div>
+          <BlockTypeStateEditor
+            blockTypeItem={bt}
+            theme={this.props.theme}
+            heightOffset={this.props.heightOffset + 80}
+          />
+        </div>
+      );
+    } else if (this.state.mode === BlockTypeEditorMode.properties) {
       mode = (
         <div>
           <BlockTypeComponentSetEditor
+            isVisualsMode={false}
+            blockTypeItem={bt}
+            theme={this.props.theme}
+            isDefault={true}
+            heightOffset={this.props.heightOffset + 80}
+          />
+        </div>
+      );
+    } else if (this.state.mode === BlockTypeEditorMode.visuals) {
+      mode = (
+        <div>
+          <BlockTypeComponentSetEditor
+            isVisualsMode={true}
             blockTypeItem={bt}
             theme={this.props.theme}
             isDefault={true}

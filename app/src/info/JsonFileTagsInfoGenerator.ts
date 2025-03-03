@@ -17,6 +17,12 @@ const tagAllowList = ["render_method", "min_difficulty", "cause", "effect_name",
 const numericAllowList: string[] = ["max_stack_size"];
 const boolAllowList: string[] = ["fire_immune", "burns_in_daylight", "hand_equipped", "stacked_by_data"];
 
+const inspectTagList: string[] = [
+  "minecraft:behavior.follow_mob",
+  "minecraft:behavior.float_wander",
+  "minecraft:behavior.tempt",
+];
+
 export enum JsonFileTagsInfoGeneratorTest {
   entityType = 1,
   blockType = 2,
@@ -129,6 +135,13 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
                 AnnotationCategories.entityComponentDependentInGroup,
                 compGroupsNode[compNodeName]
               );
+            }
+          }
+          const eventsNode = entityNode["events"];
+
+          if (eventsNode) {
+            for (const evNodeName in eventsNode) {
+              this.addSubTags(pi, "Entity Events", index, AnnotationCategories.entityEvent, eventsNode[evNodeName]);
             }
           }
         }
@@ -413,7 +426,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
               }
             } else {
               if (childObj && childObj.constructor !== Array) {
-                this.addDescendentSubTags(pi, bareTag, index, annotation, childObj);
+                this.addDescendentSubTags(pi, bareTag, index, annotation, childObj, childEltName);
               }
             }
           }
@@ -446,7 +459,14 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
     }
   }
 
-  addDescendentSubTags(pi: ProjectInfoItem, prefix: string, index: ContentIndex, annotation: string, rootTag?: any) {
+  addDescendentSubTags(
+    pi: ProjectInfoItem,
+    prefix: string,
+    index: ContentIndex,
+    annotation: string,
+    rootTag?: any,
+    parentName?: string
+  ) {
     if (!rootTag) {
       return;
     }
@@ -456,7 +476,12 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         const obj: any = rootTag[childEltName];
 
         if (pi.projectItem && pi.projectItem.projectPath) {
+          if (childEltName === "test" && parentName === "filters" && typeof obj === "string") {
+            index.insert(obj, pi.projectItem?.projectPath, AnnotationCategories.entityFilter);
+          }
+
           index.insert(prefix + "." + childEltName, pi.projectItem?.projectPath, annotation);
+
           let bareTag = childEltName;
           let colon = childEltName.indexOf(":");
 
@@ -466,22 +491,22 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
             }
 
             if (typeof obj === "number") {
-              if (numericAllowList.includes(bareTag)) {
+              if (numericAllowList.includes(bareTag) || (parentName && inspectTagList.includes(parentName))) {
                 index.insert(prefix + "." + bareTag + "==" + Math.round(obj), pi.projectItem.projectPath, annotation);
               }
             } else if (typeof obj === "boolean") {
-              if (boolAllowList.includes(bareTag)) {
+              if (boolAllowList.includes(bareTag) || (parentName && inspectTagList.includes(parentName))) {
                 index.insert(prefix + "." + bareTag + "==" + (obj ? "t" : "f"), pi.projectItem.projectPath, annotation);
               }
             } else if (typeof obj === "string") {
-              if (tagAllowList.includes(bareTag)) {
+              if (tagAllowList.includes(bareTag) || (parentName && inspectTagList.includes(parentName))) {
                 index.insert(prefix + "." + bareTag + "==" + obj, pi.projectItem.projectPath, annotation);
               }
             } else if (Array.isArray(obj)) {
               this.addSubTagsForArray(pi, prefix + "." + bareTag, index, annotation, obj);
             } else {
               if (obj && obj.constructor !== Array) {
-                this.addDescendentSubTags(pi, prefix + "." + bareTag, index, annotation, obj);
+                this.addDescendentSubTags(pi, prefix + "." + bareTag, index, annotation, obj, childEltName);
               }
             }
           }

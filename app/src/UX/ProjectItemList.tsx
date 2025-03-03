@@ -1277,6 +1277,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         projectItem.itemType === ProjectItemType.behaviorPackManifestJson ||
         projectItem.itemType === ProjectItemType.resourcePackManifestJson ||
         projectItem.itemType === ProjectItemType.skinPackManifestJson ||
+        projectItem.itemType === ProjectItemType.personaManifestJson ||
         projectItem.itemType === ProjectItemType.ninesliceJson ||
         projectItem.itemType === ProjectItemType.worldTemplateManifestJson) &&
       this.props.project.editPreference === ProjectEditPreference.summarized

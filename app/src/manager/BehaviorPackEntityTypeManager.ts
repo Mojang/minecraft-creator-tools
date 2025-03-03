@@ -161,8 +161,8 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
           if (bpEntityType) {
             await bpEntityType.load();
 
-            if (bpEntityType && bpEntityType.data && bpEntityType.data.description) {
-              const desc = bpEntityType.data.description;
+            if (bpEntityType && bpEntityType._data && bpEntityType._data.description) {
+              const desc = bpEntityType._data.description;
 
               if (desc.identifier !== undefined && desc.identifier.toLowerCase().startsWith("minecraft:")) {
                 piiIdentifier.incrementFeature(desc.identifier.toLowerCase());

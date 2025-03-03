@@ -140,6 +140,44 @@
       "type": 2
     },
     {
+      "title": "Custom sword",
+      "description": "A custom sword item that uses an icon for the model.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/custom_items",
+      "logoImage": "resource_packs/custom_item/textures/items/my_sword.png",
+      "id": "customSword",
+      "fileList": [
+        "/behavior_packs/custom_item/items/my_sword.json",
+        "/behavior_packs/custom_item/recipes/my_sword.json",
+        "/resource_packs/custom_item/texts/en_US.lang",
+        "/resource_packs/custom_item/textures/items/my_sword.png",
+        "/resource_packs/custom_item/textures/item_texture.json"
+      ],
+      "type": 7
+    },
+    {
+      "title": "Custom wrench",
+      "description": "A custom wrench with a custom geometry.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/custom_items",
+      "logoImage": "resource_packs/custom_item/textures/items/wrench_ico.png",
+      "id": "wrench",
+      "fileList": [
+        "/behavior_packs/custom_item/items/wrench.json",
+        "/resource_packs/custom_item/texts/en_US.lang",
+        "/resource_packs/custom_item/animations/first_person.json",
+        "/resource_packs/custom_item/animations/right_arm.json",
+        "/resource_packs/custom_item/attachables/wrench.player.json",
+        "/resource_packs/custom_item/models/entity/wrench.geo.json",
+        "/resource_packs/custom_item/textures/items/wrench.png",
+        "/resource_packs/custom_item/textures/items/wrench_ico.png",
+        "/resource_packs/custom_item/textures/item_texture.json"
+      ],
+      "type": 7
+    },
+    {
       "title": "Spawn Feather Item",
       "topics": ["Dimension.spawnItem", "ItemStack", "MinecraftItemTypes"],
       "sampleSet": "server",

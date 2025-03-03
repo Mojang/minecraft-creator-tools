@@ -9,6 +9,7 @@ export default interface IManagedComponentSetItem {
   removeComponent(id: string): void;
   getComponent(id: string): IManagedComponent | undefined;
   getComponents(): IManagedComponent[];
+  getAllComponents(): IManagedComponent[];
   notifyComponentUpdated(id: string): void;
 
   onComponentAdded: IEvent<IManagedComponentSetItem, IManagedComponent>;

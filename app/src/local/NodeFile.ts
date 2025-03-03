@@ -59,7 +59,7 @@ export default class NodeFile extends FileBase implements IFile {
         if (byteResult instanceof ArrayBuffer) {
           this._content = new Uint8Array(byteResult as ArrayBuffer);
         } else {
-          this._content = byteResult;
+          this._content = byteResult as any;
         }
       } else {
         // Log.debug(`NodeFS loading '${this.fullPath}' as text.`);
@@ -146,9 +146,7 @@ export default class NodeFile extends FileBase implements IFile {
       this._parentFolder._removeFile(this);
     }
 
-    this._recycleItem(this.fullPath);
-
-    return true;
+    return this._deleteItem(this.fullPath);
   }
 
   async moveTo(newStorageRelativePath: string): Promise<boolean> {
@@ -176,12 +174,20 @@ export default class NodeFile extends FileBase implements IFile {
 
     (newParentFolder as NodeFolder)._addExistingFile(this);
 
-    this._recycleItem(originalPath);
+    this._deleteItem(originalPath);
 
     return true;
   }
 
-  async _recycleItem(path: string) {
-    //    await trash(path);
+  async _deleteItem(path: string): Promise<boolean> {
+    let isSuccess = true;
+
+    try {
+      fs.rmSync(path);
+    } catch (e) {
+      isSuccess = false;
+    }
+
+    return isSuccess;
   }
 }

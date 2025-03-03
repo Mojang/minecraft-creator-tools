@@ -32,6 +32,7 @@ import TextureImageInfoGenerator from "./TextureImageInfoGenerator";
 import FormatVersionManager from "../manager/FormatVersionManager";
 import AnimationResourceInfoGenerator from "./AnimationResourceInfoGenerator";
 import UnlinkedItemInfoGenerator from "./UnlinkedItemInfoGenerator";
+import GeometryInfoGenerator from "./GeometryInfoGenerator";
 
 export default class GeneratorRegistrations {
   static projectGenerators = [
@@ -53,6 +54,7 @@ export default class GeneratorRegistrations {
     new StrictPlatformInfoGenerator(),
     new TextureInfoGenerator(),
     new TextureImageInfoGenerator(),
+    new GeometryInfoGenerator(),
   ];
 
   static itemGenerators = [

@@ -1,0 +1,15 @@
+.setna-mainArea {
+  padding-top: 20px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  padding-bottom: 20px;
+}
+
+.setna-label {
+  grid-column: 1;
+}
+
+.setna-description {
+  grid-column: 2;
+  padding: 8px;
+}

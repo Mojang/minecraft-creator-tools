@@ -1,5 +1,6 @@
-.micb-outer {
-  display: inline-flex;
+.micb-outerExpand {
+  height: 100%;
+  width: 100%;
 }
 
 .micb-button {

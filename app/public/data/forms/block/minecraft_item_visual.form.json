@@ -1,0 +1,18 @@
+{
+  "fields": [
+    {
+      "id": "geometry",
+      "title": "Geometry",
+      "description": "[Required] The \"minecraft:geometry\" component that will be used for the item.",
+      "dataType": 15
+    },
+    {
+      "id": "material_instances",
+      "title": "Material Instances",
+      "description": "[Required] The \"minecraft:material_instances\" component that will be used for the item.",
+      "dataType": 15
+    }
+  ],
+  "description": "The description identifier of the geometry and material used to render the item of this block.\r\nExperimental toggles required: Upcoming Creator Features (in format versions before 1.21.50)",
+  "title": "Item Visual"
+}

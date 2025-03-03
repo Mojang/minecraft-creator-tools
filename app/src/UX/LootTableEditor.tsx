@@ -73,7 +73,7 @@ export default class LootTableEditor extends Component<ILootTableEditorProps, IL
       }
     }
 
-    await Database.ensureFormLoaded("loot_table");
+    await Database.ensureFormLoaded("loot", "loot_table");
 
     if (
       this.state.fileToEdit &&
@@ -163,7 +163,7 @@ export default class LootTableEditor extends Component<ILootTableEditorProps, IL
       return <div>Loading definition...</div>;
     }
 
-    const form = Database.getForm("loot_table");
+    const form = Database.getForm("loot", "loot_table");
 
     let header = <></>;
     if (this.props.displayHeader === undefined || this.props.displayHeader) {

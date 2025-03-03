@@ -53,7 +53,7 @@ export default class ComponentProperty implements IProperty {
     return FieldDataType.string;
   }
 
-  get defaultValue(): string | number | number[] | bigint | bigint[] | boolean | undefined {
+  get defaultValue(): string | number | number[] | bigint | bigint[] | string[] | boolean | undefined {
     if (this._field === undefined) {
       Log.fail("Unbacked component property '" + this.id + "' found.");
       return undefined;
@@ -62,7 +62,7 @@ export default class ComponentProperty implements IProperty {
     return this._field.defaultValue;
   }
 
-  get value(): string | number | number[] | bigint | bigint[] | boolean | undefined {
+  get value(): string | number | number[] | bigint | bigint[] | string[] | boolean | undefined {
     if (this._field === undefined) {
       Log.fail("Unbacked component property '" + this.id + "' found.");
       return undefined;
@@ -152,7 +152,7 @@ export default class ComponentProperty implements IProperty {
     return defaultVal;
   }
 
-  set value(newValue: string | number | number[] | bigint | bigint[] | boolean | undefined) {
+  set value(newValue: string | string[] | number | number[] | bigint | bigint[] | boolean | undefined) {
     const val = this.value;
 
     if (val !== newValue) {

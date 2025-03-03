@@ -57,8 +57,10 @@ export default class SoundDefinitionCatalogDefinition {
         if (key !== "format_version" && key !== "sound_definitions") {
           const soundDefSet = (this._data as any)[key] as ISoundDefinition;
 
-          for (const sound of soundDefSet.sounds) {
-            soundList.push(sound);
+          if (soundDefSet && soundDefSet.sounds && Array.isArray(soundDefSet.sounds)) {
+            for (const sound of soundDefSet.sounds) {
+              soundList.push(sound);
+            }
           }
         }
       }

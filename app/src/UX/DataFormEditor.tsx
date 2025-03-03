@@ -69,7 +69,7 @@ export default class DataFormEditor extends Component<IDataFormEditorProps, IDat
   }
 
   async doLoad() {
-    await Database.ensureFormLoaded("dataform");
+    await Database.ensureFormLoaded("form", "dataform");
 
     if (this.state.fileToEdit) {
       await DataFormFile.ensureOnFile(this.state.fileToEdit);
@@ -105,7 +105,7 @@ export default class DataFormEditor extends Component<IDataFormEditorProps, IDat
     const formHeight = "calc(100vh - " + this.props.heightOffset + "px)";
 
     const dform = this.state.fileToEdit.manager as DataFormFile;
-    const form = Database.getForm("dataform");
+    const form = Database.getForm("form", "dataform");
 
     return (
       <div
@@ -125,6 +125,15 @@ export default class DataFormEditor extends Component<IDataFormEditorProps, IDat
             theme={this.props.theme}
             directObject={dform.formDefinition}
             readOnly={false}
+            objectKey={dform.id}
+          ></DataForm>
+        </div>
+        <div className="dfe-sourceForm">
+          <DataForm
+            definition={form}
+            theme={this.props.theme}
+            directObject={dform.formDefinition?.source}
+            readOnly={true}
             objectKey={dform.id}
           ></DataForm>
         </div>

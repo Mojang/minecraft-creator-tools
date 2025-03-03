@@ -2,9 +2,9 @@
   margin-bottom: 0px !important;
 }
 
-.df-form > div {
-  margin-bottom: 10px;
-  margin-top: 10px;
+.df-form {
+  border-top: solid 1px;
+  border-bottom: solid 1px;
 }
 
 .df-form TEXTAREA {
@@ -19,6 +19,7 @@
 .df-outer {
   padding: 0px;
   vertical-align: top;
+  width: 100%;
 }
 
 .df-wrapper {
@@ -60,9 +61,18 @@
 .df-fieldDescription {
   font-size: small;
   padding-bottom: 2px;
+  padding-left: 14px;
   margin-left: 1px;
-  margin-top: 6px;
+  margin-top: 9px;
   margin-bottom: 2px;
+}
+
+.df-fieldWrap .ui-checkbox__label {
+  font-size: large;
+  padding-top: 0px;
+  position: relative;
+  color: inherit !important;
+  top: -3px;
 }
 
 .df-fieldTitle {
@@ -71,7 +81,10 @@
 }
 
 .df-fieldWrap {
-  padding-bottom: 8px;
+  padding-bottom: 10px;
+  padding-top: 4px;
+  border-top: solid 1px;
+  border-bottom: solid 1px;
 }
 
 .df-fieldWrap .ui-form__label {
@@ -116,6 +129,8 @@
 
 .df-description {
   font-size: 10pt;
+  padding-top: 2px;
+  padding-bottom: 16px;
 }
 
 .df-sliderSet {
@@ -212,6 +227,36 @@
 .df-ro-value {
   display: table-cell;
   padding: 4px;
+}
+
+.df-sampleTable {
+  display: table;
+  padding-left: 14px;
+  font-size: small;
+}
+
+.df-defaultValueDescription {
+  padding-top: 10px;
+  padding-left: 14px;
+  font-size: small;
+  font-style: italic;
+}
+
+.df-sampleDescription {
+  font-style: italic;
+  padding-top: 10px;
+  padding-left: 14px;
+  font-size: small;
+}
+
+.df-sampleRow {
+  display: table-row;
+}
+
+.df-ro-sampleValue {
+  display: table-cell;
+  padding: 4px;
+  font-style: italic;
 }
 
 .df-ro-table {

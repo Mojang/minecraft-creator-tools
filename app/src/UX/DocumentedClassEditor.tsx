@@ -71,8 +71,8 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
   async doLoad() {
     await this.props.docClass.load();
 
-    await Database.ensureFormLoaded("documented_class");
-    await Database.ensureFormLoaded("simple_info_json");
+    await Database.ensureFormLoaded("documentation", "class");
+    await Database.ensureFormLoaded("documentation", "simple_info_json");
 
     this.setState({
       docClassToEdit: this.state.docClassToEdit,
@@ -111,7 +111,7 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
 
     const dclass = this.props.docClass;
 
-    const form = Database.getForm("documented_class");
+    const form = Database.getForm("documentation", "class");
 
     const memberForms = [];
 
@@ -167,7 +167,7 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
               const argsField: IField = {
                 id: "arguments",
                 title: "Arguments",
-                subForm: Database.getForm("simple_info_json"),
+                subForm: Database.getForm("documentation", "simple_info_json"),
                 dataType: FieldDataType.keyedObjectCollection,
               };
               infoForm.fields.push(argsField);
@@ -194,7 +194,7 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
                 const throwsField: IField = {
                   id: "throws",
                   title: "Throws",
-                  subForm: Database.getForm("simple_info_json"),
+                  subForm: Database.getForm("documentation", "simple_info_json"),
                   visualExperience: FieldVisualExperience.deemphasized,
                   dataType: FieldDataType.object,
                   undefinedIfEmpty: true,
@@ -214,7 +214,7 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
                   id: "returns",
                   title: "Returns (" + returnTypeName + ")",
                   undefinedIfEmpty: true,
-                  subForm: Database.getForm("simple_info_json"),
+                  subForm: Database.getForm("documentation", "simple_info_json"),
                   visualExperience: FieldVisualExperience.deemphasized,
                   dataType: FieldDataType.object,
                 };

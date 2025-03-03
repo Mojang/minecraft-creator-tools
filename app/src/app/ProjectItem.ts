@@ -370,6 +370,8 @@ export default class ProjectItem {
         return "resource/render_controllers/render_controllers.json";
       case ProjectItemType.blockCulling:
         return "resource/block_culling/block_culling.json";
+      case ProjectItemType.craftingItemCatalog:
+        return "behavior/item_catalog/crafting_item_catalog.json";
       //     case ProjectItemType.uiTextureJson:
       //        return "resource/textures/ui_texture_definition.json";
       case ProjectItemType.languagesCatalogResourceJson:

@@ -7,6 +7,7 @@ import StorageUtilities from "../storage/StorageUtilities";
 import IRenderControllerSetDefinition from "./IRenderControllerSet";
 import DataFormProcessor, { ProcessorFixupLevel } from "../dataform/DataFormProcessor";
 import IDefinition from "./IDefinition";
+import Database from "./Database";
 
 export default class RenderControllerSetDefinition implements IDefinition {
   private _file?: IFile;
@@ -145,7 +146,11 @@ export default class RenderControllerSetDefinition implements IDefinition {
     }
 
     if (this._data) {
-      await DataFormProcessor.process(this._data, "render_controller_set", ProcessorFixupLevel.perField);
+      const renderControllerSet = await Database.ensureFormLoaded("resource", "render_controller_set");
+
+      if (renderControllerSet) {
+        await DataFormProcessor.process(this._data, renderControllerSet, ProcessorFixupLevel.perField);
+      }
     }
 
     const pjString = JSON.stringify(this._data, null, 2);

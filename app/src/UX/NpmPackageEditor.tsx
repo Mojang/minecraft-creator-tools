@@ -6,7 +6,6 @@ import NpmPackageDefinition from "../devproject/NpmPackageDefinition";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
 import { ListProps } from "@fluentui/react-northstar";
-import ManagedComponentGroup from "../minecraft/ManagedComponentGroup";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import IProperty from "../dataform/IProperty";
 
@@ -19,7 +18,7 @@ interface INpmPackageEditorProps extends IFileProps {
 interface INpmPackageEditorState {
   fileToEdit: IFile;
   isLoaded: boolean;
-  selectedItem: NpmPackageDefinition | ManagedComponentGroup | undefined;
+  selectedItem: NpmPackageDefinition | undefined;
 }
 
 export default class NpmPackageEditor extends Component<INpmPackageEditorProps, INpmPackageEditorState> {
@@ -91,7 +90,7 @@ export default class NpmPackageEditor extends Component<INpmPackageEditorProps, 
   }
 
   async _doUpdate(setState: boolean) {
-    await Database.ensureFormLoaded("package_json");
+    await Database.ensureFormLoaded("dev", "package_json");
 
     let selItem = this.state.selectedItem;
 
@@ -225,7 +224,7 @@ export default class NpmPackageEditor extends Component<INpmPackageEditorProps, 
       return <div>Loading definition...</div>;
     }
 
-    const form = Database.getForm("package_json");
+    const form = Database.getForm("dev", "package_json");
 
     return (
       <div

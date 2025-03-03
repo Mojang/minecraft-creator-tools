@@ -22,13 +22,17 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
   private _isLoaded: boolean = false;
   private _managed: { [id: string]: IManagedComponent | undefined } = {};
 
-  public data?: IItemTypeBehaviorPack;
+  private _data?: IItemTypeBehaviorPack;
 
   private _onLoaded = new EventDispatcher<ItemTypeBehaviorDefinition, ItemTypeBehaviorDefinition>();
 
   private _onComponentAdded = new EventDispatcher<ItemTypeBehaviorDefinition, IManagedComponent>();
   private _onComponentRemoved = new EventDispatcher<ItemTypeBehaviorDefinition, string>();
   private _onComponentChanged = new EventDispatcher<ItemTypeBehaviorDefinition, IManagedComponent>();
+
+  public get data() {
+    return this._data;
+  }
 
   public get onComponentAdded() {
     return this._onComponentAdded.asEvent();
@@ -97,12 +101,12 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
   }
 
   getComponent(id: string) {
-    if (this.data === undefined) {
+    if (this._data === undefined) {
       return undefined;
     }
 
     if (!this._managed[id]) {
-      const comp = this.data.components[id];
+      const comp = this._data.components[id];
       if (comp) {
         this._managed[id] = new ManagedComponent(id, comp);
       }
@@ -121,11 +125,15 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
     }
   }
 
+  getAllComponents(): IManagedComponent[] {
+    return this.getComponents();
+  }
+
   getComponents(): IManagedComponent[] {
     const componentSet: IManagedComponent[] = [];
 
-    if (this.data !== undefined) {
-      for (const componentName in this.data.components) {
+    if (this._data !== undefined) {
+      for (const componentName in this._data.components) {
         const component = this.getComponent(componentName);
 
         if (component !== undefined) {
@@ -144,29 +152,30 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
       this.wrapper.format_version = versionStr;
     }
   }
-
-  addComponent(id: string, component: IManagedComponent) {
+  addComponent(id: string, component: any) {
     this._ensureBehaviorPackDataInitialized();
 
-    const bpData = this.data as IItemTypeBehaviorPack;
+    const mc = new ManagedComponent(id, component);
 
-    bpData.components[id] = component.getData();
-    this._managed[id] = component;
+    const bpData = this._data as IItemTypeBehaviorPack;
 
-    this._onComponentAdded.dispatch(this, component);
+    bpData.components[id] = component;
+    this._managed[id] = mc;
+
+    this._onComponentAdded.dispatch(this, mc);
   }
 
   removeComponent(id: string) {
-    if (this.data === undefined) {
+    if (this._data === undefined) {
       return;
     }
 
     const newBehaviorPacks: { [name: string]: IComponent | string | number | undefined } = {};
     const newManagedComponents: { [name: string]: IManagedComponent | undefined } = {};
 
-    for (const name in this.data.components) {
+    for (const name in this._data.components) {
       if (name !== id) {
-        const component = this.data.components[name];
+        const component = this._data.components[name];
 
         newBehaviorPacks[name] = component;
       }
@@ -178,13 +187,13 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
       }
     }
 
-    this.data.components = newBehaviorPacks;
+    this._data.components = newBehaviorPacks;
     this._managed = newManagedComponents;
   }
 
   _ensureBehaviorPackDataInitialized() {
-    if (this.data === undefined) {
-      this.data = {
+    if (this._data === undefined) {
+      this._data = {
         description: {
           identifier: "unknown",
         },
@@ -251,7 +260,7 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
         this.id = item.description.identifier;
       }
 
-      this.data = item;
+      this._data = item;
     }
 
     this._isLoaded = true;

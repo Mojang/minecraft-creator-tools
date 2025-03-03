@@ -119,17 +119,21 @@ export default class ProjectExporter {
 
     const rootFolder = await project.ensureProjectFolder();
 
-    await StorageUtilities.syncFolderTo(
-      gh.rootFolder,
-      rootFolder,
-      false,
-      false,
-      false,
-      ProjectImportExclusions,
-      undefined,
-      messageUpdater,
-      dontOverwriteExistingFiles
-    );
+    try {
+      await StorageUtilities.syncFolderTo(
+        gh.rootFolder,
+        rootFolder,
+        false,
+        false,
+        false,
+        ProjectImportExclusions,
+        undefined,
+        messageUpdater,
+        dontOverwriteExistingFiles
+      );
+    } catch (e) {
+      Log.error("Error synchronizing from GitHub:" + (e as any).toString());
+    }
 
     await rootFolder.saveAll();
 

@@ -1,0 +1,12 @@
+{
+  "fields": [
+    {
+      "id": "choice",
+      "title": "choice",
+      "description": "choice",
+      "dataType": 16
+    }
+  ],
+  "description": "TradeItemList",
+  "title": "TradeItemList"
+}

@@ -1,0 +1,26 @@
+{
+  "fields": [
+    {
+      "id": "value",
+      "title": "value",
+      "description": "Determines whether the item is rendered like a tool while in the player's hand.",
+      "dataType": 1
+    }
+  ],
+  "description": "The hand_equipped component determines if an item is rendered like a tool while it is in a player's hand.",
+  "title": "Hand Equipped",
+  "samples": {
+    "/vanilla/behavior_pack/items/appleEnchanted.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:hand_equipped/",
+        "content": false
+      }
+    ],
+    "/vanilla/behavior_pack/items/breeze_rod.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:hand_equipped/",
+        "content": true
+      }
+    ]
+  }
+}

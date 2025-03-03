@@ -1,38 +1,34 @@
-.rng-outer {
+.mifi-outer {
   display: table;
-  max-width: 170px;
   margin-top: 2px !important;
 }
 
-.rng-inner {
+.mifi-inner {
   display: table-row;
 }
 
-.rng-cell {
+.mifi-cell {
   display: table-cell;
 }
 
-.rng-input {
+.mifi-input {
   width: 60px;
   max-width: 60px;
 }
 
-.rng-input input {
+.mifi-input input {
   min-width: 55px;
   width: 52px;
   padding-left: 6px !important;
   padding-right: 6px !important;
 }
 
-.rng-ambient {
-  display: table-cell;
-  width: 50px;
-  max-width: 50px;
+.mificl-choice {
+  cursor: pointer;
 }
 
-.rng-ambient button {
-  width: 40px;
-  min-width: 40px;
-  max-width: 40px;
-  padding: 0px;
+.mificl-descript {
+  max-width: 200px;
+  font-size: x-small;
+  padding-top: 4px;
 }

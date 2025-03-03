@@ -1,0 +1,121 @@
+.eat-area {
+  width: 100%;
+  padding: 8px 6px 8px 6px;
+  border: outset 1px;
+  margin-top: 4px;
+}
+
+.eat-areaNoScroll {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  padding: 4px 20px 4px 20px;
+  border: outset 1px;
+}
+
+.eat-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.eat-header {
+  padding-top: 15px;
+  padding-bottom: 8px;
+  font-weight: bold;
+  font-size: large;
+}
+
+.eat-codeSnippet {
+  background-color: black;
+  font-family: "Consolas", "Courier New", Courier, monospace;
+  padding: 3px;
+  text-wrap: nowrap;
+}
+
+.eat-toolbarArea {
+  display: grid;
+  padding-top: 8px;
+  grid-template-columns: 27px 1fr;
+}
+
+.eat-toolbarLabel {
+  grid-column: 1;
+  padding-top: 4px;
+}
+
+.eat-toolbar {
+  grid-column: 2;
+}
+
+.eat-cgToggle {
+  border: outset 1px;
+  display: inline-block;
+  margin-right: 3px;
+  margin-bottom: 3px;
+  box-shadow: none !important;
+  text-wrap: wrap;
+  padding: 0px 8px 0px 2px !important;
+}
+
+.eat-addTriggerArea {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 100px 230px 1fr;
+  margin-bottom: 10px;
+}
+
+.eat-addTriggerInstruction {
+  grid-column: 1;
+  padding-top: 6px;
+}
+
+.eat-addTriggerArea .ui-dropdown__container {
+  width: 220px;
+}
+
+.eat-addTriggerDropdown {
+  grid-column: 2;
+}
+
+.eat-addTriggerButton {
+  grid-column: 3;
+}
+
+.eat-cgAdd {
+  background-color: green !important;
+}
+
+.eat-cgRemove {
+  background-color: red !important;
+}
+
+.eat-icon {
+  min-width: 18px;
+  display: inline-block;
+}
+
+.eat-componentGroupsHeaderInfo {
+  padding-bottom: 4px;
+  padding-top: 8px;
+}
+
+.eat-componentGroupsBin {
+  padding: 4px;
+  border: inset 1px;
+}
+.eat-triggerTitle {
+  padding-bottom: 10px;
+  padding-top: 15px;
+  font-weight: bold;
+}
+
+.eat-actionsTitle {
+  padding-bottom: 10px;
+  padding-top: 20px;
+  font-weight: bold;
+}
+
+.eat-instruction {
+  padding-bottom: 4px;
+}

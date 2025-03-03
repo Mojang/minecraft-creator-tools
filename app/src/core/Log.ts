@@ -135,7 +135,11 @@ export default class Log {
   static assertDefined(obj: any, message?: string) {
     if (!obj) {
       Log.unexpectedUndefined("LAD." + (message ? message : ""));
+
+      debugger;
     }
+
+    return obj !== undefined && obj !== null;
   }
 
   static fail(message: string, context?: string) {

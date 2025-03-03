@@ -1,14 +1,28 @@
-import { Component } from "react";
+import { Component, SyntheticEvent } from "react";
 import "./BlockTypeComponentSetEditor.css";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import Database from "../minecraft/Database";
-import { Toolbar, SplitButton, ThemeInput, List, ListProps, selectableListBehavior } from "@fluentui/react-northstar";
+import {
+  Toolbar,
+  ThemeInput,
+  List,
+  ListProps,
+  selectableListBehavior,
+  ButtonProps,
+  Dialog,
+} from "@fluentui/react-northstar";
 import IManagedComponentSetItem from "../minecraft/IManagedComponentSetItem";
 import DataFormUtilities from "../dataform/DataFormUtilities";
 import Utilities from "../core/Utilities";
+import { CustomLabel } from "./Labels";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import BlockTypeAddComponent from "./BlockTypeAddComponent";
+import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 
 interface IBlockTypeComponentSetEditorProps {
   blockTypeItem: IManagedComponentSetItem;
+  isVisualsMode: boolean;
   isDefault: boolean;
   heightOffset: number;
   title?: string;
@@ -18,6 +32,13 @@ interface IBlockTypeComponentSetEditorProps {
 interface IBlockTypeComponentSetEditorState {
   loadedFormCount?: number;
   activeComponentId: string | undefined;
+  dialogMode: BlockTypeComponentEditorDialog;
+  selectedNewComponentId: string | undefined;
+}
+
+export enum BlockTypeComponentEditorDialog {
+  none = 0,
+  addComponent = 1,
 }
 
 export default class BlockTypeComponentSetEditor extends Component<
@@ -31,6 +52,11 @@ export default class BlockTypeComponentSetEditor extends Component<
     this._addComponent = this._addComponent.bind(this);
     this._handleCloseClick = this._handleCloseClick.bind(this);
     this._handleComponentSelected = this._handleComponentSelected.bind(this);
+    this._addComponentClick = this._addComponentClick.bind(this);
+    this.setSelectedNewComponentId = this.setSelectedNewComponentId.bind(this);
+    this._handleAddComponentClick = this._handleAddComponentClick.bind(this);
+    this._handleAddComponentOK = this._handleAddComponentOK.bind(this);
+    this._handleDialogCancel = this._handleDialogCancel.bind(this);
 
     let id = undefined;
 
@@ -43,6 +69,8 @@ export default class BlockTypeComponentSetEditor extends Component<
     this.state = {
       loadedFormCount: undefined,
       activeComponentId: id,
+      dialogMode: BlockTypeComponentEditorDialog.none,
+      selectedNewComponentId: undefined,
     };
   }
 
@@ -67,22 +95,28 @@ export default class BlockTypeComponentSetEditor extends Component<
     this.forceUpdate();
   }
 
-  async _addComponent(name: string) {
+  async _addComponent(id: string) {
     if (Database.uxCatalog === null) {
       return;
     }
 
-    const form = await Database.ensureFormLoaded(name);
+    let formName = id;
+
+    if (formName.startsWith("minecraft:")) {
+      formName = EntityTypeDefinition.getFormIdFromComponentId(id);
+    }
+
+    const form = await Database.ensureFormLoaded("block", formName);
 
     if (form !== undefined) {
       const newDataObject = DataFormUtilities.generateDefaultItem(form);
 
-      this.props.blockTypeItem.addComponent(name, newDataObject);
+      this.props.blockTypeItem.addComponent(id, newDataObject);
     }
   }
 
   getFormIdFromComponentId(componentId: string) {
-    return "block_" + componentId.replace(/:/gi, "_").replace(/_/gi, "_");
+    return componentId.replace(/:/gi, "_").replace(/\./gi, "_");
   }
 
   async _updateManager() {
@@ -97,7 +131,7 @@ export default class BlockTypeComponentSetEditor extends Component<
 
       if (typeof component === "object" && component.id !== undefined) {
         const formId = this.getFormIdFromComponentId(component.id);
-        await Database.ensureFormLoaded(formId);
+        await Database.ensureFormLoaded("block", formId);
       }
     }
 
@@ -144,11 +178,58 @@ export default class BlockTypeComponentSetEditor extends Component<
       const component = components[i];
 
       if (typeof component === "object" && component.id !== undefined) {
-        componentList.push(component);
+        const isVisual = this.isVisualComponent(component.id);
+
+        if (isVisual === this.props.isVisualsMode) {
+          componentList.push(component);
+        }
       }
     }
 
     return componentList;
+  }
+
+  private async _handleAddComponentClick(e: SyntheticEvent | undefined, data: ButtonProps | undefined) {
+    this.setState({
+      loadedFormCount: this.state.loadedFormCount,
+      dialogMode: BlockTypeComponentEditorDialog.addComponent,
+    });
+  }
+
+  isVisualComponent(value: string) {
+    if (value === "minecraft:geometry" || value === "minecraft:material_instances") {
+      return true;
+    }
+
+    return false;
+  }
+
+  setSelectedNewComponentId(id: string) {
+    this.setState({
+      loadedFormCount: this.state.loadedFormCount,
+      activeComponentId: this.state.activeComponentId,
+      dialogMode: this.state.dialogMode,
+      selectedNewComponentId: id,
+    });
+  }
+
+  private _handleDialogCancel() {
+    this.setState({
+      loadedFormCount: this.state.loadedFormCount,
+      dialogMode: BlockTypeComponentEditorDialog.none,
+    });
+  }
+
+  private async _handleAddComponentOK() {
+    if (this.state.selectedNewComponentId) {
+      await this._addComponent(this.state.selectedNewComponentId);
+
+      this.setState({
+        loadedFormCount: this.state.loadedFormCount,
+        dialogMode: BlockTypeComponentEditorDialog.none,
+        activeComponentId: this.state.selectedNewComponentId,
+      });
+    }
   }
 
   render() {
@@ -158,156 +239,150 @@ export default class BlockTypeComponentSetEditor extends Component<
       return <div>Loading...</div>;
     }
 
-    const components = this.props.blockTypeItem.getComponents();
-    const componentForms = [];
-    const componentList = [];
+    if (this.state.dialogMode === BlockTypeComponentEditorDialog.addComponent) {
+      return (
+        <Dialog
+          open={true}
+          cancelButton="Cancel"
+          confirmButton="Add"
+          key="etcse-addComponentOuter"
+          onCancel={this._handleDialogCancel}
+          onConfirm={this._handleAddComponentOK}
+          content={
+            <BlockTypeAddComponent onNewComponentSelected={this.setSelectedNewComponentId} theme={this.props.theme} />
+          }
+          header={"Add component"}
+        />
+      );
+    } else {
+      const components = this.props.blockTypeItem.getComponents();
+      const componentForms = [];
+      const componentList = [];
 
-    let selectedIndex = 0;
+      let selectedIndex = 0;
+      let curItem = 0;
 
-    for (let i = 0; i < components.length; i++) {
-      const component = components[i];
+      for (let i = 0; i < components.length; i++) {
+        const component = components[i];
 
-      if (typeof component === "object" && component.id !== undefined) {
-        const formId = component.id.replace(/:/gi, "_").replace(/_/gi, "_");
+        if (typeof component === "object" && component.id !== undefined) {
+          const isVisual = this.isVisualComponent(component.id);
 
-        const form = Database.getForm("block_" + formId);
+          if (isVisual === this.props.isVisualsMode) {
+            const formId = component.id.replace(/:/gi, "_").replace(/\./gi, "_");
 
-        componentList.push({
-          key: component.id,
-          content: (
-            <div
-              className="cose-componentWrapper"
-              style={{
-                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-                borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-              }}
-            >
-              {Utilities.humanifyMinecraftName(component.id)}
-            </div>
-          ),
-        });
+            const form = Database.getForm("block", formId);
 
-        if (component && component.id) {
-          if (form !== undefined && component.id === this.state?.activeComponentId) {
-            selectedIndex = i;
-            componentForms.push(
-              <div className="cose-componentForm">
-                <DataForm
-                  displayTitle={true}
-                  displayDescription={true}
-                  readOnly={false}
-                  tag={component.id}
-                  theme={this.props.theme}
-                  objectKey={component.id}
-                  closeButton={false}
-                  definition={form}
-                  getsetPropertyObject={component}
-                ></DataForm>
-              </div>
-            );
-          } else if (component.id === this.state?.activeComponentId) {
-            selectedIndex = i;
-            componentForms.push(
-              <div className="cose-noeditor">(No editor is available for the {component.id} type.)</div>
-            );
+            componentList.push({
+              key: component.id,
+              content: (
+                <div
+                  className="bcose-componentWrapper"
+                  style={{
+                    backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+                    borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+                  }}
+                >
+                  {Utilities.humanifyMinecraftName(component.id)}
+                </div>
+              ),
+            });
+
+            if (component && component.id) {
+              if (form !== undefined && component.id === this.state?.activeComponentId) {
+                selectedIndex = curItem;
+                componentForms.push(
+                  <div className="bcose-componentForm">
+                    <DataForm
+                      displayTitle={true}
+                      displayDescription={true}
+                      readOnly={false}
+                      tag={component.id}
+                      theme={this.props.theme}
+                      objectKey={component.id}
+                      closeButton={false}
+                      definition={form}
+                      getsetPropertyObject={component}
+                    ></DataForm>
+                  </div>
+                );
+              } else if (component.id === this.state?.activeComponentId) {
+                selectedIndex = curItem;
+                componentForms.push(
+                  <div className="bcose-noeditor">(No editor is available for the {component.id} type.)</div>
+                );
+              }
+            }
+            curItem++;
           }
         }
       }
-    }
 
-    const toolbarItems: any[] = [];
+      const toolbarItems: any[] = [
+        {
+          key: "addComponent",
+          onClick: this._handleAddComponentClick,
+          title: "Add component",
+          icon: (
+            <CustomLabel
+              isCompact={false}
+              text="Add component"
+              icon={<FontAwesomeIcon icon={faAdd} className="fa-lg" />}
+            />
+          ),
+        },
+      ];
 
-    const splitButtonMenuItems = [
-      {
-        id: "tameable",
-        key: "tameable",
-        onClick: this._addComponentClick,
-        content: "Add tameability",
-      },
-      {
-        id: "rideable",
-        key: "rideable",
-        onClick: this._addComponentClick,
-        content: "Add rideability",
-      },
-      {
-        id: "inventory",
-        key: "inventory",
-        onClick: this._addComponentClick,
-        content: "Add inventory capabilities",
-      },
-      {
-        id: "healable",
-        key: "healable",
-        onClick: this._addComponentClick,
-        content: "Add healability",
-      },
-    ];
+      let title = <></>;
 
-    let title = <></>;
+      if (this.props.title) {
+        title = <span>{this.props.title}</span>;
+      }
 
-    if (this.props.title) {
-      title = <span>{this.props.title}</span>;
-    }
+      const areaHeight = "calc(100vh - " + String(this.props.heightOffset + 34) + "px)";
 
-    const areaHeight = "calc(100vh - " + String(this.props.heightOffset + 34) + "px)";
-
-    return (
-      <div className="cose-area">
-        <div className="cose-componentArea">
-          <div className="cose-titleArea">{title}</div>
-          <div className="cose-componentToolBarArea">
-            <Toolbar aria-label="Component editing toolbar" items={toolbarItems} />
+      return (
+        <div className="bcose-area">
+          <div className="bcose-componentArea">
+            <div className="bcose-titleArea">{title}</div>
+            <div className="bcose-componentToolBarArea">
+              <Toolbar aria-label="Component editing toolbar" items={toolbarItems} />
+            </div>
           </div>
-          <div className="cose-extraArea">
-            <SplitButton
-              menu={splitButtonMenuItems}
-              button={{
-                content: "Add component",
-                "aria-roledescription": "splitbutton",
-                "aria-describedby": "instruction-message-primary-button",
-              }}
-              primary
-              toggleButton={{
-                "aria-label": "more options",
-              }}
-              onMainButtonClick={this._addComponentClick}
+          <div
+            className="bcose-componentList"
+            style={{
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
+              minHeight: areaHeight,
+              maxHeight: areaHeight,
+            }}
+          >
+            <List
+              selectable
+              aria-label="List of components"
+              accessibility={selectableListBehavior}
+              defaultSelectedIndex={selectedIndex}
+              selectedIndex={selectedIndex}
+              items={componentList}
+              onSelectedIndexChange={this._handleComponentSelected}
             />
           </div>
+          <div
+            className="bcose-componentBin"
+            style={{
+              minHeight: areaHeight,
+              maxHeight: areaHeight,
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+              color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+            }}
+          >
+            {componentForms}
+          </div>
         </div>
-        <div
-          className="cose-componentList"
-          style={{
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
-            minHeight: areaHeight,
-            maxHeight: areaHeight,
-          }}
-        >
-          <List
-            selectable
-            aria-label="List of components"
-            accessibility={selectableListBehavior}
-            defaultSelectedIndex={selectedIndex}
-            selectedIndex={selectedIndex}
-            items={componentList}
-            onSelectedIndexChange={this._handleComponentSelected}
-          />
-        </div>
-        <div
-          className="cose-componentBin"
-          style={{
-            minHeight: areaHeight,
-            maxHeight: areaHeight,
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
-          }}
-        >
-          {componentForms}
-        </div>
-      </div>
-    );
+      );
+    }
   }
 }

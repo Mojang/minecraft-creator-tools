@@ -225,6 +225,41 @@ export default class Utilities {
     return retVal;
   }
 
+  static humanifyObject(sampVal: any) {
+    if (typeof sampVal === "object") {
+      sampVal = JSON.stringify(sampVal, undefined, 2);
+    } else {
+      sampVal = sampVal.toString();
+    }
+
+    sampVal = sampVal.trim();
+
+    if (sampVal.startsWith("[") && sampVal.endsWith("]")) {
+      sampVal = sampVal.substring(1, sampVal.length - 1);
+      sampVal = sampVal.replace(/"/gi, "");
+    }
+
+    if (sampVal.startsWith("{") && sampVal.endsWith("}")) {
+      sampVal = sampVal.substring(1, sampVal.length - 1);
+    }
+
+    return sampVal;
+  }
+
+  static ensureLooksLikeSentence(name: string) {
+    if (name.length > 1) {
+      if (name[0] >= "a" && name[0] <= "z") {
+        name = name[0].toUpperCase() + name.substring(1, name.length);
+      }
+    }
+
+    if (!name.endsWith(".")) {
+      name = name + ".";
+    }
+
+    return name;
+  }
+
   static humanifyMinecraftName(name: string | boolean | number) {
     if (typeof name === "boolean" || typeof name === "number") {
       return name.toString();
@@ -240,8 +275,19 @@ export default class Utilities {
 
     const colon = name.indexOf(":");
 
-    if (colon >= 0) {
+    if (colon >= 0 && name.substring(0, colon) === "minecraft") {
       name = name.substring(colon + 1);
+    }
+
+    const leftBracket = name.indexOf("[");
+    const rightBracket = name.indexOf("]");
+
+    if (leftBracket >= 0 && rightBracket > leftBracket) {
+      name = name.substring(0, leftBracket) + name.substring(rightBracket + 1);
+    }
+
+    if (name.endsWith(".")) {
+      name = name.substring(0, name.length - 1);
     }
 
     name = name.replace(/[_]/gi, " ");
@@ -249,6 +295,9 @@ export default class Utilities {
     if (name.endsWith("_bit")) {
       name = name.substring(0, name.length - 4);
     }
+
+    name = name.replace(/::/gi, " ");
+    name = name.replace(/:/gi, " ");
 
     const lastPeriod = name.indexOf(".");
 
@@ -277,6 +326,21 @@ export default class Utilities {
     }
 
     return name;
+  }
+
+  static stringFormat(templateString: string, ...vals: any[]) {
+    var args = arguments;
+    return arguments[0].replace(/{(\d+)}/g, function (content: any, interior: string) {
+      try {
+        const num = parseInt(interior);
+
+        if (!isNaN(num)) {
+          return args[num + 1] !== undefined ? args[num + 1] : content;
+        }
+      } catch (e) {}
+
+      return content;
+    });
   }
 
   static convertToHexString(byteArray: number[]) {
@@ -669,6 +733,46 @@ export default class Utilities {
         charCode !== "." &&
         charCode !== "-"
       ) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  static removeQuotes(candidate: string) {
+    candidate = candidate.trim();
+
+    if (candidate.startsWith('"')) {
+      candidate = candidate.substring(1);
+    } else if (candidate.startsWith('"')) {
+      candidate = candidate.substring(0, candidate.length - 1);
+    }
+
+    return candidate;
+  }
+
+  static normalizeVersionString(candidate: string) {
+    candidate = candidate.replace(/v/gi, "").trim();
+
+    candidate = candidate.trim();
+
+    if (candidate.startsWith(".")) {
+      candidate = "0" + candidate;
+    }
+
+    if (candidate.endsWith(".")) {
+      candidate = candidate.substring(0, candidate.length - 1);
+    }
+
+    return candidate;
+  }
+
+  static isVersionString(candidate: string) {
+    for (let i = 0; i < candidate.length; i++) {
+      const charCode = candidate[i];
+
+      if ((charCode < "0" || charCode > "9") && charCode !== "." && charCode !== "v") {
         return false;
       }
     }

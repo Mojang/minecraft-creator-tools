@@ -73,7 +73,7 @@ export default class SpawnRulesEditor extends Component<ISpawnRulesEditorProps, 
       }
     }
 
-    await Database.ensureFormLoaded("spawn_rules_header");
+    await Database.ensureFormLoaded("spawn", "spawn_rules_header");
 
     if (
       this.state.fileToEdit &&
@@ -169,7 +169,7 @@ export default class SpawnRulesEditor extends Component<ISpawnRulesEditorProps, 
       def["minecraft:spawn_rules"] = defInner;
     }
 
-    const form = Database.getForm("spawn_rules_header");
+    const form = Database.getForm("spawn", "spawn_rules_header");
 
     let header = <></>;
     if (this.props.displayHeader === undefined || this.props.displayHeader) {

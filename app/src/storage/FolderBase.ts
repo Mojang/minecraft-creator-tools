@@ -599,6 +599,14 @@ export default abstract class FolderBase implements IFolder {
   }
 
   async recursiveDeleteThisFolder() {
+    let isAllDeletes = await this.recursiveDeleteContentsOfThisFolder();
+
+    this.removeMeFromParent();
+
+    return isAllDeletes;
+  }
+
+  async recursiveDeleteContentsOfThisFolder() {
     let isAllDeletes = true;
 
     await this.load(true);
@@ -622,8 +630,6 @@ export default abstract class FolderBase implements IFolder {
         }
       }
     }
-
-    this.removeMeFromParent();
 
     return isAllDeletes;
   }
@@ -653,6 +659,8 @@ export default abstract class FolderBase implements IFolder {
   }
 
   abstract deleteThisFolder(): Promise<boolean>;
+  abstract deleteAllFolderContents(): Promise<boolean>;
+
   abstract exists(): Promise<boolean>;
   abstract ensureExists(): Promise<boolean>;
 

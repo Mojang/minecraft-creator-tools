@@ -1,4 +1,3 @@
-import Database from "../minecraft/Database";
 import { FieldDataType } from "./IField";
 import IFormDefinition from "./IFormDefinition";
 
@@ -17,7 +16,7 @@ export enum ProcessorFixupLevel {
 export default class DataFormProcessor {
   static async process(
     obj: { [key: string]: any },
-    form: string | IFormDefinition,
+    form: IFormDefinition,
     fixupLevel?: ProcessorFixupLevel,
     path?: string,
     issues?: IProcessorIssue[]
@@ -32,24 +31,12 @@ export default class DataFormProcessor {
       issues = [];
     }
 
-    let formInstance: IFormDefinition | undefined = undefined;
-
-    if (typeof form === "string") {
-      formInstance = await Database.ensureFormLoaded(form);
-    } else {
-      formInstance = form;
-    }
-
-    if (formInstance === undefined) {
-      return;
-    }
-
     for (const key in obj) {
       const val = obj[key as string] as any;
 
       let foundField = false;
 
-      for (const field of formInstance.fields) {
+      for (const field of form.fields) {
         if (field.id === key) {
           foundField = true;
 
@@ -68,7 +55,11 @@ export default class DataFormProcessor {
                 await DataFormProcessor.process(subObj, field.subForm, fixupLevel, path + key + "." + subKey, issues);
               }
             }
-          } else if (field.dataType === FieldDataType.object && field.subForm) {
+          } else if (
+            (field.dataType === FieldDataType.object && field.subForm) ||
+            field.dataType === FieldDataType.minecraftEventTrigger ||
+            field.dataType === FieldDataType.minecraftFilter
+          ) {
             if (val && typeof val === "object") {
               let keyCount = 0;
 
@@ -78,17 +69,27 @@ export default class DataFormProcessor {
                 }
               }
 
-              if (keyCount === 0 && field.undefinedIfEmpty) {
+              if (
+                keyCount === 0 &&
+                (field.undefinedIfEmpty ||
+                  field.dataType === FieldDataType.minecraftEventTrigger ||
+                  field.dataType === FieldDataType.minecraftFilter)
+              ) {
                 issues.push({
                   subject: key,
                   message: "Object is defined but empty; should be undefined.",
                   path: path,
                 });
 
-                if (fixupLevel === ProcessorFixupLevel.perField || fixupLevel === ProcessorFixupLevel.full) {
+                if (
+                  fixupLevel === ProcessorFixupLevel.perField ||
+                  fixupLevel === ProcessorFixupLevel.full ||
+                  field.dataType === FieldDataType.minecraftEventTrigger ||
+                  field.dataType === FieldDataType.minecraftFilter
+                ) {
                   obj[key] = undefined;
                 }
-              } else {
+              } else if (field.dataType === FieldDataType.object && field.subForm) {
                 await DataFormProcessor.process(val, field.subForm, fixupLevel, path + key, issues);
               }
             }

@@ -1,0 +1,12 @@
+{
+  "description": "Determines whether the item has the enchanted glint render effect on it.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "value",
+      "description": "Whether the item has the enchanted glint render effect.",
+      "dataType": 1
+    }
+  ],
+  "title": "Glint"
+}

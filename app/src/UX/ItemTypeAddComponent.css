@@ -1,0 +1,36 @@
+.itac-area {
+  height: 500px;
+}
+
+.itac-mainArea {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.itac-category {
+  grid-column: 1;
+  border-left: solid 1px;
+  border-top: solid 1px;
+  border-bottom: solid 1px;
+
+  max-height: 440px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.itac-list {
+  grid-column: 2;
+  max-height: 440px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: solid 1px;
+  border-top: solid 1px;
+  border-bottom: solid 1px;
+}
+
+.itac-description {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row: 2;
+  padding-top: 10px;
+}

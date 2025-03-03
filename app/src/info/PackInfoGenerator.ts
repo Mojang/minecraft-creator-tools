@@ -35,9 +35,8 @@ export enum PackInfoGeneratorTest {
   behaviorPackIcon = 22,
   skinPackIcon = 23,
   subpackTier1Count = 41,
-  subpackTier2Count = 42,
-  subpackTier3Count = 43,
-  subpackTier4Count = 44,
+  subpackTier40Count = 80,
+  subpackTiers = 145,
 }
 
 export default class PackInfoGenerator implements IProjectInfoGenerator {
@@ -85,14 +84,20 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
 
     info.subpackCount = infoSet.getFirstNumberValue(this.id, PackInfoGeneratorTest.subPacks);
 
-    info.subpackTier1Count = infoSet.getCount(this.id, PackInfoGeneratorTest.subpackTier1Count);
-    info.subpackTier2Count = infoSet.getCount(this.id, PackInfoGeneratorTest.subpackTier2Count);
-    info.subpackTier3Count = infoSet.getCount(this.id, PackInfoGeneratorTest.subpackTier3Count);
-    info.subpackTier4Count = infoSet.getCount(this.id, PackInfoGeneratorTest.subpackTier4Count);
+    for (let i = 1; i < 41; i++) {
+      info["subpackTier" + i + "Count"] = infoSet.getCount(this.id, MemoryTierBase + i);
+    }
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
-    const items: ProjectInfoItem[] = [];
+    const memoryTiersPi = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      PackInfoGeneratorTest.subpackTiers,
+      "Entity Geometry"
+    );
+
+    const items: ProjectInfoItem[] = [memoryTiersPi];
 
     const itemsCopy = project.getItemsCopy();
 
@@ -262,6 +267,8 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
 
               for (const sp of obj.subpacks) {
                 if (sp.memory_tier) {
+                  memoryTiersPi.spectrumIntFeature("Memory Tier", sp.memory_tier);
+
                   items.push(
                     new ProjectInfoItem(
                       InfoItemType.info,

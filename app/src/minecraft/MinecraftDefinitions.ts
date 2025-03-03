@@ -6,7 +6,7 @@ import AnimationControllerResourceDefinition from "./AnimationControllerResource
 import AnimationResourceDefinition from "./AnimationResourceDefinition";
 import AudioFileDefinition from "./AudioFileDefinition";
 import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
-import BlockTypeBehaviorDefinition from "./BlockTypeBehaviorDefinition";
+import BlockTypeDefinition from "./BlockTypeDefinition";
 import EntityTypeDefinition from "./EntityTypeDefinition";
 import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
 import FlipbookTextureCatalogDefinition from "./FlipbookTextureCatalogDefinition";
@@ -42,7 +42,7 @@ export default class MinecraftDefinitions {
       case ProjectItemType.itemTypeBehavior:
         return await ItemTypeBehaviorDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.blockTypeBehavior:
-        return await BlockTypeBehaviorDefinition.ensureOnFile(projectItem.file);
+        return await BlockTypeDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.flipbookTexturesJson:
         return await FlipbookTextureCatalogDefinition.ensureOnFile(projectItem.file);
       case ProjectItemType.behaviorPackManifestJson:

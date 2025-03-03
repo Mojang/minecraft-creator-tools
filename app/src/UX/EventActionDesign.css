@@ -6,6 +6,13 @@
   padding: 4px 20px 4px 20px;
 }
 
+.ead-areaNoScroll {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  padding: 4px 20px 4px 20px;
+}
+
 .ead-headerTransition {
   background-position-x: left;
   background-repeat: repeat-x;

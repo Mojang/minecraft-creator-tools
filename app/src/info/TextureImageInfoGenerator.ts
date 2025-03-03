@@ -87,13 +87,17 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
                 if (results.ImageWidth && results.ImageHeight) {
                   const textureMem = Math.pow(2, Math.ceil(Math.log2(results.ImageWidth * results.ImageHeight * 4)));
 
-                  textureImagePi.spectrumIntFeature("ImageWidth", results.ImageWidth);
-                  textureImagePi.spectrumIntFeature("ImageHeight", results.ImageHeight);
-                  textureImagePi.spectrumIntFeature("ImageSize", results.ImageWidth * results.ImageHeight);
-                  textureImagePi.spectrumIntFeature("EstimatedTextureMemory", textureMem);
+                  textureImagePi.spectrumIntFeature("Image Width", results.ImageWidth);
+                  textureImagePi.spectrumIntFeature("Image Height", results.ImageHeight);
+                  textureImagePi.spectrumIntFeature("Image Texels", results.ImageWidth * results.ImageHeight);
+                  textureImagePi.spectrumIntFeature("Texture Memory", textureMem);
 
                   if (!isVanilla) {
-                    textureImagePi.spectrumIntFeature("NonVanillaImageSize", results.ImageWidth * results.ImageHeight);
+                    textureImagePi.spectrumIntFeature(
+                      "Non-Vanilla Image Texels",
+                      results.ImageWidth * results.ImageHeight
+                    );
+                    textureImagePi.spectrumIntFeature("Non-Vanilla Texture Memory", textureMem);
                   }
 
                   totalTextureMemory += textureMem;
@@ -120,7 +124,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
                         InfoItemType.warning,
                         this.id,
                         TextureImageInfoGeneratorTest.individualTextureMemoryExceedsBudget,
-                        `Individual texture memory exceeds budget`,
+                        `Individual texture memory exceeds budget of ${individualMemoryBudget} bytes. Memory used`,
                         projectItem,
                         textureMem
                       )
@@ -147,13 +151,14 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       }
     }
 
-    if (totalTextureMemory > 100000000) {
+    const totalTextureMemoryBudget = 100000000;
+    if (totalTextureMemory > totalTextureMemoryBudget) {
       items.push(
         new ProjectInfoItem(
           InfoItemType.error,
           this.id,
           TextureImageInfoGeneratorTest.totalTextureMemoryExceedsBudget,
-          `Total texture memory exceeds budget`,
+          `Total texture memory exceeds budget of ${totalTextureMemoryBudget} bytes. Total memory used`,
           undefined,
           totalTextureMemory
         )
