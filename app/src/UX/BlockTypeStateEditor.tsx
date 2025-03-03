@@ -272,7 +272,7 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
         if (stateData !== undefined) {
           if (key === this.state.activeState || this.state.activeState === undefined || selectedIndex < 0) {
             if (Array.isArray(stateData)) {
-              if (stateData.length === 2 && typeof stateData[0] === "boolean" && typeof stateData[0] === "boolean") {
+              if (stateData.length === 2 && typeof stateData[0] === "boolean") {
                 formName = "blockstate_boolean";
                 formKey = key;
                 formData = stateData;
@@ -353,8 +353,8 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
           hasPlacementPosition = true;
           stateList.push(placementPosition);
 
-          if (this.state.activeState === "trait_placement_direction") {
-            formData = enabledPlacementDirectionStates;
+          if (this.state.activeState === "trait_placement_position") {
+            formData = enabledPlacementPositionStates;
             formKey = this.state.activeState;
             formName = this.state.activeState;
             selectedIndex = stateCount;
