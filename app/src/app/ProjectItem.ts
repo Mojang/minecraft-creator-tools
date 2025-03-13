@@ -211,6 +211,10 @@ export default class ProjectItem {
   }
 
   addChildItem(childItem: ProjectItem) {
+    if (ProjectItemUtilities.wouldBeCircular(childItem)) {
+      return;
+    }
+
     let pir: IProjectItemRelationship = {
       parentItem: this,
       childItem: childItem,
@@ -398,7 +402,7 @@ export default class ProjectItem {
         return "resource/sounds/music_definitions.json";
       case ProjectItemType.soundDefinitionCatalog:
         return "resource/sounds/sound_definitions.json";
-      case ProjectItemType.blockTypeResourceJson:
+      case ProjectItemType.blockTypeResourceJsonDoNotUse:
         return "resource/blocks.json";
       case ProjectItemType.uiJson:
         return "resource/ui/ui.json";

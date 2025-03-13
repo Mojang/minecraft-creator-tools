@@ -1,0 +1,51 @@
+{
+  "fields": [
+    {
+      "id": "offset",
+      "title": "offset",
+      "description": "offset",
+      "dataType": 15
+    },
+    {
+      "id": "direction",
+      "title": "direction",
+      "description": "direction",
+      "dataType": 16,
+      "subForm": {
+        "title": "Direction",
+        "description": "Direction",
+        "fields": []
+      }
+    },
+    {
+      "id": "radius",
+      "title": "radius",
+      "description": "radius",
+      "dataType": 16,
+      "subForm": {
+        "title": "Radius",
+        "description": "Radius",
+        "fields": []
+      }
+    },
+    {
+      "id": "surface_only",
+      "title": "surface_only",
+      "description": "surface_only",
+      "dataType": 1
+    },
+    {
+      "id": "plane_normal",
+      "title": "plane_normal",
+      "description": "plane_normal",
+      "dataType": 16,
+      "subForm": {
+        "title": "Plane Normal",
+        "description": "Plane Normal",
+        "fields": []
+      }
+    }
+  ],
+  "description": "Emitter Shape Disc V1.21.0 Misc",
+  "title": "Emitter Shape Disc V1.21.0 Misc"
+}

@@ -1,0 +1,29 @@
+{
+  "fields": [
+    {
+      "id": "type",
+      "title": "type",
+      "description": "type",
+      "dataType": 2
+    },
+    {
+      "id": "nodes",
+      "title": "nodes",
+      "description": "nodes",
+      "dataType": 16
+    },
+    {
+      "id": "input",
+      "title": "input",
+      "description": "input",
+      "dataType": 16,
+      "subForm": {
+        "title": "Input",
+        "description": "Input",
+        "fields": []
+      }
+    }
+  ],
+  "description": "Particle Curve Bezier Chain V1.21.0 Misc",
+  "title": "Particle Curve Bezier Chain V1.21.0 Misc"
+}

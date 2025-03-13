@@ -108,7 +108,36 @@
       "title": "Value",
       "description": "(Optional) true or false.",
       "defaultValue": true,
-      "dataType": 1
+      "dataType": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/fox.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:defending_fox/minecraft:environment_sensor/triggers/0/filters/all_of/0/",
+            "content": true
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:fox_thunderstorm/minecraft:environment_sensor/triggers/0/filters/all_of/1/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/fox.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:defending_fox/minecraft:environment_sensor/triggers/0/filters/all_of/0/",
+            "content": "is_daytime"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:defending_fox/minecraft:environment_sensor/triggers/1/filters/all_of/0/",
+            "content": "is_daytime"
+          }
+        ]
+      }
     }
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
@@ -131,43 +160,73 @@
     "/vanilla/behavior_pack/entities/fox.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:defending_fox/minecraft:environment_sensor/triggers/0/filters/all_of/0/",
-        "content": "{\"test\":\"is_daytime\",\"value\":true}"
+        "content": {
+          "test": "is_daytime",
+          "value": true
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/minecraft:defending_fox/minecraft:environment_sensor/triggers/1/filters/all_of/0/",
-        "content": "{\"test\":\"is_daytime\",\"value\":false}"
+        "content": {
+          "test": "is_daytime",
+          "value": false
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/minecraft:fox_thunderstorm/minecraft:environment_sensor/triggers/0/filters/all_of/1/",
-        "content": "{\"test\":\"is_daytime\",\"value\":true}"
+        "content": {
+          "test": "is_daytime",
+          "value": true
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/minecraft:fox_thunderstorm/minecraft:environment_sensor/triggers/1/filters/all_of/1/",
-        "content": "{\"test\":\"is_daytime\",\"value\":false}"
+        "content": {
+          "test": "is_daytime",
+          "value": false
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/minecraft:fox_day/minecraft:environment_sensor/triggers/1/filters/",
-        "content": "{\"test\":\"is_daytime\",\"value\":false}"
+        "content": {
+          "test": "is_daytime",
+          "value": false
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/minecraft:fox_night/minecraft:environment_sensor/triggers/1/filters/",
-        "content": "{\"test\":\"is_daytime\",\"value\":true}"
+        "content": {
+          "test": "is_daytime",
+          "value": true
+        }
       },
       {
         "path": "/minecraft:entity/components/minecraft:scheduler/scheduled_events/1/filters/all_of/0/",
-        "content": "{\"test\":\"is_daytime\",\"value\":false}"
+        "content": {
+          "test": "is_daytime",
+          "value": false
+        }
       },
       {
         "path": "/minecraft:entity/components/minecraft:scheduler/scheduled_events/2/filters/all_of/1/any_of/0/",
-        "content": "{\"test\":\"is_daytime\",\"value\":true}"
+        "content": {
+          "test": "is_daytime",
+          "value": true
+        }
       },
       {
         "path": "/minecraft:entity/components/minecraft:environment_sensor/triggers/0/filters/",
-        "content": "{\"test\":\"is_daytime\",\"value\":false}"
+        "content": {
+          "test": "is_daytime",
+          "value": false
+        }
       },
       {
         "path": "/minecraft:entity/components/minecraft:environment_sensor/triggers/1/filters/",
-        "content": "{\"test\":\"is_daytime\",\"value\":true}"
+        "content": {
+          "test": "is_daytime",
+          "value": true
+        }
       }
     ]
   }

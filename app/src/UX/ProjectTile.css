@@ -3,10 +3,10 @@
     margin-left: 10px;
     margin-top: 12px;
     width: 340px;
-    min-height: 191px;
+    min-height: 189px;
     max-width: calc(100vw - 60px);
     display: inline-block;
-    border: solid 2px #202020;
+    border: solid 1px #202020;
     text-align: left;
   }
 
@@ -23,10 +23,10 @@
     width: 340px;
     margin-left: 6px;
     margin-right: 6px;
-    min-height: 191px;
+    min-height: 189px;
     max-width: calc(100vw - 60px);
     display: inline-block;
-    border: solid 2px #202020;
+    border: solid 1px #202020;
     text-align: left;
   }
 

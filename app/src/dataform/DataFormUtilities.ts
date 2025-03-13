@@ -260,7 +260,7 @@ export default class DataFormUtilities {
 
       const samples: { [name: string]: IFormSample[] } = {};
 
-      samples[exampleSourcePath ? exampleSourcePath : "source"] = [
+      samples[exampleSourcePath ? exampleSourcePath : "generated_doNotEdit"] = [
         {
           path: fieldName,
           content: fieldData,
@@ -282,12 +282,12 @@ export default class DataFormUtilities {
     };
   }
 
-  static getFieldRepresentations(fieldDefinition: IField) {
+  static getFieldAndAlternates(fieldDefinition: IField) {
     const fields = [fieldDefinition];
 
     if (fieldDefinition.alternates) {
       for (const altField of fieldDefinition.alternates) {
-        fields.push(...DataFormUtilities.getFieldRepresentations(altField));
+        fields.push(...DataFormUtilities.getFieldAndAlternates(altField));
       }
     }
 

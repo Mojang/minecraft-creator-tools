@@ -60,7 +60,7 @@
 
 .df-fieldDescription {
   font-size: small;
-  padding-bottom: 2px;
+  padding-bottom: 3px;
   padding-left: 14px;
   margin-left: 1px;
   margin-top: 9px;
@@ -68,7 +68,7 @@
 }
 
 .df-fieldWrap .ui-checkbox__label {
-  font-size: large;
+  font-size: medium;
   padding-top: 0px;
   position: relative;
   color: inherit !important;
@@ -81,8 +81,8 @@
 }
 
 .df-fieldWrap {
-  padding-bottom: 10px;
-  padding-top: 4px;
+  padding-bottom: 20px;
+  padding-top: 14px;
   border-top: solid 1px;
   border-bottom: solid 1px;
 }
@@ -104,11 +104,11 @@
 }
 
 .df-elementBinTitle {
-  font-size: large;
+  font-size: medium;
 }
 
 .df-fieldWrap label {
-  font-size: large;
+  font-size: medium;
 }
 
 .df-cardWrapper {
@@ -130,11 +130,12 @@
 .df-description {
   font-size: 10pt;
   padding-top: 2px;
-  padding-bottom: 16px;
+  padding-bottom: 18px;
 }
 
 .df-sliderSet {
   display: grid;
+  margin-top: 6px;
   grid-template-columns: 180px 80px;
 }
 
@@ -144,7 +145,7 @@
 
 .df-elementTitle {
   padding-bottom: 3px;
-  font-size: large;
+  font-size: medium;
 }
 
 .df-elementBinNoScroll {
@@ -191,7 +192,7 @@
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row: 1;
-  font-size: large;
+  font-size: medium;
   padding-top: 3px;
   padding-bottom: 3px;
 }

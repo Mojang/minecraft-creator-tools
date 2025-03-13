@@ -43,7 +43,7 @@ export default class ProjectInfoItem {
     return this.#data.d;
   }
 
-  set data(data: string | boolean | number | object | number[] | undefined) {
+  set data(data: string | boolean | number | number[] | undefined) {
     this.#data.d = data;
   }
 
@@ -316,7 +316,7 @@ export default class ProjectInfoItem {
     generatorIndex: number,
     message?: string,
     projectItem?: ProjectItem,
-    data?: string | boolean | number | object | number[],
+    data?: string | boolean | number | number[],
     itemId?: string,
     content?: string,
     projectItemPath?: string

@@ -8,10 +8,12 @@ import { ThemeInput } from "@fluentui/styles";
 import { ListProps } from "@fluentui/react-northstar";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import IProperty from "../dataform/IProperty";
+import Project from "../app/Project";
 
 interface INpmPackageEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
+  project: Project;
   theme: ThemeInput<any>;
 }
 
@@ -221,7 +223,7 @@ export default class NpmPackageEditor extends Component<INpmPackageEditorProps, 
     const def = npmJsonFile.definition;
 
     if (def === undefined) {
-      return <div>Loading definition...</div>;
+      return <div className="npme-loading">Loading definition...</div>;
     }
 
     const form = Database.getForm("dev", "package_json");
@@ -241,6 +243,8 @@ export default class NpmPackageEditor extends Component<INpmPackageEditorProps, 
               definition={form}
               directObject={def}
               readOnly={false}
+              project={this.props.project}
+              lookupProvider={this.props.project}
               theme={this.props.theme}
               objectKey={this.props.file.storageRelativePath}
               onPropertyChanged={this._handleDataFormPropertyChange}

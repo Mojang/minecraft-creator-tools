@@ -28,7 +28,7 @@
       "title": "Find Valid Position Retries",
       "description": "Amount of retries to find a valid target position within search range.",
       "defaultValue": 5,
-      "dataType": 3,
+      "dataType": 0,
       "samples": {
         "/vanilla/behavior_pack/entities/sniffer.json": [
           {
@@ -174,7 +174,7 @@
       "title": "Search Range Xz",
       "description": "Width and length of the volume around the entity used to find a valid target position",
       "defaultValue": 10,
-      "dataType": 3,
+      "dataType": 0,
       "samples": {
         "/vanilla/behavior_pack/entities/sniffer.json": [
           {
@@ -189,7 +189,7 @@
       "title": "Search Range Y",
       "description": "Height of the volume around the entity used to find a valid target position",
       "defaultValue": 7,
-      "dataType": 3,
+      "dataType": 0,
       "samples": {
         "/vanilla/behavior_pack/entities/sniffer.json": [
           {

@@ -12,7 +12,7 @@ import Log from "../core/Log";
 
 // part of security/reliability and defense in depth is to only allow our file functions to work with files from an allow list
 // this list is also replicated in /public/preload.js
-const _allowedExtensions = [
+export const AllowedExtensions = [
   "js",
   "ts",
   "json",
@@ -104,7 +104,7 @@ export default class StorageUtilities {
   public static isUsableFile(path: string) {
     const extension = StorageUtilities.getTypeFromName(path);
 
-    return _allowedExtensions.includes(extension);
+    return AllowedExtensions.includes(extension);
   }
 
   public static getEncodingByFileName(name: string): EncodingType {
@@ -1051,6 +1051,20 @@ export default class StorageUtilities {
 
     // a very crude way to ensure this code never removes c:\ or c:\my documents or whatever or something elemental.
     return Utilities.countChar(path, "/") + Utilities.countChar(path, "\\") < 4;
+  }
+
+  public static getParentOfParentFolderNamed(folderName: string, folder: IFolder) {
+    let ancestorFolder = undefined;
+
+    while (folder.name !== folderName && folder.parentFolder) {
+      folder = folder.parentFolder;
+    }
+
+    if (folder.parentFolder) {
+      ancestorFolder = folder.parentFolder;
+    }
+
+    return ancestorFolder;
   }
 
   public static getJsonObject(file: IFile): any | undefined {

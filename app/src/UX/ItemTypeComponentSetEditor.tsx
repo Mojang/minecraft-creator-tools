@@ -298,6 +298,7 @@ export default class ItemTypeComponentSetEditor extends Component<
                       readOnly={false}
                       tag={component.id}
                       project={this.props.project}
+                      lookupProvider={this.props.project}
                       carto={this.props.carto}
                       theme={this.props.theme}
                       objectKey={component.id}

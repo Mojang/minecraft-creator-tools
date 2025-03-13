@@ -57,7 +57,21 @@
           "title": "Not",
           "description": "Test for inequality."
         }
-      ]
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
+            "content": "=="
+          }
+        ],
+        "/vanilla/behavior_pack/entities/snow_golem.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/2/filters/",
+            "content": "=="
+          }
+        ]
+      }
     },
     {
       "id": "subject",
@@ -108,7 +122,40 @@
       "title": "Value",
       "description": "(Optional) true or false.",
       "defaultValue": true,
-      "dataType": 1
+      "dataType": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/snow_golem.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/2/filters/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/blaze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
+            "content": "in_contact_with_water"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/enderman.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/1/filters/",
+            "content": "in_contact_with_water"
+          }
+        ]
+      }
     }
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
@@ -131,25 +178,39 @@
     "/vanilla/behavior_pack/entities/blaze.json": [
       {
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
-        "content": "{\"test\":\"in_contact_with_water\",\"operator\":\"==\",\"value\":true}"
+        "content": {
+          "test": "in_contact_with_water",
+          "operator": "==",
+          "value": true
+        }
       }
     ],
     "/vanilla/behavior_pack/entities/enderman.json": [
       {
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/1/filters/",
-        "content": "{\"test\":\"in_contact_with_water\"}"
+        "content": {
+          "test": "in_contact_with_water"
+        }
       }
     ],
     "/vanilla/behavior_pack/entities/snow_golem.json": [
       {
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/2/filters/",
-        "content": "{\"test\":\"in_contact_with_water\",\"operator\":\"==\",\"value\":true}"
+        "content": {
+          "test": "in_contact_with_water",
+          "operator": "==",
+          "value": true
+        }
       }
     ],
     "/vanilla/behavior_pack/entities/strider.json": [
       {
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
-        "content": "{\"test\":\"in_contact_with_water\",\"operator\":\"==\",\"value\":true}"
+        "content": {
+          "test": "in_contact_with_water",
+          "operator": "==",
+          "value": true
+        }
       }
     ]
   }

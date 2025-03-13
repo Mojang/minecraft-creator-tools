@@ -108,7 +108,14 @@ export default class ProjectExporter {
     const newProjectName = await carto.getNewProjectName(projName);
 
     if (!project) {
-      project = await carto.createNewProject(newProjectName, undefined, ProjectFocus.gameTests, false);
+      project = await carto.createNewProject(
+        newProjectName,
+        undefined,
+        undefined,
+        undefined,
+        ProjectFocus.gameTests,
+        false
+      );
     }
 
     /*if (fileList) {

@@ -1,17 +1,12 @@
 {
   "fields": [
     {
-      "id": "domain",
-      "title": "Domain",
-      "description": "(Required) The property name to look for",
-      "dataType": 2
-    },
-    {
       "id": "operator",
       "title": "Operator",
       "description": "(Optional) The comparison to apply with 'value'.",
       "defaultValue": "equals",
       "dataType": 2,
+      "mustMatchChoices": true,
       "choices": [
         {
           "id": "!=",
@@ -63,7 +58,37 @@
           "title": "Not",
           "description": "Test for inequality."
         }
-      ]
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/bee.json": [
+          {
+            "path": "/minecraft:entity/component_groups/shelter_detection/minecraft:environment_sensor/triggers/0/filters/all_of/1/",
+            "content": "!="
+          },
+          {
+            "path": "/minecraft:entity/events/find_hive_timeout/sequence/0/filters/",
+            "content": "!="
+          }
+        ]
+      }
+    },
+    {
+      "id": "domain",
+      "title": "Domain",
+      "description": "(Required) The property name to look for",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/bee.json": [
+          {
+            "path": "/minecraft:entity/component_groups/shelter_detection/minecraft:environment_sensor/triggers/0/filters/all_of/1/",
+            "content": "minecraft:has_nectar"
+          },
+          {
+            "path": "/minecraft:entity/events/find_hive_timeout/sequence/0/filters/",
+            "content": "minecraft:has_nectar"
+          }
+        ]
+      }
     },
     {
       "id": "subject",
@@ -115,6 +140,23 @@
       "description": "(Optional) true or false.",
       "defaultValue": true,
       "dataType": 1
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/bee.json": [
+          {
+            "path": "/minecraft:entity/component_groups/shelter_detection/minecraft:environment_sensor/triggers/0/filters/all_of/1/",
+            "content": "bool_property"
+          },
+          {
+            "path": "/minecraft:entity/events/find_hive_timeout/sequence/0/filters/",
+            "content": "bool_property"
+          }
+        ]
+      }
     }
   ],
   "description": "Returns true when the bool actor property matches the value provided.",
@@ -133,15 +175,26 @@
     "/vanilla/behavior_pack/entities/bee.json": [
       {
         "path": "/minecraft:entity/component_groups/shelter_detection/minecraft:environment_sensor/triggers/0/filters/all_of/1/",
-        "content": "{\"test\":\"bool_property\",\"domain\":\"minecraft:has_nectar\",\"operator\":\"!=\"}"
+        "content": {
+          "test": "bool_property",
+          "domain": "minecraft:has_nectar",
+          "operator": "!="
+        }
       },
       {
         "path": "/minecraft:entity/events/find_hive_timeout/sequence/0/filters/",
-        "content": "{\"test\":\"bool_property\",\"operator\":\"!=\",\"domain\":\"minecraft:has_nectar\"}"
+        "content": {
+          "test": "bool_property",
+          "operator": "!=",
+          "domain": "minecraft:has_nectar"
+        }
       },
       {
         "path": "/minecraft:entity/events/find_hive_timeout/sequence/1/filters/",
-        "content": "{\"test\":\"bool_property\",\"domain\":\"minecraft:has_nectar\"}"
+        "content": {
+          "test": "bool_property",
+          "domain": "minecraft:has_nectar"
+        }
       }
     ]
   }

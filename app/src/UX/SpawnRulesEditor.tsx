@@ -7,10 +7,12 @@ import { ThemeInput } from "@fluentui/styles";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import IProperty from "../dataform/IProperty";
 import SpawnRulesBehaviorDefinition from "../minecraft/SpawnRulesBehaviorDefinition";
+import Project from "../app/Project";
 
 interface ISpawnRulesEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
+  project: Project;
   displayHeader?: boolean;
   theme: ThemeInput<any>;
 }
@@ -160,7 +162,7 @@ export default class SpawnRulesEditor extends Component<ISpawnRulesEditorProps, 
     const def = definitionFile.data;
 
     if (def === undefined) {
-      return <div>Loading definition...</div>;
+      return <div className="sre-loading">Loading definition...</div>;
     }
 
     let defInner = def["minecraft:spawn_rules"];
@@ -191,6 +193,8 @@ export default class SpawnRulesEditor extends Component<ISpawnRulesEditorProps, 
               definition={form}
               directObject={defInner.description}
               readOnly={false}
+              project={this.props.project}
+              lookupProvider={this.props.project}
               theme={this.props.theme}
               objectKey={this.props.file.storageRelativePath}
               onPropertyChanged={this._handleDataFormPropertyChange}

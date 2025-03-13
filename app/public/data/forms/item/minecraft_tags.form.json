@@ -43,5 +43,6 @@
       }
     ]
   },
-  "title": "Tags"
+  "title": "Tags",
+  "id": "minecraft:tags"
 }

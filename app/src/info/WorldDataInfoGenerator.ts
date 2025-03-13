@@ -14,7 +14,7 @@ import CommandStructure from "../app/CommandStructure";
 import ProjectInfoSet from "./ProjectInfoSet";
 import CommandRegistry from "../app/CommandRegistry";
 import Dialogue from "../minecraft/Dialogue";
-import ContentIndex, { AnnotationCategories } from "../core/ContentIndex";
+import ContentIndex, { AnnotationCategory } from "../core/ContentIndex";
 import { NbtTagType } from "../minecraft/NbtBinaryTag";
 import AnimationControllerBehaviorDefinition from "../minecraft/AnimationControllerBehaviorDefinition";
 import AnimationBehaviorDefinition from "../minecraft/AnimationBehaviorDefinition";
@@ -332,7 +332,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
                 contentIndex.insert(
                   experimentChild.name + "==" + experimentChild.valueAsString,
                   projectItem.projectPath,
-                  AnnotationCategories.experiment
+                  AnnotationCategory.experiment
                 );
               }
             }
@@ -363,7 +363,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
               contentIndex.insert(
                 child.name + "==" + child.valueAsString,
                 projectItem.projectPath,
-                AnnotationCategories.worldProperty
+                AnnotationCategory.worldProperty
               );
             }
           }

@@ -6,13 +6,14 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import IDefinition from "./IDefinition";
 import ProjectItemManager from "../app/ProjectItemManager";
 import Project from "../app/Project";
+import { AllowedExtensions } from "../storage/StorageUtilities";
 
-export default class AudioFileDefinition implements IDefinition {
+export default class AudioDefinition implements IDefinition {
   private _file?: IFile;
   private _id?: string;
   private _isLoaded: boolean = false;
 
-  private _onLoaded = new EventDispatcher<AudioFileDefinition, AudioFileDefinition>();
+  private _onLoaded = new EventDispatcher<AudioDefinition, AudioDefinition>();
 
   public get isLoaded() {
     return this._isLoaded;
@@ -42,19 +43,19 @@ export default class AudioFileDefinition implements IDefinition {
     this._id = newId;
   }
 
-  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<AudioFileDefinition, AudioFileDefinition>) {
-    let afd: AudioFileDefinition | undefined;
+  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<AudioDefinition, AudioDefinition>) {
+    let afd: AudioDefinition | undefined;
 
     if (file.manager === undefined) {
-      afd = new AudioFileDefinition();
+      afd = new AudioDefinition();
 
       afd.file = file;
 
       file.manager = afd;
     }
 
-    if (file.manager !== undefined && file.manager instanceof AudioFileDefinition) {
-      afd = file.manager as AudioFileDefinition;
+    if (file.manager !== undefined && file.manager instanceof AudioDefinition) {
+      afd = file.manager as AudioDefinition;
 
       if (!afd.isLoaded && loadHandler) {
         afd.onLoaded.subscribe(loadHandler);
@@ -70,6 +71,30 @@ export default class AudioFileDefinition implements IDefinition {
     if (this._file === undefined) {
       return;
     }
+  }
+
+  static canonicalizeAudioPath(projectPath: string | undefined) {
+    if (projectPath === undefined) {
+      return undefined;
+    }
+    projectPath = projectPath.toLowerCase();
+
+    const lastPeriod = projectPath.lastIndexOf(".");
+
+    if (lastPeriod >= 0) {
+      const removedPart = projectPath.substring(lastPeriod + 1);
+
+      if (AllowedExtensions.includes(removedPart)) {
+        projectPath = projectPath.substring(0, lastPeriod);
+      }
+    }
+    /*
+    Log.assert(
+      projectPath.startsWith("sounds/") || projectPath.startsWith("music/") || projectPath.startsWith("$"),
+      "Unexpected audio path: " + projectPath
+    );*/
+
+    return projectPath;
   }
 
   async ensureSoundDefinitionsForFile(project: Project) {

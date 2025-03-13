@@ -1,4 +1,6 @@
 {
+  "title": "Text (String) Block State",
+  "description": "This is a property that can be true or false.",
   "fields": [
     {
       "id": "values",
@@ -10,7 +12,5 @@
       ],
       "dataType": 17
     }
-  ],
-  "description": "This is a property that can be true or false.",
-  "title": "Text (String) Block State"
+  ]
 }

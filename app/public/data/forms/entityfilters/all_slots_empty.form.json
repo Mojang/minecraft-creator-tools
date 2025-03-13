@@ -6,6 +6,7 @@
       "description": "(Optional) The comparison to apply with 'value'.",
       "defaultValue": "equals",
       "dataType": 2,
+      "mustMatchChoices": true,
       "choices": [
         {
           "id": "!=",

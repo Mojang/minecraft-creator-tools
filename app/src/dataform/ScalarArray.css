@@ -1,5 +1,5 @@
 .sarr-outer {
-  max-width: 270px;
+  max-width: 570px;
   margin-top: 2px !important;
 }
 
@@ -14,6 +14,14 @@
 
 .sarr-inner {
   display: grid;
+}
+
+.sarr-inner .ui-dropdown {
+  display: inherit !important;
+}
+
+.sarr-inner .ui-dropdown__container {
+  width: inherit !important;
 }
 
 .sarr-input {

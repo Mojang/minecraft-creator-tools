@@ -41,5 +41,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:use_modifiers"
 }

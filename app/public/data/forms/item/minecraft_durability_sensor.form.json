@@ -1,6 +1,12 @@
 {
   "fields": [
     {
+      "id": "durability_thresholds",
+      "title": "durability_thresholds",
+      "description": "The list of both durability thresholds and effects emitted when each threshold is met. When multiple thresholds are met, only the threshold with the lowest durability after applying the damage is considered.",
+      "dataType": 15
+    },
+    {
       "id": "durability",
       "title": "durability",
       "description": "The effects are emitted when the item durability value is less than or equal to this value.",
@@ -19,6 +25,7 @@
       "dataType": 2
     }
   ],
-  "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
-  "title": "Durability Sensor"
+  "description": "Enables an item to emit effects when it receives damage. Because of this, the item also needs a `minecraft:durability` component.",
+  "title": "Durability Sensor",
+  "id": "minecraft:durability_sensor"
 }

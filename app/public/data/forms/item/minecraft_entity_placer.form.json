@@ -65,5 +65,6 @@
       }
     ]
   },
-  "title": "Entity Placer"
+  "title": "Entity Placer",
+  "id": "minecraft:entity_placer"
 }

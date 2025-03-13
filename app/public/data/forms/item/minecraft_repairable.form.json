@@ -180,5 +180,6 @@
       }
     ]
   },
-  "title": "Repairable"
+  "title": "Repairable",
+  "id": "minecraft:repairable"
 }

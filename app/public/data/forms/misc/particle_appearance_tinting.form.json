@@ -1,0 +1,17 @@
+{
+  "fields": [
+    {
+      "id": "color",
+      "title": "color",
+      "description": "color",
+      "dataType": 16,
+      "subForm": {
+        "title": "Color",
+        "description": "Color",
+        "fields": []
+      }
+    }
+  ],
+  "description": "Particle Appearance Tinting V1.21.0 Misc",
+  "title": "Particle Appearance Tinting V1.21.0 Misc"
+}

@@ -206,7 +206,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.entityTypeBaseTs:
       case ProjectItemType.blockTypeBehavior:
       case ProjectItemType.blocksCatalogResourceJson:
-      case ProjectItemType.blockTypeResourceJson:
+      case ProjectItemType.blockTypeResourceJsonDoNotUse:
       case ProjectItemType.itemTypeBehavior:
       case ProjectItemType.fogResourceJson:
       case ProjectItemType.tradingBehaviorJson:
@@ -239,6 +239,9 @@ export default class ProjectItemUtilities {
       case ProjectItemType.vsCodeSettingsJson:
       case ProjectItemType.vsCodeTasksJson:
         return ProjectItemCategory.build;
+
+      case ProjectItemType.mcToolsProjectPreferences:
+        return ProjectItemCategory.mctools;
 
       case ProjectItemType.zip:
       case ProjectItemType.MCAddon:
@@ -392,6 +395,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.terrainTextureCatalogResourceJson:
       case ProjectItemType.globalVariablesJson:
       case ProjectItemType.dataForm:
+      case ProjectItemType.mcToolsProjectPreferences:
       case ProjectItemType.dimensionJson:
       case ProjectItemType.behaviorPackHistoryListJson:
       case ProjectItemType.resourcePackHistoryListJson:
@@ -662,6 +666,8 @@ export default class ProjectItemUtilities {
         return "Form";
       case ProjectItemType.dimensionJson:
         return "Dimension";
+      case ProjectItemType.mcToolsProjectPreferences:
+        return "MCTools preferences";
       case ProjectItemType.behaviorPackHistoryListJson:
         return "Behavior pack history";
       case ProjectItemType.resourcePackHistoryListJson:
@@ -669,6 +675,247 @@ export default class ProjectItemUtilities {
       default:
         return "Unknown";
     }
+  }
+
+  static wouldBeCircular(
+    candidate: ProjectItem,
+    considering?: ProjectItem,
+    paths?: string[],
+    dontGoUpward?: boolean,
+    dontGoDownward?: boolean
+  ) {
+    if (!paths) {
+      paths = [];
+    }
+
+    if (!candidate.projectPath) {
+      return false;
+    }
+
+    if (paths.includes(candidate.projectPath)) {
+      return true;
+    }
+
+    if (!considering) {
+      considering = candidate;
+    } else if (considering.projectPath) {
+      paths.push(considering.projectPath);
+    }
+
+    if (considering.parentItems && !dontGoUpward) {
+      for (const parentItem of considering.parentItems) {
+        if (parentItem.parentItem) {
+          if (this.wouldBeCircular(candidate, parentItem.parentItem, paths, false, true)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    if (considering.childItems && !dontGoDownward) {
+      for (const childItem of considering.childItems) {
+        if (childItem.childItem) {
+          if (this.wouldBeCircular(candidate, childItem.childItem, paths, true, false)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  static isBlock(type: ProjectItemType) {
+    return (
+      type === ProjectItemType.blockCulling ||
+      type === ProjectItemType.terrainTextureCatalogResourceJson ||
+      type === ProjectItemType.blockTypeBehavior ||
+      type === ProjectItemType.blocksCatalogResourceJson ||
+      type === ProjectItemType.blockMaterialsBehaviorJson
+    );
+  }
+
+  static isBlockRelated(projectItem: ProjectItem, dontGoUpward?: boolean, dontGoDownward?: boolean) {
+    if (projectItem.parentItems && !dontGoUpward) {
+      for (const parentItem of projectItem.parentItems) {
+        if (parentItem.parentItem) {
+          if (this.isBlock(parentItem.parentItem.itemType)) {
+            return true;
+          }
+
+          if (this.isBlockRelated(parentItem.parentItem, false, true)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    if (projectItem.childItems && !dontGoDownward) {
+      for (const parentItem of projectItem.childItems) {
+        if (parentItem.childItem) {
+          if (this.isBlock(parentItem.childItem.itemType)) {
+            return true;
+          }
+
+          if (this.isBlockRelated(parentItem.parentItem, true, false)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+  static isUI(type: ProjectItemType) {
+    return type === ProjectItemType.uiJson || type === ProjectItemType.uiTexture;
+  }
+
+  static isUIRelated(projectItem: ProjectItem, dontGoUpward?: boolean, dontGoDownward?: boolean) {
+    if (projectItem.parentItems && !dontGoUpward) {
+      for (const parentItem of projectItem.parentItems) {
+        if (parentItem.parentItem) {
+          if (this.isUI(parentItem.parentItem.itemType)) {
+            return true;
+          }
+
+          if (this.isUIRelated(parentItem.parentItem, false, true)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    if (projectItem.childItems && !dontGoDownward) {
+      for (const parentItem of projectItem.childItems) {
+        if (parentItem.childItem) {
+          if (this.isUI(parentItem.childItem.itemType)) {
+            return true;
+          }
+
+          if (this.isUIRelated(parentItem.parentItem, true, false)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  static isItem(type: ProjectItemType) {
+    return (
+      type === ProjectItemType.itemTextureJson ||
+      type === ProjectItemType.itemTypeBehavior ||
+      type === ProjectItemType.attachableResourceJson ||
+      type === ProjectItemType.itemTypeResourceJson
+    );
+  }
+
+  static isItemRelated(projectItem: ProjectItem, dontGoUpward?: boolean, dontGoDownward?: boolean) {
+    if (projectItem.parentItems && !dontGoUpward) {
+      for (const parentItem of projectItem.parentItems) {
+        if (parentItem.parentItem) {
+          if (this.isItem(parentItem.parentItem.itemType)) {
+            return true;
+          }
+
+          if (this.isItemRelated(parentItem.parentItem, false, true)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    if (projectItem.childItems && !dontGoDownward) {
+      for (const parentItem of projectItem.childItems) {
+        if (parentItem.childItem) {
+          if (this.isItem(parentItem.childItem.itemType)) {
+            return true;
+          }
+
+          if (this.isItemRelated(parentItem.parentItem, true, false)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  static isEntity(type: ProjectItemType) {
+    return (
+      type === ProjectItemType.entityTypeBehavior ||
+      type === ProjectItemType.entityTypeResource ||
+      type === ProjectItemType.renderControllerJson
+    );
+  }
+
+  static isEntityRelated(projectItem: ProjectItem, dontGoUpward?: boolean, dontGoDownward?: boolean) {
+    if (projectItem.parentItems && !dontGoUpward) {
+      for (const parentItem of projectItem.parentItems) {
+        if (parentItem.parentItem) {
+          if (this.isEntity(parentItem.parentItem.itemType)) {
+            return true;
+          }
+
+          if (this.isEntityRelated(parentItem.parentItem, false, true)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    if (projectItem.childItems && !dontGoDownward) {
+      for (const parentItem of projectItem.childItems) {
+        if (parentItem.childItem) {
+          if (this.isEntity(parentItem.childItem.itemType)) {
+            return true;
+          }
+
+          if (this.isEntityRelated(parentItem.parentItem, true, false)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  static isParticle(type: ProjectItemType) {
+    return type === ProjectItemType.particleJson;
+  }
+
+  static isParticleRelated(projectItem: ProjectItem, dontGoUpward?: boolean, dontGoDownward?: boolean) {
+    if (projectItem.parentItems && !dontGoUpward) {
+      for (const parentItem of projectItem.parentItems) {
+        if (parentItem.parentItem) {
+          if (this.isParticle(parentItem.parentItem.itemType)) {
+            return true;
+          }
+
+          if (this.isParticleRelated(parentItem.parentItem, false, true)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    if (projectItem.childItems && !dontGoDownward) {
+      for (const parentItem of projectItem.childItems) {
+        if (parentItem.childItem) {
+          if (this.isParticle(parentItem.childItem.itemType)) {
+            return true;
+          }
+
+          if (this.isParticleRelated(parentItem.parentItem, true, false)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
   }
 
   static getNewItemName(type: ProjectItemType) {
@@ -732,6 +979,8 @@ export default class ProjectItemUtilities {
         return "Entity type visuals/audio";
       case ProjectItemType.catalogIndexJs:
         return "Catalog indexes";
+      case ProjectItemType.mcToolsProjectPreferences:
+        return "MCTools preferences";
       case ProjectItemType.behaviorPackHistoryListJson:
         return "Behavior pack histories";
       case ProjectItemType.resourcePackHistoryListJson:

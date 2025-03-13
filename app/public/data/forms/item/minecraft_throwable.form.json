@@ -105,5 +105,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:throwable"
 }

@@ -1,7 +1,9 @@
 import AttachableResourceDefinition from "../minecraft/AttachableResourceDefinition";
+import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
 import ItemTextureCatalogDefinition from "../minecraft/ItemTextureCatalogDefinition";
+import JsonUIResourceDefinition from "../minecraft/JsonUIResourceDefinition";
 import MusicDefinitionCatalogDefinition from "../minecraft/MusicDefinitionCatalogDefinition";
 import ParticleEffectResourceDefinition from "../minecraft/ParticleEffectResourceDefinition";
 import SoundCatalogDefinition from "../minecraft/SoundCatalogDefinition";
@@ -32,6 +34,16 @@ export default class ProjectItemRelations {
             await entityTypeBehavior.addChildItems(project, item);
           }
         }
+      } else if (item.itemType === ProjectItemType.blockTypeBehavior) {
+        await item.ensureStorage();
+
+        if (item.file) {
+          const blockTypeBehavior = await BlockTypeDefinition.ensureOnFile(item.file);
+
+          if (blockTypeBehavior) {
+            await blockTypeBehavior.addChildItems(project, item);
+          }
+        }
       } else if (item.itemType === ProjectItemType.entityTypeResource) {
         await item.ensureStorage();
 
@@ -50,6 +62,16 @@ export default class ProjectItemRelations {
 
           if (particleResource) {
             await particleResource.addChildItems(project, item);
+          }
+        }
+      } else if (item.itemType === ProjectItemType.uiJson) {
+        await item.ensureStorage();
+
+        if (item.file) {
+          const jsonUi = await JsonUIResourceDefinition.ensureOnFile(item.file);
+
+          if (jsonUi) {
+            await jsonUi.addChildItems(project, item);
           }
         }
       } else if (item.itemType === ProjectItemType.attachableResourceJson) {

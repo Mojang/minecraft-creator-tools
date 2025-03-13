@@ -1,0 +1,17 @@
+{
+  "fields": [
+    {
+      "id": "max_particles",
+      "title": "max_particles",
+      "description": "max_particles",
+      "dataType": 16,
+      "subForm": {
+        "title": "Max Particles",
+        "description": "Max Particles",
+        "fields": []
+      }
+    }
+  ],
+  "description": "Emitter Rate Manual V1.21.0 Misc",
+  "title": "Emitter Rate Manual V1.21.0 Misc"
+}

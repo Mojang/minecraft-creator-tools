@@ -16,9 +16,9 @@ import AttachableResourceDefinition from "../minecraft/AttachableResourceDefinit
 import FlipbookTextureCatalogDefinition from "../minecraft/FlipbookTextureCatalogDefinition";
 import Database from "../minecraft/Database";
 import JsonUIResourceDefinition from "../minecraft/JsonUIResourceDefinition";
-import { IJsonUIControl } from "../minecraft/IJsonUIScreen";
-import ContentIndex from "../core/ContentIndex";
+import ContentIndex, { AnnotationCategory } from "../core/ContentIndex";
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
+import TextureDefinition from "../minecraft/TextureDefinition";
 
 export enum TextureInfoGeneratorTest {
   textures = 1,
@@ -73,7 +73,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         await projectItem.ensureFileStorage();
 
         if (projectItem.file) {
-          const blockCat = await BlocksCatalogDefinition.ensureBlocksCatalogResourceDefinitionOnFile(projectItem.file);
+          const blockCat = await BlocksCatalogDefinition.ensureOnFile(projectItem.file);
 
           if (blockCat && blockCat.blocksCatalog) {
             for (const resourceId in blockCat.blocksCatalog) {
@@ -85,12 +85,26 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
                   blockTextureRefs.push(resourceId);
                 }
 
-                if (!allTexturePaths.includes(resource.textures)) {
-                  allTexturePaths.push(resource.textures);
-                }
+                if (typeof resource.textures === "string") {
+                  if (!allTexturePaths.includes(resource.textures)) {
+                    allTexturePaths.push(resource.textures);
+                  }
 
-                if (!blockTexturePaths.includes(resource.textures)) {
-                  blockTexturePaths.push(resource.textures);
+                  if (!blockTexturePaths.includes(resource.textures)) {
+                    blockTexturePaths.push(resource.textures);
+                  }
+                } else {
+                  for (const texturePathKey in resource.textures) {
+                    const textureVal = resource.textures[texturePathKey];
+
+                    if (!allTexturePaths.includes(textureVal)) {
+                      allTexturePaths.push(textureVal);
+                    }
+
+                    if (!blockTexturePaths.includes(textureVal)) {
+                      blockTexturePaths.push(textureVal);
+                    }
+                  }
                 }
               }
             }
@@ -137,35 +151,28 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         if (projectItem.file) {
           const jsonUI = await JsonUIResourceDefinition.ensureOnFile(projectItem.file);
 
-          const namespaceId = jsonUI?.namespaceId;
+          if (jsonUI) {
+            jsonUITextureRefs.push(...jsonUI.getControlRefs());
 
-          if (namespaceId && jsonUI.jsonUIScreen) {
-            for (const jsonControlId in jsonUI.jsonUIScreen) {
-              const jsonControl = jsonUI.jsonUIScreen[jsonControlId] as IJsonUIControl;
+            const texturePaths = jsonUI.getTexturePaths();
 
-              if (jsonControlId !== "namespace" && jsonControl && jsonControl.texture) {
-                const texturePath = jsonControl.texture;
-                const matchesVanillaPath = await Database.matchesVanillaPath(texturePath);
+            for (const texturePath of texturePaths) {
+              const matchesVanillaPath = await Database.matchesVanillaPath(texturePath);
 
-                if (!matchesVanillaPath) {
-                  if (!textureHandles.includes(texturePath)) {
-                    textureHandles.push(texturePath);
-                  }
-
-                  if (!jsonUITextureRefs.includes(jsonControlId)) {
-                    jsonUITextureRefs.push(jsonControlId);
-                  }
-
-                  if (!allTexturePaths.includes(texturePath)) {
-                    allTexturePaths.push(texturePath);
-                  }
-
-                  if (!jsonUITexturePaths.includes(texturePath)) {
-                    jsonUITexturePaths.push(texturePath);
-                  }
-                } else if (!jsonUIVanillaTexturePaths.includes(texturePath)) {
-                  jsonUIVanillaTexturePaths.push(texturePath);
+              if (!matchesVanillaPath) {
+                if (!textureHandles.includes(texturePath)) {
+                  textureHandles.push(texturePath);
                 }
+
+                if (!allTexturePaths.includes(texturePath)) {
+                  allTexturePaths.push(texturePath);
+                }
+
+                if (!jsonUITexturePaths.includes(texturePath)) {
+                  jsonUITexturePaths.push(texturePath);
+                }
+              } else if (!jsonUIVanillaTexturePaths.includes(texturePath)) {
+                jsonUIVanillaTexturePaths.push(texturePath);
               }
             }
           }
@@ -375,6 +382,16 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
 
         if (projectItem.file) {
           textureCountPi.incrementFeature("File Count");
+
+          const textureResourceDef = await TextureDefinition.ensureOnFile(projectItem.file);
+
+          if (textureResourceDef && textureResourceDef.data) {
+            const texturePath = textureResourceDef.getReferencePath();
+
+            if (texturePath && projectItem.projectPath) {
+              contentIndex.insert(texturePath, projectItem.projectPath, AnnotationCategory.textureFile);
+            }
+          }
         }
       }
     }

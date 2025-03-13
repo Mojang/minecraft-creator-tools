@@ -1,0 +1,52 @@
+{
+  "fields": [
+    {
+      "id": "beach_material",
+      "title": "beach_material",
+      "description": "Material used to decorate surface near sea level.",
+      "dataType": 16,
+      "subForm": {
+        "title": "Beach Material",
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "fields": []
+      }
+    },
+    {
+      "id": "floor_materials",
+      "title": "floor_materials",
+      "description": "Materials used for the surface floor.",
+      "dataType": 15
+    },
+    {
+      "id": "ceiling_materials",
+      "title": "ceiling_materials",
+      "description": "Materials used for the surface ceiling.",
+      "dataType": 15
+    },
+    {
+      "id": "foundation_material",
+      "title": "foundation_material",
+      "description": "Material used to replace solid blocks that are not surface blocks.",
+      "dataType": 16,
+      "subForm": {
+        "title": "Foundation Material",
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "fields": []
+      }
+    },
+    {
+      "id": "sea_material",
+      "title": "sea_material",
+      "description": "Material used to replace air blocks below sea level.",
+      "dataType": 16,
+      "subForm": {
+        "title": "Sea Material",
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "fields": []
+      }
+    }
+  ],
+  "description": "Generates surface on blocks with non-solid blocks above or below.",
+  "title": "Capped Surface",
+  "id": "minecraft:capped_surface"
+}

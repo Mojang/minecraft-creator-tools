@@ -108,7 +108,28 @@
       "title": "Value",
       "description": "(Optional) true or false.",
       "defaultValue": true,
-      "dataType": 1
+      "dataType": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/stray.json": [
+          {
+            "path": "/minecraft:entity/events/change_to_skeleton/sequence/0/filters/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/stray.json": [
+          {
+            "path": "/minecraft:entity/events/change_to_skeleton/sequence/0/filters/",
+            "content": "is_underground"
+          }
+        ]
+      }
     }
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
@@ -131,7 +152,10 @@
     "/vanilla/behavior_pack/entities/stray.json": [
       {
         "path": "/minecraft:entity/events/change_to_skeleton/sequence/0/filters/",
-        "content": "{\"test\":\"is_underground\",\"value\":true}"
+        "content": {
+          "test": "is_underground",
+          "value": true
+        }
       }
     ]
   }

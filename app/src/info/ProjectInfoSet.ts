@@ -238,7 +238,7 @@ export default class ProjectInfoSet {
     let str: string[] = [];
 
     for (const item of this.items) {
-      if (str.length < 50 && item.itemType === itemType) {
+      if (str.length < 15 && item.itemType === itemType) {
         str.push(item.toString());
       }
     }
@@ -1420,6 +1420,8 @@ function _addReportJson(data) {
 
         if (item.projectItem && item.projectItem.projectPath) {
           sp = item.projectItem.projectPath;
+        } else if (item.projectItemPath) {
+          sp = item.projectItemPath;
         }
 
         let line =

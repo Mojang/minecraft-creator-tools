@@ -1,0 +1,82 @@
+.mcme-contentSingle {
+  display: grid;
+  grid-template-columns: 1fr 30px;
+}
+
+.mcme-interior {
+  min-height: 47px;
+  height: 47px;
+  padding-top: 10px;
+}
+
+.mcme-interiorSingle {
+  min-height: 32px;
+  height: 32px;
+  padding-right: 24px;
+  padding-top: 5px;
+  grid-column: 1;
+}
+
+.mcme-interiorSingle .overflow-guard {
+  height: 24px !important;
+}
+
+.mcme-area {
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  width: calc(100% - 2px);
+  height: 100%;
+}
+
+.mcme-toolBarArea {
+  padding: 2px;
+  padding-top: 10px;
+  display: grid;
+  grid-template-columns: 190px 1fr;
+}
+
+.mcme-accessoryToolBarAreaSingle {
+  grid-column: 2;
+}
+
+.mcme-acessoryToolBarArea {
+  display: grid;
+  grid-template-columns: 1fr 40px;
+}
+
+.mcme-title {
+  grid-column: 1;
+  padding-top: 5px;
+  padding-left: 10px;
+}
+
+.mcme-toolBar {
+  grid-column: 2;
+}
+
+.mcme-bottomStats {
+  grid-column: 1;
+}
+
+.mcme-bottomToolBar {
+  grid-column: 2;
+}
+
+.mcme-glyphMarginRunningClass {
+  background: gray;
+}
+
+.mcme-glyphMarginFailClass {
+  background: red;
+}
+
+.mcme-glyphContentClass {
+  background: #000000;
+}
+
+.mcme-area .monaco-editor-background {
+  background-color: #000000;
+}
+.mcme-area .monaco-editor .margin {
+  background-color: #000000;
+}

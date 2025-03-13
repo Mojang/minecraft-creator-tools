@@ -83,5 +83,6 @@
       }
     ]
   },
-  "title": "Projectile"
+  "title": "Projectile",
+  "id": "minecraft:projectile"
 }

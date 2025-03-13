@@ -1,0 +1,40 @@
+{
+  "fields": [
+    {
+      "id": "type",
+      "title": "type",
+      "description": "type",
+      "dataType": 16
+    },
+    {
+      "id": "nodes",
+      "title": "nodes",
+      "description": "nodes",
+      "dataType": 15
+    },
+    {
+      "id": "input",
+      "title": "input",
+      "description": "input",
+      "dataType": 16,
+      "subForm": {
+        "title": "Input",
+        "description": "Input",
+        "fields": []
+      }
+    },
+    {
+      "id": "horizontal_range",
+      "title": "horizontal_range",
+      "description": "horizontal_range",
+      "dataType": 16,
+      "subForm": {
+        "title": "Horizontal Range",
+        "description": "Horizontal Range",
+        "fields": []
+      }
+    }
+  ],
+  "description": "Particle Curve Linear V1.21.0 Misc",
+  "title": "Particle Curve Linear V1.21.0 Misc"
+}

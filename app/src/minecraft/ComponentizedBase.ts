@@ -14,7 +14,7 @@ import IManagedComponent from "./IManagedComponent";
 import { ManagedComponent } from "./ManagedComponent";
 
 export default class ComponentizedBase implements IManagedComponentSetItem {
-  private _components: { [id: string]: IComponent | string | number | undefined };
+  private _components: { [id: string]: IComponent | string | string[] | boolean | number[] | number | undefined };
   private _managedComponents: { [id: string]: IManagedComponent };
 
   private _componentProperties: { [id: string]: ComponentProperty };
@@ -55,7 +55,7 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
     }
 
     if (!this._managedComponents[id]) {
-      this._managedComponents[id] = new ManagedComponent(id, component);
+      this._managedComponents[id] = new ManagedComponent(this._components, id, component);
     }
 
     return this._managedComponents[id];
@@ -91,7 +91,10 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
     return componentSet;
   }
 
-  ensureDataComponent(id: string, component: IComponent | string | number): IComponent | string | number | undefined {
+  ensureDataComponent(
+    id: string,
+    component: IComponent | string | number
+  ): IComponent | string | string[] | boolean | number[] | number | undefined {
     this._ensureComponentsInitialized();
 
     id = MinecraftUtilities.canonicalizeFullName(id);
@@ -105,7 +108,7 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
       return this._managedComponents[id].getData();
     }
 
-    const mc = this.ensureComponent(id, new ManagedComponent(id, component));
+    const mc = this.ensureComponent(id, new ManagedComponent(this._components, id, component));
 
     if (mc) {
       return mc.getData();
@@ -152,6 +155,8 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
     if (this._components) {
       this._components[id] = component.getData();
     }
+
+    return component;
   }
 
   removeComponent(id: string) {
@@ -161,7 +166,8 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
 
     id = MinecraftUtilities.canonicalizeFullName(id);
 
-    const newComponents: { [id: string]: IComponent | string | number | undefined } = {};
+    const newComponents: { [id: string]: IComponent | string | string[] | boolean | number[] | number | undefined } =
+      {};
     const newManagedComponents: { [id: string]: IManagedComponent } = {};
 
     for (const name in this._components) {
@@ -241,7 +247,7 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
           component = new FloatAttributeComponent();
         }
 
-        const managedComponent = new ManagedComponent(name, component);
+        const managedComponent = new ManagedComponent(this._components, name, component);
 
         this.ensureComponent(name, managedComponent);
       }

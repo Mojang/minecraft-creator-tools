@@ -3,7 +3,7 @@
 
 import IGitHubInfo from "./IGitHubInfo";
 
-export const MaxItemTypes = 128;
+export const MaxItemTypes = 129;
 
 export enum ProjectItemCategory {
   assets,
@@ -14,6 +14,7 @@ export enum ProjectItemCategory {
   meta,
   package,
   unknown,
+  mctools,
 }
 
 export enum ProjectItemType {
@@ -65,11 +66,11 @@ export enum ProjectItemType {
   tradingBehaviorJson = 45,
   volumeBehaviorJson = 46,
   attachableResourceJson = 47,
-  itemTypeResourceJson = 48,
+  itemTypeResourceJson = 48, // note this is the 1.10 definition of item resources, more modern items use attachables?
   materialsResourceJson = 49,
   musicDefinitionJson = 50,
   soundDefinitionCatalog = 51,
-  blockTypeResourceJson = 52, // deprecated. Duplicate of blocksCatalogResourceJson
+  blockTypeResourceJsonDoNotUse = 52, // deprecated - Duplicate of blocksCatalogResourceJson
   MCAddon = 53,
   zip = 54,
   MCPack = 55,
@@ -145,6 +146,7 @@ export enum ProjectItemType {
   personaPackFolder = 126,
   blockCulling = 127,
   craftingItemCatalog = 128,
+  mcToolsProjectPreferences = 129,
 }
 
 export enum ProjectItemStorageType {

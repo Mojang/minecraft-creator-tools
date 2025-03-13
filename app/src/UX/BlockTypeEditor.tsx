@@ -17,6 +17,8 @@ import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
 import BlockTypeStateEditor from "./BlockTypeStateEditor";
 import Carto from "../app/Carto";
 import Project from "../app/Project";
+import BlockTypePermutationEditor from "./BlockTypePermutationEditor";
+import BlockTypeActionEditor from "./BlockTypeActionEditor";
 
 export enum BlockTypeEditorMode {
   states = 0,
@@ -207,7 +209,7 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
     const width = WebUtilities.getWidth();
     let isButtonCompact = false;
 
-    if (width < 1016) {
+    if (width < 716) {
       isButtonCompact = true;
     }
 
@@ -223,7 +225,7 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
         }
       }
 
-      return <div>Loading...</div>;
+      return <div className="bte_loading">Loading...</div>;
     }
 
     if (this.props.setActivePersistable !== undefined) {
@@ -318,20 +320,41 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
         <div>
           <BlockTypeStateEditor
             blockTypeItem={bt}
+            project={this.props.project}
             theme={this.props.theme}
-            heightOffset={this.props.heightOffset + 80}
+            heightOffset={this.props.heightOffset + 140}
           />
         </div>
       );
     } else if (this.state.mode === BlockTypeEditorMode.properties) {
       mode = (
         <div>
-          <BlockTypeComponentSetEditor
+          <BlockTypePermutationEditor
             isVisualsMode={false}
             blockTypeItem={bt}
+            readOnly={this.props.readOnly}
+            item={this.props.item}
+            carto={this.props.carto}
+            file={this.props.file}
+            project={this.props.project}
             theme={this.props.theme}
-            isDefault={true}
-            heightOffset={this.props.heightOffset + 80}
+            heightOffset={this.props.heightOffset + 140}
+          />
+        </div>
+      );
+    } else if (this.state.mode === BlockTypeEditorMode.actions) {
+      mode = (
+        <div>
+          <BlockTypeActionEditor
+            isVisualsMode={false}
+            blockTypeItem={bt}
+            readOnly={this.props.readOnly}
+            item={this.props.item}
+            carto={this.props.carto}
+            file={this.props.file}
+            project={this.props.project}
+            theme={this.props.theme}
+            heightOffset={this.props.heightOffset + 140}
           />
         </div>
       );
@@ -340,10 +363,13 @@ export default class BlockTypeEditor extends Component<IBlockTypeEditorProps, IB
         <div>
           <BlockTypeComponentSetEditor
             isVisualsMode={true}
-            blockTypeItem={bt}
+            componentSet={bt}
+            readOnly={this.props.readOnly}
+            carto={this.props.carto}
+            project={this.props.project}
             theme={this.props.theme}
             isDefault={true}
-            heightOffset={this.props.heightOffset + 80}
+            heightOffset={this.props.heightOffset + 140}
           />
         </div>
       );

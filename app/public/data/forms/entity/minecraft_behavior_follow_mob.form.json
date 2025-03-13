@@ -1,6 +1,18 @@
 {
   "fields": [
     {
+      "id": "filters",
+      "title": "Filters",
+      "description": "If non-empty, provides criteria for filtering which nearby Mobs can be followed. If empty default criteria will be used, which will exclude Players, Squid variants, Fish variants, Tadpoles, Dolphins, and mobs of the same type as the owner of the Goal.",
+      "dataType": 20
+    },
+    {
+      "id": "preferred_actor_type",
+      "title": "Preferred Actor Type",
+      "description": "The type of actor to prefer following. If left unspecified, a random actor among those in range will be chosen.",
+      "dataType": 2
+    },
+    {
       "id": "search_range",
       "title": "Search Range",
       "description": "The distance in blocks it will look for a mob to follow",
@@ -44,6 +56,13 @@
           }
         ]
       }
+    },
+    {
+      "id": "use_home_position_restriction",
+      "title": "Use Home Position Restriction",
+      "description": "If true, the mob will respect the 'minecraft:home' component's 'restriction_radius' field when choosing a target to follow. If false, it will choose target position without considering home restrictions.",
+      "defaultValue": true,
+      "dataType": 1
     },
     {
       "id": "priority",

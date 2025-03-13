@@ -2,9 +2,44 @@
   "fields": [
     {
       "id": "family",
-      "title": "Family",
-      "description": "List of family names.",
-      "dataType": 17,
+      "title": "Type Family (Tag)",
+      "description": "A set of tags that describe the categories of this entity. In addition to typically having a tag for the type of mob, entities frequently have additional type family tags that modify how the rest of the Minecraft world reacts to them.",
+      "minLength": 2,
+      "choices": [
+        {
+          "id": "mob"
+        },
+        {
+          "id": "inanimate"
+        },
+        {
+          "id": "aquatic"
+        },
+        {
+          "id": "monster"
+        },
+        {
+          "id": "undead"
+        },
+        {
+          "id": "skeleton"
+        },
+        {
+          "id": "arthropod"
+        },
+        {
+          "id": "zombie"
+        },
+        {
+          "id": "lightweight"
+        },
+        {
+          "id": "fish"
+        },
+        {
+          "id": "player"
+        }
+      ],
       "samples": {
         "/vanilla/behavior_pack/entities/allay.json": [
           {
@@ -1299,7 +1334,8 @@
             ]
           }
         ]
-      }
+      },
+      "dataType": 17
     }
   ],
   "description": "Defines the families this entity belongs to.",

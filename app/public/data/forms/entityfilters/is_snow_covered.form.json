@@ -108,7 +108,38 @@
       "title": "Value",
       "description": "(Optional) true or false.",
       "defaultValue": true,
-      "dataType": 1
+      "dataType": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/fox.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence/1/filters/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/rabbit.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence/3/filters/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/fox.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence/1/filters/",
+            "content": "is_snow_covered"
+          },
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence/2/filters/",
+            "content": "is_snow_covered"
+          }
+        ]
+      }
     }
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
@@ -131,21 +162,33 @@
     "/vanilla/behavior_pack/entities/fox.json": [
       {
         "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence/1/filters/",
-        "content": "{\"test\":\"is_snow_covered\",\"value\":true}"
+        "content": {
+          "test": "is_snow_covered",
+          "value": true
+        }
       },
       {
         "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence/2/filters/",
-        "content": "{\"test\":\"is_snow_covered\",\"value\":false}"
+        "content": {
+          "test": "is_snow_covered",
+          "value": false
+        }
       }
     ],
     "/vanilla/behavior_pack/entities/rabbit.json": [
       {
         "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence/3/filters/",
-        "content": "{\"test\":\"is_snow_covered\",\"value\":true}"
+        "content": {
+          "test": "is_snow_covered",
+          "value": true
+        }
       },
       {
         "path": "/minecraft:entity/events/minecraft:entity_born/sequence/3/filters/",
-        "content": "{\"test\":\"is_snow_covered\",\"value\":true}"
+        "content": {
+          "test": "is_snow_covered",
+          "value": true
+        }
       }
     ]
   }

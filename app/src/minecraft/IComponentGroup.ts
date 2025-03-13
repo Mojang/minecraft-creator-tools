@@ -4,5 +4,5 @@
 import IComponent from "./IComponent";
 
 export default interface IComponentGroup {
-  [name: string]: IComponent | string | number | undefined;
+  [name: string]: IComponent | string | string[] | boolean | number[] | number | undefined;
 }

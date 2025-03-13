@@ -142,7 +142,7 @@ export default class MinecraftEventTrigger extends Component<IMinecraftEventTrig
           onCancel={this._handleDialogCancel}
           onConfirm={this._handleSetNameOK}
           content={<SetName onNameChanged={this.setNewName} defaultName="new property" theme={this.props.theme} />}
-          header={"Add component"}
+          header={"Add new action"}
         />
       );
     } else {
@@ -160,6 +160,7 @@ export default class MinecraftEventTrigger extends Component<IMinecraftEventTrig
               readOnly={this.props.readOnly}
               theme={this.props.theme}
               displayTriggers={false}
+              project={this.props.project}
               constrainHeight={this.props.constrainHeight}
               heightOffset={this.props.heightOffset}
               entityType={this.props.entityTypeDefinition}

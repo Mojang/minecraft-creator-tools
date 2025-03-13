@@ -355,6 +355,7 @@ export default class EntityTypeComponentSetEditor extends Component<
                       readOnly={false}
                       carto={this.props.carto}
                       project={this.props.project}
+                      lookupProvider={this.props.project}
                       tag={component.id}
                       itemDefinition={this.props.entityTypeItem}
                       theme={this.props.theme}

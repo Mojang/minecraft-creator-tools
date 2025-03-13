@@ -1,0 +1,35 @@
+{
+  "fields": [
+    {
+      "id": "offset",
+      "title": "offset",
+      "description": "offset",
+      "dataType": 15
+    },
+    {
+      "id": "direction",
+      "title": "direction",
+      "description": "direction",
+      "dataType": 16,
+      "subForm": {
+        "title": "Direction",
+        "description": "Direction",
+        "fields": []
+      }
+    },
+    {
+      "id": "half_dimensions",
+      "title": "half_dimensions",
+      "description": "half_dimensions",
+      "dataType": 15
+    },
+    {
+      "id": "surface_only",
+      "title": "surface_only",
+      "description": "surface_only",
+      "dataType": 1
+    }
+  ],
+  "description": "Emitter Shape Box V1.21.0 Misc",
+  "title": "Emitter Shape Box V1.21.0 Misc"
+}

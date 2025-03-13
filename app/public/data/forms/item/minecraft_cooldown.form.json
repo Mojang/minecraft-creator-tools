@@ -50,5 +50,6 @@
       }
     ]
   },
-  "title": "Cooldown"
+  "title": "Cooldown",
+  "id": "minecraft:cooldown"
 }

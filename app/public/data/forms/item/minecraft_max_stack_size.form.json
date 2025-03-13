@@ -1,6 +1,7 @@
 {
   "title": "Max Stack Size",
   "description": "Determines how many of an item can be stacked together.",
+  "scalarFieldUpgradeName": "value",
   "fields": [
     {
       "id": "value",

@@ -130,6 +130,7 @@ export default class ClUtils {
       }
 
       const inputStorage = new NodeStorage(inputFolder, "");
+      inputStorage.readOnly = true;
       workFolder = inputStorage.rootFolder;
     }
 

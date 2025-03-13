@@ -10,9 +10,11 @@ import IProperty from "../dataform/IProperty";
 import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
 import StorageUtilities from "../storage/StorageUtilities";
 import Utilities from "../core/Utilities";
+import Project from "../app/Project";
 
 interface IBehaviorPackManifestJsonEditorProps extends IFileProps {
   heightOffset: number;
+  project: Project;
   readOnly: boolean;
   theme: ThemeInput<any>;
 }
@@ -233,7 +235,7 @@ export default class BehaviorPackManifestJsonEditor extends Component<
     const def = bpManifestJsonFile.definition;
 
     if (def === undefined) {
-      return <div>Loading definition...</div>;
+      return <div className="bpme-loading">Loading definition...</div>;
     }
 
     const headerForm = Database.getForm("pack", "behavior_pack_header_json");
@@ -273,6 +275,8 @@ export default class BehaviorPackManifestJsonEditor extends Component<
               directObject={def.header}
               readOnly={false}
               theme={this.props.theme}
+              project={this.props.project}
+              lookupProvider={this.props.project}
               objectKey={this.props.file.storageRelativePath}
               onPropertyChanged={this._handleDataFormPropertyChange}
             ></DataForm>
@@ -280,6 +284,8 @@ export default class BehaviorPackManifestJsonEditor extends Component<
               definition={restOfForm}
               directObject={def}
               readOnly={false}
+              project={this.props.project}
+              lookupProvider={this.props.project}
               theme={this.props.theme}
               objectKey={this.props.file.storageRelativePath}
               onPropertyChanged={this._handleDataFormPropertyChange}

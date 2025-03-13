@@ -1,0 +1,12 @@
+{
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "identifier",
+      "description": "The name of the Biome, used by other features like the '/locate biome' command.",
+      "dataType": 2
+    }
+  ],
+  "description": "Contains non-component settings for a Biome.",
+  "title": "Biome Description Biome"
+}

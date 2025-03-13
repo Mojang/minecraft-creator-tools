@@ -1,6 +1,7 @@
 {
   "title": "Fuel",
   "description": "Allows this item to be used as fuel in a furnace to 'cook' other items.",
+  "scalarFieldUpgradeName": "duration",
   "fields": [
     {
       "id": "duration",

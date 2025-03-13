@@ -214,5 +214,6 @@
       }
     ]
   },
-  "title": "Durability"
+  "title": "Durability",
+  "id": "minecraft:durability"
 }

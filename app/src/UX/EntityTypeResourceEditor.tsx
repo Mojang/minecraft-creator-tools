@@ -26,6 +26,7 @@ import { Toolbar } from "@fluentui/react-northstar";
 import SoundCatalogDefinition from "../minecraft/SoundCatalogDefinition";
 import { ISoundEventSet } from "../minecraft/ISoundCatalog";
 import SoundEventSetEditor, { SoundEventSetType } from "./SoundEventSetEditor";
+import Project from "../app/Project";
 
 export enum EntityTypeResourceEditorMode {
   textures = 0,
@@ -39,6 +40,7 @@ interface IEntityTypeResourceEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
   displayHeader?: boolean;
+  project: Project;
   theme: ThemeInput<any>;
   projectItem: ProjectItem;
 }
@@ -351,7 +353,7 @@ export default class EntityTypeResourceEditor extends Component<
     const def = resourceDefinition.dataWrapper;
 
     if (def === undefined) {
-      return <div>Loading definition...</div>;
+      return <div className="etre-loading">Loading definition...</div>;
     }
 
     let resourceData = resourceDefinition.ensureData();
@@ -430,6 +432,7 @@ export default class EntityTypeResourceEditor extends Component<
             theme={this.props.theme}
             displayHeader={false}
             key={"etrscrc" + i}
+            project={this.props.project}
             heightOffset={this.props.heightOffset}
             readOnly={this.props.readOnly}
             isInline={true}
@@ -464,6 +467,8 @@ export default class EntityTypeResourceEditor extends Component<
         <DataForm
           definition={form}
           key={"sevdf"}
+          project={this.props.project}
+          lookupProvider={this.props.project}
           directObject={resourceData}
           readOnly={false}
           theme={this.props.theme}

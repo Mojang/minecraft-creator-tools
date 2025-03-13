@@ -33,6 +33,7 @@
       "id": "idle_time",
       "title": "Idle Time",
       "description": "The minimum idle time in seconds between the last detected disturbance to the start of digging.",
+      "defaultValue": 0,
       "dataType": 3,
       "samples": {
         "/vanilla/behavior_pack/entities/warden.json": [

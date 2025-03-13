@@ -57,7 +57,33 @@
           "title": "Not",
           "description": "Test for inequality."
         }
-      ]
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/enderman.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:riding/minecraft:environment_sensor/triggers/filters/",
+            "content": "=="
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:not_riding/minecraft:environment_sensor/triggers/filters/",
+            "content": "=="
+          }
+        ],
+        "/vanilla/behavior_pack/entities/parrot.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:parrot_not_riding_player/minecraft:entity_sensor/subsensors/0/event_filters/all_of/0/",
+            "content": "equals"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:parrot_riding_player/minecraft:entity_sensor/subsensors/0/event_filters/all_of/0/",
+            "content": "equals"
+          },
+          {
+            "path": "/minecraft:entity/components/minecraft:healable/filters/",
+            "content": "!="
+          }
+        ]
+      }
     },
     {
       "id": "subject",
@@ -101,14 +127,57 @@
           "title": "Target",
           "description": "The caller's current target."
         }
-      ]
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/enderman.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:riding/minecraft:environment_sensor/triggers/filters/",
+            "content": "self"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:not_riding/minecraft:environment_sensor/triggers/filters/",
+            "content": "self"
+          }
+        ]
+      }
     },
     {
       "id": "value",
       "title": "Value",
       "description": "(Optional) true or false.",
       "defaultValue": true,
-      "dataType": 1
+      "dataType": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/enderman.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:not_riding/minecraft:environment_sensor/triggers/filters/",
+            "content": true
+          }
+        ],
+        "/vanilla/behavior_pack/entities/parrot.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:parrot_not_riding_player/minecraft:entity_sensor/subsensors/0/event_filters/all_of/0/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/enderman.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:riding/minecraft:environment_sensor/triggers/filters/",
+            "content": "is_riding"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:not_riding/minecraft:environment_sensor/triggers/filters/",
+            "content": "is_riding"
+          }
+        ]
+      }
     }
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
@@ -131,25 +200,49 @@
     "/vanilla/behavior_pack/entities/enderman.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:riding/minecraft:environment_sensor/triggers/filters/",
-        "content": "{\"test\":\"is_riding\",\"subject\":\"self\",\"operator\":\"==\",\"value\":false}"
+        "content": {
+          "test": "is_riding",
+          "subject": "self",
+          "operator": "==",
+          "value": false
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/minecraft:not_riding/minecraft:environment_sensor/triggers/filters/",
-        "content": "{\"test\":\"is_riding\",\"subject\":\"self\",\"operator\":\"==\",\"value\":true}"
+        "content": {
+          "test": "is_riding",
+          "subject": "self",
+          "operator": "==",
+          "value": true
+        }
       }
     ],
     "/vanilla/behavior_pack/entities/parrot.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:parrot_not_riding_player/minecraft:entity_sensor/subsensors/0/event_filters/all_of/0/",
-        "content": "{\"test\":\"is_riding\",\"subject\":\"self\",\"operator\":\"equals\",\"value\":true}"
+        "content": {
+          "test": "is_riding",
+          "subject": "self",
+          "operator": "equals",
+          "value": true
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/minecraft:parrot_riding_player/minecraft:entity_sensor/subsensors/0/event_filters/all_of/0/",
-        "content": "{\"test\":\"is_riding\",\"subject\":\"self\",\"operator\":\"equals\",\"value\":false}"
+        "content": {
+          "test": "is_riding",
+          "subject": "self",
+          "operator": "equals",
+          "value": false
+        }
       },
       {
         "path": "/minecraft:entity/components/minecraft:healable/filters/",
-        "content": "{\"test\":\"is_riding\",\"operator\":\"!=\",\"value\":true}"
+        "content": {
+          "test": "is_riding",
+          "operator": "!=",
+          "value": true
+        }
       }
     ]
   }

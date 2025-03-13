@@ -10,15 +10,24 @@ import {
   TextArea,
   TextAreaProps,
   ThemeInput,
+  Toolbar,
 } from "@fluentui/react-northstar";
 import Log from "./../core/Log";
 import IProjectSeed from "../app/IProjectSeed";
 import ProjectUtilities from "../app/ProjectUtilities";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
-import { LocalFolderLabel } from "./Labels";
+import { CustomSelectableLabel, LocalFolderLabel } from "./Labels";
 import { MinecraftTrack } from "../app/ICartoData";
 import { CartoTargetStrings } from "../app/Carto";
 import { ProjectTargetStrings } from "../app/Project";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChrome, faEdge, faFirefoxBrowser, faSafari } from "@fortawesome/free-brands-svg-icons";
+import { faComputer } from "@fortawesome/free-solid-svg-icons";
+import { faWindowRestore } from "@fortawesome/free-regular-svg-icons";
+import WebUtilities, { BrowserType } from "./WebUtilities";
+import IFolder from "../storage/IFolder";
+import FileSystemStorage from "../storage/FileSystemStorage";
+import FileSystemFolder from "../storage/FileSystemFolder";
 
 interface INewProjectProps extends IAppProps {
   theme: ThemeInput<any>;
@@ -27,12 +36,15 @@ interface INewProjectProps extends IAppProps {
 }
 
 interface INewProjectState {
+  errorMessage?: string;
   newProjectName?: string;
   newProjectPath?: string;
   newProjectShortName?: string;
   newProjectCreator?: string;
   newProjectDescription?: string;
   newProjectTrack?: MinecraftTrack;
+  newProjectFolder?: IFolder;
+  newProjectFolderTitle?: string;
 }
 
 export default class NewProject extends Component<INewProjectProps, INewProjectState> {
@@ -47,9 +59,14 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
 
     this._handleSelectFolderClick = this._handleSelectFolderClick.bind(this);
 
+    this._useBrowserStorage = this._useBrowserStorage.bind(this);
+    this._useLocalStorage = this._useLocalStorage.bind(this);
+
     this.state = {
       newProjectName: this.props.projectSeed.name,
       newProjectPath: this.props.projectSeed.path,
+      newProjectFolder: this.props.projectSeed.targetFolder,
+      newProjectFolderTitle: this.props.projectSeed.targetFolderTitle,
       newProjectShortName: this.props.projectSeed.shortName,
       newProjectCreator: this.props.projectSeed.creator,
       newProjectDescription: this.props.projectSeed.description,
@@ -76,6 +93,9 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
     }
 
     const newState = {
+      errorMessage: undefined,
+      newProjectFolder: undefined,
+      newProjectFolderTitle: undefined,
       newProjectName: this.state.newProjectName,
       newProjectPath: this.state.newProjectPath,
       newProjectShortName: this.state.newProjectShortName,
@@ -94,6 +114,9 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
     }
 
     const newState = {
+      errorMessage: this.state.errorMessage,
+      newProjectFolder: this.state.newProjectFolder,
+      newProjectFolderTitle: this.state.newProjectFolderTitle,
       newProjectName: data.value,
       newProjectPath: this.state.newProjectPath,
       newProjectShortName: this.state.newProjectShortName,
@@ -116,6 +139,9 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
         name: state.newProjectName,
         creator: state.newProjectCreator,
         shortName: state.newProjectShortName,
+        path: state.newProjectPath,
+        targetFolder: state.newProjectFolder,
+        targetFolderTitle: state.newProjectFolderTitle,
         description: state.newProjectDescription,
         galleryProject: this.props.projectSeed.galleryProject,
         track: state.newProjectTrack,
@@ -129,6 +155,9 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
     }
 
     const newState = {
+      errorMessage: this.state.errorMessage,
+      newProjectFolder: this.state.newProjectFolder,
+      newProjectFolderTitle: this.state.newProjectFolderTitle,
       newProjectName: this.state.newProjectName,
       newProjectPath: this.state.newProjectPath,
       newProjectShortName: this.state.newProjectShortName,
@@ -147,6 +176,9 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
     }
 
     const newState = {
+      errorMessage: this.state.errorMessage,
+      newProjectFolder: this.state.newProjectFolder,
+      newProjectFolderTitle: this.state.newProjectFolderTitle,
       newProjectName: this.state.newProjectName,
       newProjectPath: this.state.newProjectPath,
       newProjectShortName: data.value,
@@ -165,6 +197,9 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
     }
 
     const newState = {
+      errorMessage: this.state.errorMessage,
+      newProjectFolder: this.state.newProjectFolder,
+      newProjectFolderTitle: this.state.newProjectFolderTitle,
       newProjectName: this.state.newProjectName,
       newProjectPath: this.state.newProjectPath,
       newProjectShortName: this.state.newProjectShortName,
@@ -195,10 +230,74 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
     }
   }
 
+  private _useBrowserStorage() {
+    const newState = {
+      errorMessage: undefined,
+      newProjectFolder: undefined,
+      newProjectName: this.state.newProjectName,
+      newProjectPath: undefined,
+      newProjectShortName: this.state.newProjectShortName,
+      newProjectCreator: this.state.newProjectCreator,
+      newProjectDescription: this.state.newProjectDescription,
+      newProjectTrack: this.state.newProjectTrack,
+    };
+
+    this.setState(newState);
+    this._updateSeed(newState);
+  }
+
+  private async _useLocalStorage() {
+    const dirHandle = (await window.showDirectoryPicker({
+      mode: "readwrite",
+    })) as FileSystemDirectoryHandle | undefined;
+
+    if (dirHandle) {
+      let fss = new FileSystemStorage(dirHandle as FileSystemDirectoryHandle, dirHandle.name);
+
+      const safeMessage = await (fss.rootFolder as FileSystemFolder).getIsEmptyError();
+
+      if (safeMessage !== undefined) {
+        this.setState({
+          errorMessage: "You can only create new projects in empty folders.\r\n\r\n" + safeMessage,
+          newProjectName: this.state.newProjectName,
+          newProjectPath: undefined,
+          newProjectFolder: undefined,
+          newProjectFolderTitle: undefined,
+          newProjectShortName: this.state.newProjectShortName,
+          newProjectCreator: this.state.newProjectCreator,
+          newProjectDescription: this.state.newProjectDescription,
+          newProjectTrack: this.state.newProjectTrack,
+        });
+        return;
+      }
+
+      const newState = {
+        errorMessage: undefined,
+        newProjectFolder: fss.rootFolder,
+        newProjectName: this.state.newProjectName,
+        newProjectFolderTitle: dirHandle.name,
+        newProjectPath: undefined,
+        newProjectShortName: this.state.newProjectShortName,
+        newProjectCreator: this.state.newProjectCreator,
+        newProjectDescription: this.state.newProjectDescription,
+        newProjectTrack: this.state.newProjectTrack,
+      };
+
+      this.setState(newState);
+      this._updateSeed(newState);
+    }
+  }
+
   render() {
     const additionalDialogButtons = [];
 
-    if (AppServiceProxy.hasAppServiceOrDebug) {
+    additionalDialogButtons.push(
+      <div key="newFolderLabel" className="nepro-newFolder">
+        Store project at:
+      </div>
+    );
+
+    if (AppServiceProxy.hasAppService) {
       let path = this.state.newProjectPath;
 
       if (path === undefined) {
@@ -212,12 +311,6 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
       }
 
       additionalDialogButtons.push(
-        <div key="newFolderLabel" className="nepro-newFolder">
-          Store project at:
-        </div>
-      );
-
-      additionalDialogButtons.push(
         <div className="nepro-newPath" key="newPath">
           <div className="nepro-path">{path}</div>
           <Button
@@ -227,6 +320,62 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
             icon={<LocalFolderLabel isCompact={true} />}
             iconPosition="before"
           />
+        </div>
+      );
+    } else {
+      const accessoryToolbar = [];
+
+      let icon = faWindowRestore;
+
+      switch (WebUtilities.getBrowserType()) {
+        case BrowserType.chrome:
+          icon = faChrome;
+          break;
+        case BrowserType.firefox:
+          icon = faFirefoxBrowser;
+          break;
+        case BrowserType.safari:
+          icon = faSafari;
+          break;
+        case BrowserType.edgeChrome:
+          icon = faEdge;
+          break;
+      }
+
+      accessoryToolbar.push({
+        icon: (
+          <CustomSelectableLabel
+            icon={<FontAwesomeIcon icon={icon} className="fa-lg" />}
+            theme={this.props.theme}
+            text={"Temporary browser storage"}
+            isSelected={!this.state.newProjectFolder}
+            isCompact={false}
+          />
+        ),
+        key: "close",
+        onClick: this._useBrowserStorage,
+        title: "Use browser storage",
+      });
+
+      accessoryToolbar.push({
+        icon: (
+          <CustomSelectableLabel
+            icon={<FontAwesomeIcon icon={faComputer} className="fa-lg" />}
+            isSelected={this.state.newProjectFolder !== undefined}
+            text={this.state.newProjectPath ? this.state.newProjectPath + " folder on device" : "Use device storage"}
+            theme={this.props.theme}
+            isCompact={false}
+          />
+        ),
+        key: "close",
+        onClick: this._useLocalStorage,
+        title: "Use local storage",
+      });
+
+      additionalDialogButtons.push(
+        <div className="nepro-browserOptions" key="newPath">
+          <Toolbar aria-label="Form accesory toolbar overflow menu" items={accessoryToolbar} />
+          <div className="nepro-errorMessage">{this.state.errorMessage}</div>
         </div>
       );
     }

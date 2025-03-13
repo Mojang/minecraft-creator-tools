@@ -20,7 +20,8 @@ export default interface IFormDefinition {
   description?: string;
   dataVersion?: string;
   fields: IField[];
-  source?: IFormDefinition;
+  generated_doNotEdit?: IFormDefinition;
+  generatedFromSchema_doNotEdit?: IFormDefinition;
   note?: string;
   note2?: string;
   note3?: string;
@@ -28,6 +29,9 @@ export default interface IFormDefinition {
   tags?: string[];
   restrictions?: IFormDependency[];
   isDeprecated?: boolean;
+  isInternal?: boolean;
+  isExperimental?: boolean;
+  requiredExperiment?: string;
   scalarFieldUpgradeName?: string;
   samples?: { [path: string]: IFormSample[] };
   customField?: IField;

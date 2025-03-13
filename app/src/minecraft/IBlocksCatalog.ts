@@ -7,5 +7,5 @@ export interface IBlocksCatalogResource {
 
 export interface IBlockResource {
   sound: string;
-  textures: string;
+  textures: string | { [side: string]: string };
 }

@@ -250,5 +250,6 @@
       }
     ]
   },
-  "title": "Display Name"
+  "title": "Display Name",
+  "id": "minecraft:display_name"
 }

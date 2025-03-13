@@ -1,15 +1,5 @@
 {
   "url": "https://github.com/Mojang/bedrock-samples/archive/43ca2795c201b6fff53f38597c4d01f6c4593e1a.zip",
   "ignoreFirstFolder": true,
-  "exclude": [
-    "documentation/",
-    "scripts/",
-    "ui/",
-    "gui/",
-    "persona_thumbnails/",
-    "trading/",
-    "pack_icon.png",
-    ".github",
-    "manifest.json"
-  ]
+  "exclude": ["documentation/", "scripts/", "gui/", "persona_thumbnails/", "pack_icon.png", ".github", "manifest.json"]
 }

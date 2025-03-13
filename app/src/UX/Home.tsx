@@ -70,7 +70,6 @@ interface IHomeProps extends IAppProps {
   onNewProjectSelected?: (
     newProjectSeed: IProjectSeed,
     newProjectType: NewProjectTemplateType,
-    path?: string,
     additionalFilePath?: string,
     additionalFile?: File,
     editorStartMode?: ProjectEditorMode,
@@ -379,7 +378,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           name: fileName,
         },
         NewProjectTemplateType.empty,
-        undefined,
         path,
         file,
         editorStartMode,
@@ -1332,7 +1330,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             </h1>
             <div className="home-header-sublink">
               <a
-                href={constants.homeUrl + "/docs/"}
+                href={"https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview/"}
                 className="home-header-docsLink"
                 target="_blank"
                 rel="noreferrer noopener"
@@ -1401,7 +1399,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               {storageMessage}
               {storageAction}
               <a
-                href={constants.homeUrl + "/docs/"}
+                href={"https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview/"}
                 className="home-header-docsLink"
                 target="_blank"
                 rel="noreferrer noopener"

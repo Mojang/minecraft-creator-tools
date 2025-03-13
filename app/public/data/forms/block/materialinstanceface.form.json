@@ -103,6 +103,7 @@
       "title": "Render_method",
       "description": "The render method to use.",
       "dataType": 2,
+      "mustMatchChoices": true,
       "choices": [
         {
           "id": "opaque",

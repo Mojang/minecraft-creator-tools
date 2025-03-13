@@ -5,7 +5,14 @@ import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import { IJsonUIScreen } from "./IJsonUIScreen";
+import { IJsonUIControl, IJsonUIScreen } from "./IJsonUIScreen";
+import Project from "../app/Project";
+import ProjectItem from "../app/ProjectItem";
+import IFolder from "../storage/IFolder";
+import { ProjectItemType } from "../app/IProjectItemData";
+import Utilities from "../core/Utilities";
+import Database from "./Database";
+import TextureDefinition from "./TextureDefinition";
 
 export default class JsonUIResourceDefinition {
   public jsonUIScreen?: IJsonUIScreen;
@@ -74,6 +81,60 @@ export default class JsonUIResourceDefinition {
     this._file.setContent(defString);
   }
 
+  getControlRefs() {
+    const namespaceId = this.namespaceId;
+    const jsonUITextureRefs: string[] = [];
+
+    if (namespaceId && this.jsonUIScreen) {
+      for (const jsonControlId in this.jsonUIScreen) {
+        const jsonControl = this.jsonUIScreen[jsonControlId] as IJsonUIControl;
+
+        if (jsonControlId !== "namespace" && jsonControl && jsonControl.texture) {
+          if (!jsonUITextureRefs.includes(jsonControlId)) {
+            jsonUITextureRefs.push(jsonControlId);
+          }
+        }
+      }
+    }
+
+    return jsonUITextureRefs;
+  }
+
+  getTexturePaths() {
+    const texturePaths: string[] = [];
+
+    if (this.jsonUIScreen) {
+      this.addTexturesFromArrayOfKeyPaths([this.jsonUIScreen], texturePaths);
+    }
+
+    return texturePaths;
+  }
+
+  addTexturesFromArrayOfKeyPaths(controlSets: { [name: string]: IJsonUIControl | string }[], texturePaths: string[]) {
+    for (const controlSet of controlSets) {
+      for (const key in controlSet) {
+        const control = controlSet[key];
+
+        if (key !== "namespace" && key !== "controls") {
+          if (typeof control === "string") {
+            texturePaths.push(control);
+          } else {
+            if (control.texture) {
+              const tex = TextureDefinition.canonicalizeTexturePath(control.texture);
+
+              if (tex) {
+                texturePaths.push(tex);
+              }
+            }
+            if (control.controls) {
+              this.addTexturesFromArrayOfKeyPaths(control.controls, texturePaths);
+            }
+          }
+        }
+      }
+    }
+  }
+
   async load() {
     if (this._isLoaded) {
       return;
@@ -103,5 +164,74 @@ export default class JsonUIResourceDefinition {
     this._isLoaded = true;
 
     this._onLoaded.dispatch(this, this);
+  }
+
+  getPackRootFolder() {
+    let packRootFolder = undefined;
+    if (this.file && this.file.parentFolder) {
+      let parentFolder = this.file.parentFolder;
+
+      packRootFolder = StorageUtilities.getParentOfParentFolderNamed("ui", parentFolder);
+    }
+
+    return packRootFolder;
+  }
+
+  getRelativePath(file: IFile, packRootFolder: IFolder) {
+    let relativePath = file.getFolderRelativePath(packRootFolder);
+
+    if (relativePath) {
+      const lastPeriod = relativePath?.lastIndexOf(".");
+      if (lastPeriod >= 0) {
+        relativePath = relativePath?.substring(0, lastPeriod).toLowerCase();
+      }
+
+      relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
+    }
+
+    return relativePath;
+  }
+
+  async addChildItems(project: Project, item: ProjectItem) {
+    const itemsCopy = project.getItemsCopy();
+
+    let packRootFolder = this.getPackRootFolder();
+
+    let textureList = this.getTexturePaths();
+
+    if (textureList.length > 0) {
+      for (const candItem of itemsCopy) {
+        if (
+          (candItem.itemType === ProjectItemType.texture || candItem.itemType === ProjectItemType.uiTexture) &&
+          packRootFolder &&
+          textureList
+        ) {
+          await candItem.ensureStorage();
+
+          if (candItem.file) {
+            let relativePath = TextureDefinition.canonicalizeTexturePath(
+              this.getRelativePath(candItem.file, packRootFolder)
+            );
+
+            if (relativePath) {
+              if (textureList && textureList.includes(relativePath)) {
+                item.addChildItem(candItem);
+
+                textureList = Utilities.removeItemInArray(relativePath, textureList);
+              }
+            }
+          }
+        }
+      }
+
+      if (textureList) {
+        for (const texturePath of textureList) {
+          if (!texturePath.startsWith("$")) {
+            const isVanilla = await Database.isVanillaToken(texturePath);
+            item.addUnfulfilledRelationship(texturePath, ProjectItemType.texture, isVanilla);
+          }
+        }
+      }
+    }
   }
 }

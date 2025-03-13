@@ -707,11 +707,19 @@
       }
     },
     {
-      "id": "ignore_visibilty",
-      "title": "Ignore Visibilty",
+      "id": "ignore_visibility",
+      "title": "Ignore Visibility",
       "description": "Whether or not to ignore direct line of sight while this entity is running away from other specified entities.",
       "defaultValue": false,
-      "dataType": 1
+      "dataType": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/phantom.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.avoid_mob_type/",
+            "content": true
+          }
+        ]
+      }
     },
     {
       "id": "max_dist",
@@ -932,19 +940,6 @@
           {
             "path": "/minecraft:entity/components/minecraft:behavior.avoid_mob_type/",
             "content": 3
-          }
-        ]
-      }
-    },
-    {
-      "id": "ignore_visibility",
-      "title": "Ignore Visibility",
-      "dataType": 2,
-      "samples": {
-        "/vanilla/behavior_pack/entities/phantom.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:behavior.avoid_mob_type/",
-            "content": true
           }
         ]
       }

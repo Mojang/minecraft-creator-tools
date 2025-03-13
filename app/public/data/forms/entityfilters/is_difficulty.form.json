@@ -57,7 +57,15 @@
           "title": "Not",
           "description": "Test for inequality."
         }
-      ]
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/villager_v2.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:damage_sensor/triggers/0/on_damage/filters/1/",
+            "content": "!="
+          }
+        ]
+      }
     },
     {
       "id": "subject",
@@ -125,7 +133,64 @@
           "id": "peaceful",
           "title": "Peaceful"
         }
-      ]
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/arrow.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence/0/filters/",
+            "content": "hard"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/bee.json": [
+          {
+            "path": "/minecraft:entity/events/attacked/sequence/1/filters/",
+            "content": "easy"
+          },
+          {
+            "path": "/minecraft:entity/events/attacked/sequence/2/filters/",
+            "content": "normal"
+          },
+          {
+            "path": "/minecraft:entity/events/attacked/sequence/3/filters/",
+            "content": "hard"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cave_spider.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:become_hostile/sequence/1/filters/",
+            "content": "easy"
+          },
+          {
+            "path": "/minecraft:entity/events/minecraft:become_hostile/sequence/2/filters/",
+            "content": "normal"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/villager_v2.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:damage_sensor/triggers/0/on_damage/filters/1/",
+            "content": "peaceful"
+          }
+        ]
+      }
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/arrow.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence/0/filters/",
+            "content": "is_difficulty"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/bee.json": [
+          {
+            "path": "/minecraft:entity/events/attacked/sequence/1/filters/",
+            "content": "is_difficulty"
+          }
+        ]
+      }
     }
   ],
   "description": "Tests the current difficulty level of the game.",
@@ -144,71 +209,117 @@
     "/vanilla/behavior_pack/entities/arrow.json": [
       {
         "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence/0/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"hard\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "hard"
+        }
       }
     ],
     "/vanilla/behavior_pack/entities/bee.json": [
       {
         "path": "/minecraft:entity/events/attacked/sequence/1/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"easy\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "easy"
+        }
       },
       {
         "path": "/minecraft:entity/events/attacked/sequence/2/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"normal\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "normal"
+        }
       },
       {
         "path": "/minecraft:entity/events/attacked/sequence/3/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"hard\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "hard"
+        }
       }
     ],
     "/vanilla/behavior_pack/entities/cave_spider.json": [
       {
         "path": "/minecraft:entity/events/minecraft:become_hostile/sequence/1/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"easy\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "easy"
+        }
       },
       {
         "path": "/minecraft:entity/events/minecraft:become_hostile/sequence/2/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"normal\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "normal"
+        }
       },
       {
         "path": "/minecraft:entity/events/minecraft:become_hostile/sequence/3/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"hard\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "hard"
+        }
       },
       {
         "path": "/minecraft:entity/events/minecraft:become_angry/sequence/1/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"easy\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "easy"
+        }
       },
       {
         "path": "/minecraft:entity/events/minecraft:become_angry/sequence/2/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"normal\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "normal"
+        }
       },
       {
         "path": "/minecraft:entity/events/minecraft:become_angry/sequence/3/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"hard\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "hard"
+        }
       }
     ],
     "/vanilla/behavior_pack/entities/villager_v2.json": [
       {
         "path": "/minecraft:entity/components/minecraft:damage_sensor/triggers/0/on_damage/filters/1/",
-        "content": "{\"test\":\"is_difficulty\",\"operator\":\"!=\",\"value\":\"peaceful\"}"
+        "content": {
+          "test": "is_difficulty",
+          "operator": "!=",
+          "value": "peaceful"
+        }
       },
       {
         "path": "/minecraft:entity/events/become_zombie/sequence/0/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"normal\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "normal"
+        }
       },
       {
         "path": "/minecraft:entity/events/become_zombie/sequence/1/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"hard\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "hard"
+        }
       }
     ],
     "/vanilla/behavior_pack/entities/villager.json": [
       {
         "path": "/minecraft:entity/events/become_zombie/sequence/0/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"normal\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "normal"
+        }
       },
       {
         "path": "/minecraft:entity/events/become_zombie/sequence/1/filters/",
-        "content": "{\"test\":\"is_difficulty\",\"value\":\"hard\"}"
+        "content": {
+          "test": "is_difficulty",
+          "value": "hard"
+        }
       }
     ]
   }

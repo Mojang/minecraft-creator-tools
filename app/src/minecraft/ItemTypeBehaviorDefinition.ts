@@ -108,7 +108,7 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
     if (!this._managed[id]) {
       const comp = this._data.components[id];
       if (comp) {
-        this._managed[id] = new ManagedComponent(id, comp);
+        this._managed[id] = new ManagedComponent(this._data.components, id, comp);
       }
     }
 
@@ -152,17 +152,26 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
       this.wrapper.format_version = versionStr;
     }
   }
-  addComponent(id: string, component: any) {
-    this._ensureBehaviorPackDataInitialized();
 
-    const mc = new ManagedComponent(id, component);
+  addComponent(
+    id: string,
+    componentOrData: ManagedComponent | IComponent | string | string[] | boolean | number[] | number | undefined
+  ) {
+    this._ensureBehaviorPackDataInitialized();
 
     const bpData = this._data as IItemTypeBehaviorPack;
 
-    bpData.components[id] = component;
+    const mc =
+      componentOrData instanceof ManagedComponent
+        ? componentOrData
+        : new ManagedComponent(bpData.components, id, componentOrData);
+
+    bpData.components[id] = mc.getData();
     this._managed[id] = mc;
 
     this._onComponentAdded.dispatch(this, mc);
+
+    return mc;
   }
 
   removeComponent(id: string) {
@@ -170,7 +179,9 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
       return;
     }
 
-    const newBehaviorPacks: { [name: string]: IComponent | string | number | undefined } = {};
+    const newBehaviorPacks: {
+      [name: string]: IComponent | string | string[] | boolean | number[] | number | undefined;
+    } = {};
     const newManagedComponents: { [name: string]: IManagedComponent | undefined } = {};
 
     for (const name in this._data.components) {

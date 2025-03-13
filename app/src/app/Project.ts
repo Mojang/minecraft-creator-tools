@@ -40,6 +40,8 @@ import ProjectDeploySync from "./ProjectDeploySync";
 import { MinecraftTrack } from "./ICartoData";
 import ProjectItemRelations from "./ProjectItemRelations";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
+import ISimpleReference from "../core/ISimpleReference";
+import ProjectLookupUtilities from "./ProjectLookupUtilities";
 
 export enum ProjectAutoDeploymentMode {
   deployOnSave = 0,
@@ -65,6 +67,7 @@ export enum FolderContext {
   metaData = 10,
   libFolder = 11,
   persona = 12,
+  mctoolsWorkingFolder = 13,
 }
 
 export const ProjectTargetStrings = [
@@ -110,7 +113,7 @@ export const remappedMinecraftScriptModules: { [oldModuleName: string]: string }
 
 export default class Project {
   #data: IProjectData;
-  #file: IFile | null;
+  #preferencesFile: IFile | null;
   #carto: Carto;
   loc: LocManager;
   #errorState = ProjectErrorState.noError;
@@ -121,6 +124,7 @@ export default class Project {
   public differencesFromGitHub?: DifferenceSet;
 
   #folderStructureLoaded: boolean = false;
+  #infoSetNeedsUpdating: boolean = false;
 
   #mainDeployFolder: IFolder | null = null;
   #projectFolder: IFolder | null;
@@ -215,8 +219,8 @@ export default class Project {
     return this.#errorState;
   }
 
-  public get file() {
-    return this.#file;
+  public get preferencesFile() {
+    return this.#preferencesFile;
   }
 
   public get accessoryFolders() {
@@ -318,8 +322,8 @@ export default class Project {
       return StorageUtilities.canonicalizePath(this.#projectFolder.fullPath);
     }
 
-    if (this.#file) {
-      return StorageUtilities.canonicalizePath(this.#file.name);
+    if (this.#preferencesFile) {
+      return StorageUtilities.canonicalizePath(this.#preferencesFile.name);
     }
 
     return this.title;
@@ -338,8 +342,8 @@ export default class Project {
       return StorageUtilities.getLeafName(this.#projectFolder.fullPath);
     }
 
-    if (this.#file) {
-      return StorageUtilities.getBaseFromName(this.#file.name);
+    if (this.#preferencesFile) {
+      return StorageUtilities.getBaseFromName(this.#preferencesFile.name);
     }
 
     return this.title;
@@ -387,6 +391,10 @@ export default class Project {
 
   public get editorWorldSettings() {
     return this.#data.editorWorldSettings;
+  }
+
+  public async getLookupChoices(lookupId: string): Promise<ISimpleReference[] | undefined> {
+    return await ProjectLookupUtilities.getLookup(this, lookupId);
   }
 
   public ensureWorldSettings() {
@@ -491,6 +499,14 @@ export default class Project {
 
   public get onItemRemoved() {
     return this._onItemRemoved.asEvent();
+  }
+
+  get projectFolderTitle(): string | undefined {
+    return this.#data.projectFolderTitle;
+  }
+
+  set projectFolderTitle(newTitle: string | undefined) {
+    this.#data.projectFolderTitle = newTitle;
   }
 
   get projectFolder(): IFolder | null {
@@ -735,6 +751,7 @@ export default class Project {
     }
 
     this.#data.items = newDataArr;
+    this.#infoSetNeedsUpdating = true;
 
     this._onItemRemoved.dispatch(this, item);
   }
@@ -744,12 +761,12 @@ export default class Project {
   }
 
   get modified(): Date | null {
-    if (this.#file != null && this.#file.latestModified != null) {
-      if (this.contentsModified != null && this.contentsModified > this.#file.latestModified) {
+    if (this.#preferencesFile != null && this.#preferencesFile.latestModified != null) {
+      if (this.contentsModified != null && this.contentsModified > this.#preferencesFile.latestModified) {
         return this.contentsModified;
       }
 
-      return this.#file.latestModified;
+      return this.#preferencesFile.latestModified;
     } else {
       return this.contentsModified;
     }
@@ -1279,6 +1296,20 @@ export default class Project {
     }
   }
 
+  public async ensureInfoSetGenerated() {
+    const infoSet = this.infoSet;
+
+    if (infoSet.completedGeneration) {
+      return infoSet;
+    }
+
+    await infoSet.generateForProject(this.#infoSetNeedsUpdating);
+
+    this.#infoSetNeedsUpdating = false;
+
+    return infoSet;
+  }
+
   async ensureScriptInDestination() {
     const bpScriptsFolder = await this.ensureBehaviorPackScriptsFolder();
 
@@ -1376,11 +1407,11 @@ export default class Project {
     }
   }
 
-  constructor(carto: Carto, name: string, file: IFile | null) {
+  constructor(carto: Carto, name: string, preferencesFile: IFile | null) {
     this._handleDeployUpdated = this._handleDeployUpdated.bind(this);
     this._handleProjectFileContentsUpdated = this._handleProjectFileContentsUpdated.bind(this);
     this.applyUpdate = this.applyUpdate.bind(this);
-    this.ensureLoadedFromFile = this.ensureLoadedFromFile.bind(this);
+    this.ensurePreferencesAndFolderLoadedFromFile = this.ensurePreferencesAndFolderLoadedFromFile.bind(this);
     this.ensureProjectFolder = this.ensureProjectFolder.bind(this);
     this._handleProjectFolderMoved = this._handleProjectFolderMoved.bind(this);
 
@@ -1403,7 +1434,7 @@ export default class Project {
       items: [],
     };
 
-    this.#file = file;
+    this.#preferencesFile = preferencesFile;
 
     this.#projectFolder = null;
     this.#defaultBehaviorPackFolder = null;
@@ -1710,7 +1741,10 @@ export default class Project {
     source?: string,
     force?: boolean
   ) {
-    if (this.projectFolder === null || (folder.name.startsWith(".") && !folder.name.startsWith(".vscode"))) {
+    if (
+      this.projectFolder === null ||
+      (folder.name.startsWith(".") && !folder.name.startsWith(".vscode") && !folder.name.startsWith(".mct"))
+    ) {
       Log.debugAlert("Could not process folder: " + folder.storageRelativePath);
       return;
     }
@@ -1740,6 +1774,8 @@ export default class Project {
       folderContext = FolderContext.metaData;
     } else if (folderPathA.indexOf("/.vscode") >= 0) {
       folderContext = FolderContext.vscodeFolder;
+    } else if (folderPathA.indexOf("/.mct") >= 0) {
+      folderContext = FolderContext.mctoolsWorkingFolder;
     } else if (MinecraftUtilities.pathLooksLikeBehaviorPackName(folderPathA)) {
       folderContext = FolderContext.behaviorPack;
     } else if (MinecraftUtilities.pathLooksLikeResourcePackName(folderPathA)) {
@@ -1975,6 +2011,18 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 creationType,
                 candidateFile,
+                isInWorld
+              );
+            } else if (projectPath.endsWith(".mctp.json") && folderContext === FolderContext.mctoolsWorkingFolder) {
+              this.ensureItemByProjectPath(
+                projectPath,
+                ProjectItemStorageType.singleFile,
+                candidateFile.name,
+                ProjectItemType.mcToolsProjectPreferences,
+                source,
+                ProjectItemCreationType.normal,
+                candidateFile,
+                undefined,
                 isInWorld
               );
             } else if (projectPath.endsWith("tasks.json") && folderContext === FolderContext.vscodeFolder) {
@@ -2603,7 +2651,7 @@ export default class Project {
           this.#libFolder = folder;
         } else if (
           name !== "node_modules" &&
-          (name.startsWith(".vscode") || !name.startsWith(".")) &&
+          (name.startsWith(".mct") || name.startsWith(".vscode") || !name.startsWith(".")) &&
           name !== "test" &&
           (folderContext !== FolderContext.unknown || depth < 4) &&
           depth < 10
@@ -3085,41 +3133,39 @@ export default class Project {
 
     this.#itemsByProjectPath[ProjectUtilities.canonicalizeStoragePath(pi.projectPath)] = pi;
     this.#items.push(pi);
-
+    this.#infoSetNeedsUpdating = true;
     this._onItemAdded.dispatch(this, pi);
 
     return pi;
   }
 
-  async ensureLoadedFromFile() {
+  async ensurePreferencesAndFolderLoadedFromFile() {
     Log.assert(!this.#isDisposed, "PLF");
 
     if (this.#isLoaded) {
       return;
     }
 
-    if (this.#file === null) {
+    if (this.#preferencesFile === null) {
       return;
     }
 
-    await this.#file.loadContent(false);
+    await this.#preferencesFile.loadContent(false);
 
     this.#hasInferredFiles = false;
     this.#items = [];
     this.#itemsByProjectPath = {};
     this.#data.items = [];
 
-    if (Utilities.isString(this.#file.content) && this.#file.content != null) {
-      this.#data = JSON.parse(this.#file.content as string);
-
-      await this.ensureProjectFolder(true);
-    } else {
-      await this.ensureProjectFolder();
+    if (Utilities.isString(this.#preferencesFile.content) && this.#preferencesFile.content != null) {
+      this.#data = JSON.parse(this.#preferencesFile.content as string);
     }
 
-    this._onLoaded.dispatch(this, this);
+    await this.ensureProjectFolder();
 
     this.#isLoaded = true;
+
+    this._onLoaded.dispatch(this, this);
   }
 
   async ensureInflated() {
@@ -3129,7 +3175,7 @@ export default class Project {
       return;
     }
 
-    await this.ensureLoadedFromFile();
+    await this.ensurePreferencesAndFolderLoadedFromFile();
 
     this.#items = [];
     this.#itemsByProjectPath = {};
@@ -3157,8 +3203,8 @@ export default class Project {
   }
 
   async deleteThisProject() {
-    if (this.#file) {
-      await this.#file.deleteThisFile();
+    if (this.#preferencesFile) {
+      await this.#preferencesFile.deleteThisFile();
     }
 
     await this.loadFolderStructure();
@@ -3171,15 +3217,15 @@ export default class Project {
   async saveToFile() {
     Log.assert(!this.#isDisposed, "PSF");
 
-    if (this.#file === null) {
+    if (this.#preferencesFile === null) {
       return;
     }
 
     const jsonString = JSON.stringify(this.#data, null, 2);
 
-    this.#file.setContent(jsonString);
+    this.#preferencesFile.setContent(jsonString);
 
-    await this.#file.saveContent();
+    await this.#preferencesFile.saveContent();
   }
 
   private _handleDeployUpdated(message: string) {
@@ -3263,11 +3309,24 @@ export default class Project {
   setProjectFolder(newFolder: IFolder) {
     if (this.#projectFolder !== newFolder) {
       this._unapplyFromProjectFolder();
+
       this.#projectFolder = newFolder;
       this._applyToProjectFolder();
     }
 
     this.#isProjectFolderEnsured = true;
+  }
+
+  async attemptToLoadPreferences() {
+    if (!this.#preferencesFile && this.#projectFolder) {
+      const file = await this.#projectFolder.getFileFromRelativePath("/.mct/prefs.mctp.json");
+
+      if (file && (await file.exists())) {
+        this.#preferencesFile = file;
+
+        await this.ensurePreferencesAndFolderLoadedFromFile();
+      }
+    }
   }
 
   _unapplyFromProjectFolder() {
@@ -3590,6 +3649,7 @@ export default class Project {
     }
 
     let rootRelativePath = file.storageRelativePath;
+    this.#infoSetNeedsUpdating = true;
 
     if (
       this.#projectFolder.storageRelativePath.length > 0 &&

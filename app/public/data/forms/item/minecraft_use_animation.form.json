@@ -7,6 +7,7 @@
       "dataType": 2
     }
   ],
+  "scalarFieldUpgradeName": "value",
   "description": "Use_animation specifies which animation is played when the player uses the item.",
   "title": "Use Animation",
   "samples": {

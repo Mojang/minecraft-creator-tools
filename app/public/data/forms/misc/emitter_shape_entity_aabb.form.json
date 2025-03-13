@@ -1,0 +1,23 @@
+{
+  "fields": [
+    {
+      "id": "surface_only",
+      "title": "surface_only",
+      "description": "surface_only",
+      "dataType": 1
+    },
+    {
+      "id": "direction",
+      "title": "direction",
+      "description": "direction",
+      "dataType": 16,
+      "subForm": {
+        "title": "Direction",
+        "description": "Direction",
+        "fields": []
+      }
+    }
+  ],
+  "description": "Emitter Shape Entity Aabb V1.21.0 Misc",
+  "title": "Emitter Shape Entity Aabb V1.21.0 Misc"
+}

@@ -476,21 +476,49 @@
       "Texture Images Custom Texture": {
         "Count": 4
       },
-      "Texture Images Image Width": {
+      "Texture Images PNGJPG Width": {
         "Instance Count": 4,
         "Total": 320,
         "Max": 128,
         "Min": 64,
         "Average": 80
       },
-      "Texture Images Image Height": {
+      "Texture Images PNGJPG Height": {
         "Instance Count": 4,
         "Total": 256,
         "Max": 64,
         "Min": 64,
         "Average": 64
       },
-      "Texture Images Image Texels": {
+      "Texture Images PNGJPG Texels": {
+        "Instance Count": 4,
+        "Total": 20480,
+        "Max": 8192,
+        "Min": 4096,
+        "Average": 5120
+      },
+      "Texture Images PNGJPG Texture Memory": {
+        "Instance Count": 4,
+        "Total": 81920,
+        "Max": 32768,
+        "Min": 16384,
+        "Average": 20480
+      },
+      "Texture Images Width": {
+        "Instance Count": 4,
+        "Total": 320,
+        "Max": 128,
+        "Min": 64,
+        "Average": 80
+      },
+      "Texture Images Height": {
+        "Instance Count": 4,
+        "Total": 256,
+        "Max": 64,
+        "Min": 64,
+        "Average": 64
+      },
+      "Texture Images Texels": {
         "Instance Count": 4,
         "Total": 20480,
         "Max": 8192,
@@ -504,7 +532,7 @@
         "Min": 16384,
         "Average": 20480
       },
-      "Texture Images Non-Vanilla Image Texels": {
+      "Texture Images Non-Vanilla Texels": {
         "Instance Count": 4,
         "Total": 20480,
         "Max": 8192,
@@ -517,6 +545,90 @@
         "Max": 32768,
         "Min": 16384,
         "Average": 20480
+      },
+      "Texture Images Non-tied Width": {
+        "Instance Count": 2,
+        "Total": 192,
+        "Max": 128,
+        "Min": 64,
+        "Average": 96
+      },
+      "Texture Images Non-tied Height": {
+        "Instance Count": 2,
+        "Total": 128,
+        "Max": 64,
+        "Min": 64,
+        "Average": 64
+      },
+      "Texture Images Non-tied Texels": {
+        "Instance Count": 2,
+        "Total": 12288,
+        "Max": 8192,
+        "Min": 4096,
+        "Average": 6144
+      },
+      "Texture Images Non-tied Texture Memory": {
+        "Instance Count": 2,
+        "Total": 49152,
+        "Max": 32768,
+        "Min": 16384,
+        "Average": 24576
+      },
+      "Texture Images Non-tied Non-Vanilla Texels": {
+        "Instance Count": 2,
+        "Total": 12288,
+        "Max": 8192,
+        "Min": 4096,
+        "Average": 6144
+      },
+      "Texture Images Non-tied Non-Vanilla Texture Memory": {
+        "Instance Count": 2,
+        "Total": 49152,
+        "Max": 32768,
+        "Min": 16384,
+        "Average": 24576
+      },
+      "Texture Images Entity Width": {
+        "Instance Count": 2,
+        "Total": 128,
+        "Max": 64,
+        "Min": 64,
+        "Average": 64
+      },
+      "Texture Images Entity Height": {
+        "Instance Count": 2,
+        "Total": 128,
+        "Max": 64,
+        "Min": 64,
+        "Average": 64
+      },
+      "Texture Images Entity Texels": {
+        "Instance Count": 2,
+        "Total": 8192,
+        "Max": 4096,
+        "Min": 4096,
+        "Average": 4096
+      },
+      "Texture Images Entity Texture Memory": {
+        "Instance Count": 2,
+        "Total": 32768,
+        "Max": 16384,
+        "Min": 16384,
+        "Average": 16384
+      },
+      "Texture Images Entity Non-Vanilla Texels": {
+        "Instance Count": 2,
+        "Total": 8192,
+        "Max": 4096,
+        "Min": 4096,
+        "Average": 4096
+      },
+      "Texture Images Entity Non-Vanilla Texture Memory": {
+        "Instance Count": 2,
+        "Total": 32768,
+        "Max": 16384,
+        "Min": 16384,
+        "Average": 16384
       },
       "Entity Geometry Cubes": {
         "Instance Count": 3,
@@ -534,7 +646,7 @@
     },
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
-    "warningCount": 19,
+    "warningCount": 36,
     "testSuccessCount": 9,
     "testFailCount": 0,
     "errorSummary": "",
@@ -905,6 +1017,17 @@
           "title": "Textures"
         }
       },
+      "TEXTUREREF": {
+        "1": {
+          "title": "Texture References",
+          "defaultMessage": "Texture Refrences"
+        }
+      },
+      "TYPES": {
+        "1": {
+          "title": "Types"
+        }
+      },
       "TEXTUREIMAGE": {
         "1": {
           "title": "Texture Images"
@@ -970,6 +1093,24 @@
           "defaultMessage": "Level Dat Experiments"
         }
       },
+      "UNLINK": {
+        "1": {
+          "defaultMessage": "Test Unlinked item info generator completed successfully.",
+          "testCompleteSuccesses": 1
+        },
+        "191": {
+          "defaultMessage": "Audio does not have any items in this pack that are using this.",
+          "warnings": 3
+        },
+        "204": {
+          "defaultMessage": "Link to sound catalog is not found in this pack",
+          "warnings": 14
+        },
+        "205": {
+          "defaultMessage": "Link to vanilla Model item; avoid if possible",
+          "recommendations": 6
+        }
+      },
       "UNKFILE": {
         "1": {
           "defaultMessage": "Test Unknown files completed successfully.",
@@ -991,12 +1132,6 @@
       "WORLD": {
         "1": {
           "defaultMessage": "Test World Validation completed successfully.",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "UNLINK": {
-        "1": {
-          "defaultMessage": "Test Unlinked item info generator completed successfully.",
           "testCompleteSuccesses": 1
         }
       }
@@ -1652,69 +1787,7 @@
       "gId": "PACK",
       "gIx": 3,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": {
-        "format_version": 2,
-        "header": {
-          "name": "pack.name",
-          "description": "pack.description",
-          "uuid": "9ec8af93-4b38-429f-a4bd-7e277a50d238",
-          "version": [
-            1,
-            0,
-            0
-          ],
-          "min_engine_version": [
-            1,
-            20,
-            0
-          ]
-        },
-        "metadata": {
-          "product_type": "addon"
-        },
-        "modules": [
-          {
-            "description": "Behavior",
-            "version": [
-              1,
-              0,
-              0
-            ],
-            "uuid": "2d59a3f6-d348-496d-a0c7-6d59ddb05c5e",
-            "type": "data"
-          },
-          {
-            "description": "Script resources",
-            "language": "javascript",
-            "type": "script",
-            "uuid": "f43bb32a-c814-45e4-a428-3f4f1f59b2a3",
-            "version": [
-              1,
-              0,
-              0
-            ],
-            "entry": "scripts/main.js"
-          }
-        ],
-        "dependencies": [
-          {
-            "uuid": "9d6dad89-6e29-46ba-83d5-490a4901caef",
-            "version": [
-              1,
-              0,
-              0
-            ]
-          },
-          {
-            "module_name": "@minecraft/server",
-            "version": "1.5.0"
-          },
-          {
-            "module_name": "@minecraft/server-ui",
-            "version": "1.1.0"
-          }
-        ]
-      }
+      "d": "{\"format_version\":2,\"header\":{\"name\":\"pack.name\",\"description\":\"pack.description\",\"uuid\":\"9ec8af93-4b38-429f-a4bd-7e277a50d238\",\"version\":[1,0,0],\"min_engine_version\":[1,20,0]},\"metadata\":{\"product_type\":\"addon\"},\"modules\":[{\"description\":\"Behavior\",\"version\":[1,0,0],\"uuid\":\"2d59a3f6-d348-496d-a0c7-6d59ddb05c5e\",\"type\":\"data\"},{\"description\":\"Script resources\",\"language\":\"javascript\",\"type\":\"script\",\"uuid\":\"f43bb32a-c814-45e4-a428-3f4f1f59b2a3\",\"version\":[1,0,0],\"entry\":\"scripts/main.js\"}],\"dependencies\":[{\"uuid\":\"9d6dad89-6e29-46ba-83d5-490a4901caef\",\"version\":[1,0,0]},{\"module_name\":\"@minecraft/server\",\"version\":\"1.5.0\"},{\"module_name\":\"@minecraft/server-ui\",\"version\":\"1.1.0\"}]}"
     },
     {
       "iTp": 2,
@@ -1767,50 +1840,7 @@
       "gId": "PACK",
       "gIx": 13,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
-      "d": {
-        "format_version": 2,
-        "header": {
-          "name": "pack.name",
-          "description": "pack.description",
-          "uuid": "9d6dad89-6e29-46ba-83d5-490a4901caef",
-          "version": [
-            1,
-            0,
-            0
-          ],
-          "pack_scope": "world",
-          "min_engine_version": [
-            1,
-            20,
-            0
-          ]
-        },
-        "modules": [
-          {
-            "description": "Add-on Pack Resources",
-            "type": "resources",
-            "uuid": "523d72d2-3ba9-498a-bc63-8beb5fe268cb",
-            "version": [
-              1,
-              0,
-              0
-            ]
-          }
-        ],
-        "dependencies": [
-          {
-            "uuid": "9ec8af93-4b38-429f-a4bd-7e277a50d238",
-            "version": [
-              1,
-              0,
-              0
-            ]
-          }
-        ],
-        "metadata": {
-          "product_type": "addon"
-        }
-      }
+      "d": "{\"format_version\":2,\"header\":{\"name\":\"pack.name\",\"description\":\"pack.description\",\"uuid\":\"9d6dad89-6e29-46ba-83d5-490a4901caef\",\"version\":[1,0,0],\"pack_scope\":\"world\",\"min_engine_version\":[1,20,0]},\"modules\":[{\"description\":\"Add-on Pack Resources\",\"type\":\"resources\",\"uuid\":\"523d72d2-3ba9-498a-bc63-8beb5fe268cb\",\"version\":[1,0,0]}],\"dependencies\":[{\"uuid\":\"9ec8af93-4b38-429f-a4bd-7e277a50d238\",\"version\":[1,0,0]}],\"metadata\":{\"product_type\":\"addon\"}}"
     },
     {
       "iTp": 2,
@@ -2291,27 +2321,65 @@
     },
     {
       "iTp": 7,
+      "gId": "TEXTUREREF",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "TYPES",
+      "gIx": 1
+    },
+    {
+      "iTp": 7,
       "gId": "TEXTUREIMAGE",
       "gIx": 1,
       "fs": {
         "Custom Texture": {
           "Count": 4
         },
-        "Image Width": {
+        "PNGJPG Width": {
           "Instance Count": 4,
           "Total": 320,
           "Max": 128,
           "Min": 64,
           "Average": 80
         },
-        "Image Height": {
+        "PNGJPG Height": {
           "Instance Count": 4,
           "Total": 256,
           "Max": 64,
           "Min": 64,
           "Average": 64
         },
-        "Image Texels": {
+        "PNGJPG Texels": {
+          "Instance Count": 4,
+          "Total": 20480,
+          "Max": 8192,
+          "Min": 4096,
+          "Average": 5120
+        },
+        "PNGJPG Texture Memory": {
+          "Instance Count": 4,
+          "Total": 81920,
+          "Max": 32768,
+          "Min": 16384,
+          "Average": 20480
+        },
+        "Width": {
+          "Instance Count": 4,
+          "Total": 320,
+          "Max": 128,
+          "Min": 64,
+          "Average": 80
+        },
+        "Height": {
+          "Instance Count": 4,
+          "Total": 256,
+          "Max": 64,
+          "Min": 64,
+          "Average": 64
+        },
+        "Texels": {
           "Instance Count": 4,
           "Total": 20480,
           "Max": 8192,
@@ -2325,7 +2393,7 @@
           "Min": 16384,
           "Average": 20480
         },
-        "Non-Vanilla Image Texels": {
+        "Non-Vanilla Texels": {
           "Instance Count": 4,
           "Total": 20480,
           "Max": 8192,
@@ -2338,6 +2406,90 @@
           "Max": 32768,
           "Min": 16384,
           "Average": 20480
+        },
+        "Non-tied Width": {
+          "Instance Count": 2,
+          "Total": 192,
+          "Max": 128,
+          "Min": 64,
+          "Average": 96
+        },
+        "Non-tied Height": {
+          "Instance Count": 2,
+          "Total": 128,
+          "Max": 64,
+          "Min": 64,
+          "Average": 64
+        },
+        "Non-tied Texels": {
+          "Instance Count": 2,
+          "Total": 12288,
+          "Max": 8192,
+          "Min": 4096,
+          "Average": 6144
+        },
+        "Non-tied Texture Memory": {
+          "Instance Count": 2,
+          "Total": 49152,
+          "Max": 32768,
+          "Min": 16384,
+          "Average": 24576
+        },
+        "Non-tied Non-Vanilla Texels": {
+          "Instance Count": 2,
+          "Total": 12288,
+          "Max": 8192,
+          "Min": 4096,
+          "Average": 6144
+        },
+        "Non-tied Non-Vanilla Texture Memory": {
+          "Instance Count": 2,
+          "Total": 49152,
+          "Max": 32768,
+          "Min": 16384,
+          "Average": 24576
+        },
+        "Entity Width": {
+          "Instance Count": 2,
+          "Total": 128,
+          "Max": 64,
+          "Min": 64,
+          "Average": 64
+        },
+        "Entity Height": {
+          "Instance Count": 2,
+          "Total": 128,
+          "Max": 64,
+          "Min": 64,
+          "Average": 64
+        },
+        "Entity Texels": {
+          "Instance Count": 2,
+          "Total": 8192,
+          "Max": 4096,
+          "Min": 4096,
+          "Average": 4096
+        },
+        "Entity Texture Memory": {
+          "Instance Count": 2,
+          "Total": 32768,
+          "Max": 16384,
+          "Min": 16384,
+          "Average": 16384
+        },
+        "Entity Non-Vanilla Texels": {
+          "Instance Count": 2,
+          "Total": 8192,
+          "Max": 4096,
+          "Min": 4096,
+          "Average": 4096
+        },
+        "Entity Non-Vanilla Texture Memory": {
+          "Instance Count": 2,
+          "Total": 32768,
+          "Max": 16384,
+          "Min": 16384,
+          "Average": 16384
         }
       }
     },
@@ -2504,6 +2656,64 @@
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
     },
     {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "ambientsounds.co2_notexists"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "ambientsounds.co2_extranotexists"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "individual_event_sound_that_does_not_exist"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "m": "Link to entity type is not found in this pack",
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "aop_mobs:mob_that_does_not_exist"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "ambientsounds.co2_notexists"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "ambientsounds.co2_extranotexists"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "individual_event_sound_that_does_not_exist"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "m": "Link to entity type is not found in this pack",
+      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
+      "d": "aop_mobs:mob_that_does_not_exist"
+    },
+    {
       "iTp": 2,
       "gId": "JSON",
       "gIx": 1128,
@@ -2520,6 +2730,36 @@
       "gId": "JSON",
       "gIx": 1128,
       "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "m": "Link to texture is not found in this pack",
+      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
+      "d": "textures/aop/moremobs/biceson_filethatdoesnotexist"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "m": "Link to texture is not found in this pack",
+      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
+      "d": "textures/aop/moremobs/biceson_filethatdoesnotexist"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
+      "d": "geometry.sheep.sheared.v1.8"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
+      "d": "geometry.sheep.sheared.v1.8"
     },
     {
       "iTp": 4,
@@ -2631,6 +2871,88 @@
       "m": "anyOf /particle_effect/components/minecraft:particle_appearance_tinting/color must match a schema in anyOf",
       "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
       "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n   "
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "m": "Link to vanilla Texture item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "d": "textures/particle/particles"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "m": "Link to vanilla Texture item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "d": "textures/particle/particles"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "m": "Link to vanilla Texture item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
+      "d": "textures/particle/particles"
+    },
+    {
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "m": "Link to vanilla Texture item; avoid if possible",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
+      "d": "textures/particle/particles"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json",
+      "d": "ambientsounds.cofoo_doesnotexist"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json",
+      "d": "ambientsounds.cofoo_doesnotexist"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "m": "Link to audio is not found in this pack",
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json",
+      "d": "sounds/ambientsounds/co_doesnotexist"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 204,
+      "m": "Link to audio is not found in this pack",
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json",
+      "d": "sounds/ambientsounds/co_doesnotexist"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 191,
+      "p": "/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 191,
+      "m": "Texture does not have any items in this pack that are using this.",
+      "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 191,
+      "m": "Texture does not have any items in this pack that are using this.",
+      "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png"
     },
     {
       "iTp": 0,

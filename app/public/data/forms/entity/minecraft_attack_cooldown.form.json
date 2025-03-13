@@ -12,7 +12,6 @@
       "id": "attack_cooldown_time",
       "description": "Amount of time in seconds for the cooldown. Can be specified as a number or a pair of numbers (min and max).",
       "dataType": 19,
-      "minValue": 0,
       "maxValue": 1,
       "title": "Attack Cooldown Time"
     }

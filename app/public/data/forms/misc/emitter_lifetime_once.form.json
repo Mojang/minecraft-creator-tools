@@ -1,0 +1,17 @@
+{
+  "fields": [
+    {
+      "id": "active_time",
+      "title": "active_time",
+      "description": "active_time",
+      "dataType": 16,
+      "subForm": {
+        "title": "Active Time",
+        "description": "Active Time",
+        "fields": []
+      }
+    }
+  ],
+  "description": "Emitter Lifetime Once V1.21.0 Misc",
+  "title": "Emitter Lifetime Once V1.21.0 Misc"
+}

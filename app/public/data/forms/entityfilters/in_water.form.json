@@ -57,7 +57,29 @@
           "title": "Not",
           "description": "Test for inequality."
         }
-      ]
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/axolotl.json": [
+          {
+            "path": "/minecraft:entity/component_groups/axolotl_in_water/minecraft:environment_sensor/triggers/0/filters/",
+            "content": "!="
+          },
+          {
+            "path": "/minecraft:entity/component_groups/axolotl_on_land_in_rain/minecraft:environment_sensor/triggers/1/filters/",
+            "content": "=="
+          },
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.play_dead/filters/",
+            "content": "=="
+          }
+        ],
+        "/vanilla/behavior_pack/entities/dolphin.json": [
+          {
+            "path": "/minecraft:entity/component_groups/dolphin_swimming_navigation/minecraft:environment_sensor/triggers/0/filters/all_of/1/",
+            "content": "!="
+          }
+        ]
+      }
     },
     {
       "id": "subject",
@@ -101,14 +123,61 @@
           "title": "Target",
           "description": "The caller's current target."
         }
-      ]
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/axolotl.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.nearest_attackable_target/entity_types/0/filters/all_of/0/",
+            "content": "other"
+          },
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.nearest_attackable_target/entity_types/1/filters/all_of/0/",
+            "content": "other"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/pillager.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:melee_attack/minecraft:environment_sensor/triggers/filters/",
+            "content": "self"
+          }
+        ]
+      }
     },
     {
       "id": "value",
       "title": "Value",
       "description": "(Optional) true or false.",
       "defaultValue": true,
-      "dataType": 1
+      "dataType": 1,
+      "samples": {
+        "/vanilla/behavior_pack/entities/axolotl.json": [
+          {
+            "path": "/minecraft:entity/component_groups/axolotl_in_water/minecraft:environment_sensor/triggers/0/filters/",
+            "content": true
+          },
+          {
+            "path": "/minecraft:entity/component_groups/axolotl_on_land_in_rain/minecraft:environment_sensor/triggers/1/filters/",
+            "content": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/axolotl.json": [
+          {
+            "path": "/minecraft:entity/component_groups/axolotl_in_water/minecraft:environment_sensor/triggers/0/filters/",
+            "content": "in_water"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/axolotl_on_land_in_rain/minecraft:environment_sensor/triggers/1/filters/",
+            "content": "in_water"
+          }
+        ]
+      }
     }
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
@@ -131,39 +200,72 @@
     "/vanilla/behavior_pack/entities/axolotl.json": [
       {
         "path": "/minecraft:entity/component_groups/axolotl_in_water/minecraft:environment_sensor/triggers/0/filters/",
-        "content": "{\"test\":\"in_water\",\"operator\":\"!=\",\"value\":true}"
+        "content": {
+          "test": "in_water",
+          "operator": "!=",
+          "value": true
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/axolotl_on_land_in_rain/minecraft:environment_sensor/triggers/1/filters/",
-        "content": "{\"test\":\"in_water\",\"operator\":\"==\",\"value\":true}"
+        "content": {
+          "test": "in_water",
+          "operator": "==",
+          "value": true
+        }
       },
       {
         "path": "/minecraft:entity/components/minecraft:behavior.play_dead/filters/",
-        "content": "{\"test\":\"in_water\",\"operator\":\"==\",\"value\":true}"
+        "content": {
+          "test": "in_water",
+          "operator": "==",
+          "value": true
+        }
       },
       {
         "path": "/minecraft:entity/components/minecraft:behavior.nearest_attackable_target/entity_types/0/filters/all_of/0/",
-        "content": "{\"test\":\"in_water\",\"subject\":\"other\",\"value\":true}"
+        "content": {
+          "test": "in_water",
+          "subject": "other",
+          "value": true
+        }
       },
       {
         "path": "/minecraft:entity/components/minecraft:behavior.nearest_attackable_target/entity_types/1/filters/all_of/0/",
-        "content": "{\"test\":\"in_water\",\"subject\":\"other\",\"value\":true}"
+        "content": {
+          "test": "in_water",
+          "subject": "other",
+          "value": true
+        }
       }
     ],
     "/vanilla/behavior_pack/entities/dolphin.json": [
       {
         "path": "/minecraft:entity/component_groups/dolphin_swimming_navigation/minecraft:environment_sensor/triggers/0/filters/all_of/1/",
-        "content": "{\"test\":\"in_water\",\"operator\":\"!=\",\"value\":true}"
+        "content": {
+          "test": "in_water",
+          "operator": "!=",
+          "value": true
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/dolphin_on_land_in_rain/minecraft:environment_sensor/triggers/0/filters/",
-        "content": "{\"test\":\"in_water\",\"operator\":\"==\",\"value\":true}"
+        "content": {
+          "test": "in_water",
+          "operator": "==",
+          "value": true
+        }
       }
     ],
     "/vanilla/behavior_pack/entities/pillager.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:melee_attack/minecraft:environment_sensor/triggers/filters/",
-        "content": "{\"test\":\"in_water\",\"subject\":\"self\",\"operator\":\"==\",\"value\":false}"
+        "content": {
+          "test": "in_water",
+          "subject": "self",
+          "operator": "==",
+          "value": false
+        }
       }
     ]
   }

@@ -29,7 +29,7 @@ export default class BlocksCatalogDefinition {
     this._file = newFile;
   }
 
-  static async ensureBlocksCatalogResourceDefinitionOnFile(
+  static async ensureOnFile(
     file: IFile,
     loadHandler?: IEventHandler<BlocksCatalogDefinition, BlocksCatalogDefinition>
   ) {
@@ -54,6 +54,63 @@ export default class BlocksCatalogDefinition {
     }
 
     return et;
+  }
+
+  getBlockDefinition(id: string) {
+    if (!this.blocksCatalog) {
+      return undefined;
+    }
+
+    if (this.blocksCatalog[id]) {
+      return this.blocksCatalog[id];
+    }
+
+    const colon = id.indexOf(":");
+
+    if (colon >= 0) {
+      id = id.substring(colon + 1);
+    }
+
+    return this.blocksCatalog[id];
+  }
+
+  getDefaultTextureId(id: string) {
+    const ref = this.getBlockDefinition(id);
+
+    if (ref && ref.textures) {
+      if (typeof ref.textures === "string") {
+        return ref.textures;
+      }
+
+      if (ref.textures["side"]) {
+        return ref.textures["side"];
+      } else if (ref.textures["up"]) {
+        return ref.textures["up"];
+      } else {
+        for (const key in ref.textures) {
+          return ref.textures[key];
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  getTextureReferences() {
+    const textureRefs: string[] = [];
+    if (this.blocksCatalog) {
+      for (const resourceId in this.blocksCatalog) {
+        const resource = this.blocksCatalog[resourceId];
+
+        if (resource && resource.textures) {
+          if (!textureRefs.includes(resourceId)) {
+            textureRefs.push(resourceId);
+          }
+        }
+      }
+    }
+
+    return textureRefs;
   }
 
   persist() {

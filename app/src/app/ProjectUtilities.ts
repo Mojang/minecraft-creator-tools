@@ -28,6 +28,7 @@ import ProjectStandard from "./ProjectStandard";
 import ProjectAutogeneration from "./ProjectAutogeneration";
 import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
+import TypeScriptDefinition from "../minecraft/TypeScriptDefinition";
 
 export enum NewEntityTypeAddMode {
   baseId,
@@ -1252,6 +1253,62 @@ export default class ProjectUtilities {
     }
 
     return introSection;
+  }
+
+  static async ensureTypeScriptFileWith(
+    project: Project,
+    token: string,
+    templateSet: string,
+    templateName: string,
+    fileNameCore: string,
+    replacers: { [sourceString: string]: string }
+  ) {
+    const itemsCopy = project.getItemsCopy();
+
+    for (const projectItem of itemsCopy) {
+      if (projectItem.itemType === ProjectItemType.ts) {
+        await projectItem.ensureFileStorage();
+
+        if (projectItem.file) {
+          const tsJson = await TypeScriptDefinition.ensureOnFile(projectItem.file);
+
+          if (tsJson?.data && tsJson.data.indexOf(token) >= 0) {
+            return;
+          }
+        }
+      }
+    }
+
+    const snippet = await Database.getSnippet(templateSet, templateName);
+    const scriptFolder = await project.ensureDefaultScriptsFolder();
+
+    await scriptFolder.load();
+
+    if (!snippet) {
+      Log.error("Could not find template " + templateSet, templateName);
+      return;
+    }
+
+    const file = scriptFolder.ensureFile(fileNameCore + ".ts");
+
+    let snippetInjectContent = "\r\n" + snippet.body.join("\n") + "\r\n";
+
+    for (const replacerToken in replacers) {
+      const targetReplace = replacers[replacerToken];
+
+      if (targetReplace) {
+        // replace with something better.
+        while (snippetInjectContent.indexOf(replacerToken) >= 0) {
+          snippetInjectContent = snippetInjectContent.replace(replacerToken, replacers[replacerToken]);
+        }
+      }
+    }
+
+    file.setContent(snippetInjectContent);
+
+    await file.saveContent();
+
+    await project.inferProjectItemsFromFiles(true);
   }
 
   static async injectSnippet(project: Project, snippet: ISnippet, fullScriptBoxReplace: boolean) {

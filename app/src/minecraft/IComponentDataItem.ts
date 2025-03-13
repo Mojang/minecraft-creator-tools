@@ -4,5 +4,5 @@
 import IComponent from "./IComponent";
 
 export default interface IComponentDataItem {
-  components: { [name: string]: IComponent | string | number | undefined };
+  components: { [name: string]: IComponent | string | string[] | boolean | number[] | number | undefined };
 }

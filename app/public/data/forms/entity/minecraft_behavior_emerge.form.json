@@ -4,8 +4,8 @@
       "id": "cooldown_time",
       "title": "Cooldown Time",
       "description": "Time in seconds the mob has to wait before using the goal again",
-      "defaultValue": 0,
-      "dataType": 0
+      "defaultValue": 0.5,
+      "dataType": 3
     },
     {
       "id": "duration",

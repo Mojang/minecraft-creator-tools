@@ -12,6 +12,7 @@ import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
 import Utilities from "../core/Utilities";
 import Database from "./Database";
+import TextureDefinition from "./TextureDefinition";
 
 export default class ItemTextureCatalogDefinition {
   private _data?: IItemTexture;
@@ -52,7 +53,7 @@ export default class ItemTextureCatalogDefinition {
     return this._data.texture_data;
   }
 
-  public get texturePathList() {
+  public getCanonicalizedTexturePathList() {
     if (!this._data || !this._data.texture_data) {
       return undefined;
     }
@@ -64,10 +65,40 @@ export default class ItemTextureCatalogDefinition {
 
       if (texturePathArr && texturePathArr.textures) {
         if (typeof texturePathArr.textures === "string") {
-          textureList.push(texturePathArr.textures.toLowerCase());
+          const path = TextureDefinition.canonicalizeTexturePath(texturePathArr.textures);
+          if (path) {
+            textureList.push(path);
+          }
         } else if (Array.isArray(texturePathArr)) {
           for (const texturePath of texturePathArr.textures) {
-            textureList.push(texturePath.toLowerCase());
+            const path = TextureDefinition.canonicalizeTexturePath(texturePath);
+            if (path) {
+              textureList.push(path);
+            }
+          }
+        }
+      }
+    }
+
+    return textureList;
+  }
+
+  public getTexturePathList() {
+    if (!this._data || !this._data.texture_data) {
+      return undefined;
+    }
+
+    const textureList = [];
+
+    for (const key in this._data.texture_data) {
+      const texturePathArr = this._data.texture_data[key];
+
+      if (texturePathArr && texturePathArr.textures) {
+        if (typeof texturePathArr.textures === "string") {
+          textureList.push(texturePathArr.textures);
+        } else if (Array.isArray(texturePathArr)) {
+          for (const texturePath of texturePathArr.textures) {
+            textureList.push(texturePath);
           }
         }
       }
@@ -132,16 +163,27 @@ export default class ItemTextureCatalogDefinition {
     if (this.file && this.file.parentFolder) {
       let parentFolder = this.file.parentFolder;
 
-      while (parentFolder.name !== "textures" && parentFolder.parentFolder) {
-        parentFolder = parentFolder.parentFolder;
-      }
-
-      if (parentFolder.parentFolder) {
-        packRootFolder = parentFolder.parentFolder;
-      }
+      packRootFolder = StorageUtilities.getParentOfParentFolderNamed("textures", parentFolder);
     }
 
     return packRootFolder;
+  }
+
+  getTextureReferences() {
+    const textureRefs: string[] = [];
+    if (this.data?.texture_data) {
+      for (const resourceId in this.data.texture_data) {
+        const resource = this.data.texture_data[resourceId];
+
+        if (resource && resource.textures) {
+          if (!textureRefs.includes(resourceId)) {
+            textureRefs.push(resourceId);
+          }
+        }
+      }
+    }
+
+    return textureRefs;
   }
 
   getRelativePath(file: IFile, packRootFolder: IFolder) {
@@ -164,14 +206,16 @@ export default class ItemTextureCatalogDefinition {
 
     let packRootFolder = this.getPackRootFolder();
 
-    let texturePathList = this.texturePathList;
+    let texturePathList = this.getCanonicalizedTexturePathList();
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && texturePathList) {
         await candItem.ensureStorage();
 
         if (candItem.file) {
-          let relativePath = this.getRelativePath(candItem.file, packRootFolder);
+          let relativePath = TextureDefinition.canonicalizeTexturePath(
+            this.getRelativePath(candItem.file, packRootFolder)
+          );
 
           if (relativePath) {
             if (texturePathList && texturePathList.includes(relativePath)) {

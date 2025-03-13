@@ -4,6 +4,7 @@
 import DifferenceSet from "../storage/DifferenceSet";
 import Utilities from "../core/Utilities";
 import Log from "../core/Log";
+import Database from "./Database";
 
 export default class MinecraftUtilities {
   static isReloadableSetOfChanges(differenceSet: DifferenceSet) {
@@ -119,6 +120,30 @@ export default class MinecraftUtilities {
     }
 
     return false;
+  }
+
+  public static isBedrockItem(itemId: string) {
+    if (itemId.indexOf("element") >= 0) {
+      return false;
+    }
+
+    return true;
+  }
+  public static getBlockDefaultTexturePath(blockId: string) {
+    let blockCat = Database.getVanillaBlocksCatalogDirect();
+    let textureCat = Database.getVanillaTerrainTexturesCatalogDirect();
+
+    if (!blockCat || !textureCat) {
+      return undefined;
+    }
+
+    const blockTextureId = blockCat.getDefaultTextureId(blockId);
+
+    if (!blockTextureId) {
+      return undefined;
+    }
+
+    return textureCat.getDefaultTexturePath(blockTextureId);
   }
 
   static shortenFilterDescription(descript: string) {

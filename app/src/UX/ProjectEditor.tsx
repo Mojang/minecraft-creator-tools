@@ -2368,8 +2368,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       data !== undefined &&
       data.tag !== undefined &&
       this.props.project !== null &&
-      data.tag.action !== undefined &&
-      data.tag.path !== undefined
+      data.tag.path !== undefined &&
+      data.tag.action !== undefined
     ) {
       const me = this;
 

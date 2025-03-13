@@ -10,7 +10,7 @@ import JsonSchemaDefinition from "../jsonschema/JsonSchemaDefinition";
 import StorageUtilities from "../storage/StorageUtilities";
 import IFile from "../storage/IFile";
 import IIndexJson from "../storage/IIndexJson";
-import { AnnotationCategories } from "../core/ContentIndex";
+import { AnnotationCategory } from "../core/ContentIndex";
 import DataFormUtilities from "../dataform/DataFormUtilities";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ISimpleReference from "../core/ISimpleReference";
@@ -21,143 +21,15 @@ export interface JsonTypeSummary {
   category: string;
 }
 
-const TypesToExport: JsonTypeSummary[] = [
-  { title: "Block Specifier", category: "block" },
-  { title: "block_descriptor", category: "block" },
-  { title: "block_legacy_ptr", category: "block" },
-  { title: "block_pos", category: "block" },
-  { title: "BlockCulling", category: "block_culling" },
-  { title: "BlockCulling::Contents", category: "block_culling" },
-  { title: "BlockCulling::Contents::Description", category: "block_culling" },
-  { title: "BlockCulling::Contents::Rule", category: "block_culling" },
-  { title: "BlockCulling::Contents::Rule::GeometryPart", category: "block_culling" },
-  { title: "BlockDescriptor", category: "block" },
-  { title: "BlockDescriptorSerializer::BlockDescriptorProxy", category: "block" },
-  { title: "CameraAimAssistCategoriesDefinition", category: "camera" },
-  { title: "CameraAimAssistCategoryDefinition", category: "camera" },
-  { title: "CameraAimAssistCategoryPriorities", category: "camera" },
-  { title: "CameraAimAssistPresetDefinition", category: "camera" },
-  { title: "Color255RGB", category: "misc" },
-  { title: "compound_proxy", category: "misc" },
-  { title: "ConstantIntProvider", category: "misc" },
-  { title: "Coordinate Evaluation Order", category: "misc" },
-  { title: "Coordinate Range", category: "misc" },
-  { title: "DiggerItemComponent::BlockInfo", category: "item" },
-  { title: "expression_node", category: "misc" },
-  { title: "ExpressionNode", category: "misc" },
-  { title: "ExpressionNode::StringRepresentation", category: "misc" },
-  { title: "Feature Rule Conditions", category: "feature" },
-  { title: "Feature Rule Definition", category: "feature" },
-  { title: "Feature Rule Description", category: "feature" },
-  { title: "Filter Group", category: "misc" },
-  { title: "Filter Test", category: "misc" },
-  { title: "item_descriptor", category: "item" },
-  { title: "item_transforms", category: "item" },
-  { title: "ItemDescriptor", category: "item" },
-  { title: "Jigsaw Joint Type", category: "jigsaw" },
-  { title: "JigsawBlockMetadata", category: "jigsaw" },
-  { title: "JigsawStructure::ProcessorRule::AlwaysTrueBlock", category: "jigsaw" },
-  { title: "JigsawStructure::ProcessorRule::AlwaysTruePos", category: "jigsaw" },
-  { title: "JigsawStructure::ProcessorRule::AppendLoot", category: "jigsaw" },
-  { title: "JigsawStructure::ProcessorRule::AxisAlignedLinear", category: "jigsaw" },
-  { title: "JigsawStructure::ProcessorRule::BlockMatch", category: "jigsaw" },
-  { title: "JigsawStructure::ProcessorRule::Passthrough", category: "jigsaw" },
-  { title: "JigsawStructure::ProcessorRule::RandomBlockMatch", category: "jigsaw" },
-  { title: "JigsawStructure::ProcessorRule::TagMatch", category: "jigsaw" },
-  { title: "JigsawStructure::Processors::BlockIgnore", category: "jigsaw" },
-  { title: "JigsawStructure::Processors::BlockRules", category: "jigsaw" },
-  { title: "JigsawStructure::Processors::Capped", category: "jigsaw" },
-  { title: "JigsawStructure::Processors::ProtectedBlock", category: "jigsaw" },
-  { title: "JigsawStructure::Rule", category: "jigsaw" },
-  { title: "JigsawStructureDefinition::Description", category: "jigsaw" },
-  { title: "JigsawStructureMetadata", category: "jigsaw" },
-  { title: "JigsawStructureMetadataRegistry", category: "jigsaw" },
-  { title: "JigsawStructureProcessorList::Description", category: "jigsaw" },
-  { title: "JigsawStructureSet::Description", category: "jigsaw" },
-  { title: "JigsawStructureSet::RandomSpreadPlacement", category: "jigsaw" },
-  { title: "JigsawStructureSet::Structure", category: "jigsaw" },
-  { title: "JigsawStructureTemplatePool::Description", category: "jigsaw" },
-  { title: "JigsawStructureTemplatePool::SinglePoolElement", category: "jigsaw" },
-  { title: "JigsawStructureTemplatePool::TemplatePoolElement", category: "jigsaw" },
-  { title: "menu_category", category: "misc" },
-  { title: "minecraft:aim_assist_categories", category: "camera" },
-  { title: "minecraft:aim_assist_preset", category: "camera" },
-  { title: "minecraft:allow_off_hand", category: "item" },
-  { title: "minecraft:armor", category: "item" },
-  { title: "minecraft:block_placer", category: "item" },
-  { title: "minecraft:bundle_interaction", category: "item" },
-  { title: "minecraft:can_destroy_in_creative", category: "item" },
-  { title: "minecraft:chargeable", category: "item" },
-  { title: "minecraft:compostable", category: "item" },
-  { title: "minecraft:compostable", category: "item" },
-  { title: "minecraft:cooldown", category: "item" },
-  { title: "minecraft:custom_components", category: "item" },
-  { title: "minecraft:damage", category: "item" },
-  { title: "minecraft:damage_absorption", category: "item" },
-  { title: "minecraft:digger", category: "item" },
-  { title: "minecraft:display_name", category: "item" },
-  { title: "minecraft:durability", category: "item" },
-  { title: "minecraft:durability_sensor", category: "item" },
-  { title: "minecraft:durability_sensor durability_threshold", category: "item" },
-  { title: "minecraft:dyeable", category: "item" },
-  { title: "minecraft:enchantable", category: "item" },
-  { title: "minecraft:entity_placer", category: "item" },
-  { title: "minecraft:food", category: "item" },
-  { title: "minecraft:fuel", category: "item" },
-  { title: "minecraft:glint", category: "item" },
-  { title: "minecraft:hand_equipped", category: "item" },
-  { title: "minecraft:hover_text_color", category: "item" },
-  { title: "minecraft:icon", category: "item" },
-  { title: "minecraft:interact_button", category: "item" },
-  { title: "minecraft:item", category: "item" },
-  { title: "minecraft:jigsaw_structure_metadata", category: "jigsaw" },
-  { title: "minecraft:liquid_clipped", category: "item" },
-  { title: "minecraft:max_stack_size", category: "item" },
-  { title: "minecraft:on_use", category: "item" },
-  { title: "minecraft:on_use_on", category: "item" },
-  { title: "minecraft:projectile", category: "item" },
-  { title: "minecraft:rarity", category: "item" },
-  { title: "minecraft:record", category: "item" },
-  { title: "minecraft:render_offsets", category: "item" },
-  { title: "minecraft:repairable", category: "item" },
-  { title: "minecraft:shooter", category: "item" },
-  { title: "minecraft:should_despawn", category: "item" },
-  { title: "minecraft:stacked_by_data", category: "item" },
-  { title: "minecraft:storage_item", category: "item" },
-  { title: "minecraft:tags", category: "item" },
-  { title: "minecraft:throwable", category: "item" },
-  { title: "minecraft:use_animation", category: "item" },
-  { title: "minecraft:use_duration", category: "item" },
-  { title: "minecraft:use_modifiers", category: "item" },
-  { title: "minecraft:weapon", category: "item" },
-  { title: "minecraft:wearable", category: "item" },
-  { title: "Random Distribution Type", category: "misc" },
-  { title: "repair_items", category: "item" },
-  { title: "RepairableItemComponent::RepairItemEntry", category: "item" },
-  { title: "Scatter Chance", category: "jigsaw" },
-  { title: "Scatter Params", category: "jigsaw" },
-  { title: "ShooterItemComponent::Ammunition", category: "item" },
-  { title: "ActorDefinitionIdentifier", category: "entity" },
-  { title: "DiggerLegacyBlockInfo", category: "item" },
-  { title: "IItemComponentLegacyFactoryData::Components", category: "item" },
-  { title: "RenderOffsetsItemComponent::TRS", category: "item" },
-  { title: "SharedTypes::IntRange", category: "misc" },
-  { title: "ShooterItemComponentLegacyFactoryData::ShooterAmmunitionEntry", category: "item" },
-  { title: "Trade", category: "trade" },
-  { title: "TradeGroup", category: "trade" },
-  { title: "TradeItem", category: "trade" },
-  { title: "TradeItem::Quantity", category: "trade" },
-  { title: "TradeItemList", category: "trade" },
-  { title: "TradeTableData", category: "trade" },
-  { title: "TradeTier", category: "trade" },
-  { title: "trigger", category: "misc" },
-];
+const JsonFormExclusionList = ["is_a", "in_the", "_with_"];
 
 const MAX_FORM_DEPTH = 100;
 
 export default class FormJsonDocumentationGenerator {
   defsById: { [name: string]: JSONSchema7 } = {};
   defsByTitle: { [name: string]: JSONSchema7 } = {};
+  defRefs: { [name: string]: number } = {};
+  defCategories: { [name: string]: string } = {};
 
   public async updateFormSource(folder: IFolder, isPreview?: boolean) {
     this.defsById = {};
@@ -170,21 +42,13 @@ export default class FormJsonDocumentationGenerator {
     const schemaFolder = metadataFolder?.ensureFolder("json_schemas");
 
     if (schemaFolder) {
-      await this.loadSchemas(schemaFolder);
+      await this.loadSchemas(schemaFolder, "misc");
     }
-
-    /*
-    Log all possible keys
-
-    for (const key in this.defsByTitle) {
-      console.log(key);
-    }
-    */
 
     const formJsonFolder = folder.ensureFolder("forms");
     await formJsonFolder.ensureExists();
 
-    await this.exportJsonForms(formJsonFolder);
+    await this.exportJsonSchemaForms(formJsonFolder);
 
     const aiGoalsNode = await LegacyDocumentationDefinition.loadNode(
       "entities",
@@ -193,7 +57,7 @@ export default class FormJsonDocumentationGenerator {
     );
 
     if (aiGoalsNode) {
-      await this.generateFormNodesFromNode(formJsonFolder, aiGoalsNode, "entity");
+      await this.generateFormNodesFromLegacyDocNode(formJsonFolder, aiGoalsNode, "entity");
     }
 
     const attributesNode = await LegacyDocumentationDefinition.loadNode(
@@ -203,7 +67,7 @@ export default class FormJsonDocumentationGenerator {
     );
 
     if (attributesNode) {
-      await this.generateFormNodesFromNode(formJsonFolder, attributesNode, "entity");
+      await this.generateFormNodesFromLegacyDocNode(formJsonFolder, attributesNode, "entity");
     }
 
     const propertiesNode = await LegacyDocumentationDefinition.loadNode(
@@ -213,7 +77,7 @@ export default class FormJsonDocumentationGenerator {
     );
 
     if (propertiesNode) {
-      await this.generateFormNodesFromNode(formJsonFolder, propertiesNode, "entity");
+      await this.generateFormNodesFromLegacyDocNode(formJsonFolder, propertiesNode, "entity");
     }
 
     const entityComponentsNode = await LegacyDocumentationDefinition.loadNode(
@@ -223,7 +87,7 @@ export default class FormJsonDocumentationGenerator {
     );
 
     if (entityComponentsNode) {
-      await this.generateFormNodesFromNode(formJsonFolder, entityComponentsNode, "entity");
+      await this.generateFormNodesFromLegacyDocNode(formJsonFolder, entityComponentsNode, "entity");
     }
 
     const triggersComponentsNode = await LegacyDocumentationDefinition.loadNode(
@@ -233,19 +97,19 @@ export default class FormJsonDocumentationGenerator {
     );
 
     if (triggersComponentsNode) {
-      await this.generateFormNodesFromNode(formJsonFolder, triggersComponentsNode, "entity");
+      await this.generateFormNodesFromLegacyDocNode(formJsonFolder, triggersComponentsNode, "entity");
     }
 
     const filtersComponentsNode = await LegacyDocumentationDefinition.loadNode("entities", "/Filters/", isPreview);
 
     if (filtersComponentsNode) {
-      await this.generateFormNodesFromNode(formJsonFolder, filtersComponentsNode, "entityfilters");
+      await this.generateFormNodesFromLegacyDocNode(formJsonFolder, filtersComponentsNode, "entityfilters");
     }
 
     const entityEventsComponentsNode = await LegacyDocumentationDefinition.loadNode("entity-events", "/", isPreview);
 
     if (entityEventsComponentsNode) {
-      await this.generateFormNodesFromNode(formJsonFolder, entityEventsComponentsNode, "entityevents");
+      await this.generateFormNodesFromLegacyDocNode(formJsonFolder, entityEventsComponentsNode, "entityevents");
     }
 
     const blocksComponentsNode = await LegacyDocumentationDefinition.loadNode(
@@ -255,42 +119,87 @@ export default class FormJsonDocumentationGenerator {
     );
 
     if (blocksComponentsNode) {
-      await this.generateFormNodesFromNode(formJsonFolder, blocksComponentsNode, "block");
+      await this.generateFormNodesFromLegacyDocNode(formJsonFolder, blocksComponentsNode, "block");
     }
 
     const schemasNode = await LegacyDocumentationDefinition.loadNode("schemas", "/Schemas/", isPreview);
 
     if (schemasNode) {
-      await this.generateFormNodesFromSchemaDocs(formJsonFolder, schemasNode, "visual");
+      await this.generateFormNodesFromPseudoSchemaDocs(formJsonFolder, schemasNode, "visual");
     }
 
     const fogsNode = await LegacyDocumentationDefinition.loadNode("fogs", "/Fog Definitions/Fog Schema/", isPreview);
 
     if (fogsNode) {
-      await this.generateFormNodesFromSchemaDocs(formJsonFolder, fogsNode, "fogs");
+      await this.generateFormNodesFromPseudoSchemaDocs(formJsonFolder, fogsNode, "fogs");
     }
 
+    /* These come from JSON schema now.
     const biomesNode = await LegacyDocumentationDefinition.loadNode("biomes", "/Schema/", isPreview);
 
     if (biomesNode) {
-      await this.generateFormNodesFromSchemaDocs(formJsonFolder, biomesNode, "biomes");
+      await this.generateFormNodesFromNode(formJsonFolder, biomesNode, "biomes");
     }
+      */
 
     const featuresNode = await LegacyDocumentationDefinition.loadNode("features", "/Supported features/", isPreview);
 
     if (featuresNode) {
-      await this.generateFormNodesFromSchemaDocs(formJsonFolder, featuresNode, "features");
+      const resultForms = await this.generateFormNodesFromPseudoSchemaDocs(formJsonFolder, featuresNode, "features");
+
+      if (resultForms) {
+        this.generateSubformsFromFields(formJsonFolder, resultForms, "features");
+      }
     }
   }
 
-  public async generateFormNodesFromSchemaDocs(
+  public async generateSubformsFromFields(
+    formJsonFolder: IFolder,
+    resultForms: (IFormDefinition | undefined)[],
+    prefix?: string
+  ) {
+    const outerForms: IFormDefinition[] = [];
+
+    for (const form of resultForms) {
+      if (form && form.fields) {
+        for (const field of form.fields) {
+          if (field.subForm) {
+            const newForm: IFormDefinition = {
+              id: field.id,
+              title: field.title,
+              fields: field.subForm.fields,
+            };
+
+            outerForms.push(newForm);
+          }
+        }
+      }
+    }
+
+    for (const form of outerForms) {
+      if (form && form.id) {
+        const name = this.getFormFileName(form.id, form.dataVersion);
+
+        DataFormUtilities.mergeFields(form);
+
+        DataFormUtilities.fixupFields(form);
+
+        await this.annotateFormJson(form, name, prefix);
+        await this.mergeToFile(formJsonFolder, name, form, prefix);
+      }
+    }
+
+    return outerForms;
+  }
+  public async generateFormNodesFromPseudoSchemaDocs(
     formJsonFolder: IFolder,
     node: ILegacyDocumentationNode,
     prefix?: string
   ) {
     if (!node.description && !node.examples) {
-      return;
+      return undefined;
     }
+
     const formStack: IFormDefinition[] = [];
     let formStackIndex = -1;
     const outerForms: (IFormDefinition | undefined)[] = [];
@@ -586,6 +495,8 @@ export default class FormJsonDocumentationGenerator {
         await this.mergeToFile(formJsonFolder, name, form, prefix);
       }
     }
+
+    return outerForms;
   }
 
   public async generateFormJson(inputFolder: IFolder, outputFolder: IFolder) {
@@ -638,7 +549,7 @@ export default class FormJsonDocumentationGenerator {
   }
 
   public async finalizeJsonForm(formObj: IFormDefinition, outputFile: IFile) {
-    if (!formObj.source && formObj.id) {
+    if (!formObj.generated_doNotEdit && !formObj.generatedFromSchema_doNotEdit && formObj.id) {
       const id = formObj.id.replace(/\:/gi, "_").replace(/\./gi, "_");
 
       await outputFile.loadContent();
@@ -646,134 +557,216 @@ export default class FormJsonDocumentationGenerator {
       await this.annotateFormJson(formObj, id, outputFile.parentFolder.name, originalNode);
     }
 
-    if (formObj.source) {
-      if (!formObj.description || formObj.description === "") {
-        formObj.description = formObj.source.description;
-      }
-      if (!formObj.title || formObj.title === "") {
-        formObj.title = formObj.source.title;
-      }
-
-      if (formObj.samples) {
-        for (const samplePath in formObj.source.samples) {
-          formObj.samples[samplePath] = formObj.source.samples[samplePath];
-        }
-      } else {
-        formObj.samples = formObj.source.samples;
-      }
-
-      if (!formObj.note) {
-        formObj.note = formObj.source.note;
-      }
-
-      if (!formObj.note2) {
-        formObj.note2 = formObj.source.note2;
-      }
-
-      if (!formObj.note3) {
-        formObj.note3 = formObj.source.note3;
-      }
-
-      if (!formObj.restrictions) {
-        formObj.restrictions = formObj.source.restrictions;
-      }
-
-      if (!formObj.requires) {
-        formObj.requires = formObj.source.requires;
-      }
-
-      if (!formObj.scalarField) {
-        formObj.scalarField = formObj.source.scalarField;
-      }
-
-      if (!formObj.customField) {
-        formObj.customField = formObj.source.customField;
-      }
-
-      if (!formObj.scalarFieldUpgradeName) {
-        formObj.scalarFieldUpgradeName = formObj.source.scalarFieldUpgradeName;
-      }
-
-      if (!formObj.isDeprecated) {
-        formObj.isDeprecated = formObj.source.isDeprecated;
-      }
-
-      if (!formObj.dataVersion) {
-        formObj.dataVersion = formObj.source.dataVersion;
-      }
-
-      if (formObj.fields && formObj.fields.length === 0) {
-        formObj.id = formObj.source.id;
-
-        formObj.fields = formObj.source.fields;
-        formObj.source = undefined;
-      } else {
-        const formFields: { [id: string]: IField } = {};
-
-        if (!formObj.fields) {
-          formObj.fields = formObj.source.fields;
-        } else {
-          for (const targetField of formObj.fields) {
-            formFields[targetField.id] = targetField;
-          }
-
-          for (const field of formObj.source.fields) {
-            const targetField = formFields[field.id];
-
-            if (!targetField) {
-              formObj.fields.push(field);
-            } else {
-              targetField.samples = field.samples;
-
-              if (!targetField.defaultValue) {
-                targetField.defaultValue = field.defaultValue;
-              }
-
-              if (!targetField.alternates) {
-                targetField.alternates = field.alternates;
-              }
-
-              if (!targetField.description) {
-                targetField.description = field.description;
-              }
-
-              if (!targetField.title) {
-                targetField.title = field.title;
-              }
-
-              if (targetField.dataType === undefined) {
-                targetField.dataType = field.dataType;
-              }
-
-              if (!targetField.choices) {
-                targetField.choices = field.choices;
-              }
-
-              if (!targetField.validity) {
-                targetField.validity = field.validity;
-              }
-            }
-          }
-        }
-
-        formObj.source = undefined;
-      }
+    if (formObj.generatedFromSchema_doNotEdit) {
+      this.mergeOntoForm(formObj, formObj.generatedFromSchema_doNotEdit);
     }
+
+    if (formObj.generated_doNotEdit) {
+      this.mergeOntoForm(formObj, formObj.generated_doNotEdit);
+    }
+
+    formObj.generated_doNotEdit = undefined;
+    formObj.generatedFromSchema_doNotEdit = undefined;
 
     outputFile.setContent(JSON.stringify(formObj, undefined, 2));
 
     await outputFile.saveContent();
   }
 
-  public async exportJsonForms(formJsonFolder: IFolder) {
-    for (const typeSummary of TypesToExport) {
-      const formNode = await this.getJsonFormFromJsonKey(typeSummary.title);
+  public mergeOntoForm(formObj: IFormDefinition, genForm: IFormDefinition) {
+    if (!formObj.description || formObj.description === "") {
+      formObj.description = genForm.description;
+    }
+    if (!formObj.title || formObj.title === "") {
+      formObj.title = genForm.title;
+    }
 
-      if (formNode && formNode.fields.length > 0) {
-        const name = this.getFormFileNameFromJsonKey(typeSummary.title);
+    if (formObj.samples) {
+      for (const samplePath in genForm.samples) {
+        formObj.samples[samplePath] = genForm.samples[samplePath];
+      }
+    } else {
+      formObj.samples = genForm.samples;
+    }
 
-        await this.annotateFormJson(formNode, name, typeSummary.category);
-        await this.mergeToFile(formJsonFolder, name, formNode, typeSummary.category);
+    if (!formObj.note) {
+      formObj.note = genForm.note;
+    }
+
+    if (!formObj.note2) {
+      formObj.note2 = genForm.note2;
+    }
+
+    if (!formObj.note3) {
+      formObj.note3 = genForm.note3;
+    }
+
+    if (!formObj.restrictions) {
+      formObj.restrictions = genForm.restrictions;
+    }
+
+    if (!formObj.requires) {
+      formObj.requires = genForm.requires;
+    }
+
+    if (!formObj.scalarField) {
+      formObj.scalarField = genForm.scalarField;
+    }
+
+    if (!formObj.customField) {
+      formObj.customField = genForm.customField;
+    }
+
+    if (!formObj.scalarFieldUpgradeName) {
+      formObj.scalarFieldUpgradeName = genForm.scalarFieldUpgradeName;
+    }
+
+    if (!formObj.isDeprecated) {
+      formObj.isDeprecated = genForm.isDeprecated;
+    }
+
+    if (!formObj.isInternal) {
+      formObj.isInternal = genForm.isInternal;
+    }
+
+    if (!formObj.dataVersion) {
+      formObj.dataVersion = genForm.dataVersion;
+    }
+
+    if (formObj.fields && formObj.fields.length === 0) {
+      formObj.id = genForm.id;
+
+      formObj.fields = genForm.fields;
+    } else {
+      const formFields: { [id: string]: IField } = {};
+
+      if (!formObj.fields) {
+        formObj.fields = genForm.fields;
+      } else {
+        for (const targetField of formObj.fields) {
+          formFields[targetField.id] = targetField;
+        }
+
+        for (const field of genForm.fields) {
+          const targetField = formFields[field.id];
+
+          if (!targetField) {
+            formObj.fields.push(field);
+          } else {
+            targetField.samples = field.samples;
+
+            if (!targetField.defaultValue) {
+              targetField.defaultValue = field.defaultValue;
+            }
+
+            if (!targetField.alternates) {
+              targetField.alternates = field.alternates;
+            }
+
+            if (!targetField.description) {
+              targetField.description = field.description;
+            }
+
+            if (!targetField.title) {
+              targetField.title = field.title;
+            }
+
+            if (!targetField.humanifyValues) {
+              targetField.humanifyValues = field.humanifyValues;
+            }
+
+            if (!targetField.minLength) {
+              targetField.minLength = field.minLength;
+            }
+
+            if (!targetField.maxLength) {
+              targetField.maxLength = field.maxLength;
+            }
+
+            if (!targetField.minValue) {
+              targetField.minValue = field.minValue;
+            }
+
+            if (!targetField.maxValue) {
+              targetField.maxValue = field.maxValue;
+            }
+
+            if (!targetField.suggestedMinValue) {
+              targetField.suggestedMinValue = field.suggestedMinValue;
+            }
+
+            if (!targetField.suggestedMaxValue) {
+              targetField.suggestedMaxValue = field.suggestedMaxValue;
+            }
+
+            if (!targetField.isRequired) {
+              targetField.isRequired = field.isRequired;
+            }
+
+            if (targetField.dataType === undefined) {
+              targetField.dataType = field.dataType;
+            }
+
+            if (!targetField.choices) {
+              targetField.choices = field.choices;
+            }
+
+            if (!targetField.validity) {
+              targetField.validity = field.validity;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  public async exportJsonSchemaForms(formJsonFolder: IFolder) {
+    for (const key in this.defsByTitle) {
+      if (!this.defRefs[key]) {
+        await this.processJsonSchemaNode(formJsonFolder, key);
+      }
+    }
+  }
+
+  private async processJsonSchemaNode(formJsonFolder: IFolder, title: string) {
+    const formNode = await this.getJsonFormFromJsonSchemaKey(title);
+
+    if (formNode && formNode.fields.length > 0) {
+      if (title.indexOf("omponents") >= 0) {
+        if (formNode.fields) {
+          for (const field of formNode.fields) {
+            if (field.subForm) {
+              const name = this.getFormFileNameFromJsonKey(field.id);
+              const category = this.defCategories[title];
+
+              field.subForm.id = field.id;
+
+              await this.annotateFormJson(field.subForm, name, category);
+              await this.mergeToFile(formJsonFolder, name, field.subForm, category, true);
+            }
+          }
+        }
+      } else {
+        let versionlessTitle = title.substring(title.indexOf(".") + 1);
+        versionlessTitle = this.getVersionlessString(versionlessTitle);
+
+        const name = this.getFormFileNameFromJsonKey(versionlessTitle);
+
+        let matchesExclusion = false;
+
+        for (const exclusion of JsonFormExclusionList) {
+          if (name.indexOf(exclusion) >= 0) {
+            matchesExclusion = true;
+            break;
+          }
+        }
+
+        if (!matchesExclusion) {
+          const category = this.defCategories[title];
+
+          await this.annotateFormJson(formNode, name, category);
+          await this.mergeToFile(formJsonFolder, name, formNode, category, true);
+        }
       }
     }
   }
@@ -804,14 +797,30 @@ export default class FormJsonDocumentationGenerator {
     return key;
   }
 
-  public async getJsonFormFromJsonKey(keyName: string) {
+  public async getJsonFormFromJsonSchemaKey(keyName: string) {
     let rootNodeName: string | undefined = undefined;
     let rootNodeNameVersionless: string | undefined = undefined;
     let rootNode: JSONSchema7 | undefined = undefined;
 
+    const keyVersionless = this.getVersionlessString(keyName);
+
     // attempt to get the latest version of a component by sorting on the node name e.g., minecraft:item v1.21.60 should sort later than minecraft:item v1.21.40
     // though we should replace this with a more sophisticated sorter for version :-/
-    for (const key in this.defsByTitle) {
+    for (const candidateKey in this.defsByTitle) {
+      const candidateKeyVersionless = this.getVersionlessString(candidateKey);
+      if (candidateKeyVersionless === keyVersionless) {
+        if (
+          !rootNodeName ||
+          (candidateKey.localeCompare(rootNodeName) > 0 && candidateKeyVersionless === rootNodeNameVersionless)
+        ) {
+          rootNodeName = candidateKey;
+          rootNodeNameVersionless = candidateKeyVersionless;
+          rootNode = this.defsByTitle[candidateKey];
+        }
+      }
+    }
+
+    for (const key in this.defsById) {
       if (key.indexOf(keyName) >= 0) {
         const keyVersionless = this.getVersionlessString(key);
 
@@ -824,6 +833,10 @@ export default class FormJsonDocumentationGenerator {
     }
 
     if (rootNode === undefined) {
+      return;
+    }
+
+    if (rootNodeName !== keyName) {
       return;
     }
 
@@ -856,7 +869,7 @@ export default class FormJsonDocumentationGenerator {
     return docForm;
   }
 
-  public async loadSchemas(schemaFolder: IFolder) {
+  public async loadSchemas(schemaFolder: IFolder, categoryName: string) {
     await schemaFolder.load();
 
     for (const fileName in schemaFolder.files) {
@@ -866,7 +879,7 @@ export default class FormJsonDocumentationGenerator {
         const jsonSchema = await JsonSchemaDefinition.ensureOnFile(file);
 
         if (jsonSchema && jsonSchema.data) {
-          this.processDef(jsonSchema.data);
+          this.processDef(jsonSchema.data, categoryName);
         }
       }
     }
@@ -875,18 +888,48 @@ export default class FormJsonDocumentationGenerator {
       const folder = schemaFolder.folders[folderName];
 
       if (folder) {
-        await this.loadSchemas(folder);
+        if (!folder.name.startsWith("v1") && folder.name !== "common" && folder.name !== "components") {
+          categoryName = folder.name;
+        }
+
+        await this.loadSchemas(folder, categoryName);
       }
     }
   }
 
-  private processDef(schemaDef: JSONSchema7) {
+  private processDef(schemaDef: JSONSchema7, category: string, depth: number = 0) {
     if (schemaDef["$id"]) {
       this.defsById[schemaDef["$id"]] = schemaDef;
+
+      if (this.defRefs[schemaDef["$id"]] === undefined) {
+        this.defRefs[schemaDef["$id"]] = depth ? 1 : 0;
+      }
+
+      this.defCategories[schemaDef["$id"]] = category;
     }
 
     if (schemaDef.title) {
-      this.defsByTitle[schemaDef.title] = schemaDef;
+      this.defsByTitle[category + "." + schemaDef.title] = schemaDef;
+
+      if (this.defRefs[category + "." + schemaDef.title] === undefined) {
+        this.defRefs[category + "." + schemaDef.title] = depth ? 1 : 0;
+      }
+
+      this.defCategories[category + "." + schemaDef.title] = category;
+    }
+
+    for (const propName in schemaDef.properties) {
+      const propNode = schemaDef.properties[propName];
+
+      if (propNode && typeof propNode !== "boolean") {
+        if (propNode.$ref) {
+          if (this.defRefs[propNode.$ref] === undefined) {
+            this.defRefs[propNode.$ref] = 1;
+          } else {
+            this.defRefs[propNode.$ref]++;
+          }
+        }
+      }
     }
 
     if (schemaDef.definitions) {
@@ -894,21 +937,25 @@ export default class FormJsonDocumentationGenerator {
         const def = schemaDef.definitions[defName];
 
         if (def && typeof def !== "boolean") {
-          this.processDef(def);
+          this.processDef(def, category, depth + 1);
         }
       }
     }
   }
 
-  public async generateFormNodesFromNode(formJsonFolder: IFolder, node: ILegacyDocumentationNode, prefix?: string) {
+  public async generateFormNodesFromLegacyDocNode(
+    formJsonFolder: IFolder,
+    node: ILegacyDocumentationNode,
+    prefix?: string
+  ) {
     for (const childNode of node.nodes) {
       if (childNode.name) {
         const name = this.getFormFileName(childNode.name);
 
         const formDocNode = this.getFormFromDocNode(childNode, childNode.name);
 
-        const sourceFormDocNode = await this.getOriginalFormDefinition(formJsonFolder, name, prefix);
-        await this.annotateFormJson(formDocNode, name, prefix, sourceFormDocNode);
+        const genFormDocNode = await this.getOriginalFormDefinition(formJsonFolder, name, prefix);
+        await this.annotateFormJson(formDocNode, name, prefix, genFormDocNode);
         await this.mergeToFile(formJsonFolder, name, formDocNode, prefix);
       }
     }
@@ -929,7 +976,13 @@ export default class FormJsonDocumentationGenerator {
     return StorageUtilities.getJsonObject(file) as IFormDefinition | undefined;
   }
 
-  public async mergeToFile(formJsonFolder: IFolder, name: string, formDefNode: IFormDefinition, categoryName?: string) {
+  public async mergeToFile(
+    formJsonFolder: IFolder,
+    name: string,
+    formDefNode: IFormDefinition,
+    categoryName?: string,
+    isSchema?: boolean
+  ) {
     if (categoryName && categoryName.length > 0) {
       formJsonFolder = formJsonFolder.ensureFolder(categoryName);
     }
@@ -943,14 +996,26 @@ export default class FormJsonDocumentationGenerator {
 
     let jsonO = StorageUtilities.getJsonObject(file);
 
-    if (jsonO) {
-      (jsonO as IFormDefinition).source = formDefNode;
+    if (isSchema) {
+      if (jsonO) {
+        (jsonO as IFormDefinition).generatedFromSchema_doNotEdit = formDefNode;
+      } else {
+        jsonO = {
+          id: formDefNode.id,
+          fields: [],
+          generatedFromSchema_doNotEdit: formDefNode,
+        };
+      }
     } else {
-      jsonO = {
-        id: formDefNode.id,
-        fields: [],
-        source: formDefNode,
-      };
+      if (jsonO) {
+        (jsonO as IFormDefinition).generated_doNotEdit = formDefNode;
+      } else {
+        jsonO = {
+          id: formDefNode.id,
+          fields: [],
+          generated_doNotEdit: formDefNode,
+        };
+      }
     }
 
     file.setContent(JSON.stringify(jsonO, undefined, 2));
@@ -994,22 +1059,22 @@ export default class FormJsonDocumentationGenerator {
 
     if (prefix === "entity" && isMinecraftComponent) {
       await this.addVanillaMatches(formDefNode, canonName, [
-        AnnotationCategories.entityComponentDependent,
-        AnnotationCategories.entityComponentDependentInGroup,
+        AnnotationCategory.entityComponentDependent,
+        AnnotationCategory.entityComponentDependentInGroup,
       ]);
       await this.addSamplesMatches(formDefNode, canonName, [
-        AnnotationCategories.entityComponentDependent,
-        AnnotationCategories.entityComponentDependentInGroup,
+        AnnotationCategory.entityComponentDependent,
+        AnnotationCategory.entityComponentDependentInGroup,
       ]);
     } else if (prefix === "item" && isMinecraftComponent) {
-      await this.addVanillaMatches(formDefNode, canonName, [AnnotationCategories.itemComponentDependent]);
-      await this.addSamplesMatches(formDefNode, canonName, [AnnotationCategories.itemComponentDependent]);
+      await this.addVanillaMatches(formDefNode, canonName, [AnnotationCategory.itemComponentDependent]);
+      await this.addSamplesMatches(formDefNode, canonName, [AnnotationCategory.itemComponentDependent]);
     } else if (prefix === "block" && isMinecraftComponent) {
-      await this.addVanillaMatches(formDefNode, canonName, [AnnotationCategories.blockComponentDependent]);
-      await this.addSamplesMatches(formDefNode, canonName, [AnnotationCategories.blockComponentDependent]);
+      await this.addVanillaMatches(formDefNode, canonName, [AnnotationCategory.blockComponentDependent]);
+      await this.addSamplesMatches(formDefNode, canonName, [AnnotationCategory.blockComponentDependent]);
     } else if (prefix === "entityfilters") {
-      await this.addVanillaMatches(formDefNode, canonName, [AnnotationCategories.entityFilter]);
-      await this.addSamplesMatches(formDefNode, canonName, [AnnotationCategories.entityFilter]);
+      await this.addVanillaMatches(formDefNode, canonName, [AnnotationCategory.entityFilter]);
+      await this.addSamplesMatches(formDefNode, canonName, [AnnotationCategory.entityFilter]);
     }
 
     if (formDefNode.samples) {
@@ -1183,8 +1248,8 @@ export default class FormJsonDocumentationGenerator {
     }
   }
 
-  public async addVanillaMatches(formDefNode: IFormDefinition, name: string, annotations: AnnotationCategories[]) {
-    const vanillaMatches = await Database.getPreviewVanillaMatches(name, annotations);
+  public async addVanillaMatches(formDefNode: IFormDefinition, name: string, annotations: AnnotationCategory[]) {
+    const vanillaMatches = await Database.getPreviewVanillaMatches(name, true, annotations);
 
     if (vanillaMatches && vanillaMatches.length > 0) {
       if (!formDefNode.samples) {
@@ -1217,8 +1282,8 @@ export default class FormJsonDocumentationGenerator {
     }
   }
 
-  public async addSamplesMatches(formDefNode: IFormDefinition, name: string, annotations: AnnotationCategories[]) {
-    const samplesMatches = await Database.getSamplesMatches(name, annotations);
+  public async addSamplesMatches(formDefNode: IFormDefinition, name: string, annotations: AnnotationCategory[]) {
+    const samplesMatches = await Database.getSamplesMatches(name, true, annotations);
 
     if (samplesMatches && samplesMatches.length > 0) {
       if (!formDefNode.samples) {
@@ -1257,7 +1322,7 @@ export default class FormJsonDocumentationGenerator {
       if (attributeName === nodeName && childItem !== undefined) {
         exampleList.push({ path: path + nodeName + "/", content: childItem });
       } else if (attributeName === "test" && "minecraft:" + childItem === nodeName) {
-        exampleList.push({ path: path, content: JSON.stringify(source) });
+        exampleList.push({ path: path, content: source });
       } else if (typeof childItem === "object") {
         this.appendNodesByName(exampleList, nodeName, childItem, path + attributeName + "/");
       }

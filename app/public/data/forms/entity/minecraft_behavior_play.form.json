@@ -29,7 +29,7 @@
       "id": "friend_types",
       "title": "Friend Types",
       "description": "The entity type(s) to consider when searching for a potential friend to play with.",
-      "dataType": 17,
+      "dataType": 20,
       "samples": {
         "/vanilla/behavior_pack/entities/villager_v2.json": [
           {

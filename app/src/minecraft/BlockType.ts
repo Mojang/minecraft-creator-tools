@@ -406,8 +406,9 @@ export default class BlockType implements IManagedComponentSetItem {
 
     if (!this._managed[id]) {
       const comp = this.behaviorPackBlockTypeDef.components[id];
+
       if (comp) {
-        this._managed[id] = new ManagedComponent(id, comp);
+        this._managed[id] = new ManagedComponent(this.behaviorPackBlockTypeDef.components, id, comp);
       }
     }
 
@@ -444,15 +445,25 @@ export default class BlockType implements IManagedComponentSetItem {
     return componentSet;
   }
 
-  addComponent(id: string, component: IManagedComponent) {
+  addComponent(
+    id: string,
+    componentOrData: ManagedComponent | IComponent | string | string[] | boolean | number[] | number | undefined
+  ) {
     this._ensureBehaviorPackDataInitialized();
 
     const bpData = this.behaviorPackBlockTypeDef as IBlockTypeBehaviorPack;
 
-    bpData.components[id] = component.getData();
-    this._managed[id] = component;
+    const mc =
+      componentOrData instanceof ManagedComponent
+        ? componentOrData
+        : new ManagedComponent(bpData.components, id, componentOrData);
 
-    this._onComponentAdded.dispatch(this, component);
+    bpData.components[id] = mc.getData();
+    this._managed[id] = mc;
+
+    this._onComponentAdded.dispatch(this, mc);
+
+    return mc;
   }
 
   removeComponent(id: string) {
@@ -460,7 +471,9 @@ export default class BlockType implements IManagedComponentSetItem {
       return;
     }
 
-    const newBehaviorPacks: { [name: string]: IComponent | string | number | undefined } = {};
+    const newBehaviorPacks: {
+      [name: string]: IComponent | string | string[] | boolean | number[] | number | undefined;
+    } = {};
     const newComponents: { [name: string]: IManagedComponent | undefined } = {};
 
     for (const name in this.behaviorPackBlockTypeDef.components) {

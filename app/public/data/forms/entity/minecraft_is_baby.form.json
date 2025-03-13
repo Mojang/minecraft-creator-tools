@@ -1,5 +1,58 @@
 {
-  "fields": [],
+  "fields": [
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/villager_v2.json": [
+          {
+            "path": "/minecraft:entity/component_groups/play_schedule_villager/minecraft:behavior.play/friend_types/0/filters/all_of/1/",
+            "content": "is_baby"
+          }
+        ]
+      }
+    },
+    {
+      "id": "subject",
+      "title": "Subject",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/villager_v2.json": [
+          {
+            "path": "/minecraft:entity/component_groups/play_schedule_villager/minecraft:behavior.play/friend_types/0/filters/all_of/1/",
+            "content": "other"
+          }
+        ]
+      }
+    },
+    {
+      "id": "operator",
+      "title": "Operator",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/villager_v2.json": [
+          {
+            "path": "/minecraft:entity/component_groups/play_schedule_villager/minecraft:behavior.play/friend_types/0/filters/all_of/1/",
+            "content": "=="
+          }
+        ]
+      }
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/villager_v2.json": [
+          {
+            "path": "/minecraft:entity/component_groups/play_schedule_villager/minecraft:behavior.play/friend_types/0/filters/all_of/1/",
+            "content": true
+          }
+        ]
+      }
+    }
+  ],
   "description": "Sets that this entity is a baby. This is used to set the is_baby value for use in query functions like Molang and Filters.",
   "title": "Is Baby",
   "samples": {
@@ -204,7 +257,12 @@
     "/vanilla/behavior_pack/entities/villager_v2.json": [
       {
         "path": "/minecraft:entity/component_groups/play_schedule_villager/minecraft:behavior.play/friend_types/0/filters/all_of/1/",
-        "content": "{\"test\":\"is_baby\",\"subject\":\"other\",\"operator\":\"==\",\"value\":true}"
+        "content": {
+          "test": "is_baby",
+          "subject": "other",
+          "operator": "==",
+          "value": true
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/baby/minecraft:is_baby/",

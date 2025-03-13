@@ -14,6 +14,7 @@ import Project from "../app/Project";
 import Database from "./Database";
 import Utilities from "../core/Utilities";
 import IProjectItemRelationship from "../app/IProjectItemRelationship";
+import TextureDefinition from "./TextureDefinition";
 
 export default class ParticleEffectResourceDefinition {
   private _data?: IParticleEffectWrapper;
@@ -57,7 +58,7 @@ export default class ParticleEffectResourceDefinition {
     return this._data.particle_effect.description;
   }
 
-  public get texturesList() {
+  public getCanonicalizedTexturesList() {
     if (
       !this.description ||
       !this.description.basic_render_parameters ||
@@ -66,7 +67,9 @@ export default class ParticleEffectResourceDefinition {
       return undefined;
     }
 
-    return [this.description.basic_render_parameters.texture];
+    const result = TextureDefinition.canonicalizeTexturePath(this.description.basic_render_parameters.texture);
+
+    return result ? [result] : [];
   }
 
   public async getFormatVersionIsCurrent() {
@@ -202,13 +205,7 @@ export default class ParticleEffectResourceDefinition {
     if (this.file && this.file.parentFolder) {
       let parentFolder = this.file.parentFolder;
 
-      while (parentFolder.name !== "particles" && parentFolder.parentFolder) {
-        parentFolder = parentFolder.parentFolder;
-      }
-
-      if (parentFolder.parentFolder) {
-        packRootFolder = parentFolder.parentFolder;
-      }
+      packRootFolder = StorageUtilities.getParentOfParentFolderNamed("particles", parentFolder);
     }
 
     return packRootFolder;
@@ -234,7 +231,7 @@ export default class ParticleEffectResourceDefinition {
 
     let packRootFolder = this.getPackRootFolder();
 
-    let textureList = this.texturesList;
+    let textureList = this.getCanonicalizedTexturesList();
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
@@ -256,11 +253,9 @@ export default class ParticleEffectResourceDefinition {
 
     if (textureList) {
       for (const texturePath of textureList) {
-        item.addUnfulfilledRelationship(
-          texturePath,
-          ProjectItemType.texture,
-          await Database.isVanillaToken(texturePath)
-        );
+        const isVanillaToken = await Database.isVanillaToken(texturePath);
+
+        item.addUnfulfilledRelationship(texturePath, ProjectItemType.texture, isVanillaToken);
       }
     }
   }
