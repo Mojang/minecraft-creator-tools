@@ -2210,6 +2210,12 @@
       "gIx": 3
     },
     {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1119,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 1,
@@ -2290,6 +2296,58 @@
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1110,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1110,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1110,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 144,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 144,
+      "m": "minimum /minecraft:spawn_rules/conditions/1/minecraft:distance_filter/min must be >= 24",
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 144,
+      "m": "minimum /minecraft:spawn_rules/conditions/2/minecraft:distance_filter/min must be >= 24",
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 144,
+      "m": "minimum /minecraft:spawn_rules/conditions/3/minecraft:distance_filter/min must be >= 24",
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 144,
+      "m": "minimum /minecraft:spawn_rules/conditions/4/minecraft:distance_filter/min must be >= 24",
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+    },
+    {
       "iTp": 6,
       "gId": "UNLINK",
       "gIx": 205,
@@ -2612,6 +2670,24 @@
       "d": "aop_mobs:robot"
     },
     {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1128,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1128,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1128,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
+    },
+    {
       "iTp": 6,
       "gId": "UNLINK",
       "gIx": 205,
@@ -2626,6 +2702,117 @@
       "m": "Link to vanilla Model item; avoid if possible",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
       "d": "geometry.sheep.sheared.v1.8"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 132,
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
+      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"te"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 132,
+      "m": "additionalProperties  must NOT have additional properties",
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
+      "d": "(additionalProperty: geometry.aop_mobs.nardolphle)",
+      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"te"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 132,
+      "m": "if  must match \"else\" schema",
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
+      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"te"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 132,
+      "m": "if  must match \"else\" schema",
+      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
+      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"te"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 133,
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n   "
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 133,
+      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color type must be string",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n   "
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 133,
+      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient type must be array",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "c": "{\n  \"0.0\": [\n    1,\n    0,\n    0\n  ],\n  \"0.25\": [\n    1,\n    0,\n    0\n  ],\n  \"0.5\": [\n    0,\n    1,"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 133,
+      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient/0.0 type must be string",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "c": "[\n  1,\n  0,\n  0\n]"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 133,
+      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient/0.25 type must be string",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "c": "[\n  1,\n  0,\n  0\n]"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 133,
+      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient/0.5 type must be string",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "c": "[\n  0,\n  1,\n  0\n]"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 133,
+      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient/1.0 type must be string",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "c": "[\n  0,\n  0,\n  1\n]"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 133,
+      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient type must be array",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "c": "{\n  \"0.0\": [\n    1,\n    0,\n    0\n  ],\n  \"0.25\": [\n    1,\n    0,\n    0\n  ],\n  \"0.5\": [\n    0,\n    1,"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 133,
+      "m": "oneOf /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient must match exactly one schema in oneOf",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "c": "{\n  \"0.0\": [\n    1,\n    0,\n    0\n  ],\n  \"0.25\": [\n    1,\n    0,\n    0\n  ],\n  \"0.5\": [\n    0,\n    1,"
+    },
+    {
+      "iTp": 4,
+      "gId": "JSON",
+      "gIx": 133,
+      "m": "anyOf /particle_effect/components/minecraft:particle_appearance_tinting/color must match a schema in anyOf",
+      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+      "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n   "
     },
     {
       "iTp": 6,
@@ -2672,6 +2859,11 @@
     {
       "iTp": 0,
       "gId": "UNKJSON",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "JSON",
       "gIx": 1
     },
     {
@@ -9214,5 +9406,6 @@
   },
   "generatorName": "Minecraft Creator Tools",
   "suite": 0,
+  "subsetReports": [],
   "generatorVersion": "0.2.9"
 }
