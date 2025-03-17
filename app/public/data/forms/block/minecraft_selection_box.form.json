@@ -23,6 +23,14 @@
       "dataType": 11
     }
   ],
+  "scalarField": {
+    "id": "boolean",
+    "title": "Object enabled",
+    "tags": [
+      "presence"
+    ],
+    "dataType": 1
+  },
   "description": "Defines the area of the block that is selected by the player's cursor. If set to true, default values are used. If set to false, this block is not selectable by the player's cursor. If this component is omitted, default values are used.",
   "title": "Selection Box",
   "samples": {
@@ -74,10 +82,5 @@
         "content": true
       }
     ]
-  },
-  "scalarField": {
-    "id": "boolean",
-    "title": "Boolean",
-    "dataType": 1
   }
 }

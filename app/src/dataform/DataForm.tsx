@@ -226,17 +226,23 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
 
     if (this.props.getsetPropertyObject !== undefined) {
+      if (name === "__scalar") {
+      }
       value = this.props.getsetPropertyObject.getProperty(name);
     }
 
+    let directObject: { [name: string]: any } | undefined = undefined;
+
     if (this.props.directObject !== undefined) {
-      value = this.props.directObject[name];
+      directObject = this._upscaleDirectObject(this.props.directObject);
+
+      value = directObject[name];
     }
 
     if (value === undefined) {
       if (typeof defaultValue === "object") {
-        if (this.props.directObject && this.props.directObject[name] === undefined) {
-          this.props.directObject[name] = defaultValue;
+        if (directObject && directObject[name] === undefined) {
+          directObject[name] = defaultValue;
         }
 
         if (this.props.getsetPropertyObject !== undefined) {
@@ -265,8 +271,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       value = this.props.getsetPropertyObject.getProperty(name);
     }
 
+    let directObject: { [name: string]: any } | undefined = undefined;
+
     if (this.props.directObject !== undefined) {
-      value = this.props.directObject[name];
+      directObject = this._upscaleDirectObject(this.props.directObject);
+    }
+
+    if (directObject !== undefined) {
+      value = directObject[name];
     }
 
     if (value === undefined) {
@@ -290,6 +302,10 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
   _getFieldById(id: string) {
     const fields = this.props.definition.fields;
+
+    if (id === "__scalar" && this.props.definition.scalarField) {
+      return this.props.definition.scalarField;
+    }
 
     for (let i = 0; i < fields.length; i++) {
       const field = fields[i];
@@ -332,15 +348,21 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     const protogsObj = this.props.getsetPropertyObject;
 
     if (protogsObj !== undefined) {
-      protogsObj.setProperty(id, val);
+      if (id === "__scalar") {
+        protogsObj.setBaseValue(val);
+      } else {
+        protogsObj.setProperty(id, val);
+      }
     }
 
-    const dirObj = this.props.directObject;
+    let dirObj = this.props.directObject;
 
     if (dirObj !== undefined) {
+      dirObj = this._upscaleDirectObject(dirObj);
+
       dirObj[id] = val;
 
-      this._fixupDirectObject(dirObj);
+      this._downscaleDirectObject(dirObj);
     }
 
     Log.assert(
@@ -355,23 +377,75 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     this.forceUpdate();
   }
 
-  _fixupDirectObject(directObject: { [propName: string]: any }) {
+  _directObjectHasUniqueValues(directObject: { [propName: string]: any }) {
     const fields = this.props.definition.fields;
 
     for (let i = 0; i < fields.length; i++) {
       const field = fields[i];
 
-      if (field.undefinedIfEmpty) {
-        let hasContent = false;
-
-        for (const propVal in directObject[field.id]) {
-          if (propVal.length !== undefined && propVal.length > 0) {
-            hasContent = true;
-          }
+      if (field.id !== "__scalar") {
+        if (directObject[field.id] !== undefined && directObject[field.id] !== field.defaultValue) {
+          return true;
         }
+      }
+    }
 
-        if (!hasContent) {
-          directObject[field.id] = undefined;
+    return false;
+  }
+
+  _upscaleDirectObject(directObject: { [propName: string]: any } | string | number | boolean): { [name: string]: any } {
+    if (typeof directObject === "string" || typeof directObject === "number" || typeof directObject === "boolean") {
+      if (this.props.definition.scalarField) {
+        return {
+          __scalar: directObject,
+        };
+      }
+
+      if (this.props.definition.scalarFieldUpgradeName) {
+        const fi = DataFormUtilities.getFieldById(this.props.definition, this.props.definition.scalarFieldUpgradeName);
+
+        if (fi) {
+          const retObj: { [name: string]: string | number | boolean } = {};
+
+          retObj[fi.id] = directObject;
+
+          return retObj;
+        }
+      }
+
+      return { value: directObject };
+    }
+
+    return directObject;
+  }
+
+  _downscaleDirectObject(directObject: { [propName: string]: any }) {
+    const fields = this.props.definition.fields;
+
+    const hasUniqueValues = this._directObjectHasUniqueValues(directObject);
+
+    for (let i = 0; i < fields.length; i++) {
+      const field = fields[i];
+
+      if (field.id === "__scalar") {
+        if (!hasUniqueValues && directObject["__scalar"]) {
+          directObject = directObject["__scalar"];
+        } else {
+          directObject["__scalar"] = undefined;
+        }
+      } else {
+        if (field.undefinedIfEmpty) {
+          let hasContent = false;
+
+          for (const propVal in directObject[field.id]) {
+            if (propVal.length !== undefined && propVal.length > 0) {
+              hasContent = true;
+            }
+          }
+
+          if (!hasContent) {
+            directObject[field.id] = undefined;
+          }
         }
       }
     }
@@ -669,17 +743,25 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
       newBoolVal = !newBoolVal;
 
-      protogsObj.setProperty(id, newBoolVal);
+      if (id === "__scalar") {
+        protogsObj.setBaseValue(newBoolVal);
+      } else {
+        protogsObj.setProperty(id, newBoolVal);
+      }
     }
 
-    const dirObj = this.props.directObject;
+    let dirObj = this.props.directObject;
 
     if (dirObj !== undefined) {
       let newBoolVal: boolean | number = val;
 
       newBoolVal = !newBoolVal;
 
+      dirObj = this._upscaleDirectObject(dirObj);
+
       dirObj[id] = newBoolVal;
+
+      this._downscaleDirectObject(dirObj);
     }
 
     if (this.props.onPropertyChanged !== undefined) {
@@ -729,6 +811,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
                   if (title === content) {
                     const val = lookupSet[k].id;
+
                     this._setPropertyValue(propDef.id, val);
                   }
                 }
@@ -757,17 +840,25 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     const directPropO = this.props.getsetPropertyObject;
 
     if (directPropO !== undefined) {
-      directPropO.setProperty(id, val);
+      if (id === "__scalar") {
+        directPropO.setBaseValue(val);
+      } else {
+        directPropO.setProperty(id, val);
+      }
     }
 
-    const directO = this.props.directObject;
+    let directO = this.props.directObject;
 
     if (directO !== undefined) {
-      directO[id] = val;
-    }
+      directO = this._upscaleDirectObject(directO);
 
-    if (this.props.onPropertyChanged !== undefined) {
-      this.props.onPropertyChanged(this.props, { id: id, value: val }, val);
+      directO[id] = val;
+
+      this._downscaleDirectObject(directO);
+
+      if (this.props.onPropertyChanged !== undefined) {
+        this.props.onPropertyChanged(this.props, { id: id, value: val }, val);
+      }
     }
   }
 
@@ -942,14 +1033,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
 
     if (propertyName) {
-      const directO = this.props.directObject;
+      let directO = this.props.directObject;
 
       if (directO !== undefined) {
+        directO = this._upscaleDirectObject(directO);
+
         if (!directO[propertyName]) {
           directO[propertyName] = {};
         }
-
-        this._fixupDirectObject(directO);
 
         if (newValue !== directO[propertyName][propertyIndex]) {
           const obj = directO[propertyName];
@@ -958,6 +1049,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             this.props.onPropertyChanged(this.props, { id: props.formId, value: newValue }, obj[propertyIndex]);
           }
         }
+
+        this._downscaleDirectObject(directO);
       }
     }
   }
@@ -969,9 +1062,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       return;
     }
 
-    const directO = this.props.directObject;
+    let directO = this.props.directObject;
 
     if (directO !== undefined && property.id !== undefined) {
+      directO = this._upscaleDirectObject(directO);
+
       let obj = directO[propId];
 
       if (!obj) {
@@ -984,7 +1079,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         obj[property.id] = newValue;
       }
 
-      this._fixupDirectObject(directO);
+      this._downscaleDirectObject(directO);
 
       // this might have been changed in the sub text area, but fire the onpropertychanged in any case.
       if (this.props.onPropertyChanged !== undefined) {
@@ -1052,8 +1147,20 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     this.checkboxNames = [];
 
     if (this.props.definition !== undefined) {
-      for (const propIndex in this.props.definition.fields) {
-        const field = this.props.definition.fields[propIndex];
+      const allFields = this.props.definition.fields.slice();
+
+      if (
+        this.props.definition.scalarField &&
+        (this.props.definition.scalarField.dataType !== FieldDataType.boolean ||
+          !this.props.definition.scalarField.tags ||
+          !this.props.definition.scalarField.tags.includes("presence"))
+      ) {
+        this.props.definition.scalarField.id = "__scalar";
+        allFields.push(this.props.definition.scalarField);
+      }
+
+      for (let propIndex = 0; propIndex < allFields.length; propIndex++) {
+        const field = allFields[propIndex];
 
         if (!field.visibility || FieldUtilities.evaluate(this.props.definition, field.visibility, this.props)) {
           let curVal = FieldUtilities.getFieldValue(field, this.props);
@@ -1207,7 +1314,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               const dropdown = (
                 <FormDropdown
                   label={title}
-                  id={propIndex}
+                  id={propIndex.toString()}
                   items={items}
                   key={"frs" + baseKey + title + propIndex}
                   fluid={true}

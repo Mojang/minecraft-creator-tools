@@ -625,6 +625,10 @@ export default class FormJsonDocumentationGenerator {
       formObj.isDeprecated = genForm.isDeprecated;
     }
 
+    if (!formObj.tags) {
+      formObj.tags = genForm.tags;
+    }
+
     if (!formObj.isInternal) {
       formObj.isInternal = genForm.isInternal;
     }
@@ -673,6 +677,10 @@ export default class FormJsonDocumentationGenerator {
 
             if (!targetField.humanifyValues) {
               targetField.humanifyValues = field.humanifyValues;
+            }
+
+            if (!targetField.tags) {
+              targetField.tags = field.tags;
             }
 
             if (!targetField.minLength) {

@@ -865,6 +865,14 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     }
   }
 
+  getBaseValue(): any {
+    throw new Error("Method not implemented.");
+  }
+
+  setBaseValue(value: any): void {
+    throw new Error("Method not implemented.");
+  }
+
   public setProperty(id: string, newVal: any): any {
     switch (id.toLowerCase()) {
       case "spawnX":

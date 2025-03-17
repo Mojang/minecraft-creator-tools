@@ -290,6 +290,8 @@ export default class SoundDefinitionCatalogDefinition {
       relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
     }
 
+    relativePath = AudioDefinition.canonicalizeAudioPath(relativePath);
+
     return relativePath;
   }
 
@@ -427,7 +429,7 @@ export default class SoundDefinitionCatalogDefinition {
         await candItem.ensureStorage();
 
         if (candItem.file) {
-          let relativePath = AudioDefinition.canonicalizeAudioPath(this.getRelativePath(candItem.file, packRootFolder));
+          let relativePath = this.getRelativePath(candItem.file, packRootFolder);
 
           if (relativePath) {
             if (soundPathList.includes(relativePath)) {

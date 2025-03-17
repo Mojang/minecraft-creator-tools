@@ -30,9 +30,18 @@ export class ManagedComponent implements IManagedComponent {
     return this._data;
   }
 
+  getBaseValue() {
+    return this._data;
+  }
+
   setData(newData: IComponent | string | string[] | boolean | number[] | number | undefined) {
     this._parent[this.id] = newData;
     this._data = newData;
+  }
+
+  setBaseValue(value: any): void {
+    this._parent[this.id] = value;
+    this._data = value;
   }
 
   getProperty(id: string) {

@@ -120,6 +120,14 @@
       }
     }
   ],
+  "scalarField": {
+    "id": "boolean",
+    "title": "Object enabled",
+    "tags": [
+      "presence"
+    ],
+    "dataType": 1
+  },
   "description": "Describes the destructible by mining properties for this block. If set to true, the block will take the default number of seconds to destroy. If set to false, this block is indestructible by mining. If the component is omitted, the block will take the default number of seconds to destroy.",
   "title": "Destructible By Mining",
   "samples": {
@@ -187,10 +195,5 @@
         }
       }
     ]
-  },
-  "scalarField": {
-    "id": "boolean",
-    "title": "Boolean",
-    "dataType": 1
   }
 }

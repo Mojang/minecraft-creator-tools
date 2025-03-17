@@ -43,6 +43,14 @@
       }
     }
   ],
+  "scalarField": {
+    "id": "boolean",
+    "title": "Object enabled",
+    "tags": [
+      "presence"
+    ],
+    "dataType": 1
+  },
   "description": "Describes the flammable properties for this block. If set to true, default values are used. If set to false, or if this component is omitted, the block will not be able to catch on fire naturally from neighbors, but it can still be directly ignited.",
   "title": "Flammable",
   "samples": {
@@ -109,10 +117,5 @@
         }
       }
     ]
-  },
-  "scalarField": {
-    "id": "boolean",
-    "title": "Boolean",
-    "dataType": 1
   }
 }

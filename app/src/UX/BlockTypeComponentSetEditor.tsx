@@ -305,7 +305,15 @@ export default class BlockTypeComponentSetEditor extends Component<
   }
 
   isVisualComponent(value: string) {
-    if (value === "minecraft:geometry" || value === "minecraft:material_instances") {
+    if (
+      value === "minecraft:geometry" ||
+      value === "minecraft:material_instances" ||
+      value === "minecraft:map_color" ||
+      value === "minecraft:bone_visibility" ||
+      value === "minecraft:transformation" ||
+      value === "minecraft:item_visual" ||
+      value === "minecraft:unit_cube"
+    ) {
       return true;
     }
 
@@ -383,7 +391,11 @@ export default class BlockTypeComponentSetEditor extends Component<
           onCancel={this._handleDialogCancel}
           onConfirm={this._handleAddComponentOK}
           content={
-            <BlockTypeAddComponent onNewComponentSelected={this.setSelectedNewComponentId} theme={this.props.theme} />
+            <BlockTypeAddComponent
+              onNewComponentSelected={this.setSelectedNewComponentId}
+              theme={this.props.theme}
+              isVisual={this.props.isVisualsMode}
+            />
           }
           header={"Add component"}
         />

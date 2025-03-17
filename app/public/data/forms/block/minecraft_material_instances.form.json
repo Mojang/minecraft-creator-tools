@@ -1,4 +1,7 @@
 {
+  "tags": [
+    "visual"
+  ],
   "customField": {
     "id": "<custom material id>",
     "title": "<Custom Material Instance Id>",

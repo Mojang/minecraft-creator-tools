@@ -374,7 +374,7 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
       }
 
       if (stateList.length === 0) {
-        message = <div>Select Add state to add custom properties to this block.</div>;
+        message = <div className="btse-select">Select Add state to add custom properties to this block.</div>;
       }
 
       let title = <></>;

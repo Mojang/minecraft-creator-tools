@@ -71,6 +71,16 @@ export default class FieldUtilities {
     const gsObj = container.getsetPropertyObject;
 
     if (gsObj !== undefined) {
+      if (field.id === "__scalar") {
+        const res = gsObj.getBaseValue();
+
+        if (typeof res === "object") {
+          return undefined;
+        }
+
+        return res;
+      }
+
       curVal = gsObj.getProperty(field.id);
 
       if (curVal === undefined && field.altId !== undefined) {
@@ -81,6 +91,14 @@ export default class FieldUtilities {
     const dirObj = container.directObject;
 
     if (dirObj !== undefined) {
+      if (field.id === "__scalar") {
+        if (typeof dirObj === "object") {
+          return undefined;
+        }
+
+        return dirObj;
+      }
+
       curVal = dirObj[field.id];
     }
 

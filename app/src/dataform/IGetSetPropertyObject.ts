@@ -8,4 +8,7 @@ export default interface IGetSetPropertyObject {
 
   getProperty(id: string): any;
   setProperty(id: string, value: any): void;
+
+  setBaseValue(value: any): void;
+  getBaseValue(): any;
 }

@@ -1,8 +1,9 @@
 {
   "fields": [],
+  "isDeprecated": true,
   "scalarField": {
-    "id": "string",
-    "title": "String",
+    "id": "_breathability",
+    "title": "Breathable as",
     "dataType": 2,
     "mustMatchChoices": true,
     "choices": [
