@@ -357,7 +357,7 @@ export default class SoundCatalogDefinition implements IDefinition {
         if (candItem.file) {
           const soundDef = await SoundDefinitionCatalogDefinition.ensureOnFile(candItem.file);
 
-          const soundSetNames = soundDef?.soundDefinitionSetNameList;
+          const soundSetNames = soundDef?.getSoundDefinitionSetNameList();
           if (soundSetNames) {
             for (const soundEventName of soundEventList) {
               if (soundSetNames.includes(soundEventName)) {

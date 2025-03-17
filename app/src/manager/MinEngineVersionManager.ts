@@ -18,6 +18,7 @@ import ContentIndex from "../core/ContentIndex";
 import SkinManifestDefinition from "../minecraft/SkinManifestDefinition";
 import WorldTemplateManifestDefinition from "../minecraft/WorldTemplateManifestDefinition";
 import PersonaManifestDefinition from "../minecraft/PersonaManifestDefinition";
+import ProjectItemUtilities from "../app/ProjectItemUtilities";
 
 export enum MinEngineVersionManagerTest {
   behaviorPackMinEngineVersion = 100,
@@ -169,8 +170,6 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
     let foundWorldTemplateManifest = false;
     let foundPersonaManifest = false;
 
-    let foundError = false;
-
     if (!ver) {
       infoItems.push(
         new ProjectInfoItem(
@@ -227,8 +226,18 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                   pi
                 )
               );
-              foundError = true;
             } else {
+              infoItems.push(
+                new ProjectInfoItem(
+                  InfoItemType.info,
+                  this.id,
+                  600 + (pi.itemType as number),
+                  ProjectItemUtilities.getDescriptionForType(pi.itemType) + " min_engine_version",
+                  pi,
+                  bpManifest.minEngineVersion
+                )
+              );
+
               const bpVer = bpManifest?.definition?.header.min_engine_version;
 
               if (bpVer[0] < parseInt(verSplit[0])) {
@@ -259,7 +268,6 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                     pi
                   )
                 );
-                foundError = true;
               } else if (bpVer[1] < parseInt(verSplit[1]) - 1) {
                 infoItems.push(
                   new ProjectInfoItem(
@@ -288,7 +296,6 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                     pi
                   )
                 );
-                foundError = true;
               }
             }
           }
@@ -315,6 +322,17 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
                 )
               );
             } else {
+              infoItems.push(
+                new ProjectInfoItem(
+                  InfoItemType.info,
+                  this.id,
+                  600 + (pi.itemType as number),
+                  ProjectItemUtilities.getDescriptionForType(pi.itemType) + " format_version",
+                  pi,
+                  rpManifest.minEngineVersion
+                )
+              );
+
               const rpVer = rpManifest?.definition?.header.min_engine_version;
 
               if (rpVer[0] < parseInt(verSplit[0])) {
@@ -419,26 +437,11 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
     ) {
       infoItems.push(
         new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
+          InfoItemType.error,
           this.id,
           MinEngineVersionManagerTest.noPackManifestFound,
           "No resource/behavior/skin pack manifest or world template manifest was found."
         )
-      );
-    }
-
-    if (foundError) {
-      infoItems.push(
-        new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
-          this.id,
-          MinEngineVersionManagerTest.versionProcessingErrorsFound,
-          "Errors found with minimum engine version check."
-        )
-      );
-    } else if (foundError) {
-      infoItems.push(
-        new ProjectInfoItem(InfoItemType.testCompleteSuccess, this.id, 262, "Pack manifest/version checks passes.")
       );
     }
 

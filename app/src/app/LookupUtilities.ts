@@ -9,6 +9,9 @@ export default class LookupUtilities {
   static blockTypeRefs: ISimpleReference[] | undefined = undefined;
   static entityTypeRefs: ISimpleReference[] | undefined = undefined;
   static itemTypeRefs: ISimpleReference[] | undefined = undefined;
+  static soundDefRefs: ISimpleReference[] | undefined = undefined;
+  static terrainTextureRefs: ISimpleReference[] | undefined = undefined;
+  static itemTextureRefs: ISimpleReference[] | undefined = undefined;
 
   static async getLookup(lookupId: string): Promise<ISimpleReference[] | undefined> {
     switch (lookupId) {
@@ -20,6 +23,12 @@ export default class LookupUtilities {
 
       case "itemType":
         return await this.getItemTypeReferences();
+
+      case "soundDefinition":
+        return await this.getSoundDefinitionReferences();
+
+      case "terrainTexture":
+        return await this.getTerrainTextureReferences();
 
       case "entityTypeEvents":
         break;
@@ -38,6 +47,93 @@ export default class LookupUtilities {
     }
 
     return undefined;
+  }
+
+  static async getSoundDefinitionReferences() {
+    if (this.soundDefRefs) {
+      return this.soundDefRefs;
+    }
+
+    const soundData = await Database.getVanillaSoundDefinitionCatalog();
+
+    const refs: ISimpleReference[] = [];
+
+    if (soundData) {
+      const soundSets = soundData.getSoundDefinitionSetNameList();
+
+      if (soundSets) {
+        for (const soundSet of soundSets) {
+          refs.push({
+            id: soundSet,
+            title: Utilities.humanifyMinecraftName(soundSet),
+          });
+        }
+      }
+    }
+
+    LookupUtilities.sortReferences(refs);
+
+    this.soundDefRefs = refs;
+
+    return this.soundDefRefs;
+  }
+
+  static async getItemTextureReferences() {
+    if (this.itemTextureRefs) {
+      return this.itemTextureRefs;
+    }
+
+    const itemData = await Database.getVanillaItemTexturesCatalog();
+
+    const refs: ISimpleReference[] = [];
+
+    if (itemData) {
+      const textureRefs = itemData.getTextureReferences();
+
+      if (textureRefs) {
+        for (const textureRef of textureRefs) {
+          refs.push({
+            id: textureRef,
+            title: Utilities.humanifyMinecraftName(textureRef),
+          });
+        }
+      }
+    }
+
+    LookupUtilities.sortReferences(refs);
+
+    this.itemTextureRefs = refs;
+
+    return this.itemTextureRefs;
+  }
+
+  static async getTerrainTextureReferences() {
+    if (this.terrainTextureRefs) {
+      return this.terrainTextureRefs;
+    }
+
+    const terrainData = await Database.getVanillaTerrainTexturesCatalog();
+
+    const refs: ISimpleReference[] = [];
+
+    if (terrainData) {
+      const textureRefs = terrainData.getTextureReferences();
+
+      if (textureRefs) {
+        for (const textureRef of textureRefs) {
+          refs.push({
+            id: textureRef,
+            title: Utilities.humanifyMinecraftName(textureRef),
+          });
+        }
+      }
+    }
+
+    LookupUtilities.sortReferences(refs);
+
+    this.terrainTextureRefs = refs;
+
+    return this.terrainTextureRefs;
   }
 
   static async getBlockTypeReferences() {
@@ -62,6 +158,8 @@ export default class LookupUtilities {
         }
       }
     }
+
+    LookupUtilities.sortReferences(refs);
 
     this.blockTypeRefs = refs;
 
@@ -88,6 +186,8 @@ export default class LookupUtilities {
       }
     }
 
+    LookupUtilities.sortReferences(refs);
+
     LookupUtilities.entityTypeRefs = refs;
 
     return LookupUtilities.entityTypeRefs;
@@ -112,6 +212,8 @@ export default class LookupUtilities {
         }
       }
     }
+
+    LookupUtilities.sortReferences(refs);
 
     LookupUtilities.itemTypeRefs = refs;
 
@@ -138,10 +240,25 @@ export default class LookupUtilities {
     }
   }
 
+  static sortReferences(references: ISimpleReference[]) {
+    references.sort((a: ISimpleReference, b: ISimpleReference) => {
+      if (a.title && b.title) {
+        return a.title.localeCompare(b.title);
+      }
+
+      if (a.id && b.id) {
+        return a.id.toString().localeCompare(b.id.toString());
+      }
+
+      return 0;
+    });
+  }
+
   static getReferencesFromAnnotatedValues(
     paths: { [name: string]: IAnnotatedValue[] } | undefined,
     annotationCategory?: AnnotationCategory,
-    description?: string
+    description?: string,
+    startsWithFilter?: string
   ) {
     if (!paths) {
       return undefined;
@@ -149,10 +266,14 @@ export default class LookupUtilities {
 
     let simpleRefs: ISimpleReference[] = [];
 
-    for (const path in paths) {
+    for (let path in paths) {
       const val = paths[path];
 
-      if (path && val) {
+      if (path && val && (!startsWithFilter || path.startsWith(startsWithFilter))) {
+        if (startsWithFilter) {
+          path = path.substring(startsWithFilter.length);
+        }
+
         for (const annotatedVal of val) {
           if (annotatedVal.annotation === annotationCategory) {
             simpleRefs.push({

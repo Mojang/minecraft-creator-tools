@@ -141,6 +141,12 @@
             "path": "/minecraft:entity/component_groups/minecraft:raid_configuration/minecraft:dweller/",
             "content": "hostile"
           }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:dweller/",
+            "content": "passive"
+          }
         ]
       }
     }
@@ -236,6 +242,20 @@
         "content": {
           "dwelling_type": "village",
           "dweller_role": "hostile",
+          "update_interval_base": 60,
+          "update_interval_variant": 40,
+          "can_find_poi": false,
+          "can_migrate": true,
+          "first_founding_reward": 0
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:dweller/",
+        "content": {
+          "dwelling_type": "village",
+          "dweller_role": "passive",
           "update_interval_base": 60,
           "update_interval_variant": 40,
           "can_find_poi": false,

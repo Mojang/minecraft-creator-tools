@@ -30,6 +30,7 @@ export default class SoundDefinitionCatalogDefinition {
   public get file() {
     return this._file;
   }
+
   public get onLoaded() {
     return this._onLoaded.asEvent();
   }
@@ -148,7 +149,7 @@ export default class SoundDefinitionCatalogDefinition {
     return soundDefPathList;
   }
 
-  public get soundDefinitionSetNameList() {
+  public getSoundDefinitionSetNameList() {
     if (!this._data || !this._data.sound_definitions) {
       return undefined;
     }
@@ -351,7 +352,7 @@ export default class SoundDefinitionCatalogDefinition {
     const retSoundRefs: { [name: string]: ISoundReference[] } = {};
 
     if (relativePath && this._data) {
-      const keys = this.soundDefinitionSetNameList;
+      const keys = this.getSoundDefinitionSetNameList();
 
       for (const key in keys) {
         let soundDefSet = this._data.sound_definitions[key];

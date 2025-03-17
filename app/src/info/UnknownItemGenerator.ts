@@ -14,6 +14,7 @@ export enum UnknownItemGeneratorTest {
 export default class UnknownFileGenerator implements IProjectInfoItemGenerator {
   id = "UNKJSON";
   title = "Unknown JSON";
+  canAlwaysProcess = true;
 
   getTopicData(topicId: number) {
     return {
@@ -29,7 +30,7 @@ export default class UnknownFileGenerator implements IProjectInfoItemGenerator {
     if (projectItem.itemType === ProjectItemType.json) {
       items.push(
         new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
+          InfoItemType.error,
           this.id,
           UnknownItemGeneratorTest.unknownItemTypeFound,
           "Unknown JSON file found",

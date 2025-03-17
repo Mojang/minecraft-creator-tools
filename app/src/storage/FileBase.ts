@@ -15,6 +15,9 @@ export default abstract class FileBase implements IFile {
 
   isDisposed: boolean = false;
 
+  isInErrorState?: boolean;
+  errorStateMessage?: string;
+
   protected _content: string | Uint8Array | null;
 
   #fileContainerStorage: IStorage | null = null;

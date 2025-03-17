@@ -15,9 +15,11 @@
       "  }",
       "}",
       "",
-      "world.beforeEvents.worldInitialize.subscribe(initEvent => {",
-      "    initEvent.blockComponentRegistry.registerCustomComponent('example:newComponentId', new ExampleNewComponent());",
-      "});"
+      "export function initExampleNew() {",
+      "  world.beforeEvents.worldInitialize.subscribe(initEvent => {",
+      "      initEvent.blockComponentRegistry.registerCustomComponent('example:newComponentId', new ExampleNewComponent());",
+      "  });",
+      "}"
     ]
   }
 }

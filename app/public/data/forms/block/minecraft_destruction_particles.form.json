@@ -42,7 +42,8 @@
       "id": "texture",
       "title": "Texture",
       "description": "The texture name used for the particle.",
-      "dataType": 2
+      "dataType": 2,
+      "lookupId": "terrainTexture"
     }
   ],
   "isExperimental": true,

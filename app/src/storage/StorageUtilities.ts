@@ -1077,7 +1077,7 @@ export default class StorageUtilities {
     }
 
     let jsonObject = undefined;
-
+    let didFailToParse = false;
     let contents = file.content;
 
     contents = Utilities.fixJsonContent(contents);
@@ -1085,7 +1085,15 @@ export default class StorageUtilities {
     try {
       jsonObject = JSON.parse(contents);
     } catch (e: any) {
+      file.isInErrorState = true;
+      file.errorStateMessage = e.message;
+      didFailToParse = true;
       Log.fail("Could not parse JSON from '" + file.fullPath + "': " + e.message);
+    }
+
+    if (file.isInErrorState && !didFailToParse && contents.length > 0) {
+      file.isInErrorState = false;
+      file.errorStateMessage = undefined;
     }
 
     return jsonObject;

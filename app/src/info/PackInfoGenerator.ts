@@ -42,6 +42,7 @@ export enum PackInfoGeneratorTest {
 export default class PackInfoGenerator implements IProjectInfoGenerator {
   id = "PACK";
   title = "General info";
+  canAlwaysProcess = true;
 
   getTopicData(topicId: number) {
     return {

@@ -21,6 +21,7 @@ export enum UnlinkedItemInfoGeneratorTest {
 export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "UNLINK";
   title = "Unlinked item info generator";
+  canAlwaysProcess = true;
 
   getTopicData(topicId: number) {
     return {

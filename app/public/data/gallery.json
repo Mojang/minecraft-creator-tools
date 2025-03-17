@@ -75,13 +75,52 @@
       "type": 0
     },
     {
-      "title": "Solid Cube Block with Textures",
+      "title": "Solid Cube Block Starter",
+      "description": "This is a simple solid unit cube block.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/starter_blocks",
+      "logoImage": "resource_packs/starter_blocks/textures/blocks/simple_cube.png",
+      "id": "basicUnitCubeBlock",
+      "nameReplacers": ["simple_cube"],
+      "fileList": [
+        "/behavior_packs/starter_blocks/blocks/simple_cube.json",
+        "/resource_packs/starter_blocks/blocks.json",
+        "/resource_packs/starter_blocks/texts/en_US.lang",
+        "/resource_packs/starter_blocks/textures/blocks/simple_cube.png",
+        "/resource_packs/starter_blocks/textures/terrain_texture.json"
+      ],
+      "type": 2
+    },
+    {
+      "title": "Crate Starter Block",
+      "description": "The crate starter block is an example of a simple block with a custom model.",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/starter_blocks",
+      "logoImage": "resource_packs/starter_blocks/textures/blocks/crate.png",
+      "logoLocation": { "x": 6, "y": 16, "width": 16, "height": 16, "imageWidth": 64 },
+      "id": "crateBlock",
+      "nameReplacers": ["crate"],
+      "fileList": [
+        "/behavior_packs/starter_blocks/blocks/crate.json",
+        "/resource_packs/starter_blocks/blocks.json",
+        "/resource_packs/starter_blocks/texts/en_US.lang",
+        "/resource_packs/starter_blocks/models/blocks/crate.geo.json",
+        "/resource_packs/starter_blocks/textures/blocks/crate.png",
+        "/resource_packs/starter_blocks/textures/terrain_texture.json"
+      ],
+      "type": 2
+    },
+    {
+      "title": "Solid Cube Dice Block",
       "description": "The dice block is a simple solid cube.",
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
       "gitHubFolder": "/custom_blocks",
       "logoImage": "resource_packs/custom_blocks/textures/blocks/die_1.png",
       "id": "basicDieBlock",
+      "nameReplacers": ["die"],
       "fileList": [
         "/behavior_packs/custom_blocks/blocks/die.json",
         "/resource_packs/custom_blocks/blocks.json",
@@ -98,7 +137,7 @@
       "type": 2
     },
     {
-      "title": "Block with Custom Geometry",
+      "title": "Sushi Block",
       "description": "The sushi roll block is an example of a simple block with a custom model.",
       "gitHubOwner": "microsoft",
       "gitHubRepoName": "minecraft-samples",
@@ -106,6 +145,7 @@
       "logoImage": "resource_packs/custom_blocks/textures/blocks/california_roll.png",
       "logoLocation": { "x": 6, "y": 6, "width": 12, "height": 12, "imageWidth": 36 },
       "id": "sushiRollBlock",
+      "nameReplacers": ["sushi", "salmon_roll"],
       "fileList": [
         "/behavior_packs/custom_blocks/blocks/salmon_roll.json",
         "/resource_packs/custom_blocks/blocks.json",

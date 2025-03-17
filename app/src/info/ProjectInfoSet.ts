@@ -47,7 +47,7 @@ export default class ProjectInfoSet {
         return ProjectInfoSuite.currentPlatformVersions;
 
       default:
-        return ProjectInfoSuite.default; // default is all except cooperative add-on
+        return ProjectInfoSuite.default; // default is all infogenerators except cooperative add-on
     }
   }
 
@@ -316,6 +316,8 @@ export default class ProjectInfoSet {
       const genItemsByStoragePath: { [storagePath: string]: ProjectInfoItem[] | undefined } = {};
       const genContentIndex = new ContentIndex();
 
+      genContentIndex.iteration = new Date().getTime();
+
       if (!this.project) {
         Log.throwUnexpectedUndefined("PISGFP");
         return;
@@ -388,8 +390,9 @@ export default class ProjectInfoSet {
         0
       );
 
-      this.addSuccesses(genItems, genItemsByStoragePath, fileGenerators, this._excludeTests);
-      this.addSuccesses(genItems, genItemsByStoragePath, itemGenerators, this._excludeTests);
+      this.addTestSummations(genItems, genItemsByStoragePath, projGenerators, this._excludeTests);
+      this.addTestSummations(genItems, genItemsByStoragePath, itemGenerators, this._excludeTests);
+      this.addTestSummations(genItems, genItemsByStoragePath, fileGenerators, this._excludeTests);
 
       this.items = genItems;
 
@@ -409,6 +412,7 @@ export default class ProjectInfoSet {
       this.info.warningCount = this.getCountByType(InfoItemType.warning);
       this.info.testSuccessCount = this.getCountByType(InfoItemType.testCompleteSuccess);
       this.info.testFailCount = this.getCountByType(InfoItemType.testCompleteFail);
+      this.info.testNotApplicableCount = this.getCountByType(InfoItemType.testCompleteNoApplicableItemsFound);
 
       this.info.errorSummary = this.getSummaryByType(InfoItemType.error);
       this.info.internalProcessingErrorSummary = this.getSummaryByType(InfoItemType.internalProcessingError);
@@ -436,27 +440,93 @@ export default class ProjectInfoSet {
     }
   }
 
-  addSuccesses(
+  addTestSummations(
     genItems: ProjectInfoItem[],
     genItemsByStoragePath: { [storagePath: string]: ProjectInfoItem[] | undefined },
-    fileGenerators: IProjectInfoGeneratorBase[],
+    generators: IProjectInfoGeneratorBase[],
     excludeTests?: string[]
   ) {
-    for (const fileGen of fileGenerators) {
-      if ((!excludeTests || !excludeTests.includes(fileGen.id)) && this.matchesSuite(fileGen)) {
-        const results = ProjectInfoSet.getItemsInCollectionByType(genItems, fileGen.id, InfoItemType.testCompleteFail);
+    for (const gen of generators) {
+      if ((!excludeTests || !excludeTests.includes(gen.id)) && this.matchesSuite(gen)) {
+        const results = ProjectInfoSet.getItemsInCollection(genItems, gen.id);
 
-        if (results.length === 0) {
+        if (results.length === 0 && !gen.canAlwaysProcess) {
           this.pushItem(
             genItems,
             genItemsByStoragePath,
             new ProjectInfoItem(
-              InfoItemType.testCompleteSuccess,
-              fileGen.id,
-              1,
-              `Test ${fileGen.title} completed successfully.`
+              InfoItemType.testCompleteNoApplicableItemsFound,
+              gen.id,
+              2,
+              `No applicable items found for test ${gen.title} (${gen.id}).`
             )
           );
+        } else {
+          let errorCount = 0;
+          let internalErrorCount = 0;
+          let foundTestVerdict = false;
+
+          for (const result of results) {
+            if (
+              result.itemType === InfoItemType.testCompleteFail ||
+              result.itemType === InfoItemType.testCompleteSuccess ||
+              result.itemType === InfoItemType.testCompleteNoApplicableItemsFound
+            ) {
+              foundTestVerdict = true;
+            } else if (result.itemType === InfoItemType.error) {
+              errorCount++;
+            } else if (result.itemType === InfoItemType.internalProcessingError) {
+              internalErrorCount++;
+            }
+          }
+
+          if (!foundTestVerdict) {
+            if (errorCount > 0 && internalErrorCount <= 0) {
+              this.pushItem(
+                genItems,
+                genItemsByStoragePath,
+                new ProjectInfoItem(
+                  InfoItemType.testCompleteFail,
+                  gen.id,
+                  0,
+                  `Found ${errorCount} errors for ${gen.title} (${gen.id}).`
+                )
+              );
+            } else if (internalErrorCount > 0 && errorCount <= 0) {
+              this.pushItem(
+                genItems,
+                genItemsByStoragePath,
+                new ProjectInfoItem(
+                  InfoItemType.testCompleteFail,
+                  gen.id,
+                  0,
+                  `Found ${errorCount} internal errors for ${gen.title} (${gen.id}). This may be a temporary issue with the test run.`
+                )
+              );
+            } else if (errorCount + internalErrorCount > 0) {
+              this.pushItem(
+                genItems,
+                genItemsByStoragePath,
+                new ProjectInfoItem(
+                  InfoItemType.testCompleteFail,
+                  gen.id,
+                  0,
+                  `Found ${errorCount} errors and ${internalErrorCount} internal errors for ${gen.title} (${gen.id}).`
+                )
+              );
+            } else {
+              this.pushItem(
+                genItems,
+                genItemsByStoragePath,
+                new ProjectInfoItem(
+                  InfoItemType.testCompleteSuccess,
+                  gen.id,
+                  1,
+                  `${gen.title} (${gen.id}) completed successfully .`
+                )
+              );
+            }
+          }
         }
       }
     }
@@ -1498,6 +1568,19 @@ function _addReportJson(data) {
 
     return this.itemsByStoragePath[path];
   }
+
+  static getItemsInCollection(genItems: ProjectInfoItem[], generatorId: string) {
+    const resultItems: ProjectInfoItem[] = [];
+
+    for (const genItem of genItems) {
+      if (genItem.generatorId === generatorId) {
+        resultItems.push(genItem);
+      }
+    }
+
+    return resultItems;
+  }
+
   static getItemsInCollectionByType(genItems: ProjectInfoItem[], generatorId: string, itemType: InfoItemType) {
     const resultItems: ProjectInfoItem[] = [];
 

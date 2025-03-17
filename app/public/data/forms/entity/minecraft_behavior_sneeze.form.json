@@ -1,6 +1,25 @@
 {
   "fields": [
     {
+      "id": "sound",
+      "title": "Sound",
+      "description": "Sound to play when the sneeze occurs.",
+      "dataType": 2,
+      "lookupId": "soundDefinition",
+      "samples": {
+        "/vanilla/behavior_pack/entities/panda.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:panda_baby/minecraft:behavior.sneeze/",
+            "content": "sneeze"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:panda_sneezing/minecraft:behavior.sneeze/",
+            "content": "sneeze"
+          }
+        ]
+      }
+    },
+    {
       "id": "cooldown_time",
       "title": "Cooldown Time",
       "description": "Time in seconds the mob has to wait before using the goal again",
@@ -246,24 +265,6 @@
           {
             "path": "/minecraft:entity/component_groups/minecraft:panda_sneezing/minecraft:behavior.sneeze/",
             "content": 0.002
-          }
-        ]
-      }
-    },
-    {
-      "id": "sound",
-      "title": "Sound",
-      "description": "Sound to play when the sneeze occurs.",
-      "dataType": 2,
-      "samples": {
-        "/vanilla/behavior_pack/entities/panda.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:panda_baby/minecraft:behavior.sneeze/",
-            "content": "sneeze"
-          },
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:panda_sneezing/minecraft:behavior.sneeze/",
-            "content": "sneeze"
           }
         ]
       }

@@ -21,6 +21,7 @@ export enum StrictPlatformInfoGeneratorTest {
 export default class StrictPlatformInfoGenerator implements IProjectInfoGenerator {
   id = "STRICT";
   title = "Strict Platform Info Generator";
+  canAlwaysProcess = true;
 
   getTopicData(topicId: number) {
     return {
@@ -53,7 +54,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
               if (desc.identifier !== undefined && desc.identifier.toLowerCase().startsWith("minecraft:")) {
                 infoItems.push(
                   new ProjectInfoItem(
-                    InfoItemType.testCompleteFail,
+                    InfoItemType.error,
                     this.id,
                     StrictPlatformInfoGeneratorTest.entityTypeUsesAMinecraftIdentifier,
                     `Uses a minecraft: identifier override`,
@@ -70,7 +71,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
               ) {
                 infoItems.push(
                   new ProjectInfoItem(
-                    InfoItemType.testCompleteFail,
+                    InfoItemType.error,
                     this.id,
                     StrictPlatformInfoGeneratorTest.entityTypeUsesAMinecraftRuntimeIdentifier,
                     `Uses a runtime_identifier override`,
@@ -97,7 +98,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
               if (desc.identifier !== undefined && desc.identifier.toLowerCase().startsWith("minecraft:")) {
                 infoItems.push(
                   new ProjectInfoItem(
-                    InfoItemType.testCompleteFail,
+                    InfoItemType.error,
                     this.id,
                     StrictPlatformInfoGeneratorTest.itemTypeUsesAMinecraftIdentifier,
                     `Uses a minecraft: identifier override`,

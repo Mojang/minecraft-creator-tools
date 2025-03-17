@@ -7,6 +7,7 @@
       "title": "textures",
       "description": "This map contains the different textures that can be used for the item's icon. Default will contain the actual icon texture. Armor trim textures and palettes can be specified here as well. The icon textures are the keys from the resource_pack/textures/item_texture.json 'texture_data' object associated with the texture file.",
       "dataType": 2,
+      "lookupId": "itemTexture",
       "samples": {
         "/vanilla/behavior_pack/items/black_bundle.json": [
           {

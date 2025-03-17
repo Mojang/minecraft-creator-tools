@@ -1,13 +1,5 @@
 {
-  "url": "https://github.com/microsoft/minecraft-samples/archive/fd42374a119c38c7cdb813f22b8594f1c6449d71.zip",
+  "url": "https://github.com/microsoft/minecraft-samples/archive/068a034b4b0d725eaf773f3e67891aea27648bf3.zip",
   "replaceFirstFolderWith": "minecraft-samples-main",
-  "exclude": [
-    "add_entity_robot/",
-    "mclive2022_addon/",
-    "rtx_resource_pack/",
-    "culled_block_sample/",
-    "casual_creator/",
-    "debug_tools/",
-    "parkour_sample_world/"
-  ]
+  "exclude": ["mclive2022_addon/", "rtx_resource_pack/", "parkour_sample_world/"]
 }

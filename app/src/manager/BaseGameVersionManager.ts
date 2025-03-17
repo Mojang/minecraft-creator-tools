@@ -24,7 +24,7 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
   getTopicData(topicId: number): IProjectInfoTopicData | undefined {
     const baseGameVersion = {
       updaterId: this.id,
-      updaterIndex: 1,
+      updaterIndex: 51,
       action: "Set base_game_version to latest version.",
     };
 
@@ -96,8 +96,6 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
     const infoItems: ProjectInfoItem[] = [];
 
     const ver = await Database.getLatestVersionInfo(project.effectiveTrack);
-    let foundWorldTemplate = false;
-    let foundError = false;
 
     if (!ver) {
       infoItems.push(
@@ -132,7 +130,6 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          foundWorldTemplate = true;
           const bpManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.file);
 
           if (bpManifest) {
@@ -150,7 +147,6 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
                   pi
                 )
               );
-              foundError = true;
             } else {
               const bpVer = bpManifest?.definition?.header.base_game_version;
 
@@ -182,7 +178,6 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
                     pi
                   )
                 );
-                foundError = true;
               } else if (bpVer[1] < parseInt(verSplit[1]) - 1) {
                 infoItems.push(
                   new ProjectInfoItem(
@@ -211,7 +206,6 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
                     pi
                   )
                 );
-                foundError = true;
               } else if (bpVer[2] < parseInt(verSplit[2])) {
                 infoItems.push(
                   new ProjectInfoItem(
@@ -240,31 +234,11 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
                     pi
                   )
                 );
-                foundError = true;
               }
             }
           }
         }
       }
-    }
-
-    if (!foundWorldTemplate) {
-      infoItems.push(
-        new ProjectInfoItem(
-          InfoItemType.testCompleteSuccess,
-          this.id,
-          260,
-          "No world template was found; base game version check passes."
-        )
-      );
-    } else if (foundError) {
-      infoItems.push(
-        new ProjectInfoItem(InfoItemType.testCompleteFail, this.id, 261, "Base game version check fails.")
-      );
-    } else if (foundError) {
-      infoItems.push(
-        new ProjectInfoItem(InfoItemType.testCompleteSuccess, this.id, 262, "Base game version check passes.")
-      );
     }
 
     return infoItems;

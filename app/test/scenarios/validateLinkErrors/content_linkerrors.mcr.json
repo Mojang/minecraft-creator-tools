@@ -402,19 +402,8 @@
         "remove": 11,
         "sequence": 2
       },
-      "Sound Entity sounds": {
-        "entities": 1
-      },
       "Sound Individual sounds": {
         "events": 1
-      },
-      "Music Definition Music definition elements": {
-        "co2": 1,
-        "cofoo_doesnotexist": 1
-      },
-      "Sound Definition Sound definition elements": {
-        "ambientsounds.co2": 1,
-        "ambientsounds.co_doesnotexist": 1
       },
       "Animations Resource": {
         "Count": 8
@@ -433,18 +422,6 @@
       },
       "Bones Resource Animation Bone Position Keyframe": {
         "Count": 13
-      },
-      "Entity Type Runtime Identifier (no runtime identifier)": {
-        "Count": 3
-      },
-      "Entity Type Identifier (no override identifier)": {
-        "Count": 3
-      },
-      "Entity Type Metadata Spawnable Entity Type": {
-        "Count": 3
-      },
-      "Entity Type Metadata Summonable Entity Type": {
-        "Count": 3
       },
       "Textures Entity Resource Count": {
         "Count": 3
@@ -637,6 +614,18 @@
         "Min": 8,
         "Average": 11
       },
+      "General Item 2 (no runtime identifier)": {
+        "Count": 3
+      },
+      "General Item 3 (no override identifier)": {
+        "Count": 3
+      },
+      "General Item 4 Spawnable Entity Type": {
+        "Count": 3
+      },
+      "General Item 4 Summonable Entity Type": {
+        "Count": 3
+      },
       "Command say": {
         "Count": 1
       },
@@ -647,13 +636,19 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 36,
-    "testSuccessCount": 9,
+    "testSuccessCount": 23,
     "testFailCount": 0,
+    "testNotApplicableCount": 6,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "testFailSummary": "",
     "summary": {
       "ITEMS": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Minimum Definition of a Pack (ITEMS) completed successfully .",
+          "testCompleteSuccesses": 1
+        },
         "2": {
           "title": "2",
           "defaultMessage": "Behavior pack manifest found"
@@ -756,6 +751,11 @@
         }
       },
       "LINESIZE": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "File Line/Size Information (LINESIZE) completed successfully .",
+          "testCompleteSuccesses": 1
+        },
         "102": {
           "title": "JavaScript",
           "defaultMessage": "JavaScript file lines"
@@ -851,7 +851,9 @@
       },
       "PACKSIZE": {
         "1": {
-          "title": "Overall Size"
+          "title": "Overall Size",
+          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully .",
+          "testCompleteSuccesses": 1
         },
         "2": {
           "title": "File Count"
@@ -872,7 +874,8 @@
       "PACK": {
         "1": {
           "title": "1",
-          "defaultMessage": "Behavior Pack Min Engine Version"
+          "defaultMessage": "Behavior Pack Min Engine Version",
+          "testCompleteSuccesses": 1
         },
         "2": {
           "title": "2",
@@ -930,7 +933,8 @@
       "JSONTAGS": {
         "1": {
           "title": "Entity Type",
-          "defaultMessage": "Entity file"
+          "defaultMessage": "Entity file",
+          "testCompleteSuccesses": 1
         },
         "6": {
           "title": "Sound Definition",
@@ -945,20 +949,12 @@
           "defaultMessage": "Sounds file"
         }
       },
-      "SCRIPTMODULE": {
-        "100": {
-          "title": "100",
-          "defaultMessage": "Behavior pack dependency on 1.5.0 at @minecraft/server"
-        }
-      },
-      "BASEGAMEVER": {
-        "260": {
-          "title": "260",
-          "defaultMessage": "No world template was found; base game version check passes.",
-          "testCompleteSuccesses": 1
-        }
-      },
       "FORMATVER": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Format Version (FORMATVER) completed successfully .",
+          "testCompleteSuccesses": 1
+        },
         "216": {
           "title": "Resource animation Version Minor Version Higher than Current",
           "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)",
@@ -973,69 +969,71 @@
           "title": "296",
           "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.60)",
           "recommendations": 3
+        },
+        "619": {
+          "title": "619",
+          "defaultMessage": "Behavior pack animation format_version"
+        },
+        "620": {
+          "title": "620",
+          "defaultMessage": "Behavior pack animation controller format_version"
+        },
+        "628": {
+          "title": "628",
+          "defaultMessage": "Animation format_version"
+        },
+        "630": {
+          "title": "630",
+          "defaultMessage": "Entity type visuals/audio format_version"
+        },
+        "644": {
+          "title": "644",
+          "defaultMessage": "Spawn rule format_version"
         }
       },
       "RESOURCEANIMATION": {
         "1": {
-          "title": "Animations"
+          "title": "Animations",
+          "defaultMessage": "Resource Animation (RESOURCEANIMATION) completed successfully .",
+          "testCompleteSuccesses": 1
         },
         "2": {
           "title": "Bones"
         }
       },
-      "BPENTITYTYPE": {
-        "2": {
-          "title": "Entity Type Runtime Identifier"
-        },
-        "3": {
-          "title": "Entity Type Identifier"
-        },
-        "4": {
-          "title": "Entity Type Metadata"
-        },
-        "120": {
-          "title": "Behavior Pack Entity Type Format Version Minor Version Lower than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.60.10)",
-          "recommendations": 3
-        }
-      },
-      "BPITEMTYPE": {
-        "3": {
-          "title": "Item Type Identifier"
-        },
-        "4": {
-          "title": "Item Type Category"
-        },
-        "260": {
-          "title": "260",
-          "defaultMessage": "No Item Type behavior format version was found; base game version check passes.",
-          "testCompleteSuccesses": 1
-        }
-      },
       "TEXTURE": {
         "1": {
-          "title": "Textures"
+          "title": "Textures",
+          "defaultMessage": "Texture Validation (TEXTURE) completed successfully .",
+          "testCompleteSuccesses": 1
         }
       },
       "TEXTUREREF": {
         "1": {
           "title": "Texture References",
-          "defaultMessage": "Texture Refrences"
+          "defaultMessage": "Texture Refrences",
+          "testCompleteSuccesses": 1
         }
       },
       "TYPES": {
         "1": {
-          "title": "Types"
+          "title": "Types",
+          "defaultMessage": "Types Info Aggregation (TYPES) completed successfully .",
+          "testCompleteSuccesses": 1
         }
       },
       "TEXTUREIMAGE": {
         "1": {
-          "title": "Texture Images"
+          "title": "Texture Images",
+          "defaultMessage": "Texture Image Validation (TEXTUREIMAGE) completed successfully .",
+          "testCompleteSuccesses": 1
         }
       },
       "GEOMETRY": {
         "1": {
-          "title": "Block Geometry"
+          "title": "Block Geometry",
+          "defaultMessage": "Model Geometry Validation (GEOMETRY) completed successfully .",
+          "testCompleteSuccesses": 1
         },
         "2": {
           "title": "Entity Geometry"
@@ -1045,9 +1043,74 @@
           "defaultMessage": "Items Geometry"
         }
       },
+      "SCRIPTMODULE": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Script Modules (SCRIPTMODULE) completed successfully .",
+          "testCompleteSuccesses": 1
+        },
+        "100": {
+          "title": "100",
+          "defaultMessage": "Behavior pack dependency on 1.5.0 at @minecraft/server"
+        }
+      },
+      "MINENGINEVER": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully .",
+          "testCompleteSuccesses": 1
+        },
+        "605": {
+          "title": "605",
+          "defaultMessage": "Behavior pack manifest min_engine_version"
+        },
+        "614": {
+          "title": "614",
+          "defaultMessage": "Resource pack manifest format_version"
+        }
+      },
+      "ENTITYTYPE": {
+        "1": {
+          "title": "General Item 1",
+          "defaultMessage": "Entity Type (ENTITYTYPE) completed successfully .",
+          "testCompleteSuccesses": 1
+        },
+        "2": {
+          "title": "General Item 2",
+          "defaultMessage": "Entity Type Runtime Identifier"
+        },
+        "3": {
+          "title": "General Item 3",
+          "defaultMessage": "Entity Type Identifier"
+        },
+        "4": {
+          "title": "General Item 4",
+          "defaultMessage": "Entity Type Metadata"
+        },
+        "120": {
+          "title": "Format Version Minor Version Lower Than Current",
+          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.60.10)",
+          "recommendations": 3
+        }
+      },
+      "ITEMTYPE": {
+        "1": {
+          "title": "General Item 1",
+          "defaultMessage": "Item Type (ITEMTYPE) completed successfully .",
+          "testCompleteSuccesses": 1
+        },
+        "3": {
+          "title": "General Item 3",
+          "defaultMessage": "Item Type Identifier"
+        },
+        "4": {
+          "title": "General Item 4",
+          "defaultMessage": "Item Type Category"
+        }
+      },
       "JSON": {
         "1": {
-          "defaultMessage": "Test JSON Schema Validation completed successfully.",
+          "defaultMessage": "JSON Schema Validation (JSON) completed successfully .",
           "testCompleteSuccesses": 1
         },
         "132": {
@@ -1095,7 +1158,7 @@
       },
       "UNLINK": {
         "1": {
-          "defaultMessage": "Test Unlinked item info generator completed successfully.",
+          "defaultMessage": "Unlinked item info generator (UNLINK) completed successfully .",
           "testCompleteSuccesses": 1
         },
         "191": {
@@ -1111,27 +1174,62 @@
           "recommendations": 6
         }
       },
-      "UNKFILE": {
+      "PACKMETADATA": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)."
+        }
+      },
+      "STRICT": {
         "1": {
-          "defaultMessage": "Test Unknown files completed successfully.",
+          "title": "General Item 1",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully .",
           "testCompleteSuccesses": 1
         }
       },
-      "PATHLENGTH": {
-        "1": {
-          "defaultMessage": "Test Path Length completed successfully.",
-          "testCompleteSuccesses": 1
+      "VSCODEFILE": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test VSCode Files (VSCODEFILE)."
+        }
+      },
+      "BASEGAMEVER": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)."
+        }
+      },
+      "BLOCKSCAT": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)."
         }
       },
       "UNKJSON": {
         "1": {
-          "defaultMessage": "Test Unknown JSON completed successfully.",
+          "defaultMessage": "Unknown JSON (UNKJSON) completed successfully .",
           "testCompleteSuccesses": 1
         }
       },
       "WORLD": {
+        "2": {
+          "defaultMessage": "No applicable items found for test World Validation (WORLD)."
+        }
+      },
+      "UNKFILE": {
         "1": {
-          "defaultMessage": "Test World Validation completed successfully.",
+          "defaultMessage": "Unknown files (UNKFILE) completed successfully .",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "VALFILE": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Valid files (VALFILE)."
+        }
+      },
+      "PATHLENGTH": {
+        "1": {
+          "defaultMessage": "Path Length (PATHLENGTH) completed successfully .",
           "testCompleteSuccesses": 1
         }
       }
@@ -2076,9 +2174,6 @@
       "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
       "d": "/Content/resource_packs/aop_mobsrp/sounds.json",
       "fs": {
-        "Entity sounds": {
-          "entities": 1
-        },
         "Individual sounds": {
           "events": 1
         }
@@ -2089,48 +2184,36 @@
       "gId": "JSONTAGS",
       "gIx": 7,
       "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json",
-      "d": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json",
-      "fs": {
-        "Music definition elements": {
-          "co2": 1,
-          "cofoo_doesnotexist": 1
-        }
-      }
+      "d": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json"
     },
     {
       "iTp": 2,
       "gId": "JSONTAGS",
       "gIx": 6,
       "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json",
-      "d": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json",
-      "fs": {
-        "Sound definition elements": {
-          "ambientsounds.co2": 1,
-          "ambientsounds.co_doesnotexist": 1
-        }
-      }
+      "d": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json"
     },
     {
       "iTp": 2,
-      "gId": "SCRIPTMODULE",
-      "gIx": 100,
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": "1.5.0",
-      "iId": "@minecraft/server"
+      "gId": "FORMATVER",
+      "gIx": 619,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
+      "d": [
+        1,
+        10,
+        0
+      ]
     },
     {
       "iTp": 2,
-      "gId": "SCRIPTMODULE",
-      "gIx": 100,
-      "m": "Behavior pack dependency on 1.1.0 at @minecraft/server-ui",
-      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
-      "d": "1.1.0",
-      "iId": "@minecraft/server-ui"
-    },
-    {
-      "iTp": 0,
-      "gId": "BASEGAMEVER",
-      "gIx": 260
+      "gId": "FORMATVER",
+      "gIx": 620,
+      "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json",
+      "d": [
+        1,
+        10,
+        0
+      ]
     },
     {
       "iTp": 6,
@@ -2139,10 +2222,32 @@
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json"
     },
     {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 644,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 256,
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 644,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
     },
     {
       "iTp": 6,
@@ -2151,10 +2256,32 @@
       "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json"
     },
     {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 644,
+      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 216,
       "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 628,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
     },
     {
       "iTp": 6,
@@ -2163,10 +2290,32 @@
       "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
     },
     {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 628,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 216,
       "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 628,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
     },
     {
       "iTp": 6,
@@ -2175,10 +2324,32 @@
       "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json"
     },
     {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 630,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
       "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 630,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
     },
     {
       "iTp": 6,
@@ -2186,6 +2357,17 @@
       "gIx": 296,
       "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.60)",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 630,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
+      "d": [
+        1,
+        10,
+        0
+      ]
     },
     {
       "iTp": 7,
@@ -2218,72 +2400,6 @@
           "Count": 13
         }
       }
-    },
-    {
-      "iTp": 7,
-      "gId": "BPENTITYTYPE",
-      "gIx": 2,
-      "fs": {
-        "(no runtime identifier)": {
-          "Count": 3
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "BPENTITYTYPE",
-      "gIx": 3,
-      "fs": {
-        "(no override identifier)": {
-          "Count": 3
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "BPENTITYTYPE",
-      "gIx": 4,
-      "fs": {
-        "Spawnable Entity Type": {
-          "Count": 3
-        },
-        "Summonable Entity Type": {
-          "Count": 3
-        }
-      }
-    },
-    {
-      "iTp": 6,
-      "gId": "BPENTITYTYPE",
-      "gIx": 120,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
-    },
-    {
-      "iTp": 6,
-      "gId": "BPENTITYTYPE",
-      "gIx": 120,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
-    },
-    {
-      "iTp": 6,
-      "gId": "BPENTITYTYPE",
-      "gIx": 120,
-      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
-    },
-    {
-      "iTp": 7,
-      "gId": "BPITEMTYPE",
-      "gIx": 3
-    },
-    {
-      "iTp": 7,
-      "gId": "BPITEMTYPE",
-      "gIx": 4
-    },
-    {
-      "iTp": 0,
-      "gId": "BPITEMTYPE",
-      "gIx": 260
     },
     {
       "iTp": 7,
@@ -2516,6 +2632,106 @@
       "iTp": 7,
       "gId": "GEOMETRY",
       "gIx": 3
+    },
+    {
+      "iTp": 2,
+      "gId": "SCRIPTMODULE",
+      "gIx": 100,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
+      "d": "1.5.0",
+      "iId": "@minecraft/server"
+    },
+    {
+      "iTp": 2,
+      "gId": "SCRIPTMODULE",
+      "gIx": 100,
+      "m": "Behavior pack dependency on 1.1.0 at @minecraft/server-ui",
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
+      "d": "1.1.0",
+      "iId": "@minecraft/server-ui"
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 605,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
+      "d": [
+        1,
+        20,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 614,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
+      "d": [
+        1,
+        20,
+        0
+      ]
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 2,
+      "fs": {
+        "(no runtime identifier)": {
+          "Count": 3
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 3,
+      "fs": {
+        "(no override identifier)": {
+          "Count": 3
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 4,
+      "fs": {
+        "Spawnable Entity Type": {
+          "Count": 3
+        },
+        "Summonable Entity Type": {
+          "Count": 3
+        }
+      }
+    },
+    {
+      "iTp": 6,
+      "gId": "ENTITYTYPE",
+      "gIx": 120,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "ENTITYTYPE",
+      "gIx": 120,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "ENTITYTYPE",
+      "gIx": 120,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "ITEMTYPE",
+      "gIx": 3
+    },
+    {
+      "iTp": 7,
+      "gId": "ITEMTYPE",
+      "gIx": 4
     },
     {
       "iTp": 2,
@@ -2956,12 +3172,110 @@
     },
     {
       "iTp": 0,
-      "gId": "UNKFILE",
+      "gId": "ITEMS",
       "gIx": 1
     },
     {
       "iTp": 0,
-      "gId": "PATHLENGTH",
+      "gId": "LINESIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "PACKSIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "PACK",
+      "gIx": 1,
+      "m": "General info (PACK) completed successfully ."
+    },
+    {
+      "iTp": 0,
+      "gId": "JSONTAGS",
+      "gIx": 1,
+      "m": "JSON Tags (JSONTAGS) completed successfully ."
+    },
+    {
+      "iTp": 0,
+      "gId": "FORMATVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "PACKMETADATA",
+      "gIx": 2
+    },
+    {
+      "iTp": 0,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "STRICT",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "TEXTURE",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "TEXTUREREF",
+      "gIx": 1,
+      "m": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully ."
+    },
+    {
+      "iTp": 0,
+      "gId": "TYPES",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "GEOMETRY",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "SCRIPTMODULE",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "VSCODEFILE",
+      "gIx": 2
+    },
+    {
+      "iTp": 0,
+      "gId": "MINENGINEVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "BASEGAMEVER",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "BLOCKSCAT",
+      "gIx": 2
+    },
+    {
+      "iTp": 0,
+      "gId": "ENTITYTYPE",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "ITEMTYPE",
       "gIx": 1
     },
     {
@@ -2975,19 +3289,34 @@
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 8,
       "gId": "WORLD",
-      "gIx": 1
+      "gIx": 2
     },
     {
       "iTp": 0,
       "gId": "WORLDDATA",
       "gIx": 1,
-      "m": "Test World Data Validation completed successfully."
+      "m": "World Data Validation (WORLDDATA) completed successfully ."
     },
     {
       "iTp": 0,
       "gId": "UNLINK",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "UNKFILE",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "VALFILE",
+      "gIx": 2
+    },
+    {
+      "iTp": 0,
+      "gId": "PATHLENGTH",
       "gIx": 1
     }
   ],

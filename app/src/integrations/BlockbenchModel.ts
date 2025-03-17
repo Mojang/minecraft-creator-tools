@@ -821,7 +821,7 @@ export default class BlockbenchModel {
 
             bbmodel.elements?.push({
               name: bone.name,
-              box_uv: true,
+              box_uv: Array.isArray(cube.uv),
               rescale: false,
               locked: false,
               light_emission: 0,
@@ -895,7 +895,7 @@ export default class BlockbenchModel {
       textures = await serverBlock.getTextureItems(serverBlockProjectItem);
       sourceFile = serverBlockProjectItem.file;
     } else if (clientItem && clientItemProjectItem && clientItemProjectItem.file) {
-      textures = await clientItem.getTextureItems(clientItemProjectItem);
+      textures = clientItem.getTextureItems(clientItemProjectItem);
       sourceFile = clientItemProjectItem.file;
     }
 
@@ -976,6 +976,7 @@ export default class BlockbenchModel {
       uv = cube.uv;
     } else if (cube.uv.up) {
       uv = cube.uv.up.uv;
+      return [uv[0], uv[1], uv[0] + cube.size[0], uv[1] + cube.size[2]];
     } else {
       Log.unexpectedContentState("BBMGUB");
       uv = [0, 0];
@@ -991,6 +992,7 @@ export default class BlockbenchModel {
       uv = cube.uv;
     } else if (cube.uv.down) {
       uv = cube.uv.down.uv;
+      return [uv[0], uv[1], uv[0] + cube.size[0], uv[1] - cube.size[2]];
     } else {
       Log.unexpectedContentState("BBMGDB");
       uv = [0, 0];
@@ -1006,6 +1008,8 @@ export default class BlockbenchModel {
       uv = cube.uv;
     } else if (cube.uv && cube.uv.east) {
       uv = cube.uv.east.uv;
+
+      return [uv[0], uv[1], uv[0] + cube.size[2], uv[1] + cube.size[1]];
     } else {
       Log.unexpectedContentState("BBMGEB");
       uv = [0, 0];
@@ -1021,6 +1025,8 @@ export default class BlockbenchModel {
       uv = cube.uv;
     } else if (cube.uv && cube.uv.north) {
       uv = cube.uv.north.uv;
+
+      return [uv[0], uv[1], uv[0] + cube.size[0], uv[1] + cube.size[1]];
     } else {
       Log.unexpectedContentState("BBMGNB");
       uv = [0, 0];
@@ -1041,6 +1047,7 @@ export default class BlockbenchModel {
       uv = cube.uv;
     } else if (cube.uv && cube.uv.west) {
       uv = cube.uv.west.uv;
+      return [uv[0], uv[1], uv[0] + cube.size[2], uv[1] + cube.size[1]];
     } else {
       Log.unexpectedContentState("BBMGWB");
       uv = [0, 0];
@@ -1061,6 +1068,7 @@ export default class BlockbenchModel {
       uv = cube.uv;
     } else if (cube.uv && cube.uv.south) {
       uv = cube.uv.south.uv;
+      return [uv[0], uv[1], uv[0] + cube.size[0], uv[1] + cube.size[1]];
     } else {
       Log.unexpectedContentState("BBMGWB");
       uv = [0, 0];

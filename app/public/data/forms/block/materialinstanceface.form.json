@@ -7,6 +7,7 @@
       "title": "Texture",
       "description": "Texture name for the material.",
       "dataType": 2,
+      "lookupId": "terrainTexture",
       "samples": {
         "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/blue_bubble_fish.json": [
           {
@@ -100,7 +101,7 @@
     },
     {
       "id": "render_method",
-      "title": "Render_method",
+      "title": "Render Method",
       "description": "The render method to use.",
       "dataType": 2,
       "mustMatchChoices": true,
@@ -170,7 +171,7 @@
     },
     {
       "id": "face_dimming",
-      "title": "Face_dimming",
+      "title": "Face Dimming",
       "description": "This material should be dimmed by the direction it's facing.",
       "dataType": 2,
       "samples": {

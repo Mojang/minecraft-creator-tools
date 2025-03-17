@@ -95,7 +95,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
                   }
                 } else {
                   for (const texturePathKey in resource.textures) {
-                    const textureVal = resource.textures[texturePathKey];
+                    const textureVal = (resource.textures as any)[texturePathKey];
 
                     if (!allTexturePaths.includes(textureVal)) {
                       allTexturePaths.push(textureVal);

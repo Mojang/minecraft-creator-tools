@@ -1,6 +1,33 @@
 {
   "fields": [
     {
+      "id": "sound",
+      "title": "Sound",
+      "description": "Sound that is played when the shooter shoots a projectile.",
+      "dataType": 2,
+      "lookupId": "soundDefinition",
+      "samples": {
+        "/vanilla/behavior_pack/entities/bogged.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack/minecraft:shooter/",
+            "content": "bow"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/drowned.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_mode/minecraft:shooter/",
+            "content": "item.trident.throw"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/witch.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:shooter/",
+            "content": "throw"
+          }
+        ]
+      }
+    },
+    {
       "id": "aux_val",
       "title": "Aux Val",
       "description": "ID of the Potion effect for the default projectile to be applied on hit.",
@@ -240,32 +267,6 @@
                 "chance": 0.25
               }
             ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "sound",
-      "title": "Sound",
-      "description": "Sound that is played when the shooter shoots a projectile.",
-      "dataType": 2,
-      "samples": {
-        "/vanilla/behavior_pack/entities/bogged.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack/minecraft:shooter/",
-            "content": "bow"
-          }
-        ],
-        "/vanilla/behavior_pack/entities/drowned.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:ranged_mode/minecraft:shooter/",
-            "content": "item.trident.throw"
-          }
-        ],
-        "/vanilla/behavior_pack/entities/witch.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:shooter/",
-            "content": "throw"
           }
         ]
       }

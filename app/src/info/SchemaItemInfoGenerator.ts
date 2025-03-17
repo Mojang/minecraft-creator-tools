@@ -27,6 +27,7 @@ export enum SchemaItemInfoGeneratorTest {
 export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "JSON";
   title = "JSON Schema Validation";
+  canAlwaysProcess = true;
 
   _validatorsByPath: { [id: string]: ValidateFunction } = {};
   _schemaContentByPath: { [id: string]: object } = {};

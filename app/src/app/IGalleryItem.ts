@@ -41,5 +41,6 @@ export default interface IGalleryItem {
   fileList?: string[];
   tags?: string[];
   type: GalleryItemType;
+  nameReplacers?: string[];
   id: string;
 }

@@ -37,6 +37,7 @@ export enum JsonFileTagsInfoGeneratorTest {
 export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator {
   id = "JSONTAGS";
   title = "JSON Tags";
+  canAlwaysProcess = true;
 
   getTopicData(topicId: number) {
     return {
@@ -104,7 +105,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         this.id,
         JsonFileTagsInfoGeneratorTest.entityType,
         "Entity file",
-        project.getItemByProjectPath(file.storageRelativePath),
+        project.getItemByExtendedOrProjectPath(file.storageRelativePath),
         file.storageRelativePath
       );
 
@@ -156,7 +157,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         this.id,
         JsonFileTagsInfoGeneratorTest.itemType,
         "Item file",
-        project.getItemByProjectPath(file.storageRelativePath),
+        project.getItemByExtendedOrProjectPath(file.storageRelativePath),
         file.storageRelativePath
       );
 
@@ -181,7 +182,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         this.id,
         JsonFileTagsInfoGeneratorTest.blockType,
         "Block file",
-        project.getItemByProjectPath(file.storageRelativePath),
+        project.getItemByExtendedOrProjectPath(file.storageRelativePath),
         file.storageRelativePath
       );
 
@@ -257,7 +258,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         this.id,
         JsonFileTagsInfoGeneratorTest.terrainTexture,
         "Terrrain texture file",
-        project.getItemByProjectPath(file.storageRelativePath),
+        project.getItemByExtendedOrProjectPath(file.storageRelativePath),
         file.storageRelativePath
       );
 
@@ -265,8 +266,15 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
       const jsonO = StorageUtilities.getJsonObject(file);
 
-      if (jsonO) {
-        this.addSubTags(pi, "Terrain Texture Elements", index, AnnotationCategory.terrainTextureSource, jsonO);
+      if (jsonO && jsonO.texture_data) {
+        this.addSubTags(
+          pi,
+          "Terrain Texture Elements",
+          index,
+          AnnotationCategory.terrainTextureSource,
+          jsonO.texture_data,
+          true
+        );
       }
 
       items.push(pi);
@@ -276,7 +284,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         this.id,
         JsonFileTagsInfoGeneratorTest.itemTexture,
         "Item texture file",
-        project.getItemByProjectPath(file.storageRelativePath),
+        project.getItemByExtendedOrProjectPath(file.storageRelativePath),
         file.storageRelativePath
       );
 
@@ -284,8 +292,15 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
       const jsonO = StorageUtilities.getJsonObject(file);
 
-      if (jsonO) {
-        this.addSubTags(pi, "Item Texture Elements", index, AnnotationCategory.itemTextureSource, jsonO);
+      if (jsonO && jsonO.texture_data) {
+        this.addSubTags(
+          pi,
+          "Item Texture Elements",
+          index,
+          AnnotationCategory.itemTextureSource,
+          jsonO.texture_data,
+          true
+        );
       }
 
       items.push(pi);
@@ -295,7 +310,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         this.id,
         JsonFileTagsInfoGeneratorTest.soundDefinition,
         "Sound definitions file",
-        project.getItemByProjectPath(file.storageRelativePath),
+        project.getItemByExtendedOrProjectPath(file.storageRelativePath),
         file.storageRelativePath
       );
 
@@ -307,7 +322,14 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         const soundDef = jsonO["sound_definitions"];
 
         if (soundDef) {
-          this.addSubTags(pi, "Sound definition elements", index, AnnotationCategory.soundDefinitionSource, soundDef);
+          this.addSubTags(
+            pi,
+            "Sound definition elements",
+            index,
+            AnnotationCategory.soundDefinitionSource,
+            soundDef,
+            true
+          );
         }
       }
 
@@ -318,7 +340,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         this.id,
         JsonFileTagsInfoGeneratorTest.musicDefinition,
         "Music definitions file",
-        project.getItemByProjectPath(file.storageRelativePath),
+        project.getItemByExtendedOrProjectPath(file.storageRelativePath),
         file.storageRelativePath
       );
 
@@ -327,7 +349,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       const jsonO = StorageUtilities.getJsonObject(file);
 
       if (jsonO) {
-        this.addSubTags(pi, "Music definition elements", index, AnnotationCategory.musicDefinitionSource, jsonO);
+        this.addSubTags(pi, "Music definition elements", index, AnnotationCategory.musicDefinitionSource, jsonO, true);
       }
 
       items.push(pi);
@@ -337,7 +359,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         this.id,
         JsonFileTagsInfoGeneratorTest.sound,
         "Sounds file",
-        project.getItemByProjectPath(file.storageRelativePath),
+        project.getItemByExtendedOrProjectPath(file.storageRelativePath),
         file.storageRelativePath
       );
 
@@ -348,12 +370,12 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       if (jsonO) {
         const blockSounds = jsonO["block_sounds"];
         if (blockSounds) {
-          this.addSubTags(pi, "Block sounds", index, AnnotationCategory.blockSounds, blockSounds);
+          this.addSubTags(pi, "Block sounds", index, AnnotationCategory.blockSounds, blockSounds, true);
         }
 
         const entitySounds = jsonO["entity_sounds"];
         if (entitySounds) {
-          this.addSubTags(pi, "Entity sounds", index, AnnotationCategory.entitySounds, entitySounds);
+          this.addSubTags(pi, "Entity sounds", index, AnnotationCategory.entitySounds, entitySounds, true);
         }
 
         const individualEventSounds = jsonO["individual_event_sounds"];
@@ -369,7 +391,14 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
         const interactiveSounds = jsonO["interactive_sounds"];
         if (interactiveSounds) {
-          this.addSubTags(pi, "Interactive sounds", index, AnnotationCategory.interactiveSounds, interactiveSounds);
+          this.addSubTags(
+            pi,
+            "Interactive sounds",
+            index,
+            AnnotationCategory.interactiveSounds,
+            interactiveSounds,
+            true
+          );
         }
       }
 
@@ -377,7 +406,14 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
     }
   }
 
-  addSubTags(pi: ProjectInfoItem, prefix: string, index: ContentIndex, annotation: string, rootTag?: any) {
+  addSubTags(
+    pi: ProjectInfoItem,
+    prefix: string,
+    index: ContentIndex,
+    annotation: string,
+    rootTag?: any,
+    doNotIncrement?: boolean
+  ) {
     if (!rootTag) {
       return;
     }
@@ -388,7 +424,9 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         const childObj: any = rootTag[childEltName];
 
         if (colon <= 0 || childEltName.substring(0, colon) === "minecraft") {
-          pi.incrementFeature(prefix, childEltName);
+          if (!doNotIncrement) {
+            pi.incrementFeature(prefix, childEltName);
+          }
 
           let bareTag = childEltName;
 

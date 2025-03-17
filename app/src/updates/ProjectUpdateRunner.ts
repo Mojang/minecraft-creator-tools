@@ -4,13 +4,8 @@
 import Project from "../app/Project";
 import IProjectUpdater from "./IProjectUpdater";
 import Log from "../core/Log";
-import ScriptModuleManager from "../manager/ScriptModuleManager";
 import ProjectUpdateResult from "./ProjectUpdateResult";
-import VsCodeFileManager from "../manager/VsCodeFileManager";
-import MinEngineVersionManager from "../manager/MinEngineVersionManager";
-import BaseGameVersionManager from "../manager/BaseGameVersionManager";
-import BehaviorPackEntityTypeManager from "../manager/BehaviorPackEntityTypeManager";
-import BehaviorPackItemTypeManager from "../manager/BehaviorPackItemTypeManager";
+import GeneratorRegistrations from "../info/GeneratorRegistrations";
 
 export default class ProjectUpdateRunner {
   project?: Project;
@@ -19,19 +14,8 @@ export default class ProjectUpdateRunner {
     this.project = project;
   }
 
-  createUpdaters(): IProjectUpdater[] {
-    return [
-      new ScriptModuleManager(),
-      new VsCodeFileManager(),
-      new MinEngineVersionManager(),
-      new BaseGameVersionManager(),
-      new BehaviorPackEntityTypeManager(),
-      new BehaviorPackItemTypeManager(),
-    ];
-  }
-
   async updateProject(includeUpdaters?: string[], excludeUpdaters?: string[]) {
-    const updaters: IProjectUpdater[] = this.createUpdaters();
+    const updaters: IProjectUpdater[] = GeneratorRegistrations.updaters;
 
     const results: ProjectUpdateResult[] = [];
 
@@ -61,7 +45,7 @@ export default class ProjectUpdateRunner {
   }
 
   async update(updaterId: string, updaterIndex: number): Promise<ProjectUpdateResult[]> {
-    const updaters: IProjectUpdater[] = this.createUpdaters();
+    const updaters: IProjectUpdater[] = GeneratorRegistrations.updaters;
     const allResults: ProjectUpdateResult[] = [];
 
     if (!this.project) {

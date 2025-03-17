@@ -11,12 +11,13 @@ import ContentIndex from "../core/ContentIndex";
 
 export enum PathLengthFileGeneratorTest {
   filePathExceeds8DirectorySegments = 2,
-  filePathExceeds80Characters = 3,
+  filePathExceedsCharacterLength = 3,
 }
 
 export default class PathLengthFileGenerator implements IProjectFileInfoGenerator {
   id = "PATHLENGTH";
   title = "Path Length";
+  canAlwaysProcess = true;
 
   getTopicData(topicId: number) {
     return {
@@ -68,7 +69,7 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
     if (fSlashSegments.length > 9 || bSlashSegments.length > 9) {
       items.push(
         new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
+          InfoItemType.error,
           this.id,
           PathLengthFileGeneratorTest.filePathExceeds8DirectorySegments,
           `File path contains 8 or more directory segments, and may not run on all devices`,
@@ -78,13 +79,13 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
       );
     }
 
-    if (path.length > 80) {
+    if (path.length > 100) {
       items.push(
         new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
+          InfoItemType.error,
           this.id,
-          PathLengthFileGeneratorTest.filePathExceeds80Characters,
-          `File path contains more than 80 characters, and may not run on all devices`,
+          PathLengthFileGeneratorTest.filePathExceedsCharacterLength,
+          `File path contains more than 100 characters, and may not run on all devices`,
           project.getItemByExtendedOrProjectPath(file.extendedPath),
           path
         )

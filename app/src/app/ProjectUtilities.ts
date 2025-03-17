@@ -830,7 +830,7 @@ export default class ProjectUtilities {
 
     let contentReplacements = ['"identifier"', '"materials"'];
 
-    if (galleryProject.type === GalleryItemType.itemType) {
+    if (galleryProject.type === GalleryItemType.itemType || galleryProject.type === GalleryItemType.blockType) {
       contentReplacements = ['"materials"'];
     }
 
@@ -955,16 +955,28 @@ export default class ProjectUtilities {
     }
   }
 
-  static replaceNamesInPath(path: string, project: Project, entityTypeProject: IGalleryItem, newName: string) {
-    path = Utilities.replaceAll(path, "/" + entityTypeProject.id + ".", "/" + newName + ".");
-    path = Utilities.replaceAll(path, "\\" + entityTypeProject.id + ".", "\\" + newName + ".");
-    path = Utilities.replaceAll(path, "/" + entityTypeProject.id + "/", "/" + newName + "/");
-    path = Utilities.replaceAll(path, "\\" + entityTypeProject.id + "\\", "\\" + newName + "\\");
+  static replaceNamesInPath(path: string, project: Project, galleryProject: IGalleryItem, newName: string) {
+    let pathReplacers = galleryProject.nameReplacers;
 
-    path = Utilities.replaceAll(path, "/" + entityTypeProject.id + "_ico.", "/" + newName + "_ico.");
-    path = Utilities.replaceAll(path, "\\" + entityTypeProject.id + "_ico.", "\\" + newName + "_ico.");
-    path = Utilities.replaceAll(path, "/" + entityTypeProject.id + "_ico/", "/" + newName + "_ico/");
-    path = Utilities.replaceAll(path, "\\" + entityTypeProject.id + "_ico\\", "\\" + newName + "_ico\\");
+    if (!pathReplacers) {
+      pathReplacers = [galleryProject.id];
+    }
+
+    newName = newName.toLowerCase();
+    newName = newName.replace(/-/g, "_");
+    newName = newName.replace(/ /g, "_");
+
+    for (const pathReplacer of pathReplacers) {
+      path = Utilities.replaceAll(path, "/" + pathReplacer + ".", "/" + newName + ".");
+      path = Utilities.replaceAll(path, "\\" + pathReplacer + ".", "\\" + newName + ".");
+      path = Utilities.replaceAll(path, "/" + pathReplacer + "/", "/" + newName + "/");
+      path = Utilities.replaceAll(path, "\\" + pathReplacer + "\\", "\\" + newName + "\\");
+
+      path = Utilities.replaceAll(path, "/" + pathReplacer + "_ico.", "/" + newName + "_ico.");
+      path = Utilities.replaceAll(path, "\\" + pathReplacer + "_ico.", "\\" + newName + "_ico.");
+      path = Utilities.replaceAll(path, "/" + pathReplacer + "_ico/", "/" + newName + "_ico/");
+      path = Utilities.replaceAll(path, "\\" + pathReplacer + "_ico\\", "\\" + newName + "_ico\\");
+    }
 
     return path;
   }
@@ -972,35 +984,44 @@ export default class ProjectUtilities {
   static replaceNamesInContent(
     content: string,
     project: Project,
-    entityTypeProject: IGalleryItem,
+    galleryProject: IGalleryItem,
     newName: string,
     replaceAllExclusions: string[]
   ) {
-    content = Utilities.replaceAll(
-      content,
-      "minecraft:" + entityTypeProject.id,
-      project.effectiveDefaultNamespace + ":" + newName
-    );
+    let replacers = galleryProject.nameReplacers;
 
-    content = Utilities.replaceAllExceptInLines(
-      content,
-      ":" + entityTypeProject.id,
-      ":" + newName,
-      replaceAllExclusions
-    );
-    content = Utilities.replaceAllExceptInLines(
-      content,
-      "/" + entityTypeProject.id,
-      "/" + newName,
-      replaceAllExclusions
-    );
-    content = Utilities.replaceAllExceptInLines(
-      content,
-      "." + entityTypeProject.id,
-      "." + newName,
-      replaceAllExclusions
-    );
+    if (!replacers) {
+      replacers = [galleryProject.id];
+    }
 
+    newName = newName.toLowerCase();
+    newName = newName.replace(/-/g, "_");
+    newName = newName.replace(/ /g, "_");
+
+    for (const replacer of replacers) {
+      content = Utilities.replaceAll(
+        content,
+        "minecraft:" + replacer,
+        project.effectiveDefaultNamespace + ":" + newName
+      );
+
+      content = Utilities.replaceAll(content, "demo:" + replacer, project.effectiveDefaultNamespace + ":" + newName);
+      content = Utilities.replaceAll(content, "starter:" + replacer, project.effectiveDefaultNamespace + ":" + newName);
+      content = Utilities.replaceAll(content, "sample:" + replacer, project.effectiveDefaultNamespace + ":" + newName);
+
+      content = Utilities.replaceAllExceptInLines(content, ":" + replacer, ":" + newName, replaceAllExclusions);
+
+      content = Utilities.replaceAllExceptInLines(content, "/" + replacer, "/" + newName, replaceAllExclusions);
+
+      content = Utilities.replaceAllExceptInLines(content, "." + replacer, "." + newName, replaceAllExclusions);
+
+      content = Utilities.replaceAllExceptInLines(
+        content,
+        '"' + replacer + '"',
+        '"' + newName + '"',
+        replaceAllExclusions
+      );
+    }
     return content;
   }
 

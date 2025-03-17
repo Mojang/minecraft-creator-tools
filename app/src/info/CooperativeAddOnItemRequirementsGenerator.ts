@@ -45,6 +45,7 @@ export enum CooperativeAddOnItemRequirementsGeneratorTest {
 export default class CooperativeAddOnItemRequirementsGenerator implements IProjectInfoItemGenerator {
   id = "CADDONIREQ";
   title = "Cooperative Add-On Item Requirements Generator";
+  canAlwaysProcess = true;
 
   getTopicData(topicId: number) {
     return {
@@ -61,7 +62,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
       // CADDONIREQ191
       items.push(
         new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
+          InfoItemType.error,
           this.id,
           CooperativeAddOnItemRequirementsGeneratorTest.NoDimensionJson,
           `Dimension definition resources are not permitted in an add-on targeted behavior pack`,
@@ -81,7 +82,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
             // CADDONIREQ170
             items.push(
               new ProjectInfoItem(
-                InfoItemType.testCompleteFail,
+                InfoItemType.error,
                 this.id,
                 CooperativeAddOnItemRequirementsGeneratorTest.ResourcePackDoesNotHavePackScopeWorld,
                 `Resource pack manifest does not specify that header/pack_scope that should be 'world'`,
@@ -105,7 +106,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
               // CADDONIREQ100
               items.push(
                 new ProjectInfoItem(
-                  InfoItemType.testCompleteFail,
+                  InfoItemType.error,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationControllerIdNotInExpectedForm,
                   `Behavior pack animation controller identifier is not in the expected form of controller.animation.xyz`,
@@ -117,7 +118,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
               // CADDONIREQ101
               items.push(
                 new ProjectInfoItem(
-                  InfoItemType.testCompleteFail,
+                  InfoItemType.error,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationControllerNameNotInExpectedForm,
                   `Behavior pack animation controller name section is not in the expected form of controller.animation.creatorshortname_projectshortname`,
@@ -143,7 +144,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
               // CADDONIREQ110
               items.push(
                 new ProjectInfoItem(
-                  InfoItemType.testCompleteFail,
+                  InfoItemType.error,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationIdNotInExpectedForm,
                   `Behavior animation identifier is not in the expected form of animation.xyz.animation_name`,
@@ -155,7 +156,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
               // CADDONIREQ111
               items.push(
                 new ProjectInfoItem(
-                  InfoItemType.testCompleteFail,
+                  InfoItemType.error,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationNameNotInExpectedForm,
                   `Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name`,
@@ -181,7 +182,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
               // CADDONIREQ120
               items.push(
                 new ProjectInfoItem(
-                  InfoItemType.testCompleteFail,
+                  InfoItemType.error,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationControllerIdNotInExpectedForm,
                   `Resource pack animation controller identifier is not in the expected form of controller.animation.xyz`,
@@ -193,7 +194,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
               // CADDONIREQ121
               items.push(
                 new ProjectInfoItem(
-                  InfoItemType.testCompleteFail,
+                  InfoItemType.error,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationControllerNameNotInExpectedForm,
                   `Resource pack animation controller name section is not in the expected form of controller.animation.creatorshortname_projectshortname`,
@@ -219,7 +220,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
               // CADDONIREQ130
               items.push(
                 new ProjectInfoItem(
-                  InfoItemType.testCompleteFail,
+                  InfoItemType.error,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationIdNotInExpectedForm,
                   `Resource animation identifier is not in the expected form of animation.xyz.animation_name`,
@@ -231,7 +232,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
               // CADDONIREQ131
               items.push(
                 new ProjectInfoItem(
-                  InfoItemType.testCompleteFail,
+                  InfoItemType.error,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationNameNotInExpectedForm,
                   `Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name`,
@@ -257,7 +258,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
               // CADDONIREQ140
               items.push(
                 new ProjectInfoItem(
-                  InfoItemType.testCompleteFail,
+                  InfoItemType.error,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.RenderControllerIdNotInExpectedForm,
                   `Resource pack render controller identifier is not in the expected form of controller.render.creatorshortname_projectshortname.other`,
@@ -269,7 +270,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
               // CADDONIREQ141
               items.push(
                 new ProjectInfoItem(
-                  InfoItemType.testCompleteFail,
+                  InfoItemType.error,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.RenderControllerNameNotInExpectedForm,
                   `Resource pack render controller name section is not in the expected form of controller.render.creatorshortname_projectshortname`,
@@ -296,7 +297,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 // CADDONIREQ150
                 items.push(
                   new ProjectInfoItem(
-                    InfoItemType.testCompleteFail,
+                    InfoItemType.error,
                     this.id,
                     CooperativeAddOnItemRequirementsGeneratorTest.GeometryIdNotInExpectedForm,
                     `Geometry is not in the expected form of geometry.creatorshortname_projectshortname.other`,
@@ -308,7 +309,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 // CADDONIREQ151
                 items.push(
                   new ProjectInfoItem(
-                    InfoItemType.testCompleteFail,
+                    InfoItemType.error,
                     this.id,
                     CooperativeAddOnItemRequirementsGeneratorTest.GeometryNameNotInExpectedForm,
                     `Geometry identifier section is not in the expected form of geometry.creatorshortname_projectshortname`,
@@ -337,7 +338,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
             // CADDONIREQ112
             items.push(
               new ProjectInfoItem(
-                InfoItemType.testCompleteFail,
+                InfoItemType.error,
                 this.id,
                 CooperativeAddOnItemRequirementsGeneratorTest.JsonIdentifierNotInExpectedForm,
                 `JSON namespaced identifier is not in the expected form of creatorshortname_projectshortname:myitem`,
@@ -361,7 +362,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
             if (modIdBreaks.length < 1) {
               items.push(
                 new ProjectInfoItem(
-                  InfoItemType.testCompleteFail,
+                  InfoItemType.error,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.MaterialsIdentifierNotInExpectedForm,
                   `Materials section identifier is not in the expected form of creatorshortname_projectshortname:other`,
@@ -377,7 +378,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
               // CADDONIREQ161
               items.push(
                 new ProjectInfoItem(
-                  InfoItemType.testCompleteFail,
+                  InfoItemType.error,
                   this.id,
                   CooperativeAddOnItemRequirementsGeneratorTest.MaterialsFirstSegmentNotInExpectedForm,
                   `First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem`,

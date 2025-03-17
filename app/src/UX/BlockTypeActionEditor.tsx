@@ -49,7 +49,6 @@ export enum BlockTypeActionEditorDialogMode {
 
 export default class BlockTypeActionEditor extends Component<IBlockTypeActionEditorProps, IBlockTypeActionEditorState> {
   private _lastFileEdited?: IFile;
-  private _activeEditorPersistable?: IPersistable;
 
   constructor(props: IBlockTypeActionEditorProps) {
     super(props);
@@ -211,8 +210,27 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
         {
           "example:newComponentId": actionName,
           ExampleNewComponent: fileNameSugg,
+          initExampleNew: "init" + fileNameSugg,
         }
       );
+
+      const defaultScriptFile = await this.props.project.getDefaultScriptsFile();
+
+      if (defaultScriptFile) {
+        await defaultScriptFile.loadContent();
+
+        if (typeof defaultScriptFile.content === "string" && defaultScriptFile.content.length > 0) {
+          if (defaultScriptFile.content.indexOf("init" + fileNameSugg) <= 0) {
+            let newContent = "import { init" + fileNameSugg + ' } from "./' + fileNameSugg + '"\r\n';
+
+            newContent += defaultScriptFile.content + "\r\ninit" + fileNameSugg + "();\r\n";
+
+            defaultScriptFile.setContent(newContent);
+
+            await defaultScriptFile.saveContent();
+          }
+        }
+      }
 
       this.forceUpdate();
     }
@@ -256,7 +274,9 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
   }
 
   _handleNewChildPersistable(newPersistable: IPersistable) {
-    this._activeEditorPersistable = newPersistable;
+    if (this.props.setActivePersistable) {
+      this.props.setActivePersistable(newPersistable);
+    }
   }
 
   _onUpdatePreferredTextSize(newTextSize: number) {

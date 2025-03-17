@@ -5,7 +5,6 @@ import ScriptModuleManager from "../manager/ScriptModuleManager";
 import VsCodeFileManager from "../manager/VsCodeFileManager";
 import MinEngineVersionManager from "../manager/MinEngineVersionManager";
 import BaseGameVersionManager from "../manager/BaseGameVersionManager";
-import BehaviorPackEntityTypeManager from "../manager/BehaviorPackEntityTypeManager";
 import PackMetaDataInformationGenerator from "./PackMetaDataInfoGenerator";
 import CooperativeAddOnRequirementsGenerator from "./CooperativeAddOnRequirementsGenerator";
 import StrictPlatformInfoGenerator from "./StrictPlatformInfoGenerator";
@@ -27,7 +26,6 @@ import IProjectItemInfoGenerator from "./IProjectItemInfoGenerator";
 import IProjectInfoGeneratorBase from "./IProjectInfoGeneratorBase";
 import TextureInfoGenerator from "./TextureInfoGenerator";
 import PackSizeInfoGenerator from "./PackSizeInfoGenerator";
-import BehaviorPackItemTypeManager from "../manager/BehaviorPackItemTypeManager";
 import TextureImageInfoGenerator from "./TextureImageInfoGenerator";
 import FormatVersionManager from "../manager/FormatVersionManager";
 import AnimationResourceInfoGenerator from "./AnimationResourceInfoGenerator";
@@ -35,23 +33,31 @@ import UnlinkedItemInfoGenerator from "./UnlinkedItemInfoGenerator";
 import GeometryInfoGenerator from "./GeometryInfoGenerator";
 import TextureReferenceInfoGenerator from "./TextureReferenceInfoGenerator";
 import TypesInfoGenerator from "./TypesInfoGenerator";
+import ValidFileGenerator from "./ValidFileGenerator";
+import BlocksCatalogManager from "../manager/BlocksCatalogManager";
+import EntityTypeManager from "../manager/EntityTypeManager";
+import ItemTypeManager from "../manager/ItemTypeManager";
 
 export default class GeneratorRegistrations {
+  static managers = [
+    new ScriptModuleManager(),
+    new VsCodeFileManager(),
+    new MinEngineVersionManager(),
+    new BaseGameVersionManager(),
+    new BlocksCatalogManager(),
+    new EntityTypeManager(),
+    new ItemTypeManager(),
+  ];
+
   static projectGenerators = [
     new ItemCountsInfoGenerator(),
     new LineSizeInfoGenerator(),
     new PackSizeInfoGenerator(),
     new PackInfoGenerator(),
     new JsonFileTagsInfoGenerator(),
-    new ScriptModuleManager(),
-    new VsCodeFileManager(),
-    new MinEngineVersionManager(),
-    new BaseGameVersionManager(),
     new FormatVersionManager(),
     new PackMetaDataInformationGenerator(),
     new AnimationResourceInfoGenerator(),
-    new BehaviorPackEntityTypeManager(),
-    new BehaviorPackItemTypeManager(),
     new CooperativeAddOnRequirementsGenerator(),
     new StrictPlatformInfoGenerator(),
     new TextureInfoGenerator(),
@@ -59,7 +65,10 @@ export default class GeneratorRegistrations {
     new TypesInfoGenerator(),
     new TextureImageInfoGenerator(),
     new GeometryInfoGenerator(),
+    ...this.managers,
   ];
+
+  static updaters = this.managers;
 
   static itemGenerators = [
     new UnknownItemGenerator(),
@@ -70,7 +79,7 @@ export default class GeneratorRegistrations {
     new UnlinkedItemInfoGenerator(),
   ];
 
-  static fileGenerators = [new UnknownFileGenerator(), new PathLengthFileGenerator()];
+  static fileGenerators = [new UnknownFileGenerator(), new ValidFileGenerator(), new PathLengthFileGenerator()];
 
   static configureForSuite(
     generator:

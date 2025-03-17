@@ -62,6 +62,16 @@ export default class ContentIndex implements IContentIndex {
     trie: {},
   };
 
+  #iteration: number = Math.floor(Math.random() * 1000000);
+
+  get iteration() {
+    return this.#iteration;
+  }
+
+  set iteration(newIteration: number) {
+    this.#iteration = newIteration;
+  }
+
   static getAnnotationCategoryKeys() {
     const keys: string[] = [];
 

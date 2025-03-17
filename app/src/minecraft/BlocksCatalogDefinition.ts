@@ -6,6 +6,8 @@ import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IBlocksCatalogResource } from "./IBlocksCatalog";
+import Project from "../app/Project";
+import { AnnotationCategory } from "../core/ContentIndex";
 
 export default class BlocksCatalogDefinition {
   public blocksCatalog?: IBlocksCatalogResource;
@@ -74,6 +76,29 @@ export default class BlocksCatalogDefinition {
     return this.blocksCatalog[id];
   }
 
+  ensureBlockDefinition(id: string) {
+    if (!this.blocksCatalog) {
+      this.blocksCatalog = {};
+    }
+
+    if (this.blocksCatalog[id]) {
+      return this.blocksCatalog[id];
+    }
+
+    const colon = id.indexOf(":");
+
+    if (colon >= 0) {
+      let noColonId = id.substring(colon + 1);
+      if (this.blocksCatalog[noColonId]) {
+        return this.blocksCatalog[noColonId];
+      }
+    }
+
+    this.blocksCatalog[id] = {};
+
+    return this.blocksCatalog[id];
+  }
+
   getDefaultTextureId(id: string) {
     const ref = this.getBlockDefinition(id);
 
@@ -88,7 +113,7 @@ export default class BlocksCatalogDefinition {
         return ref.textures["up"];
       } else {
         for (const key in ref.textures) {
-          return ref.textures[key];
+          return (ref.textures as any)[key];
         }
       }
     }
@@ -111,6 +136,37 @@ export default class BlocksCatalogDefinition {
     }
 
     return textureRefs;
+  }
+
+  async getUnusedDependencies(project: Project) {
+    const textureRefs: string[] = [];
+    if (this.blocksCatalog) {
+      for (const resourceId in this.blocksCatalog) {
+        if (resourceId !== "format_version") {
+          const resource = this.blocksCatalog[resourceId];
+
+          if (resource && (resource.textures || resource.sound || resource.carried_textures)) {
+            if (!textureRefs.includes(resourceId)) {
+              const termMatches = await project.infoSet.contentIndex.getMatches(resourceId, true, [
+                AnnotationCategory.blockTypeSource,
+              ]);
+
+              if (!termMatches || termMatches.length === 0) {
+                textureRefs.push(resourceId);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return textureRefs;
+  }
+
+  removeId(id: string) {
+    if (this.blocksCatalog) {
+      (this.blocksCatalog[id] as any) = undefined;
+    }
   }
 
   persist() {

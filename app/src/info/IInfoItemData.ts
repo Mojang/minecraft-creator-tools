@@ -10,6 +10,7 @@ export enum InfoItemType {
   internalProcessingError = 5,
   recommendation = 6,
   featureAggregate = 7,
+  testCompleteNoApplicableItemsFound = 8,
 }
 
 // sorry that the fields here are truncated to save a few characters.

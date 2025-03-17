@@ -34,6 +34,8 @@ import BlocksCatalogDefinition from "./BlocksCatalogDefinition";
 import TerrainTextureCatalogDefinition from "./TerrainTextureCatalogDefinition";
 import IEntitiesMetadata from "./IEntitiesMetadata";
 import IItemsMetadata from "./IItemsMetadata";
+import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition";
+import ItemTextureCatalogDefinition from "./ItemTextureCatalogDefinition";
 
 export default class Database {
   static isLoaded = false;
@@ -68,7 +70,9 @@ export default class Database {
   static entitiesMetadata: IEntitiesMetadata | null = null;
   static itemsMetadata: IItemsMetadata | null = null;
   static blocksCatalog: BlocksCatalogDefinition | null = null;
-  static terrainTexturesCatalog: TerrainTextureCatalogDefinition | null = null;
+  static itemTextureCatalog: ItemTextureCatalogDefinition | null = null;
+  static terrainTextureCatalog: TerrainTextureCatalogDefinition | null = null;
+  static soundDefinitionCatalog: SoundDefinitionCatalogDefinition | null = null;
 
   static latestVersion: string | undefined;
   static latestPreviewVersion: string | undefined;
@@ -707,7 +711,7 @@ export default class Database {
 
   static async getVanillaBlocksCatalog() {
     if (!Database.blocksCatalog) {
-      const file = await Database.getVanillaFile("/resource_pack/blocks.json");
+      const file = await Database.getPreviewVanillaFile("/resource_pack/blocks.json");
 
       if (file) {
         const blockCat = new BlocksCatalogDefinition();
@@ -723,12 +727,12 @@ export default class Database {
   }
 
   static getVanillaTerrainTexturesCatalogDirect() {
-    return this.terrainTexturesCatalog;
+    return this.terrainTextureCatalog;
   }
 
   static async getVanillaTerrainTexturesCatalog() {
-    if (!Database.terrainTexturesCatalog) {
-      const file = await Database.getVanillaFile("/resource_pack/textures/terrain_texture.json");
+    if (!Database.terrainTextureCatalog) {
+      const file = await Database.getPreviewVanillaFile("/resource_pack/textures/terrain_texture.json");
 
       if (file) {
         const terrainCat = new TerrainTextureCatalogDefinition();
@@ -736,11 +740,45 @@ export default class Database {
 
         await terrainCat.load();
 
-        this.terrainTexturesCatalog = terrainCat;
+        Database.terrainTextureCatalog = terrainCat;
       }
     }
 
-    return this.terrainTexturesCatalog;
+    return Database.terrainTextureCatalog;
+  }
+
+  static async getVanillaItemTexturesCatalog() {
+    if (!Database.itemTextureCatalog) {
+      const file = await Database.getPreviewVanillaFile("/resource_pack/textures/item_texture.json");
+
+      if (file) {
+        const itemCat = new ItemTextureCatalogDefinition();
+        itemCat.file = file;
+
+        await itemCat.load();
+
+        Database.itemTextureCatalog = itemCat;
+      }
+    }
+
+    return Database.itemTextureCatalog;
+  }
+
+  static async getVanillaSoundDefinitionCatalog() {
+    if (!Database.soundDefinitionCatalog) {
+      const file = await Database.getPreviewVanillaFile("/resource_pack/sounds/sound_definitions.json");
+
+      if (file) {
+        const soundDefinitionCat = new SoundDefinitionCatalogDefinition();
+        soundDefinitionCat.file = file;
+
+        await soundDefinitionCat.load();
+
+        Database.soundDefinitionCatalog = soundDefinitionCat;
+      }
+    }
+
+    return Database.soundDefinitionCatalog;
   }
 
   static async getBlocksMetadata() {
@@ -793,7 +831,7 @@ export default class Database {
     return jsonObj;
   }
 
-  static async getVanillaFile(filePath: string) {
+  static async getPreviewVanillaFile(filePath: string) {
     const vanillaFolder = await Database.getPreviewVanillaFolder();
 
     if (!vanillaFolder) {
@@ -812,8 +850,8 @@ export default class Database {
     return jsonFile;
   }
 
-  static async getVanillaObject(filePath: string) {
-    const jsonFile = await Database.getVanillaFile(filePath);
+  static async getPreviewVanillaObject(filePath: string) {
+    const jsonFile = await Database.getPreviewVanillaFile(filePath);
 
     if (!jsonFile) {
       Log.unexpectedUndefined();
