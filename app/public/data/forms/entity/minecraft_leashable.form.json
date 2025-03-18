@@ -28,7 +28,6 @@
       "description": "Distance in blocks at which the leash stiffens, restricting movement.",
       "dataType": 0,
       "experienceType": 3,
-      "minValue": 0,
       "suggestedMaxValue": 20,
       "defaultValue": 6,
       "samples": {
@@ -52,7 +51,6 @@
       "description": "Distance in blocks at which the 'spring' effect starts acting to keep this entity close to the entity that leashed it.",
       "dataType": 0,
       "experienceType": 3,
-      "minValue": 0,
       "suggestedMaxValue": 20,
       "defaultValue": 4,
       "samples": {
@@ -76,7 +74,6 @@
       "description": "Distance in blocks it which the leash breaks.",
       "dataType": 0,
       "experienceType": 3,
-      "minValue": 0,
       "suggestedMaxValue": 20,
       "defaultValue": 10,
       "samples": {

@@ -206,6 +206,7 @@ export enum CooperativeAddOnRequirementsGeneratorTest {
   DependencyFromBehaviorPackToResourcePackNotValid = 166,
   NotOneDependencyFromResourcePackToBehaviorPack = 168,
   DependencyFromResourcePackToBehaviorPackNotValid = 169,
+  FoundBehaviorPack = 200,
 }
 
 export default class CooperativeAddOnRequirementsGenerator implements IProjectInfoGenerator {
@@ -235,10 +236,20 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
             // CADDONREQ160
             items.push(
               new ProjectInfoItem(
-                InfoItemType.testCompleteFail,
+                InfoItemType.error,
                 this.id,
                 CooperativeAddOnRequirementsGeneratorTest.NotOneBehaviorPackManifest,
                 `Found more than one behavior pack manifest in a cooperative add-on, which is not a best practice`,
+                projectItem
+              )
+            );
+          } else {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.info,
+                this.id,
+                CooperativeAddOnRequirementsGeneratorTest.FoundBehaviorPack,
+                `Behavior pack manifest found.`,
                 projectItem
               )
             );
@@ -253,7 +264,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
             // CADDONREQ161
             items.push(
               new ProjectInfoItem(
-                InfoItemType.testCompleteFail,
+                InfoItemType.error,
                 this.id,
                 CooperativeAddOnRequirementsGeneratorTest.NotOneResourcePackManifest,
                 `Found more than one resource pack manifest in a cooperative add-on, which is not a best practice`,
@@ -274,7 +285,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
       // CADDONREQ163
       items.push(
         new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
+          InfoItemType.error,
           this.id,
           CooperativeAddOnRequirementsGeneratorTest.BehaviorPackManifestNotValid,
           `Did not find a valid behavior pack manifest.`,
@@ -287,7 +298,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
       //CADDONREQ164
       items.push(
         new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
+          InfoItemType.error,
           this.id,
           CooperativeAddOnRequirementsGeneratorTest.ResourcePackManifestNotValid,
           `Did not find a valid resource pack manifest.`,
@@ -311,7 +322,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
         // CADDONREQ165
         items.push(
           new ProjectInfoItem(
-            InfoItemType.testCompleteFail,
+            InfoItemType.error,
             this.id,
             CooperativeAddOnRequirementsGeneratorTest.NotOneDependencyFromBehaviorPackToResourcePack,
             `Did not find exactly one dependency on the corresponding resource pack in the behavior pack manifest.`,
@@ -327,7 +338,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
         // CADDONREQ166
         items.push(
           new ProjectInfoItem(
-            InfoItemType.testCompleteFail,
+            InfoItemType.error,
             this.id,
             CooperativeAddOnRequirementsGeneratorTest.DependencyFromBehaviorPackToResourcePackNotValid,
             `Behavior pack manifest does not have a proper dependency on the resource pack identifier.`,
@@ -340,7 +351,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
         // CADDONREQ168
         items.push(
           new ProjectInfoItem(
-            InfoItemType.testCompleteFail,
+            InfoItemType.error,
             this.id,
             CooperativeAddOnRequirementsGeneratorTest.NotOneDependencyFromResourcePackToBehaviorPack,
             `Did not find exactly one dependency on the corresponding behavior pack in the resource pack manifest.`,
@@ -357,7 +368,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
         // CADDONREQ169
         items.push(
           new ProjectInfoItem(
-            InfoItemType.testCompleteFail,
+            InfoItemType.error,
             this.id,
             CooperativeAddOnRequirementsGeneratorTest.DependencyFromResourcePackToBehaviorPackNotValid,
             `Resource pack manifest does not have a proper dependency on the behavior pack identifier.`,
@@ -396,7 +407,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
         // CADDONREQ131
         items.push(
           new ProjectInfoItem(
-            InfoItemType.testCompleteFail,
+            InfoItemType.error,
             this.id,
             CooperativeAddOnRequirementsGeneratorTest.NoDimensionElements,
             `Found dimensions in a cooperative add-on, which is not a best practice.`,
@@ -441,7 +452,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
         // CADDONREQ133
         items.push(
           new ProjectInfoItem(
-            InfoItemType.testCompleteFail,
+            InfoItemType.error,
             this.id,
             CooperativeAddOnRequirementsGeneratorTest.NoUiElements,
             `Found ui elements in a cooperative add-on, which is not supported`,
@@ -532,7 +543,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
         // CADDONREQ111
         items.push(
           new ProjectInfoItem(
-            InfoItemType.testCompleteFail,
+            InfoItemType.error,
             this.id,
             CooperativeAddOnRequirementsGeneratorTest.NoLooseFilesInTypeFolder,
             `Found a loose file in the ${folder.name} folder. Should only see files in the folder ${folder.name}\\creatorshortname_gamename\\`,
@@ -552,7 +563,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
         // CADDONREQ109
         items.push(
           new ProjectInfoItem(
-            InfoItemType.testCompleteFail,
+            InfoItemType.error,
             this.id,
             CooperativeAddOnRequirementsGeneratorTest.NoUnsupportedFolderNameInTypeFolder,
             `Found an add-on-blocked folder '${folderName}' in a parent folder pack\\${folder.name}. Should be named 'creatorshortname' and not a common term`,
@@ -567,7 +578,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
       // CADDONREQ110
       items.push(
         new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
+          InfoItemType.error,
           this.id,
           CooperativeAddOnRequirementsGeneratorTest.MoreThanOneFolderInTypeFolder,
           `Folder '${folder.name}' has more than one subfolder, which is not supported. There should only be one folder in pack\\${folder.name}\\<studioname>_<mygamename>`,
@@ -616,7 +627,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
         // CADDONREQ101
         items.push(
           new ProjectInfoItem(
-            InfoItemType.testCompleteFail,
+            InfoItemType.error,
             this.id,
             CooperativeAddOnRequirementsGeneratorTest.NoLooseFileInTypeFolder,
             `Found a loose file in the ${folder.name} folder. Should only see files in the folder ${folder.name}\\creatorshortname\\gamename\\`,
@@ -633,7 +644,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
         // CADDONREQ102
         items.push(
           new ProjectInfoItem(
-            InfoItemType.testCompleteFail,
+            InfoItemType.error,
             this.id,
             CooperativeAddOnRequirementsGeneratorTest.NoCommonNamesInCreatorFolderName,
             `Found an cooperative add-on common name folder '${folderName}' in a parent folder pack\\${folder.name}. Should be named 'creatorshortname' and not a common term`,
@@ -667,7 +678,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
       // CADDONREQ104
       items.push(
         new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
+          InfoItemType.error,
           this.id,
           CooperativeAddOnRequirementsGeneratorTest.NoLooseFileInCreatorFolder,
           `Found a loose file '${fileName}' in ${parentFolderName}\\${folder.name}. Files should only be in the folder ${parentFolderName}\\${folder.name}\\<mygamename>`,
@@ -691,7 +702,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
       // CADDONREQ108
       items.push(
         new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
+          InfoItemType.error,
           this.id,
           CooperativeAddOnRequirementsGeneratorTest.MoreThanOneFolderInCreatorFolderBesidesMaybeCommon,
           `Secondary folder '${folder.name}' in ${parentFolderName} has more than one subfolder (besides 'common'), which is not supported. There should only be one folder (plus optionally 'common') in pack\\${parentFolderName}\\${folder.name}\\<mygamename>`,

@@ -1,5 +1,6 @@
 {
   "files": [
+    "new-templates.json",
     "server.json",
     "server-ui.json",
     "editor.json",

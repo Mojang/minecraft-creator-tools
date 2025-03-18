@@ -11,25 +11,70 @@
           {
             "id": "destroy_speed",
             "title": "Destroy Speed",
-            "description": "Required.\r\nA destroy speed applied while using the defined 'item'.",
+            "description": "Required. A destroy speed applied while using the defined 'item'.",
             "dataType": 3
           },
           {
             "id": "item",
             "title": "Item",
-            "description": "Required.\r\nAn ItemDescriptor filtering for the item used while mining.",
-            "dataType": 17
+            "description": "Required. A filter for the item used while mining.",
+            "dataType": 15,
+            "subForm": {
+              "description": "Optional array of objects to describe item specific block destroy speeds, each object contains an 'item' ItemDescriptor and a 'destroy_speed' float. This array currently requires UpcomingFeatures experiment to be enabled.",
+              "fields": [
+                {
+                  "id": "tags",
+                  "title": "Tags",
+                  "type": 32
+                }
+              ]
+            },
+            "alternates": [
+              {
+                "id": "item",
+                "title": "Item",
+                "description": "An item tag that is usable for the item.",
+                "dataType": 2,
+                "lookupId": "itemType"
+              }
+            ]
           }
         ],
         "samples": {
           "samples": [
             {
               "path": "Example1",
-              "content": "{\r\n\t\"minecraft:destructible_by_mining\": {\r\n\t\t\"seconds_to_destroy\": 10,\r\n\t\t\"item_specific_speeds\": [\r\n\t\t\t{\r\n\t\t\t\t\"item\": { \"tags\": \"q.any_tag('minecraft:is_pickaxe', 'minecraft:is_tool') \" },\r\n\t\t\t\t\"destroy_speed\": 5.0\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}"
+              "content": {
+                "minecraft:destructible_by_mining": {
+                  "seconds_to_destroy": 10,
+                  "item_specific_speeds": [
+                    {
+                      "item": {
+                        "tags": "q.any_tag('minecraft:is_pickaxe', 'minecraft:is_tool') "
+                      },
+                      "destroy_speed": 5
+                    }
+                  ]
+                }
+              }
             },
             {
               "path": "Example2",
-              "content": "{\r\n\t\"minecraft:destructible_by_mining\": {\r\n\t\t\"seconds_to_destroy\": 10,\r\n\t\t\"item_specific_speeds\": [\r\n\t\t\t{\r\n\t\t\t\t\"item\": \"minecraft:iron_pickaxe\",\r\n\t\t\t\t\"destroy_speed\": 5.0\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"item\": \"minecraft:diamond_pickaxe\",\r\n\t\t\t\t\"destroy_speed\": 2.0\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}"
+              "content": {
+                "minecraft:destructible_by_mining": {
+                  "seconds_to_destroy": 10,
+                  "item_specific_speeds": [
+                    {
+                      "item": "minecraft:iron_pickaxe",
+                      "destroy_speed": 5
+                    },
+                    {
+                      "item": "minecraft:diamond_pickaxe",
+                      "destroy_speed": 2
+                    }
+                  ]
+                }
+              }
             }
           ]
         }
@@ -75,6 +120,14 @@
       }
     }
   ],
+  "scalarField": {
+    "id": "boolean",
+    "title": "Object enabled",
+    "tags": [
+      "presence"
+    ],
+    "dataType": 1
+  },
   "description": "Describes the destructible by mining properties for this block. If set to true, the block will take the default number of seconds to destroy. If set to false, this block is indestructible by mining. If the component is omitted, the block will take the default number of seconds to destroy.",
   "title": "Destructible By Mining",
   "samples": {
@@ -142,10 +195,5 @@
         }
       }
     ]
-  },
-  "scalarField": {
-    "id": "boolean",
-    "title": "Boolean",
-    "dataType": 1
   }
 }

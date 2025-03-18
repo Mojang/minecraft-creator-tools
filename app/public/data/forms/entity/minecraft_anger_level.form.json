@@ -73,6 +73,47 @@
       "lookupId": "entityTypeEvents"
     },
     {
+      "id": "on_increase_sounds",
+      "title": "On Increase Sounds",
+      "description": "Sounds to play when the entity is getting provoked. Evaluated in order. First matching condition wins",
+      "dataType": 15,
+      "subForm": {
+        "description": "Sounds to play when the entity is getting provoked. Evaluated in order. First matching condition wins",
+        "fields": [
+          {
+            "id": "condition",
+            "title": "Condition",
+            "description": "A Molang expression describing under which conditions to play this sound, given that the entity was provoked",
+            "dataType": 2
+          },
+          {
+            "id": "sound",
+            "title": "Sound",
+            "description": "The sound to play",
+            "lookupId": "soundDefinition",
+            "dataType": 2
+          }
+        ]
+      },
+      "samples": {
+        "/vanilla/behavior_pack/entities/warden.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:anger_level/",
+            "content": [
+              {
+                "sound": "listening_angry",
+                "condition": "query.anger_level(this) >= 40"
+              },
+              {
+                "sound": "listening",
+                "condition": "query.anger_level(this) >= 0"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "id": "angry_boost",
       "title": "Angry Boost",
       "description": "Anger boost applied to angry threshold when mob gets angry",
@@ -175,46 +216,6 @@
                 }
               ]
             }
-          }
-        ]
-      }
-    },
-    {
-      "id": "on_increase_sounds",
-      "title": "On Increase Sounds",
-      "description": "Sounds to play when the entity is getting provoked. Evaluated in order. First matching condition wins",
-      "dataType": 15,
-      "subForm": {
-        "description": "Sounds to play when the entity is getting provoked. Evaluated in order. First matching condition wins",
-        "fields": [
-          {
-            "id": "condition",
-            "title": "Condition",
-            "description": "A Molang expression describing under which conditions to play this sound, given that the entity was provoked",
-            "dataType": 2
-          },
-          {
-            "id": "sound",
-            "title": "Sound",
-            "description": "The sound to play",
-            "dataType": 2
-          }
-        ]
-      },
-      "samples": {
-        "/vanilla/behavior_pack/entities/warden.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:anger_level/",
-            "content": [
-              {
-                "sound": "listening_angry",
-                "condition": "query.anger_level(this) >= 40"
-              },
-              {
-                "sound": "listening",
-                "condition": "query.anger_level(this) >= 0"
-              }
-            ]
           }
         ]
       }

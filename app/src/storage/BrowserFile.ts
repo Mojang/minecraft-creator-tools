@@ -132,6 +132,14 @@ export default class BrowserFile extends FileBase implements IFile {
 
       this._content = newContent;
 
+      if (
+        this.isInErrorState &&
+        typeof newContent === "string" &&
+        StorageUtilities.getMimeType(this) === "application/json"
+      ) {
+        StorageUtilities.getJsonObject(this);
+      }
+
       this.contentWasModified();
     }
   }

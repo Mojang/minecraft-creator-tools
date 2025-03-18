@@ -195,6 +195,8 @@ export default class AudioItemProperties extends Component<IAudioItemPropertiesP
               definition={form}
               directObject={this.state.formData}
               readOnly={false}
+              project={this.props.project}
+              lookupProvider={this.props.project}
               theme={this.props.theme}
               objectKey={this.props.file?.storageRelativePath}
               onPropertyChanged={this._handleDataFormPropertyChange}

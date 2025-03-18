@@ -12,6 +12,7 @@ import { ProjectItemType } from "../app/IProjectItemData";
 import Database from "./Database";
 import IFolder from "../storage/IFolder";
 import Utilities from "../core/Utilities";
+import AudioDefinition from "./AudioDefinition";
 
 export default class SoundDefinitionCatalogDefinition {
   public _data?: ISoundDefinitionCatalog;
@@ -29,6 +30,7 @@ export default class SoundDefinitionCatalogDefinition {
   public get file() {
     return this._file;
   }
+
   public get onLoaded() {
     return this._onLoaded.asEvent();
   }
@@ -37,7 +39,7 @@ export default class SoundDefinitionCatalogDefinition {
     this._file = newFile;
   }
 
-  public get soundDefinitionSoundInstanceList() {
+  public getSoundDefinitionSoundInstanceList() {
     if (!this._data) {
       return undefined;
     }
@@ -69,6 +71,62 @@ export default class SoundDefinitionCatalogDefinition {
     return soundList;
   }
 
+  public getCanonincalizedSoundPathList() {
+    if (!this._data) {
+      return undefined;
+    }
+
+    const soundList: string[] = [];
+
+    if (this._data.sound_definitions) {
+      for (const key in this._data.sound_definitions) {
+        const soundDefSet = this._data.sound_definitions[key];
+
+        for (const sound of soundDefSet.sounds) {
+          if (typeof sound === "string") {
+            let path = AudioDefinition.canonicalizeAudioPath(sound);
+
+            if (path) {
+              soundList.push(path);
+            }
+          } else if (typeof sound.name === "string") {
+            let path = AudioDefinition.canonicalizeAudioPath(sound.name);
+
+            if (path) {
+              soundList.push(path);
+            }
+          }
+        }
+      }
+    } else {
+      for (const key in this._data) {
+        if (key !== "format_version" && key !== "sound_definitions") {
+          const soundDefSet = (this._data as any)[key] as ISoundDefinition;
+
+          if (soundDefSet && soundDefSet.sounds && Array.isArray(soundDefSet.sounds)) {
+            for (const sound of soundDefSet.sounds) {
+              if (typeof sound === "string") {
+                let path = AudioDefinition.canonicalizeAudioPath(sound);
+
+                if (path) {
+                  soundList.push(path);
+                }
+              } else if (typeof sound.name === "string") {
+                let path = AudioDefinition.canonicalizeAudioPath(sound.name);
+
+                if (path) {
+                  soundList.push(path);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return soundList;
+  }
+
   public get soundDefinitionPathList() {
     if (!this._data || !this._data.sound_definitions) {
       return undefined;
@@ -91,7 +149,7 @@ export default class SoundDefinitionCatalogDefinition {
     return soundDefPathList;
   }
 
-  public get soundDefinitionSetNameList() {
+  public getSoundDefinitionSetNameList() {
     if (!this._data || !this._data.sound_definitions) {
       return undefined;
     }
@@ -100,6 +158,13 @@ export default class SoundDefinitionCatalogDefinition {
 
     for (const key in this._data.sound_definitions) {
       soundDefSetNameList.push(key);
+    }
+
+    // this seems like a legacy mode?
+    for (const key in this._data) {
+      if (key !== "sound_definitions" && key !== "format_version") {
+        soundDefSetNameList.push(key);
+      }
     }
 
     return soundDefSetNameList;
@@ -212,13 +277,7 @@ export default class SoundDefinitionCatalogDefinition {
     if (this.file && this.file.parentFolder) {
       let parentFolder = this.file.parentFolder;
 
-      while (parentFolder.name !== "sounds" && parentFolder.parentFolder) {
-        parentFolder = parentFolder.parentFolder;
-      }
-
-      if (parentFolder.parentFolder) {
-        packRootFolder = parentFolder.parentFolder;
-      }
+      packRootFolder = StorageUtilities.getParentOfParentFolderNamed("sounds", parentFolder);
     }
 
     return packRootFolder;
@@ -228,13 +287,10 @@ export default class SoundDefinitionCatalogDefinition {
     let relativePath = file.getFolderRelativePath(packRootFolder);
 
     if (relativePath) {
-      const lastPeriod = relativePath?.lastIndexOf(".");
-      if (lastPeriod >= 0) {
-        relativePath = relativePath?.substring(0, lastPeriod).toLowerCase();
-      }
-
       relativePath = StorageUtilities.ensureNotStartsWithDelimiter(relativePath);
     }
+
+    relativePath = AudioDefinition.canonicalizeAudioPath(relativePath);
 
     return relativePath;
   }
@@ -298,8 +354,14 @@ export default class SoundDefinitionCatalogDefinition {
     const retSoundRefs: { [name: string]: ISoundReference[] } = {};
 
     if (relativePath && this._data) {
-      for (const key in this._data.sound_definitions) {
-        const soundDefSet = this._data.sound_definitions[key];
+      const keys = this.getSoundDefinitionSetNameList();
+
+      for (const key in keys) {
+        let soundDefSet = this._data.sound_definitions[key];
+
+        if (!soundDefSet) {
+          soundDefSet = (this._data as any)[key];
+        }
 
         if (soundDefSet && soundDefSet.sounds) {
           for (const soundInstance of soundDefSet.sounds) {
@@ -360,65 +422,38 @@ export default class SoundDefinitionCatalogDefinition {
 
     let packRootFolder = this.getPackRootFolder();
 
-    let soundDefList = this.soundDefinitionSoundInstanceList;
+    let soundPathList = this.getCanonincalizedSoundPathList();
 
     for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.audio && packRootFolder && soundDefList) {
+      if (candItem.itemType === ProjectItemType.audio && packRootFolder && soundPathList) {
         await candItem.ensureStorage();
 
         if (candItem.file) {
           let relativePath = this.getRelativePath(candItem.file, packRootFolder);
 
           if (relativePath) {
-            for (const soundDef of soundDefList) {
-              if (typeof soundDef === "string") {
-                if (StorageUtilities.isPathEqual(soundDef, relativePath)) {
-                  item.addChildItem(candItem);
+            if (soundPathList.includes(relativePath)) {
+              item.addChildItem(candItem);
 
-                  if (soundDefList) {
-                    const nextSoundDefs: (ISoundReference | string)[] = [];
+              const nextSound: string[] = [];
 
-                    for (const soundDef of soundDefList) {
-                      if (typeof soundDef !== "string" || !StorageUtilities.isPathEqual(soundDef, relativePath)) {
-                        nextSoundDefs.push(soundDef);
-                      }
-                    }
-
-                    soundDefList = nextSoundDefs;
-                  }
-                }
-              } else if (StorageUtilities.isPathEqual(soundDef.name, relativePath)) {
-                item.addChildItem(candItem);
-
-                if (soundDefList) {
-                  const nextSoundDefs: (ISoundReference | string)[] = [];
-
-                  for (const soundDef of soundDefList) {
-                    if (typeof soundDef === "string" || !StorageUtilities.isPathEqual(soundDef.name, relativePath)) {
-                      nextSoundDefs.push(soundDef);
-                    }
-                  }
-
-                  soundDefList = nextSoundDefs;
+              for (const sound of soundPathList) {
+                if (sound !== relativePath) {
+                  nextSound.push(sound);
                 }
               }
+
+              soundPathList = nextSound;
             }
           }
         }
       }
     }
 
-    if (soundDefList) {
-      for (const soundDef of soundDefList) {
-        if (typeof soundDef === "string") {
-          item.addUnfulfilledRelationship(soundDef, ProjectItemType.audio, await Database.isVanillaToken(soundDef));
-        } else {
-          item.addUnfulfilledRelationship(
-            soundDef.name,
-            ProjectItemType.audio,
-            await Database.isVanillaToken(soundDef.name)
-          );
-        }
+    if (soundPathList) {
+      for (const soundDef of soundPathList) {
+        const isVanilla = await Database.isVanillaToken(soundDef);
+        item.addUnfulfilledRelationship(soundDef, ProjectItemType.audio, isVanilla);
       }
     }
   }

@@ -4,7 +4,7 @@ import AnimationBehaviorDefinition from "./AnimationBehaviorDefinition";
 import AnimationControllerBehaviorDefinition from "./AnimationControllerBehaviorDefinition";
 import AnimationControllerResourceDefinition from "./AnimationControllerResourceDefinition";
 import AnimationResourceDefinition from "./AnimationResourceDefinition";
-import AudioFileDefinition from "./AudioFileDefinition";
+import AudioDefinition from "./AudioDefinition";
 import BehaviorManifestDefinition from "./BehaviorManifestDefinition";
 import BlockTypeDefinition from "./BlockTypeDefinition";
 import EntityTypeDefinition from "./EntityTypeDefinition";
@@ -75,7 +75,7 @@ export default class MinecraftDefinitions {
       await item.ensureStorage();
 
       if (item.file) {
-        const audioFile = await AudioFileDefinition.ensureOnFile(item.file);
+        const audioFile = await AudioDefinition.ensureOnFile(item.file);
 
         if (audioFile) {
           await audioFile.ensureSoundDefinitionsForFile(item.project);

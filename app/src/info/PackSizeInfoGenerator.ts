@@ -34,6 +34,7 @@ export interface IPackSizeInfoGeneratorResults {
 export default class PackSizeInfoGenerator implements IProjectInfoGenerator {
   id = "PACKSIZE";
   title = "Pack Size Information";
+  canAlwaysProcess = true;
 
   performAddOnValidations = false;
 

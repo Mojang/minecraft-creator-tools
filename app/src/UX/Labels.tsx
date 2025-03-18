@@ -265,6 +265,30 @@ export const DocumentationTypesLabel: React.FC<React.HTMLAttributes<HTMLSpanElem
   </span>
 );
 
+export const CustomSelectableLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableCustomLabelProps> = (
+  props: ISelectableCustomLabelProps
+) => (
+  <span
+    className={props.isSelected ? "label-tab" : "label-deseltab"}
+    style={{
+      borderColor: props.isSelected
+        ? props.theme.siteVariables?.colorScheme.brand.background2
+        : props.theme.siteVariables?.colorScheme.brand.background1,
+      color: props.isSelected
+        ? props.theme.siteVariables?.colorScheme.brand.foreground
+        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+      fontWeight: props.isSelected ? "bold" : "normal",
+      textDecoration: props.isSelected ? "underline" : "none",
+      backgroundColor: props.isSelected
+        ? props.theme.siteVariables?.colorScheme.brand.background2
+        : props.theme.siteVariables?.colorScheme.brand.background1,
+    }}
+  >
+    {props.icon}
+    {!props.isCompact ? <span className="label-text">{props.text}</span> : <></>}
+  </span>
+);
+
 export const CustomTabLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableCustomLabelProps> = (
   props: ISelectableCustomLabelProps
 ) => (

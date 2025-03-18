@@ -357,7 +357,7 @@ export default class SoundCatalogDefinition implements IDefinition {
         if (candItem.file) {
           const soundDef = await SoundDefinitionCatalogDefinition.ensureOnFile(candItem.file);
 
-          const soundSetNames = soundDef?.soundDefinitionSetNameList;
+          const soundSetNames = soundDef?.getSoundDefinitionSetNameList();
           if (soundSetNames) {
             for (const soundEventName of soundEventList) {
               if (soundSetNames.includes(soundEventName)) {
@@ -373,21 +373,19 @@ export default class SoundCatalogDefinition implements IDefinition {
 
     if (soundEventList) {
       for (const soundEvent of soundEventList) {
-        item.addUnfulfilledRelationship(
-          soundEvent,
-          ProjectItemType.soundDefinitionCatalog,
-          await Database.isVanillaToken(soundEvent)
-        );
+        if (soundEvent.length > 0) {
+          const isVanilla = await Database.isVanillaToken(soundEvent);
+          item.addUnfulfilledRelationship(soundEvent, ProjectItemType.soundDefinitionCatalog, isVanilla);
+        }
       }
     }
 
     if (entityIdList) {
       for (const entityId of entityIdList) {
-        item.addUnfulfilledRelationship(
-          entityId,
-          ProjectItemType.entityTypeBehavior,
-          await Database.isVanillaToken(entityId)
-        );
+        if (entityId.length > 0) {
+          const isVanilla = await Database.isVanillaToken(entityId);
+          item.addUnfulfilledRelationship(entityId, ProjectItemType.entityTypeBehavior, isVanilla);
+        }
       }
     }
   }

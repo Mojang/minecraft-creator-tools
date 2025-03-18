@@ -1,4 +1,7 @@
 {
+  "tags": [
+    "visual"
+  ],
   "customField": {
     "id": "<custom material id>",
     "title": "<Custom Material Instance Id>",
@@ -8,7 +11,7 @@
   "fields": [
     {
       "id": "*",
-      "title": "Default Settings for All Faces (*)",
+      "title": "Default settings for all faces (*)",
       "dataType": 16,
       "subFormId": "block/materialinstanceface",
       "samples": {

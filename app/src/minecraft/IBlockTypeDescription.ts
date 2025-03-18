@@ -8,8 +8,6 @@ export default interface IBlockTypeDescription {
   category?: string;
   register_to_creative_menu?: boolean;
   properties?: { [id: string]: number[] | string[] | boolean[] | undefined };
-  components?: { [id: string]: object };
-  permutations?: { [id: string]: object };
   states?: { [id: string]: number[] | string[] | boolean[] | undefined };
   traits?: IBlockTraits;
 }

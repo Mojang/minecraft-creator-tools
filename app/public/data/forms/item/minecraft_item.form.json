@@ -13,19 +13,7 @@
             "id": "minecraft:tags",
             "title": "minecraft:tags",
             "description": "The tags component specifies which tags an item has on it.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Tags",
-              "description": "The tags component specifies which tags an item has on it.",
-              "fields": [
-                {
-                  "id": "tags",
-                  "title": "tags",
-                  "description": "An array that can contain multiple item tags.",
-                  "dataType": 15
-                }
-              ]
-            }
+            "dataType": 16
           },
           {
             "id": "minecraft:allow_off_hand",
@@ -796,5 +784,5 @@
   ],
   "descripiton": "Refers to the item definition, which includes the 'description' and 'components' sections of the file.",
   "description": "Item definition includes the \"description\" and \"components\" sections.",
-  "title": "Item"
+  "title": "Minecraft Item Item"
 }

@@ -4,7 +4,7 @@
       "id": "apply_regeneration",
       "title": "Apply Regeneration",
       "description": "Whether the mob will receive the regeneration effect while playing dead.",
-      "defaultValue": true,
+      "defaultValue": false,
       "dataType": 1,
       "samples": {
         "/vanilla/behavior_pack/entities/axolotl.json": [

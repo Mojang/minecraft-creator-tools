@@ -7,6 +7,7 @@
       "dataType": 1
     }
   ],
+  "scalarFieldUpgradeName": "value",
   "description": "The can_destroy_in_creative component determines if the item can be used by a player to break blocks when in creative mode.",
   "title": "Can Destroy In Creative"
 }

@@ -6,6 +6,7 @@ import { ManagedComponent } from "./ManagedComponent";
 import IComponentGroup from "./IComponentGroup";
 import IManagedComponentSetItem from "./IManagedComponentSetItem";
 import IManagedComponent from "./IManagedComponent";
+import IComponent from "./IComponent";
 
 export default class ManagedComponentGroup implements IManagedComponentSetItem {
   _data?: IComponentGroup;
@@ -37,7 +38,10 @@ export default class ManagedComponentGroup implements IManagedComponentSetItem {
     return this._onComponentChanged.asEvent();
   }
 
-  addComponent(id: string, component: IManagedComponent): void {
+  addComponent(
+    id: string,
+    componentOrData: ManagedComponent | IComponent | string | string[] | boolean | number[] | number | undefined
+  ): IManagedComponent {
     if (!this._data) {
       this._data = {};
     }
@@ -46,8 +50,15 @@ export default class ManagedComponentGroup implements IManagedComponentSetItem {
       this._managed = {};
     }
 
-    this._data[component.id] = component.getData();
-    this._managed[component.id] = component;
+    const mc =
+      componentOrData instanceof ManagedComponent
+        ? componentOrData
+        : new ManagedComponent(this._data, id, componentOrData);
+
+    this._data[mc.id] = mc.getData();
+    this._managed[mc.id] = mc;
+
+    return mc;
   }
 
   removeComponent(id: string) {
@@ -70,7 +81,7 @@ export default class ManagedComponentGroup implements IManagedComponentSetItem {
     if (!this._managed[id]) {
       const data = this._data[id];
       if (data) {
-        this._managed[id] = new ManagedComponent(id, data);
+        this._managed[id] = new ManagedComponent(this._data, id, data);
       }
     }
 
@@ -96,7 +107,7 @@ export default class ManagedComponentGroup implements IManagedComponentSetItem {
       const comp = this._data[c];
 
       if (!this._managed[c] && comp) {
-        this._managed[c] = new ManagedComponent(c, comp);
+        this._managed[c] = new ManagedComponent(this._data, c, comp);
       }
 
       const mc = this._managed[c];

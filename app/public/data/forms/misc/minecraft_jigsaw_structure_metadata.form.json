@@ -1,0 +1,18 @@
+{
+  "fields": [
+    {
+      "id": "format_version",
+      "title": "format_version",
+      "description": "Format version of the contained metadata registry.",
+      "dataType": 2
+    },
+    {
+      "id": "minecraft:jigsaw_structure_metadata",
+      "title": "minecraft:jigsaw_structure_metadata",
+      "description": "The Jigsaw metadata registry.",
+      "dataType": 16
+    }
+  ],
+  "description": "Minecraft Jigsaw Structure Metadata Misc",
+  "title": "Minecraft Jigsaw Structure Metadata Misc"
+}

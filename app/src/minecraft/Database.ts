@@ -19,7 +19,7 @@ import Utilities from "../core/Utilities";
 import NpmModule from "../devproject/NpmModule";
 import IMainInfoVersions from "./IMainInfoVersions";
 import IFormDefinition from "../dataform/IFormDefinition";
-import ContentIndex, { AnnotationCategories } from "../core/ContentIndex";
+import ContentIndex, { AnnotationCategory } from "../core/ContentIndex";
 import IProjectInfoData from "../info/IProjectInfoData";
 import Project from "../app/Project";
 import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
@@ -30,6 +30,12 @@ import { MinecraftTrack } from "../app/ICartoData";
 import IBiomesMetadata from "./IBiomesMetadata";
 import IBlocksMetadata from "./IBlocksMetadata";
 import ILegacyDocumentationNode from "./docs/ILegacyDocumentation";
+import BlocksCatalogDefinition from "./BlocksCatalogDefinition";
+import TerrainTextureCatalogDefinition from "./TerrainTextureCatalogDefinition";
+import IEntitiesMetadata from "./IEntitiesMetadata";
+import IItemsMetadata from "./IItemsMetadata";
+import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition";
+import ItemTextureCatalogDefinition from "./ItemTextureCatalogDefinition";
 
 export default class Database {
   static isLoaded = false;
@@ -61,6 +67,12 @@ export default class Database {
   static addonsDocs: ILegacyDocumentationNode | null = null;
   static biomesMetadata: IBiomesMetadata | null = null;
   static blocksMetadata: IBlocksMetadata | null = null;
+  static entitiesMetadata: IEntitiesMetadata | null = null;
+  static itemsMetadata: IItemsMetadata | null = null;
+  static blocksCatalog: BlocksCatalogDefinition | null = null;
+  static itemTextureCatalog: ItemTextureCatalogDefinition | null = null;
+  static terrainTextureCatalog: TerrainTextureCatalogDefinition | null = null;
+  static soundDefinitionCatalog: SoundDefinitionCatalogDefinition | null = null;
 
   static latestVersion: string | undefined;
   static latestPreviewVersion: string | undefined;
@@ -693,12 +705,104 @@ export default class Database {
     return Database.biomesMetadata;
   }
 
+  static getVanillaBlocksCatalogDirect() {
+    return this.blocksCatalog;
+  }
+
+  static async getVanillaBlocksCatalog() {
+    if (!Database.blocksCatalog) {
+      const file = await Database.getPreviewVanillaFile("/resource_pack/blocks.json");
+
+      if (file) {
+        const blockCat = new BlocksCatalogDefinition();
+        blockCat.file = file;
+
+        await blockCat.load();
+
+        this.blocksCatalog = blockCat;
+      }
+    }
+
+    return this.blocksCatalog;
+  }
+
+  static getVanillaTerrainTexturesCatalogDirect() {
+    return this.terrainTextureCatalog;
+  }
+
+  static async getVanillaTerrainTexturesCatalog() {
+    if (!Database.terrainTextureCatalog) {
+      const file = await Database.getPreviewVanillaFile("/resource_pack/textures/terrain_texture.json");
+
+      if (file) {
+        const terrainCat = new TerrainTextureCatalogDefinition();
+        terrainCat.file = file;
+
+        await terrainCat.load();
+
+        Database.terrainTextureCatalog = terrainCat;
+      }
+    }
+
+    return Database.terrainTextureCatalog;
+  }
+
+  static async getVanillaItemTexturesCatalog() {
+    if (!Database.itemTextureCatalog) {
+      const file = await Database.getPreviewVanillaFile("/resource_pack/textures/item_texture.json");
+
+      if (file) {
+        const itemCat = new ItemTextureCatalogDefinition();
+        itemCat.file = file;
+
+        await itemCat.load();
+
+        Database.itemTextureCatalog = itemCat;
+      }
+    }
+
+    return Database.itemTextureCatalog;
+  }
+
+  static async getVanillaSoundDefinitionCatalog() {
+    if (!Database.soundDefinitionCatalog) {
+      const file = await Database.getPreviewVanillaFile("/resource_pack/sounds/sound_definitions.json");
+
+      if (file) {
+        const soundDefinitionCat = new SoundDefinitionCatalogDefinition();
+        soundDefinitionCat.file = file;
+
+        await soundDefinitionCat.load();
+
+        Database.soundDefinitionCatalog = soundDefinitionCat;
+      }
+    }
+
+    return Database.soundDefinitionCatalog;
+  }
+
   static async getBlocksMetadata() {
     if (!Database.blocksMetadata) {
       Database.blocksMetadata = await Database.getMetadataObject("/vanilladata_modules/mojang-blocks.json");
     }
 
     return Database.blocksMetadata;
+  }
+
+  static async getEntitiesMetadata() {
+    if (!Database.entitiesMetadata) {
+      Database.entitiesMetadata = await Database.getMetadataObject("/vanilladata_modules/mojang-entities.json");
+    }
+
+    return Database.entitiesMetadata;
+  }
+
+  static async getItemsMetadata() {
+    if (!Database.itemsMetadata) {
+      Database.itemsMetadata = await Database.getMetadataObject("/vanilladata_modules/mojang-items.json");
+    }
+
+    return Database.itemsMetadata;
   }
 
   static async getMetadataObject(metaPath: string) {
@@ -716,6 +820,43 @@ export default class Database {
     }
 
     await jsonFile.loadContent();
+
+    const jsonObj = StorageUtilities.getJsonObject(jsonFile);
+
+    if (!jsonObj) {
+      Log.unexpectedUndefined();
+      return null;
+    }
+
+    return jsonObj;
+  }
+
+  static async getPreviewVanillaFile(filePath: string) {
+    const vanillaFolder = await Database.getPreviewVanillaFolder();
+
+    if (!vanillaFolder) {
+      return null;
+    }
+
+    const jsonFile = await vanillaFolder.getFileFromRelativePath(filePath);
+
+    if (!jsonFile) {
+      Log.unexpectedUndefined();
+      return null;
+    }
+
+    await jsonFile.loadContent();
+
+    return jsonFile;
+  }
+
+  static async getPreviewVanillaObject(filePath: string) {
+    const jsonFile = await Database.getPreviewVanillaFile(filePath);
+
+    if (!jsonFile) {
+      Log.unexpectedUndefined();
+      return null;
+    }
 
     const jsonObj = StorageUtilities.getJsonObject(jsonFile);
 
@@ -1107,7 +1248,7 @@ export default class Database {
   }
 
   static async isVanillaToken(path: string) {
-    const matches = await Database.getVanillaMatches(path);
+    const matches = await Database.getVanillaMatches(path, true);
 
     if (matches && matches.length > 0) {
       return true;
@@ -1116,7 +1257,7 @@ export default class Database {
     return false;
   }
 
-  static async getVanillaMatches(path: string, withAnnotation?: AnnotationCategories[]) {
+  static async getVanillaAll(withAnnotation?: AnnotationCategory[]) {
     if (!Database.vanillaContentIndex) {
       await this.loadVanillaInfoData();
     }
@@ -1125,10 +1266,26 @@ export default class Database {
       return undefined;
     }
 
-    return await Database.vanillaContentIndex.getMatches(path, withAnnotation);
+    return Database.vanillaContentIndex.getAll(withAnnotation);
   }
 
-  static async getPreviewVanillaMatches(path: string, withAnnotation?: AnnotationCategories[]) {
+  static async getVanillaMatches(path: string, wholeTermSearch?: boolean, withAnnotation?: AnnotationCategory[]) {
+    if (!Database.vanillaContentIndex) {
+      await this.loadVanillaInfoData();
+    }
+
+    if (!Database.vanillaContentIndex) {
+      return undefined;
+    }
+
+    return await Database.vanillaContentIndex.getMatches(path, wholeTermSearch, withAnnotation);
+  }
+
+  static async getPreviewVanillaMatches(
+    path: string,
+    wholeTermSearch?: boolean,
+    withAnnotation?: AnnotationCategory[]
+  ) {
     if (!Database.previewVanillaContentIndex) {
       await this.loadPreviewVanillaInfoData();
     }
@@ -1137,10 +1294,10 @@ export default class Database {
       return undefined;
     }
 
-    return await Database.previewVanillaContentIndex.getMatches(path, withAnnotation);
+    return await Database.previewVanillaContentIndex.getMatches(path, wholeTermSearch, withAnnotation);
   }
 
-  static async getSamplesMatches(path: string, withAnnotation?: AnnotationCategories[]) {
+  static async getSamplesMatches(path: string, wholeTermSearch?: boolean, withAnnotation?: AnnotationCategory[]) {
     if (!Database.samplesContentIndex) {
       await this.loadSampleInfoData();
     }
@@ -1149,7 +1306,7 @@ export default class Database {
       return undefined;
     }
 
-    return await Database.samplesContentIndex.getMatches(path, withAnnotation);
+    return await Database.samplesContentIndex.getMatches(path, wholeTermSearch, withAnnotation);
   }
 
   static async loadVanillaInfoData() {

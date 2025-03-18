@@ -32,6 +32,8 @@ export enum ExportMode {
   Filters = 9,
   MCToolsVal = 10,
   EventResponses = 11,
+  ClientBiomes = 12,
+  Biomes = 13,
 }
 
 export default class FormMarkdownDocumentationGenerator {
@@ -80,7 +82,7 @@ export default class FormMarkdownDocumentationGenerator {
       "Websocket Packet"
     );
 
-    this.exportMarkdownCatalogDocs(
+    this.exportValidatorMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
       ExportMode.MCToolsVal,
@@ -150,6 +152,26 @@ export default class FormMarkdownDocumentationGenerator {
       "Entity Component"
     );
 
+    this.exportMarkdownCatalogDocs(
+      formsByPath,
+      outputFolder,
+      ExportMode.ClientBiomes,
+      "/ClientBiomesReference/Examples/Components/",
+      "/clientbiome/",
+      "Client Biome",
+      "Client Biome"
+    );
+
+    this.exportMarkdownCatalogDocs(
+      formsByPath,
+      outputFolder,
+      ExportMode.Biomes,
+      "/BiomesReference/Examples/Components/",
+      "/biome/",
+      "Biome",
+      "Biome"
+    );
+
     this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
@@ -196,6 +218,10 @@ export default class FormMarkdownDocumentationGenerator {
       fileName = "minecraftBlock_" + baseName.substring(10);
     } else if (exportMode === ExportMode.ItemComponents && fileName.startsWith("minecraft_")) {
       fileName = "minecraft_" + baseName.substring(10);
+    } else if (exportMode === ExportMode.ClientBiomes && fileName.startsWith("minecraft_")) {
+      fileName = "minecraftClientBiomes_" + baseName.substring(10);
+    } else if (exportMode === ExportMode.Biomes && fileName.startsWith("minecraft_")) {
+      fileName = "minecraftBiomes_" + baseName.substring(10);
     }
 
     fileName = fileName.replace("_horse_", "_horse.");
@@ -249,6 +275,56 @@ export default class FormMarkdownDocumentationGenerator {
         const markdownFile = targetFolder.ensureFile(fileName + ".md");
 
         await this.saveMarkdownDocFromForm(markdownFile, formO, baseName, exportMode, category, categoryExtended);
+      }
+    }
+  }
+
+  public async exportValidatorMarkdownCatalogDocs(
+    formsByPath: { [name: string]: IFormDefinition },
+    outputFolder: IFolder,
+    exportMode: ExportMode,
+    subFolderPath: string,
+    formsPath: string,
+    categoryPlural: string,
+    categorySingular: string
+  ) {
+    const targetFolder = await outputFolder.ensureFolderFromRelativePath(subFolderPath);
+
+    if (!targetFolder) {
+      return;
+    }
+
+    let hasEnsuredFolder = false;
+
+    formsByPath = this.getFormsFromFilter(formsByPath, formsPath, exportMode);
+
+    for (const formPath in formsByPath) {
+      const formO = formsByPath[formPath];
+
+      if (formO) {
+        let baseName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(formPath));
+
+        if (baseName.endsWith(".form")) {
+          baseName = baseName.substring(0, baseName.length - 5);
+        }
+
+        if (!hasEnsuredFolder) {
+          await targetFolder.ensureExists();
+          hasEnsuredFolder = true;
+        }
+
+        let fileName = this.getFileNameFromBaseName(baseName, exportMode);
+
+        const markdownFile = targetFolder.ensureFile(fileName + ".md");
+
+        await this.saveValidatorMarkdownDocFromForm(
+          markdownFile,
+          formO,
+          baseName,
+          exportMode,
+          categoryPlural,
+          categorySingular
+        );
       }
     }
   }
@@ -398,6 +474,14 @@ export default class FormMarkdownDocumentationGenerator {
       content.push("");
     }
 
+    if (form.isInternal) {
+      content.push("> [!IMPORTANT]");
+      content.push(
+        "> This type is internal to vanilla Minecraft usage, and is not functional or supported within custom Minecraft content."
+      );
+      content.push("");
+    }
+
     await this.appendForm(form, content, 0);
 
     if (form.samples) {
@@ -475,6 +559,45 @@ export default class FormMarkdownDocumentationGenerator {
         }
       }
     }
+
+    markdownFile.setContent(content.join("\r\n"));
+
+    await markdownFile.saveContent();
+  }
+
+  public async saveValidatorMarkdownDocFromForm(
+    markdownFile: IFile,
+    form: IFormDefinition,
+    baseName: string,
+    exportMode: ExportMode,
+    category: string,
+    categoryExtended: string
+  ) {
+    const content: string[] = [];
+
+    let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
+
+    if (exportMode === ExportMode.Websockets && form.id) {
+      canonName = form.id;
+    }
+
+    content.push(
+      Utilities.stringFormat(
+        MarkdownTop,
+        category + " Documentation - " + canonName,
+        "Describes the " + canonName + " " + categoryExtended.toLowerCase()
+      )
+    );
+
+    content.push("# " + category + " Documentation - " + canonName + "\r\n");
+
+    if (form.isDeprecated) {
+      content.push("> [!IMPORTANT]");
+      content.push("> This type is now deprecated, and no longer in use in the latest versions of Minecraft.");
+      content.push("");
+    }
+
+    await this.appendValidatorForm(form, content, 0);
 
     markdownFile.setContent(content.join("\r\n"));
 
@@ -618,7 +741,7 @@ export default class FormMarkdownDocumentationGenerator {
     if (scalarField) {
       content.push("## Alternate Simple Representations\r\n");
 
-      for (const scalarFieldInst of DataFormUtilities.getFieldRepresentations(scalarField)) {
+      for (const scalarFieldInst of DataFormUtilities.getFieldAndAlternates(scalarField)) {
         content.push(
           "This item can also be represented as a `" +
             DataFormUtilities.getFieldTypeDescription(scalarFieldInst.dataType) +
@@ -732,7 +855,7 @@ export default class FormMarkdownDocumentationGenerator {
         } else {
           let fieldTypes = "";
 
-          for (const scalarFieldInst of DataFormUtilities.getFieldRepresentations(field)) {
+          for (const scalarFieldInst of DataFormUtilities.getFieldAndAlternates(field)) {
             if (fieldTypes.length > 0) {
               fieldTypes += " or ";
             }
@@ -806,6 +929,104 @@ export default class FormMarkdownDocumentationGenerator {
                 addedKey = true;
               }
             }
+          }
+        }
+
+        fieldRow += " | ";
+
+        content.push(fieldRow);
+      }
+
+      content.push(...subContent);
+    }
+  }
+
+  public async appendValidatorForm(form: IFormDefinition, content: string[], depth: number, altTitle?: string) {
+    if (form.description) {
+      content.push(this.sanitizeDescription(form.description) + "\r\n");
+    }
+
+    if (form.note) {
+      content.push("> [!Note]");
+      content.push("> " + this.sanitizeDescription(form.note) + "\r\n");
+    }
+
+    if (form.note2) {
+      content.push("> [!Note]");
+      content.push("> " + this.sanitizeDescription(form.note2) + "\r\n");
+    }
+
+    if (form.note3) {
+      content.push("> [!Note]");
+      content.push("> " + this.sanitizeDescription(form.note3) + "\r\n");
+    }
+
+    let title = undefined;
+
+    if (form.title) {
+      if (form.title === form.id) {
+        title = Utilities.humanifyMinecraftName(form.id);
+      } else {
+        title = form.title;
+      }
+    } else if (form.id) {
+      title = Utilities.humanifyMinecraftName(form.id);
+    } else if (altTitle) {
+      title = altTitle;
+    } else {
+      title = "Item";
+    }
+
+    if (form.fields && form.fields.length > 0) {
+      const subContent: string[] = [];
+      if (depth > 0) {
+        content.push("\r\n#### " + title + " Properties\r\n");
+      } else {
+        content.push("\r\n## " + title + " Properties\r\n");
+      }
+
+      content.push("|Name       |Description |");
+      content.push("|:----------|:-------------|");
+
+      form.fields.sort((a: IField, b: IField) => {
+        return a.id.localeCompare(b.id);
+      });
+
+      let fullFieldList: IField[] = [];
+
+      for (const field of form.fields) {
+        fullFieldList.push(field);
+
+        if (field.alternates) {
+          let i = 0;
+          for (const altField of field.alternates) {
+            i++;
+
+            if (!altField.id || altField.id === field.id) {
+              altField.id = field.id + " (Alternate " + i + ")";
+            }
+
+            fullFieldList.push(altField);
+          }
+        }
+      }
+
+      for (const field of fullFieldList) {
+        let fieldRow = "| " + field.id + " | ";
+
+        if (field.description) {
+          fieldRow += this.sanitizeForTable(field.description);
+
+          if (field.note) {
+            fieldRow += " " + this.sanitizeForTable(field.note);
+          }
+
+          if (field.note2) {
+            fieldRow += " " + this.sanitizeForTable(field.note2);
+          }
+
+          if (field.note3) {
+            fieldRow += " " + this.sanitizeForTable(field.note3);
           }
         }
 

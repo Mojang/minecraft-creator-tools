@@ -14,12 +14,14 @@ import MinecraftFilter from "../dataform/MinecraftFilter";
 import { faCheckSquare, faSquare } from "@fortawesome/free-regular-svg-icons";
 import Database from "../minecraft/Database";
 import DataForm from "../dataform/DataForm";
+import Project from "../app/Project";
 
 interface IEventActionDesignProps {
   readOnly: boolean;
   entityType: EntityTypeDefinition;
   displayWeight?: boolean;
   eventContextId: string;
+  project: Project;
   event: ManagedEventAction;
   theme: ThemeInput<any>;
   carto: Carto;
@@ -336,6 +338,8 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
           displayDescription={true}
           readOnly={false}
           theme={this.props.theme}
+          project={this.props.project}
+          lookupProvider={this.props.project}
           objectKey={this.props.eventContextId + "sound"}
           closeButton={false}
           definition={form}
@@ -352,6 +356,8 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
           displayDescription={true}
           readOnly={false}
           theme={this.props.theme}
+          project={this.props.project}
+          lookupProvider={this.props.project}
           objectKey={this.props.eventContextId + "vibration"}
           closeButton={false}
           definition={form}
@@ -368,6 +374,8 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
           displayDescription={true}
           readOnly={false}
           theme={this.props.theme}
+          project={this.props.project}
+          lookupProvider={this.props.project}
           objectKey={this.props.eventContextId + "particle"}
           closeButton={false}
           definition={form}
@@ -384,6 +392,8 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
           displayDescription={true}
           readOnly={false}
           theme={this.props.theme}
+          project={this.props.project}
+          lookupProvider={this.props.project}
           objectKey={this.props.eventContextId + "trigger"}
           closeButton={false}
           definition={form}

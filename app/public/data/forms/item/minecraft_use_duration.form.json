@@ -7,6 +7,7 @@
       "dataType": 3
     }
   ],
+  "scalarFieldUpgradeName": "value",
   "description": "This component determines how long the item takes to use when used in combination with components like \"shooter\", \"throwable\", or \"food\".",
   "title": "Use Duration",
   "samples": {

@@ -1,0 +1,72 @@
+.btpe-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+}
+
+.btpe-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.btpe-componentHeader {
+  padding-top: 20px;
+  font-size: 14pt;
+  padding: 12px;
+  padding-top: 40px;
+  padding-bottom: 14px;
+}
+
+.btpe-extraArea {
+  margin-bottom: 5px;
+}
+
+.btpe-extraArea {
+  grid-column: 2;
+}
+
+.btpe-loading {
+  padding: 4px;
+}
+
+.btpe-setsLabel {
+  padding-top: 2px;
+  padding-bottom: 10px;
+}
+
+.btpe-componentEditorInterior {
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: 73px 1fr;
+}
+
+.btpe-componentListHeader {
+  grid-column: 1;
+  grid-row: 1;
+  padding: 8px;
+}
+
+.btpe-itemBinHeader {
+  grid-column: 2;
+  grid-row: 1;
+  padding-left: 14px;
+  padding-top: 16px;
+}
+
+.btpe-componentList {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.btpe-listInterior {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.btpe-itemBin {
+  grid-column: 2;
+  grid-row-start: 1;
+  grid-row-end: 3;
+}

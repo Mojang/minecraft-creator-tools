@@ -461,7 +461,6 @@ export default class App extends Component<AppProps, AppState> {
   private async _handleNewProject(
     newProjectSeed: IProjectSeed,
     newProjectType: NewProjectTemplateType,
-    newProjectPath?: string,
     additionalFilePath?: string,
     additionalFile?: File,
     editorStartMode?: ProjectEditorMode,
@@ -492,16 +491,18 @@ export default class App extends Component<AppProps, AppState> {
       focus = ProjectFocus.general;
     }
 
-    if (newProjectPath === undefined) {
+    if (newProjectSeed.path === undefined) {
       newProject = await CartoApp.carto.createNewProject(
         newProjectName,
-        newProjectPath,
+        newProjectSeed.path,
+        newProjectSeed.targetFolder,
+        newProjectSeed.targetFolderTitle,
         focus,
         true,
         ProjectScriptLanguage.typeScript
       );
     } else {
-      newProject = await CartoApp.carto.ensureProjectForFolder(newProjectPath, newProjectName, false);
+      newProject = await CartoApp.carto.ensureProjectForFolder(newProjectSeed.path, newProjectName, false);
 
       await newProject.ensureProjectFolder();
 
@@ -578,6 +579,9 @@ export default class App extends Component<AppProps, AppState> {
     const newProject = new Project(CartoApp.carto, name ? name : folder.name, null);
 
     newProject.setProjectFolder(folder);
+    newProject.projectFolderTitle = name;
+
+    await newProject.attemptToLoadPreferences();
 
     if (isDocumentationProject) {
       await ProjectUtilities.prepareProjectForDocumentation(newProject);
@@ -669,7 +673,7 @@ export default class App extends Component<AppProps, AppState> {
     for (let i = 0; i < projects.length; i++) {
       const proj = projects[i];
 
-      await proj.ensureLoadedFromFile();
+      await proj.ensurePreferencesAndFolderLoadedFromFile();
 
       if (
         proj.originalGitHubOwner === gitHubOwner &&
@@ -836,7 +840,14 @@ export default class App extends Component<AppProps, AppState> {
         focus = ProjectFocus.focusedCodeSnippet;
       }
 
-      const newProject = await carto.createNewProject(newProjectName, undefined, focus, false);
+      const newProject = await carto.createNewProject(
+        newProjectName,
+        projectSeed?.path,
+        projectSeed?.targetFolder,
+        projectSeed?.targetFolderTitle,
+        focus,
+        false
+      );
 
       await gh.rootFolder.load();
 
@@ -1045,7 +1056,7 @@ export default class App extends Component<AppProps, AppState> {
     for (let i = 0; i < projects.length; i++) {
       const proj = projects[i];
 
-      await proj.ensureLoadedFromFile();
+      await proj.ensurePreferencesAndFolderLoadedFromFile();
 
       if (proj.originalFullPath === canonPath) {
         await proj.ensureInflated();
@@ -1085,7 +1096,14 @@ export default class App extends Component<AppProps, AppState> {
       projName = projName.replace(/\\/gi, "");
       projName = projName.replace(/ /gi, "");
 
-      const newProject = await carto.createNewProject(newProjectName, folder.fullPath, newFocus, false);
+      const newProject = await carto.createNewProject(
+        newProjectName,
+        folder.fullPath,
+        undefined,
+        undefined,
+        newFocus,
+        false
+      );
 
       await newProject.ensureProjectFolder();
 
@@ -1201,7 +1219,7 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   private async _handleProjectSelected(project: Project) {
-    await project.ensureLoadedFromFile();
+    await project.ensurePreferencesAndFolderLoadedFromFile();
     await project.ensureInflated();
 
     this._updateWindowTitle(AppMode.project, project);

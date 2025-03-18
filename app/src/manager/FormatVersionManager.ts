@@ -25,6 +25,7 @@ import AttachableResourceDefinition from "../minecraft/AttachableResourceDefinit
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
 import FogResourceDefinition from "../minecraft/FogResourceDefinition";
 import WorldTemplateManifestDefinition from "../minecraft/WorldTemplateManifestDefinition";
+import ProjectItemUtilities from "../app/ProjectItemUtilities";
 
 export default class FormatVersionManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "FORMATVER";
@@ -173,7 +174,6 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
     const infoItems: ProjectInfoItem[] = [];
 
     const ver = await Database.getLatestVersionInfo(project.effectiveTrack);
-    let foundError = false;
 
     if (!ver) {
       infoItems.push(
@@ -211,9 +211,17 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           if (btdef) {
             const ver = btdef.getFormatVersion();
 
-            if (this.checkVersions(ver, modernGameVersionSplit, infoItems, pi, "Block type", 110)) {
-              foundError = true;
-            }
+            this.checkVersions(ver, modernGameVersionSplit, infoItems, pi, "Block type", 110);
+            infoItems.push(
+              new ProjectInfoItem(
+                InfoItemType.info,
+                this.id,
+                600 + (pi.itemType as number),
+                ProjectItemUtilities.getDescriptionForType(pi.itemType) + " format_version",
+                pi,
+                btdef?.getFormatVersion()
+              )
+            );
           }
         }
       } else if (pi.itemType === ProjectItemType.itemTypeBehavior) {
@@ -225,9 +233,17 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           if (itdef) {
             const ver = itdef.getFormatVersion();
 
-            if (this.checkVersions(ver, modernGameVersionSplit, infoItems, pi, "Item type", 130)) {
-              foundError = true;
-            }
+            this.checkVersions(ver, modernGameVersionSplit, infoItems, pi, "Item type", 130);
+            infoItems.push(
+              new ProjectInfoItem(
+                InfoItemType.info,
+                this.id,
+                600 + (pi.itemType as number),
+                ProjectItemUtilities.getDescriptionForType(pi.itemType) + " format_version",
+                pi,
+                itdef.getFormatVersion()
+              )
+            );
           }
         }
       } else if (pi.itemType === ProjectItemType.recipeBehavior) {
@@ -239,9 +255,18 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           if (rbdef) {
             const ver = rbdef.getFormatVersion();
 
-            if (this.checkVersions(ver, modernGameVersionSplit, infoItems, pi, "Recipe", 150)) {
-              foundError = true;
-            }
+            this.checkVersions(ver, modernGameVersionSplit, infoItems, pi, "Recipe", 150);
+
+            infoItems.push(
+              new ProjectInfoItem(
+                InfoItemType.info,
+                this.id,
+                600 + (pi.itemType as number),
+                ProjectItemUtilities.getDescriptionForType(pi.itemType) + " format_version",
+                pi,
+                rbdef.getFormatVersion()
+              )
+            );
           }
         }
       } else if (pi.itemType === ProjectItemType.animationBehaviorJson) {
@@ -253,9 +278,17 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           if (abdef) {
             const ver = abdef.getFormatVersion();
 
-            if (this.checkVersions(ver, ["1", "10", "0"], infoItems, pi, "Behavior animation", 170)) {
-              foundError = true;
-            }
+            this.checkVersions(ver, ["1", "10", "0"], infoItems, pi, "Behavior animation", 170);
+            infoItems.push(
+              new ProjectInfoItem(
+                InfoItemType.info,
+                this.id,
+                600 + (pi.itemType as number),
+                ProjectItemUtilities.getDescriptionForType(pi.itemType) + " format_version",
+                pi,
+                abdef.getFormatVersion()
+              )
+            );
           }
         }
       } else if (pi.itemType === ProjectItemType.animationControllerBehaviorJson) {
@@ -267,9 +300,18 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           if (abdef) {
             const ver = abdef.getFormatVersion();
 
-            if (this.checkVersions(ver, ["1", "10", "0"], infoItems, pi, "Behavior animation controller", 190)) {
-              foundError = true;
-            }
+            this.checkVersions(ver, ["1", "10", "0"], infoItems, pi, "Behavior animation controller", 190);
+
+            infoItems.push(
+              new ProjectInfoItem(
+                InfoItemType.info,
+                this.id,
+                600 + (pi.itemType as number),
+                ProjectItemUtilities.getDescriptionForType(pi.itemType) + " format_version",
+                pi,
+                abdef.getFormatVersion()
+              )
+            );
           }
         }
       } else if (pi.itemType === ProjectItemType.animationResourceJson) {
@@ -281,9 +323,18 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           if (ardef) {
             const ver = ardef.getFormatVersion();
 
-            if (this.checkVersions(ver, ["1", "10", "0"], infoItems, pi, "Resource animation", 210)) {
-              foundError = true;
-            }
+            this.checkVersions(ver, ["1", "10", "0"], infoItems, pi, "Resource animation", 210);
+
+            infoItems.push(
+              new ProjectInfoItem(
+                InfoItemType.info,
+                this.id,
+                600 + (pi.itemType as number),
+                ProjectItemUtilities.getDescriptionForType(pi.itemType) + " format_version",
+                pi,
+                ardef.getFormatVersion()
+              )
+            );
           }
         }
       } else if (pi.itemType === ProjectItemType.animationControllerResourceJson) {
@@ -295,9 +346,18 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           if (acrdef) {
             const ver = acrdef.getFormatVersion();
 
-            if (this.checkVersions(ver, ["1", "10", "0"], infoItems, pi, "Resource animation controller", 230)) {
-              foundError = true;
-            }
+            this.checkVersions(ver, ["1", "10", "0"], infoItems, pi, "Resource animation controller", 230);
+
+            infoItems.push(
+              new ProjectInfoItem(
+                InfoItemType.info,
+                this.id,
+                600 + (pi.itemType as number),
+                ProjectItemUtilities.getDescriptionForType(pi.itemType) + " format_version",
+                pi,
+                acrdef.getFormatVersion()
+              )
+            );
           }
         }
       } else if (pi.itemType === ProjectItemType.spawnRuleBehavior) {
@@ -309,9 +369,18 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           if (srbdef) {
             const ver = srbdef.getFormatVersion();
 
-            if (this.checkVersions(ver, ["1", "12", "0"], infoItems, pi, "Spawn rules", 250)) {
-              foundError = true;
-            }
+            this.checkVersions(ver, ["1", "12", "0"], infoItems, pi, "Spawn rules", 250);
+
+            infoItems.push(
+              new ProjectInfoItem(
+                InfoItemType.info,
+                this.id,
+                600 + (pi.itemType as number),
+                ProjectItemUtilities.getDescriptionForType(pi.itemType) + " format_version",
+                pi,
+                srbdef.getFormatVersion()
+              )
+            );
           }
         }
       } else if (pi.itemType === ProjectItemType.attachableResourceJson) {
@@ -323,9 +392,17 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           if (srbdef) {
             const ver = srbdef.getFormatVersion();
 
-            if (this.checkVersions(ver, ["1", "10", "0"], infoItems, pi, "Attachables", 270)) {
-              foundError = true;
-            }
+            this.checkVersions(ver, ["1", "10", "0"], infoItems, pi, "Attachables", 270);
+            infoItems.push(
+              new ProjectInfoItem(
+                InfoItemType.info,
+                this.id,
+                600 + (pi.itemType as number),
+                ProjectItemUtilities.getDescriptionForType(pi.itemType) + " format_version",
+                pi,
+                srbdef.getFormatVersion()
+              )
+            );
           }
         }
       } else if (pi.itemType === ProjectItemType.entityTypeResource) {
@@ -337,9 +414,17 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           if (etrdef) {
             const ver = etrdef.getFormatVersion();
 
-            if (this.checkVersions(ver, modernGameVersionSplit, infoItems, pi, "Entity type resource", 290)) {
-              foundError = true;
-            }
+            this.checkVersions(ver, modernGameVersionSplit, infoItems, pi, "Entity type resource", 290);
+            infoItems.push(
+              new ProjectInfoItem(
+                InfoItemType.info,
+                this.id,
+                600 + (pi.itemType as number),
+                ProjectItemUtilities.getDescriptionForType(pi.itemType) + " format_version",
+                pi,
+                etrdef.getFormatVersion()
+              )
+            );
           }
         }
       } else if (pi.itemType === ProjectItemType.fogResourceJson) {
@@ -351,20 +436,21 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           if (etrdef) {
             const ver = etrdef.getFormatVersion();
 
-            if (this.checkVersions(ver, modernGameVersionSplit, infoItems, pi, "Fog resource", 310)) {
-              foundError = true;
-            }
+            this.checkVersions(ver, modernGameVersionSplit, infoItems, pi, "Fog resource", 310);
+
+            infoItems.push(
+              new ProjectInfoItem(
+                InfoItemType.info,
+                this.id,
+                600 + (pi.itemType as number),
+                ProjectItemUtilities.getDescriptionForType(pi.itemType) + " format_version",
+                pi,
+                etrdef.getFormatVersion()
+              )
+            );
           }
         }
       }
-    }
-
-    if (foundError) {
-      infoItems.push(new ProjectInfoItem(InfoItemType.testCompleteFail, this.id, 461, "Format version check fails."));
-    } else if (foundError) {
-      infoItems.push(
-        new ProjectInfoItem(InfoItemType.testCompleteSuccess, this.id, 462, "Format version check passes.")
-      );
     }
 
     return infoItems;

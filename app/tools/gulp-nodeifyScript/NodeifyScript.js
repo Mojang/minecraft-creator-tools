@@ -9,7 +9,7 @@ class NodeifyScript {
   }
 
   resolve(filePath, content) {
-    if (filePath.toLowerCase().indexOf("/cli/") <= 0 && filePath.toLowerCase().indexOf("\\cli\\") <= 0) {
+    if (filePath.toLowerCase().indexOf("/cli/index") <= 0 && filePath.toLowerCase().indexOf("\\cli\\index") <= 0) {
       return content;
     }
     return "#!/usr/bin/env node\r\n" + content;

@@ -67,3 +67,7 @@
 .npme-extraArea {
   grid-column: 2;
 }
+
+.npme-loading {
+  padding: 4px;
+}

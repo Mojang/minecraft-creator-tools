@@ -69,5 +69,6 @@
       }
     ]
   },
-  "title": "Block Placer"
+  "title": "Block Placer",
+  "id": "minecraft:block_placer"
 }

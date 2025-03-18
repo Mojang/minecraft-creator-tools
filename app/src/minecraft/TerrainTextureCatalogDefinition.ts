@@ -124,6 +124,68 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
     return et;
   }
 
+  getAllTexturePaths(textureId: string) {
+    if (!this.data || !this.data.texture_data) {
+      return undefined;
+    }
+
+    const elt = this.data.texture_data[textureId];
+
+    if (!elt) {
+      return undefined;
+    }
+
+    if (typeof elt.textures === "string") {
+      return [elt.textures];
+    } else if (Array.isArray(elt.textures) && elt.textures.length > 0) {
+      const texturePaths: string[] = [];
+
+      for (const tex of elt.textures) {
+        if (typeof tex === "string") {
+          texturePaths.push(tex);
+        } else if (tex.path) {
+          texturePaths.push(tex.path);
+        }
+      }
+
+      return texturePaths;
+    }
+
+    return undefined;
+  }
+
+  getTexture(textureId: string) {
+    if (!this.data || !this.data.texture_data) {
+      return undefined;
+    }
+
+    return this.data.texture_data[textureId];
+  }
+
+  getDefaultTexturePath(textureId: string) {
+    if (!this.data || !this.data.texture_data) {
+      return undefined;
+    }
+
+    const elt = this.data.texture_data[textureId];
+
+    if (!elt) {
+      return undefined;
+    }
+
+    if (typeof elt.textures === "string") {
+      return elt.textures;
+    } else if (Array.isArray(elt.textures) && elt.textures.length > 0) {
+      if (typeof elt.textures[0] === "string") {
+        return elt.textures[0];
+      } else if (elt.textures[0].path) {
+        return elt.textures[0].path;
+      }
+    }
+
+    return undefined;
+  }
+
   persist() {
     if (this._file === undefined) {
       return;
@@ -134,18 +196,29 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
     this._file.setContent(defString);
   }
 
+  getTextureReferences() {
+    const textureRefs: string[] = [];
+    if (this.data?.texture_data) {
+      for (const resourceId in this.data.texture_data) {
+        const resource = this.data.texture_data[resourceId];
+
+        if (resource && resource.textures) {
+          if (!textureRefs.includes(resourceId)) {
+            textureRefs.push(resourceId);
+          }
+        }
+      }
+    }
+
+    return textureRefs;
+  }
+
   getPackRootFolder() {
     let packRootFolder = undefined;
     if (this.file && this.file.parentFolder) {
       let parentFolder = this.file.parentFolder;
 
-      while (parentFolder.name !== "textures" && parentFolder.parentFolder) {
-        parentFolder = parentFolder.parentFolder;
-      }
-
-      if (parentFolder.parentFolder) {
-        packRootFolder = parentFolder.parentFolder;
-      }
+      packRootFolder = StorageUtilities.getParentOfParentFolderNamed("textures", parentFolder);
     }
 
     return packRootFolder;

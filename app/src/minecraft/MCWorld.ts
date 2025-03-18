@@ -865,6 +865,14 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     }
   }
 
+  getBaseValue(): any {
+    throw new Error("Method not implemented.");
+  }
+
+  setBaseValue(value: any): void {
+    throw new Error("Method not implemented.");
+  }
+
   public setProperty(id: string, newVal: any): any {
     switch (id.toLowerCase()) {
       case "spawnX":
@@ -1288,7 +1296,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
         try {
           this.worldResourcePacks = JSON.parse(packsFile.content);
         } catch {
-          this._pushError("Could not parse resource pack file content");
+          this._pushError("Could not parse resource pack file content." + packsFile.fullPath);
           this.worldResourcePacks = undefined;
         }
       }
@@ -1318,7 +1326,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
         try {
           this.worldResourcePackHistory = JSON.parse(packHistoryFile.content);
         } catch {
-          this._pushError("Could not parse resource pack history file content");
+          this._pushError("Could not parse resource pack history file content: " + packHistoryFile.fullPath);
           this.worldResourcePackHistory = undefined;
         }
       }
@@ -1593,6 +1601,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
             keyBytes.length === 16 ||
               keyBytes.length === 24 ||
               keyBytes.length === 20 ||
+              keyBytes.length === 14 ||
               keyBytes.length === 13 ||
               keyBytes.length === 12,
             "Unexpected digp key size (" + keyBytes.length + ")"

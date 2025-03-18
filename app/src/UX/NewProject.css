@@ -64,6 +64,12 @@
   grid-column: 1;
 }
 
+.nepro-browserOptions {
+  padding-top: 30px;
+  grid-row: 6;
+  grid-column: 2;
+}
+
 .nepro-newPath {
   padding-top: 35px;
   grid-row: 6;
@@ -93,4 +99,9 @@
 
 .nepro-newTrackInput .ui-dropdown__container {
   width: 345px;
+}
+
+.nepro-errorMessage {
+  padding-top: 4px;
+  padding-left: 2px;
 }

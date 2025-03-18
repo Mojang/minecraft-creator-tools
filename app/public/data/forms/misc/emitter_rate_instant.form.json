@@ -1,0 +1,17 @@
+{
+  "fields": [
+    {
+      "id": "num_particles",
+      "title": "num_particles",
+      "description": "num_particles",
+      "dataType": 16,
+      "subForm": {
+        "title": "Num Particles",
+        "description": "Num Particles",
+        "fields": []
+      }
+    }
+  ],
+  "description": "Emitter Rate Instant V1.21.0 Misc",
+  "title": "Emitter Rate Instant V1.21.0 Misc"
+}

@@ -338,6 +338,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           interior = (
             <EntityTypeResourceEditor
               theme={this.props.theme}
+              project={this.props.project}
               heightOffset={this.props.heightOffset}
               file={file}
               projectItem={this.props.activeProjectItem}

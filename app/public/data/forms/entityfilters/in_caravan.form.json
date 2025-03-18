@@ -160,6 +160,25 @@
           }
         ]
       }
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/llama.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:damage_sensor/triggers/on_damage/filters/",
+            "content": "in_caravan"
+          }
+        ],
+        "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:damage_sensor/triggers/on_damage/filters/",
+            "content": "in_caravan"
+          }
+        ]
+      }
     }
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
@@ -193,7 +212,10 @@
       },
       {
         "path": "/minecraft:entity/components/minecraft:damage_sensor/triggers/on_damage/filters/",
-        "content": "{\"test\":\"in_caravan\",\"value\":false}"
+        "content": {
+          "test": "in_caravan",
+          "value": false
+        }
       }
     ],
     "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
@@ -210,7 +232,10 @@
       },
       {
         "path": "/minecraft:entity/components/minecraft:damage_sensor/triggers/on_damage/filters/",
-        "content": "{\"test\":\"in_caravan\",\"value\":false}"
+        "content": {
+          "test": "in_caravan",
+          "value": false
+        }
       }
     ],
     "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
@@ -227,7 +252,10 @@
       },
       {
         "path": "/minecraft:entity/components/minecraft:damage_sensor/triggers/on_damage/filters/",
-        "content": "{\"test\":\"in_caravan\",\"value\":false}"
+        "content": {
+          "test": "in_caravan",
+          "value": false
+        }
       }
     ]
   }

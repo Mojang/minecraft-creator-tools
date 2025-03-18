@@ -6,6 +6,8 @@ import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IBlocksCatalogResource } from "./IBlocksCatalog";
+import Project from "../app/Project";
+import { AnnotationCategory } from "../core/ContentIndex";
 
 export default class BlocksCatalogDefinition {
   public blocksCatalog?: IBlocksCatalogResource;
@@ -29,7 +31,7 @@ export default class BlocksCatalogDefinition {
     this._file = newFile;
   }
 
-  static async ensureBlocksCatalogResourceDefinitionOnFile(
+  static async ensureOnFile(
     file: IFile,
     loadHandler?: IEventHandler<BlocksCatalogDefinition, BlocksCatalogDefinition>
   ) {
@@ -54,6 +56,117 @@ export default class BlocksCatalogDefinition {
     }
 
     return et;
+  }
+
+  getBlockDefinition(id: string) {
+    if (!this.blocksCatalog) {
+      return undefined;
+    }
+
+    if (this.blocksCatalog[id]) {
+      return this.blocksCatalog[id];
+    }
+
+    const colon = id.indexOf(":");
+
+    if (colon >= 0) {
+      id = id.substring(colon + 1);
+    }
+
+    return this.blocksCatalog[id];
+  }
+
+  ensureBlockDefinition(id: string) {
+    if (!this.blocksCatalog) {
+      this.blocksCatalog = {};
+    }
+
+    if (this.blocksCatalog[id]) {
+      return this.blocksCatalog[id];
+    }
+
+    const colon = id.indexOf(":");
+
+    if (colon >= 0) {
+      let noColonId = id.substring(colon + 1);
+      if (this.blocksCatalog[noColonId]) {
+        return this.blocksCatalog[noColonId];
+      }
+    }
+
+    this.blocksCatalog[id] = {};
+
+    return this.blocksCatalog[id];
+  }
+
+  getDefaultTextureId(id: string) {
+    const ref = this.getBlockDefinition(id);
+
+    if (ref && ref.textures) {
+      if (typeof ref.textures === "string") {
+        return ref.textures;
+      }
+
+      if (ref.textures["side"]) {
+        return ref.textures["side"];
+      } else if (ref.textures["up"]) {
+        return ref.textures["up"];
+      } else {
+        for (const key in ref.textures) {
+          return (ref.textures as any)[key];
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  getTextureReferences() {
+    const textureRefs: string[] = [];
+    if (this.blocksCatalog) {
+      for (const resourceId in this.blocksCatalog) {
+        const resource = this.blocksCatalog[resourceId];
+
+        if (resource && resource.textures) {
+          if (!textureRefs.includes(resourceId)) {
+            textureRefs.push(resourceId);
+          }
+        }
+      }
+    }
+
+    return textureRefs;
+  }
+
+  async getUnusedDependencies(project: Project) {
+    const textureRefs: string[] = [];
+    if (this.blocksCatalog) {
+      for (const resourceId in this.blocksCatalog) {
+        if (resourceId !== "format_version") {
+          const resource = this.blocksCatalog[resourceId];
+
+          if (resource && (resource.textures || resource.sound || resource.carried_textures)) {
+            if (!textureRefs.includes(resourceId)) {
+              const termMatches = await project.infoSet.contentIndex.getMatches(resourceId, true, [
+                AnnotationCategory.blockTypeSource,
+              ]);
+
+              if (!termMatches || termMatches.length === 0) {
+                textureRefs.push(resourceId);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return textureRefs;
+  }
+
+  removeId(id: string) {
+    if (this.blocksCatalog) {
+      (this.blocksCatalog[id] as any) = undefined;
+    }
   }
 
   persist() {

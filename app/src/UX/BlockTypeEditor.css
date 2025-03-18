@@ -2,7 +2,6 @@
   width: calc(100% - 2px);
   min-width: calc(100% - 2px);
   max-width: calc(100% - 2px);
-  overflow-y: auto;
 }
 
 .bte-headerTransition {
@@ -37,7 +36,8 @@
 }
 
 .bte-toolBarArea {
-  grid-column: 1;
+  padding-bottom: 0px;
+  height: 31px;
 }
 
 .bte-extraArea {

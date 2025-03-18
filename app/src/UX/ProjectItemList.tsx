@@ -1232,6 +1232,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
     if (
       cat === ProjectItemCategory.build ||
+      cat === ProjectItemCategory.mctools ||
       cat === ProjectItemCategory.package ||
       projectItem.itemType === ProjectItemType.lang || // should be handled by Text editor
       projectItem.itemType === ProjectItemType.languagesCatalogResourceJson || // should be handled by Text editor
@@ -1244,7 +1245,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       projectItem.itemType === ProjectItemType.skinPackFolder ||
       projectItem.itemType === ProjectItemType.soundCatalog ||
       projectItem.itemType === ProjectItemType.blocksCatalogResourceJson || // this should be handled by block type editor for bp block type
-      projectItem.itemType === ProjectItemType.blockTypeResourceJson || // this should be handled by block type editor for bp block type
+      projectItem.itemType === ProjectItemType.blockTypeResourceJsonDoNotUse || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.behaviorPackListJson || // this should be handled by world editor
       projectItem.itemType === ProjectItemType.resourcePackListJson || // this should be handled by world editor
       projectItem.itemType === ProjectItemType.behaviorPackHistoryListJson || // this should be handled by world editor

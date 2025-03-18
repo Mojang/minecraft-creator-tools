@@ -17,6 +17,8 @@ export interface IProjectInfoTopicData {
 export default interface IProjectInfoGeneratorBase {
   id: string;
   title: string;
+  canAlwaysProcess?: boolean;
+
   getTopicData(topicId: number): IProjectInfoTopicData | undefined;
   summarize(summaryDataObject: object, infoSet: ProjectInfoSet): void;
 }

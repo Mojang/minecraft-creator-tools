@@ -1,5 +1,6 @@
 {
   "description": "Determines the color of the item name when hovering over it.",
+  "scalarFieldUpgradeName": "value",
   "fields": [
     {
       "id": "value",

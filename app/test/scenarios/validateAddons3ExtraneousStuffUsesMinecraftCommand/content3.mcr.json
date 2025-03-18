@@ -97,18 +97,21 @@
         "Count": 1
       }
     },
-    "errorCount": 2,
+    "errorCount": 7,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
-    "testSuccessCount": 1,
-    "testFailCount": 6,
-    "errorSummary": "ERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp/manifest.json) Behavior pack manifest does not define a header/min_engine_version.\r\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Behavior pack manifest does not define a header/min_engine_version.",
+    "testSuccessCount": 4,
+    "testFailCount": 3,
+    "testNotApplicableCount": 0,
+    "errorSummary": "ERROR: [CADDONREQ160] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Found more than one behavior pack manifest in a cooperative add-on, which is not a best practice\r\nERROR: [CADDONREQ169] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Resource pack manifest does not have a proper dependency on the behavior pack identifier.\r\nERROR: [CADDONREQ101] Found a loose file in the font folder. Should only see files in the folder font\\creatorshortname\\gamename\\: glyph_E0.png\r\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp/manifest.json) Behavior pack manifest does not define a header/min_engine_version.\r\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Behavior pack manifest does not define a header/min_engine_version.\r\nERROR: [CADDONIREQ161] (/Content/resource_packs/aop_mobsrp/materials/entity.material) First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem: entity_static\r\nERROR: [CADDONIREQ161] (/Content/resource_packs/aop_mobsrp/materials/entity.material) First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem: aopthisisnotagoodname:entity_flat_color_line",
     "internalProcessingErrorSummary": "",
-    "testFailSummary": "TESTFAIL: [MINENGINEVER181] Errors found with minimum engine version check.\r\nTESTFAIL: [CADDONREQ160] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Found more than one behavior pack manifest in a cooperative add-on, which is not a best practice\r\nTESTFAIL: [CADDONREQ169] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Resource pack manifest does not have a proper dependency on the behavior pack identifier.\r\nTESTFAIL: [CADDONREQ101] Found a loose file in the font folder. Should only see files in the folder font\\creatorshortname\\gamename\\: glyph_E0.png\r\nTESTFAIL: [CADDONIREQ161] (/Content/resource_packs/aop_mobsrp/materials/entity.material) First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem: entity_static\r\nTESTFAIL: [CADDONIREQ161] (/Content/resource_packs/aop_mobsrp/materials/entity.material) First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem: aopthisisnotagoodname:entity_flat_color_line",
+    "testFailSummary": "TESTFAIL: [CADDONREQ000] Found 3 errors for Cooperative Add-On Requirements (CADDONREQ).\r\nTESTFAIL: [MINENGINEVER000] Found 2 errors for Min Engine Version (MINENGINEVER).\r\nTESTFAIL: [CADDONIREQ000] Found 2 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
     "summary": {
       "PACKSIZE": {
         "1": {
-          "title": "Overall Size"
+          "title": "Overall Size",
+          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully .",
+          "testCompleteSuccesses": 1
         },
         "2": {
           "title": "File Count"
@@ -126,38 +129,53 @@
           "title": "Content Folder Count"
         }
       },
+      "CADDONREQ": {
+        "0": {
+          "title": "General Item 0",
+          "defaultMessage": "Found 3 errors for Cooperative Add-On Requirements (CADDONREQ).",
+          "testCompleteFails": 1
+        },
+        "101": {
+          "title": "No Loose File In Type Folder",
+          "defaultMessage": "Found a loose file in the font folder. Should only see files in the folder font\\creatorshortname\\gamename\\",
+          "errors": 1
+        },
+        "160": {
+          "title": "Not One Behavior Pack Manifest",
+          "defaultMessage": "Found more than one behavior pack manifest in a cooperative add-on, which is not a best practice",
+          "errors": 1
+        },
+        "169": {
+          "title": "Dependency From Resource Pack To Behavior Pack Not Valid",
+          "defaultMessage": "Resource pack manifest does not have a proper dependency on the behavior pack identifier.",
+          "errors": 1
+        },
+        "200": {
+          "title": "Found Behavior Pack",
+          "defaultMessage": "Behavior pack manifest found."
+        }
+      },
+      "TEXTURE": {
+        "1": {
+          "title": "Textures",
+          "defaultMessage": "Texture Validation (TEXTURE) completed successfully .",
+          "testCompleteSuccesses": 1
+        }
+      },
       "MINENGINEVER": {
+        "0": {
+          "title": "0",
+          "defaultMessage": "Found 2 errors for Min Engine Version (MINENGINEVER).",
+          "testCompleteFails": 1
+        },
         "100": {
           "title": "Behavior Pack Min Engine Version Defined",
           "defaultMessage": "Behavior pack manifest does not define a header/min_engine_version.",
           "errors": 2
         },
-        "181": {
-          "title": "181",
-          "defaultMessage": "Errors found with minimum engine version check.",
-          "testCompleteFails": 1
-        }
-      },
-      "CADDONREQ": {
-        "101": {
-          "title": "No Loose File In Type Folder",
-          "defaultMessage": "Found a loose file in the font folder. Should only see files in the folder font\\creatorshortname\\gamename\\",
-          "testCompleteFails": 1
-        },
-        "160": {
-          "title": "Not One Behavior Pack Manifest",
-          "defaultMessage": "Found more than one behavior pack manifest in a cooperative add-on, which is not a best practice",
-          "testCompleteFails": 1
-        },
-        "169": {
-          "title": "Dependency From Resource Pack To Behavior Pack Not Valid",
-          "defaultMessage": "Resource pack manifest does not have a proper dependency on the behavior pack identifier.",
-          "testCompleteFails": 1
-        }
-      },
-      "TEXTURE": {
-        "1": {
-          "title": "Textures"
+        "614": {
+          "title": "614",
+          "defaultMessage": "Resource pack manifest format_version"
         }
       },
       "WORLDDATA": {
@@ -182,9 +200,20 @@
         }
       },
       "CADDONIREQ": {
+        "0": {
+          "defaultMessage": "Found 2 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
+          "testCompleteFails": 1
+        },
         "161": {
           "defaultMessage": "First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem",
-          "testCompleteFails": 2
+          "errors": 2
+        }
+      },
+      "STRICT": {
+        "1": {
+          "title": "General Item 1",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully .",
+          "testCompleteSuccesses": 1
         }
       }
     }
@@ -227,36 +256,25 @@
       "d": 22
     },
     {
-      "iTp": 3,
-      "gId": "MINENGINEVER",
-      "gIx": 100,
+      "iTp": 2,
+      "gId": "CADDONREQ",
+      "gIx": 200,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
     },
     {
       "iTp": 3,
-      "gId": "MINENGINEVER",
-      "gIx": 100,
-      "p": "/Content/behavior_packs/aop_mobsbp_2/manifest.json"
-    },
-    {
-      "iTp": 1,
-      "gId": "MINENGINEVER",
-      "gIx": 181
-    },
-    {
-      "iTp": 1,
       "gId": "CADDONREQ",
       "gIx": 160,
       "p": "/Content/behavior_packs/aop_mobsbp_2/manifest.json"
     },
     {
-      "iTp": 1,
+      "iTp": 3,
       "gId": "CADDONREQ",
       "gIx": 169,
       "p": "/Content/behavior_packs/aop_mobsbp_2/manifest.json"
     },
     {
-      "iTp": 1,
+      "iTp": 3,
       "gId": "CADDONREQ",
       "gIx": 101,
       "d": "glyph_E0.png"
@@ -294,6 +312,29 @@
           "Count": 3
         }
       }
+    },
+    {
+      "iTp": 3,
+      "gId": "MINENGINEVER",
+      "gIx": 100,
+      "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
+    },
+    {
+      "iTp": 3,
+      "gId": "MINENGINEVER",
+      "gIx": 100,
+      "p": "/Content/behavior_packs/aop_mobsbp_2/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 614,
+      "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
+      "d": [
+        1,
+        20,
+        0
+      ]
     },
     {
       "iTp": 7,
@@ -376,14 +417,14 @@
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
-      "iTp": 1,
+      "iTp": 3,
       "gId": "CADDONIREQ",
       "gIx": 161,
       "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material",
       "d": "entity_static"
     },
     {
-      "iTp": 1,
+      "iTp": 3,
       "gId": "CADDONIREQ",
       "gIx": 161,
       "p": "/Content/resource_packs/aop_mobsrp/materials/entity.material",
@@ -391,9 +432,39 @@
     },
     {
       "iTp": 0,
+      "gId": "PACKSIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CADDONREQ",
+      "gIx": 0
+    },
+    {
+      "iTp": 0,
+      "gId": "STRICT",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "TEXTURE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "MINENGINEVER",
+      "gIx": 0
+    },
+    {
+      "iTp": 0,
       "gId": "WORLDDATA",
       "gIx": 1,
-      "m": "Test World Data Validation completed successfully."
+      "m": "World Data Validation (WORLDDATA) completed successfully ."
+    },
+    {
+      "iTp": 1,
+      "gId": "CADDONIREQ",
+      "gIx": 0
     }
   ],
   "generatorName": "Minecraft Creator Tools",

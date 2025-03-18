@@ -3,7 +3,7 @@
     {
       "id": "cooldown_time",
       "title": "Cooldown Time",
-      "description": "Time (in seconds), after roar, to breath flame.",
+      "description": "Time (in seconds) between each start of the cycle to roar, then breath flame.",
       "defaultValue": 10,
       "dataType": 3
     },

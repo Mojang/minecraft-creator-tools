@@ -7,6 +7,10 @@ import IComponentDataItem from "./IComponentDataItem";
 
 export default interface IBlockTypeBehaviorPack extends IComponentDataItem {
   description: IBlockTypeDescription;
+  permutations?: IBlockPermutation[];
+  events?: { [name: string]: IBlockEvent };
+}
 
-  events: { [name: string]: IBlockEvent };
+export interface IBlockPermutation extends IComponentDataItem {
+  condition: string;
 }

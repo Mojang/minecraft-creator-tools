@@ -19,11 +19,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import BlockTypeAddComponent from "./BlockTypeAddComponent";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
+import Project from "../app/Project";
+import MolangEditor from "./MolangEditor";
+import Carto from "../app/Carto";
+import ManagedPermutation from "../minecraft/ManagedPermutation";
+import { IBlockResource } from "../minecraft/IBlocksCatalog";
+import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
+import { ProjectItemType } from "../app/IProjectItemData";
+import BlocksCatalogDefinition from "../minecraft/BlocksCatalogDefinition";
+import IFormDefinition from "../dataform/IFormDefinition";
 
 interface IBlockTypeComponentSetEditorProps {
-  blockTypeItem: IManagedComponentSetItem;
+  componentSet: IManagedComponentSetItem;
   isVisualsMode: boolean;
+  permutation?: ManagedPermutation;
   isDefault: boolean;
+  readOnly: boolean;
+  project: Project;
+  carto: Carto;
   heightOffset: number;
   title?: string;
   theme: ThemeInput<any>;
@@ -32,6 +45,8 @@ interface IBlockTypeComponentSetEditorProps {
 interface IBlockTypeComponentSetEditorState {
   loadedFormCount?: number;
   activeComponentId: string | undefined;
+  blockResource?: IBlockResource;
+  blockResourceForm?: IFormDefinition;
   dialogMode: BlockTypeComponentEditorDialog;
   selectedNewComponentId: string | undefined;
 }
@@ -57,6 +72,9 @@ export default class BlockTypeComponentSetEditor extends Component<
     this._handleAddComponentClick = this._handleAddComponentClick.bind(this);
     this._handleAddComponentOK = this._handleAddComponentOK.bind(this);
     this._handleDialogCancel = this._handleDialogCancel.bind(this);
+    this._onUpdatePreferredTextSize = this._onUpdatePreferredTextSize.bind(this);
+    this._updateCondition = this._updateCondition.bind(this);
+    this._loadBlockResource = this._loadBlockResource.bind(this);
 
     let id = undefined;
 
@@ -74,8 +92,12 @@ export default class BlockTypeComponentSetEditor extends Component<
     };
   }
 
+  componentDidMount(): void {
+    this._loadBlockResource();
+  }
+
   componentDidUpdate(prevProps: IBlockTypeComponentSetEditorProps, prevState: IBlockTypeComponentSetEditorState) {
-    if (prevProps.blockTypeItem !== this.props.blockTypeItem) {
+    if (prevProps.componentSet !== this.props.componentSet) {
       let id = undefined;
 
       const componentListing = this.getUsableComponents();
@@ -88,9 +110,81 @@ export default class BlockTypeComponentSetEditor extends Component<
         loadedFormCount: Database.loadedFormCount,
         activeComponentId: id,
       });
+
+      this._loadBlockResource();
     }
   }
 
+  async _loadBlockResource() {
+    if (this.props.componentSet instanceof BlockTypeDefinition && this.props.componentSet.id) {
+      const itemsCopy = this.props.project.getItemsCopy();
+
+      for (const projectItem of itemsCopy) {
+        if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
+          await projectItem.ensureFileStorage();
+
+          if (projectItem.file) {
+            const blocksCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.file);
+
+            if (blocksCatalog) {
+              const blockResource = blocksCatalog.getBlockDefinition(this.props.componentSet.id);
+
+              if (blockResource) {
+                const blockResourceForm = await Database.ensureFormLoaded(
+                  "block",
+                  "block_resource_" + (this.props.isVisualsMode ? "visual" : "nonvisual")
+                );
+
+                this.setState({
+                  loadedFormCount: this.state.loadedFormCount,
+                  activeComponentId: this.state.activeComponentId,
+                  dialogMode: this.state.dialogMode,
+                  selectedNewComponentId: this.state.selectedNewComponentId,
+                  blockResource: blockResource,
+                  blockResourceForm: blockResourceForm,
+                });
+
+                return;
+              }
+            }
+          }
+        }
+      }
+
+      // we couldn't find an existing definition, so create a new one
+      for (const projectItem of itemsCopy) {
+        if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
+          await projectItem.ensureFileStorage();
+
+          if (projectItem.file) {
+            const blocksCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.file);
+
+            if (blocksCatalog) {
+              const blockResource = blocksCatalog.ensureBlockDefinition(this.props.componentSet.id);
+
+              if (blockResource) {
+                const blockResourceForm = await Database.ensureFormLoaded(
+                  "block",
+                  "block_resource_" + (this.props.isVisualsMode ? "visual" : "nonvisual")
+                );
+
+                this.setState({
+                  loadedFormCount: this.state.loadedFormCount,
+                  activeComponentId: this.state.activeComponentId,
+                  dialogMode: this.state.dialogMode,
+                  selectedNewComponentId: this.state.selectedNewComponentId,
+                  blockResource: blockResource,
+                  blockResourceForm: blockResourceForm,
+                });
+
+                return;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   _addComponentClick() {
     this.forceUpdate();
   }
@@ -111,7 +205,7 @@ export default class BlockTypeComponentSetEditor extends Component<
     if (form !== undefined) {
       const newDataObject = DataFormUtilities.generateDefaultItem(form);
 
-      this.props.blockTypeItem.addComponent(id, newDataObject);
+      this.props.componentSet.addComponent(id, newDataObject);
     }
   }
 
@@ -120,11 +214,11 @@ export default class BlockTypeComponentSetEditor extends Component<
   }
 
   async _updateManager() {
-    if (!this.props.blockTypeItem) {
+    if (!this.props.componentSet) {
       return;
     }
 
-    const components = this.props.blockTypeItem.getComponents();
+    const components = this.props.componentSet.getComponents();
 
     for (let i = 0; i < components.length; i++) {
       const component = components[i];
@@ -146,9 +240,23 @@ export default class BlockTypeComponentSetEditor extends Component<
       return;
     }
 
+    let componentOffset = 0;
+
+    if (this.state.blockResource && this.state.blockResourceForm) {
+      if (event.selectedIndex === 0) {
+        this.setState({
+          activeComponentId: "baseProps",
+        });
+
+        return;
+      }
+
+      componentOffset = 1;
+    }
+
     const componentListing = this.getUsableComponents();
 
-    const id = componentListing[event.selectedIndex].id;
+    const id = componentListing[event.selectedIndex - componentOffset].id;
 
     if (id) {
       this.setState({
@@ -165,13 +273,13 @@ export default class BlockTypeComponentSetEditor extends Component<
     const componentId = props.tag;
 
     if (componentId) {
-      this.props.blockTypeItem.removeComponent(componentId);
+      this.props.componentSet.removeComponent(componentId);
       this.forceUpdate();
     }
   }
 
   getUsableComponents() {
-    const components = this.props.blockTypeItem.getComponents();
+    const components = this.props.componentSet.getComponents();
     const componentList = [];
 
     for (let i = 0; i < components.length; i++) {
@@ -197,7 +305,15 @@ export default class BlockTypeComponentSetEditor extends Component<
   }
 
   isVisualComponent(value: string) {
-    if (value === "minecraft:geometry" || value === "minecraft:material_instances") {
+    if (
+      value === "minecraft:geometry" ||
+      value === "minecraft:material_instances" ||
+      value === "minecraft:map_color" ||
+      value === "minecraft:bone_visibility" ||
+      value === "minecraft:transformation" ||
+      value === "minecraft:item_visual" ||
+      value === "minecraft:unit_cube"
+    ) {
       return true;
     }
 
@@ -232,11 +348,37 @@ export default class BlockTypeComponentSetEditor extends Component<
     }
   }
 
+  _onUpdatePreferredTextSize(newTextSize: number) {
+    this.props.carto.preferredTextSize = newTextSize;
+  }
+
+  _updateCondition(permutationContent: string) {
+    if (this.props.permutation) {
+      this.props.permutation!.condition = permutationContent;
+    }
+  }
+
   render() {
+    let permutationEditor = <></>;
     if (this.state === undefined || this.state.loadedFormCount === undefined) {
       this._updateManager();
 
-      return <div>Loading...</div>;
+      return <div className="bcose-loading">Loading...</div>;
+    }
+
+    if (this.props.permutation) {
+      permutationEditor = (
+        <MolangEditor
+          carto={this.props.carto}
+          readOnly={this.props.readOnly}
+          initialContent={this.props.permutation.condition}
+          onMolangTextChanged={this._updateCondition}
+          onUpdatePreferredTextSize={this._onUpdatePreferredTextSize}
+          preferredTextSize={this.props.carto.preferredTextSize}
+          project={this.props.project}
+          theme={this.props.theme}
+        />
+      );
     }
 
     if (this.state.dialogMode === BlockTypeComponentEditorDialog.addComponent) {
@@ -249,18 +391,63 @@ export default class BlockTypeComponentSetEditor extends Component<
           onCancel={this._handleDialogCancel}
           onConfirm={this._handleAddComponentOK}
           content={
-            <BlockTypeAddComponent onNewComponentSelected={this.setSelectedNewComponentId} theme={this.props.theme} />
+            <BlockTypeAddComponent
+              onNewComponentSelected={this.setSelectedNewComponentId}
+              theme={this.props.theme}
+              isVisual={this.props.isVisualsMode}
+            />
           }
           header={"Add component"}
         />
       );
     } else {
-      const components = this.props.blockTypeItem.getComponents();
+      const components = this.props.componentSet.getComponents();
       const componentForms = [];
       const componentList = [];
 
       let selectedIndex = 0;
       let curItem = 0;
+      let componentOffset = 0;
+
+      if (this.state.blockResource && this.state.blockResourceForm) {
+        componentList.push({
+          key: "baseProps",
+          content: (
+            <div
+              className="bcose-componentWrapper"
+              style={{
+                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+                borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+              }}
+            >
+              Base Properties
+            </div>
+          ),
+        });
+
+        componentOffset = 1;
+
+        if (this.state.activeComponentId === "baseProps") {
+          selectedIndex = 0;
+          componentForms.push(
+            <div className="bcose-componentForm">
+              <DataForm
+                displayTitle={true}
+                displayDescription={true}
+                readOnly={false}
+                tag={"baseProps"}
+                project={this.props.project}
+                lookupProvider={this.props.project}
+                theme={this.props.theme}
+                objectKey={"basePros"}
+                closeButton={false}
+                definition={this.state.blockResourceForm}
+                directObject={this.state.blockResource}
+              ></DataForm>
+            </div>
+          );
+        }
+      }
 
       for (let i = 0; i < components.length; i++) {
         const component = components[i];
@@ -290,7 +477,7 @@ export default class BlockTypeComponentSetEditor extends Component<
 
             if (component && component.id) {
               if (form !== undefined && component.id === this.state?.activeComponentId) {
-                selectedIndex = curItem;
+                selectedIndex = curItem + componentOffset;
                 componentForms.push(
                   <div className="bcose-componentForm">
                     <DataForm
@@ -298,6 +485,8 @@ export default class BlockTypeComponentSetEditor extends Component<
                       displayDescription={true}
                       readOnly={false}
                       tag={component.id}
+                      project={this.props.project}
+                      lookupProvider={this.props.project}
                       theme={this.props.theme}
                       objectKey={component.id}
                       closeButton={false}
@@ -342,44 +531,48 @@ export default class BlockTypeComponentSetEditor extends Component<
       const areaHeight = "calc(100vh - " + String(this.props.heightOffset + 34) + "px)";
 
       return (
-        <div className="bcose-area">
-          <div className="bcose-componentArea">
-            <div className="bcose-titleArea">{title}</div>
-            <div className="bcose-componentToolBarArea">
-              <Toolbar aria-label="Component editing toolbar" items={toolbarItems} />
+        <div>
+          {permutationEditor}
+
+          <div className="bcose-area">
+            <div className="bcose-componentArea">
+              <div className="bcose-titleArea">{title}</div>
+              <div className="bcose-componentToolBarArea">
+                <Toolbar aria-label="Component editing toolbar" items={toolbarItems} />
+              </div>
             </div>
-          </div>
-          <div
-            className="bcose-componentList"
-            style={{
-              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
-              minHeight: areaHeight,
-              maxHeight: areaHeight,
-            }}
-          >
-            <List
-              selectable
-              aria-label="List of components"
-              accessibility={selectableListBehavior}
-              defaultSelectedIndex={selectedIndex}
-              selectedIndex={selectedIndex}
-              items={componentList}
-              onSelectedIndexChange={this._handleComponentSelected}
-            />
-          </div>
-          <div
-            className="bcose-componentBin"
-            style={{
-              minHeight: areaHeight,
-              maxHeight: areaHeight,
-              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
-            }}
-          >
-            {componentForms}
+            <div
+              className="bcose-componentList"
+              style={{
+                borderColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
+                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+                color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
+                minHeight: areaHeight,
+                maxHeight: areaHeight,
+              }}
+            >
+              <List
+                selectable
+                aria-label="List of components"
+                accessibility={selectableListBehavior}
+                defaultSelectedIndex={selectedIndex}
+                selectedIndex={selectedIndex}
+                items={componentList}
+                onSelectedIndexChange={this._handleComponentSelected}
+              />
+            </div>
+            <div
+              className="bcose-componentBin"
+              style={{
+                minHeight: areaHeight,
+                maxHeight: areaHeight,
+                borderColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
+                backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
+                color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
+              }}
+            >
+              {componentForms}
+            </div>
           </div>
         </div>
       );

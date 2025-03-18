@@ -7,6 +7,7 @@ import IEventAction from "../minecraft/IEventAction";
 import { Button, Dropdown, DropdownProps } from "@fluentui/react-northstar";
 import Carto from "../app/Carto";
 import EventActionSet from "./EventActionSet";
+import Project from "../app/Project";
 
 interface IEventActionDesignProps {
   heightOffset: number;
@@ -15,6 +16,7 @@ interface IEventActionDesignProps {
   constrainHeight?: boolean;
   entityType: EntityTypeDefinition;
   carto: Carto;
+  project: Project;
   event: IEventActionSet | IEventAction;
   id: string;
   theme: ThemeInput<any>;
@@ -141,6 +143,7 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
             readOnly={this.props.readOnly}
             entityType={this.props.entityType}
             isRandomize={false}
+            project={this.props.project}
             eventContextId={this.props.id}
             event={this.props.event}
             carto={this.props.carto}

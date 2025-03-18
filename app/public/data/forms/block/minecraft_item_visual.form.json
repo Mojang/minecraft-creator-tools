@@ -13,6 +13,9 @@
       "dataType": 15
     }
   ],
+  "tags": [
+    "visual"
+  ],
   "description": "The description identifier of the geometry and material used to render the item of this block.\r\nExperimental toggles required: Upcoming Creator Features (in format versions before 1.21.50)",
   "title": "Item Visual"
 }

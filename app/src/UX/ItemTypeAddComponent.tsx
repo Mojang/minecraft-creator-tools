@@ -70,13 +70,17 @@ export default class ItemTypeAddComponent extends Component<IItemTypeAddComponen
       if (fileName.startsWith("minecraft") && fileName.endsWith(".form.json")) {
         const baseName = fileName.substring(0, fileName.length - 10);
 
-        let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
+        const form = await Database.ensureFormLoaded("item", baseName);
 
-        componentMenuItems.push({
-          key: canonName,
-          tag: canonName,
-          content: Utilities.humanifyMinecraftName(canonName),
-        });
+        if (form && !form.isDeprecated && !form.isInternal) {
+          let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
+
+          componentMenuItems.push({
+            key: canonName,
+            tag: canonName,
+            content: Utilities.humanifyMinecraftName(canonName),
+          });
+        }
       }
     }
 

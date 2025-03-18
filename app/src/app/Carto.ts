@@ -1292,6 +1292,8 @@ export default class Carto {
   async createNewProject(
     newProjectName: string,
     newProjectPath: string | undefined,
+    newProjectFolder: IFolder | undefined,
+    newProjectFolderTitle: string | undefined,
     focus: ProjectFocus,
     includeDefaultItems: boolean,
     projectLanguage?: ProjectScriptLanguage
@@ -1300,11 +1302,17 @@ export default class Carto {
 
     const targetProjectName = await this.getNewProjectName(newProjectName);
 
-    const projectPrefs = await this.prefsProjectsFolder.createFile(targetProjectName + ".json");
+    let projectPrefs;
+
+    if (newProjectFolder) {
+      projectPrefs = await newProjectFolder.ensureFileFromRelativePath("/.mct/prefs.mctp.json");
+    } else {
+      projectPrefs = await this.prefsProjectsFolder.createFile(targetProjectName + ".json");
+    }
 
     const newProject = new Project(this, targetProjectName, projectPrefs);
 
-    if (newProjectPath) {
+    if (newProjectPath && !newProjectFolder) {
       newProject.mainDeployFolderPath = newProjectPath;
     }
 
@@ -1312,7 +1320,12 @@ export default class Carto {
       newProject.preferredScriptLanguage = projectLanguage;
     }
 
-    await newProject.ensureProjectFolder();
+    if (newProjectFolder) {
+      newProject.setProjectFolder(newProjectFolder);
+      newProject.projectFolderTitle = newProjectFolderTitle;
+    } else {
+      await newProject.ensureProjectFolder();
+    }
 
     newProject.focus = focus;
 
@@ -1434,7 +1447,7 @@ export default class Carto {
     const canonPath = StorageUtilities.canonicalizePath(messageProjectPath);
 
     if (project !== undefined) {
-      await project.ensureLoadedFromFile();
+      await project.ensurePreferencesAndFolderLoadedFromFile();
 
       if (project.mainDeployFolderPath !== undefined) {
         if (canonPath === StorageUtilities.canonicalizePath(project.mainDeployFolderPath)) {
@@ -1504,7 +1517,7 @@ export default class Carto {
     }
 
     if (project !== undefined && !openDirect) {
-      await project.ensureLoadedFromFile();
+      await project.ensurePreferencesAndFolderLoadedFromFile();
 
       if (project.mainDeployFolderPath !== undefined) {
         if (canonPath === StorageUtilities.canonicalizePath(project.mainDeployFolderPath)) {
@@ -1536,7 +1549,7 @@ export default class Carto {
     for (let i = 0; i < this.projects.length; i++) {
       project = this.projects[i];
 
-      await project.ensureLoadedFromFile();
+      await project.ensurePreferencesAndFolderLoadedFromFile();
 
       if (project.mainDeployFolderPath !== undefined) {
         if (canonPath === StorageUtilities.canonicalizePath(project.mainDeployFolderPath)) {
@@ -1583,7 +1596,7 @@ export default class Carto {
     for (let i = 0; i < this.projects.length; i++) {
       const project = this.projects[i];
 
-      await project.ensureLoadedFromFile();
+      await project.ensurePreferencesAndFolderLoadedFromFile();
 
       await project.ensureProjectFolder();
 

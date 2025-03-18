@@ -132,7 +132,7 @@ export default class DataFormEditor extends Component<IDataFormEditorProps, IDat
           <DataForm
             definition={form}
             theme={this.props.theme}
-            directObject={dform.formDefinition?.source}
+            directObject={dform.formDefinition?.generated_doNotEdit}
             readOnly={true}
             objectKey={dform.id}
           ></DataForm>

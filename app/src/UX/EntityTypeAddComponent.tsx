@@ -56,6 +56,7 @@ export default class EntityTypeAddComponent extends Component<
     ) {
       const formId = EntityTypeDefinition.getFormIdFromComponentId(this.state.selectedComponentId);
       const form = await Database.ensureFormLoaded("entity", formId);
+
       this.setState({
         categoryLists: this.state.categoryLists,
         selectedComponentId: this.state.selectedComponentId,
@@ -79,14 +80,18 @@ export default class EntityTypeAddComponent extends Component<
       if (fileName.startsWith("minecraft") && fileName.endsWith(".form.json")) {
         const baseName = fileName.substring(0, fileName.length - 10);
 
-        let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
-        const category = EntityTypeDefinition.getExtendedComponentCategory(canonName);
+        const form = await Database.ensureFormLoaded("entity", baseName);
 
-        componentMenuItems[category as number].push({
-          key: canonName,
-          tag: canonName,
-          content: Utilities.humanifyMinecraftName(canonName),
-        });
+        if (form && !form.isDeprecated && !form.isInternal) {
+          let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
+          const category = EntityTypeDefinition.getExtendedComponentCategory(canonName);
+
+          componentMenuItems[category as number].push({
+            key: canonName,
+            tag: canonName,
+            content: Utilities.humanifyMinecraftName(canonName),
+          });
+        }
       }
     }
 

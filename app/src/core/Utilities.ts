@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import CartoApp, { HostType } from "../app/CartoApp";
+import { FieldValueHumanify } from "../dataform/IField";
 import { IErrorable } from "./IErrorable";
 import Log from "./Log";
 
@@ -25,7 +26,11 @@ export default class Utilities {
   }
 
   static get isAppSim(): boolean {
-    return false;
+    if (Utilities._isAppSim === undefined) {
+      Utilities._isAppSim = false;
+    }
+
+    return Utilities._isAppSim;
   }
 
   static get isDebug(): boolean {
@@ -260,6 +265,63 @@ export default class Utilities {
     return name;
   }
 
+  static dehumanify(val: string | boolean | number, humanify?: FieldValueHumanify) {
+    if (!humanify) {
+      return val;
+    }
+
+    return Utilities.dehumanifyMinecraftName(val);
+  }
+
+  static humanify(val: string | boolean | number | number[] | string[] | object, humanify?: FieldValueHumanify) {
+    if (!humanify || val === undefined) {
+      return val;
+    }
+
+    if (humanify === FieldValueHumanify.general) {
+      return Utilities.humanifyObject(val);
+    }
+
+    if (typeof val === "object") {
+      return JSON.stringify(val);
+    }
+
+    if (Array.isArray(val)) {
+      return val;
+    }
+
+    return Utilities.humanifyMinecraftName(val);
+  }
+
+  static humanifyString(val: string, humanify?: FieldValueHumanify) {
+    if (!humanify || val === undefined) {
+      return val;
+    }
+
+    if (humanify === FieldValueHumanify.general) {
+      return Utilities.humanifyObject(val).toString();
+    }
+
+    return Utilities.humanifyMinecraftName(val) as string;
+  }
+
+  static getHumanifiedObjectName(name: string | boolean | number) {
+    if (typeof name !== "string") {
+      name = name.toString();
+    }
+
+    let firstColon = name.indexOf(":");
+
+    if (firstColon >= 0) {
+      name = name.substring(firstColon + 1);
+    }
+
+    name = Utilities.humanifyMinecraftName(name);
+    name = name.replace(/ /gi, "");
+
+    return name;
+  }
+
   static humanifyMinecraftName(name: string | boolean | number) {
     if (typeof name === "boolean" || typeof name === "number") {
       return name.toString();
@@ -324,6 +386,24 @@ export default class Utilities {
         lastCharWasSpace = false;
       }
     }
+
+    return name;
+  }
+
+  static dehumanifyMinecraftName(name: string | boolean | number) {
+    if (!name || typeof name === "boolean" || typeof name === "number") {
+      return name;
+    }
+
+    // if this is already a technical name, return;
+    if (name.indexOf(":") >= 0) {
+      return name;
+    }
+
+    name = name.toLowerCase();
+
+    name = name.replace(/ /gi, "_");
+    name = "minecraft:" + name;
 
     return name;
   }

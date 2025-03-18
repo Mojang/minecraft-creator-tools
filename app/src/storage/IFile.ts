@@ -19,6 +19,9 @@ export default interface IFile extends IStorageObject {
   readonly coreContentLength: number;
   readonly type: string;
 
+  isInErrorState?: boolean;
+  errorStateMessage?: string;
+
   isBinary: boolean;
   isString: boolean;
 

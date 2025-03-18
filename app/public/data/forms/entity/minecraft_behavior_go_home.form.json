@@ -71,7 +71,7 @@
       "id": "on_failed",
       "title": "On Failed",
       "description": "Event(s) to run when this goal fails.",
-      "dataType": 22,
+      "dataType": 17,
       "samples": {
         "/vanilla/behavior_pack/entities/bee.json": [
           {
@@ -101,7 +101,7 @@
       "id": "on_home",
       "title": "On Home",
       "description": "Event(s) to run when this mob gets home.",
-      "dataType": 22,
+      "dataType": 17,
       "samples": {
         "/vanilla/behavior_pack/entities/bee.json": [
           {

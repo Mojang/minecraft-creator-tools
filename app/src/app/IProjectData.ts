@@ -56,6 +56,7 @@ export default interface IProjectData {
   description: string;
   focus: ProjectFocus;
   role?: ProjectRole;
+  projectFolderTitle?: string;
 
   track?: MinecraftTrack;
 

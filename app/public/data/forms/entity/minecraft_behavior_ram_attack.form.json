@@ -74,7 +74,7 @@
       "title": "Min Ram Distance",
       "description": "The minimum distance at which the mob can start a ram attack.",
       "defaultValue": 4,
-      "dataType": 3,
+      "dataType": 0,
       "samples": {
         "/vanilla/behavior_pack/entities/goat.json": [
           {
@@ -92,7 +92,7 @@
       "id": "on_start",
       "title": "On Start",
       "description": "The event to trigger when attacking",
-      "dataType": 22,
+      "dataType": 17,
       "samples": {
         "/vanilla/behavior_pack/entities/goat.json": [
           {
@@ -139,7 +139,7 @@
       "title": "Ram Distance",
       "description": "The distance at which the mob start to run with ram speed.",
       "defaultValue": 7,
-      "dataType": 3,
+      "dataType": 0,
       "samples": {
         "/vanilla/behavior_pack/entities/goat.json": [
           {

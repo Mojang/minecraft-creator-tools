@@ -7,6 +7,7 @@
       "dataType": 1
     }
   ],
+  "scalarFieldUpgradeName": "value",
   "description": "The allow_off_hand component determines whether the item can be placed in the off hand slot of the inventory.",
   "title": "Allow Off Hand"
 }

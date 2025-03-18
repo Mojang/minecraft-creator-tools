@@ -93,5 +93,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:enchantable"
 }

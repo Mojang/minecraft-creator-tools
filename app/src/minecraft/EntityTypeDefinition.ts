@@ -353,7 +353,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       const comp = this._data.components[id];
 
       if (comp) {
-        this._managedComponents[id] = new ManagedComponent(id, comp);
+        this._managedComponents[id] = new ManagedComponent(this._data.components, id, comp);
       }
     }
 
@@ -522,17 +522,25 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     return events;
   }
 
-  addComponent(id: string, component: any) {
+  addComponent(
+    id: string,
+    componentOrData: ManagedComponent | IComponent | string | string[] | boolean | number[] | number | undefined
+  ) {
     this._ensureBehaviorPackDataInitialized();
-
-    const mc = new ManagedComponent(id, component);
 
     const bpData = this._data as IEntityTypeBehaviorPack;
 
-    bpData.components[id] = component;
+    const mc =
+      componentOrData instanceof ManagedComponent
+        ? componentOrData
+        : new ManagedComponent(bpData.components, id, componentOrData);
+
+    bpData.components[id] = mc.getData();
     this._managedComponents[id] = mc;
 
     this._onComponentAdded.dispatch(this, mc);
+
+    return mc;
   }
 
   removeComponent(id: string) {
@@ -540,14 +548,16 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       return;
     }
 
-    const newBehaviorPacks: { [name: string]: string | number | IComponent | undefined } = {};
+    const newBehaviorPacks: {
+      [name: string]: string | string[] | boolean | number[] | number | IComponent | undefined;
+    } = {};
     const newManagedComponents: { [name: string]: IManagedComponent | undefined } = {};
 
     for (const name in this._data.components) {
       if (name !== id) {
-        const component = this._data.components[name];
+        const componentData = this._data.components[name];
 
-        newBehaviorPacks[name] = component;
+        newBehaviorPacks[name] = componentData;
       }
     }
 
@@ -863,7 +873,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
           const comp = this._data.components[compName];
 
           if (comp) {
-            this._managedComponents[compName] = new ManagedComponent(compName, comp);
+            this._managedComponents[compName] = new ManagedComponent(this._data.components, compName, comp);
           }
         }
       }

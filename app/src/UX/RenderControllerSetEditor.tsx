@@ -9,6 +9,7 @@ import RenderControllerSetDefinition from "../minecraft/RenderControllerSetDefin
 import IPersistable from "./IPersistable";
 import IFormDefinition from "../dataform/IFormDefinition";
 import DataFormProcessor from "../dataform/DataFormProcessor";
+import Project from "../app/Project";
 
 export enum RenderControllerSetEditorFocus {
   all,
@@ -22,6 +23,7 @@ interface IRenderControllerSetEditorProps {
   readOnly: boolean;
   displayHeader?: boolean;
   isInline?: boolean;
+  project: Project;
   focus: RenderControllerSetEditorFocus;
   theme: ThemeInput<any>;
   renderControllerSet?: RenderControllerSetDefinition;
@@ -214,6 +216,8 @@ export default class RenderControllerSetEditor extends Component<
               definition={form}
               directObject={this.state.renderControllerSet.data}
               readOnly={false}
+              project={this.props.project}
+              lookupProvider={this.props.project}
               theme={this.props.theme}
               constrainHeight={false}
               objectKey={this.props.file?.storageRelativePath}

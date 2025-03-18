@@ -1,0 +1,68 @@
+{
+  "fields": [
+    {
+      "id": "adjustments",
+      "title": "adjustments",
+      "description": "All adjustments that match the column's noise values will be applied in the order listed.",
+      "dataType": 15
+    },
+    {
+      "id": "sea_material",
+      "title": "sea_material",
+      "description": "Controls the block type used in the bodies of water in this biome when this adjustment is active.",
+      "dataType": 16,
+      "subForm": {
+        "title": "Sea Material",
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "fields": []
+      }
+    },
+    {
+      "id": "foundation_material",
+      "title": "foundation_material",
+      "description": "Controls the block type used deep underground in this biome when this adjustment is active.",
+      "dataType": 16,
+      "subForm": {
+        "title": "Foundation Material",
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "fields": []
+      }
+    },
+    {
+      "id": "top_material",
+      "title": "top_material",
+      "description": "Controls the block type used for the surface of this biome when this adjustment is active.",
+      "dataType": 16,
+      "subForm": {
+        "title": "Top Material",
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "fields": []
+      }
+    },
+    {
+      "id": "mid_material",
+      "title": "mid_material",
+      "description": "Controls the block type used in a layer below the surface of this biome when this adjustment is active.",
+      "dataType": 16,
+      "subForm": {
+        "title": "Mid Material",
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "fields": []
+      }
+    },
+    {
+      "id": "sea_floor_material",
+      "title": "sea_floor_material",
+      "description": "Controls the block type used as a floor for bodies of water in this biome when this adjustment is active.",
+      "dataType": 16,
+      "subForm": {
+        "title": "Sea Floor Material",
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "fields": []
+      }
+    }
+  ],
+  "description": "Specify fine-detail changes to blocks used in terrain generation (based on a noise function).",
+  "title": "Surface Material Adjustments",
+  "id": "minecraft:surface_material_adjustments"
+}

@@ -1,4 +1,6 @@
 {
+  "title": "Block Specifier",
+  "description": "Specifies a particular block. Can be a string block name or a JSON object",
   "fields": [
     {
       "id": "name",
@@ -12,7 +14,5 @@
       "description": "Contains members named after each state, with boolean, integer, or string values.",
       "dataType": 24
     }
-  ],
-  "description": "Specifies a particular block. Can be a string block name or a JSON object",
-  "title": "Block Specifier"
+  ]
 }

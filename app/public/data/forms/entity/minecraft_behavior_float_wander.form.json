@@ -1,6 +1,20 @@
 {
   "fields": [
     {
+      "id": "additional_collision_buffer",
+      "title": "Additional Collision Buffer",
+      "description": "If true, the mob will have an additional buffer zone around it to avoid collisions with blocks when picking a position to wander to.",
+      "defaultValue": false,
+      "dataType": 1
+    },
+    {
+      "id": "allow_navigating_through_liquids",
+      "title": "Allow Navigating Through Liquids",
+      "description": "If true allows the mob to navigate through liquids on its way to the target position.",
+      "defaultValue": false,
+      "dataType": 1
+    },
+    {
       "id": "float_duration",
       "title": "Float Duration",
       "description": "Range of time in seconds the mob will float around before landing and choosing to do something else",
@@ -40,6 +54,13 @@
       }
     },
     {
+      "id": "navigate_around_surface",
+      "title": "Navigate Around Surface",
+      "description": "If true, will prioritize finding random positions in the vicinity of surfaces, i.e. blocks that are not Air or Liquid.",
+      "defaultValue": false,
+      "dataType": 1
+    },
+    {
       "id": "random_reselect",
       "title": "Random Reselect",
       "description": "If true, the mob will randomly pick a new point while moving to the previously selected one",
@@ -53,6 +74,20 @@
           }
         ]
       }
+    },
+    {
+      "id": "surface_xz_dist",
+      "title": "Surface Xz Dist",
+      "description": "The horizontal distance in blocks that the goal will check for a surface from a candidate position. Only valid when `navigate_around_surface` is true.",
+      "defaultValue": 0,
+      "dataType": 0
+    },
+    {
+      "id": "surface_y_dist",
+      "title": "Surface Y Dist",
+      "description": "The vertical distance in blocks that the goal will check for a surface from a candidate position. Only valid when `navigate_around_surface` is true.",
+      "defaultValue": 0,
+      "dataType": 0
     },
     {
       "id": "use_home_position_restriction",

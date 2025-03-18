@@ -856,5 +856,6 @@
       }
     ]
   },
-  "title": "Food"
+  "title": "Food",
+  "id": "minecraft:food"
 }

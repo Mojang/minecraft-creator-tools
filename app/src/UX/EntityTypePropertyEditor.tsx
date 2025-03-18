@@ -9,10 +9,12 @@ import { CustomLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRemove } from "@fortawesome/free-solid-svg-icons";
 import EntityTypeDefinition, { EntityPropertyType } from "../minecraft/EntityTypeDefinition";
+import Project from "../app/Project";
 
 interface IEntityTypePropertyEditorProps {
   entityTypeItem: EntityTypeDefinition;
   heightOffset: number;
+  project: Project;
   title?: string;
   theme: ThemeInput<any>;
 }
@@ -320,6 +322,8 @@ export default class EntityTypePropertyEditor extends Component<
               displayDescription={true}
               readOnly={false}
               tag={formKey}
+              project={this.props.project}
+              lookupProvider={this.props.project}
               theme={this.props.theme}
               objectKey={formKey}
               closeButton={false}

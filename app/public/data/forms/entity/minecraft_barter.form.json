@@ -20,7 +20,6 @@
       "id": "cooldown_after_being_attacked",
       "description": "Duration, in seconds, for which mob won't barter items if it was hurt.",
       "dataType": 18,
-      "minValue": 0,
       "maxValue": 60,
       "samples": {
         "/vanilla/behavior_pack/entities/piglin.json": [

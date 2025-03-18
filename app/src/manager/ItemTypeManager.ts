@@ -14,80 +14,54 @@ import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
+import ProjectInfoUtilities from "../info/ProjectInfoUtilities";
 
-export default class BehaviorPackItemTypeManager implements IProjectInfoGenerator, IProjectUpdater {
-  id = "BPITEMTYPE";
-  title = "Item Type Behavior Pack";
+export enum ItemTypeUpdate {
+  UpdateFormatVersionToLatest = 1,
+}
+
+export enum ItemTypeInfo {
+  Identifier = 53,
+  Metadata = 54,
+  FormatVersionDefined = 100,
+  FormatVersionMajorVersionLowerThanCurrent = 110,
+  FormatVersionMajorVersionHigherThanCurrent = 111,
+  FormatVersionMinorVersionLowerThanCurrent = 120,
+  FormatVersionMinorVersionHigherThanCurrent = 121,
+  FormatVersionPatchVersionLowerThanCurrent = 130,
+  FormatVersionPatchVersionHigherThanCurrent = 131,
+  FailedToRetrieveLatestMinecraftVersion = 500,
+  FailedToParseLatestMinecraftVersion = 501,
+}
+
+export default class ItemTypeManager implements IProjectInfoGenerator, IProjectUpdater {
+  id = "ITEMTYPE";
+  title = "Item Type";
 
   getTopicData(topicId: number): IProjectInfoTopicData | undefined {
     const formatVersion = {
       updaterId: this.id,
-      updaterIndex: 1,
-      action: "Set behavior pack item type format to latest version.",
+      updaterIndex: ItemTypeUpdate.UpdateFormatVersionToLatest,
+      action: "Set behavior pack item type format version to latest version.",
     };
 
+    const title = ProjectInfoUtilities.getTitleFromEnum(ItemTypeInfo, topicId);
+
     switch (topicId) {
-      case 3:
+      case ItemTypeInfo.FormatVersionMajorVersionLowerThanCurrent:
+      case ItemTypeInfo.FormatVersionMajorVersionHigherThanCurrent:
+      case ItemTypeInfo.FormatVersionMinorVersionLowerThanCurrent:
+      case ItemTypeInfo.FormatVersionMinorVersionHigherThanCurrent:
+      case ItemTypeInfo.FormatVersionPatchVersionLowerThanCurrent:
+      case ItemTypeInfo.FormatVersionPatchVersionHigherThanCurrent:
         return {
-          title: "Item Type Identifier",
-        };
-      case 4:
-        return {
-          title: "Item Type Category",
-        };
-      case 100:
-        return {
-          title: "Behavior Pack Item Type Format Version defined",
-        };
-
-      case 110:
-        return {
-          title: "Behavior Pack Item Type Format Version Major Version Lower than Current",
+          title: title,
           updaters: [formatVersion],
-        };
-
-      case 111:
-        return {
-          title: "Behavior Pack Item Type Format Version Major Version Higher than Current",
-          updaters: [formatVersion],
-        };
-
-      case 120:
-        return {
-          title: "Behavior Pack Item Type Format Version Minor Version Lower than Current",
-          updaters: [formatVersion],
-        };
-
-      case 121:
-        return {
-          title: "Behavior Pack Item Type Format Version Minor Version Higher than Current",
-          updaters: [formatVersion],
-        };
-
-      case 130:
-        return {
-          title: "Behavior Pack Item Type Format Version Patch Version Lower than Current",
-          updaters: [formatVersion],
-        };
-
-      case 131:
-        return {
-          title: "Behavior Pack Item Type Format Version Patch Version Higher than Current",
-          updaters: [formatVersion],
-        };
-
-      case 500:
-        return {
-          title: "Retrieve Latest Minecraft Version",
-        };
-
-      case 501:
-        return {
-          title: "Parse Latest Minecraft Version",
         };
     }
+
     return {
-      title: topicId.toString(),
+      title: title,
     };
   }
 
@@ -103,8 +77,6 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
     const infoItems: ProjectInfoItem[] = [];
 
     const ver = await Database.getLatestVersionInfo(project.effectiveTrack);
-    let foundWorldTemplate = false;
-    let foundError = false;
 
     if (!ver) {
       infoItems.push(
@@ -119,7 +91,7 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
         new ProjectInfoItem(
           InfoItemType.internalProcessingError,
           this.id,
-          501,
+          ItemTypeInfo.FailedToRetrieveLatestMinecraftVersion,
           "Could not latest product retrieve version.",
           undefined,
           ver
@@ -144,7 +116,6 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          foundWorldTemplate = true;
           const bpItemType = await ItemTypeBehaviorDefinition.ensureOnFile(pi.file);
 
           if (bpItemType) {
@@ -174,14 +145,13 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
               infoItems.push(
                 new ProjectInfoItem(InfoItemType.error, this.id, 100, "Item Type does not define a format_version.", pi)
               );
-              foundError = true;
             } else {
               if (fv.length > 0 && fv[0] < parseInt(verSplit[0])) {
                 infoItems.push(
                   new ProjectInfoItem(
                     InfoItemType.recommendation,
                     this.id,
-                    110,
+                    ItemTypeInfo.FormatVersionMajorVersionLowerThanCurrent,
                     "Behavior pack Item Type format version (" +
                       fv.join(".") +
                       ") has a lower major version number compared to current version (" +
@@ -195,7 +165,7 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
-                    111,
+                    ItemTypeInfo.FormatVersionMajorVersionHigherThanCurrent,
                     "Behavior pack Item Type format version (" +
                       fv.join(".") +
                       ") has a higher major version number compared to current version (" +
@@ -204,13 +174,12 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
                     pi
                   )
                 );
-                foundError = true;
               } else if (fv[1] < parseInt(verSplit[1]) - 1) {
                 infoItems.push(
                   new ProjectInfoItem(
                     InfoItemType.recommendation,
                     this.id,
-                    120,
+                    ItemTypeInfo.FormatVersionMinorVersionLowerThanCurrent,
                     "Behavior pack Item Type format version (" +
                       fv.join(".") +
                       ") has a lower minor version number compared to the current version or the previous current minor version (" +
@@ -224,7 +193,7 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
-                    121,
+                    ItemTypeInfo.FormatVersionMinorVersionHigherThanCurrent,
                     "Behavior pack Item Type format version (" +
                       fv.join(".") +
                       ") has a higher minor version number compared to current version (" +
@@ -233,14 +202,13 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
                     pi
                   )
                 );
-                foundError = true;
               } else if (fv[2] < parseInt(verSplit[2])) {
                 infoItems.push(
                   new ProjectInfoItem(
                     InfoItemType.recommendation,
                     this.id,
-                    130,
-                    "Behavior pack Item Type format version (" +
+                    ItemTypeInfo.FormatVersionPatchVersionLowerThanCurrent,
+                    "Behavior pack item type format version (" +
                       fv.join(".") +
                       ") has a lower patch version number compared to current version (" +
                       ver +
@@ -253,8 +221,8 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
-                    131,
-                    "Behavior pack Item Type format version (" +
+                    ItemTypeInfo.FormatVersionPatchVersionHigherThanCurrent,
+                    "Behavior pack item type format version (" +
                       fv.join(".") +
                       ") has a higher patch version number compared to current version (" +
                       ver +
@@ -262,41 +230,11 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
                     pi
                   )
                 );
-                foundError = true;
               }
             }
           }
         }
       }
-    }
-
-    if (!foundWorldTemplate) {
-      infoItems.push(
-        new ProjectInfoItem(
-          InfoItemType.testCompleteSuccess,
-          this.id,
-          260,
-          "No Item Type behavior format version was found; base game version check passes."
-        )
-      );
-    } else if (foundError) {
-      infoItems.push(
-        new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
-          this.id,
-          261,
-          "Behavior pack Item Type format version check fails."
-        )
-      );
-    } else if (foundError) {
-      infoItems.push(
-        new ProjectInfoItem(
-          InfoItemType.testCompleteSuccess,
-          this.id,
-          262,
-          "Behavior pack Item Type format version check passes."
-        )
-      );
     }
 
     return infoItems;
@@ -306,7 +244,7 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
     const results: ProjectUpdateResult[] = [];
 
     switch (updateId) {
-      case 1:
+      case ItemTypeUpdate.UpdateFormatVersionToLatest:
         const localResults = await this.updateFormatVersionToLatestVersion(project);
 
         results.push(...localResults);
@@ -317,7 +255,7 @@ export default class BehaviorPackItemTypeManager implements IProjectInfoGenerato
   }
 
   getUpdateIds() {
-    return [1];
+    return [ItemTypeUpdate.UpdateFormatVersionToLatest];
   }
 
   async updateFormatVersionToLatestVersion(project: Project) {

@@ -57,6 +57,12 @@ export enum FieldDataType {
   localizableString = 37,
 }
 
+export enum FieldValueHumanify {
+  none = 0,
+  general = 1,
+  minecraft = 2,
+}
+
 export default interface IField {
   id: string;
   altId?: string;
@@ -78,6 +84,7 @@ export default interface IField {
   fixedLength?: number;
   keyDescription?: string;
   lookupId?: string;
+  minLength?: number;
   maxLength?: number;
   newItemPrototype?: any;
   noun?: string;
@@ -88,6 +95,7 @@ export default interface IField {
   minValue?: number;
   maxValue?: number;
   step?: number;
+  humanifyValues?: FieldValueHumanify;
   hideSamples?: boolean;
   suggestedMinValue?: number;
   suggestedMaxValue?: number;
@@ -101,6 +109,7 @@ export default interface IField {
   experienceType?: FieldExperienceType;
   dataType: FieldDataType;
   alternates?: IField[];
+  mustMatchChoices?: boolean;
   choices?: ISimpleReference[];
   samples?: { [path: string]: IFormSample[] };
 }

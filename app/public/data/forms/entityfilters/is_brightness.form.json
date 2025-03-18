@@ -57,7 +57,29 @@
           "title": "Not",
           "description": "Test for inequality."
         }
-      ]
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/cave_spider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_neutral/minecraft:environment_sensor/triggers/filters/",
+            "content": "<"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_hostile/minecraft:environment_sensor/triggers/filters/",
+            "content": ">"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/spider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_neutral/minecraft:environment_sensor/triggers/filters/",
+            "content": "<"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_hostile/minecraft:environment_sensor/triggers/filters/",
+            "content": ">"
+          }
+        ]
+      }
     },
     {
       "id": "subject",
@@ -107,7 +129,36 @@
       "id": "value",
       "title": "Value",
       "description": "(Required) The brightness value to compare with.",
-      "dataType": 3
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/entities/cave_spider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_neutral/minecraft:environment_sensor/triggers/filters/",
+            "content": 0.49
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_hostile/minecraft:environment_sensor/triggers/filters/",
+            "content": 0.49
+          }
+        ]
+      }
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/cave_spider.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_neutral/minecraft:environment_sensor/triggers/filters/",
+            "content": "is_brightness"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spider_hostile/minecraft:environment_sensor/triggers/filters/",
+            "content": "is_brightness"
+          }
+        ]
+      }
     }
   ],
   "description": "Tests the current brightness against a provided value in the range (0.0f, 1.0f).",
@@ -126,21 +177,37 @@
     "/vanilla/behavior_pack/entities/cave_spider.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:spider_neutral/minecraft:environment_sensor/triggers/filters/",
-        "content": "{\"test\":\"is_brightness\",\"operator\":\"<\",\"value\":0.49}"
+        "content": {
+          "test": "is_brightness",
+          "operator": "<",
+          "value": 0.49
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/minecraft:spider_hostile/minecraft:environment_sensor/triggers/filters/",
-        "content": "{\"test\":\"is_brightness\",\"operator\":\">\",\"value\":0.49}"
+        "content": {
+          "test": "is_brightness",
+          "operator": ">",
+          "value": 0.49
+        }
       }
     ],
     "/vanilla/behavior_pack/entities/spider.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:spider_neutral/minecraft:environment_sensor/triggers/filters/",
-        "content": "{\"test\":\"is_brightness\",\"operator\":\"<\",\"value\":0.49}"
+        "content": {
+          "test": "is_brightness",
+          "operator": "<",
+          "value": 0.49
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/minecraft:spider_hostile/minecraft:environment_sensor/triggers/filters/",
-        "content": "{\"test\":\"is_brightness\",\"operator\":\">\",\"value\":0.49}"
+        "content": {
+          "test": "is_brightness",
+          "operator": ">",
+          "value": 0.49
+        }
       }
     ]
   }

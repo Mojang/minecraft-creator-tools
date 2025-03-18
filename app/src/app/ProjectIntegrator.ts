@@ -82,6 +82,8 @@ export default class ProjectIntegrator implements IErrorable {
     let newProject = await carto.createNewProject(
       newProjectName,
       undefined,
+      undefined,
+      undefined,
       ProjectFocus.general,
       true,
       ProjectScriptLanguage.typeScript

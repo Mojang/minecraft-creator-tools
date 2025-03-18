@@ -1,5 +1,6 @@
 {
   "description": "Determines whether the item has the enchanted glint render effect on it.",
+  "scalarFieldUpgradeName": "value",
   "fields": [
     {
       "id": "value",

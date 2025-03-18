@@ -7,10 +7,12 @@ import { ThemeInput } from "@fluentui/styles";
 import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import IProperty from "../dataform/IProperty";
 import LootTableBehaviorDefinition from "../minecraft/LootTableBehaviorDefinition";
+import Project from "../app/Project";
 
 interface ILootTableEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
+  project: Project;
   displayHeader?: boolean;
   theme: ThemeInput<any>;
 }
@@ -160,7 +162,7 @@ export default class LootTableEditor extends Component<ILootTableEditorProps, IL
     const def = definitionFile.data;
 
     if (def === undefined) {
-      return <div>Loading definition...</div>;
+      return <div className="ltb-loading">Loading definition...</div>;
     }
 
     const form = Database.getForm("loot", "loot_table");
@@ -185,6 +187,8 @@ export default class LootTableEditor extends Component<ILootTableEditorProps, IL
               definition={form}
               directObject={def}
               readOnly={false}
+              project={this.props.project}
+              lookupProvider={this.props.project}
               theme={this.props.theme}
               objectKey={this.props.file.storageRelativePath}
               onPropertyChanged={this._handleDataFormPropertyChange}

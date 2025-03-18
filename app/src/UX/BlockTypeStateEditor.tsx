@@ -4,15 +4,17 @@ import DataForm, { IDataFormProps } from "../dataform/DataForm";
 import Database from "../minecraft/Database";
 import { Toolbar, ThemeInput, List, ListProps, selectableListBehavior, Menu, Dialog } from "@fluentui/react-northstar";
 import BlockTypeDefinition, { BlockStateType } from "../minecraft/BlockTypeDefinition";
-import SetName from "./SetName";
 import Log from "../core/Log";
 import { CustomLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRemove } from "@fortawesome/free-solid-svg-icons";
+import Project from "../app/Project";
+import SetNamespacedId from "./SetNamespacedId";
 
 interface IBlockTypeStateEditorProps {
   blockTypeItem: BlockTypeDefinition;
   heightOffset: number;
+  project: Project;
   title?: string;
   theme: ThemeInput<any>;
 }
@@ -238,7 +240,7 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
     if (this.state === undefined || this.state.loadedFormCount === undefined) {
       this._updateManager();
 
-      return <div>Loading...</div>;
+      return <div className="btse-loading">Loading...</div>;
     }
     if (this.state.dialogMode === BlockTypeStateEditorDialogMode.newStateName) {
       return (
@@ -249,8 +251,15 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
           key="btse-addComponentOuter"
           onCancel={this._handleDialogCancel}
           onConfirm={this._handleSetNameOK}
-          content={<SetName onNameChanged={this.setNewName} defaultName="new state" theme={this.props.theme} />}
-          header={"Add component"}
+          content={
+            <SetNamespacedId
+              onNameChanged={this.setNewName}
+              defaultNamespace={this.props.project.effectiveDefaultNamespace}
+              defaultName="newState"
+              theme={this.props.theme}
+            />
+          }
+          header={"Add block state"}
         />
       );
     } else {
@@ -354,7 +363,7 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
           stateList.push(placementPosition);
 
           if (this.state.activeState === "trait_placement_position") {
-            formData = enabledPlacementPositionStates;
+            formData = enabledPlacementDirectionStates;
             formKey = this.state.activeState;
             formName = this.state.activeState;
             selectedIndex = stateCount;
@@ -365,7 +374,7 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
       }
 
       if (stateList.length === 0) {
-        message = <div>Select Add state to add custom properties to this block.</div>;
+        message = <div className="btse-select">Select Add state to add custom properties to this block.</div>;
       }
 
       let title = <></>;
@@ -406,6 +415,8 @@ export default class BlockTypeStateEditor extends Component<IBlockTypeStateEdito
               displayDescription={true}
               readOnly={false}
               tag={formKey}
+              project={this.props.project}
+              lookupProvider={this.props.project}
               theme={this.props.theme}
               objectKey={formKey}
               closeButton={false}

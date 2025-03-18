@@ -19,6 +19,8 @@ import { IGeometry, IGeometryBone, IGeometryBoneCube, IGeometryUVFaces } from ".
 import { Exifr } from "exifr";
 import Project from "../app/Project";
 import Log from "../core/Log";
+import AttachableResourceDefinition from "../minecraft/AttachableResourceDefinition";
+import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 
 export default class BlockbenchModel {
   private _file?: IFile;
@@ -652,7 +654,11 @@ export default class BlockbenchModel {
 
     await modelProjectItem.ensureFileStorage();
 
-    let clientEntityItem: ProjectItem | undefined = undefined;
+    let clientItemProjectItem: ProjectItem | undefined = undefined;
+    let clientItem: AttachableResourceDefinition | undefined = undefined;
+    let serverBlockProjectItem: ProjectItem | undefined = undefined;
+    let serverBlock: BlockTypeDefinition | undefined = undefined;
+    let clientEntityProjectItem: ProjectItem | undefined = undefined;
     let clientEntity: EntityTypeResourceDefinition | undefined = undefined;
     let model: ModelGeometryDefinition | undefined = undefined;
 
@@ -663,9 +669,19 @@ export default class BlockbenchModel {
     if (modelProjectItem.parentItems) {
       for (const parentItemOuter of modelProjectItem.parentItems) {
         if (parentItemOuter.parentItem.itemType === ProjectItemType.entityTypeResource) {
-          clientEntityItem = parentItemOuter.parentItem;
-          if (clientEntityItem && clientEntityItem.file) {
-            clientEntity = await EntityTypeResourceDefinition.ensureOnFile(clientEntityItem.file);
+          clientEntityProjectItem = parentItemOuter.parentItem;
+          if (clientEntityProjectItem && clientEntityProjectItem.file) {
+            clientEntity = await EntityTypeResourceDefinition.ensureOnFile(clientEntityProjectItem.file);
+          }
+        } else if (parentItemOuter.parentItem.itemType === ProjectItemType.blockTypeBehavior) {
+          serverBlockProjectItem = parentItemOuter.parentItem;
+          if (serverBlockProjectItem && serverBlockProjectItem.file) {
+            serverBlock = await BlockTypeDefinition.ensureOnFile(serverBlockProjectItem.file);
+          }
+        } else if (parentItemOuter.parentItem.itemType === ProjectItemType.attachableResourceJson) {
+          clientItemProjectItem = parentItemOuter.parentItem;
+          if (clientItemProjectItem && clientItemProjectItem.file) {
+            clientItem = await AttachableResourceDefinition.ensureOnFile(clientItemProjectItem.file);
           }
         }
       }
@@ -805,7 +821,7 @@ export default class BlockbenchModel {
 
             bbmodel.elements?.push({
               name: bone.name,
-              box_uv: true,
+              box_uv: Array.isArray(cube.uv),
               rescale: false,
               locked: false,
               light_emission: 0,
@@ -869,60 +885,70 @@ export default class BlockbenchModel {
     let textureList: IBlockbenchTexture[] = [];
     bbmodel.textures = [];
 
-    if (clientEntity && clientEntityItem && clientEntityItem.file) {
-      const textures = clientEntity.getTextureItems(clientEntityItem);
+    let textures: { [name: string]: ProjectItem } | undefined = undefined;
+    let sourceFile: IFile | undefined = undefined;
 
-      if (textures) {
-        for (const textureName in textures) {
-          const textureItem = textures[textureName];
+    if (clientEntity && clientEntityProjectItem && clientEntityProjectItem.file) {
+      textures = clientEntity.getTextureItems(clientEntityProjectItem);
+      sourceFile = clientEntityProjectItem.file;
+    } else if (serverBlock && serverBlockProjectItem && serverBlockProjectItem.file) {
+      textures = await serverBlock.getTextureItems(serverBlockProjectItem);
+      sourceFile = serverBlockProjectItem.file;
+    } else if (clientItem && clientItemProjectItem && clientItemProjectItem.file) {
+      textures = clientItem.getTextureItems(clientItemProjectItem);
+      sourceFile = clientItemProjectItem.file;
+    }
 
-          if (textureName && textureItem && textureItem.file) {
-            await textureItem.file.loadContent();
-            const exifr = new Exifr({});
+    if (textures && sourceFile) {
+      for (const textureName in textures) {
+        const textureItem = textures[textureName];
 
-            if (textureItem.file.content) {
-              try {
-                await exifr.read(textureItem.file.content);
+        if (textureName && textureItem && textureItem.file) {
+          await textureItem.file.loadContent();
+          const exifr = new Exifr({});
 
-                const results = await exifr.parse();
+          if (textureItem.file.content) {
+            try {
+              await exifr.read(textureItem.file.content);
 
-                const relativePath = clientEntityItem.file.getRelativePathFor(textureItem.file);
-                const contentStr = StorageUtilities.getContentAsString(textureItem.file);
+              const results = await exifr.parse();
 
-                if (relativePath && contentStr) {
-                  textureList.push({
-                    path: textureItem.file.storageRelativePath,
-                    name: textureItem.file.name,
-                    folder: "",
-                    namespace: "",
-                    id: textureList.length.toString(),
-                    group: "",
-                    width: results.ImageWidth,
-                    height: results.ImageHeight,
-                    uv_width: results.ImageWidth,
-                    uv_height: results.ImageHeight,
-                    particle: false,
-                    use_as_default: false,
-                    layers_enabled: false,
-                    sync_to_project: "",
-                    render_mode: "default",
-                    render_sides: "auto",
-                    frame_time: 1,
-                    frame_order_type: "loop",
-                    frame_order: "",
-                    frame_interpolate: false,
-                    visible: true,
-                    internal: true,
-                    saved: true,
-                    uuid: Utilities.createUuid(),
-                    relative_path: relativePath,
-                    source: contentStr,
-                  });
+              const relativePath = sourceFile.getRelativePathFor(textureItem.file);
+              const contentStr = StorageUtilities.getContentAsString(textureItem.file);
 
-                  bbmodel.textures?.push(textureList[textureList.length - 1]);
-                }
-              } catch (e) {}
-            }
+              if (relativePath && contentStr) {
+                textureList.push({
+                  path: textureItem.file.storageRelativePath,
+                  name: textureItem.file.name,
+                  folder: "",
+                  namespace: "",
+                  id: textureList.length.toString(),
+                  group: "",
+                  width: results.ImageWidth,
+                  height: results.ImageHeight,
+                  uv_width: results.ImageWidth,
+                  uv_height: results.ImageHeight,
+                  particle: false,
+                  use_as_default: false,
+                  layers_enabled: false,
+                  sync_to_project: "",
+                  render_mode: "default",
+                  render_sides: "auto",
+                  frame_time: 1,
+                  frame_order_type: "loop",
+                  frame_order: "",
+                  frame_interpolate: false,
+                  visible: true,
+                  internal: true,
+                  saved: true,
+                  uuid: Utilities.createUuid(),
+                  relative_path: relativePath,
+                  source: contentStr,
+                });
+
+                bbmodel.textures?.push(textureList[textureList.length - 1]);
+              }
+            } catch (e) {}
           }
         }
       }
@@ -950,6 +976,7 @@ export default class BlockbenchModel {
       uv = cube.uv;
     } else if (cube.uv.up) {
       uv = cube.uv.up.uv;
+      return [uv[0], uv[1], uv[0] + cube.size[0], uv[1] + cube.size[2]];
     } else {
       Log.unexpectedContentState("BBMGUB");
       uv = [0, 0];
@@ -965,6 +992,7 @@ export default class BlockbenchModel {
       uv = cube.uv;
     } else if (cube.uv.down) {
       uv = cube.uv.down.uv;
+      return [uv[0], uv[1], uv[0] + cube.size[0], uv[1] - cube.size[2]];
     } else {
       Log.unexpectedContentState("BBMGDB");
       uv = [0, 0];
@@ -980,6 +1008,8 @@ export default class BlockbenchModel {
       uv = cube.uv;
     } else if (cube.uv && cube.uv.east) {
       uv = cube.uv.east.uv;
+
+      return [uv[0], uv[1], uv[0] + cube.size[2], uv[1] + cube.size[1]];
     } else {
       Log.unexpectedContentState("BBMGEB");
       uv = [0, 0];
@@ -995,6 +1025,8 @@ export default class BlockbenchModel {
       uv = cube.uv;
     } else if (cube.uv && cube.uv.north) {
       uv = cube.uv.north.uv;
+
+      return [uv[0], uv[1], uv[0] + cube.size[0], uv[1] + cube.size[1]];
     } else {
       Log.unexpectedContentState("BBMGNB");
       uv = [0, 0];
@@ -1015,6 +1047,7 @@ export default class BlockbenchModel {
       uv = cube.uv;
     } else if (cube.uv && cube.uv.west) {
       uv = cube.uv.west.uv;
+      return [uv[0], uv[1], uv[0] + cube.size[2], uv[1] + cube.size[1]];
     } else {
       Log.unexpectedContentState("BBMGWB");
       uv = [0, 0];
@@ -1035,6 +1068,7 @@ export default class BlockbenchModel {
       uv = cube.uv;
     } else if (cube.uv && cube.uv.south) {
       uv = cube.uv.south.uv;
+      return [uv[0], uv[1], uv[0] + cube.size[0], uv[1] + cube.size[1]];
     } else {
       Log.unexpectedContentState("BBMGWB");
       uv = [0, 0];

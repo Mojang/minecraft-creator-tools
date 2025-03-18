@@ -35,12 +35,6 @@
       "dataType": 3
     },
     {
-      "id": "max_dist",
-      "title": "Max Dist",
-      "description": "Unused. No effect on \"minecraft:behavior.melee_attack\".",
-      "dataType": 3
-    },
-    {
       "id": "max_path_time",
       "title": "Max Path Time",
       "description": "Maximum base time (in seconds) to recalculate new attack path to target (before increases applied).",
@@ -79,6 +73,12 @@
       "id": "on_attack",
       "title": "On Attack",
       "description": "Defines the event to trigger when this entity successfully attacks.",
+      "dataType": 22
+    },
+    {
+      "id": "on_kill",
+      "title": "On Kill",
+      "description": "Defines the event to trigger when this entity kills the target.",
       "dataType": 22
     },
     {
@@ -145,13 +145,6 @@
       }
     },
     {
-      "id": "set_persistent",
-      "title": "Set Persistent",
-      "description": "Allows the actor to be set to persist upon targeting a player",
-      "defaultValue": false,
-      "dataType": 1
-    },
-    {
       "id": "speed_multiplier",
       "title": "Speed Multiplier",
       "description": "This multiplier modifies the attacking entity's speed when moving toward the target.",
@@ -178,12 +171,6 @@
           }
         ]
       }
-    },
-    {
-      "id": "target_dist",
-      "title": "Target Dist",
-      "description": "Unused. No effect on \"minecraft:behavior.melee_attack\".",
-      "dataType": 3
     },
     {
       "id": "track_target",

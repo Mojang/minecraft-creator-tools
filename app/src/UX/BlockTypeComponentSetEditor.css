@@ -10,6 +10,10 @@
   grid-template-columns: 280px 1fr;
 }
 
+.bcose-loading {
+  padding: 6px;
+}
+
 .bcose-header {
   font-size: 12pt;
   font-size: 17pt;

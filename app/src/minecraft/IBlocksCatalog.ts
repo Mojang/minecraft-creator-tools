@@ -6,6 +6,24 @@ export interface IBlocksCatalogResource {
 }
 
 export interface IBlockResource {
-  sound: string;
-  textures: string;
+  sound?: string;
+  isotropic?: IBlocksIsotropic | boolean;
+  ambient_occlusion_exponent?: number;
+  carried_textures?: string;
+  textures?: IBlockTextures | string;
+}
+
+export interface IBlocksIsotropic {
+  up?: boolean;
+  down?: boolean;
+}
+
+export interface IBlockTextures {
+  north?: string;
+  south?: string;
+  east?: string;
+  west?: string;
+  side?: string;
+  up?: string;
+  down?: string;
 }

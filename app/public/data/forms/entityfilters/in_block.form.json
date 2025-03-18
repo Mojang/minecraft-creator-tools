@@ -57,7 +57,23 @@
           "title": "Not",
           "description": "Test for inequality."
         }
-      ]
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/skeleton.json": [
+          {
+            "path": "/minecraft:entity/component_groups/in_powder_snow/minecraft:environment_sensor/triggers/0/filters/",
+            "content": "!="
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack/minecraft:environment_sensor/triggers/2/filters/",
+            "content": "=="
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:melee_attack/minecraft:environment_sensor/triggers/1/filters/",
+            "content": "=="
+          }
+        ]
+      }
     },
     {
       "id": "subject",
@@ -101,13 +117,54 @@
           "title": "Target",
           "description": "The caller's current target."
         }
-      ]
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/skeleton.json": [
+          {
+            "path": "/minecraft:entity/component_groups/in_powder_snow/minecraft:environment_sensor/triggers/0/filters/",
+            "content": "self"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack/minecraft:environment_sensor/triggers/2/filters/",
+            "content": "self"
+          }
+        ]
+      }
     },
     {
       "id": "value",
       "title": "Value",
       "description": "(Optional) A string value.",
-      "dataType": 2
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/skeleton.json": [
+          {
+            "path": "/minecraft:entity/component_groups/in_powder_snow/minecraft:environment_sensor/triggers/0/filters/",
+            "content": "minecraft:powder_snow"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack/minecraft:environment_sensor/triggers/2/filters/",
+            "content": "minecraft:powder_snow"
+          }
+        ]
+      }
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": 2,
+      "samples": {
+        "/vanilla/behavior_pack/entities/skeleton.json": [
+          {
+            "path": "/minecraft:entity/component_groups/in_powder_snow/minecraft:environment_sensor/triggers/0/filters/",
+            "content": "in_block"
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:ranged_attack/minecraft:environment_sensor/triggers/2/filters/",
+            "content": "in_block"
+          }
+        ]
+      }
     }
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
@@ -130,19 +187,39 @@
     "/vanilla/behavior_pack/entities/skeleton.json": [
       {
         "path": "/minecraft:entity/component_groups/in_powder_snow/minecraft:environment_sensor/triggers/0/filters/",
-        "content": "{\"test\":\"in_block\",\"subject\":\"self\",\"operator\":\"!=\",\"value\":\"minecraft:powder_snow\"}"
+        "content": {
+          "test": "in_block",
+          "subject": "self",
+          "operator": "!=",
+          "value": "minecraft:powder_snow"
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/minecraft:ranged_attack/minecraft:environment_sensor/triggers/2/filters/",
-        "content": "{\"test\":\"in_block\",\"subject\":\"self\",\"operator\":\"==\",\"value\":\"minecraft:powder_snow\"}"
+        "content": {
+          "test": "in_block",
+          "subject": "self",
+          "operator": "==",
+          "value": "minecraft:powder_snow"
+        }
       },
       {
         "path": "/minecraft:entity/component_groups/minecraft:melee_attack/minecraft:environment_sensor/triggers/1/filters/",
-        "content": "{\"test\":\"in_block\",\"subject\":\"self\",\"operator\":\"==\",\"value\":\"minecraft:powder_snow\"}"
+        "content": {
+          "test": "in_block",
+          "subject": "self",
+          "operator": "==",
+          "value": "minecraft:powder_snow"
+        }
       },
       {
         "path": "/minecraft:entity/components/minecraft:environment_sensor/triggers/2/filters/",
-        "content": "{\"test\":\"in_block\",\"subject\":\"self\",\"operator\":\"==\",\"value\":\"minecraft:powder_snow\"}"
+        "content": {
+          "test": "in_block",
+          "subject": "self",
+          "operator": "==",
+          "value": "minecraft:powder_snow"
+        }
       }
     ]
   }

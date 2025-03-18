@@ -471,6 +471,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           >
             <EntityTypePropertyEditor
               theme={this.props.theme}
+              project={this.props.project}
               entityTypeItem={selItem}
               heightOffset={this.props.heightOffset}
             />
@@ -587,6 +588,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
                 displayTriggers={true}
                 readOnly={this.props.readOnly}
                 theme={this.props.theme}
+                project={this.props.project}
                 heightOffset={this.props.heightOffset + 115}
                 entityType={et}
                 event={selItem.event}
@@ -654,6 +656,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
           >
             <SpawnRulesEditor
               readOnly={this.props.readOnly}
+              project={this.props.project}
               theme={this.props.theme}
               displayHeader={false}
               file={spawnItem.file}
@@ -685,6 +688,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               theme={this.props.theme}
               displayHeader={false}
               projectItem={resourceItem}
+              project={this.props.project}
               file={resourceItem.file}
               heightOffset={this.props.heightOffset + 170}
             />
@@ -712,6 +716,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
             <LootTableEditor
               readOnly={this.props.readOnly}
               theme={this.props.theme}
+              project={this.props.project}
               file={lootTableItem.file}
               heightOffset={this.props.heightOffset + 88}
             />

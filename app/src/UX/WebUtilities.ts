@@ -1,4 +1,26 @@
+export enum BrowserType {
+  unknown = 0,
+  chrome = 1,
+  firefox = 2,
+  safari = 3,
+  edgeChrome = 4,
+}
+
 export default class WebUtilities {
+  static getBrowserType() {
+    if (navigator.userAgent.indexOf("Edg") >= 0) {
+      return BrowserType.edgeChrome;
+    } else if (navigator.userAgent.indexOf("hrom") >= 0) {
+      return BrowserType.chrome;
+    } else if (navigator.userAgent.indexOf("afari") >= 0) {
+      return BrowserType.safari;
+    } else if (navigator.userAgent.indexOf("irefo") >= 0) {
+      return BrowserType.firefox;
+    }
+
+    return BrowserType.unknown;
+  }
+
   static getWidth() {
     return Math.max(
       document.body.scrollWidth,

@@ -40,6 +40,14 @@
       }
     }
   ],
+  "scalarField": {
+    "id": "boolean",
+    "title": "Object enabled",
+    "tags": [
+      "presence"
+    ],
+    "dataType": 1
+  },
   "description": "Describes the destructible by explosion properties for this block. If set to true, the block will have the default explosion resistance. If set to false, this block is indestructible by explosion. If the component is omitted, the block will have the default explosion resistance.",
   "title": "Destructible By Explosion",
   "samples": {
@@ -107,10 +115,5 @@
         }
       }
     ]
-  },
-  "scalarField": {
-    "id": "boolean",
-    "title": "Boolean",
-    "dataType": 1
   }
 }

@@ -89,7 +89,7 @@ export default class SoundEventSetEditor extends Component<ISoundEventSetSoundEd
     const def = this.state.soundEventSet;
 
     if (def === undefined) {
-      return <div>Loading definition...</div>;
+      return <div className="ltb-loading">Loading definition...</div>;
     }
 
     const form = Database.getForm("entity", "sound_event");
@@ -108,6 +108,8 @@ export default class SoundEventSetEditor extends Component<ISoundEventSetSoundEd
               definition={form}
               directObject={def}
               readOnly={false}
+              project={this.props.project}
+              lookupProvider={this.props.project}
               theme={this.props.theme}
               objectKey={"ses" + this.props.typeId}
               onPropertyChanged={this._handleDataFormPropertyChange}

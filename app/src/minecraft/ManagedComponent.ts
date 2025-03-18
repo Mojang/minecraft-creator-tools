@@ -6,7 +6,8 @@ import IComponent from "./IComponent";
 import IManagedComponent from "./IManagedComponent";
 
 export class ManagedComponent implements IManagedComponent {
-  private _data: IComponent | string | number | undefined;
+  private _data: IComponent | string | string[] | boolean | number[] | number | undefined;
+  private _parent: { [componentId: string]: IComponent | string | string[] | boolean | number[] | number | undefined };
   id: string;
 
   private _onPropertyChanged = new EventDispatcher<ManagedComponent, string>();
@@ -15,13 +16,32 @@ export class ManagedComponent implements IManagedComponent {
     return this._onPropertyChanged.asEvent();
   }
 
-  constructor(id: string, data: IComponent | string | number) {
+  constructor(
+    parent: { [componentId: string]: IComponent | string | string[] | boolean | number[] | number | undefined },
+    id: string,
+    data: IComponent | string | string[] | boolean | number[] | number | undefined
+  ) {
+    this._parent = parent;
     this._data = data;
     this.id = id;
   }
 
   getData() {
     return this._data;
+  }
+
+  getBaseValue() {
+    return this._data;
+  }
+
+  setData(newData: IComponent | string | string[] | boolean | number[] | number | undefined) {
+    this._parent[this.id] = newData;
+    this._data = newData;
+  }
+
+  setBaseValue(value: any): void {
+    this._parent[this.id] = value;
+    this._data = value;
   }
 
   getProperty(id: string) {

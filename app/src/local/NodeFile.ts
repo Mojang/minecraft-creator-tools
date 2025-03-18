@@ -137,6 +137,18 @@ export default class NodeFile extends FileBase implements IFile {
     return this.lastLoadedOrSaved;
   }
 
+  async writeContent(content: String[]) {
+    this.lastLoadedOrSaved = new Date();
+
+    let writer = fs.createWriteStream(this.fullPath);
+
+    for (const str of content) {
+      writer.write(str + "\r\n");
+    }
+
+    writer.end();
+  }
+
   async deleteThisFile(skipRemoveFromParent?: boolean): Promise<boolean> {
     if (this.parentFolder.storage.readOnly) {
       throw new Error("Can't save read-only file.");

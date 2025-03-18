@@ -77,7 +77,7 @@ export default class ProjectGallery extends Component<IProjectGalleryProps, IPro
       const proj = projects[i];
 
       if (!proj.isLoaded) {
-        await proj.ensureLoadedFromFile();
+        await proj.ensurePreferencesAndFolderLoadedFromFile();
 
         Log.assert(proj.isLoaded, "Project is not loaded in ProjectGallery.");
         didLoad = true;

@@ -42,6 +42,7 @@ export enum PackInfoGeneratorTest {
 export default class PackInfoGenerator implements IProjectInfoGenerator {
   id = "PACK";
   title = "General info";
+  canAlwaysProcess = true;
 
   getTopicData(topicId: number) {
     return {
@@ -145,7 +146,7 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
               PackInfoGeneratorTest.behaviorPackManfiest,
               ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, PackInfoGeneratorTest.behaviorPackManfiest),
               pi,
-              obj
+              JSON.stringify(obj)
             )
           );
 
@@ -257,7 +258,7 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
               PackInfoGeneratorTest.resourcePackManifest,
               ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, PackInfoGeneratorTest.resourcePackManifest),
               pi,
-              obj
+              JSON.stringify(obj)
             )
           );
 

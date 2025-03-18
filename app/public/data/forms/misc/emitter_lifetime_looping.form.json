@@ -1,0 +1,28 @@
+{
+  "fields": [
+    {
+      "id": "active_time",
+      "title": "active_time",
+      "description": "active_time",
+      "dataType": 16,
+      "subForm": {
+        "title": "Active Time",
+        "description": "Active Time",
+        "fields": []
+      }
+    },
+    {
+      "id": "sleep_time",
+      "title": "sleep_time",
+      "description": "sleep_time",
+      "dataType": 16,
+      "subForm": {
+        "title": "Sleep Time",
+        "description": "Sleep Time",
+        "fields": []
+      }
+    }
+  ],
+  "description": "Emitter Lifetime Looping V1.21.0 Misc",
+  "title": "Emitter Lifetime Looping V1.21.0 Misc"
+}

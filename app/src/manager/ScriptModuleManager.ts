@@ -174,8 +174,6 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = await this.generateProjectState(project);
-    let foundManifest = false;
-    let foundError = false;
 
     let hasPackageJson = false;
 
@@ -187,7 +185,6 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
 
     for (const moduleName in this.modulesInUse) {
       const moduleInfo = this.modulesInUse[moduleName];
-      foundManifest = true;
 
       if (moduleInfo) {
         const npmModule = await Database.getModuleDescriptor(moduleName);
@@ -215,7 +212,6 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
                       mod.version
                     )
                   );
-                  foundError = true;
                 }
               }
             }
@@ -234,7 +230,6 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
                 moduleName
               )
             );
-            foundError = true;
           }
         } else if (hasPackageJson) {
           items.push(
@@ -247,25 +242,10 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
               moduleName
             )
           );
-          foundError = true;
         }
       }
     }
 
-    if (!foundManifest) {
-      items.push(
-        new ProjectInfoItem(
-          InfoItemType.testCompleteSuccess,
-          this.id,
-          260,
-          "No script module was found; script module version check passes."
-        )
-      );
-    } else if (foundError) {
-      items.push(
-        new ProjectInfoItem(InfoItemType.testCompleteSuccess, this.id, 262, "Script module version check passes.")
-      );
-    }
     return items;
   }
 

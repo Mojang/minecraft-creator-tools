@@ -17,6 +17,7 @@ const TopicTestIdBase = 100;
 export default class LineSizeInfoGenerator implements IProjectInfoGenerator {
   id = "LINESIZE";
   title = "File Line/Size Information";
+  canAlwaysProcess = true;
 
   getTopicData(topicId: number) {
     if (topicId >= TopicTestIdBase) {

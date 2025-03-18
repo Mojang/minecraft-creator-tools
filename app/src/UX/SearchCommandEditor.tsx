@@ -38,7 +38,7 @@ interface ISearchCommandEditorProps {
 }
 
 interface ISearchCommandEditorState {
-  autoCompleteResults?: { [fullKey: string]: IAnnotatedValue[] } | undefined;
+  autoCompleteResults?: { [fullKey: string]: IAnnotatedValue[] | undefined } | undefined;
   content?: string;
   initialContent?: string;
   selectedAutoComplete?: number;

@@ -17,6 +17,7 @@ import ModelGeometryDefinition from "./ModelGeometryDefinition";
 import Database from "./Database";
 import IProjectItemRelationship from "../app/IProjectItemRelationship";
 import MinecraftDefinitions from "./MinecraftDefinitions";
+import TextureDefinition from "./TextureDefinition";
 
 export default class AttachableResourceDefinition {
   private _dataWrapper?: IClientAttachableWrapper;
@@ -66,7 +67,7 @@ export default class AttachableResourceDefinition {
     return this._data.textures;
   }
 
-  public get texturesList() {
+  public getCanonicalizedTexturesList() {
     if (!this._data || !this._data.textures) {
       return undefined;
     }
@@ -74,10 +75,10 @@ export default class AttachableResourceDefinition {
     const textureList = [];
 
     for (const key in this._data.textures) {
-      const texturePath = this._data.textures[key];
+      const texturePath = TextureDefinition.canonicalizeTexturePath(this._data.textures[key]);
 
       if (texturePath) {
-        textureList.push(texturePath.toLowerCase());
+        textureList.push(texturePath);
       }
     }
 
@@ -347,16 +348,11 @@ export default class AttachableResourceDefinition {
 
   getPackRootFolder() {
     let packRootFolder = undefined;
+
     if (this.file && this.file.parentFolder) {
       let parentFolder = this.file.parentFolder;
 
-      while (parentFolder.name !== "attachables" && parentFolder.parentFolder) {
-        parentFolder = parentFolder.parentFolder;
-      }
-
-      if (parentFolder.parentFolder) {
-        packRootFolder = parentFolder.parentFolder;
-      }
+      packRootFolder = StorageUtilities.getParentOfParentFolderNamed("attachables", parentFolder);
     }
 
     return packRootFolder;
@@ -382,7 +378,7 @@ export default class AttachableResourceDefinition {
 
     let packRootFolder = this.getPackRootFolder();
 
-    let textureList = this.texturesList;
+    let textureList = this.getCanonicalizedTexturesList();
     let geometryList = this.geometryList;
     let renderControllerIdList = this.renderControllerIdList;
     let animationIdList = this.animationIdList;
@@ -426,7 +422,9 @@ export default class AttachableResourceDefinition {
         await candItem.ensureStorage();
 
         if (candItem.file) {
-          let relativePath = this.getRelativePath(candItem.file, packRootFolder);
+          let relativePath = TextureDefinition.canonicalizeTexturePath(
+            this.getRelativePath(candItem.file, packRootFolder)
+          );
 
           if (relativePath) {
             if (textureList && textureList.includes(relativePath)) {
@@ -462,11 +460,9 @@ export default class AttachableResourceDefinition {
 
     if (textureList) {
       for (const texturePath of textureList) {
-        item.addUnfulfilledRelationship(
-          texturePath,
-          ProjectItemType.texture,
-          await Database.isVanillaToken(texturePath)
-        );
+        const isVanilla = await Database.isVanillaToken(texturePath);
+
+        item.addUnfulfilledRelationship(texturePath, ProjectItemType.texture, isVanilla);
       }
     }
 

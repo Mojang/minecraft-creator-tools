@@ -10,6 +10,7 @@ import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 
 interface IBlockTypeAddComponentProps {
   theme: ThemeInput<any>;
+  isVisual: boolean;
   onNewComponentSelected: (id: string) => void;
   setActivePersistable?: (persistObject: IPersistable) => void;
 }
@@ -70,13 +71,23 @@ export default class BlockTypeAddComponent extends Component<IBlockTypeAddCompon
       if (fileName.startsWith("minecraft") && fileName.endsWith(".form.json")) {
         const baseName = fileName.substring(0, fileName.length - 10);
 
-        let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
+        const form = await Database.ensureFormLoaded("block", baseName);
 
-        componentMenuItems.push({
-          key: canonName,
-          tag: canonName,
-          content: Utilities.humanifyMinecraftName(canonName),
-        });
+        if (
+          form &&
+          !form.isDeprecated &&
+          !form.isInternal &&
+          ((!this.props.isVisual && (!form.tags || !form.tags.includes("visual"))) ||
+            (this.props.isVisual && form.tags && form.tags.includes("visual")))
+        ) {
+          let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
+
+          componentMenuItems.push({
+            key: canonName,
+            tag: canonName,
+            content: Utilities.humanifyMinecraftName(canonName),
+          });
+        }
       }
     }
 

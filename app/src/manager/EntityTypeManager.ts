@@ -14,83 +14,59 @@ import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
+import ProjectInfoUtilities from "../info/ProjectInfoUtilities";
 
-export default class BehaviorPackEntityTypeManager implements IProjectInfoGenerator, IProjectUpdater {
-  id = "BPENTITYTYPE";
-  title = "Entity Type Behavior Pack";
+export enum EntityTypeUpdate {
+  UpdateFormatVersionToLatest = 1051,
+}
+
+export enum EntityTypeInfo {
+  RuntimeIdentifier = 52,
+  Identifier = 53,
+  Metadata = 54,
+  FormatVersionDefined = 100,
+  FormatVersionMajorVersionLowerThanCurrent = 110,
+  FormatVersionMajorVersionHigherThanCurrent = 111,
+  FormatVersionMinorVersionLowerThanCurrent = 120,
+  FormatVersionMinorVersionHigherThanCurrent = 121,
+  FormatVersionPatchVersionLowerThanCurrent = 130,
+  FormatVersionPatchVersionHigherThanCurrent = 131,
+  FailedToRetrieveLatestMinecraftVersion = 500,
+  FailedToParseLatestMinecraftVersion = 501,
+}
+
+export default class EntityTypeManager implements IProjectInfoGenerator, IProjectUpdater {
+  id;
+  title = "Entity Type";
+
+  constructor() {
+    this.id = "ENTITYTYPE";
+  }
 
   getTopicData(topicId: number): IProjectInfoTopicData | undefined {
     const formatVersion = {
       updaterId: this.id,
-      updaterIndex: 1,
+      updaterIndex: EntityTypeUpdate.UpdateFormatVersionToLatest,
       action: "Set behavior pack entity type format to latest version.",
     };
 
+    const title = ProjectInfoUtilities.getTitleFromEnum(EntityTypeInfo, topicId);
+
     switch (topicId) {
-      case 2:
+      case EntityTypeInfo.FormatVersionMajorVersionLowerThanCurrent:
+      case EntityTypeInfo.FormatVersionMajorVersionHigherThanCurrent:
+      case EntityTypeInfo.FormatVersionMinorVersionLowerThanCurrent:
+      case EntityTypeInfo.FormatVersionMinorVersionHigherThanCurrent:
+      case EntityTypeInfo.FormatVersionPatchVersionLowerThanCurrent:
+      case EntityTypeInfo.FormatVersionPatchVersionHigherThanCurrent:
         return {
-          title: "Entity Type Runtime Identifier",
-        };
-      case 3:
-        return {
-          title: "Entity Type Identifier",
-        };
-      case 4:
-        return {
-          title: "Entity Type Metadata",
-        };
-      case 100:
-        return {
-          title: "Behavior Pack Entity Type Format Version defined",
-        };
-
-      case 110:
-        return {
-          title: "Behavior Pack Entity Type Format Version Major Version Lower than Current",
+          title: title,
           updaters: [formatVersion],
-        };
-
-      case 111:
-        return {
-          title: "Behavior Pack Entity Type Format Version Major Version Higher than Current",
-          updaters: [formatVersion],
-        };
-
-      case 120:
-        return {
-          title: "Behavior Pack Entity Type Format Version Minor Version Lower than Current",
-          updaters: [formatVersion],
-        };
-
-      case 121:
-        return {
-          title: "Behavior Pack Entity Type Format Version Minor Version Higher than Current",
-          updaters: [formatVersion],
-        };
-
-      case 130:
-        return {
-          title: "Behavior Pack Entity Type Format Version Patch Version Lower than Current",
-          updaters: [formatVersion],
-        };
-
-      case 131:
-        return {
-          title: "Behavior Pack Entity Type Format Version Patch Version Higher than Current",
-          updaters: [formatVersion],
-        };
-
-      case 500:
-        return {
-          title: "Retrieve Latest Minecraft Version",
-        };
-      case 501:
-        return {
-          title: "Parse Latest Minecraft Version",
         };
     }
+
     return {
-      title: topicId.toString(),
+      title: title,
     };
   }
 
@@ -106,8 +82,6 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
     const infoItems: ProjectInfoItem[] = [];
 
     const ver = await Database.getLatestVersionInfo(project.effectiveTrack);
-    let foundWorldTemplate = false;
-    let foundError = false;
 
     if (!ver) {
       infoItems.push(
@@ -155,7 +129,6 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
         await pi.ensureFileStorage();
 
         if (pi.file) {
-          foundWorldTemplate = true;
           const bpEntityType = await EntityTypeDefinition.ensureOnFile(pi.file);
 
           if (bpEntityType) {
@@ -225,7 +198,6 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
                   pi
                 )
               );
-              foundError = true;
             } else {
               if (fv.length > 0 && fv[0] < parseInt(verSplit[0])) {
                 infoItems.push(
@@ -255,7 +227,6 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
                     pi
                   )
                 );
-                foundError = true;
               } else if (fv[1] < parseInt(verSplit[1]) - 1) {
                 infoItems.push(
                   new ProjectInfoItem(
@@ -284,7 +255,6 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
                     pi
                   )
                 );
-                foundError = true;
               } else if (fv[2] < parseInt(verSplit[2])) {
                 infoItems.push(
                   new ProjectInfoItem(
@@ -313,41 +283,11 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
                     pi
                   )
                 );
-                foundError = true;
               }
             }
           }
         }
       }
-    }
-
-    if (!foundWorldTemplate) {
-      infoItems.push(
-        new ProjectInfoItem(
-          InfoItemType.testCompleteSuccess,
-          this.id,
-          260,
-          "No entity type behavior format version was found; base game version check passes."
-        )
-      );
-    } else if (foundError) {
-      infoItems.push(
-        new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
-          this.id,
-          261,
-          "Behavior pack entity type format version check fails."
-        )
-      );
-    } else if (foundError) {
-      infoItems.push(
-        new ProjectInfoItem(
-          InfoItemType.testCompleteSuccess,
-          this.id,
-          262,
-          "Behavior pack entity type format version check passes."
-        )
-      );
     }
 
     return infoItems;
@@ -357,7 +297,7 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
     const results: ProjectUpdateResult[] = [];
 
     switch (updateId) {
-      case 1:
+      case EntityTypeUpdate.UpdateFormatVersionToLatest:
         const localResults = await this.updateFormatVersionToLatestVersion(project);
 
         results.push(...localResults);
@@ -368,7 +308,7 @@ export default class BehaviorPackEntityTypeManager implements IProjectInfoGenera
   }
 
   getUpdateIds() {
-    return [1];
+    return [EntityTypeUpdate.UpdateFormatVersionToLatest];
   }
 
   async updateFormatVersionToLatestVersion(project: Project) {

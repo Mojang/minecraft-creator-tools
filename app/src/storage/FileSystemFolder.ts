@@ -87,6 +87,44 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
     this.files = {};
   }
 
+  async getIsEmptyError(depth?: number, processedFolders?: number): Promise<string | undefined> {
+    if (depth && depth > 10) {
+      return "Folder hierarchy is too deep.";
+    }
+
+    await this.load(false);
+
+    for (const fileName in this.files) {
+      return "Folder '" + this.fullPath + "' is not empty.";
+    }
+
+    const folderCount = this.folderCount;
+
+    processedFolders = processedFolders === undefined ? folderCount : processedFolders + this.folderCount;
+
+    if (folderCount > 1000) {
+      return "Folder hierarchy is too complex. (" + folderCount + " folders)";
+    }
+
+    if (processedFolders > 4000) {
+      return "Too many folders to process in this folder.";
+    }
+
+    for (const folderName in this.folders) {
+      const folder = this.folders[folderName];
+
+      if (folder) {
+        const result = await folder.getFirstUnsafeError(depth === undefined ? 1 : depth + 1, processedFolders);
+
+        if (result !== undefined) {
+          return result;
+        }
+      }
+    }
+
+    return undefined;
+  }
+
   async getFirstUnsafeError(depth?: number, processedFolders?: number): Promise<string | undefined> {
     if (depth && depth > 10) {
       return "Folder hierarchy is too deep.";

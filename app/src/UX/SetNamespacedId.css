@@ -1,0 +1,32 @@
+.setnaid-mainArea {
+  padding-top: 20px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: 40px 60px;
+  padding-bottom: 20px;
+}
+
+.setnaid-label {
+  grid-column: 1;
+  padding-top: 12px;
+}
+
+.setnaid-name {
+  grid-column: 2;
+  padding: 8px;
+}
+
+.setnaid-namespaceLabel {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.setnaid-namespace {
+  grid-column: 2;
+  grid-row: 2;
+  padding: 8px;
+}
+
+.setnaid-namespace input {
+  background-color: inherit !important;
+}

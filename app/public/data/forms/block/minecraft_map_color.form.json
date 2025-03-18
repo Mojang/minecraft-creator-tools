@@ -13,6 +13,9 @@
       "dataType": 2
     }
   ],
+  "tags": [
+    "visual"
+  ],
   "description": "Sets the color of the block when rendered to a map. If this component is omitted, the block will not show up on the map.",
   "title": "Map Color",
   "samples": {

@@ -7,17 +7,21 @@ import Log from "./Log";
 import Utilities from "./Utilities";
 import esprima from "esprima-next";
 
-export enum AnnotationCategories {
+export enum AnnotationCategory {
+  blockTextureReferenceSource = "a",
   blockTypeDependent = "b",
   entityComponentDependent = "c",
   blockComponentDependent = "d",
   entityTypeDependent = "e",
   entityFilter = "f",
   entityComponentDependentInGroup = "g",
+  blockTextureReferenceDependent = "h",
   itemTypeDependent = "i",
   itemComponentDependent = "j",
+  itemTextureReferenceSource = "k",
   blockComponentDependentInPermutation = "p",
   storagePathDependent = "s",
+  textureFile = "t",
   entityEvent = "v",
   blockTypeSource = "B",
   entityTypeSource = "E",
@@ -43,8 +47,12 @@ export interface IAnnotatedIndexData {
 }
 
 export interface IContentIndex {
-  getDescendentStrings(term: string): Promise<{ [fullKey: string]: IAnnotatedValue[] } | undefined>;
-  getMatches(searchString: string, withAnnotation?: AnnotationCategories[]): Promise<IAnnotatedValue[] | undefined>;
+  getDescendentStrings(term: string): Promise<{ [fullKey: string]: IAnnotatedValue[] | undefined } | undefined>;
+  getMatches(
+    searchString: string,
+    wholeTermSearch?: boolean,
+    withAnnotation?: AnnotationCategory[]
+  ): Promise<IAnnotatedValue[] | undefined>;
   startLength: number;
 }
 
@@ -53,6 +61,38 @@ export default class ContentIndex implements IContentIndex {
     items: [],
     trie: {},
   };
+
+  #iteration: number = Math.floor(Math.random() * 1000000);
+
+  get iteration() {
+    return this.#iteration;
+  }
+
+  set iteration(newIteration: number) {
+    this.#iteration = newIteration;
+  }
+
+  static getAnnotationCategoryKeys() {
+    const keys: string[] = [];
+
+    for (const key in AnnotationCategory) {
+      keys.push(key.toLowerCase());
+    }
+
+    return keys;
+  }
+
+  static getAnnotationCategoryFromLongString(longStr: string) {
+    longStr = longStr.toLowerCase();
+
+    for (const key in AnnotationCategory) {
+      if (key.toLowerCase() === longStr) {
+        return (AnnotationCategory as { [keyName: string]: string })[key];
+      }
+    }
+
+    return undefined;
+  }
 
   get data() {
     return this.#data;
@@ -70,10 +110,10 @@ export default class ContentIndex implements IContentIndex {
     this.#data.trie = trie;
   }
 
-  getAll(): { [fullKey: string]: IAnnotatedValue[] } {
+  getAll(withAnnotation?: AnnotationCategory[]): { [fullKey: string]: IAnnotatedValue[] } {
     const results: { [fullKey: string]: IAnnotatedValue[] } = {};
 
-    this._appendToResults("", this.#data.trie, results);
+    this._appendToResults("", this.#data.trie, results, withAnnotation);
 
     return results;
   }
@@ -82,7 +122,12 @@ export default class ContentIndex implements IContentIndex {
     return AvoidTermList.includes(term);
   }
 
-  _appendToResults(prefix: string, node: any, results: { [fullKey: string]: IAnnotatedValue[] }) {
+  _appendToResults(
+    prefix: string,
+    node: any,
+    results: { [fullKey: string]: IAnnotatedValue[] | undefined },
+    withAnnotation?: AnnotationCategory[]
+  ) {
     for (const token in node) {
       const subNode = node[token];
 
@@ -92,15 +137,23 @@ export default class ContentIndex implements IContentIndex {
 
           if (arr.constructor === Array) {
             if (!this._isTermToAvoid(prefix)) {
-              results[prefix] = this.getValuesFromIndexArray(arr);
+              let res = this.getValuesFromIndexArray(arr, withAnnotation);
+
+              if (res) {
+                results[prefix] = res;
+              }
             }
           }
         } else if (subNode.constructor === Array) {
           if (!this._isTermToAvoid(prefix + token)) {
-            results[prefix + token] = this.getValuesFromIndexArray(subNode);
+            let res = this.getValuesFromIndexArray(subNode, withAnnotation);
+
+            if (res) {
+              results[prefix + token] = res;
+            }
           }
         } else {
-          this._appendToResults(prefix + token, subNode, results);
+          this._appendToResults(prefix + token, subNode, results, withAnnotation);
         }
       }
     }
@@ -128,12 +181,16 @@ export default class ContentIndex implements IContentIndex {
     }
   }
 
-  static processResultValues(annotatedValues: IAnnotatedValue[], withAnyAnnotation?: AnnotationCategories[]) {
+  static processResultValues(annotatedValues: IAnnotatedValue[] | undefined, withAnyAnnotation?: AnnotationCategory[]) {
+    if (!annotatedValues) {
+      return undefined;
+    }
+
     if (withAnyAnnotation) {
       let newAnnotatedValues: IAnnotatedValue[] = [];
 
       for (const annV of annotatedValues) {
-        if (annV.annotation && withAnyAnnotation.includes(annV.annotation as AnnotationCategories)) {
+        if (annV.annotation && withAnyAnnotation.includes(annV.annotation as AnnotationCategory)) {
           newAnnotatedValues.push(annV);
         }
       }
@@ -144,11 +201,14 @@ export default class ContentIndex implements IContentIndex {
     return annotatedValues;
   }
 
-  getValuesFromIndexArray(indices: (IAnnotatedIndexData | number)[]): IAnnotatedValue[] {
-    const results: IAnnotatedValue[] = [];
+  getValuesFromIndexArray(
+    indices: (IAnnotatedIndexData | number)[],
+    withAnnotation?: AnnotationCategory[]
+  ): IAnnotatedValue[] | undefined {
+    let results: IAnnotatedValue[] = [];
 
     if (!indices) {
-      return results;
+      return undefined;
     }
 
     if (Utilities.arrayHasNegativeAndIsNumeric(indices)) {
@@ -159,11 +219,19 @@ export default class ContentIndex implements IContentIndex {
       if (typeof index === "object") {
         const indexN = (index as IAnnotatedIndexData).n;
         if (indexN >= 0 && indexN < this.#data.items.length) {
-          results.push({ value: this.#data.items[indexN], annotation: (index as IAnnotatedIndexData).a });
+          const annotate = index.a;
+
+          if (!withAnnotation || withAnnotation.includes(annotate as AnnotationCategory)) {
+            results.push({ value: this.#data.items[indexN], annotation: (index as IAnnotatedIndexData).a });
+          }
         }
-      } else if (index >= 0 && index < this.#data.items.length) {
+      } else if (index >= 0 && index < this.#data.items.length && !withAnnotation) {
         results.push({ value: this.#data.items[index], annotation: undefined });
       }
+    }
+
+    if (results.length === 0) {
+      return undefined;
     }
 
     return results;
@@ -199,10 +267,15 @@ export default class ContentIndex implements IContentIndex {
     return false;
   }
 
-  async getMatches(searchString: string, withAnyAnnotation?: AnnotationCategories[]) {
+  async getMatches(searchString: string, wholeTermSearch?: boolean, withAnyAnnotation?: AnnotationCategory[]) {
     searchString = searchString.trim().toLowerCase();
 
-    const terms = searchString.split(" ");
+    let terms = [searchString];
+
+    if (!wholeTermSearch) {
+      terms = searchString.split(" ");
+    }
+
     let termWasSearched = false;
 
     let andResults: number[] | undefined;
@@ -237,6 +310,10 @@ export default class ContentIndex implements IContentIndex {
     }
 
     let annotatedValues = ContentIndex.processResultValues(this.getValuesFromIndexArray(andResults), withAnyAnnotation);
+
+    if (!annotatedValues) {
+      return undefined;
+    }
 
     return annotatedValues.sort((a: IAnnotatedValue, b: IAnnotatedValue) => {
       let aTermMatches = 0;
@@ -280,7 +357,7 @@ export default class ContentIndex implements IContentIndex {
     let termIndex = 0;
     let curNode: any = this.#data.trie;
 
-    const results: { [fullKey: string]: IAnnotatedValue[] } = {};
+    const results: { [fullKey: string]: IAnnotatedValue[] | undefined } = {};
 
     let hasAdvanced = true;
     let termSubstr = "";

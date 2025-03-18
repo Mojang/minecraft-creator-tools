@@ -3,9 +3,13 @@
 
 import { IEvent } from "ste-events";
 import IManagedComponent from "./IManagedComponent";
+import IComponent from "./IComponent";
 
 export default interface IManagedComponentSetItem {
-  addComponent(id: string, component: IManagedComponent): void;
+  addComponent(
+    id: string,
+    componentOrData: IManagedComponent | IComponent | string | string[] | boolean | number[] | number | undefined
+  ): IManagedComponent;
   removeComponent(id: string): void;
   getComponent(id: string): IManagedComponent | undefined;
   getComponents(): IManagedComponent[];

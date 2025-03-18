@@ -17,6 +17,7 @@ export enum UnknownFileGeneratorTest {
 export default class UnknownFileGenerator implements IProjectFileInfoGenerator {
   id = "UNKFILE";
   title = "Unknown files";
+  canAlwaysProcess = true;
 
   getTopicData(topicId: number) {
     return {
@@ -34,7 +35,7 @@ export default class UnknownFileGenerator implements IProjectFileInfoGenerator {
 
       items.push(
         new ProjectInfoItem(
-          InfoItemType.testCompleteFail,
+          InfoItemType.error,
           this.id,
           UnknownFileGeneratorTest.unknownTypeFileFound,
           `Unknown type ${ext} file found`,

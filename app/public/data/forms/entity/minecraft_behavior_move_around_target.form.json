@@ -1,11 +1,19 @@
 {
   "fields": [
     {
-      "id": "destination_pos_search_spread_degrees",
-      "title": "Destination Pos Search Spread Degrees",
+      "id": "destination_pos_spread_degrees",
+      "title": "Destination Pos Spread Degrees",
       "description": "This angle (in degrees) is used for controlling the spread when picking a destination position behind the target. A zero spread angle means the destination position will be straight behind the target with no variance. A 90 degree spread angle means the destination position can be up to 45 degrees to the left and to the right of the position straight behind the target's view direction..",
       "defaultValue": 90,
-      "dataType": 3
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/entities/breeze.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.move_around_target/",
+            "content": 360
+          }
+        ]
+      }
     },
     {
       "id": "destination_position_range",
@@ -101,22 +109,9 @@
           }
         ]
       }
-    },
-    {
-      "id": "destination_pos_spread_degrees",
-      "title": "Destination Pos Spread Degrees",
-      "dataType": 7,
-      "samples": {
-        "/vanilla/behavior_pack/entities/breeze.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:behavior.move_around_target/",
-            "content": 360
-          }
-        ]
-      }
     }
   ],
-  "description": "Allows an entity to move around a target. If the entity is too close (i.e. closer than destination range min and height difference limit) it will try to move away from its target. If the entity is too far away from its target it will try to move closer to a random position within the destination range. A randomized amount of those positions will be behind the target, and the spread can be tweaked with 'destination_pos_search_spread_degrees'.",
+  "description": "Allows an entity to move around a target. If the entity is too close (i.e. closer than destination range min and height difference limit) it will try to move away from its target. If the entity is too far away from its target it will try to move closer to a random position within the destination range. A randomized amount of those positions will be behind the target, and the spread can be tweaked with 'destination_pos_spread_degrees'.",
   "title": "Move Around Target Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/breeze.json": [

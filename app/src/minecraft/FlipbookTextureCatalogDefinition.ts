@@ -162,18 +162,27 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
     this.persist();
   }
 
+  getTexturePaths() {
+    const texturePaths: string[] = [];
+    if (this.data) {
+      for (const flipbookResource of this.data) {
+        const resource = flipbookResource.flipbook_texture;
+
+        if (!texturePaths.includes(resource)) {
+          texturePaths.push(resource);
+        }
+      }
+    }
+
+    return texturePaths;
+  }
+
   getPackRootFolder() {
     let packRootFolder = undefined;
     if (this.file && this.file.parentFolder) {
       let parentFolder = this.file.parentFolder;
 
-      while (parentFolder.name !== "textures" && parentFolder.parentFolder) {
-        parentFolder = parentFolder.parentFolder;
-      }
-
-      if (parentFolder.parentFolder) {
-        packRootFolder = parentFolder.parentFolder;
-      }
+      packRootFolder = StorageUtilities.getParentOfParentFolderNamed("textures", parentFolder);
     }
 
     return packRootFolder;

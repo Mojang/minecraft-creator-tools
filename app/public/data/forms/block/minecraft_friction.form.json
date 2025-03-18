@@ -1,5 +1,10 @@
 {
   "fields": [],
+  "scalarField": {
+    "id": "number",
+    "title": "Friction value",
+    "dataType": 7
+  },
   "description": "Describes the friction for this block in a range of (0.0-0.9). Friction affects an entity's movement speed when it travels on the block. Greater value results in more friction.",
   "title": "Friction",
   "samples": {
@@ -9,10 +14,5 @@
         "content": 0.38
       }
     ]
-  },
-  "scalarField": {
-    "id": "number",
-    "title": "Number",
-    "dataType": 7
   }
 }

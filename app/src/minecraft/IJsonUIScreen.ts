@@ -9,4 +9,5 @@ export interface IJsonUIControl {
   type?: string;
   size?: number[];
   texture?: string;
+  controls?: { [name: string]: IJsonUIControl | string }[];
 }

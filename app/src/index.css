@@ -69,6 +69,43 @@ input[type="file"]:hover {
 BUTTON {
   border-radius: 0px !important;
 }
+.ui-dropdown__item {
+  padding-left: 4px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}
+
+.ui-dropdown__selecteditem {
+  border-radius: 0px !important;
+  padding-left: 2px !important;
+  margin-top: 4px !important;
+  height: 24px !important;
+  max-width: 12rem !important;
+}
+
+.ui-dropdown__selecteditem__image {
+  border-radius: 0px !important;
+  max-height: 24px;
+}
+
+.ui-dropdown__item__image {
+  max-height: 24px;
+  max-width: 24px;
+  margin-right: 10px;
+  margin-bottom: 4px;
+  border-radius: 0px !important;
+}
+
+.ui-dropdown__selected-items {
+  padding-bottom: 0px !important;
+}
+
+.ui-dropdown__selecteditem__header {
+  max-height: 24px;
+  padding-top: 2px !important;
+  margin-bottom: 4px;
+  padding-left: 3px !important;
+}
 
 @media screen and (prefers-contrast: more) {
   .ui-splitbutton__toggle {
