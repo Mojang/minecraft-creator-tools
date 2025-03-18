@@ -1,0 +1,33 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+    "identifier": "minecraft:coarse_dirt"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "DG",
+      "GD"
+    ],
+    "key": {
+      "D": {
+        "item": "minecraft:dirt",
+        "data": 0
+      },
+      "G": {
+        "item": "minecraft:gravel"
+      }
+    },
+	"unlock": [
+      {
+        "item": "minecraft:gravel"
+      }
+    ],
+    "result": {
+      "item": "minecraft:coarse_dirt",
+      "count": 4
+    }
+  }
+}

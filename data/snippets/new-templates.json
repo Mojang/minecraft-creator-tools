@@ -1,0 +1,25 @@
+{
+  "blockCustomComponent": {
+    "description": "Starts a very basic block custom component",
+    "prefix": ["mc"],
+    "body": [
+      "import { world, BlockCustomComponent, BlockComponentStepOnEvent, BlockPermutation } from '@minecraft/server';",
+      "",
+      "export default class ExampleNewComponent implements BlockCustomComponent {",
+      "  constructor() {",
+      "    this.onStepOn = this.onStepOn.bind(this);",
+      "  }",
+      "",
+      "  onStepOn(e: BlockComponentStepOnEvent): void {",
+      "    e.block.setPermutation(BlockPermutation.resolve('minecraft:air'));",
+      "  }",
+      "}",
+      "",
+      "export function initExampleNew() {",
+      "  world.beforeEvents.worldInitialize.subscribe(initEvent => {",
+      "      initEvent.blockComponentRegistry.registerCustomComponent('example:newComponentId', new ExampleNewComponent());",
+      "  });",
+      "}"
+    ]
+  }
+}

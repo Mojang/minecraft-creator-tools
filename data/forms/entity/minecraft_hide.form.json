@@ -1,0 +1,14 @@
+{
+  "id": "minecraft:hide",
+  "title": "Hide",
+  "description": "Moves to and hides at their owned POI or the closest nearby.",
+  "fields": [],
+  "samples": {
+    "/vanilla/behavior_pack/entities/villager_v2.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:hide/",
+        "content": {}
+      }
+    ]
+  }
+}

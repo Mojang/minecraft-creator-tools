@@ -1,0 +1,13 @@
+{
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Angle in degrees.",
+      "defaultValue": 0,
+      "dataType": 3
+    }
+  ],
+  "description": "Sets this entity's default head rotation angle.",
+  "title": "Default Look Angle"
+}

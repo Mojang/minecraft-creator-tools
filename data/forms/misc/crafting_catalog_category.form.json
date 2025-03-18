@@ -1,0 +1,18 @@
+{
+  "fields": [
+    {
+      "id": "category_name",
+      "title": "enum SharedTypes_v1_21_60_CraftingCatalogItemCategory",
+      "description": "The category that the items will go to. This is restricted to construction, nature, equipment, or items.",
+      "dataType": 2
+    },
+    {
+      "id": "groups",
+      "title": "groups",
+      "description": "The groups that we are adding to a category.",
+      "dataType": 15
+    }
+  ],
+  "description": "Represents a collection of groups of items in a category..",
+  "title": "Crafting Catalog Category Misc"
+}

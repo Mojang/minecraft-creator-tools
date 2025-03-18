@@ -1,0 +1,13 @@
+{
+  "fields": [],
+  "description": "An entity with this component will NEVER persist, and forever disappear when unloaded.",
+  "title": "Transient",
+  "samples": {
+    "/vanilla/behavior_pack/entities/fishing_hook.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:transient/",
+        "content": {}
+      }
+    ]
+  }
+}

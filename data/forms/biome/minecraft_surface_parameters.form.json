@@ -1,0 +1,68 @@
+{
+  "fields": [
+    {
+      "id": "mid_material",
+      "title": "mid_material",
+      "description": "Controls the block type used in a layer below the surface of this biome.",
+      "dataType": 16,
+      "subForm": {
+        "title": "Mid Material",
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "fields": []
+      }
+    },
+    {
+      "id": "sea_floor_depth",
+      "title": "sea_floor_depth",
+      "description": "Controls how deep below the world water level the floor should occur.",
+      "dataType": 0
+    },
+    {
+      "id": "sea_floor_material",
+      "title": "sea_floor_material",
+      "description": "Controls the block type used as a floor for bodies of water in this biome.",
+      "dataType": 16,
+      "subForm": {
+        "title": "Sea Floor Material",
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "fields": []
+      }
+    },
+    {
+      "id": "sea_material",
+      "title": "sea_material",
+      "description": "Controls the block type used for the bodies of water in this biome.",
+      "dataType": 16,
+      "subForm": {
+        "title": "Sea Material",
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "fields": []
+      }
+    },
+    {
+      "id": "top_material",
+      "title": "top_material",
+      "description": "Controls the block type used for the surface of this biome.",
+      "dataType": 16,
+      "subForm": {
+        "title": "Top Material",
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "fields": []
+      }
+    },
+    {
+      "id": "foundation_material",
+      "title": "foundation_material",
+      "description": "Controls the block type used deep underground in this biome.",
+      "dataType": 16,
+      "subForm": {
+        "title": "Foundation Material",
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "fields": []
+      }
+    }
+  ],
+  "description": "Controls the blocks used for the default Minecraft Overworld terrain generation.",
+  "title": "Surface Parameters",
+  "id": "minecraft:surface_parameters"
+}

@@ -1,0 +1,688 @@
+{
+  "fields": [
+    {
+      "id": "minecraft:biome",
+      "title": "minecraft:biome",
+      "description": "A single biome definition",
+      "dataType": 16,
+      "subForm": {
+        "title": "Biome",
+        "description": "Contains a description and components to define a Biome.",
+        "fields": [
+          {
+            "id": "components",
+            "title": "components",
+            "description": "Components for this Biome.",
+            "dataType": 16,
+            "subForm": {
+              "title": "Components",
+              "description": "Any components that this Biome uses",
+              "fields": [
+                {
+                  "id": "minecraft:capped_surface",
+                  "title": "minecraft:capped_surface",
+                  "description": "Generates surface on blocks with non-solid blocks above or below.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Capped Surface",
+                    "description": "Generates surface on blocks with non-solid blocks above or below.",
+                    "fields": [
+                      {
+                        "id": "beach_material",
+                        "title": "beach_material",
+                        "description": "Material used to decorate surface near sea level.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Beach Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "floor_materials",
+                        "title": "floor_materials",
+                        "description": "Materials used for the surface floor.",
+                        "dataType": 15
+                      },
+                      {
+                        "id": "ceiling_materials",
+                        "title": "ceiling_materials",
+                        "description": "Materials used for the surface ceiling.",
+                        "dataType": 15
+                      },
+                      {
+                        "id": "foundation_material",
+                        "title": "foundation_material",
+                        "description": "Material used to replace solid blocks that are not surface blocks.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Foundation Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "sea_material",
+                        "title": "sea_material",
+                        "description": "Material used to replace air blocks below sea level.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Sea Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "minecraft:creature_spawn_probability",
+                  "title": "minecraft:creature_spawn_probability",
+                  "description": "Probability that creatures will spawn within the biome when a chunk is generated.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Creature Spawn Probability",
+                    "description": "Probability that creatures will spawn within the biome when a chunk is generated.",
+                    "fields": [
+                      {
+                        "id": "probability",
+                        "title": "probability",
+                        "description": "Probabiltity between [0.0, 0.75] of creatures spawning within the biome on chunk generation.",
+                        "dataType": 3
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "minecraft:overworld_generation_rules",
+                  "title": "minecraft:overworld_generation_rules",
+                  "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the overworld.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Overworld Generation Rules",
+                    "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the overworld.",
+                    "fields": [
+                      {
+                        "id": "mutate_transformation",
+                        "title": "mutate_transformation",
+                        "description": "What biome to switch to when converting to a mutated biome",
+                        "dataType": 16
+                      },
+                      {
+                        "id": "hills_transformation",
+                        "title": "hills_transformation",
+                        "description": "What biome to switch to when converting to a hilly biome",
+                        "dataType": 16
+                      },
+                      {
+                        "id": "generate_for_climates",
+                        "title": "generate_for_climates",
+                        "description": "Controls the world generation climate categories that this biome can spawn for. A single biome can be associated with multiple categories with different weightings.",
+                        "dataType": 15
+                      },
+                      {
+                        "id": "river_transformation",
+                        "title": "river_transformation",
+                        "description": "What biome to switch to when converting to a river biome (if not the Vanilla 'river' biome)",
+                        "dataType": 16
+                      },
+                      {
+                        "id": "shore_transformation",
+                        "title": "shore_transformation",
+                        "description": "What biome to switch to when adjacent to an ocean biome",
+                        "dataType": 16
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "minecraft:climate",
+                  "title": "minecraft:climate",
+                  "description": "Describes temperature, humidity, precipitation, and similar. Biomes without this component will have default values.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Climate",
+                    "description": "Describes temperature, humidity, precipitation, and similar. Biomes without this component will have default values.",
+                    "fields": [
+                      {
+                        "id": "blue_spores",
+                        "title": "blue_spores",
+                        "description": "Density of blue spore precipitation visuals",
+                        "dataType": 3
+                      },
+                      {
+                        "id": "downfall",
+                        "title": "downfall",
+                        "description": "Amount that precipitation affects colors and block changes",
+                        "dataType": 3
+                      },
+                      {
+                        "id": "snow_accumulation",
+                        "title": "snow_accumulation",
+                        "description": "Minimum and maximum snow level, each multiple of 0.125 is another snow layer",
+                        "dataType": 15
+                      },
+                      {
+                        "id": "white_ash",
+                        "title": "white_ash",
+                        "description": "Density of white ash precipitation visuals",
+                        "dataType": 3
+                      },
+                      {
+                        "id": "temperature",
+                        "title": "temperature",
+                        "description": "Temperature affects a variety of visual and behavioral things, including snow and ice placement, sponge drying, and sky color",
+                        "dataType": 3
+                      },
+                      {
+                        "id": "red_spores",
+                        "title": "red_spores",
+                        "description": "Density of blue spore precipitation visuals",
+                        "dataType": 3
+                      },
+                      {
+                        "id": "ash",
+                        "title": "ash",
+                        "description": "Density of ash precipitation visuals",
+                        "dataType": 3
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "minecraft:frozen_ocean_surface",
+                  "title": "minecraft:frozen_ocean_surface",
+                  "description": "Similar to overworld_surface. Adds icebergs.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Frozen Ocean Surface",
+                    "description": "Similar to overworld_surface. Adds icebergs.",
+                    "fields": [
+                      {
+                        "id": "mid_material",
+                        "title": "mid_material",
+                        "description": "Controls the block type used in a layer below the surface of this biome",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Mid Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "sea_floor_depth",
+                        "title": "sea_floor_depth",
+                        "description": "Controls how deep below the world water level the floor should occur",
+                        "dataType": 0
+                      },
+                      {
+                        "id": "sea_floor_material",
+                        "title": "sea_floor_material",
+                        "description": "Controls the block type used as a floor for bodies of water in this biome",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Sea Floor Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "sea_material",
+                        "title": "sea_material",
+                        "description": "Controls the block type used for the bodies of water in this biome",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Sea Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "top_material",
+                        "title": "top_material",
+                        "description": "Controls the block type used for the surface of this biome",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Top Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "foundation_material",
+                        "title": "foundation_material",
+                        "description": "Controls the block type used deep underground in this biome",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Foundation Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "minecraft:mesa_surface",
+                  "title": "minecraft:mesa_surface",
+                  "description": "Similar to overworld_surface. Adds colored strata and optional pillars.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Mesa Surface",
+                    "description": "Similar to overworld_surface. Adds colored strata and optional pillars.",
+                    "fields": [
+                      {
+                        "id": "sea_floor_depth",
+                        "title": "sea_floor_depth",
+                        "description": "Controls how deep below the world water level the floor should occur",
+                        "dataType": 0
+                      },
+                      {
+                        "id": "mid_material",
+                        "title": "mid_material",
+                        "description": "Controls the block type used in a layer below the surface of this biome",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Mid Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "sea_floor_material",
+                        "title": "sea_floor_material",
+                        "description": "Controls the block type used as a floor for bodies of water in this biome",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Sea Floor Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "foundation_material",
+                        "title": "foundation_material",
+                        "description": "Controls the block type used deep underground in this biome",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Foundation Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "top_material",
+                        "title": "top_material",
+                        "description": "Controls the block type used for the surface of this biome",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Top Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "sea_material",
+                        "title": "sea_material",
+                        "description": "Controls the block type used for the bodies of water in this biome",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Sea Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "hard_clay_material",
+                        "title": "hard_clay_material",
+                        "description": "Hardened clay block to use",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Hard Clay Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "clay_material",
+                        "title": "clay_material",
+                        "description": "Base clay block to use",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Clay Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "bryce_pillars",
+                        "title": "bryce_pillars",
+                        "description": "Whether the mesa generates with pillars",
+                        "dataType": 1
+                      },
+                      {
+                        "id": "has_forest",
+                        "title": "has_forest",
+                        "description": "Places coarse dirt and grass at high altitudes",
+                        "dataType": 1
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "minecraft:mountain_parameters",
+                  "title": "minecraft:mountain_parameters",
+                  "description": "Noise parameters used to drive mountain terrain generation in Overworld.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Mountain Parameters",
+                    "description": "Noise parameters used to drive mountain terrain generation in Overworld.",
+                    "fields": [
+                      {
+                        "id": "steep_material_adjustment",
+                        "title": "steep_material_adjustment",
+                        "description": "Defines surface material for steep slopes",
+                        "dataType": 16
+                      },
+                      {
+                        "id": "top_slide",
+                        "title": "top_slide",
+                        "description": "Controls the density tapering that happens at the top of the world to prevent terrain from reaching too high",
+                        "dataType": 16
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "minecraft:multinoise_generation_rules",
+                  "title": "minecraft:multinoise_generation_rules",
+                  "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the nether.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Multinoise Generation Rules",
+                    "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the nether.",
+                    "fields": [
+                      {
+                        "id": "target_weirdness",
+                        "title": "target_weirdness",
+                        "description": "Weirdness with which this biome should be generated, relative to other biomes.",
+                        "dataType": 3
+                      },
+                      {
+                        "id": "target_temperature",
+                        "title": "target_temperature",
+                        "description": "Temperature with which this biome should be generated, relative to other biomes.",
+                        "dataType": 3
+                      },
+                      {
+                        "id": "target_humidity",
+                        "title": "target_humidity",
+                        "description": "Humidity with which this biome should be generated, relative to other biomes.",
+                        "dataType": 3
+                      },
+                      {
+                        "id": "target_altitude",
+                        "title": "target_altitude",
+                        "description": "Altitude with which this biome should be generated, relative to other biomes.",
+                        "dataType": 3
+                      },
+                      {
+                        "id": "weight",
+                        "title": "weight",
+                        "description": "Weight with which this biome should be generated, relative to other biomes.",
+                        "dataType": 3
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "minecraft:overworld_height",
+                  "title": "minecraft:overworld_height",
+                  "description": "Noise parameters used to drive terrain height in the Overworld.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Overworld Height",
+                    "description": "Noise parameters used to drive terrain height in the Overworld.",
+                    "fields": [
+                      {
+                        "id": "noise_type",
+                        "title": "Noise Type",
+                        "description": "Specifies a preset based on a built-in setting rather than manually using noise_params",
+                        "dataType": 2
+                      },
+                      {
+                        "id": "noise_params",
+                        "title": "noise_params",
+                        "description": "First value is depth - more negative means deeper underwater, while more positive means higher. Second value is scale, which affects how much noise changes as it moves from the surface.",
+                        "dataType": 15
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "minecraft:surface_material_adjustments",
+                  "title": "minecraft:surface_material_adjustments",
+                  "description": "Specify fine-detail changes to blocks used in terrain generation (based on a noise function).",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Surface Material Adjustments",
+                    "description": "Specify fine-detail changes to blocks used in terrain generation (based on a noise function).",
+                    "fields": [
+                      {
+                        "id": "adjustments",
+                        "title": "adjustments",
+                        "description": "All adjustments that match the column's noise values will be applied in the order listed.",
+                        "dataType": 15
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "minecraft:surface_parameters",
+                  "title": "minecraft:surface_parameters",
+                  "description": "Controls the blocks used for the default Minecraft Overworld terrain generation.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Surface Parameters",
+                    "description": "Controls the blocks used for the default Minecraft Overworld terrain generation.",
+                    "fields": [
+                      {
+                        "id": "mid_material",
+                        "title": "mid_material",
+                        "description": "Controls the block type used in a layer below the surface of this biome.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Mid Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "sea_floor_depth",
+                        "title": "sea_floor_depth",
+                        "description": "Controls how deep below the world water level the floor should occur.",
+                        "dataType": 0
+                      },
+                      {
+                        "id": "sea_floor_material",
+                        "title": "sea_floor_material",
+                        "description": "Controls the block type used as a floor for bodies of water in this biome.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Sea Floor Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "sea_material",
+                        "title": "sea_material",
+                        "description": "Controls the block type used for the bodies of water in this biome.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Sea Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "top_material",
+                        "title": "top_material",
+                        "description": "Controls the block type used for the surface of this biome.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Top Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "foundation_material",
+                        "title": "foundation_material",
+                        "description": "Controls the block type used deep underground in this biome.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Foundation Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "minecraft:swamp_surface",
+                  "title": "minecraft:swamp_surface",
+                  "description": "Similar to overworld_surface. Adds swamp surface details.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Swamp Surface",
+                    "description": "Similar to overworld_surface. Adds swamp surface details.",
+                    "fields": [
+                      {
+                        "id": "mid_material",
+                        "title": "mid_material",
+                        "description": "Controls the block type used in a layer below the surface of this biome.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Mid Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "sea_floor_depth",
+                        "title": "sea_floor_depth",
+                        "description": "Controls how deep below the world water level the floor should occur.",
+                        "dataType": 0
+                      },
+                      {
+                        "id": "sea_floor_material",
+                        "title": "sea_floor_material",
+                        "description": "Controls the block type used as a floor for bodies of water in this biome.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Sea Floor Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "sea_material",
+                        "title": "sea_material",
+                        "description": "Controls the block type used for the bodies of water in this biome.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Sea Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "top_material",
+                        "title": "top_material",
+                        "description": "Controls the block type used for the surface of this biome.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Top Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      },
+                      {
+                        "id": "foundation_material",
+                        "title": "foundation_material",
+                        "description": "Controls the block type used deep underground in this biome.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Foundation Material",
+                          "description": "Specifies a particular block. Can be a string block name or a JSON object",
+                          "fields": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "minecraft:the_end_surface",
+                  "title": "minecraft:the_end_surface",
+                  "description": "Use default Minecraft End terrain generation.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "The End Surface",
+                    "description": "Use default Minecraft End terrain generation.",
+                    "fields": []
+                  }
+                },
+                {
+                  "id": "minecraft:tags",
+                  "title": "minecraft:tags",
+                  "description": "Attach arbitrary string tags to this biome.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Tags",
+                    "description": "Attach arbitrary string tags to this biome.",
+                    "fields": [
+                      {
+                        "id": "tags",
+                        "title": "tags",
+                        "description": "Array of string tags used by other systems such as entity spawning",
+                        "dataType": 15
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "description",
+            "title": "description",
+            "description": "Non-component settings, including the Biome name.",
+            "dataType": 16,
+            "subForm": {
+              "title": "Description",
+              "description": "Contains non-component settings for a Biome.",
+              "fields": [
+                {
+                  "id": "identifier",
+                  "title": "identifier",
+                  "description": "The name of the Biome, used by other features like the '/locate biome' command.",
+                  "dataType": 2
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "format_version",
+      "title": "format_version",
+      "description": "Version of the JSON schema used by this file",
+      "dataType": 2
+    }
+  ],
+  "description": "Contains a format version and a biome definition",
+  "title": "Biome JSON File Biome"
+}

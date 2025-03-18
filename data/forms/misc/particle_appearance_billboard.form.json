@@ -1,0 +1,143 @@
+{
+  "fields": [
+    {
+      "id": "size",
+      "title": "size",
+      "description": "size",
+      "dataType": 15
+    },
+    {
+      "id": "facing_camera_mode",
+      "title": "facing_camera_mode",
+      "description": "facing_camera_mode",
+      "dataType": 16
+    },
+    {
+      "id": "direction",
+      "title": "direction",
+      "description": "direction",
+      "dataType": 16,
+      "subForm": {
+        "title": "Direction",
+        "description": "Direction",
+        "fields": [
+          {
+            "id": "mode",
+            "title": "particle_appearance_billboard direction_settings_mode",
+            "description": "particle_appearance_billboard direction_settings_mode",
+            "dataType": 2
+          },
+          {
+            "id": "custom_direction",
+            "title": "custom_direction",
+            "description": "custom_direction",
+            "dataType": 15
+          },
+          {
+            "id": "min_speed_threshold",
+            "title": "min_speed_threshold",
+            "description": "min_speed_threshold",
+            "dataType": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "uv",
+      "title": "uv",
+      "description": "uv",
+      "dataType": 16,
+      "subForm": {
+        "title": "Uv",
+        "description": "Uv",
+        "fields": [
+          {
+            "id": "texture_width",
+            "title": "texture_width",
+            "description": "texture_width",
+            "dataType": 0
+          },
+          {
+            "id": "flipbook",
+            "title": "flipbook",
+            "description": "flipbook",
+            "dataType": 16,
+            "subForm": {
+              "title": "Flipbook",
+              "description": "Flipbook",
+              "fields": [
+                {
+                  "id": "base_UV",
+                  "title": "base_UV",
+                  "description": "base_UV",
+                  "dataType": 15
+                },
+                {
+                  "id": "size_UV",
+                  "title": "size_UV",
+                  "description": "size_UV",
+                  "dataType": 15
+                },
+                {
+                  "id": "step_UV",
+                  "title": "step_UV",
+                  "description": "step_UV",
+                  "dataType": 15
+                },
+                {
+                  "id": "max_frame",
+                  "title": "max_frame",
+                  "description": "max_frame",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Max Frame",
+                    "description": "Max Frame",
+                    "fields": []
+                  }
+                },
+                {
+                  "id": "loop",
+                  "title": "loop",
+                  "description": "loop",
+                  "dataType": 1
+                },
+                {
+                  "id": "frames_per_second",
+                  "title": "frames_per_second",
+                  "description": "frames_per_second",
+                  "dataType": 3
+                },
+                {
+                  "id": "stretch_to_lifetime",
+                  "title": "stretch_to_lifetime",
+                  "description": "stretch_to_lifetime",
+                  "dataType": 1
+                }
+              ]
+            }
+          },
+          {
+            "id": "texture_height",
+            "title": "texture_height",
+            "description": "texture_height",
+            "dataType": 0
+          },
+          {
+            "id": "uv_size",
+            "title": "uv_size",
+            "description": "uv_size",
+            "dataType": 15
+          },
+          {
+            "id": "uv",
+            "title": "uv",
+            "description": "uv",
+            "dataType": 15
+          }
+        ]
+      }
+    }
+  ],
+  "description": "Particle Appearance Billboard V1.21.0 Misc",
+  "title": "Particle Appearance Billboard V1.21.0 Misc"
+}

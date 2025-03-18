@@ -1,0 +1,12 @@
+{
+  "fields": [
+    {
+      "id": "minecraft:dimension",
+      "title": "minecraft:dimension",
+      "description": "minecraft:dimension",
+      "dataType": 16
+    }
+  ],
+  "description": "DimensionDocument Misc",
+  "title": "DimensionDocument Misc"
+}

@@ -1,0 +1,24 @@
+{
+  "fields": [
+    {
+      "id": "description",
+      "title": "description",
+      "description": "description",
+      "dataType": 16
+    },
+    {
+      "id": "placement",
+      "title": "placement",
+      "description": "Placement rule defintions",
+      "dataType": 16
+    },
+    {
+      "id": "conditions",
+      "title": "conditions",
+      "description": "conditions",
+      "dataType": 15
+    }
+  ],
+  "description": "Struct SharedTypes V1 21 60 Spawn Contents Spawn",
+  "title": "Struct SharedTypes V1 21 60 Spawn Contents Spawn"
+}

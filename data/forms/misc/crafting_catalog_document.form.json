@@ -1,0 +1,12 @@
+{
+  "fields": [
+    {
+      "id": "categories",
+      "title": "categories",
+      "description": "The categories we are adding groups to.",
+      "dataType": 15
+    }
+  ],
+  "description": "The root object for defining the crafting catalog",
+  "title": "Crafting Catalog Document Misc"
+}

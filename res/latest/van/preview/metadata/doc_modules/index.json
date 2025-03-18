@@ -1,0 +1,21 @@
+{
+  "files": [
+    "animations.json",
+    "biomes.json",
+    "blocks.json",
+    "client-biomes.json",
+    "entity-events.json",
+    "entity-timeline-events.json",
+    "fogs.json",
+    "item.json",
+    "recipes.json",
+    "schemas.json",
+    "texture-sets.json",
+    "features.json",
+    "molang.json",
+    "particles.json",
+    "addons.json",
+    "entities.json"
+  ],
+  "folders": []
+}

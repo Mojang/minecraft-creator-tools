@@ -1,0 +1,69 @@
+{
+  "description": "Defines the current state of the boss for updating the boss HUD.",
+  "fields": [
+    {
+      "id": "hud_range",
+      "description": "The max distance from the boss at which the boss's health bar is present on the players screen.",
+      "dataType": 0,
+      "defaultValue": 55,
+      "samples": {
+        "/vanilla/behavior_pack/entities/ender_dragon.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:boss/",
+            "content": 125
+          }
+        ],
+        "/vanilla/behavior_pack/entities/wither.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:boss/",
+            "content": 55
+          }
+        ]
+      },
+      "title": "Hud Range"
+    },
+    {
+      "id": "name",
+      "description": "The name that will be displayed above the boss's health bar.",
+      "dataType": 2,
+      "defaultValue": 55,
+      "title": "Name"
+    },
+    {
+      "id": "should_darken_sky",
+      "description": "Whether the sky should darken in the presence of the boss.",
+      "dataType": 1,
+      "defaultValue": false,
+      "samples": {
+        "/vanilla/behavior_pack/entities/wither.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:boss/",
+            "content": true
+          }
+        ]
+      },
+      "title": "Should Darken Sky"
+    }
+  ],
+  "title": "Boss",
+  "samples": {
+    "/vanilla/behavior_pack/entities/ender_dragon.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:boss/",
+        "content": {
+          "should_darken_sky": false,
+          "hud_range": 125
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/wither.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:boss/",
+        "content": {
+          "should_darken_sky": true,
+          "hud_range": 55
+        }
+      }
+    ]
+  }
+}

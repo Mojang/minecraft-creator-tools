@@ -1,0 +1,40 @@
+{
+  "fields": [
+    {
+      "id": "offset",
+      "title": "offset",
+      "description": "offset",
+      "dataType": 15
+    },
+    {
+      "id": "direction",
+      "title": "direction",
+      "description": "direction",
+      "dataType": 16,
+      "subForm": {
+        "title": "Direction",
+        "description": "Direction",
+        "fields": []
+      }
+    },
+    {
+      "id": "radius",
+      "title": "radius",
+      "description": "radius",
+      "dataType": 16,
+      "subForm": {
+        "title": "Radius",
+        "description": "Radius",
+        "fields": []
+      }
+    },
+    {
+      "id": "surface_only",
+      "title": "surface_only",
+      "description": "surface_only",
+      "dataType": 1
+    }
+  ],
+  "description": "Emitter Shape Sphere V1.21.0 Misc",
+  "title": "Emitter Shape Sphere V1.21.0 Misc"
+}

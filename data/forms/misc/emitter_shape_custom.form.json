@@ -1,0 +1,18 @@
+{
+  "fields": [
+    {
+      "id": "offset",
+      "title": "offset",
+      "description": "offset",
+      "dataType": 15
+    },
+    {
+      "id": "direction",
+      "title": "direction",
+      "description": "direction",
+      "dataType": 15
+    }
+  ],
+  "description": "Emitter Shape Custom V1.21.0 Misc",
+  "title": "Emitter Shape Custom V1.21.0 Misc"
+}

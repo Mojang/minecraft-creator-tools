@@ -1,0 +1,43 @@
+{
+  "short_name": "mct",
+  "name": "Minecraft Creator Tools",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.mojang.minecraftpe",
+      "id": "com.mojang.minecraftpe"
+    },
+    {
+      "platform": "itunes",
+      "url": "https://apps.apple.com/app/minecraft/id479516143"
+    },
+    {
+      "platform": "windows",
+      "url": "https://www.xbox.com/games/store/minecraft-java-bedrock-edition-for-pc/9nxp44l49shj"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
