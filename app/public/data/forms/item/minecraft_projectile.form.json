@@ -25,6 +25,12 @@
       "title": "projectile_entity",
       "description": "Which entity is to be fired as a projectile.",
       "dataType": 2,
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+        }
+      ],
       "samples": {
         "/vanilla/behavior_pack/items/wind_charge.json": [
           {
@@ -49,13 +55,15 @@
   ],
   "description": "Compels the item to shoot, similarly to an arrow. Items with minecraft:projectile can be shot from dispensers or used as ammunition for items with the minecraft:shooter item component. Additionally, this component sets the entity that is spawned for items that also contain the minecraft:throwable component",
   "samples": {
-    "sample": {
-      "path": "sample",
-      "content": {
-        "minimum_critical_power": 1.25,
-        "projectile_entity": "arrow"
+    "sample": [
+      {
+        "path": "sample",
+        "content": {
+          "minimum_critical_power": 1.25,
+          "projectile_entity": "arrow"
+        }
       }
-    },
+    ],
     "/vanilla/behavior_pack/items/wind_charge.json": [
       {
         "path": "/minecraft:item/components/minecraft:projectile/",

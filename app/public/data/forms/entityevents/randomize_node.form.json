@@ -9,5 +9,6 @@
         "content": "\t\t\"randomize\": [\r\n\t\t\t{\r\n\t\t\t\t\"weight\": <float>\r\n\t\t\t\t// actions like 'add' or 'remove'\r\n\t\t\t}\r\n\t\t]\r\n\t"
       }
     ]
-  }
+  },
+  "id": "Randomize Node"
 }

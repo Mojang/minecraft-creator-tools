@@ -123,5 +123,6 @@
         "content": "{ \"test\": \"is_weather\", \"value\": \"player\" }"
       }
     ]
-  }
+  },
+  "id": "is_weather"
 }

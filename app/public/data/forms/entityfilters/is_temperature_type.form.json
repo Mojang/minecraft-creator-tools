@@ -141,5 +141,6 @@
         "content": "{ \"test\": \"is_temperature_type\", \"value\": \"cold\" }"
       }
     ]
-  }
+  },
+  "id": "is_temperature_type"
 }

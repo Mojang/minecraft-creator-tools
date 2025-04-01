@@ -45,6 +45,12 @@
             "path": "/minecraft:entity/components/minecraft:behavior.move_towards_dwelling_restriction/",
             "content": 11
           }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_wild/minecraft:behavior.move_towards_dwelling_restriction/",
+            "content": 7
+          }
         ]
       }
     }
@@ -83,6 +89,15 @@
           "speed_multiplier": 0.6
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_wild/minecraft:behavior.move_towards_dwelling_restriction/",
+        "content": {
+          "priority": 7
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.move_towards_dwelling_restriction"
 }

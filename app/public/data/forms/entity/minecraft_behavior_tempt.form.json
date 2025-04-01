@@ -3,7 +3,7 @@
     {
       "id": "can_get_scared",
       "title": "Can Get Scared",
-      "description": "If true, the mob can stop being tempted if the player moves too fast while close to this mob",
+      "description": "If true, the mob can stop being tempted if the player moves too fast while close to this mob.",
       "defaultValue": false,
       "dataType": 1,
       "samples": {
@@ -60,7 +60,8 @@
     {
       "id": "items",
       "title": "Items",
-      "description": "List of items this mob is tempted by",
+      "description": "List of items that can tempt the mob.",
+      "defaultValue": "[]",
       "dataType": 17,
       "samples": {
         "/vanilla/behavior_pack/entities/armadillo.json": [
@@ -281,6 +282,14 @@
             ]
           }
         ],
+        "/samples/add_entity_robot/full/robot_example_full_behavior/entities/robot.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
+            "content": [
+              "diamond"
+            ]
+          }
+        ],
         "/samples/addon_starter/1_hello_world/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
           {
             "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
@@ -302,6 +311,19 @@
             "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
             "content": [
               "melon_slice"
+            ]
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
+            "content": [
+              "wheat_seeds",
+              "beetroot_seeds",
+              "melon_seeds",
+              "pumpkin_seeds",
+              "pitcher_pod",
+              "torchflower_seeds"
             ]
           }
         ]
@@ -329,6 +351,15 @@
               "range_min": 2,
               "range_max": 5
             }
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_wild/minecraft:behavior.tempt/",
+            "content": [
+              0,
+              100
+            ]
           }
         ]
       }
@@ -409,8 +440,21 @@
             "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
             "content": 1.1
           }
+        ],
+        "/samples/add_entity_robot/full/robot_example_full_behavior/entities/robot.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
+            "content": 1.4
+          }
         ]
       }
+    },
+    {
+      "id": "stop_distance",
+      "title": "Stop Distance",
+      "description": "The distance at which the mob will stop following the player.",
+      "defaultValue": 1.5,
+      "dataType": 3
     },
     {
       "id": "tempt_sound",
@@ -435,7 +479,7 @@
     {
       "id": "within_radius",
       "title": "Within Radius",
-      "description": "Distance in blocks this mob can get tempted by a player holding an item they like",
+      "description": "Distance in blocks this mob can get tempted by a player holding an item they like.",
       "defaultValue": 0,
       "dataType": 3,
       "samples": {
@@ -453,6 +497,12 @@
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_tame/minecraft:behavior.tempt/",
             "content": 16
+          }
+        ],
+        "/samples/add_entity_robot/full/robot_example_full_behavior/entities/robot.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
+            "content": 7
           }
         ]
       }
@@ -505,11 +555,17 @@
             "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
             "content": 4
           }
+        ],
+        "/samples/add_entity_robot/full/robot_example_full_behavior/entities/robot.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
+            "content": 1
+          }
         ]
       }
     }
   ],
-  "description": "Allows the mob to be tempted by food they like.",
+  "description": "Allows a mob to be tempted by a player holding a specific item. Uses pathfinding for movement.",
   "title": "Tempt Behavior",
   "samples": {
     "/vanilla/behavior_pack/entities/armadillo.json": [
@@ -907,6 +963,19 @@
         }
       }
     ],
+    "/samples/add_entity_robot/full/robot_example_full_behavior/entities/robot.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
+        "content": {
+          "priority": 1,
+          "speed_multiplier": 1.4,
+          "items": [
+            "diamond"
+          ],
+          "within_radius": 7
+        }
+      }
+    ],
     "/samples/addon_starter/1_hello_world/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
       {
         "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
@@ -978,6 +1047,90 @@
           ]
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
+        "content": {
+          "priority": 4,
+          "speed_multiplier": 1,
+          "items": [
+            "wheat_seeds",
+            "beetroot_seeds",
+            "melon_seeds",
+            "pumpkin_seeds",
+            "pitcher_pod",
+            "torchflower_seeds"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
+        "content": {
+          "priority": 4,
+          "speed_multiplier": 1,
+          "items": [
+            "wheat_seeds",
+            "beetroot_seeds",
+            "melon_seeds",
+            "pumpkin_seeds",
+            "pitcher_pod",
+            "torchflower_seeds"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.tempt/",
+        "content": {
+          "priority": 4,
+          "speed_multiplier": 1,
+          "items": [
+            "wheat_seeds",
+            "beetroot_seeds",
+            "melon_seeds",
+            "pumpkin_seeds",
+            "pitcher_pod",
+            "torchflower_seeds"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_wild/minecraft:behavior.tempt/",
+        "content": {
+          "priority": 5,
+          "speed_multiplier": 0.5,
+          "within_radius": 16,
+          "can_get_scared": true,
+          "tempt_sound": "tempt",
+          "sound_interval": [
+            0,
+            100
+          ],
+          "items": [
+            "fish",
+            "salmon"
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_tame/minecraft:behavior.tempt/",
+        "content": {
+          "priority": 5,
+          "speed_multiplier": 0.5,
+          "within_radius": 16,
+          "items": [
+            "fish",
+            "salmon"
+          ]
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.tempt"
 }

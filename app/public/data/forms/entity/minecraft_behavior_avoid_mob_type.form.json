@@ -941,6 +941,12 @@
             "path": "/minecraft:entity/components/minecraft:behavior.avoid_mob_type/",
             "content": 3
           }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_wild/minecraft:behavior.avoid_mob_type/",
+            "content": 6
+          }
         ]
       }
     }
@@ -1758,6 +1764,27 @@
           "probability_per_strength": 0.14
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_wild/minecraft:behavior.avoid_mob_type/",
+        "content": {
+          "priority": 6,
+          "entity_types": [
+            {
+              "filters": {
+                "test": "is_family",
+                "subject": "other",
+                "value": "player"
+              },
+              "max_dist": 10,
+              "walk_speed_multiplier": 0.8,
+              "sprint_speed_multiplier": 1.33
+            }
+          ]
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.avoid_mob_type"
 }

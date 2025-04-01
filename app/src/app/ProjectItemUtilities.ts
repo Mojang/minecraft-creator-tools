@@ -10,6 +10,50 @@ import Project from "./Project";
 import ProjectItem from "./ProjectItem";
 import ProjectUtilities from "./ProjectUtilities";
 
+export const FormMappings: {
+  [typeIdAsString: string]: {
+    formCategory: string;
+    formName: string;
+    select?: string;
+  };
+} = {
+  /*  ["" + ProjectItemType.atmosphericsJson]: {
+    formCategory: "client_deferred_rendering",
+    formName: "atmosphericscattering_atmosphericscatteringconfigsettings",
+    select: "minecraft:atmosphere_settings",
+  },
+  ["" + ProjectItemType.colorGradingJson]: {
+    formCategory: "client_deferred_rendering",
+    formName: "colorgraderconfig_colorgradingparameterssrc",
+    select: "minecraft:color_grading_settings",
+  },
+  ["" + ProjectItemType.lightingJson]: {
+    formCategory: "client_deferred_rendering",
+    formName: "lightinggroup_lightingimpl_1_21_70",
+    select: "minecraft:lighting_settings",
+  },
+  ["" + ProjectItemType.pbrJson]: {
+    formCategory: "client_deferred_rendering",
+    formName: "pbrfallbackconfig_pbrfallbackconfigsettings",
+    select: "minecraft:pbr_fallback_settings",
+  },
+  ["" + ProjectItemType.waterJson]: {
+    formCategory: "client_deferred_rendering",
+    formName: "waterconfig_waterconfigsettingsv1",
+    select: "minecraft:water_settings",
+  },
+  ["" + ProjectItemType.shadowsJson]: {
+    formCategory: "client_deferred_rendering",
+    formName: "shadowstylizationconfig_shadowstylizationconfigsettings",
+    select: "minecraft:shadow_settings",
+  },
+  ["" + ProjectItemType.pointLightsJson]: {
+    formCategory: "client_deferred_rendering",
+    formName: "pointlightconfig_pointlightconfigsettings",
+    select: "minecraft:point_light_settings",
+  },*/
+};
+
 export default class ProjectItemUtilities {
   static inferTypeFromContent(
     content: Uint8Array | string,
@@ -325,6 +369,13 @@ export default class ProjectItemUtilities {
       case ProjectItemType.resourcePackManifestJson:
       case ProjectItemType.entityTypeBehavior:
       case ProjectItemType.tickJson:
+      case ProjectItemType.aimAssistJson:
+      case ProjectItemType.waterJson:
+      case ProjectItemType.shadowsJson:
+      case ProjectItemType.pbrJson:
+      case ProjectItemType.atmosphericsJson:
+      case ProjectItemType.pointLightsJson:
+      case ProjectItemType.colorGradingJson:
       case ProjectItemType.cameraJson:
       case ProjectItemType.actionSet:
       case ProjectItemType.worldTest:
@@ -399,6 +450,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.dimensionJson:
       case ProjectItemType.behaviorPackHistoryListJson:
       case ProjectItemType.resourcePackHistoryListJson:
+      case ProjectItemType.educationJson:
         return ["application/json"];
 
       case ProjectItemType.MCWorld:
@@ -490,8 +542,22 @@ export default class ProjectItemUtilities {
         return "Fragment";
       case ProjectItemType.materialVertex:
         return "Vertex";
+      case ProjectItemType.shadowsJson:
+        return "Shadow";
+      case ProjectItemType.waterJson:
+        return "Water";
+      case ProjectItemType.pbrJson:
+        return "PBR";
+      case ProjectItemType.atmosphericsJson:
+        return "Atmospherics";
+      case ProjectItemType.pointLightsJson:
+        return "Point Light";
+      case ProjectItemType.colorGradingJson:
+        return "Color Grading";
       case ProjectItemType.cameraJson:
         return "Camera";
+      case ProjectItemType.aimAssistJson:
+        return "Aim Assist";
       case ProjectItemType.catalogIndexJs:
         return "Catalog index";
       case ProjectItemType.behaviorPackFolder:
@@ -514,8 +580,6 @@ export default class ProjectItemUtilities {
         return "Behavior pack animation controller";
       case ProjectItemType.blockTypeBehavior:
         return "Block type";
-      case ProjectItemType.blockMaterialsBehaviorJson:
-        return "Block type materials";
       case ProjectItemType.itemTypeBehavior:
         return "Item type";
       case ProjectItemType.lootTableBehavior:
@@ -672,6 +736,8 @@ export default class ProjectItemUtilities {
         return "Behavior pack history";
       case ProjectItemType.resourcePackHistoryListJson:
         return "Resource pack history";
+      case ProjectItemType.educationJson:
+        return "Education manifest";
       default:
         return "Unknown";
     }
@@ -965,26 +1031,27 @@ export default class ProjectItemUtilities {
         return "TypeScript files";
       case ProjectItemType.js:
         return "JavaScript files";
-      case ProjectItemType.vsCodeTasksJson:
-        return "VS Code task sets";
-      case ProjectItemType.vsCodeSettingsJson:
-        return "VS Code settings sets";
-      case ProjectItemType.globalVariablesJson:
-        return "UI global variable sets";
       case ProjectItemType.itemTypeResourceJson:
         return "Item type visuals and audio";
-      case ProjectItemType.materialGeometry:
-        return "Model shapes";
       case ProjectItemType.entityTypeResource:
         return "Entity type visuals/audio";
       case ProjectItemType.catalogIndexJs:
         return "Catalog indexes";
-      case ProjectItemType.mcToolsProjectPreferences:
-        return "MCTools preferences";
       case ProjectItemType.behaviorPackHistoryListJson:
         return "Behavior pack histories";
       case ProjectItemType.resourcePackHistoryListJson:
         return "Resource pack histories";
+      case ProjectItemType.globalVariablesJson:
+      case ProjectItemType.materialGeometry:
+      case ProjectItemType.atmosphericsJson:
+      case ProjectItemType.biomeResourceJson:
+      case ProjectItemType.vsCodeTasksJson:
+      case ProjectItemType.vsCodeSettingsJson:
+      case ProjectItemType.vsCodeExtensionsJson:
+      case ProjectItemType.mcToolsProjectPreferences:
+      case ProjectItemType.materialsResourceJson:
+      case ProjectItemType.lang:
+        return this.getDescriptionForType(type);
       default:
         return this.getDescriptionForType(type) + "s";
     }
@@ -1119,7 +1186,19 @@ export default class ProjectItemUtilities {
       case ProjectItemType.worldFolder:
       case ProjectItemType.MCWorld:
         return ["worlds"];
-      case ProjectItemType.cameraJson:
+      case ProjectItemType.colorGradingJson:
+        return ["color_grading"];
+      case ProjectItemType.atmosphericsJson:
+        return ["atmospherics"];
+      case ProjectItemType.pbrJson:
+        return ["pbr"];
+      case ProjectItemType.pointLightsJson:
+        return ["point_lights"];
+      case ProjectItemType.shadowsJson:
+        return ["shadows"];
+      case ProjectItemType.waterJson:
+        return ["water"];
+      case ProjectItemType.aimAssistJson:
         return ["cameras"];
       case ProjectItemType.dimensionJson:
         return ["dimensions"];

@@ -115,5 +115,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:giveable"
 }

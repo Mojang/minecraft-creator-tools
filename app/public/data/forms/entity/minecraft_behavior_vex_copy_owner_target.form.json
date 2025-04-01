@@ -76,5 +76,6 @@
   ],
   "note": "No longer used for the `vex` entity.",
   "description": "Allows the mob to target the same entity its owner is targeting.",
-  "title": "Vex Copy Owner Target Behavior"
+  "title": "Vex Copy Owner Target Behavior",
+  "id": "minecraft:behavior.vex_copy_owner_target"
 }

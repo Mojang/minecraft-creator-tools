@@ -725,5 +725,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.melee_box_attack"
 }

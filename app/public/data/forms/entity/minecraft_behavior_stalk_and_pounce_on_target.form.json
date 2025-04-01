@@ -259,5 +259,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.stalk_and_pounce_on_target"
 }

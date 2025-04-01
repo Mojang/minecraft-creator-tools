@@ -234,5 +234,6 @@
         "content": "{ \"test\": \"has_damage\", \"value\": \"fatal\" }"
       }
     ]
-  }
+  },
+  "id": "has_damage"
 }

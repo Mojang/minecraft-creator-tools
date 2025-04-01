@@ -292,5 +292,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:on_target_escape"
 }

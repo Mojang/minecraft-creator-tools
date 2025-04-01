@@ -418,6 +418,24 @@
           ]
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:healable/",
+        "content": {
+          "items": [
+            {
+              "item": "fish",
+              "heal_amount": 2
+            },
+            {
+              "item": "salmon",
+              "heal_amount": 2
+            }
+          ]
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:healable"
 }

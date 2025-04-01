@@ -199,10 +199,16 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
         canonName = "navigation." + canonName.substring(11);
       }
       if (canonName.startsWith("player_")) {
-        canonName = "player." + canonName.substring(8);
+        canonName = "player." + canonName.substring(7);
       }
       if (canonName.startsWith("jump_")) {
         canonName = "jump." + canonName.substring(5);
+      }
+      if (canonName.startsWith("horse_")) {
+        canonName = "horse." + canonName.substring(6);
+      }
+      if (canonName.startsWith("annotation_")) {
+        canonName = "annotation." + canonName.substring(11);
       }
     }
 

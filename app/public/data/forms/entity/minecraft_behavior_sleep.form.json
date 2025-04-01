@@ -145,5 +145,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.sleep"
 }

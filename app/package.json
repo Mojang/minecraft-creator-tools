@@ -39,6 +39,7 @@
     "localforage": "^1.9.0",
     "monaco-editor": "^0.48.0",
     "node-abi": "^3.62.0",
+    "obscenity": "^0.4.3",
     "open": "^8.3.0",
     "pako": "^2.0.4",
     "permessage-deflate": "^0.1.7",

@@ -102,5 +102,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:on_hurt"
 }

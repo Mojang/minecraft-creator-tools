@@ -17,6 +17,7 @@ interface IFileExplorerFolderProps {
   theme: ThemeInput<any>;
   displayFolderDetail: boolean;
   depth: number;
+  expandByDefault?: boolean;
   mode: FileExplorerMode;
   startExpanded: boolean;
   itemAnnotations?: ItemAnnotationCollection;
@@ -153,8 +154,9 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
           items.push(
             <FileExplorerFolder
               folder={childFolder}
-              startExpanded={false || this.props.mode === FileExplorerMode.folderPicker}
+              startExpanded={this.props.expandByDefault || this.props.mode === FileExplorerMode.folderPicker}
               theme={this.props.theme}
+              expandByDefault={this.props.expandByDefault}
               key={"fo" + childFolder.name}
               mode={this.props.mode}
               selectedItem={this.props.selectedItem}

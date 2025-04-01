@@ -26,6 +26,7 @@
 		"src/cli/**/*",
 		"out/**/*",		
 		"public/**/*",		
+		"debugoutput/**/*",		
 		"build/**/*",		
 		"toolbuild/**/*",
 		"src/index.tsx",

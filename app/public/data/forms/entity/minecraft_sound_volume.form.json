@@ -9,5 +9,6 @@
     }
   ],
   "description": "Sets the entity's base volume for sound effects.",
-  "title": "Sound Volume"
+  "title": "Sound Volume",
+  "id": "minecraft:sound_volume"
 }

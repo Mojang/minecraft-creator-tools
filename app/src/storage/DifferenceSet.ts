@@ -28,7 +28,7 @@ export default class DifferenceSet {
       }
     }
 
-    zipStorage.rootFolder.saveAll();
+    await zipStorage.rootFolder.saveAll();
 
     return zipStorage;
   }

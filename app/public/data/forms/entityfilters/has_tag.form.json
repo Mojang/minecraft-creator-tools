@@ -127,5 +127,6 @@
         "content": "{ \"test\": \"has_tag\" }"
       }
     ]
-  }
+  },
+  "id": "has_tag"
 }

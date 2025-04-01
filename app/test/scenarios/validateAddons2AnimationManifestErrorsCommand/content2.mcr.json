@@ -105,12 +105,13 @@
     "testNotApplicableCount": 0,
     "errorSummary": "ERROR: [CADDONREQ168] (/Content/resource_packs/aop_mobsrp/manifest.json) Did not find exactly one dependency on the corresponding behavior pack in the resource pack manifest.\r\nERROR: [CADDONREQ102] Found an cooperative add-on common name folder 'entities' in a parent folder pack\\loot_tables. Should be named 'creatorshortname' and not a common term: entities\r\nERROR: [CADDONREQ104] Found a loose file 'sheepomelon.json' in loot_tables\\entities. Files should only be in the folder loot_tables\\entities\\<mygamename>: sheepomelon.json\r\nERROR: [CADDONREQ104] Found a loose file 'sheepomelon_shear.json' in loot_tables\\entities. Files should only be in the folder loot_tables\\entities\\<mygamename>: sheepomelon_shear.json\r\nERROR: [CADDONREQ102] Found an cooperative add-on common name folder 'entity' in a parent folder pack\\textures. Should be named 'creatorshortname' and not a common term: entity\r\nERROR: [CADDONREQ104] Found a loose file 'biceson.png' in textures\\entity. Files should only be in the folder textures\\entity\\<mygamename>: biceson.png\r\nERROR: [CADDONREQ104] Found a loose file 'nardolphle.png' in textures\\entity. Files should only be in the folder textures\\entity\\<mygamename>: nardolphle.png\r\nERROR: [CADDONREQ104] Found a loose file 'sheepomelon.png' in textures\\entity. Files should only be in the folder textures\\entity\\<mygamename>: sheepomelon.png\r\nERROR: [CADDONIREQ111] (/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json) Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.spawn\r\nERROR: [CADDONIREQ111] (/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json) Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.sheepomelon.sheared\r\nERROR: [CADDONIREQ170] (/Content/resource_packs/aop_mobsrp/manifest.json) Resource pack manifest does not specify that header/pack_scope that should be 'world'\r\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.biceson.baby_transform\r\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.biceson.move\r\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.biceson.walk\r\nERROR: [CADDONIREQ131] (/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json) Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name: animation.nardolphle.move",
     "internalProcessingErrorSummary": "",
+    "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONREQ000] Found 8 errors for Cooperative Add-On Requirements (CADDONREQ).\r\nTESTFAIL: [CADDONIREQ000] Found 11 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
     "summary": {
       "PACKSIZE": {
         "1": {
           "title": "Overall Size",
-          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully .",
+          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
           "testCompleteSuccesses": 1
         },
         "2": {
@@ -131,7 +132,7 @@
       },
       "CADDONREQ": {
         "0": {
-          "title": "General Item 0",
+          "title": "Test Failure",
           "defaultMessage": "Found 8 errors for Cooperative Add-On Requirements (CADDONREQ).",
           "testCompleteFails": 1
         },
@@ -158,14 +159,14 @@
       "TEXTURE": {
         "1": {
           "title": "Textures",
-          "defaultMessage": "Texture Validation (TEXTURE) completed successfully .",
+          "defaultMessage": "Texture Validation (TEXTURE) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
       "MINENGINEVER": {
         "1": {
           "title": "1",
-          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully .",
+          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
           "testCompleteSuccesses": 1
         },
         "605": {
@@ -218,8 +219,8 @@
       },
       "STRICT": {
         "1": {
-          "title": "General Item 1",
-          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully .",
+          "title": "Test Success",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
           "testCompleteSuccesses": 1
         }
       }
@@ -562,7 +563,7 @@
       "iTp": 0,
       "gId": "WORLDDATA",
       "gIx": 1,
-      "m": "World Data Validation (WORLDDATA) completed successfully ."
+      "m": "World Data Validation (WORLDDATA) completed successfully"
     },
     {
       "iTp": 1,

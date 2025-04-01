@@ -1340,5 +1340,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:scheduler"
 }

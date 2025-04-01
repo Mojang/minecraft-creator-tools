@@ -16,5 +16,6 @@
   ],
   "note": "In order to follow targets, this entity must have the `minecraft:behavior.slime_attack` component, otherwise the entity will jump in the direction it's looking in.",
   "description": "Move control that causes the mob to jump as it moves with a specified delay between jumps.",
-  "title": "Jump Movement"
+  "title": "Jump Movement",
+  "id": "minecraft:movement.jump"
 }

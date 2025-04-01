@@ -76,16 +76,6 @@
             "content": 1.77
           }
         ],
-        "/vanilla/behavior_pack/entities/camel.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:camel_standing/minecraft:collision_box/",
-            "content": 2.375
-          },
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:camel_sitting/minecraft:collision_box/",
-            "content": 0.945
-          }
-        ],
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
@@ -411,6 +401,18 @@
             "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:collision_box/",
             "content": 0.2
           }
+        ],
+        "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/memory_jar.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 1.975
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.01
+          }
         ]
       },
       "defaultValue": 1,
@@ -488,16 +490,6 @@
           {
             "path": "/minecraft:entity/components/minecraft:collision_box/",
             "content": 0.6
-          }
-        ],
-        "/vanilla/behavior_pack/entities/camel.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:camel_standing/minecraft:collision_box/",
-            "content": 1.7
-          },
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:camel_sitting/minecraft:collision_box/",
-            "content": 1.7
           }
         ],
         "/vanilla/behavior_pack/entities/cave_spider.json": [
@@ -715,6 +707,12 @@
             "path": "/minecraft:entity/component_groups/minecraft:adult/minecraft:collision_box/",
             "content": 1.2
           }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:collision_box/",
+            "content": 0.01
+          }
         ]
       }
     }
@@ -827,22 +825,6 @@
         "content": {
           "width": 0.6,
           "height": 1.77
-        }
-      }
-    ],
-    "/vanilla/behavior_pack/entities/camel.json": [
-      {
-        "path": "/minecraft:entity/component_groups/minecraft:camel_standing/minecraft:collision_box/",
-        "content": {
-          "width": 1.7,
-          "height": 2.375
-        }
-      },
-      {
-        "path": "/minecraft:entity/component_groups/minecraft:camel_sitting/minecraft:collision_box/",
-        "content": {
-          "width": 1.7,
-          "height": 0.945
         }
       }
     ],
@@ -1879,6 +1861,70 @@
           "height": 1.3
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 0.6,
+          "height": 0.8
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 0.6,
+          "height": 0.8
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 0.6,
+          "height": 0.8
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/memory_jar.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 0.5,
+          "height": 1.975
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 0.6,
+          "height": 0.7
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 0.01,
+          "height": 0.01
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:collision_box/",
+        "content": {
+          "width": 0.6,
+          "height": 1.9
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:collision_box"
 }

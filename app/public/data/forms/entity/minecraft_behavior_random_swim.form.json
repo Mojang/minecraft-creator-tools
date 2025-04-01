@@ -314,5 +314,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.random_swim"
 }

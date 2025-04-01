@@ -57,6 +57,24 @@
             "path": "/minecraft:entity/components/minecraft:behavior.ranged_attack/",
             "content": 3
           }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 3.8
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 0.8
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/shbullet_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 0.8
+          }
         ]
       }
     },
@@ -89,6 +107,24 @@
           {
             "path": "/minecraft:entity/components/minecraft:behavior.ranged_attack/",
             "content": 3
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 2.4
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 0.4
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/shbullet_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 0.4
           }
         ]
       }
@@ -152,6 +188,24 @@
           {
             "path": "/minecraft:entity/components/minecraft:behavior.ranged_attack/",
             "content": 10
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 19
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/shbullet_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 12
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/smfireball_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 12
           }
         ]
       }
@@ -254,7 +308,21 @@
       "title": "Ranged Fov",
       "description": "Field of view (in degrees) when using sensing to detect a target for attack.",
       "defaultValue": 90,
-      "dataType": 3
+      "dataType": 3,
+      "samples": {
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 360
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 360
+          }
+        ]
+      }
     },
     {
       "id": "set_persistent",
@@ -325,14 +393,42 @@
       "title": "X Max Rotation",
       "description": "Maximum rotation (in degrees), on the X-axis, this entity can rotate while trying to look at the target.",
       "defaultValue": 30,
-      "dataType": 3
+      "dataType": 3,
+      "samples": {
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 360
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 360
+          }
+        ]
+      }
     },
     {
       "id": "y_max_head_rotation",
       "title": "Y Max Head Rotation",
       "description": "Maximum rotation (in degrees), on the Y-axis, this entity can rotate its head while trying to look at the target.",
       "defaultValue": 30,
-      "dataType": 3
+      "dataType": 3,
+      "samples": {
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 360
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+            "content": 360
+          }
+        ]
+      }
     },
     {
       "id": "priority",
@@ -605,6 +701,69 @@
           "charge_charged_trigger": 1
         }
       }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+        "content": {
+          "attack_interval_min": 2.4,
+          "attack_interval_max": 3.8,
+          "attack_radius": 19,
+          "ranged_fov": 360,
+          "y_max_head_rotation": 360,
+          "x_max_rotation": 360
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+        "content": {
+          "attack_interval_min": 0.4,
+          "attack_interval_max": 0.8,
+          "attack_radius": 15,
+          "ranged_fov": 360,
+          "y_max_head_rotation": 360,
+          "x_max_rotation": 360
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave_generator.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+        "content": {
+          "attack_interval_min": 1,
+          "attack_interval_max": 3,
+          "attack_radius": 15
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/shbullet_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+        "content": {
+          "attack_interval_min": 0.4,
+          "attack_interval_max": 0.8,
+          "attack_radius": 12,
+          "ranged_fov": 360,
+          "y_max_head_rotation": 360,
+          "x_max_rotation": 360
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/smfireball_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.ranged_attack/",
+        "content": {
+          "attack_interval_min": 0.4,
+          "attack_interval_max": 0.8,
+          "attack_radius": 12,
+          "ranged_fov": 360,
+          "y_max_head_rotation": 360,
+          "x_max_rotation": 360
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.ranged_attack"
 }

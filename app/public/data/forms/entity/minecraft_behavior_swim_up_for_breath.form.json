@@ -55,5 +55,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.swim_up_for_breath"
 }

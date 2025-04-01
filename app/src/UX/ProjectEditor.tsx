@@ -2404,7 +2404,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const content = projectItem.file.content;
 
     if (content instanceof Uint8Array) {
-      await this.saveAsBetaApisWorldWithPacks(projectItem.file.name, content);
+      await this.saveAsWorldWithPacks(projectItem.file.name, content);
     }
 
     this.props.carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + projectItem.file.name + "'.");
@@ -2480,12 +2480,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
-  private async saveAsBetaApisWorldWithPacks(name: string, content: Uint8Array) {
+  private async saveAsWorldWithPacks(name: string, content: Uint8Array) {
     await this._ensurePersisted();
 
     await ProjectStandard.ensureIsStandard(this.props.project);
 
-    const mcworld = await ProjectExporter.generateBetaApisWorldWithPacks(this.props.project, name, content);
+    const mcworld = await ProjectExporter.generateWorldWithPacksAndContent(this.props.project, name, content, {
+      betaApisExperiment: true,
+    });
 
     if (mcworld === undefined) {
       return;
@@ -2642,7 +2644,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private async _handleExportFlatWorldWithPackRefs(e: SyntheticEvent | undefined, data: MenuItemProps | undefined) {
     const projName = await this.props.project.loc.getTokenValue(this.props.project.name);
 
-    const name = projName + " Flat GameTest";
+    const name = projName + " Flat";
     const fileName = projName + " flat.mcworld";
 
     await ProjectStandard.ensureIsStandard(this.props.project);
@@ -2797,9 +2799,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           this.downloadBbmodel(projectItem);
           break;
         case ProjectEditorItemAction.viewAsJson:
-          if (this.state.activeProjectItem) {
-            this._handleProjectItemSelected(this.state.activeProjectItem, true);
-          }
+          this._handleProjectItemSelected(projectItem, true);
           break;
         case ProjectEditorItemAction.deleteItem:
           this._handleDialogDoneAndClear(false, ProjectEditorDialog.deleteItem);
@@ -4012,16 +4012,19 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         />
       );
     } else if (this.state.dialog === ProjectEditorDialog.shareableLink) {
-      const dialogContent = <ShareProject carto={this.props.carto} project={this.props.project} />;
+      const dialogContent = (
+        <ShareProject carto={this.props.carto} project={this.props.project} theme={this.props.theme} />
+      );
       effectArea = (
         <Dialog
           open={true}
           cancelButton="Cancel"
           confirmButton="OK"
+          className={"pe-shareProjectDialog"}
           onCancel={this._handleDialogDone}
           onConfirm={this._handleDialogDone}
           content={dialogContent}
-          header={"Share Link to this Project"}
+          header={"Share a link to this project"}
         />
       );
     } else if (

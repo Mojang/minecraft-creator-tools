@@ -120,5 +120,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.slime_random_direction"
 }

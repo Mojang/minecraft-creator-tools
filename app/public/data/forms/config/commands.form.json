@@ -10,7 +10,7 @@
       "id": "permission_levels",
       "title": "permission_levels",
       "description": "permission_levels",
-      "dataType": 16
+      "dataType": 24
     }
   ],
   "description": "Commands Config",

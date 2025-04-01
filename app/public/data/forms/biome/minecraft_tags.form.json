@@ -4,7 +4,7 @@
       "id": "tags",
       "title": "tags",
       "description": "Array of string tags used by other systems such as entity spawning",
-      "dataType": 15
+      "dataType": 17
     }
   ],
   "description": "Attach arbitrary string tags to this biome.",

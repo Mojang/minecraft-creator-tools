@@ -2,7 +2,7 @@ import { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
 import Project from "../app/Project";
 import "./ShareProject.css";
-import { Button, InputProps } from "@fluentui/react-northstar";
+import { Button, InputProps, ThemeInput } from "@fluentui/react-northstar";
 import Utilities from "../core/Utilities";
 import StorageUtilities from "../storage/StorageUtilities";
 import Carto from "../app/Carto";
@@ -12,15 +12,21 @@ import { constants } from "../core/Constants";
 import Log from "../core/Log";
 import HttpStorage from "../storage/HttpStorage";
 import CartoApp from "../app/CartoApp";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import IStorage from "../storage/IStorage";
+import FileExplorer, { FileExplorerMode } from "./FileExplorer";
 
 interface IShareProjectProps extends IAppProps {
   project: Project;
+  theme: ThemeInput<any>;
 }
 
 interface IShareProjectState {
   baseProjectUrl: string | undefined;
   contentUrl: string | undefined;
   title: string | undefined;
+  exampleStorage?: IStorage | undefined;
+  exampleErrorMessage?: string | undefined;
 }
 
 export default class ShareProject extends Component<IShareProjectProps, IShareProjectState> {
@@ -60,8 +66,11 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
     let title = "Project";
     let appendDiffList = false;
 
+    let exampleStorage: IStorage | undefined = undefined;
+    let exampleErrorMessage: string | undefined = undefined;
+
     if (this.props.project.gitHubOwner && this.props.project.gitHubRepoName) {
-      url += "?open=gh/" + this.props.project.gitHubOwner + "/" + this.props.project.gitHubRepoName;
+      url += "#open=gh/" + this.props.project.gitHubOwner + "/" + this.props.project.gitHubRepoName;
 
       if (this.props.project.gitHubBranch !== undefined || this.props.project.gitHubBranch !== undefined) {
         url += "/tree/" + (this.props.project.gitHubBranch ? this.props.project.gitHubBranch : "main");
@@ -72,7 +81,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
       }
       appendDiffList = true;
     } else if (this.props.project.originalGalleryId !== undefined) {
-      url += "?open=gp/" + this.props.project.originalGalleryId;
+      url += "#open=gp/" + this.props.project.originalGalleryId;
       title = this.props.project.originalGalleryId;
 
       const galProject = await this.props.carto.getGalleryProjectById(this.props.project.originalGalleryId);
@@ -86,7 +95,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
       this.props.project.originalGitHubOwner !== undefined &&
       this.props.project.originalGitHubRepoName !== undefined
     ) {
-      url += "?open=gh/" + this.props.project.originalGitHubOwner + "/" + this.props.project.originalGitHubRepoName;
+      url += "#open=gh/" + this.props.project.originalGitHubOwner + "/" + this.props.project.originalGitHubRepoName;
       title = this.props.project.originalGitHubRepoName;
       if (
         this.props.project.originalGitHubBranch !== undefined ||
@@ -105,17 +114,31 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
     if (appendDiffList) {
       baseProjectUrl = url;
 
-      const fileDiff64 = await this._getFileDiffs(this.props.carto, this.props.project);
+      const fileDiff64 = await this._getFileDiffsBase64(this.props.carto, this.props.project);
 
       if (fileDiff64 !== undefined) {
         url += "&updates=" + fileDiff64;
+
+        const results = await StorageUtilities.createStorageFromUntrustedString(fileDiff64);
+
+        if (typeof results === "string") {
+          exampleErrorMessage = results;
+        } else if (results) {
+          exampleStorage = results;
+        }
       }
     }
 
-    this.setState({ contentUrl: url, baseProjectUrl: baseProjectUrl, title: title });
+    this.setState({
+      contentUrl: url,
+      baseProjectUrl: baseProjectUrl,
+      title: title,
+      exampleStorage: exampleStorage,
+      exampleErrorMessage: exampleErrorMessage,
+    });
   }
 
-  async _getFileDiffs(carto: Carto, project: Project) {
+  async _getFileDiffsBase64(carto: Carto, project: Project) {
     if (project.projectFolder === undefined || project.projectFolder === null) {
       return undefined;
     }
@@ -171,7 +194,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
     //const gh = new GitHubStorage(this.props.carto.anonGitHub, ghRepoName, ghRepoOwner, ghRepoBranch, ghRepoFolder);
 
     try {
-      const differenceSet = await StorageUtilities.getDifferences(gh.rootFolder, project.projectFolder, true);
+      const differenceSet = await StorageUtilities.getDifferences(gh.rootFolder, project.projectFolder, true, true);
 
       if (differenceSet.fileDifferences.length > 0) {
         const zs = await differenceSet.getZip();
@@ -275,6 +298,77 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
     const contentUrlValue = this.state.contentUrl;
     const baseProjectUrlValue = this.state.baseProjectUrl;
 
+    const shareContent = [];
+
+    if (this.state.exampleErrorMessage) {
+      shareContent.push(
+        <div className="shp-contentAreaHeader">
+          <div className="shp-contentHeader">Could not generate links with changed content.</div>
+          <div>{this.state.exampleErrorMessage}</div>
+        </div>
+      );
+    } else if (contentUrlValue && this.state.exampleStorage) {
+      shareContent.push(
+        <div className="shp-contentAreaHeader">
+          <div className="shp-contentHeader">Links with your changed content</div>
+        </div>
+      );
+      shareContent.push(<div className="shp-summaryCell">Full Link with Changes</div>);
+      shareContent.push(
+        <div className="shp-contentCell" ref={(c: HTMLDivElement) => this._setFullLink(c)}>
+          <a href={contentUrlValue}>{this.state.title}</a>
+        </div>
+      );
+      shareContent.push(
+        <div className="shp-copyButton">
+          <Button onClick={this._copyFullLink}>
+            <FontAwesomeIcon icon={faCopy} className="fa-lg" />
+          </Button>
+        </div>
+      );
+      shareContent.push(<div className="shp-summaryCell">URL with Changes</div>);
+      shareContent.push(
+        <div className="shp-contentCell" ref={(c: HTMLDivElement) => this._setFullUrlLink(c)} title={contentUrlValue}>
+          {contentUrlValue}
+        </div>
+      );
+      shareContent.push(
+        <div className="shp-copyButton">
+          <Button onClick={this._copyFullUrlLink}>
+            <FontAwesomeIcon icon={faCopy} className="fa-lg" />
+          </Button>
+        </div>
+      );
+
+      shareContent.push(
+        <div className="shp-contentArea">
+          <div className="shp-contentWarning">
+            <span className="shp-warningIcon">
+              <FontAwesomeIcon icon={faExclamationTriangle} className="fa-lg" />
+            </span>
+            <span className="shp-warningText">
+              This changed content is <b>directly included</b> within the links above. By sharing "with Changes" links,
+              you are sharing this content:
+            </span>
+          </div>
+
+          <div className="shp-contentDisplay">
+            <FileExplorer
+              rootFolder={this.state.exampleStorage.rootFolder}
+              carto={this.props.carto}
+              readOnly={true}
+              selectFirstFile={true}
+              height={260}
+              expandByDefault={true}
+              showPreview={true}
+              mode={FileExplorerMode.explorer}
+              theme={this.props.theme}
+            />
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="shp-outer">
         <div className="shp-optionsArea">
@@ -300,25 +394,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
               <FontAwesomeIcon icon={faCopy} className="fa-lg" />
             </Button>
           </div>
-
-          <div className="shp-summaryCell">Full Link with Changes</div>
-          <div className="shp-contentCell" ref={(c: HTMLDivElement) => this._setFullLink(c)}>
-            <a href={contentUrlValue}>{this.state.title}</a>
-          </div>
-          <div className="shp-copyButton">
-            <Button onClick={this._copyFullLink}>
-              <FontAwesomeIcon icon={faCopy} className="fa-lg" />
-            </Button>
-          </div>
-          <div className="shp-summaryCell">URL with Changes</div>
-          <div className="shp-contentCell" ref={(c: HTMLDivElement) => this._setFullUrlLink(c)} title={contentUrlValue}>
-            {contentUrlValue}
-          </div>
-          <div className="shp-copyButton">
-            <Button onClick={this._copyFullUrlLink}>
-              <FontAwesomeIcon icon={faCopy} className="fa-lg" />
-            </Button>
-          </div>
+          {shareContent}
         </div>
       </div>
     );

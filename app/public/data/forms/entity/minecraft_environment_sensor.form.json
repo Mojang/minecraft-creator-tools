@@ -1712,5 +1712,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:environment_sensor"
 }

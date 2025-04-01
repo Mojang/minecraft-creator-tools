@@ -917,6 +917,14 @@
         }
       }
     ],
+    "/samples/add_entity_robot/full/robot_example_full_behavior/entities/robot.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {
+          "avoid_water": true
+        }
+      }
+    ],
     "/samples/addon_starter/1_hello_world/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
       {
         "path": "/minecraft:entity/components/minecraft:navigation.walk/",
@@ -989,6 +997,97 @@
           "avoid_damage_blocks": true
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {
+          "can_path_over_water": true,
+          "avoid_damage_blocks": true
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {
+          "can_path_over_water": true,
+          "avoid_damage_blocks": true
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {
+          "can_path_over_water": true,
+          "avoid_damage_blocks": true
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {
+          "can_float": true,
+          "avoid_water": true,
+          "avoid_damage_blocks": true
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {}
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {}
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {}
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave_generator.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {}
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {}
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {
+          "is_amphibious": true,
+          "can_pass_doors": true,
+          "can_walk": true,
+          "can_break_doors": true
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/shbullet_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {}
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/smfireball_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:navigation.walk/",
+        "content": {}
+      }
     ]
-  }
+  },
+  "id": "minecraft:navigation.walk"
 }

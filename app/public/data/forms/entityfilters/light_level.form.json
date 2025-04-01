@@ -123,5 +123,6 @@
         "content": "{ \"test\": \"light_level\", \"value\": \"0\" }"
       }
     ]
-  }
+  },
+  "id": "light_level"
 }

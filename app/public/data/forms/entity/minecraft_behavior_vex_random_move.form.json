@@ -10,5 +10,6 @@
   ],
   "note": "No longer used for the `vex` entity. Instead, `minecraft:navigation.walk` and `minecraft:behavior.float` allow the `vex` entity to navigate.",
   "description": "Allows the mob to move around randomly like the Vex.",
-  "title": "Vex Random Move Behavior"
+  "title": "Vex Random Move Behavior",
+  "id": "minecraft:behavior.vex_random_move"
 }

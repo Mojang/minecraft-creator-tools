@@ -82,5 +82,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.timer_flag_3"
 }

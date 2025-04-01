@@ -268,5 +268,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.stomp_attack"
 }

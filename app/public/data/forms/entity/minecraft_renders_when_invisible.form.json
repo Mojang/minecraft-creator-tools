@@ -39,5 +39,6 @@
         "content": {}
       }
     ]
-  }
+  },
+  "id": "minecraft:renders_when_invisible"
 }

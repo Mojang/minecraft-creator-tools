@@ -76,5 +76,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.fertilize_farm_block"
 }

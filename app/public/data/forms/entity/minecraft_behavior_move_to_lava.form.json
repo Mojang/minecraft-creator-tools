@@ -45,5 +45,6 @@
   ],
   "note": "Not currently used by any entities within Minecraft: Bedrock Edition.",
   "description": "Allows the mob to move back into lava when on land.",
-  "title": "Move To Lava Behavior"
+  "title": "Move To Lava Behavior",
+  "id": "minecraft:behavior.move_to_lava"
 }

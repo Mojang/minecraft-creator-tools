@@ -62,6 +62,15 @@
           "priority": 3
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_tame/minecraft:behavior.stay_while_sitting/",
+        "content": {
+          "priority": 3
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.stay_while_sitting"
 }

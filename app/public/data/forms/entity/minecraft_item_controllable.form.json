@@ -40,5 +40,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:item_controllable"
 }

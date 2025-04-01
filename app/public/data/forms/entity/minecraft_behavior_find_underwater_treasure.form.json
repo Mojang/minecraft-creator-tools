@@ -75,5 +75,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.find_underwater_treasure"
 }

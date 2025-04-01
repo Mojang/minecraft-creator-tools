@@ -27,12 +27,6 @@
     display: grid;
   }
 
-  .home-header {
-    font-size: 30pt;
-    height: 100%;
-    border-bottom: outset 2px;
-  }
-
   .home-toolTile {
     height: 130px;
     margin-top: 10px;
@@ -42,14 +36,6 @@
     display: inline-flex;
     text-align: left;
     vertical-align: middle;
-  }
-
-  .home-header-area {
-    border-bottom: inset 2px;
-  }
-
-  .home-usage {
-    border-top: inset 2px;
   }
 
   .home-gallery {
@@ -114,12 +100,6 @@
     overflow-y: auto;
   }
 
-  .home-header {
-    height: 120px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
-
   .home-toolTile-bin {
     text-align: center;
     min-height: 160px;
@@ -142,10 +122,6 @@
 
   .home-projects-list {
     padding-bottom: 14px;
-  }
-
-  .home-legal {
-    padding-bottom: 80px;
   }
 
   .home-dialog {
@@ -208,16 +184,6 @@
   padding-left: 10px;
 }
 
-.home-header-sublink {
-  font-size: small;
-  color: white;
-}
-
-.home-header-sublink A {
-  font-size: small;
-  color: white;
-}
-
 .home-areaLoading {
   padding: 20px;
 }
@@ -234,46 +200,12 @@
   margin-right: 6px;
 }
 
-.home-header-docsLink {
-  color: white;
-  padding-left: 6px;
-  background-color: transparent;
-  border: 0px;
-  text-decoration: underline;
-  padding-right: 0px;
-}
-
-.home-header-textArea {
-  padding-left: 6px;
-}
-
 .home-error {
   background-color: #b07a14;
   padding: 10px;
   margin: 20px;
   word-break: normal;
   text-overflow: ellipsis;
-}
-
-.home-header-area {
-  vertical-align: middle;
-  text-align: center;
-  background-image: url(../images/bg-wool-dark.png);
-  grid-row: 1;
-  grid-column-start: 1;
-  grid-column-end: 3;
-}
-
-.home-header-image-outer {
-  display: inline-block;
-  margin: 0px;
-  line-height: 1;
-  background-size: cover;
-}
-
-.home-header-image {
-  width: 266px;
-  height: 60px;
 }
 
 .home-projects {
@@ -418,17 +350,6 @@
   padding-bottom: 6px;
 }
 
-.home-usage {
-  width: 100%;
-  padding-bottom: 4px;
-}
-
-.home-usage-interior {
-  padding-left: 13px;
-  padding-right: 13px;
-  padding-top: 4px;
-}
-
 .home-main {
   grid-row-start: 2;
   grid-row-end: 3;
@@ -441,12 +362,6 @@
   grid-column-end: 3;
   width: 100%;
   line-height: normal;
-}
-
-.home-legal {
-  padding-left: 13px;
-  padding-right: 13px;
-  padding-top: 1px;
 }
 
 .home-gallery-label-top {

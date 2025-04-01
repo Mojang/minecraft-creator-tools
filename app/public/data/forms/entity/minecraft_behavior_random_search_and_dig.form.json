@@ -350,5 +350,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.random_search_and_dig"
 }

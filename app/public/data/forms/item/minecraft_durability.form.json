@@ -5,6 +5,24 @@
       "title": "damage_chance",
       "description": "Specifies the percentage chance of this item losing durability. Default is set to 100. Defined as an int range with min and max value.",
       "dataType": 16,
+      "subForm": {
+        "title": "IntRange",
+        "description": "IntRange",
+        "fields": [
+          {
+            "id": "min",
+            "title": "min",
+            "description": "min",
+            "dataType": 0
+          },
+          {
+            "id": "max",
+            "title": "max",
+            "description": "max",
+            "dataType": 0
+          }
+        ]
+      },
       "samples": {
         "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
           {
@@ -106,6 +124,54 @@
             "max": 50
           },
           "max_durability": 36
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:durability/",
+        "content": {
+          "max_durability": 251
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/bow_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:durability/",
+        "content": {
+          "max_durability": 251
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/crossbow_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:durability/",
+        "content": {
+          "max_durability": 251
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/gray_wave_generator_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:durability/",
+        "content": {
+          "max_durability": 251
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/shbullet_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:durability/",
+        "content": {
+          "max_durability": 251
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/smfireball_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:durability/",
+        "content": {
+          "max_durability": 251
         }
       }
     ],

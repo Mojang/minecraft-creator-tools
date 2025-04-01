@@ -282,5 +282,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.ram_attack"
 }

@@ -71,5 +71,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.find_cover"
 }

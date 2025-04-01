@@ -90,5 +90,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.look_at_trading_player"
 }

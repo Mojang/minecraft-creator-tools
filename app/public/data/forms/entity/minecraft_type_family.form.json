@@ -1333,6 +1333,90 @@
               "mob"
             ]
           }
+        ],
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "turkey",
+              "mob"
+            ]
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "turkey",
+              "mob"
+            ]
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/memory_jar.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "inanimate"
+            ]
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "cat",
+              "mob"
+            ]
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "gray_wave",
+              "player",
+              "gray_wave_consumer"
+            ]
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "gray_wave",
+              "player",
+              "gray_wave_consumer"
+            ]
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave_generator.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "gray_wave",
+              "player"
+            ]
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "gray_wave",
+              "player"
+            ]
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:type_family/",
+            "content": [
+              "zombie",
+              "undead",
+              "monster",
+              "mob"
+            ]
+          }
         ]
       },
       "dataType": 17
@@ -2968,6 +3052,156 @@
           ]
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "turkey",
+            "mob"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "turkey",
+            "mob"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "turkey",
+            "mob"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/memory_jar.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "inanimate"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "cat",
+            "mob"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "gray_wave",
+            "player",
+            "gray_wave_consumer"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "gray_wave",
+            "player",
+            "gray_wave_consumer"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "gray_wave",
+            "player",
+            "gray_wave_consumer"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave_generator.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "gray_wave",
+            "player"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "gray_wave",
+            "player"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "zombie",
+            "undead",
+            "monster",
+            "mob"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/shbullet_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "gray_wave",
+            "player",
+            "gray_wave_consumer"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/smfireball_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:type_family/",
+        "content": {
+          "family": [
+            "gray_wave",
+            "player",
+            "gray_wave_consumer"
+          ]
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:type_family"
 }

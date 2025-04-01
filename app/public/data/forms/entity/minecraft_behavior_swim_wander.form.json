@@ -187,5 +187,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.swim_wander"
 }

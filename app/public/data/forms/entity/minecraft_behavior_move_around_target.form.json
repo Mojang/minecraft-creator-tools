@@ -142,5 +142,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.move_around_target"
 }

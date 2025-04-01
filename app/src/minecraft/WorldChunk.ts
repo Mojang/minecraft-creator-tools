@@ -168,7 +168,7 @@ export default class WorldChunk {
             "Unexpected length for a type 43 record."
           );
 
-          if (keyValue.value) {
+          if (keyValue.value && keyValue.value.length >= 512) {
             this.blockTops = [];
 
             for (let i = 0; i < 16; i++) {

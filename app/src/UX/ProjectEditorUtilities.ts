@@ -171,7 +171,7 @@ export default class ProjectEditorUtilities {
 
     const nameCore = Utilities.getFileFriendlySummarySeconds(new Date()) + "-" + projName;
 
-    const name = nameCore + " Flat GameTest";
+    const name = nameCore + " Flat";
     const fileName = nameCore + "-flatpack.mcworld";
 
     await carto.notifyStatusUpdate("Packing " + fileName);

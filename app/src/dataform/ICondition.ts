@@ -9,6 +9,7 @@ export enum ComparisonType {
   greaterThanOrEqualTo = ">=",
   isDefined = "defined",
   isNonEmpty = "nonempty",
+  matchesPattern = "pattern",
 }
 
 export default interface ICondition {

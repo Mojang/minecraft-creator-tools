@@ -214,5 +214,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:rail_sensor"
 }

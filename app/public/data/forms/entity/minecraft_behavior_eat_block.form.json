@@ -238,5 +238,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.eat_block"
 }

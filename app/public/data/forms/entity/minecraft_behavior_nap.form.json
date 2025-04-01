@@ -297,5 +297,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.nap"
 }

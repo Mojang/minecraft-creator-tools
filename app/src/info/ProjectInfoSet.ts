@@ -416,6 +416,7 @@ export default class ProjectInfoSet {
 
       this.info.errorSummary = this.getSummaryByType(InfoItemType.error);
       this.info.internalProcessingErrorSummary = this.getSummaryByType(InfoItemType.internalProcessingError);
+      this.info.warningSummary = this.getSummaryByType(InfoItemType.warning);
       this.info.testFailSummary = this.getSummaryByType(InfoItemType.testCompleteFail);
 
       if (valOperId !== undefined) {
@@ -458,7 +459,7 @@ export default class ProjectInfoSet {
               InfoItemType.testCompleteNoApplicableItemsFound,
               gen.id,
               2,
-              `No applicable items found for test ${gen.title} (${gen.id}).`
+              `No applicable items found for test ${gen.title} (${gen.id})`
             )
           );
         } else {
@@ -500,7 +501,7 @@ export default class ProjectInfoSet {
                   InfoItemType.testCompleteFail,
                   gen.id,
                   0,
-                  `Found ${errorCount} internal errors for ${gen.title} (${gen.id}). This may be a temporary issue with the test run.`
+                  `Found ${errorCount} internal errors for ${gen.title} (${gen.id}). This may be a temporary issue with the test run`
                 )
               );
             } else if (errorCount + internalErrorCount > 0) {
@@ -511,7 +512,7 @@ export default class ProjectInfoSet {
                   InfoItemType.testCompleteFail,
                   gen.id,
                   0,
-                  `Found ${errorCount} errors and ${internalErrorCount} internal errors for ${gen.title} (${gen.id}).`
+                  `Found ${errorCount} errors and ${internalErrorCount} internal errors for ${gen.title} (${gen.id})`
                 )
               );
             } else {
@@ -522,7 +523,7 @@ export default class ProjectInfoSet {
                   InfoItemType.testCompleteSuccess,
                   gen.id,
                   1,
-                  `${gen.title} (${gen.id}) completed successfully .`
+                  `${gen.title} (${gen.id}) completed successfully`
                 )
               );
             }

@@ -172,5 +172,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:block_sensor"
 }

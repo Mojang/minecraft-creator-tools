@@ -1207,6 +1207,26 @@
         }
       }
     ],
+    "/samples/add_entity_robot/full/robot_example_full_behavior/entities/robot.json": [
+      {
+        "path": "/minecraft:entity/component_groups/sample:color_0/minecraft:variant/",
+        "content": {
+          "value": 0
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/sample:color_1/minecraft:variant/",
+        "content": {
+          "value": 1
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/sample:color_2/minecraft:variant/",
+        "content": {
+          "value": 2
+        }
+      }
+    ],
     "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:llama_creamy/minecraft:variant/",
@@ -1258,6 +1278,75 @@
           "value": 3
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_white/minecraft:variant/",
+        "content": {
+          "value": 0
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_tuxedo/minecraft:variant/",
+        "content": {
+          "value": 1
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_red/minecraft:variant/",
+        "content": {
+          "value": 2
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_siamese/minecraft:variant/",
+        "content": {
+          "value": 3
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_british/minecraft:variant/",
+        "content": {
+          "value": 4
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_calico/minecraft:variant/",
+        "content": {
+          "value": 5
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_persian/minecraft:variant/",
+        "content": {
+          "value": 6
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_ragdoll/minecraft:variant/",
+        "content": {
+          "value": 7
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_tabby/minecraft:variant/",
+        "content": {
+          "value": 8
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_black/minecraft:variant/",
+        "content": {
+          "value": 9
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_jellie/minecraft:variant/",
+        "content": {
+          "value": 10
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:variant"
 }

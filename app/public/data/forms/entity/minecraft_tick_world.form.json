@@ -29,5 +29,6 @@
     }
   ],
   "description": "Defines if the entity ticks the world and the radius around it to tick.",
-  "title": "Tick World"
+  "title": "Tick World",
+  "id": "minecraft:tick_world"
 }

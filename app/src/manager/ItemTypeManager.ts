@@ -21,17 +21,18 @@ export enum ItemTypeUpdate {
 }
 
 export enum ItemTypeInfo {
-  Identifier = 53,
-  Metadata = 54,
-  FormatVersionDefined = 100,
-  FormatVersionMajorVersionLowerThanCurrent = 110,
-  FormatVersionMajorVersionHigherThanCurrent = 111,
-  FormatVersionMinorVersionLowerThanCurrent = 120,
-  FormatVersionMinorVersionHigherThanCurrent = 121,
-  FormatVersionPatchVersionLowerThanCurrent = 130,
-  FormatVersionPatchVersionHigherThanCurrent = 131,
-  FailedToRetrieveLatestMinecraftVersion = 500,
-  FailedToParseLatestMinecraftVersion = 501,
+  identifier = 53,
+  metadata = 54,
+  category = 55,
+  formatVersionDefined = 100,
+  formatVersionMajorVersionLowerThanCurrent = 110,
+  formatVersionMajorVersionHigherThanCurrent = 111,
+  formatVersionMinorVersionLowerThanCurrent = 120,
+  formatVersionMinorVersionHigherThanCurrent = 121,
+  formatVersionPatchVersionLowerThanCurrent = 130,
+  formatVersionPatchVersionHigherThanCurrent = 131,
+  failedToRetrieveLatestMinecraftVersion = 500,
+  failedToParseLatestMinecraftVersion = 501,
 }
 
 export default class ItemTypeManager implements IProjectInfoGenerator, IProjectUpdater {
@@ -48,12 +49,12 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
     const title = ProjectInfoUtilities.getTitleFromEnum(ItemTypeInfo, topicId);
 
     switch (topicId) {
-      case ItemTypeInfo.FormatVersionMajorVersionLowerThanCurrent:
-      case ItemTypeInfo.FormatVersionMajorVersionHigherThanCurrent:
-      case ItemTypeInfo.FormatVersionMinorVersionLowerThanCurrent:
-      case ItemTypeInfo.FormatVersionMinorVersionHigherThanCurrent:
-      case ItemTypeInfo.FormatVersionPatchVersionLowerThanCurrent:
-      case ItemTypeInfo.FormatVersionPatchVersionHigherThanCurrent:
+      case ItemTypeInfo.formatVersionMajorVersionLowerThanCurrent:
+      case ItemTypeInfo.formatVersionMajorVersionHigherThanCurrent:
+      case ItemTypeInfo.formatVersionMinorVersionLowerThanCurrent:
+      case ItemTypeInfo.formatVersionMinorVersionHigherThanCurrent:
+      case ItemTypeInfo.formatVersionPatchVersionLowerThanCurrent:
+      case ItemTypeInfo.formatVersionPatchVersionHigherThanCurrent:
         return {
           title: title,
           updaters: [formatVersion],
@@ -91,7 +92,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
         new ProjectInfoItem(
           InfoItemType.internalProcessingError,
           this.id,
-          ItemTypeInfo.FailedToRetrieveLatestMinecraftVersion,
+          ItemTypeInfo.failedToRetrieveLatestMinecraftVersion,
           "Could not latest product retrieve version.",
           undefined,
           ver
@@ -100,8 +101,18 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
       return infoItems;
     }
 
-    const piiIdentifier = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 3, "Item Type Identifier");
-    const piiCategory = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 4, "Item Type Category");
+    const piiIdentifier = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      ItemTypeInfo.identifier,
+      "Item Type Identifier"
+    );
+    const piiCategory = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      ItemTypeInfo.category,
+      "Item Type Category"
+    );
 
     infoItems.push(piiIdentifier);
 
@@ -136,7 +147,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
                 }
               }
             } else {
-              piiCategory.incrementFeature("Item Type without description");
+              piiCategory.incrementFeature("(item type without category)");
             }
 
             const fv = bpItemType.getFormatVersion();
@@ -151,7 +162,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
                   new ProjectInfoItem(
                     InfoItemType.recommendation,
                     this.id,
-                    ItemTypeInfo.FormatVersionMajorVersionLowerThanCurrent,
+                    ItemTypeInfo.formatVersionMajorVersionLowerThanCurrent,
                     "Behavior pack Item Type format version (" +
                       fv.join(".") +
                       ") has a lower major version number compared to current version (" +
@@ -165,7 +176,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
-                    ItemTypeInfo.FormatVersionMajorVersionHigherThanCurrent,
+                    ItemTypeInfo.formatVersionMajorVersionHigherThanCurrent,
                     "Behavior pack Item Type format version (" +
                       fv.join(".") +
                       ") has a higher major version number compared to current version (" +
@@ -179,7 +190,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
                   new ProjectInfoItem(
                     InfoItemType.recommendation,
                     this.id,
-                    ItemTypeInfo.FormatVersionMinorVersionLowerThanCurrent,
+                    ItemTypeInfo.formatVersionMinorVersionLowerThanCurrent,
                     "Behavior pack Item Type format version (" +
                       fv.join(".") +
                       ") has a lower minor version number compared to the current version or the previous current minor version (" +
@@ -193,7 +204,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
-                    ItemTypeInfo.FormatVersionMinorVersionHigherThanCurrent,
+                    ItemTypeInfo.formatVersionMinorVersionHigherThanCurrent,
                     "Behavior pack Item Type format version (" +
                       fv.join(".") +
                       ") has a higher minor version number compared to current version (" +
@@ -207,7 +218,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
                   new ProjectInfoItem(
                     InfoItemType.recommendation,
                     this.id,
-                    ItemTypeInfo.FormatVersionPatchVersionLowerThanCurrent,
+                    ItemTypeInfo.formatVersionPatchVersionLowerThanCurrent,
                     "Behavior pack item type format version (" +
                       fv.join(".") +
                       ") has a lower patch version number compared to current version (" +
@@ -221,7 +232,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
-                    ItemTypeInfo.FormatVersionPatchVersionHigherThanCurrent,
+                    ItemTypeInfo.formatVersionPatchVersionHigherThanCurrent,
                     "Behavior pack item type format version (" +
                       fv.join(".") +
                       ") has a higher patch version number compared to current version (" +

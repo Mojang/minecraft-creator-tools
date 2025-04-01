@@ -41,5 +41,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.receive_love"
 }

@@ -1,0 +1,31 @@
+{
+  "id": "minecraft:lava_movement",
+  "title": "Lava Movement",
+  "description": "Allows a custom movement speed across lava blocks.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The speed the mob moves over a lava block.",
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/entities/strider.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:lava_movement/",
+            "content": 0.32
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/strider.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:lava_movement/",
+        "content": {
+          "value": 0.32
+        }
+      }
+    ]
+  }
+}

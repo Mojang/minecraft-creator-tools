@@ -172,5 +172,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:inside_block_notifier"
 }

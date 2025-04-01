@@ -13,5 +13,6 @@
         "content": {}
       }
     ]
-  }
+  },
+  "id": "minecraft:is_ignited"
 }

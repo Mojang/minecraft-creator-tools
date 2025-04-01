@@ -213,6 +213,20 @@
           "interval": 20
         }
       }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.stomp_turtle_egg/",
+        "content": {
+          "priority": 4,
+          "speed_multiplier": 1,
+          "search_range": 10,
+          "search_height": 2,
+          "goal_radius": 1.14,
+          "interval": 20
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.stomp_turtle_egg"
 }

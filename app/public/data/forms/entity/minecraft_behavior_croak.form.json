@@ -100,5 +100,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.croak"
 }

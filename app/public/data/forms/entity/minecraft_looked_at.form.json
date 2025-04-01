@@ -382,5 +382,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:looked_at"
 }

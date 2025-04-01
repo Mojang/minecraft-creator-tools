@@ -1,0 +1,36 @@
+{
+  "fields": [
+    {
+      "id": "description",
+      "title": "description",
+      "description": "description",
+      "dataType": 16,
+      "subForm": {
+        "title": "Struct SharedTypes Legacy Spawn Description",
+        "description": "Struct SharedTypes Legacy Spawn Description",
+        "fields": [
+          {
+            "id": "identifier",
+            "title": "identifier",
+            "description": "identifier",
+            "dataType": 2
+          },
+          {
+            "id": "population_control",
+            "title": "population_control",
+            "description": "population_control",
+            "dataType": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "conditions",
+      "title": "conditions",
+      "description": "conditions",
+      "dataType": 16
+    }
+  ],
+  "description": "Struct SharedTypes Legacy Spawn Contents Spawn",
+  "title": "Struct SharedTypes Legacy Spawn Contents Spawn"
+}

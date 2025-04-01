@@ -1,0 +1,69 @@
+@media only screen and (min-width: 800px) {
+  .hftr-usage {
+    border-top: inset 2px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .hftr-legal {
+    padding-bottom: 80px;
+  }
+}
+
+.hftr-clickLink {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.hftr-footer {
+  grid-row: 4;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  width: 100%;
+  line-height: normal;
+}
+
+.hftr-legal {
+  padding-left: 13px;
+  padding-right: 13px;
+  padding-top: 1px;
+}
+
+.hftr-usage {
+  width: 100%;
+  padding-bottom: 4px;
+}
+
+.hftr-usage-interior {
+  padding-left: 13px;
+  padding-right: 13px;
+  padding-top: 4px;
+}
+
+.hftr-sublink {
+  font-size: small;
+  color: white;
+}
+
+.hftr-sublink A {
+  font-size: small;
+  color: white;
+}
+
+.hftr-docsLink {
+  color: white;
+  padding-left: 6px;
+  background-color: transparent;
+  border: 0px;
+  text-decoration: underline;
+  padding-right: 0px;
+}
+
+.hftr-docsLinkNoPad {
+  color: white;
+  padding-left: 0px;
+  background-color: transparent;
+  border: 0px;
+  text-decoration: underline;
+  padding-right: 0px;
+}

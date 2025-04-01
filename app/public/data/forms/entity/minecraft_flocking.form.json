@@ -633,5 +633,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:flocking"
 }

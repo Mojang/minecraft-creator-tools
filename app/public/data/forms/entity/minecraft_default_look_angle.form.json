@@ -9,5 +9,6 @@
     }
   ],
   "description": "Sets this entity's default head rotation angle.",
-  "title": "Default Look Angle"
+  "title": "Default Look Angle",
+  "id": "minecraft:default_look_angle"
 }

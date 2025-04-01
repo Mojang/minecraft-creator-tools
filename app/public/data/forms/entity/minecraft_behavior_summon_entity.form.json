@@ -343,5 +343,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.summon_entity"
 }

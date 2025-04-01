@@ -103,5 +103,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.inspect_bookshelf"
 }

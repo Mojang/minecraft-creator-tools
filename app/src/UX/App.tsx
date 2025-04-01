@@ -15,15 +15,15 @@ import { ThemeInput } from "@fluentui/react-northstar";
 import { CartoEditorViewMode } from "../app/ICartoData";
 import MCWorld from "../minecraft/MCWorld";
 import ProjectItem from "../app/ProjectItem";
-import ZipStorage from "../storage/ZipStorage";
 import ProjectUtilities from "../app/ProjectUtilities";
-import { LocalFolderType } from "./LocalGalleryCommand";
+import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
 import WebUtilities from "./WebUtilities";
 import ProjectEditorUtilities, { ProjectEditorMode } from "./ProjectEditorUtilities";
 import HttpStorage from "../storage/HttpStorage";
 import { ProjectImportExclusions } from "../app/ProjectExporter";
 import Database from "../minecraft/Database";
 import IProjectSeed from "../app/IProjectSeed";
+import ImportFromUrl from "./ImportFromUrl";
 
 export enum NewProjectTemplateType {
   empty,
@@ -36,6 +36,7 @@ export enum AppMode {
   project = 3,
   codeToolbox = 4,
   projectReadOnly = 5,
+  importFromUrl = 17,
 }
 
 interface AppProps {
@@ -62,7 +63,6 @@ export default class App extends Component<AppProps, AppState> {
   private _loadingMessage?: string;
   private _lastHashProcessed?: string;
   private _isMountedInternal: boolean = false;
-  private _intervalId?: number = undefined;
 
   constructor(props: AppProps) {
     super(props);
@@ -84,6 +84,8 @@ export default class App extends Component<AppProps, AppState> {
     this._handleItemChanged = this._handleItemChanged.bind(this);
     this._handleSaved = this._handleSaved.bind(this);
     this._doLog = this._doLog.bind(this);
+    this._ensureProjectFromGalleryId = this._ensureProjectFromGalleryId.bind(this);
+    this._newProjectFromGalleryId = this._newProjectFromGalleryId.bind(this);
 
     this._tick = this._tick.bind(this);
 
@@ -256,12 +258,18 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   private _getStateFromUrlWithSideEffects(dontProcessQueryStrings?: boolean): AppState | undefined {
-    const hash = window.location.hash;
-    const query = window.location.search;
+    let hash = window.location.hash;
+    let query = window.location.search;
     const queryVals: { [path: string]: string } = {};
+
+    if (!query && hash.startsWith("#open=")) {
+      query = hash;
+      hash = "";
+    }
 
     if (query) {
       const params = query.split("&");
+
       if (params.length > 0) {
         for (let i = 0; i < params.length; i++) {
           const firstEqual = params[i].indexOf("=");
@@ -270,6 +278,9 @@ export default class App extends Component<AppProps, AppState> {
             let key = params[i].substring(0, firstEqual);
 
             if (key.startsWith("?")) {
+              key = key.substring(1);
+            }
+            if (key.startsWith("#")) {
               key = key.substring(1);
             }
 
@@ -282,8 +293,6 @@ export default class App extends Component<AppProps, AppState> {
     if (!dontProcessQueryStrings && (queryVals["open"] !== undefined || queryVals["view"] !== undefined)) {
       let openQuery = queryVals["view"];
 
-      const updateContent = queryVals["updates"];
-
       if (queryVals["open"]) {
         openQuery = queryVals["open"];
       }
@@ -291,7 +300,11 @@ export default class App extends Component<AppProps, AppState> {
       const firstSlash = openQuery.indexOf("/");
 
       if (firstSlash > 1) {
-        const openToken = openQuery.substring(0, firstSlash).toLowerCase();
+        return {
+          mode: AppMode.importFromUrl,
+          activeProject: null,
+        };
+        /*     const openToken = openQuery.substring(0, firstSlash).toLowerCase();
 
         let openData = openQuery.substring(firstSlash + 1, openQuery.length);
 
@@ -303,7 +316,7 @@ export default class App extends Component<AppProps, AppState> {
           }
 
           this._ensureProjectFromGalleryId(openData, updateContent);
-        }
+        }*/
       }
     }
 
@@ -432,7 +445,7 @@ export default class App extends Component<AppProps, AppState> {
       if (typeof window !== "undefined") {
         window.addEventListener("hashchange", this._handleHashChange, false);
         window.addEventListener("resize", this._incrementVisualSeed, false);
-        this._intervalId = window.setInterval(this._tick, 50);
+        window.setInterval(this._tick, 50);
       }
     }
 
@@ -595,7 +608,22 @@ export default class App extends Component<AppProps, AppState> {
     this._setProject(newProject);
   }
 
-  private async _ensureProjectFromGalleryId(galleryId: string, updateContent?: string) {
+  private async _newProjectFromGalleryId(galleryId: string, updateContent?: IFolder) {
+    if (CartoApp.carto === undefined) {
+      return;
+    }
+
+    const gp = await CartoApp.carto.getGalleryProjectById(galleryId);
+
+    if (gp === undefined) {
+      this.setHomeWithError("We could not find a starter/sample named '" + galleryId + "' that could be opened.");
+      return;
+    }
+
+    this._newProjectFromGallery({ galleryProject: gp }, updateContent);
+  }
+
+  private async _ensureProjectFromGalleryId(galleryId: string, updateContent?: IFolder) {
     if (CartoApp.carto === undefined) {
       return;
     }
@@ -610,7 +638,7 @@ export default class App extends Component<AppProps, AppState> {
     this._ensureProjectFromGallery(gp, updateContent);
   }
 
-  private async _ensureProjectFromGallery(project: IGalleryItem, updateContent?: string) {
+  private async _ensureProjectFromGallery(project: IGalleryItem, updateContent?: IFolder) {
     this._ensureProjectFromGitHubTemplate(
       project.title,
       project.gitHubOwner,
@@ -637,7 +665,7 @@ export default class App extends Component<AppProps, AppState> {
     projectId?: string,
     sampleSet?: string,
     sampleId?: string,
-    updateContent?: string,
+    updateContent?: IFolder,
     description?: string
   ) {
     const carto = CartoApp.carto;
@@ -719,7 +747,7 @@ export default class App extends Component<AppProps, AppState> {
     );
   }
 
-  private async _newProjectFromGallery(newProjectSeed: IProjectSeed) {
+  private async _newProjectFromGallery(newProjectSeed: IProjectSeed, updateContent?: IFolder) {
     const galleryItem = newProjectSeed.galleryProject;
 
     if (!galleryItem) {
@@ -740,7 +768,7 @@ export default class App extends Component<AppProps, AppState> {
       galleryItem.type === GalleryItemType.codeSample || galleryItem.type === GalleryItemType.editorCodeSample
         ? galleryItem.id
         : undefined,
-      undefined,
+      updateContent,
       newProjectSeed,
       galleryItem.type
     );
@@ -757,7 +785,7 @@ export default class App extends Component<AppProps, AppState> {
     galleryId?: string,
     sampleSet?: string,
     sampleId?: string,
-    updateContent?: string,
+    updateContent?: IFolder,
     projectSeed?: IProjectSeed,
     galleryType?: GalleryItemType
   ) {
@@ -921,25 +949,17 @@ export default class App extends Component<AppProps, AppState> {
 
       if (updateContent !== undefined && newProject.projectFolder !== null) {
         try {
-          const zs = new ZipStorage();
-
-          await zs.loadFromBase64(updateContent);
-
-          if (zs.errorStatus) {
-            this.setHomeWithError(
-              "Error processing compressed content from URL." + (zs.errorMessage ? "Details: " + zs.errorMessage : "")
-            );
-            return;
-          }
-
           await StorageUtilities.syncFolderTo(
-            zs.rootFolder,
+            updateContent,
             newProject.projectFolder,
             false,
             false,
             false,
             ["package.json", "package.lock.json", "gulpfile.js", "just.config.ts"],
-            ["*.ts", "*.js", "*.json"]
+            ["*.ts", "*.js", "*.json"],
+            undefined,
+            false,
+            true
           );
         } catch (e) {
           this.setHomeWithError(
@@ -951,7 +971,7 @@ export default class App extends Component<AppProps, AppState> {
 
       description = description ? description : title;
 
-      await ProjectUtilities.processNewProject(newProject, suggestedName, description, suggestedShortName);
+      await ProjectUtilities.processNewProject(newProject, suggestedName, description, suggestedShortName, true);
 
       await carto.save();
 
@@ -1218,6 +1238,14 @@ export default class App extends Component<AppProps, AppState> {
     }
   }
 
+  private _handleLocalGalleryCommand(command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) {
+    switch (command) {
+      case LocalGalleryCommand.ensureAndOpenProjectFromFolder:
+        this._newProjectFromMinecraftFolder(folderType, folder);
+        break;
+    }
+  }
+
   private async _handleProjectSelected(project: Project) {
     await project.ensurePreferencesAndFolderLoadedFromFile();
     await project.ensureInflated();
@@ -1302,6 +1330,17 @@ export default class App extends Component<AppProps, AppState> {
           </div>
         </div>
       );
+    } else if (this.state.mode === AppMode.importFromUrl) {
+      interior = (
+        <ImportFromUrl
+          theme={this.props.theme}
+          carto={CartoApp.carto}
+          key="app-cot"
+          project={this.state.activeProject}
+          onModeChangeRequested={this._handleModeChangeRequested}
+          onNewProjectFromGallerySelected={this._newProjectFromGalleryId}
+        />
+      );
     } else if (this.state.mode === AppMode.home) {
       interior = (
         <Home
@@ -1315,6 +1354,7 @@ export default class App extends Component<AppProps, AppState> {
           key="app-h"
           onSetProject={this._setProject}
           onGalleryItemCommand={this._handleProjectGalleryCommand}
+          onLocalGalleryItemCommand={this._handleLocalGalleryCommand}
           onModeChangeRequested={this._handleModeChangeRequested}
           onNewProjectSelected={this._handleNewProject}
           onNewProjectFromFolderSelected={this._handleNewProjectFromFolder}
@@ -1379,6 +1419,7 @@ export default class App extends Component<AppProps, AppState> {
             key="app-hoa"
             onSetProject={this._setProject}
             onGalleryItemCommand={this._handleProjectGalleryCommand}
+            onLocalGalleryItemCommand={this._handleLocalGalleryCommand}
             onModeChangeRequested={this._handleModeChangeRequested}
             onNewProjectSelected={this._handleNewProject}
             onNewProjectFromFolderSelected={this._handleNewProjectFromFolder}

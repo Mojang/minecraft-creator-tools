@@ -9,5 +9,6 @@
       "dataType": 2
     }
   ],
-  "title": "Hover Text Color"
+  "title": "Hover Text Color",
+  "id": "minecraft:hover_text_color"
 }

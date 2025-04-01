@@ -10,7 +10,79 @@
       "id": "minecraft:aim_assist_categories",
       "title": "minecraft:aim_assist_categories",
       "description": "A single Camera Aim-Assist Categories Definition.",
-      "dataType": 16
+      "dataType": 16,
+      "subForm": {
+        "title": "V1 21 50 CameraAimAssistCategoriesDefinition",
+        "description": "V1 21 50 CameraAimAssistCategoriesDefinition",
+        "fields": [
+          {
+            "id": "categories",
+            "title": "categories",
+            "description": "List of categories used by Camera Aim-Assist 'minecraft:aim_assist_preset'.",
+            "dataType": 15,
+            "subForm": {
+              "title": "V1 21 50 CameraAimAssistCategoryDefinition",
+              "description": "V1 21 50 CameraAimAssistCategoryDefinition",
+              "fields": [
+                {
+                  "id": "name",
+                  "title": "name",
+                  "description": "Name of the Aim-Assist Category used during lookup.",
+                  "dataType": 2
+                },
+                {
+                  "id": "priorities",
+                  "title": "priorities",
+                  "description": "The set of priorities used when determining aim-assist selection.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "V1 21 50 CameraAimAssistCategoryPriorities",
+                    "description": "V1 21 50 CameraAimAssistCategoryPriorities",
+                    "fields": [
+                      {
+                        "id": "entities",
+                        "title": "entities",
+                        "description": "Optional. Map of Entity identifiers to Aim-Assist targeting priority. Larger numbers have greater priority.",
+                        "dataType": 31
+                      },
+                      {
+                        "id": "blocks",
+                        "title": "blocks",
+                        "description": "Optional. Map of Block identifiers to Aim-Assist targeting priority. Larger numbers have greater priority.",
+                        "dataType": 31
+                      },
+                      {
+                        "id": "entity_default",
+                        "title": "entity_default",
+                        "description": "Optional. Default Aim-Assist targeting priority used for Entities not found in 'entities'.",
+                        "dataType": 0,
+                        "validity": [
+                          {
+                            "comparison": "<=",
+                            "value": 100
+                          }
+                        ]
+                      },
+                      {
+                        "id": "block_default",
+                        "title": "block_default",
+                        "description": "Optional. Default Aim-Assist targeting priority used for Blocks not found in 'blocks'.",
+                        "dataType": 0,
+                        "validity": [
+                          {
+                            "comparison": "<=",
+                            "value": 100
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
     }
   ],
   "description": "Minecraft Aim Assist Categories Misc",

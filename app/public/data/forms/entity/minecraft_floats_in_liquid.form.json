@@ -1,5 +1,6 @@
 {
   "fields": [],
   "description": "Sets that this entity can float in liquid blocks.",
-  "title": "Floats In Liquid"
+  "title": "Floats In Liquid",
+  "id": "minecraft:floats_in_liquid"
 }

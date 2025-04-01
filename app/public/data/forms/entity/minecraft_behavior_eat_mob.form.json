@@ -121,5 +121,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.eat_mob"
 }

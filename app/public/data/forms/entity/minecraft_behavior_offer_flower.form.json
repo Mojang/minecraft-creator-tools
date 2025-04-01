@@ -102,5 +102,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.offer_flower"
 }

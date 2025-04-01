@@ -124,5 +124,6 @@
         "content": "{ \"test\": \"has_silk_touch\" }"
       }
     ]
-  }
+  },
+  "id": "has_silk_touch"
 }

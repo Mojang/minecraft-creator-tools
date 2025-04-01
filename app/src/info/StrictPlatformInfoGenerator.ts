@@ -23,6 +23,8 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
   title = "Strict Platform Info Generator";
   canAlwaysProcess = true;
 
+  identifierOverridesAreErrors = false;
+
   getTopicData(topicId: number) {
     return {
       title: ProjectInfoUtilities.getTitleFromEnum(StrictPlatformInfoGeneratorTest, topicId),
@@ -54,7 +56,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
               if (desc.identifier !== undefined && desc.identifier.toLowerCase().startsWith("minecraft:")) {
                 infoItems.push(
                   new ProjectInfoItem(
-                    InfoItemType.error,
+                    this.identifierOverridesAreErrors ? InfoItemType.error : InfoItemType.warning,
                     this.id,
                     StrictPlatformInfoGeneratorTest.entityTypeUsesAMinecraftIdentifier,
                     `Uses a minecraft: identifier override`,
@@ -71,7 +73,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
               ) {
                 infoItems.push(
                   new ProjectInfoItem(
-                    InfoItemType.error,
+                    this.identifierOverridesAreErrors ? InfoItemType.error : InfoItemType.warning,
                     this.id,
                     StrictPlatformInfoGeneratorTest.entityTypeUsesAMinecraftRuntimeIdentifier,
                     `Uses a runtime_identifier override`,
@@ -98,7 +100,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
               if (desc.identifier !== undefined && desc.identifier.toLowerCase().startsWith("minecraft:")) {
                 infoItems.push(
                   new ProjectInfoItem(
-                    InfoItemType.error,
+                    this.identifierOverridesAreErrors ? InfoItemType.error : InfoItemType.warning,
                     this.id,
                     StrictPlatformInfoGeneratorTest.itemTypeUsesAMinecraftIdentifier,
                     `Uses a minecraft: identifier override`,

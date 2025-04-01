@@ -67,5 +67,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:damage_over_time"
 }

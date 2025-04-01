@@ -326,5 +326,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.jump_around_target"
 }

@@ -91,5 +91,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:scale_by_age"
 }

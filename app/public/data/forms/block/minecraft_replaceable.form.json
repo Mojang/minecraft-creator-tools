@@ -1,5 +1,6 @@
 {
   "fields": [],
   "description": "A block with this component can be replaced when another block is placed in the same block position.\r\nExperimental toggles required: Upcoming Creator Features (in format versions before 1.21.60)",
-  "title": "Replaceable"
+  "title": "Replaceable",
+  "id": "minecraft:replaceable"
 }

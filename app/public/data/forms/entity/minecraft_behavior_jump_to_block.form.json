@@ -262,5 +262,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.jump_to_block"
 }

@@ -10,7 +10,7 @@ import { faCheck, faRemove } from "@fortawesome/free-solid-svg-icons";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import Carto from "../app/Carto";
 import { CustomLabel } from "./Labels";
-import MinecraftFilter from "../dataform/MinecraftFilter";
+import MinecraftFilterEditor from "../dataform/MinecraftFilterEditor";
 import { faCheckSquare, faSquare } from "@fortawesome/free-regular-svg-icons";
 import Database from "../minecraft/Database";
 import DataForm from "../dataform/DataForm";
@@ -434,7 +434,7 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
         }}
       >
         Run this action when:
-        <MinecraftFilter data={this.props.event.filters} filterContextId={this.props.eventContextId} />
+        <MinecraftFilterEditor data={this.props.event.filters} filterContextId={this.props.eventContextId} />
         <div className="eat-toolbarArea">
           <div className="eat-toolbarLabel">Do:</div>
           <div className="eat-toolbar">

@@ -224,5 +224,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.share_items"
 }

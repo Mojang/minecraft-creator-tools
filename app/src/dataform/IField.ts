@@ -55,6 +55,7 @@ export enum FieldDataType {
   molangArray = 35,
   point2 = 36,
   localizableString = 37,
+  keyedNumberArrayCollection = 38, // { "foo": [255, 0.0, 2555], "barg" : [128, 0, 0] }
 }
 
 export enum FieldValueHumanify {

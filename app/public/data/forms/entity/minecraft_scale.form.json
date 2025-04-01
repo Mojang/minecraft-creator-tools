@@ -100,6 +100,22 @@
             "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:scale/",
             "content": 0.16
           }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_baby/minecraft:scale/",
+            "content": 0.4
+          },
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_adult/minecraft:scale/",
+            "content": 0.8
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:zombie_adult/minecraft:scale/",
+            "content": 1.3
+          }
         ]
       }
     }
@@ -522,6 +538,53 @@
           "value": 0.5
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_baby/minecraft:scale/",
+        "content": {
+          "value": 0.5
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_baby/minecraft:scale/",
+        "content": {
+          "value": 0.5
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_baby/minecraft:scale/",
+        "content": {
+          "value": 0.5
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_baby/minecraft:scale/",
+        "content": {
+          "value": 0.4
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_adult/minecraft:scale/",
+        "content": {
+          "value": 0.8
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_adult/minecraft:scale/",
+        "content": {
+          "value": 1.3
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:scale"
 }

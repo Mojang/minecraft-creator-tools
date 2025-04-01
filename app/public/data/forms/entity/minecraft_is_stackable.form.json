@@ -55,5 +55,6 @@
         "content": {}
       }
     ]
-  }
+  },
+  "id": "minecraft:is_stackable"
 }

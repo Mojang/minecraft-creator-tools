@@ -28,24 +28,28 @@ import IGalleryItem from "../app/IGalleryItem";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import ProjectGallery from "./ProjectGallery";
-import { constants } from "../core/Constants";
+
 import StorageUtilities from "../storage/StorageUtilities";
 import { LocalFolderLabel, ExportBackupLabel } from "./Labels";
 import FileSystemStorage from "../storage/FileSystemStorage";
-import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
-import UrlUtilities from "../core/UrlUtilities";
+import CartoApp from "../app/CartoApp";
 import { ProjectTileDisplayMode } from "./ProjectTile";
+import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
 import ProjectUtilities from "../app/ProjectUtilities";
 import { ProjectEditorMode } from "./ProjectEditorUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import WebUtilities from "./WebUtilities";
 import FileSystemFolder from "../storage/FileSystemFolder";
+import { faNewspaper } from "@fortawesome/free-regular-svg-icons";
 import { MinecraftFlavor } from "../app/ICartoData";
 import IStorage from "../storage/IStorage";
 import MinecraftBox from "./MinecraftBox";
+import MinecraftButton from "./MinecraftButton";
 import IProjectSeed from "../app/IProjectSeed";
 import NewProject from "./NewProject";
+import HomeFooter from "./HomeFooter";
+import HomeHeader from "./HomeHeader";
 
 enum HomeDialogMode {
   none = 0,
@@ -67,6 +71,7 @@ interface IHomeProps extends IAppProps {
   onLog: (message: string) => Promise<void>;
   onSetProject: (project: Project) => void;
   onGalleryItemCommand: (command: GalleryProjectCommand, newProjectSeed: IProjectSeed) => void;
+  onLocalGalleryItemCommand: (command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) => void;
   onNewProjectSelected?: (
     newProjectSeed: IProjectSeed,
     newProjectType: NewProjectTemplateType,
@@ -104,6 +109,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     super(props);
 
     this._handleProjectGalleryCommand = this._handleProjectGalleryCommand.bind(this);
+    this._handleLocalGalleryCommand = this._handleLocalGalleryCommand.bind(this);
 
     if (this.props.errorMessage) {
       this.state = {
@@ -138,8 +144,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._handleErrorMessageConfirm = this._handleErrorMessageConfirm.bind(this);
     this._handleDeleteProjectConfirm = this._handleDeleteProjectConfirm.bind(this);
     this._doManageConsent = this._doManageConsent.bind(this);
-    this._handleExportAllKey = this._handleExportAllKey.bind(this);
-    this._handleExportAllClick = this._handleExportAllClick.bind(this);
+    this._handleExportAll = this._handleExportAll.bind(this);
     this._handleNewSearch = this._handleNewSearch.bind(this);
     this._onGalleryLoaded = this._onGalleryLoaded.bind(this);
     this._handleFileUpload = this._handleFileUpload.bind(this);
@@ -410,13 +415,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this.setCarto(this.props.carto);
   }
 
-  async _handleExportAllKey(event: React.KeyboardEvent) {
-    if (event.key === "Enter") {
-      await this._handleExportAllClick();
-    }
-  }
-
-  async _handleExportAllClick() {
+  async _handleExportAll() {
     const name = "mctbackup." + Utilities.getDateSummary(new Date()) + ".zip";
 
     this.setState({
@@ -705,6 +704,12 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
   }
 
+  private _handleLocalGalleryCommand(command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) {
+    if (this.props.onLocalGalleryItemCommand !== undefined) {
+      this.props.onLocalGalleryItemCommand(command, folderType, folder);
+    }
+  }
+
   private _compareProjects(projectA: Project, projectB: Project) {
     if (projectA.modified === null || projectB.modified === null) {
       return 0;
@@ -804,7 +809,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
     let dialogArea = <></>;
     let localGallery = <></>;
-    const webOnlyLinks: any[] = [];
+
     const browserWidth = WebUtilities.getWidth();
 
     if (this.props === null || this.props.carto === null) {
@@ -938,6 +943,38 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         </MinecraftBox>
       );
 
+      if (Utilities.isPreview) {
+        toolBin.push(
+          <MinecraftButton
+            onClick={this._handleOpenLocalFolderForDocumentationClick}
+            theme={this.props.theme}
+            key="home-documentationEditor"
+            className="home-toolTile"
+          >
+            <div className="home-toolTileInner">
+              <h3 className="home-toolTile-label">
+                <span className="home-iconAdjust">
+                  <FontAwesomeIcon icon={faNewspaper} className="fa-lg home-iconAdjust" />
+                </span>
+                <span>&#160;Documentation Editor</span>
+              </h3>
+              <div className="home-toolTile-instruction">
+                Open on the MinecraftApiDocumentation git repo docs folder on your PC.
+              </div>
+              <div
+                style={{
+                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+                  backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background5,
+                }}
+                className="home-toolTile-button"
+              >
+                Open MinecraftApiDocumentation/docs
+              </div>
+            </div>
+          </MinecraftButton>
+        );
+      }
+
       mainToolArea.push(
         <div key="toolBinArea" className="home-toolTile-bin">
           {toolBin}
@@ -971,25 +1008,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           gallery={this.state.gallery}
         />
       );
-    }
-
-    if (!AppServiceProxy.hasAppService) {
-      if (CartoApp.theme !== CartoThemeStyle.dark) {
-        webOnlyLinks.push(<span key="darksp">&#160;&#160;/&#160;&#160;</span>);
-        webOnlyLinks.push(
-          <a key="darkLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "dark")}>
-            Dark Theme
-          </a>
-        );
-      }
-      if (CartoApp.theme !== CartoThemeStyle.light) {
-        webOnlyLinks.push(<span key="lightsp">&#160;&#160;/&#160;&#160;</span>);
-        webOnlyLinks.push(
-          <a key="lightLink" href={UrlUtilities.ensureProtocol(window.location.href, "theme", "light")}>
-            Light Theme
-          </a>
-        );
-      }
     }
 
     if (this.state?.dialogMode === HomeDialogMode.newProject && this.state.newProjectSeed) {
@@ -1109,29 +1127,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         </div>
       );
     }
-    let storageAction = <></>;
-    let storageMessage = undefined;
 
-    if (AppServiceProxy.hasAppService) {
-      storageMessage = "projects are saved in the mctools subfolder of your Documents library.";
-    } else {
-      storageMessage = "take care: projects are saved locally in your browser's storage on your device.";
-      storageAction = (
-        <span>
-          &#160;&#160;
-          <span
-            className="home-clickLink"
-            tabIndex={0}
-            role="button"
-            onClick={this._handleExportAllClick}
-            onKeyDown={this._handleExportAllKey}
-          >
-            Save backups
-          </span>
-          .
-        </span>
-      );
-    }
     let effectArea = <></>;
 
     if (this.state.effect === HomeEffect.dragOver) {
@@ -1147,7 +1143,14 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     let accessoryToolArea = <></>;
 
     const actionsToolbar = [];
-    if (window.showDirectoryPicker !== undefined) {
+    if (AppServiceProxy.hasAppService) {
+      actionsToolbar.push({
+        icon: <LocalFolderLabel isCompact={false} />,
+        key: "openFolder",
+        onClick: this._handleOpenFolderClick,
+        title: "Open folder on this device",
+      });
+    } else if (window.showDirectoryPicker !== undefined) {
       actionsToolbar.push({
         icon: <LocalFolderLabel isCompact={false} />,
         key: "openFolderA",
@@ -1159,7 +1162,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     actionsToolbar.push({
       icon: <ExportBackupLabel isCompact={AppServiceProxy.hasAppService} />,
       key: "export",
-      onClick: this._handleExportAllClick,
+      onClick: this._handleExportAll,
       title: "Export",
     });
 
@@ -1208,101 +1211,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       </div>
     );
 
-    let termsArea = (
-      <span>
-        <a
-          href={constants.repositoryUrl + "/blob/main/LICENSE"}
-          className="home-header-docsLink"
-          target="_blank"
-          rel="noreferrer noopener"
-          style={{
-            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-          }}
-        >
-          License
-        </a>
-        .
-      </span>
-    );
-    let privacyArea = <></>;
-    let manageConsentArea = <></>;
-    let trademarksArea = <></>;
-
-    if ((window as any).creatorToolsSite?.termsOfUseUrl) {
-      termsArea = (
-        <span>
-          <a
-            href={(window as any).creatorToolsSite.termsOfUseUrl}
-            className="home-header-docsLink"
-            target="_blank"
-            rel="noreferrer noopener"
-            style={{
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-            }}
-          >
-            Terms of use
-          </a>
-          .
-        </span>
-      );
-    }
-
-    if ((window as any).creatorToolsSite?.privacyUrl) {
-      privacyArea = (
-        <span>
-          <a
-            href={(window as any).creatorToolsSite.privacyUrl}
-            className="home-header-docsLink"
-            target="_blank"
-            rel="noreferrer noopener"
-            style={{
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-            }}
-          >
-            Privacy and Cookies
-          </a>
-          .
-        </span>
-      );
-    }
-
-    if ((window as any).manageConsent && (window as any).siteConsent && (window as any).siteConsent.isConsentRequired) {
-      manageConsentArea = (
-        <span>
-          <button
-            id="home-manage-cookies"
-            className="home-header-docsLink"
-            onClick={this._doManageConsent}
-            style={{
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-            }}
-          >
-            Manage Cookies
-          </button>
-          .
-        </span>
-      );
-    }
-
-    if ((window as any).creatorToolsSite?.trademarksUrl) {
-      trademarksArea = (
-        <span>
-          <a
-            href={(window as any).creatorToolsSite.trademarksUrl}
-            className="home-header-docsLink"
-            target="_blank"
-            rel="noreferrer noopener"
-            style={{
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-            }}
-          >
-            Trademarks
-          </a>
-          .
-        </span>
-      );
-    }
-
     return (
       <div
         className="home-layout"
@@ -1319,31 +1227,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
             borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
           }}
         >
-          <div
-            className="home-header"
-            style={{
-              borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
-            }}
-          >
-            <h1 className="home-header-image-outer">
-              <img src="images/mctoolsbanner.png" alt="Minecraft Creator Tools" className="home-header-image"></img>
-            </h1>
-            <div className="home-header-sublink">
-              <a
-                href={"https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview/"}
-                className="home-header-docsLink"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                Docs
-              </a>
-              &#160;&#160;/&#160;&#160;
-              <a href={constants.repositoryUrl} target="_blank" rel="noreferrer noopener">
-                GitHub
-              </a>
-              {webOnlyLinks}
-            </div>
-          </div>
+          <HomeHeader carto={this.props.carto} theme={this.props.theme} />
         </header>
         <main className="home-main">
           <div
@@ -1381,86 +1265,12 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           </div>
         </main>
         <footer className="home-footer">
-          <div
-            aria-label="Usage section"
-            className="home-usage"
-            style={{
-              borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-            }}
-          >
-            <div
-              className="home-usage-interior"
-              style={{
-                borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-              }}
-            >
-              {storageMessage}
-              {storageAction}
-              <a
-                href={"https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview/"}
-                className="home-header-docsLink"
-                target="_blank"
-                rel="noreferrer noopener"
-                style={{
-                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-                }}
-              >
-                Docs
-              </a>{" "}
-              and
-              <a
-                href={constants.repositoryUrl}
-                className="home-header-docsLink"
-                target="_blank"
-                rel="noreferrer noopener"
-                style={{
-                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-                }}
-              >
-                GitHub repo
-              </a>
-              .
-              <a
-                href={Utilities.ensureEndsWithSlash(constants.repositoryUrl + "/issues/new")}
-                className="home-header-docsLink"
-                target="_blank"
-                rel="noreferrer noopener"
-                style={{
-                  color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-                }}
-              >
-                Report an issue
-              </a>
-              .
-            </div>
-          </div>
-          <div
-            className="home-legal"
-            style={{
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-            }}
-          >
-            version {constants.version} - early preview.
-            {termsArea}
-            {privacyArea}
-            {manageConsentArea}
-            {trademarksArea}
-            <a
-              href={constants.homeUrl + "/docs/notice.html"}
-              className="home-header-docsLink"
-              target="_blank"
-              rel="noreferrer noopener"
-              style={{
-                color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
-              }}
-            >
-              Attribution
-            </a>
-            .<span className="home-header-textArea">© 2024 Mojang AB.</span>
-          </div>
+          <HomeFooter
+            onExportAllRequested={this._handleExportAll}
+            theme={this.props.theme}
+            carto={this.props.carto}
+            displayStorageHandling={true}
+          />
         </footer>
       </div>
     );

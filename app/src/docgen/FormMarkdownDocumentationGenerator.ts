@@ -8,6 +8,7 @@ import DataFormUtilities from "../dataform/DataFormUtilities";
 import IField, { FieldDataType } from "../dataform/IField";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import Database from "../minecraft/Database";
+import { ComparisonType } from "../dataform/ICondition";
 
 export const MarkdownTop = `---
 author: mammerla
@@ -20,20 +21,23 @@ ms.date: 02/11/2025
 `;
 
 export enum ExportMode {
-  Other = 0,
-  Triggers = 1,
-  BlockComponents = 2,
-  ItemComponents = 3,
-  EntityComponents = 4,
+  other = 0,
+  triggers = 1,
+  blockComponents = 2,
+  itemComponents = 3,
+  entityComponents = 4,
   AIGoals = 5,
-  Visuals = 6,
-  Fogs = 7,
-  Websockets = 8,
-  Filters = 9,
+  visuals = 6,
+  fogs = 7,
+  websockets = 8,
+  filters = 9,
   MCToolsVal = 10,
-  EventResponses = 11,
-  ClientBiomes = 12,
-  Biomes = 13,
+  eventResponses = 11,
+  clientBiomes = 12,
+  biomes = 13,
+  features = 14,
+  featureCore = 15,
+  deferredRendering = 16,
 }
 
 export default class FormMarkdownDocumentationGenerator {
@@ -41,6 +45,46 @@ export default class FormMarkdownDocumentationGenerator {
     const formsByPath: { [name: string]: IFormDefinition } = {};
 
     await this.loadFormJsonFromFolder(formsByPath, formJsonInputFolder, outputFolder);
+
+    this.exportMarkdownCatalogDocs(
+      formsByPath,
+      outputFolder,
+      ExportMode.features,
+      "/FeaturesReference/Examples/Features/",
+      "/features/minecraft_",
+      "Feature",
+      "Feature Type"
+    );
+
+    this.exportMarkdownDocListPage(
+      formsByPath,
+      outputFolder,
+      ExportMode.entityComponents,
+      "/FeaturesReference/Examples/FeatureList.md",
+      "/features/minecraft_",
+      "Features",
+      "Features"
+    );
+
+    this.exportMarkdownCatalogDocs(
+      formsByPath,
+      outputFolder,
+      ExportMode.featureCore,
+      "/FeaturesReference/Examples/Features/",
+      "/feature/",
+      "Feature",
+      "Feature Type"
+    );
+
+    this.exportListYml(
+      formsByPath,
+      outputFolder,
+      ExportMode.entityComponents,
+      "/FeaturesReference/Examples/Features/TOC.yml",
+      "/features/minecraft_",
+      "- name: Features List\r\n  href: ../FeatureList.md",
+      "minecraft_"
+    );
 
     this.exportMarkdownCatalogDocs(
       formsByPath,
@@ -55,7 +99,7 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
-      ExportMode.Visuals,
+      ExportMode.visuals,
       "/VisualReference/",
       "/visual/",
       "Visuals",
@@ -65,7 +109,7 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
-      ExportMode.Fogs,
+      ExportMode.fogs,
       "/FogsReference/",
       "/fogs/",
       "Fogs",
@@ -75,7 +119,7 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
-      ExportMode.Websockets,
+      ExportMode.websockets,
       "/WebsocketsReference/",
       "/websockets/",
       "Websockets",
@@ -95,7 +139,7 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
-      ExportMode.Triggers,
+      ExportMode.triggers,
       "/EntityReference/Examples/EntityTriggers/",
       "/entity/minecraft_on",
       "Entity",
@@ -105,7 +149,7 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
-      ExportMode.Filters,
+      ExportMode.filters,
       "/EntityReference/Examples/Filters/",
       "/entityfilters/",
       "Entity Filters",
@@ -115,7 +159,7 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
-      ExportMode.EventResponses,
+      ExportMode.eventResponses,
       "/EntityReference/Examples/EventActions/",
       "/entityevents/",
       "Entity Actions",
@@ -125,7 +169,7 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
-      ExportMode.BlockComponents,
+      ExportMode.blockComponents,
       "/BlockReference/Examples/BlockComponents/",
       "/block/minecraft_",
       "Block Components",
@@ -135,7 +179,7 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
-      ExportMode.ItemComponents,
+      ExportMode.itemComponents,
       "/ItemReference/Examples/ItemComponents/",
       "/item/minecraft_",
       "Items",
@@ -145,7 +189,7 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
-      ExportMode.EntityComponents,
+      ExportMode.entityComponents,
       "/EntityReference/Examples/EntityComponents/",
       "/entity/minecraft_",
       "Entity",
@@ -155,9 +199,19 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
-      ExportMode.ClientBiomes,
+      ExportMode.deferredRendering,
+      "/DeferredRendering/",
+      "/client_deferred_rendering/",
+      "Deferred Rendering",
+      "Deferred Rendering"
+    );
+
+    this.exportMarkdownCatalogDocs(
+      formsByPath,
+      outputFolder,
+      ExportMode.clientBiomes,
       "/ClientBiomesReference/Examples/Components/",
-      "/clientbiome/",
+      "/client_biome/",
       "Client Biome",
       "Client Biome"
     );
@@ -165,11 +219,51 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportMarkdownCatalogDocs(
       formsByPath,
       outputFolder,
-      ExportMode.Biomes,
+      ExportMode.biomes,
       "/BiomesReference/Examples/Components/",
       "/biome/",
       "Biome",
       "Biome"
+    );
+
+    this.exportMarkdownDocListPage(
+      formsByPath,
+      outputFolder,
+      ExportMode.entityComponents,
+      "/EntityReference/Examples/ComponentList.md",
+      "/entity/minecraft_",
+      "Entity Components",
+      "EntityComponents"
+    );
+
+    this.exportListYml(
+      formsByPath,
+      outputFolder,
+      ExportMode.entityComponents,
+      "/EntityReference/Examples/EntityComponents/TOC.yml",
+      "/entity/minecraft_",
+      "- name: Components List\r\n  href: ../ComponentList.md",
+      "minecraftComponent_"
+    );
+
+    this.exportMarkdownDocListPage(
+      formsByPath,
+      outputFolder,
+      ExportMode.triggers,
+      "/EntityReference/Examples/TriggerList.md",
+      "/entity/minecraft_on",
+      "Entity Triggers",
+      "EntityTriggers"
+    );
+
+    this.exportListYml(
+      formsByPath,
+      outputFolder,
+      ExportMode.entityComponents,
+      "/EntityReference/Examples/EntityTriggers/TOC.yml",
+      "/entity/minecraft_on",
+      "- name: Triggers List\r\n  href: ../TriggerList.md",
+      "minecraftTrigger_"
     );
 
     this.exportMarkdownDocListPage(
@@ -182,45 +276,72 @@ export default class FormMarkdownDocumentationGenerator {
       "EntityGoals"
     );
 
+    this.exportListYml(
+      formsByPath,
+      outputFolder,
+      ExportMode.AIGoals,
+      "/EntityReference/Examples/EntityGoals/TOC.yml",
+      "/entity/minecraft_behavior",
+      "- name: AI Component List\r\n  href: ../AIGoalList.md"
+    );
+
     this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
-      ExportMode.Filters,
+      ExportMode.filters,
       "/EntityReference/Examples/FilterList.md",
       "/entityfilters/",
       "Entity Filter Types",
       "Filters"
     );
 
+    this.exportListYml(
+      formsByPath,
+      outputFolder,
+      ExportMode.filters,
+      "/EntityReference/Examples/Filters/TOC.yml",
+      "/entityfilters/",
+      "- name: Entity Filter List\r\n  href: ../FilterList.md"
+    );
+
     this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
-      ExportMode.EventResponses,
+      ExportMode.eventResponses,
       "/EntityReference/Examples/EventActions.md",
       "/entityevents/",
       "Event Actions",
       "EventActions"
+    );
+
+    this.exportListYml(
+      formsByPath,
+      outputFolder,
+      ExportMode.eventResponses,
+      "/EntityReference/Examples/EventActions/TOC.yml",
+      "/entityevents/",
+      "- name: Entity Event List\r\n  href: ../EventActions.md"
     );
   }
 
   private getFileNameFromBaseName(baseName: string, exportMode: ExportMode) {
     let fileName = baseName;
 
-    if (exportMode === ExportMode.Triggers && fileName.startsWith("minecraft_on_")) {
+    if (exportMode === ExportMode.triggers && fileName.startsWith("minecraft_on_")) {
       fileName = "minecraftTrigger_" + baseName.substring(10);
-    } else if (exportMode === ExportMode.Triggers && fileName.startsWith("minecraft_on_")) {
+    } else if (exportMode === ExportMode.triggers && fileName.startsWith("minecraft_on_")) {
       fileName = "minecraftTrigger_" + baseName.substring(10);
     } else if (exportMode === ExportMode.AIGoals && fileName.startsWith("minecraft_behavior")) {
       fileName = "minecraftB" + baseName.substring(11);
-    } else if (exportMode === ExportMode.EntityComponents && fileName.startsWith("minecraft_")) {
+    } else if (exportMode === ExportMode.entityComponents && fileName.startsWith("minecraft_")) {
       fileName = "minecraftComponent_" + baseName.substring(10);
-    } else if (exportMode === ExportMode.BlockComponents && fileName.startsWith("minecraft_")) {
+    } else if (exportMode === ExportMode.blockComponents && fileName.startsWith("minecraft_")) {
       fileName = "minecraftBlock_" + baseName.substring(10);
-    } else if (exportMode === ExportMode.ItemComponents && fileName.startsWith("minecraft_")) {
+    } else if (exportMode === ExportMode.itemComponents && fileName.startsWith("minecraft_")) {
       fileName = "minecraft_" + baseName.substring(10);
-    } else if (exportMode === ExportMode.ClientBiomes && fileName.startsWith("minecraft_")) {
+    } else if (exportMode === ExportMode.clientBiomes && fileName.startsWith("minecraft_")) {
       fileName = "minecraftClientBiomes_" + baseName.substring(10);
-    } else if (exportMode === ExportMode.Biomes && fileName.startsWith("minecraft_")) {
+    } else if (exportMode === ExportMode.biomes && fileName.startsWith("minecraft_")) {
       fileName = "minecraftBiomes_" + baseName.substring(10);
     }
 
@@ -398,13 +519,15 @@ export default class FormMarkdownDocumentationGenerator {
       )
     );
 
+    let internalDepCount = 0;
+
     content.push("| " + category + " | Description |");
     content.push("|:-----|:----------|");
 
     for (const formPath in formsByPath) {
       const formO = formsByPath[formPath];
 
-      if (formO) {
+      if (formO && !formO.isDeprecated && !formO.isInternal) {
         let baseName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(formPath));
 
         if (baseName.endsWith(".form")) {
@@ -412,6 +535,12 @@ export default class FormMarkdownDocumentationGenerator {
         }
 
         let canonName = EntityTypeDefinition.getComponentFromBaseFileName(baseName);
+
+        if (formO.id) {
+          canonName = formO.id;
+        } else if (formO.title) {
+          canonName = formO.title;
+        }
 
         content.push(
           "| [" +
@@ -424,6 +553,94 @@ export default class FormMarkdownDocumentationGenerator {
             (formO.description ? this.sanitizeForTable(this.getFirstSentence(formO.description)) : "") +
             " |"
         );
+      } else if (formO) {
+        internalDepCount++;
+      }
+    }
+
+    if (internalDepCount > 0) {
+      content.push("");
+      content.push("## Internal/Deprecated Components");
+      content.push("These components are either deprecated or internal to Minecraft and not usable in custom content.");
+      content.push("");
+
+      content.push("| " + category + " | Description |");
+      content.push("|:-----|:----------|");
+
+      for (const formPath in formsByPath) {
+        const formO = formsByPath[formPath];
+
+        if (formO && (formO.isDeprecated || formO.isInternal)) {
+          let baseName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(formPath));
+
+          if (baseName.endsWith(".form")) {
+            baseName = baseName.substring(0, baseName.length - 5);
+          }
+
+          let canonName = EntityTypeDefinition.getComponentFromBaseFileName(baseName);
+
+          content.push(
+            "| [" +
+              canonName +
+              "](" +
+              subFolderName +
+              "/" +
+              this.getFileNameFromBaseName(baseName, exportMode) +
+              ".md)| " +
+              (formO.description ? this.sanitizeForTable(this.getFirstSentence(formO.description)) : "") +
+              " |"
+          );
+        }
+      }
+    }
+
+    targetFile.setContent(content.join("\r\n"));
+
+    await targetFile.saveContent();
+  }
+
+  public async exportListYml(
+    formsByPath: { [name: string]: IFormDefinition },
+    outputFolder: IFolder,
+    exportMode: ExportMode,
+    subFolderPath: string,
+    formsPath: string,
+    header?: string,
+    prefix?: string
+  ) {
+    const targetFile = await outputFolder.ensureFileFromRelativePath(subFolderPath);
+
+    if (!targetFile) {
+      return;
+    }
+    const content: string[] = [];
+
+    if (header) {
+      content.push(header);
+    }
+
+    formsByPath = this.getFormsFromFilter(formsByPath, formsPath, exportMode);
+
+    for (const formPath in formsByPath) {
+      const formO = formsByPath[formPath];
+
+      if (formO && !formO.isDeprecated && !formO.isInternal) {
+        let baseName = StorageUtilities.getBaseFromName(StorageUtilities.getLeafName(formPath));
+
+        if (baseName.endsWith(".form")) {
+          baseName = baseName.substring(0, baseName.length - 5);
+        }
+
+        if (prefix && baseName.startsWith("minecraftComponent_")) {
+          baseName = prefix + baseName.substring(19);
+        } else if (prefix && baseName.startsWith("minecraft_")) {
+          baseName = prefix + baseName.substring(10);
+        } else if (prefix) {
+          baseName = prefix + baseName;
+        }
+
+        content.push("- name: " + (formO.id ? formO.id : formO.title));
+        content.push("  href: " + this.getFileNameFromBaseName(baseName, exportMode) + ".md");
       }
     }
 
@@ -454,7 +671,7 @@ export default class FormMarkdownDocumentationGenerator {
 
     let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
 
-    if (exportMode === ExportMode.Websockets && form.id) {
+    if (exportMode === ExportMode.websockets && form.id) {
       canonName = form.id;
     }
 
@@ -498,62 +715,66 @@ export default class FormMarkdownDocumentationGenerator {
 
           let targetPath = samplePath;
 
-          for (const sample of sampleArr) {
-            let line = "\r\n```json\r\n";
+          if (!Array.isArray(sampleArr)) {
+            console.log("Malformed sample node at `" + samplePath + "` for file at `" + markdownFile.fullPath + "`");
+          } else {
+            for (const sample of sampleArr) {
+              let line = "\r\n```json\r\n";
 
-            if (
-              baseName.startsWith("minecraft_") &&
-              (typeof sample.content !== "string" || !sample.content.startsWith("minecraft:"))
-            ) {
-              line += '"' + canonName + '": ';
-            }
+              if (
+                baseName.startsWith("minecraft_") &&
+                (typeof sample.content !== "string" || !sample.content.startsWith("minecraft:"))
+              ) {
+                line += '"' + canonName + '": ';
+              }
 
-            if (typeof sample.content === "object" || Array.isArray(sample.content)) {
-              line += JSON.stringify(sample.content, undefined, 2) + "\r\n```\r\n";
-            } else {
-              if (typeof sample.content === "string") {
-                let cont = sample.content.trim();
-
-                if (cont.startsWith("{") && cont.endsWith("}")) {
-                  line += cont + "\r\n```\r\n";
-                } else {
-                  line += '"' + cont + '"\r\n```\r\n';
-                }
+              if (typeof sample.content === "object" || Array.isArray(sample.content)) {
+                line += JSON.stringify(sample.content, undefined, 2) + "\r\n```\r\n";
               } else {
-                line += sample.content + "\r\n```\r\n";
-              }
-            }
+                if (typeof sample.content === "string") {
+                  let cont = sample.content.trim();
 
-            if (!linesAdded.includes(line)) {
-              if (!addedHeader) {
-                addedHeader = true;
-
-                if (targetPath !== "samples" && targetPath !== "sample") {
-                  if (targetPath.startsWith("/vanilla")) {
-                    targetPath = "https://github.com/Mojang/bedrock-samples/tree/preview" + targetPath.substring(8);
-                  } else if (targetPath.startsWith("/samples")) {
-                    targetPath = "https://github.com/microsoft/minecraft-samples/tree/main" + targetPath.substring(8);
+                  if (cont.startsWith("{") && cont.endsWith("}")) {
+                    line += cont + "\r\n```\r\n";
+                  } else {
+                    line += '"' + cont + '"\r\n```\r\n';
                   }
-
-                  content.push(
-                    "#### [" +
-                      Utilities.humanifyMinecraftName(
-                        sampBaseName.substring(0, 1).toUpperCase() + sampBaseName.substring(1)
-                      ) +
-                      "](" +
-                      targetPath +
-                      ")\r\n"
-                  );
+                } else {
+                  line += sample.content + "\r\n```\r\n";
                 }
               }
 
-              if (sampleArr.length > 1) {
-                content.push("At " + sample.path + ": ");
-              }
+              if (!linesAdded.includes(line)) {
+                if (!addedHeader) {
+                  addedHeader = true;
 
-              linesAdded.push(line);
-              content.push(line);
-              samplesAdded++;
+                  if (targetPath !== "samples" && targetPath !== "sample") {
+                    if (targetPath.startsWith("/vanilla")) {
+                      targetPath = "https://github.com/Mojang/bedrock-samples/tree/preview" + targetPath.substring(8);
+                    } else if (targetPath.startsWith("/samples")) {
+                      targetPath = "https://github.com/microsoft/minecraft-samples/tree/main" + targetPath.substring(8);
+                    }
+
+                    content.push(
+                      "#### [" +
+                        Utilities.humanifyMinecraftName(
+                          sampBaseName.substring(0, 1).toUpperCase() + sampBaseName.substring(1)
+                        ) +
+                        "](" +
+                        targetPath +
+                        ")\r\n"
+                    );
+                  }
+                }
+
+                if (sampleArr.length > 1) {
+                  content.push("At " + sample.path + ": ");
+                }
+
+                linesAdded.push(line);
+                content.push(line);
+                samplesAdded++;
+              }
             }
           }
         }
@@ -577,7 +798,7 @@ export default class FormMarkdownDocumentationGenerator {
 
     let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
 
-    if (exportMode === ExportMode.Websockets && form.id) {
+    if (exportMode === ExportMode.websockets && form.id) {
       canonName = form.id;
     }
 
@@ -647,30 +868,39 @@ export default class FormMarkdownDocumentationGenerator {
     if (form.requires) {
       let descStr = "";
       const entityComponents = [];
-      for (const dep of form.requires) {
-        if (dep.type === "tame_owner") {
-          content.push("> [!Note]");
-          content.push(
-            "> Requires a player to be set as the tame owner via taming (or the `tame` command, or the tame API on EntityTameableComponent) in order to work properly."
-          );
-        } else if (dep.type === "targeting_entity_component") {
-          content.push("> [!Note]");
-          content.push(
-            "> Requires a target in order to work properly. Entities can generate targets via one of the following behaviors:"
-          );
-          content.push("> ");
-          content.push(
-            "> * [minecraft:behavior.nearest_attackable_target](../EntityGoals/minecraftBehavior_nearest_attackable_target.md)"
-          );
-          content.push("> * [minecraft:behavior.hurt_by_target](../EntityGoals/minecraftBehavior_hurt_by_target.md)");
-        } else if (dep.type === "entity_component" || dep.type === "item_component" || dep.type === "block_component") {
-          if (dep.description) {
-            if (descStr.length > 0) {
-              descStr += " ";
+
+      if (!Array.isArray(form.requires)) {
+        console.log("Malformed requires node at `" + JSON.stringify(form.requires) + "`");
+      } else {
+        for (const dep of form.requires) {
+          if (dep.type === "tame_owner") {
+            content.push("> [!Note]");
+            content.push(
+              "> Requires a player to be set as the tame owner via taming (or the `tame` command, or the tame API on EntityTameableComponent) in order to work properly."
+            );
+          } else if (dep.type === "targeting_entity_component") {
+            content.push("> [!Note]");
+            content.push(
+              "> Requires a target in order to work properly. Entities can generate targets via one of the following behaviors:"
+            );
+            content.push("> ");
+            content.push(
+              "> * [minecraft:behavior.nearest_attackable_target](../EntityGoals/minecraftBehavior_nearest_attackable_target.md)"
+            );
+            content.push("> * [minecraft:behavior.hurt_by_target](../EntityGoals/minecraftBehavior_hurt_by_target.md)");
+          } else if (
+            dep.type === "entity_component" ||
+            dep.type === "item_component" ||
+            dep.type === "block_component"
+          ) {
+            if (dep.description) {
+              if (descStr.length > 0) {
+                descStr += " ";
+              }
+              descStr += dep.description;
             }
-            descStr += dep.description;
+            entityComponents.push(dep.id);
           }
-          entityComponents.push(dep.id);
         }
       }
 
@@ -821,7 +1051,7 @@ export default class FormMarkdownDocumentationGenerator {
           subForm = await Database.ensureFormLoadedByPath(field.subFormId);
         }
 
-        if (subForm && subForm.fields.length > 0) {
+        if (subForm && subForm.fields && subForm.fields.length > 0) {
           if (field.dataType === FieldDataType.objectArray) {
             fieldRow += " | Array of [" + fieldName + "]" + fieldLink + " items | ";
           } else if (field.dataType === FieldDataType.keyedObjectCollection) {
@@ -855,19 +1085,19 @@ export default class FormMarkdownDocumentationGenerator {
         } else {
           let fieldTypes = "";
 
-          for (const scalarFieldInst of DataFormUtilities.getFieldAndAlternates(field)) {
-            if (fieldTypes.length > 0) {
-              fieldTypes += " or ";
-            }
-
-            fieldTypes += DataFormUtilities.getFieldTypeDescription(scalarFieldInst.dataType);
-          }
+          fieldTypes = DataFormUtilities.getFieldTypeDescription(field.dataType);
 
           fieldRow += " | " + fieldTypes + " | ";
         }
 
         if (field.description) {
-          fieldRow += this.sanitizeForTable(field.description);
+          let descrip = field.description;
+
+          descrip += " " + this.addAdditionalNotes(field);
+
+          descrip = descrip.trim();
+
+          fieldRow += this.sanitizeForTable(descrip);
 
           if (field.note) {
             fieldRow += " " + this.sanitizeForTable(field.note);
@@ -939,6 +1169,27 @@ export default class FormMarkdownDocumentationGenerator {
 
       content.push(...subContent);
     }
+  }
+
+  public addAdditionalNotes(field: IField) {
+    let descrip = "";
+
+    if (field.minLength) {
+      descrip += "Value must have at least " + field.minLength + " items. ";
+    }
+    if (field.maxLength) {
+      descrip += "Value must have at most " + field.maxLength + " items. ";
+    }
+    if (field.validity) {
+      for (const cond of field.validity) {
+        if (cond.comparison === ComparisonType.matchesPattern) {
+          descrip += 'Value must be match patern "' + cond.value + '". ';
+        } else if (cond.comparison) {
+          descrip += "Value must be " + cond.comparison + " " + cond.value + ". ";
+        }
+      }
+    }
+    return descrip;
   }
 
   public async appendValidatorForm(form: IFormDefinition, content: string[], depth: number, altTitle?: string) {

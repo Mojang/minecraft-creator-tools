@@ -4,24 +4,118 @@
       "id": "offset",
       "title": "offset",
       "description": "offset",
-      "dataType": 15
+      "dataType": 24,
+      "minLength": 3,
+      "maxLength": 3,
+      "alternates": [
+        {
+          "id": "offset",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "title": "Offset",
+            "description": "Offset",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "expression",
+                "description": "expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "version",
+                "description": "version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "offset",
+          "dataType": 3
+        }
+      ]
     },
     {
       "id": "direction",
       "title": "direction",
       "description": "direction",
-      "dataType": 16,
-      "subForm": {
-        "title": "Direction",
-        "description": "Direction",
-        "fields": []
-      }
+      "dataType": 2,
+      "alternates": [
+        {
+          "id": "direction",
+          "dataType": 24,
+          "minLength": 3,
+          "maxLength": 3,
+          "alternates": [
+            {
+              "id": "direction",
+              "dataType": 14,
+              "readOnly": true,
+              "subForm": {
+                "title": "Direction",
+                "description": "Direction",
+                "fields": [
+                  {
+                    "id": "expression",
+                    "title": "expression",
+                    "description": "expression",
+                    "dataType": 2
+                  },
+                  {
+                    "id": "version",
+                    "title": "version",
+                    "description": "version",
+                    "dataType": 0
+                  }
+                ]
+              }
+            },
+            {
+              "id": "direction",
+              "dataType": 3
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "half_dimensions",
       "title": "half_dimensions",
       "description": "half_dimensions",
-      "dataType": 15
+      "dataType": 24,
+      "minLength": 3,
+      "maxLength": 3,
+      "alternates": [
+        {
+          "id": "half_dimensions",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "title": "Half Dimensions",
+            "description": "Half Dimensions",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "expression",
+                "description": "expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "version",
+                "description": "version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "half_dimensions",
+          "dataType": 3
+        }
+      ]
     },
     {
       "id": "surface_only",
@@ -30,6 +124,6 @@
       "dataType": 1
     }
   ],
-  "description": "Emitter Shape Box V1.21.0 Misc",
-  "title": "Emitter Shape Box V1.21.0 Misc"
+  "description": "Emitter Shape Box Misc",
+  "title": "Emitter Shape Box Misc"
 }

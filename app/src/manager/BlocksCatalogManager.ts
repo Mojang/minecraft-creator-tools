@@ -15,13 +15,14 @@ import ContentIndex from "../core/ContentIndex";
 import BlocksCatalogDefinition from "../minecraft/BlocksCatalogDefinition";
 
 export enum BlocksCatalogUpdate {
-  RemoveUnusedBlockResourceIdentifiers = 1051,
+  removeUnusedBlockResourceIdentifiers = 1051,
 }
 
 export enum BlocksCatalogInfo {
-  UnusedBlockCatalogResource = 100,
-  FoundBlockCatalogResource = 101,
-  BlockResourceIdentifier = 53,
+  unusedBlockCatalogResource = 100,
+  foundBlockCatalogResource = 101,
+  vanillaOverrideBlockCatalogResource = 102,
+  blockResourceIdentifier = 53,
 }
 
 export default class BlocksCatalogManager implements IProjectInfoGenerator, IProjectUpdater {
@@ -30,7 +31,7 @@ export default class BlocksCatalogManager implements IProjectInfoGenerator, IPro
 
   getTopicData(topicId: number): IProjectInfoTopicData | undefined {
     switch (topicId) {
-      case BlocksCatalogInfo.UnusedBlockCatalogResource:
+      case BlocksCatalogInfo.unusedBlockCatalogResource:
         return {
           title: "Block Resource Identifier",
         };
@@ -65,24 +66,35 @@ export default class BlocksCatalogManager implements IProjectInfoGenerator, IPro
             new ProjectInfoItem(
               InfoItemType.info,
               this.id,
-              BlocksCatalogInfo.FoundBlockCatalogResource,
-              `Blocks catalog resource found.`,
+              BlocksCatalogInfo.foundBlockCatalogResource,
+              `Blocks catalog resource found`,
               pi
             )
           );
 
           if (blocksCatalog) {
-            const unusedIds = await blocksCatalog.getUnusedDependencies(project);
+            const dependencies = await blocksCatalog.getDependenciesList(project);
 
-            for (const id of unusedIds) {
-              blocksCatalog.removeId(id);
-
+            for (const id of dependencies.unused) {
               results.push(
                 new ProjectInfoItem(
-                  InfoItemType.error,
+                  InfoItemType.warning,
                   this.id,
-                  BlocksCatalogInfo.UnusedBlockCatalogResource,
-                  `Blocks catalog resource is not used.`,
+                  BlocksCatalogInfo.unusedBlockCatalogResource,
+                  `Blocks catalog resource is not used`,
+                  pi,
+                  id
+                )
+              );
+            }
+
+            for (const id of dependencies.vanillaOverride) {
+              results.push(
+                new ProjectInfoItem(
+                  InfoItemType.recommendation,
+                  this.id,
+                  BlocksCatalogInfo.vanillaOverrideBlockCatalogResource,
+                  `Overrides vanilla resource, which is not recommended`,
                   pi,
                   id
                 )
@@ -111,10 +123,10 @@ export default class BlocksCatalogManager implements IProjectInfoGenerator, IPro
           let wasUpdated = false;
           if (blocksCatalog) {
             switch (updateId) {
-              case BlocksCatalogUpdate.RemoveUnusedBlockResourceIdentifiers:
-                const unusedIds = await blocksCatalog.getUnusedDependencies(project);
+              case BlocksCatalogUpdate.removeUnusedBlockResourceIdentifiers:
+                const dependencies = await blocksCatalog.getDependenciesList(project);
 
-                for (const id of unusedIds) {
+                for (const id of dependencies.unused) {
                   blocksCatalog.removeId(id);
 
                   wasUpdated = true;
@@ -122,8 +134,8 @@ export default class BlocksCatalogManager implements IProjectInfoGenerator, IPro
                     new ProjectUpdateResult(
                       UpdateResultType.updatedFile,
                       this.id,
-                      BlocksCatalogUpdate.RemoveUnusedBlockResourceIdentifiers,
-                      "Removed ununused blocks catalog resource.",
+                      BlocksCatalogUpdate.removeUnusedBlockResourceIdentifiers,
+                      "Removed ununused blocks catalog resource",
                       pi,
                       id
                     )
@@ -144,6 +156,6 @@ export default class BlocksCatalogManager implements IProjectInfoGenerator, IPro
   }
 
   getUpdateIds() {
-    return [BlocksCatalogUpdate.RemoveUnusedBlockResourceIdentifiers];
+    return [BlocksCatalogUpdate.removeUnusedBlockResourceIdentifiers];
   }
 }

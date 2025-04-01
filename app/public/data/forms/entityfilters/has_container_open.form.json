@@ -124,5 +124,6 @@
         "content": "{ \"test\": \"has_container_open\" }"
       }
     ]
-  }
+  },
+  "id": "has_container_open"
 }

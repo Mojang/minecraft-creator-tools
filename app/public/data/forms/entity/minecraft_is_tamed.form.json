@@ -86,6 +86,13 @@
         "path": "/minecraft:entity/component_groups/minecraft:llama_tamed/minecraft:is_tamed/",
         "content": {}
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_tame/minecraft:is_tamed/",
+        "content": {}
+      }
     ]
-  }
+  },
+  "id": "minecraft:is_tamed"
 }

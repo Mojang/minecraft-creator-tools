@@ -196,6 +196,27 @@
           }
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_tame/minecraft:behavior.teleport_to_owner/",
+        "content": {
+          "priority": 0,
+          "filters": {
+            "all_of": [
+              {
+                "test": "owner_distance",
+                "operator": ">",
+                "value": 12
+              },
+              {
+                "test": "is_panicking"
+              }
+            ]
+          }
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.teleport_to_owner"
 }

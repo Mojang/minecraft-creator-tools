@@ -4,29 +4,116 @@
       "id": "offset",
       "title": "offset",
       "description": "offset",
-      "dataType": 15
+      "dataType": 24,
+      "minLength": 3,
+      "maxLength": 3,
+      "alternates": [
+        {
+          "id": "offset",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "title": "Offset",
+            "description": "Offset",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "expression",
+                "description": "expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "version",
+                "description": "version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "offset",
+          "dataType": 3
+        }
+      ]
     },
     {
       "id": "direction",
       "title": "direction",
       "description": "direction",
-      "dataType": 16,
-      "subForm": {
-        "title": "Direction",
-        "description": "Direction",
-        "fields": []
-      }
+      "dataType": 2,
+      "alternates": [
+        {
+          "id": "direction",
+          "dataType": 24,
+          "minLength": 3,
+          "maxLength": 3,
+          "alternates": [
+            {
+              "id": "direction",
+              "dataType": 14,
+              "readOnly": true,
+              "subForm": {
+                "title": "Direction",
+                "description": "Direction",
+                "fields": [
+                  {
+                    "id": "expression",
+                    "title": "expression",
+                    "description": "expression",
+                    "dataType": 2
+                  },
+                  {
+                    "id": "version",
+                    "title": "version",
+                    "description": "version",
+                    "dataType": 0
+                  }
+                ]
+              }
+            },
+            {
+              "id": "direction",
+              "dataType": 3
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "radius",
       "title": "radius",
       "description": "radius",
-      "dataType": 16,
-      "subForm": {
-        "title": "Radius",
-        "description": "Radius",
-        "fields": []
-      }
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "radius",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "title": "Radius",
+            "description": "Radius",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "expression",
+                "description": "expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "version",
+                "description": "version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "radius",
+          "dataType": 3
+        }
+      ]
     },
     {
       "id": "surface_only",
@@ -38,14 +125,46 @@
       "id": "plane_normal",
       "title": "plane_normal",
       "description": "plane_normal",
-      "dataType": 16,
-      "subForm": {
-        "title": "Plane Normal",
-        "description": "Plane Normal",
-        "fields": []
-      }
+      "dataType": 2,
+      "alternates": [
+        {
+          "id": "plane_normal",
+          "dataType": 24,
+          "minLength": 3,
+          "maxLength": 3,
+          "alternates": [
+            {
+              "id": "plane_normal",
+              "dataType": 14,
+              "readOnly": true,
+              "subForm": {
+                "title": "Plane Normal",
+                "description": "Plane Normal",
+                "fields": [
+                  {
+                    "id": "expression",
+                    "title": "expression",
+                    "description": "expression",
+                    "dataType": 2
+                  },
+                  {
+                    "id": "version",
+                    "title": "version",
+                    "description": "version",
+                    "dataType": 0
+                  }
+                ]
+              }
+            },
+            {
+              "id": "plane_normal",
+              "dataType": 3
+            }
+          ]
+        }
+      ]
     }
   ],
-  "description": "Emitter Shape Disc V1.21.0 Misc",
-  "title": "Emitter Shape Disc V1.21.0 Misc"
+  "description": "Emitter Shape Disc Misc",
+  "title": "Emitter Shape Disc Misc"
 }

@@ -63,5 +63,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.move_towards_target"
 }

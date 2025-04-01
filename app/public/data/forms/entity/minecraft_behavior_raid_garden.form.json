@@ -196,5 +196,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.raid_garden"
 }

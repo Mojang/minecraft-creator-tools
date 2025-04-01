@@ -197,5 +197,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.find_mount"
 }

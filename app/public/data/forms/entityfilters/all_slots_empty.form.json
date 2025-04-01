@@ -163,5 +163,6 @@
         "content": "{ \"test\": \"all_slots_empty\" }"
       }
     ]
-  }
+  },
+  "id": "all_slots_empty"
 }

@@ -22,6 +22,7 @@ export default interface IProjectInfo {
   testNotApplicableCount?: number;
   errorSummary?: string;
   internalProcessingErrorSummary?: string;
+  warningSummary?: string;
   testFailSummary?: string;
   resourcePackManifestCount?: number;
   unknownJsonCount?: number;

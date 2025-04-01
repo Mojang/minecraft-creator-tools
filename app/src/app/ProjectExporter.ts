@@ -22,6 +22,7 @@ import HttpStorage from "../storage/HttpStorage";
 import ProjectBuild from "./ProjectBuild";
 import { Generator } from "../minecraft/WorldLevelDat";
 import IConversionSettings from "../core/IConversionSettings";
+import { ProjectItemType } from "./IProjectItemData";
 
 export const enum FolderDeploy {
   retailFolders = 0,
@@ -51,8 +52,9 @@ export default class ProjectExporter {
       return undefined;
     }
 
-    const mcworld = await this.generateBetaApisWorldWithPacks(project, name, undefined, {
+    const mcworld = await this.generateWorldWithPacksAndContent(project, name, undefined, {
       generator: Generator.flat,
+      betaApisExperiment: true,
     });
 
     if (!mcworld) {
@@ -659,11 +661,12 @@ export default class ProjectExporter {
 
     await mcworld.applyWorldSettings(worldSettings);
 
+    await ProjectExporter.ensureExperimentsEnabledOnWorld(mcworld, project);
+
     if (projectBuild) {
       await ProjectExporter.deployProjectPacks(project, projectBuild, targetFolder, mcworld);
     }
 
-    mcworld.betaApisExperiment = true;
     mcworld.name = project.name;
 
     await targetFolder.saveAll();
@@ -835,7 +838,7 @@ export default class ProjectExporter {
     }
 
     const fileName = project.name + " flatpack.mcworld";
-    const name = project.name + " Flat GameTest";
+    const name = project.name + " Flat";
 
     const mcworld = await ProjectExporter.generateFlatGameTestWorldWithPackRefs(project, name);
 
@@ -917,7 +920,7 @@ export default class ProjectExporter {
     }
   }
 
-  static async generateBetaApisWorldWithPacks(
+  static async generateWorldWithPacksAndContent(
     project: Project,
     worldName: string,
     worldContent?: Uint8Array,
@@ -946,12 +949,45 @@ export default class ProjectExporter {
       return undefined;
     }
 
-    mcworld.betaApisExperiment = true;
+    await this.ensureExperimentsEnabledOnWorld(mcworld, project);
+
     mcworld.name = worldName;
 
     await ProjectExporter.deployProjectPacks(project, projectBuild, mcworld.storage.rootFolder, mcworld);
 
     return mcworld;
+  }
+
+  static async ensureExperimentsEnabledOnWorld(mcworld: MCWorld, project: Project) {
+    const itemsCopy = project.getItemsCopy();
+
+    for (const projectItem of itemsCopy) {
+      if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
+        await projectItem.ensureFileStorage();
+
+        if (projectItem.file) {
+          await projectItem.file.loadContent();
+
+          let content = projectItem.file.content;
+
+          if (typeof content === "string" && content.indexOf("-beta") >= 0) {
+            mcworld.betaApisExperiment = true;
+          }
+        }
+      } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
+        await projectItem.ensureFileStorage();
+
+        if (projectItem.file) {
+          await projectItem.file.loadContent();
+
+          let content = projectItem.file.content;
+
+          if (typeof content === "string" && content.indexOf("pbr") >= 0 && content.indexOf("capabilities") >= 0) {
+            mcworld.deferredTechnicalPreviewExperiment = true;
+          }
+        }
+      }
+    }
   }
 
   static async generateBetaApisWorldWithPackRefs(

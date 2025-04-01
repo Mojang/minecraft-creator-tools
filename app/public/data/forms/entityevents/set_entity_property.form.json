@@ -9,5 +9,6 @@
         "content": "\t\t\"set_property\": {\r\n\t\t\t\"minecraft:has_nectar\": false\r\n\t\t}\r\n\t"
       }
     ]
-  }
+  },
+  "id": "Set Entity Property"
 }

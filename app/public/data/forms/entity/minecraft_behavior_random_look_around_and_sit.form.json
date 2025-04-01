@@ -236,5 +236,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.random_look_around_and_sit"
 }

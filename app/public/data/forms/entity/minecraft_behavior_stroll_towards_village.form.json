@@ -107,5 +107,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.stroll_towards_village"
 }

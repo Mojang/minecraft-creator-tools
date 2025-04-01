@@ -124,5 +124,6 @@
         "content": "{ \"test\": \"has_trade_supply\" }"
       }
     ]
-  }
+  },
+  "id": "has_trade_supply"
 }

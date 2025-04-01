@@ -43,5 +43,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.eat_carried_item"
 }

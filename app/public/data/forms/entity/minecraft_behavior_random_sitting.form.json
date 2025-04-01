@@ -37,5 +37,6 @@
     }
   ],
   "description": "Allows the mob to randomly sit for a duration.",
-  "title": "Random Sitting Behavior"
+  "title": "Random Sitting Behavior",
+  "id": "minecraft:behavior.random_sitting"
 }

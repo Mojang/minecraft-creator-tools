@@ -5,6 +5,16 @@
       "title": "num_viewable_slots",
       "description": "The maximum number of slots in the bundle viewable by the plater. Can be from 1 to 64. Default is 12.",
       "dataType": 0,
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": 1
+        },
+        {
+          "comparison": "<=",
+          "value": 64
+        }
+      ],
       "samples": {
         "/vanilla/behavior_pack/items/black_bundle.json": [
           {

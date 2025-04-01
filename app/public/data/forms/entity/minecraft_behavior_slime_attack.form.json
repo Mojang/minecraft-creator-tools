@@ -94,5 +94,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.slime_attack"
 }

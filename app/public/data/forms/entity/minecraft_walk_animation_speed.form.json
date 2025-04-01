@@ -9,5 +9,6 @@
     }
   ],
   "description": "Sets the speed multiplier for this entity's walk animation speed.",
-  "title": "Walk Animation Speed"
+  "title": "Walk Animation Speed",
+  "id": "minecraft:walk_animation_speed"
 }

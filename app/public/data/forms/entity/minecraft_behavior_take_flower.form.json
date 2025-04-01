@@ -150,5 +150,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.take_flower"
 }

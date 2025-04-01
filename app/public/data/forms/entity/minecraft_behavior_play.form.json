@@ -167,5 +167,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.play"
 }

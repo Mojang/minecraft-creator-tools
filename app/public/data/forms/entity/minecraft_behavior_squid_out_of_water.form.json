@@ -47,5 +47,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.squid_out_of_water"
 }

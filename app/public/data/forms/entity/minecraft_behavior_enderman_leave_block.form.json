@@ -33,5 +33,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.enderman_leave_block"
 }

@@ -128,5 +128,6 @@
         "content": "{ \"test\": \"is_persistent\" }"
       }
     ]
-  }
+  },
+  "id": "is_persistent"
 }

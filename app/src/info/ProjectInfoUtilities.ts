@@ -11,6 +11,14 @@ export default class ProjectInfoUtilities {
       return Utilities.humanifyJsName(categoryEnum[topicId]);
     }
 
+    if (topicId === 0) {
+      return "Test Failure";
+    } else if (topicId === 1) {
+      return "Test Success";
+    } else if (topicId === 2) {
+      return "Test Not Applicable";
+    }
+
     return "General Item " + topicId;
   }
 

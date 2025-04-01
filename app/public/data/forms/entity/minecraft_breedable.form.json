@@ -1,5 +1,6 @@
 {
   "description": "Allows an entity to establish a way to get into the love state used for breeding.",
+  "note": "This component is commonly used in conjunction with the 'minecraft:behavior.breed' component.",
   "fields": [
     {
       "id": "allow_sitting",
@@ -10,6 +11,12 @@
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_adult/minecraft:breedable/",
+            "content": true
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_adult/minecraft:breedable/",
             "content": true
           }
         ]
@@ -280,6 +287,19 @@
           {
             "path": "/minecraft:entity/component_groups/minecraft:sheep_adult/minecraft:breedable/",
             "content": "melon_slice"
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:breedable/",
+            "content": [
+              "wheat_seeds",
+              "beetroot_seeds",
+              "melon_seeds",
+              "pumpkin_seeds",
+              "pitcher_pod",
+              "torchflower_seeds"
+            ]
           }
         ]
       },
@@ -1342,6 +1362,101 @@
           }
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:breedable/",
+        "content": {
+          "require_tame": false,
+          "breeds_with": {
+            "mate_type": "mamm_cds:dream_turkey",
+            "baby_type": "mamm_cds:dream_turkey",
+            "breed_event": {
+              "event": "minecraft:entity_born",
+              "target": "baby"
+            }
+          },
+          "breed_items": [
+            "wheat_seeds",
+            "beetroot_seeds",
+            "melon_seeds",
+            "pumpkin_seeds",
+            "pitcher_pod",
+            "torchflower_seeds"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:breedable/",
+        "content": {
+          "require_tame": false,
+          "breeds_with": {
+            "mate_type": "mamm_cds:dream_turkey",
+            "baby_type": "mamm_cds:dream_turkey",
+            "breed_event": {
+              "event": "minecraft:entity_born",
+              "target": "baby"
+            }
+          },
+          "breed_items": [
+            "wheat_seeds",
+            "beetroot_seeds",
+            "melon_seeds",
+            "pumpkin_seeds",
+            "pitcher_pod",
+            "torchflower_seeds"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:breedable/",
+        "content": {
+          "require_tame": false,
+          "breeds_with": {
+            "mate_type": "mamm_cds:dream_turkey",
+            "baby_type": "mamm_cds:dream_turkey",
+            "breed_event": {
+              "event": "minecraft:entity_born",
+              "target": "baby"
+            }
+          },
+          "breed_items": [
+            "wheat_seeds",
+            "beetroot_seeds",
+            "melon_seeds",
+            "pumpkin_seeds",
+            "pitcher_pod",
+            "torchflower_seeds"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_adult/minecraft:breedable/",
+        "content": {
+          "require_tame": true,
+          "require_full_health": true,
+          "allow_sitting": true,
+          "breeds_with": {
+            "mate_type": "mike_eliz:eliza",
+            "baby_type": "mike_eliz:eliza",
+            "breed_event": {
+              "event": "minecraft:entity_born",
+              "target": "baby"
+            }
+          },
+          "breed_items": [
+            "fish",
+            "salmon"
+          ]
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:breedable"
 }

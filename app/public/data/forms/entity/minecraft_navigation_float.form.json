@@ -166,5 +166,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:navigation.float"
 }

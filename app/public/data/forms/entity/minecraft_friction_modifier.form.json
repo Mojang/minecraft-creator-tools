@@ -9,5 +9,6 @@
     }
   ],
   "description": "Defines how much friction affects this entity.",
-  "title": "Friction Modifier"
+  "title": "Friction Modifier",
+  "id": "minecraft:friction_modifier"
 }

@@ -39,6 +39,12 @@
             "path": "/minecraft:entity/component_groups/minecraft:ocelot_tame/minecraft:behavior.ocelot_sit_on_block/",
             "content": 6
           }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_tame/minecraft:behavior.ocelot_sit_on_block/",
+            "content": 7
+          }
         ]
       }
     }
@@ -63,6 +69,16 @@
           "speed_multiplier": 1
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_tame/minecraft:behavior.ocelot_sit_on_block/",
+        "content": {
+          "priority": 7,
+          "speed_multiplier": 1
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.ocelot_sit_on_block"
 }

@@ -87,5 +87,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:on_hurt_by_player"
 }

@@ -3,7 +3,6 @@
     {
       "id": "genes",
       "title": "Genes",
-      "description": "The list of genes that this entity has and will cross with a partner during breeding.",
       "dataType": 15,
       "subForm": {
         "description": "The list of genes that this entity has and will cross with a partner during breeding.",
@@ -75,6 +74,7 @@
           {
             "id": "use_simplified_breeding",
             "title": "Use Simplified Breeding",
+            "description": "If true, mobs spawned from breeding will always inherit main alleles from parents' main alleles and hidden alleles from the hidden ones.",
             "dataType": 2
           }
         ]
@@ -181,7 +181,8 @@
             ]
           }
         ]
-      }
+      },
+      "description": "The list of genes that this entity has and will cross with a partner during breeding."
     },
     {
       "id": "mutation_rate",
@@ -315,5 +316,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:genetics"
 }

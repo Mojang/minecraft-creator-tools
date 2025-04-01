@@ -35,5 +35,6 @@
     "visual"
   ],
   "description": "The block's translation, rotation and scale with respect to the center of its world position",
-  "title": "Transformation"
+  "title": "Transformation",
+  "id": "minecraft:transformation"
 }

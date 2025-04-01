@@ -83,5 +83,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.drink_milk"
 }

@@ -458,6 +458,136 @@
         }
       }
     ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "mamm_cds:cooked_dream_turkey"
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/dream_essence.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "mamm_cds:dream_essence"
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "mamm_cds:dream_turkey"
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "mamm_cds:cooked_dream_turkey"
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/dream_essence.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "mamm_cds:dream_essence"
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "mamm_cds:dream_turkey"
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "mamm_cds:cooked_dream_turkey"
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/dream_essence.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "mamm_cds:dream_essence"
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "mamm_cds:dream_turkey"
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal_pencil.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "mamm_cds:journal_pencil"
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "mamm_cds:journal"
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": "axe_turret_kit"
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/bow_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": "bow_turret_kit"
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/crossbow_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": "crossbow_turret_kit"
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/depleted_gray_shard.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": "depleted_gray_shard"
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/gray_wave_generator_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": "gray_wave_generator_kit"
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/shbullet_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": "shbullet_turret_kit"
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/smfireball_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": "smfireball_turret_kit"
+      }
+    ],
     "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
       {
         "path": "/minecraft:item/components/minecraft:icon/",
@@ -561,6 +691,23 @@
           "texture": "demo:wrench"
         }
       }
+    ],
+    "/samples/debug_tools/behavior_packs/common/items/magnifying_glass.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "debug_tools:magnifying_glass"
+        }
+      }
+    ],
+    "/samples/debug_tools/behavior_packs/common/items/wrench.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:icon/",
+        "content": {
+          "texture": "debug_tools:wrench"
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:icon"
 }

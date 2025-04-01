@@ -387,6 +387,14 @@
               "event": "minecraft:convert_to_drowned"
             }
           }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:start_drowned_transformation/minecraft:timer/",
+            "content": {
+              "event": "minecraft:convert_to_drowned"
+            }
+          }
         ]
       }
     }
@@ -723,6 +731,19 @@
           }
         }
       }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:start_drowned_transformation/minecraft:timer/",
+        "content": {
+          "looping": false,
+          "time": 30,
+          "time_down_event": {
+            "event": "minecraft:convert_to_drowned"
+          }
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:timer"
 }

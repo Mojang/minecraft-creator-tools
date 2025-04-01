@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { IEntityTrigger } from "./IEntityTrigger";
-import { IFilterClauseSet } from "./IFilterClauseSet";
+import { MinecraftFilterClauseSet } from "./jsoncommon/MinecraftFilterClauseSet";
 
 export interface IPlaySound {
   sound: string;
@@ -23,7 +23,7 @@ export interface IEmitParticle {
 export default interface IEntityAction {
   add?: { component_groups: string[] } | undefined;
   remove?: { component_groups: string[] } | undefined;
-  filters?: IFilterClauseSet | undefined;
+  filters?: MinecraftFilterClauseSet | undefined;
   set_property?: { [propertyName: string]: string | number | boolean | undefined };
   reset_target?: object;
   play_sound?: IPlaySound;

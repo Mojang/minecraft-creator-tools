@@ -75,7 +75,6 @@
       "dataType": 0,
       "experienceType": 3,
       "suggestedMaxValue": 20,
-      "defaultValue": 10,
       "samples": {
         "/vanilla/behavior_pack/entities/allay.json": [
           {
@@ -140,6 +139,44 @@
               "event": "minecraft:on_unleash",
               "target": "self"
             }
+          }
+        ]
+      }
+    },
+    {
+      "id": "presets",
+      "title": "Presets",
+      "description": "Defines how this entity behaves when leashed to another entity. A preset is selected upon leashing and remains until the entity is leashed to something else. The first preset whose \"filter\" conditions are met will be applied; if none match, a default configuration is used instead.",
+      "dataType": 15,
+      "subForm": {
+        "description": "Defines how this entity behaves when leashed to another entity. A preset is selected upon leashing and remains until the entity is leashed to something else. The first preset whose \"filter\" conditions are met will be applied; if none match, a default configuration is used instead.",
+        "fields": [
+          {
+            "id": "filter",
+            "title": "Filter",
+            "description": "Conditions that must be met for this preset to be applied. These conditions are only evaluated upon leashing.",
+            "dataType": 20
+          },
+          {
+            "id": "hard_distance",
+            "title": "Hard Distance",
+            "description": "Distance in blocks at which the leash stiffens, restricting movement.",
+            "defaultValue": 6,
+            "dataType": 3
+          },
+          {
+            "id": "max_distance",
+            "title": "Max Distance",
+            "description": "Distance in blocks at which the leash breaks.",
+            "defaultValue": 10,
+            "dataType": 3
+          },
+          {
+            "id": "soft_distance",
+            "title": "Soft Distance",
+            "description": "Distance in blocks at which the \"spring\" effect starts acting to keep this entity close to the entity that leashed it.",
+            "defaultValue": 4,
+            "dataType": 3
           }
         ]
       }
@@ -611,6 +648,47 @@
           "max_distance": 10
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:leashable/",
+        "content": {
+          "soft_distance": 4,
+          "hard_distance": 6,
+          "max_distance": 10
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:leashable/",
+        "content": {
+          "soft_distance": 4,
+          "hard_distance": 6,
+          "max_distance": 10
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:leashable/",
+        "content": {
+          "soft_distance": 4,
+          "hard_distance": 6,
+          "max_distance": 10
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:leashable/",
+        "content": {
+          "soft_distance": 4,
+          "hard_distance": 6,
+          "max_distance": 10
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:leashable"
 }

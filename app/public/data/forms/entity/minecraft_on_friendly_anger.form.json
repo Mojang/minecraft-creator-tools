@@ -126,5 +126,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:on_friendly_anger"
 }

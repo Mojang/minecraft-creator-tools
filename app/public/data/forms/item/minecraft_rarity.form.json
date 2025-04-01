@@ -33,5 +33,6 @@
     ]
   },
   "description": "Specifies the base rarity and subsequently color of the item name when the player hovers the cursor over the item.",
-  "title": "Rarity"
+  "title": "Rarity",
+  "id": "minecraft:rarity"
 }

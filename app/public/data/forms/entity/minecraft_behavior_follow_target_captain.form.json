@@ -109,5 +109,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.follow_target_captain"
 }

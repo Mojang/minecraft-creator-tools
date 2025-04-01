@@ -43,6 +43,18 @@ export default class ZipStorage extends StorageBase implements IStorage {
     }
   }
 
+  static fromJsonString(jsonData: string) {
+    const zs = new ZipStorage();
+
+    const file = zs.rootFolder.ensureFile("d.json");
+
+    file.setContent(jsonData);
+
+    file.saveContent();
+
+    return zs;
+  }
+
   static fromJsObject(data: object) {
     const zs = new ZipStorage();
 
@@ -57,6 +69,14 @@ export default class ZipStorage extends StorageBase implements IStorage {
     file.saveContent();
 
     return zs;
+  }
+
+  static async fromZipBytesToJsonObject(data: Uint8Array) {
+    const zs = new ZipStorage();
+
+    await zs.loadFromUint8Array(data);
+
+    return await ZipStorage.toJsObject(zs);
   }
 
   static async toJsObject(storage: IStorage) {
@@ -123,6 +143,10 @@ export default class ZipStorage extends StorageBase implements IStorage {
   async generateUint8ArrayAsync(): Promise<Uint8Array> {
     const result = await this._jsz.generateAsync({
       type: "uint8array",
+      compression: "DEFLATE",
+      compressionOptions: {
+        level: 9,
+      },
     });
 
     return result;

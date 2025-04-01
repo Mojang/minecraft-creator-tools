@@ -35,6 +35,12 @@
       "title": "Identifier",
       "dataType": 2,
       "samples": {
+        "/samples/culled_block_sample/culled_block_behavior_pack/blocks/tuna_roll.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:geometry/",
+            "content": "geometry.sushi"
+          }
+        ],
         "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/blue_bubble_fish.json": [
           {
             "path": "/minecraft:block/components/minecraft:geometry/",
@@ -52,6 +58,25 @@
             "path": "/minecraft:block/components/minecraft:geometry/",
             "content": "geometry.bubble_fish"
           }
+        ],
+        "/samples/starter_blocks/behavior_packs/starter_blocks/blocks/simple_cube.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:geometry/",
+            "content": "minecraft:geometry.full_block"
+          }
+        ]
+      }
+    },
+    {
+      "id": "culling",
+      "title": "Culling",
+      "dataType": 2,
+      "samples": {
+        "/samples/culled_block_sample/culled_block_behavior_pack/blocks/tuna_roll.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:geometry/",
+            "content": "test:sushi_cull"
+          }
         ]
       }
     }
@@ -59,6 +84,27 @@
   "scalarFieldUpgradeName": "identifier",
   "description": "The description identifier of the geometry to use to render this block. This identifier must either match an existing geometry identifier in any of the loaded resource packs or be one of the currently supported Vanilla identifiers: \"minecraft:geometry.full_block\" or \"minecraft:geometry.cross\".",
   "samples": {
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.mikeamm_gwve_fabricator"
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/gray_ore.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.mikeamm_gwve_gray_ore"
+      }
+    ],
+    "/samples/culled_block_sample/culled_block_behavior_pack/blocks/tuna_roll.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": {
+          "identifier": "geometry.sushi",
+          "culling": "test:sushi_cull"
+        }
+      }
+    ],
     "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/blue_bubble_fish.json": [
       {
         "path": "/minecraft:block/components/minecraft:geometry/",
@@ -133,6 +179,12 @@
         "content": "geometry.apple_block"
       }
     ],
+    "/samples/lucky_block/version_1/behavior_packs/mike_luck/blocks/luckyblock.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.luckyblock"
+      }
+    ],
     "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/frond_top.block.json": [
       {
         "path": "/minecraft:block/components/minecraft:geometry/",
@@ -168,8 +220,23 @@
         "path": "/minecraft:block/components/minecraft:geometry/",
         "content": "geometry.palm_trunk"
       }
+    ],
+    "/samples/starter_blocks/behavior_packs/starter_blocks/blocks/crate.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": "geometry.crate"
+      }
+    ],
+    "/samples/starter_blocks/behavior_packs/starter_blocks/blocks/simple_cube.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:geometry/",
+        "content": {
+          "identifier": "minecraft:geometry.full_block"
+        }
+      }
     ]
   },
+  "id": "minecraft:geometry",
   "scalarField": {
     "id": "string",
     "title": "String",

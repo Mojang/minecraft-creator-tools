@@ -258,6 +258,12 @@
             "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
             "content": 4
           }
+        ],
+        "/samples/add_entity_robot/full/robot_example_full_behavior/entities/robot.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
+            "content": 3
+          }
         ]
       }
     }
@@ -822,6 +828,15 @@
         }
       }
     ],
+    "/samples/add_entity_robot/full/robot_example_full_behavior/entities/robot.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
+        "content": {
+          "priority": 3,
+          "speed_multiplier": 0.8
+        }
+      }
+    ],
     "/samples/addon_starter/1_hello_world/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json": [
       {
         "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
@@ -909,6 +924,52 @@
           "speed_multiplier": 0.8
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
+        "content": {
+          "priority": 6,
+          "speed_multiplier": 1
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
+        "content": {
+          "priority": 6,
+          "speed_multiplier": 1
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
+        "content": {
+          "priority": 6,
+          "speed_multiplier": 1
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
+        "content": {
+          "priority": 8,
+          "speed_multiplier": 0.8
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
+        "content": {
+          "priority": 7,
+          "speed_multiplier": 1
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.random_stroll"
 }

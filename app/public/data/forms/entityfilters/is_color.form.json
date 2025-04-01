@@ -189,5 +189,6 @@
         "content": "{ \"test\": \"is_color\", \"value\": \"white\" }"
       }
     ]
-  }
+  },
+  "id": "is_color"
 }

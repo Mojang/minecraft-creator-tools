@@ -155,5 +155,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.move_to_water"
 }

@@ -34,5 +34,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:heartbeat"
 }

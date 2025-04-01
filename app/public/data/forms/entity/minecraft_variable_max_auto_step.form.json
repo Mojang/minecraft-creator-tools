@@ -95,5 +95,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:variable_max_auto_step"
 }

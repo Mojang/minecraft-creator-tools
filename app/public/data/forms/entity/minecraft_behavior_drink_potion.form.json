@@ -489,5 +489,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.drink_potion"
 }

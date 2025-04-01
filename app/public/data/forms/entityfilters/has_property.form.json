@@ -123,5 +123,6 @@
         "content": "{ \"test\": \"has_property\", \"value\": \"minecraft:can_climb\" }"
       }
     ]
-  }
+  },
+  "id": "has_property"
 }

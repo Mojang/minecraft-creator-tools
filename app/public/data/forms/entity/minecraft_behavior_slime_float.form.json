@@ -97,5 +97,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.slime_float"
 }

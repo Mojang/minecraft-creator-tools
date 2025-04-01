@@ -9,5 +9,14 @@
       "dataType": 1
     }
   ],
-  "title": "Glint"
+  "title": "Glint",
+  "samples": {
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/depleted_gray_shard.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:glint/",
+        "content": true
+      }
+    ]
+  },
+  "id": "minecraft:glint"
 }

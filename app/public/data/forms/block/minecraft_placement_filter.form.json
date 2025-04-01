@@ -49,5 +49,6 @@
     }
   ],
   "description": "Sets rules for under what conditions the block can be placed/survive",
-  "title": "Placement Filter"
+  "title": "Placement Filter",
+  "id": "minecraft:placement_filter"
 }

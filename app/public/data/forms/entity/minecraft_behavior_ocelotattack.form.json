@@ -270,6 +270,25 @@
           "walk_speed_multiplier": 0.8
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.ocelotattack/",
+        "content": {
+          "priority": 4,
+          "cooldown_time": 1,
+          "x_max_rotation": 30,
+          "y_max_head_rotation": 30,
+          "max_distance": 15,
+          "max_sneak_range": 15,
+          "max_sprint_range": 4,
+          "reach_multiplier": 2,
+          "sneak_speed_multiplier": 0.6,
+          "sprint_speed_multiplier": 1.33,
+          "walk_speed_multiplier": 0.8
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.ocelotattack"
 }

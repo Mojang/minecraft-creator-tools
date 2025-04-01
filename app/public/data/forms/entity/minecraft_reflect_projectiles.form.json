@@ -108,5 +108,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:reflect_projectiles"
 }

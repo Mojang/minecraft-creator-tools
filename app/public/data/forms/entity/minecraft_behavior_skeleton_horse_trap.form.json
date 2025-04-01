@@ -77,5 +77,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.skeleton_horse_trap"
 }
