@@ -123,5 +123,6 @@
         "content": "{ \"test\": \"home_distance\", \"value\": \"0.00\" }"
       }
     ]
-  }
+  },
+  "id": "home_distance"
 }

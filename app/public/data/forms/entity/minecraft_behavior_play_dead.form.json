@@ -159,5 +159,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.play_dead"
 }

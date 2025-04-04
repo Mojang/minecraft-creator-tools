@@ -26,8 +26,74 @@
       "title": "Stops Liquid Flowing From Direction",
       "description": "When a block contains a liquid, controls the directions in which the liquid can't flow out from the block. Also controls the directions in which a block can stop liquid flowing into it if `no_reaction` is set for the `on_liquid_touches` field. Can be a list of the following directions: \"up\", \"down\", \"north\", \"south\", \"east\", \"west\". The default is an empty list; this means that liquid can flow out of all directions by default.",
       "dataType": 17
+    },
+    {
+      "id": "detection_rules",
+      "title": "Detection Rules",
+      "dataType": 15,
+      "subForm": {
+        "id": "detection_rules",
+        "title": "Detection_rules",
+        "fields": [
+          {
+            "id": "liquid_type",
+            "title": "Liquid_type",
+            "dataType": 2,
+            "samples": {
+              "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
+                {
+                  "path": "liquid_type",
+                  "content": "water"
+                }
+              ]
+            }
+          },
+          {
+            "id": "on_liquid_touches",
+            "title": "On_liquid_touches",
+            "dataType": 2,
+            "samples": {
+              "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
+                {
+                  "path": "on_liquid_touches",
+                  "content": "broken"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "samples": {
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:liquid_detection/",
+            "content": [
+              {
+                "liquid_type": "water",
+                "on_liquid_touches": "broken"
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
   "description": "The definitions for how a block behaves when detecting liquid. Only one rule definition is allowed per liquid type - if multiple are specified, the first will be used and the rest will be ignored.\r\nExperimental toggles required: Upcoming Creator Features (in format versions before 1.21.60)",
-  "title": "Liquid Detection"
+  "title": "Liquid Detection",
+  "samples": {
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:liquid_detection/",
+        "content": {
+          "detection_rules": [
+            {
+              "liquid_type": "water",
+              "on_liquid_touches": "broken"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "id": "minecraft:liquid_detection"
 }

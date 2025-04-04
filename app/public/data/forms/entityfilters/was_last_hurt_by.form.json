@@ -124,5 +124,6 @@
         "content": "{ \"test\": \"was_last_hurt_by\" }"
       }
     ]
-  }
+  },
+  "id": "was_last_hurt_by"
 }

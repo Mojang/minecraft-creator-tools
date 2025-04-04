@@ -33,5 +33,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.silverfish_merge_with_stone"
 }

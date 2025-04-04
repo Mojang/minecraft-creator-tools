@@ -48,5 +48,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:on_death"
 }

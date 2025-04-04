@@ -12,6 +12,7 @@ import ProjectInfoUtilities from "./ProjectInfoUtilities";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
+import BlocksCatalogDefinition from "../minecraft/BlocksCatalogDefinition";
 
 export enum TypesInfoGeneratorTest {
   types = 1,
@@ -60,6 +61,38 @@ export default class TypesInfoGenerator implements IProjectInfoGenerator {
 
           if (blockTypeDef && blockTypeDef.id && projectItem.projectPath) {
             contentIndex.insert(blockTypeDef.id, projectItem.projectPath, AnnotationCategory.blockTypeSource);
+
+            let colon = blockTypeDef.id.indexOf(":");
+
+            if (colon >= 0) {
+              contentIndex.insert(
+                blockTypeDef.id.substring(colon + 1),
+                projectItem.projectPath,
+                AnnotationCategory.blockTypeSource
+              );
+            }
+          }
+        }
+      } else if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
+        await projectItem.ensureFileStorage();
+
+        if (projectItem.file) {
+          const blockCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.file);
+
+          if (blockCatalog && projectItem.projectPath && blockCatalog.blocksCatalog) {
+            for (const name in blockCatalog.blocksCatalog) {
+              let adjustedName = name;
+
+              let colon = adjustedName.indexOf(":");
+
+              if (colon < 0 && project.isVanillaSourceProject) {
+                adjustedName = "minecraft:" + adjustedName;
+
+                contentIndex.insert(adjustedName, projectItem.projectPath, AnnotationCategory.blockTypeSource);
+              }
+
+              contentIndex.insert(name, projectItem.projectPath, AnnotationCategory.blockTypeSource);
+            }
           }
         }
       } else if (projectItem.itemType === ProjectItemType.itemTypeBehavior) {

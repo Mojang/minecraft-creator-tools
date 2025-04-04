@@ -256,5 +256,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:equippable"
 }

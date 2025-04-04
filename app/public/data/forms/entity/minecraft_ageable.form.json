@@ -425,6 +425,19 @@
             "path": "/minecraft:entity/component_groups/minecraft:sheep_baby/minecraft:ageable/",
             "content": "melon_slice"
           }
+        ],
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mamm_cds:turkey_baby/minecraft:ageable/",
+            "content": [
+              "wheat_seeds",
+              "beetroot_seeds",
+              "melon_seeds",
+              "pumpkin_seeds",
+              "pitcher_pod",
+              "torchflower_seeds"
+            ]
+          }
         ]
       }
     },
@@ -1218,6 +1231,83 @@
           }
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_baby/minecraft:ageable/",
+        "content": {
+          "duration": 1200,
+          "feed_items": [
+            "wheat_seeds",
+            "beetroot_seeds",
+            "melon_seeds",
+            "pumpkin_seeds",
+            "pitcher_pod",
+            "torchflower_seeds"
+          ],
+          "grow_up": {
+            "event": "minecraft:ageable_grow_up",
+            "target": "self"
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_baby/minecraft:ageable/",
+        "content": {
+          "duration": 1200,
+          "feed_items": [
+            "wheat_seeds",
+            "beetroot_seeds",
+            "melon_seeds",
+            "pumpkin_seeds",
+            "pitcher_pod",
+            "torchflower_seeds"
+          ],
+          "grow_up": {
+            "event": "minecraft:ageable_grow_up",
+            "target": "self"
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_baby/minecraft:ageable/",
+        "content": {
+          "duration": 1200,
+          "feed_items": [
+            "wheat_seeds",
+            "beetroot_seeds",
+            "melon_seeds",
+            "pumpkin_seeds",
+            "pitcher_pod",
+            "torchflower_seeds"
+          ],
+          "grow_up": {
+            "event": "minecraft:ageable_grow_up",
+            "target": "self"
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_baby/minecraft:ageable/",
+        "content": {
+          "duration": 1200,
+          "feed_items": [
+            "fish",
+            "salmon"
+          ],
+          "grow_up": {
+            "event": "minecraft:ageable_grow_up",
+            "target": "self"
+          }
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:ageable"
 }

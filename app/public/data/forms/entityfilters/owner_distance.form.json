@@ -123,5 +123,6 @@
         "content": "{ \"test\": \"owner_distance\", \"value\": \"0.00\" }"
       }
     ]
-  }
+  },
+  "id": "owner_distance"
 }

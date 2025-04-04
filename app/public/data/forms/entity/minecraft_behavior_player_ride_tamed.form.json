@@ -47,5 +47,6 @@
         "content": {}
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.player_ride_tamed"
 }

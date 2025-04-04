@@ -55,5 +55,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:flying_speed"
 }

@@ -111,5 +111,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:group_size"
 }

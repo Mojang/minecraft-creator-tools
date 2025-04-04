@@ -140,5 +140,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:custom_hit_test"
 }

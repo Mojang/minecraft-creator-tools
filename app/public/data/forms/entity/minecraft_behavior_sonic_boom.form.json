@@ -217,5 +217,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.sonic_boom"
 }

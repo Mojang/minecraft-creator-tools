@@ -120,5 +120,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.harvest_farm_block"
 }

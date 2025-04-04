@@ -111,5 +111,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.go_and_give_items_to_noteblock"
 }

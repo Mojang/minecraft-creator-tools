@@ -344,5 +344,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.lay_egg"
 }

@@ -88,5 +88,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.dragonstrafeplayer"
 }

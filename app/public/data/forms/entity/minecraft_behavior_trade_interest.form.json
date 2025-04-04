@@ -286,5 +286,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.trade_interest"
 }

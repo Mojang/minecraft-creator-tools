@@ -518,5 +518,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:explode"
 }

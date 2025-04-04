@@ -92,5 +92,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:water_movement"
 }

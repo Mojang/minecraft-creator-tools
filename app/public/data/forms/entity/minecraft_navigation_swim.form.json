@@ -134,5 +134,6 @@
     }
   ],
   "description": "Allows this entity to generate paths that include water.",
-  "title": "Swim Navigation"
+  "title": "Swim Navigation",
+  "id": "minecraft:navigation.swim"
 }

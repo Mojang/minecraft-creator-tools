@@ -6,49 +6,20 @@
       "description": "components",
       "dataType": 16,
       "subForm": {
-        "title": "Components",
-        "description": "Components",
+        "title": "Particle Effect Component",
+        "description": "Particle Effect Component",
         "fields": [
           {
             "id": "minecraft:emitter_local_space",
             "title": "minecraft:emitter_local_space",
             "description": "minecraft:emitter_local_space",
-            "dataType": 16,
-            "subForm": {
-              "title": "Emitter Local Space",
-              "description": "Emitter Local Space",
-              "fields": [
-                {
-                  "id": "position",
-                  "title": "position",
-                  "description": "position",
-                  "dataType": 1
-                },
-                {
-                  "id": "velocity",
-                  "title": "velocity",
-                  "description": "velocity",
-                  "dataType": 1
-                },
-                {
-                  "id": "rotation",
-                  "title": "rotation",
-                  "description": "rotation",
-                  "dataType": 1
-                }
-              ]
-            }
+            "dataType": 16
           },
           {
             "id": "minecraft:particle_expire_if_in_blocks",
             "title": "minecraft:particle_expire_if_in_blocks",
             "description": "minecraft:particle_expire_if_in_blocks",
-            "dataType": 16,
-            "subForm": {
-              "title": "Particle Expire If In Blocks",
-              "description": "Particle Expire If In Blocks",
-              "fields": []
-            }
+            "dataType": 16
           },
           {
             "id": "minecraft:emitter_lifetime_expression",
@@ -63,23 +34,71 @@
                   "id": "activation_expression",
                   "title": "activation_expression",
                   "description": "activation_expression",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Activation Expression",
-                    "description": "Activation Expression",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "activation_expression",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Activation Expression",
+                        "description": "Activation Expression",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "activation_expression",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "expiration_expression",
                   "title": "expiration_expression",
                   "description": "expiration_expression",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Expiration Expression",
-                    "description": "Expiration Expression",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "expiration_expression",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Expiration Expression",
+                        "description": "Expiration Expression",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "expiration_expression",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -97,23 +116,71 @@
                   "id": "creation_expression",
                   "title": "creation_expression",
                   "description": "creation_expression",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Creation Expression",
-                    "description": "Creation Expression",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "creation_expression",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Creation Expression",
+                        "description": "Creation Expression",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "creation_expression",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "per_update_expression",
                   "title": "per_update_expression",
                   "description": "per_update_expression",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Per Update Expression",
-                    "description": "Per Update Expression",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "per_update_expression",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Per Update Expression",
+                        "description": "Per Update Expression",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "per_update_expression",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -131,12 +198,36 @@
                   "id": "num_particles",
                   "title": "num_particles",
                   "description": "num_particles",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Num Particles",
-                    "description": "Num Particles",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "num_particles",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Num Particles",
+                        "description": "Num Particles",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "num_particles",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -154,23 +245,71 @@
                   "id": "max_lifetime",
                   "title": "max_lifetime",
                   "description": "max_lifetime",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Max Lifetime",
-                    "description": "Max Lifetime",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "max_lifetime",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Max Lifetime",
+                        "description": "Max Lifetime",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "max_lifetime",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "expiration_expression",
                   "title": "expiration_expression",
                   "description": "expiration_expression",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Expiration Expression",
-                    "description": "Expiration Expression",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "expiration_expression",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Expiration Expression",
+                        "description": "Expiration Expression",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "expiration_expression",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -188,23 +327,71 @@
                   "id": "active_time",
                   "title": "active_time",
                   "description": "active_time",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Active Time",
-                    "description": "Active Time",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "active_time",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Active Time",
+                        "description": "Active Time",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "active_time",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "sleep_time",
                   "title": "sleep_time",
                   "description": "sleep_time",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Sleep Time",
-                    "description": "Sleep Time",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "sleep_time",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Sleep Time",
+                        "description": "Sleep Time",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "sleep_time",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -222,23 +409,71 @@
                   "id": "spawn_rate",
                   "title": "spawn_rate",
                   "description": "spawn_rate",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Spawn Rate",
-                    "description": "Spawn Rate",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "spawn_rate",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Spawn Rate",
+                        "description": "Spawn Rate",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "spawn_rate",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "max_particles",
                   "title": "max_particles",
                   "description": "max_particles",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Max Particles",
-                    "description": "Max Particles",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "max_particles",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Max Particles",
+                        "description": "Max Particles",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "max_particles",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -247,43 +482,7 @@
             "id": "minecraft:emitter_lifetime_events",
             "title": "minecraft:emitter_lifetime_events",
             "description": "minecraft:emitter_lifetime_events",
-            "dataType": 16,
-            "subForm": {
-              "title": "Emitter Lifetime Events",
-              "description": "Emitter Lifetime Events",
-              "fields": [
-                {
-                  "id": "creation_event",
-                  "title": "creation_event",
-                  "description": "creation_event",
-                  "dataType": 16
-                },
-                {
-                  "id": "expiration_event",
-                  "title": "expiration_event",
-                  "description": "expiration_event",
-                  "dataType": 16
-                },
-                {
-                  "id": "travel_distance_events",
-                  "title": "travel_distance_events",
-                  "description": "travel_distance_events",
-                  "dataType": 16
-                },
-                {
-                  "id": "timeline",
-                  "title": "timeline",
-                  "description": "timeline",
-                  "dataType": 16
-                },
-                {
-                  "id": "looping_travel_distance_events",
-                  "title": "looping_travel_distance_events",
-                  "description": "looping_travel_distance_events",
-                  "dataType": 15
-                }
-              ]
-            }
+            "dataType": 16
           },
           {
             "id": "minecraft:emitter_lifetime_once",
@@ -298,12 +497,36 @@
                   "id": "active_time",
                   "title": "active_time",
                   "description": "active_time",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Active Time",
-                    "description": "Active Time",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "active_time",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Active Time",
+                        "description": "Active Time",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "active_time",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -321,12 +544,36 @@
                   "id": "max_particles",
                   "title": "max_particles",
                   "description": "max_particles",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Max Particles",
-                    "description": "Max Particles",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "max_particles",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Max Particles",
+                        "description": "Max Particles",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "max_particles",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -344,13 +591,75 @@
                   "id": "offset",
                   "title": "offset",
                   "description": "offset",
-                  "dataType": 15
+                  "dataType": 24,
+                  "minLength": 3,
+                  "maxLength": 3,
+                  "alternates": [
+                    {
+                      "id": "offset",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Offset",
+                        "description": "Offset",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "offset",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "direction",
                   "title": "direction",
                   "description": "direction",
-                  "dataType": 15
+                  "dataType": 24,
+                  "minLength": 3,
+                  "maxLength": 3,
+                  "alternates": [
+                    {
+                      "id": "direction",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Direction",
+                        "description": "Direction",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "direction",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -368,24 +677,118 @@
                   "id": "offset",
                   "title": "offset",
                   "description": "offset",
-                  "dataType": 15
+                  "dataType": 24,
+                  "minLength": 3,
+                  "maxLength": 3,
+                  "alternates": [
+                    {
+                      "id": "offset",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Offset",
+                        "description": "Offset",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "offset",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "direction",
                   "title": "direction",
                   "description": "direction",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Direction",
-                    "description": "Direction",
-                    "fields": []
-                  }
+                  "dataType": 2,
+                  "alternates": [
+                    {
+                      "id": "direction",
+                      "dataType": 24,
+                      "minLength": 3,
+                      "maxLength": 3,
+                      "alternates": [
+                        {
+                          "id": "direction",
+                          "dataType": 14,
+                          "readOnly": true,
+                          "subForm": {
+                            "title": "Direction",
+                            "description": "Direction",
+                            "fields": [
+                              {
+                                "id": "expression",
+                                "title": "expression",
+                                "description": "expression",
+                                "dataType": 2
+                              },
+                              {
+                                "id": "version",
+                                "title": "version",
+                                "description": "version",
+                                "dataType": 0
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "direction",
+                          "dataType": 3
+                        }
+                      ]
+                    }
+                  ]
                 },
                 {
                   "id": "half_dimensions",
                   "title": "half_dimensions",
                   "description": "half_dimensions",
-                  "dataType": 15
+                  "dataType": 24,
+                  "minLength": 3,
+                  "maxLength": 3,
+                  "alternates": [
+                    {
+                      "id": "half_dimensions",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Half Dimensions",
+                        "description": "Half Dimensions",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "half_dimensions",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "surface_only",
@@ -409,29 +812,116 @@
                   "id": "offset",
                   "title": "offset",
                   "description": "offset",
-                  "dataType": 15
+                  "dataType": 24,
+                  "minLength": 3,
+                  "maxLength": 3,
+                  "alternates": [
+                    {
+                      "id": "offset",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Offset",
+                        "description": "Offset",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "offset",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "direction",
                   "title": "direction",
                   "description": "direction",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Direction",
-                    "description": "Direction",
-                    "fields": []
-                  }
+                  "dataType": 2,
+                  "alternates": [
+                    {
+                      "id": "direction",
+                      "dataType": 24,
+                      "minLength": 3,
+                      "maxLength": 3,
+                      "alternates": [
+                        {
+                          "id": "direction",
+                          "dataType": 14,
+                          "readOnly": true,
+                          "subForm": {
+                            "title": "Direction",
+                            "description": "Direction",
+                            "fields": [
+                              {
+                                "id": "expression",
+                                "title": "expression",
+                                "description": "expression",
+                                "dataType": 2
+                              },
+                              {
+                                "id": "version",
+                                "title": "version",
+                                "description": "version",
+                                "dataType": 0
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "direction",
+                          "dataType": 3
+                        }
+                      ]
+                    }
+                  ]
                 },
                 {
                   "id": "radius",
                   "title": "radius",
                   "description": "radius",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Radius",
-                    "description": "Radius",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "radius",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Radius",
+                        "description": "Radius",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "radius",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "surface_only",
@@ -455,13 +945,75 @@
                   "id": "offset",
                   "title": "offset",
                   "description": "offset",
-                  "dataType": 15
+                  "dataType": 24,
+                  "minLength": 3,
+                  "maxLength": 3,
+                  "alternates": [
+                    {
+                      "id": "offset",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Offset",
+                        "description": "Offset",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "offset",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "direction",
                   "title": "direction",
                   "description": "direction",
-                  "dataType": 15
+                  "dataType": 24,
+                  "minLength": 3,
+                  "maxLength": 3,
+                  "alternates": [
+                    {
+                      "id": "direction",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Direction",
+                        "description": "Direction",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "direction",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -485,12 +1037,44 @@
                   "id": "direction",
                   "title": "direction",
                   "description": "direction",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Direction",
-                    "description": "Direction",
-                    "fields": []
-                  }
+                  "dataType": 2,
+                  "alternates": [
+                    {
+                      "id": "direction",
+                      "dataType": 24,
+                      "minLength": 3,
+                      "maxLength": 3,
+                      "alternates": [
+                        {
+                          "id": "direction",
+                          "dataType": 14,
+                          "readOnly": true,
+                          "subForm": {
+                            "title": "Direction",
+                            "description": "Direction",
+                            "fields": [
+                              {
+                                "id": "expression",
+                                "title": "expression",
+                                "description": "expression",
+                                "dataType": 2
+                              },
+                              {
+                                "id": "version",
+                                "title": "version",
+                                "description": "version",
+                                "dataType": 0
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "direction",
+                          "dataType": 3
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }
@@ -508,29 +1092,116 @@
                   "id": "offset",
                   "title": "offset",
                   "description": "offset",
-                  "dataType": 15
+                  "dataType": 24,
+                  "minLength": 3,
+                  "maxLength": 3,
+                  "alternates": [
+                    {
+                      "id": "offset",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Offset",
+                        "description": "Offset",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "offset",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "direction",
                   "title": "direction",
                   "description": "direction",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Direction",
-                    "description": "Direction",
-                    "fields": []
-                  }
+                  "dataType": 2,
+                  "alternates": [
+                    {
+                      "id": "direction",
+                      "dataType": 24,
+                      "minLength": 3,
+                      "maxLength": 3,
+                      "alternates": [
+                        {
+                          "id": "direction",
+                          "dataType": 14,
+                          "readOnly": true,
+                          "subForm": {
+                            "title": "Direction",
+                            "description": "Direction",
+                            "fields": [
+                              {
+                                "id": "expression",
+                                "title": "expression",
+                                "description": "expression",
+                                "dataType": 2
+                              },
+                              {
+                                "id": "version",
+                                "title": "version",
+                                "description": "version",
+                                "dataType": 0
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "direction",
+                          "dataType": 3
+                        }
+                      ]
+                    }
+                  ]
                 },
                 {
                   "id": "radius",
                   "title": "radius",
                   "description": "radius",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Radius",
-                    "description": "Radius",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "radius",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Radius",
+                        "description": "Radius",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "radius",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "surface_only",
@@ -542,12 +1213,44 @@
                   "id": "plane_normal",
                   "title": "plane_normal",
                   "description": "plane_normal",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Plane Normal",
-                    "description": "Plane Normal",
-                    "fields": []
-                  }
+                  "dataType": 2,
+                  "alternates": [
+                    {
+                      "id": "plane_normal",
+                      "dataType": 24,
+                      "minLength": 3,
+                      "maxLength": 3,
+                      "alternates": [
+                        {
+                          "id": "plane_normal",
+                          "dataType": 14,
+                          "readOnly": true,
+                          "subForm": {
+                            "title": "Plane Normal",
+                            "description": "Plane Normal",
+                            "fields": [
+                              {
+                                "id": "expression",
+                                "title": "expression",
+                                "description": "expression",
+                                "dataType": 2
+                              },
+                              {
+                                "id": "version",
+                                "title": "version",
+                                "description": "version",
+                                "dataType": 0
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "plane_normal",
+                          "dataType": 3
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }
@@ -565,7 +1268,38 @@
                   "id": "size",
                   "title": "size",
                   "description": "size",
-                  "dataType": 15
+                  "dataType": 24,
+                  "minLength": 2,
+                  "maxLength": 2,
+                  "alternates": [
+                    {
+                      "id": "size",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Size",
+                        "description": "Size",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "size",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "facing_camera_mode",
@@ -577,126 +1311,13 @@
                   "id": "direction",
                   "title": "direction",
                   "description": "direction",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Direction",
-                    "description": "Direction",
-                    "fields": [
-                      {
-                        "id": "mode",
-                        "title": "particle_appearance_billboard direction_settings_mode",
-                        "description": "particle_appearance_billboard direction_settings_mode",
-                        "dataType": 2
-                      },
-                      {
-                        "id": "custom_direction",
-                        "title": "custom_direction",
-                        "description": "custom_direction",
-                        "dataType": 15
-                      },
-                      {
-                        "id": "min_speed_threshold",
-                        "title": "min_speed_threshold",
-                        "description": "min_speed_threshold",
-                        "dataType": 3
-                      }
-                    ]
-                  }
+                  "dataType": 16
                 },
                 {
                   "id": "uv",
                   "title": "uv",
                   "description": "uv",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Uv",
-                    "description": "Uv",
-                    "fields": [
-                      {
-                        "id": "texture_width",
-                        "title": "texture_width",
-                        "description": "texture_width",
-                        "dataType": 0
-                      },
-                      {
-                        "id": "flipbook",
-                        "title": "flipbook",
-                        "description": "flipbook",
-                        "dataType": 16,
-                        "subForm": {
-                          "title": "Flipbook",
-                          "description": "Flipbook",
-                          "fields": [
-                            {
-                              "id": "base_UV",
-                              "title": "base_UV",
-                              "description": "base_UV",
-                              "dataType": 15
-                            },
-                            {
-                              "id": "size_UV",
-                              "title": "size_UV",
-                              "description": "size_UV",
-                              "dataType": 15
-                            },
-                            {
-                              "id": "step_UV",
-                              "title": "step_UV",
-                              "description": "step_UV",
-                              "dataType": 15
-                            },
-                            {
-                              "id": "max_frame",
-                              "title": "max_frame",
-                              "description": "max_frame",
-                              "dataType": 16,
-                              "subForm": {
-                                "title": "Max Frame",
-                                "description": "Max Frame",
-                                "fields": []
-                              }
-                            },
-                            {
-                              "id": "loop",
-                              "title": "loop",
-                              "description": "loop",
-                              "dataType": 1
-                            },
-                            {
-                              "id": "frames_per_second",
-                              "title": "frames_per_second",
-                              "description": "frames_per_second",
-                              "dataType": 3
-                            },
-                            {
-                              "id": "stretch_to_lifetime",
-                              "title": "stretch_to_lifetime",
-                              "description": "stretch_to_lifetime",
-                              "dataType": 1
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "id": "texture_height",
-                        "title": "texture_height",
-                        "description": "texture_height",
-                        "dataType": 0
-                      },
-                      {
-                        "id": "uv_size",
-                        "title": "uv_size",
-                        "description": "uv_size",
-                        "dataType": 15
-                      },
-                      {
-                        "id": "uv",
-                        "title": "uv",
-                        "description": "uv",
-                        "dataType": 15
-                      }
-                    ]
-                  }
+                  "dataType": 16
                 }
               ]
             }
@@ -714,12 +1335,146 @@
                   "id": "color",
                   "title": "color",
                   "description": "color",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Color",
-                    "description": "Color",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "color",
+                      "dataType": 24
+                    },
+                    {
+                      "id": "color",
+                      "dataType": 24,
+                      "minLength": 3,
+                      "maxLength": 3,
+                      "alternates": [
+                        {
+                          "id": "color",
+                          "dataType": 14,
+                          "readOnly": true,
+                          "subForm": {
+                            "title": "Color",
+                            "description": "Color",
+                            "fields": [
+                              {
+                                "id": "expression",
+                                "title": "expression",
+                                "description": "expression",
+                                "dataType": 2
+                              },
+                              {
+                                "id": "version",
+                                "title": "version",
+                                "description": "version",
+                                "dataType": 0
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "color",
+                          "dataType": 3
+                        }
+                      ]
+                    },
+                    {
+                      "id": "color",
+                      "dataType": 16,
+                      "subForm": {
+                        "title": "Color",
+                        "description": "Color",
+                        "fields": [
+                          {
+                            "id": "gradient",
+                            "title": "gradient",
+                            "description": "gradient",
+                            "dataType": 24,
+                            "alternates": [
+                              {
+                                "id": "gradient",
+                                "dataType": 24,
+                                "alternates": [
+                                  {
+                                    "id": "gradient",
+                                    "dataType": 2
+                                  },
+                                  {
+                                    "id": "gradient",
+                                    "dataType": 24,
+                                    "minLength": 3,
+                                    "maxLength": 3,
+                                    "alternates": [
+                                      {
+                                        "id": "gradient",
+                                        "dataType": 14,
+                                        "readOnly": true,
+                                        "subForm": {
+                                          "title": "Gradient",
+                                          "description": "Gradient",
+                                          "fields": [
+                                            {
+                                              "id": "expression",
+                                              "title": "expression",
+                                              "description": "expression",
+                                              "dataType": 2
+                                            },
+                                            {
+                                              "id": "version",
+                                              "title": "version",
+                                              "description": "version",
+                                              "dataType": 0
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        "id": "gradient",
+                                        "dataType": 3
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "id": "interpolant",
+                            "title": "interpolant",
+                            "description": "interpolant",
+                            "dataType": 24,
+                            "alternates": [
+                              {
+                                "id": "interpolant",
+                                "dataType": 14,
+                                "readOnly": true,
+                                "subForm": {
+                                  "title": "Interpolant",
+                                  "description": "Interpolant",
+                                  "fields": [
+                                    {
+                                      "id": "expression",
+                                      "title": "expression",
+                                      "description": "expression",
+                                      "dataType": 2
+                                    },
+                                    {
+                                      "id": "version",
+                                      "title": "version",
+                                      "description": "version",
+                                      "dataType": 0
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "id": "interpolant",
+                                "dataType": 3
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -728,23 +1483,13 @@
             "id": "minecraft:particle_appearance_lighting",
             "title": "minecraft:particle_appearance_lighting",
             "description": "minecraft:particle_appearance_lighting",
-            "dataType": 16,
-            "subForm": {
-              "title": "Particle Appearance Lighting",
-              "description": "Particle Appearance Lighting",
-              "fields": []
-            }
+            "dataType": 16
           },
           {
             "id": "minecraft:particle_kill_plane",
             "title": "minecraft:particle_kill_plane",
             "description": "minecraft:particle_kill_plane",
-            "dataType": 16,
-            "subForm": {
-              "title": "Particle Kill Plane",
-              "description": "Particle Kill Plane",
-              "fields": []
-            }
+            "dataType": 16
           },
           {
             "id": "minecraft:particle_initial_spin",
@@ -759,23 +1504,71 @@
                   "id": "rotation",
                   "title": "rotation",
                   "description": "rotation",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Rotation",
-                    "description": "Rotation",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "rotation",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Rotation",
+                        "description": "Rotation",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "rotation",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "rotation_rate",
                   "title": "rotation_rate",
                   "description": "rotation_rate",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Rotation Rate",
-                    "description": "Rotation Rate",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "rotation_rate",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Rotation Rate",
+                        "description": "Rotation Rate",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "rotation_rate",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -784,12 +1577,42 @@
             "id": "minecraft:particle_initial_speed",
             "title": "minecraft:particle_initial_speed",
             "description": "minecraft:particle_initial_speed",
-            "dataType": 16,
-            "subForm": {
-              "title": "Particle Initial Speed",
-              "description": "Particle Initial Speed",
-              "fields": []
-            }
+            "dataType": 24,
+            "alternates": [
+              {
+                "id": "minecraft:particle_initial_speed",
+                "dataType": 24,
+                "alternates": [
+                  {
+                    "id": "minecraft:particle_initial_speed",
+                    "dataType": 16,
+                    "readOnly": true,
+                    "subForm": {
+                      "title": "Particle Initial Speed",
+                      "description": "Particle Initial Speed",
+                      "fields": [
+                        {
+                          "id": "expression",
+                          "title": "expression",
+                          "description": "expression",
+                          "dataType": 2
+                        },
+                        {
+                          "id": "version",
+                          "title": "version",
+                          "description": "version",
+                          "dataType": 0
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "minecraft:particle_initial_speed",
+                "dataType": 3
+              }
+            ]
           },
           {
             "id": "minecraft:particle_initialization",
@@ -804,23 +1627,71 @@
                   "id": "per_update_expression",
                   "title": "per_update_expression",
                   "description": "per_update_expression",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Per Update Expression",
-                    "description": "Per Update Expression",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "per_update_expression",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Per Update Expression",
+                        "description": "Per Update Expression",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "per_update_expression",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "per_render_expression",
                   "title": "per_render_expression",
                   "description": "per_render_expression",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Per Render Expression",
-                    "description": "Per Render Expression",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "per_render_expression",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Per Render Expression",
+                        "description": "Per Render Expression",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "per_render_expression",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -829,42 +1700,13 @@
             "id": "minecraft:particle_expire_if_not_in_blocks",
             "title": "minecraft:particle_expire_if_not_in_blocks",
             "description": "minecraft:particle_expire_if_not_in_blocks",
-            "dataType": 16,
-            "subForm": {
-              "title": "Particle Expire If Not In Blocks",
-              "description": "Particle Expire If Not In Blocks",
-              "fields": []
-            }
+            "dataType": 16
           },
           {
             "id": "minecraft:particle_lifetime_events",
             "title": "minecraft:particle_lifetime_events",
             "description": "minecraft:particle_lifetime_events",
-            "dataType": 16,
-            "subForm": {
-              "title": "Particle Lifetime Events",
-              "description": "Particle Lifetime Events",
-              "fields": [
-                {
-                  "id": "creation_event",
-                  "title": "creation_event",
-                  "description": "creation_event",
-                  "dataType": 16
-                },
-                {
-                  "id": "expiration_event",
-                  "title": "expiration_event",
-                  "description": "expiration_event",
-                  "dataType": 16
-                },
-                {
-                  "id": "timeline",
-                  "title": "timeline",
-                  "description": "timeline",
-                  "dataType": 16
-                }
-              ]
-            }
+            "dataType": 16
           },
           {
             "id": "minecraft:particle_motion_dynamic",
@@ -879,40 +1721,143 @@
                   "id": "linear_acceleration",
                   "title": "linear_acceleration",
                   "description": "linear_acceleration",
-                  "dataType": 15
+                  "dataType": 24,
+                  "minLength": 3,
+                  "maxLength": 3,
+                  "alternates": [
+                    {
+                      "id": "linear_acceleration",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Linear Acceleration",
+                        "description": "Linear Acceleration",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "linear_acceleration",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "linear_drag_coefficient",
                   "title": "linear_drag_coefficient",
                   "description": "linear_drag_coefficient",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Linear Drag Coefficient",
-                    "description": "Linear Drag Coefficient",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "linear_drag_coefficient",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Linear Drag Coefficient",
+                        "description": "Linear Drag Coefficient",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "linear_drag_coefficient",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "rotation_acceleration",
                   "title": "rotation_acceleration",
                   "description": "rotation_acceleration",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Rotation Acceleration",
-                    "description": "Rotation Acceleration",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "rotation_acceleration",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Rotation Acceleration",
+                        "description": "Rotation Acceleration",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "rotation_acceleration",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "rotation_drag_coefficient",
                   "title": "rotation_drag_coefficient",
                   "description": "rotation_drag_coefficient",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Rotation Drag Coefficient",
-                    "description": "Rotation Drag Coefficient",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "rotation_drag_coefficient",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Rotation Drag Coefficient",
+                        "description": "Rotation Drag Coefficient",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "rotation_drag_coefficient",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -930,24 +1875,110 @@
                   "id": "relative_position",
                   "title": "relative_position",
                   "description": "relative_position",
-                  "dataType": 15
+                  "dataType": 24,
+                  "minLength": 3,
+                  "maxLength": 3,
+                  "alternates": [
+                    {
+                      "id": "relative_position",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Relative Position",
+                        "description": "Relative Position",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "relative_position",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "direction",
                   "title": "direction",
                   "description": "direction",
-                  "dataType": 15
+                  "dataType": 24,
+                  "minLength": 3,
+                  "maxLength": 3,
+                  "alternates": [
+                    {
+                      "id": "direction",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Direction",
+                        "description": "Direction",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "direction",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "rotation",
                   "title": "rotation",
                   "description": "rotation",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Rotation",
-                    "description": "Rotation",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "rotation",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Rotation",
+                        "description": "Rotation",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "rotation",
+                      "dataType": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -965,18 +1996,48 @@
                   "id": "enabled",
                   "title": "enabled",
                   "description": "enabled",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Enabled",
-                    "description": "Enabled",
-                    "fields": []
-                  }
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "enabled",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Enabled",
+                        "description": "Enabled",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "enabled",
+                      "dataType": 3
+                    }
+                  ]
                 },
                 {
                   "id": "collision_radius",
                   "title": "collision_radius",
                   "description": "collision_radius",
-                  "dataType": 3
+                  "dataType": 3,
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 0.5
+                    }
+                  ]
                 },
                 {
                   "id": "collision_drag",
@@ -1000,12 +2061,49 @@
                   "id": "events",
                   "title": "events",
                   "description": "events",
-                  "dataType": 16,
+                  "dataType": 15,
                   "subForm": {
-                    "title": "Events",
-                    "description": "Events",
-                    "fields": []
-                  }
+                    "title": "Particle Motion Collision Event",
+                    "description": "Particle Motion Collision Event",
+                    "fields": [
+                      {
+                        "id": "min_speed",
+                        "title": "min_speed",
+                        "description": "min_speed",
+                        "dataType": 3
+                      },
+                      {
+                        "id": "event",
+                        "title": "event",
+                        "description": "event",
+                        "dataType": 16
+                      }
+                    ]
+                  },
+                  "alternates": [
+                    {
+                      "id": "events",
+                      "dataType": 16,
+                      "subForm": {
+                        "title": "Events",
+                        "description": "Events",
+                        "fields": [
+                          {
+                            "id": "min_speed",
+                            "title": "min_speed",
+                            "description": "min_speed",
+                            "dataType": 3
+                          },
+                          {
+                            "id": "event",
+                            "title": "event",
+                            "description": "event",
+                            "dataType": 16
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -1019,7 +2117,7 @@
       "description": "The description MUST contain an identifier and basic_render_parameters.",
       "dataType": 16,
       "subForm": {
-        "title": "Description",
+        "title": "Particle Effect Description",
         "description": "The description MUST contain an identifier and basic_render_parameters.",
         "fields": [
           {
@@ -1034,7 +2132,7 @@
             "description": "The parameters MUST contain a material and texture.",
             "dataType": 16,
             "subForm": {
-              "title": "Basic Render Parameters",
+              "title": "Particle Effect Basic Render Parameters",
               "description": "The parameters MUST contain a material and texture.",
               "fields": [
                 {
@@ -1059,15 +2157,889 @@
       "id": "curves",
       "title": "curves",
       "description": "curves",
-      "dataType": 16
+      "dataType": 16,
+      "subForm": {
+        "title": "Curves",
+        "description": "Curves",
+        "fields": [
+          {
+            "id": "type",
+            "title": "type",
+            "description": "type",
+            "dataType": 16
+          },
+          {
+            "id": "nodes",
+            "title": "nodes",
+            "description": "nodes",
+            "dataType": 24,
+            "alternates": [
+              {
+                "id": "nodes",
+                "dataType": 14,
+                "readOnly": true,
+                "subForm": {
+                  "title": "Nodes",
+                  "description": "Nodes",
+                  "fields": [
+                    {
+                      "id": "expression",
+                      "title": "expression",
+                      "description": "expression",
+                      "dataType": 2
+                    },
+                    {
+                      "id": "version",
+                      "title": "version",
+                      "description": "version",
+                      "dataType": 0
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "nodes",
+                "dataType": 3
+              }
+            ]
+          },
+          {
+            "id": "input",
+            "title": "input",
+            "description": "input",
+            "dataType": 24,
+            "alternates": [
+              {
+                "id": "input",
+                "dataType": 14,
+                "readOnly": true,
+                "subForm": {
+                  "title": "Input",
+                  "description": "Input",
+                  "fields": [
+                    {
+                      "id": "expression",
+                      "title": "expression",
+                      "description": "expression",
+                      "dataType": 2
+                    },
+                    {
+                      "id": "version",
+                      "title": "version",
+                      "description": "version",
+                      "dataType": 0
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "input",
+                "dataType": 3
+              }
+            ]
+          },
+          {
+            "id": "horizontal_range",
+            "title": "horizontal_range",
+            "description": "horizontal_range",
+            "dataType": 24,
+            "alternates": [
+              {
+                "id": "horizontal_range",
+                "dataType": 14,
+                "readOnly": true,
+                "subForm": {
+                  "title": "Horizontal Range",
+                  "description": "Horizontal Range",
+                  "fields": [
+                    {
+                      "id": "expression",
+                      "title": "expression",
+                      "description": "expression",
+                      "dataType": 2
+                    },
+                    {
+                      "id": "version",
+                      "title": "version",
+                      "description": "version",
+                      "dataType": 0
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "horizontal_range",
+                "dataType": 3
+              }
+            ]
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "curves",
+          "dataType": 16,
+          "subForm": {
+            "title": "Curves",
+            "description": "Curves",
+            "fields": [
+              {
+                "id": "type",
+                "title": "type",
+                "description": "type",
+                "dataType": 2,
+                "validity": [
+                  {
+                    "comparison": "pattern",
+                    "value": "^bezier_chain$"
+                  }
+                ]
+              },
+              {
+                "id": "nodes",
+                "title": "nodes",
+                "description": "nodes",
+                "dataType": 16
+              },
+              {
+                "id": "input",
+                "title": "input",
+                "description": "input",
+                "dataType": 24,
+                "alternates": [
+                  {
+                    "id": "input",
+                    "dataType": 14,
+                    "readOnly": true,
+                    "subForm": {
+                      "title": "Input",
+                      "description": "Input",
+                      "fields": [
+                        {
+                          "id": "expression",
+                          "title": "expression",
+                          "description": "expression",
+                          "dataType": 2
+                        },
+                        {
+                          "id": "version",
+                          "title": "version",
+                          "description": "version",
+                          "dataType": 0
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "input",
+                    "dataType": 3
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
     },
     {
       "id": "events",
       "title": "events",
       "description": "events",
-      "dataType": 16
+      "dataType": 16,
+      "subForm": {
+        "title": "Particle Event Node",
+        "description": "Particle Event Node",
+        "fields": [
+          {
+            "id": "expression",
+            "title": "expression",
+            "description": "expression",
+            "dataType": 24,
+            "alternates": [
+              {
+                "id": "expression",
+                "dataType": 14,
+                "readOnly": true,
+                "subForm": {
+                  "title": "Expression",
+                  "description": "Expression",
+                  "fields": [
+                    {
+                      "id": "expression",
+                      "title": "expression",
+                      "description": "expression",
+                      "dataType": 2
+                    },
+                    {
+                      "id": "version",
+                      "title": "version",
+                      "description": "version",
+                      "dataType": 0
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "expression",
+                "dataType": 3
+              }
+            ]
+          },
+          {
+            "id": "log",
+            "title": "log",
+            "description": "log",
+            "dataType": 2
+          },
+          {
+            "id": "particle_effect",
+            "title": "particle_effect",
+            "description": "particle_effect",
+            "dataType": 16,
+            "subForm": {
+              "title": "Particle Visual Effect Event",
+              "description": "Particle Visual Effect Event",
+              "fields": [
+                {
+                  "id": "effect",
+                  "title": "effect",
+                  "description": "effect",
+                  "dataType": 16
+                },
+                {
+                  "id": "pre_effect_expression",
+                  "title": "pre_effect_expression",
+                  "description": "pre_effect_expression",
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "pre_effect_expression",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Pre Effect Expression",
+                        "description": "Pre Effect Expression",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "pre_effect_expression",
+                      "dataType": 3
+                    }
+                  ]
+                },
+                {
+                  "id": "type",
+                  "title": "particle_visual_effect_event effect_type",
+                  "description": "particle_visual_effect_event effect_type",
+                  "dataType": 2
+                }
+              ]
+            }
+          },
+          {
+            "id": "sequence",
+            "title": "sequence",
+            "description": "sequence",
+            "dataType": 15,
+            "subForm": {
+              "title": "Particle Event Node",
+              "description": "Particle Event Node",
+              "fields": [
+                {
+                  "id": "expression",
+                  "title": "expression",
+                  "description": "expression",
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "expression",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Expression",
+                        "description": "Expression",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "expression",
+                      "dataType": 3
+                    }
+                  ]
+                },
+                {
+                  "id": "log",
+                  "title": "log",
+                  "description": "log",
+                  "dataType": 2
+                },
+                {
+                  "id": "particle_effect",
+                  "title": "particle_effect",
+                  "description": "particle_effect",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Particle Visual Effect Event",
+                    "description": "Particle Visual Effect Event",
+                    "fields": [
+                      {
+                        "id": "effect",
+                        "title": "effect",
+                        "description": "effect",
+                        "dataType": 16
+                      },
+                      {
+                        "id": "pre_effect_expression",
+                        "title": "pre_effect_expression",
+                        "description": "pre_effect_expression",
+                        "dataType": 24,
+                        "alternates": [
+                          {
+                            "id": "pre_effect_expression",
+                            "dataType": 14,
+                            "readOnly": true,
+                            "subForm": {
+                              "title": "Pre Effect Expression",
+                              "description": "Pre Effect Expression",
+                              "fields": [
+                                {
+                                  "id": "expression",
+                                  "title": "expression",
+                                  "description": "expression",
+                                  "dataType": 2
+                                },
+                                {
+                                  "id": "version",
+                                  "title": "version",
+                                  "description": "version",
+                                  "dataType": 0
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "id": "pre_effect_expression",
+                            "dataType": 3
+                          }
+                        ]
+                      },
+                      {
+                        "id": "type",
+                        "title": "particle_visual_effect_event effect_type",
+                        "description": "particle_visual_effect_event effect_type",
+                        "dataType": 2
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "sequence",
+                  "title": "sequence",
+                  "description": "sequence",
+                  "dataType": 16
+                },
+                {
+                  "id": "sound_effect",
+                  "title": "sound_effect",
+                  "description": "sound_effect",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Particle Sound Effect Event",
+                    "description": "Particle Sound Effect Event",
+                    "fields": [
+                      {
+                        "id": "event_name",
+                        "title": "event_name",
+                        "description": "event_name",
+                        "dataType": 2
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "randomize",
+                  "title": "randomize",
+                  "description": "randomize",
+                  "dataType": 15,
+                  "subForm": {
+                    "title": "Particle Event Random Node",
+                    "description": "Particle Event Random Node",
+                    "fields": [
+                      {
+                        "id": "log",
+                        "title": "log",
+                        "description": "log",
+                        "dataType": 2
+                      },
+                      {
+                        "id": "particle_effect",
+                        "title": "particle_effect",
+                        "description": "particle_effect",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Particle Visual Effect Event",
+                          "description": "Particle Visual Effect Event",
+                          "fields": [
+                            {
+                              "id": "effect",
+                              "title": "effect",
+                              "description": "effect",
+                              "dataType": 16
+                            },
+                            {
+                              "id": "pre_effect_expression",
+                              "title": "pre_effect_expression",
+                              "description": "pre_effect_expression",
+                              "dataType": 24,
+                              "alternates": [
+                                {
+                                  "id": "pre_effect_expression",
+                                  "dataType": 14,
+                                  "readOnly": true,
+                                  "subForm": {
+                                    "title": "Pre Effect Expression",
+                                    "description": "Pre Effect Expression",
+                                    "fields": [
+                                      {
+                                        "id": "expression",
+                                        "title": "expression",
+                                        "description": "expression",
+                                        "dataType": 2
+                                      },
+                                      {
+                                        "id": "version",
+                                        "title": "version",
+                                        "description": "version",
+                                        "dataType": 0
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "id": "pre_effect_expression",
+                                  "dataType": 3
+                                }
+                              ]
+                            },
+                            {
+                              "id": "type",
+                              "title": "particle_visual_effect_event effect_type",
+                              "description": "particle_visual_effect_event effect_type",
+                              "dataType": 2
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "weight",
+                        "title": "weight",
+                        "description": "weight",
+                        "dataType": 3
+                      },
+                      {
+                        "id": "sound_effect",
+                        "title": "sound_effect",
+                        "description": "sound_effect",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Particle Sound Effect Event",
+                          "description": "Particle Sound Effect Event",
+                          "fields": [
+                            {
+                              "id": "event_name",
+                              "title": "event_name",
+                              "description": "event_name",
+                              "dataType": 2
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "sequence",
+                        "title": "sequence",
+                        "description": "sequence",
+                        "dataType": 16
+                      },
+                      {
+                        "id": "randomize",
+                        "title": "randomize",
+                        "description": "randomize",
+                        "dataType": 16
+                      },
+                      {
+                        "id": "expression",
+                        "title": "expression",
+                        "description": "expression",
+                        "dataType": 24,
+                        "alternates": [
+                          {
+                            "id": "expression",
+                            "dataType": 14,
+                            "readOnly": true,
+                            "subForm": {
+                              "title": "Expression",
+                              "description": "Expression",
+                              "fields": [
+                                {
+                                  "id": "expression",
+                                  "title": "expression",
+                                  "description": "expression",
+                                  "dataType": 2
+                                },
+                                {
+                                  "id": "version",
+                                  "title": "version",
+                                  "description": "version",
+                                  "dataType": 0
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "id": "expression",
+                            "dataType": 3
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "sound_effect",
+            "title": "sound_effect",
+            "description": "sound_effect",
+            "dataType": 16,
+            "subForm": {
+              "title": "Particle Sound Effect Event",
+              "description": "Particle Sound Effect Event",
+              "fields": [
+                {
+                  "id": "event_name",
+                  "title": "event_name",
+                  "description": "event_name",
+                  "dataType": 2
+                }
+              ]
+            }
+          },
+          {
+            "id": "randomize",
+            "title": "randomize",
+            "description": "randomize",
+            "dataType": 15,
+            "subForm": {
+              "title": "Particle Event Random Node",
+              "description": "Particle Event Random Node",
+              "fields": [
+                {
+                  "id": "log",
+                  "title": "log",
+                  "description": "log",
+                  "dataType": 2
+                },
+                {
+                  "id": "particle_effect",
+                  "title": "particle_effect",
+                  "description": "particle_effect",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Particle Visual Effect Event",
+                    "description": "Particle Visual Effect Event",
+                    "fields": [
+                      {
+                        "id": "effect",
+                        "title": "effect",
+                        "description": "effect",
+                        "dataType": 16
+                      },
+                      {
+                        "id": "pre_effect_expression",
+                        "title": "pre_effect_expression",
+                        "description": "pre_effect_expression",
+                        "dataType": 24,
+                        "alternates": [
+                          {
+                            "id": "pre_effect_expression",
+                            "dataType": 14,
+                            "readOnly": true,
+                            "subForm": {
+                              "title": "Pre Effect Expression",
+                              "description": "Pre Effect Expression",
+                              "fields": [
+                                {
+                                  "id": "expression",
+                                  "title": "expression",
+                                  "description": "expression",
+                                  "dataType": 2
+                                },
+                                {
+                                  "id": "version",
+                                  "title": "version",
+                                  "description": "version",
+                                  "dataType": 0
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "id": "pre_effect_expression",
+                            "dataType": 3
+                          }
+                        ]
+                      },
+                      {
+                        "id": "type",
+                        "title": "particle_visual_effect_event effect_type",
+                        "description": "particle_visual_effect_event effect_type",
+                        "dataType": 2
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "weight",
+                  "title": "weight",
+                  "description": "weight",
+                  "dataType": 3
+                },
+                {
+                  "id": "sound_effect",
+                  "title": "sound_effect",
+                  "description": "sound_effect",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Particle Sound Effect Event",
+                    "description": "Particle Sound Effect Event",
+                    "fields": [
+                      {
+                        "id": "event_name",
+                        "title": "event_name",
+                        "description": "event_name",
+                        "dataType": 2
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "sequence",
+                  "title": "sequence",
+                  "description": "sequence",
+                  "dataType": 15,
+                  "subForm": {
+                    "title": "Particle Event Node",
+                    "description": "Particle Event Node",
+                    "fields": [
+                      {
+                        "id": "expression",
+                        "title": "expression",
+                        "description": "expression",
+                        "dataType": 24,
+                        "alternates": [
+                          {
+                            "id": "expression",
+                            "dataType": 14,
+                            "readOnly": true,
+                            "subForm": {
+                              "title": "Expression",
+                              "description": "Expression",
+                              "fields": [
+                                {
+                                  "id": "expression",
+                                  "title": "expression",
+                                  "description": "expression",
+                                  "dataType": 2
+                                },
+                                {
+                                  "id": "version",
+                                  "title": "version",
+                                  "description": "version",
+                                  "dataType": 0
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "id": "expression",
+                            "dataType": 3
+                          }
+                        ]
+                      },
+                      {
+                        "id": "log",
+                        "title": "log",
+                        "description": "log",
+                        "dataType": 2
+                      },
+                      {
+                        "id": "particle_effect",
+                        "title": "particle_effect",
+                        "description": "particle_effect",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Particle Visual Effect Event",
+                          "description": "Particle Visual Effect Event",
+                          "fields": [
+                            {
+                              "id": "effect",
+                              "title": "effect",
+                              "description": "effect",
+                              "dataType": 16
+                            },
+                            {
+                              "id": "pre_effect_expression",
+                              "title": "pre_effect_expression",
+                              "description": "pre_effect_expression",
+                              "dataType": 24,
+                              "alternates": [
+                                {
+                                  "id": "pre_effect_expression",
+                                  "dataType": 14,
+                                  "readOnly": true,
+                                  "subForm": {
+                                    "title": "Pre Effect Expression",
+                                    "description": "Pre Effect Expression",
+                                    "fields": [
+                                      {
+                                        "id": "expression",
+                                        "title": "expression",
+                                        "description": "expression",
+                                        "dataType": 2
+                                      },
+                                      {
+                                        "id": "version",
+                                        "title": "version",
+                                        "description": "version",
+                                        "dataType": 0
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "id": "pre_effect_expression",
+                                  "dataType": 3
+                                }
+                              ]
+                            },
+                            {
+                              "id": "type",
+                              "title": "particle_visual_effect_event effect_type",
+                              "description": "particle_visual_effect_event effect_type",
+                              "dataType": 2
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "sequence",
+                        "title": "sequence",
+                        "description": "sequence",
+                        "dataType": 16
+                      },
+                      {
+                        "id": "sound_effect",
+                        "title": "sound_effect",
+                        "description": "sound_effect",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Particle Sound Effect Event",
+                          "description": "Particle Sound Effect Event",
+                          "fields": [
+                            {
+                              "id": "event_name",
+                              "title": "event_name",
+                              "description": "event_name",
+                              "dataType": 2
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "randomize",
+                        "title": "randomize",
+                        "description": "randomize",
+                        "dataType": 16
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "randomize",
+                  "title": "randomize",
+                  "description": "randomize",
+                  "dataType": 16
+                },
+                {
+                  "id": "expression",
+                  "title": "expression",
+                  "description": "expression",
+                  "dataType": 24,
+                  "alternates": [
+                    {
+                      "id": "expression",
+                      "dataType": 14,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Expression",
+                        "description": "Expression",
+                        "fields": [
+                          {
+                            "id": "expression",
+                            "title": "expression",
+                            "description": "expression",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "version",
+                            "title": "version",
+                            "description": "version",
+                            "dataType": 0
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "expression",
+                      "dataType": 3
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
     }
   ],
-  "description": "Particle Effect V1.21.0 Misc",
-  "title": "Particle Effect V1.21.0 Misc"
+  "description": "Particle Effect Misc",
+  "title": "Particle Effect Misc"
 }

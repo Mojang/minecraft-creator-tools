@@ -10,8 +10,18 @@
           "target": "self"
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_tame/minecraft:on_wake_with_owner/",
+        "content": {
+          "event": "minecraft:pet_slept_with_owner",
+          "target": "self"
+        }
+      }
     ]
   },
+  "id": "minecraft:on_wake_with_owner",
   "fields": [
     {
       "id": "event",
@@ -22,6 +32,12 @@
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_tame/minecraft:on_wake_with_owner/",
+            "content": "minecraft:pet_slept_with_owner"
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_tame/minecraft:on_wake_with_owner/",
             "content": "minecraft:pet_slept_with_owner"
           }
         ]
@@ -43,6 +59,12 @@
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_tame/minecraft:on_wake_with_owner/",
+            "content": "self"
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_tame/minecraft:on_wake_with_owner/",
             "content": "self"
           }
         ]

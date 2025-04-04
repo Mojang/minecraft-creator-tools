@@ -226,5 +226,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.delayed_attack"
 }

@@ -514,7 +514,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     } else if (CartoApp.hostType === HostType.webPlusServices) {
       let gitHubFolder = <></>;
 
-      const ghUrl = baseUrl + "?open=gh/" + this.props.project.gitHubOwner + "/" + this.props.project.gitHubRepoName;
+      const ghUrl = baseUrl + "#open=gh/" + this.props.project.gitHubOwner + "/" + this.props.project.gitHubRepoName;
 
       if (this.props.project.gitHubFolder !== undefined) {
         gitHubFolder = (

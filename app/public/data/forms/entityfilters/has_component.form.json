@@ -789,6 +789,17 @@
           "value": "minecraft:is_baby"
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/events/minecraft:entity_born/sequence/0/filters/",
+        "content": {
+          "test": "has_component",
+          "operator": "!=",
+          "value": "minecraft:is_baby"
+        }
+      }
     ]
-  }
+  },
+  "id": "has_component"
 }

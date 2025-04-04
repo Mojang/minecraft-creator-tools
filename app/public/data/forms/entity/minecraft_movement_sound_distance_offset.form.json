@@ -9,5 +9,6 @@
     }
   ],
   "description": "Sets the offset used to determine the next step distance for playing a movement sound.",
-  "title": "Movement Sound Distance Offset"
+  "title": "Movement Sound Distance Offset",
+  "id": "minecraft:movement_sound_distance_offset"
 }

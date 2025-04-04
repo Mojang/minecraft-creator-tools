@@ -80,18 +80,14 @@ export default class EntityTypeAddComponent extends Component<
       if (fileName.startsWith("minecraft") && fileName.endsWith(".form.json")) {
         const baseName = fileName.substring(0, fileName.length - 10);
 
-        const form = await Database.ensureFormLoaded("entity", baseName);
+        let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
+        const category = EntityTypeDefinition.getExtendedComponentCategory(canonName);
 
-        if (form && !form.isDeprecated && !form.isInternal) {
-          let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
-          const category = EntityTypeDefinition.getExtendedComponentCategory(canonName);
-
-          componentMenuItems[category as number].push({
-            key: canonName,
-            tag: canonName,
-            content: Utilities.humanifyMinecraftName(canonName),
-          });
-        }
+        componentMenuItems[category as number].push({
+          key: canonName,
+          tag: canonName,
+          content: Utilities.humanifyMinecraftName(canonName),
+        });
       }
     }
 

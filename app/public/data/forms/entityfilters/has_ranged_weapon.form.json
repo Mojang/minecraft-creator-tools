@@ -288,5 +288,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "has_ranged_weapon"
 }

@@ -15,6 +15,13 @@
   }
 }
 
+.pe-shareProjectDialog {
+  max-width: 700px;
+  width: calc(95vw - 30px);
+  max-height: calc(100vh - 30px);
+  min-height: calc(100vh - 30px);
+}
+
 .pe-menuIcon {
   width: 20px;
   height: 20px;

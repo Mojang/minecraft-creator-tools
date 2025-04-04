@@ -123,5 +123,6 @@
         "content": "{ \"test\": \"random_chance\", \"value\": \"0\" }"
       }
     ]
-  }
+  },
+  "id": "random_chance"
 }

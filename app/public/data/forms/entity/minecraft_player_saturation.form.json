@@ -1,0 +1,46 @@
+{
+  "id": "minecraft:player.saturation",
+  "title": "Player Saturation",
+  "description": "Defines the player's need for food.",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The initial value of player saturation.",
+      "dataType": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/player.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:player.saturation/",
+            "content": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "max",
+      "title": "Maximum Value",
+      "description": "The maximum player saturation value.",
+      "dataType": 0,
+      "samples": {
+        "/vanilla/behavior_pack/entities/player.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:player.saturation/",
+            "content": 20
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/player.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:player.saturation/",
+        "content": {
+          "value": 5,
+          "max": 20
+        }
+      }
+    ]
+  }
+}

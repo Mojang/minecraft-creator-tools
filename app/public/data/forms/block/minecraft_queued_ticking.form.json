@@ -22,5 +22,6 @@
   ],
   "isDeprecated": true,
   "description": "Triggers the specified event, either once, or at a regular interval equal to a number of ticks randomly chosen from the interval_range provided.",
-  "title": "Queued Ticking"
+  "title": "Queued Ticking",
+  "id": "minecraft:queued_ticking"
 }

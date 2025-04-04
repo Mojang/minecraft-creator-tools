@@ -1,0 +1,64 @@
+@media only screen and (min-width: 800px) {
+  .hhdr {
+    font-size: 30pt;
+    height: 100%;
+    border-bottom: outset 2px;
+  }
+
+  .hhdr-area {
+    border-bottom: inset 2px;
+    padding-bottom: 5px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .hhdr {
+    height: 120px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
+
+.hhdr-sublink {
+  font-size: small;
+  color: white;
+}
+
+.hhdr-sublink A {
+  font-size: small;
+  color: white;
+}
+
+.hhdr-docsLink {
+  color: white;
+  padding-left: 6px;
+  background-color: transparent;
+  border: 0px;
+  text-decoration: underline;
+  padding-right: 0px;
+}
+
+.hhdr-textArea {
+  padding-left: 6px;
+}
+
+.hhdr-area {
+  vertical-align: middle;
+  text-align: center;
+  background-image: url(../images/bg-wool-dark.png);
+  grid-row: 1;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.hhdr-image-outer {
+  display: inline-block;
+  margin: 0px;
+  line-height: 1;
+  background-size: cover;
+}
+
+.hhdr-image {
+  width: 266px;
+  height: 60px;
+}

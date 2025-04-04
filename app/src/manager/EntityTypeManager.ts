@@ -108,11 +108,21 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
     const piiRuntimeIdentifier = new ProjectInfoItem(
       InfoItemType.featureAggregate,
       this.id,
-      2,
+      EntityTypeInfo.RuntimeIdentifier,
       "Entity Type Runtime Identifier"
     );
-    const piiIdentifier = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 3, "Entity Type Identifier");
-    const piiMetadata = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 4, "Entity Type Metadata");
+    const piiIdentifier = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      EntityTypeInfo.Identifier,
+      "Entity Type Identifier"
+    );
+    const piiMetadata = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      EntityTypeInfo.Metadata,
+      "Entity Type Metadata"
+    );
 
     infoItems.push(piiRuntimeIdentifier);
 
@@ -318,7 +328,12 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
 
     if (!ver) {
       results.push(
-        new ProjectUpdateResult(UpdateResultType.internalProcessingError, this.id, 199, "Could not retrieve version.")
+        new ProjectUpdateResult(
+          UpdateResultType.internalProcessingError,
+          this.id,
+          EntityTypeInfo.FailedToRetrieveLatestMinecraftVersion,
+          "Could not retrieve version."
+        )
       );
 
       return results;

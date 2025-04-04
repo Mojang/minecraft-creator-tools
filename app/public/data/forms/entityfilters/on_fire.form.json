@@ -124,5 +124,6 @@
         "content": "{ \"test\": \"on_fire\" }"
       }
     ]
-  }
+  },
+  "id": "on_fire"
 }

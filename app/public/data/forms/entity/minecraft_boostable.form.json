@@ -129,5 +129,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:boostable"
 }

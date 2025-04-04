@@ -558,5 +558,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.nearest_prioritized_attackable_target"
 }

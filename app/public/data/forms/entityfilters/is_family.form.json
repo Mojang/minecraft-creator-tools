@@ -3616,6 +3616,269 @@
           "value": "player"
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_wild/minecraft:behavior.nearest_attackable_target/entity_types/0/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "rabbit"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_wild/minecraft:behavior.nearest_attackable_target/entity_types/1/filters/all_of/0/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "baby_turtle"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_wild/minecraft:behavior.avoid_mob_type/entity_types/0/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/entity_types/0/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.nearest_attackable_target/entity_types/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "monster"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.hurt_by_target/entity_types/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "monster"
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.nearest_attackable_target/entity_types/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "monster"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.hurt_by_target/entity_types/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "monster"
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.nearest_attackable_target/entity_types/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "monster"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.hurt_by_target/entity_types/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "monster"
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave_generator.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.nearest_attackable_target/entity_types/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "monster"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/0/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/1/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/2/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/3/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/4/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/5/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/6/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/7/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/8/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/9/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/10/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/11/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/12/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/13/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/14/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/15/on_interact/filters/all_of/1/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "player"
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/shbullet_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.nearest_attackable_target/entity_types/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "monster"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.hurt_by_target/entity_types/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "monster"
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/smfireball_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.nearest_attackable_target/entity_types/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "monster"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.hurt_by_target/entity_types/filters/",
+        "content": {
+          "test": "is_family",
+          "subject": "other",
+          "value": "monster"
+        }
+      }
     ]
-  }
+  },
+  "id": "is_family"
 }

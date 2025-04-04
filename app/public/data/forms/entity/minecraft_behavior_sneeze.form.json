@@ -403,5 +403,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.sneeze"
 }

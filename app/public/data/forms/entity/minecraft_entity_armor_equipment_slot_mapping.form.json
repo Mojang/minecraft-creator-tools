@@ -8,5 +8,6 @@
     }
   ],
   "description": "It defines to which armor slot an item equipped to 'minecraft:equippable''s second slot should be equipped to. It is automatically applied to all entities for worlds with a version greater than or equal to 1.21.10. For older worlds, 'slot.armor.torso' will be used. It is strongly advised not to explicitly use this component, as no backwards compatibility for it will be provided.",
-  "title": "Entity Armor Equipment Slot Mapping"
+  "title": "Entity Armor Equipment Slot Mapping",
+  "id": "minecraft:entity_armor_equipment_slot_mapping"
 }

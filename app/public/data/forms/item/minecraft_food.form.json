@@ -196,12 +196,13 @@
       "id": "using_converts_to",
       "title": "using_converts_to",
       "description": "When used, converts to the item specified by the string in this field. Default does not convert item.",
-      "dataType": 16,
-      "subForm": {
-        "title": "Using Converts To",
-        "description": "Using Converts To",
-        "fields": []
-      },
+      "dataType": 2,
+      "alternates": [
+        {
+          "id": "using_converts_to",
+          "dataType": 24
+        }
+      ],
       "samples": {
         "/vanilla/behavior_pack/items/beetroot_soup.json": [
           {
@@ -852,6 +853,96 @@
           "nutrition": 2,
           "saturation_modifier": "low",
           "is_meat": false
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "can_always_eat": true,
+          "nutrition": 6,
+          "saturation_modifier": 0.6
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/dream_essence.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "can_always_eat": true,
+          "nutrition": 2,
+          "saturation_modifier": 0.2
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "can_always_eat": true,
+          "nutrition": 2,
+          "saturation_modifier": 0.2
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "can_always_eat": true,
+          "nutrition": 6,
+          "saturation_modifier": 0.6
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/dream_essence.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "can_always_eat": true,
+          "nutrition": 2,
+          "saturation_modifier": 0.2
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "can_always_eat": true,
+          "nutrition": 2,
+          "saturation_modifier": 0.2
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "can_always_eat": true,
+          "nutrition": 6,
+          "saturation_modifier": 0.6
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/dream_essence.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "can_always_eat": true,
+          "nutrition": 2,
+          "saturation_modifier": 0.2
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/dream_turkey.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:food/",
+        "content": {
+          "can_always_eat": true,
+          "nutrition": 2,
+          "saturation_modifier": 0.2
         }
       }
     ]

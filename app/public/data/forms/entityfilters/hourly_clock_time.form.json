@@ -123,5 +123,6 @@
         "content": "{ \"test\": \"hourly_clock_time\", \"value\": \"0\" }"
       }
     ]
-  }
+  },
+  "id": "hourly_clock_time"
 }

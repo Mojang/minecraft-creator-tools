@@ -129,5 +129,6 @@
         "content": "{ \"test\": \"float_property\", \"domain\": \"minecraft:can_climb\", \"value\": \"0.00\" }"
       }
     ]
-  }
+  },
+  "id": "float_property"
 }

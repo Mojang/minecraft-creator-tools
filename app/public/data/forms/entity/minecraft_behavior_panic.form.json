@@ -180,6 +180,12 @@
             "path": "/minecraft:entity/components/minecraft:behavior.panic/",
             "content": 0.6
           }
+        ],
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.panic/",
+            "content": 1.5
+          }
         ]
       }
     },
@@ -737,6 +743,43 @@
           "speed_multiplier": 1.25
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.panic/",
+        "content": {
+          "priority": 1,
+          "speed_multiplier": 1.5
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.panic/",
+        "content": {
+          "priority": 1,
+          "speed_multiplier": 1.5
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.panic/",
+        "content": {
+          "priority": 1,
+          "speed_multiplier": 1.5
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.panic/",
+        "content": {
+          "priority": 1,
+          "speed_multiplier": 1.25
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.panic"
 }

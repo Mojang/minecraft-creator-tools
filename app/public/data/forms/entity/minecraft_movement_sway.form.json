@@ -77,5 +77,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:movement.sway"
 }

@@ -336,5 +336,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:inventory"
 }

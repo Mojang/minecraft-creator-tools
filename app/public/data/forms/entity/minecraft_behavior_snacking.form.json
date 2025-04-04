@@ -36,5 +36,6 @@
     }
   ],
   "description": "Allows the mob to take a load off and snack on food that it found nearby.",
-  "title": "Snacking Behavior"
+  "title": "Snacking Behavior",
+  "id": "minecraft:behavior.snacking"
 }

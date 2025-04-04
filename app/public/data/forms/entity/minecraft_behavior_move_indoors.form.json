@@ -80,5 +80,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.move_indoors"
 }

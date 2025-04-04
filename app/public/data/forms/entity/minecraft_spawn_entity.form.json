@@ -362,6 +362,51 @@
               }
             ]
           }
+        ],
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/",
+            "content": {
+              "min_wait_time": 300,
+              "max_wait_time": 600,
+              "spawn_sound": "plop",
+              "spawn_item": "egg",
+              "filters": {
+                "test": "rider_count",
+                "subject": "self",
+                "operator": "==",
+                "value": 0
+              }
+            }
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/",
+            "content": {
+              "min_wait_time": 300,
+              "max_wait_time": 600,
+              "spawn_sound": "plop",
+              "spawn_item": "egg",
+              "filters": {
+                "test": "rider_count",
+                "subject": "self",
+                "operator": "==",
+                "value": 0
+              }
+            }
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/memory_jar.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:spawn_entity/",
+            "content": {
+              "min_wait_time": 300,
+              "max_wait_time": 600,
+              "spawn_sound": "place",
+              "spawn_item": "egg"
+            }
+          }
         ]
       }
     }
@@ -509,6 +554,77 @@
           ]
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/",
+        "content": {
+          "entities": {
+            "min_wait_time": 300,
+            "max_wait_time": 600,
+            "spawn_sound": "plop",
+            "spawn_item": "egg",
+            "filters": {
+              "test": "rider_count",
+              "subject": "self",
+              "operator": "==",
+              "value": 0
+            }
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/",
+        "content": {
+          "entities": {
+            "min_wait_time": 300,
+            "max_wait_time": 600,
+            "spawn_sound": "plop",
+            "spawn_item": "egg",
+            "filters": {
+              "test": "rider_count",
+              "subject": "self",
+              "operator": "==",
+              "value": 0
+            }
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/",
+        "content": {
+          "entities": {
+            "min_wait_time": 300,
+            "max_wait_time": 600,
+            "spawn_sound": "plop",
+            "spawn_item": "egg",
+            "filters": {
+              "test": "rider_count",
+              "subject": "self",
+              "operator": "==",
+              "value": 0
+            }
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/memory_jar.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:spawn_entity/",
+        "content": {
+          "entities": {
+            "min_wait_time": 300,
+            "max_wait_time": 600,
+            "spawn_sound": "place",
+            "spawn_item": "egg"
+          }
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:spawn_entity"
 }

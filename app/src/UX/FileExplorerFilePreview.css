@@ -1,0 +1,15 @@
+.feffp-area {
+  width: 100%;
+  white-space: nowrap;
+  padding: 2px;
+  margin-top: 3px;
+  grid-template-columns: 22px 22px 1fr;
+  display: grid;
+}
+
+.feffp-textArea {
+  width: 500px;
+  height: 100%;
+  max-width: calc(100vw - 410px);
+  font-family: "Courier New", Courier, monospace;
+}

@@ -21,5 +21,6 @@
         "content": {}
       }
     ]
-  }
+  },
+  "id": "minecraft:is_collidable"
 }

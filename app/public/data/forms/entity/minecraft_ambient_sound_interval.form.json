@@ -385,5 +385,6 @@
         "content": {}
       }
     ]
-  }
+  },
+  "id": "minecraft:ambient_sound_interval"
 }

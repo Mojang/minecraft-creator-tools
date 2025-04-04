@@ -352,6 +352,8 @@ export default class ProjectItem {
         return "behavior/dialogue/dialogue.json";
       case ProjectItemType.entityTypeBehavior:
         return "behavior/entities/entities.json";
+      case ProjectItemType.atmosphericsJson:
+        return "behavior/lighting/atmospherics.json";
       case ProjectItemType.blocksCatalogResourceJson:
         return "resource/blocks.json";
       case ProjectItemType.soundCatalog:

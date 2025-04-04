@@ -108,5 +108,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.move_to_random_block"
 }

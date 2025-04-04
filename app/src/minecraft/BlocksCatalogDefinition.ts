@@ -8,6 +8,14 @@ import StorageUtilities from "../storage/StorageUtilities";
 import { IBlocksCatalogResource } from "./IBlocksCatalog";
 import Project from "../app/Project";
 import { AnnotationCategory } from "../core/ContentIndex";
+import Database from "./Database";
+import { ProjectItemType } from "../app/IProjectItemData";
+import BlockTypeDefinition from "./BlockTypeDefinition";
+
+export interface BlocksCatalogDependendencies {
+  unused: string[];
+  vanillaOverride: string[];
+}
 
 export default class BlocksCatalogDefinition {
   public blocksCatalog?: IBlocksCatalogResource;
@@ -138,21 +146,72 @@ export default class BlocksCatalogDefinition {
     return textureRefs;
   }
 
-  async getUnusedDependencies(project: Project) {
-    const textureRefs: string[] = [];
+  async getDependenciesList(project: Project) {
+    const dependencies: BlocksCatalogDependendencies = {
+      unused: [],
+      vanillaOverride: [],
+    };
+
     if (this.blocksCatalog) {
+      const myBlockIds: { [name: string]: boolean } = {};
+
+      let projectItemsCopy = project.getItemsCopy();
+
+      for (const item of projectItemsCopy) {
+        if (item.itemType === ProjectItemType.blockTypeBehavior) {
+          await item.ensureFileStorage();
+
+          if (item.file) {
+            const blockTypeDef = await BlockTypeDefinition.ensureOnFile(item.file);
+
+            if (blockTypeDef && blockTypeDef.id) {
+              myBlockIds[blockTypeDef.id] = true;
+
+              const colon = blockTypeDef.id.indexOf(":");
+              if (colon >= 0) {
+                const noColonId = blockTypeDef.id.substring(colon + 1);
+
+                myBlockIds[noColonId] = true;
+              }
+            }
+          }
+        }
+      }
+
       for (const resourceId in this.blocksCatalog) {
         if (resourceId !== "format_version") {
           const resource = this.blocksCatalog[resourceId];
 
           if (resource && (resource.textures || resource.sound || resource.carried_textures)) {
-            if (!textureRefs.includes(resourceId)) {
-              const termMatches = await project.infoSet.contentIndex.getMatches(resourceId, true, [
-                AnnotationCategory.blockTypeSource,
-              ]);
+            if (!dependencies.unused.includes(resourceId) && !dependencies.vanillaOverride.includes(resourceId)) {
+              let foundMatch = myBlockIds[resourceId] === true;
 
-              if (!termMatches || termMatches.length === 0) {
-                textureRefs.push(resourceId);
+              if (!foundMatch) {
+                let resourceColon = resourceId.indexOf(":");
+
+                if (resourceColon < 0) {
+                  const vanillaTermMatches = await Database.getVanillaMatches("minecraft:" + resourceId, true, [
+                    AnnotationCategory.blockTypeSource,
+                  ]);
+
+                  if (vanillaTermMatches && vanillaTermMatches.length > 0) {
+                    dependencies.vanillaOverride.push(resourceId);
+                    foundMatch = true;
+                  }
+                } else if (resourceId.startsWith("minecraft:")) {
+                  const vanillaTermMatches = await Database.getVanillaMatches(resourceId, true, [
+                    AnnotationCategory.blockTypeSource,
+                  ]);
+
+                  if (vanillaTermMatches && vanillaTermMatches.length > 0) {
+                    dependencies.vanillaOverride.push(resourceId);
+                    foundMatch = true;
+                  }
+                }
+              }
+
+              if (!foundMatch) {
+                dependencies.unused.push(resourceId);
               }
             }
           }
@@ -160,7 +219,7 @@ export default class BlocksCatalogDefinition {
       }
     }
 
-    return textureRefs;
+    return dependencies;
   }
 
   removeId(id: string) {

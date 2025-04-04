@@ -177,5 +177,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.circle_around_anchor"
 }

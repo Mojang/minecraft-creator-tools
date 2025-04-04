@@ -15,13 +15,42 @@
       "dataType": 16,
       "subFormId": "block/materialinstanceface",
       "samples": {
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:material_instances/",
+            "content": {
+              "texture": "mikeamm_gwve_fabricator",
+              "render_method": "alpha_test",
+              "ambient_occlusion": 1
+            }
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/gray_ore.block.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:material_instances/",
+            "content": {
+              "texture": "mikeamm_gwve_gray_ore",
+              "render_method": "alpha_test",
+              "face_dimming": false
+            }
+          }
+        ],
+        "/samples/culled_block_sample/culled_block_behavior_pack/blocks/tuna_roll.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:material_instances/",
+            "content": {
+              "texture": "sushi_wrap"
+            }
+          }
+        ],
         "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/blue_bubble_fish.json": [
           {
             "path": "/minecraft:block/components/minecraft:material_instances/",
             "content": {
               "texture": "bubble_fish_blue",
               "render_method": "blend",
-              "face_dimming": true
+              "face_dimming": true,
+              "ambient_occlusion": 1
             }
           }
         ],
@@ -53,14 +82,6 @@
             }
           }
         ],
-        "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/salmon_roll.json": [
-          {
-            "path": "/minecraft:block/components/minecraft:material_instances/",
-            "content": {
-              "texture": "sushi_wrap"
-            }
-          }
-        ],
         "/samples/custom_features/basic_orange_ore/behavior_packs/basic_orange_ore/blocks/orange_ore.block.json": [
           {
             "path": "/minecraft:block/components/minecraft:material_instances/",
@@ -76,6 +97,14 @@
             "content": {
               "texture": "apple_block",
               "render_method": "opaque"
+            }
+          }
+        ],
+        "/samples/lucky_block/version_1/behavior_packs/mike_luck/blocks/luckyblock.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:material_instances/",
+            "content": {
+              "texture": "luckyblock"
             }
           }
         ],
@@ -132,6 +161,14 @@
               "render_method": "alpha_test"
             }
           }
+        ],
+        "/samples/starter_blocks/behavior_packs/starter_blocks/blocks/crate.json": [
+          {
+            "path": "/minecraft:block/components/minecraft:material_instances/",
+            "content": {
+              "texture": "crate"
+            }
+          }
         ]
       }
     },
@@ -141,13 +178,13 @@
       "dataType": 16,
       "subFormId": "block/materialinstanceface",
       "samples": {
-        "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/california_roll.json": [
+        "/samples/culled_block_sample/culled_block_behavior_pack/blocks/tuna_roll.json": [
           {
             "path": "/minecraft:block/components/minecraft:material_instances/",
             "content": "sushi_side"
           }
         ],
-        "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/salmon_roll.json": [
+        "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/california_roll.json": [
           {
             "path": "/minecraft:block/components/minecraft:material_instances/",
             "content": "sushi_side"
@@ -161,13 +198,13 @@
       "dataType": 16,
       "subFormId": "block/materialinstanceface",
       "samples": {
-        "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/california_roll.json": [
+        "/samples/culled_block_sample/culled_block_behavior_pack/blocks/tuna_roll.json": [
           {
             "path": "/minecraft:block/components/minecraft:material_instances/",
             "content": "sushi_side"
           }
         ],
-        "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/salmon_roll.json": [
+        "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/california_roll.json": [
           {
             "path": "/minecraft:block/components/minecraft:material_instances/",
             "content": "sushi_side"
@@ -208,12 +245,6 @@
         "description": "A material instance definition to map to a material instance in a geometry file. The material instance \"*\" will be used for any materials that don't have a match.",
         "fields": [
           {
-            "id": "Boolean",
-            "title": "Boolean",
-            "description": "isotropic",
-            "dataType": 1
-          },
-          {
             "id": "ambient_occlusion",
             "title": "Ambient Occlusion",
             "description": "Should this material have ambient occlusion applied when lighting? If true, shadows will be created around and underneath the block. Optionally can be constructed with float to control exponent applied to ao value after lighting.",
@@ -224,6 +255,13 @@
             "title": "Face Dimming",
             "description": "Should this material be dimmed by the direction it's facing?",
             "defaultValue": true,
+            "dataType": 1
+          },
+          {
+            "id": "isotropic",
+            "title": "Isotropic",
+            "description": "Should the faces that this material is applied to randomize their UVs?",
+            "defaultValue": false,
             "dataType": 1
           },
           {
@@ -253,6 +291,45 @@
   "description": "The material instances for a block. Maps face or material_instance names in a geometry file to an actual material instance. You can assign a material instance object to any of these faces: \"up\", \"down\", \"north\", \"south\", \"east\", \"west\", or \"*\". You can also give an instance the name of your choosing such as \"my_instance\", and then assign it to a face by doing \"north\":\"my_instance\".",
   "title": "Material Instances",
   "samples": {
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:material_instances/",
+        "content": {
+          "*": {
+            "texture": "mikeamm_gwve_fabricator",
+            "render_method": "alpha_test",
+            "ambient_occlusion": 1
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/gray_ore.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:material_instances/",
+        "content": {
+          "*": {
+            "texture": "mikeamm_gwve_gray_ore",
+            "render_method": "alpha_test",
+            "face_dimming": false
+          }
+        }
+      }
+    ],
+    "/samples/culled_block_sample/culled_block_behavior_pack/blocks/tuna_roll.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:material_instances/",
+        "content": {
+          "north": "sushi_side",
+          "south": "sushi_side",
+          "*": {
+            "texture": "sushi_wrap"
+          },
+          "sushi_side": {
+            "texture": "tuna_roll"
+          }
+        }
+      }
+    ],
     "/samples/custom_blocks/behavior_packs/custom_blocks/blocks/blue_bubble_fish.json": [
       {
         "path": "/minecraft:block/components/minecraft:material_instances/",
@@ -260,7 +337,8 @@
           "*": {
             "texture": "bubble_fish_blue",
             "render_method": "blend",
-            "face_dimming": true
+            "face_dimming": true,
+            "ambient_occlusion": 1
           }
         }
       }
@@ -356,6 +434,16 @@
         }
       }
     ],
+    "/samples/lucky_block/version_1/behavior_packs/mike_luck/blocks/luckyblock.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:material_instances/",
+        "content": {
+          "*": {
+            "texture": "luckyblock"
+          }
+        }
+      }
+    ],
     "/samples/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/frond_top.block.json": [
       {
         "path": "/minecraft:block/components/minecraft:material_instances/",
@@ -421,6 +509,17 @@
           }
         }
       }
+    ],
+    "/samples/starter_blocks/behavior_packs/starter_blocks/blocks/crate.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:material_instances/",
+        "content": {
+          "*": {
+            "texture": "crate"
+          }
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:material_instances"
 }

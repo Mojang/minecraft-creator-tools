@@ -128,5 +128,6 @@
         "content": "{ \"test\": \"is_target\" }"
       }
     ]
-  }
+  },
+  "id": "is_target"
 }

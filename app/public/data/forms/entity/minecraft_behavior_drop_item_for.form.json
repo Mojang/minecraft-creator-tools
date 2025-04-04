@@ -12,6 +12,12 @@
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": 0.25
           }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": 0.25
+          }
         ]
       }
     },
@@ -27,6 +33,12 @@
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": 0.7
           }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": 0.7
+          }
         ]
       }
     },
@@ -39,6 +51,21 @@
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": [
+              {
+                "filters": {
+                  "test": "is_family",
+                  "subject": "other",
+                  "value": "player"
+                },
+                "max_dist": 6
+              }
+            ]
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": [
               {
                 "filters": {
@@ -65,6 +92,12 @@
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": 1
           }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": 1
+          }
         ]
       }
     },
@@ -79,6 +112,12 @@
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": "loot_tables/entities/cat_gift.json"
           }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": "loot_tables/entities/eliza_gift.json"
+          }
         ]
       }
     },
@@ -92,6 +131,12 @@
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": 10
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": 10
           }
         ]
@@ -109,6 +154,12 @@
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": 2
           }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": 2
+          }
         ]
       }
     },
@@ -122,6 +173,12 @@
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": 5
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": 5
           }
         ]
@@ -138,6 +195,15 @@
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": {
               "event": "minecraft:cat_gifted_owner",
+              "target": "self"
+            }
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": {
+              "event": "mike_eliz:eliza_gifted_owner",
               "target": "self"
             }
           }
@@ -163,6 +229,12 @@
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": 2
           }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": 2
+          }
         ]
       }
     },
@@ -176,6 +248,12 @@
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": 5
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": 5
           }
         ]
@@ -200,6 +278,12 @@
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": 1
           }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": 1
+          }
         ]
       }
     },
@@ -217,6 +301,16 @@
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": [
+              5,
+              5,
+              5
+            ]
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": [
               5,
               5,
@@ -246,6 +340,16 @@
               0
             ]
           }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": [
+              0,
+              1,
+              0
+            ]
+          }
         ]
       }
     },
@@ -258,6 +362,15 @@
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": [
+              0.74999,
+              0.8
+            ]
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": [
               0.74999,
               0.8
@@ -276,6 +389,12 @@
         "/vanilla/behavior_pack/entities/cat.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:cat_gift_for_owner/minecraft:behavior.drop_item_for/",
+            "content": 1
+          }
+        ],
+        "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
             "content": 1
           }
         ]
@@ -338,6 +457,55 @@
           }
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_gift_for_owner/minecraft:behavior.drop_item_for/",
+        "content": {
+          "priority": 1,
+          "seconds_before_pickup": 0,
+          "cooldown": 0.25,
+          "drop_item_chance": 0.7,
+          "offering_distance": 5,
+          "minimum_teleport_distance": 2,
+          "max_head_look_at_height": 10,
+          "target_range": [
+            5,
+            5,
+            5
+          ],
+          "teleport_offset": [
+            0,
+            1,
+            0
+          ],
+          "time_of_day_range": [
+            0.74999,
+            0.8
+          ],
+          "speed_multiplier": 1,
+          "search_range": 5,
+          "search_height": 2,
+          "search_count": 0,
+          "goal_radius": 1,
+          "entity_types": [
+            {
+              "filters": {
+                "test": "is_family",
+                "subject": "other",
+                "value": "player"
+              },
+              "max_dist": 6
+            }
+          ],
+          "loot_table": "loot_tables/entities/eliza_gift.json",
+          "on_drop_attempt": {
+            "event": "mike_eliz:eliza_gifted_owner",
+            "target": "self"
+          }
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.drop_item_for"
 }

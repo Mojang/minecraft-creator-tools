@@ -15,6 +15,7 @@ import ProjectInfoSet from "../info/ProjectInfoSet";
 import { InfoItemType } from "../info/IInfoItemData";
 import LocalEnvironment from "../local/LocalEnvironment";
 import ProjectUtilities from "../app/ProjectUtilities";
+import ZipStorage from "../storage/ZipStorage";
 
 let carto: Carto | undefined;
 let localEnv: LocalEnvironment | undefined;
@@ -310,13 +311,30 @@ async function outputResults(
           ".mci.json"
       );
 
+      const mciContentFileZip = indexFolder.ensureFile(
+        StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(projectSet.projectContainerName)) +
+          fileNameModifier +
+          ".mci.json.zip"
+      );
+
+      let contentStr = "";
+
       if (outputType === OutputType.noReports) {
-        mciContentFile.setContent(pis.getStrictIndexJson(projectSet.projectName, projectSet.projectPath, undefined));
+        contentStr = pis.getStrictIndexJson(projectSet.projectName, projectSet.projectPath, undefined);
       } else {
-        mciContentFile.setContent(pis.getIndexJson(projectSet.projectName, projectSet.projectPath, undefined));
+        contentStr = pis.getIndexJson(projectSet.projectName, projectSet.projectPath, undefined);
       }
+      mciContentFile.setContent(contentStr);
 
       mciContentFile.saveContent();
+
+      const zs = ZipStorage.fromJsonString(contentStr);
+
+      const contentBytes = await zs.generateUint8ArrayAsync();
+
+      mciContentFileZip.setContent(contentBytes);
+
+      mciContentFileZip.saveContent();
     }
 
     if (outputType !== OutputType.noReports) {

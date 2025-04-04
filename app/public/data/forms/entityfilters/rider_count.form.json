@@ -57,7 +57,21 @@
           "title": "Not",
           "description": "Test for inequality."
         }
-      ]
+      ],
+      "samples": {
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/entities/filters/",
+            "content": "=="
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/entities/filters/",
+            "content": "=="
+          }
+        ]
+      }
     },
     {
       "id": "subject",
@@ -101,13 +115,46 @@
           "title": "Target",
           "description": "The caller's current target."
         }
-      ]
+      ],
+      "samples": {
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/entities/filters/",
+            "content": "self"
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/entities/filters/",
+            "content": "self"
+          }
+        ]
+      }
     },
     {
       "id": "value",
       "title": "Value",
       "description": "(Required) An integer value.",
       "dataType": 0
+    },
+    {
+      "id": "test",
+      "title": "Test",
+      "dataType": 2,
+      "samples": {
+        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/entities/filters/",
+            "content": "rider_count"
+          }
+        ],
+        "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+          {
+            "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/entities/filters/",
+            "content": "rider_count"
+          }
+        ]
+      }
     }
   ],
   "description": "Returns the number of riders on this entity.",
@@ -122,6 +169,40 @@
         "path": "Short (using Defaults)..",
         "content": "{ \"test\": \"rider_count\", \"value\": \"0\" }"
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/entities/filters/",
+        "content": {
+          "test": "rider_count",
+          "subject": "self",
+          "operator": "==",
+          "value": 0
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/entities/filters/",
+        "content": {
+          "test": "rider_count",
+          "subject": "self",
+          "operator": "==",
+          "value": 0
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:spawn_entity/entities/filters/",
+        "content": {
+          "test": "rider_count",
+          "subject": "self",
+          "operator": "==",
+          "value": 0
+        }
+      }
     ]
-  }
+  },
+  "id": "rider_count"
 }

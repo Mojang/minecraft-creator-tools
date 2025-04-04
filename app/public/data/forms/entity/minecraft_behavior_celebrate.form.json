@@ -254,5 +254,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.celebrate"
 }

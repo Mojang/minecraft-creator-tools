@@ -10,6 +10,7 @@ import StorageUtilities from "../storage/StorageUtilities";
 import WebUtilities from "./WebUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
+import FileExplorerFilePreview from "./FileExplorerFilePreview";
 
 export enum FileExplorerMode {
   explorer = 0,
@@ -19,11 +20,14 @@ export enum FileExplorerMode {
 interface IFileExplorerProps {
   rootFolder: IFolder;
   theme: ThemeInput<any>;
-  heightOffset: number;
+  heightOffset?: number;
   mode: FileExplorerMode;
-  selectedItem: IFile | IFolder | null | undefined;
+  selectFirstFile?: boolean;
+  selectedItem?: IFile | IFolder | null | undefined;
   itemAnnotations?: ItemAnnotationCollection;
-
+  expandByDefault?: boolean;
+  showPreview?: boolean;
+  height?: number;
   onFileSelected?: (file: IFile) => void;
   onFolderSelected?: (folder: IFolder) => void;
 
@@ -49,9 +53,15 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
     this._handleNewFileSelected = this._handleNewFileSelected.bind(this);
     this._handleNewFolderSelected = this._handleNewFolderSelected.bind(this);
 
+    let sel = this.props.selectedItem;
+
+    if (!sel && this.props.selectFirstFile) {
+      sel = StorageUtilities.getFirstFile(this.props.rootFolder);
+    }
+
     this.state = {
       newFolderName: undefined,
-      selectedItem: this.props.selectedItem,
+      selectedItem: sel,
     };
   }
 
@@ -133,11 +143,19 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
   render() {
     const height = WebUtilities.getHeight();
 
-    let explorerHeight =
-      height > this.props.heightOffset + 100 ? "calc(100vh - " + (this.props.heightOffset - 10) + "px)" : "inherit";
+    let explorerHeight = "inherit";
+    let folderAreaHeight = "inherit";
 
-    let folderAreaHeight =
-      height > this.props.heightOffset + 100 ? "calc(100vh - " + (this.props.heightOffset + 106) + "px)" : "inherit";
+    if (this.props.height) {
+      explorerHeight = this.props.height + "px";
+      folderAreaHeight = this.props.height - 11 + "px";
+    } else if (this.props.heightOffset) {
+      explorerHeight =
+        height > this.props.heightOffset + 100 ? "calc(100vh - " + (this.props.heightOffset - 10) + "px)" : "inherit";
+
+      folderAreaHeight =
+        height > this.props.heightOffset + 100 ? "calc(100vh - " + (this.props.heightOffset + 4) + "px)" : "inherit";
+    }
 
     let accessoryArea = <></>;
 
@@ -171,13 +189,43 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
           </div>
         </div>
       );
-      explorerHeight =
-        height > this.props.heightOffset + 100 ? "calc(100vh - " + (this.props.heightOffset + 50) + "px)" : "inherit";
+
+      if (this.props.heightOffset) {
+        explorerHeight =
+          height > this.props.heightOffset + 100
+            ? "calc(100vh - " + (this.props.heightOffset + 110) + "px)"
+            : "inherit";
+        folderAreaHeight =
+          height > this.props.heightOffset + 100
+            ? "calc(100vh - " + (this.props.heightOffset + 174) + "px)"
+            : "inherit";
+      }
+    }
+
+    let previewArea = <></>;
+    let outerClass = "fex-area";
+
+    if (this.props.showPreview && this.state.selectedItem && (this.state.selectedItem as IFile).content !== undefined) {
+      outerClass = "fex-areaWithPreview";
+
+      previewArea = (
+        <div className="fex-previewArea">
+          <FileExplorerFilePreview
+            selectedItem={this.state.selectedItem as IFile}
+            file={this.state.selectedItem as IFile}
+            heightOffset={this.props.heightOffset}
+            height={this.props.height ? this.props.height - 16 : undefined}
+            fileExplorer={this}
+            theme={this.props.theme}
+            readOnly={this.props.readOnly}
+          />
+        </div>
+      );
     }
 
     return (
       <div
-        className="fex-area"
+        className={outerClass}
         style={{
           maxHeight: explorerHeight,
           minHeight: explorerHeight,
@@ -195,6 +243,7 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
           <FileExplorerFolder
             folder={this.props.rootFolder}
             startExpanded={true}
+            expandByDefault={this.props.expandByDefault}
             itemAnnotations={this.getAnnotationsForFolder(this.props.rootFolder)}
             fileExplorer={this}
             theme={this.props.theme}
@@ -206,6 +255,7 @@ export default class FileExplorer extends Component<IFileExplorerProps, IFileExp
             depth={0}
           />
         </div>
+        {previewArea}
         {accessoryArea}
       </div>
     );

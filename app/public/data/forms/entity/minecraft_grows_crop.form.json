@@ -43,5 +43,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:grows_crop"
 }

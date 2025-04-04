@@ -59,5 +59,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.lay_down"
 }

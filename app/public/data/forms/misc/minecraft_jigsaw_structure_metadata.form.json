@@ -10,7 +10,19 @@
       "id": "minecraft:jigsaw_structure_metadata",
       "title": "minecraft:jigsaw_structure_metadata",
       "description": "The Jigsaw metadata registry.",
-      "dataType": 16
+      "dataType": 16,
+      "subForm": {
+        "title": "V1 21 80 JigsawStructureMetadataRegistry",
+        "description": "V1 21 80 JigsawStructureMetadataRegistry",
+        "fields": [
+          {
+            "id": "metadata",
+            "title": "metadata",
+            "description": "The registry associating structure locations with generated Jigsaw structure metadata.",
+            "dataType": 14
+          }
+        ]
+      }
     }
   ],
   "description": "Minecraft Jigsaw Structure Metadata Misc",

@@ -250,5 +250,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.fire_at_target"
 }

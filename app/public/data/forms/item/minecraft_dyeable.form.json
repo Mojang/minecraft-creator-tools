@@ -4,7 +4,15 @@
       "id": "default_color",
       "title": "default_color",
       "description": "default_color",
-      "dataType": 16
+      "dataType": 2,
+      "alternates": [
+        {
+          "id": "default_color",
+          "dataType": 32,
+          "minLength": 3,
+          "maxLength": 3
+        }
+      ]
     }
   ],
   "description": "enables custom items to be dyed in cauldrons. To use the dyeable component, the format version on the item and the attachable needs to have a format_version of 1.21.30 or greater.",

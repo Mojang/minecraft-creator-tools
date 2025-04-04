@@ -349,6 +349,34 @@
           "speed_multiplier": 1
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_baby/minecraft:behavior.follow_parent/",
+        "content": {
+          "priority": 5,
+          "speed_multiplier": 1.1
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_baby/minecraft:behavior.follow_parent/",
+        "content": {
+          "priority": 5,
+          "speed_multiplier": 1.1
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_baby/minecraft:behavior.follow_parent/",
+        "content": {
+          "priority": 5,
+          "speed_multiplier": 1.1
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.follow_parent"
 }

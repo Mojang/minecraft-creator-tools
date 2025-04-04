@@ -123,5 +123,6 @@
         "content": "{ \"test\": \"target_distance\", \"value\": \"0.00\" }"
       }
     ]
-  }
+  },
+  "id": "target_distance"
 }

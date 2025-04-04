@@ -68,5 +68,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:peek"
 }

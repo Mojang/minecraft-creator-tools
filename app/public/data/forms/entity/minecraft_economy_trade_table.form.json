@@ -505,5 +505,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:economy_trade_table"
 }

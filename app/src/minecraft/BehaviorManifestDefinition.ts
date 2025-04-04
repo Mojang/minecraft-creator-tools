@@ -347,6 +347,26 @@ export default class BehaviorManifestDefinition implements IDefinition {
     return this.definition.metadata;
   }
 
+  public ensureGeneratedWith(toolName: string, versionString: string): void {
+    const metadata = this.ensureMetadata();
+
+    if (!metadata) {
+      return undefined;
+    }
+
+    if (!metadata.generated_with) {
+      metadata.generated_with = {};
+    }
+
+    if (!metadata.generated_with[toolName]) {
+      metadata.generated_with[toolName] = [];
+    }
+
+    if (!metadata.generated_with[toolName].includes(versionString)) {
+      metadata.generated_with[toolName].push(versionString);
+    }
+  }
+
   public ensureHeader(name: string, description: string): IAddonManifestHeader {
     this.ensureDefinition(name, description);
 

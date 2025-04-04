@@ -37,6 +37,16 @@
       "type": 0
     },
     {
+      "title": "Deferred Lighting Starter",
+      "description": "A simple resource pack for experimenting with deferred lighting (preview).",
+      "gitHubOwner": "microsoft",
+      "gitHubRepoName": "minecraft-samples",
+      "gitHubFolder": "/deferred_lighting_starter",
+      "tags": ["preview"],
+      "id": "dlStarter",
+      "type": 0
+    },
+    {
       "title": "Editor Script Box",
       "description": "A basic starter project for editing Editor add-on projects.",
       "gitHubOwner": "microsoft",

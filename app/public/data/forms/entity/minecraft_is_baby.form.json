@@ -376,6 +376,31 @@
         "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:is_baby/",
         "content": {}
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_baby/minecraft:is_baby/",
+        "content": {}
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_baby/minecraft:is_baby/",
+        "content": {}
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_baby/minecraft:is_baby/",
+        "content": {}
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_baby/minecraft:is_baby/",
+        "content": {}
+      }
     ]
-  }
+  },
+  "id": "minecraft:is_baby"
 }

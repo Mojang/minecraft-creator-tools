@@ -229,5 +229,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.explore_outskirts"
 }

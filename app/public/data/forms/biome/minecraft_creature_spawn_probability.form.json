@@ -4,7 +4,13 @@
       "id": "probability",
       "title": "probability",
       "description": "Probabiltity between [0.0, 0.75] of creatures spawning within the biome on chunk generation.",
-      "dataType": 3
+      "dataType": 3,
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 0.75
+        }
+      ]
     }
   ],
   "description": "Probability that creatures will spawn within the biome when a chunk is generated.",

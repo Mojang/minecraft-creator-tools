@@ -550,6 +550,20 @@
           ]
         }
       }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.pickup_items/",
+        "content": {
+          "priority": 6,
+          "max_dist": 3,
+          "goal_radius": 2,
+          "speed_multiplier": 1,
+          "pickup_based_on_chance": true,
+          "can_pickup_any_item": true
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.pickup_items"
 }

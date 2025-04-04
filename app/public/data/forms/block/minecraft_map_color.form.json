@@ -19,6 +19,18 @@
   "description": "Sets the color of the block when rendered to a map. If this component is omitted, the block will not show up on the map.",
   "title": "Map Color",
   "samples": {
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:map_color/",
+        "content": "#5f4a2b"
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/gray_ore.block.json": [
+      {
+        "path": "/minecraft:block/components/minecraft:map_color/",
+        "content": "#ffcd17"
+      }
+    ],
     "/samples/custom_features/basic_orange_ore/behavior_packs/basic_orange_ore/blocks/orange_ore.block.json": [
       {
         "path": "/minecraft:block/components/minecraft:map_color/",
@@ -67,5 +79,6 @@
         "content": "#b9ae9d"
       }
     ]
-  }
+  },
+  "id": "minecraft:map_color"
 }

@@ -96,6 +96,8 @@ export default class GeneratorRegistrations {
         (generator as TextureInfoGenerator).performAddOnValidations = true;
       } else if (generator.id === "PACKSIZE") {
         (generator as PackSizeInfoGenerator).performAddOnValidations = true;
+      } else if (generator.id === "STRICT") {
+        (generator as StrictPlatformInfoGenerator).identifierOverridesAreErrors = true;
       }
     } else {
       if (generator.id === "WORLDDATA") {
@@ -104,6 +106,8 @@ export default class GeneratorRegistrations {
         (generator as TextureInfoGenerator).performAddOnValidations = false;
       } else if (generator.id === "PACKSIZE") {
         (generator as PackSizeInfoGenerator).performAddOnValidations = false;
+      } else if (generator.id === "STRICT") {
+        (generator as StrictPlatformInfoGenerator).identifierOverridesAreErrors = false;
       }
     }
 

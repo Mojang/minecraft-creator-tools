@@ -119,6 +119,18 @@
             "path": "/minecraft:entity/components/minecraft:shooter/",
             "content": "minecraft:splash_potion"
           }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:shooter/",
+            "content": "minecraft:shulker_bullet"
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/smfireball_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:shooter/",
+            "content": "minecraft:small_fireball"
+          }
         ]
       }
     },
@@ -148,6 +160,24 @@
           {
             "path": "/minecraft:entity/components/minecraft:shooter/",
             "content": 0.75
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:shooter/",
+            "content": 10
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:shooter/",
+            "content": 7
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:shooter/",
+            "content": 10
           }
         ]
       }
@@ -272,6 +302,7 @@
       }
     }
   ],
+  "note": "Ammunition used by minecraft:shooter must have the minecraft:projectile component in order to function properly.",
   "description": "Defines the entity's ranged attack behavior. The \"minecraft:behavior.ranged_attack\" goal uses this component to determine which projectiles to shoot.",
   "title": "Shooter",
   "samples": {
@@ -499,6 +530,60 @@
           "def": "minecraft:llama_spit"
         }
       }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:shooter/",
+        "content": {
+          "def": "minecraft:shulker_bullet",
+          "power": 10
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:shooter/",
+        "content": {
+          "def": "minecraft:arrow",
+          "power": 7
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:shooter/",
+        "content": {
+          "def": "minecraft:arrow",
+          "power": 10
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave_generator.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:shooter/",
+        "content": {
+          "def": "minecraft:arrow"
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/shbullet_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:shooter/",
+        "content": {
+          "def": "minecraft:shulker_bullet",
+          "power": 10
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/smfireball_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:shooter/",
+        "content": {
+          "def": "minecraft:small_fireball",
+          "power": 10
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:shooter"
 }

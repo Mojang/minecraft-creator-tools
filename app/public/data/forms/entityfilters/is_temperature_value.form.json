@@ -123,5 +123,6 @@
         "content": "{ \"test\": \"is_temperature_value\", \"value\": \"0.50\" }"
       }
     ]
-  }
+  },
+  "id": "is_temperature_value"
 }

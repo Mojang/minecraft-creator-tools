@@ -1755,6 +1755,10 @@ export default class Project {
     this.collapsedStoragePaths.push(storagePath);
   }
 
+  get isVanillaSourceProject() {
+    return this.defaultBehaviorPackUniqueId === "ee649bcf-256c-4013-9068-6a802b89d756";
+  }
+
   ensureStoragePathIsNotCollapsed(storagePath: string) {
     const newCollapsedPaths: string[] = [];
 
@@ -1952,11 +1956,13 @@ export default class Project {
                   if (manifest.header.uuid !== undefined) {
                     if (folderContext === FolderContext.behaviorPack) {
                       this.defaultBehaviorPackUniqueId = manifest.header.uuid;
+                      this.defaultBehaviorPackVersion = manifest.header.version;
                       this.#defaultBehaviorPackFolder = folder;
                       this.#behaviorPacksContainer = parentFolder;
                       this.ensurePackByFolder(folder, PackType.behavior);
                     } else if (folderContext === FolderContext.resourcePack) {
                       this.defaultResourcePackUniqueId = manifest.header.uuid;
+                      this.defaultResourcePackVersion = manifest.header.version;
                       this.#defaultResourcePackFolder = folder;
                       this.#resourcePacksContainer = parentFolder;
                       this.ensurePackByFolder(folder, PackType.resource);
@@ -2426,6 +2432,22 @@ export default class Project {
                 folderPathLower.indexOf("/spawn_rules/") >= 0
               ) {
                 newJsonType = ProjectItemType.spawnRuleBehavior;
+              } else if (
+                folderContext === FolderContext.behaviorPack &&
+                folderPathLower.indexOf("/cameras/") >= 0 &&
+                folderPathLower.indexOf("aim_assist_preset") >= 0
+              ) {
+                newJsonType = ProjectItemType.aimAssistJson;
+              } else if (
+                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                folderPathLower.indexOf("/atmospherics/") >= 0
+              ) {
+                newJsonType = ProjectItemType.atmosphericsJson;
+              } else if (
+                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                folderPathLower.indexOf("/color_grading/") >= 0
+              ) {
+                newJsonType = ProjectItemType.colorGradingJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/cameras/") >= 0) {
                 newJsonType = ProjectItemType.cameraJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/trading/") >= 0) {
@@ -2541,6 +2563,26 @@ export default class Project {
                 folderPathLower.indexOf("/lighting/") >= 0
               ) {
                 newJsonType = ProjectItemType.lightingJson;
+              } else if (
+                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                folderPathLower.indexOf("/point_lights/") >= 0
+              ) {
+                newJsonType = ProjectItemType.lightingJson;
+              } else if (
+                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                folderPathLower.indexOf("/pbr/") >= 0
+              ) {
+                newJsonType = ProjectItemType.pbrJson;
+              } else if (
+                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                folderPathLower.indexOf("/water/") >= 0
+              ) {
+                newJsonType = ProjectItemType.waterJson;
+              } else if (
+                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                folderPathLower.indexOf("/shadows/") >= 0
+              ) {
+                newJsonType = ProjectItemType.shadowsJson;
               } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/ui/") >= 0) {
                 newJsonType = ProjectItemType.uiJson;
               } else if (folderContext === FolderContext.docs && baseName === "example_files") {
@@ -2566,6 +2608,8 @@ export default class Project {
                 newJsonType = ProjectItemType.itemTypeResourceJson;
               } else if (folderContext === FolderContext.resourcePack && baseName === "sounds") {
                 newJsonType = ProjectItemType.soundCatalog;
+              } else if (baseName === "education") {
+                newJsonType = ProjectItemType.educationJson;
               } else if (baseName === "world_behavior_packs") {
                 newJsonType = ProjectItemType.behaviorPackListJson;
               } else if (baseName === "world_resource_packs") {
@@ -2961,7 +3005,7 @@ export default class Project {
         if (parentFolder !== null) {
           this.#resourcePacksContainer = parentFolder;
         }
-      } else if (!isWorld && this.#defaultBehaviorPackFolder === null) {
+      } else if (!isWorld && !isResource && this.#defaultBehaviorPackFolder === null) {
         this.#defaultBehaviorPackFolder = folder;
 
         if (parentFolder !== null) {

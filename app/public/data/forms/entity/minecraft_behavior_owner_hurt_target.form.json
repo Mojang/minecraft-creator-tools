@@ -99,5 +99,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.owner_hurt_target"
 }

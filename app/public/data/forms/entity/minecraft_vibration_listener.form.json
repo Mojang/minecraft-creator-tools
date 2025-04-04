@@ -1,0 +1,19 @@
+{
+  "id": "minecraft:vibration_listener",
+  "title": "Vibration Listener",
+  "description": "Allows the entity to listen to vibration events. This is a largely-internal component, that is only supported on the Warden and Allay mobs.",
+  "samples": {
+    "/vanilla/behavior_pack/entities/allay.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:vibration_listener/",
+        "content": {}
+      }
+    ],
+    "/vanilla/behavior_pack/entities/warden.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:vibration_listener/",
+        "content": {}
+      }
+    ]
+  }
+}

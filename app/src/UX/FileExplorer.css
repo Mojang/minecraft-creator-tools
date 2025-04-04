@@ -2,14 +2,24 @@
   width: 100%;
   height: 100%;
   min-height: 200px;
-  overflow: auto;
   border: solid 1px;
   padding: 2px;
+}
+
+.fex-areaWithPreview {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  border: solid 1px;
+  padding: 2px;
+  display: grid;
+  grid-template-columns: 290px 1fr;
 }
 
 .fex-folderArea {
   padding: 4px;
   min-height: 120px;
+  overflow-y: auto;
 }
 
 .fex-newFolderIcon {

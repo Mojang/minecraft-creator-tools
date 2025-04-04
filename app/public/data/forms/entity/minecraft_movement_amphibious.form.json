@@ -69,5 +69,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:movement.amphibious"
 }

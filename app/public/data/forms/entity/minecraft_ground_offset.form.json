@@ -9,5 +9,6 @@
     }
   ],
   "description": "Sets the offset from the ground that the entity is actually at.",
-  "title": "Ground Offset"
+  "title": "Ground Offset",
+  "id": "minecraft:ground_offset"
 }

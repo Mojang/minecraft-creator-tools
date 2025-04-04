@@ -124,5 +124,6 @@
         "content": "{ \"test\": \"taking_fire_damage\" }"
       }
     ]
-  }
+  },
+  "id": "taking_fire_damage"
 }

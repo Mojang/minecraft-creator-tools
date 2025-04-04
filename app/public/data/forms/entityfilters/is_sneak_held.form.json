@@ -124,5 +124,6 @@
         "content": "{ \"test\": \"is_sneak_held\" }"
       }
     ]
-  }
+  },
+  "id": "is_sneak_held"
 }

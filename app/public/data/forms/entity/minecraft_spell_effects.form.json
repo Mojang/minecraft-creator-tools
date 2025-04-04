@@ -144,5 +144,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:spell_effects"
 }

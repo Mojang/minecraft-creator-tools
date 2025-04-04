@@ -123,5 +123,6 @@
         "content": "{ \"test\": \"moon_intensity\", \"value\": \"0.00\" }"
       }
     ]
-  }
+  },
+  "id": "moon_intensity"
 }

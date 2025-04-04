@@ -67,5 +67,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.rise_to_liquid_level"
 }

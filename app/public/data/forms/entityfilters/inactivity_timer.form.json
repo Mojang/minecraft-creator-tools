@@ -123,5 +123,6 @@
         "content": "{ \"test\": \"inactivity_timer\", \"value\": \"0\" }"
       }
     ]
-  }
+  },
+  "id": "inactivity_timer"
 }

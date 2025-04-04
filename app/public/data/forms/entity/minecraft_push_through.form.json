@@ -9,5 +9,6 @@
     }
   ],
   "description": "Sets the distance through which the entity can push through.",
-  "title": "Push Through"
+  "title": "Push Through",
+  "id": "minecraft:push_through"
 }

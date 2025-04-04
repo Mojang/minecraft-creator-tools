@@ -9,6 +9,11 @@ import { FileDifferenceType } from "./IFileDifference";
 import Utilities from "../core/Utilities";
 import ZipStorage from "./ZipStorage";
 import Log from "../core/Log";
+import IStorage from "./IStorage";
+import Storage from "./Storage";
+import { BasicValidators } from "./BasicValidators";
+
+export const MaxShareableContentStringLength = 65536;
 
 // part of security/reliability and defense in depth is to only allow our file functions to work with files from an allow list
 // this list is also replicated in /public/preload.js
@@ -774,57 +779,56 @@ export default class StorageUtilities {
     return false;
   }
 
-  public static async getDifferences(original: IFolder, updated: IFolder, includeDeletions: boolean) {
+  public static async getDifferences(
+    original: IFolder,
+    updated: IFolder,
+    includeDeletions: boolean,
+    matchSingleChildFolders: boolean
+  ) {
+    // matchSingleChildFolders: for project template starters, where they have a structure like:
+    //     resource_packs/template_name
+    // that gets renamed to
+    //     resource_packs/mikesfooproject
+    // then -- if there is one folder in the original and one folder in the updated,
+    // we want to match them up irrespective of the name
+
     const data = new DifferenceSet();
 
-    await this.addDifferences(data, original, updated, includeDeletions);
+    await this.addDifferences(data, original, updated, includeDeletions, matchSingleChildFolders);
 
     return data;
   }
 
-  public static shouldProcessFile(fileName: string) {
-    fileName = fileName.toLowerCase();
+  public static getFirstFile(folder: IFolder): IFile | undefined {
+    for (const fileName in folder.files) {
+      const file = folder.files[fileName];
 
-    const ext = StorageUtilities.getTypeFromName(fileName);
-
-    if (ext !== "ts" && ext !== "js" && ext !== "json") {
-      return false;
+      if (file) {
+        return file;
+      }
     }
 
-    if (
-      fileName.startsWith(".") ||
-      fileName.startsWith("just.config") ||
-      fileName.endsWith(".config.ts") ||
-      fileName.endsWith(".config.js") ||
-      (fileName.startsWith("manifest") && fileName.endsWith("json")) ||
-      (fileName.startsWith("package") && fileName.endsWith("json"))
-    ) {
-      return false;
+    for (const folderName in folder.folders) {
+      const subFolder = folder.folders[folderName];
+
+      if (subFolder) {
+        const file = this.getFirstFile(subFolder);
+
+        if (file) {
+          return file;
+        }
+      }
     }
 
-    return true;
-  }
-
-  public static shouldProcessFolder(folderName: string) {
-    if (
-      folderName.startsWith(".") ||
-      folderName === "lib" ||
-      folderName === "node_modules" ||
-      folderName === ".git" ||
-      folderName === "dist" ||
-      folderName === "build"
-    ) {
-      return false;
-    }
-
-    return true;
+    return undefined;
   }
 
   public static async addDifferences(
     differences: DifferenceSet,
     original: IFolder,
     updated: IFolder,
-    includeDeletions: boolean
+    includeDeletions: boolean,
+    matchSingleFolders: boolean
   ): Promise<FolderDifferenceType> {
     await original.load(false);
 
@@ -837,19 +841,19 @@ export default class StorageUtilities {
     const updatedFoldersToConsider: { [id: string]: boolean } = {};
 
     for (const updatedFileName in updated.files) {
-      if (StorageUtilities.shouldProcessFile(updatedFileName)) {
+      if (BasicValidators.isFileNameOKForSharing(updatedFileName)) {
         updatedFilesToConsider[updatedFileName] = true;
       }
     }
 
     for (const updatedFolderName in updated.folders) {
-      if (StorageUtilities.shouldProcessFolder(updatedFolderName)) {
+      if (BasicValidators.isFolderNameOKForSharing(updatedFolderName)) {
         updatedFoldersToConsider[updatedFolderName] = true;
       }
     }
 
     for (const originalFileName in original.files) {
-      if (StorageUtilities.shouldProcessFile(originalFileName)) {
+      if (BasicValidators.isFileNameOKForSharing(originalFileName)) {
         const originalFile = original.files[originalFileName];
 
         if (originalFile !== undefined) {
@@ -888,21 +892,31 @@ export default class StorageUtilities {
     }
 
     for (const originalFolderName in original.folders) {
-      if (StorageUtilities.shouldProcessFolder(originalFolderName)) {
+      if (BasicValidators.isFolderNameOKForSharing(originalFolderName)) {
         const originalChildFolder = original.folders[originalFolderName];
 
         if (originalChildFolder !== undefined) {
           updatedFoldersToConsider[originalFolderName] = false;
 
-          if (updated.folderExists(originalFolderName)) {
-            const updatedChildFolder = updated.folders[originalFolderName];
+          if (
+            updated.folderExists(originalFolderName) ||
+            (matchSingleFolders && updated.folderCount === 1 && original.folderCount === 1)
+          ) {
+            let updatedChildFolder = updated.folders[originalFolderName];
+
+            if (matchSingleFolders && updated.folderCount && original.folderCount && !updatedChildFolder) {
+              updatedChildFolder = updated.getFolderByIndex(0);
+            }
 
             if (updatedChildFolder !== undefined) {
+              updatedFoldersToConsider[updatedChildFolder.name] = false;
+
               const childResult = await StorageUtilities.addDifferences(
                 differences,
                 originalChildFolder,
                 updatedChildFolder,
-                includeDeletions
+                includeDeletions,
+                matchSingleFolders
               );
 
               if (childResult !== FolderDifferenceType.none) {
@@ -967,6 +981,17 @@ export default class StorageUtilities {
   }
 
   public static relativizePathToOriginal(original: IFolder, updated: IFolder, path: string) {
+    const folders = original.storageRelativePath.split(StorageUtilities.standardFolderDelimiter);
+
+    for (let i = folders.length - 1; i >= 0; i--) {
+      const lastIndexOfInPath = path.lastIndexOf("/" + folders[i] + "/");
+      const lastIndexOfInSource = original.storageRelativePath.lastIndexOf("/" + folders[i] + "/");
+
+      if (lastIndexOfInPath >= 0 && lastIndexOfInSource >= 0) {
+        return original.storageRelativePath.substring(0, lastIndexOfInSource) + path.substring(lastIndexOfInPath);
+      }
+    }
+
     const originalPathLength = original.storageRelativePath.length;
     const updatedPathLength = updated.storageRelativePath.length;
 
@@ -1120,6 +1145,129 @@ export default class StorageUtilities {
     return candFileName;
   }
 
+  static async ensureFilesFromJson(
+    storage: IStorage,
+    json: string | { [name: string]: object | string }
+  ): Promise<string | undefined> {
+    if (typeof json === "string") {
+      try {
+        json = JSON.parse(json);
+      } catch (e: any) {
+        return e.toString();
+      }
+    }
+
+    if (typeof json === "object") {
+      for (let path in json) {
+        let data = json[path];
+
+        if (!path.startsWith(StorageUtilities.standardFolderDelimiter)) {
+          path = StorageUtilities.standardFolderDelimiter + path;
+        }
+
+        const file = await storage.rootFolder.ensureFileFromRelativePath(path);
+
+        if (!file) {
+          return "Could not create file '" + path + "'.";
+        }
+
+        if (file.isBinary) {
+          return "Could not create file '" + path + "'; it is a binary file.";
+        }
+
+        if (typeof data === "object") {
+          try {
+            data = JSON.stringify(data, null, 2);
+          } catch (e: any) {
+            return e.toString();
+          }
+        }
+
+        file.setContent(data);
+      }
+    }
+
+    return;
+  }
+
+  public static async createStorageFromString(content: string): Promise<string | IStorage> {
+    let storage: IStorage | undefined = undefined;
+
+    try {
+      content = content.trim();
+
+      if (content.length < 1) {
+        return "No content provided.";
+      }
+
+      if (content.startsWith("{") || content.startsWith("[")) {
+        storage = new Storage();
+
+        const result = await StorageUtilities.ensureFilesFromJson(storage, content);
+
+        if (result) {
+          return result;
+        }
+      } else {
+        const contentUnbase64 = Utilities.base64ToUint8Array(content);
+
+        if (contentUnbase64.length < 2) {
+          return "Invalid base64 content provided.";
+        }
+
+        if (contentUnbase64[0] === "{".charCodeAt(0)) {
+          const jsonStr = new TextDecoder("utf-8").decode(contentUnbase64);
+
+          storage = new Storage();
+
+          const result = await StorageUtilities.ensureFilesFromJson(storage, jsonStr);
+
+          if (!result && typeof result === "string") {
+            return result;
+          }
+        } else {
+          storage = new ZipStorage();
+
+          await (storage as ZipStorage).loadFromBase64(content);
+        }
+      }
+
+      if (storage.errorStatus) {
+        return "Error processing content." + (storage.errorMessage ? "Details: " + storage.errorMessage : "");
+      }
+    } catch (e: any) {
+      return "Unexpected error processing content.";
+    }
+
+    return storage;
+  }
+
+  public static async createStorageFromUntrustedString(untrustedContent: string): Promise<string | IStorage> {
+    if (untrustedContent.length > MaxShareableContentStringLength) {
+      return (
+        "Shared content are too large to include in the URL (" +
+        untrustedContent.length +
+        " > " +
+        MaxShareableContentStringLength +
+        ")."
+      );
+    }
+
+    const result = await StorageUtilities.createStorageFromString(untrustedContent);
+
+    if (!result || typeof result === "string") {
+      return result;
+    }
+
+    const valResult = await BasicValidators.isFolderSharingValid(result.rootFolder);
+
+    if (valResult !== undefined) {
+      return valResult;
+    }
+
+    return result;
+  }
+
   public static async syncFolderTo(
     source: IFolder,
     target: IFolder,
@@ -1129,7 +1277,8 @@ export default class StorageUtilities {
     exclude?: string[],
     include?: string[],
     messageUpdater?: (message: string) => Promise<void>,
-    dontOverwriteExistingFiles?: boolean
+    dontOverwriteExistingFiles?: boolean,
+    skipFilesAtRoot?: boolean
   ): Promise<number> {
     let modifiedFileCount = 0;
     // Log.debug("Syncing folder '" + source.storageRelativePath + "' to '" + target.storageRelativePath + "'");
@@ -1157,46 +1306,48 @@ export default class StorageUtilities {
       }
     }
 
-    for (const targetFolderName in target.folders) {
-      if (target.folders[targetFolderName] !== undefined && !StorageUtilities.isIgnorableFolder(targetFolderName)) {
-        targetFolders[targetFolderName] = true;
-      }
-    }
-
-    for (const sourceFileName in source.files) {
-      const sourceFile = source.files[sourceFileName];
-
-      let process = true;
-
-      if (exclude !== undefined && StorageUtilities.matchesList(sourceFileName, exclude)) {
-        process = false;
+    if (!skipFilesAtRoot) {
+      for (const targetFolderName in target.folders) {
+        if (target.folders[targetFolderName] !== undefined && !StorageUtilities.isIgnorableFolder(targetFolderName)) {
+          targetFolders[targetFolderName] = true;
+        }
       }
 
-      if (include !== undefined && !StorageUtilities.matchesList(sourceFileName, include)) {
-        process = false;
-      }
+      for (const sourceFileName in source.files) {
+        const sourceFile = source.files[sourceFileName];
 
-      if (sourceFile !== undefined) {
-        if (process) {
-          targetFiles[sourceFileName] = false;
+        let process = true;
 
-          const targetFile = target.ensureFile(sourceFile.name);
+        if (exclude !== undefined && StorageUtilities.matchesList(sourceFileName, exclude)) {
+          process = false;
+        }
 
-          let updateFile = true;
-          if (dontOverwriteExistingFiles) {
-            if (await targetFile.exists()) {
-              updateFile = false;
-              if (messageUpdater) {
-                messageUpdater("Not updating '" + targetFile.fullPath + "' as it already exists.");
+        if (include !== undefined && !StorageUtilities.matchesList(sourceFileName, include)) {
+          process = false;
+        }
+
+        if (sourceFile !== undefined) {
+          if (process) {
+            targetFiles[sourceFileName] = false;
+
+            const targetFile = target.ensureFile(sourceFile.name);
+
+            let updateFile = true;
+            if (dontOverwriteExistingFiles) {
+              if (await targetFile.exists()) {
+                updateFile = false;
+                if (messageUpdater) {
+                  messageUpdater("Not updating '" + targetFile.fullPath + "' as it already exists.");
+                }
               }
             }
-          }
 
-          if (updateFile) {
-            const wasUpdated = await this.syncFileTo(sourceFile, targetFile, forceFileUpdates, messageUpdater);
+            if (updateFile) {
+              const wasUpdated = await this.syncFileTo(sourceFile, targetFile, forceFileUpdates, messageUpdater);
 
-            if (wasUpdated) {
-              modifiedFileCount++;
+              if (wasUpdated) {
+                modifiedFileCount++;
+              }
             }
           }
         }
@@ -1299,6 +1450,33 @@ export default class StorageUtilities {
     }
 
     return false;
+  }
+
+  public static sanitizePathBasic(path: string) {
+    path = path.replace(/</gi, "_");
+    path = path.replace(/>/gi, "_");
+    path = path.replace(/ /gi, "_");
+    path = path.replace(/"/gi, "_");
+    path = path.replace(/'/gi, "_");
+    path = path.replace(/::/gi, "_");
+    path = path.replace(/,/gi, "_");
+    path = path.replace(/:/gi, "_");
+    path = path.replace(/\r/gi, "_");
+    path = path.replace(/\n/gi, "_");
+    path = path.replace(/__/gi, "_");
+    path = path.replace(/__/gi, "_");
+
+    while (path.length > 1 && path.startsWith("_")) {
+      path = path.substring(1, path.length);
+    }
+
+    while (path.length > 1 && path.endsWith("_")) {
+      path = path.substring(0, path.length - 1);
+    }
+
+    path = path.trim();
+
+    return path;
   }
 
   public static sanitizePath(path: string) {

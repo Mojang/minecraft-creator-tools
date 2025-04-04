@@ -22,5 +22,6 @@
     }
   ],
   "description": "Allows the mob to move to a POI if able to",
-  "title": "Move To Poi Behavior"
+  "title": "Move To Poi Behavior",
+  "id": "minecraft:behavior.move_to_poi"
 }

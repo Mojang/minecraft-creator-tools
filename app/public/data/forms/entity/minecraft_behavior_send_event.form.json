@@ -288,5 +288,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.send_event"
 }

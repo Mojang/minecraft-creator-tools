@@ -29,6 +29,7 @@ import ProjectAutogeneration from "./ProjectAutogeneration";
 import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import TypeScriptDefinition from "../minecraft/TypeScriptDefinition";
+import { constants } from "../core/Constants";
 
 export enum NewEntityTypeAddMode {
   baseId,
@@ -289,6 +290,32 @@ export default class ProjectUtilities {
     project.shortName = newShortName;
   }
 
+  static async ensureGeneratedWith(project: Project, isToolWeb?: boolean) {
+    const appName = isToolWeb ? "mctoolsweb" : "mctoolscli";
+
+    if (project.editPreference === ProjectEditPreference.summarized && project.defaultBehaviorPackUniqueId) {
+      const itemsCopy = project.getItemsCopy();
+
+      for (const projectItem of itemsCopy) {
+        if (projectItem.file && projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
+          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
+
+          if (bpManifestJson && bpManifestJson.definition) {
+            bpManifestJson.ensureGeneratedWith(appName, constants.version);
+            await bpManifestJson.save();
+          }
+        } else if (projectItem.file && projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.file);
+
+          if (rpManifestJson && rpManifestJson.definition) {
+            rpManifestJson.ensureGeneratedWith(appName, constants.version);
+            await rpManifestJson.save();
+          }
+        }
+      }
+    }
+  }
+
   static async applyTitle(project: Project, newTitle: string) {
     project.title = newTitle;
 
@@ -493,7 +520,13 @@ export default class ProjectUtilities {
     return scriptsFolder.getFolderRelativePath(project.projectFolder);
   }
 
-  static async processNewProject(project: Project, title: string, description: string, suggestedShortName?: string) {
+  static async processNewProject(
+    project: Project,
+    title: string,
+    description: string,
+    suggestedShortName?: string,
+    isWeb?: boolean
+  ) {
     await project.inferProjectItemsFromFiles();
 
     if (suggestedShortName) {
@@ -506,6 +539,7 @@ export default class ProjectUtilities {
 
     await ProjectUtilities.applyTitle(project, title);
     await ProjectUtilities.applyDescription(project, description);
+    await ProjectUtilities.ensureGeneratedWith(project, isWeb);
 
     await ProjectStandard.ensureIsStandard(project);
 

@@ -9,5 +9,6 @@
     }
   ],
   "description": "Allows the mob to automatically start avoiding the sun when its a clear day out.",
-  "title": "Restrict Sun Behavior"
+  "title": "Restrict Sun Behavior",
+  "id": "minecraft:behavior.restrict_sun"
 }

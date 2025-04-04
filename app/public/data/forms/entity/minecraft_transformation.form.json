@@ -316,6 +316,12 @@
             "path": "/minecraft:entity/component_groups/minecraft:convert_to_baby_drowned/minecraft:transformation/",
             "content": "minecraft:drowned<minecraft:as_baby>"
           }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:convert_to_drowned/minecraft:transformation/",
+            "content": "minecraft:drowned<minecraft:as_adult>"
+          }
         ]
       }
     },
@@ -665,6 +671,20 @@
           }
         }
       }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:convert_to_drowned/minecraft:transformation/",
+        "content": {
+          "into": "minecraft:drowned<minecraft:as_adult>",
+          "transformation_sound": "convert_to_drowned",
+          "drop_equipment": true,
+          "delay": {
+            "value": 15
+          }
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:transformation"
 }

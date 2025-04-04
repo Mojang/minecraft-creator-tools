@@ -9,5 +9,6 @@
   ],
   "isDeprecated": true,
   "description": "Triggers the specified event randomly based on the random tick speed gamerule. The random tick speed determines how often blocks are updated. Some other examples of game mechanics that use random ticking are crop growth and fire spreading.",
-  "title": "Random Ticking"
+  "title": "Random Ticking",
+  "id": "minecraft:random_ticking"
 }

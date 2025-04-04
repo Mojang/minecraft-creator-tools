@@ -168,5 +168,6 @@
         "content": "{ \"test\": \"has_damaged_equipment\", \"value\": \"dirt\" }"
       }
     ]
-  }
+  },
+  "id": "has_damaged_equipment"
 }

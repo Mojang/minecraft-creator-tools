@@ -123,5 +123,6 @@
         "content": "{ \"test\": \"is_altitude\", \"value\": \"0\" }"
       }
     ]
-  }
+  },
+  "id": "is_altitude"
 }

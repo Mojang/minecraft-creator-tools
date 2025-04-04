@@ -6,11 +6,14 @@ import { ManagedComponent } from "./ManagedComponent";
 import { IBlockPermutation } from "./IBlockTypeBehaviorPack";
 import IManagedComponentSetItem from "./IManagedComponentSetItem";
 import IManagedComponent from "./IManagedComponent";
+import Molang from "./Molang";
 import IComponent from "./IComponent";
 
 export default class ManagedPermutation implements IManagedComponentSetItem {
   _data?: IBlockPermutation;
   _managed?: { [id: string]: IManagedComponent | undefined };
+
+  _conditionMolang: Molang | undefined;
 
   private _onComponentAdded = new EventDispatcher<ManagedPermutation, IManagedComponent>();
   private _onComponentRemoved = new EventDispatcher<ManagedPermutation, string>();
@@ -49,6 +52,22 @@ export default class ManagedPermutation implements IManagedComponentSetItem {
 
       this._data.condition = value;
     }
+  }
+
+  public get conditionExpression() {
+    if (this._conditionMolang) {
+      return this._conditionMolang;
+    }
+
+    const cond = this.condition;
+
+    if (!cond) {
+      return undefined;
+    }
+
+    this._conditionMolang = new Molang(cond);
+
+    return this._conditionMolang;
   }
 
   addComponent(

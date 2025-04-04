@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import IEntityAction from "./IEventAction";
-import { IFilterClauseSet } from "./IFilterClauseSet";
+import { MinecraftFilterClauseSet } from "./jsoncommon/MinecraftFilterClauseSet";
 
 export default class ManagedEventAction {
   _data?: IEntityAction;
@@ -23,7 +23,7 @@ export default class ManagedEventAction {
     return this._data?.filters;
   }
 
-  public set filters(newFilters: IFilterClauseSet | undefined) {
+  public set filters(newFilters: MinecraftFilterClauseSet | undefined) {
     if (this._data) {
       this._data.filters = newFilters;
     }

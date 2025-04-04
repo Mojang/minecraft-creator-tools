@@ -74,5 +74,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.slime_keep_on_jumping"
 }

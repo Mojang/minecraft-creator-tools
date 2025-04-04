@@ -76,5 +76,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.guardian_attack"
 }

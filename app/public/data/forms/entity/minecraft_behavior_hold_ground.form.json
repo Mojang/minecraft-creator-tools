@@ -138,5 +138,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.hold_ground"
 }

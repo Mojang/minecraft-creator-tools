@@ -10,5 +10,6 @@
   ],
   "note": "Not currently used by any entities within Minecraft: Bedrock Edition.",
   "description": "Allows the mob to open and close doors.",
-  "title": "Door Interact Behavior"
+  "title": "Door Interact Behavior",
+  "id": "minecraft:behavior.door_interact"
 }

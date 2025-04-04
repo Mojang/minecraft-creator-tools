@@ -173,5 +173,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.defend_trusted_target"
 }

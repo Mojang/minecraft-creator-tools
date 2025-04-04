@@ -154,5 +154,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:target_nearby_sensor"
 }

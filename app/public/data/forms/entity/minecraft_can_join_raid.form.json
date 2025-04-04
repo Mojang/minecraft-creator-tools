@@ -33,5 +33,6 @@
         "content": {}
       }
     ]
-  }
+  },
+  "id": "minecraft:can_join_raid"
 }

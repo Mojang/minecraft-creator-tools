@@ -200,5 +200,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.trade_with_player"
 }

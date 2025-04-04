@@ -27,7 +27,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import ScalarArray, { IScalarArrayProps } from "./ScalarArray";
 import Range, { IRangeProps } from "./Range";
-import MinecraftFilter, { IMinecraftFilterProps } from "./MinecraftFilter";
+import MinecraftFilterEditor, { IMinecraftFilterEditorProps } from "./MinecraftFilterEditor";
 import ISimpleReference from "../core/ISimpleReference";
 import Utilities from "../core/Utilities";
 import IDataContainer from "./IDataContainer";
@@ -38,7 +38,7 @@ import Project from "../app/Project";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
-import MinecraftEventTrigger, { IMinecraftEventTriggerProps } from "./MinecraftEventTrigger";
+import MinecraftEventTriggerEditor, { IMinecraftEventTriggerEditorProps } from "./MinecraftEventTriggerEditor";
 import Database from "../minecraft/Database";
 import DataFormUtilities from "./DataFormUtilities";
 import ILookupProvider from "./ILookupProvider";
@@ -57,6 +57,7 @@ export interface IDataFormProps extends IDataContainer {
   parentField?: IField;
   carto?: Carto;
   project?: Project;
+  select?: string;
   lookupProvider?: ILookupProvider;
   itemDefinition?: EntityTypeDefinition | BlockTypeDefinition | ItemTypeBehaviorDefinition | undefined;
   formId?: string;
@@ -319,7 +320,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
   }
 
   processInputUpdate(id: string | undefined, data: string | undefined) {
-    if (!id || !data) {
+    if (!id || data === undefined) {
       return;
     }
 
@@ -683,6 +684,10 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       if (typeof value === "number") {
         return value;
       } else if (typeof value === "string") {
+        if (value.length === 0) {
+          return undefined;
+        }
+
         return parseInt(value);
       } else if (typeof value === "boolean") {
         if (value) {
@@ -695,6 +700,10 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       if (typeof value === "number") {
         return value;
       } else if (typeof value === "string") {
+        if (value.length === 0) {
+          return undefined;
+        }
+
         return parseFloat(value);
       } else if (typeof value === "boolean") {
         if (value) {
@@ -1115,14 +1124,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
   _handleMinecraftFilterPropertyChange(
     event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    props: IMinecraftFilterProps
+    props: IMinecraftFilterEditorProps
   ) {
     //  this._setPropertyValue(props.field.id, props.data);
   }
 
   _handleMinecraftEventTriggerPropertyChange(
     event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    props: IMinecraftEventTriggerProps
+    props: IMinecraftEventTriggerEditorProps
   ) {
     this._setPropertyValue(props.field.id, props.data);
   }
@@ -1137,6 +1146,16 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
   }
 
+  _getSourceForm() {
+    let def = this.props.definition;
+
+    if (this.props.select) {
+      def = DataFormUtilities.selectSubForm(def, this.props.select);
+    }
+
+    return def;
+  }
+
   render() {
     const formInterior = [];
 
@@ -1147,22 +1166,24 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     this.checkboxNames = [];
 
     if (this.props.definition !== undefined) {
-      const allFields = this.props.definition.fields.slice();
+      const formDef = this._getSourceForm();
+
+      const allFields = formDef.fields.slice();
 
       if (
-        this.props.definition.scalarField &&
-        (this.props.definition.scalarField.dataType !== FieldDataType.boolean ||
-          !this.props.definition.scalarField.tags ||
-          !this.props.definition.scalarField.tags.includes("presence"))
+        formDef.scalarField &&
+        (formDef.scalarField.dataType !== FieldDataType.boolean ||
+          !formDef.scalarField.tags ||
+          !formDef.scalarField.tags.includes("presence"))
       ) {
-        this.props.definition.scalarField.id = "__scalar";
-        allFields.push(this.props.definition.scalarField);
+        formDef.scalarField.id = "__scalar";
+        allFields.push(formDef.scalarField);
       }
 
       for (let propIndex = 0; propIndex < allFields.length; propIndex++) {
         const field = allFields[propIndex];
 
-        if (!field.visibility || FieldUtilities.evaluate(this.props.definition, field.visibility, this.props)) {
+        if (!field.visibility || FieldUtilities.evaluate(formDef, field.visibility, this.props)) {
           let curVal = FieldUtilities.getFieldValue(field, this.props);
           const defaultVal = curVal ? curVal : field.defaultValue;
 
@@ -1171,7 +1192,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           let isValid = true;
 
           if (field.validity) {
-            isValid = FieldUtilities.evaluate(this.props.definition, field.validity, this.props, field);
+            isValid = FieldUtilities.evaluate(formDef, field.validity, this.props, field);
           }
 
           let descriptionElements = [];
@@ -1355,7 +1376,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                   label={title}
                   ambientPoint={this.props.ambientSelectedPoint}
                   onChange={this._handlePoint3PropertyChange}
-                  form={this.props.definition}
+                  form={formDef}
                   field={field}
                 />
               );
@@ -1390,7 +1411,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                   key={"ver" + baseKey}
                   label={title}
                   onChange={this._handleVersionPropertyChange}
-                  form={this.props.definition}
+                  form={formDef}
                   field={field}
                 />
               );
@@ -1503,7 +1524,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               const val = this._getProperty(field.id, {});
 
               const sarr = (
-                <MinecraftFilter
+                <MinecraftFilterEditor
                   data={val}
                   key={"mifi" + baseKey}
                   filterContextId={(this.props.definition.id ? this.props.definition.id : "") + "." + field.id}
@@ -1540,7 +1561,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
               if (this.props.carto && this.props.project) {
                 const sarr = (
-                  <MinecraftEventTrigger
+                  <MinecraftEventTriggerEditor
                     data={val}
                     objectKey={objKey}
                     carto={this.props.carto}

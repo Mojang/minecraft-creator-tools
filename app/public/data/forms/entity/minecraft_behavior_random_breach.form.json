@@ -89,5 +89,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.random_breach"
 }

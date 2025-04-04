@@ -128,5 +128,6 @@
         "content": "{ \"test\": \"trusts\" }"
       }
     ]
-  }
+  },
+  "id": "trusts"
 }

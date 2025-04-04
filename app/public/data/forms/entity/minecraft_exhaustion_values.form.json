@@ -147,5 +147,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:exhaustion_values"
 }

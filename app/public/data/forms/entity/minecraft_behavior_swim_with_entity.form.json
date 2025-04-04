@@ -202,5 +202,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.swim_with_entity"
 }

@@ -16,5 +16,7 @@
       "title": "Attack Cooldown Time"
     }
   ],
-  "title": "Attack Cooldown"
+  "title": "Attack Cooldown",
+  "samples": {},
+  "id": "minecraft:attack_cooldown"
 }

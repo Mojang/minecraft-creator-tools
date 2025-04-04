@@ -119,5 +119,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.swim_idle"
 }

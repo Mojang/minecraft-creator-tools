@@ -251,5 +251,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:trade_table"
 }

@@ -1,0 +1,55 @@
+.ifu-outer {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  max-height: 100vh;
+  display: grid;
+  grid-template-rows: 112px 1fr 60px;
+}
+
+.ifu-header {
+  font-size: 30pt;
+  height: 100%;
+  border-bottom: outset 2px;
+}
+
+.ifu-header {
+  grid-row: 1;
+}
+
+.ifu-main {
+  grid-row: 2;
+  width: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 6px;
+}
+
+.ifu-footer {
+  grid-row: 3;
+  width: 100%;
+  line-height: normal;
+}
+
+.ifu-warning {
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+}
+
+.ifu-warningIcon {
+  grid-column: 1;
+}
+
+.ifu-warningText {
+  grid-column: 2;
+}
+
+.ifu-buttonBar {
+  padding-top: 20px;
+  text-align: right;
+}
+
+.ifu-button {
+  margin-left: 10px;
+}

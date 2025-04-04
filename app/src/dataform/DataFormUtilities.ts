@@ -26,6 +26,24 @@ export default class DataFormUtilities {
     return newDataObject;
   }
 
+  public static selectSubForm(form: IFormDefinition, select: string) {
+    const selectors = select.split("/");
+
+    for (const selector of selectors) {
+      if (selector.length > 0) {
+        const field = DataFormUtilities.getFieldById(form, selector);
+
+        if (!field || !field.subForm) {
+          throw new Error("Unable to find field " + selector + " in form " + form.id);
+        }
+
+        form = field.subForm;
+      }
+    }
+
+    return form;
+  }
+
   public static mergeFields(form: IFormDefinition) {
     let fields: IField[] = [];
     const fieldsByName: { [name: string]: IField } = {};

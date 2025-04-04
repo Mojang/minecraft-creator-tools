@@ -55,9 +55,10 @@ export default abstract class FolderBase implements IFolder {
   get folderCount() {
     let i = 0;
 
-    // eslint-disable-next-line
     for (const folderName in this.folders) {
-      i++;
+      if (this.folders[folderName]) {
+        i++;
+      }
     }
 
     return i;
@@ -68,7 +69,9 @@ export default abstract class FolderBase implements IFolder {
 
     // eslint-disable-next-line
     for (const fileName in this.files) {
-      i++;
+      if (this.files[fileName]) {
+        i++;
+      }
     }
 
     return i;

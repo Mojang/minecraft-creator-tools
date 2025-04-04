@@ -16,7 +16,9 @@
       "id": "snow_accumulation",
       "title": "snow_accumulation",
       "description": "Minimum and maximum snow level, each multiple of 0.125 is another snow layer",
-      "dataType": 15
+      "dataType": 32,
+      "minLength": 2,
+      "maxLength": 2
     },
     {
       "id": "white_ash",

@@ -128,5 +128,6 @@
         "content": "{ \"test\": \"on_ladder\" }"
       }
     ]
-  }
+  },
+  "id": "on_ladder"
 }

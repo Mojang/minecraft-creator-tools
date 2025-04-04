@@ -61,5 +61,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.dragonflaming"
 }

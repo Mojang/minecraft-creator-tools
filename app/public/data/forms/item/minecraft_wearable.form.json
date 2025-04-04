@@ -74,6 +74,24 @@
   "note": "Here are the following equipment slots that can be set for the value of slot: slot.weapon.mainhand, slot.weapon.offhand, slot.armor.head, slot.armor.chest, slot.armor.legs, slot.armor.feet, slot.hotbar, slot.inventory, slot.enderchest, slot.saddle, slot.armor, slot.chest, slot.equippable",
   "title": "Wearable",
   "samples": {
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal_pencil.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:wearable/",
+        "content": {
+          "dispensable": true,
+          "slot": "slot.weapon.offhand"
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:wearable/",
+        "content": {
+          "dispensable": true,
+          "slot": "slot.weapon.offhand"
+        }
+      }
+    ],
     "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
       {
         "path": "/minecraft:item/components/minecraft:wearable/",
@@ -120,6 +138,24 @@
       }
     ],
     "/samples/custom_items/behavior_packs/custom_item/items/wrench.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:wearable/",
+        "content": {
+          "dispensable": true,
+          "slot": "slot.weapon.offhand"
+        }
+      }
+    ],
+    "/samples/debug_tools/behavior_packs/common/items/magnifying_glass.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:wearable/",
+        "content": {
+          "dispensable": true,
+          "slot": "slot.weapon.offhand"
+        }
+      }
+    ],
+    "/samples/debug_tools/behavior_packs/common/items/wrench.json": [
       {
         "path": "/minecraft:item/components/minecraft:wearable/",
         "content": {

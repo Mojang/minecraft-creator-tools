@@ -173,5 +173,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.look_at_entity"
 }

@@ -43,5 +43,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.open_door"
 }

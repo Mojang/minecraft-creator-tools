@@ -5,7 +5,7 @@ import Log from "../core/Log";
 import Utilities from "../core/Utilities";
 import ICondition, { ComparisonType } from "./ICondition";
 import IDataContainer from "./IDataContainer";
-import IField from "./IField";
+import IField, { FieldDataType } from "./IField";
 import IFormDefinition from "./IFormDefinition";
 
 export default class FieldUtilities {
@@ -133,6 +133,25 @@ export default class FieldUtilities {
     }
 
     return undefined;
+  }
+
+  static getStringKeyedFieldType(fieldType: FieldDataType) {
+    switch (fieldType) {
+      case FieldDataType.string:
+        return FieldDataType.keyedStringCollection;
+      case FieldDataType.number:
+        return FieldDataType.keyedNumberCollection;
+      case FieldDataType.stringArray:
+        return FieldDataType.keyedStringArrayCollection;
+      case FieldDataType.numberArray:
+        return FieldDataType.keyedNumberArrayCollection;
+      case FieldDataType.boolean:
+        return FieldDataType.keyedBooleanCollection;
+      case FieldDataType.object:
+        return FieldDataType.keyedObjectCollection;
+    }
+
+    return fieldType;
   }
 
   static evaluate(form: IFormDefinition, conditions: ICondition[], container: IDataContainer, defaultField?: IField) {

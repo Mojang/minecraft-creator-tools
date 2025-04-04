@@ -109,5 +109,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.run_around_like_crazy"
 }

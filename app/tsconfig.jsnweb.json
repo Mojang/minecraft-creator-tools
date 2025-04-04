@@ -28,6 +28,7 @@
 		"public/**/*",
 		"dist/**/*",
 		"tools/**/*",
+		"debugoutput/**/*",		
 		"build/**/*",
 		"toolbuild/**/*",
 		"scriptlibs/**/*",

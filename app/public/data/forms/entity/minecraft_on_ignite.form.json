@@ -21,5 +21,6 @@
     }
   ],
   "description": "Adds a trigger to call when this entity is set on fire.",
-  "title": "On Ignite"
+  "title": "On Ignite",
+  "id": "minecraft:on_ignite"
 }

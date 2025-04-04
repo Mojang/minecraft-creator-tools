@@ -27,5 +27,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.restrict_open_door"
 }

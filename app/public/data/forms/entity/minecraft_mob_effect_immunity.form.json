@@ -48,5 +48,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:mob_effect_immunity"
 }

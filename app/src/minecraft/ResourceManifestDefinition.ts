@@ -299,6 +299,26 @@ export default class ResourceManifestDefinition {
     return this.definition.metadata;
   }
 
+  public ensureGeneratedWith(toolName: string, versionString: string): void {
+    const metadata = this.ensureMetadata();
+
+    if (!metadata) {
+      return undefined;
+    }
+
+    if (!metadata.generated_with) {
+      metadata.generated_with = {};
+    }
+
+    if (!metadata.generated_with[toolName]) {
+      metadata.generated_with[toolName] = [];
+    }
+
+    if (!metadata.generated_with[toolName].includes(versionString)) {
+      metadata.generated_with[toolName].push(versionString);
+    }
+  }
+
   public getDefaultHeader(name: string, description: string) {
     return {
       name: name,

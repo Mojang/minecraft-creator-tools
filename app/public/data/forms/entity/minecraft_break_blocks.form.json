@@ -126,5 +126,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:break_blocks"
 }

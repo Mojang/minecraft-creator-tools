@@ -33,5 +33,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.silverfish_wake_up_friends"
 }

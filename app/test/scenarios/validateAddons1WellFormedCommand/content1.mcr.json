@@ -105,12 +105,13 @@
     "testNotApplicableCount": 0,
     "errorSummary": "ERROR: [CADDONREQ102] Found an cooperative add-on common name folder 'entities' in a parent folder pack\\loot_tables. Should be named 'creatorshortname' and not a common term: entities\r\nERROR: [CADDONREQ104] Found a loose file 'sheepomelon.json' in loot_tables\\entities. Files should only be in the folder loot_tables\\entities\\<mygamename>: sheepomelon.json\r\nERROR: [CADDONREQ104] Found a loose file 'sheepomelon_shear.json' in loot_tables\\entities. Files should only be in the folder loot_tables\\entities\\<mygamename>: sheepomelon_shear.json",
     "internalProcessingErrorSummary": "",
+    "warningSummary": "",
     "testFailSummary": "TESTFAIL: [CADDONREQ000] Found 3 errors for Cooperative Add-On Requirements (CADDONREQ).",
     "summary": {
       "PACKSIZE": {
         "1": {
           "title": "Overall Size",
-          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully .",
+          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
           "testCompleteSuccesses": 1
         },
         "2": {
@@ -131,7 +132,7 @@
       },
       "CADDONREQ": {
         "0": {
-          "title": "General Item 0",
+          "title": "Test Failure",
           "defaultMessage": "Found 3 errors for Cooperative Add-On Requirements (CADDONREQ).",
           "testCompleteFails": 1
         },
@@ -153,14 +154,14 @@
       "TEXTURE": {
         "1": {
           "title": "Textures",
-          "defaultMessage": "Texture Validation (TEXTURE) completed successfully .",
+          "defaultMessage": "Texture Validation (TEXTURE) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
       "MINENGINEVER": {
         "1": {
           "title": "1",
-          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully .",
+          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
           "testCompleteSuccesses": 1
         },
         "605": {
@@ -195,14 +196,14 @@
       },
       "STRICT": {
         "1": {
-          "title": "General Item 1",
-          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully .",
+          "title": "Test Success",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
       "CADDONIREQ": {
         "1": {
-          "defaultMessage": "Cooperative Add-On Item Requirements Generator (CADDONIREQ) completed successfully .",
+          "defaultMessage": "Cooperative Add-On Item Requirements Generator (CADDONIREQ) completed successfully",
           "testCompleteSuccesses": 1
         }
       }
@@ -435,7 +436,7 @@
       "iTp": 0,
       "gId": "WORLDDATA",
       "gIx": 1,
-      "m": "World Data Validation (WORLDDATA) completed successfully ."
+      "m": "World Data Validation (WORLDDATA) completed successfully"
     },
     {
       "iTp": 0,

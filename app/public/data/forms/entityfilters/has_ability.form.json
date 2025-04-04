@@ -169,5 +169,6 @@
         "content": "{ \"test\": \"has_ability\", \"value\": \"instabuild\" }"
       }
     ]
-  }
+  },
+  "id": "has_ability"
 }

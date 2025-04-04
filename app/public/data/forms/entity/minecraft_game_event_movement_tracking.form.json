@@ -103,6 +103,31 @@
           "emit_swim": false
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:game_event_movement_tracking/",
+        "content": {
+          "emit_flap": true
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:game_event_movement_tracking/",
+        "content": {
+          "emit_flap": true
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:game_event_movement_tracking/",
+        "content": {
+          "emit_flap": true
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:game_event_movement_tracking"
 }

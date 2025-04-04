@@ -36,6 +36,7 @@ import IEntitiesMetadata from "./IEntitiesMetadata";
 import IItemsMetadata from "./IItemsMetadata";
 import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition";
 import ItemTextureCatalogDefinition from "./ItemTextureCatalogDefinition";
+import ZipStorage from "../storage/ZipStorage";
 
 export default class Database {
   static isLoaded = false;
@@ -1328,9 +1329,16 @@ export default class Database {
       try {
         // @ts-ignore
         if (typeof window !== "undefined") {
-          const response = await axios.get(CartoApp.contentRoot + "data/mci/release.mci.json");
+          const response = await axios.get(CartoApp.contentRoot + "data/mci/release.mci.json.zip", {
+            responseType: "arraybuffer",
+            headers: {
+              Accept: "application/octet-stream, application/json, text/plain, */*",
+            },
+          });
 
-          Database.vanillaInfoData = response.data;
+          if (response) {
+            Database.vanillaInfoData = await ZipStorage.fromZipBytesToJsonObject(response.data);
+          }
         } else if (Database.local) {
           const result = await Database.local.readJsonFile("data/mci/release.mci.json");
           if (result !== null) {
@@ -1376,9 +1384,16 @@ export default class Database {
       try {
         // @ts-ignore
         if (typeof window !== "undefined") {
-          const response = await axios.get(CartoApp.contentRoot + "data/mci/preview.mci.json");
+          const response = await axios.get(CartoApp.contentRoot + "data/mci/preview.mci.json.zip", {
+            responseType: "arraybuffer",
+            headers: {
+              Accept: "application/octet-stream, application/json, text/plain, */*",
+            },
+          });
 
-          Database.previewVanillaInfoData = response.data;
+          if (response) {
+            Database.previewVanillaInfoData = await ZipStorage.fromZipBytesToJsonObject(response.data);
+          }
         } else if (Database.local) {
           const result = await Database.local.readJsonFile("data/mci/preview.mci.json");
           if (result !== null) {

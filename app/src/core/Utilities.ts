@@ -41,6 +41,26 @@ export default class Utilities {
     return Utilities._isDebug;
   }
 
+  static selectJsonObject(jsonO: object, select: string, ensureObjects?: boolean): object | undefined {
+    const selectors = select.split("/");
+
+    for (const selector of selectors) {
+      if (selector.length > 0) {
+        jsonO = (jsonO as any)[selector];
+
+        if (!jsonO && !ensureObjects) {
+          return undefined;
+        }
+        if (!jsonO && ensureObjects) {
+          (jsonO as any)[selector] = {};
+          jsonO = (jsonO as any)[selector];
+        }
+      }
+    }
+
+    return jsonO;
+  }
+
   static removeItemInArray(objToRemove: any, stringArr: any[]) {
     const nextArray: any[] = [];
 
@@ -293,6 +313,15 @@ export default class Utilities {
     return Utilities.humanifyMinecraftName(val);
   }
 
+  static ensureFirstCharIsUpperCase(name: string) {
+    if (name.length > 1) {
+      if (name[0] >= "a" && name[0] <= "z") {
+        name = name[0].toUpperCase() + name.substring(1, name.length);
+      }
+    }
+    return name;
+  }
+
   static humanifyString(val: string, humanify?: FieldValueHumanify) {
     if (!humanify || val === undefined) {
       return val;
@@ -320,6 +349,80 @@ export default class Utilities {
     name = name.replace(/ /gi, "");
 
     return name;
+  }
+
+  static sanitizeJavascriptName(name: string) {
+    name = name.trim();
+
+    name = name.replace(/</gi, "LessThan");
+    name = name.replace(/>/gi, "GreaterThan");
+    name = name.replace(/=/gi, "Equals");
+    name = name.replace(/!/gi, "Not");
+    name = name.replace(/\+/gi, "Plus");
+    name = name.replace(/,/gi, "");
+    name = name.replace(/-/gi, "");
+    name = name.replace(/\./gi, "");
+    name = name.replace(/'/gi, "");
+    name = name.replace(/ /gi, "");
+    name = name.replace(/\[/gi, "");
+    name = name.replace(/\]/gi, "");
+    name = name.replace(/"/gi, "");
+    name = name.replace(/\{/gi, "");
+    name = name.replace(/\}/gi, "");
+    name = name.replace(/</gi, "");
+    name = name.replace(/>/gi, "");
+    name = name.replace(/\*/gi, "");
+    name = name.replace(/\?/gi, "");
+    name = name.replace(/\\/gi, "");
+    name = name.replace(/\|/gi, "");
+
+    if (name.length > 0 && name[0] >= "0" && name[0] <= "9") {
+      name = "_" + name;
+    }
+
+    if (name.indexOf(":") >= 0) {
+      name = '"' + name + '"';
+    }
+
+    return name;
+  }
+
+  static javascriptifyName(name: string, capitalizeFrst?: boolean) {
+    name = name.trim();
+
+    let retVal = "";
+    let capitalizeNext = capitalizeFrst === true;
+
+    for (let i = 0; i < name.length; i++) {
+      if (
+        name[i] === " " ||
+        name[i] === "_" ||
+        name[i] === ":" ||
+        name[i] === "," ||
+        name[i] === "." ||
+        name[i] === '"' ||
+        name[i] === "'" ||
+        name[i] === "+" ||
+        name[i] === "-" ||
+        name[i] === ":" ||
+        name[i] === "[" ||
+        name[i] === "]"
+      ) {
+        capitalizeNext = true;
+      } else {
+        if (capitalizeNext) {
+          retVal += name[i].toUpperCase();
+
+          capitalizeNext = false;
+        } else {
+          retVal += name[i];
+        }
+      }
+    }
+
+    retVal = this.sanitizeJavascriptName(retVal);
+
+    return retVal;
   }
 
   static humanifyMinecraftName(name: string | boolean | number) {
@@ -360,6 +463,16 @@ export default class Utilities {
 
     name = name.replace(/::/gi, " ");
     name = name.replace(/:/gi, " ");
+
+    name = name.replace("SharedTypes ", "");
+
+    if (name.startsWith("Struct ") || name.startsWith("struct ")) {
+      name = name.substring(7);
+    }
+
+    if ((name.startsWith("Enum ") || name.startsWith("enum ")) && name.indexOf("num_property") < 0) {
+      name = name.substring(5);
+    }
 
     const lastPeriod = name.indexOf(".");
 

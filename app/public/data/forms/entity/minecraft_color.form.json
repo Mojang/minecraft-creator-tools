@@ -441,6 +441,15 @@
           "value": 14
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_tame/minecraft:color/",
+        "content": {
+          "value": 14
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:color"
 }

@@ -13,29 +13,67 @@
             "id": "minecraft:tags",
             "title": "minecraft:tags",
             "description": "The tags component specifies which tags an item has on it.",
-            "dataType": 16
+            "dataType": 16,
+            "subForm": {
+              "title": "Tags",
+              "description": "The tags component specifies which tags an item has on it.",
+              "fields": [
+                {
+                  "id": "tags",
+                  "title": "tags",
+                  "description": "An array that can contain multiple item tags.",
+                  "dataType": 17
+                }
+              ]
+            }
           },
           {
             "id": "minecraft:allow_off_hand",
             "title": "minecraft:allow_off_hand",
             "description": "The allow_off_hand component determines whether the item can be placed in the off hand slot of the inventory.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Allow Off Hand",
-              "description": "The allow_off_hand component determines whether the item can be placed in the off hand slot of the inventory.",
-              "fields": []
-            }
+            "dataType": 1,
+            "alternates": [
+              {
+                "id": "minecraft:allow_off_hand",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Allow Off Hand",
+                  "description": "Allow Off Hand",
+                  "fields": [
+                    {
+                      "id": "value",
+                      "title": "value",
+                      "description": "Determines whether the item can be placed in the off hand slot.",
+                      "dataType": 1
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:can_destroy_in_creative",
             "title": "minecraft:can_destroy_in_creative",
             "description": "The can_destroy_in_creative component determines if the item can be used by a player to break blocks when in creative mode.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Can Destroy In Creative",
-              "description": "The can_destroy_in_creative component determines if the item can be used by a player to break blocks when in creative mode.",
-              "fields": []
-            }
+            "dataType": 1,
+            "alternates": [
+              {
+                "id": "minecraft:can_destroy_in_creative",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Can Destroy In Creative",
+                  "description": "Can Destroy In Creative",
+                  "fields": [
+                    {
+                      "id": "value",
+                      "title": "value",
+                      "description": "Determines whether the item can be used to destroy blocks while in creative mode.",
+                      "dataType": 1
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:cooldown",
@@ -65,23 +103,59 @@
             "id": "minecraft:rarity",
             "title": "minecraft:rarity",
             "description": "Specifies the base rarity and subsequently color of the item name when the player hovers the cursor over the item.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Rarity",
-              "description": "Specifies the base rarity and subsequently color of the item name when the player hovers the cursor over the item.",
-              "fields": []
-            }
+            "dataType": 2,
+            "alternates": [
+              {
+                "id": "minecraft:rarity",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Rarity",
+                  "description": "Rarity",
+                  "fields": [
+                    {
+                      "id": "value",
+                      "title": "value",
+                      "description": "Sets the base rarity of the item. The rarity of an item automatically increases when enchanted, either to Rare when the base rarity is Common or Uncommon, or Epic when the base rarity is Rare.",
+                      "dataType": 2
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:max_stack_size",
             "title": "minecraft:max_stack_size",
             "description": "The max_stack_size component specifies how many of the item can be stacked together.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Max Stack Size",
-              "description": "The max_stack_size component specifies how many of the item can be stacked together.",
-              "fields": []
-            }
+            "dataType": 0,
+            "alternates": [
+              {
+                "id": "minecraft:max_stack_size",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Max Stack Size",
+                  "description": "Max Stack Size",
+                  "fields": [
+                    {
+                      "id": "value",
+                      "title": "value",
+                      "description": "Specifies how many of the item that can be stacked.",
+                      "dataType": 0,
+                      "validity": [
+                        {
+                          "comparison": ">=",
+                          "value": 1
+                        },
+                        {
+                          "comparison": "<=",
+                          "value": 64
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:bundle_interaction",
@@ -96,7 +170,17 @@
                   "id": "num_viewable_slots",
                   "title": "num_viewable_slots",
                   "description": "The maximum number of slots in the bundle viewable by the plater. Can be from 1 to 64. Default is 12.",
-                  "dataType": 0
+                  "dataType": 0,
+                  "validity": [
+                    {
+                      "comparison": ">=",
+                      "value": 1
+                    },
+                    {
+                      "comparison": "<=",
+                      "value": 64
+                    }
+                  ]
                 }
               ]
             }
@@ -114,7 +198,17 @@
                   "id": "composting_chance",
                   "title": "composting_chance",
                   "description": "The chance of this item to create a layer upon composting with the composter. Valid value range is 1 - 100 inclusive",
-                  "dataType": 0
+                  "dataType": 0,
+                  "validity": [
+                    {
+                      "comparison": ">=",
+                      "value": 1
+                    },
+                    {
+                      "comparison": "<=",
+                      "value": 100
+                    }
+                  ]
                 }
               ]
             }
@@ -123,12 +217,7 @@
             "id": "minecraft:custom_components",
             "title": "minecraft:custom_components",
             "description": "Specifies an array of custom components defined in a script that should be added to this item.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Custom Components",
-              "description": "Specifies an array of custom components defined in a script that should be added to this item.",
-              "fields": []
-            }
+            "dataType": 16
           },
           {
             "id": "minecraft:damage_absorption",
@@ -143,7 +232,8 @@
                   "id": "absorbable_causes",
                   "title": "absorbable_causes",
                   "description": "List of damage causes that can be absorbed by the item. By default, no damage cause is absorbed.",
-                  "dataType": 15
+                  "dataType": 17,
+                  "minLength": 1
                 }
               ]
             }
@@ -152,12 +242,25 @@
             "id": "minecraft:damage",
             "title": "minecraft:damage",
             "description": "The damage component determines how much extra damage the item does on attack.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Damage",
-              "description": "The damage component determines how much extra damage the item does on attack.",
-              "fields": []
-            }
+            "dataType": 0,
+            "alternates": [
+              {
+                "id": "minecraft:damage",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Damage",
+                  "description": "Damage",
+                  "fields": [
+                    {
+                      "id": "value",
+                      "title": "value",
+                      "description": "Specifies how much extra damage the item does, must be a positive number.",
+                      "dataType": 0
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:record",
@@ -208,7 +311,69 @@
                   "id": "destroy_speeds",
                   "title": "destroy_speeds",
                   "description": "A list of blocks to dig with correlating speeds of digging.",
-                  "dataType": 15
+                  "dataType": 15,
+                  "subForm": {
+                    "title": "V1 20 50 DiggerItemComponent BlockInfo",
+                    "description": "V1 20 50 DiggerItemComponent BlockInfo",
+                    "fields": [
+                      {
+                        "id": "block",
+                        "title": "block",
+                        "description": "Block to be dug.",
+                        "dataType": 16,
+                        "subForm": {
+                          "title": "Block",
+                          "description": "Block",
+                          "fields": [
+                            {
+                              "id": "name",
+                              "title": "name",
+                              "description": "name",
+                              "dataType": 2
+                            },
+                            {
+                              "id": "tags",
+                              "title": "tags",
+                              "description": "tags",
+                              "dataType": 2
+                            },
+                            {
+                              "id": "states",
+                              "title": "states",
+                              "description": "states",
+                              "dataType": 0,
+                              "alternates": [
+                                {
+                                  "id": "states",
+                                  "dataType": 2
+                                },
+                                {
+                                  "id": "states",
+                                  "dataType": 1
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "alternates": [
+                          {
+                            "id": "block",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "block",
+                            "dataType": 16
+                          }
+                        ]
+                      },
+                      {
+                        "id": "speed",
+                        "title": "speed",
+                        "description": "Digging speed for the correlating block(s).",
+                        "dataType": 0
+                      }
+                    ]
+                  }
                 }
               ]
             }
@@ -217,12 +382,25 @@
             "id": "minecraft:use_animation",
             "title": "minecraft:use_animation",
             "description": "Use_animation specifies which animation is played when the player uses the item.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Use Animation",
-              "description": "Use_animation specifies which animation is played when the player uses the item.",
-              "fields": []
-            }
+            "dataType": 2,
+            "alternates": [
+              {
+                "id": "minecraft:use_animation",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Use Animation",
+                  "description": "Use Animation",
+                  "fields": [
+                    {
+                      "id": "value",
+                      "title": "enum SharedTypes_Legacy_UseAnimation",
+                      "description": "Specifies which animation to play when the the item is used.",
+                      "dataType": 2
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:display_name",
@@ -303,7 +481,25 @@
                   "id": "damage_chance",
                   "title": "damage_chance",
                   "description": "Specifies the percentage chance of this item losing durability. Default is set to 100. Defined as an int range with min and max value.",
-                  "dataType": 16
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "IntRange",
+                    "description": "IntRange",
+                    "fields": [
+                      {
+                        "id": "min",
+                        "title": "min",
+                        "description": "min",
+                        "dataType": 0
+                      },
+                      {
+                        "id": "max",
+                        "title": "max",
+                        "description": "max",
+                        "dataType": 0
+                      }
+                    ]
+                  }
                 },
                 {
                   "id": "max_durability",
@@ -327,7 +523,32 @@
                   "id": "durability_thresholds",
                   "title": "durability_thresholds",
                   "description": "The list of both durability thresholds and effects emitted when each threshold is met. When multiple thresholds are met, only the threshold with the lowest durability after applying the damage is considered.",
-                  "dataType": 15
+                  "dataType": 15,
+                  "minLength": 1,
+                  "subForm": {
+                    "title": "Durability Sensor Durability Threshold",
+                    "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
+                    "fields": [
+                      {
+                        "id": "durability",
+                        "title": "durability",
+                        "description": "The effects are emitted when the item durability value is less than or equal to this value.",
+                        "dataType": 0
+                      },
+                      {
+                        "id": "particle_type",
+                        "title": "enum ParticleType",
+                        "description": "Particle effect to emit when the threshold is met.",
+                        "dataType": 2
+                      },
+                      {
+                        "id": "sound_event",
+                        "title": "enum SharedTypes_Legacy_LevelSoundEvent",
+                        "description": "Sound effect to emit when the threshold is met.",
+                        "dataType": 2
+                      }
+                    ]
+                  }
                 }
               ]
             }
@@ -336,12 +557,25 @@
             "id": "minecraft:should_despawn",
             "title": "minecraft:should_despawn",
             "description": "Should_despawn component determines if the item should eventually despawn while floating in the world",
-            "dataType": 16,
-            "subForm": {
-              "title": "Should Despawn",
-              "description": "Should_despawn component determines if the item should eventually despawn while floating in the world",
-              "fields": []
-            }
+            "dataType": 1,
+            "alternates": [
+              {
+                "id": "minecraft:should_despawn",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Should Despawn",
+                  "description": "Should Despawn",
+                  "fields": [
+                    {
+                      "id": "value",
+                      "title": "value",
+                      "description": "Determines whether the item should eventually despawn while floating in the world.",
+                      "dataType": 1
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:dyeable",
@@ -356,7 +590,15 @@
                   "id": "default_color",
                   "title": "default_color",
                   "description": "default_color",
-                  "dataType": 16
+                  "dataType": 2,
+                  "alternates": [
+                    {
+                      "id": "default_color",
+                      "dataType": 32,
+                      "minLength": 3,
+                      "maxLength": 3
+                    }
+                  ]
                 }
               ]
             }
@@ -398,19 +640,113 @@
                   "id": "dispense_on",
                   "title": "dispense_on",
                   "description": "List of block descriptors of the blocks that this item can be dispensed on. If left empty, all blocks will be allowed.",
-                  "dataType": 15
+                  "dataType": 15,
+                  "subForm": {
+                    "title": "Dispense On",
+                    "description": "Dispense On",
+                    "fields": [
+                      {
+                        "id": "name",
+                        "title": "name",
+                        "description": "name",
+                        "dataType": 2
+                      },
+                      {
+                        "id": "tags",
+                        "title": "tags",
+                        "description": "tags",
+                        "dataType": 2
+                      },
+                      {
+                        "id": "states",
+                        "title": "states",
+                        "description": "states",
+                        "dataType": 0,
+                        "alternates": [
+                          {
+                            "id": "states",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "states",
+                            "dataType": 1
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "alternates": [
+                    {
+                      "id": "dispense_on",
+                      "dataType": 2
+                    },
+                    {
+                      "id": "dispense_on",
+                      "dataType": 16
+                    }
+                  ]
                 },
                 {
                   "id": "entity",
                   "title": "entity",
                   "description": "The entity to be placed in the world.",
-                  "dataType": 2
+                  "dataType": 2,
+                  "validity": [
+                    {
+                      "comparison": "pattern",
+                      "value": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+                    }
+                  ]
                 },
                 {
                   "id": "use_on",
                   "title": "use_on",
                   "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
-                  "dataType": 15
+                  "dataType": 15,
+                  "subForm": {
+                    "title": "Use On",
+                    "description": "Use On",
+                    "fields": [
+                      {
+                        "id": "name",
+                        "title": "name",
+                        "description": "name",
+                        "dataType": 2
+                      },
+                      {
+                        "id": "tags",
+                        "title": "tags",
+                        "description": "tags",
+                        "dataType": 2
+                      },
+                      {
+                        "id": "states",
+                        "title": "states",
+                        "description": "states",
+                        "dataType": 0,
+                        "alternates": [
+                          {
+                            "id": "states",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "states",
+                            "dataType": 1
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "alternates": [
+                    {
+                      "id": "use_on",
+                      "dataType": 2
+                    },
+                    {
+                      "id": "use_on",
+                      "dataType": 16
+                    }
+                  ]
                 }
               ]
             }
@@ -446,12 +782,13 @@
                   "id": "using_converts_to",
                   "title": "using_converts_to",
                   "description": "When used, converts to the item specified by the string in this field. Default does not convert item.",
-                  "dataType": 16,
-                  "subForm": {
-                    "title": "Using Converts To",
-                    "description": "Using Converts To",
-                    "fields": []
-                  }
+                  "dataType": 2,
+                  "alternates": [
+                    {
+                      "id": "using_converts_to",
+                      "dataType": 24
+                    }
+                  ]
                 }
               ]
             }
@@ -460,78 +797,163 @@
             "id": "minecraft:fuel",
             "title": "minecraft:fuel",
             "description": "Fuel item component allows this item to be used as fuel in a furnace to 'cook' other items.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Fuel",
-              "description": "Fuel item component allows this item to be used as fuel in a furnace to 'cook' other items.",
-              "fields": []
-            }
+            "dataType": 3,
+            "alternates": [
+              {
+                "id": "minecraft:fuel",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Fuel",
+                  "description": "Fuel",
+                  "fields": [
+                    {
+                      "id": "duration",
+                      "title": "duration",
+                      "description": "Amount of time, in seconds, this fuel will cook items.",
+                      "dataType": 3,
+                      "validity": [
+                        {
+                          "comparison": ">=",
+                          "value": 0.05000000074505806
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:glint",
             "title": "minecraft:glint",
             "description": "The glint component determines whether the item has the enchanted glint render effect on it.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Glint",
-              "description": "The glint component determines whether the item has the enchanted glint render effect on it.",
-              "fields": []
-            }
+            "dataType": 1,
+            "alternates": [
+              {
+                "id": "minecraft:glint",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Glint",
+                  "description": "Glint",
+                  "fields": [
+                    {
+                      "id": "value",
+                      "title": "value",
+                      "description": "Determines whether the item has the glint effect.",
+                      "dataType": 1
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:hand_equipped",
             "title": "minecraft:hand_equipped",
             "description": "The hand_equipped component determines if an item is rendered like a tool while it is in a player's hand.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Hand Equipped",
-              "description": "The hand_equipped component determines if an item is rendered like a tool while it is in a player's hand.",
-              "fields": []
-            }
+            "dataType": 1,
+            "alternates": [
+              {
+                "id": "minecraft:hand_equipped",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Hand Equipped",
+                  "description": "Hand Equipped",
+                  "fields": [
+                    {
+                      "id": "value",
+                      "title": "value",
+                      "description": "Determines whether the item is rendered like a tool while in the player's hand.",
+                      "dataType": 1
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:hover_text_color",
             "title": "minecraft:hover_text_color",
             "description": "The hover_text_color component specifies the color of the item name when the players hovers the cursor over the item.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Hover Text Color",
-              "description": "The hover_text_color component specifies the color of the item name when the players hovers the cursor over the item.",
-              "fields": []
-            }
+            "dataType": 2,
+            "alternates": [
+              {
+                "id": "minecraft:hover_text_color",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Hover Text Color",
+                  "description": "Hover Text Color",
+                  "fields": [
+                    {
+                      "id": "value",
+                      "title": "value",
+                      "description": "Specifies the color of the item's hover text.",
+                      "dataType": 2
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:icon",
             "title": "minecraft:icon",
             "description": "Icon item component determines which icon graphic will be used to represent the item in the UI and elsewhere.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Icon",
-              "description": "Icon item component determines which icon graphic will be used to represent the item in the UI and elsewhere.",
-              "fields": []
-            }
+            "dataType": 2,
+            "alternates": [
+              {
+                "id": "minecraft:icon",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Icon",
+                  "description": "Icon",
+                  "fields": [
+                    {
+                      "id": "textures",
+                      "title": "textures",
+                      "description": "This map contains the different textures that can be used for the item's icon. Default will contain the actual icon texture. Armor trim textures and palettes can be specified here too. The icon textures are the keys from the resource_pack/textures/item_texture.json 'texture_data' object associated with the texture file.",
+                      "dataType": 16
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:interact_button",
             "title": "minecraft:interact_button",
             "description": "This component is a boolean or string that determines if the interact button is shown in touch controls and what text is displayed on the button. When set as true, default \"Use Item\" text will be displayed.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Interact Button",
-              "description": "This component is a boolean or string that determines if the interact button is shown in touch controls and what text is displayed on the button. When set as true, default \"Use Item\" text will be displayed.",
-              "fields": []
-            }
+            "dataType": 1,
+            "alternates": [
+              {
+                "id": "minecraft:interact_button",
+                "dataType": 2
+              }
+            ]
           },
           {
             "id": "minecraft:liquid_clipped",
             "title": "minecraft:liquid_clipped",
             "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Liquid Clipped",
-              "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
-              "fields": []
-            }
+            "dataType": 1,
+            "alternates": [
+              {
+                "id": "minecraft:liquid_clipped",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Liquid Clipped",
+                  "description": "Liquid Clipped",
+                  "fields": [
+                    {
+                      "id": "value",
+                      "title": "value",
+                      "description": "Deterines whether the item interacts with liquid blocks on use.",
+                      "dataType": 1
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:block_placer",
@@ -552,7 +974,51 @@
                   "id": "use_on",
                   "title": "use_on",
                   "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
-                  "dataType": 15
+                  "dataType": 15,
+                  "subForm": {
+                    "title": "Use On",
+                    "description": "Use On",
+                    "fields": [
+                      {
+                        "id": "name",
+                        "title": "name",
+                        "description": "name",
+                        "dataType": 2
+                      },
+                      {
+                        "id": "tags",
+                        "title": "tags",
+                        "description": "tags",
+                        "dataType": 2
+                      },
+                      {
+                        "id": "states",
+                        "title": "states",
+                        "description": "states",
+                        "dataType": 0,
+                        "alternates": [
+                          {
+                            "id": "states",
+                            "dataType": 2
+                          },
+                          {
+                            "id": "states",
+                            "dataType": 1
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "alternates": [
+                    {
+                      "id": "use_on",
+                      "dataType": 2
+                    },
+                    {
+                      "id": "use_on",
+                      "dataType": 16
+                    }
+                  ]
                 },
                 {
                   "id": "replace_block_item",
@@ -582,7 +1048,13 @@
                   "id": "projectile_entity",
                   "title": "projectile_entity",
                   "description": "Which entity is to be fired as a projectile.",
-                  "dataType": 2
+                  "dataType": 2,
+                  "validity": [
+                    {
+                      "comparison": "pattern",
+                      "value": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+                    }
+                  ]
                 }
               ]
             }
@@ -600,7 +1072,67 @@
                   "id": "repair_items",
                   "title": "repair_items",
                   "description": "List of repair item entries. Each entry needs to define a list of strings for `items` that can be used for the repair and an optional `repair_amount` for how much durability is gained.",
-                  "dataType": 15
+                  "dataType": 2,
+                  "alternates": [
+                    {
+                      "id": "repair_items",
+                      "dataType": 16,
+                      "readOnly": true,
+                      "subForm": {
+                        "title": "Repair Items",
+                        "description": "Repair Items",
+                        "fields": [
+                          {
+                            "id": "items",
+                            "title": "items",
+                            "description": "Items that may be used to repair an item.",
+                            "dataType": 2,
+                            "alternates": [
+                              {
+                                "id": "items",
+                                "dataType": 24
+                              }
+                            ]
+                          },
+                          {
+                            "id": "repair_amount",
+                            "title": "repair_amount",
+                            "description": "How much the item is repaired.",
+                            "dataType": 24,
+                            "alternates": [
+                              {
+                                "id": "repair_amount",
+                                "dataType": 14,
+                                "readOnly": true,
+                                "subForm": {
+                                  "title": "Repair Amount",
+                                  "description": "Repair Amount",
+                                  "fields": [
+                                    {
+                                      "id": "expression",
+                                      "title": "expression",
+                                      "description": "expression",
+                                      "dataType": 2
+                                    },
+                                    {
+                                      "id": "version",
+                                      "title": "version",
+                                      "description": "version",
+                                      "dataType": 0
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "id": "repair_amount",
+                                "dataType": 3
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -618,7 +1150,43 @@
                   "id": "ammunition",
                   "title": "ammunition",
                   "description": "Ammunition.",
-                  "dataType": 15
+                  "dataType": 15,
+                  "subForm": {
+                    "title": "V1 20 50 ShooterItemComponent Ammunition",
+                    "description": "V1 20 50 ShooterItemComponent Ammunition",
+                    "fields": [
+                      {
+                        "id": "use_in_creative",
+                        "title": "use_in_creative",
+                        "description": "Can use in creative mode? Default is set to false.",
+                        "dataType": 1
+                      },
+                      {
+                        "id": "search_inventory",
+                        "title": "search_inventory",
+                        "description": "Can search inventory? Default is set to false.",
+                        "dataType": 1
+                      },
+                      {
+                        "id": "item",
+                        "title": "item",
+                        "description": "Ammunition item description identifier.",
+                        "dataType": 2,
+                        "alternates": [
+                          {
+                            "id": "item",
+                            "dataType": 24
+                          }
+                        ]
+                      },
+                      {
+                        "id": "use_offhand",
+                        "title": "use_offhand",
+                        "description": "Can use off-hand? Default is set to false.",
+                        "dataType": 1
+                      }
+                    ]
+                  }
                 },
                 {
                   "id": "scale_power_by_draw_duration",
@@ -645,12 +1213,25 @@
             "id": "minecraft:stacked_by_data",
             "title": "minecraft:stacked_by_data",
             "description": "The stacked_by_data component determines whether the same items with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Stacked By Data",
-              "description": "The stacked_by_data component determines whether the same items with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
-              "fields": []
-            }
+            "dataType": 1,
+            "alternates": [
+              {
+                "id": "minecraft:stacked_by_data",
+                "dataType": 16,
+                "subForm": {
+                  "title": "Stacked By Data",
+                  "description": "Stacked By Data",
+                  "fields": [
+                    {
+                      "id": "value",
+                      "title": "value",
+                      "description": "Determines whether the same item with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
+                      "dataType": 1
+                    }
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "minecraft:storage_item",
@@ -665,7 +1246,13 @@
                   "id": "max_slots",
                   "title": "max_slots",
                   "description": "The maximum allowed weight of the sum of all contained items. Maximum is 64. Default is 64.",
-                  "dataType": 0
+                  "dataType": 0,
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 64
+                    }
+                  ]
                 },
                 {
                   "id": "allow_nested_storage_items",
@@ -677,13 +1264,25 @@
                   "id": "banned_items",
                   "title": "banned_items",
                   "description": "List of items that are not allowed in this Storage Item.",
-                  "dataType": 15
+                  "dataType": 2,
+                  "alternates": [
+                    {
+                      "id": "banned_items",
+                      "dataType": 24
+                    }
+                  ]
                 },
                 {
                   "id": "allowed_items",
                   "title": "allowed_items",
                   "description": "List of items that are exclusively allowed in this Storage Item. If empty all items are allowed.",
-                  "dataType": 15
+                  "dataType": 2,
+                  "alternates": [
+                    {
+                      "id": "allowed_items",
+                      "dataType": 24
+                    }
+                  ]
                 }
               ]
             }
@@ -701,7 +1300,13 @@
                   "id": "max_weight_limit",
                   "title": "max_weight_limit",
                   "description": "The maximum allowed weight of the sum of all contained items. Maximum is 64. Default is 64.",
-                  "dataType": 0
+                  "dataType": 0,
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 64
+                    }
+                  ]
                 }
               ]
             }
@@ -743,7 +1348,13 @@
                   "id": "movement_modifier",
                   "title": "movement_modifier",
                   "description": "Modifier value to scale the players movement speed when item is in use.",
-                  "dataType": 3
+                  "dataType": 3,
+                  "validity": [
+                    {
+                      "comparison": "<=",
+                      "value": 1
+                    }
+                  ]
                 }
               ]
             }
@@ -779,7 +1390,55 @@
       "id": "description",
       "title": "description",
       "description": "Contains the required identifier for the item. May contain optional fields like menu_category.",
-      "dataType": 16
+      "dataType": 16,
+      "subForm": {
+        "title": "Description",
+        "description": "Contains the required identifier for the item. May contain optional fields like menu_category.",
+        "fields": [
+          {
+            "id": "identifier",
+            "title": "identifier",
+            "description": "Unique name for the item that must include a namespace and must not use the Minecraft namespace unless overriding a Vanilla item.",
+            "dataType": 2
+          },
+          {
+            "id": "menu_category",
+            "title": "menu_category",
+            "description": "menu_category contains the creative group name and category for this item.",
+            "dataType": 16,
+            "subForm": {
+              "title": "Menu Category",
+              "description": "menu_category contains the creative group name and category for this item.",
+              "fields": [
+                {
+                  "id": "category",
+                  "title": "enum CreativeItemCategory",
+                  "description": "Creative category where this item belongs. Defaults to \"none\".",
+                  "dataType": 2
+                },
+                {
+                  "id": "group",
+                  "title": "group",
+                  "description": "The Creative Group that this item belongs to. Group name is limited to 256 characters. The name also must start with a namespace.",
+                  "dataType": 2,
+                  "validity": [
+                    {
+                      "comparison": "pattern",
+                      "value": "^(?:.)+:(?:.)+$"
+                    }
+                  ]
+                },
+                {
+                  "id": "is_hidden_in_commands",
+                  "title": "is_hidden_in_commands",
+                  "description": "Determines whether or not this item can be used with commands. Commands can use items by default if a category is set.",
+                  "dataType": 1
+                }
+              ]
+            }
+          }
+        ]
+      }
     }
   ],
   "descripiton": "Refers to the item definition, which includes the 'description' and 'components' sections of the file.",

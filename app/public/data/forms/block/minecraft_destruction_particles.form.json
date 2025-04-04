@@ -5,7 +5,6 @@
       "title": "Tint Method",
       "description": "Tint multiplied to the color. Tint method logic varies, but often refers to the \"rain\" and \"temperature\" of the biome the block is placed in to compute the tint.",
       "dataType": 2,
-      "isRequired": false,
       "mustMatchChoices": true,
       "choices": [
         {
@@ -42,12 +41,12 @@
       "id": "texture",
       "title": "Texture",
       "description": "The texture name used for the particle.",
-      "dataType": 2,
-      "lookupId": "terrainTexture"
+      "dataType": 2
     }
   ],
   "isExperimental": true,
   "requiredExperiment": "Upcoming Creator Features",
   "description": "[Note: This component is currently experimental]. Sets the particles that will be used when block is destroyed.",
-  "title": "Destruction Particles"
+  "title": "Destruction Particles",
+  "id": "minecraft:destruction_particles"
 }

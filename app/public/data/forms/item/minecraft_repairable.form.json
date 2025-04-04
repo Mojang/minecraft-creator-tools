@@ -4,7 +4,67 @@
       "id": "repair_items",
       "title": "repair_items",
       "description": "List of repair item entries. Each entry needs to define a list of strings for `items` that can be used for the repair and an optional `repair_amount` for how much durability is gained.",
-      "dataType": 15,
+      "dataType": 2,
+      "alternates": [
+        {
+          "id": "repair_items",
+          "dataType": 16,
+          "readOnly": true,
+          "subForm": {
+            "title": "Repair Items",
+            "description": "Repair Items",
+            "fields": [
+              {
+                "id": "items",
+                "title": "items",
+                "description": "Items that may be used to repair an item.",
+                "dataType": 2,
+                "alternates": [
+                  {
+                    "id": "items",
+                    "dataType": 24
+                  }
+                ]
+              },
+              {
+                "id": "repair_amount",
+                "title": "repair_amount",
+                "description": "How much the item is repaired.",
+                "dataType": 24,
+                "alternates": [
+                  {
+                    "id": "repair_amount",
+                    "dataType": 14,
+                    "readOnly": true,
+                    "subForm": {
+                      "title": "Repair Amount",
+                      "description": "Repair Amount",
+                      "fields": [
+                        {
+                          "id": "expression",
+                          "title": "expression",
+                          "description": "expression",
+                          "dataType": 2
+                        },
+                        {
+                          "id": "version",
+                          "title": "version",
+                          "description": "version",
+                          "dataType": 0
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "repair_amount",
+                    "dataType": 3
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
       "samples": {
         "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
           {
@@ -70,6 +130,96 @@
           "on_repaired": "minecraft:celebrate",
           "repair_items": [
             "anvil"
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:repairable/",
+        "content": {
+          "repair_items": [
+            {
+              "items": [
+                "iron_ingot"
+              ],
+              "repair_amount": 62
+            }
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/bow_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:repairable/",
+        "content": {
+          "repair_items": [
+            {
+              "items": [
+                "iron_ingot"
+              ],
+              "repair_amount": 62
+            }
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/crossbow_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:repairable/",
+        "content": {
+          "repair_items": [
+            {
+              "items": [
+                "iron_ingot"
+              ],
+              "repair_amount": 62
+            }
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/gray_wave_generator_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:repairable/",
+        "content": {
+          "repair_items": [
+            {
+              "items": [
+                "iron_ingot"
+              ],
+              "repair_amount": 62
+            }
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/shbullet_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:repairable/",
+        "content": {
+          "repair_items": [
+            {
+              "items": [
+                "iron_ingot"
+              ],
+              "repair_amount": 62
+            }
+          ]
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/smfireball_turret_kit.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:repairable/",
+        "content": {
+          "repair_items": [
+            {
+              "items": [
+                "iron_ingot"
+              ],
+              "repair_amount": 62
+            }
           ]
         }
       }

@@ -1,0 +1,230 @@
+{
+  "id": "minecraft:knockback_resistance",
+  "title": "Knockback Resistance",
+  "description": "Compels an entity to resist being knocked backwards by a melee attack.",
+  "scalarFieldUpgradeName": "value",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The amount of knockback resistance that an entity has.",
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/entities/armor_stand.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/creaking.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:immobile/minecraft:knockback_resistance/",
+            "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/ender_dragon.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 100
+          }
+        ],
+        "/vanilla/behavior_pack/entities/hoglin.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 0.6
+          }
+        ],
+        "/vanilla/behavior_pack/entities/ravager.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 0.75
+          }
+        ],
+        "/vanilla/behavior_pack/entities/zoglin.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 0.6
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 100
+          }
+        ]
+      }
+    },
+    {
+      "id": "max",
+      "title": "Maximum Value",
+      "description": "Maximum potential knockback resistence that this has.",
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/entities/ender_dragon.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 100
+          }
+        ],
+        "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+            "content": 100
+          }
+        ]
+      }
+    }
+  ],
+  "samples": {
+    "/vanilla/behavior_pack/entities/armor_stand.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/breeze.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 0
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/creaking.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:mobile/minecraft:knockback_resistance/",
+        "content": {
+          "value": 0
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:immobile/minecraft:knockback_resistance/",
+        "content": {
+          "value": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/ender_dragon.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 100,
+          "max": 100
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/hoglin.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 0.6
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/iron_golem.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/ravager.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 0.75
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/warden.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/zoglin.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 0.6
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/memory_jar.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 1
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/axe_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 100,
+          "max": 100
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/bow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 100,
+          "max": 100
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/crossbow_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 100,
+          "max": 100
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave_generator.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 100,
+          "max": 100
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_wave.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 100,
+          "max": 100
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/shbullet_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 100,
+          "max": 100
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/smfireball_turret.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:knockback_resistance/",
+        "content": {
+          "value": 100,
+          "max": 100
+        }
+      }
+    ]
+  }
+}

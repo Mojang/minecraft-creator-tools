@@ -1483,6 +1483,98 @@
           }
         }
       }
+    ],
+    "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.4,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.4,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/entities/dream_turkey.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mamm_cds:turkey_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.4,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/component_groups/mike_eliz:eliza_wild/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              0.35,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/entities/gray_zombie_leader.behavior.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:zombie_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.1,
+              -0.35
+            ],
+            "lock_rider_rotation": 0
+          }
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:rideable"
 }

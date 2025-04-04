@@ -47,5 +47,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.make_love"
 }

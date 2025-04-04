@@ -227,5 +227,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.follow_caravan"
 }

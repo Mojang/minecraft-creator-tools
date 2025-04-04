@@ -105,7 +105,7 @@ export default class ZipFile extends FileBase implements IFile {
         // Log.debug("Saving '" + this.content.length + "' content to '" + this.name + "' within zip");
 
         this._parentFolder.storage.modified = this.modified;
-        this._parentFolder.zip = this._parentFolder.zip.file(this.name, this.content);
+        this._parentFolder.zip.file(this.name, this.content);
       }
     }
 

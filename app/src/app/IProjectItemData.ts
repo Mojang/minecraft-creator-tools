@@ -3,7 +3,7 @@
 
 import IGitHubInfo from "./IGitHubInfo";
 
-export const MaxItemTypes = 129;
+export const MaxItemTypes = 138;
 
 export enum ProjectItemCategory {
   assets,
@@ -147,6 +147,14 @@ export enum ProjectItemType {
   blockCulling = 127,
   craftingItemCatalog = 128,
   mcToolsProjectPreferences = 129,
+  educationJson = 130,
+  aimAssistJson = 131,
+  colorGradingJson = 132,
+  atmosphericsJson = 133,
+  pbrJson = 134,
+  pointLightsJson = 135,
+  waterJson = 136,
+  shadowsJson = 137,
 }
 
 export enum ProjectItemStorageType {

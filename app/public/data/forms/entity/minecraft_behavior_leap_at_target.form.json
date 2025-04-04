@@ -147,6 +147,16 @@
           "yd": 0.4
         }
       }
+    ],
+    "/samples/casual_creator/custom_cat_eliza/behavior_packs/mike_eliz/entities/eliza.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.leap_at_target/",
+        "content": {
+          "priority": 3,
+          "target_dist": 0.3
+        }
+      }
     ]
-  }
+  },
+  "id": "minecraft:behavior.leap_at_target"
 }

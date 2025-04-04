@@ -72,5 +72,6 @@
         }
       }
     ]
-  }
+  },
+  "id": "minecraft:behavior.charge_held_item"
 }
