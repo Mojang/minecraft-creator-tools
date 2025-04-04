@@ -1,0 +1,127 @@
+{
+  "fields": [
+    {
+      "id": "offset",
+      "title": "offset",
+      "description": "offset",
+      "dataType": 24,
+      "minLength": 3,
+      "maxLength": 3,
+      "alternates": [
+        {
+          "id": "offset",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "title": "Offset",
+            "description": "Offset",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "expression",
+                "description": "expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "version",
+                "description": "version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "offset",
+          "dataType": 3
+        }
+      ]
+    },
+    {
+      "id": "direction",
+      "title": "direction",
+      "description": "direction",
+      "dataType": 2,
+      "alternates": [
+        {
+          "id": "direction",
+          "dataType": 24,
+          "minLength": 3,
+          "maxLength": 3,
+          "alternates": [
+            {
+              "id": "direction",
+              "dataType": 14,
+              "readOnly": true,
+              "subForm": {
+                "title": "Direction",
+                "description": "Direction",
+                "fields": [
+                  {
+                    "id": "expression",
+                    "title": "expression",
+                    "description": "expression",
+                    "dataType": 2
+                  },
+                  {
+                    "id": "version",
+                    "title": "version",
+                    "description": "version",
+                    "dataType": 0
+                  }
+                ]
+              }
+            },
+            {
+              "id": "direction",
+              "dataType": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "radius",
+      "title": "radius",
+      "description": "radius",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "radius",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "title": "Radius",
+            "description": "Radius",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "expression",
+                "description": "expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "version",
+                "description": "version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "radius",
+          "dataType": 3
+        }
+      ]
+    },
+    {
+      "id": "surface_only",
+      "title": "surface_only",
+      "description": "surface_only",
+      "dataType": 1
+    }
+  ],
+  "description": "Emitter Shape Sphere Misc",
+  "title": "Emitter Shape Sphere Misc"
+}

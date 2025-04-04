@@ -1,0 +1,18 @@
+{
+  "id": "chance_information",
+  "fields": [
+    {
+      "dataType": 0,
+      "id": "numerator",
+      "title": "Numerator",
+      "isRequired": true
+    },
+    {
+      "dataType": 0,
+      "id": "denominator",
+      "title": "Denominator",
+      "isRequired": true
+    }
+  ],
+  "dataVersion": "1.14.0"
+}

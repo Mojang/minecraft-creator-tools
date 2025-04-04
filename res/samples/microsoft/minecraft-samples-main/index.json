@@ -1,0 +1,28 @@
+{
+  "files": [
+    "LICENSE",
+    "README.md"
+  ],
+  "folders": [
+    "add_entity_robot",
+    "addon_starter",
+    "behavior_pack_sample",
+    "casual_creator",
+    "culled_block_sample",
+    "custom_blocks",
+    "custom_features",
+    "custom_items",
+    "custom_sounds",
+    "debug_tools",
+    "deferred_lighting_starter",
+    "jigsaws",
+    "lucky_block",
+    "npc_dialogue_sample",
+    "palm_tree_blocks_and_features",
+    "particles_examples_1.19",
+    "resource_pack_sample",
+    "skinpack",
+    "starter_blocks",
+    "structure_blocks_sample_behavior_pack"
+  ]
+}

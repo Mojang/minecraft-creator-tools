@@ -1,0 +1,55 @@
+{
+  "fields": [
+    {
+      "id": "surface_only",
+      "title": "surface_only",
+      "description": "surface_only",
+      "dataType": 1
+    },
+    {
+      "id": "direction",
+      "title": "direction",
+      "description": "direction",
+      "dataType": 2,
+      "alternates": [
+        {
+          "id": "direction",
+          "dataType": 24,
+          "minLength": 3,
+          "maxLength": 3,
+          "alternates": [
+            {
+              "id": "direction",
+              "dataType": 14,
+              "readOnly": true,
+              "subForm": {
+                "title": "Direction",
+                "description": "Direction",
+                "fields": [
+                  {
+                    "id": "expression",
+                    "title": "expression",
+                    "description": "expression",
+                    "dataType": 2
+                  },
+                  {
+                    "id": "version",
+                    "title": "version",
+                    "description": "version",
+                    "dataType": 0
+                  }
+                ]
+              }
+            },
+            {
+              "id": "direction",
+              "dataType": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "description": "Emitter Shape Entity Aabb Misc",
+  "title": "Emitter Shape Entity Aabb Misc"
+}

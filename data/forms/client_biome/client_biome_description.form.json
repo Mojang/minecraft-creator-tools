@@ -1,0 +1,12 @@
+{
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "identifier",
+      "description": "The name of the Client Biome, used by other features like the '/locate biome' command. Must match the name of a Biome defined by the game or a behavior pack.",
+      "dataType": 2
+    }
+  ],
+  "description": "Contains non-component settings for a Client Biome.",
+  "title": "Client Biome Description Client Biome"
+}

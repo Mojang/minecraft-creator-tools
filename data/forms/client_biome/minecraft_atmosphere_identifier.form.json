@@ -1,0 +1,13 @@
+{
+  "id": "minecraft:atmosphere_identifier",
+  "fields": [
+    {
+      "id": "atmosphere_identifier",
+      "title": "atmosphere_identifier",
+      "description": "Identifier of atmosphere definition to use",
+      "dataType": 2
+    }
+  ],
+  "description": "[INTERNAL - WORK IN PROGRESS] Set the atmosphere settings used during deferred rendering. Biomes without this component will have default atmosphere settings.",
+  "title": "Atmosphere Identifier"
+}

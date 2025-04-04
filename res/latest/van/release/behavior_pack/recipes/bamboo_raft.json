@@ -1,0 +1,25 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "minecraft:bamboo_raft"
+    },
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "# #",
+      "###"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:bamboo_planks",
+        "data": 4
+      }
+    },
+    "unlock": {
+        "context": "PlayerInWater"
+    },
+    "result": {
+      "item": "minecraft:bamboo_raft"
+    }
+  }
+}
