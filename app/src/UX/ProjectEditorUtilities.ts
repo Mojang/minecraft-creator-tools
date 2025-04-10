@@ -1,6 +1,6 @@
 import Carto from "../app/Carto";
 import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
-import Project from "../app/Project";
+import Project, { FolderContext } from "../app/Project";
 import ProjectExporter from "../app/ProjectExporter";
 import ProjectItem from "../app/ProjectItem";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
@@ -342,6 +342,7 @@ export default class ProjectEditorUtilities {
           ProjectItemStorageType.folder,
           folder.name,
           ProjectItemType.worldFolder,
+          FolderContext.world,
           undefined,
           ProjectItemCreationType.normal
         );
@@ -372,6 +373,7 @@ export default class ProjectEditorUtilities {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.structure,
+          FolderContext.behaviorPack,
           undefined,
           ProjectItemCreationType.normal
         );
@@ -399,6 +401,7 @@ export default class ProjectEditorUtilities {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.MCWorld,
+          FolderContext.world,
           undefined,
           ProjectItemCreationType.normal
         );
@@ -428,6 +431,7 @@ export default class ProjectEditorUtilities {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.MCProject,
+          FolderContext.world,
           undefined,
           ProjectItemCreationType.normal
         );
@@ -457,6 +461,7 @@ export default class ProjectEditorUtilities {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.MCTemplate,
+          FolderContext.world,
           undefined,
           ProjectItemCreationType.normal
         );
@@ -486,6 +491,7 @@ export default class ProjectEditorUtilities {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.MCAddon,
+          FolderContext.unknown,
           undefined,
           ProjectItemCreationType.normal
         );
@@ -515,6 +521,7 @@ export default class ProjectEditorUtilities {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.zip,
+          FolderContext.unknown,
           undefined,
           ProjectItemCreationType.normal
         );
@@ -544,6 +551,7 @@ export default class ProjectEditorUtilities {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.MCPack,
+          FolderContext.unknown,
           undefined,
           ProjectItemCreationType.normal
         );
@@ -573,6 +581,7 @@ export default class ProjectEditorUtilities {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.structure,
+          FolderContext.behaviorPack,
           undefined,
           ProjectItemCreationType.normal
         );
@@ -600,6 +609,7 @@ export default class ProjectEditorUtilities {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.audio,
+          FolderContext.resourcePack,
           undefined,
           ProjectItemCreationType.normal
         );

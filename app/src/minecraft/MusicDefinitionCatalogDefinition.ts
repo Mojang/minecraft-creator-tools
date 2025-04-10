@@ -148,8 +148,8 @@ export default class MusicDefinitionCatalogDefinition implements IDefinition {
       if (candItem.itemType === ProjectItemType.soundDefinitionCatalog && musicDefList) {
         await candItem.ensureStorage();
 
-        if (candItem.file) {
-          const soundDef = await SoundDefinitionCatalogDefinition.ensureOnFile(candItem.file);
+        if (candItem.defaultFile) {
+          const soundDef = await SoundDefinitionCatalogDefinition.ensureOnFile(candItem.defaultFile);
 
           const soundSetNames = soundDef?.getSoundDefinitionSetNameList();
           if (soundSetNames) {

@@ -53,8 +53,8 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.availableFile);
 
           if (bpManifest && bpManifest.definition && bpManifest.definition.dependencies) {
             const deps = bpManifest.definition.dependencies;
@@ -94,8 +94,8 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
       } else if (pi.itemType === ProjectItemType.packageJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const npmPackageJson = await NpmPackageDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const npmPackageJson = await NpmPackageDefinition.ensureOnFile(pi.availableFile);
 
           if (npmPackageJson && npmPackageJson.definition) {
             const deps = npmPackageJson.definition.dependencies;
@@ -161,8 +161,8 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
       } else if (pi.itemType === ProjectItemType.env) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const envFile = await EnvSettings.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const envFile = await EnvSettings.ensureOnFile(pi.availableFile);
 
           await envFile?.ensureEnvFile(project);
         }

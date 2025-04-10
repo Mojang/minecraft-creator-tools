@@ -20,51 +20,55 @@ import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition
 
 export default class MinecraftDefinitions {
   static async get(projectItem: ProjectItem): Promise<IDefinition | undefined> {
-    if (!projectItem.file || !projectItem.file.content || typeof projectItem.file.content !== "string") {
+    if (
+      !projectItem.defaultFile ||
+      !projectItem.defaultFile.content ||
+      typeof projectItem.defaultFile.content !== "string"
+    ) {
       await projectItem.ensureFileStorage();
 
-      if (!projectItem.file) {
+      if (!projectItem.defaultFile) {
         return undefined;
       }
 
-      await projectItem.file.loadContent();
+      await projectItem.defaultFile.loadContent();
 
-      if (!projectItem.file.content || typeof projectItem.file.content !== "string") {
+      if (!projectItem.defaultFile.content || typeof projectItem.defaultFile.content !== "string") {
         return undefined;
       }
     }
 
     switch (projectItem.itemType) {
       case ProjectItemType.entityTypeBehavior:
-        return await EntityTypeDefinition.ensureOnFile(projectItem.file);
+        return await EntityTypeDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.entityTypeResource:
-        return await EntityTypeResourceDefinition.ensureOnFile(projectItem.file);
+        return await EntityTypeResourceDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.itemTypeBehavior:
-        return await ItemTypeBehaviorDefinition.ensureOnFile(projectItem.file);
+        return await ItemTypeBehaviorDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.blockTypeBehavior:
-        return await BlockTypeDefinition.ensureOnFile(projectItem.file);
+        return await BlockTypeDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.flipbookTexturesJson:
-        return await FlipbookTextureCatalogDefinition.ensureOnFile(projectItem.file);
+        return await FlipbookTextureCatalogDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.behaviorPackManifestJson:
-        return await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
+        return await BehaviorManifestDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.resourcePackManifestJson:
-        return await ResourceManifestDefinition.ensureOnFile(projectItem.file);
+        return await ResourceManifestDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.animationControllerBehaviorJson:
-        return await AnimationControllerBehaviorDefinition.ensureOnFile(projectItem.file);
+        return await AnimationControllerBehaviorDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.animationControllerResourceJson:
-        return await AnimationControllerResourceDefinition.ensureOnFile(projectItem.file);
+        return await AnimationControllerResourceDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.animationBehaviorJson:
-        return await AnimationBehaviorDefinition.ensureOnFile(projectItem.file);
+        return await AnimationBehaviorDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.animationResourceJson:
-        return await AnimationResourceDefinition.ensureOnFile(projectItem.file);
+        return await AnimationResourceDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.soundDefinitionCatalog:
-        return await SoundDefinitionCatalogDefinition.ensureOnFile(projectItem.file);
+        return await SoundDefinitionCatalogDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.soundCatalog:
-        return await SoundCatalogDefinition.ensureOnFile(projectItem.file);
+        return await SoundCatalogDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.musicDefinitionJson:
-        return await MusicDefinitionCatalogDefinition.ensureOnFile(projectItem.file);
+        return await MusicDefinitionCatalogDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.renderControllerJson:
-        return await RenderControllerSetDefinition.ensureOnFile(projectItem.file);
+        return await RenderControllerSetDefinition.ensureOnFile(projectItem.defaultFile);
     }
 
     return undefined;
@@ -74,8 +78,8 @@ export default class MinecraftDefinitions {
     if (item.itemType === ProjectItemType.audio) {
       await item.ensureStorage();
 
-      if (item.file) {
-        const audioFile = await AudioDefinition.ensureOnFile(item.file);
+      if (item.defaultFile) {
+        const audioFile = await AudioDefinition.ensureOnFile(item.defaultFile);
 
         if (audioFile) {
           await audioFile.ensureSoundDefinitionsForFile(item.project);

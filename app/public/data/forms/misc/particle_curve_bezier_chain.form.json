@@ -2,8 +2,7 @@
   "fields": [
     {
       "id": "type",
-      "title": "type",
-      "description": "type",
+      "title": "Type",
       "dataType": 2,
       "validity": [
         {
@@ -14,14 +13,12 @@
     },
     {
       "id": "nodes",
-      "title": "nodes",
-      "description": "nodes",
+      "title": "Nodes",
       "dataType": 16
     },
     {
       "id": "input",
-      "title": "input",
-      "description": "input",
+      "title": "Input",
       "dataType": 24,
       "alternates": [
         {
@@ -30,18 +27,15 @@
           "readOnly": true,
           "subForm": {
             "title": "Input",
-            "description": "Input",
             "fields": [
               {
                 "id": "expression",
-                "title": "expression",
-                "description": "expression",
+                "title": "Expression",
                 "dataType": 2
               },
               {
                 "id": "version",
-                "title": "version",
-                "description": "version",
+                "title": "Version",
                 "dataType": 0
               }
             ]
@@ -54,6 +48,5 @@
       ]
     }
   ],
-  "description": "Particle Curve Bezier Chain Misc",
   "title": "Particle Curve Bezier Chain Misc"
 }

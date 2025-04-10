@@ -129,8 +129,8 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
       if (pi.itemType === ProjectItemType.worldTemplateManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const bpManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const bpManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.availableFile);
 
           if (bpManifest) {
             if (
@@ -302,8 +302,8 @@ export default class BaseGameVersionManager implements IProjectInfoGenerator, IP
       if (pi.itemType === ProjectItemType.worldTemplateManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const wtManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const wtManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.availableFile);
 
           if (wtManifest) {
             const mev = wtManifest.baseGameVersion;

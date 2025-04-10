@@ -1,7 +1,7 @@
 import { Component } from "react";
 import IFileProps from "./IFileProps";
 import IFile from "./../storage/IFile";
-import Editor from "@monaco-editor/react";
+import Editor, { DiffEditor } from "@monaco-editor/react";
 import "./JsonEditor.css";
 import * as monaco from "monaco-editor";
 import { ThemeInput, Toolbar } from "@fluentui/react-northstar";
@@ -18,9 +18,11 @@ interface IJsonEditorProps extends IFileProps {
   heightOffset: number;
   readOnly: boolean;
   project: Project;
+  isDiffEditor?: boolean;
   theme: ThemeInput<any>;
   preferredTextSize: number;
   item: ProjectItem;
+  diffFile?: IFile;
   onUpdatePreferredTextSize: (newSize: number) => void;
 }
 
@@ -31,6 +33,7 @@ interface IJsonEditorState {
 
 export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorState> {
   editor?: monaco.editor.IStandaloneCodeEditor;
+  diffEditor?: monaco.editor.IDiffEditor;
   _needsPersistence: boolean = false;
   _monaco: any;
 
@@ -40,6 +43,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     this._handleContentUpdated = this._handleContentUpdated.bind(this);
     this._handleEditorWillMount = this._handleEditorWillMount.bind(this);
     this._handleEditorDidMount = this._handleEditorDidMount.bind(this);
+    this._handleDiffEditorDidMount = this._handleDiffEditorDidMount.bind(this);
     this._considerFormat = this._considerFormat.bind(this);
     this._zoomIn = this._zoomIn.bind(this);
     this._zoomOut = this._zoomOut.bind(this);
@@ -88,6 +92,10 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
 
   async _ensureModels(monacoInstance: any) {
     await this._ensureModelForFile(monacoInstance, this.props.file);
+
+    if (this.props.diffFile) {
+      await this._ensureModelForFile(monacoInstance, this.props.diffFile);
+    }
 
     if (this.state !== undefined && !this.state.isLoaded) {
       this.setState({
@@ -148,10 +156,10 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
 
   _handleEditorDidMount(editor: monaco.editor.IStandaloneCodeEditor, monaco: any) {
     this.editor = editor;
+  }
 
-    if (this.editor === undefined) {
-      return;
-    }
+  _handleDiffEditorDidMount(editor: monaco.editor.IDiffEditor, monaco: any) {
+    this.diffEditor = editor;
   }
 
   componentDidUpdate(prevProps: IJsonEditorProps, prevState: IJsonEditorState) {
@@ -234,25 +242,16 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     const height = "calc(100vh - " + this.props.heightOffset + "px)";
     const editorHeight = "calc(100vh - " + (this.props.heightOffset + 30) + "px)";
 
-    const toolbarItems = [
-      {
-        icon: <FontAwesomeIcon icon={faSearchPlus} className="fa-lg" />,
-        key: "zoomIn",
-        onClick: this._zoomIn,
-        title: "Toggle whether hidden items are shown",
-      },
-      {
-        icon: <FontAwesomeIcon icon={faSearchMinus} className="fa-lg" />,
-        key: "zoomOut",
-        onClick: this._zoomOut,
-        title: "Toggle whether hidden items are shown",
-      },
-    ];
+    let toolbarItems: any[] = [];
 
     let coreUri = undefined;
+    let diffUri = undefined;
+    if (this.state.isLoaded && this.state.fileToEdit) {
+      coreUri = JsonEditor.getUriForFile(this.state.fileToEdit);
 
-    if (this.state.isLoaded) {
-      coreUri = JsonEditor.getUriForFile(this.props.file);
+      if (this.props.diffFile) {
+        diffUri = JsonEditor.getUriForFile(this.props.diffFile);
+      }
     }
 
     if (this.state !== null && this.state.fileToEdit !== null) {
@@ -267,22 +266,60 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
           theme = "vs";
         }
 
-        interior = (
-          <Editor
-            height={editorHeight}
-            theme={theme}
-            defaultLanguage="json"
-            options={{
-              fontSize: this.props.preferredTextSize,
-              readOnly: this.props.readOnly,
-              renderValidationDecorations: this.props.readOnly ? "on" : "editable",
-            }}
-            path={coreUri}
-            beforeMount={this._handleEditorWillMount}
-            onMount={this._handleEditorDidMount}
-            onChange={this._handleContentUpdated}
-          />
-        );
+        if (this.props.isDiffEditor && coreUri && diffUri) {
+          interior = (
+            <DiffEditor
+              height={editorHeight}
+              theme={theme}
+              originalLanguage="json"
+              modifiedLanguage="json"
+              options={{
+                fontSize: this.props.preferredTextSize,
+                readOnly: this.props.readOnly,
+                renderSideBySide: true,
+                automaticLayout: true,
+                originalEditable: false,
+                renderValidationDecorations: this.props.readOnly ? "on" : "editable",
+              }}
+              originalModelPath={coreUri}
+              modifiedModelPath={diffUri}
+              beforeMount={this._handleEditorWillMount}
+              onMount={this._handleDiffEditorDidMount}
+            />
+          );
+        } else {
+          toolbarItems = [
+            {
+              icon: <FontAwesomeIcon icon={faSearchPlus} className="fa-lg" />,
+              key: "zoomIn",
+              onClick: this._zoomIn,
+              title: "Toggle whether hidden items are shown",
+            },
+            {
+              icon: <FontAwesomeIcon icon={faSearchMinus} className="fa-lg" />,
+              key: "zoomOut",
+              onClick: this._zoomOut,
+              title: "Toggle whether hidden items are shown",
+            },
+          ];
+
+          interior = (
+            <Editor
+              height={editorHeight}
+              theme={theme}
+              defaultLanguage="json"
+              options={{
+                fontSize: this.props.preferredTextSize,
+                readOnly: this.props.readOnly,
+                renderValidationDecorations: this.props.readOnly ? "on" : "editable",
+              }}
+              path={coreUri}
+              beforeMount={this._handleEditorWillMount}
+              onMount={this._handleEditorDidMount}
+              onChange={this._handleContentUpdated}
+            />
+          );
+        }
       }
     }
 

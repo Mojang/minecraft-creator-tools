@@ -1,0 +1,6 @@
+{
+  "id": "query.has_biome_tag",
+  "fields": [],
+  "description": "Returns whether or not a Block Placement Target has a specific biome tag",
+  "title": "Has Biome Tag Query"
+}

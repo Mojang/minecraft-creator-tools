@@ -547,6 +547,13 @@ export default interface MinecraftInteract {
 
   /**
    * @remarks
+   * Will offset the item drop position this amount in the y
+   * direction. Requires "drop_item_slot" to be specified.
+   */
+  drop_item_y_offset: number;
+
+  /**
+   * @remarks
    * The entity's slot to equip the item to, if any, upon successful
    * interaction. Inventory slots are denoted by positive numbers. Armor
    * slots are denoted by 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs',

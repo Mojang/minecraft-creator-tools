@@ -1,0 +1,6 @@
+{
+  "id": "query.swell_amount",
+  "fields": [],
+  "description": "Returns how swollen the entity is.",
+  "title": "Swell Amount Query"
+}

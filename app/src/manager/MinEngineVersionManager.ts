@@ -207,9 +207,9 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
+        if (pi.availableFile) {
           foundBpManifest = true;
-          const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.file);
+          const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.availableFile);
 
           if (bpManifest) {
             if (
@@ -303,8 +303,8 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
       } else if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const rpManifest = await ResourceManifestDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const rpManifest = await ResourceManifestDefinition.ensureOnFile(pi.availableFile);
           if (rpManifest) {
             foundRpManifest = true;
             if (
@@ -398,8 +398,8 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
       } else if (pi.itemType === ProjectItemType.skinPackManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const spManifest = await SkinManifestDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const spManifest = await SkinManifestDefinition.ensureOnFile(pi.availableFile);
 
           if (spManifest) {
             foundSpManifest = true;
@@ -408,8 +408,8 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
       } else if (pi.itemType === ProjectItemType.worldTemplateManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const wtManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const wtManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.availableFile);
 
           if (wtManifest) {
             foundWorldTemplateManifest = true;
@@ -418,8 +418,8 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
       } else if (pi.itemType === ProjectItemType.personaManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const paManifest = await PersonaManifestDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const paManifest = await PersonaManifestDefinition.ensureOnFile(pi.availableFile);
 
           if (paManifest) {
             foundPersonaManifest = true;
@@ -506,8 +506,8 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.availableFile);
 
           if (bpManifest) {
             const mev = bpManifest.minEngineVersion;
@@ -534,8 +534,8 @@ export default class MinEngineVersionManager implements IProjectInfoGenerator, I
       if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const rpManifest = await ResourceManifestDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const rpManifest = await ResourceManifestDefinition.ensureOnFile(pi.availableFile);
 
           if (rpManifest) {
             const mev = rpManifest.minEngineVersion;

@@ -1,0 +1,20 @@
+.btae-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+}
+
+.btae-toolBarArea {
+  padding: 5px;
+  padding-left: 3px;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+}
+
+.btae-dropdown {
+  grid-column: 2;
+}
+
+.btae-tools {
+  grid-column: 1;
+}

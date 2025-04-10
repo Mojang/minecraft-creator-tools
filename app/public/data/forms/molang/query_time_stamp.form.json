@@ -1,0 +1,6 @@
+{
+  "id": "query.time_stamp",
+  "fields": [],
+  "description": "Returns the current time stamp of the level",
+  "title": "Time Stamp Query"
+}

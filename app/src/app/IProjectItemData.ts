@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import IGitHubInfo from "./IGitHubInfo";
+import IProjectItemVariant from "./IProjectItemVariant";
 
 export const MaxItemTypes = 138;
 
@@ -183,7 +184,8 @@ export enum ProjectItemCreationType {
 export default interface IProjectItemData {
   itemType: ProjectItemType;
   projectPath: string | null | undefined;
-  storagePath?: string | null | undefined; // legacy name for projectPath.
+  storagePath?: string | null | undefined; // legacy name for projectPath, no longer used.
+  variants: { [label: string]: IProjectItemVariant };
   tags: string[];
   name: string;
   source?: string;

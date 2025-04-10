@@ -1,0 +1,6 @@
+{
+  "id": "query.has_owner",
+  "fields": [],
+  "description": "Returns true if the entity has an owner ID else it returns false",
+  "title": "Has Owner Query"
+}

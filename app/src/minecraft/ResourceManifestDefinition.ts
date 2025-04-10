@@ -148,9 +148,9 @@ export default class ResourceManifestDefinition {
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
 
-      if (pi.file) {
+      if (pi.defaultFile) {
         if (pi.itemType === ProjectItemType.resourcePackManifestJson && !setResourcePack) {
-          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.file);
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.defaultFile);
 
           if (rpManifestJson) {
             if (rpManifestJson.id && Utilities.uuidEqual(rpManifestJson.id, oldResourcePackId)) {
@@ -169,7 +169,7 @@ export default class ResourceManifestDefinition {
             }
           }
         } else if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
-          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.file);
+          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.defaultFile);
 
           if (bpManifestJson) {
             if (bpManifestJson.definition && bpManifestJson.definition.dependencies) {
@@ -271,6 +271,24 @@ export default class ResourceManifestDefinition {
         dependencies: [],
       };
     }
+  }
+
+  public getSubpackByFolderName(folderName: string) {
+    if (!this.definition) {
+      return undefined;
+    }
+
+    if (!this.definition.subpacks) {
+      return undefined;
+    }
+
+    for (const subpack of this.definition.subpacks) {
+      if (subpack.folder_name === folderName) {
+        return subpack;
+      }
+    }
+
+    return undefined;
   }
 
   public ensureHeader(name: string, description: string): IAddonManifestHeader {

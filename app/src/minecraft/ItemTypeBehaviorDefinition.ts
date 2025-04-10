@@ -100,6 +100,16 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
     return MinecraftUtilities.getVersionArrayFrom(this.wrapper.format_version);
   }
 
+  ensureComponent(id: string, defaultData?: IComponent | string | string[] | boolean | number[] | number | undefined) {
+    const comp = this.getComponent(id);
+
+    if (comp) {
+      return comp;
+    }
+
+    return this.addComponent(id, defaultData);
+  }
+
   getComponent(id: string) {
     if (this._data === undefined) {
       return undefined;

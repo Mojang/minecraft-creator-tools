@@ -2,8 +2,7 @@
   "fields": [
     {
       "id": "activation_expression",
-      "title": "activation_expression",
-      "description": "activation_expression",
+      "title": "Activation Expression",
       "dataType": 24,
       "alternates": [
         {
@@ -12,18 +11,15 @@
           "readOnly": true,
           "subForm": {
             "title": "Activation Expression",
-            "description": "Activation Expression",
             "fields": [
               {
                 "id": "expression",
-                "title": "expression",
-                "description": "expression",
+                "title": "Expression",
                 "dataType": 2
               },
               {
                 "id": "version",
-                "title": "version",
-                "description": "version",
+                "title": "Version",
                 "dataType": 0
               }
             ]
@@ -37,8 +33,7 @@
     },
     {
       "id": "expiration_expression",
-      "title": "expiration_expression",
-      "description": "expiration_expression",
+      "title": "Expiration Expression",
       "dataType": 24,
       "alternates": [
         {
@@ -47,18 +42,15 @@
           "readOnly": true,
           "subForm": {
             "title": "Expiration Expression",
-            "description": "Expiration Expression",
             "fields": [
               {
                 "id": "expression",
-                "title": "expression",
-                "description": "expression",
+                "title": "Expression",
                 "dataType": 2
               },
               {
                 "id": "version",
-                "title": "version",
-                "description": "version",
+                "title": "Version",
                 "dataType": 0
               }
             ]
@@ -71,6 +63,5 @@
       ]
     }
   ],
-  "description": "Emitter Lifetime Expression Misc",
   "title": "Emitter Lifetime Expression Misc"
 }

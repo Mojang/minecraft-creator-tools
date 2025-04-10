@@ -54,7 +54,7 @@ export default interface MinecraftBlockPlacer {
    * My Sword Singing: "minecraft:dirt"
    *
    */
-  block: object;
+  block: { [key: string]: string };
 
   /**
    * @remarks

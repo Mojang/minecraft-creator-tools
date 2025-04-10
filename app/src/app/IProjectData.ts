@@ -7,6 +7,7 @@ import ITool from "./ITool";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
 import IStatus from "./Status";
 import { MinecraftTrack } from "./ICartoData";
+import IProjectVariant from "./IProjectVariant";
 
 export enum ProjectDataType {
   localStorage = 0,
@@ -57,6 +58,7 @@ export default interface IProjectData {
   focus: ProjectFocus;
   role?: ProjectRole;
   projectFolderTitle?: string;
+  variants: { [variant: string]: IProjectVariant };
 
   track?: MinecraftTrack;
 

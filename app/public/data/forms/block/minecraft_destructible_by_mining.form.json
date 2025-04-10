@@ -140,9 +140,39 @@
     ],
     "dataType": 1
   },
-  "description": "Describes the destructible by mining properties for this block. If set to true, the block will take the default number of seconds to destroy. If set to false, this block is indestructible by mining. If the component is omitted, the block will take the default number of seconds to destroy.",
-  "title": "Destructible By Mining",
   "samples": {
+    "samples": [
+      {
+        "path": "JSON Object (Item Tags)",
+        "content": {
+          "seconds_to_destroy": 10,
+          "item_specific_speeds": [
+            {
+              "item": {
+                "tags": "q.any_tag('minecraft:is_pickaxe', 'my_pack:custom_tool') "
+              },
+              "destroy_speed": 5
+            }
+          ]
+        }
+      },
+      {
+        "path": "JSON Object (Item Ids)",
+        "content": {
+          "seconds_to_destroy": 10,
+          "item_specific_speeds": [
+            {
+              "item": "minecraft:iron_pickaxe",
+              "destroy_speed": 5
+            },
+            {
+              "item": "minecraft:diamond_pickaxe",
+              "destroy_speed": 2
+            }
+          ]
+        }
+      }
+    ],
     "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
       {
         "path": "/minecraft:block/components/minecraft:destructible_by_mining/",
@@ -233,5 +263,7 @@
       }
     ]
   },
+  "description": "Describes the destructible by mining properties for this block. If set to true, the block will take the default number of seconds to destroy. If set to false, this block is indestructible by mining. If the component is omitted, the block will take the default number of seconds to destroy.",
+  "title": "Destructible By Mining",
   "id": "minecraft:destructible_by_mining"
 }

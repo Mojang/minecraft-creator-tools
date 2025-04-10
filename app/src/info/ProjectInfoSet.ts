@@ -43,16 +43,22 @@ export default class ProjectInfoSet {
       case "addons":
         return ProjectInfoSuite.cooperativeAddOn;
 
+      case "sharing":
+        return ProjectInfoSuite.sharing;
+
       case "currentplatform":
         return ProjectInfoSuite.currentPlatformVersions;
 
       default:
-        return ProjectInfoSuite.default; // default is all infogenerators except cooperative add-on
+        return ProjectInfoSuite.default; // default is all infogenerators except cooperative add-on and sharing
     }
   }
 
   static getSuiteString(suite: ProjectInfoSuite) {
     switch (suite) {
+      case ProjectInfoSuite.sharing:
+        return "sharing";
+
       case ProjectInfoSuite.cooperativeAddOn:
         return "addon";
 
@@ -251,6 +257,12 @@ export default class ProjectInfoSet {
   ) {
     if (this.suite === ProjectInfoSuite.default && generator.id.indexOf("CADDON") < 0) {
       return true;
+    }
+
+    if (this.suite === ProjectInfoSuite.sharing) {
+      if (generator.id === "SHARING") {
+        return true;
+      }
     }
 
     if (this.suite === ProjectInfoSuite.currentPlatformVersions) {

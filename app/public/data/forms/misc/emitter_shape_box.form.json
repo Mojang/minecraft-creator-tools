@@ -2,8 +2,7 @@
   "fields": [
     {
       "id": "offset",
-      "title": "offset",
-      "description": "offset",
+      "title": "Offset",
       "dataType": 24,
       "minLength": 3,
       "maxLength": 3,
@@ -14,18 +13,15 @@
           "readOnly": true,
           "subForm": {
             "title": "Offset",
-            "description": "Offset",
             "fields": [
               {
                 "id": "expression",
-                "title": "expression",
-                "description": "expression",
+                "title": "Expression",
                 "dataType": 2
               },
               {
                 "id": "version",
-                "title": "version",
-                "description": "version",
+                "title": "Version",
                 "dataType": 0
               }
             ]
@@ -39,8 +35,7 @@
     },
     {
       "id": "direction",
-      "title": "direction",
-      "description": "direction",
+      "title": "Direction",
       "dataType": 2,
       "alternates": [
         {
@@ -55,18 +50,15 @@
               "readOnly": true,
               "subForm": {
                 "title": "Direction",
-                "description": "Direction",
                 "fields": [
                   {
                     "id": "expression",
-                    "title": "expression",
-                    "description": "expression",
+                    "title": "Expression",
                     "dataType": 2
                   },
                   {
                     "id": "version",
-                    "title": "version",
-                    "description": "version",
+                    "title": "Version",
                     "dataType": 0
                   }
                 ]
@@ -82,8 +74,7 @@
     },
     {
       "id": "half_dimensions",
-      "title": "half_dimensions",
-      "description": "half_dimensions",
+      "title": "Half Dimensions",
       "dataType": 24,
       "minLength": 3,
       "maxLength": 3,
@@ -94,18 +85,15 @@
           "readOnly": true,
           "subForm": {
             "title": "Half Dimensions",
-            "description": "Half Dimensions",
             "fields": [
               {
                 "id": "expression",
-                "title": "expression",
-                "description": "expression",
+                "title": "Expression",
                 "dataType": 2
               },
               {
                 "id": "version",
-                "title": "version",
-                "description": "version",
+                "title": "Version",
                 "dataType": 0
               }
             ]
@@ -119,11 +107,9 @@
     },
     {
       "id": "surface_only",
-      "title": "surface_only",
-      "description": "surface_only",
+      "title": "Surface Only",
       "dataType": 1
     }
   ],
-  "description": "Emitter Shape Box Misc",
   "title": "Emitter Shape Box Misc"
 }

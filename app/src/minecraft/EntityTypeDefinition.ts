@@ -682,8 +682,8 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       if (candItem.itemType === ProjectItemType.entityTypeResource) {
         await candItem.ensureStorage();
 
-        if (candItem.file) {
-          const etrd = await EntityTypeResourceDefinition.ensureOnFile(candItem.file);
+        if (candItem.defaultFile) {
+          const etrd = await EntityTypeResourceDefinition.ensureOnFile(candItem.defaultFile);
 
           if (etrd) {
             const id = etrd.id;
@@ -696,8 +696,8 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       } else if (candItem.itemType === ProjectItemType.spawnRuleBehavior) {
         await candItem.ensureStorage();
 
-        if (candItem.file) {
-          const srb = await SpawnRulesBehaviorDefinition.ensureOnFile(candItem.file);
+        if (candItem.defaultFile) {
+          const srb = await SpawnRulesBehaviorDefinition.ensureOnFile(candItem.defaultFile);
 
           if (srb) {
             const id = srb.id;

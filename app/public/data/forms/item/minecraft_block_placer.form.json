@@ -2,9 +2,15 @@
   "fields": [
     {
       "id": "block",
-      "title": "block",
+      "title": "Block",
       "description": "Defines the block that will be placed.",
-      "dataType": 16,
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "block",
+          "dataType": 24
+        }
+      ],
       "samples": {
         "/samples/custom_items/behavior_packs/custom_item/items/my_sword_singing.json": [
           {
@@ -16,29 +22,25 @@
     },
     {
       "id": "use_on",
-      "title": "use_on",
+      "title": "Use On",
       "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
       "dataType": 15,
       "subForm": {
         "title": "Use On",
-        "description": "Use On",
         "fields": [
           {
             "id": "name",
-            "title": "name",
-            "description": "name",
+            "title": "Name",
             "dataType": 2
           },
           {
             "id": "tags",
-            "title": "tags",
-            "description": "tags",
+            "title": "Tags",
             "dataType": 2
           },
           {
             "id": "states",
-            "title": "states",
-            "description": "states",
+            "title": "States",
             "dataType": 0,
             "alternates": [
               {
@@ -78,7 +80,7 @@
     },
     {
       "id": "replace_block_item",
-      "title": "replace_block_item",
+      "title": "Replace Block Item",
       "description": "If true, the item will be registered as the item for this block. This item will be returned by default when the block is broken/picked. Note: the identifier for this item must match the block's identifier for this field to be valid.",
       "dataType": 1
     }

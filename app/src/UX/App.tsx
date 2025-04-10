@@ -76,6 +76,7 @@ export default class App extends Component<AppProps, AppState> {
     this._handlePersistenceUpgraded = this._handlePersistenceUpgraded.bind(this);
     this._newProjectFromGallery = this._newProjectFromGallery.bind(this);
     this._handleProjectGalleryCommand = this._handleProjectGalleryCommand.bind(this);
+    this._handleLocalGalleryCommand = this._handleLocalGalleryCommand.bind(this);
     this._handleHashChange = this._handleHashChange.bind(this);
     this._incrementVisualSeed = this._incrementVisualSeed.bind(this);
     this._gitHubAddingMessageUpdater = this._gitHubAddingMessageUpdater.bind(this);
@@ -418,16 +419,7 @@ export default class App extends Component<AppProps, AppState> {
         }
 
         let selectedItem = undefined;
-
-        if (CartoApp.modeParameter && CartoApp.modeParameter.startsWith("project/")) {
-          const segments = CartoApp.modeParameter.split("/");
-
-          if (segments.length === 2) {
-            this._handleNewProject({ name: "Project" }, NewProjectTemplateType.gameTest);
-
-            selectedItem = segments[1];
-          }
-        } else if (
+        if (
           CartoApp.initialMode &&
           (CartoApp.modeParameter || CartoApp.initialMode === "info") &&
           CartoApp.projectPath
@@ -521,7 +513,7 @@ export default class App extends Component<AppProps, AppState> {
 
       newProject.focus = focus;
 
-      await newProject.ensureDefaultItems();
+      await ProjectUtilities.ensureDefaultItems(newProject);
     }
 
     if (additionalFile && additionalFilePath) {

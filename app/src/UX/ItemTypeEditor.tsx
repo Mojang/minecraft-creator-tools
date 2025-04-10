@@ -36,8 +36,6 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
       fileToEdit: props.file,
       isLoaded: false,
     };
-
-    this._updateManager(false);
   }
 
   static getDerivedStateFromProps(props: IItemTypeEditorProps, state: IItemTypeEditorState) {
@@ -60,19 +58,35 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
     return null; // No change to state
   }
 
-  componentDidUpdate(prevProps: IItemTypeEditorProps, prevState: IItemTypeEditorState) {
-    this._updateManager(true);
+  componentDidMount(): void {
+    this._updateManager();
   }
 
-  async _updateManager(setState: boolean) {
+  componentDidUpdate(prevProps: IItemTypeEditorProps, prevState: IItemTypeEditorState) {
+    this._updateManager();
+  }
+
+  async _updateManager() {
     if (this.state !== undefined && this.state.fileToEdit !== undefined) {
       if (this.state.fileToEdit !== this._lastFileEdited) {
-        this._lastFileEdited = this.state.fileToEdit;
+        const itbd = await ItemTypeBehaviorDefinition.ensureOnFile(this.state.fileToEdit, this._handleItemTypeLoaded);
 
-        await ItemTypeBehaviorDefinition.ensureOnFile(this.state.fileToEdit, this._handleItemTypeLoaded);
+        if (itbd) {
+          await itbd.load();
+        }
+
+        this._lastFileEdited = this.state.fileToEdit;
       }
     }
 
+    this._doUpdate();
+  }
+
+  _handleItemTypeLoaded(itemType: ItemTypeBehaviorDefinition, typeA: ItemTypeBehaviorDefinition) {
+    this._doUpdate();
+  }
+
+  async _doUpdate() {
     if (
       this.state.fileToEdit &&
       this.state.fileToEdit.manager !== undefined &&
@@ -80,25 +94,10 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
       (this.state.fileToEdit.manager as ItemTypeBehaviorDefinition).isLoaded &&
       !this.state.isLoaded
     ) {
-      this._doUpdate(setState);
-    }
-  }
-
-  _handleItemTypeLoaded(itemType: ItemTypeBehaviorDefinition, typeA: ItemTypeBehaviorDefinition) {
-    this._doUpdate(true);
-  }
-
-  async _doUpdate(setState: boolean) {
-    if (setState) {
       this.setState({
         fileToEdit: this.state.fileToEdit,
         isLoaded: true,
       });
-    } else {
-      this.state = {
-        fileToEdit: this.props.file,
-        isLoaded: true,
-      };
     }
   }
 
@@ -123,13 +122,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
       this.state.fileToEdit.manager === undefined ||
       Database.uxCatalog === null
     ) {
-      if (this.state.fileToEdit !== null) {
-        if (this.state.fileToEdit.manager === undefined) {
-          this._updateManager(true);
-        }
-      }
-
-      return <div>Loading...</div>;
+      return <div className="ite-loading">Loading...</div>;
     }
 
     if (this.props.setActivePersistable !== undefined) {
@@ -160,7 +153,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
             project={this.props.project}
             carto={this.props.carto}
             isVisualsMode={false}
-            heightOffset={this.props.heightOffset + 80}
+            heightOffset={this.props.heightOffset + 90}
           />
         </div>
       </div>

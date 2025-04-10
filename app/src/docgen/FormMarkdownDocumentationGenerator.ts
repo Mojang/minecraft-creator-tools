@@ -38,6 +38,8 @@ export enum ExportMode {
   features = 14,
   featureCore = 15,
   deferredRendering = 16,
+  molang = 17,
+  culling = 18,
 }
 
 export default class FormMarkdownDocumentationGenerator {
@@ -59,7 +61,7 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
-      ExportMode.entityComponents,
+      ExportMode.features,
       "/FeaturesReference/Examples/FeatureList.md",
       "/features/minecraft_",
       "Features",
@@ -79,7 +81,7 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportListYml(
       formsByPath,
       outputFolder,
-      ExportMode.entityComponents,
+      ExportMode.features,
       "/FeaturesReference/Examples/Features/TOC.yml",
       "/features/minecraft_",
       "- name: Features List\r\n  href: ../FeatureList.md",
@@ -216,16 +218,6 @@ export default class FormMarkdownDocumentationGenerator {
       "Client Biome"
     );
 
-    this.exportMarkdownCatalogDocs(
-      formsByPath,
-      outputFolder,
-      ExportMode.biomes,
-      "/BiomesReference/Examples/Components/",
-      "/biome/",
-      "Biome",
-      "Biome"
-    );
-
     this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
@@ -244,6 +236,63 @@ export default class FormMarkdownDocumentationGenerator {
       "/entity/minecraft_",
       "- name: Components List\r\n  href: ../ComponentList.md",
       "minecraftComponent_"
+    );
+
+    this.exportMarkdownCatalogDocs(
+      formsByPath,
+      outputFolder,
+      ExportMode.biomes,
+      "/BiomesReference/Examples/Components/",
+      "/biome/",
+      "Biome",
+      "Biome"
+    );
+    this.exportMarkdownDocListPage(
+      formsByPath,
+      outputFolder,
+      ExportMode.biomes,
+      "/BiomesReference/Examples/ComponentList.md",
+      "/biome/",
+      "Biomes",
+      "Components"
+    );
+
+    this.exportListYml(
+      formsByPath,
+      outputFolder,
+      ExportMode.biomes,
+      "/BiomesReference/Examples/Components/TOC.yml",
+      "/biome/",
+      "- name: Components List\r\n  href: ../ComponentList.md",
+      "minecraftBiomes_"
+    );
+
+    this.exportMarkdownCatalogDocs(
+      formsByPath,
+      outputFolder,
+      ExportMode.culling,
+      "/BlockCullingReference/",
+      "/block_culling/",
+      "Block Culling",
+      "Block Culling"
+    );
+
+    this.exportMarkdownDocListPage(
+      formsByPath,
+      outputFolder,
+      ExportMode.culling,
+      "/BlockCullingReference/BlockCulling.md",
+      "/block_culling/",
+      "Block Culling",
+      "Block Culling"
+    );
+
+    this.exportListYml(
+      formsByPath,
+      outputFolder,
+      ExportMode.culling,
+      "/BlockCullingReference/TOC.yml",
+      "/block_culling/"
     );
 
     this.exportMarkdownDocListPage(
@@ -321,6 +370,35 @@ export default class FormMarkdownDocumentationGenerator {
       "/EntityReference/Examples/EventActions/TOC.yml",
       "/entityevents/",
       "- name: Entity Event List\r\n  href: ../EventActions.md"
+    );
+
+    this.exportMarkdownCatalogDocs(
+      formsByPath,
+      outputFolder,
+      ExportMode.molang,
+      "/MolangReference/Examples/MolangConcepts/QueryFunctions/",
+      "/molang/",
+      "Molang",
+      "Molang"
+    );
+
+    this.exportMarkdownDocListPage(
+      formsByPath,
+      outputFolder,
+      ExportMode.molang,
+      "/MolangReference/Examples/MolangConcepts/QueryFunctions.md",
+      "/molang/",
+      "Molang Query Functions",
+      "queryfunctions"
+    );
+
+    this.exportListYml(
+      formsByPath,
+      outputFolder,
+      ExportMode.eventResponses,
+      "/MolangReference/Examples/MolangConcepts/QueryFunctions/TOC.yml",
+      "/molang/",
+      "- name: Molang Query Function List\r\n  href: ../QueryFunctions.md"
     );
   }
 

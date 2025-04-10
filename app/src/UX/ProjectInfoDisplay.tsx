@@ -73,7 +73,12 @@ export enum ProjectInfoDisplayMenuState {
   exportMenu,
 }
 
-export const SuiteTitles = ["All", "Current Platform Versions", "Cooperative Add-On Best Practices"];
+export const SuiteTitles = [
+  "All",
+  "Current Platform Versions",
+  "Cooperative Add-On Best Practices",
+  "Sharing Best Practices",
+];
 
 export enum InfoItemCommand {
   itemSelect,
@@ -427,6 +432,8 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       targetedSuite = ProjectInfoSuite.currentPlatformVersions;
     } else if (data.value === SuiteTitles[2]) {
       targetedSuite = ProjectInfoSuite.cooperativeAddOn;
+    } else if (data.value === SuiteTitles[3]) {
+      targetedSuite = ProjectInfoSuite.sharing;
     }
 
     if (targetedSuite !== this.props.carto.preferredSuite) {

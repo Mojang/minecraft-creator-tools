@@ -2,7 +2,7 @@
   "fields": [
     {
       "id": "category",
-      "title": "category",
+      "title": "Category",
       "description": "The type of cool down for this item. All items with a cool down component with the same category are put on cool down when one is used.",
       "dataType": 2,
       "samples": {
@@ -16,7 +16,7 @@
     },
     {
       "id": "duration",
-      "title": "duration",
+      "title": "Duration",
       "description": "The duration of time (in seconds) items with a matching category will spend cooling down before becoming usable again.",
       "dataType": 3,
       "samples": {

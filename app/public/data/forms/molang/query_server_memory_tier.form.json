@@ -1,0 +1,6 @@
+{
+  "id": "query.server_memory_tier",
+  "fields": [],
+  "description": "Returns a number representing the server RAM memory tier, 0 = 'SuperLow', 1 = 'Low', 2 = 'Mid', 3 = 'High', or 4 = 'SuperHigh'. Available on the server side (Behavior Packs) only.",
+  "title": "Server Memory Tier Query"
+}

@@ -16,7 +16,6 @@ import IProjectItemData, { ProjectItemCreationType, ProjectItemStorageType, Proj
 import Utilities from "./../core/Utilities";
 import { EventDispatcher } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import ProjectContent from "./ProjectContent";
 import GitHubStorage from "../github/GitHubStorage";
 import Log from "../core/Log";
 import DifferenceSet from "../storage/DifferenceSet";
@@ -42,6 +41,8 @@ import ProjectItemRelations from "./ProjectItemRelations";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
 import ISimpleReference from "../core/ISimpleReference";
 import ProjectLookupUtilities from "./ProjectLookupUtilities";
+import ProjectVariant from "./ProjectVariant";
+import { ProjectItemVariantType } from "./IProjectItemVariant";
 
 export enum ProjectAutoDeploymentMode {
   deployOnSave = 0,
@@ -183,6 +184,8 @@ export default class Project {
   private _onItemChanged = new EventDispatcher<Project, ProjectItem>();
   private _onItemAdded = new EventDispatcher<Project, ProjectItem>();
   private _onItemRemoved = new EventDispatcher<Project, ProjectItem>();
+
+  public variants: { [label: string]: ProjectVariant };
 
   #hasInferredFiles = false;
   #readOnlySafety = false;
@@ -1103,8 +1106,8 @@ export default class Project {
 
     if (this.editPreference === ProjectEditPreference.summarized && this.defaultBehaviorPackUniqueId) {
       for (const projectItem of this.items) {
-        if (projectItem.file && projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
+        if (projectItem.defaultFile && projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
+          const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.defaultFile);
 
           if (
             manifestJson &&
@@ -1330,13 +1333,14 @@ export default class Project {
 
           await pi.load();
 
-          if (pi.file && pi.file.content) {
+          if (pi.defaultFile && pi.defaultFile.content) {
             const item = this.ensureItemByProjectPath(
               StorageUtilities.ensureEndsWithDelimiter(coreScriptsFolderPath) +
                 StorageUtilities.ensureNotStartsWithDelimiter(spath),
               ProjectItemStorageType.singleFile,
               StorageUtilities.getLeafName(spath),
               ProjectItemType.buildProcessedJs,
+              FolderContext.behaviorPack,
               undefined,
               ProjectItemCreationType.normal
             );
@@ -1344,7 +1348,7 @@ export default class Project {
             const file = await item.ensureFileStorage();
 
             if (file) {
-              file.setContent(pi.file.content);
+              file.setContent(pi.defaultFile.content);
             }
           }
         }
@@ -1419,6 +1423,7 @@ export default class Project {
 
     this.#data = {
       dataType: ProjectDataType.clientStorage,
+      variants: {},
       storageBasePath: "",
       contentsModified: null,
       dataStorageRelativePath: "/" + name + "/",
@@ -1450,6 +1455,7 @@ export default class Project {
 
     this.#carto = carto;
     this.#items = [];
+    this.variants = {};
   }
 
   notifyProjectItemChanged(item: ProjectItem) {
@@ -1476,6 +1482,22 @@ export default class Project {
     this.#worldContainer = null;
 
     this.#packs = [];
+  }
+
+  ensureVariant(label: string) {
+    if (!this.variants[label]) {
+      if (!this.#data.variants) {
+        this.#data.variants = {};
+      }
+
+      if (this.#data.variants[label] === undefined) {
+        this.#data.variants[label] = { label: label };
+      }
+
+      this.variants[label] = new ProjectVariant(this, this.#data.variants[label]);
+    }
+
+    return this.variants[label];
   }
 
   async inferProjectItemsFromFiles(force?: boolean) {
@@ -1818,10 +1840,11 @@ export default class Project {
       folderContext = FolderContext.mctoolsWorkingFolder;
     } else if (MinecraftUtilities.pathLooksLikeBehaviorPackName(folderPathA)) {
       folderContext = FolderContext.behaviorPack;
+    } else if (MinecraftUtilities.pathLooksLikeSubPacksFolderName(folderPathA)) {
+      // note this check must be above the .resourcePack check
+      folderContext = FolderContext.resourcePackSubPack;
     } else if (MinecraftUtilities.pathLooksLikeResourcePackName(folderPathA)) {
       folderContext = FolderContext.resourcePack;
-    } else if (MinecraftUtilities.pathLooksLikeSubPacksFolderName(folderPathA)) {
-      folderContext = FolderContext.resourcePackSubPack;
     } else if (MinecraftUtilities.pathLooksLikeSkinPackName(folderPathA) && folderContext === FolderContext.unknown) {
       folderContext = FolderContext.skinPack;
     } else if (
@@ -1936,6 +1959,8 @@ export default class Project {
             const baseName = StorageUtilities.getBaseFromName(candidateFile.name);
             const folderPath = StorageUtilities.canonicalizePath(StorageUtilities.getFolderPath(projectPath));
             const folderPathLower = folderPath.toLowerCase();
+            const isResourcePack =
+              folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack;
 
             if (canonFileName === "manifest.json" || canonFileName === "pack_manifest.json") {
               if (folderContext === FolderContext.world) {
@@ -2025,6 +2050,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 newPiType,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2061,6 +2087,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.mcToolsProjectPreferences,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2073,6 +2100,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.vsCodeTasksJson,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2085,6 +2113,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.vsCodeLaunchJson,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2097,6 +2126,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.vsCodeSettingsJson,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2109,6 +2139,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.vsCodeExtensionsJson,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2121,6 +2152,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.tickJson,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2133,6 +2165,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.structure,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2145,6 +2178,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.MCFunction,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2157,6 +2191,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.material,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2169,6 +2204,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.materialVertex,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2181,6 +2217,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.materialFragment,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2193,6 +2230,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.materialGeometry,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2211,6 +2249,7 @@ export default class Project {
                 ProjectItemStorageType.folder,
                 candidateFile.name,
                 ProjectItemType.worldFolder,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2223,6 +2262,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.justConfigTs,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2235,6 +2275,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.esLintConfigMjs,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2247,6 +2288,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.js,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2259,6 +2301,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.ts,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2271,6 +2314,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.MCWorld,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2285,6 +2329,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.MCProject,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2299,6 +2344,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.MCTemplate,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2313,6 +2359,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.MCAddon,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2327,6 +2374,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.MCPack,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2341,6 +2389,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.zip,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2375,6 +2424,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 imageType,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2387,6 +2437,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.audio,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2399,6 +2450,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.env,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2411,6 +2463,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 candidateFile.name,
                 ProjectItemType.lang,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2438,15 +2491,11 @@ export default class Project {
                 folderPathLower.indexOf("aim_assist_preset") >= 0
               ) {
                 newJsonType = ProjectItemType.aimAssistJson;
-              } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                folderPathLower.indexOf("/atmospherics/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/atmospherics/") >= 0) {
                 newJsonType = ProjectItemType.atmosphericsJson;
-              } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                folderPathLower.indexOf("/color_grading/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/point_lights/") >= 0) {
+                newJsonType = ProjectItemType.pointLightsJson;
+              } else if (isResourcePack && folderPathLower.indexOf("/color_grading/") >= 0) {
                 newJsonType = ProjectItemType.colorGradingJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/cameras/") >= 0) {
                 newJsonType = ProjectItemType.cameraJson;
@@ -2460,7 +2509,7 @@ export default class Project {
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/animations/") >= 0) {
                 newJsonType = ProjectItemType.animationBehaviorJson;
               } else if (
-                folderContext === FolderContext.resourcePack &&
+                isResourcePack &&
                 (folderPathLower.indexOf("/models/") >= 0 ||
                   baseName.endsWith(".geo") ||
                   baseName.endsWith(".geometry"))
@@ -2479,31 +2528,19 @@ export default class Project {
                 folderPathLower.indexOf("/feature_rules/") >= 0
               ) {
                 newJsonType = ProjectItemType.featureRuleBehaviorJson;
-              } else if (
-                folderContext === FolderContext.resourcePack &&
-                folderPathLower.indexOf("/animation_controllers/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/animation_controllers/") >= 0) {
                 newJsonType = ProjectItemType.animationControllerResourceJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/animations/") >= 0) {
+              } else if (isResourcePack && folderPathLower.indexOf("/animations/") >= 0) {
                 newJsonType = ProjectItemType.animationResourceJson;
-              } else if (
-                folderContext === FolderContext.resourcePack &&
-                folderPathLower.indexOf("/attachables/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/attachables/") >= 0) {
                 newJsonType = ProjectItemType.attachableResourceJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/fogs/") >= 0) {
+              } else if (isResourcePack && folderPathLower.indexOf("/fogs/") >= 0) {
                 newJsonType = ProjectItemType.fogResourceJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/particles/") >= 0) {
+              } else if (isResourcePack && folderPathLower.indexOf("/particles/") >= 0) {
                 newJsonType = ProjectItemType.particleJson;
-              } else if (
-                folderContext === FolderContext.resourcePack &&
-                folderPathLower.indexOf("/render_controllers/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/render_controllers/") >= 0) {
                 newJsonType = ProjectItemType.renderControllerJson;
-              } else if (
-                folderContext === FolderContext.resourcePack &&
-                folderPathLower.indexOf("/block_culling/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/block_culling/") >= 0) {
                 newJsonType = ProjectItemType.blockCulling;
               } else if (
                 folderContext === FolderContext.behaviorPack &&
@@ -2511,102 +2548,69 @@ export default class Project {
               ) {
                 newJsonType = ProjectItemType.craftingItemCatalog;
               } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                isResourcePack &&
                 (projectPath.endsWith("terrain_texture.json") || projectPath.endsWith("terrain_textures.json"))
               ) {
                 newJsonType = ProjectItemType.terrainTextureCatalogResourceJson;
-              } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                projectPath.endsWith("_global_variables.json")
-              ) {
+              } else if (isResourcePack && projectPath.endsWith("_global_variables.json")) {
                 newJsonType = ProjectItemType.globalVariablesJson;
-              } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                projectPath.endsWith("flipbook_textures.json")
-              ) {
+              } else if (isResourcePack && projectPath.endsWith("flipbook_textures.json")) {
                 newJsonType = ProjectItemType.flipbookTexturesJson;
               } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                isResourcePack &&
                 (projectPath.endsWith("item_texture.json") || projectPath.endsWith("item_textures.json"))
               ) {
                 newJsonType = ProjectItemType.itemTextureJson;
               } else if (folderContext === FolderContext.skinPack && projectPath.endsWith("skins.json")) {
                 newJsonType = ProjectItemType.skinCatalogJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/materials/") >= 0) {
+              } else if (isResourcePack && folderPathLower.indexOf("/materials/") >= 0) {
                 newJsonType = ProjectItemType.materialSetJson;
               } else if (
-                folderContext === FolderContext.resourcePack &&
+                isResourcePack &&
                 folderPathLower.indexOf("/sounds/") >= 0 &&
                 baseName === "sound_definitions"
               ) {
                 newJsonType = ProjectItemType.soundDefinitionCatalog;
               } else if (
-                folderContext === FolderContext.resourcePack &&
+                isResourcePack &&
                 folderPathLower.indexOf("/sounds/") >= 0 &&
                 baseName === "music_definitions"
               ) {
                 newJsonType = ProjectItemType.musicDefinitionJson;
               } else if (folderPathLower.indexOf("/texts/") >= 0 || baseName === "languages") {
                 newJsonType = ProjectItemType.languagesCatalogResourceJson;
-              } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                folderPathLower.indexOf("/textures/ui/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/textures/ui/") >= 0) {
                 newJsonType = ProjectItemType.ninesliceJson;
-              } else if (
-                folderContext === FolderContext.resourcePack &&
-                folderPathLower.indexOf("/texture_sets/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/texture_sets/") >= 0) {
                 newJsonType = ProjectItemType.textureSetJson;
-              } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                folderPathLower.indexOf("/lighting/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/lighting/") >= 0) {
                 newJsonType = ProjectItemType.lightingJson;
-              } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                folderPathLower.indexOf("/point_lights/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/point_lights/") >= 0) {
                 newJsonType = ProjectItemType.lightingJson;
-              } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                folderPathLower.indexOf("/pbr/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/pbr/") >= 0) {
                 newJsonType = ProjectItemType.pbrJson;
-              } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                folderPathLower.indexOf("/water/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/water/") >= 0) {
                 newJsonType = ProjectItemType.waterJson;
-              } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                folderPathLower.indexOf("/shadows/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/shadows/") >= 0) {
                 newJsonType = ProjectItemType.shadowsJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/ui/") >= 0) {
+              } else if (isResourcePack && folderPathLower.indexOf("/ui/") >= 0) {
                 newJsonType = ProjectItemType.uiJson;
               } else if (folderContext === FolderContext.docs && baseName === "example_files") {
                 newJsonType = ProjectItemType.fileListArrayJson;
-              } else if (folderContext === FolderContext.resourcePack && baseName === "biomes_client") {
+              } else if (isResourcePack && baseName === "biomes_client") {
                 newJsonType = ProjectItemType.biomeResourceJson;
-              } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                baseName === "blocks"
-              ) {
+              } else if (isResourcePack && baseName === "blocks") {
                 newJsonType = ProjectItemType.blocksCatalogResourceJson;
               } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
+                isResourcePack &&
                 (projectPath.endsWith("texture_list.json") || projectPath.endsWith("textures_list.json"))
               ) {
                 newJsonType = ProjectItemType.textureListJson;
-              } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                projectPath.endsWith("texture_set.json")
-              ) {
+              } else if (isResourcePack && projectPath.endsWith("texture_set.json")) {
                 newJsonType = ProjectItemType.textureSetJson;
-              } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/items/") >= 0) {
+              } else if (isResourcePack && folderPathLower.indexOf("/items/") >= 0) {
                 newJsonType = ProjectItemType.itemTypeResourceJson;
-              } else if (folderContext === FolderContext.resourcePack && baseName === "sounds") {
+              } else if (isResourcePack && baseName === "sounds") {
                 newJsonType = ProjectItemType.soundCatalog;
               } else if (baseName === "education") {
                 newJsonType = ProjectItemType.educationJson;
@@ -2637,10 +2641,7 @@ export default class Project {
                 this.role = ProjectRole.documentation;
 
                 itemName = StorageUtilities.getLeafName(folderPath);
-              } else if (
-                (folderContext === FolderContext.resourcePack || folderContext === FolderContext.resourcePackSubPack) &&
-                folderPathLower.indexOf("/textures/") >= 0
-              ) {
+              } else if (isResourcePack && folderPathLower.indexOf("/textures/") >= 0) {
                 newJsonType = ProjectItemType.ninesliceJson;
               } else if (
                 folderContext === FolderContext.docs &&
@@ -2678,7 +2679,7 @@ export default class Project {
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/blocks/") >= 0) {
                 newJsonType = ProjectItemType.blockTypeBehavior;
               } else if (
-                folderContext === FolderContext.resourcePack &&
+                isResourcePack &&
                 (folderPathLower.indexOf("/entities/") >= 0 || folderPathLower.indexOf("/entity/") >= 0)
               ) {
                 newJsonType = ProjectItemType.entityTypeResource;
@@ -2696,6 +2697,7 @@ export default class Project {
                 ProjectItemStorageType.singleFile,
                 itemName,
                 newJsonType,
+                folderContext,
                 source,
                 ProjectItemCreationType.normal,
                 candidateFile,
@@ -2799,64 +2801,6 @@ export default class Project {
     await this.carto.notifyOperationEnded(operId, "Done loading package file " + file.name);
   }
 
-  async ensureDefaultItems() {
-    if (this.focus === ProjectFocus.gameTests && this.projectFolder !== null) {
-      const bpFolder = await this.ensureDefaultBehaviorPackFolder();
-
-      const defaultPath = bpFolder.getFolderRelativePath(this.projectFolder);
-
-      let pi = this.ensureItemByTag(
-        "gametestjs",
-        "Test",
-        ProjectItemType.testJs,
-        defaultPath + "scripts/test.js",
-        ProjectItemStorageType.singleFile
-      );
-
-      let file = await pi.ensureFileStorage();
-
-      if (file !== null) {
-        let content = "";
-        if (this.preferredScriptLanguage === ProjectScriptLanguage.typeScript) {
-          content = ProjectContent.getDefaultTestTypeScript(this.name, StorageUtilities.getBaseFromName("test"));
-        } else {
-          content = ProjectContent.getDefaultTestJavaScript(this.name, StorageUtilities.getBaseFromName("test"));
-        }
-
-        file.setContent(content);
-      }
-
-      await this.ensureJsIndexFile();
-
-      pi = this.ensureItemByTag(
-        "manifestjson",
-        "manifest",
-        ProjectItemType.behaviorPackManifestJson,
-        defaultPath + "manifest.json",
-        ProjectItemStorageType.singleFile,
-        ProjectItemCreationType.generated
-      );
-
-      pi = this.ensureItemByTag(
-        "gameteststructure",
-        "Basic",
-        ProjectItemType.structure,
-        defaultPath + "structures/gametests/basic.mcstructure",
-        ProjectItemStorageType.singleFile
-      );
-
-      file = await pi.ensureFileStorage();
-
-      if (file !== null) {
-        const result = ProjectContent.generateDefaultStructure();
-
-        if (result !== undefined) {
-          file.setContent(result);
-        }
-      }
-    }
-  }
-
   async ensureJsIndexFile() {
     if (this.projectFolder === null) {
       throw new Error("Could not find project folder");
@@ -2905,10 +2849,10 @@ export default class Project {
             pi.itemType === ProjectItemType.buildProcessedJs ||
             pi.itemType === ProjectItemType.testJs ||
             pi.itemType === ProjectItemType.ts) &&
-          pi.file
+          pi.defaultFile
         ) {
-          await pi.file.loadContent();
-          const content = pi.file.content;
+          await pi.defaultFile.loadContent();
+          const content = pi.defaultFile.content;
 
           if (content && typeof content === "string") {
             for (let i = 0; i < minecraftScriptModules.length; i++) {
@@ -3077,17 +3021,47 @@ export default class Project {
     storageType: ProjectItemStorageType,
     name: string,
     itemType: ProjectItemType,
+    context: FolderContext,
     source?: string,
     creationType?: ProjectItemCreationType,
     file?: IFile,
     tag?: string,
     isInWorld?: boolean
   ) {
+    let variantName = undefined;
+    let originalPath = projectPath;
+    let targetVariantType: ProjectItemVariantType = ProjectItemVariantType.general;
+
+    if (context === FolderContext.resourcePackSubPack) {
+      const indexOfSubpacks = projectPath.toLowerCase().indexOf("/subpacks/");
+
+      if (indexOfSubpacks >= 0) {
+        const nextSlash = projectPath.indexOf("/", indexOfSubpacks + 10);
+
+        if (nextSlash >= 0) {
+          targetVariantType = ProjectItemVariantType.subPack;
+          variantName = projectPath.substring(indexOfSubpacks + 10, nextSlash);
+          projectPath = projectPath.substring(0, indexOfSubpacks) + projectPath.substring(nextSlash);
+        }
+      }
+    }
+
     let pi = this.getItemByProjectPath(projectPath);
 
     if (pi !== undefined) {
-      if (!pi.file && file) {
-        pi.setFile(file);
+      if (variantName) {
+        const piv = pi.ensureVariant(variantName);
+
+        piv.projectPath = originalPath;
+        piv.variantType = targetVariantType;
+
+        if (!piv.file && file) {
+          piv.setFile(file);
+        }
+      } else {
+        if (!pi.defaultFile && file) {
+          pi.setFile(file);
+        }
       }
 
       return pi;
@@ -3101,6 +3075,7 @@ export default class Project {
 
     pi = this.createItem({
       itemType: itemType,
+      variants: {},
       projectPath: projectPath,
       storageType: storageType,
       creationType: creationType,
@@ -3109,7 +3084,16 @@ export default class Project {
       name: name,
     });
 
-    if (file) {
+    if (variantName) {
+      const piv = pi.ensureVariant(variantName);
+
+      piv.variantType = targetVariantType;
+      piv.projectPath = originalPath;
+
+      if (file) {
+        piv.setFile(file);
+      }
+    } else if (file) {
       pi.setFile(file);
     }
 
@@ -3168,6 +3152,7 @@ export default class Project {
 
     pi = this.createItem({
       itemType: itemType,
+      variants: {},
       projectPath: storagePath,
       storageType: storageType,
       creationType: creationType,
@@ -3678,6 +3663,7 @@ export default class Project {
         ProjectItemStorageType.singleFile,
         file.name,
         ProjectItemType.projectSummaryMetadata,
+        FolderContext.metaData,
         undefined,
         ProjectItemCreationType.normal,
         file
@@ -3688,6 +3674,7 @@ export default class Project {
         ProjectItemStorageType.singleFile,
         file.name,
         ProjectItemType.tagsMetadata,
+        FolderContext.metaData,
         undefined,
         ProjectItemCreationType.normal,
         file
@@ -3911,8 +3898,8 @@ export default class Project {
       if (pi.itemType === ProjectItemType.js || pi.itemType === ProjectItemType.ts) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          this.#defaultScriptsFolder = pi.file.parentFolder;
+        if (pi.defaultFile) {
+          this.#defaultScriptsFolder = pi.defaultFile.parentFolder;
 
           if (this.#defaultScriptsFolder !== null) {
             return this.#defaultScriptsFolder;
@@ -3974,25 +3961,25 @@ export default class Project {
   ensurePacks() {
     for (const item of this.items) {
       if (item.itemType === ProjectItemType.behaviorPackManifestJson) {
-        const file = item.file;
+        const file = item.defaultFile;
 
         if (file && file.parentFolder) {
           this.ensurePackByFolder(file.parentFolder, PackType.behavior);
         }
       } else if (item.itemType === ProjectItemType.resourcePackManifestJson) {
-        const file = item.file;
+        const file = item.defaultFile;
 
         if (file && file.parentFolder) {
           this.ensurePackByFolder(file.parentFolder, PackType.resource);
         }
       } else if (item.itemType === ProjectItemType.skinPackManifestJson) {
-        const file = item.file;
+        const file = item.defaultFile;
 
         if (file && file.parentFolder) {
           this.ensurePackByFolder(file.parentFolder, PackType.skin);
         }
       } else if (item.itemType === ProjectItemType.personaManifestJson) {
-        const file = item.file;
+        const file = item.defaultFile;
 
         if (file && file.parentFolder) {
           this.ensurePackByFolder(file.parentFolder, PackType.persona);
@@ -4001,6 +3988,39 @@ export default class Project {
     }
   }
 
+  async ensurePacksAsync() {
+    for (const item of this.items) {
+      if (item.itemType === ProjectItemType.behaviorPackManifestJson) {
+        await item.ensureFileStorage();
+        const file = item.defaultFile;
+
+        if (file && file.parentFolder) {
+          this.ensurePackByFolder(file.parentFolder, PackType.behavior);
+        }
+      } else if (item.itemType === ProjectItemType.resourcePackManifestJson) {
+        await item.ensureFileStorage();
+        const file = item.defaultFile;
+
+        if (file && file.parentFolder) {
+          this.ensurePackByFolder(file.parentFolder, PackType.resource);
+        }
+      } else if (item.itemType === ProjectItemType.skinPackManifestJson) {
+        await item.ensureFileStorage();
+        const file = item.defaultFile;
+
+        if (file && file.parentFolder) {
+          this.ensurePackByFolder(file.parentFolder, PackType.skin);
+        }
+      } else if (item.itemType === ProjectItemType.personaManifestJson) {
+        await item.ensureFileStorage();
+        const file = item.defaultFile;
+
+        if (file && file.parentFolder) {
+          this.ensurePackByFolder(file.parentFolder, PackType.persona);
+        }
+      }
+    }
+  }
   async getDefaultBehaviorPackFolder(force?: boolean, preventEnsureFileStorage?: boolean): Promise<IFolder | null> {
     if (this.#defaultBehaviorPackFolder !== null && !force) {
       return this.#defaultBehaviorPackFolder;
@@ -4025,8 +4045,8 @@ export default class Project {
           await pi.ensureFileStorage();
         }
 
-        if (pi.file) {
-          this.#defaultBehaviorPackFolder = pi.file.parentFolder;
+        if (pi.defaultFile) {
+          this.#defaultBehaviorPackFolder = pi.defaultFile.parentFolder;
 
           this.ensurePackByFolder(this.#defaultBehaviorPackFolder, PackType.behavior, pi.isInWorld);
 
@@ -4105,13 +4125,17 @@ export default class Project {
     }
 
     let itemType = ProjectItemType.behaviorPackFolder;
+    let folderContext = FolderContext.behaviorPack;
 
     if (packType === PackType.resource) {
       itemType = ProjectItemType.resourcePackFolder;
+      folderContext = FolderContext.resourcePack;
     } else if (packType === PackType.skin) {
       itemType = ProjectItemType.skinPackFolder;
+      folderContext = FolderContext.skinPack;
     } else if (packType === PackType.persona) {
       itemType = ProjectItemType.personaPackFolder;
+      folderContext = FolderContext.persona;
     }
 
     const folderPath = folder.getFolderRelativePath(this.projectFolder);
@@ -4125,6 +4149,7 @@ export default class Project {
       ProjectItemStorageType.folder,
       folder.name,
       itemType,
+      folderContext,
       undefined,
       ProjectItemCreationType.normal,
       undefined,
@@ -4158,8 +4183,8 @@ export default class Project {
       if (pi.itemType === ProjectItemType.skinPackManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          this.#defaultSkinPackFolder = pi.file.parentFolder;
+        if (pi.defaultFile) {
+          this.#defaultSkinPackFolder = pi.defaultFile.parentFolder;
 
           this.ensurePackByFolder(this.#defaultSkinPackFolder, PackType.skin, pi.isInWorld);
 
@@ -4194,8 +4219,8 @@ export default class Project {
       if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          this.#defaultResourcePackFolder = pi.file.parentFolder;
+        if (pi.defaultFile) {
+          this.#defaultResourcePackFolder = pi.defaultFile.parentFolder;
 
           this.ensurePackByFolder(this.#defaultResourcePackFolder, PackType.resource, pi.isInWorld);
 

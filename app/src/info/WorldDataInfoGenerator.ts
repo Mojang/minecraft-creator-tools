@@ -201,8 +201,8 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     if (projectItem.itemType === ProjectItemType.dialogueBehaviorJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.file) {
-        const diaManifest = await Dialogue.ensureOnFile(projectItem.file);
+      if (projectItem.availableFile) {
+        const diaManifest = await Dialogue.ensureOnFile(projectItem.availableFile);
 
         if (diaManifest && diaManifest.definition && diaManifest.definition["minecraft:npc_dialogue"]) {
           let scenes = diaManifest.definition["minecraft:npc_dialogue"].scenes;
@@ -227,8 +227,8 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     } else if (projectItem.itemType === ProjectItemType.animationControllerBehaviorJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.file) {
-        const acManifest = await AnimationControllerBehaviorDefinition.ensureOnFile(projectItem.file);
+      if (projectItem.availableFile) {
+        const acManifest = await AnimationControllerBehaviorDefinition.ensureOnFile(projectItem.availableFile);
 
         if (acManifest && acManifest.data && acManifest.data.animation_controllers) {
           let states = acManifest.getAllStates();
@@ -247,8 +247,8 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
     } else if (projectItem.itemType === ProjectItemType.animationBehaviorJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.file) {
-        const animManifest = await AnimationBehaviorDefinition.ensureOnFile(projectItem.file);
+      if (projectItem.availableFile) {
+        const animManifest = await AnimationBehaviorDefinition.ensureOnFile(projectItem.availableFile);
 
         if (animManifest && animManifest.data && animManifest.data.animations) {
           let timelines = animManifest.getAllTimeline();

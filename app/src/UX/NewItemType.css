@@ -1,0 +1,31 @@
+.nitem-outer {
+  padding: 8px;
+  padding-top: 2px;
+  width: 100%;
+  min-height: 450px;
+  height: 100%;
+}
+
+.nitem-optionsArea {
+  display: grid;
+  margin-top: 20px;
+  grid-template-columns: 100px 1fr;
+}
+
+.nitem-nameLabel {
+  grid-column: 1;
+  padding-top: 5px;
+}
+
+.nitem-folderAreaLabel {
+  padding-bottom: 2px;
+}
+
+.nitem-nameArea {
+  grid-column: 2;
+}
+
+.nitem-folderArea {
+  padding-top: 30px;
+  max-width: 600px;
+}

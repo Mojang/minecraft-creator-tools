@@ -1,0 +1,6 @@
+{
+  "id": "query.ride_body_x_rotation",
+  "fields": [],
+  "description": "Returns the body pitch world-rotation of the ride an entity, else it returns 0.0.",
+  "title": "Ride Body X Rotation Query"
+}

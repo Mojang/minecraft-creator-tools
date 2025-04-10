@@ -76,6 +76,102 @@ export default class ProjectItemUtilities {
     return { itemType: ProjectItemType.unknown, packType: PackType.behavior, path: "/" };
   }
 
+  static getSchemaPathForType(itemType: ProjectItemType) {
+    switch (itemType) {
+      case ProjectItemType.behaviorPackManifestJson:
+        return "general/manifest.json";
+      case ProjectItemType.behaviorPackListJson:
+        return "general/world_x_packs.json";
+      case ProjectItemType.resourcePackListJson:
+        return "general/world_x_packs.json";
+      case ProjectItemType.animationControllerBehaviorJson:
+        return "behavior/animation_controllers/animation_controller.json";
+      case ProjectItemType.animationBehaviorJson:
+        return "behavior/animations/animations.json";
+      case ProjectItemType.blockTypeBehavior:
+        return "behavior/blocks/blocks.json";
+      case ProjectItemType.itemTypeBehavior:
+        return "behavior/items/items.json";
+      case ProjectItemType.lootTableBehavior:
+        return "behavior/loot_tables/loot_tables.json";
+      case ProjectItemType.biomeBehaviorJson:
+        return "behavior/blocks/blocks.json";
+      case ProjectItemType.dialogueBehaviorJson:
+        return "behavior/dialogue/dialogue.json";
+      case ProjectItemType.entityTypeBehavior:
+        return "behavior/entities/entities.json";
+      case ProjectItemType.atmosphericsJson:
+        return "behavior/lighting/atmospherics.json";
+      case ProjectItemType.blocksCatalogResourceJson:
+        return "resource/blocks.json";
+      case ProjectItemType.soundCatalog:
+        return "resource/sounds.json";
+      case ProjectItemType.animationResourceJson:
+        return "resource/animations/actor_animation.json";
+      case ProjectItemType.animationControllerResourceJson:
+        return "resource/animation_controllers/animation_controller.json";
+      case ProjectItemType.entityTypeResource:
+        return "resource/entity/entity.json";
+      case ProjectItemType.fogResourceJson:
+        return "resource/fog/fog.json";
+      case ProjectItemType.modelGeometryJson:
+        return "resource/models/entity/model_entity.json";
+      case ProjectItemType.biomeResourceJson:
+        return "resource/biomes_client.json";
+      case ProjectItemType.particleJson:
+        return "resource/particles/particles.json";
+      case ProjectItemType.renderControllerJson:
+        return "resource/render_controllers/render_controllers.json";
+      case ProjectItemType.blockCulling:
+        return "resource/block_culling/block_culling.json";
+      case ProjectItemType.craftingItemCatalog:
+        return "behavior/item_catalog/crafting_item_catalog.json";
+      //     case ProjectItemType.uiTextureJson:
+      //        return "resource/textures/ui_texture_definition.json";
+      case ProjectItemType.languagesCatalogResourceJson:
+        return "language/languages.json";
+      case ProjectItemType.featureBehavior:
+        return "behavior/features/features.json";
+      case ProjectItemType.featureRuleBehaviorJson:
+        return "behavior/feature_rules/feature_rules.json";
+      case ProjectItemType.functionEventJson:
+        return "behavior/functions/tick.json";
+      case ProjectItemType.recipeBehavior:
+        return "behavior/recipes/recipes.json";
+      case ProjectItemType.spawnRuleBehavior:
+        return "behavior/spawn_rules/spawn_rules.json";
+      case ProjectItemType.tradingBehaviorJson:
+        return "behavior/trading/trading.json";
+      case ProjectItemType.attachableResourceJson:
+        return "resource/attachables/attachables.json";
+      case ProjectItemType.itemTypeResourceJson:
+        return "resource/items/items.json";
+      case ProjectItemType.materialsResourceJson:
+        return "resource/materials/materials.json";
+      case ProjectItemType.musicDefinitionJson:
+        return "resource/sounds/music_definitions.json";
+      case ProjectItemType.soundDefinitionCatalog:
+        return "resource/sounds/sound_definitions.json";
+      case ProjectItemType.blockTypeResourceJsonDoNotUse:
+        return "resource/blocks.json";
+      case ProjectItemType.uiJson:
+        return "resource/ui/ui.json";
+      case ProjectItemType.tickJson:
+        return "behavior/functions/tick.json";
+      case ProjectItemType.flipbookTexturesJson:
+        return "resource/textures/flipbook_textures.json";
+      case ProjectItemType.itemTextureJson:
+        return "resource/textures/item_texture.json";
+      case ProjectItemType.terrainTextureCatalogResourceJson:
+        return "resource/textures/terrain_texture.json";
+      case ProjectItemType.globalVariablesJson:
+        return "resource/ui/_global_variables.json";
+
+      default:
+        return undefined;
+    }
+  }
+
   static inferTypeFromJsonContent(
     jsonContent: string,
     fileName: string

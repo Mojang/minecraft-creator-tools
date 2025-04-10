@@ -2,7 +2,7 @@
   "fields": [
     {
       "id": "minecraft:biome",
-      "title": "minecraft:biome",
+      "title": "Minecraft Biome",
       "description": "A single biome definition",
       "dataType": 16,
       "subForm": {
@@ -10,8 +10,26 @@
         "description": "Contains a description and components to define a Biome.",
         "fields": [
           {
+            "id": "description",
+            "title": "Description",
+            "description": "Non-component settings, including the Biome name.",
+            "dataType": 16,
+            "subForm": {
+              "title": "Biome Description",
+              "description": "Contains non-component settings for a Biome.",
+              "fields": [
+                {
+                  "id": "identifier",
+                  "title": "Identifier",
+                  "description": "The name of the Biome, used by other features like the '/locate biome' command.",
+                  "dataType": 2
+                }
+              ]
+            }
+          },
+          {
             "id": "components",
-            "title": "components",
+            "title": "Components",
             "description": "Components for this Biome.",
             "dataType": 16,
             "subForm": {
@@ -20,7 +38,7 @@
               "fields": [
                 {
                   "id": "minecraft:capped_surface",
-                  "title": "minecraft:capped_surface",
+                  "title": "Minecraft Capped Surface",
                   "description": "Generates surface on blocks with non-solid blocks above or below.",
                   "dataType": 16,
                   "subForm": {
@@ -29,7 +47,7 @@
                     "fields": [
                       {
                         "id": "beach_material",
-                        "title": "beach_material",
+                        "title": "Beach Material",
                         "description": "Material used to decorate surface near sea level.",
                         "dataType": 2,
                         "alternates": [
@@ -39,17 +57,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Beach Material",
-                              "description": "Beach Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -70,7 +87,7 @@
                       },
                       {
                         "id": "floor_materials",
-                        "title": "floor_materials",
+                        "title": "Floor Materials",
                         "description": "Materials used for the surface floor.",
                         "dataType": 2,
                         "minLength": 1,
@@ -81,17 +98,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Floor Materials",
-                              "description": "Floor Materials",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -112,7 +128,7 @@
                       },
                       {
                         "id": "ceiling_materials",
-                        "title": "ceiling_materials",
+                        "title": "Ceiling Materials",
                         "description": "Materials used for the surface ceiling.",
                         "dataType": 2,
                         "minLength": 1,
@@ -123,17 +139,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Ceiling Materials",
-                              "description": "Ceiling Materials",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -154,7 +169,7 @@
                       },
                       {
                         "id": "foundation_material",
-                        "title": "foundation_material",
+                        "title": "Foundation Material",
                         "description": "Material used to replace solid blocks that are not surface blocks.",
                         "dataType": 2,
                         "alternates": [
@@ -164,17 +179,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Foundation Material",
-                              "description": "Foundation Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -195,7 +209,7 @@
                       },
                       {
                         "id": "sea_material",
-                        "title": "sea_material",
+                        "title": "Sea Material",
                         "description": "Material used to replace air blocks below sea level.",
                         "dataType": 2,
                         "alternates": [
@@ -205,17 +219,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Sea Material",
-                              "description": "Sea Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -239,7 +252,7 @@
                 },
                 {
                   "id": "minecraft:creature_spawn_probability",
-                  "title": "minecraft:creature_spawn_probability",
+                  "title": "Minecraft Creature Spawn Probability",
                   "description": "Probability that creatures will spawn within the biome when a chunk is generated.",
                   "dataType": 16,
                   "subForm": {
@@ -248,7 +261,7 @@
                     "fields": [
                       {
                         "id": "probability",
-                        "title": "probability",
+                        "title": "Probability",
                         "description": "Probabiltity between [0.0, 0.75] of creatures spawning within the biome on chunk generation.",
                         "dataType": 3,
                         "validity": [
@@ -263,7 +276,7 @@
                 },
                 {
                   "id": "minecraft:overworld_generation_rules",
-                  "title": "minecraft:overworld_generation_rules",
+                  "title": "Minecraft Overworld Generation Rules",
                   "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the overworld.",
                   "dataType": 16,
                   "subForm": {
@@ -272,7 +285,7 @@
                     "fields": [
                       {
                         "id": "mutate_transformation",
-                        "title": "mutate_transformation",
+                        "title": "Mutate Transformation",
                         "description": "What biome to switch to when converting to a mutated biome",
                         "dataType": 17,
                         "alternates": [
@@ -284,7 +297,7 @@
                       },
                       {
                         "id": "hills_transformation",
-                        "title": "hills_transformation",
+                        "title": "Hills Transformation",
                         "description": "What biome to switch to when converting to a hilly biome",
                         "dataType": 17,
                         "alternates": [
@@ -296,13 +309,13 @@
                       },
                       {
                         "id": "generate_for_climates",
-                        "title": "generate_for_climates",
+                        "title": "Generate For Climates",
                         "description": "Controls the world generation climate categories that this biome can spawn for. A single biome can be associated with multiple categories with different weightings.",
                         "dataType": 15
                       },
                       {
                         "id": "river_transformation",
-                        "title": "river_transformation",
+                        "title": "River Transformation",
                         "description": "What biome to switch to when converting to a river biome (if not the Vanilla 'river' biome)",
                         "dataType": 17,
                         "alternates": [
@@ -314,7 +327,7 @@
                       },
                       {
                         "id": "shore_transformation",
-                        "title": "shore_transformation",
+                        "title": "Shore Transformation",
                         "description": "What biome to switch to when adjacent to an ocean biome",
                         "dataType": 17,
                         "alternates": [
@@ -329,7 +342,7 @@
                 },
                 {
                   "id": "minecraft:climate",
-                  "title": "minecraft:climate",
+                  "title": "Minecraft Climate",
                   "description": "Describes temperature, humidity, precipitation, and similar. Biomes without this component will have default values.",
                   "dataType": 16,
                   "subForm": {
@@ -338,19 +351,19 @@
                     "fields": [
                       {
                         "id": "blue_spores",
-                        "title": "blue_spores",
+                        "title": "Blue Spores",
                         "description": "Density of blue spore precipitation visuals",
                         "dataType": 3
                       },
                       {
                         "id": "downfall",
-                        "title": "downfall",
+                        "title": "Downfall",
                         "description": "Amount that precipitation affects colors and block changes",
                         "dataType": 3
                       },
                       {
                         "id": "snow_accumulation",
-                        "title": "snow_accumulation",
+                        "title": "Snow Accumulation",
                         "description": "Minimum and maximum snow level, each multiple of 0.125 is another snow layer",
                         "dataType": 32,
                         "minLength": 2,
@@ -358,25 +371,25 @@
                       },
                       {
                         "id": "white_ash",
-                        "title": "white_ash",
+                        "title": "White Ash",
                         "description": "Density of white ash precipitation visuals",
                         "dataType": 3
                       },
                       {
                         "id": "temperature",
-                        "title": "temperature",
+                        "title": "Temperature",
                         "description": "Temperature affects a variety of visual and behavioral things, including snow and ice placement, sponge drying, and sky color",
                         "dataType": 3
                       },
                       {
                         "id": "red_spores",
-                        "title": "red_spores",
+                        "title": "Red Spores",
                         "description": "Density of blue spore precipitation visuals",
                         "dataType": 3
                       },
                       {
                         "id": "ash",
-                        "title": "ash",
+                        "title": "Ash",
                         "description": "Density of ash precipitation visuals",
                         "dataType": 3
                       }
@@ -385,7 +398,7 @@
                 },
                 {
                   "id": "minecraft:frozen_ocean_surface",
-                  "title": "minecraft:frozen_ocean_surface",
+                  "title": "Minecraft Frozen Ocean Surface",
                   "description": "Similar to overworld_surface. Adds icebergs.",
                   "dataType": 16,
                   "subForm": {
@@ -394,7 +407,7 @@
                     "fields": [
                       {
                         "id": "mid_material",
-                        "title": "mid_material",
+                        "title": "Mid Material",
                         "description": "Controls the block type used in a layer below the surface of this biome",
                         "dataType": 2,
                         "alternates": [
@@ -404,17 +417,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Mid Material",
-                              "description": "Mid Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -435,13 +447,13 @@
                       },
                       {
                         "id": "sea_floor_depth",
-                        "title": "sea_floor_depth",
+                        "title": "Sea Floor Depth",
                         "description": "Controls how deep below the world water level the floor should occur",
                         "dataType": 0
                       },
                       {
                         "id": "sea_floor_material",
-                        "title": "sea_floor_material",
+                        "title": "Sea Floor Material",
                         "description": "Controls the block type used as a floor for bodies of water in this biome",
                         "dataType": 2,
                         "alternates": [
@@ -451,17 +463,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Sea Floor Material",
-                              "description": "Sea Floor Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -482,7 +493,7 @@
                       },
                       {
                         "id": "sea_material",
-                        "title": "sea_material",
+                        "title": "Sea Material",
                         "description": "Controls the block type used for the bodies of water in this biome",
                         "dataType": 2,
                         "alternates": [
@@ -492,17 +503,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Sea Material",
-                              "description": "Sea Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -523,7 +533,7 @@
                       },
                       {
                         "id": "top_material",
-                        "title": "top_material",
+                        "title": "Top Material",
                         "description": "Controls the block type used for the surface of this biome",
                         "dataType": 2,
                         "alternates": [
@@ -533,17 +543,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Top Material",
-                              "description": "Top Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -564,7 +573,7 @@
                       },
                       {
                         "id": "foundation_material",
-                        "title": "foundation_material",
+                        "title": "Foundation Material",
                         "description": "Controls the block type used deep underground in this biome",
                         "dataType": 2,
                         "alternates": [
@@ -574,17 +583,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Foundation Material",
-                              "description": "Foundation Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -608,7 +616,7 @@
                 },
                 {
                   "id": "minecraft:mesa_surface",
-                  "title": "minecraft:mesa_surface",
+                  "title": "Minecraft Mesa Surface",
                   "description": "Similar to overworld_surface. Adds colored strata and optional pillars.",
                   "dataType": 16,
                   "subForm": {
@@ -617,13 +625,13 @@
                     "fields": [
                       {
                         "id": "sea_floor_depth",
-                        "title": "sea_floor_depth",
+                        "title": "Sea Floor Depth",
                         "description": "Controls how deep below the world water level the floor should occur",
                         "dataType": 0
                       },
                       {
                         "id": "mid_material",
-                        "title": "mid_material",
+                        "title": "Mid Material",
                         "description": "Controls the block type used in a layer below the surface of this biome",
                         "dataType": 2,
                         "alternates": [
@@ -633,17 +641,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Mid Material",
-                              "description": "Mid Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -664,7 +671,7 @@
                       },
                       {
                         "id": "sea_floor_material",
-                        "title": "sea_floor_material",
+                        "title": "Sea Floor Material",
                         "description": "Controls the block type used as a floor for bodies of water in this biome",
                         "dataType": 2,
                         "alternates": [
@@ -674,17 +681,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Sea Floor Material",
-                              "description": "Sea Floor Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -705,7 +711,7 @@
                       },
                       {
                         "id": "foundation_material",
-                        "title": "foundation_material",
+                        "title": "Foundation Material",
                         "description": "Controls the block type used deep underground in this biome",
                         "dataType": 2,
                         "alternates": [
@@ -715,17 +721,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Foundation Material",
-                              "description": "Foundation Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -746,7 +751,7 @@
                       },
                       {
                         "id": "top_material",
-                        "title": "top_material",
+                        "title": "Top Material",
                         "description": "Controls the block type used for the surface of this biome",
                         "dataType": 2,
                         "alternates": [
@@ -756,17 +761,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Top Material",
-                              "description": "Top Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -787,7 +791,7 @@
                       },
                       {
                         "id": "sea_material",
-                        "title": "sea_material",
+                        "title": "Sea Material",
                         "description": "Controls the block type used for the bodies of water in this biome",
                         "dataType": 2,
                         "alternates": [
@@ -797,17 +801,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Sea Material",
-                              "description": "Sea Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -828,7 +831,7 @@
                       },
                       {
                         "id": "hard_clay_material",
-                        "title": "hard_clay_material",
+                        "title": "Hard Clay Material",
                         "description": "Hardened clay block to use",
                         "dataType": 2,
                         "alternates": [
@@ -838,17 +841,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Hard Clay Material",
-                              "description": "Hard Clay Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -869,7 +871,7 @@
                       },
                       {
                         "id": "clay_material",
-                        "title": "clay_material",
+                        "title": "Clay Material",
                         "description": "Base clay block to use",
                         "dataType": 2,
                         "alternates": [
@@ -879,17 +881,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Clay Material",
-                              "description": "Clay Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -910,13 +911,13 @@
                       },
                       {
                         "id": "bryce_pillars",
-                        "title": "bryce_pillars",
+                        "title": "Bryce Pillars",
                         "description": "Whether the mesa generates with pillars",
                         "dataType": 1
                       },
                       {
                         "id": "has_forest",
-                        "title": "has_forest",
+                        "title": "Has Forest",
                         "description": "Places coarse dirt and grass at high altitudes",
                         "dataType": 1
                       }
@@ -925,7 +926,7 @@
                 },
                 {
                   "id": "minecraft:mountain_parameters",
-                  "title": "minecraft:mountain_parameters",
+                  "title": "Minecraft Mountain Parameters",
                   "description": "Noise parameters used to drive mountain terrain generation in Overworld.",
                   "dataType": 16,
                   "subForm": {
@@ -934,7 +935,7 @@
                     "fields": [
                       {
                         "id": "steep_material_adjustment",
-                        "title": "steep_material_adjustment",
+                        "title": "Steep Material Adjustment",
                         "description": "Defines surface material for steep slopes",
                         "dataType": 16,
                         "subForm": {
@@ -943,7 +944,7 @@
                           "fields": [
                             {
                               "id": "material",
-                              "title": "material",
+                              "title": "Material",
                               "description": "Block type use as steep material",
                               "dataType": 2,
                               "alternates": [
@@ -953,17 +954,16 @@
                                   "readOnly": true,
                                   "subForm": {
                                     "title": "Material",
-                                    "description": "Material",
                                     "fields": [
                                       {
                                         "id": "name",
-                                        "title": "name",
+                                        "title": "Name",
                                         "description": "Name of the block",
                                         "dataType": 2
                                       },
                                       {
                                         "id": "states",
-                                        "title": "states",
+                                        "title": "States",
                                         "description": "Contains members named after each state, with boolean, integer, or string values.",
                                         "dataType": 31,
                                         "alternates": [
@@ -984,25 +984,25 @@
                             },
                             {
                               "id": "east_slopes",
-                              "title": "east_slopes",
+                              "title": "East Slopes",
                               "description": "Enable for east-facing slopes",
                               "dataType": 1
                             },
                             {
                               "id": "north_slopes",
-                              "title": "north_slopes",
+                              "title": "North Slopes",
                               "description": "Enable for north-facing slopes",
                               "dataType": 1
                             },
                             {
                               "id": "south_slopes",
-                              "title": "south_slopes",
+                              "title": "South Slopes",
                               "description": "Enable for south-facing slopes",
                               "dataType": 1
                             },
                             {
                               "id": "west_slopes",
-                              "title": "west_slopes",
+                              "title": "West Slopes",
                               "description": "Enable for west-facing slopes",
                               "dataType": 1
                             }
@@ -1011,7 +1011,7 @@
                       },
                       {
                         "id": "top_slide",
-                        "title": "top_slide",
+                        "title": "Top Slide",
                         "description": "Controls the density tapering that happens at the top of the world to prevent terrain from reaching too high",
                         "dataType": 16,
                         "subForm": {
@@ -1020,7 +1020,7 @@
                           "fields": [
                             {
                               "id": "enabled",
-                              "title": "enabled",
+                              "title": "Enabled",
                               "description": "If false, top slide will be disabled. If true, other parameters will be taken into account.",
                               "dataType": 1
                             }
@@ -1032,7 +1032,7 @@
                 },
                 {
                   "id": "minecraft:multinoise_generation_rules",
-                  "title": "minecraft:multinoise_generation_rules",
+                  "title": "Minecraft Multinoise Generation Rules",
                   "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the nether.",
                   "dataType": 16,
                   "subForm": {
@@ -1041,31 +1041,31 @@
                     "fields": [
                       {
                         "id": "target_weirdness",
-                        "title": "target_weirdness",
+                        "title": "Target Weirdness",
                         "description": "Weirdness with which this biome should be generated, relative to other biomes.",
                         "dataType": 3
                       },
                       {
                         "id": "target_temperature",
-                        "title": "target_temperature",
+                        "title": "Target Temperature",
                         "description": "Temperature with which this biome should be generated, relative to other biomes.",
                         "dataType": 3
                       },
                       {
                         "id": "target_humidity",
-                        "title": "target_humidity",
+                        "title": "Target Humidity",
                         "description": "Humidity with which this biome should be generated, relative to other biomes.",
                         "dataType": 3
                       },
                       {
                         "id": "target_altitude",
-                        "title": "target_altitude",
+                        "title": "Target Altitude",
                         "description": "Altitude with which this biome should be generated, relative to other biomes.",
                         "dataType": 3
                       },
                       {
                         "id": "weight",
-                        "title": "weight",
+                        "title": "Weight",
                         "description": "Weight with which this biome should be generated, relative to other biomes.",
                         "dataType": 3
                       }
@@ -1074,7 +1074,7 @@
                 },
                 {
                   "id": "minecraft:overworld_height",
-                  "title": "minecraft:overworld_height",
+                  "title": "Minecraft Overworld Height",
                   "description": "Noise parameters used to drive terrain height in the Overworld.",
                   "dataType": 16,
                   "subForm": {
@@ -1089,7 +1089,7 @@
                       },
                       {
                         "id": "noise_params",
-                        "title": "noise_params",
+                        "title": "Noise Params",
                         "description": "First value is depth - more negative means deeper underwater, while more positive means higher. Second value is scale, which affects how much noise changes as it moves from the surface.",
                         "dataType": 32,
                         "minLength": 2,
@@ -1100,7 +1100,7 @@
                 },
                 {
                   "id": "minecraft:surface_material_adjustments",
-                  "title": "minecraft:surface_material_adjustments",
+                  "title": "Minecraft Surface Material Adjustments",
                   "description": "Specify fine-detail changes to blocks used in terrain generation (based on a noise function).",
                   "dataType": 16,
                   "subForm": {
@@ -1109,7 +1109,7 @@
                     "fields": [
                       {
                         "id": "adjustments",
-                        "title": "adjustments",
+                        "title": "Adjustments",
                         "description": "All adjustments that match the column's noise values will be applied in the order listed.",
                         "dataType": 15,
                         "subForm": {
@@ -1118,7 +1118,7 @@
                           "fields": [
                             {
                               "id": "materials",
-                              "title": "materials",
+                              "title": "Materials",
                               "description": "The specific blocks used for this surface adjustment",
                               "dataType": 16,
                               "subForm": {
@@ -1127,7 +1127,7 @@
                                 "fields": [
                                   {
                                     "id": "sea_material",
-                                    "title": "sea_material",
+                                    "title": "Sea Material",
                                     "description": "Controls the block type used in the bodies of water in this biome when this adjustment is active.",
                                     "dataType": 2,
                                     "alternates": [
@@ -1137,17 +1137,16 @@
                                         "readOnly": true,
                                         "subForm": {
                                           "title": "Sea Material",
-                                          "description": "Sea Material",
                                           "fields": [
                                             {
                                               "id": "name",
-                                              "title": "name",
+                                              "title": "Name",
                                               "description": "Name of the block",
                                               "dataType": 2
                                             },
                                             {
                                               "id": "states",
-                                              "title": "states",
+                                              "title": "States",
                                               "description": "Contains members named after each state, with boolean, integer, or string values.",
                                               "dataType": 31,
                                               "alternates": [
@@ -1168,7 +1167,7 @@
                                   },
                                   {
                                     "id": "foundation_material",
-                                    "title": "foundation_material",
+                                    "title": "Foundation Material",
                                     "description": "Controls the block type used deep underground in this biome when this adjustment is active.",
                                     "dataType": 2,
                                     "alternates": [
@@ -1178,17 +1177,16 @@
                                         "readOnly": true,
                                         "subForm": {
                                           "title": "Foundation Material",
-                                          "description": "Foundation Material",
                                           "fields": [
                                             {
                                               "id": "name",
-                                              "title": "name",
+                                              "title": "Name",
                                               "description": "Name of the block",
                                               "dataType": 2
                                             },
                                             {
                                               "id": "states",
-                                              "title": "states",
+                                              "title": "States",
                                               "description": "Contains members named after each state, with boolean, integer, or string values.",
                                               "dataType": 31,
                                               "alternates": [
@@ -1209,7 +1207,7 @@
                                   },
                                   {
                                     "id": "top_material",
-                                    "title": "top_material",
+                                    "title": "Top Material",
                                     "description": "Controls the block type used for the surface of this biome when this adjustment is active.",
                                     "dataType": 2,
                                     "alternates": [
@@ -1219,17 +1217,16 @@
                                         "readOnly": true,
                                         "subForm": {
                                           "title": "Top Material",
-                                          "description": "Top Material",
                                           "fields": [
                                             {
                                               "id": "name",
-                                              "title": "name",
+                                              "title": "Name",
                                               "description": "Name of the block",
                                               "dataType": 2
                                             },
                                             {
                                               "id": "states",
-                                              "title": "states",
+                                              "title": "States",
                                               "description": "Contains members named after each state, with boolean, integer, or string values.",
                                               "dataType": 31,
                                               "alternates": [
@@ -1250,7 +1247,7 @@
                                   },
                                   {
                                     "id": "mid_material",
-                                    "title": "mid_material",
+                                    "title": "Mid Material",
                                     "description": "Controls the block type used in a layer below the surface of this biome when this adjustment is active.",
                                     "dataType": 2,
                                     "alternates": [
@@ -1260,17 +1257,16 @@
                                         "readOnly": true,
                                         "subForm": {
                                           "title": "Mid Material",
-                                          "description": "Mid Material",
                                           "fields": [
                                             {
                                               "id": "name",
-                                              "title": "name",
+                                              "title": "Name",
                                               "description": "Name of the block",
                                               "dataType": 2
                                             },
                                             {
                                               "id": "states",
-                                              "title": "states",
+                                              "title": "States",
                                               "description": "Contains members named after each state, with boolean, integer, or string values.",
                                               "dataType": 31,
                                               "alternates": [
@@ -1291,7 +1287,7 @@
                                   },
                                   {
                                     "id": "sea_floor_material",
-                                    "title": "sea_floor_material",
+                                    "title": "Sea Floor Material",
                                     "description": "Controls the block type used as a floor for bodies of water in this biome when this adjustment is active.",
                                     "dataType": 2,
                                     "alternates": [
@@ -1301,17 +1297,16 @@
                                         "readOnly": true,
                                         "subForm": {
                                           "title": "Sea Floor Material",
-                                          "description": "Sea Floor Material",
                                           "fields": [
                                             {
                                               "id": "name",
-                                              "title": "name",
+                                              "title": "Name",
                                               "description": "Name of the block",
                                               "dataType": 2
                                             },
                                             {
                                               "id": "states",
-                                              "title": "states",
+                                              "title": "States",
                                               "description": "Contains members named after each state, with boolean, integer, or string values.",
                                               "dataType": 31,
                                               "alternates": [
@@ -1335,7 +1330,7 @@
                             },
                             {
                               "id": "noise_range",
-                              "title": "noise_range",
+                              "title": "Noise Range",
                               "description": "Defines a range of noise values [min, max] for which this adjustment should be applied.",
                               "dataType": 32,
                               "minLength": 2,
@@ -1343,7 +1338,7 @@
                             },
                             {
                               "id": "height_range",
-                              "title": "height_range",
+                              "title": "Height Range",
                               "description": "Defines a range of noise values [min, max] for which this adjustment should be applied.",
                               "dataType": 3,
                               "minLength": 2,
@@ -1361,7 +1356,7 @@
                             },
                             {
                               "id": "noise_frequency_scale",
-                              "title": "noise_frequency_scale",
+                              "title": "Noise Frequency Scale",
                               "description": "The scale to multiply by the position when accessing the noise value for the material adjustments.",
                               "dataType": 3
                             }
@@ -1373,7 +1368,7 @@
                 },
                 {
                   "id": "minecraft:surface_parameters",
-                  "title": "minecraft:surface_parameters",
+                  "title": "Minecraft Surface Parameters",
                   "description": "Controls the blocks used for the default Minecraft Overworld terrain generation.",
                   "dataType": 16,
                   "subForm": {
@@ -1382,7 +1377,7 @@
                     "fields": [
                       {
                         "id": "mid_material",
-                        "title": "mid_material",
+                        "title": "Mid Material",
                         "description": "Controls the block type used in a layer below the surface of this biome.",
                         "dataType": 2,
                         "alternates": [
@@ -1392,17 +1387,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Mid Material",
-                              "description": "Mid Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -1423,13 +1417,13 @@
                       },
                       {
                         "id": "sea_floor_depth",
-                        "title": "sea_floor_depth",
+                        "title": "Sea Floor Depth",
                         "description": "Controls how deep below the world water level the floor should occur.",
                         "dataType": 0
                       },
                       {
                         "id": "sea_floor_material",
-                        "title": "sea_floor_material",
+                        "title": "Sea Floor Material",
                         "description": "Controls the block type used as a floor for bodies of water in this biome.",
                         "dataType": 2,
                         "alternates": [
@@ -1439,17 +1433,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Sea Floor Material",
-                              "description": "Sea Floor Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -1470,7 +1463,7 @@
                       },
                       {
                         "id": "sea_material",
-                        "title": "sea_material",
+                        "title": "Sea Material",
                         "description": "Controls the block type used for the bodies of water in this biome.",
                         "dataType": 2,
                         "alternates": [
@@ -1480,17 +1473,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Sea Material",
-                              "description": "Sea Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -1511,7 +1503,7 @@
                       },
                       {
                         "id": "top_material",
-                        "title": "top_material",
+                        "title": "Top Material",
                         "description": "Controls the block type used for the surface of this biome.",
                         "dataType": 2,
                         "alternates": [
@@ -1521,17 +1513,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Top Material",
-                              "description": "Top Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -1552,7 +1543,7 @@
                       },
                       {
                         "id": "foundation_material",
-                        "title": "foundation_material",
+                        "title": "Foundation Material",
                         "description": "Controls the block type used deep underground in this biome.",
                         "dataType": 2,
                         "alternates": [
@@ -1562,17 +1553,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Foundation Material",
-                              "description": "Foundation Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -1595,8 +1585,69 @@
                   }
                 },
                 {
+                  "id": "minecraft:replace_biomes",
+                  "title": "Minecraft Replace Biomes",
+                  "description": "Replaces a specified portion of one or more Minecraft biomes.",
+                  "dataType": 16,
+                  "subForm": {
+                    "title": "Replace Biomes",
+                    "description": "Replaces a specified portion of one or more Minecraft biomes.",
+                    "fields": [
+                      {
+                        "id": "replacements",
+                        "title": "Replacements",
+                        "description": "List of biome replacement configurations. Retroactively adding a new replacement to the front of this list will cause the world generation to change. Please add any new replacements to the end of the list.",
+                        "dataType": 15,
+                        "subForm": {
+                          "title": "Biome Replacement",
+                          "description": "Represents the replacement information used to determine the placement of the overriding biome.",
+                          "fields": [
+                            {
+                              "id": "dimension",
+                              "title": "Dimension",
+                              "description": "Dimension in which this replacement can happen. Must be 'minecraft:overworld'.",
+                              "dataType": 2
+                            },
+                            {
+                              "id": "amount",
+                              "title": "Amount",
+                              "description": "Noise value used to determine whether or not the replacement is attempted, similar to a percentage. Must be in the range (0.0, 1.0].",
+                              "dataType": 3,
+                              "validity": [
+                                {
+                                  "comparison": "<=",
+                                  "value": 1
+                                }
+                              ]
+                            },
+                            {
+                              "id": "targets",
+                              "title": "Targets",
+                              "description": "Biomes that are going to be replaced by the overriding biome.",
+                              "dataType": 17,
+                              "minLength": 1
+                            },
+                            {
+                              "id": "noise_frequency_scale",
+                              "title": "Noise Frequency Scale",
+                              "description": "Scaling value used to alter the frequency of replacement attempts. A lower frequency will mean a bigger contiguous biome area that occurs less often. A higher frequency will mean smaller contiguous biome areas that occur more often. Must be in the range (0.0, 100.0].",
+                              "dataType": 3,
+                              "validity": [
+                                {
+                                  "comparison": "<=",
+                                  "value": 100
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
                   "id": "minecraft:swamp_surface",
-                  "title": "minecraft:swamp_surface",
+                  "title": "Minecraft Swamp Surface",
                   "description": "Similar to overworld_surface. Adds swamp surface details.",
                   "dataType": 16,
                   "subForm": {
@@ -1605,7 +1656,7 @@
                     "fields": [
                       {
                         "id": "mid_material",
-                        "title": "mid_material",
+                        "title": "Mid Material",
                         "description": "Controls the block type used in a layer below the surface of this biome.",
                         "dataType": 2,
                         "alternates": [
@@ -1615,17 +1666,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Mid Material",
-                              "description": "Mid Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -1646,13 +1696,13 @@
                       },
                       {
                         "id": "sea_floor_depth",
-                        "title": "sea_floor_depth",
+                        "title": "Sea Floor Depth",
                         "description": "Controls how deep below the world water level the floor should occur.",
                         "dataType": 0
                       },
                       {
                         "id": "sea_floor_material",
-                        "title": "sea_floor_material",
+                        "title": "Sea Floor Material",
                         "description": "Controls the block type used as a floor for bodies of water in this biome.",
                         "dataType": 2,
                         "alternates": [
@@ -1662,17 +1712,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Sea Floor Material",
-                              "description": "Sea Floor Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -1693,7 +1742,7 @@
                       },
                       {
                         "id": "sea_material",
-                        "title": "sea_material",
+                        "title": "Sea Material",
                         "description": "Controls the block type used for the bodies of water in this biome.",
                         "dataType": 2,
                         "alternates": [
@@ -1703,17 +1752,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Sea Material",
-                              "description": "Sea Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -1734,7 +1782,7 @@
                       },
                       {
                         "id": "top_material",
-                        "title": "top_material",
+                        "title": "Top Material",
                         "description": "Controls the block type used for the surface of this biome.",
                         "dataType": 2,
                         "alternates": [
@@ -1744,17 +1792,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Top Material",
-                              "description": "Top Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -1775,7 +1822,7 @@
                       },
                       {
                         "id": "foundation_material",
-                        "title": "foundation_material",
+                        "title": "Foundation Material",
                         "description": "Controls the block type used deep underground in this biome.",
                         "dataType": 2,
                         "alternates": [
@@ -1785,17 +1832,16 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Foundation Material",
-                              "description": "Foundation Material",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "Name of the block",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "states",
-                                  "title": "states",
+                                  "title": "States",
                                   "description": "Contains members named after each state, with boolean, integer, or string values.",
                                   "dataType": 31,
                                   "alternates": [
@@ -1819,13 +1865,13 @@
                 },
                 {
                   "id": "minecraft:the_end_surface",
-                  "title": "minecraft:the_end_surface",
+                  "title": "Minecraft The End Surface",
                   "description": "Use default Minecraft End terrain generation.",
                   "dataType": 16
                 },
                 {
                   "id": "minecraft:tags",
-                  "title": "minecraft:tags",
+                  "title": "Minecraft Tags",
                   "description": "Attach arbitrary string tags to this biome.",
                   "dataType": 16,
                   "subForm": {
@@ -1834,30 +1880,12 @@
                     "fields": [
                       {
                         "id": "tags",
-                        "title": "tags",
+                        "title": "Tags",
                         "description": "Array of string tags used by other systems such as entity spawning",
                         "dataType": 17
                       }
                     ]
                   }
-                }
-              ]
-            }
-          },
-          {
-            "id": "description",
-            "title": "description",
-            "description": "Non-component settings, including the Biome name.",
-            "dataType": 16,
-            "subForm": {
-              "title": "Biome Description",
-              "description": "Contains non-component settings for a Biome.",
-              "fields": [
-                {
-                  "id": "identifier",
-                  "title": "identifier",
-                  "description": "The name of the Biome, used by other features like the '/locate biome' command.",
-                  "dataType": 2
                 }
               ]
             }
@@ -1867,7 +1895,7 @@
     },
     {
       "id": "format_version",
-      "title": "format_version",
+      "title": "Format Version",
       "description": "Version of the JSON schema used by this file",
       "dataType": 2
     }

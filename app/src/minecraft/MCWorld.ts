@@ -462,10 +462,10 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   static async ensureOnItem(projectItem: ProjectItem) {
     let mcworld: MCWorld | undefined = undefined;
 
-    if (projectItem.folder) {
-      mcworld = await MCWorld.ensureMCWorldOnFolder(projectItem.folder, projectItem.project);
-    } else if (projectItem.file) {
-      mcworld = await MCWorld.ensureOnFile(projectItem.file, projectItem.project);
+    if (projectItem.defaultFolder) {
+      mcworld = await MCWorld.ensureMCWorldOnFolder(projectItem.defaultFolder, projectItem.project);
+    } else if (projectItem.defaultFile) {
+      mcworld = await MCWorld.ensureOnFile(projectItem.defaultFile, projectItem.project);
     }
 
     if (!mcworld) {

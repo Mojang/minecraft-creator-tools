@@ -28,6 +28,8 @@ import ProjectItemRelationship from "./IProjectItemRelationship";
 import IProjectItemRelationship from "./IProjectItemRelationship";
 import IProjectItemUnfulfilledRelationship from "./IProjectItemUnfulfilledRelationship";
 import ProjectItemRelations from "./ProjectItemRelations";
+import ProjectItemVariant from "./ProjectItemVariant";
+import { ProjectItemVariantType } from "./IProjectItemVariant";
 
 export default class ProjectItem {
   private _data: IProjectItemData;
@@ -36,10 +38,10 @@ export default class ProjectItem {
   private _onFileRetrieved = new EventDispatcher<ProjectItem, IFile>();
   private _onFolderRetrieved = new EventDispatcher<ProjectItem, IFolder>();
   private _onLoaded = new EventDispatcher<ProjectItem, ProjectItem>();
-  private _file: IFile | null;
+  private _defaultFile: IFile | null;
+  private _defaultFolder: IFolder | null;
   private _pendingLoadRequests: ((value: unknown) => void)[] = [];
   private _isLoading: boolean = false;
-  private _folder: IFolder | null;
   private _isFileContentProcessed: boolean = false;
   private _imageUrlBase64Cache: string | undefined;
   private _pack: Pack | undefined;
@@ -48,17 +50,21 @@ export default class ProjectItem {
   public childItems: ProjectItemRelationship[] | undefined;
   public unfulfilledRelationships: IProjectItemUnfulfilledRelationship[] | undefined;
 
+  public variants: { [label: string]: ProjectItemVariant };
+
   constructor(parent: Project, incomingData?: IProjectItemData) {
     this._project = parent;
-    this._file = null;
-    this._folder = null;
+    this._defaultFile = null;
+    this._defaultFolder = null;
     this._isFileContentProcessed = false;
+    this.variants = {};
     this._handleMCWorldLoaded = this._handleMCWorldLoaded.bind(this);
 
     if (incomingData) {
       this._data = incomingData;
     } else {
       this._data = {
+        variants: {},
         itemType: ProjectItemType.unknown,
         projectPath: null,
         storageType: ProjectItemStorageType.singleFile,
@@ -166,6 +172,77 @@ export default class ProjectItem {
     return sig;
   }
 
+  get defaultVariant() {
+    return this.ensureVariant("");
+  }
+
+  getVariantList() {
+    const vararr = [];
+
+    for (const key in this._data.variants) {
+      const variant = this.ensureVariant(key);
+      vararr.push(variant);
+    }
+
+    return vararr;
+  }
+
+  hasNonDefaultVariant() {
+    const vararr = this.getVariantList();
+
+    if (vararr.length === 0) {
+      return false;
+    }
+
+    if (vararr.length > 1) {
+      return true;
+    }
+
+    if (vararr[0].label !== "") {
+      return true;
+    }
+
+    return false;
+  }
+
+  ensureVariant(label: string) {
+    if (!this.variants[label]) {
+      const pv = this.project.ensureVariant(label);
+
+      if (!this._data.variants) {
+        this._data.variants = {};
+      }
+
+      if (this._data.variants[label] === undefined) {
+        this._data.variants[label] = { label: label, variantType: ProjectItemVariantType.general };
+      }
+
+      this.variants[label] = new ProjectItemVariant(this, this._data.variants[label], pv);
+    }
+
+    return this.variants[label];
+  }
+
+  getFile(variantName?: string) {
+    if (variantName === undefined || variantName === "") {
+      return this._defaultFile;
+    }
+
+    const variant = this.ensureVariant(variantName);
+
+    return variant.file;
+  }
+
+  getFolder(variantName?: string) {
+    if (variantName === undefined || variantName === "") {
+      return this._defaultFolder;
+    }
+
+    const variant = this.ensureVariant(variantName);
+
+    return variant.folder;
+  }
+
   getPack() {
     if (this._pack) {
       return this._pack;
@@ -173,10 +250,10 @@ export default class ProjectItem {
 
     let thisPath = undefined;
 
-    if (this._file) {
-      thisPath = this._file.storageRelativePath;
-    } else if (this._folder) {
-      thisPath = this._folder.storageRelativePath;
+    if (this._defaultFile) {
+      thisPath = this._defaultFile.storageRelativePath;
+    } else if (this._defaultFolder) {
+      thisPath = this._defaultFolder.storageRelativePath;
     }
 
     if (thisPath === undefined) {
@@ -242,10 +319,10 @@ export default class ProjectItem {
       return undefined;
     }
 
-    if (this._file) {
-      return this._file.getFolderRelativePath(pack.folder);
-    } else if (this._folder) {
-      return this._folder.getFolderRelativePath(pack.folder);
+    if (this._defaultFile) {
+      return this._defaultFile.getFolderRelativePath(pack.folder);
+    } else if (this._defaultFolder) {
+      return this._defaultFolder.getFolderRelativePath(pack.folder);
     }
 
     return undefined;
@@ -329,99 +406,7 @@ export default class ProjectItem {
   }
 
   getSchemaPath() {
-    switch (this._data.itemType) {
-      case ProjectItemType.behaviorPackManifestJson:
-        return "general/manifest.json";
-      case ProjectItemType.behaviorPackListJson:
-        return "general/world_x_packs.json";
-      case ProjectItemType.resourcePackListJson:
-        return "general/world_x_packs.json";
-      case ProjectItemType.animationControllerBehaviorJson:
-        return "behavior/animation_controllers/animation_controller.json";
-      case ProjectItemType.animationBehaviorJson:
-        return "behavior/animations/animations.json";
-      case ProjectItemType.blockTypeBehavior:
-        return "behavior/blocks/blocks.json";
-      case ProjectItemType.itemTypeBehavior:
-        return "behavior/items/items.json";
-      case ProjectItemType.lootTableBehavior:
-        return "behavior/loot_tables/loot_tables.json";
-      case ProjectItemType.biomeBehaviorJson:
-        return "behavior/blocks/blocks.json";
-      case ProjectItemType.dialogueBehaviorJson:
-        return "behavior/dialogue/dialogue.json";
-      case ProjectItemType.entityTypeBehavior:
-        return "behavior/entities/entities.json";
-      case ProjectItemType.atmosphericsJson:
-        return "behavior/lighting/atmospherics.json";
-      case ProjectItemType.blocksCatalogResourceJson:
-        return "resource/blocks.json";
-      case ProjectItemType.soundCatalog:
-        return "resource/sounds.json";
-      case ProjectItemType.animationResourceJson:
-        return "resource/animations/actor_animation.json";
-      case ProjectItemType.animationControllerResourceJson:
-        return "resource/animation_controllers/animation_controller.json";
-      case ProjectItemType.entityTypeResource:
-        return "resource/entity/entity.json";
-      case ProjectItemType.fogResourceJson:
-        return "resource/fog/fog.json";
-      case ProjectItemType.modelGeometryJson:
-        return "resource/models/entity/model_entity.json";
-      case ProjectItemType.biomeResourceJson:
-        return "resource/biomes_client.json";
-      case ProjectItemType.particleJson:
-        return "resource/particles/particles.json";
-      case ProjectItemType.renderControllerJson:
-        return "resource/render_controllers/render_controllers.json";
-      case ProjectItemType.blockCulling:
-        return "resource/block_culling/block_culling.json";
-      case ProjectItemType.craftingItemCatalog:
-        return "behavior/item_catalog/crafting_item_catalog.json";
-      //     case ProjectItemType.uiTextureJson:
-      //        return "resource/textures/ui_texture_definition.json";
-      case ProjectItemType.languagesCatalogResourceJson:
-        return "language/languages.json";
-      case ProjectItemType.featureBehavior:
-        return "behavior/features/features.json";
-      case ProjectItemType.featureRuleBehaviorJson:
-        return "behavior/feature_rules/feature_rules.json";
-      case ProjectItemType.functionEventJson:
-        return "behavior/functions/tick.json";
-      case ProjectItemType.recipeBehavior:
-        return "behavior/recipes/recipes.json";
-      case ProjectItemType.spawnRuleBehavior:
-        return "behavior/spawn_rules/spawn_rules.json";
-      case ProjectItemType.tradingBehaviorJson:
-        return "behavior/trading/trading.json";
-      case ProjectItemType.attachableResourceJson:
-        return "resource/attachables/attachables.json";
-      case ProjectItemType.itemTypeResourceJson:
-        return "resource/items/items.json";
-      case ProjectItemType.materialsResourceJson:
-        return "resource/materials/materials.json";
-      case ProjectItemType.musicDefinitionJson:
-        return "resource/sounds/music_definitions.json";
-      case ProjectItemType.soundDefinitionCatalog:
-        return "resource/sounds/sound_definitions.json";
-      case ProjectItemType.blockTypeResourceJsonDoNotUse:
-        return "resource/blocks.json";
-      case ProjectItemType.uiJson:
-        return "resource/ui/ui.json";
-      case ProjectItemType.tickJson:
-        return "behavior/functions/tick.json";
-      case ProjectItemType.flipbookTexturesJson:
-        return "resource/textures/flipbook_textures.json";
-      case ProjectItemType.itemTextureJson:
-        return "resource/textures/item_texture.json";
-      case ProjectItemType.terrainTextureCatalogResourceJson:
-        return "resource/textures/terrain_texture.json";
-      case ProjectItemType.globalVariablesJson:
-        return "resource/ui/_global_variables.json";
-
-      default:
-        return undefined;
-    }
+    return ProjectItemUtilities.getSchemaPathForType(this.itemType);
   }
 
   get errorStatus() {
@@ -510,12 +495,30 @@ export default class ProjectItem {
     return this._data.itemType;
   }
 
-  get file() {
-    return this._file;
+  get defaultFile() {
+    return this._defaultFile;
   }
 
-  get folder() {
-    return this._folder;
+  get availableFile() {
+    if (this._defaultFile) {
+      return this._defaultFile;
+    }
+
+    for (const variantName in this.variants) {
+      if (variantName) {
+        const variant = this.variants[variantName];
+
+        if (variant.file) {
+          return variant.file;
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  get defaultFolder() {
+    return this._defaultFolder;
   }
 
   set itemType(newItemType) {
@@ -528,40 +531,40 @@ export default class ProjectItem {
 
   get isLoaded() {
     if (this.storageType === ProjectItemStorageType.folder) {
-      if (!this.folder) {
+      if (!this.defaultFolder) {
         return false;
       }
 
-      if (!this.folder.isLoaded) {
+      if (!this.defaultFolder.isLoaded) {
         return false;
       }
 
       if (this.itemType === ProjectItemType.worldFolder) {
-        if (!this.folder.manager || !(this.folder.manager instanceof MCWorld)) {
+        if (!this.defaultFolder.manager || !(this.defaultFolder.manager instanceof MCWorld)) {
           return false;
         }
 
-        const world = this.folder.manager as MCWorld;
+        const world = this.defaultFolder.manager as MCWorld;
 
         return world.isLoaded;
       }
 
       return true;
     } else if (this.storageType === ProjectItemStorageType.singleFile) {
-      if (!this.file) {
+      if (!this.defaultFile) {
         return false;
       }
 
-      if (!this.file.isContentLoaded) {
+      if (!this.defaultFile.isContentLoaded) {
         return false;
       }
 
       if (this.isWorld) {
-        if (!this.file.manager || !(this.file.manager instanceof MCWorld)) {
+        if (!this.defaultFile.manager || !(this.defaultFile.manager instanceof MCWorld)) {
           return false;
         }
 
-        const world = this.file.manager as MCWorld;
+        const world = this.defaultFile.manager as MCWorld;
 
         return world.isLoaded;
       }
@@ -579,34 +582,34 @@ export default class ProjectItem {
   }
 
   setFile(file: IFile) {
-    if (file !== this._file) {
-      this._file = file;
+    if (file !== this._defaultFile) {
+      this._defaultFile = file;
       this._isFileContentProcessed = false;
     }
   }
 
   get needsSave() {
     if (
-      this._file === null &&
+      this._defaultFile === null &&
       this.creationType === ProjectItemCreationType.generated &&
       this.storageType === ProjectItemStorageType.singleFile
     ) {
       return true;
     }
 
-    if (this._file === null) {
+    if (this._defaultFile === null) {
       return false;
     }
 
-    let val = this._file.needsSave;
+    let val = this._defaultFile.needsSave;
 
     if (!val) {
       if (
         this.isFileContainerStorageItem &&
-        this._file.fileContainerStorage &&
-        this._file.fileContainerStorage instanceof ZipStorage
+        this._defaultFile.fileContainerStorage &&
+        this._defaultFile.fileContainerStorage instanceof ZipStorage
       ) {
-        val = (this._file.fileContainerStorage as ZipStorage).isContentUpdated;
+        val = (this._defaultFile.fileContainerStorage as ZipStorage).isContentUpdated;
       }
 
       if (!val) {
@@ -623,10 +626,10 @@ export default class ProjectItem {
 
   updateProjectPath() {
     if (this._project && this._project.projectFolder) {
-      if (this._file) {
-        this.projectPath = this._file.getFolderRelativePath(this._project.projectFolder);
-      } else if (this._folder) {
-        this.projectPath = this._folder.getFolderRelativePath(this._project.projectFolder);
+      if (this._defaultFile) {
+        this.projectPath = this._defaultFile.getFolderRelativePath(this._project.projectFolder);
+      } else if (this._defaultFolder) {
+        this.projectPath = this._defaultFolder.getFolderRelativePath(this._project.projectFolder);
       }
     }
   }
@@ -640,12 +643,14 @@ export default class ProjectItem {
       return;
     }
 
-    if (this._file !== null) {
-      await this._file.moveTo(this._file.parentFolder.storageRelativePath + newFileBaseName + "." + this._file.type);
+    if (this._defaultFile !== null) {
+      await this._defaultFile.moveTo(
+        this._defaultFile.parentFolder.storageRelativePath + newFileBaseName + "." + this._defaultFile.type
+      );
 
-      this._data.name = newFileBaseName + "." + this._file.type;
+      this._data.name = newFileBaseName + "." + this._defaultFile.type;
 
-      this.projectPath = this._file.getFolderRelativePath(this._project.projectFolder);
+      this.projectPath = this._defaultFile.getFolderRelativePath(this._project.projectFolder);
       this.storageType = ProjectItemStorageType.singleFile;
     } else {
       this._data.name = newFileBaseName;
@@ -661,8 +666,8 @@ export default class ProjectItem {
 
     await ProjectItemRelations.deleteLinksFromParents(this);
 
-    if (this._file !== null) {
-      await this._file.deleteThisFile();
+    if (this._defaultFile !== null) {
+      await this._defaultFile.deleteThisFile();
     }
 
     this._project.removeItem(this);
@@ -670,9 +675,9 @@ export default class ProjectItem {
 
   get imageUrl() {
     if (this.itemType === ProjectItemType.worldFolder) {
-      if (this.folder) {
-        if (this.folder.manager instanceof MCWorld) {
-          const world = this.folder.manager as MCWorld;
+      if (this.defaultFolder) {
+        if (this.defaultFolder.manager instanceof MCWorld) {
+          const world = this.defaultFolder.manager as MCWorld;
 
           if (world.isLoaded) {
             return "data:image/jpg;base64, " + world.imageBase64;
@@ -680,9 +685,9 @@ export default class ProjectItem {
         }
       }
     } else if (this.isWorld) {
-      if (this.file) {
-        if (this.file.manager instanceof MCWorld) {
-          const world = this.file.manager as MCWorld;
+      if (this.defaultFile) {
+        if (this.defaultFile.manager instanceof MCWorld) {
+          const world = this.defaultFile.manager as MCWorld;
 
           if (world.isLoaded) {
             return "data:image/jpg;base64, " + world.imageBase64;
@@ -694,8 +699,8 @@ export default class ProjectItem {
         return this._imageUrlBase64Cache;
       }
 
-      if (this._file && this._file.content && this._file.content instanceof Uint8Array) {
-        this._imageUrlBase64Cache = "data:image/jpg;base64, " + Utilities.uint8ArrayToBase64(this._file.content);
+      if (this._defaultFile && this._defaultFile.content && this._defaultFile.content instanceof Uint8Array) {
+        this._imageUrlBase64Cache = "data:image/jpg;base64, " + Utilities.uint8ArrayToBase64(this._defaultFile.content);
 
         return this._imageUrlBase64Cache;
       }
@@ -706,9 +711,9 @@ export default class ProjectItem {
 
   get name() {
     if (this.itemType === ProjectItemType.worldFolder) {
-      if (this.folder) {
-        if (this.folder.manager instanceof MCWorld) {
-          const world = this.folder.manager as MCWorld;
+      if (this.defaultFolder) {
+        if (this.defaultFolder.manager instanceof MCWorld) {
+          const world = this.defaultFolder.manager as MCWorld;
 
           if (world.isLoaded) {
             return world.name;
@@ -716,9 +721,9 @@ export default class ProjectItem {
         }
       }
     } else if (this.itemType === ProjectItemType.MCWorld || this.itemType === ProjectItemType.MCTemplate) {
-      if (this.file) {
-        if (this.file.manager instanceof MCWorld) {
-          const world = this.file.manager as MCWorld;
+      if (this.defaultFile) {
+        if (this.defaultFile.manager instanceof MCWorld) {
+          const world = this.defaultFile.manager as MCWorld;
 
           if (world.isLoaded) {
             return world.name;
@@ -752,7 +757,7 @@ export default class ProjectItem {
   async ensureFolderStorage() {
     if (this.storageType === ProjectItemStorageType.folder) {
       if (
-        this._folder === null &&
+        this._defaultFolder === null &&
         this.projectPath !== null &&
         this.projectPath !== undefined &&
         this.projectPath.startsWith("/") &&
@@ -789,21 +794,27 @@ export default class ProjectItem {
           }
 
           if (folderToLoadFrom) {
-            this._folder = await folderToLoadFrom.ensureFolderFromRelativePath(prefixPaths[prefixPaths.length - 1]);
+            this._defaultFolder = await folderToLoadFrom.ensureFolderFromRelativePath(
+              prefixPaths[prefixPaths.length - 1]
+            );
           } else {
             // Log.debugAlert("Unable to parse a containerized file path of '" + this.storagePath + "'");
             return null;
           }
         } else {
-          this._folder = await this._project.projectFolder.ensureFolderFromRelativePath(this.projectPath);
+          this._defaultFolder = await this._project.projectFolder.ensureFolderFromRelativePath(this.projectPath);
         }
 
-        await this._folder.load();
+        await this._defaultFolder.load();
 
-        this._onFolderRetrieved.dispatch(this, this._folder);
+        this._onFolderRetrieved.dispatch(this, this._defaultFolder);
 
         if (this.itemType === ProjectItemType.worldFolder) {
-          const mcworld = await MCWorld.ensureMCWorldOnFolder(this._folder, this._project, this._handleMCWorldLoaded);
+          const mcworld = await MCWorld.ensureMCWorldOnFolder(
+            this._defaultFolder,
+            this._project,
+            this._handleMCWorldLoaded
+          );
 
           if (mcworld) {
             this.errorMessage = mcworld.storageErrorMessage;
@@ -819,7 +830,7 @@ export default class ProjectItem {
         }
       }
 
-      return this._folder;
+      return this._defaultFolder;
     }
 
     return undefined;
@@ -838,12 +849,12 @@ export default class ProjectItem {
   async getManager() {
     await this.load();
 
-    if (this.storageType === ProjectItemStorageType.singleFile && this._file) {
-      return this._file.manager;
+    if (this.storageType === ProjectItemStorageType.singleFile && this._defaultFile) {
+      return this._defaultFile.manager;
     }
 
-    if (this.storageType === ProjectItemStorageType.folder && this._folder) {
-      return this._folder.manager;
+    if (this.storageType === ProjectItemStorageType.folder && this._defaultFolder) {
+      return this._defaultFolder.manager;
     }
 
     return undefined;
@@ -860,7 +871,7 @@ export default class ProjectItem {
   async ensureFileStorage() {
     if (
       this.storageType === ProjectItemStorageType.singleFile &&
-      this._file === null &&
+      this._defaultFile === null &&
       this.projectPath !== null &&
       this.projectPath !== undefined &&
       this.projectPath.startsWith("/") &&
@@ -897,33 +908,39 @@ export default class ProjectItem {
         }
 
         if (folderToLoadFrom) {
-          this._file = await folderToLoadFrom.ensureFileFromRelativePath(prefixPaths[prefixPaths.length - 1]);
+          this._defaultFile = await folderToLoadFrom.ensureFileFromRelativePath(prefixPaths[prefixPaths.length - 1]);
           this._isFileContentProcessed = false;
         } else {
           Log.debugAlert("Unable to parse a containerized file path of '" + this.projectPath + "'");
           return null;
         }
       } else {
-        this._file = await this._project.projectFolder.ensureFileFromRelativePath(this.projectPath);
+        this._defaultFile = await this._project.projectFolder.ensureFileFromRelativePath(this.projectPath);
         this._isFileContentProcessed = false;
       }
     }
 
-    if (!this._isFileContentProcessed && this._file) {
+    const variants = this.getVariantList();
+
+    for (const variant of variants) {
+      await variant.ensureFileStorage();
+    }
+
+    if (!this._isFileContentProcessed && this._defaultFile) {
       if (this._data.creationType === ProjectItemCreationType.generated) {
         await ProjectAutogeneration.updateItemAutogeneration(this, true);
       } else {
-        await this._file.loadContent();
+        await this._defaultFile.loadContent();
       }
 
       await ProjectAutogeneration.updateItemAutogeneratedSideFiles(this);
 
       this._isFileContentProcessed = true;
 
-      this._onFileRetrieved.dispatch(this, this._file);
+      this._onFileRetrieved.dispatch(this, this._defaultFile);
 
       if (this.itemType === ProjectItemType.MCWorld || this.itemType === ProjectItemType.MCTemplate) {
-        const mcworld = await MCWorld.ensureOnFile(this._file, this._project, this._handleMCWorldLoaded);
+        const mcworld = await MCWorld.ensureOnFile(this._defaultFile, this._project, this._handleMCWorldLoaded);
 
         if (mcworld) {
           this.errorMessage = mcworld.storageErrorMessage;
@@ -935,14 +952,15 @@ export default class ProjectItem {
           }
         }
       } else if (this.itemType === ProjectItemType.entityTypeBehavior) {
-        await EntityTypeDefinition.ensureOnFile(this._file);
+        await EntityTypeDefinition.ensureOnFile(this._defaultFile);
 
         this._fireLoadedEvent();
       } else {
         this._fireLoadedEvent();
       }
     }
-    return this._file;
+
+    return this._defaultFile;
   }
 
   async getJsonObject(): Promise<object | undefined> {
@@ -967,17 +985,17 @@ export default class ProjectItem {
   async getStringContent(): Promise<string | undefined> {
     await this.load();
 
-    if (!this._file) {
+    if (!this._defaultFile) {
       return undefined;
     }
 
-    await this._file.loadContent();
+    await this._defaultFile.loadContent();
 
-    if (this._file.content instanceof Uint8Array || this._file.content === null) {
+    if (this._defaultFile.content instanceof Uint8Array || this._defaultFile.content === null) {
       return undefined;
     }
 
-    return this._file.content;
+    return this._defaultFile.content;
   }
 
   async load() {
@@ -1022,29 +1040,29 @@ export default class ProjectItem {
     if (
       !this.isInFileContainer &&
       this.isFileContainerStorageItem &&
-      this.file &&
-      this.file.fileContainerStorage &&
-      this.file.fileContainerStorage instanceof ZipStorage
+      this.defaultFile &&
+      this.defaultFile.fileContainerStorage &&
+      this.defaultFile.fileContainerStorage instanceof ZipStorage
     ) {
-      const zs = this.file.fileContainerStorage as ZipStorage;
+      const zs = this.defaultFile.fileContainerStorage as ZipStorage;
 
       if (zs.isContentUpdated && (zs.errorStatus === undefined || zs.errorStatus === StorageErrorStatus.none)) {
         const op = await this._project.carto.notifyOperationStarted(
-          "Zipping file '" + this.file.storageRelativePath + "'..."
+          "Zipping file '" + this.defaultFile.storageRelativePath + "'..."
         );
         const bytes = await zs.generateUint8ArrayAsync();
         await this._project.carto.notifyOperationEnded(
           op,
-          "Done zipping file '" + this.file.storageRelativePath + "'."
+          "Done zipping file '" + this.defaultFile.storageRelativePath + "'."
         );
 
-        this.file.setContent(bytes);
+        this.defaultFile.setContent(bytes);
       }
     }
   }
 
   getJavaScriptLibTwin() {
-    if (!this._file) {
+    if (!this._defaultFile) {
       return undefined;
     }
 
@@ -1055,7 +1073,9 @@ export default class ProjectItem {
         return undefined;
       }
 
-      const jsTwinName = StorageUtilities.canonicalizeName(StorageUtilities.getBaseFromName(this._file.name) + ".js");
+      const jsTwinName = StorageUtilities.canonicalizeName(
+        StorageUtilities.getBaseFromName(this._defaultFile.name) + ".js"
+      );
 
       return libScriptsFolder.ensureFile(jsTwinName);
     }
@@ -1064,16 +1084,16 @@ export default class ProjectItem {
   }
 
   getFunctionTwin() {
-    if (!this._file) {
+    if (!this._defaultFile) {
       return undefined;
     }
 
     if (this.itemType === ProjectItemType.actionSet) {
       const functionTwinName = StorageUtilities.canonicalizeName(
-        StorageUtilities.getBaseFromName(this._file.name) + ".mcfunction"
+        StorageUtilities.getBaseFromName(this._defaultFile.name) + ".mcfunction"
       );
 
-      let functionFolder = this._file.parentFolder;
+      let functionFolder = this._defaultFile.parentFolder;
 
       if (functionFolder.name === "scripts" && functionFolder.parentFolder) {
         functionFolder = functionFolder.parentFolder.ensureFolder("functions");
@@ -1086,8 +1106,8 @@ export default class ProjectItem {
   }
 
   async saveContent() {
-    if (this._file) {
-      await this._file.saveContent();
+    if (this._defaultFile) {
+      await this._defaultFile.saveContent();
 
       // these next two are associated with action set
       const jsFile = this.getJavaScriptLibTwin();

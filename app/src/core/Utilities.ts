@@ -500,6 +500,8 @@ export default class Utilities {
       }
     }
 
+    name = name.trim();
+
     return name;
   }
 

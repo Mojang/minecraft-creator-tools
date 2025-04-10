@@ -54,9 +54,13 @@
     ],
     "dataType": 1
   },
-  "description": "Describes the destructible by explosion properties for this block. If set to true, the block will have the default explosion resistance. If set to false, this block is indestructible by explosion. If the component is omitted, the block will have the default explosion resistance.",
-  "title": "Destructible By Explosion",
   "samples": {
+    "Example": [
+      {
+        "path": "Boolean",
+        "content": true
+      }
+    ],
     "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
       {
         "path": "/minecraft:block/components/minecraft:destructible_by_explosion/",
@@ -138,5 +142,7 @@
       }
     ]
   },
+  "description": "Describes the destructible by explosion properties for this block. If set to true, the block will have the default explosion resistance. If set to false, this block is indestructible by explosion. If the component is omitted, the block will have the default explosion resistance.",
+  "title": "Destructible By Explosion",
   "id": "minecraft:destructible_by_explosion"
 }

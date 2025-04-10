@@ -59,7 +59,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       if (projectItem.itemType === ProjectItemType.texture) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.file) {
+        if (projectItem.availableFile) {
           let pathInRp = projectItem.getPackRelativePath();
           let isVanilla = false;
 
@@ -80,14 +80,14 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
           let imageWidth = -1;
           let imageHeight = -1;
 
-          if (projectItem.file.type !== "tga") {
-            await projectItem.file.loadContent();
+          if (projectItem.availableFile.type !== "tga") {
+            await projectItem.availableFile.loadContent();
 
-            if (projectItem.file.content && projectItem.file.content instanceof Uint8Array) {
+            if (projectItem.availableFile.content && projectItem.availableFile.content instanceof Uint8Array) {
               const exifr = new Exifr({});
 
               try {
-                await exifr.read(projectItem.file.content);
+                await exifr.read(projectItem.availableFile.content);
 
                 const results = await exifr.parse();
 
@@ -116,13 +116,13 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
               }
             }
 
-            projectItem.file.unload();
+            projectItem.availableFile.unload();
           } else {
-            await projectItem.file.loadContent();
+            await projectItem.availableFile.loadContent();
 
-            if (projectItem.file.content && projectItem.file.content instanceof Uint8Array) {
+            if (projectItem.availableFile.content && projectItem.availableFile.content instanceof Uint8Array) {
               try {
-                const tga = await decodeTga(projectItem.file.content);
+                const tga = await decodeTga(projectItem.availableFile.content);
 
                 imageWidth = tga.image.width;
                 imageHeight = tga.image.height;

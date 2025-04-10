@@ -1,13 +1,12 @@
 {
-  "id": "minecraft:color_grading_identifier",
   "fields": [
     {
       "id": "color_grading_identifier",
-      "title": "color_grading_identifier",
+      "title": "Color Grading Identifier",
       "description": "Identifier of color_grading definition to use",
       "dataType": 2
     }
   ],
   "description": "[INTERNAL - WORK IN PROGRESS] Set the color_grading settings used during deferred rendering. Biomes without this component will have default color_grading settings.",
-  "title": "Color Grading Identifier"
+  "title": "Minecraft Color Grading Identifier Client Biome"
 }

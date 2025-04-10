@@ -17,7 +17,7 @@ import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinit
 import Utilities from "../core/Utilities";
 import { IGeometry, IGeometryBone, IGeometryBoneCube, IGeometryUVFaces } from "../minecraft/IModelGeometry";
 import { Exifr } from "exifr";
-import Project from "../app/Project";
+import Project, { FolderContext } from "../app/Project";
 import Log from "../core/Log";
 import AttachableResourceDefinition from "../minecraft/AttachableResourceDefinition";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
@@ -380,8 +380,8 @@ export default class BlockbenchModel {
         if (item.itemType === ProjectItemType.modelGeometryJson && geoToUpdate === undefined) {
           await item.ensureFileStorage();
 
-          if (item.file) {
-            const modelDefOuter = await ModelGeometryDefinition.ensureOnFile(item.file);
+          if (item.availableFile) {
+            const modelDefOuter = await ModelGeometryDefinition.ensureOnFile(item.availableFile);
 
             if (modelDefOuter && modelDefOuter.definitions) {
               geoToUpdate = modelDefOuter.getById(modelId);
@@ -392,8 +392,8 @@ export default class BlockbenchModel {
           // ensure references to textures if an entiy exists
           await item.ensureFileStorage();
 
-          if (item.file) {
-            const etrd = await EntityTypeResourceDefinition.ensureOnFile(item.file);
+          if (item.availableFile) {
+            const etrd = await EntityTypeResourceDefinition.ensureOnFile(item.availableFile);
 
             if (etrd && etrd.id === modelId) {
               if (this.data && this.data.textures && etrd.textures) {
@@ -502,11 +502,11 @@ export default class BlockbenchModel {
               if (item.itemType === ProjectItemType.texture && !setItem) {
                 await item.ensureFileStorage();
 
-                if (item.file) {
-                  const projectPath = item.file.getFolderRelativePath(project.projectFolder);
+                if (item.availableFile) {
+                  const projectPath = item.availableFile.getFolderRelativePath(project.projectFolder);
 
                   if (projectPath && projectPath.endsWith(path)) {
-                    item.file.setContent(bytes);
+                    item.availableFile.setContent(bytes);
 
                     setItem = true;
                   }
@@ -518,8 +518,8 @@ export default class BlockbenchModel {
             if (!setItem) {
               for (const item of project.items) {
                 if (item.itemType === ProjectItemType.texture && !setItem) {
-                  if (item.file && item.file.name === texture.name) {
-                    item.file.setContent(bytes);
+                  if (item.availableFile && item.availableFile.name === texture.name) {
+                    item.availableFile.setContent(bytes);
 
                     setItem = true;
                   }
@@ -549,6 +549,7 @@ export default class BlockbenchModel {
                     ProjectItemStorageType.singleFile,
                     file.name,
                     ProjectItemType.texture,
+                    FolderContext.resourcePack,
                     undefined,
                     ProjectItemCreationType.normal,
                     file
@@ -662,26 +663,26 @@ export default class BlockbenchModel {
     let clientEntity: EntityTypeResourceDefinition | undefined = undefined;
     let model: ModelGeometryDefinition | undefined = undefined;
 
-    if (modelProjectItem.file) {
-      model = await ModelGeometryDefinition.ensureOnFile(modelProjectItem.file);
+    if (modelProjectItem.availableFile) {
+      model = await ModelGeometryDefinition.ensureOnFile(modelProjectItem.availableFile);
     }
 
     if (modelProjectItem.parentItems) {
       for (const parentItemOuter of modelProjectItem.parentItems) {
         if (parentItemOuter.parentItem.itemType === ProjectItemType.entityTypeResource) {
           clientEntityProjectItem = parentItemOuter.parentItem;
-          if (clientEntityProjectItem && clientEntityProjectItem.file) {
-            clientEntity = await EntityTypeResourceDefinition.ensureOnFile(clientEntityProjectItem.file);
+          if (clientEntityProjectItem && clientEntityProjectItem.availableFile) {
+            clientEntity = await EntityTypeResourceDefinition.ensureOnFile(clientEntityProjectItem.availableFile);
           }
         } else if (parentItemOuter.parentItem.itemType === ProjectItemType.blockTypeBehavior) {
           serverBlockProjectItem = parentItemOuter.parentItem;
-          if (serverBlockProjectItem && serverBlockProjectItem.file) {
-            serverBlock = await BlockTypeDefinition.ensureOnFile(serverBlockProjectItem.file);
+          if (serverBlockProjectItem && serverBlockProjectItem.availableFile) {
+            serverBlock = await BlockTypeDefinition.ensureOnFile(serverBlockProjectItem.availableFile);
           }
         } else if (parentItemOuter.parentItem.itemType === ProjectItemType.attachableResourceJson) {
           clientItemProjectItem = parentItemOuter.parentItem;
-          if (clientItemProjectItem && clientItemProjectItem.file) {
-            clientItem = await AttachableResourceDefinition.ensureOnFile(clientItemProjectItem.file);
+          if (clientItemProjectItem && clientItemProjectItem.availableFile) {
+            clientItem = await AttachableResourceDefinition.ensureOnFile(clientItemProjectItem.availableFile);
           }
         }
       }
@@ -888,38 +889,38 @@ export default class BlockbenchModel {
     let textures: { [name: string]: ProjectItem } | undefined = undefined;
     let sourceFile: IFile | undefined = undefined;
 
-    if (clientEntity && clientEntityProjectItem && clientEntityProjectItem.file) {
+    if (clientEntity && clientEntityProjectItem && clientEntityProjectItem.availableFile) {
       textures = clientEntity.getTextureItems(clientEntityProjectItem);
-      sourceFile = clientEntityProjectItem.file;
-    } else if (serverBlock && serverBlockProjectItem && serverBlockProjectItem.file) {
+      sourceFile = clientEntityProjectItem.availableFile;
+    } else if (serverBlock && serverBlockProjectItem && serverBlockProjectItem.availableFile) {
       textures = await serverBlock.getTextureItems(serverBlockProjectItem);
-      sourceFile = serverBlockProjectItem.file;
-    } else if (clientItem && clientItemProjectItem && clientItemProjectItem.file) {
+      sourceFile = serverBlockProjectItem.availableFile;
+    } else if (clientItem && clientItemProjectItem && clientItemProjectItem.availableFile) {
       textures = clientItem.getTextureItems(clientItemProjectItem);
-      sourceFile = clientItemProjectItem.file;
+      sourceFile = clientItemProjectItem.availableFile;
     }
 
     if (textures && sourceFile) {
       for (const textureName in textures) {
         const textureItem = textures[textureName];
 
-        if (textureName && textureItem && textureItem.file) {
-          await textureItem.file.loadContent();
+        if (textureName && textureItem && textureItem.availableFile) {
+          await textureItem.availableFile.loadContent();
           const exifr = new Exifr({});
 
-          if (textureItem.file.content) {
+          if (textureItem.availableFile.content) {
             try {
-              await exifr.read(textureItem.file.content);
+              await exifr.read(textureItem.availableFile.content);
 
               const results = await exifr.parse();
 
-              const relativePath = sourceFile.getRelativePathFor(textureItem.file);
-              const contentStr = StorageUtilities.getContentAsString(textureItem.file);
+              const relativePath = sourceFile.getRelativePathFor(textureItem.availableFile);
+              const contentStr = StorageUtilities.getContentAsString(textureItem.availableFile);
 
               if (relativePath && contentStr) {
                 textureList.push({
-                  path: textureItem.file.storageRelativePath,
-                  name: textureItem.file.name,
+                  path: textureItem.availableFile.storageRelativePath,
+                  name: textureItem.availableFile.name,
                   folder: "",
                   namespace: "",
                   id: textureList.length.toString(),

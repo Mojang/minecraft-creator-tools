@@ -276,14 +276,15 @@ export default class HttpServer {
 
               const result = JSON.stringify(pis.getDataObject(undefined, undefined, undefined, false, subsetReports));
 
-              res.write(result);
-              res.end();
+              res.write(result, () => {
+                res.end();
 
-              if (this._serverManager.runOnce) {
-                this._serverManager.shutdown(
-                  "Shutting down due to completion of one validation operation in runOnce mode."
-                );
-              }
+                if (this._serverManager.runOnce) {
+                  this._serverManager.shutdown(
+                    "Shutting down due to completion of one validation operation in runOnce mode."
+                  );
+                }
+              });
 
               return;
             } else {
@@ -316,8 +317,7 @@ export default class HttpServer {
           Log.message(this.getShortReqDescription(req) + "Status: " + JSON.stringify(status));
 
           res.writeHead(200, this.headers);
-          res.write(JSON.stringify(status));
-          res.end();
+          res.end(JSON.stringify(status));
           return;
         } else if (urlSegments[3] === "updateStatus" && req.method === "POST") {
           if (!this.hasPermissionLevel(authorizedPermissionLevel, ServerPermissionLevel.updateState, req, res)) {
@@ -446,8 +446,7 @@ export default class HttpServer {
     if (!res.headersSent) {
       res.writeHead(statusCode, this.headers);
     }
-    res.write(message);
-    res.end();
+    res.end(message);
   }
 
   hasPermissionLevel(

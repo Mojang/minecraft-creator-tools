@@ -43,8 +43,8 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
       if (pi.itemType === ProjectItemType.vsCodeTasksJson && pi.storageType === ProjectItemStorageType.singleFile) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const vscodeTasksJson = await VsCodeTasksDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const vscodeTasksJson = await VsCodeTasksDefinition.ensureOnFile(pi.availableFile);
 
           if (vscodeTasksJson) {
             const hasMinecraftTasks = await vscodeTasksJson.hasMinContent();
@@ -58,7 +58,7 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
                   "Project has a VSCode tasks file, but no minecraft deploy tasks.",
                   pi,
                   undefined,
-                  pi.file.storageRelativePath
+                  pi.availableFile.storageRelativePath
                 )
               );
             }
@@ -70,8 +70,8 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
       ) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const vscodeLaunchJson = await VsCodeLaunchDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const vscodeLaunchJson = await VsCodeLaunchDefinition.ensureOnFile(pi.availableFile);
 
           if (vscodeLaunchJson) {
             vscodeLaunchJson.project = project;
@@ -86,7 +86,7 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
                   "Project has a VSCode launch file, but is not configured for Minecraft server launch.",
                   pi,
                   undefined,
-                  pi.file.storageRelativePath
+                  pi.availableFile.storageRelativePath
                 )
               );
             }
@@ -126,8 +126,8 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
       if (pi.itemType === ProjectItemType.vsCodeTasksJson && pi.storageType === ProjectItemStorageType.singleFile) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const vscodeTasksJson = await VsCodeTasksDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const vscodeTasksJson = await VsCodeTasksDefinition.ensureOnFile(pi.availableFile);
 
           if (vscodeTasksJson) {
             const hasTasks = await vscodeTasksJson.hasMinContent();
@@ -159,8 +159,8 @@ export default class VsCodeFileManager implements IProjectInfoGenerator, IProjec
       if (pi.itemType === ProjectItemType.vsCodeLaunchJson && pi.storageType === ProjectItemStorageType.singleFile) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const vscodeLaunchJson = await VsCodeLaunchDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const vscodeLaunchJson = await VsCodeLaunchDefinition.ensureOnFile(pi.availableFile);
 
           const pack = await project.getDefaultBehaviorPack();
 

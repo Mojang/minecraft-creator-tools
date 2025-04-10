@@ -21,7 +21,7 @@ import IMainInfoVersions from "./IMainInfoVersions";
 import IFormDefinition from "../dataform/IFormDefinition";
 import ContentIndex, { AnnotationCategory } from "../core/ContentIndex";
 import IProjectInfoData from "../info/IProjectInfoData";
-import Project from "../app/Project";
+import Project, { FolderContext } from "../app/Project";
 import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 import StorageUtilities from "../storage/StorageUtilities";
 import ISnippet from "../app/ISnippet";
@@ -340,6 +340,7 @@ export default class Database {
           ProjectItemStorageType.singleFile,
           file.name,
           ProjectItemType.MCAddon,
+          FolderContext.unknown,
           undefined,
           ProjectItemCreationType.normal
         );

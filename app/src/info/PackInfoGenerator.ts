@@ -17,12 +17,12 @@ import ProjectInfoUtilities from "./ProjectInfoUtilities";
 const MemoryTierBase = 40;
 
 export enum PackInfoGeneratorTest {
-  behaviorPackMinEngineVersion = 1,
-  behaviorPackUuid = 2,
-  behaviorPackManfiest = 3,
   behaviorPackName = 4,
   behaviorPackDescription = 5,
   behaviorPackId = 6,
+  behaviorPackMinEngineVersion = 7,
+  behaviorPackUuid = 8,
+  behaviorPackManfiest = 9,
   resourcePackMinEngineVersion = 11,
   resourcePackUuid = 12,
   resourcePackManifest = 13,
@@ -106,19 +106,19 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.iconImage) {
-        if (pi.file) {
+        if (pi.availableFile) {
           if (
-            StorageUtilities.getBaseFromName(pi.file.name) === "pack_icon" &&
-            StorageUtilities.getTypeFromName(pi.file.name) === "png"
+            StorageUtilities.getBaseFromName(pi.availableFile.name) === "pack_icon" &&
+            StorageUtilities.getTypeFromName(pi.availableFile.name) === "png"
           ) {
-            await pi.file.loadContent(false);
+            await pi.availableFile.loadContent(false);
 
-            if (pi.file.content && typeof pi.file.content !== "string") {
+            if (pi.availableFile.content && typeof pi.availableFile.content !== "string") {
               let index = PackInfoGeneratorTest.resourcePackIcon;
 
-              if (MinecraftUtilities.pathLooksLikeBehaviorPackName(pi.file.storageRelativePath)) {
+              if (MinecraftUtilities.pathLooksLikeBehaviorPackName(pi.availableFile.storageRelativePath)) {
                 index = PackInfoGeneratorTest.behaviorPackIcon;
-              } else if (MinecraftUtilities.pathLooksLikeSkinPackName(pi.file.storageRelativePath)) {
+              } else if (MinecraftUtilities.pathLooksLikeSkinPackName(pi.availableFile.storageRelativePath)) {
                 index = PackInfoGeneratorTest.skinPackIcon;
               }
 
@@ -129,7 +129,7 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
                   index,
                   ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, index),
                   pi,
-                  Utilities.uint8ArrayToBase64(pi.file.content)
+                  Utilities.uint8ArrayToBase64(pi.availableFile.content)
                 )
               );
             }

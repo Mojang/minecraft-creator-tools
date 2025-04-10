@@ -39,6 +39,7 @@ import DeploymentStorageMinecraft from "./DeploymentStorageMinecraft";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import { GalleryItemType } from "./IGalleryItem";
 import ProjectItemRelations from "./ProjectItemRelations";
+import ProjectUtilities from "./ProjectUtilities";
 
 export enum CartoMinecraftState {
   none = 0,
@@ -1330,7 +1331,7 @@ export default class Carto {
     newProject.focus = focus;
 
     if (includeDefaultItems) {
-      await newProject.ensureDefaultItems();
+      await ProjectUtilities.ensureDefaultItems(newProject);
     }
 
     this.projects.push(newProject);

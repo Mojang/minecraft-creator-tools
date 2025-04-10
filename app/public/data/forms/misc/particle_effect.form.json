@@ -2,38 +2,31 @@
   "fields": [
     {
       "id": "components",
-      "title": "components",
-      "description": "components",
+      "title": "Components",
       "dataType": 16,
       "subForm": {
         "title": "Particle Effect Component",
-        "description": "Particle Effect Component",
         "fields": [
           {
             "id": "minecraft:emitter_local_space",
-            "title": "minecraft:emitter_local_space",
-            "description": "minecraft:emitter_local_space",
+            "title": "Minecraft Emitter Local Space",
             "dataType": 16
           },
           {
             "id": "minecraft:particle_expire_if_in_blocks",
-            "title": "minecraft:particle_expire_if_in_blocks",
-            "description": "minecraft:particle_expire_if_in_blocks",
+            "title": "Minecraft Particle Expire If In Blocks",
             "dataType": 16
           },
           {
             "id": "minecraft:emitter_lifetime_expression",
-            "title": "minecraft:emitter_lifetime_expression",
-            "description": "minecraft:emitter_lifetime_expression",
+            "title": "Minecraft Emitter Lifetime Expression",
             "dataType": 16,
             "subForm": {
               "title": "Emitter Lifetime Expression",
-              "description": "Emitter Lifetime Expression",
               "fields": [
                 {
                   "id": "activation_expression",
-                  "title": "activation_expression",
-                  "description": "activation_expression",
+                  "title": "Activation Expression",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -42,18 +35,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Activation Expression",
-                        "description": "Activation Expression",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -67,8 +57,7 @@
                 },
                 {
                   "id": "expiration_expression",
-                  "title": "expiration_expression",
-                  "description": "expiration_expression",
+                  "title": "Expiration Expression",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -77,18 +66,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Expiration Expression",
-                        "description": "Expiration Expression",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -105,17 +91,14 @@
           },
           {
             "id": "minecraft:emitter_initialization",
-            "title": "minecraft:emitter_initialization",
-            "description": "minecraft:emitter_initialization",
+            "title": "Minecraft Emitter Initialization",
             "dataType": 16,
             "subForm": {
               "title": "Emitter Initialization",
-              "description": "Emitter Initialization",
               "fields": [
                 {
                   "id": "creation_expression",
-                  "title": "creation_expression",
-                  "description": "creation_expression",
+                  "title": "Creation Expression",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -124,18 +107,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Creation Expression",
-                        "description": "Creation Expression",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -149,8 +129,7 @@
                 },
                 {
                   "id": "per_update_expression",
-                  "title": "per_update_expression",
-                  "description": "per_update_expression",
+                  "title": "Per Update Expression",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -159,18 +138,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Per Update Expression",
-                        "description": "Per Update Expression",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -187,17 +163,14 @@
           },
           {
             "id": "minecraft:emitter_rate_instant",
-            "title": "minecraft:emitter_rate_instant",
-            "description": "minecraft:emitter_rate_instant",
+            "title": "Minecraft Emitter Rate Instant",
             "dataType": 16,
             "subForm": {
               "title": "Emitter Rate Instant",
-              "description": "Emitter Rate Instant",
               "fields": [
                 {
                   "id": "num_particles",
-                  "title": "num_particles",
-                  "description": "num_particles",
+                  "title": "Num Particles",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -206,18 +179,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Num Particles",
-                        "description": "Num Particles",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -234,17 +204,14 @@
           },
           {
             "id": "minecraft:particle_lifetime_expression",
-            "title": "minecraft:particle_lifetime_expression",
-            "description": "minecraft:particle_lifetime_expression",
+            "title": "Minecraft Particle Lifetime Expression",
             "dataType": 16,
             "subForm": {
               "title": "Particle Lifetime Expression",
-              "description": "Particle Lifetime Expression",
               "fields": [
                 {
                   "id": "max_lifetime",
-                  "title": "max_lifetime",
-                  "description": "max_lifetime",
+                  "title": "Max Lifetime",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -253,18 +220,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Max Lifetime",
-                        "description": "Max Lifetime",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -278,8 +242,7 @@
                 },
                 {
                   "id": "expiration_expression",
-                  "title": "expiration_expression",
-                  "description": "expiration_expression",
+                  "title": "Expiration Expression",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -288,18 +251,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Expiration Expression",
-                        "description": "Expiration Expression",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -316,17 +276,14 @@
           },
           {
             "id": "minecraft:emitter_lifetime_looping",
-            "title": "minecraft:emitter_lifetime_looping",
-            "description": "minecraft:emitter_lifetime_looping",
+            "title": "Minecraft Emitter Lifetime Looping",
             "dataType": 16,
             "subForm": {
               "title": "Emitter Lifetime Looping",
-              "description": "Emitter Lifetime Looping",
               "fields": [
                 {
                   "id": "active_time",
-                  "title": "active_time",
-                  "description": "active_time",
+                  "title": "Active Time",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -335,18 +292,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Active Time",
-                        "description": "Active Time",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -360,8 +314,7 @@
                 },
                 {
                   "id": "sleep_time",
-                  "title": "sleep_time",
-                  "description": "sleep_time",
+                  "title": "Sleep Time",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -370,18 +323,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Sleep Time",
-                        "description": "Sleep Time",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -398,17 +348,14 @@
           },
           {
             "id": "minecraft:emitter_rate_steady",
-            "title": "minecraft:emitter_rate_steady",
-            "description": "minecraft:emitter_rate_steady",
+            "title": "Minecraft Emitter Rate Steady",
             "dataType": 16,
             "subForm": {
               "title": "Emitter Rate Steady",
-              "description": "Emitter Rate Steady",
               "fields": [
                 {
                   "id": "spawn_rate",
-                  "title": "spawn_rate",
-                  "description": "spawn_rate",
+                  "title": "Spawn Rate",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -417,18 +364,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Spawn Rate",
-                        "description": "Spawn Rate",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -442,8 +386,7 @@
                 },
                 {
                   "id": "max_particles",
-                  "title": "max_particles",
-                  "description": "max_particles",
+                  "title": "Max Particles",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -452,18 +395,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Max Particles",
-                        "description": "Max Particles",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -480,23 +420,19 @@
           },
           {
             "id": "minecraft:emitter_lifetime_events",
-            "title": "minecraft:emitter_lifetime_events",
-            "description": "minecraft:emitter_lifetime_events",
+            "title": "Minecraft Emitter Lifetime Events",
             "dataType": 16
           },
           {
             "id": "minecraft:emitter_lifetime_once",
-            "title": "minecraft:emitter_lifetime_once",
-            "description": "minecraft:emitter_lifetime_once",
+            "title": "Minecraft Emitter Lifetime Once",
             "dataType": 16,
             "subForm": {
               "title": "Emitter Lifetime Once",
-              "description": "Emitter Lifetime Once",
               "fields": [
                 {
                   "id": "active_time",
-                  "title": "active_time",
-                  "description": "active_time",
+                  "title": "Active Time",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -505,18 +441,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Active Time",
-                        "description": "Active Time",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -533,17 +466,14 @@
           },
           {
             "id": "minecraft:emitter_rate_manual",
-            "title": "minecraft:emitter_rate_manual",
-            "description": "minecraft:emitter_rate_manual",
+            "title": "Minecraft Emitter Rate Manual",
             "dataType": 16,
             "subForm": {
               "title": "Emitter Rate Manual",
-              "description": "Emitter Rate Manual",
               "fields": [
                 {
                   "id": "max_particles",
-                  "title": "max_particles",
-                  "description": "max_particles",
+                  "title": "Max Particles",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -552,18 +482,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Max Particles",
-                        "description": "Max Particles",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -580,17 +507,14 @@
           },
           {
             "id": "minecraft:emitter_shape_point",
-            "title": "minecraft:emitter_shape_point",
-            "description": "minecraft:emitter_shape_point",
+            "title": "Minecraft Emitter Shape Point",
             "dataType": 16,
             "subForm": {
               "title": "Emitter Shape Point",
-              "description": "Emitter Shape Point",
               "fields": [
                 {
                   "id": "offset",
-                  "title": "offset",
-                  "description": "offset",
+                  "title": "Offset",
                   "dataType": 24,
                   "minLength": 3,
                   "maxLength": 3,
@@ -601,18 +525,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Offset",
-                        "description": "Offset",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -626,8 +547,7 @@
                 },
                 {
                   "id": "direction",
-                  "title": "direction",
-                  "description": "direction",
+                  "title": "Direction",
                   "dataType": 24,
                   "minLength": 3,
                   "maxLength": 3,
@@ -638,18 +558,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Direction",
-                        "description": "Direction",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -666,17 +583,14 @@
           },
           {
             "id": "minecraft:emitter_shape_box",
-            "title": "minecraft:emitter_shape_box",
-            "description": "minecraft:emitter_shape_box",
+            "title": "Minecraft Emitter Shape Box",
             "dataType": 16,
             "subForm": {
               "title": "Emitter Shape Box",
-              "description": "Emitter Shape Box",
               "fields": [
                 {
                   "id": "offset",
-                  "title": "offset",
-                  "description": "offset",
+                  "title": "Offset",
                   "dataType": 24,
                   "minLength": 3,
                   "maxLength": 3,
@@ -687,18 +601,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Offset",
-                        "description": "Offset",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -712,8 +623,7 @@
                 },
                 {
                   "id": "direction",
-                  "title": "direction",
-                  "description": "direction",
+                  "title": "Direction",
                   "dataType": 2,
                   "alternates": [
                     {
@@ -728,18 +638,15 @@
                           "readOnly": true,
                           "subForm": {
                             "title": "Direction",
-                            "description": "Direction",
                             "fields": [
                               {
                                 "id": "expression",
-                                "title": "expression",
-                                "description": "expression",
+                                "title": "Expression",
                                 "dataType": 2
                               },
                               {
                                 "id": "version",
-                                "title": "version",
-                                "description": "version",
+                                "title": "Version",
                                 "dataType": 0
                               }
                             ]
@@ -755,8 +662,7 @@
                 },
                 {
                   "id": "half_dimensions",
-                  "title": "half_dimensions",
-                  "description": "half_dimensions",
+                  "title": "Half Dimensions",
                   "dataType": 24,
                   "minLength": 3,
                   "maxLength": 3,
@@ -767,18 +673,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Half Dimensions",
-                        "description": "Half Dimensions",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -792,8 +695,7 @@
                 },
                 {
                   "id": "surface_only",
-                  "title": "surface_only",
-                  "description": "surface_only",
+                  "title": "Surface Only",
                   "dataType": 1
                 }
               ]
@@ -801,17 +703,14 @@
           },
           {
             "id": "minecraft:emitter_shape_sphere",
-            "title": "minecraft:emitter_shape_sphere",
-            "description": "minecraft:emitter_shape_sphere",
+            "title": "Minecraft Emitter Shape Sphere",
             "dataType": 16,
             "subForm": {
               "title": "Emitter Shape Sphere",
-              "description": "Emitter Shape Sphere",
               "fields": [
                 {
                   "id": "offset",
-                  "title": "offset",
-                  "description": "offset",
+                  "title": "Offset",
                   "dataType": 24,
                   "minLength": 3,
                   "maxLength": 3,
@@ -822,18 +721,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Offset",
-                        "description": "Offset",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -847,8 +743,7 @@
                 },
                 {
                   "id": "direction",
-                  "title": "direction",
-                  "description": "direction",
+                  "title": "Direction",
                   "dataType": 2,
                   "alternates": [
                     {
@@ -863,18 +758,15 @@
                           "readOnly": true,
                           "subForm": {
                             "title": "Direction",
-                            "description": "Direction",
                             "fields": [
                               {
                                 "id": "expression",
-                                "title": "expression",
-                                "description": "expression",
+                                "title": "Expression",
                                 "dataType": 2
                               },
                               {
                                 "id": "version",
-                                "title": "version",
-                                "description": "version",
+                                "title": "Version",
                                 "dataType": 0
                               }
                             ]
@@ -890,8 +782,7 @@
                 },
                 {
                   "id": "radius",
-                  "title": "radius",
-                  "description": "radius",
+                  "title": "Radius",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -900,18 +791,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Radius",
-                        "description": "Radius",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -925,8 +813,7 @@
                 },
                 {
                   "id": "surface_only",
-                  "title": "surface_only",
-                  "description": "surface_only",
+                  "title": "Surface Only",
                   "dataType": 1
                 }
               ]
@@ -934,17 +821,14 @@
           },
           {
             "id": "minecraft:emitter_shape_custom",
-            "title": "minecraft:emitter_shape_custom",
-            "description": "minecraft:emitter_shape_custom",
+            "title": "Minecraft Emitter Shape Custom",
             "dataType": 16,
             "subForm": {
               "title": "Emitter Shape Custom",
-              "description": "Emitter Shape Custom",
               "fields": [
                 {
                   "id": "offset",
-                  "title": "offset",
-                  "description": "offset",
+                  "title": "Offset",
                   "dataType": 24,
                   "minLength": 3,
                   "maxLength": 3,
@@ -955,18 +839,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Offset",
-                        "description": "Offset",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -980,8 +861,7 @@
                 },
                 {
                   "id": "direction",
-                  "title": "direction",
-                  "description": "direction",
+                  "title": "Direction",
                   "dataType": 24,
                   "minLength": 3,
                   "maxLength": 3,
@@ -992,18 +872,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Direction",
-                        "description": "Direction",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1020,23 +897,19 @@
           },
           {
             "id": "minecraft:emitter_shape_entity_aabb",
-            "title": "minecraft:emitter_shape_entity_aabb",
-            "description": "minecraft:emitter_shape_entity_aabb",
+            "title": "Minecraft Emitter Shape Entity Aabb",
             "dataType": 16,
             "subForm": {
               "title": "Emitter Shape Entity Aabb",
-              "description": "Emitter Shape Entity Aabb",
               "fields": [
                 {
                   "id": "surface_only",
-                  "title": "surface_only",
-                  "description": "surface_only",
+                  "title": "Surface Only",
                   "dataType": 1
                 },
                 {
                   "id": "direction",
-                  "title": "direction",
-                  "description": "direction",
+                  "title": "Direction",
                   "dataType": 2,
                   "alternates": [
                     {
@@ -1051,18 +924,15 @@
                           "readOnly": true,
                           "subForm": {
                             "title": "Direction",
-                            "description": "Direction",
                             "fields": [
                               {
                                 "id": "expression",
-                                "title": "expression",
-                                "description": "expression",
+                                "title": "Expression",
                                 "dataType": 2
                               },
                               {
                                 "id": "version",
-                                "title": "version",
-                                "description": "version",
+                                "title": "Version",
                                 "dataType": 0
                               }
                             ]
@@ -1081,17 +951,14 @@
           },
           {
             "id": "minecraft:emitter_shape_disc",
-            "title": "minecraft:emitter_shape_disc",
-            "description": "minecraft:emitter_shape_disc",
+            "title": "Minecraft Emitter Shape Disc",
             "dataType": 16,
             "subForm": {
               "title": "Emitter Shape Disc",
-              "description": "Emitter Shape Disc",
               "fields": [
                 {
                   "id": "offset",
-                  "title": "offset",
-                  "description": "offset",
+                  "title": "Offset",
                   "dataType": 24,
                   "minLength": 3,
                   "maxLength": 3,
@@ -1102,18 +969,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Offset",
-                        "description": "Offset",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1127,8 +991,7 @@
                 },
                 {
                   "id": "direction",
-                  "title": "direction",
-                  "description": "direction",
+                  "title": "Direction",
                   "dataType": 2,
                   "alternates": [
                     {
@@ -1143,18 +1006,15 @@
                           "readOnly": true,
                           "subForm": {
                             "title": "Direction",
-                            "description": "Direction",
                             "fields": [
                               {
                                 "id": "expression",
-                                "title": "expression",
-                                "description": "expression",
+                                "title": "Expression",
                                 "dataType": 2
                               },
                               {
                                 "id": "version",
-                                "title": "version",
-                                "description": "version",
+                                "title": "Version",
                                 "dataType": 0
                               }
                             ]
@@ -1170,8 +1030,7 @@
                 },
                 {
                   "id": "radius",
-                  "title": "radius",
-                  "description": "radius",
+                  "title": "Radius",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -1180,18 +1039,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Radius",
-                        "description": "Radius",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1205,14 +1061,12 @@
                 },
                 {
                   "id": "surface_only",
-                  "title": "surface_only",
-                  "description": "surface_only",
+                  "title": "Surface Only",
                   "dataType": 1
                 },
                 {
                   "id": "plane_normal",
-                  "title": "plane_normal",
-                  "description": "plane_normal",
+                  "title": "Plane Normal",
                   "dataType": 2,
                   "alternates": [
                     {
@@ -1227,18 +1081,15 @@
                           "readOnly": true,
                           "subForm": {
                             "title": "Plane Normal",
-                            "description": "Plane Normal",
                             "fields": [
                               {
                                 "id": "expression",
-                                "title": "expression",
-                                "description": "expression",
+                                "title": "Expression",
                                 "dataType": 2
                               },
                               {
                                 "id": "version",
-                                "title": "version",
-                                "description": "version",
+                                "title": "Version",
                                 "dataType": 0
                               }
                             ]
@@ -1257,17 +1108,14 @@
           },
           {
             "id": "minecraft:particle_appearance_billboard",
-            "title": "minecraft:particle_appearance_billboard",
-            "description": "minecraft:particle_appearance_billboard",
+            "title": "Minecraft Particle Appearance Billboard",
             "dataType": 16,
             "subForm": {
               "title": "Particle Appearance Billboard",
-              "description": "Particle Appearance Billboard",
               "fields": [
                 {
                   "id": "size",
-                  "title": "size",
-                  "description": "size",
+                  "title": "Size",
                   "dataType": 24,
                   "minLength": 2,
                   "maxLength": 2,
@@ -1278,18 +1126,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Size",
-                        "description": "Size",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1303,20 +1148,17 @@
                 },
                 {
                   "id": "facing_camera_mode",
-                  "title": "facing_camera_mode",
-                  "description": "facing_camera_mode",
+                  "title": "Facing Camera Mode",
                   "dataType": 16
                 },
                 {
                   "id": "direction",
-                  "title": "direction",
-                  "description": "direction",
+                  "title": "Direction",
                   "dataType": 16
                 },
                 {
                   "id": "uv",
-                  "title": "uv",
-                  "description": "uv",
+                  "title": "Uv",
                   "dataType": 16
                 }
               ]
@@ -1324,17 +1166,14 @@
           },
           {
             "id": "minecraft:particle_appearance_tinting",
-            "title": "minecraft:particle_appearance_tinting",
-            "description": "minecraft:particle_appearance_tinting",
+            "title": "Minecraft Particle Appearance Tinting",
             "dataType": 16,
             "subForm": {
               "title": "Particle Appearance Tinting",
-              "description": "Particle Appearance Tinting",
               "fields": [
                 {
                   "id": "color",
-                  "title": "color",
-                  "description": "color",
+                  "title": "Color",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -1353,18 +1192,15 @@
                           "readOnly": true,
                           "subForm": {
                             "title": "Color",
-                            "description": "Color",
                             "fields": [
                               {
                                 "id": "expression",
-                                "title": "expression",
-                                "description": "expression",
+                                "title": "Expression",
                                 "dataType": 2
                               },
                               {
                                 "id": "version",
-                                "title": "version",
-                                "description": "version",
+                                "title": "Version",
                                 "dataType": 0
                               }
                             ]
@@ -1381,12 +1217,10 @@
                       "dataType": 16,
                       "subForm": {
                         "title": "Color",
-                        "description": "Color",
                         "fields": [
                           {
                             "id": "gradient",
-                            "title": "gradient",
-                            "description": "gradient",
+                            "title": "Gradient",
                             "dataType": 24,
                             "alternates": [
                               {
@@ -1409,18 +1243,15 @@
                                         "readOnly": true,
                                         "subForm": {
                                           "title": "Gradient",
-                                          "description": "Gradient",
                                           "fields": [
                                             {
                                               "id": "expression",
-                                              "title": "expression",
-                                              "description": "expression",
+                                              "title": "Expression",
                                               "dataType": 2
                                             },
                                             {
                                               "id": "version",
-                                              "title": "version",
-                                              "description": "version",
+                                              "title": "Version",
                                               "dataType": 0
                                             }
                                           ]
@@ -1438,8 +1269,7 @@
                           },
                           {
                             "id": "interpolant",
-                            "title": "interpolant",
-                            "description": "interpolant",
+                            "title": "Interpolant",
                             "dataType": 24,
                             "alternates": [
                               {
@@ -1448,18 +1278,15 @@
                                 "readOnly": true,
                                 "subForm": {
                                   "title": "Interpolant",
-                                  "description": "Interpolant",
                                   "fields": [
                                     {
                                       "id": "expression",
-                                      "title": "expression",
-                                      "description": "expression",
+                                      "title": "Expression",
                                       "dataType": 2
                                     },
                                     {
                                       "id": "version",
-                                      "title": "version",
-                                      "description": "version",
+                                      "title": "Version",
                                       "dataType": 0
                                     }
                                   ]
@@ -1481,29 +1308,24 @@
           },
           {
             "id": "minecraft:particle_appearance_lighting",
-            "title": "minecraft:particle_appearance_lighting",
-            "description": "minecraft:particle_appearance_lighting",
+            "title": "Minecraft Particle Appearance Lighting",
             "dataType": 16
           },
           {
             "id": "minecraft:particle_kill_plane",
-            "title": "minecraft:particle_kill_plane",
-            "description": "minecraft:particle_kill_plane",
+            "title": "Minecraft Particle Kill Plane",
             "dataType": 16
           },
           {
             "id": "minecraft:particle_initial_spin",
-            "title": "minecraft:particle_initial_spin",
-            "description": "minecraft:particle_initial_spin",
+            "title": "Minecraft Particle Initial Spin",
             "dataType": 16,
             "subForm": {
               "title": "Particle Initial Spin",
-              "description": "Particle Initial Spin",
               "fields": [
                 {
                   "id": "rotation",
-                  "title": "rotation",
-                  "description": "rotation",
+                  "title": "Rotation",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -1512,18 +1334,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Rotation",
-                        "description": "Rotation",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1537,8 +1356,7 @@
                 },
                 {
                   "id": "rotation_rate",
-                  "title": "rotation_rate",
-                  "description": "rotation_rate",
+                  "title": "Rotation Rate",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -1547,18 +1365,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Rotation Rate",
-                        "description": "Rotation Rate",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1575,8 +1390,7 @@
           },
           {
             "id": "minecraft:particle_initial_speed",
-            "title": "minecraft:particle_initial_speed",
-            "description": "minecraft:particle_initial_speed",
+            "title": "Minecraft Particle Initial Speed",
             "dataType": 24,
             "alternates": [
               {
@@ -1589,18 +1403,15 @@
                     "readOnly": true,
                     "subForm": {
                       "title": "Particle Initial Speed",
-                      "description": "Particle Initial Speed",
                       "fields": [
                         {
                           "id": "expression",
-                          "title": "expression",
-                          "description": "expression",
+                          "title": "Expression",
                           "dataType": 2
                         },
                         {
                           "id": "version",
-                          "title": "version",
-                          "description": "version",
+                          "title": "Version",
                           "dataType": 0
                         }
                       ]
@@ -1616,17 +1427,14 @@
           },
           {
             "id": "minecraft:particle_initialization",
-            "title": "minecraft:particle_initialization",
-            "description": "minecraft:particle_initialization",
+            "title": "Minecraft Particle Initialization",
             "dataType": 16,
             "subForm": {
               "title": "Particle Initialization",
-              "description": "Particle Initialization",
               "fields": [
                 {
                   "id": "per_update_expression",
-                  "title": "per_update_expression",
-                  "description": "per_update_expression",
+                  "title": "Per Update Expression",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -1635,18 +1443,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Per Update Expression",
-                        "description": "Per Update Expression",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1660,8 +1465,7 @@
                 },
                 {
                   "id": "per_render_expression",
-                  "title": "per_render_expression",
-                  "description": "per_render_expression",
+                  "title": "Per Render Expression",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -1670,18 +1474,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Per Render Expression",
-                        "description": "Per Render Expression",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1698,29 +1499,24 @@
           },
           {
             "id": "minecraft:particle_expire_if_not_in_blocks",
-            "title": "minecraft:particle_expire_if_not_in_blocks",
-            "description": "minecraft:particle_expire_if_not_in_blocks",
+            "title": "Minecraft Particle Expire If Not In Blocks",
             "dataType": 16
           },
           {
             "id": "minecraft:particle_lifetime_events",
-            "title": "minecraft:particle_lifetime_events",
-            "description": "minecraft:particle_lifetime_events",
+            "title": "Minecraft Particle Lifetime Events",
             "dataType": 16
           },
           {
             "id": "minecraft:particle_motion_dynamic",
-            "title": "minecraft:particle_motion_dynamic",
-            "description": "minecraft:particle_motion_dynamic",
+            "title": "Minecraft Particle Motion Dynamic",
             "dataType": 16,
             "subForm": {
               "title": "Particle Motion Dynamic",
-              "description": "Particle Motion Dynamic",
               "fields": [
                 {
                   "id": "linear_acceleration",
-                  "title": "linear_acceleration",
-                  "description": "linear_acceleration",
+                  "title": "Linear Acceleration",
                   "dataType": 24,
                   "minLength": 3,
                   "maxLength": 3,
@@ -1731,18 +1527,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Linear Acceleration",
-                        "description": "Linear Acceleration",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1756,8 +1549,7 @@
                 },
                 {
                   "id": "linear_drag_coefficient",
-                  "title": "linear_drag_coefficient",
-                  "description": "linear_drag_coefficient",
+                  "title": "Linear Drag Coefficient",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -1766,18 +1558,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Linear Drag Coefficient",
-                        "description": "Linear Drag Coefficient",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1791,8 +1580,7 @@
                 },
                 {
                   "id": "rotation_acceleration",
-                  "title": "rotation_acceleration",
-                  "description": "rotation_acceleration",
+                  "title": "Rotation Acceleration",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -1801,18 +1589,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Rotation Acceleration",
-                        "description": "Rotation Acceleration",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1826,8 +1611,7 @@
                 },
                 {
                   "id": "rotation_drag_coefficient",
-                  "title": "rotation_drag_coefficient",
-                  "description": "rotation_drag_coefficient",
+                  "title": "Rotation Drag Coefficient",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -1836,18 +1620,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Rotation Drag Coefficient",
-                        "description": "Rotation Drag Coefficient",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1864,17 +1645,14 @@
           },
           {
             "id": "minecraft:particle_motion_parametric",
-            "title": "minecraft:particle_motion_parametric",
-            "description": "minecraft:particle_motion_parametric",
+            "title": "Minecraft Particle Motion Parametric",
             "dataType": 16,
             "subForm": {
               "title": "Particle Motion Parametric",
-              "description": "Particle Motion Parametric",
               "fields": [
                 {
                   "id": "relative_position",
-                  "title": "relative_position",
-                  "description": "relative_position",
+                  "title": "Relative Position",
                   "dataType": 24,
                   "minLength": 3,
                   "maxLength": 3,
@@ -1885,18 +1663,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Relative Position",
-                        "description": "Relative Position",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1910,8 +1685,7 @@
                 },
                 {
                   "id": "direction",
-                  "title": "direction",
-                  "description": "direction",
+                  "title": "Direction",
                   "dataType": 24,
                   "minLength": 3,
                   "maxLength": 3,
@@ -1922,18 +1696,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Direction",
-                        "description": "Direction",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1947,8 +1718,7 @@
                 },
                 {
                   "id": "rotation",
-                  "title": "rotation",
-                  "description": "rotation",
+                  "title": "Rotation",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -1957,18 +1727,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Rotation",
-                        "description": "Rotation",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -1985,17 +1752,14 @@
           },
           {
             "id": "minecraft:particle_motion_collision",
-            "title": "minecraft:particle_motion_collision",
-            "description": "minecraft:particle_motion_collision",
+            "title": "Minecraft Particle Motion Collision",
             "dataType": 16,
             "subForm": {
               "title": "Particle Motion Collision",
-              "description": "Particle Motion Collision",
               "fields": [
                 {
                   "id": "enabled",
-                  "title": "enabled",
-                  "description": "enabled",
+                  "title": "Enabled",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -2004,18 +1768,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Enabled",
-                        "description": "Enabled",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -2029,8 +1790,7 @@
                 },
                 {
                   "id": "collision_radius",
-                  "title": "collision_radius",
-                  "description": "collision_radius",
+                  "title": "Collision Radius",
                   "dataType": 3,
                   "validity": [
                     {
@@ -2041,41 +1801,34 @@
                 },
                 {
                   "id": "collision_drag",
-                  "title": "collision_drag",
-                  "description": "collision_drag",
+                  "title": "Collision Drag",
                   "dataType": 3
                 },
                 {
                   "id": "coefficient_of_restitution",
-                  "title": "coefficient_of_restitution",
-                  "description": "coefficient_of_restitution",
+                  "title": "Coefficient Of Restitution",
                   "dataType": 3
                 },
                 {
                   "id": "expire_on_contact",
-                  "title": "expire_on_contact",
-                  "description": "expire_on_contact",
+                  "title": "Expire On Contact",
                   "dataType": 1
                 },
                 {
                   "id": "events",
-                  "title": "events",
-                  "description": "events",
+                  "title": "Events",
                   "dataType": 15,
                   "subForm": {
                     "title": "Particle Motion Collision Event",
-                    "description": "Particle Motion Collision Event",
                     "fields": [
                       {
                         "id": "min_speed",
-                        "title": "min_speed",
-                        "description": "min_speed",
+                        "title": "Min Speed",
                         "dataType": 3
                       },
                       {
                         "id": "event",
-                        "title": "event",
-                        "description": "event",
+                        "title": "Event",
                         "dataType": 16
                       }
                     ]
@@ -2086,18 +1839,15 @@
                       "dataType": 16,
                       "subForm": {
                         "title": "Events",
-                        "description": "Events",
                         "fields": [
                           {
                             "id": "min_speed",
-                            "title": "min_speed",
-                            "description": "min_speed",
+                            "title": "Min Speed",
                             "dataType": 3
                           },
                           {
                             "id": "event",
-                            "title": "event",
-                            "description": "event",
+                            "title": "Event",
                             "dataType": 16
                           }
                         ]
@@ -2113,7 +1863,7 @@
     },
     {
       "id": "description",
-      "title": "description",
+      "title": "Description",
       "description": "The description MUST contain an identifier and basic_render_parameters.",
       "dataType": 16,
       "subForm": {
@@ -2122,13 +1872,12 @@
         "fields": [
           {
             "id": "identifier",
-            "title": "identifier",
-            "description": "identifier",
+            "title": "Identifier",
             "dataType": 2
           },
           {
             "id": "basic_render_parameters",
-            "title": "basic_render_parameters",
+            "title": "Basic Render Parameters",
             "description": "The parameters MUST contain a material and texture.",
             "dataType": 16,
             "subForm": {
@@ -2137,14 +1886,12 @@
               "fields": [
                 {
                   "id": "material",
-                  "title": "material",
-                  "description": "material",
+                  "title": "Material",
                   "dataType": 16
                 },
                 {
                   "id": "texture",
-                  "title": "texture",
-                  "description": "texture",
+                  "title": "Texture",
                   "dataType": 2
                 }
               ]
@@ -2155,23 +1902,19 @@
     },
     {
       "id": "curves",
-      "title": "curves",
-      "description": "curves",
+      "title": "Curves",
       "dataType": 16,
       "subForm": {
         "title": "Curves",
-        "description": "Curves",
         "fields": [
           {
             "id": "type",
-            "title": "type",
-            "description": "type",
+            "title": "Type",
             "dataType": 16
           },
           {
             "id": "nodes",
-            "title": "nodes",
-            "description": "nodes",
+            "title": "Nodes",
             "dataType": 24,
             "alternates": [
               {
@@ -2180,18 +1923,15 @@
                 "readOnly": true,
                 "subForm": {
                   "title": "Nodes",
-                  "description": "Nodes",
                   "fields": [
                     {
                       "id": "expression",
-                      "title": "expression",
-                      "description": "expression",
+                      "title": "Expression",
                       "dataType": 2
                     },
                     {
                       "id": "version",
-                      "title": "version",
-                      "description": "version",
+                      "title": "Version",
                       "dataType": 0
                     }
                   ]
@@ -2205,8 +1945,7 @@
           },
           {
             "id": "input",
-            "title": "input",
-            "description": "input",
+            "title": "Input",
             "dataType": 24,
             "alternates": [
               {
@@ -2215,18 +1954,15 @@
                 "readOnly": true,
                 "subForm": {
                   "title": "Input",
-                  "description": "Input",
                   "fields": [
                     {
                       "id": "expression",
-                      "title": "expression",
-                      "description": "expression",
+                      "title": "Expression",
                       "dataType": 2
                     },
                     {
                       "id": "version",
-                      "title": "version",
-                      "description": "version",
+                      "title": "Version",
                       "dataType": 0
                     }
                   ]
@@ -2240,8 +1976,7 @@
           },
           {
             "id": "horizontal_range",
-            "title": "horizontal_range",
-            "description": "horizontal_range",
+            "title": "Horizontal Range",
             "dataType": 24,
             "alternates": [
               {
@@ -2250,18 +1985,15 @@
                 "readOnly": true,
                 "subForm": {
                   "title": "Horizontal Range",
-                  "description": "Horizontal Range",
                   "fields": [
                     {
                       "id": "expression",
-                      "title": "expression",
-                      "description": "expression",
+                      "title": "Expression",
                       "dataType": 2
                     },
                     {
                       "id": "version",
-                      "title": "version",
-                      "description": "version",
+                      "title": "Version",
                       "dataType": 0
                     }
                   ]
@@ -2281,12 +2013,10 @@
           "dataType": 16,
           "subForm": {
             "title": "Curves",
-            "description": "Curves",
             "fields": [
               {
                 "id": "type",
-                "title": "type",
-                "description": "type",
+                "title": "Type",
                 "dataType": 2,
                 "validity": [
                   {
@@ -2297,14 +2027,12 @@
               },
               {
                 "id": "nodes",
-                "title": "nodes",
-                "description": "nodes",
+                "title": "Nodes",
                 "dataType": 16
               },
               {
                 "id": "input",
-                "title": "input",
-                "description": "input",
+                "title": "Input",
                 "dataType": 24,
                 "alternates": [
                   {
@@ -2313,18 +2041,15 @@
                     "readOnly": true,
                     "subForm": {
                       "title": "Input",
-                      "description": "Input",
                       "fields": [
                         {
                           "id": "expression",
-                          "title": "expression",
-                          "description": "expression",
+                          "title": "Expression",
                           "dataType": 2
                         },
                         {
                           "id": "version",
-                          "title": "version",
-                          "description": "version",
+                          "title": "Version",
                           "dataType": 0
                         }
                       ]
@@ -2343,17 +2068,14 @@
     },
     {
       "id": "events",
-      "title": "events",
-      "description": "events",
+      "title": "Events",
       "dataType": 16,
       "subForm": {
         "title": "Particle Event Node",
-        "description": "Particle Event Node",
         "fields": [
           {
             "id": "expression",
-            "title": "expression",
-            "description": "expression",
+            "title": "Expression",
             "dataType": 24,
             "alternates": [
               {
@@ -2362,18 +2084,15 @@
                 "readOnly": true,
                 "subForm": {
                   "title": "Expression",
-                  "description": "Expression",
                   "fields": [
                     {
                       "id": "expression",
-                      "title": "expression",
-                      "description": "expression",
+                      "title": "Expression",
                       "dataType": 2
                     },
                     {
                       "id": "version",
-                      "title": "version",
-                      "description": "version",
+                      "title": "Version",
                       "dataType": 0
                     }
                   ]
@@ -2387,29 +2106,24 @@
           },
           {
             "id": "log",
-            "title": "log",
-            "description": "log",
+            "title": "Log",
             "dataType": 2
           },
           {
             "id": "particle_effect",
-            "title": "particle_effect",
-            "description": "particle_effect",
+            "title": "Particle Effect",
             "dataType": 16,
             "subForm": {
               "title": "Particle Visual Effect Event",
-              "description": "Particle Visual Effect Event",
               "fields": [
                 {
                   "id": "effect",
-                  "title": "effect",
-                  "description": "effect",
+                  "title": "Effect",
                   "dataType": 16
                 },
                 {
                   "id": "pre_effect_expression",
-                  "title": "pre_effect_expression",
-                  "description": "pre_effect_expression",
+                  "title": "Pre Effect Expression",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -2418,18 +2132,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Pre Effect Expression",
-                        "description": "Pre Effect Expression",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -2443,8 +2154,7 @@
                 },
                 {
                   "id": "type",
-                  "title": "particle_visual_effect_event effect_type",
-                  "description": "particle_visual_effect_event effect_type",
+                  "title": "Particle Visual Effect Event Effect Type",
                   "dataType": 2
                 }
               ]
@@ -2452,17 +2162,14 @@
           },
           {
             "id": "sequence",
-            "title": "sequence",
-            "description": "sequence",
+            "title": "Sequence",
             "dataType": 15,
             "subForm": {
               "title": "Particle Event Node",
-              "description": "Particle Event Node",
               "fields": [
                 {
                   "id": "expression",
-                  "title": "expression",
-                  "description": "expression",
+                  "title": "Expression",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -2471,18 +2178,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Expression",
-                        "description": "Expression",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -2496,29 +2200,24 @@
                 },
                 {
                   "id": "log",
-                  "title": "log",
-                  "description": "log",
+                  "title": "Log",
                   "dataType": 2
                 },
                 {
                   "id": "particle_effect",
-                  "title": "particle_effect",
-                  "description": "particle_effect",
+                  "title": "Particle Effect",
                   "dataType": 16,
                   "subForm": {
                     "title": "Particle Visual Effect Event",
-                    "description": "Particle Visual Effect Event",
                     "fields": [
                       {
                         "id": "effect",
-                        "title": "effect",
-                        "description": "effect",
+                        "title": "Effect",
                         "dataType": 16
                       },
                       {
                         "id": "pre_effect_expression",
-                        "title": "pre_effect_expression",
-                        "description": "pre_effect_expression",
+                        "title": "Pre Effect Expression",
                         "dataType": 24,
                         "alternates": [
                           {
@@ -2527,18 +2226,15 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Pre Effect Expression",
-                              "description": "Pre Effect Expression",
                               "fields": [
                                 {
                                   "id": "expression",
-                                  "title": "expression",
-                                  "description": "expression",
+                                  "title": "Expression",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "version",
-                                  "title": "version",
-                                  "description": "version",
+                                  "title": "Version",
                                   "dataType": 0
                                 }
                               ]
@@ -2552,8 +2248,7 @@
                       },
                       {
                         "id": "type",
-                        "title": "particle_visual_effect_event effect_type",
-                        "description": "particle_visual_effect_event effect_type",
+                        "title": "Particle Visual Effect Event Effect Type",
                         "dataType": 2
                       }
                     ]
@@ -2561,23 +2256,19 @@
                 },
                 {
                   "id": "sequence",
-                  "title": "sequence",
-                  "description": "sequence",
+                  "title": "Sequence",
                   "dataType": 16
                 },
                 {
                   "id": "sound_effect",
-                  "title": "sound_effect",
-                  "description": "sound_effect",
+                  "title": "Sound Effect",
                   "dataType": 16,
                   "subForm": {
                     "title": "Particle Sound Effect Event",
-                    "description": "Particle Sound Effect Event",
                     "fields": [
                       {
                         "id": "event_name",
-                        "title": "event_name",
-                        "description": "event_name",
+                        "title": "Event Name",
                         "dataType": 2
                       }
                     ]
@@ -2585,38 +2276,31 @@
                 },
                 {
                   "id": "randomize",
-                  "title": "randomize",
-                  "description": "randomize",
+                  "title": "Randomize",
                   "dataType": 15,
                   "subForm": {
                     "title": "Particle Event Random Node",
-                    "description": "Particle Event Random Node",
                     "fields": [
                       {
                         "id": "log",
-                        "title": "log",
-                        "description": "log",
+                        "title": "Log",
                         "dataType": 2
                       },
                       {
                         "id": "particle_effect",
-                        "title": "particle_effect",
-                        "description": "particle_effect",
+                        "title": "Particle Effect",
                         "dataType": 16,
                         "subForm": {
                           "title": "Particle Visual Effect Event",
-                          "description": "Particle Visual Effect Event",
                           "fields": [
                             {
                               "id": "effect",
-                              "title": "effect",
-                              "description": "effect",
+                              "title": "Effect",
                               "dataType": 16
                             },
                             {
                               "id": "pre_effect_expression",
-                              "title": "pre_effect_expression",
-                              "description": "pre_effect_expression",
+                              "title": "Pre Effect Expression",
                               "dataType": 24,
                               "alternates": [
                                 {
@@ -2625,18 +2309,15 @@
                                   "readOnly": true,
                                   "subForm": {
                                     "title": "Pre Effect Expression",
-                                    "description": "Pre Effect Expression",
                                     "fields": [
                                       {
                                         "id": "expression",
-                                        "title": "expression",
-                                        "description": "expression",
+                                        "title": "Expression",
                                         "dataType": 2
                                       },
                                       {
                                         "id": "version",
-                                        "title": "version",
-                                        "description": "version",
+                                        "title": "Version",
                                         "dataType": 0
                                       }
                                     ]
@@ -2650,8 +2331,7 @@
                             },
                             {
                               "id": "type",
-                              "title": "particle_visual_effect_event effect_type",
-                              "description": "particle_visual_effect_event effect_type",
+                              "title": "Particle Visual Effect Event Effect Type",
                               "dataType": 2
                             }
                           ]
@@ -2659,23 +2339,19 @@
                       },
                       {
                         "id": "weight",
-                        "title": "weight",
-                        "description": "weight",
+                        "title": "Weight",
                         "dataType": 3
                       },
                       {
                         "id": "sound_effect",
-                        "title": "sound_effect",
-                        "description": "sound_effect",
+                        "title": "Sound Effect",
                         "dataType": 16,
                         "subForm": {
                           "title": "Particle Sound Effect Event",
-                          "description": "Particle Sound Effect Event",
                           "fields": [
                             {
                               "id": "event_name",
-                              "title": "event_name",
-                              "description": "event_name",
+                              "title": "Event Name",
                               "dataType": 2
                             }
                           ]
@@ -2683,20 +2359,17 @@
                       },
                       {
                         "id": "sequence",
-                        "title": "sequence",
-                        "description": "sequence",
+                        "title": "Sequence",
                         "dataType": 16
                       },
                       {
                         "id": "randomize",
-                        "title": "randomize",
-                        "description": "randomize",
+                        "title": "Randomize",
                         "dataType": 16
                       },
                       {
                         "id": "expression",
-                        "title": "expression",
-                        "description": "expression",
+                        "title": "Expression",
                         "dataType": 24,
                         "alternates": [
                           {
@@ -2705,18 +2378,15 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Expression",
-                              "description": "Expression",
                               "fields": [
                                 {
                                   "id": "expression",
-                                  "title": "expression",
-                                  "description": "expression",
+                                  "title": "Expression",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "version",
-                                  "title": "version",
-                                  "description": "version",
+                                  "title": "Version",
                                   "dataType": 0
                                 }
                               ]
@@ -2736,17 +2406,14 @@
           },
           {
             "id": "sound_effect",
-            "title": "sound_effect",
-            "description": "sound_effect",
+            "title": "Sound Effect",
             "dataType": 16,
             "subForm": {
               "title": "Particle Sound Effect Event",
-              "description": "Particle Sound Effect Event",
               "fields": [
                 {
                   "id": "event_name",
-                  "title": "event_name",
-                  "description": "event_name",
+                  "title": "Event Name",
                   "dataType": 2
                 }
               ]
@@ -2754,38 +2421,31 @@
           },
           {
             "id": "randomize",
-            "title": "randomize",
-            "description": "randomize",
+            "title": "Randomize",
             "dataType": 15,
             "subForm": {
               "title": "Particle Event Random Node",
-              "description": "Particle Event Random Node",
               "fields": [
                 {
                   "id": "log",
-                  "title": "log",
-                  "description": "log",
+                  "title": "Log",
                   "dataType": 2
                 },
                 {
                   "id": "particle_effect",
-                  "title": "particle_effect",
-                  "description": "particle_effect",
+                  "title": "Particle Effect",
                   "dataType": 16,
                   "subForm": {
                     "title": "Particle Visual Effect Event",
-                    "description": "Particle Visual Effect Event",
                     "fields": [
                       {
                         "id": "effect",
-                        "title": "effect",
-                        "description": "effect",
+                        "title": "Effect",
                         "dataType": 16
                       },
                       {
                         "id": "pre_effect_expression",
-                        "title": "pre_effect_expression",
-                        "description": "pre_effect_expression",
+                        "title": "Pre Effect Expression",
                         "dataType": 24,
                         "alternates": [
                           {
@@ -2794,18 +2454,15 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Pre Effect Expression",
-                              "description": "Pre Effect Expression",
                               "fields": [
                                 {
                                   "id": "expression",
-                                  "title": "expression",
-                                  "description": "expression",
+                                  "title": "Expression",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "version",
-                                  "title": "version",
-                                  "description": "version",
+                                  "title": "Version",
                                   "dataType": 0
                                 }
                               ]
@@ -2819,8 +2476,7 @@
                       },
                       {
                         "id": "type",
-                        "title": "particle_visual_effect_event effect_type",
-                        "description": "particle_visual_effect_event effect_type",
+                        "title": "Particle Visual Effect Event Effect Type",
                         "dataType": 2
                       }
                     ]
@@ -2828,23 +2484,19 @@
                 },
                 {
                   "id": "weight",
-                  "title": "weight",
-                  "description": "weight",
+                  "title": "Weight",
                   "dataType": 3
                 },
                 {
                   "id": "sound_effect",
-                  "title": "sound_effect",
-                  "description": "sound_effect",
+                  "title": "Sound Effect",
                   "dataType": 16,
                   "subForm": {
                     "title": "Particle Sound Effect Event",
-                    "description": "Particle Sound Effect Event",
                     "fields": [
                       {
                         "id": "event_name",
-                        "title": "event_name",
-                        "description": "event_name",
+                        "title": "Event Name",
                         "dataType": 2
                       }
                     ]
@@ -2852,17 +2504,14 @@
                 },
                 {
                   "id": "sequence",
-                  "title": "sequence",
-                  "description": "sequence",
+                  "title": "Sequence",
                   "dataType": 15,
                   "subForm": {
                     "title": "Particle Event Node",
-                    "description": "Particle Event Node",
                     "fields": [
                       {
                         "id": "expression",
-                        "title": "expression",
-                        "description": "expression",
+                        "title": "Expression",
                         "dataType": 24,
                         "alternates": [
                           {
@@ -2871,18 +2520,15 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Expression",
-                              "description": "Expression",
                               "fields": [
                                 {
                                   "id": "expression",
-                                  "title": "expression",
-                                  "description": "expression",
+                                  "title": "Expression",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "version",
-                                  "title": "version",
-                                  "description": "version",
+                                  "title": "Version",
                                   "dataType": 0
                                 }
                               ]
@@ -2896,29 +2542,24 @@
                       },
                       {
                         "id": "log",
-                        "title": "log",
-                        "description": "log",
+                        "title": "Log",
                         "dataType": 2
                       },
                       {
                         "id": "particle_effect",
-                        "title": "particle_effect",
-                        "description": "particle_effect",
+                        "title": "Particle Effect",
                         "dataType": 16,
                         "subForm": {
                           "title": "Particle Visual Effect Event",
-                          "description": "Particle Visual Effect Event",
                           "fields": [
                             {
                               "id": "effect",
-                              "title": "effect",
-                              "description": "effect",
+                              "title": "Effect",
                               "dataType": 16
                             },
                             {
                               "id": "pre_effect_expression",
-                              "title": "pre_effect_expression",
-                              "description": "pre_effect_expression",
+                              "title": "Pre Effect Expression",
                               "dataType": 24,
                               "alternates": [
                                 {
@@ -2927,18 +2568,15 @@
                                   "readOnly": true,
                                   "subForm": {
                                     "title": "Pre Effect Expression",
-                                    "description": "Pre Effect Expression",
                                     "fields": [
                                       {
                                         "id": "expression",
-                                        "title": "expression",
-                                        "description": "expression",
+                                        "title": "Expression",
                                         "dataType": 2
                                       },
                                       {
                                         "id": "version",
-                                        "title": "version",
-                                        "description": "version",
+                                        "title": "Version",
                                         "dataType": 0
                                       }
                                     ]
@@ -2952,8 +2590,7 @@
                             },
                             {
                               "id": "type",
-                              "title": "particle_visual_effect_event effect_type",
-                              "description": "particle_visual_effect_event effect_type",
+                              "title": "Particle Visual Effect Event Effect Type",
                               "dataType": 2
                             }
                           ]
@@ -2961,23 +2598,19 @@
                       },
                       {
                         "id": "sequence",
-                        "title": "sequence",
-                        "description": "sequence",
+                        "title": "Sequence",
                         "dataType": 16
                       },
                       {
                         "id": "sound_effect",
-                        "title": "sound_effect",
-                        "description": "sound_effect",
+                        "title": "Sound Effect",
                         "dataType": 16,
                         "subForm": {
                           "title": "Particle Sound Effect Event",
-                          "description": "Particle Sound Effect Event",
                           "fields": [
                             {
                               "id": "event_name",
-                              "title": "event_name",
-                              "description": "event_name",
+                              "title": "Event Name",
                               "dataType": 2
                             }
                           ]
@@ -2985,8 +2618,7 @@
                       },
                       {
                         "id": "randomize",
-                        "title": "randomize",
-                        "description": "randomize",
+                        "title": "Randomize",
                         "dataType": 16
                       }
                     ]
@@ -2994,14 +2626,12 @@
                 },
                 {
                   "id": "randomize",
-                  "title": "randomize",
-                  "description": "randomize",
+                  "title": "Randomize",
                   "dataType": 16
                 },
                 {
                   "id": "expression",
-                  "title": "expression",
-                  "description": "expression",
+                  "title": "Expression",
                   "dataType": 24,
                   "alternates": [
                     {
@@ -3010,18 +2640,15 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Expression",
-                        "description": "Expression",
                         "fields": [
                           {
                             "id": "expression",
-                            "title": "expression",
-                            "description": "expression",
+                            "title": "Expression",
                             "dataType": 2
                           },
                           {
                             "id": "version",
-                            "title": "version",
-                            "description": "version",
+                            "title": "Version",
                             "dataType": 0
                           }
                         ]
@@ -3040,6 +2667,5 @@
       }
     }
   ],
-  "description": "Particle Effect Misc",
   "title": "Particle Effect Misc"
 }

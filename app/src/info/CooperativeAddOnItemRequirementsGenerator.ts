@@ -72,8 +72,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.file) {
-        const rpManifest = await ResourceManifestDefinition.ensureOnFile(projectItem.file);
+      if (projectItem.availableFile) {
+        const rpManifest = await ResourceManifestDefinition.ensureOnFile(projectItem.availableFile);
 
         if (rpManifest) {
           await rpManifest.load();
@@ -95,8 +95,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.animationControllerBehaviorJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.file) {
-        const bacManifest = await AnimationControllerBehaviorDefinition.ensureOnFile(projectItem.file);
+      if (projectItem.availableFile) {
+        const bacManifest = await AnimationControllerBehaviorDefinition.ensureOnFile(projectItem.availableFile);
 
         if (bacManifest && bacManifest.data && bacManifest.data.animation_controllers) {
           for (let bacName in bacManifest.data.animation_controllers) {
@@ -133,8 +133,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.animationBehaviorJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.file) {
-        const baManifest = await AnimationBehaviorDefinition.ensureOnFile(projectItem.file);
+      if (projectItem.availableFile) {
+        const baManifest = await AnimationBehaviorDefinition.ensureOnFile(projectItem.availableFile);
 
         if (baManifest && baManifest.data && baManifest.data.animations) {
           for (let aName in baManifest.data.animations) {
@@ -171,8 +171,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.animationControllerResourceJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.file) {
-        const racManifest = await AnimationControllerResourceDefinition.ensureOnFile(projectItem.file);
+      if (projectItem.availableFile) {
+        const racManifest = await AnimationControllerResourceDefinition.ensureOnFile(projectItem.availableFile);
 
         if (racManifest && racManifest.data && racManifest.data.animation_controllers) {
           for (let racName in racManifest.data.animation_controllers) {
@@ -209,8 +209,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.animationResourceJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.file) {
-        const raManifest = await AnimationResourceDefinition.ensureOnFile(projectItem.file);
+      if (projectItem.availableFile) {
+        const raManifest = await AnimationResourceDefinition.ensureOnFile(projectItem.availableFile);
 
         if (raManifest && raManifest.animations) {
           for (let aName in raManifest.animations) {
@@ -247,8 +247,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.renderControllerJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.file) {
-        const racManifest = await RenderControllerSetDefinition.ensureOnFile(projectItem.file);
+      if (projectItem.availableFile) {
+        const racManifest = await RenderControllerSetDefinition.ensureOnFile(projectItem.availableFile);
 
         if (racManifest && racManifest.data && racManifest.data.render_controllers) {
           for (let rrcName in racManifest.data.render_controllers) {
@@ -285,8 +285,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.modelGeometryJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.file) {
-        const modGeo = await ModelGeometryDefinition.ensureOnFile(projectItem.file);
+      if (projectItem.availableFile) {
+        const modGeo = await ModelGeometryDefinition.ensureOnFile(projectItem.availableFile);
 
         if (modGeo) {
           for (const modId of modGeo.identifiers) {
@@ -330,7 +330,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     ) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.file) {
+      if (projectItem.availableFile) {
         const projectItemDef = await MinecraftDefinitions.get(projectItem);
 
         if (projectItemDef && projectItemDef.id) {
@@ -352,8 +352,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.material) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.file) {
-        const mat = await Material.ensureOnFile(projectItem.file);
+      if (projectItem.availableFile) {
+        const mat = await Material.ensureOnFile(projectItem.availableFile);
 
         if (mat && mat.definition && mat.definition.materials) {
           for (const modId in mat.definition.materials) {

@@ -2,7 +2,7 @@
   "fields": [
     {
       "id": "value",
-      "title": "value",
+      "title": "Value",
       "description": "Name shown for an item.",
       "dataType": 2,
       "samples": {

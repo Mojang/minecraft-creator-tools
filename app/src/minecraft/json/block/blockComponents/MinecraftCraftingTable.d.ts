@@ -11,6 +11,17 @@
  * 
  * minecraft:crafting_table Samples
 
+Example - Example
+
+"minecraft:crafting_table": {
+  "crafting_tags": [
+    "crafting_table",
+    "custom_crafting_tag"
+  ],
+  "table_name": "My Crafting Table"
+}
+
+
 Block Fabricator - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json
 
 "minecraft:crafting_table": {

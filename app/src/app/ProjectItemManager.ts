@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import Project from "./Project";
+import Project, { FolderContext } from "./Project";
 import ProjectContent from "./ProjectContent";
 import { ProjectScriptLanguage } from "./IProjectData";
 import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "./IProjectItemData";
@@ -139,6 +139,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       itemType === ProjectItemType.js ? ProjectItemType.js : ProjectItemType.ts,
+      FolderContext.behaviorPack,
       undefined,
       ProjectItemCreationType.normal
     );
@@ -323,6 +324,7 @@ export default class ProjectItemManager {
 
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.testJs,
+      FolderContext.behaviorPack,
       undefined,
       ProjectItemCreationType.normal
     );
@@ -374,6 +376,7 @@ export default class ProjectItemManager {
 
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.MCFunction,
+      FolderContext.behaviorPack,
       undefined,
       ProjectItemCreationType.normal
     );
@@ -412,6 +415,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.structure,
+      FolderContext.behaviorPack,
       undefined,
       ProjectItemCreationType.normal
     );
@@ -452,6 +456,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.actionSet,
+      FolderContext.behaviorPack,
       undefined,
       ProjectItemCreationType.normal
     );
@@ -487,6 +492,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.folder,
       candidateFolderPath,
       ProjectItemType.documentedTypeFolder,
+      FolderContext.metaData,
       undefined,
       ProjectItemCreationType.normal
     );
@@ -504,8 +510,8 @@ export default class ProjectItemManager {
     }
 
     for (const item of project.items) {
-      if (item.itemType === itemType && item.file) {
-        return item.file.parentFolder.getFolderRelativePath(project.projectFolder);
+      if (item.itemType === itemType && item.defaultFile) {
+        return item.defaultFile.parentFolder.getFolderRelativePath(project.projectFolder);
       }
     }
 
@@ -552,6 +558,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.dataForm,
+      FolderContext.metaData,
       undefined,
       ProjectItemCreationType.normal
     );
@@ -579,14 +586,14 @@ export default class ProjectItemManager {
     if (items.length > 0) {
       await items[0].ensureStorage();
 
-      if (items[0].file) {
-        await items[0].file.loadContent();
+      if (items[0].defaultFile) {
+        await items[0].defaultFile.loadContent();
 
-        if (!items[0].file.content) {
-          this.setFileToDefaultContent(items[0].file);
+        if (!items[0].defaultFile.content) {
+          this.setFileToDefaultContent(items[0].defaultFile);
         }
 
-        return await SoundDefinitionCatalogDefinition.ensureOnFile(items[0].file);
+        return await SoundDefinitionCatalogDefinition.ensureOnFile(items[0].defaultFile);
       }
     }
 
@@ -618,6 +625,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.soundDefinitionCatalog,
+      FolderContext.resourcePack,
       undefined,
       ProjectItemCreationType.normal
     );
@@ -650,8 +658,8 @@ export default class ProjectItemManager {
     if (items.length > 0) {
       await items[0].ensureStorage();
 
-      if (items[0].file) {
-        return await SoundCatalogDefinition.ensureOnFile(items[0].file);
+      if (items[0].defaultFile) {
+        return await SoundCatalogDefinition.ensureOnFile(items[0].defaultFile);
       }
     }
 
@@ -678,6 +686,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.soundCatalog,
+      FolderContext.resourcePack,
       undefined,
       ProjectItemCreationType.normal
     );
@@ -739,6 +748,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.spawnRuleBehavior,
+      FolderContext.behaviorPack,
       undefined,
       ProjectItemCreationType.normal
     );
@@ -813,6 +823,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.audio,
+      FolderContext.resourcePack,
       undefined,
       ProjectItemCreationType.normal
     );
@@ -875,6 +886,7 @@ export default class ProjectItemManager {
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
       ProjectItemType.worldTest,
+      FolderContext.behaviorPack,
       undefined,
       ProjectItemCreationType.normal
     );
