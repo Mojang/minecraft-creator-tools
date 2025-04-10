@@ -22,6 +22,9 @@ export enum TextureImageInfoGeneratorTest {
   individualTextureMemoryExceedsBudget = 402,
   totalTextureMemoryExceedsBudget = 403,
   tgaImageProcessingError = 404,
+  individualAtlasTextureMemoryExceedsBudget = 405,
+  totalAtlasTextureMemoryExceedsBudgetWarn = 406,
+  totalAtlasTextureMemoryExceedsBudgetError = 407,
 }
 
 export default class TextureImageInfoGenerator implements IProjectInfoGenerator {
@@ -55,6 +58,8 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
     const itemsCopy = project.getItemsCopy();
 
     let totalTextureMemory = 0;
+    let totalBlockAtlasTextureMemory = 0;
+    let totalItemAtlasTextureMemory = 0;
     for (const projectItem of itemsCopy) {
       if (projectItem.itemType === ProjectItemType.texture) {
         await projectItem.ensureFileStorage();
@@ -95,7 +100,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
                   imageWidth = results.ImageWidth;
                   imageHeight = results.ImageHeight;
 
-                  const pngJpgTextureMem = Math.pow(2, Math.ceil(Math.log2(imageWidth * imageHeight * 4)));
+                  const pngJpgTextureMem = imageWidth * imageHeight * 4;
 
                   textureImagePi.spectrumIntFeature("PNGJPG Width", imageWidth);
                   textureImagePi.spectrumIntFeature("PNGJPG Height", imageHeight);
@@ -127,7 +132,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
                 imageWidth = tga.image.width;
                 imageHeight = tga.image.height;
 
-                const tgaTextureMem = Math.pow(2, Math.ceil(Math.log2(imageWidth * imageHeight * 4)));
+                const tgaTextureMem = imageWidth * imageHeight * 4;
 
                 textureImagePi.spectrumIntFeature("TGA Width", imageWidth);
                 textureImagePi.spectrumIntFeature("TGA Height", imageHeight);
@@ -149,7 +154,8 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
           }
 
           if (imageWidth >= 0 && imageHeight >= 0) {
-            const textureMem = Math.pow(2, Math.ceil(Math.log2(imageWidth * imageHeight * 4)));
+            const textureMem = imageWidth * imageHeight * 4;
+            let isAtlasTexture = false;
 
             textureImagePi.spectrumIntFeature("Width", imageWidth);
             textureImagePi.spectrumIntFeature("Height", imageHeight);
@@ -188,6 +194,9 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
               }
 
               relations++;
+
+              isAtlasTexture = true;
+              totalBlockAtlasTextureMemory += textureMem;
             }
 
             if (ProjectItemUtilities.isEntityRelated(projectItem)) {
@@ -216,6 +225,9 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
               }
 
               relations++;
+
+              isAtlasTexture = true;
+              totalItemAtlasTextureMemory += textureMem;
             }
 
             if (ProjectItemUtilities.isParticleRelated(projectItem)) {
@@ -267,42 +279,103 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
               }
             }
 
-            totalTextureMemory += textureMem;
+            let individualMemoryBudget = 2048 * 2048 * 4;
 
-            // Empirical threshold for loose textures set below 2048*2048 per texture
-            let individualMemoryBudget = 16000000;
-
-            if (projectItem.parentItems) {
-              for (const itemRelationship of projectItem.parentItems) {
-                if (
-                  itemRelationship.parentItem.itemType === ProjectItemType.terrainTextureCatalogResourceJson ||
-                  itemRelationship.parentItem.itemType === ProjectItemType.itemTextureJson
-                ) {
-                  // Empirical threshold for atlas textures set below 256*256 per texture
-                  individualMemoryBudget = 200000;
-                  break;
-                }
+            if (isAtlasTexture) {
+              individualMemoryBudget = 256 * 256 * 4;
+              if (textureMem > individualMemoryBudget) {
+                items.push(
+                  new ProjectInfoItem(
+                    InfoItemType.warning,
+                    this.id,
+                    TextureImageInfoGeneratorTest.individualAtlasTextureMemoryExceedsBudget,
+                    `Individual atlassed texture memory exceeds budget of ${individualMemoryBudget} bytes. Memory used`,
+                    projectItem,
+                    textureMem
+                  )
+                );
               }
-            }
+            } else {
+              totalTextureMemory += textureMem;
 
-            if (textureMem > individualMemoryBudget) {
-              items.push(
-                new ProjectInfoItem(
-                  InfoItemType.warning,
-                  this.id,
-                  TextureImageInfoGeneratorTest.individualTextureMemoryExceedsBudget,
-                  `Individual texture memory exceeds budget of ${individualMemoryBudget} bytes. Memory used`,
-                  projectItem,
-                  textureMem
-                )
-              );
+              if (textureMem > individualMemoryBudget) {
+                items.push(
+                  new ProjectInfoItem(
+                    InfoItemType.warning,
+                    this.id,
+                    TextureImageInfoGeneratorTest.individualTextureMemoryExceedsBudget,
+                    `Individual loose texture memory exceeds budget of ${individualMemoryBudget} bytes. Memory used`,
+                    projectItem,
+                    textureMem
+                  )
+                );
+              }
             }
           }
         }
       }
     }
 
-    const totalTextureMemoryBudget = 100000000;
+    // Expand atlases to power of 2
+    totalBlockAtlasTextureMemory = Math.pow(2, Math.ceil(Math.log2(totalBlockAtlasTextureMemory)));
+    totalItemAtlasTextureMemory = Math.pow(2, Math.ceil(Math.log2(totalItemAtlasTextureMemory)));
+
+    // 4K limit for warn, 8K as hard limit
+    const totalAtlasTextureMemoryBudgetWarn = 4096 * 4096 * 4;
+    const totalAtlasTextureMemoryBudgetError = totalAtlasTextureMemoryBudgetWarn * 4;
+    if (totalBlockAtlasTextureMemory > totalAtlasTextureMemoryBudgetError) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.error,
+          this.id,
+          TextureImageInfoGeneratorTest.totalAtlasTextureMemoryExceedsBudgetError,
+          `Texture memory of block atlas exceeds hard limit of ${totalAtlasTextureMemoryBudgetError} bytes. Total memory used`,
+          undefined,
+          totalBlockAtlasTextureMemory
+        )
+      );
+    } else if (totalBlockAtlasTextureMemory > totalAtlasTextureMemoryBudgetWarn) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.warning,
+          this.id,
+          TextureImageInfoGeneratorTest.totalAtlasTextureMemoryExceedsBudgetWarn,
+          `Texture memory of block atlas exceeds budget of ${totalAtlasTextureMemoryBudgetWarn} bytes. Total memory used`,
+          undefined,
+          totalBlockAtlasTextureMemory
+        )
+      );
+    }
+
+    if (totalItemAtlasTextureMemory > totalAtlasTextureMemoryBudgetError) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.error,
+          this.id,
+          TextureImageInfoGeneratorTest.totalAtlasTextureMemoryExceedsBudgetError,
+          `Texture memory of block atlas exceeds hard limit of ${totalAtlasTextureMemoryBudgetError} bytes. Total memory used`,
+          undefined,
+          totalItemAtlasTextureMemory
+        )
+      );
+    } else if (totalItemAtlasTextureMemory > totalAtlasTextureMemoryBudgetWarn) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.warning,
+          this.id,
+          TextureImageInfoGeneratorTest.totalAtlasTextureMemoryExceedsBudgetWarn,
+          `Texture memory of block atlas exceeds budget of ${totalAtlasTextureMemoryBudgetWarn} bytes. Total memory used`,
+          undefined,
+          totalItemAtlasTextureMemory
+        )
+      );
+    }
+
+    totalTextureMemory += totalBlockAtlasTextureMemory + totalItemAtlasTextureMemory;
+
+    // TODO: Potentially add multiple tiers of warning/error for total texmem
+    // Total texmem limit of 150 MB
+    const totalTextureMemoryBudget = 1024 * 1024 * 150;
     if (totalTextureMemory > totalTextureMemoryBudget) {
       items.push(
         new ProjectInfoItem(

@@ -22,7 +22,6 @@ import CartoApp, { HostType } from "../app/CartoApp";
 import TextEditor from "./TextEditor";
 import NpmPackageEditor from "./NpmPackageEditor";
 import BehaviorPackManifestJsonEditor from "./BehaviorPackManifestJsonEditor";
-import ImageManager from "./ImageManager";
 import DataFormEditor from "./DataFormEditor";
 import ProjectItemUtilities, { FormMappings } from "../app/ProjectItemUtilities";
 import ProjectInfoDisplay from "./ProjectInfoDisplay";
@@ -39,6 +38,7 @@ import { CustomTabLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IFile from "../storage/IFile";
 import { faFile } from "@fortawesome/free-regular-svg-icons";
+import ImageEditor from "./ImageEditor";
 
 enum ProjectItemEditorDirtyState {
   clean = 0,
@@ -360,7 +360,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           }
         } else if (file.type === "png" || file.type === "jpg" || file.type === "jpeg" || file.type === "tga") {
           interior = (
-            <ImageManager
+            <ImageEditor
               readOnly={this.props.readOnly}
               heightOffset={heightOffset}
               visualSeed={this.props.visualSeed}
