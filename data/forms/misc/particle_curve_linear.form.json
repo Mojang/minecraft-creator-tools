@@ -1,0 +1,103 @@
+{
+  "fields": [
+    {
+      "id": "type",
+      "title": "Type",
+      "dataType": 16
+    },
+    {
+      "id": "nodes",
+      "title": "Nodes",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "nodes",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "title": "Nodes",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "nodes",
+          "dataType": 3
+        }
+      ]
+    },
+    {
+      "id": "input",
+      "title": "Input",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "input",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "title": "Input",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "input",
+          "dataType": 3
+        }
+      ]
+    },
+    {
+      "id": "horizontal_range",
+      "title": "Horizontal Range",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "horizontal_range",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "title": "Horizontal Range",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "horizontal_range",
+          "dataType": 3
+        }
+      ]
+    }
+  ],
+  "title": "Particle Curve Linear Misc"
+}

@@ -1,0 +1,30 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": {
+    "identifier": "minecraft:glow_frame"
+    },
+
+    
+    "tags": [ "crafting_table" ],
+    "ingredients": [
+      {
+        "item": "minecraft:frame"
+      },
+      {
+        "item": "minecraft:glow_ink_sac"
+      }
+    ],
+	"unlock": [
+      {
+        "item": "minecraft:frame"
+	  },
+	  {
+		"item": "minecraft:glow_ink_sac"
+      }
+    ],
+    "result": {
+      "item": "minecraft:glow_frame"
+    }
+  }
+}

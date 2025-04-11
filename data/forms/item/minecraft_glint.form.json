@@ -1,0 +1,22 @@
+{
+  "description": "Determines whether the item has the enchanted glint render effect on it.",
+  "scalarFieldUpgradeName": "value",
+  "fields": [
+    {
+      "id": "value",
+      "title": "value",
+      "description": "Whether the item has the enchanted glint render effect.",
+      "dataType": 1
+    }
+  ],
+  "title": "Glint",
+  "samples": {
+    "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/depleted_gray_shard.item.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:glint/",
+        "content": true
+      }
+    ]
+  },
+  "id": "minecraft:glint"
+}

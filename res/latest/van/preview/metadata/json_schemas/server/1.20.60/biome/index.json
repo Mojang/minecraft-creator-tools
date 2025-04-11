@@ -1,0 +1,22 @@
+{
+  "files": [
+    "Biome Components.json",
+    "Biome Description.json",
+    "Biome Document.json",
+    "Biome Object.json",
+    "Capped Surface Biome Component.json",
+    "Climate Biome Component.json",
+    "Creature Spawn Probability Biome Component.json",
+    "Frozen Ocean Surface Biome Component.json",
+    "Mesa Surface Biome Component.json",
+    "Mountain Parameters Biome Component.json",
+    "Multinoise Generation Rules Biome Component.json",
+    "Overworld Generation Rules Biome Component.json",
+    "Overworld Height Biome Component.json",
+    "Surface Material Adjustments Biome Component.json",
+    "Surface Parameters Component.json",
+    "Swamp Surface Biome Component.json",
+    "The End Surface Biome Component.json"
+  ],
+  "folders": []
+}

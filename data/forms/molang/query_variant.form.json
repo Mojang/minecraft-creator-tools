@@ -1,0 +1,6 @@
+{
+  "id": "query.variant",
+  "fields": [],
+  "description": "Returns the entity's variant index",
+  "title": "Variant Query"
+}

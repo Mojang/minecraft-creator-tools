@@ -1,0 +1,12 @@
+{
+  "fields": [
+    {
+      "id": "water_identifier",
+      "title": "Water Identifier",
+      "description": "Identifier of water definition to use",
+      "dataType": 2
+    }
+  ],
+  "description": "[INTERNAL - WORK IN PROGRESS] Set the water settings used during deferred rendering. Biomes without this component will have default water settings.",
+  "title": "Minecraft Water Identifier Client Biome"
+}

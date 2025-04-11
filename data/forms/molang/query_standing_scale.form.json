@@ -1,0 +1,6 @@
+{
+  "id": "query.standing_scale",
+  "fields": [],
+  "description": "Returns the scale of how standing up the entity is.",
+  "title": "Standing Scale Query"
+}

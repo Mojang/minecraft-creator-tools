@@ -1,0 +1,6 @@
+{
+  "id": "query.total_emitter_count",
+  "fields": [],
+  "description": "Returns the total number of active emitters in the world.",
+  "title": "Total Emitter Count Query"
+}

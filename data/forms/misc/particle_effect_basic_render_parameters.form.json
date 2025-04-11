@@ -1,0 +1,16 @@
+{
+  "fields": [
+    {
+      "id": "material",
+      "title": "Material",
+      "dataType": 16
+    },
+    {
+      "id": "texture",
+      "title": "Texture",
+      "dataType": 2
+    }
+  ],
+  "description": "The parameters MUST contain a material and texture.",
+  "title": "Particle Effect Basic Render Parameters Misc"
+}

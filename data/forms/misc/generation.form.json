@@ -1,0 +1,10 @@
+{
+  "fields": [
+    {
+      "id": "generator_type",
+      "title": "Generator Type",
+      "dataType": 2
+    }
+  ],
+  "title": "Generation Misc"
+}

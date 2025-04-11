@@ -1,0 +1,6 @@
+{
+  "id": "query.graphics_mode_is_any",
+  "fields": [],
+  "description": "Takes in one or more arguments ('simple', 'fancy', 'deferred', 'raytraced'). If the graphics mode of the client matches any of the arguments, return 1.0. Available on the Client (Resource Packs) only.",
+  "title": "Graphics Mode Is Any Query"
+}

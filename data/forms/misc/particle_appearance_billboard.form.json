@@ -1,0 +1,53 @@
+{
+  "fields": [
+    {
+      "id": "size",
+      "title": "Size",
+      "dataType": 24,
+      "minLength": 2,
+      "maxLength": 2,
+      "alternates": [
+        {
+          "id": "size",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "title": "Size",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "size",
+          "dataType": 3
+        }
+      ]
+    },
+    {
+      "id": "facing_camera_mode",
+      "title": "Facing Camera Mode",
+      "dataType": 16
+    },
+    {
+      "id": "direction",
+      "title": "Direction",
+      "dataType": 16
+    },
+    {
+      "id": "uv",
+      "title": "Uv",
+      "dataType": 16
+    }
+  ],
+  "title": "Particle Appearance Billboard Misc"
+}

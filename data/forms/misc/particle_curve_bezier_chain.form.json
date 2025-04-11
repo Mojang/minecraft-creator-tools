@@ -1,0 +1,52 @@
+{
+  "fields": [
+    {
+      "id": "type",
+      "title": "Type",
+      "dataType": 2,
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^bezier_chain$"
+        }
+      ]
+    },
+    {
+      "id": "nodes",
+      "title": "Nodes",
+      "dataType": 16
+    },
+    {
+      "id": "input",
+      "title": "Input",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "input",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "title": "Input",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "input",
+          "dataType": 3
+        }
+      ]
+    }
+  ],
+  "title": "Particle Curve Bezier Chain Misc"
+}

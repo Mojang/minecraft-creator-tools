@@ -1,0 +1,6 @@
+{
+  "id": "query.is_orphaned",
+  "fields": [],
+  "description": "Returns 1.0 if the entity is orphaned, else it returns 0.0.",
+  "title": "Is Orphaned Query"
+}

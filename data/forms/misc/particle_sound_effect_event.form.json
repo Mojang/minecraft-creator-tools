@@ -1,0 +1,10 @@
+{
+  "fields": [
+    {
+      "id": "event_name",
+      "title": "Event Name",
+      "dataType": 2
+    }
+  ],
+  "title": "Particle Sound Effect Event Misc"
+}

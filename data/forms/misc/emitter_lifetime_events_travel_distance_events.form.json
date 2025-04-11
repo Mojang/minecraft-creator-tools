@@ -1,0 +1,25 @@
+{
+  "fields": [
+    {
+      "id": "distance",
+      "title": "Distance",
+      "dataType": 3
+    },
+    {
+      "id": "effects",
+      "title": "Effects",
+      "dataType": 15,
+      "alternates": [
+        {
+          "id": "effects",
+          "dataType": 16,
+          "subForm": {
+            "title": "Effects",
+            "fields": []
+          }
+        }
+      ]
+    }
+  ],
+  "title": "Emitter Lifetime Events Travel Distance Events Misc"
+}

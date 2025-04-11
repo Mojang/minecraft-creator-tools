@@ -1,0 +1,32 @@
+{
+  "format_version": "1.20.50",
+  "minecraft:item": {
+    "description": {
+      "identifier": "minecraft:apple",
+      "category": "nature"
+    },
+
+    "components": {
+			"minecraft:icon": {
+				"texture": "apple"
+			},
+      "minecraft:display_name":{
+        "value": "item.apple.name"
+      },
+      "minecraft:tags": {
+        "tags": [
+          "minecraft:is_food"
+        ]
+      },
+      "minecraft:use_animation": "eat",
+      "minecraft:use_modifiers": {
+        "use_duration": 1.6,
+        "movement_modifier": 0.35
+      },
+      "minecraft:food": {
+        "nutrition": 4,
+        "saturation_modifier": 0.3
+      }
+    }
+  }
+}

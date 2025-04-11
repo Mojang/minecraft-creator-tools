@@ -1,0 +1,12 @@
+{
+  "files": [
+    "README.md",
+    "package.json",
+    "tsconfig.json",
+    "package-lock.json"
+  ],
+  "folders": [
+    "behavior_packs",
+    "scripts"
+  ]
+}

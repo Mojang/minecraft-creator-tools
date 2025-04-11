@@ -1,0 +1,9 @@
+{
+  "files": [
+    "ItemObject.json",
+    "Components.json"
+  ],
+  "folders": [
+    "components"
+  ]
+}

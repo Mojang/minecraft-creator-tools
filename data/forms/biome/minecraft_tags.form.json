@@ -1,0 +1,12 @@
+{
+  "fields": [
+    {
+      "id": "tags",
+      "title": "Tags",
+      "description": "Array of string tags used by other systems such as entity spawning",
+      "dataType": 17
+    }
+  ],
+  "description": "Attach arbitrary string tags to this biome.",
+  "title": "Minecraft Tags Biome"
+}

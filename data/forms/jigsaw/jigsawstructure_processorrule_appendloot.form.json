@@ -1,0 +1,18 @@
+{
+  "fields": [
+    {
+      "id": "type",
+      "title": "PositionalBlockRuleAxis",
+      "description": "PositionalBlockRuleAxis",
+      "dataType": 2
+    },
+    {
+      "id": "loot_table",
+      "title": "loot_table",
+      "description": "The loot table to append",
+      "dataType": 2
+    }
+  ],
+  "description": "Modifier will attempt to add loot to a block entity.",
+  "title": "JigsawStructure ProcessorRule AppendLoot"
+}
