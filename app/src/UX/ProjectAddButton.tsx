@@ -8,17 +8,17 @@ import { SplitButton, Dialog, ThemeInput } from "@fluentui/react-northstar";
 
 import { GitHubPropertyType } from "./ProjectPropertyEditor";
 import NewEntityType from "./NewEntityType";
-import ProjectUtilities, { NewEntityTypeAddMode } from "../app/ProjectUtilities";
+import ProjectUtilities, { NewEntityTypeAddMode, NewItemTypeAddMode } from "../app/ProjectUtilities";
 import IGitHubInfo from "../app/IGitHubInfo";
 import ProjectItemManager from "../app/ProjectItemManager";
 import "./ProjectAddButton.css";
+import Utilities from "../core/Utilities";
 import NewBlockType from "./NewBlockType";
-import { ProjectScriptLanguage } from "../app/IProjectData";
+import { ProjectRole, ProjectScriptLanguage } from "../app/IProjectData";
 import IGalleryItem from "../app/IGalleryItem";
-import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import IProjectItemSeed from "../app/IProjectItemSeed";
-import NewItem from "./NewItem";
+import NewItemType from "./NewItemType";
 
 export enum EntityTypeCommand {
   select,
@@ -60,7 +60,7 @@ export enum ProjectAddButtonDialogType {
   noDialog = 0,
   newEntityTypeDialog = 3,
   newBlockTypeDialog = 5,
-  newItemDialog = 6,
+  newItemTypeDialog = 6,
 }
 
 export default class ProjectAddButton extends Component<IProjectAddButtonProps, IProjectAddButtonState> {
@@ -76,19 +76,20 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
   tentativeGitHubTitle?: string;
 
   tentativeNewEntityTypeAddMode?: NewEntityTypeAddMode;
-  tentativeNewEntityTypeName?: string;
+  tentativeNewTypeName?: string;
   tentativeNewEntityTypeItem?: IGalleryItem;
 
-  tentativeNewBlockTypeName?: string;
   tentativeNewBlockTypeItem?: IGalleryItem;
+  tentativeNewItemTypeItem?: IGalleryItem;
 
   constructor(props: IProjectAddButtonProps) {
     super(props);
 
-    this._updateNewItemSeed = this._updateNewItemSeed.bind(this);
+    this._newItemTypeUpdated = this._newItemTypeUpdated.bind(this);
 
     this._handleNewItem = this._handleNewItem.bind(this);
     this._handleNewScriptClick = this._handleNewScriptClick.bind(this);
+    this._handleNewFormClick = this._handleNewFormClick.bind(this);
     this._handleCancel = this._handleCancel.bind(this);
     this._handleNewSpawnRuleClick = this._handleNewSpawnRuleClick.bind(this);
     this._handleNewLootTableClick = this._handleNewLootTableClick.bind(this);
@@ -96,11 +97,13 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     this._handleNewFunctionClick = this._handleNewFunctionClick.bind(this);
     this._handleNewEntityTypeClick = this._handleNewEntityTypeClick.bind(this);
     this._handleNewBlockTypeClick = this._handleNewBlockTypeClick.bind(this);
+    this._handleNewItemTypeClick = this._handleNewItemTypeClick.bind(this);
     this._githubProjectUpdated = this._githubProjectUpdated.bind(this);
     this._handleAddReference = this._handleAddReference.bind(this);
     this._newEntityTypeUpdated = this._newEntityTypeUpdated.bind(this);
     this._newBlockTypeUpdated = this._newBlockTypeUpdated.bind(this);
     this._handleNewEntityType = this._handleNewEntityType.bind(this);
+    this._handleNewItemType = this._handleNewItemType.bind(this);
     this._handleNewBlockType = this._handleNewBlockType.bind(this);
     this._handleNewAudioClick = this._handleNewAudioClick.bind(this);
 
@@ -116,12 +119,17 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
   _newEntityTypeUpdated(newAddMode: NewEntityTypeAddMode, entityTypeItem: IGalleryItem, name: string) {
     this.tentativeNewEntityTypeItem = entityTypeItem;
     this.tentativeNewEntityTypeAddMode = newAddMode;
-    this.tentativeNewEntityTypeName = name;
+    this.tentativeNewTypeName = name;
   }
 
   _newBlockTypeUpdated(blockTypeItem: IGalleryItem | undefined, name: string | undefined) {
     this.tentativeNewBlockTypeItem = blockTypeItem;
-    this.tentativeNewBlockTypeName = name;
+    this.tentativeNewTypeName = name;
+  }
+
+  _newItemTypeUpdated(propertyType: NewItemTypeAddMode, itemTypeItem: IGalleryItem, name: string) {
+    this.tentativeNewItemTypeItem = itemTypeItem;
+    this.tentativeNewTypeName = name;
   }
 
   _githubProjectUpdated(property: GitHubPropertyType, value?: string) {
@@ -188,6 +196,12 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     }
   }
 
+  _handleNewWorldTestClick() {
+    if (this.props.project !== null) {
+      this.launchNewItemType(ProjectItemType.worldTest);
+    }
+  }
+
   _handleNewFormClick() {
     if (this.props.project !== null) {
       this.launchNewItemType(ProjectItemType.dataForm);
@@ -208,7 +222,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
 
     this.setState({
       activeItem: this.state.activeItem,
-      dialogMode: ProjectAddButtonDialogType.newItemDialog,
+      dialogMode: ProjectAddButtonDialogType.newItemTypeDialog,
       newItemType: itemType,
       maxItemsToShow: this.state.maxItemsToShow,
       contextFocusedItem: this.state.contextFocusedItem,
@@ -247,16 +261,31 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     });
   }
 
+  async _handleNewItemTypeClick() {
+    if (this.state === null) {
+      return;
+    }
+
+    this.setState({
+      activeItem: this.state.activeItem,
+      dialogMode: ProjectAddButtonDialogType.newItemTypeDialog,
+      maxItemsToShow: this.state.maxItemsToShow,
+      contextFocusedItem: this.state.contextFocusedItem,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
+    });
+  }
+
   async _handleNewBlockType() {
     if (this.state === null) {
       return;
     }
 
-    if (this.tentativeNewBlockTypeName && this.tentativeNewBlockTypeItem && this.props.project !== null) {
+    if (this.tentativeNewTypeName && this.tentativeNewBlockTypeItem && this.props.project !== null) {
       await ProjectUtilities.addBlockTypeFromGallery(
         this.props.project,
         this.tentativeNewBlockTypeItem,
-        this.tentativeNewBlockTypeName
+        this.tentativeNewTypeName
       );
     }
 
@@ -283,8 +312,35 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       await ProjectUtilities.addEntityTypeFromGallery(
         this.props.project,
         this.tentativeNewEntityTypeItem,
-        this.tentativeNewEntityTypeName,
+        this.tentativeNewTypeName,
         this.tentativeNewEntityTypeAddMode
+      );
+    }
+
+    if (this.props.project) {
+      await this.props.project.save();
+    }
+
+    this.setState({
+      activeItem: undefined,
+      dialogMode: ProjectAddButtonDialogType.noDialog,
+      maxItemsToShow: this.state.maxItemsToShow,
+      contextFocusedItem: this.state.contextFocusedItem,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
+    });
+  }
+
+  async _handleNewItemType() {
+    if (this.state === null) {
+      return;
+    }
+
+    if (this.tentativeNewItemTypeItem !== undefined && this.props.project !== null) {
+      await ProjectUtilities.addItemTypeFromGallery(
+        this.props.project,
+        this.tentativeNewItemTypeItem,
+        this.tentativeNewTypeName
       );
     }
 
@@ -361,10 +417,6 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     });
   }
 
-  _updateNewItemSeed(newSeed: IProjectItemSeed) {
-    this._tentativeNewItem = newSeed;
-  }
-
   render() {
     const splitButtonMenuItems: any[] = [
       {
@@ -393,6 +445,12 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
         key: "blockType",
         onClick: this._handleNewBlockTypeClick,
         content: "New block type",
+      },
+      {
+        id: "itemType",
+        key: "itemType",
+        onClick: this._handleNewItemTypeClick,
+        content: "New item type",
       },
       {
         id: "definitions",
@@ -456,8 +514,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     } else if (
       this.state !== null &&
       this.props.project !== null &&
-      this.state.newItemType !== undefined &&
-      this.state.dialogMode === ProjectAddButtonDialogType.newItemDialog
+      this.state.dialogMode === ProjectAddButtonDialogType.newItemTypeDialog
     ) {
       dialogArea = (
         <Dialog
@@ -466,19 +523,17 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
           confirmButton="Add"
           key="pab-newItemOuter"
           onCancel={this._handleCancel}
-          onConfirm={this._handleNewItem}
+          onConfirm={this._handleNewItemType}
           content={
-            <NewItem
+            <NewItemType
               theme={this.props.theme}
               key="pab-newItemDia"
-              heightOffset={this.props.heightOffset + 100}
-              itemType={this.state.newItemType}
-              onNewItemSeedUpdated={this._updateNewItemSeed}
+              onNewItemTypeUpdated={this._newItemTypeUpdated}
               project={this.props.project}
               carto={this.props.carto}
             />
           }
-          header={"New " + ProjectItemUtilities.getDescriptionForType(this.state.newItemType)}
+          header={"New Item Type"}
         />
       );
     } else if (

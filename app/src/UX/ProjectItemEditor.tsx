@@ -626,7 +626,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
       }
     }
 
-    if (this.props.activeProjectItem?.hasNonDefaultVariant) {
+    if (this.props.activeProjectItem?.hasNonDefaultVariant()) {
       variantList = this.props.activeProjectItem.getVariantList();
       const toolbarItems = [];
       const items: string[] = [];

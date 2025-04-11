@@ -612,13 +612,13 @@ export default class ProjectItem {
         val = (this._defaultFile.fileContainerStorage as ZipStorage).isContentUpdated;
       }
 
-      if (!val) {
+      /*if (!val) {
         const jsFile = this.getJavaScriptLibTwin();
 
         if (jsFile !== undefined) {
           val = jsFile.needsSave;
         }
-      }
+      }*/
     }
 
     return val;
@@ -1110,11 +1110,11 @@ export default class ProjectItem {
       await this._defaultFile.saveContent();
 
       // these next two are associated with action set
-      const jsFile = this.getJavaScriptLibTwin();
+      /*const jsFile = this.getJavaScriptLibTwin();
 
       if (jsFile !== undefined && jsFile.needsSave) {
         await jsFile.saveContent();
-      }
+      }*/
 
       const functionFile = this.getFunctionTwin();
 
