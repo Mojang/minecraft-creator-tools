@@ -2,7 +2,7 @@
   "fields": [
     {
       "id": "probability",
-      "title": "probability",
+      "title": "Probability",
       "description": "Probabiltity between [0.0, 0.75] of creatures spawning within the biome on chunk generation.",
       "dataType": 3,
       "validity": [
@@ -14,6 +14,5 @@
     }
   ],
   "description": "Probability that creatures will spawn within the biome when a chunk is generated.",
-  "title": "Creature Spawn Probability",
-  "id": "minecraft:creature_spawn_probability"
+  "title": "Minecraft Creature Spawn Probability Biome"
 }

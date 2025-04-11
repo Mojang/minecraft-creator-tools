@@ -37,6 +37,7 @@ import ValidFileGenerator from "./ValidFileGenerator";
 import BlocksCatalogManager from "../manager/BlocksCatalogManager";
 import EntityTypeManager from "../manager/EntityTypeManager";
 import ItemTypeManager from "../manager/ItemTypeManager";
+import SharingInfoGenerator from "./SharingInfoGenerator";
 
 export default class GeneratorRegistrations {
   static managers = [
@@ -56,6 +57,7 @@ export default class GeneratorRegistrations {
     new PackInfoGenerator(),
     new JsonFileTagsInfoGenerator(),
     new FormatVersionManager(),
+    new SharingInfoGenerator(),
     new PackMetaDataInformationGenerator(),
     new AnimationResourceInfoGenerator(),
     new CooperativeAddOnRequirementsGenerator(),

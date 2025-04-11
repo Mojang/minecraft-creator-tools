@@ -186,8 +186,8 @@ export default class ParticleEffectResourceDefinition {
     if (rel.childItem.itemType === ProjectItemType.texture) {
       await rel.childItem.ensureStorage();
 
-      if (rel.childItem.file && packRootFolder) {
-        let relativePath = this.getRelativePath(rel.childItem.file, packRootFolder);
+      if (rel.childItem.defaultFile && packRootFolder) {
+        let relativePath = this.getRelativePath(rel.childItem.defaultFile, packRootFolder);
 
         if (relativePath) {
           if (basicTexture === relativePath) {
@@ -237,8 +237,8 @@ export default class ParticleEffectResourceDefinition {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
         await candItem.ensureStorage();
 
-        if (candItem.file) {
-          let relativePath = this.getRelativePath(candItem.file, packRootFolder);
+        if (candItem.defaultFile) {
+          let relativePath = this.getRelativePath(candItem.defaultFile, packRootFolder);
 
           if (relativePath) {
             if (textureList && textureList.includes(relativePath)) {

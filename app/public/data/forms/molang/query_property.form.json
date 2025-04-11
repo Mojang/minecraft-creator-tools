@@ -1,0 +1,6 @@
+{
+  "id": "query.property",
+  "fields": [],
+  "description": "Takes one argument: the name of the property on the entity. Returns the value of that property if it exists, else 0.0 if not.",
+  "title": "Property Query"
+}

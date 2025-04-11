@@ -1,0 +1,6 @@
+{
+  "id": "query.get_name",
+  "fields": [],
+  "description": "DEPRECATED (Use query.is_name_any instead if possible so names can be changed later without breaking content.)Get the name of the mob if there is one, otherwise return ''.",
+  "title": "Get Name Query"
+}

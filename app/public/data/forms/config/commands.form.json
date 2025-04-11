@@ -2,17 +2,15 @@
   "fields": [
     {
       "id": "default_permission_level",
-      "title": "command_permission_level",
+      "title": "Command Permission Level",
       "description": "Default permission level for all unspecified commands.  If not set then commands will default to their normal permission level.",
       "dataType": 2
     },
     {
       "id": "permission_levels",
-      "title": "permission_levels",
-      "description": "permission_levels",
+      "title": "Permission Levels",
       "dataType": 24
     }
   ],
-  "description": "Commands Config",
   "title": "Commands Config"
 }

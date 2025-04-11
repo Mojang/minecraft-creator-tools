@@ -8,6 +8,15 @@
  * Contains types for working with various Minecraft Bedrock Edition JSON schemas.
  * 
  * Items Documentation - minecraft:storage_weight_modifier
+ * 
+ * minecraft:storage_weight_modifier Samples
+
+Black Bundle - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/black_bundle.json
+
+"minecraft:storage_weight_modifier": {
+  "weight_in_storage_item": 4
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -23,6 +32,11 @@ export default interface MinecraftStorageWeightModifier {
    * @remarks
    * The weight of this item when inside another Storage Item. Default is
    * 4. 0 means item is not allowed in another Storage Item.
+   * 
+   * Sample Values:
+   * Black Bundle: 4
+   *
+   *
    */
   weight_in_storage_item: number;
 

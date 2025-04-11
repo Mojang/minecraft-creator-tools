@@ -205,8 +205,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       if (pi.itemType === ProjectItemType.blockTypeBehavior) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const btdef = await BlockTypeDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const btdef = await BlockTypeDefinition.ensureOnFile(pi.availableFile);
 
           if (btdef) {
             const ver = btdef.getFormatVersion();
@@ -227,8 +227,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       } else if (pi.itemType === ProjectItemType.itemTypeBehavior) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const itdef = await ItemTypeBehaviorDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const itdef = await ItemTypeBehaviorDefinition.ensureOnFile(pi.availableFile);
 
           if (itdef) {
             const ver = itdef.getFormatVersion();
@@ -249,8 +249,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       } else if (pi.itemType === ProjectItemType.recipeBehavior) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const rbdef = await RecipeBehaviorDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const rbdef = await RecipeBehaviorDefinition.ensureOnFile(pi.availableFile);
 
           if (rbdef) {
             const ver = rbdef.getFormatVersion();
@@ -272,8 +272,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       } else if (pi.itemType === ProjectItemType.animationBehaviorJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const abdef = await AnimationControllerBehaviorDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const abdef = await AnimationControllerBehaviorDefinition.ensureOnFile(pi.availableFile);
 
           if (abdef) {
             const ver = abdef.getFormatVersion();
@@ -294,8 +294,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       } else if (pi.itemType === ProjectItemType.animationControllerBehaviorJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const abdef = await AnimationControllerBehaviorDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const abdef = await AnimationControllerBehaviorDefinition.ensureOnFile(pi.availableFile);
 
           if (abdef) {
             const ver = abdef.getFormatVersion();
@@ -317,8 +317,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       } else if (pi.itemType === ProjectItemType.animationResourceJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const ardef = await AnimationResourceDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const ardef = await AnimationResourceDefinition.ensureOnFile(pi.availableFile);
 
           if (ardef) {
             const ver = ardef.getFormatVersion();
@@ -340,8 +340,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       } else if (pi.itemType === ProjectItemType.animationControllerResourceJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const acrdef = await AnimationControllerResourceDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const acrdef = await AnimationControllerResourceDefinition.ensureOnFile(pi.availableFile);
 
           if (acrdef) {
             const ver = acrdef.getFormatVersion();
@@ -363,8 +363,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       } else if (pi.itemType === ProjectItemType.spawnRuleBehavior) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const srbdef = await SpawnRulesBehaviorDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const srbdef = await SpawnRulesBehaviorDefinition.ensureOnFile(pi.availableFile);
 
           if (srbdef) {
             const ver = srbdef.getFormatVersion();
@@ -386,8 +386,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       } else if (pi.itemType === ProjectItemType.attachableResourceJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const srbdef = await AttachableResourceDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const srbdef = await AttachableResourceDefinition.ensureOnFile(pi.availableFile);
 
           if (srbdef) {
             const ver = srbdef.getFormatVersion();
@@ -408,8 +408,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       } else if (pi.itemType === ProjectItemType.entityTypeResource) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const etrdef = await EntityTypeResourceDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const etrdef = await EntityTypeResourceDefinition.ensureOnFile(pi.availableFile);
 
           if (etrdef) {
             const ver = etrdef.getFormatVersion();
@@ -430,8 +430,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       } else if (pi.itemType === ProjectItemType.fogResourceJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const etrdef = await FogResourceDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const etrdef = await FogResourceDefinition.ensureOnFile(pi.availableFile);
 
           if (etrdef) {
             const ver = etrdef.getFormatVersion();
@@ -638,8 +638,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       if (pi.itemType === ProjectItemType.worldTemplateManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.file) {
-          const wtManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.file);
+        if (pi.availableFile) {
+          const wtManifest = await WorldTemplateManifestDefinition.ensureOnFile(pi.availableFile);
 
           if (wtManifest) {
             const mev = wtManifest.baseGameVersion;

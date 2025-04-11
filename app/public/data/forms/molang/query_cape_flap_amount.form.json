@@ -1,0 +1,6 @@
+{
+  "id": "query.cape_flap_amount",
+  "fields": [],
+  "description": "Returns value between 0.0 and 1.0 with 0.0 meaning cape is fully down and 1.0 is cape is fully up.",
+  "title": "Cape Flap Amount Query"
+}

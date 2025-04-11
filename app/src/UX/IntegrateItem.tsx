@@ -144,7 +144,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
         const target = data.value.substring(8);
 
         for (const projectItem of this.props.project.items) {
-          if (projectItem.file && projectItem.projectPath === target) {
+          if (projectItem.defaultFile && projectItem.projectPath === target) {
             newSelectedItem = projectItem;
           }
         }
@@ -178,7 +178,7 @@ export default class IntegrateItem extends Component<IIntegrateItemProps, IInteg
     if (this.props.data.fileSource) {
       const name = this.props.data.fileSource.name;
       for (const projectItem of this.props.project.items) {
-        if (projectItem.file && projectItem.file.name === name) {
+        if (projectItem.defaultFile && projectItem.defaultFile.name === name) {
           items.push({
             name: "replace." + projectItem.projectPath,
             key: "replace." + projectItem.projectPath,

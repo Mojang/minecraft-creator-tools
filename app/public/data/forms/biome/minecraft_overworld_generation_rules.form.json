@@ -3,7 +3,7 @@
     {
       "id": "generate_for_climates",
       "description": "Can be just the name of a biome, or an array of any size. If an array, each entry can be a biome name string, or an array of size 2, where the first entry is a biome name and the second entry is a positive integer representing how that biome is weighted against other entries. If no weight is provided, a weight of 1 is used.",
-      "title": "generate_for_climates",
+      "title": "Generate For Climates",
       "dataType": 15
     },
     {
@@ -15,12 +15,12 @@
           "dataType": 2
         }
       ],
-      "title": "hills_transformation",
+      "title": "Hills Transformation",
       "dataType": 17
     },
     {
       "id": "mutate_transformation",
-      "title": "mutate_transformation",
+      "title": "Mutate Transformation",
       "description": "What biome to switch to when converting to a mutated biome",
       "dataType": 17,
       "alternates": [
@@ -32,7 +32,7 @@
     },
     {
       "id": "river_transformation",
-      "title": "river_transformation",
+      "title": "River Transformation",
       "description": "What biome to switch to when converting to a river biome (if not the Vanilla 'river' biome)",
       "dataType": 17,
       "alternates": [
@@ -44,7 +44,7 @@
     },
     {
       "id": "shore_transformation",
-      "title": "shore_transformation",
+      "title": "Shore Transformation",
       "description": "What biome to switch to when adjacent to an ocean biome",
       "dataType": 17,
       "alternates": [
@@ -56,6 +56,5 @@
     }
   ],
   "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the overworld.",
-  "title": "Overworld Generation Rules",
-  "id": "minecraft:overworld_generation_rules"
+  "title": "Minecraft Overworld Generation Rules Biome"
 }

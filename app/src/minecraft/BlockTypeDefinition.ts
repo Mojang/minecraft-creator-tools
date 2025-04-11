@@ -733,8 +733,8 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
       if (candItem.itemType === ProjectItemType.terrainTextureCatalogResourceJson) {
         await candItem.ensureStorage();
 
-        if (candItem.file && candItem.childItems) {
-          const blockTextureCatalog = await TerrainTextureCatalogDefinition.ensureOnFile(candItem.file);
+        if (candItem.defaultFile && candItem.childItems) {
+          const blockTextureCatalog = await TerrainTextureCatalogDefinition.ensureOnFile(candItem.defaultFile);
 
           if (blockTextureCatalog && textureList) {
             for (const textureId of textureList) {
@@ -905,10 +905,10 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
       if (candItem.itemType === ProjectItemType.ts) {
         await candItem.ensureStorage();
 
-        if (candItem.file) {
+        if (candItem.defaultFile) {
           await candItem.load();
 
-          const tsd = await TypeScriptDefinition.ensureOnFile(candItem.file);
+          const tsd = await TypeScriptDefinition.ensureOnFile(candItem.defaultFile);
 
           if (tsd && tsd.data && customComponentIds) {
             let doAddTs = false;
@@ -928,8 +928,8 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
       } else if (candItem.itemType === ProjectItemType.terrainTextureCatalogResourceJson) {
         await candItem.ensureStorage();
 
-        if (candItem.file) {
-          const blockTextureCatalog = await TerrainTextureCatalogDefinition.ensureOnFile(candItem.file);
+        if (candItem.defaultFile) {
+          const blockTextureCatalog = await TerrainTextureCatalogDefinition.ensureOnFile(candItem.defaultFile);
 
           if (blockTextureCatalog && textureList) {
             let doAddTextureCatalog = false;
@@ -951,8 +951,8 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
       } else if (candItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
         await candItem.ensureStorage();
 
-        if (candItem.file) {
-          const blockCatalog = await BlocksCatalogDefinition.ensureOnFile(candItem.file);
+        if (candItem.defaultFile) {
+          const blockCatalog = await BlocksCatalogDefinition.ensureOnFile(candItem.defaultFile);
 
           if (blockCatalog && this.id) {
             const blockResource = blockCatalog.getBlockDefinition(this.id);
@@ -965,8 +965,8 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
       } else if (candItem.itemType === ProjectItemType.modelGeometryJson && geometryList) {
         await candItem.ensureStorage();
 
-        if (candItem.file) {
-          const model = await ModelGeometryDefinition.ensureOnFile(candItem.file);
+        if (candItem.defaultFile) {
+          const model = await ModelGeometryDefinition.ensureOnFile(candItem.defaultFile);
 
           if (model) {
             let doAddModel = false;

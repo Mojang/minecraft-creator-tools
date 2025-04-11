@@ -160,6 +160,9 @@ import * as jsoncommon from './../../../jsoncommon';
  * "*". You can also give an instance the name of your choosing such
  * as "my_instance", and then assign it to a face by doing
  * "north":"my_instance".
+ * Note: From 1.21.80 onward, when using a minecraft:geometry component
+ * or minecraft:material_instances component, you must include 
+ * both.
  */
 export default interface MinecraftMaterialInstances {
 

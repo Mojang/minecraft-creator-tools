@@ -2,8 +2,7 @@
   "fields": [
     {
       "id": "offset",
-      "title": "offset",
-      "description": "offset",
+      "title": "Offset",
       "dataType": 24,
       "minLength": 3,
       "maxLength": 3,
@@ -14,18 +13,15 @@
           "readOnly": true,
           "subForm": {
             "title": "Offset",
-            "description": "Offset",
             "fields": [
               {
                 "id": "expression",
-                "title": "expression",
-                "description": "expression",
+                "title": "Expression",
                 "dataType": 2
               },
               {
                 "id": "version",
-                "title": "version",
-                "description": "version",
+                "title": "Version",
                 "dataType": 0
               }
             ]
@@ -39,8 +35,7 @@
     },
     {
       "id": "direction",
-      "title": "direction",
-      "description": "direction",
+      "title": "Direction",
       "dataType": 2,
       "alternates": [
         {
@@ -55,18 +50,15 @@
               "readOnly": true,
               "subForm": {
                 "title": "Direction",
-                "description": "Direction",
                 "fields": [
                   {
                     "id": "expression",
-                    "title": "expression",
-                    "description": "expression",
+                    "title": "Expression",
                     "dataType": 2
                   },
                   {
                     "id": "version",
-                    "title": "version",
-                    "description": "version",
+                    "title": "Version",
                     "dataType": 0
                   }
                 ]
@@ -82,8 +74,7 @@
     },
     {
       "id": "radius",
-      "title": "radius",
-      "description": "radius",
+      "title": "Radius",
       "dataType": 24,
       "alternates": [
         {
@@ -92,18 +83,15 @@
           "readOnly": true,
           "subForm": {
             "title": "Radius",
-            "description": "Radius",
             "fields": [
               {
                 "id": "expression",
-                "title": "expression",
-                "description": "expression",
+                "title": "Expression",
                 "dataType": 2
               },
               {
                 "id": "version",
-                "title": "version",
-                "description": "version",
+                "title": "Version",
                 "dataType": 0
               }
             ]
@@ -117,14 +105,12 @@
     },
     {
       "id": "surface_only",
-      "title": "surface_only",
-      "description": "surface_only",
+      "title": "Surface Only",
       "dataType": 1
     },
     {
       "id": "plane_normal",
-      "title": "plane_normal",
-      "description": "plane_normal",
+      "title": "Plane Normal",
       "dataType": 2,
       "alternates": [
         {
@@ -139,18 +125,15 @@
               "readOnly": true,
               "subForm": {
                 "title": "Plane Normal",
-                "description": "Plane Normal",
                 "fields": [
                   {
                     "id": "expression",
-                    "title": "expression",
-                    "description": "expression",
+                    "title": "Expression",
                     "dataType": 2
                   },
                   {
                     "id": "version",
-                    "title": "version",
-                    "description": "version",
+                    "title": "Version",
                     "dataType": 0
                   }
                 ]
@@ -165,6 +148,5 @@
       ]
     }
   ],
-  "description": "Emitter Shape Disc Misc",
   "title": "Emitter Shape Disc Misc"
 }

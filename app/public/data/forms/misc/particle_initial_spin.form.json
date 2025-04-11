@@ -2,8 +2,7 @@
   "fields": [
     {
       "id": "rotation",
-      "title": "rotation",
-      "description": "rotation",
+      "title": "Rotation",
       "dataType": 24,
       "alternates": [
         {
@@ -12,18 +11,15 @@
           "readOnly": true,
           "subForm": {
             "title": "Rotation",
-            "description": "Rotation",
             "fields": [
               {
                 "id": "expression",
-                "title": "expression",
-                "description": "expression",
+                "title": "Expression",
                 "dataType": 2
               },
               {
                 "id": "version",
-                "title": "version",
-                "description": "version",
+                "title": "Version",
                 "dataType": 0
               }
             ]
@@ -37,8 +33,7 @@
     },
     {
       "id": "rotation_rate",
-      "title": "rotation_rate",
-      "description": "rotation_rate",
+      "title": "Rotation Rate",
       "dataType": 24,
       "alternates": [
         {
@@ -47,18 +42,15 @@
           "readOnly": true,
           "subForm": {
             "title": "Rotation Rate",
-            "description": "Rotation Rate",
             "fields": [
               {
                 "id": "expression",
-                "title": "expression",
-                "description": "expression",
+                "title": "Expression",
                 "dataType": 2
               },
               {
                 "id": "version",
-                "title": "version",
-                "description": "version",
+                "title": "Version",
                 "dataType": 0
               }
             ]
@@ -71,6 +63,5 @@
       ]
     }
   ],
-  "description": "Particle Initial Spin Misc",
   "title": "Particle Initial Spin Misc"
 }

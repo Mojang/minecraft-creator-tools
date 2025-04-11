@@ -10,6 +10,7 @@ export enum ProjectInfoSuite {
   default = 0,
   currentPlatformVersions = 1,
   cooperativeAddOn = 2,
+  sharing = 3,
 }
 
 export default interface IProjectInfoData {

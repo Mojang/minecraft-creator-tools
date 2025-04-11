@@ -249,6 +249,23 @@ async function validateAndDisposeProject(
       await outputResults(projectSet, pis, "addon", outputStorage, undefined);
     }
 
+    pis = new ProjectInfoSet(project, ProjectInfoSuite.sharing);
+
+    await pis.generateForProject();
+
+    const projectSet = {
+      projectContainerName: project.containerName,
+      projectPath: project.projectFolder?.storageRelativePath,
+      projectName: project.name,
+      projectTitle: project.title,
+      infoSetData: pis.getDataObject(),
+      suite: ProjectInfoSuite.sharing,
+    };
+
+    resultStates.push(projectSet);
+
+    await outputResults(projectSet, pis, "sharing", outputStorage, undefined);
+
     const shouldRunPlatformVersion = (pisData.info as any)["CWave"] !== undefined;
 
     if (shouldRunPlatformVersion) {
@@ -310,6 +327,14 @@ async function outputResults(
           fileNameModifier +
           ".mci.json"
       );
+
+      if (outputType === OutputType.noReports) {
+        mciContentFile.setContent(pis.getStrictIndexJson(projectSet.projectName, projectSet.projectPath, undefined));
+      } else {
+        mciContentFile.setContent(pis.getIndexJson(projectSet.projectName, projectSet.projectPath, undefined));
+      }
+
+      mciContentFile.saveContent();
 
       const mciContentFileZip = indexFolder.ensureFile(
         StorageUtilities.ensureFileNameIsSafe(StorageUtilities.getBaseFromName(projectSet.projectContainerName)) +

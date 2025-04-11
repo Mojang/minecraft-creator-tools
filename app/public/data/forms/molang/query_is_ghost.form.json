@@ -1,0 +1,6 @@
+{
+  "id": "query.is_ghost",
+  "fields": [],
+  "description": "Returns 1.0 if an entity is a ghost, else it returns 0.0.",
+  "title": "Is Ghost Query"
+}

@@ -556,7 +556,7 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 21,
-    "testSuccessCount": 23,
+    "testSuccessCount": 24,
     "testFailCount": 0,
     "testNotApplicableCount": 6,
     "errorSummary": "",
@@ -763,16 +763,8 @@
       "PACK": {
         "1": {
           "title": "1",
-          "defaultMessage": "Behavior Pack Min Engine Version",
+          "defaultMessage": "General info (PACK) completed successfully",
           "testCompleteSuccesses": 1
-        },
-        "2": {
-          "title": "2",
-          "defaultMessage": "Behavior Pack Uuid"
-        },
-        "3": {
-          "title": "3",
-          "defaultMessage": "Behavior Pack Manfiest"
         },
         "4": {
           "title": "4",
@@ -785,6 +777,18 @@
         "6": {
           "title": "6",
           "defaultMessage": "Behavior Pack Id"
+        },
+        "7": {
+          "title": "7",
+          "defaultMessage": "Behavior Pack Min Engine Version"
+        },
+        "8": {
+          "title": "8",
+          "defaultMessage": "Behavior Pack Uuid"
+        },
+        "9": {
+          "title": "9",
+          "defaultMessage": "Behavior Pack Manfiest"
         },
         "11": {
           "title": "11",
@@ -1049,6 +1053,13 @@
         "205": {
           "defaultMessage": "Link to vanilla Sound catalog item; avoid if possible",
           "recommendations": 50
+        }
+      },
+      "SHARING": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Sharing Best Practices Information (SHARING) completed successfully",
+          "testCompleteSuccesses": 1
         }
       },
       "PACKMETADATA": {
@@ -1655,21 +1666,21 @@
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 3,
+      "gIx": 9,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": "{\"format_version\":2,\"header\":{\"name\":\"pack.name\",\"description\":\"pack.description\",\"uuid\":\"9ec8af93-4b38-429f-a4bd-7e277a50d238\",\"version\":[1,0,0],\"min_engine_version\":[1,20,0]},\"modules\":[{\"description\":\"Behavior\",\"version\":[1,0,0],\"uuid\":\"2d59a3f6-d348-496d-a0c7-6d59ddb05c5e\",\"type\":\"data\"},{\"description\":\"Script resources\",\"language\":\"javascript\",\"type\":\"script\",\"uuid\":\"f43bb32a-c814-45e4-a428-3f4f1f59b2a3\",\"version\":[1,0,0],\"entry\":\"scripts/main.js\"}],\"dependencies\":[{\"uuid\":\"9d6dad89-6e29-46ba-83d5-490a4901caef\",\"version\":[1,0,0]},{\"module_name\":\"@minecraft/server\",\"version\":\"1.5.0\"},{\"module_name\":\"@minecraft/server-ui\",\"version\":\"1.1.0\"}]}"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 1,
+      "gIx": 7,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": 2
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 2,
+      "gIx": 8,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": "9ec8af93-4b38-429f-a4bd-7e277a50d238"
     },
@@ -1697,7 +1708,7 @@
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 1,
+      "gIx": 7,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": [
         1,
@@ -3099,8 +3110,7 @@
     {
       "iTp": 0,
       "gId": "PACK",
-      "gIx": 1,
-      "m": "General info (PACK) completed successfully"
+      "gIx": 1
     },
     {
       "iTp": 0,
@@ -3111,6 +3121,11 @@
     {
       "iTp": 0,
       "gId": "FORMATVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "SHARING",
       "gIx": 1
     },
     {

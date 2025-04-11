@@ -1,0 +1,6 @@
+{
+  "id": "query.anger_level",
+  "fields": [],
+  "description": "Returns the anger level of the actor [0,n). On errors or if the actor has no anger level, returns 0. Available on the Server only.",
+  "title": "Anger Level Query"
+}

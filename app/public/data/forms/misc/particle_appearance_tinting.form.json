@@ -2,8 +2,7 @@
   "fields": [
     {
       "id": "color",
-      "title": "color",
-      "description": "color",
+      "title": "Color",
       "dataType": 24,
       "alternates": [
         {
@@ -22,18 +21,15 @@
               "readOnly": true,
               "subForm": {
                 "title": "Color",
-                "description": "Color",
                 "fields": [
                   {
                     "id": "expression",
-                    "title": "expression",
-                    "description": "expression",
+                    "title": "Expression",
                     "dataType": 2
                   },
                   {
                     "id": "version",
-                    "title": "version",
-                    "description": "version",
+                    "title": "Version",
                     "dataType": 0
                   }
                 ]
@@ -50,12 +46,10 @@
           "dataType": 16,
           "subForm": {
             "title": "Color",
-            "description": "Color",
             "fields": [
               {
                 "id": "gradient",
-                "title": "gradient",
-                "description": "gradient",
+                "title": "Gradient",
                 "dataType": 24,
                 "alternates": [
                   {
@@ -78,18 +72,15 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Gradient",
-                              "description": "Gradient",
                               "fields": [
                                 {
                                   "id": "expression",
-                                  "title": "expression",
-                                  "description": "expression",
+                                  "title": "Expression",
                                   "dataType": 2
                                 },
                                 {
                                   "id": "version",
-                                  "title": "version",
-                                  "description": "version",
+                                  "title": "Version",
                                   "dataType": 0
                                 }
                               ]
@@ -107,8 +98,7 @@
               },
               {
                 "id": "interpolant",
-                "title": "interpolant",
-                "description": "interpolant",
+                "title": "Interpolant",
                 "dataType": 24,
                 "alternates": [
                   {
@@ -117,18 +107,15 @@
                     "readOnly": true,
                     "subForm": {
                       "title": "Interpolant",
-                      "description": "Interpolant",
                       "fields": [
                         {
                           "id": "expression",
-                          "title": "expression",
-                          "description": "expression",
+                          "title": "Expression",
                           "dataType": 2
                         },
                         {
                           "id": "version",
-                          "title": "version",
-                          "description": "version",
+                          "title": "Version",
                           "dataType": 0
                         }
                       ]
@@ -146,6 +133,5 @@
       ]
     }
   ],
-  "description": "Particle Appearance Tinting Misc",
   "title": "Particle Appearance Tinting Misc"
 }

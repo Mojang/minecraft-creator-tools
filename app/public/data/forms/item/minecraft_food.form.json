@@ -1,82 +1,8 @@
 {
   "fields": [
     {
-      "id": "saturation_modifier",
-      "title": "saturation_modifier",
-      "description": "saturation_modifier is used in this formula: (nutrition * saturation_modifier * 2) when applying the saturation buff. Default is set to 0.6.",
-      "dataType": 3,
-      "samples": {
-        "/vanilla/behavior_pack/items/apple.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:food/",
-            "content": 0.3
-          }
-        ],
-        "/vanilla/behavior_pack/items/appleEnchanted.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:food/",
-            "content": "supernatural"
-          }
-        ],
-        "/vanilla/behavior_pack/items/baked_potato.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:food/",
-            "content": "normal"
-          }
-        ],
-        "/vanilla/behavior_pack/items/beef.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:food/",
-            "content": "low"
-          }
-        ],
-        "/vanilla/behavior_pack/items/beetroot_soup.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:food/",
-            "content": "normal"
-          }
-        ],
-        "/vanilla/behavior_pack/items/chicken.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:food/",
-            "content": "low"
-          }
-        ],
-        "/vanilla/behavior_pack/items/clownfish.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:food/",
-            "content": "poor"
-          }
-        ],
-        "/vanilla/behavior_pack/items/cooked_beef.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:food/",
-            "content": "good"
-          }
-        ],
-        "/vanilla/behavior_pack/items/cooked_porkchop.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:food/",
-            "content": "good"
-          }
-        ],
-        "/vanilla/behavior_pack/items/cookie.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:food/",
-            "content": "poor"
-          }
-        ],
-        "/vanilla/behavior_pack/items/golden_apple.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:food/",
-            "content": "supernatural"
-          }
-        ]
-      }
-    },
-    {
       "id": "nutrition",
-      "title": "nutrition",
+      "title": "Nutrition",
       "description": "Value that is added to the entity's nutrition when the item is used. Default is set to 0.",
       "dataType": 0,
       "samples": {
@@ -173,8 +99,82 @@
       }
     },
     {
+      "id": "saturation_modifier",
+      "title": "Saturation Modifier",
+      "description": "saturation_modifier is used in this formula: (nutrition * saturation_modifier * 2) when applying the saturation buff. Default is set to 0.6.",
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/items/apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": 0.3
+          }
+        ],
+        "/vanilla/behavior_pack/items/appleEnchanted.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "supernatural"
+          }
+        ],
+        "/vanilla/behavior_pack/items/baked_potato.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "normal"
+          }
+        ],
+        "/vanilla/behavior_pack/items/beef.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "low"
+          }
+        ],
+        "/vanilla/behavior_pack/items/beetroot_soup.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "normal"
+          }
+        ],
+        "/vanilla/behavior_pack/items/chicken.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "low"
+          }
+        ],
+        "/vanilla/behavior_pack/items/clownfish.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "poor"
+          }
+        ],
+        "/vanilla/behavior_pack/items/cooked_beef.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "good"
+          }
+        ],
+        "/vanilla/behavior_pack/items/cooked_porkchop.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "good"
+          }
+        ],
+        "/vanilla/behavior_pack/items/cookie.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "poor"
+          }
+        ],
+        "/vanilla/behavior_pack/items/golden_apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:food/",
+            "content": "supernatural"
+          }
+        ]
+      }
+    },
+    {
       "id": "can_always_eat",
-      "title": "can_always_eat",
+      "title": "Can Always Eat",
       "description": "If true you can always eat this item (even when not hungry). Default is set to false.",
       "dataType": 1,
       "samples": {
@@ -194,7 +194,7 @@
     },
     {
       "id": "using_converts_to",
-      "title": "using_converts_to",
+      "title": "Using Converts To",
       "description": "When used, converts to the item specified by the string in this field. Default does not convert item.",
       "dataType": 2,
       "alternates": [

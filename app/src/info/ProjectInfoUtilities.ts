@@ -43,6 +43,21 @@ export default class ProjectInfoUtilities {
       derivedStates.push(projectSet);
     }
 
+    const pisSharing = new ProjectInfoSet(project, ProjectInfoSuite.sharing);
+
+    await pisSharing.generateForProject();
+
+    const sharing = {
+      projectContainerName: project.containerName,
+      projectPath: project.projectFolder?.storageRelativePath,
+      projectName: project.name,
+      projectTitle: project.title,
+      infoSetData: pisSharing.getDataObject(),
+      suite: ProjectInfoSuite.cooperativeAddOn,
+    };
+
+    derivedStates.push(sharing);
+
     const shouldRunPlatformVersion = (pisData.info as any)["CWave"] !== undefined;
 
     if (shouldRunPlatformVersion) {

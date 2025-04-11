@@ -1,6 +1,6 @@
 import React, { Component, SyntheticEvent } from "react";
 import IAppProps from "./IAppProps";
-import Project, { ProjectErrorState } from "./../app/Project";
+import Project, { FolderContext, ProjectErrorState } from "./../app/Project";
 import ProjectItem from "./../app/ProjectItem";
 import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "./../app/IProjectItemData";
 import ProjectItemList from "./ProjectItemList";
@@ -116,6 +116,7 @@ interface IProjectEditorState {
   searchFilter?: string;
   displayFileView: boolean;
   visualSeed?: number;
+  activeVariant?: string;
   viewMode: CartoEditorViewMode;
   menuState: ProjectEditorMenuState;
   effectMode?: ProjectEditorEffect;
@@ -190,6 +191,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this.gridElt = React.createRef();
 
     this.getProjectTitle = this.getProjectTitle.bind(this);
+
+    this.setNewProjectVariantName = this.setNewProjectVariantName.bind(this);
 
     this._handleNewProjectItemName = this._handleNewProjectItemName.bind(this);
     this._handleExportMCAddonClick = this._handleExportMCAddonClick.bind(this);
@@ -505,6 +508,34 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     return undefined;
   }
 
+  public setNewProjectVariantName(name: string | undefined) {
+    this.setState({
+      activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
+      activeReference: this.state.activeReference,
+      mode: this.state.mode,
+      effectMode: this.state.effectMode,
+      dragStyle: this.state.dragStyle,
+      activeVariant: name,
+      visualSeed: this.state.visualSeed ? this.state.visualSeed + 1 : 1,
+      viewMode: this.state.viewMode,
+      allInfoSet: this.props.project.infoSet,
+      allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+      displayFileView: this.state.displayFileView,
+      menuState: this.state.menuState,
+      forceRawView: this.state.forceRawView,
+      filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
+      statusAreaMode: this.state.statusAreaMode,
+      lastDeployKey: this.state.lastDeployKey,
+      lastExportKey: this.state.lastExportKey,
+      lastDeployFunction: this.state.lastDeployFunction,
+      lastExportFunction: this.state.lastExportFunction,
+      lastDeployData: this.state.lastDeployData,
+      lastExportData: this.state.lastExportData,
+    });
+  }
+
   async _doAsyncLoading() {
     if (this._isMountedInternal && this.state) {
       if (!this.state.allInfoSet || !this.state.allInfoSet.completedGeneration) {
@@ -711,7 +742,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         } else if ((this.state.dialogData as IProjectItemSeed).action === ProjectItemSeedAction.overwriteFile) {
           const item = (this.state.dialogData as IProjectItemSeed).targetedItem;
 
-          if (item && item.file) {
+          if (item && item.defaultFile) {
             let content = undefined;
 
             if (StorageUtilities.getEncodingByFileName(fileSource.name) === EncodingType.Utf8String) {
@@ -720,7 +751,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               content = new Uint8Array(await fileSource.arrayBuffer());
             }
 
-            item.file.setContent(content);
+            item.defaultFile.setContent(content);
           }
           this._incrementVisualSeed();
         } else if ((this.state.dialogData as IProjectItemSeed).action === ProjectItemSeedAction.fileOrFolder) {
@@ -966,8 +997,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
               const height = WebUtilities.getHeight();
 
-              if (top > height / 2 && this.state.activeProjectItem && this.state.activeProjectItem.file) {
-                this.state.activeProjectItem.file.setContent(content);
+              if (top > height / 2 && this.state.activeProjectItem && this.state.activeProjectItem.defaultFile) {
+                this.state.activeProjectItem.defaultFile.setContent(content);
 
                 this._stopDragEffect();
 
@@ -2211,7 +2242,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       ProjectItemType.worldFolder,
     ]);
 
-    if (!projectItem || !projectItem.file) {
+    if (!projectItem || !projectItem.defaultFile) {
       Log.debugAlert("Could not find respective project item.");
       return;
     }
@@ -2225,7 +2256,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const date = new Date();
     let downloadTitle = projectItem.name + " - " + Utilities.getFriendlySummarySeconds(date);
 
-    const zipBytes = projectItem.file.content;
+    const zipBytes = projectItem.defaultFile.content;
 
     if (projectItem.itemType === ProjectItemType.MCWorld) {
       downloadTitle += ".mcworld";
@@ -2342,21 +2373,21 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await projectItem.load();
 
-    if (projectItem.file === null) {
+    if (projectItem.defaultFile === null) {
       return;
     }
 
-    const content = projectItem.file.content;
+    const content = projectItem.defaultFile.content;
 
-    Log.message("About to save " + projectItem.file.name, this.props.project.name);
+    Log.message("About to save " + projectItem.defaultFile.name, this.props.project.name);
 
     if (content instanceof Uint8Array) {
-      saveAs(new Blob([content], { type: "application/octet-stream" }), projectItem.file.name);
+      saveAs(new Blob([content], { type: "application/octet-stream" }), projectItem.defaultFile.name);
     }
 
-    Log.message("Done saving " + projectItem.file.name, this.props.project.name);
+    Log.message("Done saving " + projectItem.defaultFile.name, this.props.project.name);
 
-    this.props.carto.notifyStatusUpdate("Downloading mcworld '" + projectItem.file.name + "'.");
+    this.props.carto.notifyStatusUpdate("Downloading mcworld '" + projectItem.defaultFile.name + "'.");
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewDeployKey((data.icon as any).key, this._handleDownloadMCWorld, data);
@@ -2397,17 +2428,19 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await projectItem.load();
 
-    if (projectItem.file === null) {
+    if (projectItem.defaultFile === null) {
       return;
     }
 
-    const content = projectItem.file.content;
+    const content = projectItem.defaultFile.content;
 
     if (content instanceof Uint8Array) {
-      await this.saveAsWorldWithPacks(projectItem.file.name, content);
+      await this.saveAsWorldWithPacks(projectItem.defaultFile.name, content);
     }
 
-    this.props.carto.notifyStatusUpdate("Downloading mcworld with packs embedded '" + projectItem.file.name + "'.");
+    this.props.carto.notifyStatusUpdate(
+      "Downloading mcworld with packs embedded '" + projectItem.defaultFile.name + "'."
+    );
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewDeployKey((data.icon as any).key, this._handleDownloadMCWorldWithPacks, data);
@@ -2463,14 +2496,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await projectItem.load();
 
-    if (projectItem.file === null) {
+    if (projectItem.defaultFile === null) {
       return;
     }
 
-    const content = projectItem.file.content;
+    const content = projectItem.defaultFile.content;
 
     if (content instanceof Uint8Array) {
-      await this.saveAsWorldWithPackRefs(projectItem.file.name, content);
+      await this.saveAsWorldWithPackRefs(projectItem.defaultFile.name, content);
     }
 
     this.props.carto.notifyStatusUpdate("Downloading");
@@ -2573,6 +2606,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             ProjectItemStorageType.singleFile,
             file.name,
             itemType,
+            FolderContext.unknown,
             undefined,
             creationType
           );
@@ -2813,7 +2847,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
   async downloadProjectItem(projectItem: ProjectItem) {
     if (projectItem.storageType === ProjectItemStorageType.singleFile) {
-      const file = projectItem.file;
+      const file = projectItem.defaultFile;
 
       if (file) {
         await file.loadContent();
@@ -2831,7 +2865,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
   async downloadBbmodel(projectItem: ProjectItem) {
     if (projectItem.storageType === ProjectItemStorageType.singleFile) {
-      const file = projectItem.file;
+      const file = projectItem.defaultFile;
 
       if (file) {
         await file.loadContent();
@@ -3127,7 +3161,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       this.props.project.role !== ProjectRole.documentation &&
       this.props.project.role !== ProjectRole.meta
     ) {
-      if (Utilities.isPreview && ProjectEditorUtilities.getIsLinkShareable(this.props.project)) {
+      if (ProjectEditorUtilities.getIsLinkShareable(this.props.project)) {
         exportKeys[nextExportKey] = {
           key: nextExportKey,
           icon: <FontAwesomeIcon icon={faLink} key={nextExportKey} className="fa-lg" />,
@@ -3234,10 +3268,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       ) {
         let world = undefined;
 
-        if (pi.folder && pi.folder.manager && pi.folder.manager instanceof MCWorld) {
-          world = pi.folder.manager as MCWorld;
-        } else if (pi.file && pi.file.manager && pi.file.manager instanceof MCWorld) {
-          world = pi.file.manager as MCWorld;
+        if (pi.defaultFolder && pi.defaultFolder.manager && pi.defaultFolder.manager instanceof MCWorld) {
+          world = pi.defaultFolder.manager as MCWorld;
+        } else if (pi.defaultFile && pi.defaultFile.manager && pi.defaultFile.manager instanceof MCWorld) {
+          world = pi.defaultFile.manager as MCWorld;
         }
 
         let title = pi.name;
@@ -3898,9 +3932,11 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           theme={this.props.theme}
           readOnly={this.props.readOnly}
           heightOffset={heightOffset}
+          activeVariant={this.state.activeVariant}
           visualSeed={this.state.visualSeed}
           forceRawView={this.state.forceRawView}
           project={this.props.project}
+          onVariantChangeRequested={this.setNewProjectVariantName}
           setActivePersistable={this._setActiveEditorPersistable}
           carto={this.props.carto}
           activeReference={this.state.activeReference}
@@ -4089,7 +4125,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     if (this.state.displayFileView) {
       if (this.props.project.projectFolder) {
-        const selectedFile = this.state.activeProjectItem ? this.state.activeProjectItem.file : undefined;
+        const selectedFile = this.state.activeProjectItem ? this.state.activeProjectItem.defaultFile : undefined;
 
         itemList = (
           <FileExplorer

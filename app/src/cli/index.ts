@@ -22,7 +22,7 @@ import IIndexJson from "../storage/IIndexJson.js";
 import * as inquirer from "inquirer";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem.js";
 import ProjectUtilities, { NewEntityTypeAddMode } from "../app/ProjectUtilities.js";
-import Project, { ProjectAutoDeploymentMode } from "../app/Project.js";
+import Project, { FolderContext, ProjectAutoDeploymentMode } from "../app/Project.js";
 import ProjectExporter from "../app/ProjectExporter.js";
 import Utilities from "../core/Utilities.js";
 import { ProjectInfoSuite } from "../info/IProjectInfoData.js";
@@ -976,7 +976,8 @@ async function setAndDisplayAllWorlds() {
                 path,
                 ProjectItemStorageType.folder,
                 targetName,
-                ProjectItemType.worldFolder
+                ProjectItemType.worldFolder,
+                FolderContext.unknown
               );
 
               await pi.ensureFolderStorage();

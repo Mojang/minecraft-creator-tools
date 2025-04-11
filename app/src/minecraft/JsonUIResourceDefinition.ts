@@ -208,9 +208,9 @@ export default class JsonUIResourceDefinition {
         ) {
           await candItem.ensureStorage();
 
-          if (candItem.file) {
+          if (candItem.defaultFile) {
             let relativePath = TextureDefinition.canonicalizeTexturePath(
-              this.getRelativePath(candItem.file, packRootFolder)
+              this.getRelativePath(candItem.defaultFile, packRootFolder)
             );
 
             if (relativePath) {

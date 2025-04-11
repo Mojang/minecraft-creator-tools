@@ -359,10 +359,10 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
         for (const candItem of this.props.item.childItems) {
           if (candItem.childItem.itemType === ProjectItemType.ts) {
             if (
-              candItem.childItem.file &&
-              candItem.childItem.file.content &&
-              typeof candItem.childItem.file.content === "string" &&
-              candItem.childItem.file.content.indexOf(this.state.selectedActionComponentId) >= 0
+              candItem.childItem.defaultFile &&
+              candItem.childItem.defaultFile.content &&
+              typeof candItem.childItem.defaultFile.content === "string" &&
+              candItem.childItem.defaultFile.content.indexOf(this.state.selectedActionComponentId) >= 0
             ) {
               foundTypeScript = true;
               itemInterior = (
@@ -376,7 +376,7 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
                   project={this.props.project}
                   scriptLanguage={ProjectScriptLanguage.typeScript}
                   heightOffset={226}
-                  file={candItem.childItem.file}
+                  file={candItem.childItem.defaultFile}
                   setActivePersistable={this._handleNewChildPersistable}
                 />
               );

@@ -431,15 +431,15 @@ export default class ProjectExporter {
 
     await worldProjectItem.load();
 
-    if (!worldProjectItem.file && !worldProjectItem.folder) {
+    if (!worldProjectItem.defaultFile && !worldProjectItem.defaultFolder) {
       Log.unexpectedUndefined("DAWATA");
       return;
     }
 
-    if (worldProjectItem.folder) {
-      mcworld = await MCWorld.ensureMCWorldOnFolder(worldProjectItem.folder, project);
-    } else if (worldProjectItem.file) {
-      mcworld = await MCWorld.ensureOnFile(worldProjectItem.file, project);
+    if (worldProjectItem.defaultFolder) {
+      mcworld = await MCWorld.ensureMCWorldOnFolder(worldProjectItem.defaultFolder, project);
+    } else if (worldProjectItem.defaultFile) {
+      mcworld = await MCWorld.ensureOnFile(worldProjectItem.defaultFile, project);
     }
 
     if (!mcworld) {
@@ -543,15 +543,15 @@ export default class ProjectExporter {
     const operId = await carto.notifyOperationStarted("Deploying world '" + worldProjectItem.name + "'");
     await worldProjectItem.load();
 
-    if (!worldProjectItem.file && !worldProjectItem.folder) {
+    if (!worldProjectItem.defaultFile && !worldProjectItem.defaultFolder) {
       Log.unexpectedUndefined("DAWATA");
       return;
     }
 
-    if (worldProjectItem.folder) {
-      mcworld = await MCWorld.ensureMCWorldOnFolder(worldProjectItem.folder, project);
-    } else if (worldProjectItem.file) {
-      mcworld = await MCWorld.ensureOnFile(worldProjectItem.file, project);
+    if (worldProjectItem.defaultFolder) {
+      mcworld = await MCWorld.ensureMCWorldOnFolder(worldProjectItem.defaultFolder, project);
+    } else if (worldProjectItem.defaultFile) {
+      mcworld = await MCWorld.ensureOnFile(worldProjectItem.defaultFile, project);
     }
 
     if (!mcworld) {
@@ -965,10 +965,10 @@ export default class ProjectExporter {
       if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.file) {
-          await projectItem.file.loadContent();
+        if (projectItem.defaultFile) {
+          await projectItem.defaultFile.loadContent();
 
-          let content = projectItem.file.content;
+          let content = projectItem.defaultFile.content;
 
           if (typeof content === "string" && content.indexOf("-beta") >= 0) {
             mcworld.betaApisExperiment = true;
@@ -977,10 +977,10 @@ export default class ProjectExporter {
       } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.file) {
-          await projectItem.file.loadContent();
+        if (projectItem.defaultFile) {
+          await projectItem.defaultFile.loadContent();
 
-          let content = projectItem.file.content;
+          let content = projectItem.defaultFile.content;
 
           if (typeof content === "string" && content.indexOf("pbr") >= 0 && content.indexOf("capabilities") >= 0) {
             mcworld.deferredTechnicalPreviewExperiment = true;

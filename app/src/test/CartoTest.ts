@@ -17,7 +17,6 @@ import ProjectExporter from "../app/ProjectExporter";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
 import { GameType, Generator } from "../minecraft/WorldLevelDat";
 import * as fs from "fs";
-import Utilities from "../core/Utilities";
 
 CartoApp.hostType = HostType.testLocal;
 

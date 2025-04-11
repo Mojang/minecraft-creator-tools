@@ -2,7 +2,7 @@ import EslintConfig from "../devproject/EslintConfig";
 import JustConfig from "../devproject/JustConfig";
 import NpmPackageDefinition from "../devproject/NpmPackageDefinition";
 import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "./IProjectItemData";
-import Project from "./Project";
+import Project, { FolderContext } from "./Project";
 
 export default class ProjectStandard {
   static async ensureIsStandard(project: Project) {
@@ -31,6 +31,7 @@ export default class ProjectStandard {
           ProjectItemStorageType.singleFile,
           "package.json",
           ProjectItemType.packageJson,
+          FolderContext.unknown,
           undefined,
           ProjectItemCreationType.generated
         );
@@ -41,28 +42,28 @@ export default class ProjectStandard {
     for (let i = 0; i < itemsCopy.length; i++) {
       const item = itemsCopy[i];
 
-      if (item.itemType === ProjectItemType.justConfigTs && item.file) {
+      if (item.itemType === ProjectItemType.justConfigTs && item.defaultFile) {
         item.creationType = ProjectItemCreationType.generated;
 
-        const justConfig = await JustConfig.ensureOnFile(item.file);
+        const justConfig = await JustConfig.ensureOnFile(item.defaultFile);
 
         if (justConfig) {
           justConfig.ensureDefault();
           await justConfig.save();
         }
-      } else if (item.itemType === ProjectItemType.esLintConfigMjs && item.file) {
+      } else if (item.itemType === ProjectItemType.esLintConfigMjs && item.defaultFile) {
         item.creationType = ProjectItemCreationType.generated;
 
-        const eslintConfig = await EslintConfig.ensureOnFile(item.file);
+        const eslintConfig = await EslintConfig.ensureOnFile(item.defaultFile);
 
         if (eslintConfig) {
           eslintConfig.ensureDefault();
           await eslintConfig.save();
         }
-      } else if (item.itemType === ProjectItemType.packageJson && item.file) {
+      } else if (item.itemType === ProjectItemType.packageJson && item.defaultFile) {
         item.creationType = ProjectItemCreationType.generated;
 
-        const packageJson = await NpmPackageDefinition.ensureOnFile(item.file);
+        const packageJson = await NpmPackageDefinition.ensureOnFile(item.defaultFile);
 
         if (packageJson) {
           await packageJson.ensureStandardContent();

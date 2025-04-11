@@ -10,6 +10,18 @@
  * Block Components Documentation - minecraft:item_visual
  * 
  * minecraft:item_visual Samples
+"minecraft:item_visual": {
+  "geometry": {
+    "identifier": "minecraft:geometry.full_block"
+  },
+  "material_instances": {
+    "*": {
+      "texture": "dirt",
+      "render_method": "opaque"
+    }
+  }
+}
+
 
 Block Fabricator - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json
 

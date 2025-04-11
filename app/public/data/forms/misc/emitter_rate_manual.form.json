@@ -2,8 +2,7 @@
   "fields": [
     {
       "id": "max_particles",
-      "title": "max_particles",
-      "description": "max_particles",
+      "title": "Max Particles",
       "dataType": 24,
       "alternates": [
         {
@@ -12,18 +11,15 @@
           "readOnly": true,
           "subForm": {
             "title": "Max Particles",
-            "description": "Max Particles",
             "fields": [
               {
                 "id": "expression",
-                "title": "expression",
-                "description": "expression",
+                "title": "Expression",
                 "dataType": 2
               },
               {
                 "id": "version",
-                "title": "version",
-                "description": "version",
+                "title": "Version",
                 "dataType": 0
               }
             ]
@@ -36,6 +32,5 @@
       ]
     }
   ],
-  "description": "Emitter Rate Manual Misc",
   "title": "Emitter Rate Manual Misc"
 }

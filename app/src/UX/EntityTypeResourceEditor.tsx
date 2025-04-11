@@ -64,7 +64,6 @@ export default class EntityTypeResourceEditor extends Component<
   constructor(props: IEntityTypeResourceEditorProps) {
     super(props);
 
-    this._definitionLoaded = this._definitionLoaded.bind(this);
     this._handleDataFormPropertyChange = this._handleDataFormPropertyChange.bind(this);
     this._handleNewChildPersistable = this._handleNewChildPersistable.bind(this);
 
@@ -108,6 +107,10 @@ export default class EntityTypeResourceEditor extends Component<
     return null;
   }
 
+  componentDidUpdate(prevProps: IEntityTypeResourceEditorProps, prevState: IEntityTypeResourceEditorState) {
+    this._updateManager();
+  }
+
   componentDidMount(): void {
     this._childPersistables = [];
 
@@ -127,6 +130,10 @@ export default class EntityTypeResourceEditor extends Component<
     await Database.ensureFormLoaded("entity", "resource_textures");
     await Database.ensureFormLoaded("entity", "sound_event");
 
+    if (this.state.fileToEdit && this.state.fileToEdit.manager === undefined) {
+      await EntityTypeResourceDefinition.ensureOnFile(this.state.fileToEdit);
+    }
+
     if (
       this.state.fileToEdit &&
       this.state.fileToEdit.manager !== undefined &&
@@ -136,10 +143,6 @@ export default class EntityTypeResourceEditor extends Component<
     ) {
       this._doUpdate();
     }
-  }
-
-  _definitionLoaded(defA: EntityTypeResourceDefinition, defB: EntityTypeResourceDefinition) {
-    this._doUpdate();
   }
 
   async _doUpdate() {
@@ -161,7 +164,7 @@ export default class EntityTypeResourceEditor extends Component<
       }
     }
 
-    const etrd = await EntityTypeResourceDefinition.ensureOnFile(this.state.fileToEdit, this._definitionLoaded);
+    const etrd = await EntityTypeResourceDefinition.ensureOnFile(this.state.fileToEdit);
 
     const items = this.props.projectItem.project.getItemsCopy();
     let soundEvent: ISoundEventSet | undefined = undefined;
@@ -265,7 +268,7 @@ export default class EntityTypeResourceEditor extends Component<
       this.state.fileToEdit.manager === undefined ||
       Database.uxCatalog === null
     ) {
-      return <div>Loading...</div>;
+      return <div className="etre-loading">Loading...</div>;
     }
 
     if (this.props.setActivePersistable !== undefined) {

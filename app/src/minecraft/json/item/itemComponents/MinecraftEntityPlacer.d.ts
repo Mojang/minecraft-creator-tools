@@ -99,7 +99,7 @@ export default interface MinecraftEntityPlacer {
    * My Sword Turtle: "minecraft:turtle"
    *
    */
-  entity: string;
+  entity: { [key: string]: string };
 
   /**
    * @remarks

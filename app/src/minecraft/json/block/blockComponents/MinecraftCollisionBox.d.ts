@@ -10,6 +10,19 @@
  * Block Components Documentation - minecraft:collision_box
  * 
  * minecraft:collision_box Samples
+"minecraft:collision_box": {
+  "origin": [
+    -8,
+    0,
+    -8
+  ],
+  "size": [
+    16,
+    16,
+    16
+  ]
+}
+
 
 Block Fabricator - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json
 
@@ -23,7 +36,10 @@ import * as jsoncommon from './../../../jsoncommon';
  * Defines the area of the block that collides with entities. If
  * set to true, default values are used. If set to false, the
  * block's collision with entities is disabled. If this component is
- * omitted, default values are used.
+ * omitted, default values are used.  If this component is
+ * omitted, the default value for this component is true, which will
+ * give your block the default values for its parameters (a
+ * collision box the size/shape of a regular block).
  * NOTE: Alternate Simple Representations
 
  * This can also be represent as a simple `Boolean true/false`.

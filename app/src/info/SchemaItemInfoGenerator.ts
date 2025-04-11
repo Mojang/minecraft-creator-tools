@@ -59,7 +59,11 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
   async generate(projectItem: ProjectItem, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
-    if (projectItem.file && projectItem.file.content && typeof projectItem.file.content === "string") {
+    if (
+      projectItem.availableFile &&
+      projectItem.availableFile.content &&
+      typeof projectItem.availableFile.content === "string"
+    ) {
       const schemaPath = projectItem.getSchemaPath();
 
       if (schemaPath) {
@@ -94,7 +98,7 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
           }
 
           if (val) {
-            let content = projectItem.file.content;
+            let content = projectItem.availableFile.content;
             let contentObj = undefined;
 
             content = Utilities.fixJsonContent(content);

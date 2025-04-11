@@ -1,0 +1,6 @@
+{
+  "id": "query.position_delta",
+  "fields": [],
+  "description": "Returns the position delta for an actor.  Takes one argument that represents the desired axis (0 == x-axis, 1 == y-axis, 2 == z-axis).",
+  "title": "Position Delta Query"
+}

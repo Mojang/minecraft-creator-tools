@@ -37,9 +37,23 @@
   "tags": [
     "visual"
   ],
-  "description": "The description identifier of the geometry and material used to render the item of this block.\r\nExperimental toggles required: Upcoming Creator Features (in format versions before 1.21.50)",
-  "title": "Item Visual",
   "samples": {
+    "sample": [
+      {
+        "path": "Full Block Example",
+        "content": {
+          "geometry": {
+            "identifier": "minecraft:geometry.full_block"
+          },
+          "material_instances": {
+            "*": {
+              "texture": "dirt",
+              "render_method": "opaque"
+            }
+          }
+        }
+      }
+    ],
     "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
       {
         "path": "/minecraft:block/components/minecraft:item_visual/",
@@ -55,5 +69,7 @@
       }
     ]
   },
+  "description": "The description identifier of the geometry and material used to render the item of this block.\r\nExperimental toggles required: Upcoming Creator Features (in format versions before 1.21.50)",
+  "title": "Item Visual",
   "id": "minecraft:item_visual"
 }

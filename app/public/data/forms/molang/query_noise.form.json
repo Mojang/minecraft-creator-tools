@@ -1,0 +1,6 @@
+{
+  "id": "query.noise",
+  "fields": [],
+  "description": "Queries Perlin Noise Map",
+  "title": "Noise Query"
+}

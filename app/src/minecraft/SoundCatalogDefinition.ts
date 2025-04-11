@@ -6,7 +6,7 @@ import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import { IEntitySounds, ISoundCatalog, ISoundEventCatalog, ISoundEventSet } from "./ISoundCatalog";
-import Project from "../app/Project";
+import Project, { FolderContext } from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition";
@@ -221,8 +221,8 @@ export default class SoundCatalogDefinition implements IDefinition {
       if (item.itemType === ProjectItemType.soundCatalog) {
         await item.ensureFileStorage();
 
-        if (item.file) {
-          const soundCatalog = await SoundCatalogDefinition.ensureOnFile(item.file);
+        if (item.defaultFile) {
+          const soundCatalog = await SoundCatalogDefinition.ensureOnFile(item.defaultFile);
 
           if (soundCatalog) {
             return soundCatalog;
@@ -250,6 +250,7 @@ export default class SoundCatalogDefinition implements IDefinition {
               ProjectItemStorageType.singleFile,
               newFile.name,
               ProjectItemType.soundCatalog,
+              FolderContext.resourcePack,
               undefined,
               ProjectItemCreationType.normal,
               newFile
@@ -354,8 +355,8 @@ export default class SoundCatalogDefinition implements IDefinition {
       } else if (candItem.itemType === ProjectItemType.soundDefinitionCatalog && soundEventList) {
         await candItem.ensureStorage();
 
-        if (candItem.file) {
-          const soundDef = await SoundDefinitionCatalogDefinition.ensureOnFile(candItem.file);
+        if (candItem.defaultFile) {
+          const soundDef = await SoundDefinitionCatalogDefinition.ensureOnFile(candItem.defaultFile);
 
           const soundSetNames = soundDef?.getSoundDefinitionSetNameList();
           if (soundSetNames) {

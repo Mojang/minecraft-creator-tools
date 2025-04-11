@@ -27,7 +27,7 @@ export class BasicValidators {
           return childFile.name + " is an unsupported file name.";
         }
 
-        const res = await this.isFileContentOKForSharing(childFile);
+        const res = await this.hasStrongLanguageContent(childFile);
 
         if (res) {
           return childFile.name + " has unsupported content.";
@@ -55,7 +55,7 @@ export class BasicValidators {
 
     const ext = StorageUtilities.getTypeFromName(fileName);
 
-    if (ext !== "ts" && ext !== "js" && ext !== "json") {
+    if (ext !== "ts" && ext !== "json" && ext !== "lang") {
       return false;
     }
 
@@ -88,25 +88,25 @@ export class BasicValidators {
     return true;
   }
 
-  public static async isFileContentOKForSharing(file: IFile) {
+  public static async hasStrongLanguageContent(file: IFile) {
     await file.loadContent();
 
     if (file.isBinary) {
-      return false;
+      return undefined;
     }
 
     const str = file.content;
 
     if (!str) {
-      return false;
+      return undefined;
     }
 
     if (typeof str !== "string") {
-      return false;
+      return undefined;
     }
 
     if (str.length < 1) {
-      return false;
+      return undefined;
     }
 
     const content = str.toLowerCase();
@@ -119,9 +119,24 @@ export class BasicValidators {
     }
 
     if (this.contentMatcher.hasMatch(content)) {
-      return true;
+      const matches = this.contentMatcher.getAllMatches(content);
+      let strMatches: string[] = [];
+
+      for (let i = 0; i < matches.length && i < 100; i++) {
+        const match = matches[i];
+
+        if (match) {
+          const result = content.substring(match.startIndex, match.endIndex + 1);
+
+          if (!strMatches.includes(result)) {
+            strMatches.push(result);
+          }
+        }
+      }
+
+      return strMatches.join(", ");
     }
 
-    return false;
+    return undefined;
   }
 }

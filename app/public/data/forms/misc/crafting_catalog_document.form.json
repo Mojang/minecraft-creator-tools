@@ -2,7 +2,7 @@
   "fields": [
     {
       "id": "categories",
-      "title": "categories",
+      "title": "Categories",
       "description": "The categories we are adding groups to.",
       "dataType": 15,
       "subForm": {
@@ -11,13 +11,13 @@
         "fields": [
           {
             "id": "category_name",
-            "title": "enum SharedTypes_v1_21_60_CraftingCatalogItemCategory",
+            "title": "V1 21 60 CraftingCatalogItemCategory",
             "description": "The category that the items will go to. This is restricted to construction, nature, equipment, or items.",
             "dataType": 2
           },
           {
             "id": "groups",
-            "title": "groups",
+            "title": "Groups",
             "description": "The groups that we are adding to a category.",
             "dataType": 15,
             "subForm": {
@@ -26,7 +26,7 @@
               "fields": [
                 {
                   "id": "group_identifier",
-                  "title": "group_identifier",
+                  "title": "Group Identifier",
                   "description": "Optional field to give an icon and name to a group. Otherwise the items are added as loose items.",
                   "dataType": 16,
                   "subForm": {
@@ -35,7 +35,7 @@
                     "fields": [
                       {
                         "id": "name",
-                        "title": "name",
+                        "title": "Name",
                         "description": "A localization key representing the name of the group that starts with a namespace. The 'minecraft' namespace is reservered for the Vanilla game. Creating new group names starting with 'minecraft' run the risk of being overwritten in later updates.",
                         "dataType": 2,
                         "validity": [
@@ -47,7 +47,7 @@
                       },
                       {
                         "id": "icon",
-                        "title": "icon",
+                        "title": "Icon",
                         "description": "The item or block that represents the group.",
                         "dataType": 2,
                         "alternates": [
@@ -57,11 +57,10 @@
                             "readOnly": true,
                             "subForm": {
                               "title": "Icon",
-                              "description": "Icon",
                               "fields": [
                                 {
                                   "id": "name",
-                                  "title": "name",
+                                  "title": "Name",
                                   "description": "The name of an item or block. A namespace for the item is required. You can optionally provide an aux value for items that use it at the end. Example: namespace:my_item:1",
                                   "dataType": 2,
                                   "validity": [
@@ -81,7 +80,7 @@
                 },
                 {
                   "id": "items",
-                  "title": "items",
+                  "title": "Items",
                   "description": "The items to add to the group.",
                   "dataType": 2,
                   "alternates": [
@@ -91,11 +90,10 @@
                       "readOnly": true,
                       "subForm": {
                         "title": "Items",
-                        "description": "Items",
                         "fields": [
                           {
                             "id": "name",
-                            "title": "name",
+                            "title": "Name",
                             "description": "The name of an item or block. A namespace for the item is required. You can optionally provide an aux value for items that use it at the end. Example: namespace:my_item:1",
                             "dataType": 2,
                             "validity": [

@@ -248,8 +248,8 @@ export default class SoundDefinitionCatalogDefinition {
     if (childItem.itemType === ProjectItemType.texture && this._data && this._data.sound_definitions) {
       await childItem.ensureStorage();
 
-      if (childItem.file && packRootFolder) {
-        let relativePath = this.getRelativePath(childItem.file, packRootFolder);
+      if (childItem.defaultFile && packRootFolder) {
+        let relativePath = this.getRelativePath(childItem.defaultFile, packRootFolder);
 
         if (relativePath) {
           for (const key in this._data.sound_definitions) {
@@ -428,8 +428,8 @@ export default class SoundDefinitionCatalogDefinition {
       if (candItem.itemType === ProjectItemType.audio && packRootFolder && soundPathList) {
         await candItem.ensureStorage();
 
-        if (candItem.file) {
-          let relativePath = this.getRelativePath(candItem.file, packRootFolder);
+        if (candItem.defaultFile) {
+          let relativePath = this.getRelativePath(candItem.defaultFile, packRootFolder);
 
           if (relativePath) {
             if (soundPathList.includes(relativePath)) {

@@ -2,8 +2,7 @@
   "fields": [
     {
       "id": "per_update_expression",
-      "title": "per_update_expression",
-      "description": "per_update_expression",
+      "title": "Per Update Expression",
       "dataType": 24,
       "alternates": [
         {
@@ -12,18 +11,15 @@
           "readOnly": true,
           "subForm": {
             "title": "Per Update Expression",
-            "description": "Per Update Expression",
             "fields": [
               {
                 "id": "expression",
-                "title": "expression",
-                "description": "expression",
+                "title": "Expression",
                 "dataType": 2
               },
               {
                 "id": "version",
-                "title": "version",
-                "description": "version",
+                "title": "Version",
                 "dataType": 0
               }
             ]
@@ -37,8 +33,7 @@
     },
     {
       "id": "per_render_expression",
-      "title": "per_render_expression",
-      "description": "per_render_expression",
+      "title": "Per Render Expression",
       "dataType": 24,
       "alternates": [
         {
@@ -47,18 +42,15 @@
           "readOnly": true,
           "subForm": {
             "title": "Per Render Expression",
-            "description": "Per Render Expression",
             "fields": [
               {
                 "id": "expression",
-                "title": "expression",
-                "description": "expression",
+                "title": "Expression",
                 "dataType": 2
               },
               {
                 "id": "version",
-                "title": "version",
-                "description": "version",
+                "title": "Version",
                 "dataType": 0
               }
             ]
@@ -71,6 +63,5 @@
       ]
     }
   ],
-  "description": "Particle Initialization Misc",
   "title": "Particle Initialization Misc"
 }

@@ -1,0 +1,6 @@
+{
+  "id": "query.is_attached_to_entity",
+  "fields": [],
+  "description": "Returns 1.0 if the actor is attached to an entity, else it will return 0.0.",
+  "title": "Is Attached To Entity Query"
+}

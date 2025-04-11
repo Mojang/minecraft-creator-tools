@@ -1,0 +1,6 @@
+{
+  "id": "query.invulnerable_ticks",
+  "fields": [],
+  "description": "Returns the number of ticks of invulnerability the entity has left if it makes sense, else it returns 0.0.",
+  "title": "Invulnerable Ticks Query"
+}

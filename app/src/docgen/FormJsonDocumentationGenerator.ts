@@ -152,6 +152,16 @@ export default class FormJsonDocumentationGenerator {
         this.generateSubformsFromFields(formJsonFolder, resultForms, "features");
       }
     }
+
+    const molangQfNode = await LegacyDocumentationDefinition.loadNode(
+      "molang",
+      "/Query Functions/List of Entity Queries/",
+      isPreview
+    );
+
+    if (molangQfNode) {
+      await this.generateFormNodesFromLegacyDocNode(formJsonFolder, molangQfNode, "molang");
+    }
   }
 
   public async generateSubformsFromFields(
@@ -240,7 +250,6 @@ export default class FormJsonDocumentationGenerator {
       const endCompare = docLineMod.lastIndexOf(">");
 
       let mainStr: string | undefined = undefined;
-      let endStr: string | undefined = undefined;
 
       if (startQuote >= 0 && endQuote > startQuote) {
         if (endCompare === endQuote + 1) {
@@ -248,7 +257,6 @@ export default class FormJsonDocumentationGenerator {
         }
 
         mainStr = docLineMod.substring(startQuote + 1, endQuote);
-        endStr = docLineMod.substring(endQuote + 1);
       }
 
       if (docLineTrim.endsWith(":{") && !mainStr) {
@@ -551,7 +559,7 @@ export default class FormJsonDocumentationGenerator {
 
   public async finalizeJsonForm(formObj: IFormDefinition, outputFile: IFile) {
     if (!formObj.generated_doNotEdit && !formObj.generatedFromSchema_doNotEdit && formObj.id) {
-      const id = formObj.id.replace(/\:/gi, "_").replace(/\./gi, "_");
+      const id = formObj.id.replace(/:/gi, "_").replace(/\./gi, "_");
 
       await outputFile.loadContent();
       const originalNode = StorageUtilities.getJsonObject(outputFile);
@@ -735,10 +743,18 @@ export default class FormJsonDocumentationGenerator {
 
   public async exportJsonSchemaForms(formJsonFolder: IFolder) {
     for (const key in this.defsByTitle) {
-      if (!this.defRefs[key]) {
+      if ((!this.defRefs[key] || this.defRefs[key] <= 1) && !this.isDisallowedSchemaFile(key)) {
         await this.processAndExportJsonSchemaNode(formJsonFolder, key);
       }
     }
+  }
+
+  isDisallowedSchemaFile(key: string) {
+    if (key.indexOf("struct ") >= 0) {
+      return true;
+    }
+
+    return false;
   }
 
   private async processAndExportJsonSchemaNode(formJsonFolder: IFolder, title: string) {
@@ -891,7 +907,7 @@ export default class FormJsonDocumentationGenerator {
 
     const docForm: IFormDefinition = {
       title: Utilities.humanifyMinecraftName(nodeName),
-      description: node.description ? node.description : Utilities.humanifyMinecraftName(nodeName),
+      description: node.description ? node.description : undefined,
       fields: fields,
     };
 
@@ -1705,11 +1721,9 @@ export default class FormJsonDocumentationGenerator {
     alreadyProcessedFieldList?: string[]
   ) {
     let id = childNode.$id ? childNode.$id : propName;
-    let title = childNode.title ? this.humanifyJsonMinecraftName(childNode.title) : id;
+    let title = childNode.title ? childNode.title : id;
 
-    if (childNode.title === "sequence container" || childNode.title === "associative container") {
-      title = this.humanifyJsonMinecraftName(id);
-    }
+    title = Utilities.humanifyMinecraftName(this.humanifyJsonMinecraftName(title));
 
     if (!alreadyProcessedFieldList) {
       alreadyProcessedFieldList = [];
@@ -1720,7 +1734,7 @@ export default class FormJsonDocumentationGenerator {
     const fieldNode: IField = {
       id: id,
       title: title,
-      description: childNode.description ? childNode.description : title,
+      description: childNode.description ? childNode.description : undefined,
       dataType: FieldDataType.object,
     };
 
@@ -2062,6 +2076,12 @@ export default class FormJsonDocumentationGenerator {
     }
     title = title.replace("Struct", "");
     title = title.replace("struct", "");
+
+    title = title.replace("Enum", "");
+    title = title.replace("enum", "");
+
+    title = title.replace("SharedTypes", "");
+    title = title.replace("sharedtypes", "");
 
     title = title.replace(/::/gi, "_");
     title = title.replace(/:/gi, "_");

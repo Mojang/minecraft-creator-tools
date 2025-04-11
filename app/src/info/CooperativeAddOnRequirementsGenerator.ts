@@ -230,7 +230,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
     const itemsCopy = project.getItemsCopy();
 
     for (const projectItem of itemsCopy) {
-      if (projectItem.file) {
+      if (projectItem.availableFile) {
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
           if (behaviorPackManifest) {
             // CADDONREQ160
@@ -255,7 +255,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
             );
           }
 
-          behaviorPackManifest = await BehaviorManifestDefinition.ensureOnFile(projectItem.file);
+          behaviorPackManifest = await BehaviorManifestDefinition.ensureOnFile(projectItem.availableFile);
           behaviorPackItem = projectItem;
 
           await behaviorPackManifest?.load();
@@ -273,7 +273,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
             );
           }
 
-          resourcePackManifest = await ResourceManifestDefinition.ensureOnFile(projectItem.file);
+          resourcePackManifest = await ResourceManifestDefinition.ensureOnFile(projectItem.availableFile);
           resourcePackItem = projectItem;
 
           await resourcePackManifest?.load();

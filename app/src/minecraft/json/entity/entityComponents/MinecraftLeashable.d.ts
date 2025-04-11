@@ -120,6 +120,14 @@ export default interface MinecraftLeashable {
 
   /**
    * @remarks
+   * When set to true, "on_unleash" does not trigger when the entity
+   * gets unleashed for other reasons such as being stolen or the
+   * leash breaking.
+   */
+  on_unleash_interact_only: boolean;
+
+  /**
+   * @remarks
    * Defines how this entity behaves when leashed to another entity. A
    * preset is selected upon leashing and remains until the entity is
    * leashed to something else. The first preset whose "filter" conditions

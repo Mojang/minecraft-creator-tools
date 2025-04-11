@@ -2,7 +2,7 @@
 
 This project is a work in progress for a set of web-based and command line tools for Minecraft creators.
 
-Visit the [documentation](https://mctools.dev/docs/) for more information on Minecraft Creator Tools and the current set of capabilities.
+Visit the [documentation](https://learn.microsoft.com/minecraft/creator/documents/mctoolsoverview) for more information on Minecraft Creator Tools and the current set of capabilities.
 
 See the [changelog](CHANGELOG.md) for detailed updates and notes. If you have issues, please create a [GitHub issue](https://github.com/Mojang/minecraft-creator-tools/issues).
 
@@ -20,15 +20,29 @@ Enjoy!
 
 ## GitHub Repo & Developer Getting Started
 
-Everything is built out of the `app` folder.
+Everything is built out of the `app` folder. To get started, you should have node.js installed (to give you access to NPM - the node package manager.) You can install 
+node.js/npm from https://nodejs.org/. We'd recommend installing the latest LTS.
+
+You may need to adjust permissions to allow for remote signed PowerShell scripts, if you're using a PowerShell-based shell. Consider the script execution policies 
+you want to run with; to change the execution policy to remote signed, run:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
 
 In the `app\` folder, run
+
+```dotnetcli
+npm i
+```
+
+to install dependencies, and then
 
 ```dotnetcli
 npm run all
 ```
 
-to install dependencies and resources, and compile projects.
+to install more resources, and compile projects.
 
 ## Build Scripts
 
@@ -44,6 +58,18 @@ The page will reload if you make edits. You will also see any lint errors in the
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.
+
+IMPORTANT: Make sure you go into <repo>/samplecontent/addon and ensure the sample is built via:
+
+```dotnetcli
+npm i
+```
+
+and then
+
+```dotnetcli
+npx gulp package
+```
 
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
