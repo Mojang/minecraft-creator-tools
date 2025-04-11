@@ -12,9 +12,8 @@ import ProjectUtilities, { NewEntityTypeAddMode, NewItemTypeAddMode } from "../a
 import IGitHubInfo from "../app/IGitHubInfo";
 import ProjectItemManager from "../app/ProjectItemManager";
 import "./ProjectAddButton.css";
-import Utilities from "../core/Utilities";
 import NewBlockType from "./NewBlockType";
-import { ProjectRole, ProjectScriptLanguage } from "../app/IProjectData";
+import { ProjectScriptLanguage } from "../app/IProjectData";
 import IGalleryItem from "../app/IGalleryItem";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import IProjectItemSeed from "../app/IProjectItemSeed";

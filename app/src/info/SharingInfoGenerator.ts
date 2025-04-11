@@ -11,7 +11,6 @@ import ProjectInfoSet from "./ProjectInfoSet";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ContentIndex from "../core/ContentIndex";
 import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
-import { BasicValidators } from "../storage/BasicValidators";
 
 export enum SharingInfoGeneratorTest {
   requiresCustomCapabilities = 100,
@@ -70,6 +69,7 @@ export default class SharingInfoGenerator implements IProjectInfoGenerator {
         await pi.ensureFileStorage();
 
         if (pi.availableFile) {
+          /*
           let strongLanguageContent = await BasicValidators.hasStrongLanguageContent(pi.availableFile);
           if (strongLanguageContent) {
             projInfoItem = new ProjectInfoItem(
@@ -81,7 +81,7 @@ export default class SharingInfoGenerator implements IProjectInfoGenerator {
             );
             itemsByType[pi.itemType] = projInfoItem;
             items.push(projInfoItem);
-          }
+          }*/
         }
       }
 

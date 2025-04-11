@@ -55,7 +55,7 @@ export class BasicValidators {
 
     const ext = StorageUtilities.getTypeFromName(fileName);
 
-    if (ext !== "ts" && ext !== "js" && ext !== "json") {
+    if (ext !== "ts" && ext !== "json" && ext !== "lang") {
       return false;
     }
 

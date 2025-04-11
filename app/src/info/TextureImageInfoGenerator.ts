@@ -353,7 +353,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
           InfoItemType.error,
           this.id,
           TextureImageInfoGeneratorTest.totalAtlasTextureMemoryExceedsBudgetError,
-          `Texture memory of block atlas exceeds hard limit of ${totalAtlasTextureMemoryBudgetError} bytes. Total memory used`,
+          `Texture memory of item atlas exceeds hard limit of ${totalAtlasTextureMemoryBudgetError} bytes. Total memory used`,
           undefined,
           totalItemAtlasTextureMemory
         )
@@ -364,7 +364,7 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
           InfoItemType.warning,
           this.id,
           TextureImageInfoGeneratorTest.totalAtlasTextureMemoryExceedsBudgetWarn,
-          `Texture memory of block atlas exceeds budget of ${totalAtlasTextureMemoryBudgetWarn} bytes. Total memory used`,
+          `Texture memory of item atlas exceeds budget of ${totalAtlasTextureMemoryBudgetWarn} bytes. Total memory used`,
           undefined,
           totalItemAtlasTextureMemory
         )
