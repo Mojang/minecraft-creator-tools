@@ -8,5 +8,6 @@
     }
   ],
   "description": "Attach arbitrary string tags to this biome.",
-  "title": "Minecraft Tags Biome"
+  "title": "Minecraft Tags Biome",
+  "id": "minecraft:tags"
 }

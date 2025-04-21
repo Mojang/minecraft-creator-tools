@@ -13,7 +13,7 @@ import { UpdateResultType } from "../updates/IUpdateResult";
 import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
-import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
+import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import ProjectInfoUtilities from "../info/ProjectInfoUtilities";
 
 export enum ItemTypeUpdate {
@@ -127,7 +127,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
         await pi.ensureFileStorage();
 
         if (pi.defaultFile) {
-          const bpItemType = await ItemTypeBehaviorDefinition.ensureOnFile(pi.defaultFile);
+          const bpItemType = await ItemTypeDefinition.ensureOnFile(pi.defaultFile);
 
           if (bpItemType) {
             await bpItemType.load();
@@ -310,7 +310,7 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
         await pi.ensureFileStorage();
 
         if (pi.defaultFile) {
-          const wtManifest = await ItemTypeBehaviorDefinition.ensureOnFile(pi.defaultFile);
+          const wtManifest = await ItemTypeDefinition.ensureOnFile(pi.defaultFile);
 
           if (wtManifest) {
             const mev = wtManifest.wrapper?.format_version;

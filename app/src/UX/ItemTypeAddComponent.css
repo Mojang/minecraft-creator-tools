@@ -3,7 +3,7 @@
 }
 
 .itac-list {
-  max-height: 440px;
+  max-height: 400px;
   overflow-y: auto;
   overflow-x: hidden;
   border: solid 1px;

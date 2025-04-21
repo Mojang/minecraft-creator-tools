@@ -12,6 +12,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "relative_position",
             "title": "Relative Position",
             "fields": [
               {
@@ -45,6 +46,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "direction",
             "title": "Direction",
             "fields": [
               {
@@ -76,6 +78,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "rotation",
             "title": "Rotation",
             "fields": [
               {
@@ -98,5 +101,6 @@
       ]
     }
   ],
-  "title": "Particle Motion Parametric Misc"
+  "title": "Particle Motion Parametric Misc",
+  "id": "particle_motion_parametric"
 }

@@ -7,6 +7,7 @@
       "dataType": 15,
       "minLength": 1,
       "subForm": {
+        "id": "minecraft:durability_sensor durability_threshold",
         "title": "Durability Sensor Durability Threshold",
         "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
         "fields": [

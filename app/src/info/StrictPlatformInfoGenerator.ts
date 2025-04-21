@@ -9,7 +9,7 @@ import { InfoItemType } from "./IInfoItemData";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
-import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
+import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
 export enum StrictPlatformInfoGeneratorTest {
@@ -89,7 +89,7 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
         await pi.ensureFileStorage();
 
         if (pi.availableFile) {
-          const bpItemType = await ItemTypeBehaviorDefinition.ensureOnFile(pi.availableFile);
+          const bpItemType = await ItemTypeDefinition.ensureOnFile(pi.availableFile);
 
           if (bpItemType) {
             await bpItemType.load();

@@ -12,6 +12,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "offset",
             "title": "Offset",
             "fields": [
               {
@@ -49,6 +50,7 @@
               "dataType": 14,
               "readOnly": true,
               "subForm": {
+                "id": "direction",
                 "title": "Direction",
                 "fields": [
                   {
@@ -82,6 +84,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "radius",
             "title": "Radius",
             "fields": [
               {
@@ -109,5 +112,6 @@
       "dataType": 1
     }
   ],
-  "title": "Emitter Shape Sphere Misc"
+  "title": "Emitter Shape Sphere Misc",
+  "id": "emitter_shape_sphere"
 }

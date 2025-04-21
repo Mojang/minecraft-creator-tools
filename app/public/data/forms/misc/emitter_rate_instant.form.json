@@ -10,6 +10,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "num_particles",
             "title": "Num Particles",
             "fields": [
               {
@@ -32,5 +33,6 @@
       ]
     }
   ],
-  "title": "Emitter Rate Instant Misc"
+  "title": "Emitter Rate Instant Misc",
+  "id": "emitter_rate_instant"
 }

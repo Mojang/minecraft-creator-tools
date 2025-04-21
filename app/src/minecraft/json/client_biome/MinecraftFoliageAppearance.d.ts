@@ -19,7 +19,8 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Foliage Appearance (minecraft:foliage_appearance)
+ * Minecraft Foliage Appearance Client Biome
+ * (minecraft:foliage_appearance)
  * Sets the foliage color or color map used during rendering. Biomes
  * without this component will have default foliage appearance.
  */

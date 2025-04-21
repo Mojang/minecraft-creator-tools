@@ -11,6 +11,7 @@
       "description": "The parameters MUST contain a material and texture.",
       "dataType": 16,
       "subForm": {
+        "id": "particle_effect basic_render_parameters",
         "title": "Particle Effect Basic Render Parameters",
         "description": "The parameters MUST contain a material and texture.",
         "fields": [
@@ -29,5 +30,6 @@
     }
   ],
   "description": "The description MUST contain an identifier and basic_render_parameters.",
-  "title": "Particle Effect Description Misc"
+  "title": "Particle Effect Description Misc",
+  "id": "particle_effect description"
 }

@@ -12,6 +12,7 @@
       "description": "A list of blocks to dig with correlating speeds of digging.",
       "dataType": 15,
       "subForm": {
+        "id": "_v1_20_50_DiggerItemComponent_BlockInfo",
         "title": "V1 20 50 DiggerItemComponent BlockInfo",
         "fields": [
           {
@@ -20,6 +21,7 @@
             "description": "Block to be dug.",
             "dataType": 16,
             "subForm": {
+              "id": "block",
               "title": "Block",
               "fields": [
                 {

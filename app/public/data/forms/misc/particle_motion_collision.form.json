@@ -10,6 +10,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "enabled",
             "title": "Enabled",
             "fields": [
               {
@@ -62,6 +63,7 @@
       "title": "Events",
       "dataType": 15,
       "subForm": {
+        "id": "particle_motion_collision_event",
         "title": "Particle Motion Collision Event",
         "fields": [
           {
@@ -81,6 +83,7 @@
           "id": "events",
           "dataType": 16,
           "subForm": {
+            "id": "events",
             "title": "Events",
             "fields": [
               {
@@ -99,5 +102,6 @@
       ]
     }
   ],
-  "title": "Particle Motion Collision Misc"
+  "title": "Particle Motion Collision Misc",
+  "id": "particle_motion_collision"
 }

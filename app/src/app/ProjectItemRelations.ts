@@ -3,6 +3,7 @@ import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
 import ItemTextureCatalogDefinition from "../minecraft/ItemTextureCatalogDefinition";
+import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import JsonUIResourceDefinition from "../minecraft/JsonUIResourceDefinition";
 import MusicDefinitionCatalogDefinition from "../minecraft/MusicDefinitionCatalogDefinition";
 import ParticleEffectResourceDefinition from "../minecraft/ParticleEffectResourceDefinition";
@@ -32,6 +33,16 @@ export default class ProjectItemRelations {
 
           if (entityTypeBehavior) {
             await entityTypeBehavior.addChildItems(project, item);
+          }
+        }
+      } else if (item.itemType === ProjectItemType.itemTypeBehavior) {
+        await item.ensureStorage();
+
+        if (item.defaultFile) {
+          const itemTypeBehavior = await ItemTypeDefinition.ensureOnFile(item.defaultFile);
+
+          if (itemTypeBehavior) {
+            await itemTypeBehavior.addChildItems(project, item);
           }
         }
       } else if (item.itemType === ProjectItemType.blockTypeBehavior) {

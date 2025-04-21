@@ -5,6 +5,7 @@
       "title": "Components",
       "dataType": 16,
       "subForm": {
+        "id": "particle_effect component",
         "title": "Particle Effect Component",
         "fields": [
           {
@@ -22,6 +23,7 @@
             "title": "Minecraft Emitter Lifetime Expression",
             "dataType": 16,
             "subForm": {
+              "id": "emitter_lifetime_expression",
               "title": "Emitter Lifetime Expression",
               "fields": [
                 {
@@ -34,6 +36,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "activation_expression",
                         "title": "Activation Expression",
                         "fields": [
                           {
@@ -65,6 +68,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "expiration_expression",
                         "title": "Expiration Expression",
                         "fields": [
                           {
@@ -94,6 +98,7 @@
             "title": "Minecraft Emitter Initialization",
             "dataType": 16,
             "subForm": {
+              "id": "emitter_initialization",
               "title": "Emitter Initialization",
               "fields": [
                 {
@@ -106,6 +111,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "creation_expression",
                         "title": "Creation Expression",
                         "fields": [
                           {
@@ -137,6 +143,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "per_update_expression",
                         "title": "Per Update Expression",
                         "fields": [
                           {
@@ -166,6 +173,7 @@
             "title": "Minecraft Emitter Rate Instant",
             "dataType": 16,
             "subForm": {
+              "id": "emitter_rate_instant",
               "title": "Emitter Rate Instant",
               "fields": [
                 {
@@ -178,6 +186,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "num_particles",
                         "title": "Num Particles",
                         "fields": [
                           {
@@ -207,6 +216,7 @@
             "title": "Minecraft Particle Lifetime Expression",
             "dataType": 16,
             "subForm": {
+              "id": "particle_lifetime_expression",
               "title": "Particle Lifetime Expression",
               "fields": [
                 {
@@ -219,6 +229,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "max_lifetime",
                         "title": "Max Lifetime",
                         "fields": [
                           {
@@ -250,6 +261,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "expiration_expression",
                         "title": "Expiration Expression",
                         "fields": [
                           {
@@ -279,6 +291,7 @@
             "title": "Minecraft Emitter Lifetime Looping",
             "dataType": 16,
             "subForm": {
+              "id": "emitter_lifetime_looping",
               "title": "Emitter Lifetime Looping",
               "fields": [
                 {
@@ -291,6 +304,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "active_time",
                         "title": "Active Time",
                         "fields": [
                           {
@@ -322,6 +336,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "sleep_time",
                         "title": "Sleep Time",
                         "fields": [
                           {
@@ -351,6 +366,7 @@
             "title": "Minecraft Emitter Rate Steady",
             "dataType": 16,
             "subForm": {
+              "id": "emitter_rate_steady",
               "title": "Emitter Rate Steady",
               "fields": [
                 {
@@ -363,6 +379,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "spawn_rate",
                         "title": "Spawn Rate",
                         "fields": [
                           {
@@ -394,6 +411,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "max_particles",
                         "title": "Max Particles",
                         "fields": [
                           {
@@ -428,6 +446,7 @@
             "title": "Minecraft Emitter Lifetime Once",
             "dataType": 16,
             "subForm": {
+              "id": "emitter_lifetime_once",
               "title": "Emitter Lifetime Once",
               "fields": [
                 {
@@ -440,6 +459,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "active_time",
                         "title": "Active Time",
                         "fields": [
                           {
@@ -469,6 +489,7 @@
             "title": "Minecraft Emitter Rate Manual",
             "dataType": 16,
             "subForm": {
+              "id": "emitter_rate_manual",
               "title": "Emitter Rate Manual",
               "fields": [
                 {
@@ -481,6 +502,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "max_particles",
                         "title": "Max Particles",
                         "fields": [
                           {
@@ -510,6 +532,7 @@
             "title": "Minecraft Emitter Shape Point",
             "dataType": 16,
             "subForm": {
+              "id": "emitter_shape_point",
               "title": "Emitter Shape Point",
               "fields": [
                 {
@@ -524,6 +547,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "offset",
                         "title": "Offset",
                         "fields": [
                           {
@@ -557,6 +581,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "direction",
                         "title": "Direction",
                         "fields": [
                           {
@@ -586,6 +611,7 @@
             "title": "Minecraft Emitter Shape Box",
             "dataType": 16,
             "subForm": {
+              "id": "emitter_shape_box",
               "title": "Emitter Shape Box",
               "fields": [
                 {
@@ -600,6 +626,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "offset",
                         "title": "Offset",
                         "fields": [
                           {
@@ -637,6 +664,7 @@
                           "dataType": 14,
                           "readOnly": true,
                           "subForm": {
+                            "id": "direction",
                             "title": "Direction",
                             "fields": [
                               {
@@ -672,6 +700,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "half_dimensions",
                         "title": "Half Dimensions",
                         "fields": [
                           {
@@ -706,6 +735,7 @@
             "title": "Minecraft Emitter Shape Sphere",
             "dataType": 16,
             "subForm": {
+              "id": "emitter_shape_sphere",
               "title": "Emitter Shape Sphere",
               "fields": [
                 {
@@ -720,6 +750,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "offset",
                         "title": "Offset",
                         "fields": [
                           {
@@ -757,6 +788,7 @@
                           "dataType": 14,
                           "readOnly": true,
                           "subForm": {
+                            "id": "direction",
                             "title": "Direction",
                             "fields": [
                               {
@@ -790,6 +822,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "radius",
                         "title": "Radius",
                         "fields": [
                           {
@@ -824,6 +857,7 @@
             "title": "Minecraft Emitter Shape Custom",
             "dataType": 16,
             "subForm": {
+              "id": "emitter_shape_custom",
               "title": "Emitter Shape Custom",
               "fields": [
                 {
@@ -838,6 +872,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "offset",
                         "title": "Offset",
                         "fields": [
                           {
@@ -871,6 +906,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "direction",
                         "title": "Direction",
                         "fields": [
                           {
@@ -900,6 +936,7 @@
             "title": "Minecraft Emitter Shape Entity Aabb",
             "dataType": 16,
             "subForm": {
+              "id": "emitter_shape_entity_aabb",
               "title": "Emitter Shape Entity Aabb",
               "fields": [
                 {
@@ -923,6 +960,7 @@
                           "dataType": 14,
                           "readOnly": true,
                           "subForm": {
+                            "id": "direction",
                             "title": "Direction",
                             "fields": [
                               {
@@ -954,6 +992,7 @@
             "title": "Minecraft Emitter Shape Disc",
             "dataType": 16,
             "subForm": {
+              "id": "emitter_shape_disc",
               "title": "Emitter Shape Disc",
               "fields": [
                 {
@@ -968,6 +1007,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "offset",
                         "title": "Offset",
                         "fields": [
                           {
@@ -1005,6 +1045,7 @@
                           "dataType": 14,
                           "readOnly": true,
                           "subForm": {
+                            "id": "direction",
                             "title": "Direction",
                             "fields": [
                               {
@@ -1038,6 +1079,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "radius",
                         "title": "Radius",
                         "fields": [
                           {
@@ -1080,6 +1122,7 @@
                           "dataType": 14,
                           "readOnly": true,
                           "subForm": {
+                            "id": "plane_normal",
                             "title": "Plane Normal",
                             "fields": [
                               {
@@ -1111,6 +1154,7 @@
             "title": "Minecraft Particle Appearance Billboard",
             "dataType": 16,
             "subForm": {
+              "id": "particle_appearance_billboard",
               "title": "Particle Appearance Billboard",
               "fields": [
                 {
@@ -1125,6 +1169,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "size",
                         "title": "Size",
                         "fields": [
                           {
@@ -1169,6 +1214,7 @@
             "title": "Minecraft Particle Appearance Tinting",
             "dataType": 16,
             "subForm": {
+              "id": "particle_appearance_tinting",
               "title": "Particle Appearance Tinting",
               "fields": [
                 {
@@ -1191,6 +1237,7 @@
                           "dataType": 14,
                           "readOnly": true,
                           "subForm": {
+                            "id": "color",
                             "title": "Color",
                             "fields": [
                               {
@@ -1216,6 +1263,7 @@
                       "id": "color",
                       "dataType": 16,
                       "subForm": {
+                        "id": "color",
                         "title": "Color",
                         "fields": [
                           {
@@ -1242,6 +1290,7 @@
                                         "dataType": 14,
                                         "readOnly": true,
                                         "subForm": {
+                                          "id": "gradient",
                                           "title": "Gradient",
                                           "fields": [
                                             {
@@ -1277,6 +1326,7 @@
                                 "dataType": 14,
                                 "readOnly": true,
                                 "subForm": {
+                                  "id": "interpolant",
                                   "title": "Interpolant",
                                   "fields": [
                                     {
@@ -1321,6 +1371,7 @@
             "title": "Minecraft Particle Initial Spin",
             "dataType": 16,
             "subForm": {
+              "id": "particle_initial_spin",
               "title": "Particle Initial Spin",
               "fields": [
                 {
@@ -1333,6 +1384,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "rotation",
                         "title": "Rotation",
                         "fields": [
                           {
@@ -1364,6 +1416,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "rotation_rate",
                         "title": "Rotation Rate",
                         "fields": [
                           {
@@ -1402,6 +1455,7 @@
                     "dataType": 16,
                     "readOnly": true,
                     "subForm": {
+                      "id": "minecraft:particle_initial_speed",
                       "title": "Particle Initial Speed",
                       "fields": [
                         {
@@ -1430,6 +1484,7 @@
             "title": "Minecraft Particle Initialization",
             "dataType": 16,
             "subForm": {
+              "id": "particle_initialization",
               "title": "Particle Initialization",
               "fields": [
                 {
@@ -1442,6 +1497,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "per_update_expression",
                         "title": "Per Update Expression",
                         "fields": [
                           {
@@ -1473,6 +1529,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "per_render_expression",
                         "title": "Per Render Expression",
                         "fields": [
                           {
@@ -1512,6 +1569,7 @@
             "title": "Minecraft Particle Motion Dynamic",
             "dataType": 16,
             "subForm": {
+              "id": "particle_motion_dynamic",
               "title": "Particle Motion Dynamic",
               "fields": [
                 {
@@ -1526,6 +1584,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "linear_acceleration",
                         "title": "Linear Acceleration",
                         "fields": [
                           {
@@ -1557,6 +1616,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "linear_drag_coefficient",
                         "title": "Linear Drag Coefficient",
                         "fields": [
                           {
@@ -1588,6 +1648,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "rotation_acceleration",
                         "title": "Rotation Acceleration",
                         "fields": [
                           {
@@ -1619,6 +1680,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "rotation_drag_coefficient",
                         "title": "Rotation Drag Coefficient",
                         "fields": [
                           {
@@ -1648,6 +1710,7 @@
             "title": "Minecraft Particle Motion Parametric",
             "dataType": 16,
             "subForm": {
+              "id": "particle_motion_parametric",
               "title": "Particle Motion Parametric",
               "fields": [
                 {
@@ -1662,6 +1725,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "relative_position",
                         "title": "Relative Position",
                         "fields": [
                           {
@@ -1695,6 +1759,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "direction",
                         "title": "Direction",
                         "fields": [
                           {
@@ -1726,6 +1791,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "rotation",
                         "title": "Rotation",
                         "fields": [
                           {
@@ -1755,6 +1821,7 @@
             "title": "Minecraft Particle Motion Collision",
             "dataType": 16,
             "subForm": {
+              "id": "particle_motion_collision",
               "title": "Particle Motion Collision",
               "fields": [
                 {
@@ -1767,6 +1834,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "enabled",
                         "title": "Enabled",
                         "fields": [
                           {
@@ -1819,6 +1887,7 @@
                   "title": "Events",
                   "dataType": 15,
                   "subForm": {
+                    "id": "particle_motion_collision_event",
                     "title": "Particle Motion Collision Event",
                     "fields": [
                       {
@@ -1838,6 +1907,7 @@
                       "id": "events",
                       "dataType": 16,
                       "subForm": {
+                        "id": "events",
                         "title": "Events",
                         "fields": [
                           {
@@ -1867,6 +1937,7 @@
       "description": "The description MUST contain an identifier and basic_render_parameters.",
       "dataType": 16,
       "subForm": {
+        "id": "particle_effect description",
         "title": "Particle Effect Description",
         "description": "The description MUST contain an identifier and basic_render_parameters.",
         "fields": [
@@ -1881,6 +1952,7 @@
             "description": "The parameters MUST contain a material and texture.",
             "dataType": 16,
             "subForm": {
+              "id": "particle_effect basic_render_parameters",
               "title": "Particle Effect Basic Render Parameters",
               "description": "The parameters MUST contain a material and texture.",
               "fields": [
@@ -1905,6 +1977,7 @@
       "title": "Curves",
       "dataType": 16,
       "subForm": {
+        "id": "curves",
         "title": "Curves",
         "fields": [
           {
@@ -1922,6 +1995,7 @@
                 "dataType": 14,
                 "readOnly": true,
                 "subForm": {
+                  "id": "nodes",
                   "title": "Nodes",
                   "fields": [
                     {
@@ -1953,6 +2027,7 @@
                 "dataType": 14,
                 "readOnly": true,
                 "subForm": {
+                  "id": "input",
                   "title": "Input",
                   "fields": [
                     {
@@ -1984,6 +2059,7 @@
                 "dataType": 14,
                 "readOnly": true,
                 "subForm": {
+                  "id": "horizontal_range",
                   "title": "Horizontal Range",
                   "fields": [
                     {
@@ -2012,6 +2088,7 @@
           "id": "curves",
           "dataType": 16,
           "subForm": {
+            "id": "curves",
             "title": "Curves",
             "fields": [
               {
@@ -2040,6 +2117,7 @@
                     "dataType": 14,
                     "readOnly": true,
                     "subForm": {
+                      "id": "input",
                       "title": "Input",
                       "fields": [
                         {
@@ -2071,6 +2149,7 @@
       "title": "Events",
       "dataType": 16,
       "subForm": {
+        "id": "particle_event_node",
         "title": "Particle Event Node",
         "fields": [
           {
@@ -2083,6 +2162,7 @@
                 "dataType": 14,
                 "readOnly": true,
                 "subForm": {
+                  "id": "expression",
                   "title": "Expression",
                   "fields": [
                     {
@@ -2114,6 +2194,7 @@
             "title": "Particle Effect",
             "dataType": 16,
             "subForm": {
+              "id": "particle_visual_effect_event",
               "title": "Particle Visual Effect Event",
               "fields": [
                 {
@@ -2131,6 +2212,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "pre_effect_expression",
                         "title": "Pre Effect Expression",
                         "fields": [
                           {
@@ -2165,6 +2247,7 @@
             "title": "Sequence",
             "dataType": 15,
             "subForm": {
+              "id": "particle_event_node",
               "title": "Particle Event Node",
               "fields": [
                 {
@@ -2177,6 +2260,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "expression",
                         "title": "Expression",
                         "fields": [
                           {
@@ -2208,6 +2292,7 @@
                   "title": "Particle Effect",
                   "dataType": 16,
                   "subForm": {
+                    "id": "particle_visual_effect_event",
                     "title": "Particle Visual Effect Event",
                     "fields": [
                       {
@@ -2225,6 +2310,7 @@
                             "dataType": 14,
                             "readOnly": true,
                             "subForm": {
+                              "id": "pre_effect_expression",
                               "title": "Pre Effect Expression",
                               "fields": [
                                 {
@@ -2264,6 +2350,7 @@
                   "title": "Sound Effect",
                   "dataType": 16,
                   "subForm": {
+                    "id": "particle_sound_effect_event",
                     "title": "Particle Sound Effect Event",
                     "fields": [
                       {
@@ -2279,6 +2366,7 @@
                   "title": "Randomize",
                   "dataType": 15,
                   "subForm": {
+                    "id": "particle_event_random_node",
                     "title": "Particle Event Random Node",
                     "fields": [
                       {
@@ -2291,6 +2379,7 @@
                         "title": "Particle Effect",
                         "dataType": 16,
                         "subForm": {
+                          "id": "particle_visual_effect_event",
                           "title": "Particle Visual Effect Event",
                           "fields": [
                             {
@@ -2308,6 +2397,7 @@
                                   "dataType": 14,
                                   "readOnly": true,
                                   "subForm": {
+                                    "id": "pre_effect_expression",
                                     "title": "Pre Effect Expression",
                                     "fields": [
                                       {
@@ -2347,6 +2437,7 @@
                         "title": "Sound Effect",
                         "dataType": 16,
                         "subForm": {
+                          "id": "particle_sound_effect_event",
                           "title": "Particle Sound Effect Event",
                           "fields": [
                             {
@@ -2377,6 +2468,7 @@
                             "dataType": 14,
                             "readOnly": true,
                             "subForm": {
+                              "id": "expression",
                               "title": "Expression",
                               "fields": [
                                 {
@@ -2409,6 +2501,7 @@
             "title": "Sound Effect",
             "dataType": 16,
             "subForm": {
+              "id": "particle_sound_effect_event",
               "title": "Particle Sound Effect Event",
               "fields": [
                 {
@@ -2424,6 +2517,7 @@
             "title": "Randomize",
             "dataType": 15,
             "subForm": {
+              "id": "particle_event_random_node",
               "title": "Particle Event Random Node",
               "fields": [
                 {
@@ -2436,6 +2530,7 @@
                   "title": "Particle Effect",
                   "dataType": 16,
                   "subForm": {
+                    "id": "particle_visual_effect_event",
                     "title": "Particle Visual Effect Event",
                     "fields": [
                       {
@@ -2453,6 +2548,7 @@
                             "dataType": 14,
                             "readOnly": true,
                             "subForm": {
+                              "id": "pre_effect_expression",
                               "title": "Pre Effect Expression",
                               "fields": [
                                 {
@@ -2492,6 +2588,7 @@
                   "title": "Sound Effect",
                   "dataType": 16,
                   "subForm": {
+                    "id": "particle_sound_effect_event",
                     "title": "Particle Sound Effect Event",
                     "fields": [
                       {
@@ -2507,6 +2604,7 @@
                   "title": "Sequence",
                   "dataType": 15,
                   "subForm": {
+                    "id": "particle_event_node",
                     "title": "Particle Event Node",
                     "fields": [
                       {
@@ -2519,6 +2617,7 @@
                             "dataType": 14,
                             "readOnly": true,
                             "subForm": {
+                              "id": "expression",
                               "title": "Expression",
                               "fields": [
                                 {
@@ -2550,6 +2649,7 @@
                         "title": "Particle Effect",
                         "dataType": 16,
                         "subForm": {
+                          "id": "particle_visual_effect_event",
                           "title": "Particle Visual Effect Event",
                           "fields": [
                             {
@@ -2567,6 +2667,7 @@
                                   "dataType": 14,
                                   "readOnly": true,
                                   "subForm": {
+                                    "id": "pre_effect_expression",
                                     "title": "Pre Effect Expression",
                                     "fields": [
                                       {
@@ -2606,6 +2707,7 @@
                         "title": "Sound Effect",
                         "dataType": 16,
                         "subForm": {
+                          "id": "particle_sound_effect_event",
                           "title": "Particle Sound Effect Event",
                           "fields": [
                             {
@@ -2639,6 +2741,7 @@
                       "dataType": 14,
                       "readOnly": true,
                       "subForm": {
+                        "id": "expression",
                         "title": "Expression",
                         "fields": [
                           {
@@ -2667,5 +2770,6 @@
       }
     }
   ],
-  "title": "Particle Effect Misc"
+  "title": "Particle Effect Misc",
+  "id": "particle_effect"
 }

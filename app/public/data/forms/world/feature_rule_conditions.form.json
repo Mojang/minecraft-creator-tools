@@ -12,6 +12,7 @@
       "description": "List of filter tests to determine which biomes this rule will attach to.",
       "dataType": 16,
       "subForm": {
+        "id": "minecraft:biome_filter",
         "title": "Biome Filter",
         "fields": [
           {
@@ -55,6 +56,7 @@
           "id": "minecraft:biome_filter",
           "dataType": 16,
           "subForm": {
+            "id": "minecraft:biome_filter",
             "title": "Biome Filter",
             "fields": [
               {
@@ -111,5 +113,6 @@
       ]
     }
   ],
-  "title": "Feature Rule Conditions World"
+  "title": "Feature Rule Conditions World",
+  "id": "Feature Rule Conditions"
 }

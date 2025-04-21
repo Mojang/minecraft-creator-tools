@@ -4,7 +4,7 @@ import IFile from "../storage/IFile";
 import "./ItemTypeActionEditor.css";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
-import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
+import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import ProjectItem from "../app/ProjectItem";
 import { CustomLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,7 +26,7 @@ interface IItemTypeActionEditorProps extends IFileProps {
   isVisualsMode: boolean;
   heightOffset: number;
   readOnly: boolean;
-  itemTypeItem: ItemTypeBehaviorDefinition;
+  itemTypeItem: ItemTypeDefinition;
   item: ProjectItem;
   project: Project;
   carto: Carto;
@@ -94,22 +94,22 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
       if (this.state.fileToEdit !== this._lastFileEdited) {
         this._lastFileEdited = this.state.fileToEdit;
 
-        await ItemTypeBehaviorDefinition.ensureOnFile(this.state.fileToEdit, this._handleItemTypeLoaded);
+        await ItemTypeDefinition.ensureOnFile(this.state.fileToEdit, this._handleItemTypeLoaded);
       }
     }
 
     if (
       this.state.fileToEdit &&
       this.state.fileToEdit.manager !== undefined &&
-      this.state.fileToEdit.manager instanceof ItemTypeBehaviorDefinition &&
-      (this.state.fileToEdit.manager as ItemTypeBehaviorDefinition).isLoaded &&
+      this.state.fileToEdit.manager instanceof ItemTypeDefinition &&
+      (this.state.fileToEdit.manager as ItemTypeDefinition).isLoaded &&
       !this.state.isLoaded
     ) {
       this._doUpdate(setState);
     }
   }
 
-  _handleItemTypeLoaded(ItemType: ItemTypeBehaviorDefinition, typeA: ItemTypeBehaviorDefinition) {
+  _handleItemTypeLoaded(ItemType: ItemTypeDefinition, typeA: ItemTypeDefinition) {
     this._doUpdate(true);
   }
 
@@ -136,7 +136,7 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
       const file = this.state.fileToEdit;
 
       if (file.manager !== null) {
-        const bt = file.manager as ItemTypeBehaviorDefinition;
+        const bt = file.manager as ItemTypeDefinition;
 
         bt.persist();
       }
@@ -205,7 +205,7 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
         this.props.project,
         actionName,
         "new-templates",
-        "blockCustomComponent",
+        "itemCustomComponent",
         fileNameSugg,
         {
           "example:newComponentId": actionName,
@@ -296,7 +296,7 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
   render() {
     const height = "calc(100vh - " + this.props.heightOffset + "px)";
 
-    const bt = this.state.fileToEdit.manager as ItemTypeBehaviorDefinition;
+    const bt = this.state.fileToEdit.manager as ItemTypeDefinition;
 
     if (bt.data === undefined) {
       return <div className="btpe-loading">Loading behavior pack...</div>;
@@ -321,7 +321,7 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
         }
       }
 
-      return <div className="btae-loading">Loading...</div>;
+      return <div className="itae-loading">Loading...</div>;
     }
 
     if (this.props.setActivePersistable !== undefined) {
@@ -386,7 +386,9 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
 
         if (!foundTypeScript) {
           itemInterior = (
-            <div>Could not find any TypeScript files that references `{this.state.selectedActionComponentId}`.</div>
+            <div className="itae-error">
+              Could not find any TypeScript files that references `{this.state.selectedActionComponentId}`.
+            </div>
           );
         }
       }
@@ -427,7 +429,7 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
 
       return (
         <div
-          className="btae-area"
+          className="itae-area"
           style={{
             minHeight: height,
             maxHeight: height,
@@ -435,11 +437,11 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
             color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,
           }}
         >
-          <div className="btae-toolBarArea">
-            <div className="btae-tools">
+          <div className="itae-toolBarArea">
+            <div className="itae-tools">
               <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
             </div>
-            <div className="btae-dropdown">{dropdownArea}</div>
+            <div className="itae-dropdown">{dropdownArea}</div>
           </div>
           {itemInterior}
         </div>

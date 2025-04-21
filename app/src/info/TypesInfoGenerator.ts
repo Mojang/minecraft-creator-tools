@@ -11,7 +11,7 @@ import ContentIndex, { AnnotationCategory } from "../core/ContentIndex";
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
-import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
+import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import BlocksCatalogDefinition from "../minecraft/BlocksCatalogDefinition";
 
 export enum TypesInfoGeneratorTest {
@@ -99,7 +99,7 @@ export default class TypesInfoGenerator implements IProjectInfoGenerator {
         await projectItem.ensureFileStorage();
 
         if (projectItem.availableFile) {
-          const itemTypeDef = await ItemTypeBehaviorDefinition.ensureOnFile(projectItem.availableFile);
+          const itemTypeDef = await ItemTypeDefinition.ensureOnFile(projectItem.availableFile);
 
           if (itemTypeDef && itemTypeDef.id && projectItem.projectPath) {
             contentIndex.insert(itemTypeDef.id, projectItem.projectPath, AnnotationCategory.itemTypeSource);

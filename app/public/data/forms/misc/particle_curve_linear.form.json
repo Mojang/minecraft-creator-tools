@@ -15,6 +15,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "nodes",
             "title": "Nodes",
             "fields": [
               {
@@ -46,6 +47,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "input",
             "title": "Input",
             "fields": [
               {
@@ -77,6 +79,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "horizontal_range",
             "title": "Horizontal Range",
             "fields": [
               {
@@ -99,5 +102,6 @@
       ]
     }
   ],
-  "title": "Particle Curve Linear Misc"
+  "title": "Particle Curve Linear Misc",
+  "id": "particle_curve_linear"
 }

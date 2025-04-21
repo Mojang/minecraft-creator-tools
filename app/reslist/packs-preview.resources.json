@@ -1,5 +1,5 @@
 {
-  "url": "https://github.com/Mojang/bedrock-samples/archive/95a9acc1c00922e774a4710d99bb26afda562728.zip",
+  "url": "https://github.com/Mojang/bedrock-samples/archive/d1046766930cbf2b6b55cdc5422dba9de515a706.zip",
   "ignoreFirstFolder": true,
   "exclude": ["documentation/", "scripts/", "gui/", "persona_thumbnails/", "pack_icon.png", ".github"]
 }

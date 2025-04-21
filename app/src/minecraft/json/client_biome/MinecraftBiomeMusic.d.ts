@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Biome Music (minecraft:biome_music)
+ * Minecraft Biome Music Client Biome (minecraft:biome_music)
  * Affects how music plays within the biome.
  */
 export default interface MinecraftBiomeMusic {

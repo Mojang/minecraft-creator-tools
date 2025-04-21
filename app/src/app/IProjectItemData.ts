@@ -67,7 +67,7 @@ export enum ProjectItemType {
   tradingBehaviorJson = 45,
   volumeBehaviorJson = 46,
   attachableResourceJson = 47,
-  itemTypeResourceJson = 48, // note this is the 1.10 definition of item resources, more modern items use attachables?
+  itemTypeLegacyResource = 48, // note this is the 1.10 definition of item resources, more modern items use attachables?
   materialsResourceJson = 49,
   musicDefinitionJson = 50,
   soundDefinitionCatalog = 51,

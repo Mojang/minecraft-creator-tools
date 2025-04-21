@@ -12,6 +12,7 @@
       "description": "A single Camera Aim-Assist Preset Definition.",
       "dataType": 16,
       "subForm": {
+        "id": "_v1_21_50_CameraAimAssistPresetDefinition",
         "title": "V1 21 50 CameraAimAssistPresetDefinition",
         "fields": [
           {
@@ -54,5 +55,6 @@
       }
     }
   ],
-  "title": "Minecraft Aim Assist Preset Misc"
+  "title": "Minecraft Aim Assist Preset Misc",
+  "id": "minecraft:aim_assist_preset"
 }

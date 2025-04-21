@@ -12,6 +12,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "offset",
             "title": "Offset",
             "fields": [
               {
@@ -49,6 +50,7 @@
               "dataType": 14,
               "readOnly": true,
               "subForm": {
+                "id": "direction",
                 "title": "Direction",
                 "fields": [
                   {
@@ -84,6 +86,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "half_dimensions",
             "title": "Half Dimensions",
             "fields": [
               {
@@ -111,5 +114,6 @@
       "dataType": 1
     }
   ],
-  "title": "Emitter Shape Box Misc"
+  "title": "Emitter Shape Box Misc",
+  "id": "emitter_shape_box"
 }

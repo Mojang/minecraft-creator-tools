@@ -20,6 +20,7 @@
               "dataType": 14,
               "readOnly": true,
               "subForm": {
+                "id": "color",
                 "title": "Color",
                 "fields": [
                   {
@@ -45,6 +46,7 @@
           "id": "color",
           "dataType": 16,
           "subForm": {
+            "id": "color",
             "title": "Color",
             "fields": [
               {
@@ -71,6 +73,7 @@
                             "dataType": 14,
                             "readOnly": true,
                             "subForm": {
+                              "id": "gradient",
                               "title": "Gradient",
                               "fields": [
                                 {
@@ -106,6 +109,7 @@
                     "dataType": 14,
                     "readOnly": true,
                     "subForm": {
+                      "id": "interpolant",
                       "title": "Interpolant",
                       "fields": [
                         {
@@ -133,5 +137,6 @@
       ]
     }
   ],
-  "title": "Particle Appearance Tinting Misc"
+  "title": "Particle Appearance Tinting Misc",
+  "id": "particle_appearance_tinting"
 }

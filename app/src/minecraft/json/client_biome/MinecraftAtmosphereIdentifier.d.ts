@@ -13,7 +13,8 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Atmosphere Identifier (minecraft:atmosphere_identifier)
+ * Minecraft Atmosphere Identifier Client Biome
+ * (minecraft:atmosphere_identifier)
  * [INTERNAL - WORK IN PROGRESS] Set the atmosphere settings used
  * during deferred rendering. Biomes without this component will
  * have default atmosphere settings.

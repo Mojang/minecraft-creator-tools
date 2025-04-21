@@ -387,7 +387,9 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
 
         if (!foundTypeScript) {
           itemInterior = (
-            <div>Could not find any TypeScript files that references `{this.state.selectedActionComponentId}`.</div>
+            <div className="btae-error">
+              Could not find any TypeScript files that references `{this.state.selectedActionComponentId}`.
+            </div>
           );
         }
       }

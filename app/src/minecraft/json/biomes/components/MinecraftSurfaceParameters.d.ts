@@ -13,7 +13,8 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Surface Parameters (minecraft:surface_parameters)
+ * Minecraft Surface Parameters Biome 
+ * (minecraft:surface_parameters)
  * Controls the blocks used for the default Minecraft Overworld terrain
  * generation.
  */

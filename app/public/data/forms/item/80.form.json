@@ -6,6 +6,7 @@
       "description": "List of all components used in this item.",
       "dataType": 16,
       "subForm": {
+        "id": "21.80",
         "title": "21.80 Components V1",
         "description": "List of all components used in this item.",
         "fields": [
@@ -15,6 +16,7 @@
             "description": "The tags component specifies which tags an item has on it.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:tags",
               "title": "Tags",
               "description": "The tags component specifies which tags an item has on it.",
               "fields": [
@@ -37,6 +39,7 @@
                 "id": "minecraft:allow_off_hand",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:allow_off_hand",
                   "title": "Allow Off Hand",
                   "fields": [
                     {
@@ -60,6 +63,7 @@
                 "id": "minecraft:can_destroy_in_creative",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:can_destroy_in_creative",
                   "title": "Can Destroy In Creative",
                   "fields": [
                     {
@@ -79,6 +83,7 @@
             "description": "After you use an item, all items specified with the same `cool down category` setting becomes unusable for the duration specified by the 'cool down time' setting in this component.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:cooldown",
               "title": "Cooldown",
               "description": "After you use an item, all items specified with the same `cool down category` setting becomes unusable for the duration specified by the 'cool down time' setting in this component.",
               "fields": [
@@ -107,6 +112,7 @@
                 "id": "minecraft:rarity",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:rarity",
                   "title": "Rarity",
                   "fields": [
                     {
@@ -130,6 +136,7 @@
                 "id": "minecraft:max_stack_size",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:max_stack_size",
                   "title": "Max Stack Size",
                   "fields": [
                     {
@@ -159,6 +166,7 @@
             "description": "[EXPERIMENTAL] Adds bundle-specific interactions and tooltip to the item. Requires a \"minecraft:storage_item\" component.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:bundle_interaction",
               "title": "Bundle Interaction",
               "description": "[EXPERIMENTAL] Adds bundle-specific interactions and tooltip to the item. Requires a \"minecraft:storage_item\" component.",
               "fields": [
@@ -187,6 +195,7 @@
             "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:compostable",
               "title": "Compostable",
               "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
               "fields": [
@@ -221,6 +230,7 @@
             "description": "It allows an item to absorb damage that would otherwise be dealt to its wearer. For this to happen, the item needs to be equipped in an armor slot. The absorbed damage reduces the item's durability, with any excess damage being ignored. Because of this, the item also needs a `minecraft:durability` component.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:damage_absorption",
               "title": "Damage Absorption",
               "description": "It allows an item to absorb damage that would otherwise be dealt to its wearer. For this to happen, the item needs to be equipped in an armor slot. The absorbed damage reduces the item's durability, with any excess damage being ignored. Because of this, the item also needs a `minecraft:durability` component.",
               "fields": [
@@ -244,6 +254,7 @@
                 "id": "minecraft:damage",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:damage",
                   "title": "Damage",
                   "fields": [
                     {
@@ -263,6 +274,7 @@
             "description": "Record Item Component. Used by record items to play music.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:record",
               "title": "Record",
               "description": "Record Item Component. Used by record items to play music.",
               "fields": [
@@ -293,6 +305,7 @@
             "description": "Digger item component specifies how quickly this item can dig specific blocks.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:digger",
               "title": "Digger",
               "description": "Digger item component specifies how quickly this item can dig specific blocks.",
               "fields": [
@@ -308,6 +321,7 @@
                   "description": "A list of blocks to dig with correlating speeds of digging.",
                   "dataType": 15,
                   "subForm": {
+                    "id": "_v1_20_50_DiggerItemComponent_BlockInfo",
                     "title": "V1 20 50 DiggerItemComponent BlockInfo",
                     "fields": [
                       {
@@ -316,6 +330,7 @@
                         "description": "Block to be dug.",
                         "dataType": 16,
                         "subForm": {
+                          "id": "block",
                           "title": "Block",
                           "fields": [
                             {
@@ -378,6 +393,7 @@
                 "id": "minecraft:use_animation",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:use_animation",
                   "title": "Use Animation",
                   "fields": [
                     {
@@ -397,6 +413,7 @@
             "description": "The display_name item component specifies the text shown whenever an item's name is displayed, like in hover text.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:display_name",
               "title": "Display Name",
               "description": "The display_name item component specifies the text shown whenever an item's name is displayed, like in hover text.",
               "fields": [
@@ -415,6 +432,7 @@
             "description": "Throwable items can be thrown by the player, such as a snowball.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:throwable",
               "title": "Throwable",
               "description": "Throwable items can be thrown by the player, such as a snowball.",
               "fields": [
@@ -463,6 +481,7 @@
             "description": "The durability item component specifies how much damage the item takes before breaking, and allows the item to be combined to repair or augment them.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:durability",
               "title": "Durability",
               "description": "The durability item component specifies how much damage the item takes before breaking, and allows the item to be combined to repair or augment them.",
               "fields": [
@@ -472,6 +491,7 @@
                   "description": "Specifies the percentage chance of this item losing durability. Default is set to 100. Defined as an int range with min and max value.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "_IntRange",
                     "title": "IntRange",
                     "fields": [
                       {
@@ -502,6 +522,7 @@
             "description": "Enables an item to emit effects when it receives damage. Because of this, the item also needs a `minecraft:durability` component.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:durability_sensor",
               "title": "Durability Sensor",
               "description": "Enables an item to emit effects when it receives damage. Because of this, the item also needs a `minecraft:durability` component.",
               "fields": [
@@ -512,6 +533,7 @@
                   "dataType": 15,
                   "minLength": 1,
                   "subForm": {
+                    "id": "minecraft:durability_sensor durability_threshold",
                     "title": "Durability Sensor Durability Threshold",
                     "description": "Defines both the durability threshold, and the effects emitted when that threshold is met.",
                     "fields": [
@@ -549,6 +571,7 @@
                 "id": "minecraft:should_despawn",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:should_despawn",
                   "title": "Should Despawn",
                   "fields": [
                     {
@@ -567,6 +590,7 @@
             "title": "Minecraft Dyeable",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:dyeable",
               "title": "Dyeable",
               "fields": [
                 {
@@ -591,6 +615,7 @@
             "description": "The enchantable component specifies what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:enchantable",
               "title": "Enchantable",
               "description": "The enchantable component specifies what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
               "fields": [
@@ -615,6 +640,7 @@
             "description": "The entity_placer item component specifies the blocks that the item can be placed on.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:entity_placer",
               "title": "Entity Placer",
               "description": "The entity_placer item component specifies the blocks that the item can be placed on.",
               "fields": [
@@ -624,6 +650,7 @@
                   "description": "List of block descriptors of the blocks that this item can be dispensed on. If left empty, all blocks will be allowed.",
                   "dataType": 15,
                   "subForm": {
+                    "id": "dispense_on",
                     "title": "Dispense On",
                     "fields": [
                       {
@@ -688,6 +715,7 @@
                   "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
                   "dataType": 15,
                   "subForm": {
+                    "id": "use_on",
                     "title": "Use On",
                     "fields": [
                       {
@@ -737,6 +765,7 @@
             "description": "When an item has a food component, it becomes edible to the player. Must have the 'minecraft:use_duration' component in order to function properly.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:food",
               "title": "Food",
               "description": "When an item has a food component, it becomes edible to the player. Must have the 'minecraft:use_duration' component in order to function properly.",
               "fields": [
@@ -783,6 +812,7 @@
                 "id": "minecraft:fuel",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:fuel",
                   "title": "Fuel",
                   "fields": [
                     {
@@ -812,6 +842,7 @@
                 "id": "minecraft:glint",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:glint",
                   "title": "Glint",
                   "fields": [
                     {
@@ -835,6 +866,7 @@
                 "id": "minecraft:hand_equipped",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:hand_equipped",
                   "title": "Hand Equipped",
                   "fields": [
                     {
@@ -858,6 +890,7 @@
                 "id": "minecraft:hover_text_color",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:hover_text_color",
                   "title": "Hover Text Color",
                   "fields": [
                     {
@@ -881,6 +914,7 @@
                 "id": "minecraft:icon",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:icon",
                   "title": "Icon",
                   "fields": [
                     {
@@ -922,6 +956,7 @@
                 "id": "minecraft:liquid_clipped",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:liquid_clipped",
                   "title": "Liquid Clipped",
                   "fields": [
                     {
@@ -941,6 +976,7 @@
             "description": "Items with the block_placer component will place a block when used. \nThis component can also be used instead of the \"minecraft:icon\" component to render the referenced block as the item icon.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:block_placer",
               "title": "Block Placer",
               "description": "Items with the block_placer component will place a block when used. \nThis component can also be used instead of the \"minecraft:icon\" component to render the referenced block as the item icon.",
               "fields": [
@@ -962,6 +998,7 @@
                   "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
                   "dataType": 15,
                   "subForm": {
+                    "id": "use_on",
                     "title": "Use On",
                     "fields": [
                       {
@@ -1017,6 +1054,7 @@
             "description": "Projectile items shoot out, like an arrow.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:projectile",
               "title": "Projectile",
               "description": "Projectile items shoot out, like an arrow.",
               "fields": [
@@ -1053,6 +1091,7 @@
             "description": "The repairable item component specifies which items can be used to repair this item, along with how much durability is gained.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:repairable",
               "title": "Repairable",
               "description": "The repairable item component specifies which items can be used to repair this item, along with how much durability is gained.",
               "fields": [
@@ -1067,6 +1106,7 @@
                       "dataType": 16,
                       "readOnly": true,
                       "subForm": {
+                        "id": "repair_items",
                         "title": "Repair Items",
                         "fields": [
                           {
@@ -1092,6 +1132,7 @@
                                 "dataType": 14,
                                 "readOnly": true,
                                 "subForm": {
+                                  "id": "repair_amount",
                                   "title": "Repair Amount",
                                   "fields": [
                                     {
@@ -1127,6 +1168,7 @@
             "description": "Shooter Item Component.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:shooter",
               "title": "Shooter",
               "description": "Shooter Item Component.",
               "fields": [
@@ -1136,6 +1178,7 @@
                   "description": "Ammunition.",
                   "dataType": 15,
                   "subForm": {
+                    "id": "_v1_20_50_ShooterItemComponent_Ammunition",
                     "title": "V1 20 50 ShooterItemComponent Ammunition",
                     "fields": [
                       {
@@ -1202,6 +1245,7 @@
                 "id": "minecraft:stacked_by_data",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:stacked_by_data",
                   "title": "Stacked By Data",
                   "fields": [
                     {
@@ -1221,6 +1265,7 @@
             "description": "[EXPERIMENTAL] Storage Items can be used by other components to store other items within this item.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:storage_item",
               "title": "Storage Item",
               "description": "[EXPERIMENTAL] Storage Items can be used by other components to store other items within this item.",
               "fields": [
@@ -1275,6 +1320,7 @@
             "description": "Specifies the maximum weight limit that a storage item can hold",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:storage_weight_limit",
               "title": "Storage Weight Limit",
               "description": "Specifies the maximum weight limit that a storage item can hold",
               "fields": [
@@ -1299,6 +1345,7 @@
             "description": "Specifies the maximum weight limit that a storage item can hold",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:storage_weight_modifier",
               "title": "Storage Weight Modifier",
               "description": "Specifies the maximum weight limit that a storage item can hold",
               "fields": [
@@ -1317,6 +1364,7 @@
             "description": "This component modifies use effects, including how long the item takes to use and the player's speed when used in combination with components like \"shooter\", \"throwable\", or \"food\".",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:use_modifiers",
               "title": "Use Modifiers",
               "description": "This component modifies use effects, including how long the item takes to use and the player's speed when used in combination with components like \"shooter\", \"throwable\", or \"food\".",
               "fields": [
@@ -1347,6 +1395,7 @@
             "description": "Wearable items can be worn by a player in the head, chest, legs, feet, or off-hand slots.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:wearable",
               "title": "Wearable",
               "description": "Wearable items can be worn by a player in the head, chest, legs, feet, or off-hand slots.",
               "fields": [
@@ -1374,6 +1423,7 @@
       "description": "Contains the required identifier for the item. May contain optional fields like menu_category.",
       "dataType": 16,
       "subForm": {
+        "id": "description",
         "title": "Description",
         "description": "Contains the required identifier for the item. May contain optional fields like menu_category.",
         "fields": [
@@ -1389,6 +1439,7 @@
             "description": "menu_category contains the creative group name and category for this item.",
             "dataType": 16,
             "subForm": {
+              "id": "menu_category",
               "title": "Menu Category",
               "description": "menu_category contains the creative group name and category for this item.",
               "fields": [
@@ -1424,5 +1475,6 @@
     }
   ],
   "description": "Item definition includes the \"description\" and \"components\" sections.",
-  "title": "Minecraft Item V1.21.80 Item"
+  "title": "Minecraft Item V1.21.80 Item",
+  "id": "minecraft:item v1.21.80"
 }

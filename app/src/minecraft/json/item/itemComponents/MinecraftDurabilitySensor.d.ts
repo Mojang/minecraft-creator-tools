@@ -52,7 +52,8 @@ export default interface MinecraftDurabilitySensor {
 
 
 /**
- * Durability Sensor Durability Threshold
+ * Durability Sensor Durability Threshold (minecraft:durability_sensor 
+ * durability_threshold)
  * Defines both the durability threshold, and the effects emitted when
  * that threshold is met.
  */

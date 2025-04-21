@@ -31,6 +31,7 @@ export interface IGeometryBone {
   pivot: number[];
   rotation?: number[];
   parent?: string;
+  binding?: string;
   bind_pose_rotation?: number[];
   cubes?: IGeometryBoneCube[];
   locators?: { [name: string]: number[] };

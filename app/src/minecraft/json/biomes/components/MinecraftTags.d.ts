@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Tags (minecraft:tags)
+ * Minecraft Tags Biome (minecraft:tags)
  * Attach arbitrary string tags to this biome.
  */
 export default interface MinecraftTags {

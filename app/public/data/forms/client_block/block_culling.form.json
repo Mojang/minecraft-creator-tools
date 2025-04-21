@@ -5,6 +5,7 @@
       "title": "Description",
       "dataType": 16,
       "subForm": {
+        "id": "_v1_20_60_BlockCulling_Description",
         "title": "V1 20 60 BlockCulling Description",
         "fields": [
           {
@@ -20,6 +21,7 @@
       "title": "Rules",
       "dataType": 15,
       "subForm": {
+        "id": "_v1_21_80_BlockCulling_Rule",
         "title": "V1 21 80 BlockCulling Rule",
         "fields": [
           {
@@ -27,6 +29,7 @@
             "title": "Geometry Part",
             "dataType": 16,
             "subForm": {
+              "id": "_v1_20_60_BlockCulling_Rule_GeometryPart",
               "title": "V1 20 60 BlockCulling Rule GeometryPart",
               "fields": [
                 {
@@ -61,5 +64,6 @@
       }
     }
   ],
-  "title": "Block Culling Client Block"
+  "title": "Block Culling Client Block",
+  "id": "Block Culling"
 }

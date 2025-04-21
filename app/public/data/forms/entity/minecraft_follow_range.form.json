@@ -86,6 +86,12 @@
             "path": "/minecraft:entity/components/minecraft:follow_range/",
             "content": 128
           }
+        ],
+        "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/entities/beachager.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:follow_range/",
+            "content": 128
+          }
         ]
       }
     },
@@ -416,6 +422,14 @@
         "path": "/minecraft:entity/components/minecraft:follow_range/",
         "content": {
           "value": 1024
+        }
+      }
+    ],
+    "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/entities/beachager.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:follow_range/",
+        "content": {
+          "value": 128
         }
       }
     ]

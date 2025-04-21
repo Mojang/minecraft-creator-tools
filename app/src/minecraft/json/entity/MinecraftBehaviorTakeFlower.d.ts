@@ -40,6 +40,13 @@ Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
   }
 }
 
+
+Beachager - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/entities/beachager.behavior.json
+
+"minecraft:behavior.take_flower": {
+  "priority": 9
+}
+
  */
 
 import * as jsoncommon from './../../jsoncommon';
@@ -107,6 +114,7 @@ export default interface MinecraftBehaviorTakeFlower {
    * Villager V2: 9
    *
    * Villager: 7
+   *
    *
    */
   priority: number;

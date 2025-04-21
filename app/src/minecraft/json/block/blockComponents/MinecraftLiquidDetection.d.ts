@@ -51,6 +51,7 @@ export default interface MinecraftLiquidDetection {
    * Sample Values:
    * Block Fabricator: [{"liquid_type":"water","on_liquid_touches":"broken"}]
    *
+   *
    */
   detection_rules: MinecraftLiquidDetectionDetectionRules[];
 

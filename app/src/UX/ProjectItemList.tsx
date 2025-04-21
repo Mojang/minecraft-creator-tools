@@ -1244,6 +1244,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       projectItem.itemType === ProjectItemType.resourcePackFolder ||
       projectItem.itemType === ProjectItemType.skinPackFolder ||
       projectItem.itemType === ProjectItemType.soundCatalog ||
+      projectItem.itemType === ProjectItemType.itemTextureJson ||
+      projectItem.itemType === ProjectItemType.attachableResourceJson ||
       projectItem.itemType === ProjectItemType.blocksCatalogResourceJson || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.blockTypeResourceJsonDoNotUse || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.behaviorPackListJson || // this should be handled by world editor

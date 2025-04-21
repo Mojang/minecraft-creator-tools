@@ -100,7 +100,7 @@ export default interface MinecraftShooter {
 
 /**
  * V1 20 50 ShooterItemComponent Ammunition
- * V1 20 50 ShooterItemComponent Ammunition.
+ * (_v1_20_50_ShooterItemComponent_Ammunition)
  */
 export interface MinecraftShooterAmmunition {
 

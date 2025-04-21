@@ -21,6 +21,7 @@
               "dataType": 14,
               "readOnly": true,
               "subForm": {
+                "id": "direction",
                 "title": "Direction",
                 "fields": [
                   {
@@ -45,5 +46,6 @@
       ]
     }
   ],
-  "title": "Emitter Shape Entity Aabb Misc"
+  "title": "Emitter Shape Entity Aabb Misc",
+  "id": "emitter_shape_entity_aabb"
 }

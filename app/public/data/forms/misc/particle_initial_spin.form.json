@@ -10,6 +10,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "rotation",
             "title": "Rotation",
             "fields": [
               {
@@ -41,6 +42,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "rotation_rate",
             "title": "Rotation Rate",
             "fields": [
               {
@@ -63,5 +65,6 @@
       ]
     }
   ],
-  "title": "Particle Initial Spin Misc"
+  "title": "Particle Initial Spin Misc",
+  "id": "particle_initial_spin"
 }

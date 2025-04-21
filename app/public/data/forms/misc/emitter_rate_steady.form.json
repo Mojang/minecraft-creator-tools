@@ -10,6 +10,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "spawn_rate",
             "title": "Spawn Rate",
             "fields": [
               {
@@ -41,6 +42,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "max_particles",
             "title": "Max Particles",
             "fields": [
               {
@@ -63,5 +65,6 @@
       ]
     }
   ],
-  "title": "Emitter Rate Steady Misc"
+  "title": "Emitter Rate Steady Misc",
+  "id": "emitter_rate_steady"
 }

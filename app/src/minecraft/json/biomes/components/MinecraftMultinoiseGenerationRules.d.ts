@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Multinoise Generation Rules
+ * Minecraft Multinoise Generation Rules Biome
  * (minecraft:multinoise_generation_rules)
  * Controls how this biome is instantiated (and then potentially modified)
  * during world generation of the nether.

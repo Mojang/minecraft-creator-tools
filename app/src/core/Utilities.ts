@@ -294,7 +294,7 @@ export default class Utilities {
   }
 
   static humanify(val: string | boolean | number | number[] | string[] | object, humanify?: FieldValueHumanify) {
-    if (!humanify || val === undefined) {
+    if (humanify === FieldValueHumanify.none || val === undefined) {
       return val;
     }
 
@@ -303,7 +303,24 @@ export default class Utilities {
     }
 
     if (typeof val === "object") {
-      return JSON.stringify(val);
+      let simpleStr = "";
+      for (const key in val as any) {
+        const data = (val as any)[key];
+
+        if (data !== undefined) {
+          // if the object looks complicated, just stringify it
+          if (typeof data === "object") {
+            return JSON.stringify(val);
+          }
+
+          if (simpleStr.length > 0) {
+            simpleStr += ", ";
+          }
+          simpleStr += key + ": " + data.toString();
+        }
+      }
+
+      return simpleStr;
     }
 
     if (Array.isArray(val)) {

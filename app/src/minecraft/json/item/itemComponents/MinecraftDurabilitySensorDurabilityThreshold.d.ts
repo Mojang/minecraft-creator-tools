@@ -13,11 +13,12 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Durability Sensor Durability Threshold
+ * Minecraft Durability Sensor Durability Threshold Item
+ * (minecraft:durability_sensor durability_threshold)
  * Defines both the durability threshold, and the effects emitted when
  * that threshold is met.
  */
-export default interface DurabilitySensorDurabilityThreshold {
+export default interface MinecraftDurabilitySensorDurabilityThreshold {
 
   /**
    * @remarks

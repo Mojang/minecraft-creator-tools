@@ -23,6 +23,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "icon",
             "title": "Icon",
             "fields": [
               {
@@ -44,5 +45,6 @@
     }
   ],
   "description": "The identifier of a group of items.",
-  "title": "Crafting Catalog Group Icon Misc"
+  "title": "Crafting Catalog Group Icon Misc",
+  "id": "Crafting Catalog Group Icon"
 }

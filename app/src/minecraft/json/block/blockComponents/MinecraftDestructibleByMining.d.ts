@@ -46,6 +46,51 @@ Block Fabricator - https://github.com/microsoft/minecraft-samples/tree/main/casu
 }
 
 
+Block White Sand - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/white_sand.block.json
+
+"minecraft:destructible_by_mining": {
+  "seconds_to_destroy": 7.5,
+  "item_specific_speeds": [
+    {
+      "item": {
+        "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:wooden_tier')"
+      },
+      "destroy_speed": 1.15
+    },
+    {
+      "item": {
+        "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:stone_tier')"
+      },
+      "destroy_speed": 0.6
+    },
+    {
+      "item": {
+        "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:iron_tier')"
+      },
+      "destroy_speed": 0.4
+    },
+    {
+      "item": {
+        "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:golden_tier')"
+      },
+      "destroy_speed": 0.2
+    },
+    {
+      "item": {
+        "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:diamond_tier')"
+      },
+      "destroy_speed": 0.3
+    },
+    {
+      "item": {
+        "tags": "q.all_tags('minecraft:is_pickaxe', 'minecraft:netherite_tier')"
+      },
+      "destroy_speed": 0.25
+    }
+  ]
+}
+
+
 Block Orange Ore - https://github.com/microsoft/minecraft-samples/tree/main/custom_features/basic_orange_ore/behavior_packs/basic_orange_ore/blocks/orange_ore.block.json
 
 "minecraft:destructible_by_mining": {
@@ -88,7 +133,7 @@ export default interface MinecraftDestructibleByMining {
    * Sample Values:
    * Samples: "{ <br> "minecraft:destructible_by_mining": { <br> "seconds_to_destroy": 10, <br> "item_specific_speeds": [ <br> { <br> "item": { "tags": "q.any_tag('minecraft:is_pickaxe', 'minecraft:is_tool') " }, <br> "destroy_speed": 5.0 <br> } <br> ] <br> } <br>}", "{ <br> "minecraft:destructible_by_mining": { <br> "seconds_to_destroy": 10, <br> "item_specific_speeds": [ <br> { <br> "item": "minecraft:iron_pickaxe", <br> "destroy_speed": 5.0 <br> }, <br> { <br> "item": "minecraft:diamond_pickaxe", <br> "destroy_speed": 2.0 <br> } <br> ] <br> } <br>}"
    *
-   * Luckyblock: []
+   * Block White Sand: [{"item":{"tags":"q.all_tags('minecraft:is_pickaxe', 'minecraft:wooden_tier')"},"destroy_speed":1.15},{"item":{"tags":"q.all_tags('minecraft:is_pickaxe', 'minecraft:stone_tier')"},"destroy_speed":0.6},{"item":{"tags":"q.all_tags('minecraft:is_pickaxe', 'minecraft:iron_tier')"},"destroy_speed":0.4},{"item":{"tags":"q.all_tags('minecraft:is_pickaxe', 'minecraft:golden_tier')"},"destroy_speed":0.2},{"item":{"tags":"q.all_tags('minecraft:is_pickaxe', 'minecraft:diamond_tier')"},"destroy_speed":0.3},{"item":{"tags":"q.all_tags('minecraft:is_pickaxe', 'minecraft:netherite_tier')"},"destroy_speed":0.25}]
    *
    */
   item_specific_speeds: MinecraftDestructibleByMiningItemSpecificSpeeds[];
@@ -103,9 +148,9 @@ export default interface MinecraftDestructibleByMining {
    * Block Fabricator: 0.4
    *
    *
-   * Block Orange Ore: 1
+   * Block White Sand: 7.5
    *
-   * Luckyblock: 5
+   * Block Orange Ore: 1
    *
    */
   seconds_to_destroy: number;

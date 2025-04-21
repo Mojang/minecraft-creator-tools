@@ -17,7 +17,8 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Water Appearance (minecraft:water_appearance)
+ * Minecraft Water Appearance Client Biome
+ * (minecraft:water_appearance)
  * Set the water surface color used during rendering. Biomes without
  * this component will have default water surface color 
  * behavior.

@@ -3,13 +3,21 @@
   white-space: nowrap;
   padding: 2px;
   margin-top: 3px;
-  grid-template-columns: 22px 22px 1fr;
   display: grid;
 }
 
-.feffp-textArea {
-  width: 500px;
-  height: 100%;
-  max-width: calc(100vw - 410px);
-  font-family: "Courier New", Courier, monospace;
+@media only screen and (min-width: 800px) {
+  .feffp-textArea {
+    width: 500px;
+    height: 100%;
+    max-width: calc(100vw - 410px);
+    font-family: "Courier New", Courier, monospace;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .feffp-textArea {
+    min-width: calc (100vw - 100px);
+    font-family: "Courier New", Courier, monospace;
+  }
 }

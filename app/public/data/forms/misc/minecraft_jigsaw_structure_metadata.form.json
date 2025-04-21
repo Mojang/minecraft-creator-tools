@@ -12,6 +12,7 @@
       "description": "The Jigsaw metadata registry.",
       "dataType": 16,
       "subForm": {
+        "id": "_v1_21_80_JigsawureMetadataRegistry",
         "title": "V1 21 80 JigsawStructureMetadataRegistry",
         "fields": [
           {
@@ -24,5 +25,6 @@
       }
     }
   ],
-  "title": "Minecraft Jigsaw Structure Metadata Misc"
+  "title": "Minecraft Jigsaw Structure Metadata Misc",
+  "id": "minecraft:jigsaw_ure_metadata"
 }

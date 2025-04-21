@@ -144,7 +144,7 @@ export default class ProjectItemUtilities {
         return "behavior/trading/trading.json";
       case ProjectItemType.attachableResourceJson:
         return "resource/attachables/attachables.json";
-      case ProjectItemType.itemTypeResourceJson:
+      case ProjectItemType.itemTypeLegacyResource:
         return "resource/items/items.json";
       case ProjectItemType.materialsResourceJson:
         return "resource/materials/materials.json";
@@ -360,7 +360,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.dialogueBehaviorJson:
       case ProjectItemType.MCWorld:
       case ProjectItemType.worldTemplateManifestJson:
-      case ProjectItemType.itemTypeResourceJson:
+      case ProjectItemType.itemTypeLegacyResource:
       case ProjectItemType.featureBehavior:
       case ProjectItemType.featureRuleBehaviorJson:
         return ProjectItemCategory.types;
@@ -507,7 +507,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.tradingBehaviorJson:
       case ProjectItemType.volumeBehaviorJson:
       case ProjectItemType.attachableResourceJson:
-      case ProjectItemType.itemTypeResourceJson:
+      case ProjectItemType.itemTypeLegacyResource:
       case ProjectItemType.materialsResourceJson:
       case ProjectItemType.musicDefinitionJson:
       case ProjectItemType.soundDefinitionCatalog:
@@ -730,7 +730,7 @@ export default class ProjectItemUtilities {
         return "Volume";
       case ProjectItemType.attachableResourceJson:
         return "Attachable";
-      case ProjectItemType.itemTypeResourceJson:
+      case ProjectItemType.itemTypeLegacyResource:
         return "Item type resources";
       case ProjectItemType.materialsResourceJson:
         return "Materials";
@@ -968,7 +968,7 @@ export default class ProjectItemUtilities {
       type === ProjectItemType.itemTextureJson ||
       type === ProjectItemType.itemTypeBehavior ||
       type === ProjectItemType.attachableResourceJson ||
-      type === ProjectItemType.itemTypeResourceJson
+      type === ProjectItemType.itemTypeLegacyResource
     );
   }
 
@@ -1127,7 +1127,7 @@ export default class ProjectItemUtilities {
         return "TypeScript files";
       case ProjectItemType.js:
         return "JavaScript files";
-      case ProjectItemType.itemTypeResourceJson:
+      case ProjectItemType.itemTypeLegacyResource:
         return "Item type visuals and audio";
       case ProjectItemType.entityTypeResource:
         return "Entity type visuals/audio";
@@ -1261,7 +1261,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.entityTypeBehavior:
         return ["entities"];
       case ProjectItemType.itemTypeBehavior:
-      case ProjectItemType.itemTypeResourceJson:
+      case ProjectItemType.itemTypeLegacyResource:
         return ["items"];
       case ProjectItemType.blockTypeBehavior:
         return ["blocks"];

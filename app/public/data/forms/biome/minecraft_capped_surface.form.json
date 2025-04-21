@@ -11,6 +11,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "beach_material",
             "title": "Beach Material",
             "fields": [
               {
@@ -52,6 +53,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "floor_materials",
             "title": "Floor Materials",
             "fields": [
               {
@@ -93,6 +95,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "ceiling_materials",
             "title": "Ceiling Materials",
             "fields": [
               {
@@ -133,6 +136,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "foundation_material",
             "title": "Foundation Material",
             "fields": [
               {
@@ -173,6 +177,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "sea_material",
             "title": "Sea Material",
             "fields": [
               {
@@ -204,5 +209,6 @@
     }
   ],
   "description": "Generates surface on blocks with non-solid blocks above or below.",
-  "title": "Minecraft Capped Surface Biome"
+  "title": "Minecraft Capped Surface Biome",
+  "id": "minecraft:capped_surface"
 }

@@ -102,6 +102,8 @@ export default interface IField {
   suggestedMaxValue?: number;
   tags?: string[];
   isRequired?: boolean;
+  isDeprecated?: boolean;
+  isInternal?: boolean;
   validity?: ICondition[];
   visibility?: ICondition[];
   defaultValue?: string | number | boolean | number[] | string[];

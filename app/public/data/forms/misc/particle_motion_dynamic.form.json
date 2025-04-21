@@ -12,6 +12,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "linear_acceleration",
             "title": "Linear Acceleration",
             "fields": [
               {
@@ -43,6 +44,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "linear_drag_coefficient",
             "title": "Linear Drag Coefficient",
             "fields": [
               {
@@ -74,6 +76,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "rotation_acceleration",
             "title": "Rotation Acceleration",
             "fields": [
               {
@@ -105,6 +108,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "rotation_drag_coefficient",
             "title": "Rotation Drag Coefficient",
             "fields": [
               {
@@ -127,5 +131,6 @@
       ]
     }
   ],
-  "title": "Particle Motion Dynamic Misc"
+  "title": "Particle Motion Dynamic Misc",
+  "id": "particle_motion_dynamic"
 }

@@ -12,6 +12,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "offset",
             "title": "Offset",
             "fields": [
               {
@@ -45,6 +46,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "direction",
             "title": "Direction",
             "fields": [
               {
@@ -67,5 +69,6 @@
       ]
     }
   ],
-  "title": "Emitter Shape Point Misc"
+  "title": "Emitter Shape Point Misc",
+  "id": "emitter_shape_point"
 }

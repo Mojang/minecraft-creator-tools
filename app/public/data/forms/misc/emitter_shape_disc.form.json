@@ -12,6 +12,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "offset",
             "title": "Offset",
             "fields": [
               {
@@ -49,6 +50,7 @@
               "dataType": 14,
               "readOnly": true,
               "subForm": {
+                "id": "direction",
                 "title": "Direction",
                 "fields": [
                   {
@@ -82,6 +84,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "radius",
             "title": "Radius",
             "fields": [
               {
@@ -124,6 +127,7 @@
               "dataType": 14,
               "readOnly": true,
               "subForm": {
+                "id": "plane_normal",
                 "title": "Plane Normal",
                 "fields": [
                   {
@@ -148,5 +152,6 @@
       ]
     }
   ],
-  "title": "Emitter Shape Disc Misc"
+  "title": "Emitter Shape Disc Misc",
+  "id": "emitter_shape_disc"
 }

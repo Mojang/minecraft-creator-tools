@@ -8,5 +8,6 @@
     }
   ],
   "description": "Contains non-component settings for a Client Biome.",
-  "title": "Client Biome Description Client Biome"
+  "title": "Client Biome Description Client Biome",
+  "id": "Client Biome Description"
 }

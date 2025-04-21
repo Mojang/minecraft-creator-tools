@@ -12,6 +12,7 @@
       "description": "A single Camera Aim-Assist Categories Definition.",
       "dataType": 16,
       "subForm": {
+        "id": "_v1_21_50_CameraAimAssistCategoriesDefinition",
         "title": "V1 21 50 CameraAimAssistCategoriesDefinition",
         "fields": [
           {
@@ -20,6 +21,7 @@
             "description": "List of categories used by Camera Aim-Assist 'minecraft:aim_assist_preset'.",
             "dataType": 15,
             "subForm": {
+              "id": "_v1_21_50_CameraAimAssistCategoryDefinition",
               "title": "V1 21 50 CameraAimAssistCategoryDefinition",
               "fields": [
                 {
@@ -34,6 +36,7 @@
                   "description": "The set of priorities used when determining aim-assist selection.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "_v1_21_50_CameraAimAssistCategoryPriorities",
                     "title": "V1 21 50 CameraAimAssistCategoryPriorities",
                     "fields": [
                       {
@@ -82,5 +85,6 @@
       }
     }
   ],
-  "title": "Minecraft Aim Assist Categories Misc"
+  "title": "Minecraft Aim Assist Categories Misc",
+  "id": "minecraft:aim_assist_categories"
 }

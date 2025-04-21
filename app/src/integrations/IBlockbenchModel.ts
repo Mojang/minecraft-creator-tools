@@ -28,7 +28,7 @@ export interface IBlockbench2DSize {
 export interface IBlockbenchOutlineItem {
   name: string;
   origin: number[];
-  bedrock_binding: string;
+  bedrock_binding?: string;
   color: number;
   uuid: string;
   rotation?: number[];

@@ -6,6 +6,7 @@
       "description": "Identifier of the Jigsaw Structure.",
       "dataType": 16,
       "subForm": {
+        "id": "_v1_21_20_JigsawureDefinition_Description",
         "title": "V1 21 20 JigsawStructureDefinition Description",
         "description": "Identifier of the Jigsaw Structure.",
         "fields": [
@@ -23,6 +24,7 @@
       "description": "Biomes in which the Jigsaw Structure can generate.",
       "dataType": 16,
       "subForm": {
+        "id": "biome_filters",
         "title": "Biome Filters",
         "fields": [
           {
@@ -66,6 +68,7 @@
           "id": "biome_filters",
           "dataType": 16,
           "subForm": {
+            "id": "biome_filters",
             "title": "Biome Filters",
             "fields": [
               {
@@ -199,5 +202,6 @@
     }
   ],
   "description": "A Jigsaw Structure is a group of Structure Templates that make up a larger structure.Jigsaw Structures are placed during world generation.",
-  "title": "JigsawStructure World"
+  "title": "JigsawStructure World",
+  "id": "Jigsawure"
 }

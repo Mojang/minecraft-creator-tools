@@ -9,6 +9,7 @@
           "id": "creation_event",
           "dataType": 16,
           "subForm": {
+            "id": "creation_event",
             "title": "Creation Event",
             "fields": []
           }
@@ -24,6 +25,7 @@
           "id": "expiration_event",
           "dataType": 16,
           "subForm": {
+            "id": "expiration_event",
             "title": "Expiration Event",
             "fields": []
           }
@@ -39,6 +41,7 @@
           "id": "travel_distance_events",
           "dataType": 16,
           "subForm": {
+            "id": "travel_distance_events",
             "title": "Travel Distance Events",
             "fields": []
           }
@@ -54,6 +57,7 @@
           "id": "timeline",
           "dataType": 16,
           "subForm": {
+            "id": "timeline",
             "title": "Timeline",
             "fields": []
           }
@@ -65,6 +69,7 @@
       "title": "Looping Travel Distance Events",
       "dataType": 15,
       "subForm": {
+        "id": "emitter_lifetime_events travel_distance_events",
         "title": "Emitter Lifetime Events Travel Distance Events",
         "fields": [
           {
@@ -81,6 +86,7 @@
                 "id": "effects",
                 "dataType": 16,
                 "subForm": {
+                  "id": "effects",
                   "title": "Effects",
                   "fields": []
                 }
@@ -91,5 +97,6 @@
       }
     }
   ],
-  "title": "Emitter Lifetime Events Proxy Misc"
+  "title": "Emitter Lifetime Events Proxy Misc",
+  "id": "emitter_lifetime_events proxy"
 }

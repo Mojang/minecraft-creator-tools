@@ -8,5 +8,6 @@
     }
   ],
   "description": "Object specifying a color map for foliage instead of a specific color.",
-  "title": "Foliage Color Map Client Biome"
+  "title": "Foliage Color Map Client Biome",
+  "id": "Foliage Color Map"
 }

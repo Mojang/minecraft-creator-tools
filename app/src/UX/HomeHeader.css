@@ -4,21 +4,18 @@
     height: 100%;
     border-bottom: outset 2px;
   }
-
-  .hhdr-area {
-    border-bottom: inset 2px;
-    padding-bottom: 5px;
-  }
 }
 
 @media only screen and (max-width: 800px) {
   .hhdr {
-    height: 120px;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    height: 100%;
   }
 }
 
+.hhdr-area {
+  border-bottom: inset 2px;
+  padding-bottom: 5px;
+}
 .hhdr-sublink {
   font-size: small;
   color: white;

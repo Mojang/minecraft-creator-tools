@@ -12,6 +12,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "size",
             "title": "Size",
             "fields": [
               {
@@ -49,5 +50,6 @@
       "dataType": 16
     }
   ],
-  "title": "Particle Appearance Billboard Misc"
+  "title": "Particle Appearance Billboard Misc",
+  "id": "particle_appearance_billboard"
 }

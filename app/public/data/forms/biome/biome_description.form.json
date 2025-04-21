@@ -8,5 +8,6 @@
     }
   ],
   "description": "Contains non-component settings for a Biome.",
-  "title": "Biome Description Biome"
+  "title": "Biome Description Biome",
+  "id": "Biome Description"
 }

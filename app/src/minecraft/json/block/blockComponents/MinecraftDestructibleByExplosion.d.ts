@@ -29,6 +29,20 @@ Block Gray Ore - https://github.com/microsoft/minecraft-samples/tree/main/casual
 }
 
 
+Block Palm Leave - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave.block.json
+
+"minecraft:destructible_by_explosion": {
+  "explosion_resistance": 1.3
+}
+
+
+Block White Sand - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/white_sand.block.json
+
+"minecraft:destructible_by_explosion": {
+  "explosion_resistance": 1.1
+}
+
+
 Block Orange Ore - https://github.com/microsoft/minecraft-samples/tree/main/custom_features/basic_orange_ore/behavior_packs/basic_orange_ore/blocks/orange_ore.block.json
 
 "minecraft:destructible_by_explosion": {
@@ -40,13 +54,6 @@ Apple Block - https://github.com/microsoft/minecraft-samples/tree/main/custom_fe
 
 "minecraft:destructible_by_explosion": {
   "explosion_resistance": 2.9
-}
-
-
-Block Palm Leave - https://github.com/microsoft/minecraft-samples/tree/main/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_leave.block.json
-
-"minecraft:destructible_by_explosion": {
-  "explosion_resistance": 1.3
 }
 
  */
@@ -81,7 +88,8 @@ export default interface MinecraftDestructibleByExplosion {
    *
    * Block Gray Ore: 96
    *
-   * Block Orange Ore: 30
+   *
+   * Block Palm Leave: 1.3
    *
    */
   explosion_resistance: number;

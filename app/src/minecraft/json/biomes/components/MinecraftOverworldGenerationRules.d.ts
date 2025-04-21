@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Overworld Generation Rules 
+ * Minecraft Overworld Generation Rules Biome
  * (minecraft:overworld_generation_rules)
  * Controls how this biome is instantiated (and then potentially modified)
  * during world generation of the overworld.

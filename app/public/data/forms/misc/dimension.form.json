@@ -5,6 +5,7 @@
       "title": "Description",
       "dataType": 16,
       "subForm": {
+        "id": "Description",
         "title": "Description",
         "fields": [
           {
@@ -20,6 +21,7 @@
       "title": "Components",
       "dataType": 16,
       "subForm": {
+        "id": "Components",
         "title": "Components",
         "fields": [
           {
@@ -27,6 +29,7 @@
             "title": "Minecraft Dimension Bounds",
             "dataType": 16,
             "subForm": {
+              "id": "Bounds",
               "title": "Bounds",
               "fields": [
                 {
@@ -67,6 +70,7 @@
             "title": "Minecraft Generation",
             "dataType": 16,
             "subForm": {
+              "id": "Generation",
               "title": "Generation",
               "fields": [
                 {
@@ -81,5 +85,6 @@
       }
     }
   ],
-  "title": "Dimension Misc"
+  "title": "Dimension Misc",
+  "id": "Dimension"
 }

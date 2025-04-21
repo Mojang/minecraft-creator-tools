@@ -14,5 +14,6 @@
     }
   ],
   "description": "Affects how music plays within the biome",
-  "title": "Minecraft Biome Music Client Biome"
+  "title": "Minecraft Biome Music Client Biome",
+  "id": "minecraft:biome_music"
 }

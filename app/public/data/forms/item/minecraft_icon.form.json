@@ -1,11 +1,19 @@
 {
   "title": "Icon",
   "description": "Determines the icon to represent the item in the UI and elsewhere.",
+  "scalarField": {
+    "id": "texture",
+    "title": "Texture",
+    "description": "This contains a single texture for the items icon.  Note that you should either set the Texture or Textures, but not both.",
+    "dataType": 2,
+    "lookupId": "itemTexture"
+  },
   "fields": [
     {
       "id": "textures",
       "title": "Textures",
-      "description": "(Note that either the Texture property should be filled out, or the Textures property should be filled out, but not both.) This map contains the different textures that can be used for the item's icon. Default will contain the actual icon texture. Armor trim textures and palettes can be specified here as well. The icon textures are the keys from the resource_pack/textures/item_texture.json 'texture_data' object associated with the texture file.",
+      "description": "This map contains the different textures that can be used for the item's icon. Default will contain the actual icon texture. Armor trim textures and palettes can be specified here as well. The icon textures are the keys from the resource_pack/textures/item_texture.json 'texture_data' object associated with the texture file. Note that you should either set the Texture or Textures, but not both.",
+      "dataType": 24,
       "lookupId": "itemTexture",
       "samples": {
         "/vanilla/behavior_pack/items/black_bundle.json": [
@@ -144,13 +152,15 @@
             }
           }
         ]
-      },
-      "dataType": 16
+      }
     },
     {
       "id": "texture",
-      "description": "(Note that either the Texture property should be filled out, or the Textures property should be filled out, but not both.) Specifies a texture to use for the item.",
+      "title": "Texture",
+      "description": "This contains a single texture for the items icon.  Note that you should either set the Texture or Textures, but not both.",
+      "dataType": 2,
       "lookupId": "itemTexture",
+      "isDeprecated": true,
       "samples": {
         "/vanilla/behavior_pack/items/apple.json": [
           {
@@ -180,54 +190,6 @@
           {
             "path": "/minecraft:item/components/minecraft:icon/",
             "content": "wind_charge"
-          }
-        ],
-        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:icon/",
-            "content": "mamm_cds:cooked_dream_turkey"
-          }
-        ],
-        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/dream_essence.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:icon/",
-            "content": "mamm_cds:dream_essence"
-          }
-        ],
-        "/samples/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/items/dream_turkey.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:icon/",
-            "content": "mamm_cds:dream_turkey"
-          }
-        ],
-        "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/cooked_dream_turkey.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:icon/",
-            "content": "mamm_cds:cooked_dream_turkey"
-          }
-        ],
-        "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/dream_essence.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:icon/",
-            "content": "mamm_cds:dream_essence"
-          }
-        ],
-        "/samples/casual_creator/chill_dreams/2_dreams_come_true/behavior_packs/mamm_cds/items/dream_turkey.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:icon/",
-            "content": "mamm_cds:dream_turkey"
-          }
-        ],
-        "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal_pencil.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:icon/",
-            "content": "mamm_cds:journal_pencil"
-          }
-        ],
-        "/samples/casual_creator/chill_dreams/complete/behavior_packs/mamm_cds/items/journal.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:icon/",
-            "content": "mamm_cds:journal"
           }
         ],
         "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
@@ -283,22 +245,8 @@
             "path": "/minecraft:item/components/minecraft:icon/",
             "content": "demo:wrench"
           }
-        ],
-        "/samples/debug_tools/behavior_packs/common/items/magnifying_glass.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:icon/",
-            "content": "debug_tools:magnifying_glass"
-          }
-        ],
-        "/samples/debug_tools/behavior_packs/common/items/wrench.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:icon/",
-            "content": "debug_tools:wrench"
-          }
         ]
-      },
-      "title": "Texture",
-      "dataType": 2
+      }
     }
   ],
   "samples": {

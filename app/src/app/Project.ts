@@ -2609,7 +2609,7 @@ export default class Project {
               } else if (isResourcePack && projectPath.endsWith("texture_set.json")) {
                 newJsonType = ProjectItemType.textureSetJson;
               } else if (isResourcePack && folderPathLower.indexOf("/items/") >= 0) {
-                newJsonType = ProjectItemType.itemTypeResourceJson;
+                newJsonType = ProjectItemType.itemTypeLegacyResource;
               } else if (isResourcePack && baseName === "sounds") {
                 newJsonType = ProjectItemType.soundCatalog;
               } else if (baseName === "education") {

@@ -48,6 +48,25 @@ Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
   ]
 }
 
+
+Beachager - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/entities/beachager.behavior.json
+
+"minecraft:behavior.share_items": {
+  "priority": 9,
+  "max_dist": 3,
+  "goal_radius": 2,
+  "speed_multiplier": 0.5,
+  "entity_types": [
+    {
+      "filters": {
+        "test": "is_family",
+        "subject": "other",
+        "value": "villager"
+      }
+    }
+  ]
+}
+
  */
 
 import * as jsoncommon from './../../jsoncommon';
@@ -74,11 +93,6 @@ export default interface MinecraftBehaviorShareItems {
    * Distance in blocks within the mob considers it has reached the
    * goal. This is the "wiggle room" to stop the AI from bouncing back
    * and forth trying to reach a specific spot
-   * 
-   * Sample Values:
-   * Villager V2: 2
-   *
-   *
    */
   goal_radius: number;
 
@@ -86,11 +100,6 @@ export default interface MinecraftBehaviorShareItems {
    * @remarks
    * Maximum distance in blocks this mob will look for entities to
    * share items with
-   * 
-   * Sample Values:
-   * Villager V2: 3
-   *
-   *
    */
   max_dist: number;
 
@@ -99,23 +108,12 @@ export default interface MinecraftBehaviorShareItems {
    * As priority approaches 0, the priority is increased. The higher the
    * priority, the sooner this behavior will be executed as a 
    * goal.
-   * 
-   * Sample Values:
-   * Villager V2: 10
-   *
-   * Villager: 8
-   *
    */
   priority: number;
 
   /**
    * @remarks
    * Movement speed multiplier of the mob when using this AI Goal
-   * 
-   * Sample Values:
-   * Villager V2: 0.5
-   *
-   *
    */
   speed_multiplier: number;
 

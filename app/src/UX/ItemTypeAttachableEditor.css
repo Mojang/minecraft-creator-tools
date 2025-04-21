@@ -1,0 +1,41 @@
+.itae-area {
+  overflow-y: auto;
+}
+
+.itae-toolBarArea {
+  width: 100%;
+  padding-top: 3px;
+  padding-left: 29px;
+  height: 34px;
+}
+
+.itae-headerTransition {
+  background-position-x: left;
+  background-repeat: repeat-x;
+  height: 40px;
+}
+
+.itae-header {
+  font-size: 16pt;
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-bottom: 13px;
+}
+
+.itae-form {
+  padding-top: 10px;
+  padding-left: 20px;
+}
+
+.itae-rc-header {
+  padding-left: 20px;
+  padding-top: 10px;
+}
+
+.itae-header-interior {
+  font-size: large;
+}
+
+.itae-loading {
+  padding: 4px;
+}
