@@ -1,0 +1,19 @@
+{
+  "updateScore": {
+    "description": "Updates score on a local server. See https://learn.microsoft.com/minecraft/creator/scriptapi/minecraft/server-net/httprequest",
+    "prefix": ["mc"],
+    "body": [
+      "// Note this code will only run on Bedrock Dedicated Server.",
+      "  const req = new HttpRequest('http://localhost:3000/updateScore');",
+      "  req.body = JSON.stringify({",
+      "    score: 22,",
+      "  });",
+      "  req.method = HttpRequestMethod.Post;",
+      "  req.headers = [",
+      "    new HttpHeader('Content-Type', 'application/json'),",
+      "    new HttpHeader('auth', 'my-auth-token'),",
+      "  ];",
+      "  await http.request(req);"
+    ]
+  }
+}
