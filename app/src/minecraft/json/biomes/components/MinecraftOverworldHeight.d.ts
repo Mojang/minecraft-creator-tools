@@ -13,7 +13,8 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Overworld Height (minecraft:overworld_height)
+ * Minecraft Overworld Height Biome 
+ * (minecraft:overworld_height)
  * Noise parameters used to drive terrain height in the 
  * Overworld.
  */

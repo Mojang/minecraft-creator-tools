@@ -8,5 +8,6 @@
     }
   ],
   "description": "Sets the fog settings used during rendering. Biomes without this component will have default fog settings.",
-  "title": "Minecraft Fog Appearance Client Biome"
+  "title": "Minecraft Fog Appearance Client Biome",
+  "id": "minecraft:fog_appearance"
 }

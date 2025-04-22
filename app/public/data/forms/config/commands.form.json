@@ -12,5 +12,6 @@
       "dataType": 24
     }
   ],
-  "title": "Commands Config"
+  "title": "Commands Config",
+  "id": "commands"
 }

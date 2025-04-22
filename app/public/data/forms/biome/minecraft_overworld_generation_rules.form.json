@@ -56,5 +56,6 @@
     }
   ],
   "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the overworld.",
-  "title": "Minecraft Overworld Generation Rules Biome"
+  "title": "Minecraft Overworld Generation Rules Biome",
+  "id": "minecraft:overworld_generation_rules"
 }

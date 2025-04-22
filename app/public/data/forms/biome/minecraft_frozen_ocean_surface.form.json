@@ -11,6 +11,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "mid_material",
             "title": "Mid Material",
             "fields": [
               {
@@ -57,6 +58,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "sea_floor_material",
             "title": "Sea Floor Material",
             "fields": [
               {
@@ -97,6 +99,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "sea_material",
             "title": "Sea Material",
             "fields": [
               {
@@ -137,6 +140,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "top_material",
             "title": "Top Material",
             "fields": [
               {
@@ -177,6 +181,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "foundation_material",
             "title": "Foundation Material",
             "fields": [
               {
@@ -208,5 +213,6 @@
     }
   ],
   "description": "Similar to overworld_surface. Adds icebergs.",
-  "title": "Minecraft Frozen Ocean Surface Biome"
+  "title": "Minecraft Frozen Ocean Surface Biome",
+  "id": "minecraft:frozen_ocean_surface"
 }

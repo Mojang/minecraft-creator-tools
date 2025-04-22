@@ -10,6 +10,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "max_lifetime",
             "title": "Max Lifetime",
             "fields": [
               {
@@ -41,6 +42,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "expiration_expression",
             "title": "Expiration Expression",
             "fields": [
               {
@@ -63,5 +65,6 @@
       ]
     }
   ],
-  "title": "Particle Lifetime Expression Misc"
+  "title": "Particle Lifetime Expression Misc",
+  "id": "particle_lifetime_expression"
 }

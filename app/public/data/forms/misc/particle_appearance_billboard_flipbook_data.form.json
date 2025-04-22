@@ -12,6 +12,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "base_UV",
             "title": "Base UV",
             "fields": [
               {
@@ -57,6 +58,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "max_frame",
             "title": "Max Frame",
             "fields": [
               {
@@ -94,5 +96,6 @@
       "dataType": 1
     }
   ],
-  "title": "Particle Appearance Billboard Flipbook Data Misc"
+  "title": "Particle Appearance Billboard Flipbook Data Misc",
+  "id": "particle_appearance_billboard flipbook_data"
 }

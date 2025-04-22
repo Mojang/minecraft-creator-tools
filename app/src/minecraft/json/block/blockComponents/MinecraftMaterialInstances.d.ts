@@ -33,6 +33,76 @@ Block Gray Ore - https://github.com/microsoft/minecraft-samples/tree/main/casual
 }
 
 
+Block Frond Top - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/frond_top.block.json
+
+"minecraft:material_instances": {
+  "*": {
+    "texture": "frond_top",
+    "render_method": "alpha_test"
+  }
+}
+
+
+Block Palm Leave Corner - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave_corner.block.json
+
+"minecraft:material_instances": {
+  "*": {
+    "texture": "palm_leave_corner",
+    "render_method": "alpha_test"
+  }
+}
+
+
+Block Palm Leave Tip - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave_tip.block.json
+
+"minecraft:material_instances": {
+  "*": {
+    "texture": "palm_leave_tip",
+    "render_method": "alpha_test"
+  }
+}
+
+
+Block Palm Leave - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave.block.json
+
+"minecraft:material_instances": {
+  "*": {
+    "texture": "palm_leave",
+    "render_method": "alpha_test"
+  }
+}
+
+
+Block Palm Tree Top - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_tree_top.block.json
+
+"minecraft:material_instances": {
+  "*": {
+    "texture": "chill_oasis_top",
+    "render_method": "alpha_test"
+  }
+}
+
+
+Block Palm Trunk - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_trunk.block.json
+
+"minecraft:material_instances": {
+  "*": {
+    "texture": "palm_trunk",
+    "render_method": "alpha_test"
+  }
+}
+
+
+Block White Sand - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/white_sand.block.json
+
+"minecraft:material_instances": {
+  "*": {
+    "texture": "white_sand",
+    "render_method": "alpha_test"
+  }
+}
+
+
 Tuna Roll - https://github.com/microsoft/minecraft-samples/tree/main/culled_block_sample/culled_block_behavior_pack/blocks/tuna_roll.json
 
 "minecraft:material_instances": {
@@ -69,81 +139,6 @@ California Roll - https://github.com/microsoft/minecraft-samples/tree/main/custo
   },
   "sushi_side": {
     "texture": "california_roll"
-  }
-}
-
-
-Green Bubble Fish - https://github.com/microsoft/minecraft-samples/tree/main/custom_blocks/behavior_packs/custom_blocks/blocks/green_bubble_fish.json
-
-"minecraft:material_instances": {
-  "*": {
-    "texture": "bubble_fish_green",
-    "render_method": "blend",
-    "face_dimming": true
-  }
-}
-
-
-Orange Bubble Fish - https://github.com/microsoft/minecraft-samples/tree/main/custom_blocks/behavior_packs/custom_blocks/blocks/orange_bubble_fish.json
-
-"minecraft:material_instances": {
-  "*": {
-    "texture": "bubble_fish_orange",
-    "render_method": "blend",
-    "face_dimming": true
-  }
-}
-
-
-Salmon Roll - https://github.com/microsoft/minecraft-samples/tree/main/custom_blocks/behavior_packs/custom_blocks/blocks/salmon_roll.json
-
-"minecraft:material_instances": {
-  "north": "sushi_side",
-  "south": "sushi_side",
-  "*": {
-    "texture": "sushi_wrap"
-  },
-  "sushi_side": {
-    "texture": "salmon_roll"
-  }
-}
-
-
-Block Orange Ore - https://github.com/microsoft/minecraft-samples/tree/main/custom_features/basic_orange_ore/behavior_packs/basic_orange_ore/blocks/orange_ore.block.json
-
-"minecraft:material_instances": {
-  "*": {
-    "texture": "orange_ore",
-    "render_method": "opaque"
-  }
-}
-
-
-Apple Block - https://github.com/microsoft/minecraft-samples/tree/main/custom_features/example_feature_set/behavior_packs/example_feature_set/blocks/apple_block.json
-
-"minecraft:material_instances": {
-  "*": {
-    "texture": "apple_block",
-    "render_method": "opaque"
-  }
-}
-
-
-Luckyblock - https://github.com/microsoft/minecraft-samples/tree/main/lucky_block/version_1/behavior_packs/mike_luck/blocks/luckyblock.json
-
-"minecraft:material_instances": {
-  "*": {
-    "texture": "luckyblock"
-  }
-}
-
-
-Block Frond Top - https://github.com/microsoft/minecraft-samples/tree/main/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/frond_top.block.json
-
-"minecraft:material_instances": {
-  "*": {
-    "texture": "frond_top",
-    "render_method": "alpha_test"
   }
 }
 

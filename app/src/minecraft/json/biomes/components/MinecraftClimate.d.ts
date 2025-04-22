@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Climate (minecraft:climate)
+ * Minecraft Climate Biome (minecraft:climate)
  * Describes temperature, humidity, precipitation, and similar. Biomes
  * without this component will have default values.
  */

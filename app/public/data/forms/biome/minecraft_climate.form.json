@@ -46,5 +46,6 @@
     }
   ],
   "description": "Describes temperature, humidity, precipitation, and similar. Biomes without this component will have default values.",
-  "title": "Minecraft Climate Biome"
+  "title": "Minecraft Climate Biome",
+  "id": "minecraft:climate"
 }

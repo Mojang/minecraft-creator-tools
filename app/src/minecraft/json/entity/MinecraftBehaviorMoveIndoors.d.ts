@@ -48,6 +48,7 @@ export default interface MinecraftBehaviorMoveIndoors {
    *
    * Villager: 4
    *
+   *
    */
   priority: number;
 
@@ -70,6 +71,7 @@ export default interface MinecraftBehaviorMoveIndoors {
    * 
    * Sample Values:
    * Villager V2: 8
+   *
    *
    */
   timeout_cooldown: number;

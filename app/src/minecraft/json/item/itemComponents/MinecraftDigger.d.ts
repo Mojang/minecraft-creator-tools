@@ -57,7 +57,7 @@ export default interface MinecraftDigger {
 
 /**
  * V1 20 50 DiggerItemComponent BlockInfo
- * V1 20 50 DiggerItemComponent BlockInfo.
+ * (_v1_20_50_DiggerItemComponent_BlockInfo)
  */
 export interface MinecraftDiggerDestroySpeeds {
 
@@ -77,27 +77,14 @@ export interface MinecraftDiggerDestroySpeeds {
 
 
 /**
- * Block
- * Block
+ * Block (block)
  */
 export interface MinecraftDiggerDestroySpeedsBlock {
 
-  /**
-   * @remarks
-   * name
-   */
   name: string;
 
-  /**
-   * @remarks
-   * states
-   */
   states: number;
 
-  /**
-   * @remarks
-   * tags
-   */
   tags: string;
 
 }

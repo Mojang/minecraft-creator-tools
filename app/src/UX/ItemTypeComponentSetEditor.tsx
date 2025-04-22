@@ -21,14 +21,16 @@ import ItemTypeAddComponent from "./ItemTypeAddComponent";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import Carto from "../app/Carto";
 import Project from "../app/Project";
+import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 
 interface IItemTypeComponentSetEditorProps {
-  itemTypeItem: IManagedComponentSetItem;
+  itemTypeDefinition: IManagedComponentSetItem;
   isVisualsMode: boolean;
   isDefault: boolean;
   project: Project;
   carto: Carto;
-  heightOffset: number;
+  height?: number;
+  heightOffset?: number;
   title?: string;
   theme: ThemeInput<any>;
 }
@@ -79,7 +81,7 @@ export default class ItemTypeComponentSetEditor extends Component<
   }
 
   componentDidUpdate(prevProps: IItemTypeComponentSetEditorProps, prevState: IItemTypeComponentSetEditorState) {
-    if (prevProps.itemTypeItem !== this.props.itemTypeItem) {
+    if (prevProps.itemTypeDefinition !== this.props.itemTypeDefinition) {
       let id = undefined;
 
       const componentListing = this.getUsableComponents();
@@ -115,7 +117,7 @@ export default class ItemTypeComponentSetEditor extends Component<
     if (form !== undefined) {
       const newDataObject = DataFormUtilities.generateDefaultItem(form);
 
-      this.props.itemTypeItem.addComponent(id, newDataObject);
+      this.props.itemTypeDefinition.addComponent(id, newDataObject);
     }
   }
 
@@ -124,11 +126,11 @@ export default class ItemTypeComponentSetEditor extends Component<
   }
 
   async _updateManager() {
-    if (!this.props.itemTypeItem) {
+    if (!this.props.itemTypeDefinition) {
       return;
     }
 
-    const components = this.props.itemTypeItem.getComponents();
+    const components = this.props.itemTypeDefinition.getComponents();
 
     for (let i = 0; i < components.length; i++) {
       const component = components[i];
@@ -169,20 +171,24 @@ export default class ItemTypeComponentSetEditor extends Component<
     const componentId = props.tag;
 
     if (componentId) {
-      this.props.itemTypeItem.removeComponent(componentId);
+      this.props.itemTypeDefinition.removeComponent(componentId);
       this.forceUpdate();
     }
   }
 
   getUsableComponents() {
-    const components = this.props.itemTypeItem.getComponents();
+    const components = this.props.itemTypeDefinition.getComponents();
     const componentList = [];
 
     for (let i = 0; i < components.length; i++) {
       const component = components[i];
 
       if (typeof component === "object" && component.id !== undefined) {
-        componentList.push(component);
+        const isVisual = ItemTypeDefinition.isVisualComponent(component.id);
+
+        if (isVisual === this.props.isVisualsMode) {
+          componentList.push(component);
+        }
       }
     }
 
@@ -194,14 +200,6 @@ export default class ItemTypeComponentSetEditor extends Component<
       loadedFormCount: this.state.loadedFormCount,
       dialogMode: ItemTypeComponentEditorDialog.addComponent,
     });
-  }
-
-  isVisualComponent(value: string) {
-    if (value === "minecraft:geometry" || value === "minecraft:material_instances") {
-      return true;
-    }
-
-    return false;
   }
 
   setSelectedNewComponentId(id: string) {
@@ -236,7 +234,7 @@ export default class ItemTypeComponentSetEditor extends Component<
     if (this.state === undefined || this.state.loadedFormCount === undefined) {
       this._updateManager();
 
-      return <div>Loading...</div>;
+      return <div className="icose-loading">Loading...</div>;
     }
 
     if (this.state.dialogMode === ItemTypeComponentEditorDialog.addComponent) {
@@ -249,13 +247,17 @@ export default class ItemTypeComponentSetEditor extends Component<
           onCancel={this._handleDialogCancel}
           onConfirm={this._handleAddComponentOK}
           content={
-            <ItemTypeAddComponent onNewComponentSelected={this.setSelectedNewComponentId} theme={this.props.theme} />
+            <ItemTypeAddComponent
+              isVisualsMode={this.props.isVisualsMode}
+              onNewComponentSelected={this.setSelectedNewComponentId}
+              theme={this.props.theme}
+            />
           }
           header={"Add component"}
         />
       );
     } else {
-      const components = this.props.itemTypeItem.getComponents();
+      const components = this.getUsableComponents();
       const componentForms = [];
       const componentList = [];
 
@@ -265,7 +267,7 @@ export default class ItemTypeComponentSetEditor extends Component<
         const component = components[i];
 
         if (typeof component === "object" && component.id !== undefined) {
-          const isVisual = this.isVisualComponent(component.id);
+          const isVisual = ItemTypeDefinition.isVisualComponent(component.id);
 
           if (isVisual === this.props.isVisualsMode) {
             const formId = component.id.replace(/:/gi, "_").replace(/\./gi, "_");
@@ -340,7 +342,11 @@ export default class ItemTypeComponentSetEditor extends Component<
         title = <span>{this.props.title}</span>;
       }
 
-      const areaHeight = "calc(100vh - " + String(this.props.heightOffset + 34) + "px)";
+      let areaHeight = "calc(100vh - " + String((this.props.heightOffset ? this.props.heightOffset : 0) + 34) + "px)";
+
+      if (this.props.height) {
+        areaHeight = this.props.height + "px";
+      }
 
       return (
         <div className="icose-area">

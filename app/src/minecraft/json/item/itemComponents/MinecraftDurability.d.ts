@@ -116,21 +116,12 @@ export default interface MinecraftDurability {
 
 
 /**
- * IntRange
- * IntRange
+ * IntRange (_IntRange)
  */
 export interface MinecraftDurabilityDamageChance {
 
-  /**
-   * @remarks
-   * max
-   */
   max: number;
 
-  /**
-   * @remarks
-   * min
-   */
   min: number;
 
 }

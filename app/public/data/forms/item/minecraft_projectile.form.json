@@ -1,42 +1,8 @@
 {
   "fields": [
     {
-      "id": "minimum_critical_power",
-      "title": "Minimum Critical Power",
-      "description": "Specifies how long a player must charge a projectile for it to critically hit.",
-      "dataType": 3,
-      "samples": {
-        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:projectile/",
-            "content": 1.25
-          }
-        ],
-        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:projectile/",
-            "content": 1.25
-          }
-        ]
-      }
-    },
-    {
       "id": "projectile_entity",
-      "title": "Projectile Entity",
-      "description": "Which entity is to be fired as a projectile.",
-      "dataType": 24,
-      "validity": [
-        {
-          "comparison": "pattern",
-          "value": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
-        }
-      ],
-      "alternates": [
-        {
-          "id": "projectile_entity",
-          "dataType": 24
-        }
-      ],
+      "dataType": 2,
       "samples": {
         "/vanilla/behavior_pack/items/wind_charge.json": [
           {
@@ -54,6 +20,40 @@
           {
             "path": "/minecraft:item/components/minecraft:projectile/",
             "content": "minecraft:snowball"
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "projectile_entity",
+          "dataType": 24
+        }
+      ],
+      "description": "Which entity is to be fired as a projectile.",
+      "title": "Projectile Entity",
+      "validity": [
+        {
+          "comparison": "pattern",
+          "value": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
+        }
+      ]
+    },
+    {
+      "id": "minimum_critical_power",
+      "title": "Minimum Critical Power",
+      "description": "Specifies how long a player must charge a projectile for it to critically hit.",
+      "dataType": 3,
+      "samples": {
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:projectile/",
+            "content": 1.25
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:projectile/",
+            "content": 1.25
           }
         ]
       }

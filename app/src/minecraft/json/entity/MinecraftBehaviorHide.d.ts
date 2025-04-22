@@ -40,6 +40,7 @@ export default interface MinecraftBehaviorHide {
    * Sample Values:
    * Villager V2: 30
    *
+   *
    */
   duration: number;
 
@@ -49,6 +50,7 @@ export default interface MinecraftBehaviorHide {
    * 
    * Sample Values:
    * Villager V2: "bed"
+   *
    *
    */
   poi_type: string;
@@ -67,6 +69,7 @@ export default interface MinecraftBehaviorHide {
    * 
    * Sample Values:
    * Villager V2: 0.8
+   *
    *
    */
   speed_multiplier: number;

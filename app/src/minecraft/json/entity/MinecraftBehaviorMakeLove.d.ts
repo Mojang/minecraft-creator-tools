@@ -46,6 +46,7 @@ export default interface MinecraftBehaviorMakeLove {
    *
    * Villager: 6
    *
+   *
    */
   priority: number;
 

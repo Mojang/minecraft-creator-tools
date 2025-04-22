@@ -14,8 +14,13 @@ import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 import IDefinition from "./IDefinition";
+import Project from "../app/Project";
+import ProjectItem from "../app/ProjectItem";
+import { ProjectItemType } from "../app/IProjectItemData";
+import AttachableResourceDefinition from "./AttachableResourceDefinition";
+import TypeScriptDefinition from "./TypeScriptDefinition";
 
-export default class ItemTypeBehaviorDefinition implements IManagedComponentSetItem, IDefinition {
+export default class ItemTypeDefinition implements IManagedComponentSetItem, IDefinition {
   public wrapper: IItemTypeWrapper | null = null;
   private _behaviorPackFile?: IFile;
   private _id?: string;
@@ -24,11 +29,11 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
 
   private _data?: IItemTypeBehaviorPack;
 
-  private _onLoaded = new EventDispatcher<ItemTypeBehaviorDefinition, ItemTypeBehaviorDefinition>();
+  private _onLoaded = new EventDispatcher<ItemTypeDefinition, ItemTypeDefinition>();
 
-  private _onComponentAdded = new EventDispatcher<ItemTypeBehaviorDefinition, IManagedComponent>();
-  private _onComponentRemoved = new EventDispatcher<ItemTypeBehaviorDefinition, string>();
-  private _onComponentChanged = new EventDispatcher<ItemTypeBehaviorDefinition, IManagedComponent>();
+  private _onComponentAdded = new EventDispatcher<ItemTypeDefinition, IManagedComponent>();
+  private _onComponentRemoved = new EventDispatcher<ItemTypeDefinition, string>();
+  private _onComponentChanged = new EventDispatcher<ItemTypeDefinition, IManagedComponent>();
 
   public get data() {
     return this._data;
@@ -111,7 +116,7 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
   }
 
   getComponent(id: string) {
-    if (this._data === undefined) {
+    if (!this._data || !this._data.components) {
       return undefined;
     }
 
@@ -139,6 +144,25 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
     return this.getComponents();
   }
 
+  getCustomComponentIds() {
+    let customComponentIds: string[] = [];
+    const customComponent = this.getComponent("minecraft:custom_components");
+
+    if (customComponent) {
+      let compData = customComponent.getData();
+
+      if (compData && Array.isArray(compData)) {
+        for (const str of compData) {
+          if (typeof str === "string") {
+            customComponentIds.push(str);
+          }
+        }
+      }
+    }
+
+    return customComponentIds;
+  }
+
   getComponents(): IManagedComponent[] {
     const componentSet: IManagedComponent[] = [];
 
@@ -153,6 +177,52 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
     }
 
     return componentSet;
+  }
+
+  async addChildItems(project: Project, item: ProjectItem) {
+    const itemsCopy = project.getItemsCopy();
+
+    let customComponentIds: string[] = this.getCustomComponentIds();
+    for (const candItem of itemsCopy) {
+      if (candItem.itemType === ProjectItemType.ts) {
+        await candItem.ensureStorage();
+
+        if (candItem.defaultFile) {
+          await candItem.load();
+
+          const tsd = await TypeScriptDefinition.ensureOnFile(candItem.defaultFile);
+
+          if (tsd && tsd.data && customComponentIds) {
+            let doAddTs = false;
+
+            for (const customCompId of customComponentIds) {
+              if (tsd.data.indexOf(customCompId) >= 0) {
+                doAddTs = true;
+                break;
+              }
+            }
+
+            if (doAddTs) {
+              item.addChildItem(candItem);
+            }
+          }
+        }
+      } else if (candItem.itemType === ProjectItemType.attachableResourceJson) {
+        await candItem.ensureStorage();
+
+        if (candItem.defaultFile) {
+          const ard = await AttachableResourceDefinition.ensureOnFile(candItem.defaultFile);
+
+          if (ard) {
+            const id = ard.id;
+
+            if (id === this.id) {
+              item.addChildItem(candItem);
+            }
+          }
+        }
+      }
+    }
   }
 
   setBehaviorPackFormatVersion(versionStr: string) {
@@ -224,22 +294,19 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
     }
   }
 
-  static async ensureOnFile(
-    file: IFile,
-    loadHandler?: IEventHandler<ItemTypeBehaviorDefinition, ItemTypeBehaviorDefinition>
-  ) {
-    let itt: ItemTypeBehaviorDefinition | undefined;
+  static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<ItemTypeDefinition, ItemTypeDefinition>) {
+    let itt: ItemTypeDefinition | undefined;
 
     if (file.manager === undefined) {
-      itt = new ItemTypeBehaviorDefinition();
+      itt = new ItemTypeDefinition();
 
       itt.behaviorPackFile = file;
 
       file.manager = itt;
     }
 
-    if (file.manager !== undefined && file.manager instanceof ItemTypeBehaviorDefinition) {
-      itt = file.manager as ItemTypeBehaviorDefinition;
+    if (file.manager !== undefined && file.manager instanceof ItemTypeDefinition) {
+      itt = file.manager as ItemTypeDefinition;
 
       if (!itt.isLoaded && loadHandler) {
         itt.onLoaded.subscribe(loadHandler);
@@ -249,6 +316,19 @@ export default class ItemTypeBehaviorDefinition implements IManagedComponentSetI
     }
 
     return itt;
+  }
+
+  static isVisualComponent(value: string) {
+    if (
+      value === "minecraft:icon" ||
+      value === "minecraft:display_name" ||
+      value === "minecraft:glint" ||
+      value === "minecraft:hover_text_color"
+    ) {
+      return true;
+    }
+
+    return false;
   }
 
   persist() {

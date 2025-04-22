@@ -11,7 +11,7 @@ import EntityTypeDefinition from "./EntityTypeDefinition";
 import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
 import FlipbookTextureCatalogDefinition from "./FlipbookTextureCatalogDefinition";
 import IDefinition from "./IDefinition";
-import ItemTypeBehaviorDefinition from "./ItemTypeBehaviorDefinition";
+import ItemTypeDefinition from "./ItemTypeDefinition";
 import MusicDefinitionCatalogDefinition from "./MusicDefinitionCatalogDefinition";
 import RenderControllerSetDefinition from "./RenderControllerSetDefinition";
 import ResourceManifestDefinition from "./ResourceManifestDefinition";
@@ -44,7 +44,7 @@ export default class MinecraftDefinitions {
       case ProjectItemType.entityTypeResource:
         return await EntityTypeResourceDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.itemTypeBehavior:
-        return await ItemTypeBehaviorDefinition.ensureOnFile(projectItem.defaultFile);
+        return await ItemTypeDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.blockTypeBehavior:
         return await BlockTypeDefinition.ensureOnFile(projectItem.defaultFile);
       case ProjectItemType.flipbookTexturesJson:

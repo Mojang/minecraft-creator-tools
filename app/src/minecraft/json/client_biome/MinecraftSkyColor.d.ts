@@ -17,7 +17,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Sky Color (minecraft:sky_color)
+ * Minecraft Sky Color Client Biome (minecraft:sky_color)
  * Sets the sky color used during rendering. Biomes without this
  * component will have default sky color behavior.
  */

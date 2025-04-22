@@ -743,7 +743,11 @@ export default class FormJsonDocumentationGenerator {
 
   public async exportJsonSchemaForms(formJsonFolder: IFolder) {
     for (const key in this.defsByTitle) {
-      if ((!this.defRefs[key] || this.defRefs[key] <= 1) && !this.isDisallowedSchemaFile(key)) {
+      if (
+        (!this.defRefs[key] || this.defRefs[key] <= 1) &&
+        !this.isDisallowedSchemaFile(key) &&
+        key.indexOf(" - ") < 0
+      ) {
         await this.processAndExportJsonSchemaNode(formJsonFolder, key);
       }
     }
@@ -906,6 +910,7 @@ export default class FormJsonDocumentationGenerator {
     }
 
     const docForm: IFormDefinition = {
+      id: this.humanifyId(nodeName),
       title: Utilities.humanifyMinecraftName(nodeName),
       description: node.description ? node.description : undefined,
       fields: fields,
@@ -2070,10 +2075,34 @@ export default class FormJsonDocumentationGenerator {
     }
   }
 
+  public humanifyId(title: string) {
+    let i = title.indexOf(".");
+
+    if (i > 1) {
+      title = title.substring(i + 1);
+    }
+
+    title = title.replace("Struct", "");
+    title = title.replace("struct", "");
+
+    title = title.replace("Enum", "");
+    title = title.replace("enum", "");
+
+    title = title.replace("SharedTypes", "");
+    title = title.replace("sharedtypes", "");
+
+    title = title.replace(/::/gi, "_");
+
+    title = title.trim();
+
+    return title;
+  }
+
   public humanifyJsonMinecraftName(title: string) {
     while (title.length > 1 && title.startsWith(":")) {
       title = title.substring(1);
     }
+
     title = title.replace("Struct", "");
     title = title.replace("struct", "");
 

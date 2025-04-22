@@ -303,6 +303,39 @@ export default class AttachableResourceDefinition {
 
     this._onLoaded.dispatch(this, this);
   }
+  ensureData() {
+    if (this._data) {
+      return this._data;
+    }
+
+    const newDef: IClientAttachableDescription = {
+      identifier: "",
+      materials: {},
+      textures: {},
+      geometry: {},
+      particle_effects: {},
+      animations: {},
+      render_controllers: [],
+      scripts: {},
+    };
+
+    if (!this._dataWrapper) {
+      this._dataWrapper = { format_version: "1.10.0", "minecraft:attachable": { description: newDef } };
+      this._data = this._dataWrapper["minecraft:attachable"].description;
+      return this._data;
+    }
+
+    if (
+      this._dataWrapper["minecraft:attachable"] === undefined ||
+      this._dataWrapper["minecraft:attachable"].description === undefined
+    ) {
+      this._dataWrapper["minecraft:attachable"] = { description: newDef };
+    }
+
+    this._data = this._dataWrapper["minecraft:attachable"].description;
+
+    return this._data;
+  }
 
   async deleteLinkToChild(rel: IProjectItemRelationship) {
     let packRootFolder = this.getPackRootFolder();

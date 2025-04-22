@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Swamp Surface (minecraft:swamp_surface)
+ * Minecraft Swamp Surface Biome (minecraft:swamp_surface)
  * Similar to overworld_surface. Adds swamp surface details.
  */
 export default interface MinecraftSwampSurface {

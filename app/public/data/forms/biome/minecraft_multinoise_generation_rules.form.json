@@ -32,5 +32,6 @@
     }
   ],
   "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the nether.",
-  "title": "Minecraft Multinoise Generation Rules Biome"
+  "title": "Minecraft Multinoise Generation Rules Biome",
+  "id": "minecraft:multinoise_generation_rules"
 }

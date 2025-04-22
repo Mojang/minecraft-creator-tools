@@ -30,5 +30,6 @@
     ]
   },
   "description": "Set the water surface color used during rendering. Biomes without this component will have default water surface color behavior.",
-  "title": "Minecraft Water Appearance Client Biome"
+  "title": "Minecraft Water Appearance Client Biome",
+  "id": "minecraft:water_appearance"
 }

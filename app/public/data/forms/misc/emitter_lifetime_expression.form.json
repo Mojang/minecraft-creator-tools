@@ -10,6 +10,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "activation_expression",
             "title": "Activation Expression",
             "fields": [
               {
@@ -41,6 +42,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "expiration_expression",
             "title": "Expiration Expression",
             "fields": [
               {
@@ -63,5 +65,6 @@
       ]
     }
   ],
-  "title": "Emitter Lifetime Expression Misc"
+  "title": "Emitter Lifetime Expression Misc",
+  "id": "emitter_lifetime_expression"
 }

@@ -2,13 +2,22 @@ import { Component } from "react";
 import IFileProps from "./IFileProps";
 import IFile from "../storage/IFile";
 import "./ItemTypeEditor.css";
-import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
+import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import Database from "../minecraft/Database";
 import { ThemeInput } from "@fluentui/styles";
 import ProjectItem from "../app/ProjectItem";
 import ItemTypeComponentSetEditor from "./ItemTypeComponentSetEditor";
 import Project from "../app/Project";
 import Carto from "../app/Carto";
+import { CustomTabLabel } from "./Labels";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
+import WebUtilities from "./WebUtilities";
+import { faBolt, faCow } from "@fortawesome/free-solid-svg-icons";
+import { Toolbar } from "@fluentui/react-northstar";
+import ItemTypeActionEditor from "./ItemTypeActionEditor";
+import { ProjectItemType } from "../app/IProjectItemData";
+import ItemTypeAttachableEditor from "./ItemTypeAttachableEditor";
 
 interface IItemTypeEditorProps extends IFileProps {
   heightOffset: number;
@@ -21,7 +30,14 @@ interface IItemTypeEditorProps extends IFileProps {
 
 interface IItemTypeEditorState {
   fileToEdit: IFile;
+  mode: ItemTypeEditorMode;
   isLoaded: boolean;
+}
+
+export enum ItemTypeEditorMode {
+  properties = 1,
+  visuals = 2,
+  actions = 3,
 }
 
 export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IItemTypeEditorState> {
@@ -31,31 +47,15 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
     super(props);
 
     this._handleItemTypeLoaded = this._handleItemTypeLoaded.bind(this);
+    this._setPropertiesMode = this._setPropertiesMode.bind(this);
+    this._setActionsMode = this._setActionsMode.bind(this);
+    this._setVisualsMode = this._setVisualsMode.bind(this);
 
     this.state = {
       fileToEdit: props.file,
+      mode: ItemTypeEditorMode.properties,
       isLoaded: false,
     };
-  }
-
-  static getDerivedStateFromProps(props: IItemTypeEditorProps, state: IItemTypeEditorState) {
-    if (state === undefined || state === null) {
-      state = {
-        fileToEdit: props.file,
-        isLoaded: false,
-      };
-
-      return state;
-    }
-
-    if (props.file !== state.fileToEdit) {
-      state.fileToEdit = props.file;
-      state.isLoaded = false;
-
-      return state;
-    }
-
-    return null; // No change to state
   }
 
   componentDidMount(): void {
@@ -69,7 +69,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
   async _updateManager() {
     if (this.state !== undefined && this.state.fileToEdit !== undefined) {
       if (this.state.fileToEdit !== this._lastFileEdited) {
-        const itbd = await ItemTypeBehaviorDefinition.ensureOnFile(this.state.fileToEdit, this._handleItemTypeLoaded);
+        const itbd = await ItemTypeDefinition.ensureOnFile(this.state.fileToEdit, this._handleItemTypeLoaded);
 
         if (itbd) {
           await itbd.load();
@@ -82,7 +82,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
     this._doUpdate();
   }
 
-  _handleItemTypeLoaded(itemType: ItemTypeBehaviorDefinition, typeA: ItemTypeBehaviorDefinition) {
+  _handleItemTypeLoaded(itemType: ItemTypeDefinition, typeA: ItemTypeDefinition) {
     this._doUpdate();
   }
 
@@ -90,8 +90,8 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
     if (
       this.state.fileToEdit &&
       this.state.fileToEdit.manager !== undefined &&
-      this.state.fileToEdit.manager instanceof ItemTypeBehaviorDefinition &&
-      (this.state.fileToEdit.manager as ItemTypeBehaviorDefinition).isLoaded &&
+      this.state.fileToEdit.manager instanceof ItemTypeDefinition &&
+      (this.state.fileToEdit.manager as ItemTypeDefinition).isLoaded &&
       !this.state.isLoaded
     ) {
       this.setState({
@@ -106,15 +106,42 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
       const file = this.state.fileToEdit;
 
       if (file.manager !== null) {
-        const et = file.manager as ItemTypeBehaviorDefinition;
+        const et = file.manager as ItemTypeDefinition;
 
         et.persist();
       }
     }
   }
 
+  _setPropertiesMode() {
+    this._setMode(ItemTypeEditorMode.properties);
+  }
+
+  _setVisualsMode() {
+    this._setMode(ItemTypeEditorMode.visuals);
+  }
+
+  _setActionsMode() {
+    this._setMode(ItemTypeEditorMode.actions);
+  }
+
+  _setMode(mode: ItemTypeEditorMode) {
+    this.setState({
+      fileToEdit: this.state.fileToEdit,
+      isLoaded: this.state.isLoaded,
+      mode: mode,
+    });
+  }
+
   render() {
     const height = "calc(100vh - " + this.props.heightOffset + "px)";
+    const toolbarItems = [];
+    const width = WebUtilities.getWidth();
+    let isButtonCompact = false;
+
+    if (width < 716) {
+      isButtonCompact = true;
+    }
 
     if (
       this.state === null ||
@@ -129,10 +156,134 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
       this.props.setActivePersistable(this);
     }
 
-    const itbd = this.state.fileToEdit.manager as ItemTypeBehaviorDefinition;
+    const itbd = this.state.fileToEdit.manager as ItemTypeDefinition;
 
     if (itbd.data === undefined) {
       return <div className="ite-loading">Loading...</div>;
+    }
+
+    toolbarItems.push({
+      icon: (
+        <CustomTabLabel
+          icon={<FontAwesomeIcon icon={faSquarePlus} className="fa-lg" />}
+          text={"Components"}
+          isCompact={isButtonCompact}
+          isSelected={this.state.mode === ItemTypeEditorMode.properties}
+          theme={this.props.theme}
+        />
+      ),
+      key: "bteComponentsTab",
+      onClick: this._setPropertiesMode,
+      title: "Edit item base properties",
+    });
+
+    toolbarItems.push({
+      icon: (
+        <CustomTabLabel
+          icon={<FontAwesomeIcon icon={faBolt} className="fa-lg" />}
+          text={"Actions"}
+          isCompact={isButtonCompact}
+          isSelected={this.state.mode === ItemTypeEditorMode.actions}
+          theme={this.props.theme}
+        />
+      ),
+      key: "bteActionsTab",
+      onClick: this._setActionsMode,
+      title: "Edit documentation by types that need edits",
+    });
+
+    toolbarItems.push({
+      icon: (
+        <CustomTabLabel
+          icon={<FontAwesomeIcon icon={faCow} className="fa-lg" />}
+          text={"Visuals"}
+          isCompact={isButtonCompact}
+          isSelected={this.state.mode === ItemTypeEditorMode.visuals}
+          theme={this.props.theme}
+        />
+      ),
+      key: "bteVisualsTab",
+      onClick: this._setVisualsMode,
+      title: "Edit item core properties",
+    });
+
+    let mode = <></>;
+
+    if (this.state.mode === ItemTypeEditorMode.properties) {
+      mode = (
+        <div>
+          <ItemTypeComponentSetEditor
+            itemTypeDefinition={itbd}
+            theme={this.props.theme}
+            isDefault={true}
+            project={this.props.project}
+            carto={this.props.carto}
+            isVisualsMode={false}
+            heightOffset={this.props.heightOffset + 99}
+          />
+        </div>
+      );
+    } else if (this.state.mode === ItemTypeEditorMode.visuals) {
+      let attachableItem = undefined;
+      if (this.props.item && this.props.item.childItems) {
+        for (const childItem of this.props.item.childItems) {
+          if (childItem.childItem.itemType === ProjectItemType.attachableResourceJson) {
+            attachableItem = childItem.childItem;
+          }
+        }
+      }
+
+      if (attachableItem && attachableItem.defaultFile) {
+        mode = (
+          <div
+            className="ite-attachableArea"
+            style={{
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
+            }}
+          >
+            <ItemTypeAttachableEditor
+              readOnly={this.props.readOnly}
+              theme={this.props.theme}
+              displayHeader={false}
+              projectItem={attachableItem}
+              project={this.props.project}
+              carto={this.props.carto}
+              file={attachableItem.defaultFile}
+              heightOffset={this.props.heightOffset + 106}
+            />
+          </div>
+        );
+      } else {
+        mode = (
+          <div>
+            <ItemTypeComponentSetEditor
+              itemTypeDefinition={itbd}
+              theme={this.props.theme}
+              isDefault={true}
+              project={this.props.project}
+              carto={this.props.carto}
+              isVisualsMode={true}
+              heightOffset={this.props.heightOffset + 106}
+            />
+          </div>
+        );
+      }
+    } else if (this.state.mode === ItemTypeEditorMode.actions) {
+      mode = (
+        <div>
+          <ItemTypeActionEditor
+            isVisualsMode={false}
+            itemTypeItem={itbd}
+            readOnly={this.props.readOnly}
+            item={this.props.item}
+            carto={this.props.carto}
+            file={this.props.file}
+            project={this.props.project}
+            theme={this.props.theme}
+            heightOffset={this.props.heightOffset + 90}
+          />
+        </div>
+      );
     }
 
     return (
@@ -143,19 +294,25 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
           maxHeight: height,
         }}
       >
-        <div className="ite-header">{itbd.id}</div>
-
-        <div>
-          <ItemTypeComponentSetEditor
-            itemTypeItem={itbd}
-            theme={this.props.theme}
-            isDefault={true}
-            project={this.props.project}
-            carto={this.props.carto}
-            isVisualsMode={false}
-            heightOffset={this.props.heightOffset + 90}
-          />
+        <div
+          className="ite-header"
+          style={{
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+          }}
+        >
+          {itbd.id}
         </div>
+        <div
+          className="ite-toolBarArea"
+          style={{
+            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
+            color: this.props.theme.siteVariables?.colorScheme.brand.foreground1,
+          }}
+        >
+          <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
+        </div>
+        {mode}
       </div>
     );
   }

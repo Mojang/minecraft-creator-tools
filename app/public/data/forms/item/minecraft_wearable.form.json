@@ -1,6 +1,26 @@
 {
   "fields": [
     {
+      "id": "dispensable",
+      "dataType": 1,
+      "isDeprecated": true,
+      "samples": {
+        "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:wearable/",
+            "content": true
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/crown.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:wearable/",
+            "content": true
+          }
+        ]
+      },
+      "title": "Dispensable"
+    },
+    {
       "id": "slot",
       "title": "Legacy EquipmentSlot",
       "description": "Specifies where the item can be worn. If any non-hand slot is chosen, the max stack size is set to 1.",
@@ -49,25 +69,6 @@
       "title": "Protection",
       "description": "How much protection the wearable item provides. Default is set to 0.",
       "dataType": 0
-    },
-    {
-      "id": "dispensable",
-      "title": "Dispensable",
-      "dataType": 2,
-      "samples": {
-        "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:wearable/",
-            "content": true
-          }
-        ],
-        "/samples/custom_items/behavior_packs/custom_item/items/crown.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:wearable/",
-            "content": true
-          }
-        ]
-      }
     }
   ],
   "description": "Sets the wearable item component.",

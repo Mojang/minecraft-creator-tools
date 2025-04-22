@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Mesa Surface (minecraft:mesa_surface)
+ * Minecraft Mesa Surface Biome (minecraft:mesa_surface)
  * Similar to overworld_surface. Adds colored strata and optional
  * pillars.
  */

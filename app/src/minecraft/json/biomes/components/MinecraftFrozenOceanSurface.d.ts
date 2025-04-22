@@ -13,7 +13,8 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Frozen Ocean Surface (minecraft:frozen_ocean_surface)
+ * Minecraft Frozen Ocean Surface Biome
+ * (minecraft:frozen_ocean_surface)
  * Similar to overworld_surface. Adds icebergs.
  */
 export default interface MinecraftFrozenOceanSurface {

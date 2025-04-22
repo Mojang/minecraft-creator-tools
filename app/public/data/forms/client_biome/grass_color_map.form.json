@@ -8,5 +8,6 @@
     }
   ],
   "description": "Object specifying a color map for grass instead of a specific color.",
-  "title": "Grass Color Map Client Biome"
+  "title": "Grass Color Map Client Biome",
+  "id": "Grass Color Map"
 }

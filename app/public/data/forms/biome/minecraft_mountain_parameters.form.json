@@ -6,6 +6,7 @@
       "description": "Defines surface material for steep slopes",
       "dataType": 16,
       "subForm": {
+        "id": "minecraft:mountain_parameters - steep_material_adjustment settings",
         "title": "Mountain Parameters - Steep Material Adjustment Settings",
         "description": "Defines surface material for steep slopes",
         "fields": [
@@ -20,6 +21,7 @@
                 "dataType": 16,
                 "readOnly": true,
                 "subForm": {
+                  "id": "material",
                   "title": "Material",
                   "fields": [
                     {
@@ -82,6 +84,7 @@
       "description": "Controls the density tapering that happens at the top of the world to prevent terrain from reaching too high",
       "dataType": 16,
       "subForm": {
+        "id": "minecraft:mountain_parameters - top_slide settings",
         "title": "Mountain Parameters - Top Slide Settings",
         "description": "Controls the density tapering that happens at the top of the world to prevent terrain from reaching too high.",
         "fields": [
@@ -131,5 +134,6 @@
     }
   ],
   "description": "Noise parameters used to drive mountain terrain generation in Overworld.",
-  "title": "Minecraft Mountain Parameters Biome"
+  "title": "Minecraft Mountain Parameters Biome",
+  "id": "minecraft:mountain_parameters"
 }

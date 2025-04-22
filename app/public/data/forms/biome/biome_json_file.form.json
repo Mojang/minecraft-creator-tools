@@ -6,6 +6,7 @@
       "description": "A single biome definition",
       "dataType": 16,
       "subForm": {
+        "id": "Biome Definition",
         "title": "Biome Definition",
         "description": "Contains a description and components to define a Biome.",
         "fields": [
@@ -15,6 +16,7 @@
             "description": "Non-component settings, including the Biome name.",
             "dataType": 16,
             "subForm": {
+              "id": "Biome Description",
               "title": "Biome Description",
               "description": "Contains non-component settings for a Biome.",
               "fields": [
@@ -33,6 +35,7 @@
             "description": "Components for this Biome.",
             "dataType": 16,
             "subForm": {
+              "id": "Biome Components",
               "title": "Biome Components",
               "description": "Any components that this Biome uses",
               "fields": [
@@ -42,6 +45,7 @@
                   "description": "Generates surface on blocks with non-solid blocks above or below.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:capped_surface",
                     "title": "Capped Surface",
                     "description": "Generates surface on blocks with non-solid blocks above or below.",
                     "fields": [
@@ -56,6 +60,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "beach_material",
                               "title": "Beach Material",
                               "fields": [
                                 {
@@ -97,6 +102,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "floor_materials",
                               "title": "Floor Materials",
                               "fields": [
                                 {
@@ -138,6 +144,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "ceiling_materials",
                               "title": "Ceiling Materials",
                               "fields": [
                                 {
@@ -178,6 +185,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "foundation_material",
                               "title": "Foundation Material",
                               "fields": [
                                 {
@@ -218,6 +226,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "sea_material",
                               "title": "Sea Material",
                               "fields": [
                                 {
@@ -256,6 +265,7 @@
                   "description": "Probability that creatures will spawn within the biome when a chunk is generated.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:creature_spawn_probability",
                     "title": "Creature Spawn Probability",
                     "description": "Probability that creatures will spawn within the biome when a chunk is generated.",
                     "fields": [
@@ -280,6 +290,7 @@
                   "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the overworld.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:overworld_generation_rules",
                     "title": "Overworld Generation Rules",
                     "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the overworld.",
                     "fields": [
@@ -346,6 +357,7 @@
                   "description": "Describes temperature, humidity, precipitation, and similar. Biomes without this component will have default values.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:climate",
                     "title": "Climate",
                     "description": "Describes temperature, humidity, precipitation, and similar. Biomes without this component will have default values.",
                     "fields": [
@@ -402,6 +414,7 @@
                   "description": "Similar to overworld_surface. Adds icebergs.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:frozen_ocean_surface",
                     "title": "Frozen Ocean Surface",
                     "description": "Similar to overworld_surface. Adds icebergs.",
                     "fields": [
@@ -416,6 +429,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "mid_material",
                               "title": "Mid Material",
                               "fields": [
                                 {
@@ -462,6 +476,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "sea_floor_material",
                               "title": "Sea Floor Material",
                               "fields": [
                                 {
@@ -502,6 +517,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "sea_material",
                               "title": "Sea Material",
                               "fields": [
                                 {
@@ -542,6 +558,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "top_material",
                               "title": "Top Material",
                               "fields": [
                                 {
@@ -582,6 +599,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "foundation_material",
                               "title": "Foundation Material",
                               "fields": [
                                 {
@@ -620,6 +638,7 @@
                   "description": "Similar to overworld_surface. Adds colored strata and optional pillars.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:mesa_surface",
                     "title": "Mesa Surface",
                     "description": "Similar to overworld_surface. Adds colored strata and optional pillars.",
                     "fields": [
@@ -640,6 +659,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "mid_material",
                               "title": "Mid Material",
                               "fields": [
                                 {
@@ -680,6 +700,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "sea_floor_material",
                               "title": "Sea Floor Material",
                               "fields": [
                                 {
@@ -720,6 +741,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "foundation_material",
                               "title": "Foundation Material",
                               "fields": [
                                 {
@@ -760,6 +782,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "top_material",
                               "title": "Top Material",
                               "fields": [
                                 {
@@ -800,6 +823,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "sea_material",
                               "title": "Sea Material",
                               "fields": [
                                 {
@@ -840,6 +864,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "hard_clay_material",
                               "title": "Hard Clay Material",
                               "fields": [
                                 {
@@ -880,6 +905,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "clay_material",
                               "title": "Clay Material",
                               "fields": [
                                 {
@@ -930,6 +956,7 @@
                   "description": "Noise parameters used to drive mountain terrain generation in Overworld.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:mountain_parameters",
                     "title": "Mountain Parameters",
                     "description": "Noise parameters used to drive mountain terrain generation in Overworld.",
                     "fields": [
@@ -939,6 +966,7 @@
                         "description": "Defines surface material for steep slopes",
                         "dataType": 16,
                         "subForm": {
+                          "id": "minecraft:mountain_parameters - steep_material_adjustment settings",
                           "title": "Mountain Parameters - Steep Material Adjustment Settings",
                           "description": "Defines surface material for steep slopes",
                           "fields": [
@@ -953,6 +981,7 @@
                                   "dataType": 16,
                                   "readOnly": true,
                                   "subForm": {
+                                    "id": "material",
                                     "title": "Material",
                                     "fields": [
                                       {
@@ -1015,6 +1044,7 @@
                         "description": "Controls the density tapering that happens at the top of the world to prevent terrain from reaching too high",
                         "dataType": 16,
                         "subForm": {
+                          "id": "minecraft:mountain_parameters - top_slide settings",
                           "title": "Mountain Parameters - Top Slide Settings",
                           "description": "Controls the density tapering that happens at the top of the world to prevent terrain from reaching too high.",
                           "fields": [
@@ -1036,6 +1066,7 @@
                   "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the nether.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:multinoise_generation_rules",
                     "title": "Multinoise Generation Rules",
                     "description": "Controls how this biome is instantiated (and then potentially modified) during world generation of the nether.",
                     "fields": [
@@ -1078,6 +1109,7 @@
                   "description": "Noise parameters used to drive terrain height in the Overworld.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:overworld_height",
                     "title": "Overworld Height",
                     "description": "Noise parameters used to drive terrain height in the Overworld.",
                     "fields": [
@@ -1104,6 +1136,7 @@
                   "description": "Specify fine-detail changes to blocks used in terrain generation (based on a noise function).",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:surface_material_adjustments",
                     "title": "Surface Material Adjustments",
                     "description": "Specify fine-detail changes to blocks used in terrain generation (based on a noise function).",
                     "fields": [
@@ -1113,6 +1146,7 @@
                         "description": "All adjustments that match the column's noise values will be applied in the order listed.",
                         "dataType": 15,
                         "subForm": {
+                          "id": "minecraft:surface_material_adjustments - surface adjustment settings",
                           "title": "Surface Material Adjustments - Surface Adjustment Settings",
                           "description": "An adjustment to generated terrain, replacing blocks based on the specified settings.",
                           "fields": [
@@ -1122,6 +1156,7 @@
                               "description": "The specific blocks used for this surface adjustment",
                               "dataType": 16,
                               "subForm": {
+                                "id": "minecraft:surface_material_adjustments - surface adjustment materials settings",
                                 "title": "Surface Material Adjustments - Surface Adjustment Materials Settings",
                                 "description": "The specific blocks used for this surface adjustment",
                                 "fields": [
@@ -1136,6 +1171,7 @@
                                         "dataType": 16,
                                         "readOnly": true,
                                         "subForm": {
+                                          "id": "sea_material",
                                           "title": "Sea Material",
                                           "fields": [
                                             {
@@ -1176,6 +1212,7 @@
                                         "dataType": 16,
                                         "readOnly": true,
                                         "subForm": {
+                                          "id": "foundation_material",
                                           "title": "Foundation Material",
                                           "fields": [
                                             {
@@ -1216,6 +1253,7 @@
                                         "dataType": 16,
                                         "readOnly": true,
                                         "subForm": {
+                                          "id": "top_material",
                                           "title": "Top Material",
                                           "fields": [
                                             {
@@ -1256,6 +1294,7 @@
                                         "dataType": 16,
                                         "readOnly": true,
                                         "subForm": {
+                                          "id": "mid_material",
                                           "title": "Mid Material",
                                           "fields": [
                                             {
@@ -1296,6 +1335,7 @@
                                         "dataType": 16,
                                         "readOnly": true,
                                         "subForm": {
+                                          "id": "sea_floor_material",
                                           "title": "Sea Floor Material",
                                           "fields": [
                                             {
@@ -1372,6 +1412,7 @@
                   "description": "Controls the blocks used for the default Minecraft Overworld terrain generation.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:surface_parameters",
                     "title": "Surface Parameters",
                     "description": "Controls the blocks used for the default Minecraft Overworld terrain generation.",
                     "fields": [
@@ -1386,6 +1427,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "mid_material",
                               "title": "Mid Material",
                               "fields": [
                                 {
@@ -1432,6 +1474,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "sea_floor_material",
                               "title": "Sea Floor Material",
                               "fields": [
                                 {
@@ -1472,6 +1515,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "sea_material",
                               "title": "Sea Material",
                               "fields": [
                                 {
@@ -1512,6 +1556,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "top_material",
                               "title": "Top Material",
                               "fields": [
                                 {
@@ -1552,6 +1597,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "foundation_material",
                               "title": "Foundation Material",
                               "fields": [
                                 {
@@ -1590,6 +1636,7 @@
                   "description": "Replaces a specified portion of one or more Minecraft biomes.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:replace_biomes",
                     "title": "Replace Biomes",
                     "description": "Replaces a specified portion of one or more Minecraft biomes.",
                     "fields": [
@@ -1599,6 +1646,7 @@
                         "description": "List of biome replacement configurations. Retroactively adding a new replacement to the front of this list will cause the world generation to change. Please add any new replacements to the end of the list.",
                         "dataType": 15,
                         "subForm": {
+                          "id": "Biome Replacement",
                           "title": "Biome Replacement",
                           "description": "Represents the replacement information used to determine the placement of the overriding biome.",
                           "fields": [
@@ -1651,6 +1699,7 @@
                   "description": "Similar to overworld_surface. Adds swamp surface details.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:swamp_surface",
                     "title": "Swamp Surface",
                     "description": "Similar to overworld_surface. Adds swamp surface details.",
                     "fields": [
@@ -1665,6 +1714,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "mid_material",
                               "title": "Mid Material",
                               "fields": [
                                 {
@@ -1711,6 +1761,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "sea_floor_material",
                               "title": "Sea Floor Material",
                               "fields": [
                                 {
@@ -1751,6 +1802,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "sea_material",
                               "title": "Sea Material",
                               "fields": [
                                 {
@@ -1791,6 +1843,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "top_material",
                               "title": "Top Material",
                               "fields": [
                                 {
@@ -1831,6 +1884,7 @@
                             "dataType": 16,
                             "readOnly": true,
                             "subForm": {
+                              "id": "foundation_material",
                               "title": "Foundation Material",
                               "fields": [
                                 {
@@ -1875,6 +1929,7 @@
                   "description": "Attach arbitrary string tags to this biome.",
                   "dataType": 16,
                   "subForm": {
+                    "id": "minecraft:tags",
                     "title": "Tags",
                     "description": "Attach arbitrary string tags to this biome.",
                     "fields": [
@@ -1901,5 +1956,6 @@
     }
   ],
   "description": "Contains a format version and a biome definition",
-  "title": "Biome JSON File Biome"
+  "title": "Biome JSON File Biome",
+  "id": "Biome JSON File"
 }

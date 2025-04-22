@@ -15,6 +15,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "pre_effect_expression",
             "title": "Pre Effect Expression",
             "fields": [
               {
@@ -42,5 +43,6 @@
       "dataType": 2
     }
   ],
-  "title": "Particle Visual Effect Event Misc"
+  "title": "Particle Visual Effect Event Misc",
+  "id": "particle_visual_effect_event"
 }

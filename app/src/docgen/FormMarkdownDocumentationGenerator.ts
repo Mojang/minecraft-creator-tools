@@ -221,6 +221,26 @@ export default class FormMarkdownDocumentationGenerator {
     this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
+      ExportMode.clientBiomes,
+      "/ClientBiomesReference/Examples/ComponentList.md",
+      "/client_biome/minecraft_",
+      "Client Biomes",
+      "Components"
+    );
+
+    this.exportListYml(
+      formsByPath,
+      outputFolder,
+      ExportMode.clientBiomes,
+      "/ClientBiomesReference/Examples/Components/TOC.yml",
+      "/client_biome/minecraft_",
+      "- name: Components List\r\n  href: ../ComponentList.md",
+      "minecraftBiomes_"
+    );
+
+    this.exportMarkdownDocListPage(
+      formsByPath,
+      outputFolder,
       ExportMode.entityComponents,
       "/EntityReference/Examples/ComponentList.md",
       "/entity/minecraft_",
@@ -247,12 +267,13 @@ export default class FormMarkdownDocumentationGenerator {
       "Biome",
       "Biome"
     );
+
     this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
       ExportMode.biomes,
       "/BiomesReference/Examples/ComponentList.md",
-      "/biome/",
+      "/biome/minecraft_",
       "Biomes",
       "Components"
     );
@@ -262,7 +283,7 @@ export default class FormMarkdownDocumentationGenerator {
       outputFolder,
       ExportMode.biomes,
       "/BiomesReference/Examples/Components/TOC.yml",
-      "/biome/",
+      "/biome/minecraft_",
       "- name: Components List\r\n  href: ../ComponentList.md",
       "minecraftBiomes_"
     );

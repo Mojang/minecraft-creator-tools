@@ -13,7 +13,8 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Water Identifier (minecraft:water_identifier)
+ * Minecraft Water Identifier Client Biome
+ * (minecraft:water_identifier)
  * [INTERNAL - WORK IN PROGRESS] Set the water settings used during
  * deferred rendering. Biomes without this component will have
  * default water settings.

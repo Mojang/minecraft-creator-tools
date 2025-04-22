@@ -13,7 +13,8 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Mountain Parameters (minecraft:mountain_parameters)
+ * Minecraft Mountain Parameters Biome
+ * (minecraft:mountain_parameters)
  * Noise parameters used to drive mountain terrain generation in
  * Overworld.
  */
@@ -77,6 +78,8 @@ export interface MinecraftMountainParametersMaterial {
 
 /**
  * Mountain Parameters - Steep Material Adjustment Settings
+ * (minecraft:mountain_parameters - steep_material_adjustment 
+ * settings)
  * Defines surface material for steep slopes.
  */
 export interface MinecraftMountainParametersSteepMaterialAdjustment {
@@ -116,6 +119,7 @@ export interface MinecraftMountainParametersSteepMaterialAdjustment {
 
 /**
  * Mountain Parameters - Top Slide Settings
+ * (minecraft:mountain_parameters - top_slide settings)
  * Controls the density tapering that happens at the top of the
  * world to prevent terrain from reaching too high.
  */

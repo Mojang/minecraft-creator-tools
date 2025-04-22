@@ -7,23 +7,23 @@
  * @packageDocumentation
  * Contains types for working with various Minecraft Bedrock Edition JSON schemas.
  * 
- * Client Biomes Documentation - minecraft:client_biome_description
+ * Client Biomes Documentation - minecraft:foliage_color_map
  */
 
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Client Biome Description Client Biome
- * Contains non-component settings for a Client Biome.
+ * Foliage Color Map Client Biome (Foliage Color Map)
+ * Object specifying a color map for foliage instead of a
+ * specific color.
  */
-export default interface ClientBiomeDescriptionClientBiome {
+export default interface FoliageColorMap {
 
   /**
    * @remarks
-   * The name of the Client Biome, used by other features like the
-   * '/locate biome' command. Must match the name of a Biome defined by
-   * the game or a behavior pack.
+   * Color map from textures/colormap to determine color of 
+   * foliage.
    */
-  identifier: string;
+  color_map: string;
 
 }

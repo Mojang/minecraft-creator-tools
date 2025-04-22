@@ -26,5 +26,6 @@
     }
   ],
   "description": "menu_category contains the creative group name and category for this item.",
-  "title": "Menu Category Item"
+  "title": "Menu Category Item",
+  "id": "menu_category"
 }

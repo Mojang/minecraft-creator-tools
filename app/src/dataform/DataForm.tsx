@@ -37,7 +37,7 @@ import Carto from "../app/Carto";
 import Project from "../app/Project";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
-import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
+import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import MinecraftEventTriggerEditor, { IMinecraftEventTriggerEditorProps } from "./MinecraftEventTriggerEditor";
 import Database from "../minecraft/Database";
 import DataFormUtilities from "./DataFormUtilities";
@@ -59,7 +59,7 @@ export interface IDataFormProps extends IDataContainer {
   project?: Project;
   select?: string;
   lookupProvider?: ILookupProvider;
-  itemDefinition?: EntityTypeDefinition | BlockTypeDefinition | ItemTypeBehaviorDefinition | undefined;
+  itemDefinition?: EntityTypeDefinition | BlockTypeDefinition | ItemTypeDefinition | undefined;
   formId?: string;
   theme: ThemeInput<any>;
   closeButton?: boolean;
@@ -1183,7 +1183,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       for (let propIndex = 0; propIndex < allFields.length; propIndex++) {
         const field = allFields[propIndex];
 
-        if (!field.visibility || FieldUtilities.evaluate(formDef, field.visibility, this.props)) {
+        if (
+          (!field.visibility || FieldUtilities.evaluate(formDef, field.visibility, this.props)) &&
+          !field.isDeprecated &&
+          !field.isInternal
+        ) {
           let curVal = FieldUtilities.getFieldValue(field, this.props);
           const defaultVal = curVal ? curVal : field.defaultValue;
 
@@ -2365,6 +2369,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     const fieldInterior = [];
     const childElements = [];
     const fieldTopper = [];
+    const fieldBottom = [];
 
     Log.assert(val !== undefined, "Keyed string boolean not available in data form.");
 
@@ -2384,8 +2389,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         fieldTopper.push(headerElement);
       }
 
-      fieldTopper.push(descriptionElements);
-      fieldTopper.push(sampleElements);
+      fieldBottom.push(descriptionElements);
+      fieldBottom.push(sampleElements);
 
       if (!this.props.readOnly) {
         const toolbarItems = [];
@@ -2521,6 +2526,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       >
         {fieldTopper}
         {fieldInterior}
+        {fieldBottom}
       </div>
     );
   }

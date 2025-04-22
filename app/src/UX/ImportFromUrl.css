@@ -1,10 +1,25 @@
-.ifu-outer {
-  min-width: 100%;
-  max-width: 100%;
-  min-height: 100vh;
-  max-height: 100vh;
-  display: grid;
-  grid-template-rows: 112px 1fr 60px;
+@media only screen and (min-width: 800px) {
+  .ifu-outer {
+    min-width: 100%;
+    max-width: 100%;
+    min-height: calc(100vh);
+    max-height: calc(100vh);
+    display: grid;
+    grid-template-rows: 112px 1fr 54px;
+    padding-bottom: 10px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .ifu-outer {
+    min-width: 100%;
+    max-width: 100%;
+    min-height: calc(100vh - 80px);
+    max-height: calc(100vh - 80px);
+    display: grid;
+    grid-template-rows: 112px 1fr 54px;
+    padding-bottom: 10px;
+  }
 }
 
 .ifu-header {
@@ -22,7 +37,7 @@
   width: 100%;
   padding-left: 20px;
   padding-right: 20px;
-  padding-top: 6px;
+  padding-bottom: 8px;
 }
 
 .ifu-footer {

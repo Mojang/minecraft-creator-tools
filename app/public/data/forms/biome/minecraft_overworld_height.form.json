@@ -16,5 +16,6 @@
     }
   ],
   "description": "Noise parameters used to drive terrain height in the Overworld.",
-  "title": "Minecraft Overworld Height Biome"
+  "title": "Minecraft Overworld Height Biome",
+  "id": "minecraft:overworld_height"
 }

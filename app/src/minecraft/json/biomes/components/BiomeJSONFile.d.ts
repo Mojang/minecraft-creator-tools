@@ -13,10 +13,10 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Biome JSON File Biome
+ * Biome JSON File Biome (Biome JSON File)
  * Contains a format version and a biome definition.
  */
-export default interface BiomeJSONFileBiome {
+export default interface BiomeJSONFile {
 
   /**
    * @remarks
@@ -28,132 +28,132 @@ export default interface BiomeJSONFileBiome {
    * @remarks
    * A single biome definition
    */
-  "minecraft:biome": BiomeJSONFileBiomeMinecraftBiome;
+  "minecraft:biome": BiomeJSONFileMinecraftBiome;
 
 }
 
 
 /**
- * Biome Definition
+ * Biome Definition (Biome Definition)
  * Contains a description and components to define a Biome.
  */
-export interface BiomeJSONFileBiomeMinecraftBiome {
+export interface BiomeJSONFileMinecraftBiome {
 
   /**
    * @remarks
    * Components for this Biome.
    */
-  components: BiomeJSONFileBiomeMinecraftBiomeComponents;
+  components: BiomeJSONFileMinecraftBiomeComponents;
 
   /**
    * @remarks
    * Non-component settings, including the Biome name.
    */
-  description: BiomeJSONFileBiomeMinecraftBiomeDescription;
+  description: BiomeJSONFileMinecraftBiomeDescription;
 
 }
 
 
 /**
- * Biome Components
+ * Biome Components (Biome Components)
  * Any components that this Biome uses.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponents {
+export interface BiomeJSONFileMinecraftBiomeComponents {
 
   /**
    * @remarks
    * Generates surface on blocks with non-solid blocks above or
    * below.
    */
-  "minecraft:capped_surface": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftCappedSurface;
+  "minecraft:capped_surface": BiomeJSONFileMinecraftBiomeComponentsMinecraftCappedSurface;
 
   /**
    * @remarks
    * Describes temperature, humidity, precipitation, and similar. Biomes
    * without this component will have default values.
    */
-  "minecraft:climate": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftClimate;
+  "minecraft:climate": BiomeJSONFileMinecraftBiomeComponentsMinecraftClimate;
 
   /**
    * @remarks
    * Probability that creatures will spawn within the biome when a
    * chunk is generated.
    */
-  "minecraft:creature_spawn_probability": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftCreatureSpawnProbability;
+  "minecraft:creature_spawn_probability": BiomeJSONFileMinecraftBiomeComponentsMinecraftCreatureSpawnProbability;
 
   /**
    * @remarks
    * Similar to overworld_surface. Adds icebergs.
    */
-  "minecraft:frozen_ocean_surface": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftFrozenOceanSurface;
+  "minecraft:frozen_ocean_surface": BiomeJSONFileMinecraftBiomeComponentsMinecraftFrozenOceanSurface;
 
   /**
    * @remarks
    * Similar to overworld_surface. Adds colored strata and optional
    * pillars.
    */
-  "minecraft:mesa_surface": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMesaSurface;
+  "minecraft:mesa_surface": BiomeJSONFileMinecraftBiomeComponentsMinecraftMesaSurface;
 
   /**
    * @remarks
    * Noise parameters used to drive mountain terrain generation in
    * Overworld.
    */
-  "minecraft:mountain_parameters": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMountainParameters;
+  "minecraft:mountain_parameters": BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParameters;
 
   /**
    * @remarks
    * Controls how this biome is instantiated (and then potentially modified)
    * during world generation of the nether.
    */
-  "minecraft:multinoise_generation_rules": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMultinoiseGenerationRules;
+  "minecraft:multinoise_generation_rules": BiomeJSONFileMinecraftBiomeComponentsMinecraftMultinoiseGenerationRules;
 
   /**
    * @remarks
    * Controls how this biome is instantiated (and then potentially modified)
    * during world generation of the overworld.
    */
-  "minecraft:overworld_generation_rules": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftOverworldGenerationRules;
+  "minecraft:overworld_generation_rules": BiomeJSONFileMinecraftBiomeComponentsMinecraftOverworldGenerationRules;
 
   /**
    * @remarks
    * Noise parameters used to drive terrain height in the 
    * Overworld.
    */
-  "minecraft:overworld_height": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftOverworldHeight;
+  "minecraft:overworld_height": BiomeJSONFileMinecraftBiomeComponentsMinecraftOverworldHeight;
 
   /**
    * @remarks
    * Replaces a specified portion of one or more Minecraft 
    * biomes.
    */
-  "minecraft:replace_biomes": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftReplaceBiomes;
+  "minecraft:replace_biomes": BiomeJSONFileMinecraftBiomeComponentsMinecraftReplaceBiomes;
 
   /**
    * @remarks
    * Specify fine-detail changes to blocks used in terrain generation (based
    * on a noise function).
    */
-  "minecraft:surface_material_adjustments": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustments;
+  "minecraft:surface_material_adjustments": BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustments;
 
   /**
    * @remarks
    * Controls the blocks used for the default Minecraft Overworld terrain
    * generation.
    */
-  "minecraft:surface_parameters": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSurfaceParameters;
+  "minecraft:surface_parameters": BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceParameters;
 
   /**
    * @remarks
    * Similar to overworld_surface. Adds swamp surface details.
    */
-  "minecraft:swamp_surface": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSwampSurface;
+  "minecraft:swamp_surface": BiomeJSONFileMinecraftBiomeComponentsMinecraftSwampSurface;
 
   /**
    * @remarks
    * Attach arbitrary string tags to this biome.
    */
-  "minecraft:tags": BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftTags;
+  "minecraft:tags": BiomeJSONFileMinecraftBiomeComponentsMinecraftTags;
 
   /**
    * @remarks
@@ -165,11 +165,11 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponents {
 
 
 /**
- * Capped Surface
+ * Capped Surface (minecraft:capped_surface)
  * Generates surface on blocks with non-solid blocks above or
  * below.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftCappedSurface {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftCappedSurface {
 
   /**
    * @remarks
@@ -206,11 +206,11 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftCappedSurfac
 
 
 /**
- * Climate
+ * Climate (minecraft:climate)
  * Describes temperature, humidity, precipitation, and similar. Biomes
  * without this component will have default values.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftClimate {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftClimate {
 
   /**
    * @remarks
@@ -261,11 +261,12 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftClimate {
 
 
 /**
- * Creature Spawn Probability
+ * Creature Spawn Probability 
+ * (minecraft:creature_spawn_probability)
  * Probability that creatures will spawn within the biome when a
  * chunk is generated.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftCreatureSpawnProbability {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftCreatureSpawnProbability {
 
   /**
    * @remarks
@@ -278,10 +279,10 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftCreatureSpaw
 
 
 /**
- * Frozen Ocean Surface
+ * Frozen Ocean Surface (minecraft:frozen_ocean_surface)
  * Similar to overworld_surface. Adds icebergs.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftFrozenOceanSurface {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftFrozenOceanSurface {
 
   /**
    * @remarks
@@ -327,11 +328,11 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftFrozenOceanS
 
 
 /**
- * Mesa Surface
+ * Mesa Surface (minecraft:mesa_surface)
  * Similar to overworld_surface. Adds colored strata and optional
  * pillars.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMesaSurface {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftMesaSurface {
 
   /**
    * @remarks
@@ -401,33 +402,35 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMesaSurface 
 
 
 /**
- * Mountain Parameters
+ * Mountain Parameters (minecraft:mountain_parameters)
  * Noise parameters used to drive mountain terrain generation in
  * Overworld.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMountainParameters {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParameters {
 
   /**
    * @remarks
    * Defines surface material for steep slopes
    */
-  steep_material_adjustment: BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMountainParametersSteepMaterialAdjustment;
+  steep_material_adjustment: BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParametersSteepMaterialAdjustment;
 
   /**
    * @remarks
    * Controls the density tapering that happens at the top of the
    * world to prevent terrain from reaching too high
    */
-  top_slide: BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMountainParametersTopSlide;
+  top_slide: BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParametersTopSlide;
 
 }
 
 
 /**
  * Mountain Parameters - Steep Material Adjustment Settings
+ * (minecraft:mountain_parameters - steep_material_adjustment 
+ * settings)
  * Defines surface material for steep slopes.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMountainParametersSteepMaterialAdjustment {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParametersSteepMaterialAdjustment {
 
   /**
    * @remarks
@@ -464,10 +467,11 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMountainPara
 
 /**
  * Mountain Parameters - Top Slide Settings
+ * (minecraft:mountain_parameters - top_slide settings)
  * Controls the density tapering that happens at the top of the
  * world to prevent terrain from reaching too high.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMountainParametersTopSlide {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftMountainParametersTopSlide {
 
   /**
    * @remarks
@@ -481,10 +485,11 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMountainPara
 
 /**
  * Multinoise Generation Rules
+ * (minecraft:multinoise_generation_rules)
  * Controls how this biome is instantiated (and then potentially modified)
  * during world generation of the nether.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMultinoiseGenerationRules {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftMultinoiseGenerationRules {
 
   /**
    * @remarks
@@ -525,11 +530,12 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftMultinoiseGe
 
 
 /**
- * Overworld Generation Rules
+ * Overworld Generation Rules 
+ * (minecraft:overworld_generation_rules)
  * Controls how this biome is instantiated (and then potentially modified)
  * during world generation of the overworld.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftOverworldGenerationRules {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftOverworldGenerationRules {
 
   /**
    * @remarks
@@ -568,11 +574,11 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftOverworldGen
 
 
 /**
- * Overworld Height
+ * Overworld Height (minecraft:overworld_height)
  * Noise parameters used to drive terrain height in the 
  * Overworld.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftOverworldHeight {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftOverworldHeight {
 
   /**
    * @remarks
@@ -593,11 +599,11 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftOverworldHei
 
 
 /**
- * Replace Biomes
+ * Replace Biomes (minecraft:replace_biomes)
  * Replaces a specified portion of one or more Minecraft 
  * biomes.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftReplaceBiomes {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftReplaceBiomes {
 
   /**
    * @remarks
@@ -606,17 +612,17 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftReplaceBiome
    * generation to change. Please add any new replacements to the end
    * of the list.
    */
-  replacements: BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftReplaceBiomesReplacements[];
+  replacements: BiomeJSONFileMinecraftBiomeComponentsMinecraftReplaceBiomesReplacements[];
 
 }
 
 
 /**
- * Biome Replacement
+ * Biome Replacement (Biome Replacement)
  * Represents the replacement information used to determine the
  * placement of the overriding biome.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftReplaceBiomesReplacements {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftReplaceBiomesReplacements {
 
   /**
    * @remarks
@@ -654,28 +660,31 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftReplaceBiome
 
 
 /**
- * Surface Material Adjustments
+ * Surface Material Adjustments 
+ * (minecraft:surface_material_adjustments)
  * Specify fine-detail changes to blocks used in terrain generation (based
  * on a noise function).
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustments {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustments {
 
   /**
    * @remarks
    * All adjustments that match the column's noise values will be
    * applied in the order listed.
    */
-  adjustments: BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustments[];
+  adjustments: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustments[];
 
 }
 
 
 /**
  * Surface Material Adjustments - Surface Adjustment Settings
+ * (minecraft:surface_material_adjustments - surface adjustment 
+ * settings)
  * An adjustment to generated terrain, replacing blocks based on
  * the specified settings.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustments {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustments {
 
   /**
    * @remarks
@@ -688,7 +697,7 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSurfaceMater
    * @remarks
    * The specific blocks used for this surface adjustment
    */
-  materials: BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterials;
+  materials: BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterials;
 
   /**
    * @remarks
@@ -708,11 +717,12 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSurfaceMater
 
 
 /**
- * Surface Material Adjustments - Surface Adjustment Materials 
- * Settings
+ * Surface Material Adjustments - Surface Adjustment Materials Settings
+ * (minecraft:surface_material_adjustments - surface adjustment materials
+ * settings)
  * The specific blocks used for this surface adjustment.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterials {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterials {
 
   /**
    * @remarks
@@ -753,11 +763,11 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSurfaceMater
 
 
 /**
- * Surface Parameters
+ * Surface Parameters (minecraft:surface_parameters)
  * Controls the blocks used for the default Minecraft Overworld terrain
  * generation.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSurfaceParameters {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSurfaceParameters {
 
   /**
    * @remarks
@@ -803,10 +813,10 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSurfaceParam
 
 
 /**
- * Swamp Surface
+ * Swamp Surface (minecraft:swamp_surface)
  * Similar to overworld_surface. Adds swamp surface details.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSwampSurface {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftSwampSurface {
 
   /**
    * @remarks
@@ -852,10 +862,10 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftSwampSurface
 
 
 /**
- * Tags
+ * Tags (minecraft:tags)
  * Attach arbitrary string tags to this biome.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftTags {
+export interface BiomeJSONFileMinecraftBiomeComponentsMinecraftTags {
 
   /**
    * @remarks
@@ -868,10 +878,10 @@ export interface BiomeJSONFileBiomeMinecraftBiomeComponentsMinecraftTags {
 
 
 /**
- * Biome Description
+ * Biome Description (Biome Description)
  * Contains non-component settings for a Biome.
  */
-export interface BiomeJSONFileBiomeMinecraftBiomeDescription {
+export interface BiomeJSONFileMinecraftBiomeDescription {
 
   /**
    * @remarks

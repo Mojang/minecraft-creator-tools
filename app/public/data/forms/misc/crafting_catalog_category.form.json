@@ -12,6 +12,7 @@
       "description": "The groups that we are adding to a category.",
       "dataType": 15,
       "subForm": {
+        "id": "Crafting Catalog Group",
         "title": "Crafting Catalog Group",
         "description": "Represents a group of items. A group can be collapsible if it is provided with a group identifier, or added a set of loose items without an icon.",
         "fields": [
@@ -21,6 +22,7 @@
             "description": "Optional field to give an icon and name to a group. Otherwise the items are added as loose items.",
             "dataType": 16,
             "subForm": {
+              "id": "Crafting Catalog Group Icon",
               "title": "Crafting Catalog Group Icon",
               "description": "The identifier of a group of items.",
               "fields": [
@@ -47,6 +49,7 @@
                       "dataType": 16,
                       "readOnly": true,
                       "subForm": {
+                        "id": "icon",
                         "title": "Icon",
                         "fields": [
                           {
@@ -80,6 +83,7 @@
                 "dataType": 16,
                 "readOnly": true,
                 "subForm": {
+                  "id": "items",
                   "title": "Items",
                   "fields": [
                     {
@@ -104,5 +108,6 @@
     }
   ],
   "description": "Represents a collection of groups of items in a category..",
-  "title": "Crafting Catalog Category Misc"
+  "title": "Crafting Catalog Category Misc",
+  "id": "Crafting Catalog Category"
 }

@@ -14,6 +14,7 @@
           "id": "effects",
           "dataType": 16,
           "subForm": {
+            "id": "effects",
             "title": "Effects",
             "fields": []
           }
@@ -21,5 +22,6 @@
       ]
     }
   ],
-  "title": "Emitter Lifetime Events Travel Distance Events Misc"
+  "title": "Emitter Lifetime Events Travel Distance Events Misc",
+  "id": "emitter_lifetime_events travel_distance_events"
 }

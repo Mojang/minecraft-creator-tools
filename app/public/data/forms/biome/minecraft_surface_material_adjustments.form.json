@@ -6,6 +6,7 @@
       "description": "All adjustments that match the column's noise values will be applied in the order listed.",
       "dataType": 15,
       "subForm": {
+        "id": "minecraft:surface_material_adjustments - surface adjustment settings",
         "title": "Surface Material Adjustments - Surface Adjustment Settings",
         "description": "An adjustment to generated terrain, replacing blocks based on the specified settings.",
         "fields": [
@@ -15,6 +16,7 @@
             "description": "The specific blocks used for this surface adjustment",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:surface_material_adjustments - surface adjustment materials settings",
               "title": "Surface Material Adjustments - Surface Adjustment Materials Settings",
               "description": "The specific blocks used for this surface adjustment",
               "fields": [
@@ -29,6 +31,7 @@
                       "dataType": 16,
                       "readOnly": true,
                       "subForm": {
+                        "id": "sea_material",
                         "title": "Sea Material",
                         "fields": [
                           {
@@ -69,6 +72,7 @@
                       "dataType": 16,
                       "readOnly": true,
                       "subForm": {
+                        "id": "foundation_material",
                         "title": "Foundation Material",
                         "fields": [
                           {
@@ -109,6 +113,7 @@
                       "dataType": 16,
                       "readOnly": true,
                       "subForm": {
+                        "id": "top_material",
                         "title": "Top Material",
                         "fields": [
                           {
@@ -149,6 +154,7 @@
                       "dataType": 16,
                       "readOnly": true,
                       "subForm": {
+                        "id": "mid_material",
                         "title": "Mid Material",
                         "fields": [
                           {
@@ -189,6 +195,7 @@
                       "dataType": 16,
                       "readOnly": true,
                       "subForm": {
+                        "id": "sea_floor_material",
                         "title": "Sea Floor Material",
                         "fields": [
                           {
@@ -313,5 +320,6 @@
     }
   ],
   "description": "Specify fine-detail changes to blocks used in terrain generation (based on a noise function).",
-  "title": "Minecraft Surface Material Adjustments Biome"
+  "title": "Minecraft Surface Material Adjustments Biome",
+  "id": "minecraft:surface_material_adjustments"
 }

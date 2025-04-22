@@ -5,6 +5,7 @@
       "title": "Description",
       "dataType": 16,
       "subForm": {
+        "id": "_v1_21_20_JigsawureTemplatePool_Description",
         "title": "V1 21 20 JigsawStructureTemplatePool Description",
         "fields": [
           {
@@ -22,6 +23,7 @@
       "description": "List of Structure Template and processor list pairs.",
       "dataType": 15,
       "subForm": {
+        "id": "_v1_21_20_JigsawureTemplatePool_TemplatePoolElement",
         "title": "V1 21 20 JigsawStructureTemplatePool TemplatePoolElement",
         "fields": [
           {
@@ -30,6 +32,7 @@
             "description": "A grouping of a Structure Template, the Processor List to use when placing the structure, and its weight that determines the likelihood of the element being chosen.",
             "dataType": 16,
             "subForm": {
+              "id": "_v1_21_20_JigsawureTemplatePool_SinglePoolElement",
               "title": "V1 21 20 JigsawStructureTemplatePool SinglePoolElement",
               "fields": [
                 {
@@ -85,5 +88,6 @@
       "dataType": 2
     }
   ],
-  "title": "Used To Pair Block Rules With Structure Templates And To Randomly Place Structure Templates Using A Weighted List World"
+  "title": "Used To Pair Block Rules With Structure Templates And To Randomly Place Structure Templates Using A Weighted List World",
+  "id": "Used to pair block rules with ure Templates and to randomly place Structure Templates using a weighted list."
 }

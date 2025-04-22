@@ -26,6 +26,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "input",
             "title": "Input",
             "fields": [
               {
@@ -48,5 +49,6 @@
       ]
     }
   ],
-  "title": "Particle Curve Bezier Chain Misc"
+  "title": "Particle Curve Bezier Chain Misc",
+  "id": "particle_curve_bezier_chain"
 }

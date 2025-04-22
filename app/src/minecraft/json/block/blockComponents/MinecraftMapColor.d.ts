@@ -19,6 +19,22 @@ Block Gray Ore - https://github.com/microsoft/minecraft-samples/tree/main/casual
 
 "minecraft:map_color": "#ffcd17
 
+Block Palm Leave Corner - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave_corner.block.json
+
+"minecraft:map_color": "#495f2b
+
+Block Palm Leave - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_leave.block.json
+
+"minecraft:map_color": "#639f28
+
+Block Palm Trunk - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/palm_trunk.block.json
+
+"minecraft:map_color": "#b9ae9d
+
+Block White Sand - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/blocks/white_sand.block.json
+
+"minecraft:map_color": "#fdfdfd
+
 Block Orange Ore - https://github.com/microsoft/minecraft-samples/tree/main/custom_features/basic_orange_ore/behavior_packs/basic_orange_ore/blocks/orange_ore.block.json
 
 "minecraft:map_color": "#a69787
@@ -26,18 +42,6 @@ Block Orange Ore - https://github.com/microsoft/minecraft-samples/tree/main/cust
 Apple Block - https://github.com/microsoft/minecraft-samples/tree/main/custom_features/example_feature_set/behavior_packs/example_feature_set/blocks/apple_block.json
 
 "minecraft:map_color": "#f30000
-
-Block Palm Leave Corner - https://github.com/microsoft/minecraft-samples/tree/main/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_leave_corner.block.json
-
-"minecraft:map_color": "#495f2b
-
-Block Palm Leave - https://github.com/microsoft/minecraft-samples/tree/main/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_leave.block.json
-
-"minecraft:map_color": "#639f28
-
-Block Palm Trunk - https://github.com/microsoft/minecraft-samples/tree/main/palm_tree_blocks_and_features/palm_tree_blocks/behavior_packs/palm_tree/blocks/palm_trunk.block.json
-
-"minecraft:map_color": "#b9ae9d
  */
 
 import * as jsoncommon from './../../../jsoncommon';

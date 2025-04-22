@@ -6,6 +6,7 @@
       "description": "Non-component settings, including the Client Biome name.",
       "dataType": 16,
       "subForm": {
+        "id": "Client Biome Description",
         "title": "Client Biome Description",
         "description": "Contains non-component settings for a Client Biome.",
         "fields": [
@@ -24,6 +25,7 @@
       "description": "Components for this Client Biome.",
       "dataType": 16,
       "subForm": {
+        "id": "Client Biome Components",
         "title": "Client Biome Components",
         "description": "Any components that this Client Biome uses",
         "fields": [
@@ -33,6 +35,7 @@
             "description": "Set the ambient sounds for the biome. These sounds must be in the 'individual_named_sounds' in a 'sounds.json' file.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:ambient_sounds",
               "title": "Ambient Sounds",
               "description": "Set the ambient sounds for the biome. These sounds must be in the 'individual_named_sounds' in a 'sounds.json' file.",
               "fields": [
@@ -63,6 +66,7 @@
             "description": "Set the sky color used during rendering. Biomes without this component will have default sky color behavior.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:sky_color",
               "title": "Sky Color",
               "description": "Set the sky color used during rendering. Biomes without this component will have default sky color behavior.",
               "fields": [
@@ -89,6 +93,7 @@
             "description": "Set the fog settings used during rendering. Biomes without this component will have default fog settings.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:fog_appearance",
               "title": "Fog Appearance",
               "description": "Set the fog settings used during rendering. Biomes without this component will have default fog settings.",
               "fields": [
@@ -107,6 +112,7 @@
             "description": "Set the foliage color or color map used during rendering. Biomes without this component will have default foliage appearance.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:foliage_appearance",
               "title": "Foliage Appearance",
               "description": "Set the foliage color or color map used during rendering. Biomes without this component will have default foliage appearance.",
               "fields": [
@@ -125,6 +131,7 @@
             "description": "[INTERNAL - WORK IN PROGRESS] Set the lighting settings used during deferred rendering. Biomes without this component will have default lighting settings.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:lighting_identifier",
               "title": "Lighting Identifier",
               "description": "[INTERNAL - WORK IN PROGRESS] Set the lighting settings used during deferred rendering. Biomes without this component will have default lighting settings.",
               "fields": [
@@ -143,6 +150,7 @@
             "description": "Set the water surface color used during rendering. Biomes without this component will have default water surface color behavior.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:water_appearance",
               "title": "Water Appearance",
               "description": "Set the water surface color used during rendering. Biomes without this component will have default water surface color behavior.",
               "fields": [
@@ -175,6 +183,7 @@
             "description": "Set the grass color or color map used during rendering. Biomes without this component will have default grass appearance.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:grass_appearance",
               "title": "Grass Appearance",
               "description": "Set the grass color or color map used during rendering. Biomes without this component will have default grass appearance.",
               "fields": [
@@ -193,6 +202,7 @@
             "description": "Set the dry foliage color used during rendering. Biomes without this component will have default dry foliage color behavior.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:dry_foliage_color",
               "title": "Dry Foliage Color",
               "description": "Set the dry foliage color used during rendering. Biomes without this component will have default dry foliage color behavior.",
               "fields": [
@@ -219,6 +229,7 @@
             "description": "[INTERNAL - WORK IN PROGRESS] Set the atmosphere settings used during deferred rendering. Biomes without this component will have default atmosphere settings.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:atmosphere_identifier",
               "title": "Atmosphere Identifier",
               "description": "[INTERNAL - WORK IN PROGRESS] Set the atmosphere settings used during deferred rendering. Biomes without this component will have default atmosphere settings.",
               "fields": [
@@ -237,6 +248,7 @@
             "description": "[INTERNAL - WORK IN PROGRESS] Set the color_grading settings used during deferred rendering. Biomes without this component will have default color_grading settings.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:color_grading_identifier",
               "title": "Color Grading Identifier",
               "description": "[INTERNAL - WORK IN PROGRESS] Set the color_grading settings used during deferred rendering. Biomes without this component will have default color_grading settings.",
               "fields": [
@@ -255,6 +267,7 @@
             "description": "[INTERNAL - WORK IN PROGRESS] Set the water settings used during deferred rendering. Biomes without this component will have default water settings.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:water_identifier",
               "title": "Water Identifier",
               "description": "[INTERNAL - WORK IN PROGRESS] Set the water settings used during deferred rendering. Biomes without this component will have default water settings.",
               "fields": [
@@ -273,6 +286,7 @@
             "description": "Affect how music plays within the biome",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:biome_music",
               "title": "Biome Music",
               "description": "Affect how music plays within the biome",
               "fields": [
@@ -296,5 +310,6 @@
     }
   ],
   "description": "Contains a description and components to define a Client Biome.",
-  "title": "Client Biome Definition Client Biome"
+  "title": "Client Biome Definition Client Biome",
+  "id": "Client Biome Definition"
 }

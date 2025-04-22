@@ -18,3 +18,7 @@
 .btae-tools {
   grid-column: 1;
 }
+
+.btae-error {
+  padding: 8px;
+}

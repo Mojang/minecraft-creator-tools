@@ -11,6 +11,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "repair_items",
             "title": "Repair Items",
             "fields": [
               {
@@ -36,6 +37,7 @@
                     "dataType": 14,
                     "readOnly": true,
                     "subForm": {
+                      "id": "repair_amount",
                       "title": "Repair Amount",
                       "fields": [
                         {

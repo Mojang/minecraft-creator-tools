@@ -72,6 +72,13 @@ Villager - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
   }
 }
 
+
+Beachager - https://github.com/microsoft/minecraft-samples/tree/main/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/entities/beachager.behavior.json
+
+"minecraft:behavior.trade_with_player": {
+  "priority": 2
+}
+
  */
 
 import * as jsoncommon from './../../jsoncommon';
@@ -112,6 +119,7 @@ export default interface MinecraftBehaviorTradeWithPlayer {
    * Villager V2: 2
    *
    * Villager: 1
+   *
    *
    *
    */

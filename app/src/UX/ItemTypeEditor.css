@@ -15,6 +15,13 @@
   height: 40px;
 }
 
+.ite-attachableArea {
+  margin-left: 11px;
+  margin-top: 11px;
+  margin-right: 11px;
+  border: solid 1px;
+}
+
 .ite-header {
   font-size: 16pt;
   padding-top: 10px;
@@ -42,6 +49,7 @@
 
 .ite-toolBarArea {
   grid-column: 1;
+  height: 31px;
 }
 
 .ite-extraArea {

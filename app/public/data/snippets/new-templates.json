@@ -21,5 +21,28 @@
       "  });",
       "}"
     ]
+  },
+  "itemCustomComponent": {
+    "description": "Starts a very basic item custom component",
+    "prefix": ["mc"],
+    "body": [
+      "import { world, ItemCustomComponent, ItemComponentUseEvent } from '@minecraft/server';",
+      "",
+      "export default class ExampleNewComponent implements ItemCustomComponent {",
+      "  constructor() {",
+      "    this.onUse = this.onUse.bind(this);",
+      "  }",
+      "",
+      "  onUse(e: ItemComponentUseEvent): void {",
+      "    world.sendMessage('Item ' + e.itemStack.typeId + ' is being used.');",
+      "  }",
+      "}",
+      "",
+      "export function initExampleNew() {",
+      "  world.beforeEvents.worldInitialize.subscribe(initEvent => {",
+      "      initEvent.itemComponentRegistry.registerCustomComponent('example:newComponentId', new ExampleNewComponent());",
+      "  });",
+      "}"
+    ]
   }
 }

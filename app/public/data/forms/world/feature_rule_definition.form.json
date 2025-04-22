@@ -6,6 +6,7 @@
       "description": "Identifier for the Feature Rule and Feture to place.",
       "dataType": 16,
       "subForm": {
+        "id": "Feature Rule Description",
         "title": "Feature Rule Description",
         "fields": [
           {
@@ -29,6 +30,7 @@
       "description": "Parameters to control where and when the feature will be placed.",
       "dataType": 16,
       "subForm": {
+        "id": "Feature Rule Conditions",
         "title": "Feature Rule Conditions",
         "fields": [
           {
@@ -43,6 +45,7 @@
             "description": "List of filter tests to determine which biomes this rule will attach to.",
             "dataType": 16,
             "subForm": {
+              "id": "minecraft:biome_filter",
               "title": "Biome Filter",
               "fields": [
                 {
@@ -86,6 +89,7 @@
                 "id": "minecraft:biome_filter",
                 "dataType": 16,
                 "subForm": {
+                  "id": "minecraft:biome_filter",
                   "title": "Biome Filter",
                   "fields": [
                     {
@@ -150,6 +154,7 @@
       "description": "Parameters controlling the initial scatter of the feature.",
       "dataType": 16,
       "subForm": {
+        "id": "Scatter Params",
         "title": "Scatter Params",
         "description": "Controls the scatter distribution of a particular object.",
         "fields": [
@@ -168,6 +173,7 @@
                 "dataType": 16,
                 "readOnly": true,
                 "subForm": {
+                  "id": "z",
                   "title": "Z",
                   "fields": [
                     {
@@ -218,6 +224,7 @@
                 "dataType": 14,
                 "readOnly": true,
                 "subForm": {
+                  "id": "iterations",
                   "title": "Iterations",
                   "fields": [
                     {
@@ -254,6 +261,7 @@
                 "dataType": 16,
                 "readOnly": true,
                 "subForm": {
+                  "id": "scatter_chance",
                   "title": "Scatter Chance",
                   "fields": [
                     {
@@ -306,6 +314,7 @@
                 "dataType": 16,
                 "readOnly": true,
                 "subForm": {
+                  "id": "x",
                   "title": "X",
                   "fields": [
                     {
@@ -360,6 +369,7 @@
                 "dataType": 16,
                 "readOnly": true,
                 "subForm": {
+                  "id": "y",
                   "title": "Y",
                   "fields": [
                     {
@@ -403,5 +413,6 @@
       }
     }
   ],
-  "title": "Feature Rule Definition World"
+  "title": "Feature Rule Definition World",
+  "id": "Feature Rule Definition"
 }

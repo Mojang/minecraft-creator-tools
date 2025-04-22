@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Surface Material Adjustments 
+ * Minecraft Surface Material Adjustments Biome
  * (minecraft:surface_material_adjustments)
  * Specify fine-detail changes to blocks used in terrain generation (based
  * on a noise function).
@@ -67,6 +67,8 @@ export default interface MinecraftSurfaceMaterialAdjustments {
 
 /**
  * Surface Material Adjustments - Surface Adjustment Settings
+ * (minecraft:surface_material_adjustments - surface adjustment 
+ * settings)
  * An adjustment to generated terrain, replacing blocks based on
  * the specified settings.
  */
@@ -103,8 +105,9 @@ export interface MinecraftSurfaceMaterialAdjustmentsAdjustments {
 
 
 /**
- * Surface Material Adjustments - Surface Adjustment Materials 
- * Settings
+ * Surface Material Adjustments - Surface Adjustment Materials Settings
+ * (minecraft:surface_material_adjustments - surface adjustment materials
+ * settings)
  * The specific blocks used for this surface adjustment.
  */
 export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterials {

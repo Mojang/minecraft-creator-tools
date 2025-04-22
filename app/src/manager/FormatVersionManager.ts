@@ -15,7 +15,7 @@ import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import ProjectItem from "../app/ProjectItem";
-import ItemTypeBehaviorDefinition from "../minecraft/ItemTypeBehaviorDefinition";
+import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import RecipeBehaviorDefinition from "../minecraft/RecipeBehaviorDefinition";
 import AnimationControllerBehaviorDefinition from "../minecraft/AnimationBehaviorDefinition";
 import SpawnRulesBehaviorDefinition from "../minecraft/SpawnRulesBehaviorDefinition";
@@ -228,7 +228,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
         await pi.ensureFileStorage();
 
         if (pi.availableFile) {
-          const itdef = await ItemTypeBehaviorDefinition.ensureOnFile(pi.availableFile);
+          const itdef = await ItemTypeDefinition.ensureOnFile(pi.availableFile);
 
           if (itdef) {
             const ver = itdef.getFormatVersion();

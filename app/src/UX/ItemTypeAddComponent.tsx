@@ -7,9 +7,11 @@ import { List, ListProps, selectableListBehavior } from "@fluentui/react-northst
 import Utilities from "../core/Utilities";
 import IFormDefinition from "../dataform/IFormDefinition";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
+import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 
 interface IItemTypeAddComponentProps {
   theme: ThemeInput<any>;
+  isVisualsMode: boolean;
   onNewComponentSelected: (id: string) => void;
   setActivePersistable?: (persistObject: IPersistable) => void;
 }
@@ -71,10 +73,14 @@ export default class ItemTypeAddComponent extends Component<IItemTypeAddComponen
         const baseName = fileName.substring(0, fileName.length - 10);
 
         const form = await Database.ensureFormLoaded("item", baseName);
+        let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
 
-        if (form && !form.isDeprecated && !form.isInternal) {
-          let canonName = "minecraft:" + EntityTypeDefinition.getComponentFromBaseFileName(baseName);
-
+        if (
+          form &&
+          !form.isDeprecated &&
+          !form.isInternal &&
+          ItemTypeDefinition.isVisualComponent(canonName) === this.props.isVisualsMode
+        ) {
           componentMenuItems.push({
             key: canonName,
             tag: canonName,

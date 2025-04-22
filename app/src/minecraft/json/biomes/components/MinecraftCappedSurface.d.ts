@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Capped Surface (minecraft:capped_surface)
+ * Minecraft Capped Surface Biome (minecraft:capped_surface)
  * Generates surface on blocks with non-solid blocks above or
  * below.
  */

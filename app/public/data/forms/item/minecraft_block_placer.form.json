@@ -26,6 +26,7 @@
       "description": "List of block descriptors of the blocks that this item can be used on. If left empty, all blocks will be allowed.",
       "dataType": 15,
       "subForm": {
+        "id": "use_on",
         "title": "Use On",
         "fields": [
           {

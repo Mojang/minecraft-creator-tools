@@ -13,10 +13,10 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Biome Description Biome
+ * Biome Description Biome (Biome Description)
  * Contains non-component settings for a Biome.
  */
-export default interface BiomeDescriptionBiome {
+export default interface BiomeDescription {
 
   /**
    * @remarks

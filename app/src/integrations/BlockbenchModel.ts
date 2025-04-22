@@ -215,6 +215,16 @@ export default class BlockbenchModel {
             parent.cubes = [];
           }
 
+          if (
+            elt.pivot &&
+            parent.pivot &&
+            elt.pivot[0] === parent.pivot[0] &&
+            elt.pivot[1] === parent.pivot[1] &&
+            elt.pivot[2] === parent.pivot[2]
+          ) {
+            elt.pivot = undefined;
+          }
+
           parent.cubes.push(elt);
         } else {
           const lead = locatorsById[outlineItem];
@@ -234,11 +244,24 @@ export default class BlockbenchModel {
           bone = {
             name: outlineItem.name,
             pivot: [],
+            binding: outlineItem.bedrock_binding,
             cubes: undefined,
             locators: undefined,
           };
 
           bonesByName[outlineItem.name] = bone;
+        }
+
+        let rot = outlineItem.rotation;
+
+        if (rot) {
+          if (rot.length === 3) {
+            rot[0] = -rot[0];
+            rot[1] = -rot[1];
+            rot[2] = -rot[2];
+
+            bone.rotation = rot;
+          }
         }
 
         bone.pivot = outlineItem.origin;
@@ -737,7 +760,7 @@ export default class BlockbenchModel {
         name: bone.name,
         origin: bone.pivot,
         rotation: rot,
-        bedrock_binding: "",
+        bedrock_binding: bone.binding,
         color: colorIndex,
         uuid: Utilities.createUuid(),
         export: true,

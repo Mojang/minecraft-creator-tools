@@ -169,11 +169,11 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
             rootFolder={this.state.storage.rootFolder}
             carto={this.props.carto}
             readOnly={true}
+            showPreview={true}
             selectFirstFile={true}
             expandByDefault={true}
             theme={this.props.theme}
-            heightOffset={350}
-            showPreview={true}
+            heightOffset={380}
             mode={FileExplorerMode.explorer}
           />
         </div>

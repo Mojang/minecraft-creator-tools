@@ -13,7 +13,7 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Color Grading Identifier 
+ * Minecraft Color Grading Identifier Client Biome
  * (minecraft:color_grading_identifier)
  * [INTERNAL - WORK IN PROGRESS] Set the color_grading settings used
  * during deferred rendering. Biomes without this component will

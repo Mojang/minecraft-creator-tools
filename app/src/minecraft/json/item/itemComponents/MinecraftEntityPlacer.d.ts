@@ -116,54 +116,28 @@ export default interface MinecraftEntityPlacer {
 
 
 /**
- * Dispense On
- * Dispense On.
+ * Dispense On (dispense_on)
  */
 export interface MinecraftEntityPlacerDispenseOn {
 
-  /**
-   * @remarks
-   * name
-   */
   name: string;
 
-  /**
-   * @remarks
-   * states
-   */
   states: number;
 
-  /**
-   * @remarks
-   * tags
-   */
   tags: string;
 
 }
 
 
 /**
- * Use On
- * Use On
+ * Use On (use_on)
  */
 export interface MinecraftEntityPlacerUseOn {
 
-  /**
-   * @remarks
-   * name
-   */
   name: string;
 
-  /**
-   * @remarks
-   * states
-   */
   states: number;
 
-  /**
-   * @remarks
-   * tags
-   */
   tags: string;
 
 }

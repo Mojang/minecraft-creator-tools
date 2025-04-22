@@ -15,6 +15,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "z",
             "title": "Z",
             "fields": [
               {
@@ -65,6 +66,7 @@
           "dataType": 14,
           "readOnly": true,
           "subForm": {
+            "id": "iterations",
             "title": "Iterations",
             "fields": [
               {
@@ -101,6 +103,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "scatter_chance",
             "title": "Scatter Chance",
             "fields": [
               {
@@ -153,6 +156,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "x",
             "title": "X",
             "fields": [
               {
@@ -207,6 +211,7 @@
           "dataType": 16,
           "readOnly": true,
           "subForm": {
+            "id": "y",
             "title": "Y",
             "fields": [
               {
@@ -248,5 +253,6 @@
     }
   ],
   "description": "Controls the scatter distribution of a particular object.",
-  "title": "Scatter Params World"
+  "title": "Scatter Params World",
+  "id": "Scatter Params"
 }

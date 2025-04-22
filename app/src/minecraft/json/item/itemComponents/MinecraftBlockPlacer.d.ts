@@ -80,27 +80,14 @@ export default interface MinecraftBlockPlacer {
 
 
 /**
- * Use On
- * Use On
+ * Use On (use_on)
  */
 export interface MinecraftBlockPlacerUseOn {
 
-  /**
-   * @remarks
-   * name
-   */
   name: string;
 
-  /**
-   * @remarks
-   * states
-   */
   states: number;
 
-  /**
-   * @remarks
-   * tags
-   */
   tags: string;
 
 }
