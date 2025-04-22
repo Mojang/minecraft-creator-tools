@@ -116,7 +116,7 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
   }
 
   getComponent(id: string) {
-    if (this._data === undefined) {
+    if (!this._data || !this._data.components) {
       return undefined;
     }
 

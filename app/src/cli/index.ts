@@ -1112,60 +1112,65 @@ async function validate() {
     const ps = projectStarts[i];
 
     pool.queue(async (doTask) => {
-      const result = await doTask({
-        task: TaskType.validate,
-        project: ps,
-        arguments: {
-          suite: suiteConst,
-          exclusionList: exclusionListConst,
-          outputMci: aggregateReportsAfterValidationConst || outputType === OutputType.noReports ? true : false,
-          outputType: outputType,
-        },
-        outputFolder: options.outputFolder,
-        inputFolder: options.inputFolder,
-        displayInfo: localEnvConst.displayInfo,
-        displayVerbose: localEnvConst.displayVerbose,
-        force: force,
-      });
+      try {
+        const result = await doTask({
+          task: TaskType.validate,
+          project: ps,
+          arguments: {
+            suite: suiteConst,
+            exclusionList: exclusionListConst,
+            outputMci: aggregateReportsAfterValidationConst || outputType === OutputType.noReports ? true : false,
+            outputType: outputType,
+          },
+          outputFolder: options.outputFolder,
+          inputFolder: options.inputFolder,
+          displayInfo: localEnvConst.displayInfo,
+          displayVerbose: localEnvConst.displayVerbose,
+          force: force,
+        });
 
-      if (result !== undefined) {
-        if (typeof result === "string") {
-          if (ps) {
-            Log.error(ps.ctorProjectName + " error: " + result);
-          }
-        } else {
-          for (const metaState of result) {
-            // clear out icons since the aggregation won't need them, and it should save memory.
-            if (metaState.infoSetData && metaState.infoSetData.info && metaState.infoSetData.info["defaultIcon"]) {
-              metaState.infoSetData.info["defaultIcon"] = undefined;
+        if (result !== undefined) {
+          if (typeof result === "string") {
+            if (ps) {
+              Log.error(ps.ctorProjectName + " error: " + result);
             }
+          } else {
+            for (const metaState of result) {
+              // clear out icons since the aggregation won't need them, and it should save memory.
+              if (metaState.infoSetData && metaState.infoSetData.info && metaState.infoSetData.info["defaultIcon"]) {
+                metaState.infoSetData.info["defaultIcon"] = undefined;
+              }
 
-            projectList.push(metaState as IProjectMetaState);
+              projectList.push(metaState as IProjectMetaState);
 
-            const infoSet = (metaState as IProjectMetaState).infoSetData;
+              const infoSet = (metaState as IProjectMetaState).infoSetData;
 
-            if (infoSet) {
-              const items = infoSet.items;
+              if (infoSet) {
+                const items = infoSet.items;
 
-              if (items) {
-                for (const item of items) {
-                  if (item.iTp === InfoItemType.internalProcessingError) {
-                    console.error(
-                      "Internal Processing Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item)
-                    );
-                    setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
-                  } else if (item.iTp === InfoItemType.testCompleteFail && !options.outputFolder) {
-                    console.error("Test Fail: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
-                    setErrorLevel(ERROR_VALIDATION_TESTFAIL);
-                  } else if (item.iTp === InfoItemType.error && !options.outputFolder) {
-                    console.error("Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
-                    setErrorLevel(ERROR_VALIDATION_ERROR);
+                if (items) {
+                  for (const item of items) {
+                    if (item.iTp === InfoItemType.internalProcessingError) {
+                      console.error(
+                        "Internal Processing Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item)
+                      );
+                      setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
+                    } else if (item.iTp === InfoItemType.testCompleteFail && !options.outputFolder) {
+                      console.error("Test Fail: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
+                      setErrorLevel(ERROR_VALIDATION_TESTFAIL);
+                    } else if (item.iTp === InfoItemType.error && !options.outputFolder) {
+                      console.error("Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
+                      setErrorLevel(ERROR_VALIDATION_ERROR);
+                    }
                   }
                 }
               }
             }
           }
         }
+      } catch (e) {
+        console.error("Internal Processing Error 2: " + e.toString());
+        setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
       }
     });
   }
