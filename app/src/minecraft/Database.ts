@@ -263,6 +263,40 @@ export default class Database {
     return Database.moduleDescriptors[moduleId];
   }
 
+  static async getNextMinecraftPreviewVersion() {
+    const latestMinecraftPreviewVersion = await Database.getLatestMinecraftPreviewVersion();
+
+    if (!latestMinecraftPreviewVersion) {
+      return undefined;
+    }
+
+    const ver = latestMinecraftPreviewVersion.split(".");
+
+    if (!ver || !ver.length || ver.length < 3) {
+      return undefined;
+    }
+
+    let triplet = undefined;
+
+    try {
+      triplet = [parseInt(ver[0]), parseInt(ver[1]), parseInt(ver[2]) + 10];
+    } catch (e) {
+      return undefined;
+    }
+
+    return triplet.join(".");
+  }
+
+  static async getLatestMinecraftPreviewVersion() {
+    const moduleDescriptor = await this.getModuleDescriptor("@minecraft/server");
+
+    if (!moduleDescriptor || !moduleDescriptor.latestPreviewVersion) {
+      return "1.21.0";
+    }
+
+    return moduleDescriptor.latestPreviewVersion;
+  }
+
   static async getLatestMinecraftRetailVersion() {
     const moduleDescriptor = await this.getModuleDescriptor("@minecraft/server");
 
@@ -457,7 +491,7 @@ export default class Database {
   static getVersionIndexFromVersionStr(ver: string) {
     const verNums = ver.split(".");
 
-    if (verNums.length !== 4) {
+    if (verNums.length !== 4 && verNums.length !== 3) {
       return -1;
     }
 
@@ -467,11 +501,11 @@ export default class Database {
       }
     }
 
-    const versionIndex =
-      parseInt(verNums[0]) * 16777216 +
-      parseInt(verNums[1]) * 65536 +
-      parseInt(verNums[2]) * 256 +
-      parseInt(verNums[3]);
+    let versionIndex = parseInt(verNums[0]) * 16777216 + parseInt(verNums[1]) * 65536 + parseInt(verNums[2]) * 256;
+
+    if (verNums.length === 4) {
+      versionIndex += parseInt(verNums[3]);
+    }
 
     return versionIndex;
   }

@@ -29,19 +29,19 @@ export default interface MinecraftMesaSurface {
    * @remarks
    * Base clay block to use
    */
-  clay_material: string;
+  clay_material: { [key: string]: string };
 
   /**
    * @remarks
    * Controls the block type used deep underground in this biome
    */
-  foundation_material: string;
+  foundation_material: { [key: string]: string };
 
   /**
    * @remarks
    * Hardened clay block to use
    */
-  hard_clay_material: string;
+  hard_clay_material: { [key: string]: string };
 
   /**
    * @remarks
@@ -54,7 +54,7 @@ export default interface MinecraftMesaSurface {
    * Controls the block type used in a layer below the surface of
    * this biome
    */
-  mid_material: string;
+  mid_material: { [key: string]: string };
 
   /**
    * @remarks
@@ -68,19 +68,89 @@ export default interface MinecraftMesaSurface {
    * Controls the block type used as a floor for bodies of water in
    * this biome
    */
-  sea_floor_material: string;
+  sea_floor_material: { [key: string]: string };
 
   /**
    * @remarks
    * Controls the block type used for the bodies of water in this
    * biome
    */
-  sea_material: string;
+  sea_material: { [key: string]: string };
 
   /**
    * @remarks
    * Controls the block type used for the surface of this biome
    */
-  top_material: string;
+  top_material: { [key: string]: string };
+
+}
+
+
+/**
+ * Clay Material
+ * Specifies a particular block. Can be a string block name or a
+ * JSON object.
+ */
+export interface MinecraftMesaSurfaceClayMaterial {
+
+}
+
+
+/**
+ * Foundation Material
+ * Specifies a particular block. Can be a string block name or a
+ * JSON object.
+ */
+export interface MinecraftMesaSurfaceFoundationMaterial {
+
+}
+
+
+/**
+ * Hard Clay Material
+ * Specifies a particular block. Can be a string block name or a
+ * JSON object.
+ */
+export interface MinecraftMesaSurfaceHardClayMaterial {
+
+}
+
+
+/**
+ * Mid Material
+ * Specifies a particular block. Can be a string block name or a
+ * JSON object.
+ */
+export interface MinecraftMesaSurfaceMidMaterial {
+
+}
+
+
+/**
+ * Sea Floor Material
+ * Specifies a particular block. Can be a string block name or a
+ * JSON object.
+ */
+export interface MinecraftMesaSurfaceSeaFloorMaterial {
+
+}
+
+
+/**
+ * Sea Material
+ * Specifies a particular block. Can be a string block name or a
+ * JSON object.
+ */
+export interface MinecraftMesaSurfaceSeaMaterial {
+
+}
+
+
+/**
+ * Top Material
+ * Specifies a particular block. Can be a string block name or a
+ * JSON object.
+ */
+export interface MinecraftMesaSurfaceTopMaterial {
 
 }

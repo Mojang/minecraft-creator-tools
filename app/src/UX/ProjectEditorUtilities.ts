@@ -8,6 +8,7 @@ import ProjectUtilities from "../app/ProjectUtilities";
 import Utilities from "../core/Utilities";
 import BlockbenchModel from "../integrations/BlockbenchModel";
 import MinecraftDefinitions from "../minecraft/MinecraftDefinitions";
+import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import { PackType } from "../minecraft/Pack";
 import FileSystemFolder from "../storage/FileSystemFolder";
 import FileSystemStorage from "../storage/FileSystemStorage";
@@ -260,7 +261,18 @@ export default class ProjectEditorUtilities {
         const bd = BlockbenchModel.ensureFromContent(content);
 
         if (bd.id) {
-          descrip += "(" + bd.id + ") ";
+          descrip += "(" + bd.id + ")";
+        }
+
+        if (bd.data?.animations) {
+          descrip += ", animations ";
+
+          if (bd.data && bd.data.animations) {
+            const name = MinecraftUtilities.removeSubTypeExtensionFromName(bd.data.name);
+
+            descrip += "(" + name + ".animation.json";
+            descrip += ") ";
+          }
         }
 
         descrip += "and textures";

@@ -92,6 +92,13 @@ export default interface MinecraftGeometry {
 
   /**
    * @remarks
+   * The component can be defined as an object to gain control over
+   * more specific behaviors.
+   */
+  Asanobject: MinecraftGeometryAsanobject[];
+
+  /**
+   * @remarks
    * An optional array of Booleans that define the visibility of
    * individual bones in the geometry file. In order to set up
    * 'bone_visibility', the geometry file name must be entered as an
@@ -152,5 +159,86 @@ export default interface MinecraftGeometry {
    *
    */
   identifier: string;
+
+}
+
+
+/**
+ * The component can be defined as an object to gain control over
+ * more specific behaviors.
+ */
+export interface MinecraftGeometryAsanobject {
+
+  /**
+   * @remarks
+   * A JSON object that contains a list of key/value pairs that map
+   * from bone name in the specified geometry file (key) to a
+   * boolean that tells whether the bone should be visible or not
+   * (value).
+   */
+  bone_visibility: object[];
+
+  /**
+   * @remarks
+   * Which block_culling .json file to use when rendering this 
+   * block.
+   */
+  culling: string;
+
+  /**
+   * @remarks
+   * A string that allows culling rule to group multiple blocks together
+   * when comparing them. When using the minecraft namespace, the
+   * only allowed culling layer identifiers are :
+   * "minecraft:culling_layer.undefined" or
+   * "minecraft:culling_layer.leaves". When using no namespaces or a
+   * custom one, the names must start and end with an alpha-numeric 
+   * character.
+   */
+  culling_layer: string;
+
+  /**
+   * @remarks
+   * The description identifier of the geometry to use to render this
+   * block.
+   */
+  identifier: string;
+
+  /**
+   * @remarks
+   * A Boolean locking UV orientation of all bones in the geometry, or
+   * an array of strings locking UV orientation of specific bones in
+   * the geometry. For performance reasons it is recommended to use
+   * the Boolean. Note that for cubes using Box UVs, rather than
+   * Per-face UVs, 'uv_lock' is only supported if the cube faces are
+   * square.
+   */
+  uv_lock: string;
+
+}
+
+
+/**
+ * Bone_visibility (bone_visibility)
+ */
+export interface MinecraftGeometryBoneVisibility {
+
+  /**
+   * @remarks
+   * 
+   * Sample Values:
+   * Blue Bubble Fish: true
+   *
+   */
+  bb_main: string;
+
+  /**
+   * @remarks
+   * 
+   * Sample Values:
+   * Blue Bubble Fish: true
+   *
+   */
+  fish: string;
 
 }

@@ -143,7 +143,7 @@ export default class FileExplorerContainerFile extends Component<
         for (const folderName in this.state.cabinetRootFolder.folders) {
           const childFolder = this.state.cabinetRootFolder.folders[folderName];
 
-          if (childFolder) {
+          if (childFolder && !childFolder.canIgnore) {
             items.push(
               <FileExplorerFolder
                 folder={childFolder}

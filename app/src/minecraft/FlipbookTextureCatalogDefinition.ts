@@ -142,8 +142,8 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
     if (rel.childItem.itemType === ProjectItemType.texture) {
       await rel.childItem.ensureStorage();
 
-      if (rel.childItem.defaultFile && packRootFolder) {
-        let relativePath = this.getRelativePath(rel.childItem.defaultFile, packRootFolder);
+      if (rel.childItem.primaryFile && packRootFolder) {
+        let relativePath = this.getRelativePath(rel.childItem.primaryFile, packRootFolder);
 
         if (relativePath) {
           let newFlipbookTextures: IFlipbookTexture[] = [];
@@ -214,8 +214,8 @@ export default class FlipbookTextureCatalogDefinition implements IDefinition {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
-          let relativePath = this.getRelativePath(candItem.defaultFile, packRootFolder);
+        if (candItem.primaryFile) {
+          let relativePath = this.getRelativePath(candItem.primaryFile, packRootFolder);
 
           if (relativePath) {
             if (textureList && textureList.includes(relativePath)) {

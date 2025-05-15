@@ -34,8 +34,7 @@ export default interface MinecraftFuel {
 
   /**
    * @remarks
-   * How long in seconds will this fuel cook items for. Minimum value:
-   * 0.05.
+   * How long in seconds will this fuel cook items for.
    * 
    * Sample Values:
    * My Sword Chuck: 3

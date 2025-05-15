@@ -582,158 +582,290 @@ export default class FormJsonDocumentationGenerator {
     await outputFile.saveContent();
   }
 
-  public mergeOntoForm(formObj: IFormDefinition, genForm: IFormDefinition) {
-    if (!formObj.description || formObj.description === "") {
-      formObj.description = genForm.description;
+  public mergeOntoForm(targetForm: IFormDefinition, formToMergeOn: IFormDefinition) {
+    if (!targetForm.description || targetForm.description === "") {
+      targetForm.description = formToMergeOn.description;
     }
-    if (!formObj.title || formObj.title === "") {
-      formObj.title = genForm.title;
+    if (!targetForm.title || targetForm.title === "") {
+      targetForm.title = formToMergeOn.title;
     }
 
-    if (formObj.samples) {
-      for (const samplePath in genForm.samples) {
-        formObj.samples[samplePath] = genForm.samples[samplePath];
+    if (targetForm.samples) {
+      for (const samplePath in formToMergeOn.samples) {
+        targetForm.samples[samplePath] = formToMergeOn.samples[samplePath];
       }
     } else {
-      formObj.samples = genForm.samples;
+      targetForm.samples = formToMergeOn.samples;
     }
 
-    if (!formObj.id) {
-      formObj.id = genForm.id;
+    if (!targetForm.id) {
+      targetForm.id = formToMergeOn.id;
     }
 
-    if (!formObj.note) {
-      formObj.note = genForm.note;
+    if (!targetForm.note) {
+      targetForm.note = formToMergeOn.note;
     }
 
-    if (!formObj.note2) {
-      formObj.note2 = genForm.note2;
+    if (!targetForm.note2) {
+      targetForm.note2 = formToMergeOn.note2;
     }
 
-    if (!formObj.note3) {
-      formObj.note3 = genForm.note3;
+    if (!targetForm.note3) {
+      targetForm.note3 = formToMergeOn.note3;
     }
 
-    if (!formObj.restrictions) {
-      formObj.restrictions = genForm.restrictions;
+    if (!targetForm.restrictions) {
+      targetForm.restrictions = formToMergeOn.restrictions;
     }
 
-    if (!formObj.requires) {
-      formObj.requires = genForm.requires;
+    if (!targetForm.requires) {
+      targetForm.requires = formToMergeOn.requires;
     }
 
-    if (!formObj.scalarField) {
-      formObj.scalarField = genForm.scalarField;
+    if (!targetForm.scalarField) {
+      targetForm.scalarField = formToMergeOn.scalarField;
     }
 
-    if (!formObj.customField) {
-      formObj.customField = genForm.customField;
+    if (!targetForm.customField) {
+      targetForm.customField = formToMergeOn.customField;
     }
 
-    if (!formObj.scalarFieldUpgradeName) {
-      formObj.scalarFieldUpgradeName = genForm.scalarFieldUpgradeName;
+    if (!targetForm.scalarFieldUpgradeName) {
+      targetForm.scalarFieldUpgradeName = formToMergeOn.scalarFieldUpgradeName;
     }
 
-    if (!formObj.isDeprecated) {
-      formObj.isDeprecated = genForm.isDeprecated;
+    if (!targetForm.isDeprecated) {
+      targetForm.isDeprecated = formToMergeOn.isDeprecated;
     }
 
-    if (!formObj.tags) {
-      formObj.tags = genForm.tags;
+    if (!targetForm.versionIntroduced) {
+      targetForm.versionIntroduced = formToMergeOn.versionIntroduced;
     }
 
-    if (!formObj.isInternal) {
-      formObj.isInternal = genForm.isInternal;
+    if (!targetForm.versionDeprecated) {
+      targetForm.versionDeprecated = formToMergeOn.versionDeprecated;
     }
 
-    if (!formObj.dataVersion) {
-      formObj.dataVersion = genForm.dataVersion;
+    if (!targetForm.tags) {
+      targetForm.tags = formToMergeOn.tags;
     }
 
-    if (formObj.fields && formObj.fields.length === 0) {
-      formObj.id = genForm.id;
+    if (!targetForm.isInternal) {
+      targetForm.isInternal = formToMergeOn.isInternal;
+    }
 
-      formObj.fields = genForm.fields;
+    if (!targetForm.dataVersion) {
+      targetForm.dataVersion = formToMergeOn.dataVersion;
+    }
+
+    if (targetForm.fields && targetForm.fields.length === 0) {
+      targetForm.id = formToMergeOn.id;
+
+      targetForm.fields = formToMergeOn.fields;
     } else {
-      const formFields: { [id: string]: IField } = {};
+      const formFields: { [id: string]: IField | undefined } = {};
 
-      if (!formObj.fields) {
-        formObj.fields = genForm.fields;
+      if (!targetForm.fields) {
+        targetForm.fields = formToMergeOn.fields;
       } else {
-        for (const targetField of formObj.fields) {
+        for (const targetField of targetForm.fields) {
           formFields[targetField.id] = targetField;
         }
 
-        for (const field of genForm.fields) {
-          const targetField = formFields[field.id];
+        for (const mergeOnField of formToMergeOn.fields) {
+          const targetField = formFields[mergeOnField.id];
 
           if (!targetField) {
-            formObj.fields.push(field);
+            targetForm.fields.push(mergeOnField);
           } else {
-            targetField.samples = field.samples;
+            if (targetField.isRemoved) {
+              formFields[mergeOnField.id] = undefined;
 
-            if (!targetField.defaultValue) {
-              targetField.defaultValue = field.defaultValue;
-            }
+              const newFieldArr: IField[] = [];
+              for (const updatedField of targetForm.fields) {
+                if (updatedField.id !== mergeOnField.id) {
+                  newFieldArr.push(updatedField);
+                }
+              }
 
-            if (!targetField.alternates) {
-              targetField.alternates = field.alternates;
-            }
+              targetForm.fields = newFieldArr;
+            } else {
+              targetField.samples = mergeOnField.samples;
 
-            if (!targetField.description) {
-              targetField.description = field.description;
-            }
+              if (!targetField.defaultValue) {
+                targetField.defaultValue = mergeOnField.defaultValue;
+              }
 
-            if (!targetField.title) {
-              targetField.title = field.title;
-            }
+              if (mergeOnField.subForm) {
+                if (!targetField.subForm) {
+                  targetField.subForm = {
+                    fields: [],
+                  };
+                }
 
-            if (!targetField.humanifyValues) {
-              targetField.humanifyValues = field.humanifyValues;
-            }
+                this.mergeOntoForm(targetField.subForm, mergeOnField.subForm);
+              }
 
-            if (!targetField.tags) {
-              targetField.tags = field.tags;
-            }
+              if (!targetField.alternates) {
+                targetField.alternates = mergeOnField.alternates;
+              }
 
-            if (!targetField.minLength) {
-              targetField.minLength = field.minLength;
-            }
+              if (!targetField.description) {
+                targetField.description = mergeOnField.description;
+              }
 
-            if (!targetField.maxLength) {
-              targetField.maxLength = field.maxLength;
-            }
+              if (!targetField.title) {
+                targetField.title = mergeOnField.title;
+              }
 
-            if (!targetField.minValue) {
-              targetField.minValue = field.minValue;
-            }
+              if (!targetField.versionDeprecated) {
+                targetField.versionDeprecated = mergeOnField.versionDeprecated;
+              }
 
-            if (!targetField.maxValue) {
-              targetField.maxValue = field.maxValue;
-            }
+              if (!targetField.versionIntroduced) {
+                targetField.versionIntroduced = mergeOnField.versionIntroduced;
+              }
 
-            if (!targetField.suggestedMinValue) {
-              targetField.suggestedMinValue = field.suggestedMinValue;
-            }
+              if (!targetField.humanifyValues) {
+                targetField.humanifyValues = mergeOnField.humanifyValues;
+              }
 
-            if (!targetField.suggestedMaxValue) {
-              targetField.suggestedMaxValue = field.suggestedMaxValue;
-            }
+              if (!targetField.tags) {
+                targetField.tags = mergeOnField.tags;
+              }
 
-            if (!targetField.isRequired) {
-              targetField.isRequired = field.isRequired;
-            }
+              if (!targetField.minLength) {
+                targetField.minLength = mergeOnField.minLength;
+              }
 
-            if (targetField.dataType === undefined) {
-              targetField.dataType = field.dataType;
-            }
+              if (!targetField.maxLength) {
+                targetField.maxLength = mergeOnField.maxLength;
+              }
 
-            if (!targetField.choices) {
-              targetField.choices = field.choices;
-            }
+              if (!targetField.minValue) {
+                targetField.minValue = mergeOnField.minValue;
+              }
 
-            if (!targetField.validity) {
-              targetField.validity = field.validity;
+              if (!targetField.priority) {
+                targetField.priority = mergeOnField.priority;
+              }
+
+              if (!targetField.note) {
+                targetField.note = mergeOnField.note;
+              }
+
+              if (!targetField.note2) {
+                targetField.note2 = mergeOnField.note2;
+              }
+
+              if (!targetField.note3) {
+                targetField.note3 = mergeOnField.note3;
+              }
+
+              if (!targetField.fixedLength) {
+                targetField.fixedLength = mergeOnField.fixedLength;
+              }
+
+              if (!targetField.undefinedIfEmpty) {
+                targetField.undefinedIfEmpty = mergeOnField.undefinedIfEmpty;
+              }
+
+              if (!targetField.allowedKeys) {
+                targetField.allowedKeys = mergeOnField.allowedKeys;
+              }
+
+              if (!targetField.objectArrayTitleFieldKey) {
+                targetField.objectArrayTitleFieldKey = mergeOnField.objectArrayTitleFieldKey;
+              }
+
+              if (!targetField.objectArrayToSubFieldKey) {
+                targetField.objectArrayToSubFieldKey = mergeOnField.objectArrayToSubFieldKey;
+              }
+
+              if (!targetField.matchObjectArrayLengthToSubFieldLength) {
+                targetField.matchObjectArrayLengthToSubFieldLength =
+                  mergeOnField.matchObjectArrayLengthToSubFieldLength;
+              }
+
+              if (!targetField.matchObjectArrayToSubFieldKey) {
+                targetField.matchObjectArrayToSubFieldKey = mergeOnField.matchObjectArrayToSubFieldKey;
+              }
+
+              if (!targetField.keyDescription) {
+                targetField.keyDescription = mergeOnField.keyDescription;
+              }
+
+              if (!targetField.maxValue) {
+                targetField.maxValue = mergeOnField.maxValue;
+              }
+
+              if (!targetField.suggestedMinValue) {
+                targetField.suggestedMinValue = mergeOnField.suggestedMinValue;
+              }
+
+              if (!targetField.suggestedMaxValue) {
+                targetField.suggestedMaxValue = mergeOnField.suggestedMaxValue;
+              }
+
+              if (!targetField.isRequired) {
+                targetField.isRequired = mergeOnField.isRequired;
+              }
+
+              if (targetField.dataType === undefined) {
+                targetField.dataType = mergeOnField.dataType;
+              }
+
+              if (mergeOnField.choices) {
+                if (!targetField.choices) {
+                  targetField.choices = [];
+                }
+
+                for (const mergeOnChoice of mergeOnField.choices) {
+                  let foundChoice = false;
+
+                  for (const targetChoice of targetField.choices) {
+                    if (targetChoice.id === mergeOnChoice.id) {
+                      foundChoice = true;
+
+                      if (!targetChoice.title) {
+                        targetChoice.title = mergeOnChoice.title;
+                      }
+
+                      if (!targetChoice.description) {
+                        targetChoice.description = mergeOnChoice.description;
+                      }
+
+                      if (!targetChoice.isDeprecated) {
+                        targetChoice.isDeprecated = mergeOnChoice.isDeprecated;
+                      }
+
+                      if (!targetChoice.iconImage) {
+                        targetChoice.iconImage = mergeOnChoice.iconImage;
+                      }
+
+                      if (!targetChoice.versionIntroduced) {
+                        targetChoice.versionIntroduced = mergeOnChoice.versionIntroduced;
+                      }
+
+                      if (!targetChoice.versionDeprecated) {
+                        targetChoice.versionDeprecated = mergeOnChoice.versionDeprecated;
+                      }
+
+                      break;
+                    }
+                  }
+
+                  if (!foundChoice) {
+                    targetField.choices.push(mergeOnChoice);
+                  }
+                }
+
+                targetField.choices = mergeOnField.choices;
+              }
+
+              if (!targetField.validity) {
+                targetField.validity = mergeOnField.validity;
+              }
             }
           }
         }

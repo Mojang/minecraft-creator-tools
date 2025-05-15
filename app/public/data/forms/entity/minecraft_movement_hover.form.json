@@ -22,6 +22,12 @@
         "path": "/minecraft:entity/components/minecraft:movement.hover/",
         "content": {}
       }
+    ],
+    "/vanilla/behavior_pack/entities/happy_ghast.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:movement.hover/",
+        "content": {}
+      }
     ]
   },
   "id": "minecraft:movement.hover"

@@ -101,6 +101,10 @@ export default class ManagedPermutation implements IManagedComponentSetItem {
     }
 
     this._data.components[id] = undefined;
+
+    if (this._managed) {
+      this._managed[id] = undefined;
+    }
   }
 
   getComponent(id: string): IManagedComponent | undefined {

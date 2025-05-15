@@ -44,8 +44,8 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
       if (pi.itemType === ProjectItemType.entityTypeBehavior) {
         await pi.ensureFileStorage();
 
-        if (pi.availableFile) {
-          const bpEntityType = await EntityTypeDefinition.ensureOnFile(pi.availableFile);
+        if (pi.primaryFile) {
+          const bpEntityType = await EntityTypeDefinition.ensureOnFile(pi.primaryFile);
 
           if (bpEntityType) {
             await bpEntityType.load();
@@ -88,8 +88,8 @@ export default class StrictPlatformInfoGenerator implements IProjectInfoGenerato
       } else if (pi.itemType === ProjectItemType.itemTypeBehavior) {
         await pi.ensureFileStorage();
 
-        if (pi.availableFile) {
-          const bpItemType = await ItemTypeDefinition.ensureOnFile(pi.availableFile);
+        if (pi.primaryFile) {
+          const bpItemType = await ItemTypeDefinition.ensureOnFile(pi.primaryFile);
 
           if (bpItemType) {
             await bpItemType.load();

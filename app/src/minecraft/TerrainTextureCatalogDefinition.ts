@@ -250,8 +250,8 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && texturePathList) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
-          let relativePath = this.getRelativePath(candItem.defaultFile, packRootFolder);
+        if (candItem.primaryFile) {
+          let relativePath = this.getRelativePath(candItem.primaryFile, packRootFolder);
 
           if (relativePath) {
             if (texturePathList && texturePathList.includes(relativePath)) {

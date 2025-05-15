@@ -75,4 +75,15 @@ export default class Pack {
       return folder.manager as Pack;
     }
   }
+
+  async getFiles(predicate?: (file: IFile) => boolean): Promise<IFile[]> {
+    const result = [];
+    for await (const file of this.folder.allFiles) {
+      if (!predicate || predicate(file)) {
+        result.push(file);
+      }
+    }
+
+    return result;
+  }
 }

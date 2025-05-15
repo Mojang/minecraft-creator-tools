@@ -64,7 +64,8 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       if (projectItem.itemType === ProjectItemType.texture) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
+        const itemFile = projectItem.primaryFile;
+        if (itemFile) {
           let pathInRp = projectItem.getPackRelativePath();
           let isVanilla = false;
 
@@ -85,14 +86,14 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
           let imageWidth = -1;
           let imageHeight = -1;
 
-          if (projectItem.availableFile.type !== "tga") {
-            await projectItem.availableFile.loadContent();
+          if (itemFile.type !== "tga") {
+            await itemFile.loadContent();
 
-            if (projectItem.availableFile.content && projectItem.availableFile.content instanceof Uint8Array) {
+            if (itemFile.content && itemFile.content instanceof Uint8Array) {
               const exifr = new Exifr({});
 
               try {
-                await exifr.read(projectItem.availableFile.content);
+                await exifr.read(itemFile.content);
 
                 const results = await exifr.parse();
 
@@ -121,13 +122,13 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
               }
             }
 
-            projectItem.availableFile.unload();
+            itemFile.unload();
           } else {
-            await projectItem.availableFile.loadContent();
+            await itemFile.loadContent();
 
-            if (projectItem.availableFile.content && projectItem.availableFile.content instanceof Uint8Array) {
+            if (itemFile.content && itemFile.content instanceof Uint8Array) {
               try {
-                const tga = await decodeTga(projectItem.availableFile.content);
+                const tga = await decodeTga(itemFile.content);
 
                 imageWidth = tga.image.width;
                 imageHeight = tga.image.height;

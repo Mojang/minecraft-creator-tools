@@ -46,6 +46,17 @@ export const AllowedExtensions = [
   "mc",
   "",
   "zip",
+  "wlist",
+  "brarchive",
+  "nbt",
+  "webm",
+  "svg",
+  "otf",
+  "bin",
+  "obj",
+  "pdn",
+  "h",
+  "fontdata",
   "mcstructure",
   "mcworld",
   "mcproject",
@@ -66,6 +77,10 @@ export const AllowedExtensions = [
   "ldb",
   "log",
 ];
+
+const IgnoreExtensions = ["ds_store", "brarchive"];
+
+const IgnoreFolders = ["__MACOSX", "credits", "shaders", "hbui", "ray_tracing", "node_modules", "test", "__brarchive"];
 
 const _minecraftProjectFolderNames = [
   "behavior_packs",
@@ -105,11 +120,20 @@ export enum EncodingType {
 
 export default class StorageUtilities {
   public static standardFolderDelimiter = "/";
+  private static textEncoder = new TextEncoder();
 
   public static isUsableFile(path: string) {
     const extension = StorageUtilities.getTypeFromName(path);
 
     return AllowedExtensions.includes(extension);
+  }
+
+  public static canIgnoreFileExtension(extension: string) {
+    return IgnoreExtensions.includes(extension);
+  }
+
+  public static canIgnoreFolders(folder: string) {
+    return IgnoreFolders.includes(folder);
   }
 
   public static getEncodingByFileName(name: string): EncodingType {
@@ -207,6 +231,40 @@ export default class StorageUtilities {
     }
 
     return path;
+  }
+
+  /***
+   * returns true if IFile argument is a .json file
+   */
+  public static isJsonFile(file?: IFile | null): file is IFile {
+    return !!file && file.fullPath.endsWith(".json");
+  }
+
+  /***
+   * Checks binary file contents for a UTF8 Byte Order Mark
+   *
+   * falsey contents will return false
+   */
+  public static hasUTF8ByteOrderMark(bytes?: Uint8Array | null) {
+    if (!bytes) {
+      return false;
+    }
+
+    return bytes.length >= 3 && bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf;
+  }
+
+  /***
+   * Normalizes file contents by converting non-binary contents into binary
+   *
+   * falsey content will return as null
+   */
+  public static getContentsAsBinary(file: IFile): Uint8Array | null {
+    if (!file || !file.content) return null;
+    if (typeof file.content === "string") {
+      return StorageUtilities.textEncoder.encode(file.content);
+    }
+
+    return file.content as Uint8Array;
   }
 
   public static ensureStartsWithDelimiter(path: string) {
@@ -803,7 +861,7 @@ export default class StorageUtilities {
     for (const fileName in folder.files) {
       const file = folder.files[fileName];
 
-      if (file) {
+      if (file && !file.canIgnore) {
         return file;
       }
     }
@@ -814,7 +872,7 @@ export default class StorageUtilities {
       if (subFolder) {
         const file = this.getFirstFile(subFolder);
 
-        if (file) {
+        if (file && !file.canIgnore) {
           return file;
         }
       }

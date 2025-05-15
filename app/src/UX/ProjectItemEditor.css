@@ -11,20 +11,24 @@
 .pie-grid {
   display: grid;
   grid-template-columns: 250px 1fr;
-  grid-template-rows: 36px 1fr;
+  grid-template-rows: 52px 1fr;
 }
 
 .pie-variantView {
   grid-row: 1;
   grid-column: 1;
-  padding-top: 1px;
+  padding-top: 2px;
   padding-left: 2px;
 }
 
 .pie-viewTabs {
   grid-row: 1;
   grid-column: 2;
-  padding-top: 5px;
+  padding-top: 3px;
+  overflow-x: auto;
+}
+.pie-viewTabs button {
+  min-width: inherit;
 }
 
 .pie-interior {

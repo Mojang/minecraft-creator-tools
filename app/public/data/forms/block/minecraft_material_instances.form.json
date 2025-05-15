@@ -234,6 +234,51 @@
             }
           }
         ]
+      },
+      "subForm": {
+        "fields": [
+          {
+            "id": "texture",
+            "title": "Texture",
+            "dataType": 2,
+            "samples": {
+              "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
+                {
+                  "path": "texture",
+                  "content": "mikeamm_gwve_fabricator"
+                }
+              ]
+            }
+          },
+          {
+            "id": "render_method",
+            "title": "Render_method",
+            "dataType": 2,
+            "samples": {
+              "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
+                {
+                  "path": "render_method",
+                  "content": "alpha_test"
+                }
+              ]
+            }
+          },
+          {
+            "id": "ambient_occlusion",
+            "title": "Ambient_occlusion",
+            "dataType": 7,
+            "samples": {
+              "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json": [
+                {
+                  "path": "ambient_occlusion",
+                  "content": 1
+                }
+              ]
+            }
+          }
+        ],
+        "title": "*",
+        "id": "*"
       }
     },
     {

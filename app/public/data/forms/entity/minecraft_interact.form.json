@@ -1,199 +1,127 @@
 {
   "fields": [
     {
-      "id": "add_items",
-      "title": "Add Items",
-      "description": "Loot table with items to add to the player's inventory upon successful interaction.",
-      "dataType": 15,
+      "id": "interactions",
       "subForm": {
-        "description": "Loot table with items to add to the player's inventory upon successful interaction.",
+        "id": "interactions",
         "fields": [
           {
-            "id": "table",
-            "title": "Table",
-            "description": "File path, relative to the Behavior Pack's path, to the loot table file.",
+            "id": "particle_on_start",
+            "title": "Particle On Start",
+            "description": "Particle effect that will be triggered at the start of the interaction.",
+            "dataType": 15,
+            "subForm": {
+              "description": "Particle effect that will be triggered at the start of the interaction.",
+              "fields": [
+                {
+                  "id": "particle_offset_towards_interactor",
+                  "title": "Particle Offset Towards Interactor",
+                  "description": "Whether or not the particle will appear closer to who performed the interaction.",
+                  "defaultValue": false,
+                  "dataType": 1
+                },
+                {
+                  "id": "particle_type",
+                  "title": "Particle Type",
+                  "description": "The type of particle that will be spawned.",
+                  "dataType": 2
+                },
+                {
+                  "id": "particle_y_offset",
+                  "title": "Particle Y Offset",
+                  "description": "Will offset the particle this amount in the y direction.",
+                  "defaultValue": 0,
+                  "dataType": 3
+                }
+              ]
+            }
+          },
+          {
+            "id": "play_sounds",
+            "title": "Play Sounds",
+            "description": "List of sounds to play when the interaction occurs.",
             "dataType": 2
-          }
-        ]
-      }
-    },
-    {
-      "id": "cooldown",
-      "title": "Cooldown",
-      "description": "Time in seconds before this entity can be interacted with again.",
-      "defaultValue": 0,
-      "dataType": 3
-    },
-    {
-      "id": "cooldown_after_being_attacked",
-      "title": "Cooldown After Being Attacked",
-      "description": "Time in seconds before this entity can be interacted with after being attacked.",
-      "defaultValue": 0,
-      "dataType": 3
-    },
-    {
-      "id": "drop_item_slot",
-      "title": "Drop Item Slot",
-      "description": "The entity's slot to remove and drop the item from, if any, upon successful interaction. Inventory slots are denoted by positive numbers. Armor slots are denoted by 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs', 'slot.armor.feet' and 'slot.armor.body'.",
-      "dataType": 2
-    },
-    {
-      "id": "drop_item_y_offset",
-      "title": "Drop Item Y Offset",
-      "description": "Will offset the item drop position this amount in the y direction. Requires \"drop_item_slot\" to be specified.",
-      "defaultValue": 0,
-      "dataType": 3
-    },
-    {
-      "id": "equip_item_slot",
-      "title": "Equip Item Slot",
-      "description": "The entity's slot to equip the item to, if any, upon successful interaction. Inventory slots are denoted by positive numbers. Armor slots are denoted by 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs', 'slot.armor.feet' and 'slot.armor.body'.",
-      "dataType": 2
-    },
-    {
-      "id": "health_amount",
-      "title": "Health Amount",
-      "description": "The amount of health this entity will recover or lose when interacting with this item. Negative values will harm the entity.",
-      "defaultValue": 0,
-      "dataType": 0
-    },
-    {
-      "id": "hurt_item",
-      "title": "Hurt Item",
-      "description": "The amount of damage the item will take when used to interact with this entity. A value of 0 means the item won't lose durability.",
-      "defaultValue": 0,
-      "dataType": 0
-    },
-    {
-      "id": "interact_text",
-      "title": "Interact Text",
-      "description": "Text to show when the player is able to interact in this way with this entity when playing with Touch-screen controls.",
-      "dataType": 2
-    },
-    {
-      "id": "on_interact",
-      "title": "On Interact",
-      "description": "Event to fire when the interaction occurs.",
-      "dataType": 22
-    },
-    {
-      "id": "particle_on_start",
-      "title": "Particle On Start",
-      "description": "Particle effect that will be triggered at the start of the interaction.",
-      "dataType": 15,
-      "subForm": {
-        "description": "Particle effect that will be triggered at the start of the interaction.",
-        "fields": [
+          },
           {
-            "id": "particle_offset_towards_interactor",
-            "title": "Particle Offset Towards Interactor",
-            "description": "Whether or not the particle will appear closer to who performed the interaction.",
+            "id": "repair_entity_item",
+            "title": "Repair Entity Item",
+            "description": "Allows to repair one of the entity's items.",
+            "dataType": 15,
+            "subForm": {
+              "description": "Allows to repair one of the entity's items.",
+              "fields": [
+                {
+                  "id": "amount",
+                  "title": "Amount",
+                  "description": "How much of the item durability should be restored upon interaction.",
+                  "dataType": 0
+                },
+                {
+                  "id": "slot",
+                  "title": "Slot",
+                  "description": "The entity's slot containing the item to be repaired. Inventory slots are denoted by positive numbers. Armor slots are denoted by 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs', 'slot.armor.feet' and 'slot.armor.body'.",
+                  "dataType": 0
+                }
+              ]
+            }
+          },
+          {
+            "id": "spawn_entities",
+            "title": "Spawn Entities",
+            "description": "List of entities to spawn when the interaction occurs.",
+            "dataType": 2
+          },
+          {
+            "id": "spawn_items",
+            "title": "Spawn Items",
+            "description": "Loot table with items to drop on the ground upon successful interaction.",
+            "dataType": 15,
+            "subForm": {
+              "description": "Loot table with items to drop on the ground upon successful interaction.",
+              "fields": [
+                {
+                  "id": "table",
+                  "title": "Table",
+                  "description": "File path, relative to the Behavior Pack's path, to the loot table file.",
+                  "dataType": 2
+                },
+                {
+                  "id": "y_offset",
+                  "title": "Y Offset",
+                  "description": "Will offset the items spawn position this amount in the y direction.",
+                  "defaultValue": 1,
+                  "dataType": 3
+                }
+              ]
+            }
+          },
+          {
+            "id": "swing",
+            "title": "Swing",
+            "description": "If true, the player will do the 'swing' animation when interacting with this entity.",
             "defaultValue": false,
             "dataType": 1
           },
           {
-            "id": "particle_type",
-            "title": "Particle Type",
-            "description": "The type of particle that will be spawned.",
+            "id": "transform_to_item",
+            "title": "Transform To Item",
+            "description": "The item used will transform to this item upon successful interaction. Format: itemName:auxValue",
             "dataType": 2
           },
           {
-            "id": "particle_y_offset",
-            "title": "Particle Y Offset",
-            "description": "Will offset the particle this amount in the y direction.",
-            "defaultValue": 0,
-            "dataType": 3
-          }
-        ]
-      }
-    },
-    {
-      "id": "play_sounds",
-      "title": "Play Sounds",
-      "description": "List of sounds to play when the interaction occurs.",
-      "dataType": 2
-    },
-    {
-      "id": "repair_entity_item",
-      "title": "Repair Entity Item",
-      "description": "Allows to repair one of the entity's items.",
-      "dataType": 15,
-      "subForm": {
-        "description": "Allows to repair one of the entity's items.",
-        "fields": [
-          {
-            "id": "amount",
-            "title": "Amount",
-            "description": "How much of the item durability should be restored upon interaction.",
-            "dataType": 0
+            "id": "use_item",
+            "title": "Use Item",
+            "description": "If true, the interaction will use an item.",
+            "defaultValue": false,
+            "dataType": 1
           },
           {
-            "id": "slot",
-            "title": "Slot",
-            "description": "The entity's slot containing the item to be repaired. Inventory slots are denoted by positive numbers. Armor slots are denoted by 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs', 'slot.armor.feet' and 'slot.armor.body'.",
-            "dataType": 0
-          }
-        ]
-      }
-    },
-    {
-      "id": "spawn_entities",
-      "title": "Spawn Entities",
-      "description": "List of entities to spawn when the interaction occurs.",
-      "dataType": 2
-    },
-    {
-      "id": "spawn_items",
-      "title": "Spawn Items",
-      "description": "Loot table with items to drop on the ground upon successful interaction.",
-      "dataType": 15,
-      "subForm": {
-        "description": "Loot table with items to drop on the ground upon successful interaction.",
-        "fields": [
-          {
-            "id": "table",
-            "title": "Table",
-            "description": "File path, relative to the Behavior Pack's path, to the loot table file.",
+            "id": "vibration",
+            "title": "Vibration",
+            "description": "Vibration to emit when the interaction occurs. Admitted values are none (no vibration emitted), shear, entity_die, entity_act, entity_interact.",
+            "defaultValue": "entity_interact",
             "dataType": 2
-          }
-        ]
-      }
-    },
-    {
-      "id": "swing",
-      "title": "Swing",
-      "description": "If true, the player will do the 'swing' animation when interacting with this entity.",
-      "defaultValue": false,
-      "dataType": 1
-    },
-    {
-      "id": "transform_to_item",
-      "title": "Transform To Item",
-      "description": "The item used will transform to this item upon successful interaction. Format: itemName:auxValue",
-      "dataType": 2
-    },
-    {
-      "id": "use_item",
-      "title": "Use Item",
-      "description": "If true, the interaction will use an item.",
-      "defaultValue": false,
-      "dataType": 1
-    },
-    {
-      "id": "vibration",
-      "title": "Vibration",
-      "description": "Vibration to emit when the interaction occurs. Admitted values are none (no vibration emitted), shear, entity_die, entity_act, entity_interact.",
-      "defaultValue": "entity_interact",
-      "dataType": 2
-    },
-    {
-      "id": "interactions",
-      "title": "Interactions",
-      "dataType": 15,
-      "subForm": {
-        "id": "interactions",
-        "title": "Interactions",
-        "fields": [
+          },
           {
             "id": "on_interact",
             "title": "On_interact",
@@ -329,7 +257,8 @@
               ]
             }
           }
-        ]
+        ],
+        "title": "Interactions"
       },
       "samples": {
         "/vanilla/behavior_pack/entities/allay.json": [
@@ -393,7 +322,62 @@
             ]
           }
         ]
-      }
+      },
+      "title": "Interactions",
+      "dataType": 15
+    },
+    {
+      "id": "cooldown",
+      "title": "Cooldown",
+      "description": "Time in seconds before this entity can be interacted with again.",
+      "defaultValue": 0,
+      "dataType": 3
+    },
+    {
+      "id": "cooldown_after_being_attacked",
+      "title": "Cooldown After Being Attacked",
+      "description": "Time in seconds before this entity can be interacted with after being attacked.",
+      "defaultValue": 0,
+      "dataType": 3
+    },
+    {
+      "id": "drop_item_slot",
+      "title": "Drop Item Slot",
+      "description": "The entity's slot to remove and drop the item from, if any, upon successful interaction. Inventory slots are denoted by positive numbers. Armor slots are denoted by 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs', 'slot.armor.feet' and 'slot.armor.body'.",
+      "dataType": 2
+    },
+    {
+      "id": "drop_item_y_offset",
+      "title": "Drop Item Y Offset",
+      "description": "Will offset the item drop position this amount in the y direction. Requires \"drop_item_slot\" to be specified.",
+      "defaultValue": 0,
+      "dataType": 3
+    },
+    {
+      "id": "equip_item_slot",
+      "title": "Equip Item Slot",
+      "description": "The entity's slot to equip the item to, if any, upon successful interaction. Inventory slots are denoted by positive numbers. Armor slots are denoted by 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs', 'slot.armor.feet' and 'slot.armor.body'.",
+      "dataType": 2
+    },
+    {
+      "id": "health_amount",
+      "title": "Health Amount",
+      "description": "The amount of health this entity will recover or lose when interacting with this item. Negative values will harm the entity.",
+      "defaultValue": 0,
+      "dataType": 0
+    },
+    {
+      "id": "hurt_item",
+      "title": "Hurt Item",
+      "description": "The amount of damage the item will take when used to interact with this entity. A value of 0 means the item won't lose durability.",
+      "defaultValue": 0,
+      "dataType": 0
+    },
+    {
+      "id": "interact_text",
+      "title": "Interact Text",
+      "description": "Text to show when the player is able to interact in this way with this entity when playing with touch-screen controls.",
+      "dataType": 2
     }
   ],
   "description": "Defines interactions with this entity.",
@@ -584,9 +568,42 @@
                       "value": "saddle"
                     },
                     {
-                      "test": "is_family",
+                      "test": "is_sneak_held",
                       "subject": "other",
-                      "value": "player"
+                      "value": false
+                    }
+                  ]
+                }
+              },
+              "equip_item_slot": "0",
+              "interact_text": "action.interact.saddle"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "is_sitting",
+                      "subject": "self",
+                      "value": false
+                    },
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "value": "saddle"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
                     },
                     {
                       "test": "is_sneak_held",
@@ -594,11 +611,55 @@
                       "value": false
                     }
                   ]
-                },
-                "target": "self"
+                }
               },
-              "equip_item_slot": "0",
-              "interact_text": "action.interact.saddle"
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 2,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "is_sitting",
+                      "subject": "self"
+                    },
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "value": "saddle"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
             }
           ]
         }
@@ -697,11 +758,6 @@
                       "value": "saddle"
                     },
                     {
-                      "test": "is_family",
-                      "subject": "other",
-                      "value": "player"
-                    },
-                    {
                       "test": "is_sneak_held",
                       "subject": "other",
                       "value": false
@@ -712,6 +768,43 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.equip"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "value": "saddle"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
             }
           ]
         }
@@ -739,11 +832,6 @@
                       "value": "saddle"
                     },
                     {
-                      "test": "is_family",
-                      "subject": "other",
-                      "value": "player"
-                    },
-                    {
                       "test": "is_sneak_held",
                       "subject": "other",
                       "value": false
@@ -756,15 +844,47 @@
               "interact_text": "action.interact.saddle"
             },
             {
-              "play_sounds": "armor.equip_generic",
               "on_interact": {
                 "filters": {
                   "all_of": [
                     {
-                      "test": "is_family",
-                      "subject": "other",
-                      "value": "player"
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
                     },
+                    {
+                      "test": "has_equipment",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "value": "saddle"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
+            },
+            {
+              "play_sounds": "armor.equip_generic",
+              "on_interact": {
+                "filters": {
+                  "all_of": [
                     {
                       "test": "is_sneaking",
                       "subject": "other",
@@ -825,6 +945,43 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.saddle"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "value": "saddle"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
             }
           ]
         }
@@ -904,6 +1061,165 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/happy_ghast.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:unharnessed/minecraft:interact/",
+        "content": {
+          "interactions": [
+            {
+              "on_interact": {
+                "filters": {
+                  "any_of": [
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "black_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "blue_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "brown_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "cyan_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "gray_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "green_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "light_blue_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "light_gray_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "lime_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "magenta_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "orange_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "pink_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "purple_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "red_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "white_harness"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "yellow_harness"
+                    }
+                  ]
+                },
+                "event": "minecraft:on_harnessed",
+                "target": "self"
+              },
+              "use_item": true,
+              "equip_item_slot": "slot.armor.body",
+              "play_sounds": "armor.equip_generic",
+              "interact_text": "action.interact.equipharness"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:interact/",
+        "content": {
+          "interactions": [
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    }
+                  ]
+                },
+                "event": "minecraft:on_unharnessed",
+                "target": "self"
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "slot.armor.body",
+              "drop_item_y_offset": 5,
+              "play_sounds": "armor.unequip_generic",
+              "interact_text": "action.interact.removeharness",
+              "vibration": "shear"
+            }
+          ]
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/horse.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:horse_tamed/minecraft:interact/",
@@ -971,11 +1287,6 @@
                       ]
                     },
                     {
-                      "test": "is_family",
-                      "subject": "other",
-                      "value": "player"
-                    },
-                    {
                       "test": "is_sneak_held",
                       "subject": "other",
                       "value": false
@@ -986,6 +1297,65 @@
               },
               "equip_item_slot": "1",
               "interact_text": "action.interact.equiphorsearmor"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    },
+                    {
+                      "any_of": [
+                        {
+                          "test": "has_equipment",
+                          "subject": "self",
+                          "domain": "inventory",
+                          "value": "leather_horse_armor"
+                        },
+                        {
+                          "test": "has_equipment",
+                          "subject": "self",
+                          "domain": "inventory",
+                          "value": "iron_horse_armor"
+                        },
+                        {
+                          "test": "has_equipment",
+                          "subject": "self",
+                          "domain": "inventory",
+                          "value": "golden_horse_armor"
+                        },
+                        {
+                          "test": "has_equipment",
+                          "subject": "self",
+                          "domain": "inventory",
+                          "value": "diamond_horse_armor"
+                        }
+                      ]
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "1",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removehorsearmor",
+              "play_sounds": "shear",
+              "vibration": "shear"
             },
             {
               "play_sounds": "saddle",
@@ -1006,11 +1376,6 @@
                       "value": "saddle"
                     },
                     {
-                      "test": "is_family",
-                      "subject": "other",
-                      "value": "player"
-                    },
-                    {
                       "test": "is_sneak_held",
                       "subject": "other",
                       "value": false
@@ -1021,6 +1386,43 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.saddle"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "value": "saddle"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
             }
           ]
         }
@@ -1047,8 +1449,7 @@
                       "value": "iron_ingot"
                     },
                     {
-                      "test": "is_missing_health",
-                      "value": true
+                      "test": "is_missing_health"
                     }
                   ]
                 }
@@ -1115,11 +1516,6 @@
                       "value": "carpet"
                     },
                     {
-                      "test": "is_family",
-                      "subject": "other",
-                      "value": "player"
-                    },
-                    {
                       "test": "is_sneaking",
                       "subject": "other",
                       "value": false
@@ -1130,6 +1526,43 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.equipcarpet"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "value": "carpet"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removecarpet",
+              "play_sounds": "shear",
+              "vibration": "shear"
             }
           ]
         }
@@ -1172,6 +1605,43 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.equipcarpet"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "value": "carpet"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removecarpet",
+              "play_sounds": "shear",
+              "vibration": "shear"
             }
           ]
         }
@@ -1891,11 +2361,6 @@
                       "value": "chest"
                     },
                     {
-                      "test": "is_family",
-                      "subject": "other",
-                      "value": "player"
-                    },
-                    {
                       "test": "is_sneak_held",
                       "subject": "other",
                       "value": false
@@ -1927,11 +2392,6 @@
                       "value": "saddle"
                     },
                     {
-                      "test": "is_family",
-                      "subject": "other",
-                      "value": "player"
-                    },
-                    {
                       "test": "is_sneak_held",
                       "subject": "other",
                       "value": false
@@ -1942,6 +2402,43 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.saddle"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "value": "saddle"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
             }
           ]
         }
@@ -1984,6 +2481,43 @@
               },
               "equip_item_slot": "0",
               "interact_text": "action.interact.saddle"
+            },
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "self",
+                      "domain": "inventory",
+                      "value": "saddle"
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    }
+                  ]
+                }
+              },
+              "hurt_item": 1,
+              "drop_item_slot": "0",
+              "drop_item_y_offset": 1.1,
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
             }
           ]
         }
@@ -2006,8 +2540,47 @@
               },
               "use_item": true,
               "play_sounds": "saddle",
-              "equip_item_slot": "slot.armor.body",
               "interact_text": "action.interact.saddle"
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:pig_saddled/minecraft:interact/",
+        "content": {
+          "interactions": [
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    }
+                  ]
+                },
+                "event": "minecraft:on_unsaddled"
+              },
+              "hurt_item": 1,
+              "spawn_items": {
+                "table": "loot_tables/entities/saddle.json"
+              },
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
             }
           ]
         }
@@ -2610,6 +3183,47 @@
       }
     ],
     "/vanilla/behavior_pack/entities/strider.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:strider_saddled/minecraft:interact/",
+        "content": {
+          "interactions": [
+            {
+              "on_interact": {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "is_sneak_held",
+                      "subject": "other",
+                      "value": false
+                    },
+                    {
+                      "test": "has_equipment",
+                      "subject": "other",
+                      "domain": "hand",
+                      "value": "shears"
+                    },
+                    {
+                      "test": "rider_count",
+                      "subject": "self",
+                      "operator": "equals",
+                      "value": 0
+                    }
+                  ]
+                },
+                "event": "minecraft:on_unsaddled"
+              },
+              "hurt_item": 1,
+              "spawn_items": {
+                "table": "loot_tables/entities/saddle.json",
+                "y_offset": 1.7
+              },
+              "interact_text": "action.interact.removesaddle",
+              "play_sounds": "shear",
+              "vibration": "shear"
+            }
+          ]
+        }
+      },
       {
         "path": "/minecraft:entity/component_groups/minecraft:strider_unsaddled/minecraft:interact/",
         "content": {

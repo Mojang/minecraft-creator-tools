@@ -209,12 +209,12 @@ Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
 }
 
 
-Hoglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/hoglin.json
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
 
 "minecraft:ageable": {
   "duration": 1200,
   "feed_items": [
-    "crimson_fungus"
+    "minecraft:snowball"
   ],
   "grow_up": {
     "event": "minecraft:ageable_grow_up",
@@ -223,19 +223,12 @@ Hoglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
-Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/llama.json
+Hoglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/hoglin.json
 
 "minecraft:ageable": {
   "duration": 1200,
   "feed_items": [
-    {
-      "item": "wheat",
-      "growth": 0.1
-    },
-    {
-      "item": "hay_block",
-      "growth": 0.9
-    }
+    "crimson_fungus"
   ],
   "grow_up": {
     "event": "minecraft:ageable_grow_up",

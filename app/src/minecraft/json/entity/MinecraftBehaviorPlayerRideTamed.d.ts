@@ -15,6 +15,13 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 
 "minecraft:behavior.player_ride_tamed": {}
 
+
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+"minecraft:behavior.player_ride_tamed": {
+  "priority": 1
+}
+
  */
 
 import * as jsoncommon from './../../jsoncommon';
@@ -31,6 +38,10 @@ export default interface MinecraftBehaviorPlayerRideTamed {
    * As priority approaches 0, the priority is increased. The higher the
    * priority, the sooner this behavior will be executed as a 
    * goal.
+   * 
+   * Sample Values:
+   * Happy Ghast: 1
+   *
    */
   priority: number;
 

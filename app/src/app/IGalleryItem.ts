@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { ProjectItemType } from "./IProjectItemData";
+
 export enum GalleryItemType {
   project = 0,
   chunk = 1,
@@ -10,6 +12,13 @@ export enum GalleryItemType {
   editorCodeSample = 5,
   editorProject = 6,
   itemType = 7,
+  spawnLootRecipes = 21,
+  worldGen = 22,
+  visuals = 23,
+  entityItemBlockSingleFiles = 41,
+  worldGenSingleFiles = 42,
+  visualSingleFiles = 43,
+  catalogSingleFiles = 44,
 }
 
 export interface LogoLocation {
@@ -32,6 +41,7 @@ export default interface IGalleryItem {
   topics?: string[];
   logoLocation?: LogoLocation;
   title: string;
+  targetType?: ProjectItemType;
   description: string;
   targetRuntimeIdentifier?: string;
   containsStructures?: boolean;

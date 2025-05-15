@@ -105,10 +105,10 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
     }
 
     if (this.props.mode !== FileExplorerMode.folderPicker) {
-      for (const fileName in this.props.folder.files) {
+      this.props.folder.getSortedFileKeys().forEach((fileName) => {
         const file = this.props.folder.files[fileName];
 
-        if (file) {
+        if (file && !file.canIgnore) {
           if (StorageUtilities.isContainerFile(fileName)) {
             items.push(
               <FileExplorerContainerFile
@@ -140,17 +140,17 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
             );
           }
         }
-      }
+      });
     }
 
     let bin = <></>;
 
     if (this.state.isExpanded) {
       bin = <div className={binHeader}>{items}</div>;
-      for (const folderName in this.props.folder.folders) {
+      this.props.folder.getSortedFolderKeys().forEach((folderName) => {
         const childFolder = this.props.folder.folders[folderName];
 
-        if (childFolder) {
+        if (childFolder && !childFolder.canIgnore) {
           items.push(
             <FileExplorerFolder
               folder={childFolder}
@@ -169,7 +169,7 @@ export default class FileExplorerFolder extends Component<IFileExplorerFolderPro
             />
           );
         }
-      }
+      });
     }
 
     return (

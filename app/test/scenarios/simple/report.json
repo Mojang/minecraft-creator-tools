@@ -128,7 +128,7 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
-    "testSuccessCount": 21,
+    "testSuccessCount": 23,
     "testFailCount": 0,
     "testNotApplicableCount": 9,
     "errorSummary": "",
@@ -389,6 +389,13 @@
           "testCompleteSuccesses": 1
         }
       },
+      "CPI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Pack Icon Generator (CPI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
       "SCRIPTMODULE": {
         "2": {
           "title": "2",
@@ -455,6 +462,12 @@
       "PATHLENGTH": {
         "1": {
           "defaultMessage": "Path Length (PATHLENGTH) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "NOBOM": {
+        "1": {
+          "defaultMessage": "No Byte Order Mark allowed in json file. (NOBOM) completed successfully",
           "testCompleteSuccesses": 1
         }
       }
@@ -857,6 +870,11 @@
       "gIx": 1
     },
     {
+      "iTp": 0,
+      "gId": "CPI",
+      "gIx": 1
+    },
+    {
       "iTp": 8,
       "gId": "SCRIPTMODULE",
       "gIx": 2
@@ -929,6 +947,11 @@
     {
       "iTp": 0,
       "gId": "PATHLENGTH",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "NOBOM",
       "gIx": 1
     }
   ],

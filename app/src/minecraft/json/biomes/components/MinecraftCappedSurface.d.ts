@@ -23,31 +23,61 @@ export default interface MinecraftCappedSurface {
    * @remarks
    * Material used to decorate surface near sea level.
    */
-  beach_material: string;
+  beach_material: { [key: string]: string };
 
   /**
    * @remarks
    * Materials used for the surface ceiling.
    */
-  ceiling_materials: string;
+  ceiling_materials: { [key: string]: string };
 
   /**
    * @remarks
    * Materials used for the surface floor.
    */
-  floor_materials: string;
+  floor_materials: { [key: string]: string };
 
   /**
    * @remarks
    * Material used to replace solid blocks that are not surface 
    * blocks.
    */
-  foundation_material: string;
+  foundation_material: { [key: string]: string };
 
   /**
    * @remarks
    * Material used to replace air blocks below sea level.
    */
-  sea_material: string;
+  sea_material: { [key: string]: string };
+
+}
+
+
+/**
+ * Beach Material
+ * Specifies a particular block. Can be a string block name or a
+ * JSON object.
+ */
+export interface MinecraftCappedSurfaceBeachMaterial {
+
+}
+
+
+/**
+ * Foundation Material
+ * Specifies a particular block. Can be a string block name or a
+ * JSON object.
+ */
+export interface MinecraftCappedSurfaceFoundationMaterial {
+
+}
+
+
+/**
+ * Sea Material
+ * Specifies a particular block. Can be a string block name or a
+ * JSON object.
+ */
+export interface MinecraftCappedSurfaceSeaMaterial {
 
 }

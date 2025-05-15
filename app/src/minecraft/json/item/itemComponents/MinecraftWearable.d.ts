@@ -73,7 +73,7 @@ export default interface MinecraftWearable {
    *
    *
    */
-  dispensable: string;
+  dispensable: boolean;
 
   /**
    * @remarks

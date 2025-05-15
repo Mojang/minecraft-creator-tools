@@ -72,8 +72,8 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
       if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
-          const blockCat = await BlocksCatalogDefinition.ensureOnFile(projectItem.availableFile);
+        if (projectItem.primaryFile) {
+          const blockCat = await BlocksCatalogDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (blockCat && blockCat.blocksCatalog) {
             for (const resourceId in blockCat.blocksCatalog) {
@@ -113,8 +113,8 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
       } else if (projectItem.itemType === ProjectItemType.particleJson) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
-          const particleEffect = await ParticleEffectResourceDefinition.ensureOnFile(projectItem.availableFile);
+        if (projectItem.primaryFile) {
+          const particleEffect = await ParticleEffectResourceDefinition.ensureOnFile(projectItem.primaryFile);
 
           const desc = particleEffect?.data?.particle_effect?.description;
 
@@ -148,8 +148,8 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
       } else if (projectItem.itemType === ProjectItemType.uiJson) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
-          const jsonUI = await JsonUIResourceDefinition.ensureOnFile(projectItem.availableFile);
+        if (projectItem.primaryFile) {
+          const jsonUI = await JsonUIResourceDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (jsonUI) {
             jsonUITextureRefs.push(...jsonUI.getControlRefs());
@@ -180,8 +180,8 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
       } else if (projectItem.itemType === ProjectItemType.terrainTextureCatalogResourceJson) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
-          const terrainTextureCat = await TerrainTextureCatalogDefinition.ensureOnFile(projectItem.availableFile);
+        if (projectItem.primaryFile) {
+          const terrainTextureCat = await TerrainTextureCatalogDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (terrainTextureCat && terrainTextureCat.data && terrainTextureCat.data.texture_data) {
             for (const terrainTextureId in terrainTextureCat.data.texture_data) {
@@ -212,11 +212,11 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
       } else if (projectItem.itemType === ProjectItemType.flipbookTexturesJson) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
-          const flipbookTexturesCat = await FlipbookTextureCatalogDefinition.ensureOnFile(projectItem.availableFile);
+        if (projectItem.primaryFile) {
+          const flipbookTexturesCat = await FlipbookTextureCatalogDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (flipbookTexturesCat && flipbookTexturesCat && flipbookTexturesCat.data) {
-            const pathId = projectItem.availableFile.storageRelativePath + "_flipbooktextures";
+            const pathId = projectItem.primaryFile.storageRelativePath + "_flipbooktextures";
 
             if (!allTexturePaths.includes(pathId)) {
               allTexturePaths.push(pathId);
@@ -245,8 +245,8 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
       } else if (projectItem.itemType === ProjectItemType.itemTextureJson) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
-          const itemTextureCat = await ItemTextureCatalogDefinition.ensureOnFile(projectItem.availableFile);
+        if (projectItem.primaryFile) {
+          const itemTextureCat = await ItemTextureCatalogDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (itemTextureCat && itemTextureCat.data && itemTextureCat.data.texture_data) {
             for (const itemTextureId in itemTextureCat.data.texture_data) {
@@ -293,8 +293,8 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         textureCountPi.incrementFeature("Entity Resource Count");
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
-          const entityTypeResourceDef = await EntityTypeResourceDefinition.ensureOnFile(projectItem.availableFile);
+        if (projectItem.primaryFile) {
+          const entityTypeResourceDef = await EntityTypeResourceDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (entityTypeResourceDef?.data) {
             const desc = entityTypeResourceDef.data;
@@ -340,8 +340,8 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
 
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
-          const attachableResourceDef = await AttachableResourceDefinition.ensureOnFile(projectItem.availableFile);
+        if (projectItem.primaryFile) {
+          const attachableResourceDef = await AttachableResourceDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (attachableResourceDef?.data) {
             const desc = attachableResourceDef.data;
@@ -380,10 +380,10 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
       if (projectItem.itemType === ProjectItemType.texture || projectItem.itemType === ProjectItemType.uiTexture) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
+        if (projectItem.primaryFile) {
           textureCountPi.incrementFeature("File Count");
 
-          const textureResourceDef = await TextureDefinition.ensureOnFile(projectItem.availableFile);
+          const textureResourceDef = await TextureDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (textureResourceDef && textureResourceDef.data) {
             const texturePath = textureResourceDef.getReferencePath();

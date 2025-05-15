@@ -1,13 +1,18 @@
 {
   "fields": [
     {
-      "id": "value",
-      "title": "Value",
+      "id": "left_slope",
+      "title": "Left Slope",
       "dataType": 3
     },
     {
       "id": "left_value",
       "title": "Left Value",
+      "dataType": 3
+    },
+    {
+      "id": "right_slope",
+      "title": "Right Slope",
       "dataType": 3
     },
     {
@@ -21,13 +26,8 @@
       "dataType": 3
     },
     {
-      "id": "left_slope",
-      "title": "Left Slope",
-      "dataType": 3
-    },
-    {
-      "id": "right_slope",
-      "title": "Right Slope",
+      "id": "value",
+      "title": "Value",
       "dataType": 3
     }
   ],

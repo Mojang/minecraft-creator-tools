@@ -8,6 +8,13 @@
  * Contains types for working with various Minecraft Bedrock Edition JSON schemas.
  * 
  * Entity Documentation - minecraft:body_rotation_axis_aligned
+ * 
+ * minecraft:body_rotation_axis_aligned Samples
+
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+"minecraft:body_rotation_axis_aligned": {}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';

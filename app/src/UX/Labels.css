@@ -53,6 +53,8 @@
   padding-top: 6px;
   padding-bottom: 6px;
   vertical-align: top;
+
+  white-space: nowrap;
   color: green;
   background-color: #fafafa;
   border-left: solid 1px green;
@@ -65,6 +67,7 @@
   padding-top: 6px;
   padding-bottom: 6px;
   vertical-align: top;
+  white-space: nowrap;
   color: green;
   background-color: #fafafa;
   border-left: solid 1px transparent;
@@ -115,4 +118,15 @@
 .label-selected {
   background-color: #202020;
   color: green;
+}
+
+.label-icon {
+  padding: 5px;
+  vertical-align: middle;
+  min-width: 35px;
+  min-height: 33px;
+  text-align: center;
+  display: inline-block;
+  background-color: #000000;
+  color: #c0c0c0;
 }

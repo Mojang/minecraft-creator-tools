@@ -39,6 +39,21 @@ Elder Guardian - https://github.com/Mojang/bedrock-samples/tree/preview/behavior
 }
 
 
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+ * At /minecraft:entity/component_groups/minecraft:baby/minecraft:home/: 
+"minecraft:home": {
+  "restriction_radius": 32,
+  "restriction_type": "random_movement"
+}
+
+ * At /minecraft:entity/component_groups/minecraft:unharnessed/minecraft:home/: 
+"minecraft:home": {
+  "restriction_radius": 64,
+  "restriction_type": "random_movement"
+}
+
+
 Piglin Brute - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/piglin_brute.json
 
 "minecraft:home": {}

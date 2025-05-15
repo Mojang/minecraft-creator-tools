@@ -89,6 +89,7 @@
       }
     }
   ],
+  "versionIntroduced": "1.21.60",
   "description": "The definitions for how a block behaves when detecting liquid. Only one rule definition is allowed per liquid type - if multiple are specified, the first will be used and the rest will be ignored.\r\nExperimental toggles required: Upcoming Creator Features (in format versions before 1.21.60)",
   "title": "Liquid Detection",
   "samples": {

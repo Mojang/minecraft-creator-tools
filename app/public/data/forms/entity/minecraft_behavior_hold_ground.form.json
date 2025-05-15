@@ -1,6 +1,30 @@
 {
   "fields": [
     {
+      "id": "within_radius_event",
+      "dataType": 39,
+      "samples": {
+        "/vanilla/behavior_pack/entities/pillager.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:patrol_captain/minecraft:behavior.hold_ground/",
+            "content": {
+              "event": "minecraft:ranged_mode",
+              "target": "self"
+            }
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:patrol_follower/minecraft:behavior.hold_ground/",
+            "content": {
+              "event": "minecraft:ranged_mode",
+              "target": "self"
+            }
+          }
+        ]
+      },
+      "description": "Event to run when target is within the radius. This event is broadcasted if broadcast is true.",
+      "title": "Within Radius Event"
+    },
+    {
       "id": "broadcast",
       "title": "Broadcast",
       "description": "Whether to broadcast out the mob's target to other mobs of the same type.",
@@ -53,30 +77,6 @@
           {
             "path": "/minecraft:entity/component_groups/minecraft:patrol_follower/minecraft:behavior.hold_ground/",
             "content": 10
-          }
-        ]
-      }
-    },
-    {
-      "id": "within_radius_event",
-      "title": "Within Radius Event",
-      "description": "Event to run when target is within the radius. This event is broadcasted if broadcast is true.",
-      "dataType": 22,
-      "samples": {
-        "/vanilla/behavior_pack/entities/pillager.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:patrol_captain/minecraft:behavior.hold_ground/",
-            "content": {
-              "event": "minecraft:ranged_mode",
-              "target": "self"
-            }
-          },
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:patrol_follower/minecraft:behavior.hold_ground/",
-            "content": {
-              "event": "minecraft:ranged_mode",
-              "target": "self"
-            }
           }
         ]
       }

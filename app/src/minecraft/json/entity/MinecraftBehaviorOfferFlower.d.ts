@@ -16,12 +16,7 @@ Iron Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pac
 "minecraft:behavior.offer_flower": {
   "priority": 5,
   "filters": {
-    "all_of": [
-      {
-        "test": "is_daytime",
-        "value": true
-      }
-    ]
+    "test": "is_daytime"
   }
 }
 
@@ -49,7 +44,7 @@ export default interface MinecraftBehaviorOfferFlower {
    * Conditions that need to be met for the behavior to start.
    * 
    * Sample Values:
-   * Iron Golem: {"all_of":[{"test":"is_daytime","value":true}]}
+   * Iron Golem: {"test":"is_daytime"}
    *
    */
   filters: jsoncommon.MinecraftFilter;

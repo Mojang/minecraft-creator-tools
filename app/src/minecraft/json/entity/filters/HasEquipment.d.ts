@@ -28,11 +28,20 @@ Enderman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/
 
 Pig - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/pig.json
 
+ * At /minecraft:entity/component_groups/minecraft:pig_unsaddled/minecraft:interact/interactions/0/on_interact/filters/: 
 {
   "test": "has_equipment",
   "subject": "other",
   "domain": "hand",
   "value": "saddle"
+}
+
+ * At /minecraft:entity/component_groups/minecraft:pig_saddled/minecraft:interact/interactions/0/on_interact/filters/all_of/1/: 
+{
+  "test": "has_equipment",
+  "subject": "other",
+  "domain": "hand",
+  "value": "shears"
 }
 
  */
@@ -54,7 +63,6 @@ export default interface HasEquipment {
    * Enderman: "head"
    *
    * Pig: "hand"
-   *
    *
    */
   domain: string;
@@ -97,8 +105,7 @@ export default interface HasEquipment {
    * Sample Values:
    * Enderman: "carved_pumpkin"
    *
-   * Pig: "saddle"
-   *
+   * Pig: "saddle", "shears"
    *
    */
   value: string;

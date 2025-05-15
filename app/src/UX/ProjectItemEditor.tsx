@@ -34,10 +34,12 @@ import AudioManager from "./AudioManager";
 import ItemTypeEditor from "./ItemTypeEditor";
 import GeneralFormEditor from "./GeneralFormEditor";
 import ProjectItemVariant from "../app/ProjectItemVariant";
-import { CustomTabLabel } from "./Labels";
+import { CustomLabel, CustomTabLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IFile from "../storage/IFile";
 import { faFile } from "@fortawesome/free-regular-svg-icons";
+import ItemTypeAttachableEditor from "./ItemTypeAttachableEditor";
+import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import ImageEditor from "./ImageEditor";
 
 enum ProjectItemEditorDirtyState {
@@ -47,8 +49,9 @@ enum ProjectItemEditorDirtyState {
 }
 
 enum ProjectItemEditorView {
-  singleFile = 0,
+  singleFileEditor = 0,
   diff = 1,
+  singleFileRaw = 2,
 }
 
 interface IProjectItemEditorProps extends IAppProps {
@@ -61,6 +64,7 @@ interface IProjectItemEditorProps extends IAppProps {
   activeProjectItem: ProjectItem | null;
   activeReference: IGitHubInfo | null;
   readOnly: boolean;
+  onNewVariantRequested?: (newVariant: string | undefined) => void;
   onVariantChangeRequested?: (newVariant: string | undefined) => void;
   setActivePersistable?: (persistObject: IPersistable) => void;
 }
@@ -81,6 +85,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
 
     this._handleItemLoaded = this._handleItemLoaded.bind(this);
     this.persist = this.persist.bind(this);
+    this._handleNewVariant = this._handleNewVariant.bind(this);
     this._handleNewChildPersistable = this._handleNewChildPersistable.bind(this);
     this._onUpdatePreferredTextSize = this._onUpdatePreferredTextSize.bind(this);
     this._updateFromProps = this._updateFromProps.bind(this);
@@ -101,6 +106,19 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
 
       this._updateFromProps();
     }
+  }
+
+  static getDerivedStateFromProps(nextProps: IProjectItemEditorProps, prevState: IProjectItemEditorState) {
+    if (nextProps.activeProjectItem !== prevState.loadedItem) {
+      return {
+        loadedItem: null,
+        dirtyState: ProjectItemEditorDirtyState.clean,
+        activeView: ProjectItemEditorView.singleFileEditor,
+        activeViewTarget: undefined,
+      };
+    }
+
+    return undefined;
   }
 
   componentDidUpdate(prevProps: IProjectItemEditorProps, prevState: IProjectItemEditorState) {
@@ -166,9 +184,15 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
     this.props.carto.preferredTextSize = newTextSize;
   }
 
+  _handleNewVariant(ev: SyntheticEvent<HTMLElement, Event>, data: any) {
+    if (this.props.onNewVariantRequested) {
+      this.props.onNewVariantRequested(undefined);
+    }
+  }
+
   _handleDefaultVariant(ev: SyntheticEvent<HTMLElement, Event>, data: any) {
     if (this.props.onVariantChangeRequested) {
-      this.props.onVariantChangeRequested(undefined);
+      this.props.onVariantChangeRequested("");
     }
   }
 
@@ -184,11 +208,18 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
     if (data.value && typeof data.value === "string") {
       let fromIndex = data.value.indexOf("from ");
 
-      if (data.value === "Single view") {
+      if (data.value === "Single editor view") {
         this.setState({
           dirtyState: this.state.dirtyState,
           loadedItem: this.state.loadedItem,
-          activeView: ProjectItemEditorView.singleFile,
+          activeView: ProjectItemEditorView.singleFileEditor,
+          activeViewTarget: undefined,
+        });
+      } else if (data.value === "Single JSON view") {
+        this.setState({
+          dirtyState: this.state.dirtyState,
+          loadedItem: this.state.loadedItem,
+          activeView: ProjectItemEditorView.singleFileRaw,
           activeViewTarget: undefined,
         });
       } else if (fromIndex > 0) {
@@ -217,9 +248,16 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         (this.props.activeProjectItem.projectPath ? this.props.activeProjectItem.projectPath + " " : "");
 
       if (this.props.activeProjectItem.storageType === ProjectItemStorageType.singleFile) {
-        file = this.props.activeProjectItem.getFile(this.props.activeVariant);
+        if (this.props.activeVariant === "") {
+          file = this.props.activeProjectItem.defaultFile;
+        } else if (this.props.activeVariant === undefined) {
+          file = this.props.activeProjectItem.primaryFile;
+        } else {
+          file = this.props.activeProjectItem.getFile(this.props.activeVariant);
+        }
+
         if (!file) {
-          if (this.props.activeVariant === undefined || this.props.activeVariant === "") {
+          if (this.props.activeVariant === "") {
             descrip += " - No default file. Please select a variant if one exists.";
           } else {
             descrip += " - No file for variant `" + this.props.activeVariant + "`.";
@@ -255,7 +293,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
       const ep = this.props.activeProjectItem.effectiveEditPreference;
 
       if (this.props.activeProjectItem.hasNonDefaultVariant()) {
-        heightOffset += 40;
+        heightOffset += 52;
       }
 
       if (
@@ -275,7 +313,8 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           this.props.forceRawView ||
           ep === ProjectEditPreference.raw ||
           file.isInErrorState ||
-          this.state.activeView === ProjectItemEditorView.diff;
+          this.state.activeView === ProjectItemEditorView.diff ||
+          this.state.activeView === ProjectItemEditorView.singleFileRaw;
 
         const formCategoryData = FormMappings["" + projItem.itemType];
 
@@ -491,6 +530,19 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               setActivePersistable={this._handleNewChildPersistable}
             />
           );
+        } else if (file.type === "json" && projItem.itemType === ProjectItemType.attachableResourceJson && !showRaw) {
+          interior = (
+            <ItemTypeAttachableEditor
+              theme={this.props.theme}
+              projectItem={this.props.activeProjectItem}
+              carto={this.props.carto}
+              heightOffset={heightOffset}
+              project={this.props.project}
+              file={file}
+              readOnly={this.props.readOnly}
+              setActivePersistable={this._handleNewChildPersistable}
+            />
+          );
         } else if (file.type === "json" && projItem.itemType === ProjectItemType.commandSetDefinitionJson && !showRaw) {
           interior = (
             <DocumentedCommandSetEditor
@@ -626,25 +678,54 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
       }
     }
 
+    let activeVariant = this.props.activeVariant;
+
+    let primaryVariantLabel = this.props.activeProjectItem?.primaryVariantLabel;
+
+    if (activeVariant === undefined && this.props.activeProjectItem) {
+      activeVariant = primaryVariantLabel;
+    }
+
     if (this.props.activeProjectItem?.hasNonDefaultVariant()) {
-      variantList = this.props.activeProjectItem.getVariantList();
+      variantList = this.props.activeProjectItem.getVariantListMostImportantFirst();
       const toolbarItems = [];
       const items: string[] = [];
       let dropdownVal = undefined;
-      items.push("Single view");
 
-      if (this.state.activeView === ProjectItemEditorView.singleFile || this.state.activeView === undefined) {
-        dropdownVal = "Single view";
+      items.push("Single editor view");
+      items.push("Single JSON view");
+
+      if (this.state.activeView === ProjectItemEditorView.singleFileEditor || this.state.activeView === undefined) {
+        dropdownVal = "Single editor view";
+      } else if (this.state.activeView === ProjectItemEditorView.singleFileRaw) {
+        dropdownVal = "Single JSON view";
       }
 
-      if (this.props.activeProjectItem.defaultFile) {
+      if (!this.props.readOnly) {
+        toolbarItems.push({
+          icon: (
+            <CustomLabel
+              isCompact={false}
+              text="New Variant"
+              icon={<FontAwesomeIcon icon={faAdd} className="fa-lg" />}
+            />
+          ),
+          content: "New variant",
+          key: "newVariant",
+          onClick: this._handleNewVariant,
+          active: true,
+          title: "New variant",
+        });
+      }
+
+      if (this.props.activeProjectItem.defaultFile && this.props.activeProjectItem.defaultFile.content !== null) {
         toolbarItems.push({
           icon: (
             <CustomTabLabel
               theme={this.props.theme}
-              isSelected={this.props.activeVariant === undefined || this.props.activeVariant === ""}
+              isSelected={activeVariant === "" || activeVariant === undefined}
               icon={<FontAwesomeIcon icon={faFile} className="fa-lg" />}
-              text={"Default"}
+              text={"Default" + (primaryVariantLabel === undefined ? " (primary)" : "")}
               isCompact={false}
             />
           ),
@@ -667,9 +748,9 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
             icon: (
               <CustomTabLabel
                 theme={this.props.theme}
-                isSelected={variant.label === this.props.activeVariant}
+                isSelected={variant.label === activeVariant}
                 icon={<FontAwesomeIcon icon={faFile} className="fa-lg" />}
-                text={variant.label}
+                text={variant.label + (variant.label === primaryVariantLabel ? " (primary)" : "")}
                 isCompact={false}
               />
             ),
@@ -701,7 +782,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               id={"inptDrop"}
               key={"inptDrop"}
               items={items}
-              defaultValue={dropdownVal}
+              value={dropdownVal}
               fluid={true}
               onChange={this._handleDrodownValChange}
             />

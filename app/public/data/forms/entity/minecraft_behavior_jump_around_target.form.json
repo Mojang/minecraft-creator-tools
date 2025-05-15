@@ -265,6 +265,7 @@
       }
     }
   ],
+  "versionIntroduced": "1.21.30",
   "description": "Allows an entity to jump around a target.",
   "title": "Jump Around Target Behavior",
   "samples": {

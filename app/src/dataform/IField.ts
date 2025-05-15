@@ -56,6 +56,7 @@ export enum FieldDataType {
   point2 = 36,
   localizableString = 37,
   keyedNumberArrayCollection = 38, // { "foo": [255, 0.0, 2555], "barg" : [128, 0, 0] }
+  minecraftEventReference = 39,
 }
 
 export enum FieldValueHumanify {
@@ -77,6 +78,8 @@ export default interface IField {
   subForm?: IFormDefinition;
   subFormId?: string;
   allowedKeys?: string[];
+  versionIntroduced?: string;
+  versionDeprecated?: string;
   subFields?: { [keyName: string]: IField };
   objectArrayToSubFieldKey?: string;
   objectArrayTitleFieldKey?: string;
@@ -89,6 +92,7 @@ export default interface IField {
   maxLength?: number;
   newItemPrototype?: any;
   noun?: string;
+  priority?: number;
   allowCreateDelete?: boolean;
   readOnly?: boolean;
   displayTitle?: boolean;
@@ -96,6 +100,7 @@ export default interface IField {
   minValue?: number;
   maxValue?: number;
   step?: number;
+  isRemoved?: boolean; // a placeholder for internal processes to signify that this field should NOT be merged in via automatic processes and should not really exist in the schema.
   humanifyValues?: FieldValueHumanify;
   hideSamples?: boolean;
   suggestedMinValue?: number;

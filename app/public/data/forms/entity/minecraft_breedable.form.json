@@ -314,21 +314,24 @@
           {
             "id": "baby_type",
             "description": "The entity definition of this entity's babies.",
-            "dataType": 2
+            "dataType": 2,
+            "title": "Baby Type"
           },
           {
             "id": "breed_event",
             "description": "Event to run when this entity breeds.",
-            "dataType": 8,
-            "lookupId": "entityTypeEvents"
+            "dataType": 39,
+            "title": "Breed Event"
           },
           {
             "id": "mate_type",
             "description": "The inclusive minimum of the variant range.",
             "dataType": 8,
-            "lookupId": "entityTypePlusVariants"
+            "lookupId": "entityTypePlusVariants",
+            "title": "Mate Type"
           }
-        ]
+        ],
+        "description": "The list of entity definitions that this entity can breed with."
       },
       "samples": {
         "/vanilla/behavior_pack/entities/armadillo.json": [
@@ -445,19 +448,26 @@
           {
             "id": "chance",
             "description": "The percentage chance of denying the parents' variant.",
-            "dataType": 3
+            "dataType": 3,
+            "defaultValue": 0,
+            "title": "Chance"
           },
           {
             "id": "max_variant",
             "description": "The inclusive maximum of the variant range.",
-            "dataType": 2
+            "dataType": 2,
+            "defaultValue": 0,
+            "title": "Max Variant"
           },
           {
             "id": "min_variant",
             "description": "The inclusive minimum of the variant range.",
-            "dataType": 2
+            "dataType": 2,
+            "defaultValue": 0,
+            "title": "Min Variant"
           }
-        ]
+        ],
+        "description": "Determines how likely the baby of parents with the same variant will deny that variant and take a random variant within the given range instead."
       },
       "title": "Deny Parents Variant"
     },
@@ -475,16 +485,26 @@
           {
             "id": "count",
             "description": "The number of the required block types nearby for the entity to breed.",
-            "dataType": 0
+            "dataType": 0,
+            "defaultValue": 1,
+            "title": "Count"
           },
           {
             "id": "radius",
             "description": "How many blocks radius from the mob's center to search in for the required blocks. Bounded between 0 and 16.",
             "dataType": 3,
-            "minValue": 0,
-            "maxValue": 16
+            "maxValue": 16,
+            "defaultValue": 5,
+            "title": "Radius"
+          },
+          {
+            "id": "blocks",
+            "title": "Blocks",
+            "description": "The block types required nearby for the entity to breed.",
+            "dataType": 17
           }
-        ]
+        ],
+        "description": "The list of nearby block requirements to get the entity into the 'love' state."
       },
       "title": "Environment Requirements"
     },
@@ -517,19 +537,26 @@
           {
             "id": "color",
             "description": "The percentage chance of denying the parents' variant.",
-            "dataType": 21
+            "dataType": 21,
+            "defaultValue": 0,
+            "title": "Color"
           },
           {
             "id": "variant",
             "description": "The percentage chance of a mutation on the entity's variant type.",
-            "dataType": 21
+            "dataType": 21,
+            "defaultValue": 0,
+            "title": "Variant"
           },
           {
             "id": "extra_variant",
             "description": "The percentage chance of a mutation on the entity's extra variant type.",
-            "dataType": 21
+            "dataType": 21,
+            "defaultValue": 0,
+            "title": "Extra Variant"
           }
-        ]
+        ],
+        "description": "Determines how likely the babies are to NOT inherit one of their parent's variances. Values are between 0.0 and 1.0, with a higher number meaning more likely to mutate."
       },
       "title": "Mutation Factor"
     },
@@ -878,7 +905,7 @@
           "love_filters": {
             "test": "has_component",
             "subject": "self",
-            "operator": "!=",
+            "operator": "not",
             "value": "minecraft:attack_cooldown"
           },
           "breeds_with": {

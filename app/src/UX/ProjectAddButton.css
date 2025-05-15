@@ -1,5 +1,6 @@
 .pab-outer {
   padding: 7px;
+  padding-top: 6px;
 }
 
 .pab-commands {
@@ -12,6 +13,10 @@
   padding-left: 8px;
 }
 
+.pab-loading {
+  padding: 8px;
+}
+
 .pab-dialog {
   min-height: 90px;
   margin-top: 20px;
@@ -20,4 +25,10 @@
 
 .pab-extension {
   padding-left: 8px;
+}
+
+.pab-newarea .ui-button {
+  padding-left: 10px;
+  padding-right: 14px;
+  min-width: inherit;
 }

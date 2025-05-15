@@ -59,13 +59,13 @@
         }
       ],
       "samples": {
-        "/vanilla/behavior_pack/entities/allay.json": [
+        "/vanilla/behavior_pack/entities/armor_stand.json": [
           {
             "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
             "content": "=="
           }
         ],
-        "/vanilla/behavior_pack/entities/armor_stand.json": [
+        "/vanilla/behavior_pack/entities/arrow.json": [
           {
             "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
             "content": "=="
@@ -138,13 +138,13 @@
       "defaultValue": true,
       "dataType": 1,
       "samples": {
-        "/vanilla/behavior_pack/entities/allay.json": [
+        "/vanilla/behavior_pack/entities/armor_stand.json": [
           {
             "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
             "content": true
           }
         ],
-        "/vanilla/behavior_pack/entities/armor_stand.json": [
+        "/vanilla/behavior_pack/entities/arrow.json": [
           {
             "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
             "content": true
@@ -194,9 +194,7 @@
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
         "content": {
           "test": "in_lava",
-          "subject": "self",
-          "operator": "==",
-          "value": true
+          "subject": "self"
         }
       }
     ],
@@ -305,9 +303,7 @@
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
         "content": {
           "test": "in_lava",
-          "subject": "self",
-          "operator": "==",
-          "value": true
+          "subject": "self"
         }
       }
     ],
@@ -397,9 +393,7 @@
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
         "content": {
           "test": "in_lava",
-          "subject": "self",
-          "operator": "==",
-          "value": true
+          "subject": "self"
         }
       }
     ],
@@ -499,9 +493,7 @@
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
         "content": {
           "test": "in_lava",
-          "subject": "self",
-          "operator": "==",
-          "value": true
+          "subject": "self"
         }
       }
     ],
@@ -510,9 +502,7 @@
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
         "content": {
           "test": "in_lava",
-          "subject": "self",
-          "operator": "==",
-          "value": true
+          "subject": "self"
         }
       }
     ],
@@ -524,6 +514,14 @@
           "subject": "self",
           "operator": "==",
           "value": true
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/happy_ghast.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
+        "content": {
+          "test": "in_lava"
         }
       }
     ],
@@ -543,9 +541,7 @@
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
         "content": {
           "test": "in_lava",
-          "subject": "self",
-          "operator": "==",
-          "value": true
+          "subject": "self"
         }
       }
     ],
@@ -565,9 +561,7 @@
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
         "content": {
           "test": "in_lava",
-          "subject": "self",
-          "operator": "==",
-          "value": true
+          "subject": "self"
         }
       }
     ],
@@ -596,9 +590,7 @@
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
         "content": {
           "test": "in_lava",
-          "subject": "self",
-          "operator": "==",
-          "value": true
+          "subject": "self"
         }
       }
     ],
@@ -651,9 +643,7 @@
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
         "content": {
           "test": "in_lava",
-          "subject": "self",
-          "operator": "==",
-          "value": true
+          "subject": "self"
         }
       }
     ],
@@ -843,9 +833,7 @@
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
         "content": {
           "test": "in_lava",
-          "subject": "self",
-          "operator": "==",
-          "value": true
+          "subject": "self"
         }
       }
     ],

@@ -13,34 +13,86 @@
 
 Allay - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/allay.json
 
+"minecraft:leashable": {}
+
+
+Boat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/boat.json
+
 "minecraft:leashable": {
-  "soft_distance": 4,
-  "hard_distance": 6,
-  "max_distance": 10
+  "presets": [
+    {
+      "filter": {
+        "test": "is_family",
+        "subject": "other",
+        "value": "happy_ghast"
+      },
+      "spring_type": "quad_dampened",
+      "rotation_adjustment": 90
+    },
+    {
+      "rotation_adjustment": 90,
+      "soft_distance": 2,
+      "hard_distance": 4
+    }
+  ]
 }
 
 
-Frog - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/frog.json
+Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/camel.json
 
-"minecraft:leashable": {}
+"minecraft:leashable": {
+  "presets": [
+    {
+      "filter": {
+        "test": "is_family",
+        "subject": "other",
+        "value": "happy_ghast"
+      },
+      "spring_type": "quad_dampened"
+    }
+  ]
+}
+
+
+Chest Boat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/chest_boat.json
+
+"minecraft:leashable": {
+  "presets": [
+    {
+      "filter": {
+        "test": "is_family",
+        "subject": "other",
+        "value": "happy_ghast"
+      },
+      "spring_type": "quad_dampened",
+      "rotation_adjustment": 90
+    },
+    {
+      "rotation_adjustment": 90
+    }
+  ]
+}
+
+
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+"minecraft:leashable": {
+  "on_unleash": {
+    "event": "minecraft:on_unleashed",
+    "target": "self"
+  },
+  "presets": [
+    {
+      "hard_distance": 10,
+      "max_distance": 14
+    }
+  ]
+}
 
 
 Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/llama.json
 
 "minecraft:leashable": {
-  "soft_distance": 4,
-  "hard_distance": 6,
-  "max_distance": 10,
-  "can_be_stolen": true
-}
-
-
-Ocelot - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/ocelot.json
-
-"minecraft:leashable": {
-  "soft_distance": 4,
-  "hard_distance": 6,
-  "max_distance": 10,
   "on_leash": {
     "event": "minecraft:on_leash",
     "target": "self"
@@ -49,6 +101,25 @@ Ocelot - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
     "event": "minecraft:on_unleash",
     "target": "self"
   }
+}
+
+
+Sheepomelon - https://github.com/microsoft/minecraft-samples/tree/main/addon_starter/1_hello_world/behavior_packs/aop_mobs/entities/sheepomelon.behavior.json
+
+"minecraft:leashable": {
+  "soft_distance": 4,
+  "hard_distance": 6,
+  "max_distance": 10
+}
+
+
+Frost Moose - https://github.com/microsoft/minecraft-samples/tree/main/addon_starter/2_entities/behavior_packs/aop_mobs/entities/frost_moose.behavior.json
+
+"minecraft:leashable": {
+  "soft_distance": 4,
+  "hard_distance": 6,
+  "max_distance": 10,
+  "can_be_stolen": true
 }
 
  */
@@ -63,11 +134,18 @@ export default interface MinecraftLeashable {
 
   /**
    * @remarks
+   * If true, players can cut both incoming and outgoing leashes by
+   * using shears on the entity.
+   */
+  can_be_cut: boolean;
+
+  /**
+   * @remarks
    * If true, players can leash this entity even if it is already leashed
-   * to another mob.
+   * to another entity.
    * 
    * Sample Values:
-   * Llama: true
+   * Frost Moose: true
    *
    *
    */
@@ -77,22 +155,12 @@ export default interface MinecraftLeashable {
    * @remarks
    * Distance in blocks at which the leash stiffens, restricting 
    * movement.
-   * 
-   * Sample Values:
-   * Allay: 6
-   *
-   *
    */
   hard_distance: number;
 
   /**
    * @remarks
    * Distance in blocks it which the leash breaks.
-   * 
-   * Sample Values:
-   * Allay: 10
-   *
-   *
    */
   max_distance: number;
 
@@ -101,7 +169,7 @@ export default interface MinecraftLeashable {
    * Event to call when this entity is leashed.
    * 
    * Sample Values:
-   * Ocelot: {"event":"minecraft:on_leash","target":"self"}
+   * Llama: {"event":"minecraft:on_leash","target":"self"}
    *
    *
    */
@@ -112,7 +180,9 @@ export default interface MinecraftLeashable {
    * Event to call when this entity is unleashed.
    * 
    * Sample Values:
-   * Ocelot: {"event":"minecraft:on_unleash","target":"self"}
+   * Happy Ghast: {"event":"minecraft:on_unleashed","target":"self"}
+   *
+   * Llama: {"event":"minecraft:on_unleash","target":"self"}
    *
    *
    */
@@ -121,18 +191,22 @@ export default interface MinecraftLeashable {
   /**
    * @remarks
    * When set to true, "on_unleash" does not trigger when the entity
-   * gets unleashed for other reasons such as being stolen or the
-   * leash breaking.
+   * gets unleashed for reasons other than the player directly interacting
+   * with it.
    */
   on_unleash_interact_only: boolean;
 
   /**
    * @remarks
-   * Defines how this entity behaves when leashed to another entity. A
-   * preset is selected upon leashing and remains until the entity is
-   * leashed to something else. The first preset whose "filter" conditions
-   * are met will be applied; if none match, a default configuration is
-   * used instead.
+   * Defines how this entity behaves when leashed to another entity. The
+   * first preset which "filter" conditions are met will be applied; if
+   * none match, a default configuration is used instead.
+   * 
+   * Sample Values:
+   * Boat: [{"filter":{"test":"is_family","subject":"other","value":"happy_ghast"},"spring_type":"quad_dampened","rotation_adjustment":90},{"rotation_adjustment":90,"soft_distance":2,"hard_distance":4}]
+   *
+   * Camel: [{"filter":{"test":"is_family","subject":"other","value":"happy_ghast"},"spring_type":"quad_dampened"}]
+   *
    */
   presets: MinecraftLeashablePresets[];
 
@@ -140,11 +214,6 @@ export default interface MinecraftLeashable {
    * @remarks
    * Distance in blocks at which the 'spring' effect starts acting to
    * keep this entity close to the entity that leashed it.
-   * 
-   * Sample Values:
-   * Allay: 4
-   *
-   *
    */
   soft_distance: number;
 
@@ -152,25 +221,22 @@ export default interface MinecraftLeashable {
 
 
 /**
- * Defines how this entity behaves when leashed to another entity. A
- * preset is selected upon leashing and remains until the entity is
- * leashed to something else. The first preset whose "filter" conditions
- * are met will be applied; if none match, a default configuration is
- * used instead.
+ * Defines how this entity behaves when leashed to another entity. The
+ * first preset which "filter" conditions are met will be applied; if
+ * none match, a default configuration is used instead.
  */
 export interface MinecraftLeashablePresets {
 
   /**
    * @remarks
-   * Conditions that must be met for this preset to be applied. These
-   * conditions are only evaluated upon leashing.
+   * Conditions that must be met for this preset to be applied.
    */
   filter: jsoncommon.MinecraftFilter;
 
   /**
    * @remarks
-   * Distance in blocks at which the leash stiffens, restricting 
-   * movement.
+   * Distance (in blocks) over which the entity starts being pulled
+   * toward the leash holder with an spring-like force.
    */
   hard_distance: number;
 
@@ -182,9 +248,35 @@ export interface MinecraftLeashablePresets {
 
   /**
    * @remarks
-   * Distance in blocks at which the "spring" effect starts acting to
-   * keep this entity close to the entity that leashed it.
+   * Adjusts the rotation at which the entity reaches equilibrium, when
+   * "spring_type" is set to "dampened" or "quad_dampened".
+   */
+  rotation_adjustment: number;
+
+  /**
+   * @remarks
+   * Distance (in blocks) over which the entity begins pathfinding toward
+   * the leash holder, if able.
    */
   soft_distance: number;
+
+  /**
+   * @remarks
+   * Defines the type of spring-like force that pulls the entity towards
+   * its leash holder:
+- "bouncy": Simulates a highly elastic spring
+   * that never reaches an equilibrium if the leashed entity is
+   * suspended mid-air.
+- "dampened": Simulates a dampened spring
+   * attached to the front of the leashed entity's collision. It
+   * reaches an equilibrium if the entity is suspended mid-air and
+   * aligns with the movement direction.
+- "quad_dampened": Simulates four
+   * dampened springs connected to the center of each side of the
+   * entities' collisions. It reaches an equilibrium if the entity is
+   * suspended mid-air and gradually aligns with the leash holder over
+   * time.
+   */
+  spring_type: string;
 
 }

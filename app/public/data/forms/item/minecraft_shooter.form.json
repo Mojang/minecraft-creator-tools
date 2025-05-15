@@ -47,18 +47,6 @@
         "title": "V1 20 50 ShooterItemComponent Ammunition",
         "fields": [
           {
-            "id": "use_in_creative",
-            "title": "Use In Creative",
-            "description": "Can use in creative mode? Default is set to false.",
-            "dataType": 1
-          },
-          {
-            "id": "search_inventory",
-            "title": "Search Inventory",
-            "description": "Can search inventory? Default is set to false.",
-            "dataType": 1
-          },
-          {
             "id": "item",
             "title": "Item",
             "description": "Ammunition item description identifier.",
@@ -69,6 +57,18 @@
                 "dataType": 24
               }
             ]
+          },
+          {
+            "id": "search_inventory",
+            "title": "Search Inventory",
+            "description": "Can search inventory? Default is set to false.",
+            "dataType": 1
+          },
+          {
+            "id": "use_in_creative",
+            "title": "Use In Creative",
+            "description": "Can use in creative mode? Default is set to false.",
+            "dataType": 1
           },
           {
             "id": "use_offhand",

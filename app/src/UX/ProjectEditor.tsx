@@ -87,6 +87,9 @@ import ProjectStandard from "../app/ProjectStandard";
 import ProjectAutogeneration from "../app/ProjectAutogeneration";
 import BrowserFolder from "../storage/BrowserFolder";
 import BlockbenchModel from "../integrations/BlockbenchModel";
+import NewVariant from "./NewVariant";
+import IProjectItemVariantSeed from "../app/IProjectItemVariantSeed";
+import ProjectItemVariantCreateManager from "../app/ProjectItemVariantCreateManager";
 
 interface IProjectEditorProps extends IAppProps {
   onModeChangeRequested?: (mode: AppMode) => void;
@@ -167,6 +170,7 @@ export enum ProjectEditorDialog {
   integrateItem = 5,
   deleteItem = 6,
   renameItem = 7,
+  newVariant = 8,
 }
 
 export enum ProjectStatusAreaMode {
@@ -234,6 +238,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleOuterMouseMove = this._handleOuterMouseMove.bind(this);
     this._handleOuterMouseOutOrUp = this._handleOuterMouseOutOrUp.bind(this);
 
+    this._handleNewVariantRequested = this._handleNewVariantRequested.bind(this);
     this._handleSplitterDrag = this._handleSplitterDrag.bind(this);
     this._openInExplorerClick = this._openInExplorerClick.bind(this);
     this._handleExportMenuOpen = this._handleExportMenuOpen.bind(this);
@@ -242,6 +247,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this._handleItemMenuOpen = this._handleItemMenuOpen.bind(this);
     this._handleConvertOK = this._handleConvertOK.bind(this);
     this._handleIntegrateItemOK = this._handleIntegrateItemOK.bind(this);
+    this._handleNewVariantOK = this._handleNewVariantOK.bind(this);
     this._handleDeployWorldAndTestAssetsPackClick = this._handleDeployWorldAndTestAssetsPackClick.bind(this);
     this._handleDeployWorldAndTestAssetsLocalClick = this._handleDeployWorldAndTestAssetsLocalClick.bind(this);
     this._handleDeployWorldPackClick = this._handleDeployWorldPackClick.bind(this);
@@ -508,6 +514,36 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     return undefined;
   }
 
+  public _handleNewVariantRequested() {
+    this.setState({
+      activeProjectItem: this.state.activeProjectItem,
+      tentativeProjectItem: this.state.tentativeProjectItem,
+      activeReference: this.state.activeReference,
+      menuState: this.state.menuState,
+      mode: this.state.mode,
+      viewMode: this.state.viewMode,
+      allInfoSet: this.props.project.infoSet,
+      allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
+      displayFileView: this.state.displayFileView,
+      forceRawView: this.state.forceRawView,
+      filteredItems: this.state.filteredItems,
+      searchFilter: this.state.searchFilter,
+      effectMode: this.state.effectMode,
+      dragStyle: this.state.dragStyle,
+      visualSeed: this.state.visualSeed,
+      dialog: ProjectEditorDialog.newVariant,
+      dialogData: this.state.dialogData,
+      dialogActiveItem: this.state.dialogActiveItem,
+      statusAreaMode: this.state.statusAreaMode,
+      lastDeployKey: this.state.lastDeployKey,
+      lastExportKey: this.state.lastExportKey,
+      lastDeployFunction: this.state.lastDeployFunction,
+      lastExportFunction: this.state.lastExportFunction,
+      lastDeployData: this.state.lastDeployData,
+      lastExportData: this.state.lastExportData,
+    });
+  }
+
   public setNewProjectVariantName(name: string | undefined) {
     this.setState({
       activeProjectItem: this.state.activeProjectItem,
@@ -726,6 +762,16 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     }
   }
 
+  private async _handleNewVariantOK() {
+    if (this.state.dialogData && this.state.activeProjectItem) {
+      const newVariantSeed = this.state.dialogData as IProjectItemVariantSeed;
+
+      await ProjectItemVariantCreateManager.createVariant(this.state.activeProjectItem, newVariantSeed);
+    }
+
+    this._handleDialogDone();
+  }
+
   private async _handleIntegrateItemOK() {
     this._handleDialogDone();
 
@@ -742,7 +788,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         } else if ((this.state.dialogData as IProjectItemSeed).action === ProjectItemSeedAction.overwriteFile) {
           const item = (this.state.dialogData as IProjectItemSeed).targetedItem;
 
-          if (item && item.defaultFile) {
+          if (item && item.primaryFile) {
             let content = undefined;
 
             if (StorageUtilities.getEncodingByFileName(fileSource.name) === EncodingType.Utf8String) {
@@ -751,7 +797,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               content = new Uint8Array(await fileSource.arrayBuffer());
             }
 
-            item.defaultFile.setContent(content);
+            item.primaryFile.setContent(content);
           }
           this._incrementVisualSeed();
         } else if ((this.state.dialogData as IProjectItemSeed).action === ProjectItemSeedAction.fileOrFolder) {
@@ -997,8 +1043,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
               const height = WebUtilities.getHeight();
 
-              if (top > height / 2 && this.state.activeProjectItem && this.state.activeProjectItem.defaultFile) {
-                this.state.activeProjectItem.defaultFile.setContent(content);
+              if (top > height / 2 && this.state.activeProjectItem && this.state.activeProjectItem.primaryFile) {
+                this.state.activeProjectItem.primaryFile.setContent(content);
 
                 this._stopDragEffect();
 
@@ -2242,7 +2288,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       ProjectItemType.worldFolder,
     ]);
 
-    if (!projectItem || !projectItem.defaultFile) {
+    if (!projectItem || !projectItem.primaryFile) {
       Log.debugAlert("Could not find respective project item.");
       return;
     }
@@ -2256,7 +2302,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const date = new Date();
     let downloadTitle = projectItem.name + " - " + Utilities.getFriendlySummarySeconds(date);
 
-    const zipBytes = projectItem.defaultFile.content;
+    const zipBytes = projectItem.primaryFile.content;
 
     if (projectItem.itemType === ProjectItemType.MCWorld) {
       downloadTitle += ".mcworld";
@@ -2373,21 +2419,21 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await projectItem.load();
 
-    if (projectItem.defaultFile === null) {
+    if (projectItem.primaryFile === null) {
       return;
     }
 
-    const content = projectItem.defaultFile.content;
+    const content = projectItem.primaryFile.content;
 
-    Log.message("About to save " + projectItem.defaultFile.name, this.props.project.name);
+    Log.message("About to save " + projectItem.primaryFile.name, this.props.project.name);
 
     if (content instanceof Uint8Array) {
-      saveAs(new Blob([content], { type: "application/octet-stream" }), projectItem.defaultFile.name);
+      saveAs(new Blob([content], { type: "application/octet-stream" }), projectItem.primaryFile.name);
     }
 
-    Log.message("Done saving " + projectItem.defaultFile.name, this.props.project.name);
+    Log.message("Done saving " + projectItem.primaryFile.name, this.props.project.name);
 
-    this.props.carto.notifyStatusUpdate("Downloading mcworld '" + projectItem.defaultFile.name + "'.");
+    this.props.carto.notifyStatusUpdate("Downloading mcworld '" + projectItem.primaryFile.name + "'.");
 
     if (data && data.icon && (data.icon as any).key) {
       this._setNewDeployKey((data.icon as any).key, this._handleDownloadMCWorld, data);
@@ -2428,18 +2474,18 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await projectItem.load();
 
-    if (projectItem.defaultFile === null) {
+    if (projectItem.primaryFile === null) {
       return;
     }
 
-    const content = projectItem.defaultFile.content;
+    const content = projectItem.primaryFile.content;
 
     if (content instanceof Uint8Array) {
-      await this.saveAsWorldWithPacks(projectItem.defaultFile.name, content);
+      await this.saveAsWorldWithPacks(projectItem.primaryFile.name, content);
     }
 
     this.props.carto.notifyStatusUpdate(
-      "Downloading mcworld with packs embedded '" + projectItem.defaultFile.name + "'."
+      "Downloading mcworld with packs embedded '" + projectItem.primaryFile.name + "'."
     );
 
     if (data && data.icon && (data.icon as any).key) {
@@ -2496,14 +2542,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     await projectItem.load();
 
-    if (projectItem.defaultFile === null) {
+    if (projectItem.primaryFile === null) {
       return;
     }
 
-    const content = projectItem.defaultFile.content;
+    const content = projectItem.primaryFile.content;
 
     if (content instanceof Uint8Array) {
-      await this.saveAsWorldWithPackRefs(projectItem.defaultFile.name, content);
+      await this.saveAsWorldWithPackRefs(projectItem.primaryFile.name, content);
     }
 
     this.props.carto.notifyStatusUpdate("Downloading");
@@ -2788,6 +2834,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
       this.setState({
         activeProjectItem: newProjectItem,
+        activeVariant: undefined,
         tentativeProjectItem: this.state.tentativeProjectItem,
         activeReference: null,
         mode: newMode,
@@ -2847,7 +2894,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
   async downloadProjectItem(projectItem: ProjectItem) {
     if (projectItem.storageType === ProjectItemStorageType.singleFile) {
-      const file = projectItem.defaultFile;
+      const file = projectItem.primaryFile;
 
       if (file) {
         await file.loadContent();
@@ -2865,7 +2912,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
   async downloadBbmodel(projectItem: ProjectItem) {
     if (projectItem.storageType === ProjectItemStorageType.singleFile) {
-      const file = projectItem.defaultFile;
+      const file = projectItem.primaryFile;
 
       if (file) {
         await file.loadContent();
@@ -3161,7 +3208,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       this.props.project.role !== ProjectRole.documentation &&
       this.props.project.role !== ProjectRole.meta
     ) {
-      if (ProjectEditorUtilities.getIsLinkShareable(this.props.project)) {
+      if (Utilities.isPreview && ProjectEditorUtilities.getIsLinkShareable(this.props.project)) {
         exportKeys[nextExportKey] = {
           key: nextExportKey,
           icon: <FontAwesomeIcon icon={faLink} key={nextExportKey} className="fa-lg" />,
@@ -3270,8 +3317,8 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
         if (pi.defaultFolder && pi.defaultFolder.manager && pi.defaultFolder.manager instanceof MCWorld) {
           world = pi.defaultFolder.manager as MCWorld;
-        } else if (pi.defaultFile && pi.defaultFile.manager && pi.defaultFile.manager instanceof MCWorld) {
-          world = pi.defaultFile.manager as MCWorld;
+        } else if (pi.primaryFile && pi.primaryFile.manager && pi.primaryFile.manager instanceof MCWorld) {
+          world = pi.primaryFile.manager as MCWorld;
         }
 
         let title = pi.name;
@@ -3936,6 +3983,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           visualSeed={this.state.visualSeed}
           forceRawView={this.state.forceRawView}
           project={this.props.project}
+          onNewVariantRequested={this._handleNewVariantRequested}
           onVariantChangeRequested={this.setNewProjectVariantName}
           setActivePersistable={this._setActiveEditorPersistable}
           carto={this.props.carto}
@@ -4091,6 +4139,26 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           }
         />
       );
+    } else if (this.state.dialog === ProjectEditorDialog.newVariant && this.state.activeProjectItem) {
+      effectArea = (
+        <Dialog
+          open={true}
+          cancelButton="Cancel"
+          confirmButton="OK"
+          onCancel={this._handleDialogDone}
+          onConfirm={this._handleNewVariantOK}
+          content={
+            <NewVariant
+              carto={this.props.carto}
+              project={this.props.project}
+              theme={this.props.theme}
+              onDialogDataChange={this._handleDialogDataUpdated}
+              projectItem={this.state.activeProjectItem}
+            />
+          }
+          header={"New Variant for " + this.state.activeProjectItem.projectPath}
+        />
+      );
     } else if (this.state.dialog === ProjectEditorDialog.worldSettings) {
       const dialogContent = (
         <WorldSettingsArea
@@ -4125,7 +4193,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     if (this.state.displayFileView) {
       if (this.props.project.projectFolder) {
-        const selectedFile = this.state.activeProjectItem ? this.state.activeProjectItem.defaultFile : undefined;
+        const selectedFile = this.state.activeProjectItem ? this.state.activeProjectItem.primaryFile : undefined;
 
         itemList = (
           <FileExplorer

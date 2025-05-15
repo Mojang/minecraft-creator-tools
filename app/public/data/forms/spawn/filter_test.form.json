@@ -1,16 +1,16 @@
 {
   "fields": [
     {
+      "id": "domain",
+      "title": "Domain",
+      "description": "The domain the test should be performed in.",
+      "dataType": 16
+    },
+    {
       "id": "operator",
       "title": "Operator",
       "description": "The comparison to apply with 'value'.",
       "dataType": 16
-    },
-    {
-      "id": "test",
-      "title": "Test",
-      "description": "The name of the test to apply.",
-      "dataType": 2
     },
     {
       "id": "subject",
@@ -19,10 +19,10 @@
       "dataType": 16
     },
     {
-      "id": "domain",
-      "title": "Domain",
-      "description": "The domain the test should be performed in.",
-      "dataType": 16
+      "id": "test",
+      "title": "Test",
+      "description": "The name of the test to apply.",
+      "dataType": 2
     },
     {
       "id": "value",

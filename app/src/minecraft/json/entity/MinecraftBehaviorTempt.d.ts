@@ -255,6 +255,15 @@ export default interface MinecraftBehaviorTempt {
 
   /**
    * @remarks
+   * 
+   * Sample Values:
+   * Happy Ghast: {"event":"minecraft:on_stop_tempting"}
+   *
+   */
+  on_tempt_end: jsoncommon.MinecraftEventTrigger;
+
+  /**
+   * @remarks
    * As priority approaches 0, the priority is increased. The higher the
    * priority, the sooner this behavior will be executed as a 
    * goal.

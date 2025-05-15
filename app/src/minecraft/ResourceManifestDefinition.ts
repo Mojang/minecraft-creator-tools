@@ -148,9 +148,9 @@ export default class ResourceManifestDefinition {
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
 
-      if (pi.defaultFile) {
+      if (pi.primaryFile) {
         if (pi.itemType === ProjectItemType.resourcePackManifestJson && !setResourcePack) {
-          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.defaultFile);
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.primaryFile);
 
           if (rpManifestJson) {
             if (rpManifestJson.id && Utilities.uuidEqual(rpManifestJson.id, oldResourcePackId)) {
@@ -169,7 +169,7 @@ export default class ResourceManifestDefinition {
             }
           }
         } else if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
-          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.defaultFile);
+          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.primaryFile);
 
           if (bpManifestJson) {
             if (bpManifestJson.definition && bpManifestJson.definition.dependencies) {

@@ -126,8 +126,8 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
       if (pi.itemType === ProjectItemType.itemTypeBehavior) {
         await pi.ensureFileStorage();
 
-        if (pi.defaultFile) {
-          const bpItemType = await ItemTypeDefinition.ensureOnFile(pi.defaultFile);
+        if (pi.primaryFile) {
+          const bpItemType = await ItemTypeDefinition.ensureOnFile(pi.primaryFile);
 
           if (bpItemType) {
             await bpItemType.load();
@@ -309,8 +309,8 @@ export default class ItemTypeManager implements IProjectInfoGenerator, IProjectU
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.defaultFile) {
-          const wtManifest = await ItemTypeDefinition.ensureOnFile(pi.defaultFile);
+        if (pi.primaryFile) {
+          const wtManifest = await ItemTypeDefinition.ensureOnFile(pi.primaryFile);
 
           if (wtManifest) {
             const mev = wtManifest.wrapper?.format_version;

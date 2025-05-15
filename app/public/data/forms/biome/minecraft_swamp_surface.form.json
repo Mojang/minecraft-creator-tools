@@ -1,181 +1,15 @@
 {
   "fields": [
     {
-      "id": "mid_material",
-      "title": "Mid Material",
-      "description": "Controls the block type used in a layer below the surface of this biome.",
-      "dataType": 2,
-      "alternates": [
-        {
-          "id": "mid_material",
-          "dataType": 16,
-          "readOnly": true,
-          "subForm": {
-            "id": "mid_material",
-            "title": "Mid Material",
-            "fields": [
-              {
-                "id": "name",
-                "title": "Name",
-                "description": "Name of the block",
-                "dataType": 2
-              },
-              {
-                "id": "states",
-                "title": "States",
-                "description": "Contains members named after each state, with boolean, integer, or string values.",
-                "dataType": 31,
-                "alternates": [
-                  {
-                    "id": "states",
-                    "dataType": 27
-                  },
-                  {
-                    "id": "states",
-                    "dataType": 24
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "sea_floor_depth",
-      "title": "Sea Floor Depth",
-      "description": "Controls how deep below the world water level the floor should occur.",
-      "dataType": 0
-    },
-    {
-      "id": "sea_floor_material",
-      "title": "Sea Floor Material",
-      "description": "Controls the block type used as a floor for bodies of water in this biome.",
-      "dataType": 2,
-      "alternates": [
-        {
-          "id": "sea_floor_material",
-          "dataType": 16,
-          "readOnly": true,
-          "subForm": {
-            "id": "sea_floor_material",
-            "title": "Sea Floor Material",
-            "fields": [
-              {
-                "id": "name",
-                "title": "Name",
-                "description": "Name of the block",
-                "dataType": 2
-              },
-              {
-                "id": "states",
-                "title": "States",
-                "description": "Contains members named after each state, with boolean, integer, or string values.",
-                "dataType": 31,
-                "alternates": [
-                  {
-                    "id": "states",
-                    "dataType": 27
-                  },
-                  {
-                    "id": "states",
-                    "dataType": 24
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "sea_material",
-      "title": "Sea Material",
-      "description": "Controls the block type used for the bodies of water in this biome.",
-      "dataType": 2,
-      "alternates": [
-        {
-          "id": "sea_material",
-          "dataType": 16,
-          "readOnly": true,
-          "subForm": {
-            "id": "sea_material",
-            "title": "Sea Material",
-            "fields": [
-              {
-                "id": "name",
-                "title": "Name",
-                "description": "Name of the block",
-                "dataType": 2
-              },
-              {
-                "id": "states",
-                "title": "States",
-                "description": "Contains members named after each state, with boolean, integer, or string values.",
-                "dataType": 31,
-                "alternates": [
-                  {
-                    "id": "states",
-                    "dataType": 27
-                  },
-                  {
-                    "id": "states",
-                    "dataType": 24
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "top_material",
-      "title": "Top Material",
-      "description": "Controls the block type used for the surface of this biome.",
-      "dataType": 2,
-      "alternates": [
-        {
-          "id": "top_material",
-          "dataType": 16,
-          "readOnly": true,
-          "subForm": {
-            "id": "top_material",
-            "title": "Top Material",
-            "fields": [
-              {
-                "id": "name",
-                "title": "Name",
-                "description": "Name of the block",
-                "dataType": 2
-              },
-              {
-                "id": "states",
-                "title": "States",
-                "description": "Contains members named after each state, with boolean, integer, or string values.",
-                "dataType": 31,
-                "alternates": [
-                  {
-                    "id": "states",
-                    "dataType": 27
-                  },
-                  {
-                    "id": "states",
-                    "dataType": 24
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
       "id": "foundation_material",
       "title": "Foundation Material",
       "description": "Controls the block type used deep underground in this biome.",
-      "dataType": 2,
+      "dataType": 24,
       "alternates": [
+        {
+          "id": "foundation_material",
+          "dataType": 24
+        },
         {
           "id": "foundation_material",
           "dataType": 16,
@@ -188,7 +22,7 @@
                 "id": "name",
                 "title": "Name",
                 "description": "Name of the block",
-                "dataType": 2
+                "dataType": 16
               },
               {
                 "id": "states",
@@ -209,7 +43,218 @@
             ]
           }
         }
-      ]
+      ],
+      "subForm": {
+        "fields": [],
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "title": "Foundation Material"
+      }
+    },
+    {
+      "id": "mid_material",
+      "title": "Mid Material",
+      "description": "Controls the block type used in a layer below the surface of this biome.",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "mid_material",
+          "dataType": 24
+        },
+        {
+          "id": "mid_material",
+          "dataType": 16,
+          "readOnly": true,
+          "subForm": {
+            "id": "mid_material",
+            "title": "Mid Material",
+            "fields": [
+              {
+                "id": "name",
+                "title": "Name",
+                "description": "Name of the block",
+                "dataType": 16
+              },
+              {
+                "id": "states",
+                "title": "States",
+                "description": "Contains members named after each state, with boolean, integer, or string values.",
+                "dataType": 31,
+                "alternates": [
+                  {
+                    "id": "states",
+                    "dataType": 27
+                  },
+                  {
+                    "id": "states",
+                    "dataType": 24
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "subForm": {
+        "fields": [],
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "title": "Mid Material"
+      }
+    },
+    {
+      "id": "sea_floor_depth",
+      "title": "Sea Floor Depth",
+      "description": "Controls how deep below the world water level the floor should occur.",
+      "dataType": 0
+    },
+    {
+      "id": "sea_floor_material",
+      "title": "Sea Floor Material",
+      "description": "Controls the block type used as a floor for bodies of water in this biome.",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "sea_floor_material",
+          "dataType": 24
+        },
+        {
+          "id": "sea_floor_material",
+          "dataType": 16,
+          "readOnly": true,
+          "subForm": {
+            "id": "sea_floor_material",
+            "title": "Sea Floor Material",
+            "fields": [
+              {
+                "id": "name",
+                "title": "Name",
+                "description": "Name of the block",
+                "dataType": 16
+              },
+              {
+                "id": "states",
+                "title": "States",
+                "description": "Contains members named after each state, with boolean, integer, or string values.",
+                "dataType": 31,
+                "alternates": [
+                  {
+                    "id": "states",
+                    "dataType": 27
+                  },
+                  {
+                    "id": "states",
+                    "dataType": 24
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "subForm": {
+        "fields": [],
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "title": "Sea Floor Material"
+      }
+    },
+    {
+      "id": "sea_material",
+      "title": "Sea Material",
+      "description": "Controls the block type used for the bodies of water in this biome.",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "sea_material",
+          "dataType": 24
+        },
+        {
+          "id": "sea_material",
+          "dataType": 16,
+          "readOnly": true,
+          "subForm": {
+            "id": "sea_material",
+            "title": "Sea Material",
+            "fields": [
+              {
+                "id": "name",
+                "title": "Name",
+                "description": "Name of the block",
+                "dataType": 16
+              },
+              {
+                "id": "states",
+                "title": "States",
+                "description": "Contains members named after each state, with boolean, integer, or string values.",
+                "dataType": 31,
+                "alternates": [
+                  {
+                    "id": "states",
+                    "dataType": 27
+                  },
+                  {
+                    "id": "states",
+                    "dataType": 24
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "subForm": {
+        "fields": [],
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "title": "Sea Material"
+      }
+    },
+    {
+      "id": "top_material",
+      "title": "Top Material",
+      "description": "Controls the block type used for the surface of this biome.",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "top_material",
+          "dataType": 24
+        },
+        {
+          "id": "top_material",
+          "dataType": 16,
+          "readOnly": true,
+          "subForm": {
+            "id": "top_material",
+            "title": "Top Material",
+            "fields": [
+              {
+                "id": "name",
+                "title": "Name",
+                "description": "Name of the block",
+                "dataType": 16
+              },
+              {
+                "id": "states",
+                "title": "States",
+                "description": "Contains members named after each state, with boolean, integer, or string values.",
+                "dataType": 31,
+                "alternates": [
+                  {
+                    "id": "states",
+                    "dataType": 27
+                  },
+                  {
+                    "id": "states",
+                    "dataType": 24
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "subForm": {
+        "fields": [],
+        "description": "Specifies a particular block. Can be a string block name or a JSON object",
+        "title": "Top Material"
+      }
     }
   ],
   "description": "Similar to overworld_surface. Adds swamp surface details.",

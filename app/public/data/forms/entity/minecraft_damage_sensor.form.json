@@ -9,14 +9,17 @@
       "choices": [
         {
           "id": "yes",
+          "versionIntroduced": "1.21.40",
           "description": "Received damage is applied to the entity."
         },
         {
           "id": "no",
+          "versionIntroduced": "1.21.40",
           "description": "Received damage is not applied to the entity."
         },
         {
           "id": "no_but_side_effects_apply",
+          "versionIntroduced": "1.21.40",
           "description": "Received damage is not applied to the entity, but the side effects of the attack are. This means that the attacker's weapon loses durability, enchantment side effects are applied, and so on."
         }
       ],
@@ -31,12 +34,14 @@
     },
     {
       "id": "triggers",
-      "title": "Triggers",
-      "description": "List of triggers with the events to call when taking specific kinds of damage.\"",
-      "dataType": 15,
       "subForm": {
-        "description": "List of triggers with the events to call when taking specific kinds of damage.\"",
         "fields": [
+          {
+            "id": "on_damage_sound_event",
+            "dataType": 39,
+            "description": "Defines what sound to play, if any, when the \"on_damage\" filters are met.",
+            "title": "On Damage Sound Event"
+          },
           {
             "id": "cause",
             "title": "Cause",
@@ -70,14 +75,9 @@
             "title": "On Damage",
             "description": "Defines which entities the trigger applies to, and which, if any, event to emit when damaged.",
             "dataType": 22
-          },
-          {
-            "id": "on_damage_sound_event",
-            "title": "On Damage Sound Event",
-            "description": "Defines what sound to play, if any, when the \"on_damage\" filters are met.",
-            "dataType": 2
           }
-        ]
+        ],
+        "description": "List of triggers with the events to call when taking specific kinds of damage.\""
       },
       "samples": {
         "/vanilla/behavior_pack/entities/allay.json": [
@@ -95,13 +95,12 @@
                       },
                       {
                         "test": "is_owner",
-                        "subject": "other",
-                        "value": true
+                        "subject": "other"
                       }
                     ]
                   }
                 },
-                "deals_damage": false
+                "deals_damage": "no"
               }
             ]
           }
@@ -179,7 +178,10 @@
             }
           }
         ]
-      }
+      },
+      "description": "List of triggers with the events to call when taking specific kinds of damage.\"",
+      "title": "Triggers",
+      "dataType": 15
     }
   ],
   "description": "Defines what events to call when this entity is damaged by specific entities or items.",
@@ -201,13 +203,12 @@
                     },
                     {
                       "test": "is_owner",
-                      "subject": "other",
-                      "value": true
+                      "subject": "other"
                     }
                   ]
                 }
               },
-              "deals_damage": false
+              "deals_damage": "no"
             }
           ]
         }
@@ -477,7 +478,7 @@
         "content": {
           "triggers": {
             "cause": "fall",
-            "deals_damage": true,
+            "deals_damage": "yes",
             "damage_modifier": -5
           }
         }
@@ -489,7 +490,7 @@
         "content": {
           "triggers": {
             "cause": "fall",
-            "deals_damage": false
+            "deals_damage": "no"
           }
         }
       }
@@ -500,9 +501,22 @@
         "content": {
           "triggers": {
             "cause": "fall",
-            "deals_damage": true,
+            "deals_damage": "yes",
             "damage_modifier": -10
           }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/happy_ghast.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:damage_sensor/",
+        "content": {
+          "triggers": [
+            {
+              "cause": "fall",
+              "deals_damage": "no"
+            }
+          ]
         }
       }
     ],
@@ -512,7 +526,7 @@
         "content": {
           "triggers": {
             "cause": "fall",
-            "deals_damage": false
+            "deals_damage": "no"
           }
         }
       }
@@ -677,7 +691,7 @@
         "content": {
           "triggers": {
             "cause": "fall",
-            "deals_damage": false
+            "deals_damage": "no"
           }
         }
       }

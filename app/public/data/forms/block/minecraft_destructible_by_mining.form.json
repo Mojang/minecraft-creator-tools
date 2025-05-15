@@ -1,4 +1,5 @@
 {
+  "versionIntroduced": "1.21.50",
   "fields": [
     {
       "id": "item_specific_speeds",
@@ -44,37 +45,11 @@
           "samples": [
             {
               "path": "Example1",
-              "content": {
-                "minecraft:destructible_by_mining": {
-                  "seconds_to_destroy": 10,
-                  "item_specific_speeds": [
-                    {
-                      "item": {
-                        "tags": "q.any_tag('minecraft:is_pickaxe', 'minecraft:is_tool') "
-                      },
-                      "destroy_speed": 5
-                    }
-                  ]
-                }
-              }
+              "content": "{\r\n\t\"minecraft:destructible_by_mining\": {\r\n\t\t\"seconds_to_destroy\": 10,\r\n\t\t\"item_specific_speeds\": [\r\n\t\t\t{\r\n\t\t\t\t\"item\": { \"tags\": \"q.any_tag('minecraft:is_pickaxe', 'minecraft:is_tool') \" },\r\n\t\t\t\t\"destroy_speed\": 5.0\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}"
             },
             {
               "path": "Example2",
-              "content": {
-                "minecraft:destructible_by_mining": {
-                  "seconds_to_destroy": 10,
-                  "item_specific_speeds": [
-                    {
-                      "item": "minecraft:iron_pickaxe",
-                      "destroy_speed": 5
-                    },
-                    {
-                      "item": "minecraft:diamond_pickaxe",
-                      "destroy_speed": 2
-                    }
-                  ]
-                }
-              }
+              "content": "{\r\n\t\"minecraft:destructible_by_mining\": {\r\n\t\t\"seconds_to_destroy\": 10,\r\n\t\t\"item_specific_speeds\": [\r\n\t\t\t{\r\n\t\t\t\t\"item\": \"minecraft:iron_pickaxe\",\r\n\t\t\t\t\"destroy_speed\": 5.0\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"item\": \"minecraft:diamond_pickaxe\",\r\n\t\t\t\t\"destroy_speed\": 2.0\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}"
             }
           ]
         }

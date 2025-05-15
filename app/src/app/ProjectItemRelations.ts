@@ -28,8 +28,8 @@ export default class ProjectItemRelations {
       if (item.itemType === ProjectItemType.entityTypeBehavior) {
         await item.ensureStorage();
 
-        if (item.defaultFile) {
-          const entityTypeBehavior = await EntityTypeDefinition.ensureOnFile(item.defaultFile);
+        if (item.primaryFile) {
+          const entityTypeBehavior = await EntityTypeDefinition.ensureOnFile(item.primaryFile);
 
           if (entityTypeBehavior) {
             await entityTypeBehavior.addChildItems(project, item);
@@ -38,8 +38,8 @@ export default class ProjectItemRelations {
       } else if (item.itemType === ProjectItemType.itemTypeBehavior) {
         await item.ensureStorage();
 
-        if (item.defaultFile) {
-          const itemTypeBehavior = await ItemTypeDefinition.ensureOnFile(item.defaultFile);
+        if (item.primaryFile) {
+          const itemTypeBehavior = await ItemTypeDefinition.ensureOnFile(item.primaryFile);
 
           if (itemTypeBehavior) {
             await itemTypeBehavior.addChildItems(project, item);
@@ -48,8 +48,8 @@ export default class ProjectItemRelations {
       } else if (item.itemType === ProjectItemType.blockTypeBehavior) {
         await item.ensureStorage();
 
-        if (item.defaultFile) {
-          const blockTypeBehavior = await BlockTypeDefinition.ensureOnFile(item.defaultFile);
+        if (item.primaryFile) {
+          const blockTypeBehavior = await BlockTypeDefinition.ensureOnFile(item.primaryFile);
 
           if (blockTypeBehavior) {
             await blockTypeBehavior.addChildItems(project, item);
@@ -58,8 +58,8 @@ export default class ProjectItemRelations {
       } else if (item.itemType === ProjectItemType.entityTypeResource) {
         await item.ensureStorage();
 
-        if (item.defaultFile) {
-          const entityTypeResource = await EntityTypeResourceDefinition.ensureOnFile(item.defaultFile);
+        if (item.primaryFile) {
+          const entityTypeResource = await EntityTypeResourceDefinition.ensureOnFile(item.primaryFile);
 
           if (entityTypeResource) {
             await entityTypeResource.addChildItems(project, item);
@@ -68,8 +68,8 @@ export default class ProjectItemRelations {
       } else if (item.itemType === ProjectItemType.particleJson) {
         await item.ensureStorage();
 
-        if (item.defaultFile) {
-          const particleResource = await ParticleEffectResourceDefinition.ensureOnFile(item.defaultFile);
+        if (item.primaryFile) {
+          const particleResource = await ParticleEffectResourceDefinition.ensureOnFile(item.primaryFile);
 
           if (particleResource) {
             await particleResource.addChildItems(project, item);
@@ -78,8 +78,8 @@ export default class ProjectItemRelations {
       } else if (item.itemType === ProjectItemType.uiJson) {
         await item.ensureStorage();
 
-        if (item.defaultFile) {
-          const jsonUi = await JsonUIResourceDefinition.ensureOnFile(item.defaultFile);
+        if (item.primaryFile) {
+          const jsonUi = await JsonUIResourceDefinition.ensureOnFile(item.primaryFile);
 
           if (jsonUi) {
             await jsonUi.addChildItems(project, item);
@@ -88,8 +88,8 @@ export default class ProjectItemRelations {
       } else if (item.itemType === ProjectItemType.attachableResourceJson) {
         await item.ensureStorage();
 
-        if (item.defaultFile) {
-          const attachableResource = await AttachableResourceDefinition.ensureOnFile(item.defaultFile);
+        if (item.primaryFile) {
+          const attachableResource = await AttachableResourceDefinition.ensureOnFile(item.primaryFile);
 
           if (attachableResource) {
             await attachableResource.addChildItems(project, item);
@@ -98,8 +98,8 @@ export default class ProjectItemRelations {
       } else if (item.itemType === ProjectItemType.itemTextureJson) {
         await item.ensureStorage();
 
-        if (item.defaultFile) {
-          const itemTextures = await ItemTextureCatalogDefinition.ensureOnFile(item.defaultFile);
+        if (item.primaryFile) {
+          const itemTextures = await ItemTextureCatalogDefinition.ensureOnFile(item.primaryFile);
 
           if (itemTextures) {
             await itemTextures.addChildItems(project, item);
@@ -108,8 +108,8 @@ export default class ProjectItemRelations {
       } else if (item.itemType === ProjectItemType.terrainTextureCatalogResourceJson) {
         await item.ensureStorage();
 
-        if (item.defaultFile) {
-          const terrainTexture = await TerrainTextureCatalogDefinition.ensureOnFile(item.defaultFile);
+        if (item.primaryFile) {
+          const terrainTexture = await TerrainTextureCatalogDefinition.ensureOnFile(item.primaryFile);
 
           if (terrainTexture) {
             await terrainTexture.addChildItems(project, item);
@@ -118,8 +118,8 @@ export default class ProjectItemRelations {
       } else if (item.itemType === ProjectItemType.soundDefinitionCatalog) {
         await item.ensureStorage();
 
-        if (item.defaultFile) {
-          const soundDefCat = await SoundDefinitionCatalogDefinition.ensureOnFile(item.defaultFile);
+        if (item.primaryFile) {
+          const soundDefCat = await SoundDefinitionCatalogDefinition.ensureOnFile(item.primaryFile);
 
           if (soundDefCat) {
             await soundDefCat.addChildItems(project, item);
@@ -128,8 +128,8 @@ export default class ProjectItemRelations {
       } else if (item.itemType === ProjectItemType.musicDefinitionJson) {
         await item.ensureStorage();
 
-        if (item.defaultFile) {
-          const musicDefCat = await MusicDefinitionCatalogDefinition.ensureOnFile(item.defaultFile);
+        if (item.primaryFile) {
+          const musicDefCat = await MusicDefinitionCatalogDefinition.ensureOnFile(item.primaryFile);
 
           if (musicDefCat) {
             await musicDefCat.addChildItems(project, item);
@@ -138,8 +138,8 @@ export default class ProjectItemRelations {
       } else if (item.itemType === ProjectItemType.soundCatalog) {
         await item.ensureStorage();
 
-        if (item.defaultFile) {
-          const soundCat = await SoundCatalogDefinition.ensureOnFile(item.defaultFile);
+        if (item.primaryFile) {
+          const soundCat = await SoundCatalogDefinition.ensureOnFile(item.primaryFile);
 
           if (soundCat) {
             await soundCat.addChildItems(project, item);
@@ -159,8 +159,8 @@ export default class ProjectItemRelations {
         if (rel.parentItem.itemType === ProjectItemType.entityTypeResource) {
           await item.ensureStorage();
 
-          if (rel.parentItem.defaultFile) {
-            const entityTypeResource = await EntityTypeResourceDefinition.ensureOnFile(rel.parentItem.defaultFile);
+          if (rel.parentItem.primaryFile) {
+            const entityTypeResource = await EntityTypeResourceDefinition.ensureOnFile(rel.parentItem.primaryFile);
 
             if (entityTypeResource) {
               await entityTypeResource.deleteLinkToChild(rel);
@@ -169,8 +169,8 @@ export default class ProjectItemRelations {
         } else if (rel.parentItem.itemType === ProjectItemType.particleJson) {
           await item.ensureStorage();
 
-          if (rel.parentItem.defaultFile) {
-            const particleResource = await ParticleEffectResourceDefinition.ensureOnFile(rel.parentItem.defaultFile);
+          if (rel.parentItem.primaryFile) {
+            const particleResource = await ParticleEffectResourceDefinition.ensureOnFile(rel.parentItem.primaryFile);
 
             if (particleResource) {
               await particleResource.deleteLinkToChild(rel);
@@ -179,8 +179,8 @@ export default class ProjectItemRelations {
         } else if (rel.parentItem.itemType === ProjectItemType.attachableResourceJson) {
           await item.ensureStorage();
 
-          if (rel.parentItem.defaultFile) {
-            const attachableResource = await AttachableResourceDefinition.ensureOnFile(rel.parentItem.defaultFile);
+          if (rel.parentItem.primaryFile) {
+            const attachableResource = await AttachableResourceDefinition.ensureOnFile(rel.parentItem.primaryFile);
 
             if (attachableResource) {
               await attachableResource.deleteLinkToChild(rel);
@@ -189,8 +189,8 @@ export default class ProjectItemRelations {
         } else if (rel.parentItem.itemType === ProjectItemType.soundCatalog) {
           await item.ensureStorage();
 
-          if (rel.parentItem.defaultFile) {
-            const soundCat = await SoundDefinitionCatalogDefinition.ensureOnFile(rel.parentItem.defaultFile);
+          if (rel.parentItem.primaryFile) {
+            const soundCat = await SoundDefinitionCatalogDefinition.ensureOnFile(rel.parentItem.primaryFile);
 
             if (soundCat) {
               await soundCat.deleteLinkToChild(rel.childItem);

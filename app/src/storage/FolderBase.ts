@@ -42,6 +42,10 @@ export default abstract class FolderBase implements IFolder {
     return this.#lastLoadedOrSaved !== null;
   }
 
+  get canIgnore() {
+    return StorageUtilities.canIgnoreFolders(this.name);
+  }
+
   get allFiles(): AsyncIterable<IFile> {
     let parentFolder = this;
 
@@ -385,6 +389,14 @@ export default abstract class FolderBase implements IFolder {
     }
 
     return undefined;
+  }
+
+  getSortedFolderKeys(): string[] {
+    return Object.keys(this.folders).sort();
+  }
+
+  getSortedFileKeys(): string[] {
+    return Object.keys(this.files).sort();
   }
 
   getSummary() {

@@ -33,7 +33,7 @@ export default class SetNamespacedId extends Component<ISetNamespacedIdProps, IS
     if (event && event.value && typeof event.value === "string") {
       const val = event.value;
 
-      this.props.onNameChanged(val + ":" + this.state.namespace);
+      this.props.onNameChanged(val + ":" + this.state.name);
       this.setState({
         namespace: val,
         name: this.state.name,
@@ -45,7 +45,7 @@ export default class SetNamespacedId extends Component<ISetNamespacedIdProps, IS
     if (event && event.value && typeof event.value === "string") {
       const val = event.value;
 
-      this.props.onNameChanged(this.state.namespace + ":" + val);
+      this.props.onNameChanged((this.state.namespace ? this.state.namespace : this.props.defaultNamespace) + ":" + val);
       this.setState({
         namespace: this.state.namespace,
         name: val,

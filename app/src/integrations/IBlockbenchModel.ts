@@ -5,6 +5,7 @@ export default interface IBlockbenchModel {
   elements?: IBlockbenchElement[];
   outliner?: IBlockbenchOutlineItem[];
   textures?: IBlockbenchTexture[];
+  animations?: IBlockbenchAnimation[];
   visible_box: number[];
   variable_placeholders: string;
   variable_placeholder_buttons: string[];
@@ -23,6 +24,41 @@ export interface IBlockbenchModelMetadata {
 export interface IBlockbench2DSize {
   width: number;
   height: number;
+}
+
+export interface IBlockbenchAnimation {
+  uuid: string;
+  name: string;
+  loop: string;
+  override: boolean;
+  length: number;
+  snapping: number;
+  selected: boolean;
+  saved: boolean;
+  path: string;
+  anim_time_update: string;
+  blend_weight: string;
+  loop_delay: string;
+  animators: { [name: string]: IBlockbenchAnimationAnimator };
+}
+
+export interface IBlockbenchAnimationAnimator {
+  name: string;
+  type: string;
+  keyframes: IBlockbenchAnimationKeyframe[];
+}
+
+export interface IBlockbenchAnimationKeyframe {
+  channel: string;
+  data_points: {
+    x: string;
+    y: string;
+    z: string;
+  }[];
+  uuid: string;
+  time: number;
+  color: number;
+  interpolation: string;
 }
 
 export interface IBlockbenchOutlineItem {

@@ -28,7 +28,6 @@ import IGalleryItem from "../app/IGalleryItem";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import ProjectGallery from "./ProjectGallery";
-
 import StorageUtilities from "../storage/StorageUtilities";
 import { LocalFolderLabel, ExportBackupLabel } from "./Labels";
 import FileSystemStorage from "../storage/FileSystemStorage";
@@ -81,6 +80,7 @@ interface IHomeProps extends IAppProps {
     isReadOnly?: boolean
   ) => void;
   onNewProjectFromFolderSelected?: (folder: string) => void;
+  onProgressLog?: (message: string) => void;
   onNewProjectFromFolderInstanceSelected?: (folder: IFolder, name?: string, isDocumentationProject?: boolean) => void;
 }
 
@@ -267,6 +267,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
       this.props.carto.isDeployingToComMojang = true;
       this.props.carto.updateDeploymentStorage(fss);
       this.props.carto.ensureMinecraft(MinecraftFlavor.deploymentStorage);
+
       this.setState({
         gallery: this.state.gallery,
         search: this.state.search,
@@ -280,6 +281,10 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
       return true;
     } else {
+      if (this.props.onProgressLog) {
+        this.props.onProgressLog("Scanning folder '" + dirHandle.name + "'...");
+      }
+
       let fss = new FileSystemStorage(dirHandle as FileSystemDirectoryHandle, dirHandle.name);
 
       const safeMessage = await (fss.rootFolder as FileSystemFolder).getFirstUnsafeError();
@@ -294,6 +299,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
         });
         return false;
       }
+
       if (this.props.onNewProjectFromFolderInstanceSelected) {
         this.props.onNewProjectFromFolderInstanceSelected(fss.rootFolder, dirHandle.name, isDocumentationProject);
         return true;
@@ -1143,14 +1149,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     let accessoryToolArea = <></>;
 
     const actionsToolbar = [];
-    if (AppServiceProxy.hasAppService) {
-      actionsToolbar.push({
-        icon: <LocalFolderLabel isCompact={false} />,
-        key: "openFolder",
-        onClick: this._handleOpenFolderClick,
-        title: "Open folder on this device",
-      });
-    } else if (window.showDirectoryPicker !== undefined) {
+    if (window.showDirectoryPicker !== undefined) {
       actionsToolbar.push({
         icon: <LocalFolderLabel isCompact={false} />,
         key: "openFolderA",

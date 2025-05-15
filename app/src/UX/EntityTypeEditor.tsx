@@ -646,7 +646,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
         }
       }
 
-      if (spawnItem && spawnItem.defaultFile) {
+      if (spawnItem && spawnItem.primaryFile) {
         modeArea = (
           <div
             className="ete-componentEditorInteriorFull"
@@ -659,7 +659,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               project={this.props.project}
               theme={this.props.theme}
               displayHeader={false}
-              file={spawnItem.defaultFile}
+              file={spawnItem.primaryFile}
               heightOffset={this.props.heightOffset + 170}
             />
           </div>
@@ -675,7 +675,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
         }
       }
 
-      if (resourceItem && resourceItem.defaultFile) {
+      if (resourceItem && resourceItem.primaryFile) {
         modeArea = (
           <div
             className="ete-componentEditorInteriorFull"
@@ -689,7 +689,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               displayHeader={false}
               projectItem={resourceItem}
               project={this.props.project}
-              file={resourceItem.defaultFile}
+              file={resourceItem.primaryFile}
               heightOffset={this.props.heightOffset + 170}
             />
           </div>
@@ -705,7 +705,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
         }
       }
 
-      if (lootTableItem && lootTableItem.defaultFile) {
+      if (lootTableItem && lootTableItem.primaryFile) {
         modeArea = (
           <div
             className="ete-componentEditorInteriorFull"
@@ -717,7 +717,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               readOnly={this.props.readOnly}
               theme={this.props.theme}
               project={this.props.project}
-              file={lootTableItem.defaultFile}
+              file={lootTableItem.primaryFile}
               heightOffset={this.props.heightOffset + 88}
             />
           </div>

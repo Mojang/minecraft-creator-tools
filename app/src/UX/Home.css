@@ -19,7 +19,7 @@
   .home-layout {
     width: 100%;
     display: grid;
-    grid-template-rows: 112px 0.5fr 0.5fr 60px;
+    grid-template-rows: 106px 0.5fr 0.5fr 60px;
   }
 
   .home-main {

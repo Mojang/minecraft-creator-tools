@@ -21,6 +21,8 @@ import Project, { FolderContext } from "../app/Project";
 import Log from "../core/Log";
 import AttachableResourceDefinition from "../minecraft/AttachableResourceDefinition";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
+import AnimationResourceDefinition from "../minecraft/AnimationResourceDefinition";
+import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 
 export default class BlockbenchModel {
   private _file?: IFile;
@@ -107,6 +109,132 @@ export default class BlockbenchModel {
     }
 
     return { uv: [0, 0], uv_size: [1, 1] };
+  }
+
+  async updateMinecraftAnimationsFromBlockbench(
+    animationDef: AnimationResourceDefinition,
+    etrd?: EntityTypeResourceDefinition
+  ) {
+    if (!this.data?.animations) {
+      return;
+    }
+
+    for (const animation of this.data.animations) {
+      if (animation.name) {
+        const targetMcAnimation = animationDef.ensureAnimation(animation.name);
+
+        const rotationKeyframes: { [boneName: string]: { [timeCode: string]: (string | number)[] } } = {};
+        const positionKeyframes: { [boneName: string]: { [timeCode: string]: (string | number)[] } } = {};
+        const scaleKeyframes: { [boneName: string]: { [timeCode: string]: (string | number)[] } } = {};
+
+        for (const animatorName in animation.animators) {
+          const animator = animation.animators[animatorName];
+
+          if (animator) {
+            if (animator.type === "bone" && animator.name && animator.keyframes) {
+              for (const keyframe of animator.keyframes) {
+                if (keyframe.data_points && keyframe.data_points.length > 0) {
+                  const keyframeData: (string | number)[] = [];
+
+                  if (keyframe.data_points[0].x) {
+                    keyframeData.push(keyframe.data_points[0].x);
+                  }
+                  if (keyframe.data_points[0].y) {
+                    keyframeData.push(keyframe.data_points[0].y);
+                  }
+                  if (keyframe.data_points[0].z) {
+                    keyframeData.push(keyframe.data_points[0].z);
+                  }
+
+                  if (keyframe.channel === "rotation") {
+                    if (!rotationKeyframes[animator.name]) {
+                      rotationKeyframes[animator.name] = {};
+                    }
+                    rotationKeyframes[animator.name][keyframe.time.toString()] = keyframeData;
+                  } else if (keyframe.channel === "position") {
+                    if (!positionKeyframes[animator.name]) {
+                      positionKeyframes[animator.name] = {};
+                    }
+                    positionKeyframes[animator.name][keyframe.time.toString()] = keyframeData;
+                  } else if (keyframe.channel === "scale") {
+                    if (!scaleKeyframes[animator.name]) {
+                      scaleKeyframes[animator.name] = {};
+                    }
+                    scaleKeyframes[animator.name][keyframe.time.toString()] = keyframeData;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        for (const boneName in rotationKeyframes) {
+          const boneKeyframes = rotationKeyframes[boneName];
+
+          if (boneKeyframes) {
+            if (!targetMcAnimation.bones[boneName]) {
+              targetMcAnimation.bones[boneName] = {
+                rotation: {},
+                position: {},
+                scale: {},
+              };
+            }
+
+            const boneKeys = Object.keys(boneKeyframes);
+
+            if (boneKeys.length === 1 && boneKeys[0] === "0") {
+              targetMcAnimation.bones[boneName].rotation = boneKeyframes["0"];
+            } else {
+              targetMcAnimation.bones[boneName].rotation = boneKeyframes;
+            }
+          }
+        }
+
+        for (const boneName in positionKeyframes) {
+          const boneKeyframes = positionKeyframes[boneName];
+
+          if (boneKeyframes) {
+            if (!targetMcAnimation.bones[boneName]) {
+              targetMcAnimation.bones[boneName] = {
+                rotation: {},
+                position: {},
+                scale: {},
+              };
+            }
+
+            const boneKeys = Object.keys(boneKeyframes);
+
+            if (boneKeys.length === 1 && boneKeys[0] === "0") {
+              targetMcAnimation.bones[boneName].position = boneKeyframes["0"];
+            } else {
+              targetMcAnimation.bones[boneName].position = boneKeyframes;
+            }
+          }
+        }
+
+        for (const boneName in scaleKeyframes) {
+          const boneKeyframes = scaleKeyframes[boneName];
+
+          if (boneKeyframes) {
+            if (!targetMcAnimation.bones[boneName]) {
+              targetMcAnimation.bones[boneName] = {
+                rotation: {},
+                position: {},
+                scale: {},
+              };
+            }
+
+            const boneKeys = Object.keys(boneKeyframes);
+
+            if (boneKeys.length === 1 && boneKeys[0] === "0") {
+              targetMcAnimation.bones[boneName].scale = boneKeyframes["0"];
+            } else {
+              targetMcAnimation.bones[boneName].scale = boneKeyframes;
+            }
+          }
+        }
+      }
+    }
   }
 
   async updateGeometryFromModel(geo: IGeometry, formatVersion: number[]) {
@@ -198,14 +326,37 @@ export default class BlockbenchModel {
     }
   }
 
+  static isLessThan110(formatVersion: number[]) {
+    if (formatVersion[0] > 1) {
+      return false;
+    }
+
+    if (formatVersion.length >= 2) {
+      return formatVersion[1] < 10;
+    }
+
+    // if the format version doesn't match any known format, presume it's a pre-format versoin file?
+    return true;
+  }
+
   processOutlineItems(
     outlineItems: (string | IBlockbenchOutlineItem)[],
     bonesByName: { [name: string]: IGeometryBone },
     cubesById: { [name: string]: IGeometryBoneCube },
     locatorsById: { [name: string]: IBlockbenchElement },
     formatVersion: number[],
-    parent?: IGeometryBone
+    parent?: IGeometryBone,
+    context?: {
+      // wrap this in an object so we can pass by ref
+      addIndex: number;
+    }
   ) {
+    if (!context) {
+      context = {
+        addIndex: 1,
+      };
+    }
+
     for (const outlineItem of outlineItems) {
       if (outlineItem && typeof outlineItem === "string" && parent) {
         const elt = cubesById[outlineItem];
@@ -244,7 +395,10 @@ export default class BlockbenchModel {
           bone = {
             name: outlineItem.name,
             pivot: [],
-            binding: outlineItem.bedrock_binding,
+            binding:
+              !BlockbenchModel.isLessThan110(formatVersion) && outlineItem.bedrock_binding
+                ? outlineItem.bedrock_binding
+                : undefined,
             cubes: undefined,
             locators: undefined,
           };
@@ -271,20 +425,26 @@ export default class BlockbenchModel {
         }
 
         if (outlineItem.children) {
-          this.processOutlineItems(outlineItem.children, bonesByName, cubesById, locatorsById, formatVersion, bone);
+          this.processOutlineItems(
+            outlineItem.children,
+            bonesByName,
+            cubesById,
+            locatorsById,
+            formatVersion,
+            bone,
+            context
+          );
         }
 
         if (bone.cubes) {
           // geo fv of 1.8 uses bind_pose_rotation at the bone level rather than per-cube rotation
           // also it manages pivot at the bone level
           // so "pull up" rotation -> bind_pose_rotation or create new bones
-          if (formatVersion[0] === 1 && formatVersion[1] === 8 && bone.cubes) {
+          if (BlockbenchModel.isLessThan110(formatVersion) && bone.cubes) {
             const newCubesPivot: IGeometryBoneCube[] = [];
-            let i = 0;
 
             // promote cubes to their own bones if they have a separate pivot than the governing bone
             for (const cube of bone.cubes) {
-              i++;
               let addCube = true;
 
               if (cube.pivot && bone.pivot && cube.pivot.length === 3 && bone.pivot.length === 3) {
@@ -297,12 +457,16 @@ export default class BlockbenchModel {
                 } else {
                   addCube = false;
 
+                  context.addIndex++;
+
                   const newBone: IGeometryBone = {
                     pivot: cube.pivot,
                     bind_pose_rotation: cube.rotation,
                     cubes: [cube],
-                    name: (cube as any).name ? (cube as any).name : bone.name + i.toString(),
-                    parent: bone.parent,
+                    name: (cube as any).name
+                      ? (cube as any).name + context.addIndex.toString()
+                      : bone.name + context.addIndex.toString(),
+                    parent: bone.name,
                   };
 
                   (cube as any).name = undefined;
@@ -318,10 +482,8 @@ export default class BlockbenchModel {
               }
             }
 
-            i = 0;
             const newCubesRotation: IGeometryBoneCube[] = [];
             for (const cube of newCubesPivot) {
-              i++;
               let addCube = true;
 
               if (cube.rotation) {
@@ -334,13 +496,16 @@ export default class BlockbenchModel {
                     cube.rotation[2] !== bone.bind_pose_rotation[2]
                   ) {
                     addCube = false;
+                    context.addIndex++;
 
                     const newBone: IGeometryBone = {
                       pivot: bone.pivot,
                       bind_pose_rotation: cube.rotation,
                       cubes: [cube],
-                      name: (cube as any).name ? (cube as any).name : bone.name + i.toString(),
-                      parent: bone.parent,
+                      name: (cube as any).name
+                        ? (cube as any).name + context.addIndex.toString()
+                        : bone.name + context.addIndex.toString(),
+                      parent: bone.name,
                     };
 
                     cube.rotation = undefined;
@@ -362,12 +527,15 @@ export default class BlockbenchModel {
                     bone.bind_pose_rotation[2] !== 0)
                 ) {
                   addCube = false;
+                  context.addIndex++;
 
                   const newBone: IGeometryBone = {
                     pivot: bone.pivot,
                     cubes: [cube],
-                    name: (cube as any).name ? (cube as any).name : bone.name + i.toString(),
-                    parent: bone.parent,
+                    name: (cube as any).name
+                      ? (cube as any).name + context.addIndex.toString()
+                      : bone.name + context.addIndex.toString(),
+                    parent: bone.name,
                   };
 
                   (cube as any).name = undefined;
@@ -397,14 +565,19 @@ export default class BlockbenchModel {
 
     if (modelId) {
       let geoToUpdate: IGeometry | undefined = undefined;
+      let animationToUpdate: AnimationResourceDefinition | undefined = undefined;
+      let animationFile: IFile | undefined = undefined;
       let modelGeometryDefinitionToUpdate: ModelGeometryDefinition | undefined = undefined;
+      let entityTypeResourceDefinitionToUpdate: EntityTypeResourceDefinition | undefined = undefined;
+      let entityTypeResourceProjectItem: ProjectItem | undefined = undefined;
 
+      // first pass: find the model name and the ETRD
       for (const item of project.items) {
         if (item.itemType === ProjectItemType.modelGeometryJson && geoToUpdate === undefined) {
           await item.ensureFileStorage();
 
-          if (item.availableFile) {
-            const modelDefOuter = await ModelGeometryDefinition.ensureOnFile(item.availableFile);
+          if (item.primaryFile) {
+            const modelDefOuter = await ModelGeometryDefinition.ensureOnFile(item.primaryFile);
 
             if (modelDefOuter && modelDefOuter.definitions) {
               geoToUpdate = modelDefOuter.getById(modelId);
@@ -415,39 +588,45 @@ export default class BlockbenchModel {
           // ensure references to textures if an entiy exists
           await item.ensureFileStorage();
 
-          if (item.availableFile) {
-            const etrd = await EntityTypeResourceDefinition.ensureOnFile(item.availableFile);
+          if (item.primaryFile) {
+            const etrd = await EntityTypeResourceDefinition.ensureOnFile(item.primaryFile);
 
-            if (etrd && etrd.id === modelId) {
-              if (this.data && this.data.textures && etrd.textures) {
-                for (const texture of this.data.textures) {
-                  let path = texture.path ? texture.path : texture.name;
+            if (etrd && etrd.geometryList) {
+              for (const geometry of etrd.geometryList) {
+                if (geometry === modelId) {
+                  entityTypeResourceProjectItem = item;
+                  entityTypeResourceDefinitionToUpdate = etrd;
+                  if (this.data && this.data.textures && etrd.textures) {
+                    for (const texture of this.data.textures) {
+                      let path = texture.path ? texture.path : texture.name;
 
-                  path = StorageUtilities.canonicalizePath(path);
-                  let hasPath = false;
-                  let hasDefault = false;
+                      path = StorageUtilities.canonicalizePath(path);
+                      let hasPath = false;
+                      let hasDefault = false;
 
-                  const texturesIndex = path.indexOf("textures/");
+                      const texturesIndex = path.indexOf("textures/");
 
-                  if (texturesIndex >= 0) {
-                    path = path.substring(texturesIndex);
+                      if (texturesIndex >= 0) {
+                        path = path.substring(texturesIndex);
 
-                    for (const textureKey in etrd.textures) {
-                      const targetPath = etrd.textures[textureKey];
+                        for (const textureKey in etrd.textures) {
+                          const targetPath = etrd.textures[textureKey];
 
-                      if (textureKey === "default") {
-                        hasDefault = true;
-                      }
-                      if (targetPath && StorageUtilities.isPathEqual(targetPath, path)) {
-                        hasPath = true;
-                      }
-                    }
+                          if (textureKey === "default") {
+                            hasDefault = true;
+                          }
+                          if (targetPath && StorageUtilities.isPathEqual(targetPath, path)) {
+                            hasPath = true;
+                          }
+                        }
 
-                    if (!hasPath) {
-                      if (!hasDefault) {
-                        etrd.textures["default"] = path;
-                      } else {
-                        etrd.textures[texture.name] = path;
+                        if (!hasPath) {
+                          if (!hasDefault) {
+                            etrd.textures["default"] = path;
+                          } else {
+                            etrd.textures[texture.name] = path;
+                          }
+                        }
                       }
                     }
                   }
@@ -458,7 +637,29 @@ export default class BlockbenchModel {
         }
       }
 
-      // a model file doesn't exist, so let's keep one.
+      // second pass: find the animation if we have an ETRD
+      if (
+        entityTypeResourceDefinitionToUpdate &&
+        entityTypeResourceProjectItem &&
+        entityTypeResourceProjectItem.childItems
+      ) {
+        for (const item of entityTypeResourceProjectItem.childItems) {
+          if (item.childItem.itemType === ProjectItemType.animationResourceJson && animationToUpdate === undefined) {
+            await item.childItem.ensureFileStorage();
+
+            if (item.childItem.primaryFile) {
+              const animationOuter = await AnimationResourceDefinition.ensureOnFile(item.childItem.primaryFile);
+
+              if (animationOuter && animationOuter.data) {
+                animationToUpdate = animationOuter;
+                animationFile = item.childItem.primaryFile;
+              }
+            }
+          }
+        }
+      }
+
+      // a model file doesn't exist, so let's create one.
       if (!geoToUpdate && project.projectFolder) {
         let modelName = this.data?.name;
 
@@ -496,10 +697,69 @@ export default class BlockbenchModel {
         }
       }
 
+      // an animation file doesn't exist, so let's create one if we need to.
+      if (!animationToUpdate && project.projectFolder && this.data?.animations) {
+        let animationSetName = MinecraftUtilities.removeSubTypeExtensionFromName(this.data?.name);
+
+        if (animationSetName === undefined) {
+          animationSetName = modelId;
+
+          const colonNamespaceSep = animationSetName.lastIndexOf(":");
+
+          if (colonNamespaceSep >= 0) {
+            animationSetName = animationSetName.substring(colonNamespaceSep + 1);
+          }
+        }
+
+        const defaultRp = await project.getDefaultResourcePackFolder();
+
+        if (defaultRp) {
+          const animationsFolder = defaultRp.ensureFolder("animations");
+          await animationsFolder.ensureExists();
+
+          const newFileName = await StorageUtilities.getUniqueFileName(
+            animationSetName,
+            "animation.json",
+            animationsFolder
+          );
+
+          animationFile = animationsFolder.ensureFile(newFileName);
+
+          animationToUpdate = await AnimationResourceDefinition.ensureOnFile(animationFile);
+
+          if (animationToUpdate) {
+            animationToUpdate.ensureDefault();
+          }
+        }
+      }
+
+      if (animationToUpdate && this.data?.animations && animationFile) {
+        await this.updateMinecraftAnimationsFromBlockbench(animationToUpdate, entityTypeResourceDefinitionToUpdate);
+
+        animationToUpdate.persist();
+
+        if (animationFile && project.projectFolder) {
+          const projectPath = animationFile.getFolderRelativePath(project.projectFolder);
+
+          if (projectPath) {
+            project.ensureItemByProjectPath(
+              projectPath,
+              ProjectItemStorageType.singleFile,
+              animationFile.name,
+              ProjectItemType.animationResourceJson,
+              FolderContext.resourcePack,
+              undefined,
+              ProjectItemCreationType.normal,
+              animationFile
+            );
+          }
+        }
+      }
+
       if (geoToUpdate && modelGeometryDefinitionToUpdate) {
         const fv = modelGeometryDefinitionToUpdate?.getFormatVersion();
 
-        this.updateGeometryFromModel(geoToUpdate, fv);
+        await this.updateGeometryFromModel(geoToUpdate, fv);
 
         modelGeometryDefinitionToUpdate?.persist();
       }
@@ -525,11 +785,11 @@ export default class BlockbenchModel {
               if (item.itemType === ProjectItemType.texture && !setItem) {
                 await item.ensureFileStorage();
 
-                if (item.availableFile) {
-                  const projectPath = item.availableFile.getFolderRelativePath(project.projectFolder);
+                if (item.primaryFile) {
+                  const projectPath = item.primaryFile.getFolderRelativePath(project.projectFolder);
 
                   if (projectPath && projectPath.endsWith(path)) {
-                    item.availableFile.setContent(bytes);
+                    item.primaryFile.setContent(bytes);
 
                     setItem = true;
                   }
@@ -541,8 +801,8 @@ export default class BlockbenchModel {
             if (!setItem) {
               for (const item of project.items) {
                 if (item.itemType === ProjectItemType.texture && !setItem) {
-                  if (item.availableFile && item.availableFile.name === texture.name) {
-                    item.availableFile.setContent(bytes);
+                  if (item.primaryFile && item.primaryFile.name === texture.name) {
+                    item.primaryFile.setContent(bytes);
 
                     setItem = true;
                   }
@@ -686,26 +946,26 @@ export default class BlockbenchModel {
     let clientEntity: EntityTypeResourceDefinition | undefined = undefined;
     let model: ModelGeometryDefinition | undefined = undefined;
 
-    if (modelProjectItem.availableFile) {
-      model = await ModelGeometryDefinition.ensureOnFile(modelProjectItem.availableFile);
+    if (modelProjectItem.primaryFile) {
+      model = await ModelGeometryDefinition.ensureOnFile(modelProjectItem.primaryFile);
     }
 
     if (modelProjectItem.parentItems) {
       for (const parentItemOuter of modelProjectItem.parentItems) {
         if (parentItemOuter.parentItem.itemType === ProjectItemType.entityTypeResource) {
           clientEntityProjectItem = parentItemOuter.parentItem;
-          if (clientEntityProjectItem && clientEntityProjectItem.availableFile) {
-            clientEntity = await EntityTypeResourceDefinition.ensureOnFile(clientEntityProjectItem.availableFile);
+          if (clientEntityProjectItem && clientEntityProjectItem.primaryFile) {
+            clientEntity = await EntityTypeResourceDefinition.ensureOnFile(clientEntityProjectItem.primaryFile);
           }
         } else if (parentItemOuter.parentItem.itemType === ProjectItemType.blockTypeBehavior) {
           serverBlockProjectItem = parentItemOuter.parentItem;
-          if (serverBlockProjectItem && serverBlockProjectItem.availableFile) {
-            serverBlock = await BlockTypeDefinition.ensureOnFile(serverBlockProjectItem.availableFile);
+          if (serverBlockProjectItem && serverBlockProjectItem.primaryFile) {
+            serverBlock = await BlockTypeDefinition.ensureOnFile(serverBlockProjectItem.primaryFile);
           }
         } else if (parentItemOuter.parentItem.itemType === ProjectItemType.attachableResourceJson) {
           clientItemProjectItem = parentItemOuter.parentItem;
-          if (clientItemProjectItem && clientItemProjectItem.availableFile) {
-            clientItem = await AttachableResourceDefinition.ensureOnFile(clientItemProjectItem.availableFile);
+          if (clientItemProjectItem && clientItemProjectItem.primaryFile) {
+            clientItem = await AttachableResourceDefinition.ensureOnFile(clientItemProjectItem.primaryFile);
           }
         }
       }
@@ -912,38 +1172,38 @@ export default class BlockbenchModel {
     let textures: { [name: string]: ProjectItem } | undefined = undefined;
     let sourceFile: IFile | undefined = undefined;
 
-    if (clientEntity && clientEntityProjectItem && clientEntityProjectItem.availableFile) {
+    if (clientEntity && clientEntityProjectItem && clientEntityProjectItem.primaryFile) {
       textures = clientEntity.getTextureItems(clientEntityProjectItem);
-      sourceFile = clientEntityProjectItem.availableFile;
-    } else if (serverBlock && serverBlockProjectItem && serverBlockProjectItem.availableFile) {
+      sourceFile = clientEntityProjectItem.primaryFile;
+    } else if (serverBlock && serverBlockProjectItem && serverBlockProjectItem.primaryFile) {
       textures = await serverBlock.getTextureItems(serverBlockProjectItem);
-      sourceFile = serverBlockProjectItem.availableFile;
-    } else if (clientItem && clientItemProjectItem && clientItemProjectItem.availableFile) {
+      sourceFile = serverBlockProjectItem.primaryFile;
+    } else if (clientItem && clientItemProjectItem && clientItemProjectItem.primaryFile) {
       textures = clientItem.getTextureItems(clientItemProjectItem);
-      sourceFile = clientItemProjectItem.availableFile;
+      sourceFile = clientItemProjectItem.primaryFile;
     }
 
     if (textures && sourceFile) {
       for (const textureName in textures) {
         const textureItem = textures[textureName];
 
-        if (textureName && textureItem && textureItem.availableFile) {
-          await textureItem.availableFile.loadContent();
+        if (textureName && textureItem && textureItem.primaryFile) {
+          await textureItem.primaryFile.loadContent();
           const exifr = new Exifr({});
 
-          if (textureItem.availableFile.content) {
+          if (textureItem.primaryFile.content) {
             try {
-              await exifr.read(textureItem.availableFile.content);
+              await exifr.read(textureItem.primaryFile.content);
 
               const results = await exifr.parse();
 
-              const relativePath = sourceFile.getRelativePathFor(textureItem.availableFile);
-              const contentStr = StorageUtilities.getContentAsString(textureItem.availableFile);
+              const relativePath = sourceFile.getRelativePathFor(textureItem.primaryFile);
+              const contentStr = StorageUtilities.getContentAsString(textureItem.primaryFile);
 
               if (relativePath && contentStr) {
                 textureList.push({
-                  path: textureItem.availableFile.storageRelativePath,
-                  name: textureItem.availableFile.name,
+                  path: textureItem.primaryFile.storageRelativePath,
+                  name: textureItem.primaryFile.name,
                   folder: "",
                   namespace: "",
                   id: textureList.length.toString(),

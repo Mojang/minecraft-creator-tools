@@ -29,6 +29,7 @@ export default interface IFolder extends IStorageObject {
   allFiles: AsyncIterable<IFile>;
 
   isLoaded: boolean;
+  canIgnore: boolean;
 
   errorStatus?: FolderErrorStatus;
 
@@ -56,6 +57,8 @@ export default interface IFolder extends IStorageObject {
   getFolderFromRelativePath(serverRelativePath: string): Promise<IFolder | undefined>;
   getFolderFromRelativePathLocal(serverRelativePath: string): IFolder | undefined;
   getFolderByIndex(index: number): IFolder | undefined;
+  getSortedFolderKeys(): string[];
+  getSortedFileKeys(): string[];
 
   ensureFolderFromRelativePath(serverRelativePath: string): Promise<IFolder>;
   ensureFileFromRelativePath(serverRelativePath: string): Promise<IFile>;

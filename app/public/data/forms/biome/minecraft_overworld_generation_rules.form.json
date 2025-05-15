@@ -12,7 +12,11 @@
       "alternates": [
         {
           "id": "hills_transformation",
-          "dataType": 2
+          "dataType": 24
+        },
+        {
+          "id": "hills_transformation",
+          "dataType": 24
         }
       ],
       "title": "Hills Transformation",
@@ -26,7 +30,11 @@
       "alternates": [
         {
           "id": "mutate_transformation",
-          "dataType": 2
+          "dataType": 24
+        },
+        {
+          "id": "mutate_transformation",
+          "dataType": 24
         }
       ]
     },
@@ -38,7 +46,11 @@
       "alternates": [
         {
           "id": "river_transformation",
-          "dataType": 2
+          "dataType": 24
+        },
+        {
+          "id": "river_transformation",
+          "dataType": 24
         }
       ]
     },
@@ -50,7 +62,11 @@
       "alternates": [
         {
           "id": "shore_transformation",
-          "dataType": 2
+          "dataType": 24
+        },
+        {
+          "id": "shore_transformation",
+          "dataType": 24
         }
       ]
     }

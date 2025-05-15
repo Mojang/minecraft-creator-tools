@@ -1,6 +1,34 @@
 {
   "fields": [
     {
+      "id": "restriction_type",
+      "versionIntroduced": "1.21.40",
+      "samples": {
+        "/vanilla/behavior_pack/entities/bee.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:home/",
+            "content": "random_movement"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/creaking.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:spawned_by_creaking_heart/minecraft:home/",
+            "content": "all_movement"
+          }
+        ],
+        "/vanilla/behavior_pack/entities/elder_guardian.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:home/",
+            "content": "random_movement"
+          }
+        ]
+      },
+      "defaultValue": "none",
+      "description": "Defines how the the entity will be restricted to its home position. The possible values are:\r\n\t\t\t\t\t\t\t\t\t\t\t\t\\n- \"none\", which poses no restriction.\r\n\t\t\t\t\t\t\t\t\t\t\t\t\\n- \"random_movement\", which restricts randomized movement to be around the home position.\r\n\t\t\t\t\t\t\t\t\t\t\t\t\\n- \"all_movement\", which restricts any kind of movement to be around the home position.\r\n\t\t\t\t\t\t\t\t\t\t\t\t\tHowever, entities that somehow got too far away from their home will always be able to move closer to it, if prompted to do so.",
+      "title": "Restriction Type",
+      "dataType": 2
+    },
+    {
       "id": "home_block_list",
       "title": "Home Block List",
       "description": "Optional list of blocks that can be considered a valid home. If no such block longer exists at that position,\r\n\t\t\t\t\t\t\t\t\t\t\tthe home restriction is removed. Example syntax: minecraft:sand. Not supported: minecraft:sand:1.",
@@ -47,32 +75,15 @@
             "path": "/minecraft:entity/components/minecraft:home/",
             "content": 16
           }
-        ]
-      }
-    },
-    {
-      "id": "restriction_type",
-      "title": "Restriction Type",
-      "description": "Defines how the the entity will be restricted to its home position. The possible values are:\r\n\t\t\t\t\t\t\t\t\t\t\t\t\\n- \"none\", which poses no restriction.\r\n\t\t\t\t\t\t\t\t\t\t\t\t\\n- \"random_movement\", which restricts randomized movement to be around the home position.\r\n\t\t\t\t\t\t\t\t\t\t\t\t\\n- \"all_movement\", which restricts any kind of movement to be around the home position.\r\n\t\t\t\t\t\t\t\t\t\t\t\t\tHowever, entities that somehow got too far away from their home will always be able to move closer to it, if prompted to do so.",
-      "defaultValue": "none",
-      "dataType": 2,
-      "samples": {
-        "/vanilla/behavior_pack/entities/bee.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:home/",
-            "content": "random_movement"
-          }
         ],
-        "/vanilla/behavior_pack/entities/creaking.json": [
+        "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:spawned_by_creaking_heart/minecraft:home/",
-            "content": "all_movement"
-          }
-        ],
-        "/vanilla/behavior_pack/entities/elder_guardian.json": [
+            "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:home/",
+            "content": 32
+          },
           {
-            "path": "/minecraft:entity/components/minecraft:home/",
-            "content": "random_movement"
+            "path": "/minecraft:entity/component_groups/minecraft:unharnessed/minecraft:home/",
+            "content": 64
           }
         ]
       }
@@ -118,6 +129,29 @@
         "content": {
           "restriction_type": "random_movement",
           "restriction_radius": 16
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/happy_ghast.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:home/",
+        "content": {
+          "restriction_radius": 32,
+          "restriction_type": "random_movement"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:unharnessed/minecraft:home/",
+        "content": {
+          "restriction_radius": 64,
+          "restriction_type": "random_movement"
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:home/",
+        "content": {
+          "restriction_radius": 32,
+          "restriction_type": "random_movement"
         }
       }
     ],

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEyeSlash, faSave } from "@fortawesome/free-regular-svg-icons";
+import { faFileCode, faSave } from "@fortawesome/free-regular-svg-icons";
 import {
   faCircleCheck,
   faCircleQuestion,
@@ -37,6 +37,7 @@ import {
   faCow,
   faDownload,
   faListDots,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./Labels.css";
@@ -598,12 +599,13 @@ export const AddLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompact
   </span>
 );
 
-export const EyeSlashLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
+export const CheckIcon: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => (
   <span
-    className={props.isSelected ? "label-button label-selected" : "label-button"}
+    className={"label-icon" + (props.isSelected ? " label-selected" : "")}
     style={{
+      paddingLeft: "13px",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background4,
@@ -618,17 +620,42 @@ export const EyeSlashLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISe
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
   >
-    <FontAwesomeIcon icon={faEyeSlash} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Hidden</span> : <></>}
+    {props.isSelected ? <FontAwesomeIcon icon={faCheck} className="fa-lg" /> : <></>}
   </span>
 );
-
-export const FunctionsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
+export const AdvancedFilesIcon: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => (
   <span
-    className={props.isSelected ? "label-button label-selected" : "label-button"}
+    className={"label-icon" + (props.isSelected ? " label-selected" : "")}
     style={{
+      paddingLeft: "13px",
+      borderLeftColor: props.isSelected
+        ? props.theme.siteVariables?.colorScheme.brand.background
+        : props.theme.siteVariables?.colorScheme.brand.background4,
+      borderRightColor: props.isSelected
+        ? props.theme.siteVariables?.colorScheme.brand.background
+        : props.theme.siteVariables?.colorScheme.brand.background4,
+      color: props.isSelected
+        ? props.theme.siteVariables?.colorScheme.brand.background
+        : props.theme.siteVariables?.colorScheme.brand.foreground6,
+      backgroundColor: props.isSelected
+        ? props.theme.siteVariables?.colorScheme.brand.background4
+        : props.theme.siteVariables?.colorScheme.brand.background1,
+    }}
+  >
+    <FontAwesomeIcon icon={faFileCode} className="fa-lg" />
+  </span>
+);
+
+export const FunctionsIcon: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
+  props: ISelectableLabelProps
+) => (
+  <span
+    className={"label-icon" + (props.isSelected ? " label-selected" : "")}
+    style={{
+      paddingLeft: "14px",
+      paddingTop: "7px",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background4,
@@ -645,17 +672,17 @@ export const FunctionsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & IS
         : props.theme.siteVariables?.colorScheme.brand.background1,
     }}
   >
-    <FontAwesomeIcon icon={faBoltLightning} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Scripts/Functions</span> : <></>}
+    <FontAwesomeIcon icon={faBoltLightning} className="fa-md" />
   </span>
 );
 
-export const AssetsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
+export const AssetsIcon: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => (
   <span
-    className={props.isSelected ? "label-button label-selected" : "label-button"}
+    className={"label-icon" + (props.isSelected ? " label-selected" : "")}
     style={{
+      paddingLeft: "12px",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background4,
@@ -673,16 +700,16 @@ export const AssetsLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISele
     }}
   >
     <FontAwesomeIcon icon={faImage} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Scripts/Functions</span> : <></>}
   </span>
 );
 
-export const TypesLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
+export const TypesIcon: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableLabelProps> = (
   props: ISelectableLabelProps
 ) => (
   <span
-    className={props.isSelected ? "label-button label-selected" : "label-button"}
+    className={"label-icon" + (props.isSelected ? " label-selected" : "")}
     style={{
+      paddingLeft: "10.5px",
       borderLeftColor: props.isSelected
         ? props.theme.siteVariables?.colorScheme.brand.background
         : props.theme.siteVariables?.colorScheme.brand.background4,
@@ -700,7 +727,6 @@ export const TypesLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelec
     }}
   >
     <FontAwesomeIcon icon={faCow} className="fa-lg" />
-    {!props.isCompact ? <span className="label-text">Types</span> : <></>}
   </span>
 );
 

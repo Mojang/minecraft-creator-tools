@@ -59,6 +59,26 @@ Fish - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
 }
 
 
+Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/ghast.json
+
+"minecraft:scale": {
+  "value": 4.5
+}
+
+
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+ * At /minecraft:entity/component_groups/minecraft:adult/minecraft:scale/: 
+"minecraft:scale": {
+  "value": 3.999
+}
+
+ * At /minecraft:entity/component_groups/minecraft:baby/minecraft:scale/: 
+"minecraft:scale": {
+  "value": 1.999
+}
+
+
 Pufferfish - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/pufferfish.json
 
 "minecraft:scale": {
@@ -71,20 +91,6 @@ Salmon - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
  * At /minecraft:entity/component_groups/scale_large/minecraft:scale/: 
 "minecraft:scale": {
   "value": 1.5
-}
-
-
-Tropicalfish - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/tropicalfish.json
-
-"minecraft:scale": {
-  "value": 1.3
-}
-
-
-Turtle - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/turtle.json
-
-"minecraft:scale": {
-  "value": 0.16
 }
 
  */

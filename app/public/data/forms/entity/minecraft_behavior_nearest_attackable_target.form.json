@@ -706,7 +706,7 @@
                     {
                       "test": "is_family",
                       "subject": "other",
-                      "operator": "!=",
+                      "operator": "not",
                       "value": "creeper"
                     }
                   ]
@@ -723,7 +723,7 @@
                     },
                     {
                       "test": "is_difficulty",
-                      "operator": "!=",
+                      "operator": "not",
                       "value": "peaceful"
                     }
                   ]
@@ -740,7 +740,7 @@
                     },
                     {
                       "test": "is_difficulty",
-                      "operator": "!=",
+                      "operator": "not",
                       "value": "peaceful"
                     }
                   ]
@@ -1186,7 +1186,7 @@
                     {
                       "test": "has_component",
                       "subject": "other",
-                      "operator": "!=",
+                      "operator": "not",
                       "value": "minecraft:is_tamed"
                     }
                   ]
@@ -1643,6 +1643,31 @@
                   "value": "fox"
                 },
                 "max_dist": 16
+              }
+            ]
+          }
+        ],
+        "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.nearest_attackable_target/",
+            "content": [
+              {
+                "filters": {
+                  "all_of": [
+                    {
+                      "test": "is_family",
+                      "subject": "other",
+                      "value": "wolf"
+                    },
+                    {
+                      "test": "has_component",
+                      "subject": "other",
+                      "operator": "!=",
+                      "value": "minecraft:is_tamed"
+                    }
+                  ]
+                },
+                "max_dist": 10
               }
             ]
           }
@@ -2915,7 +2940,7 @@
                   {
                     "test": "is_family",
                     "subject": "other",
-                    "operator": "!=",
+                    "operator": "not",
                     "value": "creeper"
                   }
                 ]
@@ -2932,7 +2957,7 @@
                   },
                   {
                     "test": "is_difficulty",
-                    "operator": "!=",
+                    "operator": "not",
                     "value": "peaceful"
                   }
                 ]
@@ -2949,7 +2974,7 @@
                   },
                   {
                     "test": "is_difficulty",
-                    "operator": "!=",
+                    "operator": "not",
                     "value": "peaceful"
                   }
                 ]
@@ -3606,7 +3631,7 @@
                   {
                     "test": "has_component",
                     "subject": "other",
-                    "operator": "!=",
+                    "operator": "not",
                     "value": "minecraft:is_tamed"
                   }
                 ]

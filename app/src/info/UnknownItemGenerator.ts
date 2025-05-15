@@ -11,7 +11,7 @@ export enum UnknownItemGeneratorTest {
   unknownItemTypeFound,
 }
 
-export default class UnknownFileGenerator implements IProjectInfoItemGenerator {
+export default class UnknownItemGenerator implements IProjectInfoItemGenerator {
   id = "UNKJSON";
   title = "Unknown JSON";
   canAlwaysProcess = true;

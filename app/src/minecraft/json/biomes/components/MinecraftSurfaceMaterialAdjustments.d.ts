@@ -117,35 +117,35 @@ export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterials {
    * Controls the block type used deep underground in this biome when
    * this adjustment is active.
    */
-  foundation_material: string;
+  foundation_material: { [key: string]: string };
 
   /**
    * @remarks
    * Controls the block type used in a layer below the surface of
    * this biome when this adjustment is active.
    */
-  mid_material: string;
+  mid_material: { [key: string]: string };
 
   /**
    * @remarks
    * Controls the block type used as a floor for bodies of water in
    * this biome when this adjustment is active.
    */
-  sea_floor_material: string;
+  sea_floor_material: { [key: string]: string };
 
   /**
    * @remarks
    * Controls the block type used in the bodies of water in this biome
    * when this adjustment is active.
    */
-  sea_material: string;
+  sea_material: { [key: string]: string };
 
   /**
    * @remarks
    * Controls the block type used for the surface of this biome when
    * this adjustment is active.
    */
-  top_material: string;
+  top_material: { [key: string]: string };
 
 }
 

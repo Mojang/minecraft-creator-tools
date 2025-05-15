@@ -80,7 +80,7 @@
     {
       "id": "spawn_event",
       "description": "Trigger event when a rider is acquired",
-      "dataType": 8,
+      "dataType": 39,
       "lookupId": "entityTypeEvents",
       "samples": {
         "/vanilla/behavior_pack/entities/ravager.json": [

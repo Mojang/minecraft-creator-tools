@@ -964,6 +964,20 @@ export default class FormMarkdownDocumentationGenerator {
       content.push("> " + this.sanitizeDescription(form.note3) + "\r\n");
     }
 
+    if (form.versionIntroduced || form.versionDeprecated) {
+      content.push("> [!Note]");
+
+      if (form.versionDeprecated) {
+        content.push(
+          "> This item no longer works after format versions of at least " + form.versionIntroduced + ".\r\n"
+        );
+      }
+
+      if (form.versionIntroduced) {
+        content.push("> This item requires a format version of at least " + form.versionIntroduced + ".\r\n");
+      }
+    }
+
     if (form.requires) {
       let descStr = "";
       const entityComponents = [];
@@ -1109,6 +1123,11 @@ export default class FormMarkdownDocumentationGenerator {
       content.push("|:----------|:-------------|:----|:-----------|:------------- |");
 
       form.fields.sort((a: IField, b: IField) => {
+        if (a.isDeprecated && !b.isDeprecated) {
+          return 1;
+        } else if (!a.isDeprecated && b.isDeprecated) {
+          return -1;
+        }
         return a.id.localeCompare(b.id);
       });
 
@@ -1132,7 +1151,13 @@ export default class FormMarkdownDocumentationGenerator {
       }
 
       for (const field of fullFieldList) {
-        let fieldRow = "| " + field.id + " | ";
+        let fieldId = field.id;
+
+        if (field.isDeprecated) {
+          fieldId = "(deprecated) " + fieldId;
+        }
+
+        let fieldRow = "| " + fieldId + " | ";
 
         if (field.defaultValue !== undefined) {
           fieldRow += this.getValueAsString(field.defaultValue);
@@ -1140,7 +1165,8 @@ export default class FormMarkdownDocumentationGenerator {
           fieldRow += "*not set*";
         }
 
-        const fieldName = Utilities.humanifyMinecraftName(field.id);
+        let fieldName = Utilities.humanifyMinecraftName(field.id);
+
         const fieldLink =
           "(#" + this.getMarkdownBookmark(fieldName) + "-" + (field.choices ? "choices" : "item-type") + ")";
 
@@ -1195,6 +1221,19 @@ export default class FormMarkdownDocumentationGenerator {
           descrip += " " + this.addAdditionalNotes(field);
 
           descrip = descrip.trim();
+
+          if (field.isDeprecated) {
+            descrip = "Deprecated - no longer in use. " + descrip;
+          }
+
+          if (field.versionDeprecated) {
+            descrip +=
+              " This property no longer works after format versions of at least " + form.versionIntroduced + ".";
+          }
+
+          if (field.versionIntroduced) {
+            descrip += " This item requires a format version of at least " + form.versionIntroduced + ".";
+          }
 
           fieldRow += this.sanitizeForTable(descrip);
 

@@ -19,17 +19,17 @@ Allay - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 
 {
   "test": "in_lava",
-  "subject": "self",
-  "operator": "==",
-  "value": true
+  "subject": "self"
 }
 
 
-Armadillo - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/armadillo.json
+Armor Stand - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/armor_stand.json
 
 {
   "test": "in_lava",
-  "subject": "self"
+  "subject": "self",
+  "operator": "==",
+  "value": true
 }
 
 
@@ -65,7 +65,7 @@ export default interface InLava {
    * (Optional) The comparison to apply with 'value'.
    * 
    * Sample Values:
-   * Allay: "=="
+   * Armor Stand: "=="
    *
    *
    */
@@ -97,7 +97,7 @@ export default interface InLava {
    * (Optional) true or false.
    * 
    * Sample Values:
-   * Allay: true
+   * Armor Stand: true
    *
    *
    */

@@ -6,4 +6,7 @@ export default interface ISimpleReference {
   title?: string;
   description?: string;
   iconImage?: string;
+  versionIntroduced?: string;
+  versionDeprecated?: string;
+  isDeprecated?: boolean;
 }

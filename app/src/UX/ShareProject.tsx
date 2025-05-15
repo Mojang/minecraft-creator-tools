@@ -15,6 +15,7 @@ import CartoApp from "../app/CartoApp";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import IStorage from "../storage/IStorage";
 import FileExplorer, { FileExplorerMode } from "./FileExplorer";
+import QRCode from "react-qr-code";
 
 interface IShareProjectProps extends IAppProps {
   project: Project;
@@ -34,6 +35,7 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
   _fullUrlLinkElt: HTMLDivElement | undefined;
   _projectLinkElt: HTMLDivElement | undefined;
   _projectUrlLinkElt: HTMLDivElement | undefined;
+  _qrCodeLinkElt: HTMLDivElement | undefined;
 
   constructor(props: IShareProjectProps) {
     super(props);
@@ -42,8 +44,10 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
     this._ensureLoaded = this._ensureLoaded.bind(this);
     this._setFullLink = this._setFullLink.bind(this);
     this._setFullUrlLink = this._setFullUrlLink.bind(this);
+    this._setQrCodeLink = this._setQrCodeLink.bind(this);
     this._copyFullLink = this._copyFullLink.bind(this);
     this._copyFullUrlLink = this._copyFullUrlLink.bind(this);
+    this._copyQrCodeLink = this._copyQrCodeLink.bind(this);
     this._setProjectLink = this._setProjectLink.bind(this);
     this._setProjectUrlLink = this._setProjectUrlLink.bind(this);
     this._copyProjectLink = this._copyProjectLink.bind(this);
@@ -234,12 +238,26 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
     }
   }
 
+  _copyQrCodeLink(event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null) {
+    if (this._qrCodeLinkElt !== undefined) {
+      this._selectAndCopySvg(this._qrCodeLinkElt);
+    }
+  }
+
   _setFullUrlLink(elt: HTMLDivElement | null) {
     if (elt === null) {
       return;
     }
 
     this._fullUrlLinkElt = elt;
+  }
+
+  _setQrCodeLink(elt: HTMLDivElement | null) {
+    if (elt === null) {
+      return;
+    }
+
+    this._qrCodeLinkElt = elt;
   }
 
   _copyFullUrlLink(event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null) {
@@ -273,6 +291,35 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
   _copyProjectUrlLink(event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null) {
     if (this._projectUrlLinkElt !== undefined) {
       this._selectAndCopy(this._projectUrlLinkElt);
+    }
+  }
+
+  async _selectAndCopySvg(elt: HTMLDivElement) {
+    try {
+      // convert SVG to image, then copy to clipboard
+      const stringData = elt.innerHTML;
+      const utf8Encoder = new TextEncoder();
+      const uint8Array = utf8Encoder.encode(stringData);
+
+      const url = "data:image/svg+xml;base64," + Utilities.uint8ArrayToBase64(uint8Array);
+
+      const image = document.createElement("img");
+
+      image.onload = async () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 512;
+        canvas.height = 512;
+        (canvas.getContext("2d") as any).drawImage(image, 0, 0, 512, 512);
+        canvas.toBlob((blob) => {
+          if (blob) {
+            navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+          }
+        }, "image/png");
+      };
+
+      image.src = url;
+    } catch (err: any) {
+      alert(err.message);
     }
   }
 
@@ -326,12 +373,13 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
           </Button>
         </div>
       );
-      shareContent.push(<div className="shp-summaryCell">URL with Changes</div>);
+      shareContent.push(<div className="shp-summaryCell">URL with Changes ({contentUrlValue.length} chars)</div>);
       shareContent.push(
         <div className="shp-contentCell" ref={(c: HTMLDivElement) => this._setFullUrlLink(c)} title={contentUrlValue}>
           {contentUrlValue}
         </div>
       );
+
       shareContent.push(
         <div className="shp-copyButton">
           <Button onClick={this._copyFullUrlLink}>
@@ -339,6 +387,28 @@ export default class ShareProject extends Component<IShareProjectProps, ISharePr
           </Button>
         </div>
       );
+      shareContent.push(<div className="shp-summaryCell">URL with Changes QR Code</div>);
+      if (contentUrlValue.length < 4200) {
+        shareContent.push(
+          <div className="shp-contentCell" ref={(c: HTMLDivElement) => this._setQrCodeLink(c)} title={contentUrlValue}>
+            <QRCode value={contentUrlValue} />
+          </div>
+        );
+
+        shareContent.push(
+          <div className="shp-copyButton">
+            <Button onClick={this._copyQrCodeLink}>
+              <FontAwesomeIcon icon={faCopy} className="fa-lg" />
+            </Button>
+          </div>
+        );
+      } else {
+        shareContent.push(
+          <div className="shp-contentCell" title={contentUrlValue}>
+            URL is too long - {contentUrlValue} - for a QR code (over 4200 characters.
+          </div>
+        );
+      }
 
       shareContent.push(
         <div className="shp-contentArea">

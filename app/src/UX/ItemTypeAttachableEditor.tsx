@@ -172,8 +172,8 @@ export default class ItemTypeAttachableEditor extends Component<
 
           await parentBehaviorItem.ensureStorage();
 
-          if (parentBehaviorItem.defaultFile) {
-            parentBehaviorFile = parentBehaviorItem.defaultFile;
+          if (parentBehaviorItem.primaryFile) {
+            parentBehaviorFile = parentBehaviorItem.primaryFile;
             parentBehaviorDefinition = await ItemTypeDefinition.ensureOnFile(parentBehaviorFile);
           }
         }

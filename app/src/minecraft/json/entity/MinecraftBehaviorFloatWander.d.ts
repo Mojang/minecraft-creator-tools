@@ -29,7 +29,32 @@ Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 
 "minecraft:behavior.float_wander": {
   "priority": 2,
-  "must_reach": true
+  "must_reach": true,
+  "random_reselect": true,
+  "float_duration": [
+    2,
+    7
+  ],
+  "float_wander_has_move_control": false
+}
+
+
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+"minecraft:behavior.float_wander": {
+  "priority": 7,
+  "must_reach": true,
+  "random_reselect": true,
+  "navigate_around_surface": true,
+  "additional_collision_buffer": true,
+  "allow_navigating_through_liquids": false,
+  "use_home_position_restriction": true,
+  "surface_xz_dist": 16,
+  "surface_y_dist": 16,
+  "float_duration": [
+    2,
+    7
+  ]
 }
 
  */
@@ -47,6 +72,10 @@ export default interface MinecraftBehaviorFloatWander {
    * If true, the mob will have an additional buffer zone around it
    * to avoid collisions with blocks when picking a position to
    * wander to.
+   * 
+   * Sample Values:
+   * Happy Ghast: true
+   *
    */
   additional_collision_buffer: boolean;
 
@@ -64,6 +93,9 @@ export default interface MinecraftBehaviorFloatWander {
    * 
    * Sample Values:
    * Bat: [0.1,0.35]
+   *
+   * Ghast: [2,7]
+   *
    *
    */
   float_duration: number[];
@@ -83,6 +115,7 @@ export default interface MinecraftBehaviorFloatWander {
    * Sample Values:
    * Ghast: true
    *
+   *
    */
   must_reach: boolean;
 
@@ -91,6 +124,10 @@ export default interface MinecraftBehaviorFloatWander {
    * If true, will prioritize finding random positions in the
    * vicinity of surfaces, i.e. blocks that are not Air or 
    * Liquid.
+   * 
+   * Sample Values:
+   * Happy Ghast: true
+   *
    */
   navigate_around_surface: boolean;
 
@@ -103,6 +140,8 @@ export default interface MinecraftBehaviorFloatWander {
    * Sample Values:
    * Ghast: 2
    *
+   * Happy Ghast: 7
+   *
    */
   priority: number;
 
@@ -114,6 +153,7 @@ export default interface MinecraftBehaviorFloatWander {
    * Sample Values:
    * Bat: true
    *
+   *
    */
   random_reselect: boolean;
 
@@ -122,6 +162,10 @@ export default interface MinecraftBehaviorFloatWander {
    * The horizontal distance in blocks that the goal will check for a
    * surface from a candidate position. Only valid when
    * `navigate_around_surface` is true.
+   * 
+   * Sample Values:
+   * Happy Ghast: 16
+   *
    */
   surface_xz_dist: number;
 
@@ -130,6 +174,10 @@ export default interface MinecraftBehaviorFloatWander {
    * The vertical distance in blocks that the goal will check for a
    * surface from a candidate position. Only valid when
    * `navigate_around_surface` is true.
+   * 
+   * Sample Values:
+   * Happy Ghast: 16
+   *
    */
   surface_y_dist: number;
 
@@ -138,6 +186,10 @@ export default interface MinecraftBehaviorFloatWander {
    * If true, the mob will respect home position restrictions when
    * choosing new target positions. If false, it will choose target
    * position without considering home restrictions
+   * 
+   * Sample Values:
+   * Happy Ghast: true
+   *
    */
   use_home_position_restriction: boolean;
 

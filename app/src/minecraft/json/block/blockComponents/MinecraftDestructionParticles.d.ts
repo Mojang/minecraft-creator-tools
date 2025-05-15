@@ -21,6 +21,13 @@ export default interface MinecraftDestructionParticles {
 
   /**
    * @remarks
+   * Optional, number of particles to spawn of destruction. Default is
+   * 100, maximum is 255 inclusively
+   */
+  particle_count: number;
+
+  /**
+   * @remarks
    * The texture name used for the particle.
    */
   texture: string;

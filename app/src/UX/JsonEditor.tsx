@@ -141,6 +141,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
           jsonlang.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             enableSchemaRequest: false,
+            allowComments: true,
             schemas: [
               {
                 uri: schemaUri,
@@ -266,26 +267,45 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
           theme = "vs";
         }
 
-        if (this.props.isDiffEditor && coreUri && diffUri) {
+        if (
+          this.props.isDiffEditor &&
+          this.state.fileToEdit.content &&
+          this.props.diffFile?.content &&
+          typeof this.state.fileToEdit.content === "string" &&
+          typeof this.props.diffFile?.content === "string"
+        ) {
+          // diff editor doesn't seem to update its diffs in response to different URI switches properly,
+          // so we set the content explicitly instead
+          // originalModelPath={coreUri}
+          // modifiedModelPath={diffUri}
+
           interior = (
-            <DiffEditor
-              height={editorHeight}
-              theme={theme}
-              originalLanguage="json"
-              modifiedLanguage="json"
-              options={{
-                fontSize: this.props.preferredTextSize,
-                readOnly: this.props.readOnly,
-                renderSideBySide: true,
-                automaticLayout: true,
-                originalEditable: false,
-                renderValidationDecorations: this.props.readOnly ? "on" : "editable",
-              }}
-              originalModelPath={coreUri}
-              modifiedModelPath={diffUri}
-              beforeMount={this._handleEditorWillMount}
-              onMount={this._handleDiffEditorDidMount}
-            />
+            <div>
+              <div className="jse-dffEditorHeader">
+                <div className="jse-coreLabel">{coreUri}</div>
+                <div className="jse-diffLabel">{diffUri}</div>
+              </div>
+              <div>
+                <DiffEditor
+                  height={editorHeight}
+                  theme={theme}
+                  originalLanguage="json"
+                  modifiedLanguage="json"
+                  original={this.state.fileToEdit.content}
+                  modified={this.props.diffFile.content}
+                  options={{
+                    fontSize: this.props.preferredTextSize,
+                    readOnly: this.props.readOnly,
+                    renderSideBySide: true,
+                    automaticLayout: true,
+                    originalEditable: false,
+                    renderValidationDecorations: this.props.readOnly ? "on" : "editable",
+                  }}
+                  beforeMount={this._handleEditorWillMount}
+                  onMount={this._handleDiffEditorDidMount}
+                />
+              </div>
+            </div>
           );
         } else {
           toolbarItems = [

@@ -1,4 +1,4 @@
-import { Component, SyntheticEvent } from "react";
+import { Component } from "react";
 import "./MinecraftEventTriggerEditor.css";
 import IFormComponentProps from "./IFormComponentProps.js";
 import { Dialog, Dropdown, DropdownProps, ThemeInput, Toolbar } from "@fluentui/react-northstar";
@@ -14,6 +14,7 @@ import SetName from "../UX/SetName";
 import { CustomLabel } from "../UX/Labels";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import MinecraftEventTrigger from "../minecraft/jsoncommon/MinecraftEventTrigger";
+import IField from "./IField";
 
 export interface IMinecraftEventTriggerEditorProps extends IFormComponentProps {
   data: MinecraftEventTrigger;
@@ -25,10 +26,7 @@ export interface IMinecraftEventTriggerEditorProps extends IFormComponentProps {
   theme: ThemeInput<any>;
   constrainHeight?: boolean;
   entityTypeDefinition: EntityTypeDefinition;
-  onChange?: (
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    data: IMinecraftEventTriggerEditorProps
-  ) => void;
+  onChange?: (field: IField, data: MinecraftEventTrigger) => void;
 }
 
 interface IMinecraftEventTriggerEditorState {
@@ -89,6 +87,10 @@ export default class MinecraftEventTriggerEditor extends Component<
 
     this.props.data.event = data.value;
 
+    if (this.props.onChange) {
+      this.props.onChange(this.props.field, this.props.data);
+    }
+
     this.setState({
       eventName: data.value,
       target: this.state.target,
@@ -117,6 +119,10 @@ export default class MinecraftEventTriggerEditor extends Component<
     if (this.state.selectedName) {
       this.props.entityTypeDefinition.addEvent(this.state.selectedName);
       this.props.data.event = this.state.selectedName;
+
+      if (this.props.onChange) {
+        this.props.onChange(this.props.field, this.props.data);
+      }
 
       this.setState({
         eventName: this.state.selectedName,
@@ -198,7 +204,6 @@ export default class MinecraftEventTriggerEditor extends Component<
             <Toolbar aria-label="Actions toolbar overflow menu" items={toolbarItems} />
           </div>
           <div className="miet-actionList">
-            <div className="miet-actionListLabel">Actions:</div>
             <div className="miet-actionListDropdown">
               <Dropdown
                 items={availableEvents}

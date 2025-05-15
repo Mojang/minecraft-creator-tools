@@ -60,9 +60,9 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
     const items: ProjectInfoItem[] = [];
 
     if (
-      projectItem.availableFile &&
-      projectItem.availableFile.content &&
-      typeof projectItem.availableFile.content === "string"
+      projectItem.primaryFile &&
+      projectItem.primaryFile.content &&
+      typeof projectItem.primaryFile.content === "string"
     ) {
       const schemaPath = projectItem.getSchemaPath();
 
@@ -98,7 +98,7 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
           }
 
           if (val) {
-            let content = projectItem.availableFile.content;
+            let content = projectItem.primaryFile.content;
             let contentObj = undefined;
 
             content = Utilities.fixJsonContent(content);

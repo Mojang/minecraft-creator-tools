@@ -23,23 +23,23 @@ import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
 // rule name/check. For validation errors, name should be a terse description of "your problem"
 export enum CooperativeAddOnItemRequirementsGeneratorTest {
-  BehaviorAnimationControllerIdNotInExpectedForm = 100,
-  BehaviorAnimationControllerNameNotInExpectedForm = 101,
-  BehaviorAnimationIdNotInExpectedForm = 110,
-  BehaviorAnimationNameNotInExpectedForm = 111,
-  JsonIdentifierNotInExpectedForm = 112,
-  ResourceAnimationControllerIdNotInExpectedForm = 120,
-  ResourceAnimationControllerNameNotInExpectedForm = 121,
-  ResourceAnimationIdNotInExpectedForm = 130,
-  ResourceAnimationNameNotInExpectedForm = 131,
-  RenderControllerIdNotInExpectedForm = 140,
-  RenderControllerNameNotInExpectedForm = 141,
-  GeometryIdNotInExpectedForm = 150,
-  GeometryNameNotInExpectedForm = 151,
-  MaterialsIdentifierNotInExpectedForm = 160,
-  MaterialsFirstSegmentNotInExpectedForm = 161,
-  ResourcePackDoesNotHavePackScopeWorld = 170,
-  NoDimensionJson = 191,
+  behaviorAnimationControllerIdNotInExpectedForm = 100,
+  behaviorAnimationControllerNameNotInExpectedForm = 101,
+  behaviorAnimationIdNotInExpectedForm = 110,
+  behaviorAnimationNameNotInExpectedForm = 111,
+  jsonIdentifierNotInExpectedForm = 112,
+  resourceAnimationControllerIdNotInExpectedForm = 120,
+  resourceAnimationControllerNameNotInExpectedForm = 121,
+  resourceAnimationIdNotInExpectedForm = 130,
+  resourceAnimationNameNotInExpectedForm = 131,
+  renderControllerIdNotInExpectedForm = 140,
+  renderControllerNameNotInExpectedForm = 141,
+  geometryIdNotInExpectedForm = 150,
+  geometryNameNotInExpectedForm = 151,
+  materialsIdentifierNotInExpectedForm = 160,
+  materialsFirstSegmentNotInExpectedForm = 161,
+  resourcePackDoesNotHavePackScopeWorld = 170,
+  noDimensionJson = 191,
 }
 
 export default class CooperativeAddOnItemRequirementsGenerator implements IProjectInfoItemGenerator {
@@ -64,7 +64,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
         new ProjectInfoItem(
           InfoItemType.error,
           this.id,
-          CooperativeAddOnItemRequirementsGeneratorTest.NoDimensionJson,
+          CooperativeAddOnItemRequirementsGeneratorTest.noDimensionJson,
           `Dimension definition resources are not permitted in an add-on targeted behavior pack`,
           projectItem
         )
@@ -72,8 +72,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.availableFile) {
-        const rpManifest = await ResourceManifestDefinition.ensureOnFile(projectItem.availableFile);
+      if (projectItem.primaryFile) {
+        const rpManifest = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
 
         if (rpManifest) {
           await rpManifest.load();
@@ -84,7 +84,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
               new ProjectInfoItem(
                 InfoItemType.error,
                 this.id,
-                CooperativeAddOnItemRequirementsGeneratorTest.ResourcePackDoesNotHavePackScopeWorld,
+                CooperativeAddOnItemRequirementsGeneratorTest.resourcePackDoesNotHavePackScopeWorld,
                 `Resource pack manifest does not specify that header/pack_scope that should be 'world'`,
                 projectItem
               )
@@ -95,8 +95,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.animationControllerBehaviorJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.availableFile) {
-        const bacManifest = await AnimationControllerBehaviorDefinition.ensureOnFile(projectItem.availableFile);
+      if (projectItem.primaryFile) {
+        const bacManifest = await AnimationControllerBehaviorDefinition.ensureOnFile(projectItem.primaryFile);
 
         if (bacManifest && bacManifest.data && bacManifest.data.animation_controllers) {
           for (let bacName in bacManifest.data.animation_controllers) {
@@ -108,7 +108,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationControllerIdNotInExpectedForm,
+                  CooperativeAddOnItemRequirementsGeneratorTest.behaviorAnimationControllerIdNotInExpectedForm,
                   `Behavior pack animation controller identifier is not in the expected form of controller.animation.xyz`,
                   projectItem,
                   bacName
@@ -120,7 +120,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationControllerNameNotInExpectedForm,
+                  CooperativeAddOnItemRequirementsGeneratorTest.behaviorAnimationControllerNameNotInExpectedForm,
                   `Behavior pack animation controller name section is not in the expected form of controller.animation.creatorshortname_projectshortname`,
                   projectItem,
                   bacName
@@ -133,8 +133,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.animationBehaviorJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.availableFile) {
-        const baManifest = await AnimationBehaviorDefinition.ensureOnFile(projectItem.availableFile);
+      if (projectItem.primaryFile) {
+        const baManifest = await AnimationBehaviorDefinition.ensureOnFile(projectItem.primaryFile);
 
         if (baManifest && baManifest.data && baManifest.data.animations) {
           for (let aName in baManifest.data.animations) {
@@ -146,7 +146,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationIdNotInExpectedForm,
+                  CooperativeAddOnItemRequirementsGeneratorTest.behaviorAnimationIdNotInExpectedForm,
                   `Behavior animation identifier is not in the expected form of animation.xyz.animation_name`,
                   projectItem,
                   aName
@@ -158,7 +158,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  CooperativeAddOnItemRequirementsGeneratorTest.BehaviorAnimationNameNotInExpectedForm,
+                  CooperativeAddOnItemRequirementsGeneratorTest.behaviorAnimationNameNotInExpectedForm,
                   `Behavior pack animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name`,
                   projectItem,
                   aName
@@ -171,8 +171,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.animationControllerResourceJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.availableFile) {
-        const racManifest = await AnimationControllerResourceDefinition.ensureOnFile(projectItem.availableFile);
+      if (projectItem.primaryFile) {
+        const racManifest = await AnimationControllerResourceDefinition.ensureOnFile(projectItem.primaryFile);
 
         if (racManifest && racManifest.data && racManifest.data.animation_controllers) {
           for (let racName in racManifest.data.animation_controllers) {
@@ -184,7 +184,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationControllerIdNotInExpectedForm,
+                  CooperativeAddOnItemRequirementsGeneratorTest.resourceAnimationControllerIdNotInExpectedForm,
                   `Resource pack animation controller identifier is not in the expected form of controller.animation.xyz`,
                   projectItem,
                   racName
@@ -196,7 +196,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationControllerNameNotInExpectedForm,
+                  CooperativeAddOnItemRequirementsGeneratorTest.resourceAnimationControllerNameNotInExpectedForm,
                   `Resource pack animation controller name section is not in the expected form of controller.animation.creatorshortname_projectshortname`,
                   projectItem,
                   racName
@@ -209,8 +209,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.animationResourceJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.availableFile) {
-        const raManifest = await AnimationResourceDefinition.ensureOnFile(projectItem.availableFile);
+      if (projectItem.primaryFile) {
+        const raManifest = await AnimationResourceDefinition.ensureOnFile(projectItem.primaryFile);
 
         if (raManifest && raManifest.animations) {
           for (let aName in raManifest.animations) {
@@ -222,7 +222,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationIdNotInExpectedForm,
+                  CooperativeAddOnItemRequirementsGeneratorTest.resourceAnimationIdNotInExpectedForm,
                   `Resource animation identifier is not in the expected form of animation.xyz.animation_name`,
                   projectItem,
                   aName
@@ -234,7 +234,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  CooperativeAddOnItemRequirementsGeneratorTest.ResourceAnimationNameNotInExpectedForm,
+                  CooperativeAddOnItemRequirementsGeneratorTest.resourceAnimationNameNotInExpectedForm,
                   `Resource animation name section is not in the expected form of animation.creatorshortname_projectshortname.animation_name`,
                   projectItem,
                   aName
@@ -247,8 +247,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.renderControllerJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.availableFile) {
-        const racManifest = await RenderControllerSetDefinition.ensureOnFile(projectItem.availableFile);
+      if (projectItem.primaryFile) {
+        const racManifest = await RenderControllerSetDefinition.ensureOnFile(projectItem.primaryFile);
 
         if (racManifest && racManifest.data && racManifest.data.render_controllers) {
           for (let rrcName in racManifest.data.render_controllers) {
@@ -260,7 +260,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  CooperativeAddOnItemRequirementsGeneratorTest.RenderControllerIdNotInExpectedForm,
+                  CooperativeAddOnItemRequirementsGeneratorTest.renderControllerIdNotInExpectedForm,
                   `Resource pack render controller identifier is not in the expected form of controller.render.creatorshortname_projectshortname.other`,
                   projectItem,
                   rrcName
@@ -272,7 +272,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  CooperativeAddOnItemRequirementsGeneratorTest.RenderControllerNameNotInExpectedForm,
+                  CooperativeAddOnItemRequirementsGeneratorTest.renderControllerNameNotInExpectedForm,
                   `Resource pack render controller name section is not in the expected form of controller.render.creatorshortname_projectshortname`,
                   projectItem,
                   rrcName
@@ -285,8 +285,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.modelGeometryJson) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.availableFile) {
-        const modGeo = await ModelGeometryDefinition.ensureOnFile(projectItem.availableFile);
+      if (projectItem.primaryFile) {
+        const modGeo = await ModelGeometryDefinition.ensureOnFile(projectItem.primaryFile);
 
         if (modGeo) {
           for (const modId of modGeo.identifiers) {
@@ -299,7 +299,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
-                    CooperativeAddOnItemRequirementsGeneratorTest.GeometryIdNotInExpectedForm,
+                    CooperativeAddOnItemRequirementsGeneratorTest.geometryIdNotInExpectedForm,
                     `Geometry is not in the expected form of geometry.creatorshortname_projectshortname.other`,
                     projectItem,
                     modId
@@ -311,7 +311,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                   new ProjectInfoItem(
                     InfoItemType.error,
                     this.id,
-                    CooperativeAddOnItemRequirementsGeneratorTest.GeometryNameNotInExpectedForm,
+                    CooperativeAddOnItemRequirementsGeneratorTest.geometryNameNotInExpectedForm,
                     `Geometry identifier section is not in the expected form of geometry.creatorshortname_projectshortname`,
                     projectItem,
                     modId
@@ -330,7 +330,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     ) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.availableFile) {
+      if (projectItem.primaryFile) {
         const projectItemDef = await MinecraftDefinitions.get(projectItem);
 
         if (projectItemDef && projectItemDef.id) {
@@ -340,7 +340,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
               new ProjectInfoItem(
                 InfoItemType.error,
                 this.id,
-                CooperativeAddOnItemRequirementsGeneratorTest.JsonIdentifierNotInExpectedForm,
+                CooperativeAddOnItemRequirementsGeneratorTest.jsonIdentifierNotInExpectedForm,
                 `JSON namespaced identifier is not in the expected form of creatorshortname_projectshortname:myitem`,
                 projectItem,
                 projectItemDef.id
@@ -352,8 +352,8 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
     } else if (projectItem.itemType === ProjectItemType.material) {
       await projectItem.ensureFileStorage();
 
-      if (projectItem.availableFile) {
-        const mat = await Material.ensureOnFile(projectItem.availableFile);
+      if (projectItem.primaryFile) {
+        const mat = await Material.ensureOnFile(projectItem.primaryFile);
 
         if (mat && mat.definition && mat.definition.materials) {
           for (const modId in mat.definition.materials) {
@@ -364,7 +364,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  CooperativeAddOnItemRequirementsGeneratorTest.MaterialsIdentifierNotInExpectedForm,
+                  CooperativeAddOnItemRequirementsGeneratorTest.materialsIdentifierNotInExpectedForm,
                   `Materials section identifier is not in the expected form of creatorshortname_projectshortname:other`,
                   projectItem,
                   modId
@@ -380,7 +380,7 @@ export default class CooperativeAddOnItemRequirementsGenerator implements IProje
                 new ProjectInfoItem(
                   InfoItemType.error,
                   this.id,
-                  CooperativeAddOnItemRequirementsGeneratorTest.MaterialsFirstSegmentNotInExpectedForm,
+                  CooperativeAddOnItemRequirementsGeneratorTest.materialsFirstSegmentNotInExpectedForm,
                   `First segment of a Materials section identifier is not in the expected form of creatorshortname_projectshortname_materialname or creatorshortname_projectshortname_materialname:baseitem`,
                   projectItem,
                   modId

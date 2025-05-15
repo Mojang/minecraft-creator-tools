@@ -67,6 +67,6 @@ export default interface MinecraftProjectile {
    *
    *
    */
-  projectile_entity: { [key: string]: string };
+  projectile_entity: string;
 
 }

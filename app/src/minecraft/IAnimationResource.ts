@@ -21,7 +21,13 @@ export interface IAnimationResourceBoneSet {
 }
 
 export interface IAnimationResourceBone {
-  rotation: number[] | string;
-  position: number[] | string;
-  scale: number[] | string;
+  rotation: { [timeCode: string]: (number | string)[] | IAnimationResourceBoneKeyframeOffset } | (number | string)[];
+  position: { [timeCode: string]: (number | string)[] | IAnimationResourceBoneKeyframeOffset } | (number | string)[];
+  scale: { [timeCode: string]: (number | string)[] } | (number | string)[];
+}
+
+export interface IAnimationResourceBoneKeyframeOffset {
+  lerp_mode: "linear" | "catmullrom";
+  post: number[];
+  pre?: number[];
 }

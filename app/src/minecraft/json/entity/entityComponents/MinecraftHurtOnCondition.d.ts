@@ -18,9 +18,7 @@ Allay - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
     {
       "filters": {
         "test": "in_lava",
-        "subject": "self",
-        "operator": "==",
-        "value": true
+        "subject": "self"
       },
       "cause": "lava",
       "damage_per_tick": 4
@@ -29,14 +27,16 @@ Allay - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
-Armadillo - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/armadillo.json
+Armor Stand - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/armor_stand.json
 
 "minecraft:hurt_on_condition": {
   "damage_conditions": [
     {
       "filters": {
         "test": "in_lava",
-        "subject": "self"
+        "subject": "self",
+        "operator": "==",
+        "value": true
       },
       "cause": "lava",
       "damage_per_tick": 4
@@ -145,6 +145,21 @@ Snow Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pac
   ]
 }
 
+
+Strider - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/strider.json
+
+"minecraft:hurt_on_condition": {
+  "damage_conditions": [
+    {
+      "filters": {
+        "test": "in_contact_with_water"
+      },
+      "cause": "drowning",
+      "damage_per_tick": 1
+    }
+  ]
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -162,9 +177,8 @@ export default interface MinecraftHurtOnCondition {
    * entity.
    * 
    * Sample Values:
-   * Allay: [{"filters":{"test":"in_lava","subject":"self","operator":"==","value":true},"cause":"lava","damage_per_tick":4}]
+   * Allay: [{"filters":{"test":"in_lava","subject":"self"},"cause":"lava","damage_per_tick":4}]
    *
-   * Armadillo: [{"filters":{"test":"in_lava","subject":"self"},"cause":"lava","damage_per_tick":4}]
    *
    */
   damage_conditions: MinecraftHurtOnConditionDamageConditions[];

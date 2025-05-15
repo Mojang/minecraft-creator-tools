@@ -49,7 +49,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "The allow_off_hand component determines whether the item can be placed in the off hand slot of the inventory.",
+              "title": "Allow Off Hand"
+            }
           },
           {
             "id": "minecraft:can_destroy_in_creative",
@@ -73,7 +78,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "The can_destroy_in_creative component determines if the item can be used by a player to break blocks when in creative mode.",
+              "title": "Can Destroy In Creative"
+            }
           },
           {
             "id": "minecraft:cooldown",
@@ -121,7 +131,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "Specifies the base rarity and subsequently color of the item name when the player hovers the cursor over the item.",
+              "title": "Rarity"
+            }
           },
           {
             "id": "minecraft:max_stack_size",
@@ -155,7 +170,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "The max_stack_size component specifies how many of the item can be stacked together.",
+              "title": "Max Stack Size"
+            }
           },
           {
             "id": "minecraft:bundle_interaction",
@@ -217,7 +237,12 @@
             "id": "minecraft:custom_components",
             "title": "minecraft:custom_components",
             "description": "Specifies an array of custom components defined in a script that should be added to this item.",
-            "dataType": 16
+            "dataType": 16,
+            "subForm": {
+              "fields": [],
+              "description": "Specifies an array of custom components defined in a script that should be added to this item.",
+              "title": "Custom Components"
+            }
           },
           {
             "id": "minecraft:damage_absorption",
@@ -260,7 +285,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "The damage component determines how much extra damage the item does on attack.",
+              "title": "Damage"
+            }
           },
           {
             "id": "minecraft:record",
@@ -400,7 +430,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "Use_animation specifies which animation is played when the player uses the item.",
+              "title": "Use Animation"
+            }
           },
           {
             "id": "minecraft:display_name",
@@ -575,7 +610,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "Should_despawn component determines if the item should eventually despawn while floating in the world",
+              "title": "Should Despawn"
+            }
           },
           {
             "id": "minecraft:dyeable",
@@ -788,7 +828,12 @@
                       "id": "using_converts_to",
                       "dataType": 24
                     }
-                  ]
+                  ],
+                  "subForm": {
+                    "fields": [],
+                    "description": "Using Converts To",
+                    "title": "Using Converts To"
+                  }
                 }
               ]
             }
@@ -821,7 +866,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "Fuel item component allows this item to be used as fuel in a furnace to 'cook' other items.",
+              "title": "Fuel"
+            }
           },
           {
             "id": "minecraft:glint",
@@ -845,7 +895,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "The glint component determines whether the item has the enchanted glint render effect on it.",
+              "title": "Glint"
+            }
           },
           {
             "id": "minecraft:hand_equipped",
@@ -869,7 +924,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "The hand_equipped component determines if an item is rendered like a tool while it is in a player's hand.",
+              "title": "Hand Equipped"
+            }
           },
           {
             "id": "minecraft:hover_text_color",
@@ -893,7 +953,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "The hover_text_color component specifies the color of the item name when the players hovers the cursor over the item.",
+              "title": "Hover Text Color"
+            }
           },
           {
             "id": "minecraft:icon",
@@ -917,7 +982,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "Icon item component determines which icon graphic will be used to represent the item in the UI and elsewhere.",
+              "title": "Icon"
+            }
           },
           {
             "id": "minecraft:interact_button",
@@ -929,7 +999,12 @@
                 "id": "minecraft:interact_button",
                 "dataType": 2
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "This component is a boolean or string that determines if the interact button is shown in touch controls and what text is displayed on the button. When set as true, default \"Use Item\" text will be displayed.",
+              "title": "Interact Button"
+            }
           },
           {
             "id": "minecraft:liquid_clipped",
@@ -953,7 +1028,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
+              "title": "Liquid Clipped"
+            }
           },
           {
             "id": "minecraft:block_placer",
@@ -1231,7 +1311,12 @@
                   ]
                 }
               }
-            ]
+            ],
+            "subForm": {
+              "fields": [],
+              "description": "The stacked_by_data component determines whether the same items with different aux values can stack. Also defines whether the item entities can merge while floating in the world.",
+              "title": "Stacked By Data"
+            }
           },
           {
             "id": "minecraft:storage_item",

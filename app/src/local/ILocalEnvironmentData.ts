@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 export default interface ILocalEnvironmentData {
-  iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula?: boolean;
+  iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula?: boolean;
 
   worldContainerPath?: string;
 

@@ -5,17 +5,45 @@
       "title": "Backwards Movement Modifier",
       "description": "Modifies speed going backwards.",
       "defaultValue": 0.5,
-      "dataType": 3
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/entities/happy_ghast.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:input_air_controlled/",
+            "content": 0.5
+          }
+        ]
+      }
     },
     {
       "id": "strafe_speed_modifier",
       "title": "Strafe Speed Modifier",
       "description": "Modifies the strafe speed.",
       "defaultValue": 0.4,
-      "dataType": 3
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/entities/happy_ghast.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:input_air_controlled/",
+            "content": 1
+          }
+        ]
+      }
     }
   ],
-  "description": "When configured as a rideable entity, the entity will be controlled using WASD controls and mouse to move in three dimensions. Only available with `\"use_beta_features\": true` and likely to be drastically changed or removed.",
+  "isExperimental": true,
+  "description": "When configured as a rideable entity, the entity will be controlled using WASD controls and mouse to move in three dimensions.",
   "title": "Input Air Controlled",
+  "samples": {
+    "/vanilla/behavior_pack/entities/happy_ghast.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:input_air_controlled/",
+        "content": {
+          "strafe_speed_modifier": 1,
+          "backwards_movement_modifier": 0.5
+        }
+      }
+    ]
+  },
   "id": "minecraft:input_air_controlled"
 }

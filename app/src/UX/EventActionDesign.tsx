@@ -129,9 +129,8 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
           color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
         }}
       >
-        <div className="ead-header">{this.props.id}</div>
+        <div className="ead-header">{this.props.id} - Action</div>
         {triggerContent}
-        <div className="ead-actionsTitle">Actions</div>
         <div
           className="ead-actionSetBin"
           style={{

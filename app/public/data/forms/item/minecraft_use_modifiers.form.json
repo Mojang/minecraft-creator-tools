@@ -1,20 +1,6 @@
 {
   "fields": [
     {
-      "id": "use_duration",
-      "title": "Use Duration",
-      "description": "How long the item takes to use in seconds.",
-      "dataType": 3,
-      "samples": {
-        "/vanilla/behavior_pack/items/apple.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:use_modifiers/",
-            "content": 1.6
-          }
-        ]
-      }
-    },
-    {
       "id": "movement_modifier",
       "title": "Movement Modifier",
       "description": "Modifier value to scale the players movement speed when item is in use.",
@@ -30,6 +16,20 @@
           {
             "path": "/minecraft:item/components/minecraft:use_modifiers/",
             "content": 0.35
+          }
+        ]
+      }
+    },
+    {
+      "id": "use_duration",
+      "title": "Use Duration",
+      "description": "How long the item takes to use in seconds.",
+      "dataType": 3,
+      "samples": {
+        "/vanilla/behavior_pack/items/apple.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:use_modifiers/",
+            "content": 1.6
           }
         ]
       }
@@ -125,6 +125,14 @@
         "content": {
           "use_duration": 4,
           "movement_modifier": 0.35
+        }
+      }
+    ],
+    "/samples/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:use_modifiers/",
+        "content": {
+          "use_duration": 3
         }
       }
     ]

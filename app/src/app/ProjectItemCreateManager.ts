@@ -17,8 +17,13 @@ import Log from "../core/Log";
 import SoundDefinitionCatalogDefinition from "../minecraft/SoundDefinitionCatalogDefinition";
 import SoundCatalogDefinition from "../minecraft/SoundCatalogDefinition";
 import IFile from "../storage/IFile";
+import MinecraftUtilities from "../minecraft/MinecraftUtilities";
+import IGalleryItem, { GalleryItemType } from "./IGalleryItem";
+import ProjectUtilities, { NewEntityTypeAddMode } from "./ProjectUtilities";
 
-export default class ProjectItemManager {
+/// Does create operations for project items.
+
+export default class ProjectItemCreateManager {
   private static async _getDefaultBehaviorPackPath(project: Project) {
     const bpFolder = await project.ensureDefaultBehaviorPackFolder();
 
@@ -94,17 +99,20 @@ export default class ProjectItemManager {
       switch (itemSeed.itemType) {
         case ProjectItemType.js:
         case ProjectItemType.ts:
-          return ProjectItemManager.createNewScript(project, itemSeed.itemType, itemSeed.name, itemSeed.folder);
+          return ProjectItemCreateManager.createNewScript(project, itemSeed.itemType, itemSeed.name, itemSeed.folder);
 
         case ProjectItemType.dataForm:
-          return ProjectItemManager.createNewForm(project, itemSeed.name, itemSeed.folder);
-
-        case ProjectItemType.spawnRuleBehavior:
-          return ProjectItemManager.createNewSpawnRule(project, itemSeed.name, itemSeed.folder);
+          return ProjectItemCreateManager.createNewForm(project, itemSeed.name, itemSeed.folder);
 
         case ProjectItemType.audio:
-          return ProjectItemManager.createNewAudio(project, itemSeed.name, itemSeed.folder);
+          return ProjectItemCreateManager.createNewAudio(project, itemSeed.name, itemSeed.folder);
       }
+    }
+
+    if (ProjectItemUtilities.isBehaviorRelated(itemSeed.itemType)) {
+      return ProjectItemCreateManager.createBehaviorPackJsonItem(project, itemSeed);
+    } else if (ProjectItemUtilities.isResourceRelated(itemSeed.itemType)) {
+      return ProjectItemCreateManager.createResourcePackJsonItem(project, itemSeed);
     }
 
     return undefined;
@@ -116,14 +124,14 @@ export default class ProjectItemManager {
     if (folder && project.projectFolder) {
       defaultPath = folder.getFolderRelativePath(project.projectFolder);
     } else {
-      defaultPath = await ProjectItemManager._getDefaultScriptsFolderPath(project);
+      defaultPath = await ProjectItemCreateManager._getDefaultScriptsFolderPath(project);
     }
 
     if (defaultPath === undefined) {
       return;
     }
 
-    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
+    const candidateFilePath = await ProjectItemCreateManager._generateFileNameForNewItem(
       project,
       defaultPath,
       name,
@@ -306,13 +314,18 @@ export default class ProjectItemManager {
   }
 
   static async createNewGameTestScript(project: Project) {
-    const defaultPath = await ProjectItemManager._getDefaultBehaviorPackFolderPath(project, "scripts");
+    const defaultPath = await ProjectItemCreateManager._getDefaultBehaviorPackFolderPath(project, "scripts");
 
     if (defaultPath === undefined) {
       return;
     }
 
-    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(project, defaultPath, "test", "js");
+    const candidateFilePath = await ProjectItemCreateManager._generateFileNameForNewItem(
+      project,
+      defaultPath,
+      "test",
+      "js"
+    );
 
     if (candidateFilePath === undefined) {
       return;
@@ -359,7 +372,7 @@ export default class ProjectItemManager {
       return;
     }
 
-    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
+    const candidateFilePath = await ProjectItemCreateManager._generateFileNameForNewItem(
       project,
       defaultPath,
       "action",
@@ -393,13 +406,13 @@ export default class ProjectItemManager {
   }
 
   static async createNewStructure(project: Project) {
-    const defaultPath = await ProjectItemManager._getDefaultBehaviorPackFolderPath(project, "structures");
+    const defaultPath = await ProjectItemCreateManager._getDefaultBehaviorPackFolderPath(project, "structures");
 
     if (defaultPath === undefined) {
       return;
     }
 
-    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
+    const candidateFilePath = await ProjectItemCreateManager._generateFileNameForNewItem(
       project,
       defaultPath,
       "structure",
@@ -440,7 +453,7 @@ export default class ProjectItemManager {
       return;
     }
 
-    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
+    const candidateFilePath = await ProjectItemCreateManager._generateFileNameForNewItem(
       project,
       defaultPath,
       "actionset",
@@ -481,7 +494,11 @@ export default class ProjectItemManager {
       return;
     }
 
-    const candidateFolderPath = await ProjectItemManager._generateFolderNameForNewItem(project, defaultPath, "type");
+    const candidateFolderPath = await ProjectItemCreateManager._generateFolderNameForNewItem(
+      project,
+      defaultPath,
+      "type"
+    );
 
     if (candidateFolderPath === undefined) {
       return;
@@ -510,8 +527,8 @@ export default class ProjectItemManager {
     }
 
     for (const item of project.items) {
-      if (item.itemType === itemType && item.defaultFile) {
-        return item.defaultFile.parentFolder.getFolderRelativePath(project.projectFolder);
+      if (item.itemType === itemType && item.primaryFile) {
+        return item.primaryFile.parentFolder.getFolderRelativePath(project.projectFolder);
       }
     }
 
@@ -528,7 +545,7 @@ export default class ProjectItemManager {
     if (folder) {
       path = folder.getFolderRelativePath(project.projectFolder);
     } else {
-      path = ProjectItemManager.getExistingPath(project, ProjectItemType.dataForm);
+      path = ProjectItemCreateManager.getExistingPath(project, ProjectItemType.dataForm);
 
       if (path === undefined) {
         path = await this._getDefaultBehaviorPackFolderPath(project, "forms");
@@ -547,7 +564,12 @@ export default class ProjectItemManager {
       name = "form";
     }
 
-    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(project, path, name, "form.json");
+    const candidateFilePath = await ProjectItemCreateManager._generateFileNameForNewItem(
+      project,
+      path,
+      name,
+      "form.json"
+    );
 
     if (candidateFilePath === undefined) {
       return undefined;
@@ -581,19 +603,21 @@ export default class ProjectItemManager {
   static async ensureSoundDefinitionCatalogDefinition(
     project: Project
   ): Promise<SoundDefinitionCatalogDefinition | undefined> {
-    const items = project.getItemByType(ProjectItemType.soundDefinitionCatalog);
+    const items = project.getItemsByType(ProjectItemType.soundDefinitionCatalog);
 
     if (items.length > 0) {
       await items[0].ensureStorage();
 
-      if (items[0].defaultFile) {
-        await items[0].defaultFile.loadContent();
+      const itemFile = items[0].primaryFile;
 
-        if (!items[0].defaultFile.content) {
-          this.setFileToDefaultContent(items[0].defaultFile);
+      if (itemFile) {
+        await itemFile.loadContent();
+
+        if (!itemFile.content) {
+          this.setFileToDefaultContent(itemFile);
         }
 
-        return await SoundDefinitionCatalogDefinition.ensureOnFile(items[0].defaultFile);
+        return await SoundDefinitionCatalogDefinition.ensureOnFile(itemFile);
       }
     }
 
@@ -609,7 +633,7 @@ export default class ProjectItemManager {
       return undefined;
     }
 
-    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
+    const candidateFilePath = await ProjectItemCreateManager._generateFileNameForNewItem(
       project,
       path,
       "sound_definitions",
@@ -652,14 +676,39 @@ export default class ProjectItemManager {
     file.saveContent();
   }
 
+  static async addFromGallery(project: Project, newName: string, galleryItem: IGalleryItem) {
+    if (galleryItem.type === GalleryItemType.entityType) {
+      await ProjectUtilities.addEntityTypeFromGallery(
+        project,
+        galleryItem,
+        newName,
+        NewEntityTypeAddMode.baseId,
+        async (message: string) => {
+          Log.message(message);
+        }
+      );
+    } else if (galleryItem.type === GalleryItemType.itemType) {
+      await ProjectUtilities.addItemTypeFromGallery(project, galleryItem, newName);
+    } else if (galleryItem.type === GalleryItemType.blockType) {
+      await ProjectUtilities.addBlockTypeFromGallery(project, galleryItem, newName);
+    } else if (galleryItem.type >= GalleryItemType.spawnLootRecipes && galleryItem.targetType) {
+      await ProjectItemCreateManager.createNewItem(project, {
+        itemType: galleryItem.targetType,
+        contentTemplateName: galleryItem.id,
+        name: newName,
+        folder: undefined,
+      });
+    }
+  }
+
   static async ensureSoundCatalogDefinition(project: Project): Promise<SoundCatalogDefinition | undefined> {
-    const items = project.getItemByType(ProjectItemType.soundCatalog);
+    const items = project.getItemsByType(ProjectItemType.soundCatalog);
 
     if (items.length > 0) {
       await items[0].ensureStorage();
 
-      if (items[0].defaultFile) {
-        return await SoundCatalogDefinition.ensureOnFile(items[0].defaultFile);
+      if (items[0].primaryFile) {
+        return await SoundCatalogDefinition.ensureOnFile(items[0].primaryFile);
       }
     }
 
@@ -675,7 +724,12 @@ export default class ProjectItemManager {
       return undefined;
     }
 
-    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(project, path, "sounds", "json");
+    const candidateFilePath = await ProjectItemCreateManager._generateFileNameForNewItem(
+      project,
+      path,
+      "sounds",
+      "json"
+    );
 
     if (candidateFilePath === undefined) {
       return undefined;
@@ -708,20 +762,27 @@ export default class ProjectItemManager {
     return await SoundCatalogDefinition.ensureOnFile(file);
   }
 
-  static async createNewSpawnRule(project: Project, name?: string, folder?: IFolder): Promise<ProjectItem | undefined> {
+  static async createBehaviorPackJsonItem(
+    project: Project,
+    itemSeed: IProjectItemSeed
+  ): Promise<ProjectItem | undefined> {
     let path: string | undefined = undefined;
 
     if (!project.projectFolder) {
       return undefined;
     }
 
-    if (folder) {
-      path = folder.getFolderRelativePath(project.projectFolder);
+    const folderRootsForType = ProjectItemUtilities.getFolderRootsForType(itemSeed.itemType);
+
+    Log.assert(folderRootsForType.length > 0, "No folder roots for item type: " + itemSeed.itemType);
+
+    if (itemSeed.folder) {
+      path = itemSeed.folder.getFolderRelativePath(project.projectFolder);
     } else {
-      path = ProjectItemManager.getExistingPath(project, ProjectItemType.spawnRuleBehavior);
+      path = ProjectItemCreateManager.getExistingPath(project, itemSeed.itemType);
 
       if (path === undefined) {
-        path = await this._getDefaultBehaviorPackFolderPath(project, "spawn_rules");
+        path = await this._getDefaultBehaviorPackFolderPath(project, folderRootsForType[0]);
 
         if (path === undefined) {
           return undefined;
@@ -733,11 +794,17 @@ export default class ProjectItemManager {
       return undefined;
     }
 
-    if (!name) {
-      name = "spawn_rule";
+    let namespacedId = itemSeed.name;
+    let name = namespacedId;
+
+    if (!namespacedId || !name) {
+      name = ProjectItemUtilities.getNewItemTechnicalName(itemSeed.itemType);
+      namespacedId = name;
     }
 
-    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(project, path, name, "json");
+    name = MinecraftUtilities.getNamespacedIdName(name);
+
+    const candidateFilePath = await ProjectItemCreateManager._generateFileNameForNewItem(project, path, name, "json");
 
     if (candidateFilePath === undefined) {
       return undefined;
@@ -747,7 +814,7 @@ export default class ProjectItemManager {
       candidateFilePath,
       ProjectItemStorageType.singleFile,
       StorageUtilities.getLeafName(candidateFilePath),
-      ProjectItemType.spawnRuleBehavior,
+      itemSeed.itemType,
       FolderContext.behaviorPack,
       undefined,
       ProjectItemCreationType.normal
@@ -756,7 +823,124 @@ export default class ProjectItemManager {
     const file = await pi.ensureFileStorage();
 
     if (file !== null) {
-      const content = "{}";
+      let content = "{}";
+
+      await Database.loadContent();
+
+      if (Database.contentFolder !== null) {
+        const contentTemplate = itemSeed.contentTemplateName
+          ? itemSeed.contentTemplateName
+          : ProjectItemUtilities.getNewItemTechnicalName(itemSeed.itemType);
+
+        const sourceFile = await Database.contentFolder.getFileFromRelativePath(
+          "/newitemjson/" + contentTemplate + ".json"
+        );
+
+        if (sourceFile) {
+          await sourceFile.loadContent();
+
+          if (sourceFile.content) {
+            content = sourceFile.content.toString();
+          }
+        }
+      }
+
+      content = content.replace(/examplens:examplename/g, namespacedId);
+
+      file.setContent(content);
+    }
+
+    await ProjectAutogeneration.updateProjectAutogeneration(project);
+
+    await project.save();
+
+    return pi;
+  }
+
+  static async createResourcePackJsonItem(
+    project: Project,
+    itemSeed: IProjectItemSeed
+  ): Promise<ProjectItem | undefined> {
+    let path: string | undefined = undefined;
+
+    if (!project.projectFolder) {
+      return undefined;
+    }
+
+    const folderRootsForType = ProjectItemUtilities.getFolderRootsForType(itemSeed.itemType);
+
+    Log.assert(folderRootsForType.length > 0, "No folder roots for item type: " + itemSeed.itemType);
+
+    if (itemSeed.folder) {
+      path = itemSeed.folder.getFolderRelativePath(project.projectFolder);
+    } else {
+      path = ProjectItemCreateManager.getExistingPath(project, itemSeed.itemType);
+
+      if (path === undefined) {
+        path = await this._getDefaultResourcePackFolderPath(project, folderRootsForType[0]);
+
+        if (path === undefined) {
+          return undefined;
+        }
+      }
+    }
+
+    if (!path) {
+      return undefined;
+    }
+
+    let namespacedId = itemSeed.name;
+    let name = namespacedId;
+
+    if (!namespacedId || !name) {
+      name = ProjectItemUtilities.getNewItemTechnicalName(itemSeed.itemType);
+      namespacedId = name;
+    }
+
+    name = MinecraftUtilities.getNamespacedIdName(name);
+
+    const candidateFilePath = await ProjectItemCreateManager._generateFileNameForNewItem(project, path, name, "json");
+
+    if (candidateFilePath === undefined) {
+      return undefined;
+    }
+
+    const pi = project.ensureItemByProjectPath(
+      candidateFilePath,
+      ProjectItemStorageType.singleFile,
+      StorageUtilities.getLeafName(candidateFilePath),
+      itemSeed.itemType,
+      FolderContext.resourcePack,
+      undefined,
+      ProjectItemCreationType.normal
+    );
+
+    const file = await pi.ensureFileStorage();
+
+    if (file !== null) {
+      let content = "{}";
+
+      await Database.loadContent();
+
+      if (Database.contentFolder !== null) {
+        const contentTemplate = itemSeed.contentTemplateName
+          ? itemSeed.contentTemplateName
+          : ProjectItemUtilities.getNewItemTechnicalName(itemSeed.itemType);
+
+        const sourceFile = await Database.contentFolder.getFileFromRelativePath(
+          "/newitemjson/" + contentTemplate + ".json"
+        );
+
+        if (sourceFile) {
+          await sourceFile.loadContent();
+
+          if (sourceFile.content) {
+            content = sourceFile.content.toString();
+          }
+        }
+      }
+
+      content = content.replace(/examplens:examplename/g, namespacedId);
 
       file.setContent(content);
     }
@@ -793,7 +977,7 @@ export default class ProjectItemManager {
     if (folder) {
       path = folder.getFolderRelativePath(project.projectFolder);
     } else {
-      path = ProjectItemManager.getExistingPath(project, ProjectItemType.audio);
+      path = ProjectItemCreateManager.getExistingPath(project, ProjectItemType.audio);
 
       if (path === undefined) {
         path = await this._getDefaultResourcePackFolderPath(project, "sounds");
@@ -812,7 +996,7 @@ export default class ProjectItemManager {
       name = "sound";
     }
 
-    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(project, path, name, "mp3");
+    const candidateFilePath = await ProjectItemCreateManager._generateFileNameForNewItem(project, path, name, "ogg");
 
     if (candidateFilePath === undefined) {
       return undefined;
@@ -851,7 +1035,7 @@ export default class ProjectItemManager {
     if (folder) {
       path = folder.getFolderRelativePath(project.projectFolder);
     } else {
-      path = ProjectItemManager.getExistingPath(project, ProjectItemType.dataForm);
+      path = ProjectItemCreateManager.getExistingPath(project, ProjectItemType.dataForm);
 
       if (path === undefined) {
         path = await this._getDefaultBehaviorPackFolderPath(project, "forms");
@@ -870,7 +1054,7 @@ export default class ProjectItemManager {
       name = "form";
     }
 
-    const candidateFilePath = await ProjectItemManager._generateFileNameForNewItem(
+    const candidateFilePath = await ProjectItemCreateManager._generateFileNameForNewItem(
       project,
       path + "tests/",
       "worldtest",

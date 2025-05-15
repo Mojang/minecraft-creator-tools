@@ -8,7 +8,7 @@
     {
       "id": "texture",
       "title": "Texture",
-      "dataType": 2
+      "dataType": 16
     }
   ],
   "description": "The parameters MUST contain a material and texture.",

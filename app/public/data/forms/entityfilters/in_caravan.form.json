@@ -128,7 +128,7 @@
                   "path": "triggers",
                   "content": {
                     "cause": "all",
-                    "deals_damage": true
+                    "deals_damage": "yes"
                   }
                 }
               ]
@@ -143,12 +143,23 @@
             "content": {
               "triggers": {
                 "cause": "all",
-                "deals_damage": true
+                "deals_damage": "yes"
               }
             }
           }
         ],
         "/samples/addon_starter/2_entities/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:in_caravan/",
+            "content": {
+              "triggers": {
+                "cause": "all",
+                "deals_damage": true
+              }
+            }
+          }
+        ],
+        "/samples/addon_starter/complete/behavior_packs/aop_mobs/entities/frost_moose.behavior.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:in_caravan/",
             "content": {
@@ -205,7 +216,7 @@
           "minecraft:damage_sensor": {
             "triggers": {
               "cause": "all",
-              "deals_damage": true
+              "deals_damage": "yes"
             }
           }
         }

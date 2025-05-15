@@ -22,7 +22,7 @@ Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
   "minecraft:damage_sensor": {
     "triggers": {
       "cause": "all",
-      "deals_damage": true
+      "deals_damage": "yes"
     }
   }
 }
@@ -31,6 +31,19 @@ Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 {
   "test": "in_caravan",
   "value": false
+}
+
+
+Frost Moose - https://github.com/microsoft/minecraft-samples/tree/main/addon_starter/2_entities/behavior_packs/aop_mobs/entities/frost_moose.behavior.json
+
+ * At /minecraft:entity/component_groups/minecraft:in_caravan/: 
+{
+  "minecraft:damage_sensor": {
+    "triggers": {
+      "cause": "all",
+      "deals_damage": true
+    }
+  }
 }
 
  */
@@ -49,7 +62,9 @@ export default interface InCaravan {
    * @remarks
    * 
    * Sample Values:
-   * Llama: {"triggers":{"cause":"all","deals_damage":true}}
+   * Llama: {"triggers":{"cause":"all","deals_damage":"yes"}}
+   *
+   * Frost Moose: {"triggers":{"cause":"all","deals_damage":true}}
    *
    *
    */
@@ -95,7 +110,7 @@ export interface InCaravanMinecraftDamageSensor {
    * @remarks
    * 
    * Sample Values:
-   * Llama: {"cause":"all","deals_damage":true}
+   * Llama: {"cause":"all","deals_damage":"yes"}
    *
    */
   triggers: string;

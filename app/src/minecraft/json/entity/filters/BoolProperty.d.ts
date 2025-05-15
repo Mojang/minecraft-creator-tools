@@ -37,6 +37,23 @@ Bee - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
   "domain": "minecraft:has_nectar"
 }
 
+
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+ * At /minecraft:entity/events/minecraft:on_player_detected_above/filters/: 
+{
+  "test": "bool_property",
+  "domain": "minecraft:can_move",
+  "value": true
+}
+
+ * At /minecraft:entity/events/minecraft:on_no_player_detected_above/filters/: 
+{
+  "test": "bool_property",
+  "domain": "minecraft:can_move",
+  "value": false
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -54,6 +71,8 @@ export default interface BoolProperty {
    * 
    * Sample Values:
    * Bee: "minecraft:has_nectar"
+   *
+   * Happy Ghast: "minecraft:can_move"
    *
    */
   domain: string;
@@ -86,6 +105,10 @@ export default interface BoolProperty {
   /**
    * @remarks
    * (Optional) true or false.
+   * 
+   * Sample Values:
+   * Happy Ghast: true
+   *
    */
   value: boolean;
 

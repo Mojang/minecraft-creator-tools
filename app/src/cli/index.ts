@@ -826,7 +826,7 @@ async function minecraftEulaAndPrivacyPolicy() {
   const questions: inquirer.DistinctQuestion<any>[] = [];
 
   console.log(
-    "To download the Minecraft Bedrock Dedicated Server, you must agree to the Minecraft End User License Agreement and Privacy Policy.\n"
+    "To download the Minecraft Bedrock Dedicated Server, you must agree to the Minecraft End User License Agreement and Privacy Statement.\n"
   );
   console.log("    Minecraft End User License Agreement: https://minecraft.net/eula");
   console.log("    Minecraft Privacy Policy: https://go.microsoft.com/fwlink/?LinkId=521839\n");
@@ -834,16 +834,16 @@ async function minecraftEulaAndPrivacyPolicy() {
   questions.push({
     type: "confirm",
     default: false,
-    name: "minecraftEulaAndPrivacyPolicy",
-    message: "I agree to the Minecraft End User License Agreement and Privacy Policy",
+    name: "minecraftEulaAndPrivacyStatement",
+    message: "I agree to the Minecraft End User License Agreement and Privacy Statement",
   });
 
   const answers = await inquirer.prompt(questions);
 
-  const iaccept = answers["minecraftEulaAndPrivacyPolicy"];
+  const iaccept = answers["minecraftEulaAndPrivacyStatement"];
 
   if (iaccept === true || iaccept === false) {
-    localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula = iaccept;
+    localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula = iaccept;
 
     await localEnv.save();
   }
@@ -1112,65 +1112,60 @@ async function validate() {
     const ps = projectStarts[i];
 
     pool.queue(async (doTask) => {
-      try {
-        const result = await doTask({
-          task: TaskType.validate,
-          project: ps,
-          arguments: {
-            suite: suiteConst,
-            exclusionList: exclusionListConst,
-            outputMci: aggregateReportsAfterValidationConst || outputType === OutputType.noReports ? true : false,
-            outputType: outputType,
-          },
-          outputFolder: options.outputFolder,
-          inputFolder: options.inputFolder,
-          displayInfo: localEnvConst.displayInfo,
-          displayVerbose: localEnvConst.displayVerbose,
-          force: force,
-        });
+      const result = await doTask({
+        task: TaskType.validate,
+        project: ps,
+        arguments: {
+          suite: suiteConst,
+          exclusionList: exclusionListConst,
+          outputMci: aggregateReportsAfterValidationConst || outputType === OutputType.noReports ? true : false,
+          outputType: outputType,
+        },
+        outputFolder: options.outputFolder,
+        inputFolder: options.inputFolder,
+        displayInfo: localEnvConst.displayInfo,
+        displayVerbose: localEnvConst.displayVerbose,
+        force: force,
+      });
 
-        if (result !== undefined) {
-          if (typeof result === "string") {
-            if (ps) {
-              Log.error(ps.ctorProjectName + " error: " + result);
+      if (result !== undefined) {
+        if (typeof result === "string") {
+          if (ps) {
+            Log.error(ps.ctorProjectName + " error: " + result);
+          }
+        } else {
+          for (const metaState of result) {
+            // clear out icons since the aggregation won't need them, and it should save memory.
+            if (metaState.infoSetData && metaState.infoSetData.info && metaState.infoSetData.info["defaultIcon"]) {
+              metaState.infoSetData.info["defaultIcon"] = undefined;
             }
-          } else {
-            for (const metaState of result) {
-              // clear out icons since the aggregation won't need them, and it should save memory.
-              if (metaState.infoSetData && metaState.infoSetData.info && metaState.infoSetData.info["defaultIcon"]) {
-                metaState.infoSetData.info["defaultIcon"] = undefined;
-              }
 
-              projectList.push(metaState as IProjectMetaState);
+            projectList.push(metaState as IProjectMetaState);
 
-              const infoSet = (metaState as IProjectMetaState).infoSetData;
+            const infoSet = (metaState as IProjectMetaState).infoSetData;
 
-              if (infoSet) {
-                const items = infoSet.items;
+            if (infoSet) {
+              const items = infoSet.items;
 
-                if (items) {
-                  for (const item of items) {
-                    if (item.iTp === InfoItemType.internalProcessingError) {
-                      console.error(
-                        "Internal Processing Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item)
-                      );
-                      setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
-                    } else if (item.iTp === InfoItemType.testCompleteFail && !options.outputFolder) {
-                      console.error("Test Fail: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
-                      setErrorLevel(ERROR_VALIDATION_TESTFAIL);
-                    } else if (item.iTp === InfoItemType.error && !options.outputFolder) {
-                      console.error("Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
-                      setErrorLevel(ERROR_VALIDATION_ERROR);
-                    }
+              if (items) {
+                for (const item of items) {
+                  if (item.iTp === InfoItemType.internalProcessingError) {
+                    console.error(
+                      "Internal Processing Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item)
+                    );
+                    setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
+                  } else if (item.iTp === InfoItemType.testCompleteFail && !options.outputFolder) {
+                    console.error("Test Fail: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
+                    setErrorLevel(ERROR_VALIDATION_TESTFAIL);
+                  } else if (item.iTp === InfoItemType.error && !options.outputFolder) {
+                    console.error("Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
+                    setErrorLevel(ERROR_VALIDATION_ERROR);
                   }
                 }
               }
             }
           }
         }
-      } catch (e) {
-        console.error("Internal Processing Error 2: " + e.toString());
-        setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
       }
     });
   }
@@ -1946,7 +1941,9 @@ function getStartInfoFromProject(project: Project): IMinecraftStartMessage | und
 
   return {
     path: Utilities.ensureEndsWithBackSlash(path),
-    iagree: carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula ? true : false,
+    iagree: carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula
+      ? true
+      : false,
     mode: carto.dedicatedServerMode,
     track: track,
     projectKey: project.key,

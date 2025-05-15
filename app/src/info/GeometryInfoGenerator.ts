@@ -60,9 +60,9 @@ export default class GeometryInfoGenerator implements IProjectInfoGenerator {
       if (projectItem.itemType === ProjectItemType.modelGeometryJson) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
-          const srPath = projectItem.availableFile.storageRelativePath.toLowerCase();
-          const modGeo = await ModelGeometryDefinition.ensureOnFile(projectItem.availableFile);
+        if (projectItem.primaryFile) {
+          const srPath = projectItem.primaryFile.storageRelativePath.toLowerCase();
+          const modGeo = await ModelGeometryDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (modGeo && modGeo.definitions) {
             for (const geoDef of modGeo.definitions) {

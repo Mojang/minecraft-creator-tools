@@ -254,6 +254,15 @@
         }
       }
     ],
+    "/vanilla/behavior_pack/entities/happy_ghast.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:follow_range/",
+        "content": {
+          "value": 16,
+          "max": 16
+        }
+      }
+    ],
     "/vanilla/behavior_pack/entities/iron_golem.json": [
       {
         "path": "/minecraft:entity/components/minecraft:follow_range/",
