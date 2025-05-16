@@ -76,7 +76,13 @@ async function executeTask(task: ITask) {
         );
     }
   } catch (e) {
-    return e.toString();
+    let err = "Error while running task: " + e.toString();
+
+    if (e.stack) {
+      err += "\nStack: " + e.stack;
+    }
+
+    return err;
   }
 
   return undefined;
@@ -223,6 +229,12 @@ async function validateAndDisposeProject(
   try {
     await outputResults(projectSet, pis, "", outputStorage, mcrJsonFile, outputMci, outputType);
   } catch (e) {
+    let err = "Error while getting results of a task: " + e.toString();
+
+    if (e.stack) {
+      err += "\nStack: " + e.stack;
+    }
+
     Log.error(e);
   }
 

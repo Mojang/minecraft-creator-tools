@@ -87,6 +87,14 @@ Goat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
 }
 
 
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+"minecraft:behavior.panic": {
+  "priority": 2,
+  "speed_multiplier": 2
+}
+
+
 Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/horse.json
 
 "minecraft:behavior.panic": {
@@ -100,14 +108,6 @@ Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 "minecraft:behavior.panic": {
   "priority": 4,
   "speed_multiplier": 1.2
-}
-
-
-Pig - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/pig.json
-
-"minecraft:behavior.panic": {
-  "priority": 3,
-  "speed_multiplier": 1.25
 }
 
  */
@@ -187,6 +187,7 @@ export default interface MinecraftBehaviorPanic {
    *
    *
    * Fox: 2
+   *
    *
    * Horse: 3
    *

@@ -12,7 +12,6 @@ import ProjectItem from "./../app/ProjectItem";
 import ProjectEditorUtilities, { ProjectEditorItemAction, ProjectEditorMode } from "./ProjectEditorUtilities";
 import StorageUtilities from "./../storage/StorageUtilities";
 import {
-  Toolbar,
   List,
   ListProps,
   ListItemProps,
@@ -24,11 +23,10 @@ import {
   listItemBehavior,
 } from "@fluentui/react-northstar";
 
-import { AssetsLabel, EyeSlashLabel, FunctionsLabel, TypesLabel } from "./Labels";
+import { AssetsIcon, AdvancedFilesIcon, FunctionsIcon, TypesIcon, CheckIcon } from "./Labels";
 import { GitHubPropertyType } from "./ProjectPropertyEditor";
 import ProjectUtilities, { NewEntityTypeAddMode } from "../app/ProjectUtilities";
 import IGitHubInfo from "../app/IGitHubInfo";
-import ProjectItemManager from "../app/ProjectItemManager";
 import "./ProjectItemList.css";
 import Utilities from "../core/Utilities";
 import { ProjectEditPreference, ProjectRole } from "../app/IProjectData";
@@ -36,7 +34,7 @@ import IGalleryItem from "../app/IGalleryItem";
 import ColorUtilities from "../core/ColorUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolder } from "@fortawesome/free-regular-svg-icons";
-import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCaretRight, faListCheck } from "@fortawesome/free-solid-svg-icons";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import IProjectItemSeed from "../app/IProjectItemSeed";
@@ -44,6 +42,7 @@ import ProjectInfoItem from "../info/ProjectInfoItem";
 import { AnnotatedValueSet, IAnnotatedValue } from "../core/AnnotatedValue";
 import ProjectAddButton from "./ProjectAddButton";
 import WebUtilities from "./WebUtilities";
+import ProjectItemCreateManager from "../app/ProjectItemCreateManager";
 
 export enum EntityTypeCommand {
   select,
@@ -84,6 +83,7 @@ interface IProjectItemListState {
   activeItem: ProjectItem | undefined;
   dialogMode: ProjectItemListDialogType;
   maxItemsToShow: number;
+  packFilter?: string;
   newItemType?: ProjectItemType;
   activeProjectInfoSet?: ProjectInfoSet | undefined;
   collapsedItemTypes: number[];
@@ -141,6 +141,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._contextMenuClick = this._contextMenuClick.bind(this);
     this._getSortedItems = this._getSortedItems.bind(this);
     this._handleCancel = this._handleCancel.bind(this);
+    this._showPackClick = this._showPackClick.bind(this);
     this._handleItemTypeToggle = this._handleItemTypeToggle.bind(this);
     this._handleItemTypeDoubleClick = this._handleItemTypeDoubleClick.bind(this);
     this._handleStoragePathToggle = this._handleStoragePathToggle.bind(this);
@@ -189,6 +190,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         this.setState({
           activeItem: this.state.activeItem,
           dialogMode: this.state.dialogMode,
+          packFilter: this.state.packFilter,
+
           maxItemsToShow: this.state.maxItemsToShow + Math.min(this.state.maxItemsToShow, 1100),
           contextFocusedItem: this.state.contextFocusedItem,
           collapsedItemTypes: this.state.collapsedItemTypes,
@@ -311,6 +314,20 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._loadItems();
   }
 
+  private _showPackClick(elt: any, event: ListProps | undefined) {
+    if (event && (event as any).content) {
+      this.setState({
+        activeItem: this.state.activeItem,
+        dialogMode: this.state.dialogMode,
+        maxItemsToShow: this.state.maxItemsToShow,
+        packFilter: this.state.packFilter === (event as any).content ? undefined : (event as any).content,
+        contextFocusedItem: this.state.contextFocusedItem,
+        collapsedItemTypes: this.state.collapsedItemTypes,
+        collapsedStoragePaths: this.state.collapsedStoragePaths,
+      });
+    }
+  }
+
   private _showTypesClick() {
     if (this.props.project === null) {
       return;
@@ -398,6 +415,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       activeItem: undefined,
       dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: this.state.maxItemsToShow,
+      packFilter: this.state.packFilter,
       contextFocusedItem: this.state.contextFocusedItem,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -426,6 +444,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       activeItem: undefined,
       dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: this.state.maxItemsToShow,
+      packFilter: this.state.packFilter,
+
       contextFocusedItem: this.state.contextFocusedItem,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -440,7 +460,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     let projectItem = undefined;
 
     if (this._tentativeNewItem !== undefined && this.props.project !== null) {
-      projectItem = await ProjectItemManager.createNewItem(this.props.project, this._tentativeNewItem);
+      projectItem = await ProjectItemCreateManager.createNewItem(this.props.project, this._tentativeNewItem);
     }
 
     if (this.props.project) {
@@ -451,6 +471,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       activeItem: projectItem,
       dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: this.state.maxItemsToShow,
+      packFilter: this.state.packFilter,
+
       contextFocusedItem: this.state.contextFocusedItem,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -470,6 +492,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       activeItem: undefined,
       dialogMode: ProjectItemListDialogType.noDialog,
       maxItemsToShow: this.state.maxItemsToShow,
+      packFilter: this.state.packFilter,
+
       contextFocusedItem: this.state.contextFocusedItem,
       collapsedItemTypes: this.state.collapsedItemTypes,
       collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -496,6 +520,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           this.setState({
             activeItem: this.state.activeItem,
             dialogMode: this.state.dialogMode,
+            packFilter: this.state.packFilter,
+
             maxItemsToShow: this.state.maxItemsToShow,
             contextFocusedItem: this.state.contextFocusedItem,
             collapsedItemTypes: this.props.carto.collapsedTypes,
@@ -520,6 +546,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           this.setState({
             activeItem: this.state.activeItem,
             dialogMode: this.state.dialogMode,
+            packFilter: this.state.packFilter,
+
             maxItemsToShow: this.state.maxItemsToShow,
             contextFocusedItem: this.state.contextFocusedItem,
             collapsedItemTypes: this.props.carto.collapsedTypes,
@@ -555,6 +583,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
               this.setState({
                 activeItem: this.state.activeItem,
                 dialogMode: this.state.dialogMode,
+                packFilter: this.state.packFilter,
+
                 maxItemsToShow: this.state.maxItemsToShow,
                 contextFocusedItem: this.state.contextFocusedItem,
                 collapsedItemTypes: this.props.carto.collapsedTypes,
@@ -584,6 +614,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         activeItem: this.state.activeItem,
         dialogMode: this.state.dialogMode,
         maxItemsToShow: this.state.maxItemsToShow,
+        packFilter: this.state.packFilter,
+
         contextFocusedItem: undefined,
         collapsedItemTypes: this.state.collapsedItemTypes,
         collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -702,7 +734,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           }}
           title={isExpanded ? "Hide" : "Show"}
         >
-          <FontAwesomeIcon icon={isExpanded ? faCaretRight : faCaretDown} className="fa-md" />
+          <FontAwesomeIcon icon={isExpanded ? faCaretDown : faCaretRight} className="fa-md" />
         </div>
       );
     } else {
@@ -1185,6 +1217,8 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             activeItem: this.state.activeItem,
             dialogMode: this.state.dialogMode,
             maxItemsToShow: this.state.maxItemsToShow,
+            packFilter: this.state.packFilter,
+
             contextFocusedItem: curIndex,
             collapsedItemTypes: this.state.collapsedItemTypes,
             collapsedStoragePaths: this.state.collapsedStoragePaths,
@@ -1213,6 +1247,14 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
 
     const cat = ProjectItemUtilities.getCategory(projectItem.itemType);
+
+    if (this.state.packFilter) {
+      const packFolder = projectItem.getPackFolderName();
+
+      if (packFolder !== this.state.packFilter) {
+        return false;
+      }
+    }
 
     if (!this.props.project.showFunctions && cat === ProjectItemCategory.logic) {
       return false;
@@ -1486,13 +1528,14 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       }
     }
 
-    const toolbarItems = [];
+    const showMenuItems = [];
 
     if (this.props.project?.editPreference === ProjectEditPreference.summarized) {
-      toolbarItems.push({
+      showMenuItems.push({
         icon: (
-          <FunctionsLabel theme={this.props.theme} isSelected={this.props.project?.showFunctions} isCompact={true} />
+          <FunctionsIcon theme={this.props.theme} isSelected={this.props.project?.showFunctions} isCompact={true} />
         ),
+        content: "Script & Functions",
         key: "pil-hideShowFunctions",
         kind: "toggle",
         active: this.props.project?.showFunctions,
@@ -1500,34 +1543,68 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         title: "Toggle whether functions and scripts are shown",
       });
 
-      toolbarItems.push({
-        icon: <TypesLabel theme={this.props.theme} isSelected={this.props.project?.showTypes} isCompact={true} />,
+      showMenuItems.push({
+        icon: <TypesIcon theme={this.props.theme} isSelected={this.props.project?.showTypes} isCompact={true} />,
         key: "pil-hideShowTypes",
         kind: "toggle",
+        content: "Types",
         active: this.props.project?.showTypes,
         onClick: this._showTypesClick,
         title: "Toggle whether world details and entity, block, and item types are shown",
       });
 
-      toolbarItems.push({
-        icon: <AssetsLabel theme={this.props.theme} isSelected={this.props.project?.showAssets} isCompact={true} />,
+      showMenuItems.push({
+        icon: <AssetsIcon theme={this.props.theme} isSelected={this.props.project?.showAssets} isCompact={true} />,
         key: "pil-hideShowAssets",
         kind: "toggle",
+        content: "Assets",
         active: this.props.project?.showAssets,
         onClick: this._showAssetsClick,
         title: "Toggle whether assets (models, images, UI and sound) are shown",
       });
 
-      toolbarItems.push({
+      showMenuItems.push({
         icon: (
-          <EyeSlashLabel theme={this.props.theme} isSelected={!this.props.project?.showHiddenItems} isCompact={true} />
+          <AdvancedFilesIcon
+            theme={this.props.theme}
+            isSelected={this.props.project?.showHiddenItems}
+            isCompact={true}
+          />
         ),
         key: "pil-hideShowSlash",
         kind: "toggle",
+        content: "All Single Files (Advanced)",
         active: this.props.project?.showHiddenItems,
         onClick: this._showAllClick,
         title: "Toggle whether hidden items are shown",
       });
+    }
+
+    showMenuItems.push({
+      key: "dividerPacks",
+      kind: "divider",
+    });
+
+    if (this.props.project && this.props.project.packs && this.props.project.packs.length > 2) {
+      const packList: string[] = [];
+      for (const pack of this.props.project.packs) {
+        if (!packList.includes(pack.folder.name)) {
+          packList.push(pack.folder.name);
+        }
+      }
+
+      packList.sort();
+
+      for (const pack of packList) {
+        showMenuItems.push({
+          icon: <CheckIcon theme={this.props.theme} isSelected={this.state.packFilter === pack} isCompact={true} />,
+          key: "pil-hideShowPack" + pack,
+          content: pack,
+          active: this.state.packFilter === pack,
+          onClick: this._showPackClick,
+          title: "Toggle whether pack is shown",
+        });
+      }
     }
 
     let splitButton = <></>;
@@ -1561,13 +1638,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         >
           {splitButton}
           <div className={this.props.readOnly ? "pil-newarea" : "pil-commands"}>
-            <Toolbar
-              aria-label="New project item tools"
-              items={toolbarItems}
-              overflow
-              overflowItem={{
-                title: "More",
-              }}
+            <MenuButton
+              menu={showMenuItems}
+              trigger={
+                <Button
+                  icon={<FontAwesomeIcon icon={faListCheck} className="fa-lg" />}
+                  content="Show"
+                  aria-label="Show or hide different categories of items on the list"
+                />
+              }
             />
           </div>
           <div

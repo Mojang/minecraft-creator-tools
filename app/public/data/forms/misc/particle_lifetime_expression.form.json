@@ -1,38 +1,6 @@
 {
   "fields": [
     {
-      "id": "max_lifetime",
-      "title": "Max Lifetime",
-      "dataType": 24,
-      "alternates": [
-        {
-          "id": "max_lifetime",
-          "dataType": 14,
-          "readOnly": true,
-          "subForm": {
-            "id": "max_lifetime",
-            "title": "Max Lifetime",
-            "fields": [
-              {
-                "id": "expression",
-                "title": "Expression",
-                "dataType": 2
-              },
-              {
-                "id": "version",
-                "title": "Version",
-                "dataType": 0
-              }
-            ]
-          }
-        },
-        {
-          "id": "max_lifetime",
-          "dataType": 3
-        }
-      ]
-    },
-    {
       "id": "expiration_expression",
       "title": "Expiration Expression",
       "dataType": 24,
@@ -60,6 +28,38 @@
         },
         {
           "id": "expiration_expression",
+          "dataType": 3
+        }
+      ]
+    },
+    {
+      "id": "max_lifetime",
+      "title": "Max Lifetime",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "max_lifetime",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "id": "max_lifetime",
+            "title": "Max Lifetime",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "max_lifetime",
           "dataType": 3
         }
       ]

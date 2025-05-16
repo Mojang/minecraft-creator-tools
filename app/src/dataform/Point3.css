@@ -8,6 +8,10 @@
   display: table-row;
 }
 
+.p3-label {
+  font-size: small;
+}
+
 .p3-cell {
   display: table-cell;
 }

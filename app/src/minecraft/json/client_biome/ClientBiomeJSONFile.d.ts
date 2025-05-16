@@ -72,9 +72,10 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponents {
 
   /**
    * @remarks
-   * [INTERNAL - WORK IN PROGRESS] Set the atmosphere settings used
-   * during deferred rendering. Biomes without this component will
-   * have default atmosphere settings.
+   * Set the identifier used for atmospherics in Vibrant Visuals mode.
+   * Identifiers must resolve to identifiers in valid Atmospheric Scattering
+   * JSON schemas under the "atmospherics" directory. Biomes without this
+   * component will have default atmosphere settings.
    */
   "minecraft:atmosphere_identifier": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftAtmosphereIdentifier;
 
@@ -86,9 +87,10 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponents {
 
   /**
    * @remarks
-   * [INTERNAL - WORK IN PROGRESS] Set the color_grading settings used
-   * during deferred rendering. Biomes without this component will
-   * have default color_grading settings.
+   * Set the identifier used for color grading in Vibrant Visuals mode.
+   * Identifiers must resolve to identifiers in valid Color Grading JSON
+   * schemas under the "color_grading" directory. Biomes without this
+   * component will have default color_grading settings.
    */
   "minecraft:color_grading_identifier": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftColorGradingIdentifier;
 
@@ -122,9 +124,10 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponents {
 
   /**
    * @remarks
-   * [INTERNAL - WORK IN PROGRESS] Set the lighting settings used
-   * during deferred rendering. Biomes without this component will
-   * have default lighting settings.
+   * Set the identifier used for lighting in Vibrant Visuals mode.
+   * Identifiers must resolve to identifiers in valid Lighting JSON
+   * schemas under the "lighting" directory. Biomes without this
+   * component will have default lighting settings.
    */
   "minecraft:lighting_identifier": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftLightingIdentifier;
 
@@ -145,9 +148,10 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponents {
 
   /**
    * @remarks
-   * [INTERNAL - WORK IN PROGRESS] Set the water settings used during
-   * deferred rendering. Biomes without this component will have
-   * default water settings.
+   * Set the identifier used for rendering water in Vibrant Visuals mode.
+   * Identifiers must resolve to identifiers in valid Water JSON
+   * schemas under the "water" directory. Biomes without this
+   * component will have default water settings.
    */
   "minecraft:water_identifier": ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftWaterIdentifier;
 
@@ -187,9 +191,10 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftAmbie
 
 /**
  * Atmosphere Identifier (minecraft:atmosphere_identifier)
- * [INTERNAL - WORK IN PROGRESS] Set the atmosphere settings used
- * during deferred rendering. Biomes without this component will
- * have default atmosphere settings.
+ * Set the identifier used for atmospherics in Vibrant Visuals mode.
+ * Identifiers must resolve to identifiers in valid Atmospheric Scattering
+ * JSON schemas under the "atmospherics" directory. Biomes without this
+ * component will have default atmosphere settings.
  */
 export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftAtmosphereIdentifier {
 
@@ -230,9 +235,10 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftBiome
 /**
  * Color Grading Identifier 
  * (minecraft:color_grading_identifier)
- * [INTERNAL - WORK IN PROGRESS] Set the color_grading settings used
- * during deferred rendering. Biomes without this component will
- * have default color_grading settings.
+ * Set the identifier used for color grading in Vibrant Visuals mode.
+ * Identifiers must resolve to identifiers in valid Color Grading JSON
+ * schemas under the "color_grading" directory. Biomes without this
+ * component will have default color_grading settings.
  */
 export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftColorGradingIdentifier {
 
@@ -311,9 +317,10 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftGrass
 
 /**
  * Lighting Identifier (minecraft:lighting_identifier)
- * [INTERNAL - WORK IN PROGRESS] Set the lighting settings used
- * during deferred rendering. Biomes without this component will
- * have default lighting settings.
+ * Set the identifier used for lighting in Vibrant Visuals mode.
+ * Identifiers must resolve to identifiers in valid Lighting JSON
+ * schemas under the "lighting" directory. Biomes without this
+ * component will have default lighting settings.
  */
 export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftLightingIdentifier {
 
@@ -368,9 +375,10 @@ export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftWater
 
 /**
  * Water Identifier (minecraft:water_identifier)
- * [INTERNAL - WORK IN PROGRESS] Set the water settings used during
- * deferred rendering. Biomes without this component will have
- * default water settings.
+ * Set the identifier used for rendering water in Vibrant Visuals mode.
+ * Identifiers must resolve to identifiers in valid Water JSON
+ * schemas under the "water" directory. Biomes without this
+ * component will have default water settings.
  */
 export interface ClientBiomeJSONFileMinecraftClientBiomeComponentsMinecraftWaterIdentifier {
 

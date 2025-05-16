@@ -133,7 +133,8 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
     await this.load(false);
 
     for (const fileName in this.files) {
-      if (!StorageUtilities.isUsableFile(fileName)) {
+      const file = this.files[fileName];
+      if (!StorageUtilities.isUsableFile(fileName) && file && !file.canIgnore) {
         return "Cannot work with '" + this.fullPath + fileName + "'";
       }
     }

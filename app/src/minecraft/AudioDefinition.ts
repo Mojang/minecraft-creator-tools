@@ -4,9 +4,9 @@
 import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import IDefinition from "./IDefinition";
-import ProjectItemManager from "../app/ProjectItemManager";
 import Project from "../app/Project";
 import { AllowedExtensions } from "../storage/StorageUtilities";
+import ProjectItemCreateManager from "../app/ProjectItemCreateManager";
 
 export default class AudioDefinition implements IDefinition {
   private _file?: IFile;
@@ -102,7 +102,7 @@ export default class AudioDefinition implements IDefinition {
       return;
     }
 
-    let soundDefinitionCat = await ProjectItemManager.ensureSoundDefinitionCatalogDefinition(project);
+    let soundDefinitionCat = await ProjectItemCreateManager.ensureSoundDefinitionCatalogDefinition(project);
 
     if (this._file && soundDefinitionCat) {
       let matches = soundDefinitionCat.getSoundDefinitionMatchesByPath(this._file);

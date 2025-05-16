@@ -233,7 +233,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
         }
       }
 
-      if (attachableItem && attachableItem.defaultFile) {
+      if (attachableItem && attachableItem.primaryFile) {
         mode = (
           <div
             className="ite-attachableArea"
@@ -248,7 +248,7 @@ export default class ItemTypeEditor extends Component<IItemTypeEditorProps, IIte
               projectItem={attachableItem}
               project={this.props.project}
               carto={this.props.carto}
-              file={attachableItem.defaultFile}
+              file={attachableItem.primaryFile}
               heightOffset={this.props.heightOffset + 106}
             />
           </div>

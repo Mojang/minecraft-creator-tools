@@ -1,38 +1,6 @@
 {
   "fields": [
     {
-      "id": "per_update_expression",
-      "title": "Per Update Expression",
-      "dataType": 24,
-      "alternates": [
-        {
-          "id": "per_update_expression",
-          "dataType": 14,
-          "readOnly": true,
-          "subForm": {
-            "id": "per_update_expression",
-            "title": "Per Update Expression",
-            "fields": [
-              {
-                "id": "expression",
-                "title": "Expression",
-                "dataType": 2
-              },
-              {
-                "id": "version",
-                "title": "Version",
-                "dataType": 0
-              }
-            ]
-          }
-        },
-        {
-          "id": "per_update_expression",
-          "dataType": 3
-        }
-      ]
-    },
-    {
       "id": "per_render_expression",
       "title": "Per Render Expression",
       "dataType": 24,
@@ -60,6 +28,38 @@
         },
         {
           "id": "per_render_expression",
+          "dataType": 3
+        }
+      ]
+    },
+    {
+      "id": "per_update_expression",
+      "title": "Per Update Expression",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "per_update_expression",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "id": "per_update_expression",
+            "title": "Per Update Expression",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "per_update_expression",
           "dataType": 3
         }
       ]

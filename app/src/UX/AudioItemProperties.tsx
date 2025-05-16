@@ -8,11 +8,11 @@ import IProperty from "../dataform/IProperty";
 import SpawnRulesBehaviorDefinition from "../minecraft/SpawnRulesBehaviorDefinition";
 import SoundDefinitionCatalogDefinition from "../minecraft/SoundDefinitionCatalogDefinition";
 import SoundCatalogDefinition from "../minecraft/SoundCatalogDefinition";
-import ProjectItemManager from "../app/ProjectItemManager";
 import Carto from "../app/Carto";
 import Project from "../app/Project";
 import { ISoundDefinition } from "../minecraft/ISoundDefinitionCatalog";
 import IPersistable from "./IPersistable";
+import ProjectItemCreateManager from "../app/ProjectItemCreateManager";
 
 interface IAudioItemPropertiesProps {
   readOnly: boolean;
@@ -107,8 +107,8 @@ export default class AudioItemProperties extends Component<IAudioItemPropertiesP
   }
 
   async _doUpdate(setState: boolean) {
-    let soundDefinitionCat = await ProjectItemManager.ensureSoundDefinitionCatalogDefinition(this.props.project);
-    let soundCat = await ProjectItemManager.ensureSoundCatalogDefinition(this.props.project);
+    let soundDefinitionCat = await ProjectItemCreateManager.ensureSoundDefinitionCatalogDefinition(this.props.project);
+    let soundCat = await ProjectItemCreateManager.ensureSoundCatalogDefinition(this.props.project);
 
     const formData: IAudioItemFormData = {
       definitions: {},

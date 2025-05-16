@@ -145,7 +145,7 @@ export default class EnvSettings {
     }
 
     let minecraftProductIndex = content.indexOf('MINECRAFT_PRODUCT="');
-    const trackStr = project.track === MinecraftTrack.preview ? "PreviewURP" : "BedrockUWP";
+    const trackStr = project.track === MinecraftTrack.preview ? "PreviewUWP" : "BedrockUWP";
 
     if (minecraftProductIndex >= 0) {
       let minecraftProductIndexNextQuote = content.indexOf('"', minecraftProductIndex + 19);

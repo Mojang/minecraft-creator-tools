@@ -39,10 +39,9 @@ import * as jsoncommon from './../../../jsoncommon';
  * Block Placer (minecraft:block_placer)
  * Sets the item as a planter item component for blocks. Items with
  * this component will place a block when used.
- * Note: [EXPERIMENTAL] This component can also be used instead of
- * the minecraft:icon component to render the block this item will
- * place as the icon (Requires the 'Upcoming Creator Features' 
- * toggle).
+ * Note: This component can also be used instead of the
+ * minecraft:icon component to render the block this item will place
+ * as the icon.
  */
 export default interface MinecraftBlockPlacer {
 

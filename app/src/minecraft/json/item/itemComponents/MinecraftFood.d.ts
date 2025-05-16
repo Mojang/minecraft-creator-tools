@@ -287,3 +287,12 @@ export interface MinecraftFoodEffects {
   name: string;
 
 }
+
+
+/**
+ * Using Converts To
+ * Using Converts To.
+ */
+export interface MinecraftFoodUsingConvertsTo {
+
+}

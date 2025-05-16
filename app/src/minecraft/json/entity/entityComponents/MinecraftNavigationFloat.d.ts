@@ -17,6 +17,15 @@ Bat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
   "can_path_over_water": true
 }
 
+
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+"minecraft:navigation.float": {
+  "can_path_over_water": true,
+  "avoid_damage_blocks": true,
+  "avoid_water": true
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -32,6 +41,10 @@ export default interface MinecraftNavigationFloat {
    * @remarks
    * Tells the pathfinder to avoid blocks that cause damage when
    * finding a path
+   * 
+   * Sample Values:
+   * Happy Ghast: true
+   *
    */
   avoid_damage_blocks: boolean;
 
@@ -52,6 +65,10 @@ export default interface MinecraftNavigationFloat {
   /**
    * @remarks
    * Tells the pathfinder to avoid water when creating a path
+   * 
+   * Sample Values:
+   * Happy Ghast: true
+   *
    */
   avoid_water: boolean;
 

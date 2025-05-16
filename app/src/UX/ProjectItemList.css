@@ -7,7 +7,7 @@
   border-top: outset 2px;
   border-bottom: outset 2px;
   display: grid;
-  grid-template-columns: 140px 1fr;
+  grid-template-columns: 84px 1fr;
   grid-template-rows: 46px 1fr;
 }
 
@@ -17,6 +17,23 @@
   margin-left: 3px;
   width: 24px;
   height: 25px;
+}
+
+.pil-commands .ui-menu__item {
+  padding: 1px;
+}
+
+.pil-commands .ui-menu__itemicon {
+  height: inherit;
+}
+
+.pil-commands .ui-menu__itemcontent {
+  padding: 6px;
+}
+
+.pil-commands .ui-button {
+  padding-left: 10px;
+  min-width: none;
 }
 
 .pil-newarea {
@@ -45,9 +62,9 @@
 .pil-commands {
   grid-column: 2;
   grid-row: 1;
-  text-align: right;
+  text-align: left;
   max-width: 140px;
-  padding-top: 7px;
+  padding-top: 6px;
   padding-bottom: 6px;
   padding-left: 8px;
 }

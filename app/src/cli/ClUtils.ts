@@ -22,7 +22,7 @@ export enum TaskType {
   passcodes = 13,
   setPasscode = 14,
   setServerProperties = 15,
-  minecraftEulaAndPrivacyPolicy = 16,
+  minecraftEulaAndPrivacyStatement = 16,
   world = 18,
   fix = 19,
   setProjectProperty = 20,
@@ -177,6 +177,7 @@ export default class ClUtils {
 
     if (localEnv.utilities && basePath) {
       (localEnv.utilities as LocalUtilities).basePathAdjust = basePath;
+      CartoApp.fullLocalStorage = true;
     }
 
     const coreStorage = new NodeStorage(__dirname + "/../data/content/", "");

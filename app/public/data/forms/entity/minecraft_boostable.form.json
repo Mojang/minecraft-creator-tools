@@ -10,19 +10,24 @@
           {
             "id": "damage",
             "description": "This is the damage that the item will take each time it is used.",
-            "dataType": 17
+            "dataType": 17,
+            "defaultValue": 1,
+            "title": "Damage"
           },
           {
             "id": "item",
             "dataType": 2,
-            "description": "Name of the item that can be used to boost."
+            "description": "Name of the item that can be used to boost.",
+            "title": "Item"
           },
           {
             "id": "replace_item",
             "dataType": 2,
-            "description": "The item used to boost will become this item once it is used up."
+            "description": "The item used to boost will become this item once it is used up.",
+            "title": "Replace Item"
           }
-        ]
+        ],
+        "description": "List of items that can be used to boost while riding this entity. Each item has the following properties:"
       },
       "samples": {
         "/vanilla/behavior_pack/entities/pig.json": [

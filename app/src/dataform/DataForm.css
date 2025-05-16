@@ -68,11 +68,12 @@
 }
 
 .df-fieldWrap .ui-checkbox__label {
-  font-size: medium;
-  padding-top: 0px;
+  font-size: small;
+  font-weight: bold;
   position: relative;
   color: inherit !important;
-  top: -3px;
+  top: -2px;
+  left: -2px;
 }
 
 .df-fieldTitle {
@@ -81,18 +82,18 @@
 }
 
 .df-fieldWrap {
-  padding-bottom: 20px;
-  padding-top: 14px;
+  padding-bottom: 24px;
+  padding-top: 18px;
+  padding-left: 10px;
   border-top: solid 1px;
   border-bottom: solid 1px;
 }
 
 .df-fieldWrap .ui-form__label {
-  padding-bottom: 4px;
-  vertical-align: bottom;
+  vertical-align: middle;
   padding-right: 14px;
   display: inline-block !important;
-  min-width: 189px;
+  width: 189px;
 }
 
 .df-fieldWrap .ui-dropdown {
@@ -104,11 +105,13 @@
 }
 
 .df-elementBinTitle {
-  font-size: medium;
+  font-size: small;
+  font-weight: bold;
 }
 
 .df-fieldWrap label {
-  font-size: medium;
+  font-size: small;
+  font-weight: bold;
 }
 
 .df-cardWrapper {
@@ -145,7 +148,8 @@
 
 .df-elementTitle {
   padding-bottom: 3px;
-  font-size: medium;
+  font-size: small;
+  font-weight: bold;
 }
 
 .df-elementBinNoScroll {

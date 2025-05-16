@@ -15,6 +15,25 @@
  * At Short (using Defaults)..: 
 { "test": "rider_count", "value": "0" }
 
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+ * At /minecraft:entity/component_groups/minecraft:harnessed/minecraft:interact/interactions/0/on_interact/filters/all_of/2/: 
+{
+  "test": "rider_count",
+  "subject": "self",
+  "operator": "equals",
+  "value": 0
+}
+
+ * At /minecraft:entity/events/minecraft:on_passenger_mount/sequence/0/filters/: 
+{
+  "test": "rider_count",
+  "subject": "self",
+  "operator": "equals",
+  "value": 1
+}
+
+
 Dream Turkey - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/chill_dreams/1_dream_turkey/behavior_packs/mamm_cds/entities/dream_turkey.json
 
 {
@@ -39,6 +58,8 @@ export default interface RiderCount {
    * (Optional) The comparison to apply with 'value'.
    * 
    * Sample Values:
+   * Happy Ghast: "equals"
+   *
    * Dream Turkey: "=="
    *
    *
@@ -50,8 +71,7 @@ export default interface RiderCount {
    * (Optional) The subject of this filter test.
    * 
    * Sample Values:
-   * Dream Turkey: "self"
-   *
+   * Happy Ghast: "self"
    *
    */
   subject: string;
@@ -60,8 +80,7 @@ export default interface RiderCount {
    * @remarks
    * 
    * Sample Values:
-   * Dream Turkey: "rider_count"
-   *
+   * Happy Ghast: "rider_count"
    *
    */
   test: string;
@@ -69,6 +88,10 @@ export default interface RiderCount {
   /**
    * @remarks
    * (Required) An integer value.
+   * 
+   * Sample Values:
+   * Happy Ghast: 1
+   *
    */
   value: number;
 

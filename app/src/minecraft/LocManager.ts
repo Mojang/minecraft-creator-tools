@@ -93,8 +93,8 @@ export default class LocManager {
       if (pi.itemType === ProjectItemType.lang) {
         await pi.ensureFileStorage();
 
-        if (pi.defaultFile) {
-          const lang = await Lang.ensureOnFile(pi.defaultFile);
+        if (pi.primaryFile) {
+          const lang = await Lang.ensureOnFile(pi.primaryFile);
 
           if (lang) {
             await lang.load();

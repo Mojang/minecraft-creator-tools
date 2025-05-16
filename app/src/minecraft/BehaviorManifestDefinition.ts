@@ -116,9 +116,9 @@ export default class BehaviorManifestDefinition implements IDefinition {
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
 
-      if (pi.defaultFile) {
+      if (pi.primaryFile) {
         if (pi.itemType === ProjectItemType.behaviorPackManifestJson && !setBehaviorPack) {
-          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.defaultFile);
+          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.primaryFile);
 
           if (bpManifestJson) {
             if (bpManifestJson.id && Utilities.uuidEqual(bpManifestJson.id, oldBehaviorPackId)) {
@@ -139,7 +139,7 @@ export default class BehaviorManifestDefinition implements IDefinition {
             }
           }
         } else if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
-          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.defaultFile);
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.primaryFile);
 
           if (rpManifestJson) {
             if (rpManifestJson.definition && rpManifestJson.definition.dependencies) {
@@ -484,7 +484,7 @@ export default class BehaviorManifestDefinition implements IDefinition {
     let pi = project.getFirstItemByType(ProjectItemType.catalogIndexJs);
 
     if (pi !== undefined) {
-      scriptFile = pi.defaultFile;
+      scriptFile = pi.primaryFile;
     }
 
     const behaviorPackRootFolder = await project.getDefaultBehaviorPackFolder(false, contentOnlyUpdate);
@@ -492,14 +492,14 @@ export default class BehaviorManifestDefinition implements IDefinition {
     if (scriptFile === undefined) {
       pi = project.getFirstItemByType(ProjectItemType.js);
       if (pi !== undefined) {
-        scriptFile = pi.defaultFile;
+        scriptFile = pi.primaryFile;
       }
 
       if (scriptFile === undefined) {
         pi = project.getFirstItemByType(ProjectItemType.testJs);
 
         if (pi !== undefined) {
-          scriptFile = pi.defaultFile;
+          scriptFile = pi.primaryFile;
         }
       }
     }

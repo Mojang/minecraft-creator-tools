@@ -19,6 +19,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
+.ui-menubutton__menu {
+  text-align: left !important;
+}
+
 .leaflet-container {
   height: 100%;
   width: 100%;
@@ -48,6 +52,7 @@ input[type="file"]:hover {
 
 .ui-dialog {
   border-radius: 0px;
+  grid-template-rows: 24px 1fr 24px;
   max-width: calc(100vw - 8px);
   margin: 4px;
   width: calc(100vw - 40px) !important;
@@ -64,6 +69,10 @@ input[type="file"]:hover {
 .ui-dialog__content {
   overflow-y: scroll;
   max-height: calc(100vh - 200px);
+}
+
+.ui-menubutton__menu {
+  width: 240px !important;
 }
 
 BUTTON {

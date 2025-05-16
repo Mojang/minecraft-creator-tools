@@ -138,8 +138,8 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
       if (pi.itemType === ProjectItemType.entityTypeBehavior) {
         await pi.ensureFileStorage();
 
-        if (pi.availableFile) {
-          const bpEntityType = await EntityTypeDefinition.ensureOnFile(pi.availableFile);
+        if (pi.primaryFile) {
+          const bpEntityType = await EntityTypeDefinition.ensureOnFile(pi.primaryFile);
 
           if (bpEntityType) {
             await bpEntityType.load();
@@ -366,8 +366,8 @@ export default class EntityTypeManager implements IProjectInfoGenerator, IProjec
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.availableFile) {
-          const wtManifest = await EntityTypeDefinition.ensureOnFile(pi.availableFile);
+        if (pi.primaryFile) {
+          const wtManifest = await EntityTypeDefinition.ensureOnFile(pi.primaryFile);
 
           if (wtManifest) {
             const mev = wtManifest.behaviorPackWrapper?.format_version;

@@ -302,7 +302,28 @@ export default class Utilities {
       return Utilities.humanifyObject(val);
     }
 
-    if (typeof val === "object") {
+    if (Array.isArray(val)) {
+      let simpleStr = "";
+
+      for (let i = 0; i < val.length; i++) {
+        const data = (val as any)[i];
+
+        if (data !== undefined) {
+          // if the object looks complicated, just stringify it
+          if (typeof data === "object") {
+            return JSON.stringify(val);
+          }
+
+          if (simpleStr.length > 0) {
+            simpleStr += ", ";
+          }
+
+          simpleStr += String(i + 1) + ": " + data.toString();
+        }
+      }
+
+      return simpleStr;
+    } else if (typeof val === "object") {
       let simpleStr = "";
       for (const key in val as any) {
         const data = (val as any)[key];
@@ -351,6 +372,13 @@ export default class Utilities {
     return Utilities.humanifyMinecraftName(val) as string;
   }
 
+  static getHumanifiedObjectNameNoSpaces(name: string | boolean | number) {
+    name = Utilities.getHumanifiedObjectName(name);
+    name = name.replace(/ /gi, "");
+
+    return name;
+  }
+
   static getHumanifiedObjectName(name: string | boolean | number) {
     if (typeof name !== "string") {
       name = name.toString();
@@ -363,7 +391,6 @@ export default class Utilities {
     }
 
     name = Utilities.humanifyMinecraftName(name);
-    name = name.replace(/ /gi, "");
 
     return name;
   }
@@ -656,6 +683,8 @@ export default class Utilities {
     if (typeof jsonString !== "string") {
       throw new TypeError(`Expected argument \`jsonString\` to be a \`string\`, got \`${typeof jsonString}\``);
     }
+
+    jsonString = jsonString.trim();
 
     const strip = whitespace ? Utilities.stripWithWhitespace : Utilities.stripWithoutWhitespace;
 

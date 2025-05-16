@@ -225,6 +225,13 @@ export interface MinecraftMaterialInstancesDown {
 
   /**
    * @remarks
+   * Should the faces that this material is applied to randomize their
+   * UVs?
+   */
+  isotropic: boolean;
+
+  /**
+   * @remarks
    * The render method to use.
    * 
    * Sample Values:
@@ -251,6 +258,16 @@ export interface MinecraftMaterialInstancesDown {
    *
    */
   texture: string;
+
+  /**
+   * @remarks
+   * Tint multiplied to the color. Tint method logic varies, but
+   * often refers to the "rain" and "temperature" of the biome the
+   * block is placed in to compute the tint. Supported tint methods are
+   * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
+   * "grass" and "water"
+   */
+  tint_method: boolean;
 
 }
 
@@ -286,7 +303,29 @@ export enum MinecraftMaterialInstancesDownRenderMethod {
    * translucency, only fully opaque or fully transparent textures. Also
    * enables backface culling.
    */
-  AlphaTestSingleSided = `alpha_test_single_sided`
+  AlphaTestSingleSided = `alpha_test_single_sided`,
+  /**
+   * @remarks
+   * Will blend like stained glass in the near render and turn opaque on
+   * the far render.
+   */
+  BlendToOpaque = `blend_to_opaque`,
+  /**
+   * @remarks
+   * Used for a block like the leaves. Does not allow for
+   * translucency, only fully opaque or fully transparent textures in
+   * the near render and turn only opaque on the far render. Also
+   * disabled backface culling.
+   */
+  AlphaTestToOpaque = `alpha_test_to_opaque`,
+  /**
+   * @remarks
+   * Used for a block like the sugar cane. Does not allow for
+   * translucency, only fully opaque or fully transparent textures in
+   * the near render and turn only opaque on the far render. Also
+   * enables backface culling.
+   */
+  AlphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
 }
 
 
@@ -312,6 +351,13 @@ export interface MinecraftMaterialInstancesEast {
    *
    */
   face_dimming: string;
+
+  /**
+   * @remarks
+   * Should the faces that this material is applied to randomize their
+   * UVs?
+   */
+  isotropic: boolean;
 
   /**
    * @remarks
@@ -341,6 +387,16 @@ export interface MinecraftMaterialInstancesEast {
    *
    */
   texture: string;
+
+  /**
+   * @remarks
+   * Tint multiplied to the color. Tint method logic varies, but
+   * often refers to the "rain" and "temperature" of the biome the
+   * block is placed in to compute the tint. Supported tint methods are
+   * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
+   * "grass" and "water"
+   */
+  tint_method: boolean;
 
 }
 
@@ -376,7 +432,29 @@ export enum MinecraftMaterialInstancesEastRenderMethod {
    * translucency, only fully opaque or fully transparent textures. Also
    * enables backface culling.
    */
-  AlphaTestSingleSided = `alpha_test_single_sided`
+  AlphaTestSingleSided = `alpha_test_single_sided`,
+  /**
+   * @remarks
+   * Will blend like stained glass in the near render and turn opaque on
+   * the far render.
+   */
+  BlendToOpaque = `blend_to_opaque`,
+  /**
+   * @remarks
+   * Used for a block like the leaves. Does not allow for
+   * translucency, only fully opaque or fully transparent textures in
+   * the near render and turn only opaque on the far render. Also
+   * disabled backface culling.
+   */
+  AlphaTestToOpaque = `alpha_test_to_opaque`,
+  /**
+   * @remarks
+   * Used for a block like the sugar cane. Does not allow for
+   * translucency, only fully opaque or fully transparent textures in
+   * the near render and turn only opaque on the far render. Also
+   * enables backface culling.
+   */
+  AlphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
 }
 
 
@@ -471,6 +549,13 @@ export interface MinecraftMaterialInstancesNorth {
 
   /**
    * @remarks
+   * Should the faces that this material is applied to randomize their
+   * UVs?
+   */
+  isotropic: boolean;
+
+  /**
+   * @remarks
    * The render method to use.
    * 
    * Sample Values:
@@ -497,6 +582,16 @@ export interface MinecraftMaterialInstancesNorth {
    *
    */
   texture: string;
+
+  /**
+   * @remarks
+   * Tint multiplied to the color. Tint method logic varies, but
+   * often refers to the "rain" and "temperature" of the biome the
+   * block is placed in to compute the tint. Supported tint methods are
+   * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
+   * "grass" and "water"
+   */
+  tint_method: boolean;
 
 }
 
@@ -532,7 +627,29 @@ export enum MinecraftMaterialInstancesNorthRenderMethod {
    * translucency, only fully opaque or fully transparent textures. Also
    * enables backface culling.
    */
-  AlphaTestSingleSided = `alpha_test_single_sided`
+  AlphaTestSingleSided = `alpha_test_single_sided`,
+  /**
+   * @remarks
+   * Will blend like stained glass in the near render and turn opaque on
+   * the far render.
+   */
+  BlendToOpaque = `blend_to_opaque`,
+  /**
+   * @remarks
+   * Used for a block like the leaves. Does not allow for
+   * translucency, only fully opaque or fully transparent textures in
+   * the near render and turn only opaque on the far render. Also
+   * disabled backface culling.
+   */
+  AlphaTestToOpaque = `alpha_test_to_opaque`,
+  /**
+   * @remarks
+   * Used for a block like the sugar cane. Does not allow for
+   * translucency, only fully opaque or fully transparent textures in
+   * the near render and turn only opaque on the far render. Also
+   * enables backface culling.
+   */
+  AlphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
 }
 
 
@@ -558,6 +675,13 @@ export interface MinecraftMaterialInstancesSouth {
    *
    */
   face_dimming: string;
+
+  /**
+   * @remarks
+   * Should the faces that this material is applied to randomize their
+   * UVs?
+   */
+  isotropic: boolean;
 
   /**
    * @remarks
@@ -587,6 +711,16 @@ export interface MinecraftMaterialInstancesSouth {
    *
    */
   texture: string;
+
+  /**
+   * @remarks
+   * Tint multiplied to the color. Tint method logic varies, but
+   * often refers to the "rain" and "temperature" of the biome the
+   * block is placed in to compute the tint. Supported tint methods are
+   * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
+   * "grass" and "water"
+   */
+  tint_method: boolean;
 
 }
 
@@ -622,7 +756,29 @@ export enum MinecraftMaterialInstancesSouthRenderMethod {
    * translucency, only fully opaque or fully transparent textures. Also
    * enables backface culling.
    */
-  AlphaTestSingleSided = `alpha_test_single_sided`
+  AlphaTestSingleSided = `alpha_test_single_sided`,
+  /**
+   * @remarks
+   * Will blend like stained glass in the near render and turn opaque on
+   * the far render.
+   */
+  BlendToOpaque = `blend_to_opaque`,
+  /**
+   * @remarks
+   * Used for a block like the leaves. Does not allow for
+   * translucency, only fully opaque or fully transparent textures in
+   * the near render and turn only opaque on the far render. Also
+   * disabled backface culling.
+   */
+  AlphaTestToOpaque = `alpha_test_to_opaque`,
+  /**
+   * @remarks
+   * Used for a block like the sugar cane. Does not allow for
+   * translucency, only fully opaque or fully transparent textures in
+   * the near render and turn only opaque on the far render. Also
+   * enables backface culling.
+   */
+  AlphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
 }
 
 
@@ -648,6 +804,13 @@ export interface MinecraftMaterialInstancesUp {
    *
    */
   face_dimming: string;
+
+  /**
+   * @remarks
+   * Should the faces that this material is applied to randomize their
+   * UVs?
+   */
+  isotropic: boolean;
 
   /**
    * @remarks
@@ -677,6 +840,16 @@ export interface MinecraftMaterialInstancesUp {
    *
    */
   texture: string;
+
+  /**
+   * @remarks
+   * Tint multiplied to the color. Tint method logic varies, but
+   * often refers to the "rain" and "temperature" of the biome the
+   * block is placed in to compute the tint. Supported tint methods are
+   * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
+   * "grass" and "water"
+   */
+  tint_method: boolean;
 
 }
 
@@ -712,7 +885,29 @@ export enum MinecraftMaterialInstancesUpRenderMethod {
    * translucency, only fully opaque or fully transparent textures. Also
    * enables backface culling.
    */
-  AlphaTestSingleSided = `alpha_test_single_sided`
+  AlphaTestSingleSided = `alpha_test_single_sided`,
+  /**
+   * @remarks
+   * Will blend like stained glass in the near render and turn opaque on
+   * the far render.
+   */
+  BlendToOpaque = `blend_to_opaque`,
+  /**
+   * @remarks
+   * Used for a block like the leaves. Does not allow for
+   * translucency, only fully opaque or fully transparent textures in
+   * the near render and turn only opaque on the far render. Also
+   * disabled backface culling.
+   */
+  AlphaTestToOpaque = `alpha_test_to_opaque`,
+  /**
+   * @remarks
+   * Used for a block like the sugar cane. Does not allow for
+   * translucency, only fully opaque or fully transparent textures in
+   * the near render and turn only opaque on the far render. Also
+   * enables backface culling.
+   */
+  AlphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
 }
 
 
@@ -738,6 +933,13 @@ export interface MinecraftMaterialInstancesWest {
    *
    */
   face_dimming: string;
+
+  /**
+   * @remarks
+   * Should the faces that this material is applied to randomize their
+   * UVs?
+   */
+  isotropic: boolean;
 
   /**
    * @remarks
@@ -767,6 +969,16 @@ export interface MinecraftMaterialInstancesWest {
    *
    */
   texture: string;
+
+  /**
+   * @remarks
+   * Tint multiplied to the color. Tint method logic varies, but
+   * often refers to the "rain" and "temperature" of the biome the
+   * block is placed in to compute the tint. Supported tint methods are
+   * "none", "default_foliage", "birch_foliage", "evergreen_foliage", "dry_foliage",
+   * "grass" and "water"
+   */
+  tint_method: boolean;
 
 }
 
@@ -802,5 +1014,27 @@ export enum MinecraftMaterialInstancesWestRenderMethod {
    * translucency, only fully opaque or fully transparent textures. Also
    * enables backface culling.
    */
-  AlphaTestSingleSided = `alpha_test_single_sided`
+  AlphaTestSingleSided = `alpha_test_single_sided`,
+  /**
+   * @remarks
+   * Will blend like stained glass in the near render and turn opaque on
+   * the far render.
+   */
+  BlendToOpaque = `blend_to_opaque`,
+  /**
+   * @remarks
+   * Used for a block like the leaves. Does not allow for
+   * translucency, only fully opaque or fully transparent textures in
+   * the near render and turn only opaque on the far render. Also
+   * disabled backface culling.
+   */
+  AlphaTestToOpaque = `alpha_test_to_opaque`,
+  /**
+   * @remarks
+   * Used for a block like the sugar cane. Does not allow for
+   * translucency, only fully opaque or fully transparent textures in
+   * the near render and turn only opaque on the far render. Also
+   * enables backface culling.
+   */
+  AlphaTestSingleSidedToOpaque = `alpha_test_single_sided_to_opaque`
 }

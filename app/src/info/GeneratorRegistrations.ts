@@ -38,6 +38,9 @@ import BlocksCatalogManager from "../manager/BlocksCatalogManager";
 import EntityTypeManager from "../manager/EntityTypeManager";
 import ItemTypeManager from "../manager/ItemTypeManager";
 import SharingInfoGenerator from "./SharingInfoGenerator";
+import CheckNoBOMGenerator from "./fileGenerators/CheckNoBOMGenerator";
+import CheckPackIconsGenerator from "./projectGenerators/CheckPackIconsGenerator";
+import CheckWorldIconsGenerator from "./projectGenerators/CheckWorldIconsGenerator";
 
 export default class GeneratorRegistrations {
   static managers = [
@@ -67,6 +70,8 @@ export default class GeneratorRegistrations {
     new TypesInfoGenerator(),
     new TextureImageInfoGenerator(),
     new GeometryInfoGenerator(),
+    new CheckPackIconsGenerator(),
+    new CheckWorldIconsGenerator(),
     ...this.managers,
   ];
 
@@ -81,7 +86,12 @@ export default class GeneratorRegistrations {
     new UnlinkedItemInfoGenerator(),
   ];
 
-  static fileGenerators = [new UnknownFileGenerator(), new ValidFileGenerator(), new PathLengthFileGenerator()];
+  static fileGenerators = [
+    new UnknownFileGenerator(),
+    new ValidFileGenerator(),
+    new PathLengthFileGenerator(),
+    new CheckNoBOMGenerator(),
+  ];
 
   static configureForSuite(
     generator:

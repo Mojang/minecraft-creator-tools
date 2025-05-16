@@ -25,6 +25,8 @@ export default interface IFormDefinition {
   note?: string;
   note2?: string;
   note3?: string;
+  versionIntroduced?: string;
+  versionDeprecated?: string;
   requires?: IFormDependency[];
   tags?: string[];
   restrictions?: IFormDependency[];

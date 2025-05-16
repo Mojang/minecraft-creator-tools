@@ -349,8 +349,8 @@ export default class AttachableResourceDefinition {
     if (rel.childItem.itemType === ProjectItemType.texture && this._data && this._data.textures) {
       await rel.childItem.ensureStorage();
 
-      if (rel.childItem.defaultFile && packRootFolder) {
-        let relativePath = this.getRelativePath(rel.childItem.defaultFile, packRootFolder);
+      if (rel.childItem.primaryFile && packRootFolder) {
+        let relativePath = this.getRelativePath(rel.childItem.primaryFile, packRootFolder);
 
         if (relativePath) {
           for (const key in this._data.textures) {
@@ -420,8 +420,8 @@ export default class AttachableResourceDefinition {
       if (candItem.itemType === ProjectItemType.animationResourceJson && animationIdList) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
-          const animationDef = await AnimationResourceDefinition.ensureOnFile(candItem.defaultFile);
+        if (candItem.primaryFile) {
+          const animationDef = await AnimationResourceDefinition.ensureOnFile(candItem.primaryFile);
 
           const animIds = animationDef?.idList;
 
@@ -437,8 +437,8 @@ export default class AttachableResourceDefinition {
       } else if (candItem.itemType === ProjectItemType.renderControllerJson && renderControllerIdList) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
-          const renderControllerDef = await RenderControllerSetDefinition.ensureOnFile(candItem.defaultFile);
+        if (candItem.primaryFile) {
+          const renderControllerDef = await RenderControllerSetDefinition.ensureOnFile(candItem.primaryFile);
 
           const renderIds = renderControllerDef?.idList;
 
@@ -454,9 +454,9 @@ export default class AttachableResourceDefinition {
       } else if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
+        if (candItem.primaryFile) {
           let relativePath = TextureDefinition.canonicalizeTexturePath(
-            this.getRelativePath(candItem.defaultFile, packRootFolder)
+            this.getRelativePath(candItem.primaryFile, packRootFolder)
           );
 
           if (relativePath) {
@@ -470,8 +470,8 @@ export default class AttachableResourceDefinition {
       } else if (candItem.itemType === ProjectItemType.modelGeometryJson && geometryList) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
-          const model = await ModelGeometryDefinition.ensureOnFile(candItem.defaultFile);
+        if (candItem.primaryFile) {
+          const model = await ModelGeometryDefinition.ensureOnFile(candItem.primaryFile);
 
           if (model) {
             let doAddModel = false;

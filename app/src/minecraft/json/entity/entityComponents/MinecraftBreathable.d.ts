@@ -93,32 +93,31 @@ Fish - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
 }
 
 
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+ * At /minecraft:entity/component_groups/minecraft:adult/minecraft:breathable/: 
+"minecraft:breathable": {
+  "total_supply": 5,
+  "suffocate_time": 0,
+  "breathes_air": true,
+  "breathes_water": false
+}
+
+ * At /minecraft:entity/component_groups/minecraft:baby/minecraft:breathable/: 
+"minecraft:breathable": {
+  "total_supply": 5,
+  "suffocate_time": 0,
+  "breathes_air": true,
+  "breathes_water": true
+}
+
+
 Magma Cube - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/magma_cube.json
 
 "minecraft:breathable": {
   "total_supply": 15,
   "suffocate_time": 0,
   "breathes_lava": true
-}
-
-
-Phantom - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/phantom.json
-
-"minecraft:breathable": {
-  "total_supply": 15,
-  "suffocate_time": 0,
-  "breathes_air": true,
-  "breathes_water": false
-}
-
-
-Player - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/player.json
-
-"minecraft:breathable": {
-  "total_supply": 15,
-  "suffocate_time": -1,
-  "inhale_time": 3.75,
-  "generates_bubbles": false
 }
 
  */
@@ -230,7 +229,7 @@ export default interface MinecraftBreathable {
    *
    * Dolphin: 240
    *
-   * Tadpole: 8
+   * Happy Ghast: 5
    *
    */
   total_supply: number;

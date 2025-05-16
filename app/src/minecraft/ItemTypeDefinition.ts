@@ -187,10 +187,10 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
       if (candItem.itemType === ProjectItemType.ts) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
+        if (candItem.primaryFile) {
           await candItem.load();
 
-          const tsd = await TypeScriptDefinition.ensureOnFile(candItem.defaultFile);
+          const tsd = await TypeScriptDefinition.ensureOnFile(candItem.primaryFile);
 
           if (tsd && tsd.data && customComponentIds) {
             let doAddTs = false;
@@ -210,8 +210,8 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
       } else if (candItem.itemType === ProjectItemType.attachableResourceJson) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
-          const ard = await AttachableResourceDefinition.ensureOnFile(candItem.defaultFile);
+        if (candItem.primaryFile) {
+          const ard = await AttachableResourceDefinition.ensureOnFile(candItem.primaryFile);
 
           if (ard) {
             const id = ard.id;

@@ -419,6 +419,7 @@ export default class App extends Component<AppProps, AppState> {
         }
 
         let selectedItem = undefined;
+
         if (
           CartoApp.initialMode &&
           (CartoApp.modeParameter || CartoApp.initialMode === "info") &&
@@ -581,6 +582,8 @@ export default class App extends Component<AppProps, AppState> {
       return;
     }
 
+    this._doLog("Loading project from '" + name + "' folder.");
+
     const newProject = new Project(CartoApp.carto, name ? name : folder.name, null);
 
     newProject.setProjectFolder(folder);
@@ -592,9 +595,10 @@ export default class App extends Component<AppProps, AppState> {
       await ProjectUtilities.prepareProjectForDocumentation(newProject);
     }
 
-    await newProject.inferProjectItemsFromFiles();
+    await newProject.inferProjectItemsFromFiles(true, this._doLog);
 
-    newProject.save();
+    this._doLog("Opening project...");
+
     CartoApp.carto.save();
 
     this._setProject(newProject);
@@ -1349,6 +1353,7 @@ export default class App extends Component<AppProps, AppState> {
           onLocalGalleryItemCommand={this._handleLocalGalleryCommand}
           onModeChangeRequested={this._handleModeChangeRequested}
           onNewProjectSelected={this._handleNewProject}
+          onProgressLog={this._doLog}
           onNewProjectFromFolderSelected={this._handleNewProjectFromFolder}
           onNewProjectFromFolderInstanceSelected={this._handleNewProjectFromFolderInstance}
           onProjectSelected={this._handleProjectSelected}

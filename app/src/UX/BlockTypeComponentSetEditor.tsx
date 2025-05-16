@@ -123,8 +123,8 @@ export default class BlockTypeComponentSetEditor extends Component<
         if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
           await projectItem.ensureFileStorage();
 
-          if (projectItem.defaultFile) {
-            const blocksCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.defaultFile);
+          if (projectItem.primaryFile) {
+            const blocksCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.primaryFile);
 
             if (blocksCatalog) {
               const blockResource = blocksCatalog.getBlockDefinition(this.props.componentSet.id);
@@ -156,8 +156,8 @@ export default class BlockTypeComponentSetEditor extends Component<
         if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
           await projectItem.ensureFileStorage();
 
-          if (projectItem.defaultFile) {
-            const blocksCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.defaultFile);
+          if (projectItem.primaryFile) {
+            const blocksCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.primaryFile);
 
             if (blocksCatalog) {
               const blockResource = blocksCatalog.ensureBlockDefinition(this.props.componentSet.id);

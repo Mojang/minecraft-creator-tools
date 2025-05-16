@@ -15,9 +15,10 @@ import * as jsoncommon from './../../jsoncommon';
 /**
  * Minecraft Atmosphere Identifier Client Biome
  * (minecraft:atmosphere_identifier)
- * [INTERNAL - WORK IN PROGRESS] Set the atmosphere settings used
- * during deferred rendering. Biomes without this component will
- * have default atmosphere settings.
+ * Set the identifier used for atmospherics in Vibrant Visuals mode.
+ * Identifiers must resolve to identifiers in valid Atmospheric Scattering
+ * JSON schemas under the "atmospherics" directory. Biomes without this
+ * component will have default atmosphere settings.
  */
 export default interface MinecraftAtmosphereIdentifier {
 

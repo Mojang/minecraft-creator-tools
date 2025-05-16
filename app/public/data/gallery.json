@@ -1410,6 +1410,212 @@
       "id": "mobGameTest",
       "tags": ["gametest"],
       "type": 0
+    },
+    {
+      "title": "Spawn Rule",
+      "description": "Will automatically create new entities in the world based on a set of rules",
+      "id": "spawn_rule",
+      "type": 21,
+      "targetType": 44
+    },
+    {
+      "title": "Loot Table",
+      "description": "Determines a set of items to randomly generate, typically in response a block being broken, an entity being no more, or when randomly generating chests.",
+      "id": "loot_table",
+      "type": 21,
+      "targetType": 24
+    },
+    {
+      "title": "Recipe (Shapeless)",
+      "description": "Used to define how a player can create new items from a set of existing items - without a need for a specific arrangement",
+      "id": "recipe_shapeless",
+      "type": 21,
+      "targetType": 43
+    },
+    {
+      "title": "Recipe (Shaped)",
+      "description": "Used to define how a player can create new items from a set of existing items - with items arranged in particular patterns",
+      "id": "recipe_shaped",
+      "type": 21,
+      "targetType": 43
+    },
+    {
+      "title": "Feature + Rule",
+      "description": "Defines a hierarchy of features that can be used to generate structures and other in-game random assemblages of blocks",
+      "id": "feature_rule",
+      "type": 22,
+      "targetType": 40
+    },
+    {
+      "title": "Jigsaw Structure Set",
+      "description": "Defines a randomly building collection of structures",
+      "id": "jigsaw",
+      "type": 22,
+      "targetType": 139
+    },
+    {
+      "title": "Atmospherics",
+      "description": "Defines atmospherics files",
+      "id": "atmospherics",
+      "type": 23,
+      "targetType": 133
+    },
+    {
+      "title": "Color grading",
+      "description": "Color grading",
+      "id": "color_grading",
+      "type": 23,
+      "targetType": 132
+    },
+    {
+      "title": "Lighting",
+      "description": "Lighting",
+      "id": "lighting",
+      "type": 23,
+      "targetType": 88
+    },
+    {
+      "title": "PBR",
+      "description": "PBR",
+      "id": "pbr",
+      "type": 23,
+      "targetType": 134
+    },
+    {
+      "title": "Point lights",
+      "description": "Point Lights",
+      "id": "point_lights",
+      "type": 23,
+      "targetType": 135
+    },
+    {
+      "title": "Shadows",
+      "description": "Shadow",
+      "id": "shadows",
+      "type": 23,
+      "targetType": 137
+    },
+    {
+      "title": "Water",
+      "description": "Water",
+      "id": "water",
+      "type": 23,
+      "targetType": 136
+    },
+    {
+      "title": "Biome",
+      "description": "Defines a biome replacement",
+      "id": "biome",
+      "type": 22,
+      "targetType": 25
+    },
+    {
+      "title": "Entity (Behavior)",
+      "id": "entity_behavior",
+      "type": 41,
+      "targetType": 10
+    },
+    {
+      "title": "Entity (Resource)",
+      "id": "entity_resources",
+      "type": 41,
+      "targetType": 30
+    },
+    {
+      "title": "Item (Behavior)",
+      "id": "item_behavior",
+      "type": 41,
+      "targetType": 23
+    },
+    {
+      "title": "Attachable (Item Resource)",
+      "id": "attachable",
+      "type": 41,
+      "targetType": 47
+    },
+    {
+      "title": "Block (Behavior)",
+      "id": "block_behavior",
+      "type": 41,
+      "targetType": 21
+    },
+    {
+      "title": "Block Culling",
+      "id": "block_culling",
+      "type": 41,
+      "targetType": 127
+    },
+    {
+      "title": "Block Visual Catalog (Singleton)",
+      "id": "block_catalog",
+      "type": 41,
+      "targetType": 26
+    },
+    {
+      "title": "Aggregate Feature",
+      "id": "aggregate_feature",
+      "type": 42,
+      "targetType": 41
+    },
+    {
+      "title": "Cave Carver Feature",
+      "id": "cave_carver_feature",
+      "type": 42,
+      "targetType": 41
+    },
+    {
+      "title": "Fossil Feature",
+      "id": "fossil_feature",
+      "type": 42,
+      "targetType": 41
+    },
+    {
+      "title": "Geode Feature",
+      "id": "geode_feature",
+      "type": 42,
+      "targetType": 41
+    },
+    {
+      "title": "Growing Plant Feature",
+      "id": "growing_plant_feature",
+      "type": 42,
+      "targetType": 41
+    },
+    {
+      "title": "Multiface Feature",
+      "id": "multiface_feature",
+      "type": 42,
+      "targetType": 41
+    },
+    {
+      "title": "Nether Cave Carver Feature",
+      "id": "nether_cave_carver_feature",
+      "type": 42,
+      "targetType": 41
+    },
+    {
+      "title": "Ore Feature",
+      "id": "ore_feature",
+      "type": 42,
+      "targetType": 41
+    },
+    {
+      "title": "Animation",
+      "id": "animation",
+      "type": 43,
+      "targetType": 28
+    },
+    {
+      "title": "Animation Controller",
+      "id": "animation_controller",
+      "type": 43,
+      "targetType": 29
+    },
+    {
+      "title": "Render Controller",
+      "id": "render_controller",
+      "type": 43,
+      "targetType": 434
     }
   ]
 }

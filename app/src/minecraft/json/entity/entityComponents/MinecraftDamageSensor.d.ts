@@ -26,13 +26,12 @@ Allay - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
             },
             {
               "test": "is_owner",
-              "subject": "other",
-              "value": true
+              "subject": "other"
             }
           ]
         }
       },
-      "deals_damage": false
+      "deals_damage": "no"
     }
   ]
 }
@@ -259,7 +258,7 @@ Frog - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
 "minecraft:damage_sensor": {
   "triggers": {
     "cause": "fall",
-    "deals_damage": true,
+    "deals_damage": "yes",
     "damage_modifier": -5
   }
 }
@@ -287,7 +286,7 @@ export default interface MinecraftDamageSensor {
    * of damage."
    * 
    * Sample Values:
-   * Allay: [{"on_damage":{"filters":{"all_of":[{"test":"is_family","subject":"other","value":"player"},{"test":"is_owner","subject":"other","value":true}]}},"deals_damage":false}]
+   * Allay: [{"on_damage":{"filters":{"all_of":[{"test":"is_family","subject":"other","value":"player"},{"test":"is_owner","subject":"other"}]}},"deals_damage":"no"}]
    *
    * Armadillo: {"on_damage":{"filters":{"any_of":[{"test":"is_family","subject":"other","value":"mob"},{"test":"is_family","subject":"other","value":"player"}]},"event":"minecraft:threat_detected"}}, [{"on_damage":{"filters":{"any_of":[{"test":"is_family","subject":"other","value":"mob"},{"test":"is_family","subject":"other","value":"player"}]},"event":"minecraft:threat_detected"},"damage_multiplier":0.5,"damage_modifier":-1},{"damage_multiplier":0.5,"damage_modifier":-1}]
    *

@@ -15,11 +15,16 @@ import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition"
 export enum SharingInfoGeneratorTest {
   requiresCustomCapabilities = 100,
   hasStrongLanguageContent = 101,
+  noVibrantVisualsForNow = 210,
 }
 
 const TopicTestIdBase = 500;
 
 const UnsupportedForSharingTypes = [
+  ProjectItemType.jigsawProcessorList,
+  ProjectItemType.jigsawStructure,
+  ProjectItemType.jigsawStructureSet,
+  ProjectItemType.jigsawTemplatePool,
   ProjectItemType.textureSetJson,
   ProjectItemType.atmosphericsJson,
   ProjectItemType.shadowsJson,
@@ -28,7 +33,10 @@ const UnsupportedForSharingTypes = [
   ProjectItemType.waterJson,
   ProjectItemType.colorGradingJson,
   ProjectItemType.lightingJson,
-  ProjectItemType.aimAssistJson,
+  ProjectItemType.aimAssistPresetJson,
+  ProjectItemType.aimAssistCategoryJson,
+  ProjectItemType.behaviorTreeJson,
+  ProjectItemType.spawnGroupJson,
 ];
 
 export default class SharingInfoGenerator implements IProjectInfoGenerator {
@@ -68,7 +76,7 @@ export default class SharingInfoGenerator implements IProjectInfoGenerator {
       if (pi.storageType === ProjectItemStorageType.singleFile) {
         await pi.ensureFileStorage();
 
-        if (pi.availableFile) {
+        if (pi.primaryFile) {
           /*
           let strongLanguageContent = await BasicValidators.hasStrongLanguageContent(pi.availableFile);
           if (strongLanguageContent) {
@@ -84,8 +92,18 @@ export default class SharingInfoGenerator implements IProjectInfoGenerator {
           }*/
         }
       }
-
-      if (UnsupportedForSharingTypes.includes(pi.itemType)) {
+      if (ProjectItemUtilities.isVibrantVisualsRelated(pi.itemType)) {
+        // SHARING210
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.error,
+            this.id,
+            SharingInfoGeneratorTest.noVibrantVisualsForNow,
+            `Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).`,
+            pi
+          )
+        );
+      } else if (UnsupportedForSharingTypes.includes(pi.itemType)) {
         projInfoItem = new ProjectInfoItem(
           InfoItemType.error,
           this.id,
@@ -99,8 +117,8 @@ export default class SharingInfoGenerator implements IProjectInfoGenerator {
       } else if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
         await pi.ensureFileStorage();
 
-        if (pi.availableFile) {
-          const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.availableFile);
+        if (pi.primaryFile) {
+          const bpManifest = await BehaviorManifestDefinition.ensureOnFile(pi.primaryFile);
 
           if (bpManifest) {
             await bpManifest.load();

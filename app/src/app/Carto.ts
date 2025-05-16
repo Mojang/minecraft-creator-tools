@@ -37,7 +37,7 @@ import ZipStorage from "../storage/ZipStorage";
 import { MaxItemTypes, ProjectItemType } from "./IProjectItemData";
 import DeploymentStorageMinecraft from "./DeploymentStorageMinecraft";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
-import { GalleryItemType } from "./IGalleryItem";
+import IGalleryItem, { GalleryItemType } from "./IGalleryItem";
 import ProjectItemRelations from "./ProjectItemRelations";
 import ProjectUtilities from "./ProjectUtilities";
 
@@ -396,14 +396,14 @@ export default class Carto {
     }
   }
 
-  public get iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula() {
-    return this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula;
+  public get iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula() {
+    return this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula;
   }
 
-  public set iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula(
+  public set iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula(
     newPort: boolean | undefined
   ) {
-    this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula = newPort;
+    this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula = newPort;
   }
 
   public get dedicatedServerSlotCount() {
@@ -1239,6 +1239,8 @@ export default class Carto {
 
     for (const galProj of this._gallery.items) {
       if (
+        galProj.gitHubRepoName &&
+        galProj.gitHubOwner &&
         galProj.gitHubRepoName.toLowerCase() === repoName &&
         galProj.gitHubOwner.toLowerCase() === owner &&
         branch === galProj.gitHubBranch &&
@@ -1271,6 +1273,36 @@ export default class Carto {
     }
 
     return undefined;
+  }
+
+  async getGalleryProjectByCaption(galleryProjectTitle: string) {
+    if (this._galleryLoaded === false || this._gallery === undefined || this._gallery.items === undefined) {
+      return undefined;
+    }
+
+    for (const galProj of this._gallery.items) {
+      if (galProj.title === galleryProjectTitle) {
+        return galProj;
+      }
+    }
+
+    return undefined;
+  }
+
+  getGalleryProjectByType(itemType: GalleryItemType) {
+    if (this._galleryLoaded === false || this._gallery === undefined || this._gallery.items === undefined) {
+      return undefined;
+    }
+
+    const galleryItems: IGalleryItem[] = [];
+
+    for (const galProj of this._gallery.items) {
+      if (galProj.type === itemType) {
+        galleryItems.push(galProj);
+      }
+    }
+
+    return galleryItems;
   }
 
   async getNewProjectName(seedName: string) {
@@ -1838,11 +1870,12 @@ export default class Carto {
         this.lastActiveMinecraftFlavor = MinecraftFlavor.remote;
         this.save();
       }
-      this._onMinecraftStateChanged.dispatch(this.activeMinecraft, CartoMinecraftState.newMinecraft);
 
       if (this.activeMinecraft === undefined) {
         Log.unexpectedUndefined("EMA");
         return undefined;
+      } else {
+        this._onMinecraftStateChanged.dispatch(this.activeMinecraft, CartoMinecraftState.newMinecraft);
       }
 
       this.activeMinecraft.onStateChanged.subscribe(this._bubbleMinecraftStateChanged);

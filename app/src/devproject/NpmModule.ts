@@ -31,7 +31,7 @@ export default class NpmModule {
         const dash = this.betaProductVersion.indexOf("-");
 
         if (dash >= 0) {
-          this.latestPreviewVersion = this.betaProductVersion.substring(dash);
+          this.latestPreviewVersion = this.betaProductVersion.substring(0, dash);
 
           const nums = this.latestPreviewVersion.split(".");
 

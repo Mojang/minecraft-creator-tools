@@ -1,7 +1,26 @@
-.jsone-area
-{
+.jse-area {
   min-width: calc(100% - 2px);
   max-width: calc(100% - 2px);
   width: calc(100% - 2px);
   height: 100%;
+}
+
+.jse-dffEditorHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 28px;
+}
+
+.jse-coreLabel {
+  grid-column: 1;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 10px;
+}
+
+.jse-diffLabel {
+  grid-column: 2;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 10px;
 }

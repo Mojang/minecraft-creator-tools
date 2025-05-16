@@ -137,7 +137,7 @@
     {
       "name": "cli (create)",
       "cwd": "${workspaceRoot}/",
-      "args": ["create", "-o", "debugoutput", "custom_name", "addonStarter", "custom_creator", "florid description"],
+      "args": ["create", "-o", "debugoutput/create", "custom_name", "addonStarter", "custom_creator", "florid description"],
       "type": "node",
       "request": "launch",
       "program": "${workspaceRoot}/src/cli/index.ts",

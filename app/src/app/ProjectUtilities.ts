@@ -53,6 +53,19 @@ export default class ProjectUtilities {
     throw new Error();
   }
 
+  static getPackTypeName(packType: PackType) {
+    switch (packType) {
+      case PackType.behavior:
+        return "Behavior";
+      case PackType.resource:
+        return "Resource";
+      case PackType.skin:
+        return "Skin";
+      default:
+        return "Unknown";
+    }
+  }
+
   static async ensureJsonItem(project: Project, jsonContent: string, fileName: string) {
     if (!project.projectFolder) {
       return undefined;
@@ -266,8 +279,8 @@ export default class ProjectUtilities {
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
           await projectItem.ensureFileStorage();
 
-          if (projectItem.defaultFile) {
-            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.defaultFile);
+          if (projectItem.primaryFile) {
+            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
 
             if (
               manifestJson &&
@@ -296,8 +309,8 @@ export default class ProjectUtilities {
         if (projectItem.itemType === ProjectItemType.packageJson) {
           await projectItem.ensureFileStorage();
 
-          if (projectItem.defaultFile) {
-            const npmPackageJson = await NpmPackageDefinition.ensureOnFile(projectItem.defaultFile);
+          if (projectItem.primaryFile) {
+            const npmPackageJson = await NpmPackageDefinition.ensureOnFile(projectItem.primaryFile);
 
             if (npmPackageJson && npmPackageJson.definition) {
               npmPackageJson.definition.description = newDescription;
@@ -308,8 +321,8 @@ export default class ProjectUtilities {
         } else if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
           await projectItem.ensureFileStorage();
 
-          if (projectItem.defaultFile) {
-            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.defaultFile);
+          if (projectItem.primaryFile) {
+            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
 
             if (
               manifestJson &&
@@ -326,8 +339,8 @@ export default class ProjectUtilities {
         } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
           await projectItem.ensureFileStorage();
 
-          if (projectItem.defaultFile) {
-            const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.defaultFile);
+          if (projectItem.primaryFile) {
+            const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
 
             if (
               manifestJson &&
@@ -361,15 +374,15 @@ export default class ProjectUtilities {
       const itemsCopy = project.getItemsCopy();
 
       for (const projectItem of itemsCopy) {
-        if (projectItem.defaultFile && projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
-          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.defaultFile);
+        if (projectItem.primaryFile && projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
+          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (bpManifestJson && bpManifestJson.definition) {
             bpManifestJson.ensureGeneratedWith(appName, constants.version);
             await bpManifestJson.save();
           }
-        } else if (projectItem.defaultFile && projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
-          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.defaultFile);
+        } else if (projectItem.primaryFile && projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (rpManifestJson && rpManifestJson.definition) {
             rpManifestJson.ensureGeneratedWith(appName, constants.version);
@@ -387,8 +400,8 @@ export default class ProjectUtilities {
       const itemsCopy = project.getItemsCopy();
 
       for (const projectItem of itemsCopy) {
-        if (projectItem.defaultFile && projectItem.itemType === ProjectItemType.packageJson) {
-          const npmPackageJson = await NpmPackageDefinition.ensureOnFile(projectItem.defaultFile);
+        if (projectItem.primaryFile && projectItem.itemType === ProjectItemType.packageJson) {
+          const npmPackageJson = await NpmPackageDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (npmPackageJson && npmPackageJson.definition) {
             npmPackageJson.definition.name = newTitle;
@@ -397,8 +410,8 @@ export default class ProjectUtilities {
         } else if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
           await projectItem.ensureFileStorage();
 
-          if (projectItem.defaultFile) {
-            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.defaultFile);
+          if (projectItem.primaryFile) {
+            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
 
             if (
               manifestJson &&
@@ -415,8 +428,8 @@ export default class ProjectUtilities {
         } else if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
           await projectItem.ensureFileStorage();
 
-          if (projectItem.defaultFile) {
-            const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.defaultFile);
+          if (projectItem.primaryFile) {
+            const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
 
             if (
               manifestJson &&
@@ -455,8 +468,8 @@ export default class ProjectUtilities {
         if (projectItem.itemType === ProjectItemType.behaviorPackManifestJson) {
           await projectItem.ensureFileStorage();
 
-          if (projectItem.defaultFile) {
-            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.defaultFile);
+          if (projectItem.primaryFile) {
+            const manifestJson = await BehaviorManifestDefinition.ensureOnFile(projectItem.primaryFile);
 
             if (
               manifestJson &&
@@ -497,8 +510,8 @@ export default class ProjectUtilities {
         if (projectItem.itemType === ProjectItemType.resourcePackManifestJson) {
           await projectItem.ensureFileStorage();
 
-          if (projectItem.defaultFile) {
-            const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.defaultFile);
+          if (projectItem.primaryFile) {
+            const manifestJson = await ResourceManifestDefinition.ensureOnFile(projectItem.primaryFile);
 
             if (
               manifestJson &&
@@ -621,9 +634,9 @@ export default class ProjectUtilities {
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
 
-      if (pi.defaultFile) {
+      if (pi.primaryFile) {
         if (pi.itemType === ProjectItemType.resourcePackManifestJson && !setResourcePack) {
-          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.defaultFile);
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.primaryFile);
 
           if (rpManifestJson) {
             if (rpManifestJson.definition && rpManifestJson.definition.modules) {
@@ -637,7 +650,7 @@ export default class ProjectUtilities {
             }
           }
         } else if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
-          const bpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.defaultFile);
+          const bpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.primaryFile);
 
           if (bpManifestJson) {
             if (bpManifestJson.definition && bpManifestJson.definition.modules) {
@@ -655,32 +668,18 @@ export default class ProjectUtilities {
     }
   }
 
-  static async getDefaultSpawnRulesFolder(project: Project) {
+  static async getDefaultBehaviorPackFolder(project: Project, paths: string[]) {
     const bpFolder = await project.getDefaultBehaviorPackFolder();
 
     if (!bpFolder) {
       return undefined;
     }
 
-    const srFolder = bpFolder.ensureFolder("spawn_rules");
+    const srFolder = await bpFolder.ensureFolderFromRelativePath(paths.join("/"));
 
     await srFolder.ensureExists();
 
     return srFolder;
-  }
-
-  static async getDefaultLootTableFolder(project: Project) {
-    const bpFolder = await project.getDefaultBehaviorPackFolder();
-
-    if (!bpFolder) {
-      return undefined;
-    }
-
-    const ltFolder = bpFolder.ensureFolder("loot_table");
-
-    await ltFolder.ensureExists();
-
-    return ltFolder;
   }
 
   static async getIsAddon(project: Project) {
@@ -691,10 +690,10 @@ export default class ProjectUtilities {
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
 
-      if (pi.defaultFile) {
+      if (pi.primaryFile) {
         if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
           rpCount++;
-          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.defaultFile);
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.primaryFile);
 
           if (rpManifestJson) {
             if (!rpManifestJson.hasAddonProperties()) {
@@ -703,7 +702,7 @@ export default class ProjectUtilities {
           }
         } else if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
           bpCount++;
-          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.defaultFile);
+          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.primaryFile);
 
           if (bpManifestJson) {
             if (!bpManifestJson.hasAddonProperties()) {
@@ -723,15 +722,15 @@ export default class ProjectUtilities {
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
 
-      if (pi.defaultFile) {
+      if (pi.primaryFile) {
         if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
-          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.defaultFile);
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.primaryFile);
 
           if (rpManifestJson) {
             rpManifestJson.setAddonProperties();
           }
         } else if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
-          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.defaultFile);
+          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.primaryFile);
 
           if (bpManifestJson) {
             bpManifestJson.setAddonProperties();
@@ -759,9 +758,9 @@ export default class ProjectUtilities {
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
 
-      if (pi.defaultFile) {
+      if (pi.primaryFile) {
         if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
-          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.defaultFile);
+          const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.primaryFile);
 
           if (bpManifestJson) {
             bpManifestJson.randomizeModuleUuids(
@@ -777,7 +776,7 @@ export default class ProjectUtilities {
             }
           }
         } else if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
-          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.defaultFile);
+          const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.primaryFile);
 
           if (rpManifestJson) {
             rpManifestJson.randomizeModuleUuids(project.defaultDataUniqueId, oldUids["defaultDataModulePack"]);
@@ -845,8 +844,8 @@ export default class ProjectUtilities {
     await project.save();
   }
 
-  static async addItemTypeFromGallery(project: Project, blockTypeProject: IGalleryItem, blockTypeName?: string) {
-    await ProjectUtilities.copyGalleryPackFilesAndFixupIds(project, blockTypeProject, blockTypeName);
+  static async addItemTypeFromGallery(project: Project, itemTypeProject: IGalleryItem, itemTypeName?: string) {
+    await ProjectUtilities.copyGalleryPackFilesAndFixupIds(project, itemTypeProject, itemTypeName);
 
     await project.inferProjectItemsFromFiles(true);
 
@@ -877,17 +876,16 @@ export default class ProjectUtilities {
       sourceBpFolder = await Database.getReleaseVanillaBehaviorPackFolder();
       sourceRpFolder = await Database.getReleaseVanillaResourcePackFolder();
     } else {
-      const gh = new HttpStorage(
-        CartoApp.contentRoot +
-          "res/samples/" +
-          galleryProject.gitHubOwner +
-          "/" +
-          galleryProject.gitHubRepoName +
-          "-" +
-          (galleryProject.gitHubBranch ? galleryProject.gitHubBranch : "main") +
-          "/" +
-          galleryProject.gitHubFolder
-      ); //new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
+      const url =
+        Utilities.ensureEndsWithSlash(CartoApp.contentRoot) +
+        "res/samples/" +
+        Utilities.ensureEndsWithSlash(galleryProject.gitHubOwner) +
+        galleryProject.gitHubRepoName +
+        "-" +
+        Utilities.ensureEndsWithSlash(galleryProject.gitHubBranch ? galleryProject.gitHubBranch : "main") +
+        (galleryProject.gitHubFolder ? Utilities.ensureNotStartsWithSlash(galleryProject.gitHubFolder) : "");
+
+      const gh = new HttpStorage(url); //new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
 
       await gh.rootFolder.load();
 
@@ -954,7 +952,7 @@ export default class ProjectUtilities {
         const sourceFile = await sourceBpFolder.getFileFromRelativePath(subPath);
 
         if (!sourceFile) {
-          Log.debugAlert("Could not find file '" + subPath + "'");
+          Log.debugAlert("Could not find file '" + subPath + "'  (GPFFIA)");
         } else {
           const targetFile = await targetBpFolder.ensureFileFromRelativePath(targetPath);
           let update = true;
@@ -1012,7 +1010,7 @@ export default class ProjectUtilities {
         const sourceFile = await sourceRpFolder.getFileFromRelativePath(subPath);
 
         if (!sourceFile) {
-          Log.debugAlert("Could not find file '" + subPath + "'");
+          Log.debugAlert("Could not find file '" + subPath + "' (GPFFIB)");
         } else {
           const targetFile = await targetRpFolder.ensureFileFromRelativePath(targetPath);
           let update = true;
@@ -1388,8 +1386,8 @@ export default class ProjectUtilities {
       if (projectItem.itemType === ProjectItemType.ts) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.defaultFile) {
-          const tsJson = await TypeScriptDefinition.ensureOnFile(projectItem.defaultFile);
+        if (projectItem.primaryFile) {
+          const tsJson = await TypeScriptDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (tsJson?.data && tsJson.data.indexOf(token) >= 0) {
             return;

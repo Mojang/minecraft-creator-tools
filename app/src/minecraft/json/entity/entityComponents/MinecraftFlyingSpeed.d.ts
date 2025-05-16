@@ -31,6 +31,19 @@ Ender Dragon - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_p
   "value": 0.6
 }
 
+
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+ * At /minecraft:entity/component_groups/minecraft:adult_mobile/minecraft:flying_speed/: 
+"minecraft:flying_speed": {
+  "value": 0.016
+}
+
+ * At /minecraft:entity/component_groups/minecraft:adult_immobile/minecraft:flying_speed/: 
+"minecraft:flying_speed": {
+  "value": 0
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';

@@ -191,9 +191,42 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
               "value": "saddle"
             },
             {
-              "test": "is_family",
+              "test": "is_sneak_held",
               "subject": "other",
-              "value": "player"
+              "value": false
+            }
+          ]
+        }
+      },
+      "equip_item_slot": "0",
+      "interact_text": "action.interact.saddle"
+    },
+    {
+      "on_interact": {
+        "filters": {
+          "all_of": [
+            {
+              "test": "is_sitting",
+              "subject": "self",
+              "value": false
+            },
+            {
+              "test": "rider_count",
+              "subject": "self",
+              "operator": "equals",
+              "value": 0
+            },
+            {
+              "test": "has_equipment",
+              "subject": "self",
+              "domain": "inventory",
+              "value": "saddle"
+            },
+            {
+              "test": "has_equipment",
+              "subject": "other",
+              "domain": "hand",
+              "value": "shears"
             },
             {
               "test": "is_sneak_held",
@@ -201,11 +234,55 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
               "value": false
             }
           ]
-        },
-        "target": "self"
+        }
       },
-      "equip_item_slot": "0",
-      "interact_text": "action.interact.saddle"
+      "hurt_item": 1,
+      "drop_item_slot": "0",
+      "drop_item_y_offset": 2,
+      "interact_text": "action.interact.removesaddle",
+      "play_sounds": "shear",
+      "vibration": "shear"
+    },
+    {
+      "on_interact": {
+        "filters": {
+          "all_of": [
+            {
+              "test": "is_sitting",
+              "subject": "self"
+            },
+            {
+              "test": "rider_count",
+              "subject": "self",
+              "operator": "equals",
+              "value": 0
+            },
+            {
+              "test": "has_equipment",
+              "subject": "self",
+              "domain": "inventory",
+              "value": "saddle"
+            },
+            {
+              "test": "has_equipment",
+              "subject": "other",
+              "domain": "hand",
+              "value": "shears"
+            },
+            {
+              "test": "is_sneak_held",
+              "subject": "other",
+              "value": false
+            }
+          ]
+        }
+      },
+      "hurt_item": 1,
+      "drop_item_slot": "0",
+      "drop_item_y_offset": 1,
+      "interact_text": "action.interact.removesaddle",
+      "play_sounds": "shear",
+      "vibration": "shear"
     }
   ]
 }
@@ -302,11 +379,6 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
               "value": "saddle"
             },
             {
-              "test": "is_family",
-              "subject": "other",
-              "value": "player"
-            },
-            {
               "test": "is_sneak_held",
               "subject": "other",
               "value": false
@@ -317,6 +389,43 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       },
       "equip_item_slot": "0",
       "interact_text": "action.interact.equip"
+    },
+    {
+      "on_interact": {
+        "filters": {
+          "all_of": [
+            {
+              "test": "rider_count",
+              "subject": "self",
+              "operator": "equals",
+              "value": 0
+            },
+            {
+              "test": "has_equipment",
+              "subject": "self",
+              "domain": "inventory",
+              "value": "saddle"
+            },
+            {
+              "test": "has_equipment",
+              "subject": "other",
+              "domain": "hand",
+              "value": "shears"
+            },
+            {
+              "test": "is_sneak_held",
+              "subject": "other",
+              "value": false
+            }
+          ]
+        }
+      },
+      "hurt_item": 1,
+      "drop_item_slot": "0",
+      "drop_item_y_offset": 1.1,
+      "interact_text": "action.interact.removesaddle",
+      "play_sounds": "shear",
+      "vibration": "shear"
     }
   ]
 }
@@ -343,11 +452,6 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
               "value": "saddle"
             },
             {
-              "test": "is_family",
-              "subject": "other",
-              "value": "player"
-            },
-            {
               "test": "is_sneak_held",
               "subject": "other",
               "value": false
@@ -360,15 +464,47 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "interact_text": "action.interact.saddle"
     },
     {
-      "play_sounds": "armor.equip_generic",
       "on_interact": {
         "filters": {
           "all_of": [
             {
-              "test": "is_family",
-              "subject": "other",
-              "value": "player"
+              "test": "rider_count",
+              "subject": "self",
+              "operator": "equals",
+              "value": 0
             },
+            {
+              "test": "has_equipment",
+              "subject": "self",
+              "domain": "inventory",
+              "value": "saddle"
+            },
+            {
+              "test": "has_equipment",
+              "subject": "other",
+              "domain": "hand",
+              "value": "shears"
+            },
+            {
+              "test": "is_sneak_held",
+              "subject": "other",
+              "value": false
+            }
+          ]
+        }
+      },
+      "hurt_item": 1,
+      "drop_item_slot": "0",
+      "drop_item_y_offset": 1.1,
+      "interact_text": "action.interact.removesaddle",
+      "play_sounds": "shear",
+      "vibration": "shear"
+    },
+    {
+      "play_sounds": "armor.equip_generic",
+      "on_interact": {
+        "filters": {
+          "all_of": [
             {
               "test": "is_sneaking",
               "subject": "other",
@@ -428,6 +564,43 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       },
       "equip_item_slot": "0",
       "interact_text": "action.interact.saddle"
+    },
+    {
+      "on_interact": {
+        "filters": {
+          "all_of": [
+            {
+              "test": "rider_count",
+              "subject": "self",
+              "operator": "equals",
+              "value": 0
+            },
+            {
+              "test": "has_equipment",
+              "subject": "self",
+              "domain": "inventory",
+              "value": "saddle"
+            },
+            {
+              "test": "has_equipment",
+              "subject": "other",
+              "domain": "hand",
+              "value": "shears"
+            },
+            {
+              "test": "is_sneak_held",
+              "subject": "other",
+              "value": false
+            }
+          ]
+        }
+      },
+      "hurt_item": 1,
+      "drop_item_slot": "0",
+      "drop_item_y_offset": 1.1,
+      "interact_text": "action.interact.removesaddle",
+      "play_sounds": "shear",
+      "vibration": "shear"
     }
   ]
 }
@@ -517,13 +690,6 @@ export default interface MinecraftInteract {
 
   /**
    * @remarks
-   * Loot table with items to add to the player's inventory upon
-   * successful interaction.
-   */
-  add_items: MinecraftInteractAddItems[];
-
-  /**
-   * @remarks
    * Time in seconds before this entity can be interacted with 
    * again.
    */
@@ -580,7 +746,7 @@ export default interface MinecraftInteract {
   /**
    * @remarks
    * Text to show when the player is able to interact in this way
-   * with this entity when playing with Touch-screen controls.
+   * with this entity when playing with touch-screen controls.
    */
   interact_text: string;
 
@@ -594,88 +760,6 @@ export default interface MinecraftInteract {
    *
    */
   interactions: MinecraftInteractInteractions[];
-
-  /**
-   * @remarks
-   * Event to fire when the interaction occurs.
-   */
-  on_interact: jsoncommon.MinecraftEventTrigger;
-
-  /**
-   * @remarks
-   * Particle effect that will be triggered at the start of the
-   * interaction.
-   */
-  particle_on_start: MinecraftInteractParticleOnStart[];
-
-  /**
-   * @remarks
-   * List of sounds to play when the interaction occurs.
-   */
-  play_sounds: string;
-
-  /**
-   * @remarks
-   * Allows to repair one of the entity's items.
-   */
-  repair_entity_item: MinecraftInteractRepairEntityItem[];
-
-  /**
-   * @remarks
-   * List of entities to spawn when the interaction occurs.
-   */
-  spawn_entities: string;
-
-  /**
-   * @remarks
-   * Loot table with items to drop on the ground upon successful
-   * interaction.
-   */
-  spawn_items: MinecraftInteractSpawnItems[];
-
-  /**
-   * @remarks
-   * If true, the player will do the 'swing' animation when
-   * interacting with this entity.
-   */
-  swing: boolean;
-
-  /**
-   * @remarks
-   * The item used will transform to this item upon successful interaction.
-   * Format: itemName:auxValue
-   */
-  transform_to_item: string;
-
-  /**
-   * @remarks
-   * If true, the interaction will use an item.
-   */
-  use_item: boolean;
-
-  /**
-   * @remarks
-   * Vibration to emit when the interaction occurs. Admitted values are
-   * none (no vibration emitted), shear, entity_die, entity_act,
-   * entity_interact.
-   */
-  vibration: string;
-
-}
-
-
-/**
- * Loot table with items to add to the player's inventory upon
- * successful interaction.
- */
-export interface MinecraftInteractAddItems {
-
-  /**
-   * @remarks
-   * File path, relative to the Behavior Pack's path, to the loot
-   * table file.
-   */
-  table: string;
 
 }
 
@@ -714,13 +798,44 @@ export interface MinecraftInteractInteractions {
    */
   on_interact: string;
 
-  particle_on_start: MinecraftInteractInteractionsParticleOnStart;
+  /**
+   * @remarks
+   * Particle effect that will be triggered at the start of the
+   * interaction.
+   */
+  particle_on_start: MinecraftInteractInteractionsParticleOnStart[];
 
+  /**
+   * @remarks
+   * List of sounds to play when the interaction occurs.
+   */
   play_sounds: string;
 
-  spawn_items: MinecraftInteractInteractionsSpawnItems;
+  /**
+   * @remarks
+   * Allows to repair one of the entity's items.
+   */
+  repair_entity_item: MinecraftInteractInteractionsRepairEntityItem[];
 
-  swing: string;
+  /**
+   * @remarks
+   * List of entities to spawn when the interaction occurs.
+   */
+  spawn_entities: string;
+
+  /**
+   * @remarks
+   * Loot table with items to drop on the ground upon successful
+   * interaction.
+   */
+  spawn_items: MinecraftInteractInteractionsSpawnItems[];
+
+  /**
+   * @remarks
+   * If true, the player will do the 'swing' animation when
+   * interacting with this entity.
+   */
+  swing: boolean;
 
   /**
    * @remarks
@@ -731,41 +846,26 @@ export interface MinecraftInteractInteractions {
    */
   take_item: string;
 
-  use_item: string;
-
-}
-
-
-/**
- * Particle_on_start (particle_on_start)
- */
-export interface MinecraftInteractInteractionsParticleOnStart {
+  /**
+   * @remarks
+   * The item used will transform to this item upon successful interaction.
+   * Format: itemName:auxValue
+   */
+  transform_to_item: string;
 
   /**
    * @remarks
-   * 
-   * Sample Values:
-   * Bee: "food"
-   *
+   * If true, the interaction will use an item.
    */
-  particle_type: string;
-
-}
-
-
-/**
- * Spawn_items (spawn_items)
- */
-export interface MinecraftInteractInteractionsSpawnItems {
+  use_item: boolean;
 
   /**
    * @remarks
-   * 
-   * Sample Values:
-   * Armadillo: "loot_tables/entities/armadillo_brush.json"
-   *
+   * Vibration to emit when the interaction occurs. Admitted values are
+   * none (no vibration emitted), shear, entity_die, entity_act,
+   * entity_interact.
    */
-  table: string;
+  vibration: string;
 
 }
 
@@ -774,7 +874,7 @@ export interface MinecraftInteractInteractionsSpawnItems {
  * Particle effect that will be triggered at the start of the
  * interaction.
  */
-export interface MinecraftInteractParticleOnStart {
+export interface MinecraftInteractInteractionsParticleOnStart {
 
   /**
    * @remarks
@@ -801,7 +901,7 @@ export interface MinecraftInteractParticleOnStart {
 /**
  * Allows to repair one of the entity's items.
  */
-export interface MinecraftInteractRepairEntityItem {
+export interface MinecraftInteractInteractionsRepairEntityItem {
 
   /**
    * @remarks
@@ -826,7 +926,7 @@ export interface MinecraftInteractRepairEntityItem {
  * Loot table with items to drop on the ground upon successful
  * interaction.
  */
-export interface MinecraftInteractSpawnItems {
+export interface MinecraftInteractInteractionsSpawnItems {
 
   /**
    * @remarks
@@ -834,5 +934,12 @@ export interface MinecraftInteractSpawnItems {
    * table file.
    */
   table: string;
+
+  /**
+   * @remarks
+   * Will offset the items spawn position this amount in the y
+   * direction.
+   */
+  y_offset: number;
 
 }

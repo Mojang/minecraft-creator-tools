@@ -132,6 +132,38 @@ export default class DataFormUtilities {
     return fieldA.dataType - fieldB.dataType;
   }
 
+  public static sortFieldsByPriority(fieldA: IField, fieldB: IField): number {
+    if (fieldA.isDeprecated && !fieldB.isDeprecated) {
+      return 1;
+    }
+
+    if (!fieldA.isDeprecated && fieldB.isDeprecated) {
+      return -1;
+    }
+
+    if (fieldA.priority && !fieldB.priority) {
+      return -1;
+    }
+
+    if (fieldB.priority && !fieldA.priority) {
+      return 1;
+    }
+
+    if (fieldA.priority && fieldB.priority) {
+      return fieldA.priority - fieldB.priority;
+    }
+
+    if (fieldA.title && fieldB.title) {
+      return fieldA.title.localeCompare(fieldB.title);
+    }
+
+    if (fieldA.id && fieldB.id) {
+      return fieldA.id.localeCompare(fieldB.id);
+    }
+
+    return 0;
+  }
+
   public static async loadSubForms(
     form: IFormDefinition,
     loadedForms?: string | undefined
@@ -399,6 +431,8 @@ export default class DataFormUtilities {
         return "Percent Range";
       case FieldDataType.minecraftEventTrigger:
         return "Minecraft Event Trigger";
+      case FieldDataType.minecraftEventReference:
+        return "Minecraft Event Reference";
       case FieldDataType.longFormStringArray:
         return "Array of longer descriptive text";
       case FieldDataType.keyedStringCollection:

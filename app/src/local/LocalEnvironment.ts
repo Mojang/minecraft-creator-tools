@@ -226,14 +226,14 @@ export default class LocalEnvironment {
     this._inmemAdminPasscode = newPasscode;
     this._inmemAdminPasscodeComplement = this.generateRandomPasscode();
   }
-  get iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula() {
-    return this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula;
+  get iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula() {
+    return this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula;
   }
 
-  set iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula(
+  set iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula(
     iAgreeValue: boolean | undefined
   ) {
-    this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula = iAgreeValue;
+    this.#data.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula = iAgreeValue;
   }
 
   public constructor(subscribeToLog: boolean) {

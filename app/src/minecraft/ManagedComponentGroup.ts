@@ -67,6 +67,10 @@ export default class ManagedComponentGroup implements IManagedComponentSetItem {
     }
 
     this._data[id] = undefined;
+
+    if (this._managed) {
+      this._managed[id] = undefined;
+    }
   }
 
   getComponent(id: string): IManagedComponent | undefined {

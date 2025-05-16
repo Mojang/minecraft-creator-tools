@@ -62,7 +62,7 @@ export default class DedicatedServerSettingsPanel extends Component<
       dedicatedServerSlotCount: port,
       dedicatedServerMode: this.props.carto.dedicatedServerMode,
       dedicatedServerPath: this.props.carto.dedicatedServerPath,
-      iagree: this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula,
+      iagree: this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula,
     };
 
     this.props.carto.onLoaded.subscribe(this._onCartoLoaded);
@@ -94,7 +94,7 @@ export default class DedicatedServerSettingsPanel extends Component<
 
   _handleIAgreeChanged(e: SyntheticEvent, data: (CheckboxProps & { checked: boolean }) | undefined) {
     if (data) {
-      this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula =
+      this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula =
         data.checked;
       this.props.carto.save();
       this._notifyOnChange();
@@ -247,7 +247,7 @@ export default class DedicatedServerSettingsPanel extends Component<
         <div className="dssp-iagreeinput" key="iagreeinput">
           <Checkbox
             checked={
-              this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula
+              this.props.carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula
             }
             onClick={this._handleIAgreeChanged}
           />
@@ -268,7 +268,7 @@ export default class DedicatedServerSettingsPanel extends Component<
           >
             https://minecraft.net/eula
           </a>
-          ) and Privacy Policy (
+          ) and Privacy Statement (
           <a
             className="dssp-link"
             href="https://go.microsoft.com/fwlink/?LinkId=521839"

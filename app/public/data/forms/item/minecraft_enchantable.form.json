@@ -1,26 +1,6 @@
 {
   "fields": [
     {
-      "id": "value",
-      "title": "Value",
-      "description": "Specifies the value of the enchantment (minimum of 0).",
-      "dataType": 0,
-      "samples": {
-        "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:enchantable/",
-            "content": 10
-          }
-        ],
-        "/samples/custom_items/behavior_packs/custom_item/items/my_boots.json": [
-          {
-            "path": "/minecraft:item/components/minecraft:enchantable/",
-            "content": 10
-          }
-        ]
-      }
-    },
-    {
       "id": "slot",
       "title": "Slot",
       "description": "Specifies which types of enchantments can be applied. For example, `bow` would allow this item to be enchanted as if it were a bow.",
@@ -48,6 +28,26 @@
           {
             "path": "/minecraft:item/components/minecraft:enchantable/",
             "content": "armor_legs"
+          }
+        ]
+      }
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Specifies the value of the enchantment (minimum of 0).",
+      "dataType": 0,
+      "samples": {
+        "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:enchantable/",
+            "content": 10
+          }
+        ],
+        "/samples/custom_items/behavior_packs/custom_item/items/my_boots.json": [
+          {
+            "path": "/minecraft:item/components/minecraft:enchantable/",
+            "content": 10
           }
         ]
       }

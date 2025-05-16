@@ -132,6 +132,66 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+"minecraft:rideable": {
+  "seat_count": 4,
+  "family_types": [
+    "player"
+  ],
+  "dismount_mode": "on_top_center",
+  "on_rider_enter_event": "minecraft:on_passenger_mount",
+  "on_rider_exit_event": "minecraft:on_passenger_dismount",
+  "interact_text": "action.interact.ride.horse",
+  "seats": [
+    {
+      "min_rider_count": 0,
+      "max_rider_count": 4,
+      "position": [
+        0,
+        0.95,
+        0.45
+      ],
+      "third_person_camera_radius": 8,
+      "camera_relax_distance_smoothing": 6
+    },
+    {
+      "min_rider_count": 1,
+      "max_rider_count": 4,
+      "position": [
+        -0.45,
+        0.95,
+        0
+      ],
+      "third_person_camera_radius": 8,
+      "camera_relax_distance_smoothing": 6
+    },
+    {
+      "min_rider_count": 2,
+      "max_rider_count": 4,
+      "position": [
+        0,
+        0.95,
+        -0.45
+      ],
+      "third_person_camera_radius": 8,
+      "camera_relax_distance_smoothing": 6
+    },
+    {
+      "min_rider_count": 3,
+      "max_rider_count": 4,
+      "position": [
+        0.45,
+        0.95,
+        0
+      ],
+      "third_person_camera_radius": 8,
+      "camera_relax_distance_smoothing": 6
+    }
+  ]
+}
+
+
 Hoglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/hoglin.json
 
 "minecraft:rideable": {
@@ -297,6 +357,10 @@ export default interface MinecraftRideable {
    * found.
 - "on_top_center", riders are placed at the center of
    * the top of the entity's collision box.
+   * 
+   * Sample Values:
+   * Happy Ghast: "on_top_center"
+   *
    */
   dismount_mode: string;
 
@@ -335,15 +399,23 @@ export default interface MinecraftRideable {
    * @remarks
    * Event to execute on the owner entity when an entity starts riding
    * it.
+   * 
+   * Sample Values:
+   * Happy Ghast: "minecraft:on_passenger_mount"
+   *
    */
-  on_rider_enter_event: jsoncommon.MinecraftEventTrigger;
+  on_rider_enter_event: string;
 
   /**
    * @remarks
    * Event to execute on the owner entity when an entity stops riding
    * it.
+   * 
+   * Sample Values:
+   * Happy Ghast: "minecraft:on_passenger_dismount"
+   *
    */
-  on_rider_exit_event: jsoncommon.MinecraftEventTrigger;
+  on_rider_exit_event: string;
 
   /**
    * @remarks
@@ -391,7 +463,7 @@ export default interface MinecraftRideable {
    * Cat: 1
    *
    *
-   * Hoglin: 3
+   * Happy Ghast: 4
    *
    */
   seat_count: number;
@@ -414,11 +486,19 @@ export default interface MinecraftRideable {
 }
 
 
+export enum MinecraftRideableDismountMode {
+  Default = `default`,
+  OnTopCenter = `on_top_center`
+}
+
+
 /**
  * The list of positions and number of riders for each position for
  * entities riding this entity.
  */
 export interface MinecraftRideableSeats {
+
+  camera_relax_distance_smoothing: number;
 
   /**
    * @remarks
@@ -452,5 +532,7 @@ export interface MinecraftRideableSeats {
    * Offset to rotate riders by.
    */
   rotate_rider_by: string;
+
+  third_person_camera_radius: number;
 
 }

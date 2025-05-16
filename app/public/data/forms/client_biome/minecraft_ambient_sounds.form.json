@@ -19,6 +19,7 @@
       "dataType": 2
     }
   ],
+  "versionIntroduced": "1.21.50",
   "description": "Sets the ambient sounds for the biome. These sounds must be in the 'individual_named_sounds' in a 'sounds.json' file.",
   "title": "Ambient Sounds",
   "id": "minecraft:ambient_sounds"

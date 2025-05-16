@@ -29,6 +29,13 @@ Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
   "value": false
 }
 
+
+Iron Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/iron_golem.json
+
+{
+  "test": "is_daytime"
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';

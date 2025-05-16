@@ -92,7 +92,7 @@ This component can also be used instead of the
    * Specifies an array of custom components defined in a script that
    * should be added to this item.
    */
-  "minecraft:custom_components": object;
+  "minecraft:custom_components": MinecraftItemItemComponentsMinecraftCustomComponents;
 
   /**
    * @remarks
@@ -337,6 +337,16 @@ This component can also be used instead of the
 
 
 /**
+ * Allow Off Hand
+ * The allow_off_hand component determines whether the item can be
+ * placed in the off hand slot of the inventory.
+ */
+export interface MinecraftItemItemComponentsMinecraftAllowOffHand {
+
+}
+
+
+/**
  * Block Placer
  * Items with the block_placer component will place a block when
  * used. 
@@ -416,6 +426,16 @@ export interface MinecraftItemItemComponentsMinecraftBundleInteraction {
 
 
 /**
+ * Can Destroy In Creative
+ * The can_destroy_in_creative component determines if the item can
+ * be used by a player to break blocks when in creative mode.
+ */
+export interface MinecraftItemItemComponentsMinecraftCanDestroyInCreative {
+
+}
+
+
+/**
  * Compostable
  * Specifies that an item is compostable and provides the chance of
  * creating a composting layer in the composter.
@@ -454,6 +474,26 @@ export interface MinecraftItemItemComponentsMinecraftCooldown {
    * spend cooling down before becoming usable again.
    */
   duration: number;
+
+}
+
+
+/**
+ * Custom Components
+ * Specifies an array of custom components defined in a script that
+ * should be added to this item.
+ */
+export interface MinecraftItemItemComponentsMinecraftCustomComponents {
+
+}
+
+
+/**
+ * Damage
+ * The damage component determines how much extra damage the item
+ * does on attack.
+ */
+export interface MinecraftItemItemComponentsMinecraftDamage {
 
 }
 
@@ -828,6 +868,97 @@ export interface MinecraftItemItemComponentsMinecraftFood {
 
 
 /**
+ * Using Converts To
+ * Using Converts To.
+ */
+export interface MinecraftItemItemComponentsMinecraftFoodUsingConvertsTo {
+
+}
+
+
+/**
+ * Fuel
+ * Fuel item component allows this item to be used as fuel in a
+ * furnace to 'cook' other items.
+ */
+export interface MinecraftItemItemComponentsMinecraftFuel {
+
+}
+
+
+/**
+ * Glint
+ * The glint component determines whether the item has the
+ * enchanted glint render effect on it.
+ */
+export interface MinecraftItemItemComponentsMinecraftGlint {
+
+}
+
+
+/**
+ * Hand Equipped
+ * The hand_equipped component determines if an item is rendered like
+ * a tool while it is in a player's hand.
+ */
+export interface MinecraftItemItemComponentsMinecraftHandEquipped {
+
+}
+
+
+/**
+ * Hover Text Color
+ * The hover_text_color component specifies the color of the item
+ * name when the players hovers the cursor over the item.
+ */
+export interface MinecraftItemItemComponentsMinecraftHoverTextColor {
+
+}
+
+
+/**
+ * Icon
+ * Icon item component determines which icon graphic will be used to
+ * represent the item in the UI and elsewhere.
+ */
+export interface MinecraftItemItemComponentsMinecraftIcon {
+
+}
+
+
+/**
+ * Interact Button
+ * This component is a boolean or string that determines if the
+ * interact button is shown in touch controls and what text is
+ * displayed on the button. When set as true, default "Use Item" text
+ * will be displayed.
+ */
+export interface MinecraftItemItemComponentsMinecraftInteractButton {
+
+}
+
+
+/**
+ * Liquid Clipped
+ * The liquid_clipped component determines whether the item
+ * interacts with liquid blocks on use.
+ */
+export interface MinecraftItemItemComponentsMinecraftLiquidClipped {
+
+}
+
+
+/**
+ * Max Stack Size
+ * The max_stack_size component specifies how many of the item can
+ * be stacked together.
+ */
+export interface MinecraftItemItemComponentsMinecraftMaxStackSize {
+
+}
+
+
+/**
  * Projectile
  * Projectile items shoot out, like an arrow.
  */
@@ -845,6 +976,16 @@ export interface MinecraftItemItemComponentsMinecraftProjectile {
    * Which entity is to be fired as a projectile.
    */
   projectile_entity: string;
+
+}
+
+
+/**
+ * Rarity
+ * Specifies the base rarity and subsequently color of the item name
+ * when the player hovers the cursor over the item.
+ */
+export interface MinecraftItemItemComponentsMinecraftRarity {
 
 }
 
@@ -959,6 +1100,27 @@ export interface MinecraftItemItemComponentsMinecraftShooterAmmunition {
    * Can use off-hand? Default is set to false.
    */
   use_offhand: boolean;
+
+}
+
+
+/**
+ * Should Despawn
+ * Should_despawn component determines if the item should eventually
+ * despawn while floating in the world.
+ */
+export interface MinecraftItemItemComponentsMinecraftShouldDespawn {
+
+}
+
+
+/**
+ * Stacked By Data
+ * The stacked_by_data component determines whether the same items
+ * with different aux values can stack. Also defines whether the
+ * item entities can merge while floating in the world.
+ */
+export interface MinecraftItemItemComponentsMinecraftStackedByData {
 
 }
 
@@ -1097,6 +1259,16 @@ export interface MinecraftItemItemComponentsMinecraftThrowable {
    * charged. Default is set to false.
    */
   scale_power_by_draw_duration: boolean;
+
+}
+
+
+/**
+ * Use Animation
+ * Use_animation specifies which animation is played when the
+ * player uses the item.
+ */
+export interface MinecraftItemItemComponentsMinecraftUseAnimation {
 
 }
 

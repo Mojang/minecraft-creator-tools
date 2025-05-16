@@ -3,6 +3,7 @@ import { ProjectItemCreationType, ProjectItemErrorStatus } from "./IProjectItemD
 export enum ProjectItemVariantType {
   general = 0,
   subPack = 1,
+  versionSlice = 2,
 }
 
 export default interface IProjectItemVariant {

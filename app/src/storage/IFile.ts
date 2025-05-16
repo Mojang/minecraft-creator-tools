@@ -24,6 +24,7 @@ export default interface IFile extends IStorageObject {
 
   isBinary: boolean;
   isString: boolean;
+  canIgnore: boolean;
 
   parentFolder: IFolder;
 

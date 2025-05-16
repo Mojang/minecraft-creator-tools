@@ -94,7 +94,7 @@ export interface MinecraftMountainParametersSteepMaterialAdjustment {
    * @remarks
    * Block type use as steep material
    */
-  material: string;
+  material: { [key: string]: string };
 
   /**
    * @remarks

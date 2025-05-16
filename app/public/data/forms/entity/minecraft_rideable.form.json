@@ -6,6 +6,7 @@
       "id": "seat_count",
       "title": "Number of seats",
       "dataType": 0,
+      "priority": 10,
       "samples": {
         "/vanilla/behavior_pack/entities/camel.json": [
           {
@@ -23,6 +24,12 @@
           {
             "path": "/minecraft:entity/component_groups/minecraft:chicken_adult/minecraft:rideable/",
             "content": 1
+          }
+        ],
+        "/vanilla/behavior_pack/entities/happy_ghast.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:rideable/",
+            "content": 4
           }
         ],
         "/vanilla/behavior_pack/entities/hoglin.json": [
@@ -66,13 +73,15 @@
       "id": "controlling_seat",
       "title": "The seat that controls how this entity moves",
       "dataType": 0,
+      "priority": 12,
       "defaultValue": 0,
       "description": "The seat that designates the driver of the entity. Entities with the \"minecraft:behavior.controlled_by_player\" goal ignore this field and give control to any player in any seat."
     },
     {
       "id": "pulls_in_entities",
       "title": "This entity will pull in nearby entities.",
-      "dataType": 1
+      "dataType": 1,
+      "isDeprecated": true
     },
     {
       "id": "rider_can_interact",
@@ -82,11 +91,258 @@
       "description": "If true, this entity will be picked when looked at by the rider."
     },
     {
+      "id": "on_rider_enter_event",
+      "dataType": 39,
+      "versionIntrouduced": "1.21.80",
+      "samples": {
+        "/vanilla/behavior_pack/entities/happy_ghast.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:rideable/",
+            "content": "minecraft:on_passenger_mount"
+          }
+        ]
+      },
+      "description": "Event to execute on the owner entity when an entity starts riding it.",
+      "title": "On Rider Enter Event"
+    },
+    {
+      "id": "on_rider_exit_event",
+      "dataType": 39,
+      "versionIntrouduced": "1.21.80",
+      "samples": {
+        "/vanilla/behavior_pack/entities/happy_ghast.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:rideable/",
+            "content": "minecraft:on_passenger_dismount"
+          }
+        ]
+      },
+      "description": "Event to execute on the owner entity when an entity stops riding it.",
+      "title": "On Rider Exit Event"
+    },
+    {
       "id": "dismount_mode",
-      "title": "Dismount Mode",
-      "description": "Defines where riders are placed when dismounting this entity:\r\n- \"default\", riders are placed on a valid ground position around the entity, or at the center of the entity's collision box if none is found.\r\n- \"on_top_center\", riders are placed at the center of the top of the entity's collision box.",
+      "choices": [
+        {
+          "id": "default",
+          "title": "Default"
+        },
+        {
+          "id": "on_top_center",
+          "title": "On Top Center"
+        }
+      ],
+      "samples": {
+        "/vanilla/behavior_pack/entities/happy_ghast.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:rideable/",
+            "content": "on_top_center"
+          }
+        ]
+      },
       "defaultValue": "default",
+      "description": "Defines where riders are placed when dismounting this entity:\r\n- \"default\", riders are placed on a valid ground position around the entity, or at the center of the entity's collision box if none is found.\r\n- \"on_top_center\", riders are placed at the center of the top of the entity's collision box.",
+      "title": "Dismount Mode",
       "dataType": 2
+    },
+    {
+      "id": "seats",
+      "priority": 11,
+      "subForm": {
+        "fields": [
+          {
+            "id": "third_person_camera_radius",
+            "versionIntroduced": "1.21.80",
+            "title": "Third Person Camera Radius",
+            "dataType": 7
+          },
+          {
+            "id": "camera_relax_distance_smoothing",
+            "versionIntroduced": "1.21.80",
+            "title": "Camera Relax Distance Smoothing",
+            "dataType": 7
+          },
+          {
+            "id": "lock_rider_rotation",
+            "title": "Lock Rider Rotation",
+            "description": "Angle in degrees that a rider is allowed to rotate while riding this entity. Omit this property for no limit.",
+            "defaultValue": 181,
+            "dataType": 3
+          },
+          {
+            "id": "max_rider_count",
+            "title": "Max Rider Count",
+            "description": "Defines the maximum number of riders that can be riding this entity for this seat to be valid.",
+            "defaultValue": 0,
+            "dataType": 0
+          },
+          {
+            "id": "min_rider_count",
+            "title": "Min Rider Count",
+            "description": "Defines the minimum number of riders that need to be riding this entity before this seat can be used.",
+            "defaultValue": 0,
+            "dataType": 0
+          },
+          {
+            "id": "position",
+            "title": "Position",
+            "description": "Position of this seat relative to this entity's position.",
+            "defaultValue": [
+              0,
+              0,
+              0
+            ],
+            "dataType": 11
+          },
+          {
+            "id": "rotate_rider_by",
+            "title": "Rotate Rider By",
+            "description": "Offset to rotate riders by.",
+            "defaultValue": "0",
+            "dataType": 2
+          }
+        ],
+        "description": "The list of positions and number of riders for each position for entities riding this entity."
+      },
+      "samples": {
+        "/vanilla/behavior_pack/entities/camel.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:camel_adult/minecraft:rideable/",
+            "content": [
+              {
+                "min_rider_count": 0,
+                "max_rider_count": 2,
+                "position": [
+                  0,
+                  1.905,
+                  0.5
+                ]
+              },
+              {
+                "min_rider_count": 1,
+                "max_rider_count": 2,
+                "position": [
+                  0,
+                  1.905,
+                  -0.5
+                ]
+              }
+            ]
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cat.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:cat_wild/minecraft:rideable/",
+            "content": {
+              "position": [
+                0,
+                0.35,
+                0
+              ]
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/chicken.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:chicken_adult/minecraft:rideable/",
+            "content": {
+              "position": [
+                0,
+                0.4,
+                0
+              ]
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/cow.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:rideable/",
+            "content": {
+              "position": [
+                0,
+                1.105,
+                0
+              ]
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/donkey.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:donkey_wild/minecraft:rideable/",
+            "content": {
+              "position": [
+                0,
+                0.925,
+                -0.2
+              ]
+            }
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:donkey_tamed/minecraft:rideable/",
+            "content": {
+              "position": [
+                0,
+                0.925,
+                -0.2
+              ]
+            }
+          }
+        ],
+        "/vanilla/behavior_pack/entities/happy_ghast.json": [
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:rideable/",
+            "content": [
+              {
+                "min_rider_count": 0,
+                "max_rider_count": 4,
+                "position": [
+                  0,
+                  0.95,
+                  0.45
+                ],
+                "third_person_camera_radius": 8,
+                "camera_relax_distance_smoothing": 6
+              },
+              {
+                "min_rider_count": 1,
+                "max_rider_count": 4,
+                "position": [
+                  -0.45,
+                  0.95,
+                  0
+                ],
+                "third_person_camera_radius": 8,
+                "camera_relax_distance_smoothing": 6
+              },
+              {
+                "min_rider_count": 2,
+                "max_rider_count": 4,
+                "position": [
+                  0,
+                  0.95,
+                  -0.45
+                ],
+                "third_person_camera_radius": 8,
+                "camera_relax_distance_smoothing": 6
+              },
+              {
+                "min_rider_count": 3,
+                "max_rider_count": 4,
+                "position": [
+                  0.45,
+                  0.95,
+                  0
+                ],
+                "third_person_camera_radius": 8,
+                "camera_relax_distance_smoothing": 6
+              }
+            ]
+          }
+        ]
+      },
+      "description": "The list of positions and number of riders for each position for entities riding this entity.",
+      "title": "Seats",
+      "dataType": 15
     },
     {
       "id": "family_types",
@@ -232,18 +488,6 @@
       }
     },
     {
-      "id": "on_rider_enter_event",
-      "title": "On Rider Enter Event",
-      "description": "Event to execute on the owner entity when an entity starts riding it.",
-      "dataType": 22
-    },
-    {
-      "id": "on_rider_exit_event",
-      "title": "On Rider Exit Event",
-      "description": "Event to execute on the owner entity when an entity stops riding it.",
-      "dataType": 22
-    },
-    {
       "id": "passenger_max_width",
       "title": "Passenger Max Width",
       "description": "The max width a mob can have to be a rider. A value of 0 ignores this parameter.",
@@ -273,309 +517,6 @@
           {
             "path": "/minecraft:entity/components/minecraft:rideable/",
             "content": true
-          }
-        ]
-      }
-    },
-    {
-      "id": "seats",
-      "title": "Seats",
-      "description": "The list of positions and number of riders for each position for entities riding this entity.",
-      "dataType": 15,
-      "subForm": {
-        "description": "The list of positions and number of riders for each position for entities riding this entity.",
-        "fields": [
-          {
-            "id": "lock_rider_rotation",
-            "title": "Lock Rider Rotation",
-            "description": "Angle in degrees that a rider is allowed to rotate while riding this entity. Omit this property for no limit.",
-            "defaultValue": 181,
-            "dataType": 3
-          },
-          {
-            "id": "max_rider_count",
-            "title": "Max Rider Count",
-            "description": "Defines the maximum number of riders that can be riding this entity for this seat to be valid.",
-            "defaultValue": 0,
-            "dataType": 0
-          },
-          {
-            "id": "min_rider_count",
-            "title": "Min Rider Count",
-            "description": "Defines the minimum number of riders that need to be riding this entity before this seat can be used.",
-            "defaultValue": 0,
-            "dataType": 0
-          },
-          {
-            "id": "position",
-            "title": "Position",
-            "description": "Position of this seat relative to this entity's position.",
-            "defaultValue": [
-              0,
-              0,
-              0
-            ],
-            "dataType": 11
-          },
-          {
-            "id": "rotate_rider_by",
-            "title": "Rotate Rider By",
-            "description": "Offset to rotate riders by.",
-            "defaultValue": "0",
-            "dataType": 2
-          }
-        ]
-      },
-      "samples": {
-        "/vanilla/behavior_pack/entities/camel.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:camel_adult/minecraft:rideable/",
-            "content": [
-              {
-                "min_rider_count": 0,
-                "max_rider_count": 2,
-                "position": [
-                  0,
-                  1.905,
-                  0.5
-                ]
-              },
-              {
-                "min_rider_count": 1,
-                "max_rider_count": 2,
-                "position": [
-                  0,
-                  1.905,
-                  -0.5
-                ]
-              }
-            ]
-          }
-        ],
-        "/vanilla/behavior_pack/entities/cat.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:cat_wild/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                0.35,
-                0
-              ]
-            }
-          }
-        ],
-        "/vanilla/behavior_pack/entities/chicken.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:chicken_adult/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                0.4,
-                0
-              ]
-            }
-          }
-        ],
-        "/vanilla/behavior_pack/entities/cow.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                1.105,
-                0
-              ]
-            }
-          }
-        ],
-        "/vanilla/behavior_pack/entities/donkey.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:donkey_wild/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                0.925,
-                -0.2
-              ]
-            }
-          },
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:donkey_tamed/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                0.925,
-                -0.2
-              ]
-            }
-          }
-        ],
-        "/vanilla/behavior_pack/entities/hoglin.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:hoglin_baby/minecraft:rideable/",
-            "content": [
-              {
-                "position": [
-                  0,
-                  0.9,
-                  -0.3
-                ],
-                "lock_rider_rotation": 0
-              },
-              {
-                "position": [
-                  0,
-                  2.4,
-                  -0.3
-                ],
-                "lock_rider_rotation": 0
-              },
-              {
-                "position": [
-                  0,
-                  3.9,
-                  -0.3
-                ],
-                "lock_rider_rotation": 0
-              }
-            ]
-          }
-        ],
-        "/vanilla/behavior_pack/entities/horse.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:horse_wild/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                1.1,
-                -0.2
-              ]
-            }
-          },
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:horse_tamed/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                1.1,
-                -0.2
-              ]
-            }
-          }
-        ],
-        "/vanilla/behavior_pack/entities/husk.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:zombie_husk_adult/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                1.1,
-                -0.35
-              ],
-              "lock_rider_rotation": 0
-            }
-          }
-        ],
-        "/vanilla/behavior_pack/entities/llama.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:llama_wild/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                1.17,
-                -0.3
-              ]
-            }
-          },
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:llama_tamed/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                1.17,
-                -0.3
-              ]
-            }
-          }
-        ],
-        "/vanilla/behavior_pack/entities/minecart.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                -0.2,
-                0
-              ]
-            }
-          }
-        ],
-        "/vanilla/behavior_pack/entities/mooshroom.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                1.105,
-                0
-              ]
-            }
-          }
-        ],
-        "/vanilla/behavior_pack/entities/mule.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:mule_wild/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                0.975,
-                -0.2
-              ]
-            }
-          },
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:mule_tamed/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                0.975,
-                -0.2
-              ]
-            }
-          }
-        ],
-        "/vanilla/behavior_pack/entities/ocelot.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:ocelot_wild/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                0.35,
-                0
-              ]
-            }
-          }
-        ],
-        "/vanilla/behavior_pack/entities/pig.json": [
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:pig_unsaddled/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                0.63,
-                0
-              ]
-            }
-          },
-          {
-            "path": "/minecraft:entity/component_groups/minecraft:pig_saddled/minecraft:rideable/",
-            "content": {
-              "position": [
-                0,
-                0.63,
-                0
-              ]
-            }
           }
         ]
       }
@@ -705,6 +646,67 @@
               -0.2
             ]
           }
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/happy_ghast.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:rideable/",
+        "content": {
+          "seat_count": 4,
+          "family_types": [
+            "player"
+          ],
+          "dismount_mode": "on_top_center",
+          "on_rider_enter_event": "minecraft:on_passenger_mount",
+          "on_rider_exit_event": "minecraft:on_passenger_dismount",
+          "interact_text": "action.interact.ride.horse",
+          "seats": [
+            {
+              "min_rider_count": 0,
+              "max_rider_count": 4,
+              "position": [
+                0,
+                0.95,
+                0.45
+              ],
+              "third_person_camera_radius": 8,
+              "camera_relax_distance_smoothing": 6
+            },
+            {
+              "min_rider_count": 1,
+              "max_rider_count": 4,
+              "position": [
+                -0.45,
+                0.95,
+                0
+              ],
+              "third_person_camera_radius": 8,
+              "camera_relax_distance_smoothing": 6
+            },
+            {
+              "min_rider_count": 2,
+              "max_rider_count": 4,
+              "position": [
+                0,
+                0.95,
+                -0.45
+              ],
+              "third_person_camera_radius": 8,
+              "camera_relax_distance_smoothing": 6
+            },
+            {
+              "min_rider_count": 3,
+              "max_rider_count": 4,
+              "position": [
+                0.45,
+                0.95,
+                0
+              ],
+              "third_person_camera_radius": 8,
+              "camera_relax_distance_smoothing": 6
+            }
+          ]
         }
       }
     ],

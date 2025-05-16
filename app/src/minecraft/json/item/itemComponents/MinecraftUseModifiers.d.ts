@@ -26,6 +26,13 @@ Cooked Dream Turkey - https://github.com/microsoft/minecraft-samples/tree/main/c
   "movement_modifier": 0.35
 }
 
+
+My Sword Shoot - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_sword_shoot.json
+
+"minecraft:use_modifiers": {
+  "use_duration": 3
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';

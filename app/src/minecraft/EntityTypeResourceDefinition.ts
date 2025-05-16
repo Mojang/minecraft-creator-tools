@@ -202,6 +202,71 @@ export default class EntityTypeResourceDefinition {
     return geometryList;
   }
 
+  public ensureAnimationAndGetShortName(animationFullName: string): string | undefined {
+    if (!this._data || !this._data.animations) {
+      return undefined;
+    }
+
+    let hasAnimation = false;
+    let animationShortName = animationFullName;
+
+    for (const key in this._data.animations) {
+      const val = this._data.animations[key];
+
+      if (val === animationFullName) {
+        animationShortName = key;
+        hasAnimation = true;
+      }
+    }
+
+    if (!hasAnimation) {
+      const lastPeriod = animationFullName.lastIndexOf(".");
+
+      if (lastPeriod > 0) {
+        animationShortName = animationFullName.substring(lastPeriod + 1).toLowerCase();
+      }
+
+      this._data.animations[animationShortName] = animationFullName;
+    }
+
+    return animationShortName;
+  }
+
+  public ensureAnimationAndScript(animationFullName: string) {
+    if (!this._data) {
+      return;
+    }
+
+    const animationShortName = this.ensureAnimationAndGetShortName(animationFullName);
+
+    if (!animationShortName) {
+      return;
+    }
+
+    if (!this._data.scripts) {
+      this._data.scripts = {};
+    }
+
+    if (!this._data.scripts["animate"]) {
+      this._data.scripts["animate"] = [];
+    }
+
+    const animationList = this._data.scripts["animate"];
+
+    let hasScript = false;
+    for (const val of animationList) {
+      if (typeof val === "string" && val === animationShortName) {
+        hasScript = true;
+      } else if (typeof val === "object" && val[animationShortName]) {
+        hasScript = true;
+      }
+    }
+
+    if (!hasScript) {
+      animationList.push(animationShortName);
+    }
+  }
+
   public getTextureItems(entityTypeResourceProjectItem: ProjectItem): { [name: string]: ProjectItem } | undefined {
     if (!this._data || !this._data.geometry || !entityTypeResourceProjectItem.childItems) {
       return undefined;
@@ -390,8 +455,8 @@ export default class EntityTypeResourceDefinition {
     if (rel.childItem.itemType === ProjectItemType.texture && this._data && this._data.textures) {
       await rel.childItem.ensureStorage();
 
-      if (rel.childItem.defaultFile && packRootFolder) {
-        let relativePath = this.getRelativePath(rel.childItem.defaultFile, packRootFolder);
+      if (rel.childItem.primaryFile && packRootFolder) {
+        let relativePath = this.getRelativePath(rel.childItem.primaryFile, packRootFolder);
 
         if (relativePath) {
           for (const key in this._data.textures) {
@@ -455,19 +520,19 @@ export default class EntityTypeResourceDefinition {
     let geometryList = this.geometryList;
     let renderControllerIdList = this.renderControllerIdList;
     let animationControllerIdList = this.animationControllerIdList;
-    let animationIdList = this.animationIdList;
+    let animationValList = this.animationList;
 
     for (const candItem of itemsCopy) {
-      if (candItem.itemType === ProjectItemType.animationResourceJson && animationIdList) {
+      if (candItem.itemType === ProjectItemType.animationResourceJson && animationValList) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
-          const animationDef = await AnimationResourceDefinition.ensureOnFile(candItem.defaultFile);
+        if (candItem.primaryFile) {
+          const animationDef = await AnimationResourceDefinition.ensureOnFile(candItem.primaryFile);
 
           const animIds = animationDef?.idList;
 
           if (animIds) {
-            for (const animId of animationIdList) {
+            for (const animId of animationValList) {
               if (animIds.includes(animId)) {
                 item.addChildItem(candItem);
                 continue;
@@ -478,8 +543,8 @@ export default class EntityTypeResourceDefinition {
       } else if (candItem.itemType === ProjectItemType.animationControllerResourceJson && animationControllerIdList) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
-          const animationControllerDef = await AnimationControllerResourceDefinition.ensureOnFile(candItem.defaultFile);
+        if (candItem.primaryFile) {
+          const animationControllerDef = await AnimationControllerResourceDefinition.ensureOnFile(candItem.primaryFile);
 
           const acIds = animationControllerDef?.idList;
 
@@ -495,8 +560,8 @@ export default class EntityTypeResourceDefinition {
       } else if (candItem.itemType === ProjectItemType.renderControllerJson && renderControllerIdList) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
-          const renderControllerDef = await RenderControllerSetDefinition.ensureOnFile(candItem.defaultFile);
+        if (candItem.primaryFile) {
+          const renderControllerDef = await RenderControllerSetDefinition.ensureOnFile(candItem.primaryFile);
 
           const renderIds = renderControllerDef?.idList;
 
@@ -512,9 +577,9 @@ export default class EntityTypeResourceDefinition {
       } else if (candItem.itemType === ProjectItemType.texture && packRootFolder && textureList) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
+        if (candItem.primaryFile) {
           let relativePath = TextureDefinition.canonicalizeTexturePath(
-            this.getRelativePath(candItem.defaultFile, packRootFolder)
+            this.getRelativePath(candItem.primaryFile, packRootFolder)
           );
 
           if (relativePath) {
@@ -528,8 +593,8 @@ export default class EntityTypeResourceDefinition {
       } else if (candItem.itemType === ProjectItemType.modelGeometryJson && geometryList) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
-          const model = await ModelGeometryDefinition.ensureOnFile(candItem.defaultFile);
+        if (candItem.primaryFile) {
+          const model = await ModelGeometryDefinition.ensureOnFile(candItem.primaryFile);
 
           if (model) {
             let doAddModel = false;

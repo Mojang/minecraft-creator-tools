@@ -106,6 +106,78 @@ Armadillo - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack
 }
 
 
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+"minecraft:entity_sensor": {
+  "find_players_only": true,
+  "relative_range": false,
+  "subsensors": [
+    {
+      "event": "minecraft:on_no_player_detected_above",
+      "cooldown": 0,
+      "y_offset": 5,
+      "range": [
+        3,
+        1
+      ],
+      "minimum_count": 0,
+      "maximum_count": 0,
+      "event_filters": {
+        "test": "is_riding_self",
+        "subject": "other",
+        "value": false
+      }
+    },
+    {
+      "event": "minecraft:on_player_detected_above",
+      "cooldown": 0,
+      "y_offset": 5,
+      "range": [
+        3,
+        1
+      ],
+      "minimum_count": 1,
+      "event_filters": {
+        "test": "is_riding_self",
+        "subject": "other",
+        "value": false
+      }
+    },
+    {
+      "event": "minecraft:on_no_player_detected_above",
+      "cooldown": 0,
+      "y_offset": 4.5,
+      "range": [
+        2,
+        1.5
+      ],
+      "minimum_count": 0,
+      "maximum_count": 0,
+      "event_filters": {
+        "test": "is_riding_self",
+        "subject": "other",
+        "value": false
+      }
+    },
+    {
+      "event": "minecraft:on_player_detected_above",
+      "cooldown": 0,
+      "y_offset": 4.5,
+      "range": [
+        2,
+        1.5
+      ],
+      "minimum_count": 1,
+      "event_filters": {
+        "test": "is_riding_self",
+        "subject": "other",
+        "value": false
+      }
+    }
+  ]
+}
+
+
 Parrot - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/parrot.json
 
  * At /minecraft:entity/component_groups/minecraft:parrot_not_riding_player/minecraft:entity_sensor/: 
@@ -331,6 +403,10 @@ export default interface MinecraftEntitySensor {
   /**
    * @remarks
    * Limits the search to Players only for all subsensors.
+   * 
+   * Sample Values:
+   * Happy Ghast: true
+   *
    */
   find_players_only: boolean;
 
@@ -349,7 +425,7 @@ export default interface MinecraftEntitySensor {
    * Sample Values:
    * Armadillo: [{"event":"minecraft:no_threat_detected","cooldown":0.2,"range":[7,2],"minimum_count":0,"maximum_count":0,"event_filters":{"any_of":[{"test":"is_family","subject":"other","value":"undead"},{"all_of":[{"test":"is_family","subject":"other","value":"player"},{"any_of":[{"test":"was_last_hurt_by","subject":"other"},{"test":"is_sprinting","subject":"other"},{"test":"is_riding","subject":"other"}]}]}]}},{"event":"minecraft:threat_detected","cooldown":0.2,"range":[7,2],"minimum_count":1,"event_filters":{"any_of":[{"test":"is_family","subject":"other","value":"undead"},{"all_of":[{"test":"is_family","subject":"other","value":"player"},{"any_of":[{"test":"was_last_hurt_by","subject":"other"},{"test":"is_sprinting","subject":"other"},{"test":"is_riding","subject":"other"}]}]}]}}]
    *
-   * Parrot: [{"range":[2,2],"event_filters":{"all_of":[{"test":"is_riding","subject":"self","operator":"equals","value":true},{"test":"has_component","subject":"self","operator":"equals","value":"minecraft:behavior.look_at_player"}]},"event":"minecraft:on_riding_player"}]
+   * Happy Ghast: [{"event":"minecraft:on_no_player_detected_above","cooldown":0,"y_offset":5,"range":[3,1],"minimum_count":0,"maximum_count":0,"event_filters":{"test":"is_riding_self","subject":"other","value":false}},{"event":"minecraft:on_player_detected_above","cooldown":0,"y_offset":5,"range":[3,1],"minimum_count":1,"event_filters":{"test":"is_riding_self","subject":"other","value":false}},{"event":"minecraft:on_no_player_detected_above","cooldown":0,"y_offset":4.5,"range":[2,1.5],"minimum_count":0,"maximum_count":0,"event_filters":{"test":"is_riding_self","subject":"other","value":false}},{"event":"minecraft:on_player_detected_above","cooldown":0,"y_offset":4.5,"range":[2,1.5],"minimum_count":1,"event_filters":{"test":"is_riding_self","subject":"other","value":false}}]
    *
    */
   subsensors: MinecraftEntitySensorSubsensors[];

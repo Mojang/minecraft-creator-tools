@@ -16,7 +16,10 @@
   border-bottom: inset 2px;
   padding-bottom: 5px;
 }
+
 .hhdr-sublink {
+  line-height: 5px;
+  padding-bottom: 10px;
   font-size: small;
   color: white;
 }

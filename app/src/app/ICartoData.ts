@@ -69,7 +69,7 @@ export default interface ICartoData {
   defaultFunction?: string;
   customTools: ICustomTool[];
   conversionJarPath?: string;
-  iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyPolicyAtMinecraftDotNetSlashEula?: boolean;
+  iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula?: boolean;
   autoStartDedicatedServer?: boolean;
   dedicatedServerMode?: DedicatedServerMode;
   dedicatedServerPath?: string;

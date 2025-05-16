@@ -199,7 +199,7 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
         actionNameShort = actionName.substring(idx + 1);
       }
 
-      const fileNameSugg = Utilities.getHumanifiedObjectName(actionNameShort);
+      const fileNameSugg = Utilities.getHumanifiedObjectNameNoSpaces(actionNameShort);
 
       await ProjectUtilities.ensureTypeScriptFileWith(
         this.props.project,
@@ -287,7 +287,8 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
     let suggestedName = "actions";
 
     if (this.props.itemTypeItem.id) {
-      suggestedName = Utilities.getHumanifiedObjectName(this.props.itemTypeItem.id).toLowerCase() + "_" + suggestedName;
+      suggestedName =
+        Utilities.getHumanifiedObjectNameNoSpaces(this.props.itemTypeItem.id).toLowerCase() + "_" + suggestedName;
     }
 
     return suggestedName;
@@ -358,10 +359,10 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
         for (const candItem of this.props.item.childItems) {
           if (candItem.childItem.itemType === ProjectItemType.ts) {
             if (
-              candItem.childItem.defaultFile &&
-              candItem.childItem.defaultFile.content &&
-              typeof candItem.childItem.defaultFile.content === "string" &&
-              candItem.childItem.defaultFile.content.indexOf(this.state.selectedActionComponentId) >= 0
+              candItem.childItem.primaryFile &&
+              candItem.childItem.primaryFile.content &&
+              typeof candItem.childItem.primaryFile.content === "string" &&
+              candItem.childItem.primaryFile.content.indexOf(this.state.selectedActionComponentId) >= 0
             ) {
               foundTypeScript = true;
               itemInterior = (
@@ -375,7 +376,7 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
                   project={this.props.project}
                   scriptLanguage={ProjectScriptLanguage.typeScript}
                   heightOffset={226}
-                  file={candItem.childItem.defaultFile}
+                  file={candItem.childItem.primaryFile}
                   setActivePersistable={this._handleNewChildPersistable}
                 />
               );

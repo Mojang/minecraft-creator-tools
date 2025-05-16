@@ -6,7 +6,7 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
-import IResourceAnimationWrapper from "./IAnimationResource";
+import IResourceAnimationWrapper, { IAnimationResource } from "./IAnimationResource";
 import IDefinition from "./IDefinition";
 
 export default class AnimationResourceDefinition implements IDefinition {
@@ -102,20 +102,36 @@ export default class AnimationResourceDefinition implements IDefinition {
   }
 
   setResourcePackFormatVersion(versionStr: string) {
-    this._ensureDataInitialized();
+    this.ensureDefault();
 
     if (this._data) {
       this._data.format_version = versionStr;
     }
   }
 
-  _ensureDataInitialized() {
+  ensureDefault() {
     if (this._data === undefined) {
       this._data = {
         format_version: "1.12.0",
         animations: {},
       };
     }
+
+    return this._data;
+  }
+
+  ensureAnimation(animationName: string): IAnimationResource {
+    this.ensureDefault();
+
+    if (!this._data || !this._data.animations) {
+      throw new Error();
+    }
+
+    if (!this._data.animations[animationName]) {
+      this._data.animations[animationName] = { bones: {} };
+    }
+
+    return this._data.animations[animationName];
   }
 
   static async ensureOnFile(

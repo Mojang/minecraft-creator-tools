@@ -1,12 +1,6 @@
 {
   "fields": [
     {
-      "id": "dimension",
-      "title": "Dimension",
-      "description": "Dimension in which this replacement can happen. Must be 'minecraft:overworld'.",
-      "dataType": 2
-    },
-    {
       "id": "amount",
       "title": "Amount",
       "description": "Noise value used to determine whether or not the replacement is attempted, similar to a percentage. Must be in the range (0.0, 1.0].",
@@ -19,11 +13,10 @@
       ]
     },
     {
-      "id": "targets",
-      "title": "Targets",
-      "description": "Biomes that are going to be replaced by the overriding biome.",
-      "dataType": 17,
-      "minLength": 1
+      "id": "dimension",
+      "title": "Dimension",
+      "description": "Dimension in which this replacement can happen. Must be 'minecraft:overworld'.",
+      "dataType": 2
     },
     {
       "id": "noise_frequency_scale",
@@ -34,6 +27,19 @@
         {
           "comparison": "<=",
           "value": 100
+        }
+      ]
+    },
+    {
+      "id": "targets",
+      "title": "Targets",
+      "description": "Biomes that are going to be replaced by the overriding biome. Target biomes must not contain namespaces.",
+      "dataType": 24,
+      "minLength": 1,
+      "alternates": [
+        {
+          "id": "targets",
+          "dataType": 24
         }
       ]
     }

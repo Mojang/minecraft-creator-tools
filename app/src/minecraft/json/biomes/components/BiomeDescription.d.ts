@@ -21,8 +21,8 @@ export default interface BiomeDescription {
   /**
    * @remarks
    * The name of the Biome, used by other features like the '/locate
-   * biome' command.
+   * biome' command. Identifiers should only be lowercase.
    */
-  identifier: string;
+  identifier: object;
 
 }

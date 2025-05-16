@@ -1,0 +1,42 @@
+{
+    "format_version": "1.21.60",
+    "minecraft:crafting_items_catalog": {
+      "categories": [
+        {
+          "category_name": "construction",
+          "groups": [
+             {
+              "items": [
+                "mynamespace:my_item4",
+                "mynamespace:my_item5",
+                "mynamespace:my_item6"
+              ]
+            },
+            {
+              "group_identifier": {
+                "icon": "mynamespace:my_item1",
+                "name": "mynamespace:my_group_name"
+              },
+              "items": [
+                "mynamespace:my_item1",
+                "mynamespace:my_item2"
+              ]
+            }
+          ]
+        },
+        {
+          "category_name": "equipment",
+          "groups": [
+            {
+              "group_identifier": {
+                "name": "minecraft:itemGroup.name.helmet"
+              },
+              "items": [
+                "mynamespace:my_item3"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }

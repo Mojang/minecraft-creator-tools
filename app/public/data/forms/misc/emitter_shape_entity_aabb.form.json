@@ -1,11 +1,6 @@
 {
   "fields": [
     {
-      "id": "surface_only",
-      "title": "Surface Only",
-      "dataType": 1
-    },
-    {
       "id": "direction",
       "title": "Direction",
       "dataType": 2,
@@ -44,6 +39,11 @@
           ]
         }
       ]
+    },
+    {
+      "id": "surface_only",
+      "title": "Surface Only",
+      "dataType": 1
     }
   ],
   "title": "Emitter Shape Entity Aabb Misc",

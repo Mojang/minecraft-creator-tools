@@ -168,6 +168,7 @@ export default interface IsFamily {
    *
    * Fox: "=="
    *
+   * Iron Golem: "not"
    *
    */
   operator: string;

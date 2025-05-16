@@ -464,8 +464,8 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
     if (projectItem.defaultFolder) {
       mcworld = await MCWorld.ensureMCWorldOnFolder(projectItem.defaultFolder, projectItem.project);
-    } else if (projectItem.defaultFile) {
-      mcworld = await MCWorld.ensureOnFile(projectItem.defaultFile, projectItem.project);
+    } else if (projectItem.primaryFile) {
+      mcworld = await MCWorld.ensureOnFile(projectItem.primaryFile, projectItem.project);
     }
 
     if (!mcworld) {

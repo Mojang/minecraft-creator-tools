@@ -1,5 +1,6 @@
 {
   "fields": [],
+  "versionIntroduced": "1.21.40",
   "description": "An entity with this component will NEVER persist, and forever disappear when unloaded.",
   "title": "Transient",
   "samples": {

@@ -46,8 +46,8 @@ export default class TypesInfoGenerator implements IProjectInfoGenerator {
       if (projectItem.itemType === ProjectItemType.entityTypeBehavior) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
-          const etd = await EntityTypeDefinition.ensureOnFile(projectItem.availableFile);
+        if (projectItem.primaryFile) {
+          const etd = await EntityTypeDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (etd && etd.id && projectItem.projectPath) {
             contentIndex.insert(etd.id, projectItem.projectPath, AnnotationCategory.entityTypeSource);
@@ -56,8 +56,8 @@ export default class TypesInfoGenerator implements IProjectInfoGenerator {
       } else if (projectItem.itemType === ProjectItemType.blockTypeBehavior) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
-          const blockTypeDef = await BlockTypeDefinition.ensureOnFile(projectItem.availableFile);
+        if (projectItem.primaryFile) {
+          const blockTypeDef = await BlockTypeDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (blockTypeDef && blockTypeDef.id && projectItem.projectPath) {
             contentIndex.insert(blockTypeDef.id, projectItem.projectPath, AnnotationCategory.blockTypeSource);
@@ -76,8 +76,8 @@ export default class TypesInfoGenerator implements IProjectInfoGenerator {
       } else if (projectItem.itemType === ProjectItemType.blocksCatalogResourceJson) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
-          const blockCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.availableFile);
+        if (projectItem.primaryFile) {
+          const blockCatalog = await BlocksCatalogDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (blockCatalog && projectItem.projectPath && blockCatalog.blocksCatalog) {
             for (const name in blockCatalog.blocksCatalog) {
@@ -98,8 +98,8 @@ export default class TypesInfoGenerator implements IProjectInfoGenerator {
       } else if (projectItem.itemType === ProjectItemType.itemTypeBehavior) {
         await projectItem.ensureFileStorage();
 
-        if (projectItem.availableFile) {
-          const itemTypeDef = await ItemTypeDefinition.ensureOnFile(projectItem.availableFile);
+        if (projectItem.primaryFile) {
+          const itemTypeDef = await ItemTypeDefinition.ensureOnFile(projectItem.primaryFile);
 
           if (itemTypeDef && itemTypeDef.id && projectItem.projectPath) {
             contentIndex.insert(itemTypeDef.id, projectItem.projectPath, AnnotationCategory.itemTypeSource);

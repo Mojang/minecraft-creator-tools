@@ -92,6 +92,8 @@ export default interface MinecraftBoostable {
 
 
 /**
+ * List of items that can be used to boost while riding this entity.
+ * Each item has the following properties:
  */
 export interface MinecraftBoostableBoostItems {
 

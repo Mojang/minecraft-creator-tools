@@ -35,6 +35,9 @@ import * as jsoncommon from './../../../jsoncommon';
  * This component determines how long the item takes to use when
  * used in combination with components like "shooter", "throwable", or
  * "food".
+ * IMPORTANT
+ * This type is now deprecated, and no longer in use in the latest versions of Minecraft.
+ * 
  * NOTE: Alternate Simple Representations
 
  * This can also be represent as a simple `Decimal number`.

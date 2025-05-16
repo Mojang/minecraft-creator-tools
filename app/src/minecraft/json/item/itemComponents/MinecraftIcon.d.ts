@@ -10,10 +10,7 @@
  * Items Documentation - minecraft:icon
  * 
  * minecraft:icon Samples
-"minecraft:icon": {
-  "textures": "oak_slab"
-}
-
+"minecraft:icon": "oak_slab
 
 Apple - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/items/apple.json
 
@@ -117,11 +114,16 @@ import * as jsoncommon from './../../../jsoncommon';
  * Icon (minecraft:icon)
  * Determines the icon to represent the item in the UI and
  * elsewhere.
+ * NOTE: Alternate Simple Representations
+
+ * This can also be represent as a simple `String`.
+
  */
 export default interface MinecraftIcon {
 
   /**
    * @remarks
+   * This contains a single texture for the items icon.
    * 
    * Sample Values:
    * Apple: "apple"
@@ -150,6 +152,23 @@ export default interface MinecraftIcon {
    * Brown Bundle: {"default":"bundle_brown"}
    *
    */
-  textures: string;
+  textures: { [key: string]: string };
+
+}
+
+
+/**
+ * Textures (textures)
+ */
+export interface MinecraftIconTextures {
+
+  /**
+   * @remarks
+   * 
+   * Sample Values:
+   * Black Bundle: "bundle_black"
+   *
+   */
+  default: string;
 
 }

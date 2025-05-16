@@ -132,7 +132,7 @@ export default class ProjectItemUtilities {
         return "language/languages.json";
       case ProjectItemType.featureBehavior:
         return "behavior/features/features.json";
-      case ProjectItemType.featureRuleBehaviorJson:
+      case ProjectItemType.featureRuleBehavior:
         return "behavior/feature_rules/feature_rules.json";
       case ProjectItemType.functionEventJson:
         return "behavior/functions/tick.json";
@@ -362,7 +362,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.worldTemplateManifestJson:
       case ProjectItemType.itemTypeLegacyResource:
       case ProjectItemType.featureBehavior:
-      case ProjectItemType.featureRuleBehaviorJson:
+      case ProjectItemType.featureRuleBehavior:
         return ProjectItemCategory.types;
 
       case ProjectItemType.esLintConfigMjs:
@@ -443,6 +443,24 @@ export default class ProjectItemUtilities {
     return false;
   }
 
+  static isVibrantVisualsRelated(itemType: ProjectItemType) {
+    if (
+      itemType === ProjectItemType.atmosphericsJson ||
+      itemType === ProjectItemType.colorGradingJson ||
+      itemType === ProjectItemType.lightingJson ||
+      itemType === ProjectItemType.shadowsJson ||
+      itemType === ProjectItemType.pbrJson ||
+      itemType === ProjectItemType.pointLightsJson ||
+      itemType === ProjectItemType.waterJson ||
+      itemType ===
+        ProjectItemType.textureSetJson /* not 100% sure there might not be some legit usages of this outside of VV */
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   static getMimeTypes(item: ProjectItem) {
     switch (item.itemType) {
       case ProjectItemType.js:
@@ -465,7 +483,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.resourcePackManifestJson:
       case ProjectItemType.entityTypeBehavior:
       case ProjectItemType.tickJson:
-      case ProjectItemType.aimAssistJson:
+      case ProjectItemType.aimAssistPresetJson:
       case ProjectItemType.waterJson:
       case ProjectItemType.shadowsJson:
       case ProjectItemType.pbrJson:
@@ -499,7 +517,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.languagesCatalogResourceJson:
       case ProjectItemType.biomeBehaviorJson:
       case ProjectItemType.dialogueBehaviorJson:
-      case ProjectItemType.featureRuleBehaviorJson:
+      case ProjectItemType.featureRuleBehavior:
       case ProjectItemType.featureBehavior:
       case ProjectItemType.functionEventJson:
       case ProjectItemType.recipeBehavior:
@@ -546,6 +564,11 @@ export default class ProjectItemUtilities {
       case ProjectItemType.dimensionJson:
       case ProjectItemType.behaviorPackHistoryListJson:
       case ProjectItemType.resourcePackHistoryListJson:
+      case ProjectItemType.contentsJson:
+      case ProjectItemType.jigsawProcessorList:
+      case ProjectItemType.jigsawStructure:
+      case ProjectItemType.jigsawTemplatePool:
+      case ProjectItemType.jigsawStructureSet:
       case ProjectItemType.educationJson:
         return ["application/json"];
 
@@ -642,6 +665,16 @@ export default class ProjectItemUtilities {
         return "Shadow";
       case ProjectItemType.waterJson:
         return "Water";
+      case ProjectItemType.jigsawProcessorList:
+        return "Jigsaw Processor List";
+      case ProjectItemType.jigsawStructure:
+        return "Jigsaw Structure";
+      case ProjectItemType.jigsawTemplatePool:
+        return "Jigsaw Template Pool";
+      case ProjectItemType.contentsJson:
+        return "Contents Catalog";
+      case ProjectItemType.jigsawStructureSet:
+        return "Jigsaw Structure Set";
       case ProjectItemType.pbrJson:
         return "PBR";
       case ProjectItemType.atmosphericsJson:
@@ -652,8 +685,14 @@ export default class ProjectItemUtilities {
         return "Color Grading";
       case ProjectItemType.cameraJson:
         return "Camera";
-      case ProjectItemType.aimAssistJson:
-        return "Aim Assist";
+      case ProjectItemType.aimAssistPresetJson:
+        return "Aim Assist Preset";
+      case ProjectItemType.aimAssistCategoryJson:
+        return "Aim Assist Category";
+      case ProjectItemType.behaviorTreeJson:
+        return "Behavior Tree";
+      case ProjectItemType.spawnGroupJson:
+        return "Spawn Group";
       case ProjectItemType.catalogIndexJs:
         return "Catalog index";
       case ProjectItemType.behaviorPackFolder:
@@ -714,7 +753,7 @@ export default class ProjectItemUtilities {
         return "Biome";
       case ProjectItemType.dialogueBehaviorJson:
         return "Entity dialogue";
-      case ProjectItemType.featureRuleBehaviorJson:
+      case ProjectItemType.featureRuleBehavior:
         return "World feature rule";
       case ProjectItemType.featureBehavior:
         return "Feature";
@@ -963,6 +1002,43 @@ export default class ProjectItemUtilities {
     return false;
   }
 
+  static isBehaviorRelated(itemType: ProjectItemType) {
+    if (
+      itemType === ProjectItemType.spawnRuleBehavior ||
+      itemType === ProjectItemType.lootTableBehavior ||
+      itemType === ProjectItemType.recipeBehavior ||
+      itemType === ProjectItemType.featureBehavior ||
+      itemType === ProjectItemType.featureRuleBehavior ||
+      itemType === ProjectItemType.jigsawProcessorList ||
+      itemType === ProjectItemType.jigsawStructure ||
+      itemType === ProjectItemType.jigsawStructureSet ||
+      itemType === ProjectItemType.jigsawTemplatePool
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  static isResourceRelated(itemType: ProjectItemType) {
+    if (ProjectItemUtilities.isVibrantVisualsRelated(itemType)) {
+      return true;
+    }
+
+    if (
+      itemType === ProjectItemType.attachableResourceJson ||
+      itemType === ProjectItemType.animationControllerResourceJson ||
+      itemType === ProjectItemType.animationResourceJson ||
+      itemType === ProjectItemType.entityTypeResource ||
+      itemType === ProjectItemType.itemTypeLegacyResource ||
+      itemType === ProjectItemType.blocksCatalogResourceJson
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   static isItem(type: ProjectItemType) {
     return (
       type === ProjectItemType.itemTextureJson ||
@@ -1194,10 +1270,15 @@ export default class ProjectItemUtilities {
         return defaultRpFolder.ensureFolderFromRelativePath(path[0]);
 
       case ProjectItemType.spawnRuleBehavior:
-        return await ProjectUtilities.getDefaultSpawnRulesFolder(project);
-
       case ProjectItemType.lootTableBehavior:
-        return await ProjectUtilities.getDefaultLootTableFolder(project);
+      case ProjectItemType.recipeBehavior:
+      case ProjectItemType.featureBehavior:
+      case ProjectItemType.featureRuleBehavior:
+      case ProjectItemType.jigsawProcessorList:
+      case ProjectItemType.jigsawStructure:
+      case ProjectItemType.jigsawTemplatePool:
+      case ProjectItemType.jigsawStructureSet:
+        return await ProjectUtilities.getDefaultBehaviorPackFolder(project, path);
 
       case ProjectItemType.uiTexture:
         const defaultRpFolderA = await project.getDefaultResourcePackFolder();
@@ -1212,10 +1293,34 @@ export default class ProjectItemUtilities {
     return undefined;
   }
 
+  static getNewItemTechnicalName(type: ProjectItemType) {
+    const roots = this.getFolderRootsForType(type);
+
+    if (roots.length > 0) {
+      let str = roots[roots.length - 1];
+
+      if (str === "entities") {
+        str = "entity";
+      } else if (str.endsWith("s")) {
+        str = str.substring(0, str.length - 1);
+      }
+
+      return str;
+    }
+
+    return "item";
+  }
+
   static getFolderRootsForType(itemType: ProjectItemType) {
     switch (itemType) {
       case ProjectItemType.MCFunction:
         return ["functions"];
+
+      case ProjectItemType.featureRuleBehavior:
+        return ["feature_rules"];
+
+      case ProjectItemType.featureBehavior:
+        return ["features"];
 
       case ProjectItemType.js:
       case ProjectItemType.ts:
@@ -1232,11 +1337,25 @@ export default class ProjectItemUtilities {
 
       case ProjectItemType.uiTexture:
         return ["textures", "ui"];
+
+      case ProjectItemType.jigsawProcessorList:
+        return ["worldgen", "processors"];
+
+      case ProjectItemType.jigsawStructure:
+        return ["worldgen", "jigsaw_structures"];
+
+      case ProjectItemType.jigsawTemplatePool:
+        return ["worldgen", "template_pools"];
+
+      case ProjectItemType.jigsawStructureSet:
+        return ["worldgen", "structure_sets"];
+
       case ProjectItemType.texture:
       case ProjectItemType.terrainTextureCatalogResourceJson:
       case ProjectItemType.itemTextureJson:
       case ProjectItemType.flipbookTexturesJson:
         return ["textures"];
+
       case ProjectItemType.iconImage:
         return [
           "resource_packs",
@@ -1246,6 +1365,7 @@ export default class ProjectItemUtilities {
           "bps",
           "development_behavior_packs",
         ];
+
       case ProjectItemType.modelGeometryJson:
         return ["models"];
       case ProjectItemType.soundCatalog:
@@ -1254,6 +1374,12 @@ export default class ProjectItemUtilities {
         return ["sounds"];
       case ProjectItemType.entityTypeResource:
         return ["entity"];
+      case ProjectItemType.animationControllerResourceJson:
+      case ProjectItemType.animationControllerBehaviorJson:
+        return ["animation_controllers"];
+      case ProjectItemType.animationResourceJson:
+      case ProjectItemType.animationBehaviorJson:
+        return ["animations"];
       case ProjectItemType.renderControllerJson:
         return ["render_controllers"];
       case ProjectItemType.attachableResourceJson:
@@ -1294,7 +1420,7 @@ export default class ProjectItemUtilities {
         return ["shadows"];
       case ProjectItemType.waterJson:
         return ["water"];
-      case ProjectItemType.aimAssistJson:
+      case ProjectItemType.aimAssistPresetJson:
         return ["cameras"];
       case ProjectItemType.dimensionJson:
         return ["dimensions"];

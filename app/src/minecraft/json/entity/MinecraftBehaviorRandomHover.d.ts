@@ -40,6 +40,21 @@ Bee - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
   ]
 }
 
+
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+"minecraft:behavior.random_hover": {
+  "priority": 8,
+  "xz_dist": 8,
+  "y_dist": 8,
+  "y_offset": -1,
+  "interval": 1,
+  "hover_height": [
+    1,
+    4
+  ]
+}
+
  */
 
 import * as jsoncommon from './../../jsoncommon';
@@ -85,6 +100,8 @@ export default interface MinecraftBehaviorRandomHover {
    * Allay: 9
    *
    * Bee: 12
+   *
+   * Happy Ghast: 8
    *
    */
   priority: number;

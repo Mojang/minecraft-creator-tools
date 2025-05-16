@@ -11,6 +11,22 @@ export default class MinecraftUtilities {
     return differenceSet.hasFileOnlyOfExtension("js", "ts", "map") && !differenceSet.getHasDeletions();
   }
 
+  static removeSubTypeExtensionFromName(name: string) {
+    let canonId = name.trim();
+
+    if (name.endsWith(".json")) {
+      canonId = canonId.substring(0, canonId.length - 5);
+    }
+
+    const lastPeriod = name.lastIndexOf(".");
+
+    if (lastPeriod >= 0) {
+      canonId = canonId.substring(0, lastPeriod);
+    }
+
+    return canonId;
+  }
+
   static getIsBuiltIn(eventId: string) {
     return (
       eventId === "minecraft:entity_spawned" ||
@@ -28,6 +44,30 @@ export default class MinecraftUtilities {
     }
 
     return path;
+  }
+
+  static getNamespacedIdNamspace(name: string) {
+    let canonId = name.toLowerCase().trim();
+
+    let colonIndex = canonId.indexOf(":");
+
+    if (colonIndex >= 0) {
+      canonId = canonId.substring(0, colonIndex);
+    }
+
+    return canonId;
+  }
+
+  static getNamespacedIdName(name: string) {
+    let canonId = name.toLowerCase().trim();
+
+    let colonIndex = canonId.indexOf(":");
+
+    if (colonIndex >= 0) {
+      canonId = canonId.substring(colonIndex + 1);
+    }
+
+    return canonId;
   }
 
   static pathLooksLikeSkinPackContainerName(path: string) {

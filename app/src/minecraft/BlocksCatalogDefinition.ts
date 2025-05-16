@@ -161,8 +161,8 @@ export default class BlocksCatalogDefinition {
         if (item.itemType === ProjectItemType.blockTypeBehavior) {
           await item.ensureFileStorage();
 
-          if (item.defaultFile) {
-            const blockTypeDef = await BlockTypeDefinition.ensureOnFile(item.defaultFile);
+          if (item.primaryFile) {
+            const blockTypeDef = await BlockTypeDefinition.ensureOnFile(item.primaryFile);
 
             if (blockTypeDef && blockTypeDef.id) {
               myBlockIds[blockTypeDef.id] = true;

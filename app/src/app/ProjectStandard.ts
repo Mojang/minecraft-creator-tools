@@ -42,28 +42,28 @@ export default class ProjectStandard {
     for (let i = 0; i < itemsCopy.length; i++) {
       const item = itemsCopy[i];
 
-      if (item.itemType === ProjectItemType.justConfigTs && item.defaultFile) {
+      if (item.itemType === ProjectItemType.justConfigTs && item.primaryFile) {
         item.creationType = ProjectItemCreationType.generated;
 
-        const justConfig = await JustConfig.ensureOnFile(item.defaultFile);
+        const justConfig = await JustConfig.ensureOnFile(item.primaryFile);
 
         if (justConfig) {
           justConfig.ensureDefault();
           await justConfig.save();
         }
-      } else if (item.itemType === ProjectItemType.esLintConfigMjs && item.defaultFile) {
+      } else if (item.itemType === ProjectItemType.esLintConfigMjs && item.primaryFile) {
         item.creationType = ProjectItemCreationType.generated;
 
-        const eslintConfig = await EslintConfig.ensureOnFile(item.defaultFile);
+        const eslintConfig = await EslintConfig.ensureOnFile(item.primaryFile);
 
         if (eslintConfig) {
           eslintConfig.ensureDefault();
           await eslintConfig.save();
         }
-      } else if (item.itemType === ProjectItemType.packageJson && item.defaultFile) {
+      } else if (item.itemType === ProjectItemType.packageJson && item.primaryFile) {
         item.creationType = ProjectItemCreationType.generated;
 
-        const packageJson = await NpmPackageDefinition.ensureOnFile(item.defaultFile);
+        const packageJson = await NpmPackageDefinition.ensureOnFile(item.primaryFile);
 
         if (packageJson) {
           await packageJson.ensureStandardContent();

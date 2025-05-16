@@ -212,9 +212,9 @@ export default class ItemTextureCatalogDefinition {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && texturePathList) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
+        if (candItem.primaryFile) {
           let relativePath = TextureDefinition.canonicalizeTexturePath(
-            this.getRelativePath(candItem.defaultFile, packRootFolder)
+            this.getRelativePath(candItem.primaryFile, packRootFolder)
           );
 
           if (relativePath) {

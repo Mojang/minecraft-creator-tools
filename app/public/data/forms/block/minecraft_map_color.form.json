@@ -1,15 +1,16 @@
 {
   "fields": [
     {
-      "id": "color",
-      "title": "Color",
-      "description": "The color is represented as a hex value in the format \"#RRGGBB\". May also be expressed as an array of [R, G, B] from 0 to 255.",
+      "id": "tint_method",
+      "versionIntroduced": "1.21.80",
+      "description": "Optional, tint multiplied to the color. Tint method logic varies, but often refers to the \"rain\" and \"temperature\" of the biome the block is placed in to compute the tint. Supported tint methods are \"none\", \"default_foliage\", \"birch_foliage\", \"evergreen_foliage\", \"dry_foliage\", \"grass\" and \"water\"",
+      "title": "Tint Method",
       "dataType": 2
     },
     {
-      "id": "tint_method",
-      "title": "Tint Method",
-      "description": "Optional, tint multiplied to the color. Tint method logic varies, but often refers to the \"rain\" and \"temperature\" of the biome the block is placed in to compute the tint. Supported tint methods are \"none\", \"default_foliage\", \"birch_foliage\", \"evergreen_foliage\", \"dry_foliage\", \"grass\" and \"water\"",
+      "id": "color",
+      "title": "Color",
+      "description": "The color is represented as a hex value in the format \"#RRGGBB\". May also be expressed as an array of [R, G, B] from 0 to 255.",
       "dataType": 2
     }
   ],

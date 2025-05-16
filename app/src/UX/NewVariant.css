@@ -1,0 +1,33 @@
+.newvar-outer {
+  padding: 20px;
+  max-width: 600px;
+  min-height: 400px;
+}
+
+.newvar-options {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+}
+
+.newvar-variantLabel {
+  grid-column: 1;
+  grid-row: 1;
+  margin-top: 4px;
+}
+
+.newvar-variantDropdown {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.newvar-basedOnLabel {
+  grid-column: 1;
+  grid-row: 2;
+  margin-top: 8px;
+}
+
+.newvar-basedOnDropdown {
+  grid-column: 2;
+  grid-row: 2;
+  margin-top: 4px;
+}

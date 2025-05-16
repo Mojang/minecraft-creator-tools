@@ -1,15 +1,15 @@
 {
   "fields": [
     {
-      "id": "sound_event",
-      "title": "Legacy LevelSoundEvent",
-      "description": "Sound event type: 13, cat, blocks, chirp, far, mall, mellohi, stal, strad, ward, 11, wait, pigstep, otherside, 5, relic.",
-      "dataType": 2,
+      "id": "comparator_signal",
+      "title": "Comparator Signal",
+      "description": "Specifies signal strength for comparator blocks to use, from 1 - 13.",
+      "dataType": 0,
       "samples": {
         "/samples/custom_items/behavior_packs/custom_item/items/my_sword_singing.json": [
           {
             "path": "/minecraft:item/components/minecraft:record/",
-            "content": "pre_ram.screamer"
+            "content": 1
           }
         ]
       }
@@ -29,15 +29,15 @@
       }
     },
     {
-      "id": "comparator_signal",
-      "title": "Comparator Signal",
-      "description": "Specifies signal strength for comparator blocks to use, from 1 - 13.",
-      "dataType": 0,
+      "id": "sound_event",
+      "title": "Legacy LevelSoundEvent",
+      "description": "Sound event type: 13, cat, blocks, chirp, far, mall, mellohi, stal, strad, ward, 11, wait, pigstep, otherside, 5, relic.",
+      "dataType": 2,
       "samples": {
         "/samples/custom_items/behavior_packs/custom_item/items/my_sword_singing.json": [
           {
             "path": "/minecraft:item/components/minecraft:record/",
-            "content": 1
+            "content": "pre_ram.screamer"
           }
         ]
       }

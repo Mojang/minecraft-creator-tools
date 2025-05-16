@@ -38,10 +38,11 @@ import Project from "../app/Project";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import BlockTypeDefinition from "../minecraft/BlockTypeDefinition";
 import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
-import MinecraftEventTriggerEditor, { IMinecraftEventTriggerEditorProps } from "./MinecraftEventTriggerEditor";
+import MinecraftEventTriggerEditor from "./MinecraftEventTriggerEditor";
 import Database from "../minecraft/Database";
 import DataFormUtilities from "./DataFormUtilities";
 import ILookupProvider from "./ILookupProvider";
+import { MinecraftEventTrigger } from "../minecraft/jsoncommon";
 
 export interface IDataFormProps extends IDataContainer {
   definition: IFormDefinition;
@@ -1129,11 +1130,12 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     //  this._setPropertyValue(props.field.id, props.data);
   }
 
-  _handleMinecraftEventTriggerPropertyChange(
-    event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
-    props: IMinecraftEventTriggerEditorProps
-  ) {
-    this._setPropertyValue(props.field.id, props.data);
+  _handleMinecraftEventTriggerPropertyChange(field: IField, data: MinecraftEventTrigger) {
+    if (field.dataType === FieldDataType.minecraftEventReference) {
+      this._setPropertyValue(field.id, data.event);
+    } else {
+      this._setPropertyValue(field.id, data);
+    }
   }
 
   _handleCloseClick(event: React.SyntheticEvent<HTMLElement>, data?: ButtonProps) {
@@ -1169,6 +1171,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       const formDef = this._getSourceForm();
 
       const allFields = formDef.fields.slice();
+
+      allFields.sort(DataFormUtilities.sortFieldsByPriority);
 
       if (
         formDef.scalarField &&
@@ -1243,6 +1247,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             field.subForm === undefined &&
             field.subFormId === undefined &&
             field.dataType !== FieldDataType.minecraftEventTrigger &&
+            field.dataType !== FieldDataType.minecraftEventReference &&
             field.dataType !== FieldDataType.minecraftFilter
           ) {
             sampleElements.push(
@@ -1396,8 +1401,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                     borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
                   }}
                 >
-                  {descriptionElements}
                   {point3}
+                  {descriptionElements}
                   {sampleElements}
                 </div>
               );
@@ -1554,8 +1559,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                   {sampleElements}
                 </div>
               );
-            } else if (field.dataType === FieldDataType.minecraftEventTrigger) {
-              const val = this._getProperty(field.id, {});
+            } else if (
+              field.dataType === FieldDataType.minecraftEventTrigger ||
+              field.dataType === FieldDataType.minecraftEventReference
+            ) {
+              const val = this._getProperty(
+                field.id,
+                field.dataType === FieldDataType.minecraftEventTrigger ? {} : undefined
+              );
 
               let objKey = field.id;
 
@@ -1566,7 +1577,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               if (this.props.carto && this.props.project) {
                 const sarr = (
                   <MinecraftEventTriggerEditor
-                    data={val}
+                    data={field.dataType === FieldDataType.minecraftEventTrigger ? val : { event: val }}
                     objectKey={objKey}
                     carto={this.props.carto}
                     project={this.props.project}

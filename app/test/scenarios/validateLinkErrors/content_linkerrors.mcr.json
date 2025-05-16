@@ -636,7 +636,7 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 36,
-    "testSuccessCount": 24,
+    "testSuccessCount": 27,
     "testFailCount": 0,
     "testNotApplicableCount": 6,
     "errorSummary": "",
@@ -972,7 +972,7 @@
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.70)",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.80)",
           "recommendations": 3
         },
         "619": {
@@ -1094,7 +1094,7 @@
         },
         "120": {
           "title": "Format Version Minor Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.70.03)",
+          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.80.03)",
           "recommendations": 3
         }
       },
@@ -1199,6 +1199,20 @@
           "testCompleteSuccesses": 1
         }
       },
+      "CPI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Pack Icon Generator (CPI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CWI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
       "VSCODEFILE": {
         "2": {
           "title": "2",
@@ -1242,6 +1256,12 @@
       "PATHLENGTH": {
         "1": {
           "defaultMessage": "Path Length (PATHLENGTH) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "NOBOM": {
+        "1": {
+          "defaultMessage": "No Byte Order Mark allowed in json file. (NOBOM) completed successfully",
           "testCompleteSuccesses": 1
         }
       }
@@ -2367,7 +2387,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.70)",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.80)",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -3261,6 +3281,16 @@
     },
     {
       "iTp": 0,
+      "gId": "CPI",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "CWI",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
       "gId": "SCRIPTMODULE",
       "gIx": 1
     },
@@ -3333,6 +3363,11 @@
     {
       "iTp": 0,
       "gId": "PATHLENGTH",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "NOBOM",
       "gIx": 1
     }
   ],

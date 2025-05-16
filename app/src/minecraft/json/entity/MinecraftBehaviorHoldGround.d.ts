@@ -101,6 +101,6 @@ export default interface MinecraftBehaviorHoldGround {
    * Pillager: {"event":"minecraft:ranged_mode","target":"self"}
    *
    */
-  within_radius_event: jsoncommon.MinecraftEventTrigger;
+  within_radius_event: string;
 
 }

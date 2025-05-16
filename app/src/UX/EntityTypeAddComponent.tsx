@@ -161,26 +161,6 @@ export default class EntityTypeAddComponent extends Component<
                   content: "General Components",
                 },
                 {
-                  id: "behaviors",
-                  key: "behaviors",
-                  content: "AI Components (Behaviors)",
-                },
-                {
-                  id: "triggers",
-                  key: "triggers",
-                  content: "Triggers",
-                },
-                {
-                  id: "movBehaviors",
-                  key: "movBehaviors",
-                  content: "Movement Behaviors",
-                },
-                {
-                  id: "mobBehaviors",
-                  key: "mobBehaviors",
-                  content: "Mob-specific Behaviors",
-                },
-                {
                   id: "movecomponents",
                   key: "movecomponents",
                   content: "Movement Components",
@@ -194,6 +174,26 @@ export default class EntityTypeAddComponent extends Component<
                   id: "senscomponents",
                   key: "senscomponents",
                   content: "Sensor Components",
+                },
+                {
+                  id: "triggers",
+                  key: "triggers",
+                  content: "Triggers",
+                },
+                {
+                  id: "behaviors",
+                  key: "behaviors",
+                  content: "AI Components (Behaviors)",
+                },
+                {
+                  id: "movBehaviors",
+                  key: "movBehaviors",
+                  content: "Movement Behaviors",
+                },
+                {
+                  id: "mobBehaviors",
+                  key: "mobBehaviors",
+                  content: "Mob-specific Behaviors",
                 },
               ]}
               onSelectedIndexChange={this._handleCategorySelected}

@@ -30,6 +30,7 @@ import IProjectItemUnfulfilledRelationship from "./IProjectItemUnfulfilledRelati
 import ProjectItemRelations from "./ProjectItemRelations";
 import ProjectItemVariant from "./ProjectItemVariant";
 import { ProjectItemVariantType } from "./IProjectItemVariant";
+import Database from "../minecraft/Database";
 
 export default class ProjectItem {
   private _data: IProjectItemData;
@@ -59,7 +60,8 @@ export default class ProjectItem {
     this._isFileContentProcessed = false;
     this.variants = {};
     this._handleMCWorldLoaded = this._handleMCWorldLoaded.bind(this);
-
+    this.sortVariantsMostImportantFirst = this.sortVariantsMostImportantFirst.bind(this);
+    this.sortVariantsMostImportantLast = this.sortVariantsMostImportantLast.bind(this);
     if (incomingData) {
       this._data = incomingData;
     } else {
@@ -180,6 +182,34 @@ export default class ProjectItem {
     const vararr = [];
 
     for (const key in this._data.variants) {
+      const variant = this.ensureVariant(key);
+      vararr.push(variant);
+    }
+
+    return vararr;
+  }
+
+  getVariantListMostImportantLast() {
+    const vararr = [];
+
+    const varKeys = Object.keys(this._data.variants);
+    varKeys.sort(this.sortVariantsMostImportantLast);
+
+    for (const key of varKeys) {
+      const variant = this.ensureVariant(key);
+      vararr.push(variant);
+    }
+
+    return vararr;
+  }
+
+  getVariantListMostImportantFirst() {
+    const vararr = [];
+
+    const varKeys = Object.keys(this._data.variants);
+    varKeys.sort(this.sortVariantsMostImportantFirst);
+
+    for (const key of varKeys) {
       const variant = this.ensureVariant(key);
       vararr.push(variant);
     }
@@ -374,6 +404,33 @@ export default class ProjectItem {
     return ProjectItemUtilities.getDescriptionForType(this._data.itemType);
   }
 
+  getPackFolderName() {
+    if (this.projectPath === undefined || this.projectPath === null) {
+      return undefined;
+    }
+    let folderStoragePath = StorageUtilities.getFolderPath(this.projectPath);
+
+    if (folderStoragePath === undefined) {
+      return undefined;
+    }
+
+    let folderStoragePathLower = folderStoragePath.toLowerCase();
+
+    if (this.project.packs.length > 2) {
+      const endOfPacks = folderStoragePathLower.indexOf("_packs/");
+
+      if (endOfPacks > 0) {
+        const endOfPacksSegment = folderStoragePathLower.indexOf("/", endOfPacks + 7);
+
+        if (endOfPacksSegment > 0) {
+          return folderStoragePath.substring(endOfPacks + 7, endOfPacksSegment);
+        }
+      }
+    }
+
+    return undefined;
+  }
+
   getFolderGroupingPath() {
     if (this.projectPath === undefined || this.projectPath === null) {
       return undefined;
@@ -395,7 +452,15 @@ export default class ProjectItem {
       const start = folderStoragePathLower.indexOf("/" + folderTypeRoot + "/");
 
       if (start >= 0) {
-        folderStoragePath = folderStoragePath.substring(start + 2 + folderTypeRoot.length);
+        let packPrefix = this.getPackFolderName();
+
+        if (packPrefix === undefined) {
+          packPrefix = "";
+        } else {
+          packPrefix += " ";
+        }
+
+        folderStoragePath = packPrefix + folderStoragePath.substring(start + 2 + folderTypeRoot.length);
         folderStoragePathLower = folderStoragePath.toLowerCase();
       }
     }
@@ -499,12 +564,122 @@ export default class ProjectItem {
     return this._defaultFile;
   }
 
-  get availableFile() {
+  sortVariantsMostImportantLast(a: string, b: string) {
+    if (!this.variants) {
+      this.getVariantList();
+    }
+
+    if (!this.variants) {
+      return a.localeCompare(b);
+    }
+
+    const va = this.variants[a];
+    const vb = this.variants[b];
+
+    if (!va || !vb || !va.label || !vb.label) {
+      return 0;
+    }
+
+    if (
+      va.variantType === ProjectItemVariantType.versionSlice &&
+      vb.variantType === ProjectItemVariantType.versionSlice
+    ) {
+      const versionIndexA = Database.getVersionIndexFromVersionStr(va.label);
+      const versionIndexB = Database.getVersionIndexFromVersionStr(vb.label);
+
+      return versionIndexA - versionIndexB;
+    }
+
+    return va.label.toString().localeCompare(vb.label.toString());
+  }
+
+  sortVariantsMostImportantFirst(a: string, b: string) {
+    if (!this.variants) {
+      this.getVariantList();
+    }
+
+    if (!this.variants) {
+      return a.localeCompare(b);
+    }
+
+    const va = this.variants[a];
+    const vb = this.variants[b];
+
+    if (!va || !vb || !va.label || !vb.label) {
+      return 0;
+    }
+
+    if (
+      va.variantType === ProjectItemVariantType.versionSlice &&
+      vb.variantType === ProjectItemVariantType.versionSlice
+    ) {
+      const versionIndexA = Database.getVersionIndexFromVersionStr(va.label);
+      const versionIndexB = Database.getVersionIndexFromVersionStr(vb.label);
+
+      return versionIndexB - versionIndexA;
+    }
+
+    return vb.label.localeCompare(va.label);
+  }
+
+  get primaryVariantLabel(): string | undefined {
+    const variantKeys = Object.keys(this.variants);
+
+    // if we have version slices, return the latest one that has a file
+    if (variantKeys.length > 0) {
+      variantKeys.sort(this.sortVariantsMostImportantFirst);
+
+      for (const variantName of variantKeys) {
+        const variant = this.variants[variantName];
+
+        if (variant.variantType === ProjectItemVariantType.versionSlice) {
+          if (variant.file) {
+            return variant.label;
+          }
+        }
+      }
+    }
+
+    if (this._defaultFile) {
+      return undefined;
+    }
+
+    for (const variantName of variantKeys) {
+      if (variantName) {
+        const variant = this.variants[variantName];
+
+        if (variant.file) {
+          return variant.label;
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  get primaryFile(): IFile | null {
+    const variantKeys = Object.keys(this.variants);
+
+    // if we have version slices, return the latest one that has a file
+    if (variantKeys.length > 0) {
+      variantKeys.sort(this.sortVariantsMostImportantFirst);
+
+      for (const variantName of variantKeys) {
+        const variant = this.variants[variantName];
+
+        if (variant.variantType === ProjectItemVariantType.versionSlice) {
+          if (variant.file) {
+            return variant.file;
+          }
+        }
+      }
+    }
+
     if (this._defaultFile) {
       return this._defaultFile;
     }
 
-    for (const variantName in this.variants) {
+    for (const variantName of variantKeys) {
       if (variantName) {
         const variant = this.variants[variantName];
 
@@ -514,7 +689,7 @@ export default class ProjectItem {
       }
     }
 
-    return undefined;
+    return null;
   }
 
   get defaultFolder() {
@@ -551,20 +726,22 @@ export default class ProjectItem {
 
       return true;
     } else if (this.storageType === ProjectItemStorageType.singleFile) {
-      if (!this.defaultFile) {
+      const itemFile = this.primaryFile;
+
+      if (!itemFile) {
         return false;
       }
 
-      if (!this.defaultFile.isContentLoaded) {
+      if (!itemFile.isContentLoaded) {
         return false;
       }
 
       if (this.isWorld) {
-        if (!this.defaultFile.manager || !(this.defaultFile.manager instanceof MCWorld)) {
+        if (!itemFile.manager || !(itemFile.manager instanceof MCWorld)) {
           return false;
         }
 
-        const world = this.defaultFile.manager as MCWorld;
+        const world = itemFile.manager as MCWorld;
 
         return world.isLoaded;
       }
@@ -612,13 +789,13 @@ export default class ProjectItem {
         val = (this._defaultFile.fileContainerStorage as ZipStorage).isContentUpdated;
       }
 
-      /*if (!val) {
+      if (!val) {
         const jsFile = this.getJavaScriptLibTwin();
 
         if (jsFile !== undefined) {
           val = jsFile.needsSave;
         }
-      }*/
+      }
     }
 
     return val;
@@ -685,9 +862,11 @@ export default class ProjectItem {
         }
       }
     } else if (this.isWorld) {
-      if (this.defaultFile) {
-        if (this.defaultFile.manager instanceof MCWorld) {
-          const world = this.defaultFile.manager as MCWorld;
+      const itemFile = this.primaryFile;
+
+      if (itemFile) {
+        if (itemFile.manager instanceof MCWorld) {
+          const world = itemFile.manager as MCWorld;
 
           if (world.isLoaded) {
             return "data:image/jpg;base64, " + world.imageBase64;
@@ -721,9 +900,11 @@ export default class ProjectItem {
         }
       }
     } else if (this.itemType === ProjectItemType.MCWorld || this.itemType === ProjectItemType.MCTemplate) {
-      if (this.defaultFile) {
-        if (this.defaultFile.manager instanceof MCWorld) {
-          const world = this.defaultFile.manager as MCWorld;
+      const itemFile = this.primaryFile;
+
+      if (itemFile) {
+        if (itemFile.manager instanceof MCWorld) {
+          const world = itemFile.manager as MCWorld;
 
           if (world.isLoaded) {
             return world.name;
@@ -1040,23 +1221,23 @@ export default class ProjectItem {
     if (
       !this.isInFileContainer &&
       this.isFileContainerStorageItem &&
-      this.defaultFile &&
-      this.defaultFile.fileContainerStorage &&
-      this.defaultFile.fileContainerStorage instanceof ZipStorage
+      this.primaryFile &&
+      this.primaryFile.fileContainerStorage &&
+      this.primaryFile.fileContainerStorage instanceof ZipStorage
     ) {
-      const zs = this.defaultFile.fileContainerStorage as ZipStorage;
+      const zs = this.primaryFile.fileContainerStorage as ZipStorage;
 
       if (zs.isContentUpdated && (zs.errorStatus === undefined || zs.errorStatus === StorageErrorStatus.none)) {
         const op = await this._project.carto.notifyOperationStarted(
-          "Zipping file '" + this.defaultFile.storageRelativePath + "'..."
+          "Zipping file '" + this.primaryFile.storageRelativePath + "'..."
         );
         const bytes = await zs.generateUint8ArrayAsync();
         await this._project.carto.notifyOperationEnded(
           op,
-          "Done zipping file '" + this.defaultFile.storageRelativePath + "'."
+          "Done zipping file '" + this.primaryFile.storageRelativePath + "'."
         );
 
-        this.defaultFile.setContent(bytes);
+        this.primaryFile.setContent(bytes);
       }
     }
   }
@@ -1110,11 +1291,11 @@ export default class ProjectItem {
       await this._defaultFile.saveContent();
 
       // these next two are associated with action set
-      /*const jsFile = this.getJavaScriptLibTwin();
+      const jsFile = this.getJavaScriptLibTwin();
 
       if (jsFile !== undefined && jsFile.needsSave) {
         await jsFile.saveContent();
-      }*/
+      }
 
       const functionFile = this.getFunctionTwin();
 

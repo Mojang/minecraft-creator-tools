@@ -221,8 +221,8 @@ export default class SoundCatalogDefinition implements IDefinition {
       if (item.itemType === ProjectItemType.soundCatalog) {
         await item.ensureFileStorage();
 
-        if (item.defaultFile) {
-          const soundCatalog = await SoundCatalogDefinition.ensureOnFile(item.defaultFile);
+        if (item.primaryFile) {
+          const soundCatalog = await SoundCatalogDefinition.ensureOnFile(item.primaryFile);
 
           if (soundCatalog) {
             return soundCatalog;
@@ -355,8 +355,8 @@ export default class SoundCatalogDefinition implements IDefinition {
       } else if (candItem.itemType === ProjectItemType.soundDefinitionCatalog && soundEventList) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
-          const soundDef = await SoundDefinitionCatalogDefinition.ensureOnFile(candItem.defaultFile);
+        if (candItem.primaryFile) {
+          const soundDef = await SoundDefinitionCatalogDefinition.ensureOnFile(candItem.primaryFile);
 
           const soundSetNames = soundDef?.getSoundDefinitionSetNameList();
           if (soundSetNames) {

@@ -4,7 +4,7 @@
 import IGitHubInfo from "./IGitHubInfo";
 import IProjectItemVariant from "./IProjectItemVariant";
 
-export const MaxItemTypes = 138;
+export const MaxItemTypes = 146;
 
 export enum ProjectItemCategory {
   assets,
@@ -59,7 +59,7 @@ export enum ProjectItemType {
   languagesCatalogResourceJson = 37,
   biomeBehaviorJson = 38,
   dialogueBehaviorJson = 39,
-  featureRuleBehaviorJson = 40,
+  featureRuleBehavior = 40,
   featureBehavior = 41,
   functionEventJson = 42,
   recipeBehavior = 43,
@@ -149,13 +149,21 @@ export enum ProjectItemType {
   craftingItemCatalog = 128,
   mcToolsProjectPreferences = 129,
   educationJson = 130,
-  aimAssistJson = 131,
+  aimAssistPresetJson = 131,
   colorGradingJson = 132,
   atmosphericsJson = 133,
   pbrJson = 134,
   pointLightsJson = 135,
   waterJson = 136,
   shadowsJson = 137,
+  contentsJson = 138,
+  jigsawStructureSet = 139,
+  jigsawStructure = 140,
+  jigsawTemplatePool = 141,
+  jigsawProcessorList = 142,
+  aimAssistCategoryJson = 143,
+  behaviorTreeJson = 144,
+  spawnGroupJson = 145,
 }
 
 export enum ProjectItemStorageType {

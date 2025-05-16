@@ -25,6 +25,21 @@
         "title": "V1 21 80 BlockCulling Rule",
         "fields": [
           {
+            "id": "condition",
+            "title": "V1 21 80 BlockCulling Rule Condition",
+            "dataType": 2
+          },
+          {
+            "id": "cull_against_full_and_opaque",
+            "title": "Cull Against Full And Opaque",
+            "dataType": 1
+          },
+          {
+            "id": "direction",
+            "title": "Facing",
+            "dataType": 2
+          },
+          {
             "id": "geometry_part",
             "title": "Geometry Part",
             "dataType": 16,
@@ -49,16 +64,6 @@
                 }
               ]
             }
-          },
-          {
-            "id": "condition",
-            "title": "V1 21 80 BlockCulling Rule Condition",
-            "dataType": 2
-          },
-          {
-            "id": "direction",
-            "title": "Facing",
-            "dataType": 2
           }
         ]
       }

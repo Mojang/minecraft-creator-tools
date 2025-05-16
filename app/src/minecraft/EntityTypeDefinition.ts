@@ -35,13 +35,13 @@ export enum EntityTypeComponentCategory {
 export enum EntityTypeComponentExtendedCategory {
   attribute = 0,
   complex = 1,
-  behavior = 2,
-  trigger = 3,
-  movementBehavior = 4,
-  mobSpecificBehavior = 5,
-  movementComplex = 6,
-  combatAndHealthComplex = 7,
-  sensorComponents = 8,
+  movementComplex = 2,
+  combatAndHealthComplex = 3,
+  sensorComponents = 4,
+  trigger = 5,
+  behavior = 6,
+  movementBehavior = 7,
+  mobSpecificBehavior = 8,
 }
 
 export const AttributeComponents: { [id: string]: string } = {
@@ -456,6 +456,19 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     return componentSet;
   }
 
+  getComponentGroupsComponentUsedIn(componentName: string): ManagedComponentGroup[] {
+    const componentGroups = this.getComponentGroups();
+    const cgsUsedIn: ManagedComponentGroup[] = [];
+
+    for (const cg of componentGroups) {
+      if (cg && cg.getComponent(componentName)) {
+        cgsUsedIn.push(cg);
+      }
+    }
+
+    return cgsUsedIn;
+  }
+
   getComponentGroup(componentGroupName: string): ManagedComponentGroup | undefined {
     if (this._data !== undefined) {
       if (!this._componentGroups[componentGroupName]) {
@@ -682,8 +695,8 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       if (candItem.itemType === ProjectItemType.entityTypeResource) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
-          const etrd = await EntityTypeResourceDefinition.ensureOnFile(candItem.defaultFile);
+        if (candItem.primaryFile) {
+          const etrd = await EntityTypeResourceDefinition.ensureOnFile(candItem.primaryFile);
 
           if (etrd) {
             const id = etrd.id;
@@ -696,8 +709,8 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       } else if (candItem.itemType === ProjectItemType.spawnRuleBehavior) {
         await candItem.ensureStorage();
 
-        if (candItem.defaultFile) {
-          const srb = await SpawnRulesBehaviorDefinition.ensureOnFile(candItem.defaultFile);
+        if (candItem.primaryFile) {
+          const srb = await SpawnRulesBehaviorDefinition.ensureOnFile(candItem.primaryFile);
 
           if (srb) {
             const id = srb.id;

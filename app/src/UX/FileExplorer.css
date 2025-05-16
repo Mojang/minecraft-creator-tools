@@ -19,7 +19,7 @@
 .fex-areaWithPreviewCompact {
   width: 100%;
   height: 100%;
-  border: solid 1px;
+  border: solid 0px;
   padding: 2px;
   display: grid;
   grid-template-rows: 186px 186px;

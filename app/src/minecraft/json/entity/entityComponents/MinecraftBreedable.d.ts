@@ -283,7 +283,7 @@ Hoglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
   "love_filters": {
     "test": "has_component",
     "subject": "self",
-    "operator": "!=",
+    "operator": "not",
     "value": "minecraft:attack_cooldown"
   },
   "breeds_with": {
@@ -477,6 +477,8 @@ export default interface MinecraftBreedable {
 
 
 /**
+ * The list of entity definitions that this entity can breed 
+ * with.
  */
 export interface MinecraftBreedableBreedsWith {
 
@@ -502,6 +504,9 @@ export interface MinecraftBreedableBreedsWith {
 
 
 /**
+ * Determines how likely the baby of parents with the same variant will
+ * deny that variant and take a random variant within the given range
+ * instead.
  */
 export interface MinecraftBreedableDenyParentsVariant {
 
@@ -527,6 +532,8 @@ export interface MinecraftBreedableDenyParentsVariant {
 
 
 /**
+ * The list of nearby block requirements to get the entity into the
+ * 'love' state.
  */
 export interface MinecraftBreedableEnvironmentRequirements {
 
@@ -535,6 +542,12 @@ export interface MinecraftBreedableEnvironmentRequirements {
    * The block types required nearby for the entity to breed.
    */
   block_types: string[];
+
+  /**
+   * @remarks
+   * The block types required nearby for the entity to breed.
+   */
+  blocks: string[];
 
   /**
    * @remarks
@@ -554,6 +567,9 @@ export interface MinecraftBreedableEnvironmentRequirements {
 
 
 /**
+ * Determines how likely the babies are to NOT inherit one of
+ * their parent's variances. Values are between 0.0 and 1.0, with a
+ * higher number meaning more likely to mutate.
  */
 export interface MinecraftBreedableMutationFactor {
 

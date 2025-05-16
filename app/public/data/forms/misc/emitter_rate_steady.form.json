@@ -1,38 +1,6 @@
 {
   "fields": [
     {
-      "id": "spawn_rate",
-      "title": "Spawn Rate",
-      "dataType": 24,
-      "alternates": [
-        {
-          "id": "spawn_rate",
-          "dataType": 14,
-          "readOnly": true,
-          "subForm": {
-            "id": "spawn_rate",
-            "title": "Spawn Rate",
-            "fields": [
-              {
-                "id": "expression",
-                "title": "Expression",
-                "dataType": 2
-              },
-              {
-                "id": "version",
-                "title": "Version",
-                "dataType": 0
-              }
-            ]
-          }
-        },
-        {
-          "id": "spawn_rate",
-          "dataType": 3
-        }
-      ]
-    },
-    {
       "id": "max_particles",
       "title": "Max Particles",
       "dataType": 24,
@@ -60,6 +28,38 @@
         },
         {
           "id": "max_particles",
+          "dataType": 3
+        }
+      ]
+    },
+    {
+      "id": "spawn_rate",
+      "title": "Spawn Rate",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "spawn_rate",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "id": "spawn_rate",
+            "title": "Spawn Rate",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "spawn_rate",
           "dataType": 3
         }
       ]

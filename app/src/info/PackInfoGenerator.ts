@@ -106,19 +106,20 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
       const pi = itemsCopy[i];
 
       if (pi.itemType === ProjectItemType.iconImage) {
-        if (pi.availableFile) {
+        const itemFile = pi.primaryFile;
+        if (itemFile) {
           if (
-            StorageUtilities.getBaseFromName(pi.availableFile.name) === "pack_icon" &&
-            StorageUtilities.getTypeFromName(pi.availableFile.name) === "png"
+            StorageUtilities.getBaseFromName(itemFile.name) === "pack_icon" &&
+            StorageUtilities.getTypeFromName(itemFile.name) === "png"
           ) {
-            await pi.availableFile.loadContent(false);
+            await itemFile.loadContent(false);
 
-            if (pi.availableFile.content && typeof pi.availableFile.content !== "string") {
+            if (itemFile.content && typeof itemFile.content !== "string") {
               let index = PackInfoGeneratorTest.resourcePackIcon;
 
-              if (MinecraftUtilities.pathLooksLikeBehaviorPackName(pi.availableFile.storageRelativePath)) {
+              if (MinecraftUtilities.pathLooksLikeBehaviorPackName(itemFile.storageRelativePath)) {
                 index = PackInfoGeneratorTest.behaviorPackIcon;
-              } else if (MinecraftUtilities.pathLooksLikeSkinPackName(pi.availableFile.storageRelativePath)) {
+              } else if (MinecraftUtilities.pathLooksLikeSkinPackName(itemFile.storageRelativePath)) {
                 index = PackInfoGeneratorTest.skinPackIcon;
               }
 
@@ -129,7 +130,7 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
                   index,
                   ProjectInfoUtilities.getTitleFromEnum(PackInfoGeneratorTest, index),
                   pi,
-                  Utilities.uint8ArrayToBase64(pi.availableFile.content)
+                  Utilities.uint8ArrayToBase64(itemFile.content)
                 )
               );
             }

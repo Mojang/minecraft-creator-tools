@@ -23,6 +23,16 @@ Allay - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
   "avoid_sun": false
 }
 
+
+Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
+
+"minecraft:navigation.hover": {
+  "can_path_over_water": true,
+  "avoid_damage_blocks": true,
+  "can_path_from_air": true,
+  "avoid_water": true
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';

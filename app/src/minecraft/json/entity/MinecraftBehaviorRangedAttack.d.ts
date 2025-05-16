@@ -21,7 +21,7 @@ Blaze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
   "charge_shoot_trigger": 4,
   "attack_interval_min": 3,
   "attack_interval_max": 5,
-  "attack_radius": 16
+  "attack_radius": 48
 }
 
 
@@ -207,7 +207,7 @@ export default interface MinecraftBehaviorRangedAttack {
    * shoot.
    * 
    * Sample Values:
-   * Blaze: 16
+   * Blaze: 48
    *
    * Bogged: 15
    *

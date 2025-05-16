@@ -66,13 +66,14 @@ export default class JsonSchemaGenerator {
       case FieldDataType.string:
       case FieldDataType.localizableString:
       case FieldDataType.molang:
-      case FieldDataType.minecraftEventTrigger:
+      case FieldDataType.minecraftEventReference:
         schema.type = "string";
         break;
       case FieldDataType.stringArray:
         schema.type = "array";
         schema.items = { type: "string" };
         break;
+      case FieldDataType.minecraftEventTrigger:
       case FieldDataType.object:
         schema.type = "object";
         schema.properties = {};

@@ -4,5 +4,6 @@ export const constants = {
   disclaimer: "Alpha software. License at https://github.com/mojang/minecraft-creator-tools.",
   copyright: "Copyright 2024 Mojang AB. All rights reserved.",
   homeUrl: "https://mctools.dev",
+  webContentUrl: "https://mctools.dev",
   repositoryUrl: "https://github.com/mojang/minecraft-creator-tools",
 };
