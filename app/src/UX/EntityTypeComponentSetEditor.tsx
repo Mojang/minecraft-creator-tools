@@ -23,6 +23,7 @@ import EntityTypeAddComponent from "./EntityTypeAddComponent";
 import Carto from "../app/Carto";
 import Project from "../app/Project";
 import MinecraftButton from "./MinecraftButton";
+import ManagedComponentGroup from "../minecraft/ManagedComponentGroup";
 
 interface IEntityTypeComponentSetEditorProps {
   componentSetItem: IManagedComponentSetItem;
@@ -344,6 +345,80 @@ export default class EntityTypeComponentSetEditor extends Component<
 
             if (component.id === this.state?.activeComponentId) {
               componentForms.push(<Toolbar aria-label="Component editing toolbar" items={perComponentToolbarItems} />);
+
+              if (this.state.activeComponentId) {
+                if (this.props.isDefault) {
+                  const cgs = this.props.entityTypeItem.getComponentGroupsComponentUsedIn(this.state.activeComponentId);
+
+                  if (cgs.length === 1) {
+                    componentForms.push(
+                      <div className="etcse-note">
+                        This component is used in the {Utilities.getHumanifiedObjectName(cgs[0].id)} component group.
+                        Its settings will be overridden when that group is applied.
+                      </div>
+                    );
+                  } else if (cgs.length >= 2) {
+                    let strCgList = "";
+
+                    for (let i = 0; i < cgs.length; i++) {
+                      if (i < cgs.length - 1) {
+                        strCgList += Utilities.getHumanifiedObjectName(cgs[i].id) + ", ";
+                      } else {
+                        strCgList += "and " + Utilities.getHumanifiedObjectName(cgs[i].id);
+                      }
+                    }
+
+                    componentForms.push(
+                      <div className="etcse-note">
+                        This component is used in the {strCgList} component groups. Its settings will be overridden when
+                        one of those groups is applied.
+                      </div>
+                    );
+                  }
+                } else {
+                  let cgs = this.props.entityTypeItem.getComponentGroupsComponentUsedIn(this.state.activeComponentId);
+
+                  const cgsA: ManagedComponentGroup[] = [];
+
+                  for (const cg of cgs) {
+                    if (cg.id !== (this.props.componentSetItem as ManagedComponentGroup).id) {
+                      cgsA.push(cg);
+                    }
+                  }
+
+                  let noteStr = "";
+
+                  if (this.props.entityTypeItem.getComponent(component.id)) {
+                    noteStr = "This component is used in the default configuration. ";
+                  }
+
+                  if (cgsA.length === 1) {
+                    noteStr +=
+                      "This component is used in the " +
+                      cgsA[0] +
+                      " component group. Its' settings will be overridden when that group is applied.";
+                  } else if (cgsA.length >= 2) {
+                    let strCgList = "";
+
+                    for (let i = 0; i < cgsA.length; i++) {
+                      if (i < cgsA.length - 1) {
+                        strCgList += cgsA[i].id + ", ";
+                      } else {
+                        strCgList += "and " + cgsA[i].id;
+                      }
+                    }
+
+                    noteStr +=
+                      "This component is used in " +
+                      strCgList +
+                      " component groups. Its' settings will be overridden when one of those groups is applied.";
+                  }
+
+                  if (noteStr.length > 0) {
+                    componentForms.push(<div className="etcse-note">{noteStr}</div>);
+                  }
+                }
+              }
 
               if (form !== undefined) {
                 selectedIndex = itemsAdded - 1;

@@ -1401,8 +1401,8 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                     borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
                   }}
                 >
-                  {descriptionElements}
                   {point3}
+                  {descriptionElements}
                   {sampleElements}
                 </div>
               );

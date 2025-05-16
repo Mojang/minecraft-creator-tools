@@ -26,3 +26,7 @@ export function parseImageData(file: IFile): Promise<any | null> {
 export function isPackIcon(file?: IFile): boolean {
   return !!file && file.name.includes("pack_icon") && file.name.endsWith(".png");
 }
+
+export function isWorldIcon(file?: IFile): boolean {
+  return !!file && file.name.includes("world_icon") && file.name.endsWith(".jpeg");
+}

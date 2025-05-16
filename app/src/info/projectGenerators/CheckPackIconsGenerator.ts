@@ -58,10 +58,10 @@ export default class CheckPackIconsGenerator implements IProjectInfoGenerator {
     const icons = await pack.getFiles(isPackIcon);
 
     if (icons.length === 0) {
-      const message = "pack_icon image file not found. It must use the .png extension.";
+      const message = `pack_icon image file not found for ${pack.name}. It must use the .png extension.`;
       return this.createResult(CheckPacksIconsGeneratorTest.NoIconFound, message);
     } else if (icons.length > 1) {
-      const message = "Found multiple pack icon files, there should be only one.";
+      const message = `Found multiple pack icon files for ${pack.name}, there should be only one.`;
       return this.createResult(CheckPacksIconsGeneratorTest.MultipleIconsFound, message);
     }
 

@@ -40,6 +40,7 @@ import ItemTypeManager from "../manager/ItemTypeManager";
 import SharingInfoGenerator from "./SharingInfoGenerator";
 import CheckNoBOMGenerator from "./fileGenerators/CheckNoBOMGenerator";
 import CheckPackIconsGenerator from "./projectGenerators/CheckPackIconsGenerator";
+import CheckWorldIconsGenerator from "./projectGenerators/CheckWorldIconsGenerator";
 
 export default class GeneratorRegistrations {
   static managers = [
@@ -70,6 +71,7 @@ export default class GeneratorRegistrations {
     new TextureImageInfoGenerator(),
     new GeometryInfoGenerator(),
     new CheckPackIconsGenerator(),
+    new CheckWorldIconsGenerator(),
     ...this.managers,
   ];
 

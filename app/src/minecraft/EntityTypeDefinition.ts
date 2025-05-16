@@ -35,13 +35,13 @@ export enum EntityTypeComponentCategory {
 export enum EntityTypeComponentExtendedCategory {
   attribute = 0,
   complex = 1,
-  behavior = 2,
-  trigger = 3,
-  movementBehavior = 4,
-  mobSpecificBehavior = 5,
-  movementComplex = 6,
-  combatAndHealthComplex = 7,
-  sensorComponents = 8,
+  movementComplex = 2,
+  combatAndHealthComplex = 3,
+  sensorComponents = 4,
+  trigger = 5,
+  behavior = 6,
+  movementBehavior = 7,
+  mobSpecificBehavior = 8,
 }
 
 export const AttributeComponents: { [id: string]: string } = {
@@ -454,6 +454,19 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     }
 
     return componentSet;
+  }
+
+  getComponentGroupsComponentUsedIn(componentName: string): ManagedComponentGroup[] {
+    const componentGroups = this.getComponentGroups();
+    const cgsUsedIn: ManagedComponentGroup[] = [];
+
+    for (const cg of componentGroups) {
+      if (cg && cg.getComponent(componentName)) {
+        cgsUsedIn.push(cg);
+      }
+    }
+
+    return cgsUsedIn;
   }
 
   getComponentGroup(componentGroupName: string): ManagedComponentGroup | undefined {

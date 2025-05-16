@@ -517,7 +517,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               project={this.props.project}
               theme={this.props.theme}
               title={selItem.id}
-              isDefault={true}
+              isDefault={selItem instanceof EntityTypeDefinition}
               heightOffset={this.props.heightOffset + 115}
             />
           );

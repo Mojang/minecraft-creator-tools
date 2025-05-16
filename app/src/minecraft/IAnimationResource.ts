@@ -12,7 +12,8 @@ export interface IAnimationResourceSet {
 }
 
 export interface IAnimationResource {
-  animation_length: number;
+  animation_length?: number;
+  loop?: boolean;
   bones: IAnimationResourceBoneSet;
 }
 
@@ -21,9 +22,9 @@ export interface IAnimationResourceBoneSet {
 }
 
 export interface IAnimationResourceBone {
-  rotation: { [timeCode: string]: (number | string)[] | IAnimationResourceBoneKeyframeOffset } | (number | string)[];
-  position: { [timeCode: string]: (number | string)[] | IAnimationResourceBoneKeyframeOffset } | (number | string)[];
-  scale: { [timeCode: string]: (number | string)[] } | (number | string)[];
+  rotation?: { [timeCode: string]: (number | string)[] | IAnimationResourceBoneKeyframeOffset } | (number | string)[];
+  position?: { [timeCode: string]: (number | string)[] | IAnimationResourceBoneKeyframeOffset } | (number | string)[];
+  scale?: { [timeCode: string]: (number | string)[] } | (number | string)[];
 }
 
 export interface IAnimationResourceBoneKeyframeOffset {

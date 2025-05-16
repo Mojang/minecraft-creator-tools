@@ -19,7 +19,7 @@ export interface IEntityTypeResourceDescription {
   particle_effects: { [identifier: string]: string };
   animations: { [identifier: string]: string };
   animation_controllers: { [identifier: string]: string };
-  scripts: { [identifier: string]: string[] };
+  scripts: { [identifier: string]: (string | { [name: string]: string })[] };
   render_controllers: string[];
   spawn_egg?: IEntityResourceSpawnEgg;
 }

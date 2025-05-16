@@ -199,7 +199,7 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
         actionNameShort = actionName.substring(idx + 1);
       }
 
-      const fileNameSugg = Utilities.getHumanifiedObjectName(actionNameShort);
+      const fileNameSugg = Utilities.getHumanifiedObjectNameNoSpaces(actionNameShort);
 
       await ProjectUtilities.ensureTypeScriptFileWith(
         this.props.project,
@@ -287,7 +287,8 @@ export default class ItemTypeActionEditor extends Component<IItemTypeActionEdito
     let suggestedName = "actions";
 
     if (this.props.itemTypeItem.id) {
-      suggestedName = Utilities.getHumanifiedObjectName(this.props.itemTypeItem.id).toLowerCase() + "_" + suggestedName;
+      suggestedName =
+        Utilities.getHumanifiedObjectNameNoSpaces(this.props.itemTypeItem.id).toLowerCase() + "_" + suggestedName;
     }
 
     return suggestedName;

@@ -202,6 +202,71 @@ export default class EntityTypeResourceDefinition {
     return geometryList;
   }
 
+  public ensureAnimationAndGetShortName(animationFullName: string): string | undefined {
+    if (!this._data || !this._data.animations) {
+      return undefined;
+    }
+
+    let hasAnimation = false;
+    let animationShortName = animationFullName;
+
+    for (const key in this._data.animations) {
+      const val = this._data.animations[key];
+
+      if (val === animationFullName) {
+        animationShortName = key;
+        hasAnimation = true;
+      }
+    }
+
+    if (!hasAnimation) {
+      const lastPeriod = animationFullName.lastIndexOf(".");
+
+      if (lastPeriod > 0) {
+        animationShortName = animationFullName.substring(lastPeriod + 1).toLowerCase();
+      }
+
+      this._data.animations[animationShortName] = animationFullName;
+    }
+
+    return animationShortName;
+  }
+
+  public ensureAnimationAndScript(animationFullName: string) {
+    if (!this._data) {
+      return;
+    }
+
+    const animationShortName = this.ensureAnimationAndGetShortName(animationFullName);
+
+    if (!animationShortName) {
+      return;
+    }
+
+    if (!this._data.scripts) {
+      this._data.scripts = {};
+    }
+
+    if (!this._data.scripts["animate"]) {
+      this._data.scripts["animate"] = [];
+    }
+
+    const animationList = this._data.scripts["animate"];
+
+    let hasScript = false;
+    for (const val of animationList) {
+      if (typeof val === "string" && val === animationShortName) {
+        hasScript = true;
+      } else if (typeof val === "object" && val[animationShortName]) {
+        hasScript = true;
+      }
+    }
+
+    if (!hasScript) {
+      animationList.push(animationShortName);
+    }
+  }
+
   public getTextureItems(entityTypeResourceProjectItem: ProjectItem): { [name: string]: ProjectItem } | undefined {
     if (!this._data || !this._data.geometry || !entityTypeResourceProjectItem.childItems) {
       return undefined;

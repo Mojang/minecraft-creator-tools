@@ -199,7 +199,7 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
         actionNameShort = actionName.substring(idx + 1);
       }
 
-      const fileNameSugg = Utilities.getHumanifiedObjectName(actionNameShort);
+      const fileNameSugg = Utilities.getHumanifiedObjectNameNoSpaces(actionNameShort);
 
       await ProjectUtilities.ensureTypeScriptFileWith(
         this.props.project,
@@ -288,7 +288,7 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
 
     if (this.props.blockTypeItem.id) {
       suggestedName =
-        Utilities.getHumanifiedObjectName(this.props.blockTypeItem.id).toLowerCase() + "_" + suggestedName;
+        Utilities.getHumanifiedObjectNameNoSpaces(this.props.blockTypeItem.id).toLowerCase() + "_" + suggestedName;
     }
 
     return suggestedName;

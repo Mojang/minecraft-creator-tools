@@ -372,6 +372,13 @@ export default class Utilities {
     return Utilities.humanifyMinecraftName(val) as string;
   }
 
+  static getHumanifiedObjectNameNoSpaces(name: string | boolean | number) {
+    name = Utilities.getHumanifiedObjectName(name);
+    name = name.replace(/ /gi, "");
+
+    return name;
+  }
+
   static getHumanifiedObjectName(name: string | boolean | number) {
     if (typeof name !== "string") {
       name = name.toString();
@@ -384,7 +391,6 @@ export default class Utilities {
     }
 
     name = Utilities.humanifyMinecraftName(name);
-    name = name.replace(/ /gi, "");
 
     return name;
   }

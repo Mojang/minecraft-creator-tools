@@ -636,7 +636,7 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 36,
-    "testSuccessCount": 26,
+    "testSuccessCount": 27,
     "testFailCount": 0,
     "testNotApplicableCount": 6,
     "errorSummary": "",
@@ -1203,6 +1203,13 @@
         "1": {
           "title": "Test Success",
           "defaultMessage": "Check Pack Icon Generator (CPI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CWI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
@@ -3275,6 +3282,11 @@
     {
       "iTp": 0,
       "gId": "CPI",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "CWI",
       "gIx": 1
     },
     {

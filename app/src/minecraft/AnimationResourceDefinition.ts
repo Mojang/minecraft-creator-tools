@@ -128,7 +128,7 @@ export default class AnimationResourceDefinition implements IDefinition {
     }
 
     if (!this._data.animations[animationName]) {
-      this._data.animations[animationName] = { animation_length: 1, bones: {} };
+      this._data.animations[animationName] = { bones: {} };
     }
 
     return this._data.animations[animationName];

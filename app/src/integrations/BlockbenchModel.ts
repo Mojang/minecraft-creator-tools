@@ -123,6 +123,17 @@ export default class BlockbenchModel {
       if (animation.name) {
         const targetMcAnimation = animationDef.ensureAnimation(animation.name);
 
+        if (animation.loop === "loop") {
+          targetMcAnimation.loop = true;
+        } else {
+          targetMcAnimation.loop = false;
+        }
+
+        if (etrd) {
+          etrd.ensureAnimationAndScript(animation.name);
+          etrd.persist();
+        }
+
         const rotationKeyframes: { [boneName: string]: { [timeCode: string]: (string | number)[] } } = {};
         const positionKeyframes: { [boneName: string]: { [timeCode: string]: (string | number)[] } } = {};
         const scaleKeyframes: { [boneName: string]: { [timeCode: string]: (string | number)[] } } = {};
@@ -173,11 +184,7 @@ export default class BlockbenchModel {
 
           if (boneKeyframes) {
             if (!targetMcAnimation.bones[boneName]) {
-              targetMcAnimation.bones[boneName] = {
-                rotation: {},
-                position: {},
-                scale: {},
-              };
+              targetMcAnimation.bones[boneName] = {};
             }
 
             const boneKeys = Object.keys(boneKeyframes);

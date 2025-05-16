@@ -15,6 +15,11 @@
   font-size: 17pt;
 }
 
+.etcse-note {
+  padding: 8px;
+  font-style: italic;
+}
+
 .etcse-componentForm {
   margin-bottom: 12px;
   padding: 3px;

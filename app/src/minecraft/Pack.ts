@@ -76,6 +76,10 @@ export default class Pack {
     }
   }
 
+  get name(): string {
+    return this.projectItem?.name || "Unnamed pack";
+  }
+
   async getFiles(predicate?: (file: IFile) => boolean): Promise<IFile[]> {
     const result = [];
     for await (const file of this.folder.allFiles) {
@@ -85,5 +89,9 @@ export default class Pack {
     }
 
     return result;
+  }
+
+  async isEDUOffer(): Promise<boolean> {
+    return !!this.getFiles((file) => file && file.name.toLocaleLowerCase() === "education.json");
   }
 }

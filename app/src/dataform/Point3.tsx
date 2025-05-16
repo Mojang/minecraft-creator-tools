@@ -215,7 +215,7 @@ export default class Point3 extends Component<IPoint3Props, IPoint3State> {
     let header = <></>;
 
     if (this.props.label) {
-      header = <div>{this.props.label}</div>;
+      header = <div className="p3-label">{this.props.label}</div>;
     }
 
     return (
