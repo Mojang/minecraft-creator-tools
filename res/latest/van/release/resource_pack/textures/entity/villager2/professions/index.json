@@ -1,0 +1,20 @@
+{
+  "files": [
+    "armorer.tga",
+    "butcher.tga",
+    "cartographer.tga",
+    "cleric.tga",
+    "farmer.tga",
+    "fisherman.tga",
+    "fletcher.tga",
+    "leatherworker.tga",
+    "librarian.tga",
+    "nitwit.tga",
+    "shepherd.tga",
+    "stonemason.tga",
+    "toolsmith.tga",
+    "unskilled.tga",
+    "weaponsmith.tga"
+  ],
+  "folders": []
+}

@@ -1,0 +1,6 @@
+{
+  "id": "query.day",
+  "fields": [],
+  "description": "Returns the day of the current level.",
+  "title": "Day Query"
+}

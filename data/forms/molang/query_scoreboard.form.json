@@ -1,0 +1,6 @@
+{
+  "id": "query.scoreboard",
+  "fields": [],
+  "description": "Takes one argument - the name of the scoreboard entry for this entity. Returns the specified scoreboard value for this entity. Available only with behavior packs.",
+  "title": "Scoreboard Query"
+}
