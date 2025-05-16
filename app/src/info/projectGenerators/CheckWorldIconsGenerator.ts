@@ -41,13 +41,14 @@ export default class CheckWorldIconsGenerator implements IProjectInfoGenerator {
     }
 
     const results: ProjectInfoItem[] = [];
-
+    /*
     for (const pack of project.packs) {
       const result = await this.getResultForPack(pack);
       if (result) {
         results.push(result);
       }
     }
+      */
 
     return results;
   }

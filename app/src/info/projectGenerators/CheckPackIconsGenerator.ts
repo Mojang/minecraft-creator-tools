@@ -2,7 +2,7 @@ import Project from "../../app/Project";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
 import { IProjectInfoTopicData } from "../IProjectInfoGeneratorBase";
 import ProjectInfoItem from "../ProjectInfoItem";
-import Pack from "../../minecraft/Pack";
+import Pack, { PackType } from "../../minecraft/Pack";
 import { InfoItemType } from "../IInfoItemData";
 import ProjectInfoUtilities from "../ProjectInfoUtilities";
 import { isPackIcon, parseImageData } from "../../storage/ImageUtilites";
@@ -38,9 +38,11 @@ export default class CheckPackIconsGenerator implements IProjectInfoGenerator {
     const results: ProjectInfoItem[] = [];
 
     for (const pack of project.packs) {
-      const result = await this.getResultForPack(pack);
-      if (result) {
-        results.push(result);
+      if (pack.type !== PackType.skin) {
+        const result = await this.getResultForPack(pack);
+        if (result) {
+          results.push(result);
+        }
       }
     }
 
