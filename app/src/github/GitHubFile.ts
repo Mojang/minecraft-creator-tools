@@ -146,9 +146,8 @@ export default class GitHubFile extends FileBase implements IFile {
               responseType: "arraybuffer",
               headers: {},
             });
-          } catch (e) {
-            Log.error("Could not retrieve file '" + this.fullPath + "' from '" + path + "'");
-
+          } catch (e: any) {
+            Log.error("Could not retrieve file '" + this.fullPath + "' from '" + path + "' - " + e.toString());
             this.lastLoadedOrSaved = new Date();
             return this.lastLoadedOrSaved;
           }
@@ -161,8 +160,8 @@ export default class GitHubFile extends FileBase implements IFile {
             response = await axios.get(path, {
               headers: {},
             });
-          } catch (e) {
-            Log.error("Could not retrieve file '" + this.fullPath + "'", path);
+          } catch (e: any) {
+            Log.error("Could not retrieve file '" + this.fullPath + "' - " + e.toString(), path);
 
             this.lastLoadedOrSaved = new Date();
             return this.lastLoadedOrSaved;

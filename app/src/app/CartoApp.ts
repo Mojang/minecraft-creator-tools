@@ -40,6 +40,7 @@ export default class CartoApp {
   private static _initializing = false;
   private static _initialized = false;
   public static isLocalNode = false;
+  public static fullLocalStorage = false;
   public static hostType = HostType.web;
   public static hostManager?: any = undefined;
   public static theme: CartoThemeStyle = CartoThemeStyle.dark;

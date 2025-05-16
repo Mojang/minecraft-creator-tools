@@ -50,7 +50,7 @@ export default class SchemaItemInfoGenerator implements IProjectInfoItemGenerato
 
   async loadSchema(uri: string) {
     console.log("Retrieving " + uri);
-    const res = await axios.get(CartoApp.contentRoot + uri);
+    const res = await axios.get(Utilities.ensureEndsWithSlash(CartoApp.contentRoot) + uri);
 
     console.log("Loading error: " + JSON.stringify(res.data));
     return res.data;

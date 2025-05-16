@@ -268,7 +268,7 @@ export default class DedicatedServerSettingsPanel extends Component<
           >
             https://minecraft.net/eula
           </a>
-          ) and Privacy Policy (
+          ) and Privacy Statement (
           <a
             className="dssp-link"
             href="https://go.microsoft.com/fwlink/?LinkId=521839"

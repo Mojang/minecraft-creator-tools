@@ -876,17 +876,16 @@ export default class ProjectUtilities {
       sourceBpFolder = await Database.getReleaseVanillaBehaviorPackFolder();
       sourceRpFolder = await Database.getReleaseVanillaResourcePackFolder();
     } else {
-      const gh = new HttpStorage(
-        CartoApp.contentRoot +
-          "res/samples/" +
-          galleryProject.gitHubOwner +
-          "/" +
-          galleryProject.gitHubRepoName +
-          "-" +
-          (galleryProject.gitHubBranch ? galleryProject.gitHubBranch : "main") +
-          "/" +
-          galleryProject.gitHubFolder
-      ); //new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
+      const url =
+        Utilities.ensureEndsWithSlash(CartoApp.contentRoot) +
+        "res/samples/" +
+        Utilities.ensureEndsWithSlash(galleryProject.gitHubOwner) +
+        galleryProject.gitHubRepoName +
+        "-" +
+        Utilities.ensureEndsWithSlash(galleryProject.gitHubBranch ? galleryProject.gitHubBranch : "main") +
+        (galleryProject.gitHubFolder ? Utilities.ensureNotStartsWithSlash(galleryProject.gitHubFolder) : "");
+
+      const gh = new HttpStorage(url); //new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
 
       await gh.rootFolder.load();
 
@@ -953,7 +952,7 @@ export default class ProjectUtilities {
         const sourceFile = await sourceBpFolder.getFileFromRelativePath(subPath);
 
         if (!sourceFile) {
-          Log.debugAlert("Could not find file '" + subPath + "'");
+          Log.debugAlert("Could not find file '" + subPath + "'  (GPFFIA)");
         } else {
           const targetFile = await targetBpFolder.ensureFileFromRelativePath(targetPath);
           let update = true;
@@ -1011,7 +1010,7 @@ export default class ProjectUtilities {
         const sourceFile = await sourceRpFolder.getFileFromRelativePath(subPath);
 
         if (!sourceFile) {
-          Log.debugAlert("Could not find file '" + subPath + "'");
+          Log.debugAlert("Could not find file '" + subPath + "' (GPFFIB)");
         } else {
           const targetFile = await targetRpFolder.ensureFileFromRelativePath(targetPath);
           let update = true;

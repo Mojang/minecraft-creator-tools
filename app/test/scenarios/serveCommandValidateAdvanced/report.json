@@ -10,9 +10,9 @@
     "entityTypeResourceCount": 3,
     "behaviorPackAnimationCount": 1,
     "behaviorPackAnimationControllerCount": 1,
-    "overallSize": 7018266,
-    "fileCounts": 61,
-    "folderCounts": 31,
+    "overallSize": 57619,
+    "fileCounts": 45,
+    "folderCounts": 29,
     "contentSize": 57619,
     "contentFileCounts": 45,
     "contentFolderCounts": 24,
@@ -408,20 +408,6 @@
         "Min": 19,
         "Average": 19
       },
-      "Marketing image Size": {
-        "Instance Count": 8,
-        "Total": 5565201,
-        "Max": 809093,
-        "Min": 369231,
-        "Average": 695650
-      },
-      "Store image Size": {
-        "Instance Count": 8,
-        "Total": 1395446,
-        "Max": 508820,
-        "Min": 26393,
-        "Average": 174431
-      },
       "Entity Type Default Components": {
         "minecraft:type_family": 2,
         "minecraft:breathable": 3,
@@ -724,9 +710,9 @@
     "errorCount": 9,
     "internalProcessingErrorCount": 0,
     "warningCount": 27,
-    "testSuccessCount": 27,
+    "testSuccessCount": 26,
     "testFailCount": 1,
-    "testNotApplicableCount": 5,
+    "testNotApplicableCount": 6,
     "errorSummary": "ERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/atmospherics/atmospherics.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/color_grading/color_grading.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/lighting/global.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/pbr/global.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/point_lights/global.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/shadows/shadows.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/water/water.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).",
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [JSON144] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) minimum /minecraft:spawn_rules/conditions/0/minecraft:distance_filter/min must be >= 24\r\nWARNING: [JSON144] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) minimum /minecraft:spawn_rules/conditions/1/minecraft:distance_filter/min must be >= 24\r\nWARNING: [JSON144] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) minimum /minecraft:spawn_rules/conditions/2/minecraft:distance_filter/min must be >= 24\r\nWARNING: [JSON144] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) minimum /minecraft:spawn_rules/conditions/3/minecraft:distance_filter/min must be >= 24\r\nWARNING: [JSON144] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) minimum /minecraft:spawn_rules/conditions/4/minecraft:distance_filter/min must be >= 24\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: aop_mobs:boomfly\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: aop_mobs:robot\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: aop_mobs:boomfly\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: aop_mobs:robot\r\nWARNING: [JSON233] (/Content/resource_packs/aop_mobsrp/atmospherics/atmospherics.json) additionalProperties  must NOT have additional properties: (additionalProperty: format_version) [in {   \"format_version\": \"1.21.40\",   \"minecraft:atmosphere_settings\": {     \"de...]\r\nWARNING: [JSON233] (/Content/resource_packs/aop_mobsrp/atmospherics/atmospherics.json) additionalProperties  must NOT have additional properties: (additionalProperty: minecraft:atmosphere_settings) [in {   \"format_version\": \"1.21.40\",   \"minecraft:atmosphere_settings\": {     \"de...]\r\nWARNING: [JSON132] (/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json) Property \"minecraft:geometry\" missing [in {   \"format_version\": \"1.10.0\",   \"geometry.aop_mobs.nardolphle\": {     \"text...]\r\nWARNING: [JSON132] (/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json) additionalProperties  must NOT have additional properties: (additionalProperty: geometry.aop_mobs.nardolphle) [in {   \"format_version\": \"1.10.0\",   \"geometry.aop_mobs.nardolphle\": {     \"text...]\r\nWARNING: [JSON132] (/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json) if  must match \"else\" schema [in {   \"format_version\": \"1.10.0\",   \"geometry.aop_mobs.nardolphle\": {     \"text...]\r\nWARNING: [JSON132] (/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json) if  must match \"else\" schema [in {   \"format_version\": \"1.10.0\",   \"geometry.aop_mobs.nardolphle\": {     \"text...]",
@@ -813,14 +799,6 @@
         "199": {
           "title": "Texture count",
           "defaultMessage": "Texture item count"
-        },
-        "200": {
-          "title": "Marketing image count",
-          "defaultMessage": "Marketing image item count"
-        },
-        "201": {
-          "title": "Store image count",
-          "defaultMessage": "Store image item count"
         },
         "203": {
           "title": "Icon count",
@@ -936,14 +914,6 @@
         "199": {
           "title": "Texture",
           "defaultMessage": "Texture file size"
-        },
-        "200": {
-          "title": "Marketing image",
-          "defaultMessage": "Marketing image file size"
-        },
-        "201": {
-          "title": "Store image",
-          "defaultMessage": "Store image file size"
         },
         "203": {
           "title": "Icon",
@@ -1324,10 +1294,9 @@
         }
       },
       "PACKMETADATA": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "General info (PACKMETADATA) completed successfully",
-          "testCompleteSuccesses": 1
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)"
         }
       },
       "STRICT": {
@@ -1519,18 +1488,6 @@
       "gId": "ITEMS",
       "gIx": 199,
       "d": 5
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 200,
-      "d": 8
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 201,
-      "d": 8
     },
     {
       "iTp": 2,
@@ -2142,51 +2099,21 @@
     },
     {
       "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 200,
-      "p": "/Marketing Art/aopmoremobs_MarketingKeyArt.jpg",
-      "fs": {
-        "Size": {
-          "Instance Count": 8,
-          "Total": 5565201,
-          "Max": 809093,
-          "Min": 369231,
-          "Average": 695650
-        }
-      }
-    },
-    {
-      "iTp": 7,
-      "gId": "LINESIZE",
-      "gIx": 201,
-      "p": "/Store Art/aopmoremobs_packicon.jpg",
-      "fs": {
-        "Size": {
-          "Instance Count": 8,
-          "Total": 1395446,
-          "Max": 508820,
-          "Min": 26393,
-          "Average": 174431
-        }
-      }
-    },
-    {
-      "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 1,
-      "d": 7018266
+      "d": 57619
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 2,
-      "d": 61
+      "d": 45
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
       "gIx": 3,
-      "d": 31
+      "d": 29
     },
     {
       "iTp": 7,
@@ -3885,9 +3812,9 @@
       "gIx": 0
     },
     {
-      "iTp": 0,
+      "iTp": 8,
       "gId": "PACKMETADATA",
-      "gIx": 1
+      "gIx": 2
     },
     {
       "iTp": 0,
@@ -4067,23 +3994,7 @@
       "/Content/resource_packs/aop_mobsrp/texts/languages.json",
       "/Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json",
       "/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json",
-      "/Content/resource_packs/aop_mobsrp/water/water.json",
-      "/Marketing Art/aopmoremobs_MarketingKeyArt.jpg",
-      "/Marketing Art/aopmoremobs_MarketingScreenshot_0.jpg",
-      "/Marketing Art/aopmoremobs_MarketingScreenshot_1.jpg",
-      "/Marketing Art/aopmoremobs_MarketingScreenshot_2.jpg",
-      "/Marketing Art/aopmoremobs_MarketingScreenshot_3.jpg",
-      "/Marketing Art/aopmoremobs_MarketingScreenshot_4.jpg",
-      "/Marketing Art/aopmoremobs_MarketingScreenshot_5.jpg",
-      "/Marketing Art/aopmoremobs_PartnerArt.jpg",
-      "/Store Art/aopmoremobs_packicon.jpg",
-      "/Store Art/aopmoremobs_panorama.jpg",
-      "/Store Art/aopmoremobs_screenshot_1.jpg",
-      "/Store Art/aopmoremobs_screenshot_2.jpg",
-      "/Store Art/aopmoremobs_screenshot_3.jpg",
-      "/Store Art/aopmoremobs_screenshot_4.jpg",
-      "/Store Art/aopmoremobs_screenshot_5.jpg",
-      "/Store Art/aopmoremobs_Thumbnail.jpg"
+      "/Content/resource_packs/aop_mobsrp/water/water.json"
     ],
     "trie": {
       "9": {
@@ -7003,6 +6914,40 @@
             ]
           }
         },
+        "op_mobs": {
+          ":": {
+            "biceson": [
+              {
+                "n": 1,
+                "a": "E"
+              }
+            ],
+            "nardolphle": [
+              {
+                "n": 3,
+                "a": "E"
+              }
+            ],
+            "sheepomelon": [
+              {
+                "n": 5,
+                "a": "E"
+              }
+            ]
+          },
+          "±": [
+            1,
+            20,
+            -2,
+            3,
+            32,
+            -2,
+            39,
+            -1,
+            5,
+            7
+          ]
+        },
         "d": {
           "d": {
             "±": [
@@ -7264,100 +7209,6 @@
           "ors": [
             41
           ]
-        },
-        "op": {
-          "_mobs": {
-            ":": {
-              "biceson": [
-                {
-                  "n": 1,
-                  "a": "E"
-                }
-              ],
-              "nardolphle": [
-                {
-                  "n": 3,
-                  "a": "E"
-                }
-              ],
-              "sheepomelon": [
-                {
-                  "n": 5,
-                  "a": "E"
-                }
-              ]
-            },
-            "±": [
-              1,
-              20,
-              -2,
-              3,
-              32,
-              -2,
-              39,
-              -1,
-              5,
-              7
-            ]
-          },
-          "moremobs_": {
-            "marketing": {
-              "keyart": [
-                49
-              ],
-              "screenshot_": {
-                "0": [
-                  50
-                ],
-                "1": [
-                  51
-                ],
-                "2": [
-                  52
-                ],
-                "3": [
-                  53
-                ],
-                "4": [
-                  54
-                ],
-                "5": [
-                  55
-                ]
-              }
-            },
-            "pa": {
-              "rtnerart": [
-                56
-              ],
-              "ckicon": [
-                57
-              ],
-              "norama": [
-                58
-              ]
-            },
-            "screenshot_": {
-              "1": [
-                59
-              ],
-              "2": [
-                60
-              ],
-              "3": [
-                61
-              ],
-              "4": [
-                62
-              ],
-              "5": [
-                63
-              ]
-            },
-            "thumbnail": [
-              64
-            ]
-          }
         }
       },
       "l": {
@@ -10066,37 +9917,7 @@
           ],
           "ummon": [
             15
-          ],
-          "tore art/aopmoremobs_": {
-            "pa": {
-              "ckicon.jpg": [
-                57
-              ],
-              "norama.jpg": [
-                58
-              ]
-            },
-            "screenshot_": {
-              "1.jpg": [
-                59
-              ],
-              "2.jpg": [
-                60
-              ],
-              "3.jpg": [
-                61
-              ],
-              "4.jpg": [
-                62
-              ],
-              "5.jpg": [
-                63
-              ]
-            },
-            "thumbnail.jpg": [
-              64
-            ]
-          }
+          ]
         },
         "content/": {
           "behavior_packs/aop_mobsbp/": {
@@ -10235,36 +10056,6 @@
               48
             ]
           }
-        },
-        "marketing art/aopmoremobs_": {
-          "marketing": {
-            "keyart.jpg": [
-              49
-            ],
-            "screenshot_": {
-              "0.jpg": [
-                50
-              ],
-              "1.jpg": [
-                51
-              ],
-              "2.jpg": [
-                52
-              ],
-              "3.jpg": [
-                53
-              ],
-              "4.jpg": [
-                54
-              ],
-              "5.jpg": [
-                55
-              ]
-            }
-          },
-          "partnerart.jpg": [
-            56
-          ]
         }
       },
       "!query.is_sheared": [
@@ -11138,23 +10929,7 @@
             "/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.png",
             "/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json",
             "/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon_mer.png",
-            "/Content/resource_packs/aop_mobsrp/water/water.json",
-            "/Marketing Art/aopmoremobs_MarketingKeyArt.jpg",
-            "/Marketing Art/aopmoremobs_MarketingScreenshot_0.jpg",
-            "/Marketing Art/aopmoremobs_MarketingScreenshot_1.jpg",
-            "/Marketing Art/aopmoremobs_MarketingScreenshot_2.jpg",
-            "/Marketing Art/aopmoremobs_MarketingScreenshot_3.jpg",
-            "/Marketing Art/aopmoremobs_MarketingScreenshot_4.jpg",
-            "/Marketing Art/aopmoremobs_MarketingScreenshot_5.jpg",
-            "/Marketing Art/aopmoremobs_PartnerArt.jpg",
-            "/Store Art/aopmoremobs_packicon.jpg",
-            "/Store Art/aopmoremobs_panorama.jpg",
-            "/Store Art/aopmoremobs_screenshot_1.jpg",
-            "/Store Art/aopmoremobs_screenshot_2.jpg",
-            "/Store Art/aopmoremobs_screenshot_3.jpg",
-            "/Store Art/aopmoremobs_screenshot_4.jpg",
-            "/Store Art/aopmoremobs_screenshot_5.jpg",
-            "/Store Art/aopmoremobs_Thumbnail.jpg"
+            "/Content/resource_packs/aop_mobsrp/water/water.json"
           ],
           "trie": {
             "9": {
@@ -12519,37 +12294,7 @@
                 ],
                 "ummon": [
                   2
-                ],
-                "tore art/aopmoremobs_": {
-                  "pa": {
-                    "ckicon.jpg": [
-                      53
-                    ],
-                    "norama.jpg": [
-                      54
-                    ]
-                  },
-                  "screenshot_": {
-                    "1.jpg": [
-                      55
-                    ],
-                    "2.jpg": [
-                      56
-                    ],
-                    "3.jpg": [
-                      57
-                    ],
-                    "4.jpg": [
-                      58
-                    ],
-                    "5.jpg": [
-                      59
-                    ]
-                  },
-                  "thumbnail.jpg": [
-                    60
-                  ]
-                }
+                ]
               },
               "content/": {
                 "behavior_packs/aop_mobsbp/": {
@@ -12688,36 +12433,6 @@
                     44
                   ]
                 }
-              },
-              "marketing art/aopmoremobs_": {
-                "marketing": {
-                  "keyart.jpg": [
-                    45
-                  ],
-                  "screenshot_": {
-                    "0.jpg": [
-                      46
-                    ],
-                    "1.jpg": [
-                      47
-                    ],
-                    "2.jpg": [
-                      48
-                    ],
-                    "3.jpg": [
-                      49
-                    ],
-                    "4.jpg": [
-                      50
-                    ],
-                    "5.jpg": [
-                      51
-                    ]
-                  }
-                },
-                "partnerart.jpg": [
-                  52
-                ]
               }
             },
             "b": {
@@ -13021,6 +12736,17 @@
               3
             ],
             "a": {
+              "op_mobs": [
+                10,
+                -2,
+                17,
+                23,
+                -2,
+                30,
+                -1,
+                4,
+                -2
+              ],
               "geable": {
                 "±": [
                   4,
@@ -13212,77 +12938,6 @@
                 "ors": [
                   32
                 ]
-              },
-              "op": {
-                "_mobs": [
-                  10,
-                  -2,
-                  17,
-                  23,
-                  -2,
-                  30,
-                  -1,
-                  4,
-                  -2
-                ],
-                "moremobs_": {
-                  "marketing": {
-                    "keyart": [
-                      45
-                    ],
-                    "screenshot_": {
-                      "0": [
-                        46
-                      ],
-                      "1": [
-                        47
-                      ],
-                      "2": [
-                        48
-                      ],
-                      "3": [
-                        49
-                      ],
-                      "4": [
-                        50
-                      ],
-                      "5": [
-                        51
-                      ]
-                    }
-                  },
-                  "pa": {
-                    "rtnerart": [
-                      52
-                    ],
-                    "ckicon": [
-                      53
-                    ],
-                    "norama": [
-                      54
-                    ]
-                  },
-                  "screenshot_": {
-                    "1": [
-                      55
-                    ],
-                    "2": [
-                      56
-                    ],
-                    "3": [
-                      57
-                    ],
-                    "4": [
-                      58
-                    ],
-                    "5": [
-                      59
-                    ]
-                  },
-                  "thumbnail": [
-                    60
-                  ]
-                }
               }
             },
             "i": {
@@ -14616,10 +14271,10 @@
         },
         "generatorName": "Minecraft Creator Tools",
         "suite": 3,
-        "generatorVersion": "0.0.1"
+        "generatorVersion": "0.2.9"
       },
       "suite": 2
     }
   ],
-  "generatorVersion": "0.0.1"
+  "generatorVersion": "0.2.9"
 }

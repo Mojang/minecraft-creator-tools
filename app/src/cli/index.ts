@@ -31,6 +31,7 @@ import { IWorldSettings } from "../minecraft/IWorldSettings.js";
 import { IMinecraftStartMessage } from "../app/IMinecraftStartMessage.js";
 import ServerManager, { ServerManagerFeatures } from "../local/ServerManager.js";
 import IProjectMetaState from "../info/IProjectMetaState.js";
+import ProjectItemCreateManager from "../app/ProjectItemCreateManager.js";
 
 if (typeof btoa === "undefined") {
   // @ts-ignore
@@ -47,6 +48,7 @@ if (typeof atob === "undefined") {
 }
 
 CartoApp.hostType = HostType.toolsNodejs;
+CartoApp.contentRoot = Utilities.ensureEndsWithSlash(constants.homeUrl);
 
 const MAX_LINES_PER_CSV_FILE = 500000;
 
@@ -128,7 +130,11 @@ program
   .option("-no-editor", "Removes that the world is an editor.")
   .option("--threads [thread count]", "Targeted number of threads to use.")
   .option("-show, --display-only", "Whether to only show messages, vs. output report files.")
-  .option("-lv, --log-verbose", "Whether to show verbose log messages.");
+  .option("-lv, --log-verbose", "Whether to show verbose log messages.")
+  .option(
+    "-internalOnlyRunningInTheContextOfTestCommandLines",
+    "Do not use. For internal self-testing use only functionality."
+  );
 
 program.addHelpText("before", "\x1b[32m┌─────┐\x1b[0m");
 program.addHelpText("before", "\x1b[32m│ ▄ ▄ │\x1b[0m Minecraft Creator Tools (preview) command line");
@@ -149,6 +155,18 @@ program
   });
 
 program
+  .command("add")
+  .alias("a")
+  .description("Adds new content into this Minecraft project")
+  .addArgument(new Argument("[type]", "Type of item to add"))
+  .addArgument(new Argument("[name]", "Desired item namespace/name"))
+  .action((typeIn, nameIn) => {
+    type = typeIn;
+    newName = nameIn;
+    executionTaskType = TaskType.add;
+  });
+
+program
   .command("create")
   .alias("c")
   .description("Creates a new Minecraft project")
@@ -165,11 +183,11 @@ program
   });
 
 program
-  .command("minecrafteulaandprivacypolicy")
+  .command("minecrafteulaandprivacystatement")
   .alias("eula")
   .description("See the Minecraft End User License Agreement.")
   .action(() => {
-    executionTaskType = TaskType.minecraftEulaAndPrivacyPolicy;
+    executionTaskType = TaskType.minecraftEulaAndPrivacyStatement;
   });
 
 program
@@ -407,6 +425,19 @@ if (options.logVerbose) {
       await serve();
       break;
 
+    case TaskType.add:
+      try {
+        for (const projectStart of projectStarts) {
+          if (projectStart) {
+            await add(ClUtils.createProject(carto, projectStart));
+          }
+        }
+      } catch (e) {
+        errorLevel = ERROR_INIT_ERROR;
+        console.error("Error adding to a project. " + e.toString());
+      }
+      break;
+
     case TaskType.create:
       try {
         for (const projectStart of projectStarts) {
@@ -420,8 +451,8 @@ if (options.logVerbose) {
       }
       break;
 
-    case TaskType.minecraftEulaAndPrivacyPolicy:
-      await minecraftEulaAndPrivacyPolicy();
+    case TaskType.minecraftEulaAndPrivacyStatement:
+      await minecraftEulaAndPrivacyStatement();
       break;
 
     case TaskType.world:
@@ -816,7 +847,7 @@ async function stop() {
   process.exit();
 }
 
-async function minecraftEulaAndPrivacyPolicy() {
+async function minecraftEulaAndPrivacyStatement() {
   if (!localEnv) {
     throw new Error();
   }
@@ -826,10 +857,10 @@ async function minecraftEulaAndPrivacyPolicy() {
   const questions: inquirer.DistinctQuestion<any>[] = [];
 
   console.log(
-    "To download the Minecraft Bedrock Dedicated Server, you must agree to the Minecraft End User License Agreement and Privacy Statement.\n"
+    "This feature uses Minecraft assets and/or the Minecraft Bedrock Dedicated Server. To use it, you must agree to the Minecraft End User License Agreement and Privacy Statement.\n"
   );
   console.log("    Minecraft End User License Agreement: https://minecraft.net/eula");
-  console.log("    Minecraft Privacy Policy: https://go.microsoft.com/fwlink/?LinkId=521839\n");
+  console.log("    Minecraft Privacy Statement: https://go.microsoft.com/fwlink/?LinkId=521839\n");
 
   questions.push({
     type: "confirm",
@@ -847,6 +878,8 @@ async function minecraftEulaAndPrivacyPolicy() {
 
     await localEnv.save();
   }
+
+  return iaccept;
 }
 
 async function displayInfo() {
@@ -1486,10 +1519,26 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
 async function create(project: Project, isSingleFolder: boolean) {
   outputLogo("Minecraft Creator Tools (preview)");
 
-  if (!carto) {
+  if (!localEnv || !carto) {
     errorLevel = ERROR_INIT_ERROR;
     console.error("Not configured correctly to create a project (no mctools core).");
     return;
+  }
+
+  await localEnv.load();
+
+  if (
+    !localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula &&
+    (!options.InternalOnlyRunningInTheContextOfTestCommandLines ||
+      newName !== "testerName" ||
+      creator !== "testerCreatorName")
+  ) {
+    const result = await minecraftEulaAndPrivacyStatement();
+
+    if (!result) {
+      console.log("The Minecraft End User License Agreement and Privacy Statement was not agreed to.");
+      return;
+    }
   }
 
   await carto.loadGallery();
@@ -1502,7 +1551,7 @@ async function create(project: Project, isSingleFolder: boolean) {
 
   let title = newName;
 
-  if (!newName) {
+  if (!title) {
     const titleQuestions: inquirer.DistinctQuestion<any>[] = [];
     titleQuestions.push({
       type: "input",
@@ -1689,7 +1738,7 @@ async function create(project: Project, isSingleFolder: boolean) {
     await ProjectUtilities.applyCreator(project, creator);
   }
 
-  await ProjectUtilities.processNewProject(project, title, applyDescription, suggestedShortName);
+  await ProjectUtilities.processNewProject(project, title, applyDescription, suggestedShortName, false);
 
   console.log(
     "\nAll done! Now run \x1b[47m\x1b[30mnpm i\x1b[37m\x1b[40m in the \x1b[47m\x1b[30m" +
@@ -1699,7 +1748,28 @@ async function create(project: Project, isSingleFolder: boolean) {
 }
 
 async function add(project: Project) {
+  if (!localEnv || !carto) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to create a project (no mctools core).");
+    return;
+  }
+
+  await localEnv.load();
+
+  if (
+    !localEnv.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula &&
+    (!options.InternalOnlyRunningInTheContextOfTestCommandLines || newName !== "testerName")
+  ) {
+    const result = await minecraftEulaAndPrivacyStatement();
+
+    if (!result) {
+      console.log("The Minecraft End User License Agreement and Privacy Statement was not agreed to.");
+      return;
+    }
+  }
+
   let typeDesc = "Item";
+
   if (type) {
     switch (type) {
       case "entity":
@@ -1712,11 +1782,13 @@ async function add(project: Project) {
         typeDesc = "Block";
         break;
       default:
-        console.log("Unknown item type '" + typeDesc + "' specified.");
-        type = undefined;
+        typeDesc = "Definition File";
         break;
     }
   }
+
+  await project.ensureProjectFolder();
+
   outputLogo("Minecraft Add " + typeDesc);
 
   if (!carto) {
@@ -1734,18 +1806,36 @@ async function add(project: Project) {
   }
 
   const typeQuestions: inquirer.DistinctQuestion<any>[] = [];
-  const questions: inquirer.DistinctQuestion<any>[] = [];
 
-  const galProjects = carto.gallery.items;
-  let galProject: IGalleryItem | undefined;
+  if (type) {
+    const galleryItem = await carto.getGalleryProjectById(type);
 
-  if (template) {
-    for (let i = 0; i < galProjects.length; i++) {
-      const galProjectCand = galProjects[i];
-      if (galProjectCand && galProjectCand.id && galProjectCand.id.toLowerCase() === template.toLowerCase()) {
-        galProject = galProjectCand;
+    if (galleryItem) {
+      if (!newName) {
+        const newNameQuestions: inquirer.DistinctQuestion<any>[] = [];
+        newNameQuestions.push({
+          type: "input",
+          name: "name",
+          message: "What's your preferred new name? (<20 chars, no spaces)",
+        });
+        const answers = await inquirer.prompt(newNameQuestions);
+
+        newName = answers["name"];
       }
+      if (newName) {
+        console.log("Adding item " + newName + " from " + galleryItem.title + " (" + galleryItem.id + ")");
+        await ProjectItemCreateManager.addFromGallery(project, newName, galleryItem);
+        await project.save();
+      } else {
+        errorLevel = ERROR_INIT_ERROR;
+        console.error("No item name was specified.");
+      }
+    } else {
+      errorLevel = ERROR_INIT_ERROR;
+      console.error("Could not find a template for " + type + ".");
     }
+
+    return;
   }
 
   if (type === undefined) {
@@ -1754,9 +1844,13 @@ async function add(project: Project) {
       name: "type",
       message: "What type of item should we add?",
       choices: [
-        { name: "Entity Type", value: "entity" },
-        { name: "Block Type", value: "block" },
-        { name: "Item Type", value: "item" },
+        { name: "Entity Type (entity)", value: "entity" },
+        { name: "Block Type (block)", value: "block" },
+        { name: "Item Type (item)", value: "item" },
+        { name: "Spawn/Loot/Recipes", value: "spawnLootRecipes" },
+        { name: "World Gen", value: "worldGen" },
+        { name: "Visuals", value: "visuals" },
+        { name: "Single files (advanced)", value: "singleFiles" },
       ],
     });
 
@@ -1765,91 +1859,95 @@ async function add(project: Project) {
     type = typeAnswers["type"];
   }
 
+  let subType: string | undefined = undefined;
+
+  if (type) {
+    type = type?.toLowerCase();
+  }
+
   if (type === "entity") {
-    const gallery = await carto.loadGallery();
+    chooseAddItem(project, GalleryItemType.entityType, "entity type");
+  } else if (type === "block") {
+    chooseAddItem(project, GalleryItemType.blockType, "block type");
+  } else if (type === "item") {
+    chooseAddItem(project, GalleryItemType.itemType, "item type");
+  } else if (type === "spawnlootrecipes") {
+    chooseAddItem(project, GalleryItemType.spawnLootRecipes, "spawn/loot/recipe");
+  } else if (type === "worldgen") {
+    chooseAddItem(project, GalleryItemType.worldGen, "world gen");
+  } else if (type === "visuals") {
+    chooseAddItem(project, GalleryItemType.visuals, "visuals");
+  } else if (type === "singlefiles" || subType) {
+    if (!subType) {
+      const subTypeQuestions: inquirer.DistinctQuestion<any>[] = [
+        {
+          type: "list",
+          name: "subType",
+          message: "What type of single file should we add?",
+          choices: [
+            { name: "Entity/Item/Blocks", value: "entityItemBlocks_sf" },
+            { name: "World Gen", value: "worldGen_sf" },
+            { name: "Visuals", value: "visuals_sf" },
+            { name: "Catalogs", value: "catalogs_sf" },
+          ],
+        },
+      ];
 
-    if (gallery) {
-      const entityTypeChoices: inquirer.DistinctChoice[] = [];
+      const subTypeAnswers = await inquirer.prompt(subTypeQuestions);
 
-      for (const proj of gallery.items) {
-        if (proj.type === GalleryItemType.entityType) {
-          entityTypeChoices.push({
-            name: proj.title,
-            value: proj.id,
-          });
-        }
+      subType = subTypeAnswers["subType"];
+    }
+
+    if (subType) {
+      subType = subType?.toLowerCase();
+
+      if (subType === "worldgen_sf") {
+        await chooseAddItem(project, GalleryItemType.worldGenSingleFiles, "world gen file");
+      } else if (subType === "entityitemblocks_sf") {
+        await chooseAddItem(project, GalleryItemType.entityItemBlockSingleFiles, "file");
+      } else if (subType === "visuals_sf") {
+        await chooseAddItem(project, GalleryItemType.visualSingleFiles, "visuals file");
+      } else if (subType === "catalogs_sf") {
+        await chooseAddItem(project, GalleryItemType.catalogSingleFiles, "catalog file");
       }
+    }
+  }
 
-      questions.push({
-        type: "list",
-        name: "entityType",
-        message: "Based on which entity type?",
-        choices: entityTypeChoices,
-      });
+  await project.save();
+}
 
-      if (!newName) {
-        questions.push({
-          type: "input",
-          name: "name",
-          message: "What's your preferred new item name? (<20 chars, no spaces)",
+async function chooseAddItem(project: Project, itemType: GalleryItemType, typeDescriptor: string) {
+  if (!carto) {
+    return;
+  }
+  const questions: inquirer.DistinctQuestion<any>[] = [];
+
+  const gallery = await carto.loadGallery();
+
+  if (gallery) {
+    const templateTypeChoices: inquirer.DistinctChoice[] = [];
+
+    for (const proj of gallery.items) {
+      if (proj.type === itemType) {
+        templateTypeChoices.push({
+          name: proj.title + " (" + proj.id + ")",
+          value: proj.id,
         });
       }
-
-      const answers = await inquirer.prompt(questions);
-
-      if (!newName) {
-        newName = answers["name"];
-      }
-
-      const entityType = answers["entityType"];
-
-      if (entityType) {
-        for (const proj of gallery.items) {
-          if (proj.id === entityType) {
-            await ProjectUtilities.addEntityTypeFromGallery(
-              project,
-              proj,
-              newName,
-              NewEntityTypeAddMode.baseId,
-              async (message: string) => {
-                Log.message(message);
-              }
-            );
-          }
-        }
-      }
-    } else {
-      errorLevel = ERROR_INIT_ERROR;
-      console.error("Could not find any entity types.");
     }
-  } else {
-    if (!galProject) {
-      const projectTypeChoices: inquirer.DistinctChoice[] = [];
 
-      for (let i = 0; i < galProjects.length; i++) {
-        const galProjectCand = galProjects[i];
-
-        if (galProjectCand.type === GalleryItemType.chunk) {
-          projectTypeChoices.push({
-            name: galProjectCand.id + ": " + galProjectCand.title,
-            value: i,
-          });
-        }
-      }
-
-      questions.push({
-        type: "list",
-        name: "projectSource",
-        message: "What type of item should we add?",
-        choices: projectTypeChoices,
-      });
-    }
+    questions.push({
+      type: "list",
+      name: "templateType",
+      message: "Based on which " + typeDescriptor + " template?",
+      choices: templateTypeChoices,
+    });
 
     if (!newName) {
       questions.push({
         type: "input",
         name: "name",
-        message: "What's your preferred new item name? (<20 chars, no spaces)",
+        message: "What's your preferred new " + typeDescriptor + " name? (<20 chars, no spaces)",
       });
     }
 
@@ -1859,30 +1957,19 @@ async function add(project: Project) {
       newName = answers["name"];
     }
 
-    if (!galProject) {
-      galProject = galProjects[answers["projectSource"]];
+    const templateType = answers["templateType"];
+
+    if (templateType && newName) {
+      for (const galItem of gallery.items) {
+        if (galItem.id === templateType && galItem.type === itemType) {
+          await ProjectItemCreateManager.addFromGallery(project, newName, galItem);
+        }
+      }
     }
-
-    await project.ensureDefaultBehaviorPackFolder();
-
-    project = await ProjectExporter.syncProjectFromGitHub(
-      false,
-      carto,
-      galProject.gitHubRepoName,
-      galProject.gitHubOwner,
-      galProject.gitHubBranch,
-      galProject.gitHubFolder,
-      project.name,
-      project,
-      galProject.fileList,
-      async (message: string) => {
-        Log.message(message);
-      },
-      true
-    );
+  } else {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Could not find a template for " + typeDescriptor + ".");
   }
-
-  await project.save();
 }
 
 function outputLogo(message: string) {

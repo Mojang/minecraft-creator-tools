@@ -12,11 +12,11 @@ import { chunksToLinesAsync } from "@rauschma/stringio";
 import { Readable } from "stream";
 import * as fs from "fs";
 import Utilities from "../core/Utilities";
+import axios, { AxiosResponse } from "axios";
+import IFile from "../storage/IFile";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
 import ProjectUtilities from "../app/ProjectUtilities";
-import axios, { AxiosResponse } from "axios";
-import IFile from "../storage/IFile";
 
 CartoApp.hostType = HostType.testLocal;
 
@@ -385,6 +385,104 @@ describe("serveCommandValidateAddon", async () => {
   });
 });
 
+describe("serveCommandValidateAdvanced", async () => {
+  let exitCode: number | null = null;
+  const stdoutLines: string[] = [];
+  const stderrLines: string[] = [];
+  let process: ChildProcessWithoutNullStreams | null = null;
+
+  before(function (done) {
+    this.timeout(20000);
+
+    removeResultFolder("serveCommandValidateAdvanced");
+    const passcode = Utilities.createUuid().substring(0, 8);
+
+    if (!sampleFolder) {
+      throw new Error("Sample folder does not exist.");
+    }
+
+    sampleFolder
+      .ensureFileFromRelativePath("/addon/build/packages/aop_moremobs_advanced.zip")
+      .then((sampleFile: IFile) => {
+        console.log("Starting web server.");
+
+        process = spawn("node", [
+          " ./../toolbuild/jsn/cli",
+          "serve",
+          "basicwebservices",
+          "localhost",
+          "6126",
+          "-lv",
+          "-once",
+          "-updatepc",
+          passcode,
+        ]);
+
+        collectLines(process.stdout, stdoutLines);
+        collectLines(process.stderr, stderrLines);
+
+        sampleFile.loadContent().then(() => {
+          const content = sampleFile.content;
+
+          Utilities.sleep(3000).then(() => {
+            console.log(
+              "Making validation web request to http://localhost:6126/api/validate/ " + content?.length + " bytes"
+            );
+
+            axios
+              .post("http://localhost:6126/api/validate/", content, {
+                headers: { mctpc: passcode, "content-type": "application/zip", mctsuite: "all" },
+                method: "POST",
+              })
+              .then((response: AxiosResponse) => {
+                ensureJsonMatchesScenario(response.data, "serveCommandValidateAdvanced");
+
+                if (response === undefined) {
+                  throw new Error("Could not connect to server.");
+                }
+
+                if (process) {
+                  process.on("exit", (code) => {
+                    exitCode = code;
+                    process = null;
+                    done();
+                  });
+                }
+              });
+          });
+        });
+      });
+  });
+
+  it("should have no stderr lines", async () => {
+    if (process) {
+      process.kill();
+      process = null;
+    }
+    assert.equal(stderrLines.length, 0, "Error: " + stderrLines.join("\n") + "|");
+  }).timeout(10000);
+
+  it("exit code should be zero", async () => {
+    if (process) {
+      process.kill();
+      process = null;
+    }
+    assert.equal(exitCode, 0);
+  }).timeout(10000);
+
+  it("output matches", async () => {
+    await folderMatches("serveCommandValidateAdvanced");
+  });
+
+  after(function () {
+    if (process) {
+      console.log("Ending web process in serverCommandValidateAdvanced after function.");
+      process.kill();
+      process = null;
+    }
+  });
+});
+
 describe("createCommandAddonStarter", async () => {
   let exitCode: number | null = null;
   const stdoutLines: string[] = [];
@@ -407,6 +505,8 @@ describe("createCommandAddonStarter", async () => {
       "testerDescription",
       "-o",
       "./test/results/createCommandAddonStarter/",
+      "-internalOnlyRunningInTheContextOfTestCommandLines",
+      "yes",
     ]);
 
     collectLines(process.stdout, stdoutLines);
@@ -465,6 +565,82 @@ describe("createCommandAddonStarter", async () => {
   it("addon validation should have 0 errors, failures, or warnings", async () => {
     assert(addonProjectInfoSet);
     assert.equal(addonProjectInfoSet.errorFailWarnCount, 0, addonProjectInfoSet.errorFailWarnString);
+  }).timeout(10000);
+
+  it("output matches", async () => {
+    await folderMatches("createCommandAddonStarter", ["manifest.json"]);
+  });
+});
+
+describe("addLootTable", async () => {
+  let exitCode: number | null = null;
+  const stdoutLines: string[] = [];
+  const stderrLines: string[] = [];
+  let project: Project | null = null;
+  let allProjectInfoSet: ProjectInfoSet | null = null;
+  let addonProjectInfoSet: ProjectInfoSet | null = null;
+
+  before(function (done) {
+    this.timeout(10000);
+
+    removeResultFolder("addLootTable");
+
+    const process = spawn("node", [
+      " ./../toolbuild/jsn/cli",
+      "add",
+      "loot_table",
+      "testerName",
+      "-o",
+      "./test/results/addLootTable/",
+      "-internalOnlyRunningInTheContextOfTestCommandLines",
+      "yes",
+    ]);
+
+    collectLines(process.stdout, stdoutLines);
+    collectLines(process.stderr, stderrLines);
+
+    process.on("exit", (code) => {
+      exitCode = code;
+
+      assert(carto, "Carto is not properly initialized");
+
+      project = new Project(carto, "addLootTable", null);
+
+      // exclude eslint because we know the .ts comes with some warnings due to
+      // the starter TS having some unused variables.
+      allProjectInfoSet = new ProjectInfoSet(project, ProjectInfoSuite.default);
+
+      project.autoDeploymentMode = ProjectAutoDeploymentMode.noAutoDeployment;
+      project.localFolderPath = __dirname + "/../../test/results/addLootTable/";
+
+      project.inferProjectItemsFromFiles().then(() => {
+        assert(project);
+
+        assert(allProjectInfoSet);
+
+        allProjectInfoSet.generateForProject().then(() => {
+          done();
+        });
+      });
+    });
+  });
+
+  it("should have no stderr lines", async () => {
+    assert.equal(stderrLines.length, 0, "Error: |" + stderrLines.join("\n") + "|");
+  }).timeout(10000);
+
+  it("exit code should be zero", async () => {
+    assert.equal(exitCode, 0);
+  }).timeout(10000);
+
+  it("should have 1 project item", async () => {
+    assert(project);
+    assert.equal(project.items.length, 1);
+  }).timeout(10000);
+
+  it("main validation should have 2 errors (which is expected, no manifest exists)", async () => {
+    assert(allProjectInfoSet);
+    assert.equal(allProjectInfoSet.errorFailWarnCount, 2, allProjectInfoSet.errorFailWarnString);
   }).timeout(10000);
 
   it("output matches", async () => {
