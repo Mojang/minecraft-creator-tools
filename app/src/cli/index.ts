@@ -48,7 +48,6 @@ if (typeof atob === "undefined") {
 }
 
 CartoApp.hostType = HostType.toolsNodejs;
-CartoApp.contentRoot = Utilities.ensureEndsWithSlash(constants.homeUrl);
 
 const MAX_LINES_PER_CSV_FILE = 500000;
 
@@ -1541,6 +1540,8 @@ async function create(project: Project, isSingleFolder: boolean) {
     }
   }
 
+  CartoApp.contentRoot = Utilities.ensureEndsWithSlash(constants.webContentUrl);
+
   await carto.loadGallery();
 
   if (!carto.gallery) {
@@ -1767,6 +1768,8 @@ async function add(project: Project) {
       return;
     }
   }
+
+  CartoApp.contentRoot = Utilities.ensureEndsWithSlash(constants.webContentUrl);
 
   let typeDesc = "Item";
 

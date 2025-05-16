@@ -908,7 +908,7 @@ export default class Database {
 
   static async loadPreviewMetadataFolder() {
     if (!this.previewMetadataFolder) {
-      if (Database.local && CartoApp.fullLocalStorage) {
+      if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
         const storage = await Database.local.createStorage("res/latest/van/preview/metadata/");
 
         if (storage) {
@@ -928,7 +928,7 @@ export default class Database {
 
   static async loadReleaseMetadataFolder() {
     if (!this.releaseMetadataFolder) {
-      if (Database.local && CartoApp.fullLocalStorage) {
+      if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
         const storage = await Database.local.createStorage("res/latest/van/release/metadata/");
 
         if (storage) {
@@ -951,7 +951,7 @@ export default class Database {
       return Database.releaseVanillaFolder;
     }
 
-    if (Database.local && CartoApp.fullLocalStorage) {
+    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
       const storage = await Database.local.createStorage("res/latest/van/release/");
 
       if (storage) {
@@ -975,7 +975,7 @@ export default class Database {
       return Database.previewVanillaFolder;
     }
 
-    if (Database.local && CartoApp.fullLocalStorage) {
+    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
       const storage = await Database.local.createStorage("res/latest/van/preview/");
 
       if (storage) {
@@ -1023,7 +1023,7 @@ export default class Database {
       return Database.releaseVanillaBehaviorPackFolder;
     }
 
-    if (Database.local && CartoApp.fullLocalStorage) {
+    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
       const storage = await Database.local.createStorage("res/latest/van/release/behavior_pack/");
 
       if (storage) {
@@ -1047,7 +1047,7 @@ export default class Database {
       return Database.releaseVanillaResourcePackFolder;
     }
 
-    if (Database.local && CartoApp.fullLocalStorage) {
+    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
       const storage = await Database.local.createStorage("res/latest/van/release/resource_pack/");
 
       if (storage) {
