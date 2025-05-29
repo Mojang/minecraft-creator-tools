@@ -1,0 +1,6 @@
+{
+  "id": "query.mark_variant",
+  "fields": [],
+  "description": "Returns the entity's mark variant",
+  "title": "Mark Variant Query"
+}

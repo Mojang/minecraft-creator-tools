@@ -1,0 +1,6 @@
+{
+  "id": "query.get_actor_info_id",
+  "fields": [],
+  "description": "Returns the integer id of an actor by its string name.",
+  "title": "Get Actor Info Id Query"
+}

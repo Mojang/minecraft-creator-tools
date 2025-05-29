@@ -1,0 +1,6 @@
+{
+  "id": "query.is_jump_goal_jumping",
+  "fields": [],
+  "description": "Returns 1.0 if the entity is doing a jump goal jump, else it returns 0.0.",
+  "title": "Is Jump Goal Jumping Query"
+}

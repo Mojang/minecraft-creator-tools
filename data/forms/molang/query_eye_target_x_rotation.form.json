@@ -1,0 +1,6 @@
+{
+  "id": "query.eye_target_x_rotation",
+  "fields": [],
+  "description": "Returns the X eye rotation of the entity if it makes sense, else it returns 0.0.",
+  "title": "Eye Target X Rotation Query"
+}

@@ -1,0 +1,18 @@
+{
+  "files": [
+    "Ambient Sounds Client Biome Component.json",
+    "Client Biome Components.json",
+    "Client Biome Description.json",
+    "Client Biome Document.json",
+    "Client Biome Object.json",
+    "Fog Appearance Client Biome Component.json",
+    "Foliage Appearance Client Biome Component.json",
+    "Foliage Color Map Container.json",
+    "Grass Appearance Client Biome Component.json",
+    "Grass Color Map Container.json",
+    "Music Client Biome Component.json",
+    "Sky Color Client Biome Component.json",
+    "Water Appearance Client Biome Component.json"
+  ],
+  "folders": []
+}

@@ -1,0 +1,38 @@
+{
+  "fields": [
+    {
+      "id": "num_particles",
+      "title": "Num Particles",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "num_particles",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "id": "num_particles",
+            "title": "Num Particles",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "num_particles",
+          "dataType": 3
+        }
+      ]
+    }
+  ],
+  "title": "Emitter Rate Instant Misc",
+  "id": "emitter_rate_instant"
+}

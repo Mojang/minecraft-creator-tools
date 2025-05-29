@@ -1,0 +1,16 @@
+{
+  "fields": [
+    {
+      "id": "event",
+      "title": "Event",
+      "dataType": 16
+    },
+    {
+      "id": "min_speed",
+      "title": "Min Speed",
+      "dataType": 3
+    }
+  ],
+  "title": "Particle Motion Collision Event Misc",
+  "id": "particle_motion_collision_event"
+}

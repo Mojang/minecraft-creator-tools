@@ -1,0 +1,6 @@
+{
+  "id": "query.position",
+  "fields": [],
+  "description": "Returns the absolute position of an actor.  Takes one argument that represents the desired axis (0 == x-axis, 1 == y-axis, 2 == z-axis).",
+  "title": "Position Query"
+}

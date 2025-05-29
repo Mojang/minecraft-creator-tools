@@ -1,0 +1,107 @@
+{
+  "fields": [
+    {
+      "id": "coefficient_of_restitution",
+      "title": "Coefficient Of Restitution",
+      "dataType": 3
+    },
+    {
+      "id": "collision_drag",
+      "title": "Collision Drag",
+      "dataType": 3
+    },
+    {
+      "id": "collision_radius",
+      "title": "Collision Radius",
+      "dataType": 3,
+      "validity": [
+        {
+          "comparison": "<=",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": "enabled",
+      "title": "Enabled",
+      "dataType": 24,
+      "alternates": [
+        {
+          "id": "enabled",
+          "dataType": 14,
+          "readOnly": true,
+          "subForm": {
+            "id": "enabled",
+            "title": "Enabled",
+            "fields": [
+              {
+                "id": "expression",
+                "title": "Expression",
+                "dataType": 2
+              },
+              {
+                "id": "version",
+                "title": "Version",
+                "dataType": 0
+              }
+            ]
+          }
+        },
+        {
+          "id": "enabled",
+          "dataType": 3
+        }
+      ]
+    },
+    {
+      "id": "events",
+      "title": "Events",
+      "dataType": 15,
+      "subForm": {
+        "id": "particle_motion_collision_event",
+        "title": "Particle Motion Collision Event",
+        "fields": [
+          {
+            "id": "event",
+            "title": "Event",
+            "dataType": 16
+          },
+          {
+            "id": "min_speed",
+            "title": "Min Speed",
+            "dataType": 3
+          }
+        ]
+      },
+      "alternates": [
+        {
+          "id": "events",
+          "dataType": 16,
+          "subForm": {
+            "id": "events",
+            "title": "Events",
+            "fields": [
+              {
+                "id": "event",
+                "title": "Event",
+                "dataType": 16
+              },
+              {
+                "id": "min_speed",
+                "title": "Min Speed",
+                "dataType": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "expire_on_contact",
+      "title": "Expire On Contact",
+      "dataType": 1
+    }
+  ],
+  "title": "Particle Motion Collision Misc",
+  "id": "particle_motion_collision"
+}
