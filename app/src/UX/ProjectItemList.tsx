@@ -1580,12 +1580,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       });
     }
 
-    showMenuItems.push({
-      key: "dividerPacks",
-      kind: "divider",
-    });
-
     if (this.props.project && this.props.project.packs && this.props.project.packs.length > 2) {
+      showMenuItems.push({
+        key: "dividerPacks",
+        kind: "divider",
+      });
+
       const packList: string[] = [];
       for (const pack of this.props.project.packs) {
         if (!packList.includes(pack.folder.name)) {
