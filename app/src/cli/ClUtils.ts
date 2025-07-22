@@ -13,6 +13,7 @@ import IProjectStartInfo from "./IProjectStartInfo";
 
 export enum TaskType {
   noCommand = 0,
+  deploy = 5,
   info = 7,
   add = 8,
   create = 9,

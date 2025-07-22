@@ -1,0 +1,32 @@
+{
+  "format_version": "1.20.10",
+  "animations": {
+    "animation.sample_entity.walk": {
+      "animation_length": 1.0,
+      "loop": true,
+      "bones": {
+        "body": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "head": {
+          "rotation": {
+            "0.0": [0, 0, 0],
+            "0.5": [10, 0, 0],
+            "1.0": [0, 0, 0]
+          }
+        }
+      }
+    },
+    "animation.sample_entity.idle": {
+      "animation_length": 2.0,
+      "loop": true,
+      "bones": {
+        "body": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        }
+      }
+    }
+  }
+}

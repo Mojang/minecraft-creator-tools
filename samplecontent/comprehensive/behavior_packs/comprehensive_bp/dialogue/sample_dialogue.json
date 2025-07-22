@@ -1,0 +1,42 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:dialogue": {
+    "scenes": [
+      {
+        "scene_tag": "test:sample_dialogue",
+        "npc_name": {
+          "rawtext": [
+            { "text": "Sample NPC" }
+          ]
+        },
+        "text": {
+          "rawtext": [
+            { "text": "Hello! This is a sample dialogue." }
+          ]
+        },
+        "buttons": [
+          {
+            "name": {
+              "rawtext": [
+                { "text": "Give me an item" }
+              ]
+            },
+            "commands": [
+              "/give @s test:sample_item 1"
+            ]
+          },
+          {
+            "name": {
+              "rawtext": [
+                { "text": "Goodbye" }
+              ]
+            },
+            "commands": [
+              "/say Goodbye!"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

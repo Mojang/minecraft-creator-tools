@@ -4,7 +4,7 @@
 import IColor from "../core/IColor";
 import Utilities from "../core/Utilities";
 import { PackType } from "../minecraft/Pack";
-import TextureDefinition, { VibrantVisualsFileExtensionVariants } from "../minecraft/TextureDefinition";
+import { VibrantVisualsFileExtensionVariants } from "../minecraft/TextureDefinition";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ProjectItemCategory, ProjectItemType } from "./IProjectItemData";
 import IProjectItemRelationship from "./IProjectItemRelationship";

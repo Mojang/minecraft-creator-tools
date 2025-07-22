@@ -1,0 +1,38 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:item": {
+    "description": {
+      "identifier": "test:simple_tool",
+      "menu_category": {
+        "category": "items",
+        "group": "itemGroup.name.tools"
+      }
+    },
+    "components": {
+      "minecraft:icon": {
+        "texture": "simple_tool"
+      },
+      "minecraft:display_name": {
+        "value": "Simple Tool"
+      },
+      "minecraft:durability": {
+        "max_durability": 50
+      },
+      "minecraft:hand_equipped": true,
+      "minecraft:can_destroy_in_creative": true,
+      "minecraft:digger": {
+        "use_efficiency": true,
+        "destroy_speeds": [
+          {
+            "block": "minecraft:dirt",
+            "speed": 4
+          },
+          {
+            "block": "minecraft:grass",
+            "speed": 4
+          }
+        ]
+      }
+    }
+  }
+}

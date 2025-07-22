@@ -74,7 +74,7 @@
       "weapon"
     ],
     "apisUsed": [],
-    "mctoolsVersion": 10000001,
+    "mctoolsVersion": 10002009,
     "itemTypes": [
       "Animation",
       "Animation controller",
@@ -713,9 +713,9 @@
     "errorCount": 3,
     "internalProcessingErrorCount": 3,
     "warningCount": 14,
-    "testSuccessCount": 30,
+    "testSuccessCount": 29,
     "testFailCount": 3,
-    "testNotApplicableCount": 7,
+    "testNotApplicableCount": 8,
     "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for comprehensive_bp. It must use the .png extension.\r\nERROR: [CPACKICON101] pack_icon image file not found for comprehensive_rp. It must use the .png extension.\r\nERROR: [SCRIPTMODULE114] (/behavior_packs/comprehensive_bp/manifest.json) For @minecraft/server, using an out of date beta version: 1.8.0-beta compared to what is available (2.2.0): 1.8.0-beta",
     "internalProcessingErrorSummary": "UNKNOWN: [JSONF402] Could not find expected form: entity/actor_document\r\nUNKNOWN: [JSONF402] Could not find expected form: spawn/spawn_rules\r\nUNKNOWN: [JSONF402] Could not find expected form: visual/geometry.v1.21.0",
     "warningSummary": "WARNING: [FORMATVER178] (/behavior_packs/comprehensive_bp/animations/sample_entity_animations.json) Behavior animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)\r\nWARNING: [FORMATVER198] (/behavior_packs/comprehensive_bp/animation_controllers/sample_entity_controller.json) Behavior animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)\r\nWARNING: [FORMATVER258] (/behavior_packs/comprehensive_bp/spawn_rules/sample_entity.json) Spawn rules version (1.20.10) has a higher minor version number compared to current version (1.12.0)\r\nWARNING: [FORMATVER218] (/resource_packs/comprehensive_rp/animations/sample_entity_resource.json) Resource animation version (1.20.10) has a higher minor version number compared to current version (1.10.0)\r\nWARNING: [FORMATVER238] (/resource_packs/comprehensive_rp/animation_controllers/sample_entity_resource.json) Resource animation controller version (1.20.10) has a higher minor version number compared to current version (1.10.0)\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/sample_loot_table.json to `minecraft:stick`\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:diamond`\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:emerald`\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/loot_tables/treasure_loot.json to `minecraft:gold_ingot`\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/sample_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/sample_recipe.json to `minecraft:stick`\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:dirt`\r\nWARNING: [UNLINK323] (/behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json) Link to item type is not found in this pack: /behavior_packs/comprehensive_bp/recipes/shapeless_recipe.json to `minecraft:stick`\r\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/entity/sample_entity.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/entity/sample_entity.json to `textures/entity/sample_entity`\r\nWARNING: [UNLINK399] (/resource_packs/comprehensive_rp/particles/sample_particle.json) Link to texture is not found in this pack: /resource_packs/comprehensive_rp/particles/sample_particle.json to `textures/particle/sample_particle`",
@@ -1404,10 +1404,9 @@
         }
       },
       "PACKMETADATA": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "General info (PACKMETADATA) completed successfully",
-          "testCompleteSuccesses": 1
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)"
         }
       },
       "STRICT": {
@@ -3361,9 +3360,9 @@
       "gIx": 1
     },
     {
-      "iTp": 1,
+      "iTp": 8,
       "gId": "PACKMETADATA",
-      "gIx": 1
+      "gIx": 2
     },
     {
       "iTp": 1,
@@ -5767,5 +5766,5 @@
   },
   "generatorName": "Minecraft Creator Tools",
   "suite": 0,
-  "generatorVersion": "0.0.1"
+  "generatorVersion": "0.2.9"
 }

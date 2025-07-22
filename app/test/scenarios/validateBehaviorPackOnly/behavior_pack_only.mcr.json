@@ -26,7 +26,7 @@
     "blockTypeComponents": [],
     "itemTypeComponents": [],
     "apisUsed": [],
-    "mctoolsVersion": 10000001,
+    "mctoolsVersion": 10002009,
     "itemTypes": [
       "Behavior pack",
       "Behavior pack manifest",
@@ -242,5 +242,5 @@
   ],
   "generatorName": "Minecraft Creator Tools",
   "suite": 2,
-  "generatorVersion": "0.0.1"
+  "generatorVersion": "0.2.9"
 }

@@ -1,0 +1,35 @@
+{
+  "format_version": "1.20.10",
+  "particle_effect": {
+    "description": {
+      "identifier": "test:sample_particle",
+      "basic_render_parameters": {
+        "material": "particles_alpha",
+        "texture": "textures/particle/sample_particle"
+      }
+    },
+    "components": {
+      "minecraft:emitter_rate_instant": {
+        "num_particles": 50
+      },
+      "minecraft:emitter_lifetime_looping": {
+        "active_time": 1.0,
+        "sleep_time": 0.5
+      },
+      "minecraft:emitter_shape_sphere": {
+        "radius": 1.0
+      },
+      "minecraft:particle_lifetime_expression": {
+        "max_lifetime": 3.0
+      },
+      "minecraft:particle_initial_speed": 2.0,
+      "minecraft:particle_motion_dynamic": {
+        "linear_acceleration": [0, -9.8, 0]
+      },
+      "minecraft:particle_appearance_billboard": {
+        "size": [0.1, 0.1],
+        "facing_camera_mode": "rotate_xyz"
+      }
+    }
+  }
+}

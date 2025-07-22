@@ -1,6 +1,5 @@
 import { Component } from "react";
 import ProjectEditor, { ProjectStatusAreaMode } from "./ProjectEditor";
-import ExporterTool from "./ExporterTool";
 import Home from "./Home";
 import "./App.css";
 import Carto from "./../app/Carto";
@@ -10,7 +9,7 @@ import IFolder from "../storage/IFolder";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import Log from "../core/Log";
 import { ProjectFocus, ProjectScriptLanguage } from "../app/IProjectData";
-import CartoApp, { HostType } from "../app/CartoApp";
+import CartoApp from "../app/CartoApp";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { CartoEditorViewMode } from "../app/ICartoData";
@@ -20,7 +19,6 @@ import ProjectUtilities from "../app/ProjectUtilities";
 import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
 import WebUtilities from "./WebUtilities";
 import ProjectEditorUtilities, { ProjectEditorMode } from "./ProjectEditorUtilities";
-import AppServiceProxy from "../core/AppServiceProxy";
 import HttpStorage from "../storage/HttpStorage";
 import { ProjectImportExclusions } from "../app/ProjectExporter";
 import Database from "../minecraft/Database";
@@ -61,10 +59,6 @@ interface AppState {
 }
 
 // Layout and UI constants
-const ELECTRON_TITLEBAR_HEIGHT = 41;
-const DEFAULT_BANNER_HEIGHT = 96;
-const MIN_BANNER_OFFSET_HEIGHT = 20;
-const BANNER_EXTRA_HEIGHT = 17;
 const LOADING_INTERVAL_MS = 50;
 const TOOLBAR_MENU_TRANSFORM_OFFSET = " 235px";
 

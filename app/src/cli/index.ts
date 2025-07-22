@@ -21,7 +21,7 @@ import ContentIndex from "../core/ContentIndex.js";
 import IIndexJson from "../storage/IIndexJson.js";
 import * as inquirer from "inquirer";
 import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem.js";
-import ProjectUtilities, { NewEntityTypeAddMode } from "../app/ProjectUtilities.js";
+import ProjectUtilities from "../app/ProjectUtilities.js";
 import Project, { FolderContext, ProjectAutoDeploymentMode } from "../app/Project.js";
 import ProjectExporter from "../app/ProjectExporter.js";
 import Utilities from "../core/Utilities.js";
@@ -32,6 +32,7 @@ import { IMinecraftStartMessage } from "../app/IMinecraftStartMessage.js";
 import ServerManager, { ServerManagerFeatures } from "../local/ServerManager.js";
 import IProjectMetaState from "../info/IProjectMetaState.js";
 import ProjectItemCreateManager from "../app/ProjectItemCreateManager.js";
+import LocalTools from "../local/LocalTools.js";
 
 if (typeof btoa === "undefined") {
   // @ts-ignore
@@ -140,6 +141,21 @@ program.addHelpText("before", "\x1b[32m│ ▄ ▄ │\x1b[0m Minecraft Creator 
 program.addHelpText("before", "\x1b[32m│ ┏▀┓ │\x1b[0m See " + constants.homeUrl + " for more info.");
 program.addHelpText("before", "\x1b[32m└─────┘\x1b[0m");
 program.addHelpText("before", " ");
+
+program
+  .command("deploy")
+  .alias("dp")
+  .description("Copies Minecraft files to a destination folder.")
+  .addArgument(
+    new Argument(
+      "<mode>",
+      "Determines where to copy Minecraft files to. Use 'mcuwp' for Minecraft Bedrock UWP, 'mcpreview' for Minecraft Bedrock Preview, 'server' for the server path , or use a custom path."
+    )
+  )
+  .action((modeIn) => {
+    mode = modeIn;
+    executionTaskType = TaskType.deploy;
+  });
 
 program
   .command("world")
@@ -412,6 +428,14 @@ if (options.logVerbose) {
 
     case TaskType.validate:
       await validate();
+      break;
+
+    case TaskType.deploy:
+      await deploy();
+
+      if (options.ensureWorld) {
+        await ensureRefWorld();
+      }
       break;
 
     case TaskType.aggregateReports:
@@ -760,6 +784,33 @@ async function doExit() {
 
   if (!errorLevel) {
     (process as any).exitCode = errorLevel;
+  }
+}
+
+async function ensureRefWorld() {
+  const ns: NodeStorage | undefined = getTargetFolderFromMode();
+  if (!carto || !carto.local || projectStarts.length === 0) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to export a project.");
+    return;
+  }
+
+  for (const projectStart of projectStarts) {
+    if (projectStart) {
+      if (!ns) {
+        return;
+      }
+
+      const project = ClUtils.createProject(carto, projectStart);
+
+      await ns.rootFolder.ensureExists();
+
+      await LocalTools.ensureFlatPackRefWorldTo(carto, project, ns.rootFolder, project.name);
+
+      if (options.launch) {
+        await LocalTools.launchWorld(carto, project.name);
+      }
+    }
   }
 }
 
@@ -1981,6 +2032,67 @@ function outputLogo(message: string) {
   console.log("\x1b[32m│ ┏▀┓ │\x1b[0m");
   console.log("\x1b[32m└─────┘\x1b[0m");
   console.log("");
+}
+
+async function deploy() {
+  const ns: NodeStorage | undefined = getTargetFolderFromMode();
+
+  if (!carto || !carto.local || projectStarts.length === 0) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to deploy a project.");
+    return;
+  }
+  for (const projectStart of projectStarts) {
+    if (projectStart) {
+      const project = ClUtils.createProject(carto, projectStart);
+
+      await project.inferProjectItemsFromFiles();
+
+      if (!ns) {
+        console.log("Could not determine storage for this project.");
+        return;
+      }
+
+      await ns.rootFolder.ensureExists();
+
+      await LocalTools.deploy(carto, project, ns, ns.rootFolder, project.name);
+    }
+  }
+}
+
+function getTargetFolderFromMode() {
+  let ns: NodeStorage | undefined;
+
+  if (!carto || !carto.local || projectStarts.length === 0) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to sync a project.");
+    return;
+  }
+
+  switch (mode) {
+    case "mcuwp":
+    case undefined:
+    case "":
+      ns = new NodeStorage(carto.local.minecraftPath, "");
+      break;
+    case "mcpreview":
+      ns = new NodeStorage(carto.local.minecraftPreviewPath, "");
+      break;
+    case "server":
+      ns = new NodeStorage(options.serverPath, "");
+      break;
+
+    case "output":
+    case "folder":
+      ns = new NodeStorage(options.outputFolder, "");
+      break;
+
+    default:
+      ns = new NodeStorage(mode, "");
+      break;
+  }
+
+  return ns;
 }
 
 async function serve() {

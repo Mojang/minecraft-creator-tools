@@ -38,7 +38,7 @@
     "blockTypeComponents": [],
     "itemTypeComponents": [],
     "apisUsed": [],
-    "mctoolsVersion": 10000001,
+    "mctoolsVersion": 10002009,
     "itemTypes": [
       "Behavior pack",
       "Behavior pack manifest",
@@ -252,9 +252,9 @@
     "errorCount": 1,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
-    "testSuccessCount": 30,
+    "testSuccessCount": 29,
     "testFailCount": 1,
-    "testNotApplicableCount": 9,
+    "testNotApplicableCount": 10,
     "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for test_bp. It must use the .png extension.",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
@@ -586,10 +586,9 @@
         }
       },
       "PACKMETADATA": {
-        "1": {
-          "title": "1",
-          "defaultMessage": "General info (PACKMETADATA) completed successfully",
-          "testCompleteSuccesses": 1
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)"
         }
       },
       "STRICT": {
@@ -1285,9 +1284,9 @@
       "gIx": 1
     },
     {
-      "iTp": 1,
+      "iTp": 8,
       "gId": "PACKMETADATA",
-      "gIx": 1
+      "gIx": 2
     },
     {
       "iTp": 1,
@@ -1442,5 +1441,5 @@
   ],
   "generatorName": "Minecraft Creator Tools",
   "suite": 0,
-  "generatorVersion": "0.0.1"
+  "generatorVersion": "0.2.9"
 }

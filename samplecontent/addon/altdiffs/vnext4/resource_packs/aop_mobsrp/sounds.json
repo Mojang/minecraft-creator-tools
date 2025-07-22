@@ -1,0 +1,69 @@
+{
+  "entity_sounds": {
+    "entities": {
+      "aop_mobs:nardolphle": {
+        "events": {
+          "ambient": "mob.dolphin.idle",
+          "ambient.in.water": "mob.dolphin.idle_water",
+          "attack": "mob.dolphin.attack",
+          "breathe": "mob.dolphin.blowhole",
+          "death": "mob.dolphin.death",
+          "death.in.water": "mob.dolphin.death",
+          "eat": {
+            "pitch": 1,
+            "sound": "mob.dolphin.eat",
+            "volume": 0.7
+          },
+          "hurt": "mob.dolphin.hurt",
+          "hurt.in.water": "mob.dolphin.hurt",
+          "jump": {
+            "pitch": 1,
+            "sound": "mob.dolphin.jump",
+            "volume": 0.7
+          },
+          "splash": "mob.dolphin.splash",
+          "swim": "mob.dolphin.swim"
+        },
+        "pitch": [0.8, 1.2],
+        "volume": 1
+      },
+      "aop_mobs:biceson": {
+        "events": {
+          "ambient": "mob.polarbear.idle",
+          "ambient.baby": "mob.polarbear_baby.idle",
+          "death": "mob.polarbear.death",
+          "hurt": {
+            "sound": "mob.polarbear.hurt",
+            "volume": 0.7
+          },
+          "mob.warning": {
+            "pitch": 1,
+            "sound": "mob.polarbear.warning",
+            "volume": 1.2
+          },
+          "step": {
+            "pitch": 1,
+            "sound": "mob.polarbear.step",
+            "volume": 0.7
+          }
+        },
+        "pitch": [0.8, 1.2],
+        "volume": 1
+      },
+      "aop_mobs:sheepomelon": {
+        "events": {
+          "ambient": "mob.sheep.say",
+          "death": "mob.sheep.say",
+          "hurt": "mob.sheep.say",
+          "step": {
+            "pitch": 1,
+            "sound": "mob.sheep.step",
+            "volume": 0.4
+          }
+        },
+        "pitch": [0.8, 1.2],
+        "volume": 1
+      }
+    }
+  }
+}

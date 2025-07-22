@@ -29,7 +29,7 @@ import { GalleryProjectCommand } from "./ProjectGallery";
 import AppServiceProxy, { AppServiceProxyCommands } from "../core/AppServiceProxy";
 import ProjectGallery from "./ProjectGallery";
 import StorageUtilities from "../storage/StorageUtilities";
-import { LocalFolderLabel, ConnectLabel, ExportBackupLabel } from "./Labels";
+import { LocalFolderLabel, ExportBackupLabel } from "./Labels";
 import FileSystemStorage from "../storage/FileSystemStorage";
 import CartoApp from "../app/CartoApp";
 import { ProjectTileDisplayMode } from "./ProjectTile";
@@ -144,10 +144,8 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._handleErrorMessageConfirm = this._handleErrorMessageConfirm.bind(this);
     this._handleDeleteProjectConfirm = this._handleDeleteProjectConfirm.bind(this);
     this._doManageConsent = this._doManageConsent.bind(this);
-    this._handleExportToolClick = this._handleExportToolClick.bind(this);
     this._handleExportAll = this._handleExportAll.bind(this);
     this._handleNewSearch = this._handleNewSearch.bind(this);
-    this._handleConnectClick = this._handleConnectClick.bind(this);
     this._onGalleryLoaded = this._onGalleryLoaded.bind(this);
     this._handleFileUpload = this._handleFileUpload.bind(this);
     this._handleInspectFileUpload = this._handleInspectFileUpload.bind(this);
@@ -425,21 +423,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
 
   componentDidUpdate(prevProps: IHomeProps, prevState: IHomeState) {
     this.setCarto(this.props.carto);
-  }
-
-  async _handleConnectClick() {
-    if (this.props.onModeChangeRequested) {
-      this.props.onModeChangeRequested(AppMode.companionPlusBack);
-    }
-  }
-
-  _handleExportToolClick() {
-    if (this.props.onModeChangeRequested === undefined) {
-      Log.unexpectedUndefined("HETC");
-      return;
-    }
-
-    this.props.onModeChangeRequested(AppMode.exporterTool);
   }
 
   async _handleExportAll() {
@@ -1170,21 +1153,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     let accessoryToolArea = <></>;
 
     const actionsToolbar = [];
-    if (AppServiceProxy.hasAppService) {
-      actionsToolbar.push({
-        icon: <LocalFolderLabel isCompact={false} />,
-        key: "openFolder",
-        onClick: this._handleOpenFolderViaAppServiceClick,
-        title: "Open folder on this device",
-      });
-
-      actionsToolbar.push({
-        icon: <ConnectLabel isCompact={false} />,
-        key: "connect",
-        onClick: this._handleConnectClick,
-        title: "Connect",
-      });
-    } else if (window.showDirectoryPicker !== undefined) {
+    if (window.showDirectoryPicker !== undefined) {
       actionsToolbar.push({
         icon: <LocalFolderLabel isCompact={false} />,
         key: "openFolderA",

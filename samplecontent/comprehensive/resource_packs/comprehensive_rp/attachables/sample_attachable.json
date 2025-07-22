@@ -1,0 +1,22 @@
+{
+  "format_version": "1.20.10",
+  "attachables": {
+    "test:sample_attachable": {
+      "description": {
+        "identifier": "test:sample_attachable",
+        "materials": {
+          "default": "entity_alphatest",
+          "enchanted": "entity_alphatest_glint"
+        },
+        "textures": {
+          "default": "textures/items/sample_item",
+          "enchanted": "textures/items/sample_item_enchanted"
+        },
+        "geometry": {
+          "default": "geometry.sample_attachable"
+        },
+        "render_controllers": ["controller.render.sample_attachable"]
+      }
+    }
+  }
+}

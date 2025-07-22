@@ -1,0 +1,7 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "sheepomelon",
+		"metalness_emissive_roughness": "sheepomelon_mer"
+	}
+}

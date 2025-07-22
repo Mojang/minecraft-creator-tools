@@ -1,5 +1,9 @@
 {
   "info": {
+    "capabilities": [
+      "behaviorPack",
+      "scripting"
+    ],
     "behaviorPackManifestCount": 1,
     "unknownJsonCount": 0,
     "entityTypeManifestCount": 0,
@@ -19,54 +23,39 @@
     "defaultBehaviorPackUuid": "afeeb2ab-0404-4518-822f-9837117e78e1",
     "defaultIcon": "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",
     "defaultBehaviorPackMinEngineVersion": "1.20.10",
+    "minBehaviorPackMinEngineVersionString": "1.20.10",
+    "minBehaviorPackMinEngineVersion": 11020010,
     "defaultBehaviorPackName": "Starter Hello World Tests",
     "defaultBehaviorPackDescription": "Introductory tests for Minecraft GameTest Framework.",
+    "minResourcePackMinEngineVersion": 0,
     "subpackCount": 0,
-    "subpackTier1Count": 0,
-    "subpackTier2Count": 0,
-    "subpackTier3Count": 0,
-    "subpackTier4Count": 0,
-    "subpackTier5Count": 0,
-    "subpackTier6Count": 0,
-    "subpackTier7Count": 0,
-    "subpackTier8Count": 0,
-    "subpackTier9Count": 0,
-    "subpackTier10Count": 0,
-    "subpackTier11Count": 0,
-    "subpackTier12Count": 0,
-    "subpackTier13Count": 0,
-    "subpackTier14Count": 0,
-    "subpackTier15Count": 0,
-    "subpackTier16Count": 0,
-    "subpackTier17Count": 0,
-    "subpackTier18Count": 0,
-    "subpackTier19Count": 0,
-    "subpackTier20Count": 0,
-    "subpackTier21Count": 0,
-    "subpackTier22Count": 0,
-    "subpackTier23Count": 0,
-    "subpackTier24Count": 0,
-    "subpackTier25Count": 0,
-    "subpackTier26Count": 0,
-    "subpackTier27Count": 0,
-    "subpackTier28Count": 0,
-    "subpackTier29Count": 0,
-    "subpackTier30Count": 0,
-    "subpackTier31Count": 0,
-    "subpackTier32Count": 0,
-    "subpackTier33Count": 0,
-    "subpackTier34Count": 0,
-    "subpackTier35Count": 0,
-    "subpackTier36Count": 0,
-    "subpackTier37Count": 0,
-    "subpackTier38Count": 0,
-    "subpackTier39Count": 0,
-    "subpackTier40Count": 0,
+    "entityTypeComponents": [],
+    "blockTypeComponents": [],
+    "itemTypeComponents": [],
+    "apisUsed": [],
+    "mctoolsVersion": 10002009,
+    "itemTypes": [
+      "Behavior pack",
+      "Behavior pack manifest",
+      "Catalog index",
+      "Icon",
+      "JavaScript",
+      "Structure"
+    ],
     "animationCount": 0,
     "textureCount": 0,
+    "textureTexelSize": 0,
+    "minimumSupportablePerformanceTier": 0,
+    "invalidCommandSyntaxCount": 0,
+    "linesWithSlashCount": 0,
+    "multipleSoundsManifests": 0,
+    "soundsDefinitionManifestFormatIsValid": 0,
+    "soundsDefinitionManifestIsNotValidJson": 0,
+    "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
     "worldLoadErrors": 0,
+    "commands": [],
     "featureSets": {
       "Behavior pack manifest Size": {
         "Instance Count": 1,
@@ -123,14 +112,140 @@
         "Max": 9872,
         "Min": 9872,
         "Average": 9872
+      },
+      "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier0 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier0 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier1 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier1 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier1 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier2 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier2 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier2 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier3 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier3 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier3 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier4 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier4 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier4 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier5 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier5 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier5 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
       }
     },
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
-    "testSuccessCount": 24,
+    "testSuccessCount": 29,
     "testFailCount": 0,
-    "testNotApplicableCount": 9,
+    "testNotApplicableCount": 11,
     "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
@@ -142,31 +257,31 @@
           "defaultMessage": "Minimum Definition of a Pack (ITEMS) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "2": {
-          "title": "2",
+        "102": {
+          "title": "102",
           "defaultMessage": "Behavior pack manifest found"
         },
-        "102": {
+        "202": {
           "title": "JavaScript count",
           "defaultMessage": "JavaScript item count"
         },
-        "103": {
+        "203": {
           "title": "Catalog index count",
           "defaultMessage": "Catalog index item count"
         },
-        "104": {
+        "204": {
           "title": "Structure count",
           "defaultMessage": "Structure item count"
         },
-        "105": {
+        "205": {
           "title": "Behavior pack manifest count",
           "defaultMessage": "Behavior pack manifest item count"
         },
-        "203": {
+        "303": {
           "title": "Icon count",
           "defaultMessage": "Icon item count"
         },
-        "209": {
+        "309": {
           "title": "Behavior pack count",
           "defaultMessage": "Behavior pack item count"
         }
@@ -204,23 +319,26 @@
       },
       "PACKSIZE": {
         "1": {
-          "title": "Overall Size",
+          "title": "Test Success",
           "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "2": {
+        "101": {
+          "title": "Overall Size"
+        },
+        "102": {
           "title": "File Count"
         },
-        "3": {
+        "103": {
           "title": "Folder Count"
         },
-        "4": {
+        "104": {
           "title": "Content Size"
         },
-        "5": {
+        "105": {
           "title": "Content File Count"
         },
-        "6": {
+        "106": {
           "title": "Content Folder Count"
         }
       },
@@ -230,83 +348,150 @@
           "defaultMessage": "General info (PACK) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "4": {
-          "title": "4",
+        "104": {
+          "title": "104",
           "defaultMessage": "Behavior Pack Name"
         },
-        "5": {
-          "title": "5",
+        "105": {
+          "title": "105",
           "defaultMessage": "Behavior Pack Description"
         },
-        "6": {
-          "title": "6",
+        "106": {
+          "title": "106",
           "defaultMessage": "Behavior Pack Id"
         },
-        "7": {
-          "title": "7",
+        "107": {
+          "title": "107",
           "defaultMessage": "Behavior Pack Min Engine Version"
         },
-        "8": {
-          "title": "8",
+        "108": {
+          "title": "108",
           "defaultMessage": "Behavior Pack Uuid"
         },
-        "9": {
-          "title": "9",
+        "109": {
+          "title": "109",
           "defaultMessage": "Behavior Pack Manfiest"
         },
-        "145": {
-          "title": "145",
+        "245": {
+          "title": "245",
           "defaultMessage": "Entity Geometry"
+        }
+      },
+      "SCRIPT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Script (SCRIPT) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "apisUsed"
+        }
+      },
+      "SUMMARY": {
+        "1": {
+          "title": "",
+          "defaultMessage": "Summary Information (SUMMARY) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "",
+          "defaultMessage": "Resource Manifests"
+        },
+        "102": {
+          "title": "",
+          "defaultMessage": "Behavior Manifests"
         }
       },
       "RESOURCEANIMATION": {
         "1": {
-          "title": "Animations",
+          "title": "Test Success",
           "defaultMessage": "Resource Animation (RESOURCEANIMATION) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "2": {
+        "101": {
+          "title": "Animations"
+        },
+        "102": {
           "title": "Bones"
         }
       },
       "TEXTURE": {
         "1": {
-          "title": "Textures",
+          "title": "Test Success",
           "defaultMessage": "Texture Validation (TEXTURE) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Textures"
         }
       },
       "TEXTUREREF": {
         "1": {
-          "title": "Texture References",
-          "defaultMessage": "Texture Refrences",
+          "title": "Test Success",
+          "defaultMessage": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Texture References"
         }
       },
       "TYPES": {
         "1": {
-          "title": "Types",
+          "title": "Test Success",
           "defaultMessage": "Types Info Aggregation (TYPES) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Types"
         }
       },
       "TEXTUREIMAGE": {
         "1": {
-          "title": "Texture Images",
+          "title": "Test Success",
           "defaultMessage": "Texture Image Validation (TEXTUREIMAGE) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Texture Images"
+        },
+        "200": {
+          "title": "Texture Images Tier0",
+          "defaultMessage": "Texture Images Tier 0"
+        },
+        "201": {
+          "title": "Texture Images Tier1",
+          "defaultMessage": "Texture Images Tier 1"
+        },
+        "202": {
+          "title": "Texture Images Tier2",
+          "defaultMessage": "Texture Images Tier 2"
+        },
+        "203": {
+          "title": "Texture Images Tier3",
+          "defaultMessage": "Texture Images Tier 3"
+        },
+        "204": {
+          "title": "Texture Images Tier4",
+          "defaultMessage": "Texture Images Tier 4"
+        },
+        "205": {
+          "title": "Texture Images Tier5",
+          "defaultMessage": "Texture Images Tier 5"
         }
       },
       "GEOMETRY": {
         "1": {
-          "title": "Block Geometry",
+          "title": "Test Success",
           "defaultMessage": "Model Geometry Validation (GEOMETRY) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "2": {
+        "101": {
+          "title": "Block Geometry"
+        },
+        "102": {
           "title": "Entity Geometry"
         },
-        "3": {
+        "103": {
           "title": "Item Geometry",
           "defaultMessage": "Items Geometry"
         }
@@ -358,7 +543,7 @@
       },
       "JSONTAGS": {
         "1": {
-          "title": "Entity Type",
+          "title": "Test Success",
           "defaultMessage": "JSON Tags (JSONTAGS) completed successfully",
           "testCompleteSuccesses": 1
         }
@@ -389,10 +574,16 @@
           "testCompleteSuccesses": 1
         }
       },
-      "CPI": {
+      "MCFUNCTION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test MC Function Validation (MCFUNCTION)"
+        }
+      },
+      "CPACKICON": {
         "1": {
           "title": "Test Success",
-          "defaultMessage": "Check Pack Icon Generator (CPI) completed successfully",
+          "defaultMessage": "Check Pack Icon Generator (CPACKICON) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
@@ -400,6 +591,26 @@
         "1": {
           "title": "Test Success",
           "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "SOUNDSDEFINITION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SOUNDSDEFINITION)"
+        }
+      },
+      "CPARTI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CSPJ": {
+        "1": {
+          "title": "Unknown Test: 1",
+          "defaultMessage": "Check Skin Pack Json Generator (CSPJ) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
@@ -433,9 +644,15 @@
           "testCompleteSuccesses": 1
         }
       },
+      "JSONF": {
+        "1": {
+          "defaultMessage": "JSON Structure Validation (via Minecraft docs) (JSONF) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
       "JSON": {
         "1": {
-          "defaultMessage": "JSON Schema Validation (JSON) completed successfully",
+          "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
@@ -484,31 +701,13 @@
     {
       "iTp": 2,
       "gId": "ITEMS",
-      "gIx": 2,
+      "gIx": 102,
       "p": "/behavior_packs/StarterTestsTutorial/manifest.json"
     },
     {
       "iTp": 2,
       "gId": "ITEMS",
-      "gIx": 102,
-      "d": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 103,
-      "d": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 104,
-      "d": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 105,
+      "gIx": 202,
       "d": 1
     },
     {
@@ -520,7 +719,25 @@
     {
       "iTp": 2,
       "gId": "ITEMS",
-      "gIx": 209,
+      "gIx": 204,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 205,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 303,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 309,
       "d": 1
     },
     {
@@ -628,90 +845,90 @@
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 1,
+      "gIx": 101,
       "d": 18965
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 2,
+      "gIx": 102,
       "d": 5
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 3,
+      "gIx": 103,
       "d": 5
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 4,
+      "gIx": 104,
       "d": 18965
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 5,
+      "gIx": 105,
       "d": 5
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 6,
+      "gIx": 106,
       "d": 3
     },
     {
       "iTp": 7,
       "gId": "PACK",
-      "gIx": 145
+      "gIx": 245
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 9,
+      "gIx": 109,
       "p": "/behavior_packs/StarterTestsTutorial/manifest.json",
       "d": "{\"format_version\":2,\"__comment__\":\"===== AUTOGENERATED FILE ===== CONTENT WITHIN THIS FILE WILL BE WIPED AND UPDATED WHEN USED IN TOOLING\",\"header\":{\"description\":\"Introductory tests for Minecraft GameTest Framework.\",\"name\":\"Starter Hello World Tests\",\"uuid\":\"afeeb2ab-0404-4518-822f-9837117e78e1\",\"version\":[0,0,1],\"min_engine_version\":[1,20,10]},\"modules\":[],\"dependencies\":[]}"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 7,
+      "gIx": 107,
       "p": "/behavior_packs/StarterTestsTutorial/manifest.json",
       "d": 2
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 8,
+      "gIx": 108,
       "p": "/behavior_packs/StarterTestsTutorial/manifest.json",
       "d": "afeeb2ab-0404-4518-822f-9837117e78e1"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 6,
+      "gIx": 106,
       "p": "/behavior_packs/StarterTestsTutorial/manifest.json",
       "d": "afeeb2ab-0404-4518-822f-9837117e78e1|0.0.1"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 4,
+      "gIx": 104,
       "p": "/behavior_packs/StarterTestsTutorial/manifest.json",
       "d": "Starter Hello World Tests"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 5,
+      "gIx": 105,
       "p": "/behavior_packs/StarterTestsTutorial/manifest.json",
       "d": "Introductory tests for Minecraft GameTest Framework."
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 7,
+      "gIx": 107,
       "p": "/behavior_packs/StarterTestsTutorial/manifest.json",
       "d": [
         1,
@@ -721,48 +938,231 @@
     },
     {
       "iTp": 7,
-      "gId": "RESOURCEANIMATION",
-      "gIx": 1
+      "gId": "SCRIPT",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 102
     },
     {
       "iTp": 7,
       "gId": "RESOURCEANIMATION",
-      "gIx": 2
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 102
     },
     {
       "iTp": 7,
       "gId": "TEXTURE",
-      "gIx": 1
+      "gIx": 101
     },
     {
       "iTp": 7,
       "gId": "TEXTUREREF",
-      "gIx": 1
+      "gIx": 101
     },
     {
       "iTp": 7,
       "gId": "TYPES",
-      "gIx": 1
+      "gIx": 101
     },
     {
       "iTp": 7,
       "gId": "TEXTUREIMAGE",
-      "gIx": 1
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 200,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 201,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 202,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 203,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 204,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 205,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
     },
     {
       "iTp": 7,
       "gId": "GEOMETRY",
-      "gIx": 1
+      "gIx": 101
     },
     {
       "iTp": 7,
       "gId": "GEOMETRY",
-      "gIx": 2
+      "gIx": 102
     },
     {
       "iTp": 7,
       "gId": "GEOMETRY",
-      "gIx": 3
+      "gIx": 103
     },
     {
       "iTp": 2,
@@ -801,27 +1201,27 @@
       "gIx": 55
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "ITEMS",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "LINESIZE",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "PACKSIZE",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "PACK",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "JSONTAGS",
       "gIx": 1
     },
@@ -831,8 +1231,18 @@
       "gIx": 2
     },
     {
-      "iTp": 0,
+      "iTp": 1,
+      "gId": "SCRIPT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
       "gId": "SHARING",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SUMMARY",
       "gIx": 1
     },
     {
@@ -841,49 +1251,68 @@
       "gIx": 2
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "RESOURCEANIMATION",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "STRICT",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "TEXTURE",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "TEXTUREREF",
-      "gIx": 1,
-      "m": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully"
+      "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "TYPES",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "TEXTUREIMAGE",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "GEOMETRY",
       "gIx": 1
     },
     {
-      "iTp": 0,
-      "gId": "CPI",
+      "iTp": 8,
+      "gId": "MCFUNCTION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CPACKICON",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "CWI",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "SOUNDSDEFINITION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CPARTI",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CSPJ",
       "gIx": 1
     },
     {
@@ -897,7 +1326,7 @@
       "gIx": 2
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "MINENGINEVER",
       "gIx": 1
     },
@@ -912,22 +1341,27 @@
       "gIx": 2
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "ENTITYTYPE",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "ITEMTYPE",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "UNKJSON",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
+      "gId": "JSONF",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
       "gId": "JSON",
       "gIx": 1
     },
@@ -942,12 +1376,12 @@
       "gIx": 2
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "UNLINK",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "UNKFILE",
       "gIx": 1
     },
@@ -957,12 +1391,12 @@
       "gIx": 2
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "PATHLENGTH",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "NOBOM",
       "gIx": 1
     }
@@ -1027,9 +1461,6 @@
         ]
       },
       "t": {
-        "his": [
-          0
-        ],
         "ooling": [
           0
         ],
