@@ -178,7 +178,7 @@ export default class DataFormUtilities {
       loadedForms = "";
     }
 
-    if (form.fields) {
+    if (form && form.fields) {
       for (const field of form.fields) {
         let subForm: IFormDefinition | undefined = undefined;
 

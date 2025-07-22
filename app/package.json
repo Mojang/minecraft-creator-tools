@@ -67,6 +67,7 @@
     "process": "npx ./toolbuild/jsn/ validate --force -ot noreports -i ./public/res/latest/van/release/ -o ./public/data && npx ./toolbuild/jsn/ validate --force -ot noreports -i ./public/res/latest/van/preview/ -o ./public/data && npx ./toolbuild/jsn/ validate --force -ot noreports -i ./public/res/samples/microsoft/minecraft-samples-main/ -o ./public/data && npx gulp copyjsnodedata",
     "all": "npm install && npm run-script allbuild",
     "allbuild": "npm run-script preparedevenvandjsnbuild && npm run-script webbuild",
+    "corebuild": "npm run-script jsnbuild",
     "preparedevenvandjsnbuild": "npm run-script preparedevenv && npm run-script jsnbuild && npm run-script process",
     "updateversionsandbuild": "npx gulp updateversions && npm run-script webbuild && npm run-script jsnbuild && npm run-script process && npx gulp customizesite",
     "test": "ts-mocha -delay -p tsconfig.test.json src/test/**/*.ts",

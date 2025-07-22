@@ -1308,6 +1308,17 @@ export default class App extends Component<AppProps, AppState> {
     let height = "100vh";
     let heightOffset = 0;
 
+    if (this.state.hasBanner) {
+      let bannerHeight = 96;
+      const elt = window.document.getElementById("cookie-banner");
+      if (elt && elt.offsetHeight > 20) {
+        bannerHeight = elt.offsetHeight + 17;
+      }
+
+      height = "calc(100vh - " + bannerHeight + "px)";
+      heightOffset = bannerHeight;
+    }
+
     if (CartoApp.carto === undefined || !CartoApp.carto.isLoaded) {
       interior = (
         <div className="app-loadingArea" key="app-la">

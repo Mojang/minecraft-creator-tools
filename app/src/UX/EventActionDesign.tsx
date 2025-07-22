@@ -93,23 +93,6 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
     toolbarItems.push({
       icon: (
         <CustomTabLabel
-          icon={<FontAwesomeIcon icon={faDiagramProject} className="fa-lg" />}
-          text={"Designer"}
-          isCompact={isButtonCompact}
-          isSelected={this.state.mode === EventActionDesignMode.designer}
-          theme={this.props.theme}
-        />
-      ),
-      key: "eadDesignerTab",
-      onClick: () => {
-        this.setState({ mode: EventActionDesignMode.designer });
-      },
-      title: "Designer",
-    });
-
-    toolbarItems.push({
-      icon: (
-        <CustomTabLabel
           icon={<FontAwesomeIcon icon={faCode} className="fa-lg" />}
           text={"JSON"}
           isCompact={isButtonCompact}
