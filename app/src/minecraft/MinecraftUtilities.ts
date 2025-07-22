@@ -4,7 +4,7 @@
 import DifferenceSet from "../storage/DifferenceSet";
 import Utilities from "../core/Utilities";
 import Log from "../core/Log";
-import Database from "./Database";
+import VanillaProjectManager from "./VanillaProjectManager";
 
 export default class MinecraftUtilities {
   static isReloadableSetOfChanges(differenceSet: DifferenceSet) {
@@ -112,6 +112,27 @@ export default class MinecraftUtilities {
     return false;
   }
 
+  static pathLooksLikeDesignPackContainerName(path: string) {
+    let pathCanon = path.toLowerCase();
+
+    pathCanon = pathCanon.replace(/\\/gi, "/");
+    pathCanon = pathCanon.replace(/ /gi, "_");
+    pathCanon = Utilities.ensureEndsWithSlash(Utilities.ensureStartsWithSlash(pathCanon));
+
+    if (
+      pathCanon.indexOf("design_packs") >= 0 ||
+      pathCanon.indexOf("_dps") >= 0 ||
+      pathCanon.indexOf("/dps_") >= 0 ||
+      pathCanon.endsWith("dps/") ||
+      pathCanon === "/dps/" ||
+      pathCanon === "/dp/"
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   static pathLooksLikeResourcePackContainerName(path: string) {
     let pathCanon = path.toLowerCase();
 
@@ -138,8 +159,29 @@ export default class MinecraftUtilities {
     return (
       this.pathLooksLikeBehaviorPackContainerName(path) ||
       this.pathLooksLikeResourcePackContainerName(path) ||
+      this.pathLooksLikeResourcePackContainerName(path) ||
       this.pathLooksLikeSkinPackContainerName(path)
     );
+  }
+
+  static pathLooksLikeDesignPackName(path: string) {
+    let pathCanon = path.toLowerCase();
+
+    pathCanon = pathCanon.replace(/\\/gi, "/");
+    pathCanon = pathCanon.replace(/ /gi, "_");
+    pathCanon = Utilities.ensureEndsWithSlash(Utilities.ensureStartsWithSlash(pathCanon));
+
+    if (
+      pathCanon.indexOf("/design") >= 0 ||
+      pathCanon.indexOf("design_pack") >= 0 ||
+      pathCanon.indexOf("_dp") >= 0 || // bp is uncommon as the start of a word
+      pathCanon.indexOf("/dp_") >= 0 ||
+      pathCanon.indexOf("/dp/") >= 0
+    ) {
+      return true;
+    }
+
+    return false;
   }
 
   static pathLooksLikeBehaviorPackName(path: string) {
@@ -170,8 +212,8 @@ export default class MinecraftUtilities {
     return true;
   }
   public static getBlockDefaultTexturePath(blockId: string) {
-    let blockCat = Database.getVanillaBlocksCatalogDirect();
-    let textureCat = Database.getVanillaTerrainTexturesCatalogDirect();
+    let blockCat = VanillaProjectManager.getBlocksCatalogDirect();
+    let textureCat = VanillaProjectManager.getTerrainTexturesCatalogDirect();
 
     if (!blockCat || !textureCat) {
       return undefined;
@@ -325,7 +367,7 @@ export default class MinecraftUtilities {
   }
 
   static makeNameScriptSafe(tokenName: string) {
-    tokenName = tokenName.replace(/[^a-z0-9]/gi, "-").replace(/\s+/g, "-");
+    tokenName = tokenName.replace(/[^a-z0-9_]/gi, "-").replace(/\s+/g, "-");
 
     while (tokenName.length > 1 && !Utilities.isAlpha(tokenName.substring(0, 1))) {
       tokenName = tokenName.substring(1);
@@ -386,6 +428,40 @@ export default class MinecraftUtilities {
     }
 
     return ver;
+  }
+
+  static getVersionNumber(ver: string): number {
+    if (ver === undefined) {
+      return 0;
+    }
+
+    let fvArr = ver.split(".");
+
+    let fvArrInt: number[] = [];
+    for (let i = 0; i < fvArr.length; i++) {
+      try {
+        const num = parseInt(fvArr[i]);
+
+        if (isNaN(num)) {
+          return 0;
+        }
+
+        fvArrInt.push(num);
+      } catch (e) {}
+    }
+
+    while (fvArrInt.length < 3) {
+      fvArrInt.push(0);
+    }
+
+    if (fvArrInt.length < 3) {
+      return 0;
+    }
+
+    let verNum = fvArrInt[0] * 1000000 + 10000000;
+    verNum += fvArrInt[1] * 1000 + fvArrInt[2];
+
+    return verNum;
   }
 
   static cleanUpScriptDescription(scriptDescription: string) {

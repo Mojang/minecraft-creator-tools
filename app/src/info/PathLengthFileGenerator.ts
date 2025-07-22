@@ -10,8 +10,9 @@ import Project from "../app/Project";
 import ContentIndex from "../core/ContentIndex";
 
 export enum PathLengthFileGeneratorTest {
-  filePathExceeds8DirectorySegments = 2,
-  filePathExceedsCharacterLength = 3,
+  filePathExceeds8DirectorySegments = 102,
+  filePathExceedsCharacterLength = 103,
+  filePathContainsNonLowercaseLetters = 104,
 }
 
 export default class PathLengthFileGenerator implements IProjectFileInfoGenerator {
@@ -31,6 +32,40 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
     const items: ProjectInfoItem[] = [];
 
     let path = file.storageRelativePath;
+    let pathSub = path;
+    pathSub = pathSub.replace("/Content/", "/content/");
+    pathSub = pathSub.replace("/Marketing Art/", "/marketing art/");
+    pathSub = pathSub.replace("/Store Art/", "/store art/");
+
+    let packsIndex = pathSub.indexOf("_packs/");
+
+    if (packsIndex > 0) {
+      packsIndex = pathSub.indexOf("/", packsIndex + 7);
+
+      if (packsIndex >= 0) {
+        pathSub = pathSub.substring(packsIndex);
+      }
+    }
+
+    if (
+      pathSub.toLowerCase() !== pathSub &&
+      !pathSub.startsWith("/marketing art/") &&
+      !pathSub.startsWith("/store art/") &&
+      !pathSub.endsWith(".lang") &&
+      pathSub.indexOf("/texts/") < 0 &&
+      pathSub.indexOf("/scripts/") < 0
+    ) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.recommendation,
+          this.id,
+          PathLengthFileGeneratorTest.filePathContainsNonLowercaseLetters,
+          `File path contains non-lowercase letters`,
+          project.getItemByExtendedOrProjectPath(file.extendedPath),
+          pathSub
+        )
+      );
+    }
 
     const packContentFolderHints = [
       "bp",
@@ -55,9 +90,21 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
       }
     }
 
-    const packStarterFolderHints = ["resource_packs", "behavior_packs", "world_templates", "skin_packs"];
+    const packStarterFolderHints = [
+      "resource_packs",
+      "behavior_packs",
+      "resource_pack",
+      "behavior_pack",
+      "world_templates",
+      "world_template",
+      "skin_packs",
+      "skin_pack",
+    ];
 
     for (const hint of packStarterFolderHints) {
+      if (path.toLowerCase().startsWith("/" + hint + "/")) {
+        path = path.substring(hint.length + 2);
+      }
       if (path.toLowerCase().startsWith(hint + "/")) {
         path = path.substring(hint.length + 1);
       }

@@ -226,7 +226,9 @@ export default class EntityTypeResourceDefinition {
         animationShortName = animationFullName.substring(lastPeriod + 1).toLowerCase();
       }
 
-      this._data.animations[animationShortName] = animationFullName;
+      if (Utilities.isUsableAsObjectKey(animationShortName)) {
+        this._data.animations[animationShortName] = animationFullName;
+      }
     }
 
     return animationShortName;
@@ -289,7 +291,7 @@ export default class EntityTypeResourceDefinition {
               texturePathCand = texturePathCand.substring(0, lastPeriod).toLowerCase();
             }
 
-            if (texturePathCand.endsWith(texturePath)) {
+            if (texturePathCand.endsWith(texturePath) && Utilities.isUsableAsObjectKey(key)) {
               results[key] = projectItemRel.childItem;
             }
           }
@@ -455,8 +457,8 @@ export default class EntityTypeResourceDefinition {
     if (rel.childItem.itemType === ProjectItemType.texture && this._data && this._data.textures) {
       await rel.childItem.ensureStorage();
 
-      if (rel.childItem.primaryFile && packRootFolder) {
-        let relativePath = this.getRelativePath(rel.childItem.primaryFile, packRootFolder);
+      if (rel.childItem.defaultFile && packRootFolder) {
+        let relativePath = this.getRelativePath(rel.childItem.defaultFile, packRootFolder);
 
         if (relativePath) {
           for (const key in this._data.textures) {
@@ -526,14 +528,14 @@ export default class EntityTypeResourceDefinition {
       if (candItem.itemType === ProjectItemType.animationResourceJson && animationValList) {
         await candItem.ensureStorage();
 
-        if (candItem.primaryFile) {
-          const animationDef = await AnimationResourceDefinition.ensureOnFile(candItem.primaryFile);
+        if (candItem.defaultFile) {
+          const animationDef = await AnimationResourceDefinition.ensureOnFile(candItem.defaultFile);
 
           const animIds = animationDef?.idList;
 
           if (animIds) {
             for (const animId of animationValList) {
-              if (animIds.includes(animId)) {
+              if (animIds.has(animId)) {
                 item.addChildItem(candItem);
                 continue;
               }
@@ -550,7 +552,7 @@ export default class EntityTypeResourceDefinition {
 
           if (acIds) {
             for (const acId of animationControllerIdList) {
-              if (acIds.includes(acId)) {
+              if (acIds.has(acId)) {
                 item.addChildItem(candItem);
                 continue;
               }
@@ -567,7 +569,7 @@ export default class EntityTypeResourceDefinition {
 
           if (renderIds) {
             for (const rcId of renderControllerIdList) {
-              if (renderIds.includes(rcId)) {
+              if (renderIds.has(rcId)) {
                 item.addChildItem(candItem);
                 continue;
               }

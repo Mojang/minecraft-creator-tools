@@ -112,6 +112,10 @@
       "dataType": 1
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Returns true if the subject entity is riding the calling entity.",
   "title": "Is Riding Self",
   "samples": {

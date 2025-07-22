@@ -1,3 +1,4 @@
+import Utilities from "../core/Utilities";
 import { FieldDataType } from "./IField";
 import IFormDefinition from "./IFormDefinition";
 
@@ -87,7 +88,9 @@ export default class DataFormProcessor {
                   field.dataType === FieldDataType.minecraftEventTrigger ||
                   field.dataType === FieldDataType.minecraftFilter
                 ) {
-                  obj[key] = undefined;
+                  if (Utilities.isUsableAsObjectKey(key)) {
+                    obj[key] = undefined;
+                  }
                 }
               } else if (field.dataType === FieldDataType.object && field.subForm) {
                 await DataFormProcessor.process(val, field.subForm, fixupLevel, path + key, issues);

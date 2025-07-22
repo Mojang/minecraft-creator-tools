@@ -1,0 +1,245 @@
+{
+  "info": {
+    "capabilities": [
+      "resourcePack"
+    ],
+    "behaviorPackManifestCount": 0,
+    "unknownJsonCount": 0,
+    "entityTypeManifestCount": 0,
+    "itemTypeManifestCount": 0,
+    "blockTypeManifestCount": 0,
+    "resourcePackManifestCount": 0,
+    "worldCount": 0,
+    "entityTypeResourceCount": 0,
+    "behaviorPackAnimationCount": 0,
+    "behaviorPackAnimationControllerCount": 0,
+    "overallSize": 300,
+    "fileCounts": 1,
+    "folderCounts": 0,
+    "contentSize": 300,
+    "contentFileCounts": 1,
+    "contentFolderCounts": 0,
+    "minBehaviorPackMinEngineVersion": 0,
+    "minResourcePackMinEngineVersion": 0,
+    "subpackCount": 0,
+    "entityTypeComponents": [],
+    "blockTypeComponents": [],
+    "itemTypeComponents": [],
+    "apisUsed": [],
+    "mctoolsVersion": 10000001,
+    "itemTypes": [
+      "Resource pack",
+      "Resource pack manifest"
+    ],
+    "animationCount": 0,
+    "textureCount": 0,
+    "textureTexelSize": 0,
+    "minimumSupportablePerformanceTier": 0,
+    "invalidCommandSyntaxCount": 0,
+    "linesWithSlashCount": 0,
+    "multipleSoundsManifests": 0,
+    "soundsDefinitionManifestFormatIsValid": 0,
+    "soundsDefinitionManifestIsNotValidJson": 0,
+    "minBaseGameVersion": 0,
+    "chunkCount": 0,
+    "subchunkLessChunkCount": 0,
+    "worldLoadErrors": 0,
+    "commands": [],
+    "featureSets": {},
+    "errorCount": 2,
+    "internalProcessingErrorCount": 0,
+    "warningCount": 0,
+    "testSuccessCount": 4,
+    "testFailCount": 2,
+    "testNotApplicableCount": 1,
+    "errorSummary": "ERROR: [CADDONREQ163] Did not find a valid behavior pack manifest.\r\nERROR: [CADDONIREQ170] (/manifest.json) Resource pack manifest does not specify that header/pack_scope that should be 'world'",
+    "internalProcessingErrorSummary": "",
+    "warningSummary": "",
+    "testFailSummary": "TESTFAIL: [CADDONREQ000] Found 1 errors for Cooperative Add-On Requirements (CADDONREQ).\r\nTESTFAIL: [CADDONIREQ000] Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
+    "summary": {
+      "PACKSIZE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Overall Size"
+        },
+        "102": {
+          "title": "File Count"
+        },
+        "103": {
+          "title": "Folder Count"
+        },
+        "104": {
+          "title": "Content Size"
+        },
+        "105": {
+          "title": "Content File Count"
+        },
+        "106": {
+          "title": "Content Folder Count"
+        }
+      },
+      "CADDONREQ": {
+        "0": {
+          "title": "Test Failure",
+          "defaultMessage": "Found 1 errors for Cooperative Add-On Requirements (CADDONREQ).",
+          "testCompleteFails": 1
+        },
+        "163": {
+          "title": "Behavior Pack Manifest Not Valid",
+          "defaultMessage": "Did not find a valid behavior pack manifest.",
+          "errors": 1
+        }
+      },
+      "TEXTURE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Texture Validation (TEXTURE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Textures"
+        }
+      },
+      "MINENGINEVER": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "614": {
+          "title": "614",
+          "defaultMessage": "Resource pack manifest format_version"
+        }
+      },
+      "CADDONIREQ": {
+        "0": {
+          "defaultMessage": "Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",
+          "testCompleteFails": 1
+        },
+        "170": {
+          "defaultMessage": "Resource pack manifest does not specify that header/pack_scope that should be 'world'",
+          "errors": 1
+        }
+      },
+      "STRICT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "WORLDDATA": {
+        "2": {
+          "defaultMessage": "No applicable items found for test World Data Validation (WORLDDATA)"
+        }
+      }
+    }
+  },
+  "items": [
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 101,
+      "d": 300
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 102,
+      "d": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 103,
+      "d": 0
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 104,
+      "d": 300
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 105,
+      "d": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 106,
+      "d": 0
+    },
+    {
+      "iTp": 3,
+      "gId": "CADDONREQ",
+      "gIx": 163
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTURE",
+      "gIx": 101
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 614,
+      "p": "/manifest.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 3,
+      "gId": "CADDONIREQ",
+      "gIx": 170,
+      "p": "/manifest.json"
+    },
+    {
+      "iTp": 1,
+      "gId": "PACKSIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "CADDONREQ",
+      "gIx": 0
+    },
+    {
+      "iTp": 1,
+      "gId": "STRICT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "TEXTURE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "MINENGINEVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "WORLDDATA",
+      "gIx": 2
+    },
+    {
+      "iTp": 0,
+      "gId": "CADDONIREQ",
+      "gIx": 0
+    }
+  ],
+  "generatorName": "Minecraft Creator Tools",
+  "suite": 2,
+  "generatorVersion": "0.0.1"
+}

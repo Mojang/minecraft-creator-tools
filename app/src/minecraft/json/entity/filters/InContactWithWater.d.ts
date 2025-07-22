@@ -18,16 +18,16 @@
 Blaze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/blaze.json
 
 {
-  "test": "in_contact_with_water",
-  "operator": "==",
-  "value": true
+  "test": "in_contact_with_water"
 }
 
 
-Enderman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/enderman.json
+Snow Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/snow_golem.json
 
 {
-  "test": "in_contact_with_water"
+  "test": "in_contact_with_water",
+  "operator": "==",
+  "value": true
 }
 
  */
@@ -48,8 +48,7 @@ export default interface InContactWithWater {
    * (Optional) The comparison to apply with 'value'.
    * 
    * Sample Values:
-   * Blaze: "=="
-   *
+   * Snow Golem: "=="
    *
    */
   operator: string;
@@ -75,8 +74,7 @@ export default interface InContactWithWater {
    * (Optional) true or false.
    * 
    * Sample Values:
-   * Blaze: true
-   *
+   * Snow Golem: true
    *
    */
   value: boolean;

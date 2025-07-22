@@ -1,0 +1,20 @@
+{
+  "id": "AppendLoot",
+  "fields": [
+    {
+      "id": "loot_table",
+      "title": "Loot Table",
+      "description": "The loot table to append",
+      "dataType": 2,
+      "isRequired": true
+    },
+    {
+      "id": "type",
+      "title": "BlockEntityModifierType",
+      "dataType": 2,
+      "isRequired": true
+    }
+  ],
+  "description": "Modifier will attempt to add loot to a block entity.",
+  "title": "AppendLoot World"
+}

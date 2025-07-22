@@ -111,6 +111,10 @@
       "dataType": 1
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests if the subject is the last player who attacked the entity in the last 400 seconds, or the last mob to do so in the last 60 seconds.",
   "title": "Was Last Hurt By",
   "samples": {

@@ -24,7 +24,8 @@
                     "id": "items",
                     "dataType": 24
                   }
-                ]
+                ],
+                "isRequired": true
               },
               {
                 "id": "repair_amount",
@@ -43,12 +44,14 @@
                         {
                           "id": "expression",
                           "title": "Expression",
-                          "dataType": 2
+                          "dataType": 2,
+                          "isRequired": true
                         },
                         {
                           "id": "version",
                           "title": "Version",
-                          "dataType": 0
+                          "dataType": 0,
+                          "isRequired": true
                         }
                       ]
                     }
@@ -328,6 +331,6 @@
       }
     ]
   },
-  "title": "Repairable",
+  "title": "Minecraft Repairable Item",
   "id": "minecraft:repairable"
 }

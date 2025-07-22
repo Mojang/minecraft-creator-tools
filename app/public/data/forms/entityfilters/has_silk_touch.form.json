@@ -111,6 +111,10 @@
       "dataType": 1
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests if the subject is holding an item with silk touch.",
   "title": "Has Silk Touch",
   "samples": {

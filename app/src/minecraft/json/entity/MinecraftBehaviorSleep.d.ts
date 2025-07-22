@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.sleep Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/job_specific_goals/minecraft:behavior.sleep/: 
 "minecraft:behavior.sleep": {}
@@ -56,7 +56,7 @@ export default interface MinecraftBehaviorSleep {
    * @remarks
    * 
    * Sample Values:
-   * Villager V2: 1.5
+   * Villager v2: 1.5
    *
    */
   goal_radius: number;
@@ -68,7 +68,7 @@ export default interface MinecraftBehaviorSleep {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 3
+   * Villager v2: 3
    *
    */
   priority: number;
@@ -78,7 +78,7 @@ export default interface MinecraftBehaviorSleep {
    * The height of the mob's collider while sleeping
    * 
    * Sample Values:
-   * Villager V2: 0.3
+   * Villager v2: 0.3
    *
    */
   sleep_collider_height: number;
@@ -88,7 +88,7 @@ export default interface MinecraftBehaviorSleep {
    * The width of the mob's collider while sleeping
    * 
    * Sample Values:
-   * Villager V2: 1
+   * Villager v2: 1
    *
    */
   sleep_collider_width: number;
@@ -98,7 +98,7 @@ export default interface MinecraftBehaviorSleep {
    * The y offset of the mob's collider while sleeping
    * 
    * Sample Values:
-   * Villager V2: 0.6
+   * Villager v2: 0.6
    *
    */
   sleep_y_offset: number;
@@ -108,7 +108,7 @@ export default interface MinecraftBehaviorSleep {
    * Movement speed multiplier of the mob when using this AI Goal
    * 
    * Sample Values:
-   * Villager V2: 0.6
+   * Villager v2: 0.6
    *
    */
   speed_multiplier: number;
@@ -119,7 +119,7 @@ export default interface MinecraftBehaviorSleep {
    * internal failure or timeout condition
    * 
    * Sample Values:
-   * Villager V2: 10
+   * Villager v2: 10
    *
    */
   timeout_cooldown: number;

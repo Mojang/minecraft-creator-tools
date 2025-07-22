@@ -91,7 +91,7 @@ Block White Sand - https://github.com/microsoft/minecraft-samples/tree/main/chil
 }
 
 
-Block Orange Ore - https://github.com/microsoft/minecraft-samples/tree/main/custom_features/basic_orange_ore/behavior_packs/basic_orange_ore/blocks/orange_ore.block.json
+Block Leaf Pile - https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/blocks/leaf_pile.block.json
 
 "minecraft:destructible_by_mining": {
   "seconds_to_destroy": 1
@@ -150,7 +150,7 @@ export default interface MinecraftDestructibleByMining {
    *
    * Block White Sand: 7.5
    *
-   * Block Orange Ore: 1
+   * Block Leaf Pile: 1
    *
    */
   seconds_to_destroy: number;

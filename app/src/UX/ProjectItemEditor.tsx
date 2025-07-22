@@ -5,7 +5,6 @@ import ProjectItem from "./../app/ProjectItem";
 import JavaScriptEditor, { ScriptEditorRole } from "./JavaScriptEditor";
 import JsonEditor from "./JsonEditor";
 import FunctionEditor from "./FunctionEditor";
-import Log from "./../core/Log";
 
 import IPersistable from "./IPersistable";
 import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
@@ -22,6 +21,7 @@ import CartoApp, { HostType } from "../app/CartoApp";
 import TextEditor from "./TextEditor";
 import NpmPackageEditor from "./NpmPackageEditor";
 import BehaviorPackManifestJsonEditor from "./BehaviorPackManifestJsonEditor";
+import ImageManager from "./ImageManager";
 import DataFormEditor from "./DataFormEditor";
 import ProjectItemUtilities, { FormMappings } from "../app/ProjectItemUtilities";
 import ProjectInfoDisplay from "./ProjectInfoDisplay";
@@ -40,7 +40,8 @@ import IFile from "../storage/IFile";
 import { faFile } from "@fortawesome/free-regular-svg-icons";
 import ItemTypeAttachableEditor from "./ItemTypeAttachableEditor";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
-import ImageEditor from "./ImageEditor";
+import { ProjectItemEditorView } from "./ProjectEditorUtilities";
+import ProjectMap from "./ProjectMap";
 
 enum ProjectItemEditorDirtyState {
   clean = 0,
@@ -48,17 +49,11 @@ enum ProjectItemEditorDirtyState {
   itemDirty = 2,
 }
 
-enum ProjectItemEditorView {
-  singleFileEditor = 0,
-  diff = 1,
-  singleFileRaw = 2,
-}
-
 interface IProjectItemEditorProps extends IAppProps {
   project: Project;
   theme: ThemeInput<any>;
   heightOffset: number;
-  forceRawView: boolean;
+  initialView: ProjectItemEditorView;
   activeVariant?: string;
   visualSeed?: number;
   activeProjectItem: ProjectItem | null;
@@ -108,21 +103,10 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
     }
   }
 
-  static getDerivedStateFromProps(nextProps: IProjectItemEditorProps, prevState: IProjectItemEditorState) {
-    if (nextProps.activeProjectItem !== prevState.loadedItem) {
-      return {
-        loadedItem: null,
-        dirtyState: ProjectItemEditorDirtyState.clean,
-        activeView: ProjectItemEditorView.singleFileEditor,
-        activeViewTarget: undefined,
-      };
-    }
-
-    return undefined;
-  }
-
   componentDidUpdate(prevProps: IProjectItemEditorProps, prevState: IProjectItemEditorState) {
-    this._updateFromProps();
+    if (!prevState.loadedItem || prevProps.activeProjectItem !== prevState.loadedItem) {
+      this._updateFromProps();
+    }
   }
 
   private async _updateFromProps() {
@@ -148,6 +132,8 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
       source !== this.state?.loadedItem
     ) {
       this.setState({
+        activeView: this.state.activeView,
+        activeViewTarget: this.state.activeViewTarget,
         dirtyState: this.state.dirtyState,
         loadedItem: source,
       });
@@ -264,9 +250,9 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           }
         } else if (file.isContentLoaded) {
           if (file.content === null) {
-            descrip += " - no default content.";
+            descrip = "No default content for " + descrip[0].toLowerCase() + descrip.substring(1);
           } else {
-            descrip += " - loaded.";
+            descrip = "Loaded " + descrip[0].toLowerCase() + descrip.substring(1);
           }
         }
       }
@@ -303,14 +289,24 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
         readOnly = true;
       }
 
-      if (file !== null && file.isContentLoaded && file.content !== null) {
+      if (this.state.activeView === ProjectItemEditorView.map) {
+        interior = (
+          <ProjectMap
+            theme={this.props.theme}
+            carto={this.props.carto}
+            heightOffset={heightOffset}
+            project={this.props.project}
+            sourceItem={this.props.activeProjectItem}
+          />
+        );
+      } else if (file !== null && file.isContentLoaded && file.content !== null) {
         if (this.props.setActivePersistable !== undefined) {
           this.props.setActivePersistable(this);
         }
 
         const projItem = this.props.activeProjectItem;
         const showRaw =
-          this.props.forceRawView ||
+          this.props.initialView === ProjectItemEditorView.singleFileRaw ||
           ep === ProjectEditPreference.raw ||
           file.isInErrorState ||
           this.state.activeView === ProjectItemEditorView.diff ||
@@ -324,8 +320,6 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           if (file.type === "ts") {
             pref = ProjectScriptLanguage.typeScript;
           }
-
-          // Log.verbose("Showing JavaScript editor for '" + file.fullPath + "' size: " + file.content?.length);
 
           let role = ScriptEditorRole.script;
 
@@ -365,7 +359,6 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
             );
           }
         } else if (file.type === "mcfunction") {
-          Log.verbose("Showing MCFunction editor for '" + file.storageRelativePath + "'");
           // because electron doesn't work in debug electron due to odd pathing reasons, use a text editor instead
           if (Utilities.isDebug && CartoApp.hostType === HostType.electronWeb) {
             interior = (
@@ -397,19 +390,26 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
               />
             );
           }
-        } else if (file.type === "png" || file.type === "jpg" || file.type === "jpeg" || file.type === "tga") {
+        } else if (
+          file.type === "png" ||
+          file.type === "jpg" ||
+          file.type === "jpeg" ||
+          file.type === "tga" ||
+          file.type === "psd"
+        ) {
           interior = (
-            <ImageEditor
+            <ImageManager
               readOnly={this.props.readOnly}
               heightOffset={heightOffset}
               visualSeed={this.props.visualSeed}
               carto={this.props.carto}
+              projectItem={this.props.activeProjectItem}
               theme={this.props.theme}
               file={file}
               setActivePersistable={this._handleNewChildPersistable}
             />
           );
-        } else if (file.type === "mp3" || file.type === "ogg" || file.type === "wav") {
+        } else if (file.type === "mp3" || file.type === "ogg" || file.type === "flac" || file.type === "wav") {
           interior = (
             <AudioManager
               readOnly={this.props.readOnly}
@@ -617,9 +617,7 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
             />
           );
         } else if (file.type === "json" || file.type === "material") {
-          // Log.verbose("Showing Json editor for '" + file.storageRelativePath + "'");
-
-          // because electron doesn't work in debug electron due to odd pathing reasons, use a text editor instead
+          // because monaco doesn't work in debug electron due to odd pathing reasons, use a text editor instead
           if (Utilities.isDebug && CartoApp.hostType === HostType.electronWeb) {
             interior = (
               <TextEditor

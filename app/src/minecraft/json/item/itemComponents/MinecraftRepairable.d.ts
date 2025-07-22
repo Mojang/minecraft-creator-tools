@@ -64,7 +64,7 @@ My Sword Chuck - https://github.com/microsoft/minecraft-samples/tree/main/custom
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Repairable (minecraft:repairable)
+ * Minecraft Repairable Item (minecraft:repairable)
  * Defines the items that can be used to repair a defined item, and
  * the amount of durability each item restores upon repair. Each
  * entry needs to define a list of strings for 'items' that can be

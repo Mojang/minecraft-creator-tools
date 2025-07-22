@@ -155,7 +155,7 @@ Cooked Beef - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Food (minecraft:food)
+ * Minecraft Food Item (minecraft:food)
  * Sets the item as a food component, allowing it to be edible to
  * the player.
  */

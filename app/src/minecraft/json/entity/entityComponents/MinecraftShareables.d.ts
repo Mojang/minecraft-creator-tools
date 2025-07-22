@@ -1254,7 +1254,7 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/work_schedule_farmer/minecraft:shareables/: 
 "minecraft:shareables": {

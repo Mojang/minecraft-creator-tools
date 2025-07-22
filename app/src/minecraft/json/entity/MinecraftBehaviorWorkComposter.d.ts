@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.work_composter Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/job_specific_goals/minecraft:behavior.work_composter/: 
 "minecraft:behavior.work_composter": {}
@@ -47,7 +47,7 @@ export default interface MinecraftBehaviorWorkComposter {
    * location
    * 
    * Sample Values:
-   * Villager V2: 250
+   * Villager v2: 250
    *
    */
   active_time: number;
@@ -85,7 +85,7 @@ export default interface MinecraftBehaviorWorkComposter {
    * be used again
    * 
    * Sample Values:
-   * Villager V2: 200
+   * Villager v2: 200
    *
    */
   goal_cooldown: number;
@@ -109,7 +109,7 @@ export default interface MinecraftBehaviorWorkComposter {
    * Event to run when the mob reaches their jobsite.
    * 
    * Sample Values:
-   * Villager V2: {"event":"minecraft:resupply_trades","target":"self"}
+   * Villager v2: {"event":"minecraft:resupply_trades","target":"self"}
    *
    */
   on_arrival: jsoncommon.MinecraftEventTrigger;
@@ -121,7 +121,7 @@ export default interface MinecraftBehaviorWorkComposter {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 9
+   * Villager v2: 9
    *
    */
   priority: number;
@@ -131,7 +131,7 @@ export default interface MinecraftBehaviorWorkComposter {
    * Movement speed multiplier of the mob when using this AI Goal
    * 
    * Sample Values:
-   * Villager V2: 0.5
+   * Villager v2: 0.5
    *
    */
   speed_multiplier: number;
@@ -157,7 +157,7 @@ export default interface MinecraftBehaviorWorkComposter {
    * goal
    * 
    * Sample Values:
-   * Villager V2: 100
+   * Villager v2: 100
    *
    */
   work_in_rain_tolerance: number;

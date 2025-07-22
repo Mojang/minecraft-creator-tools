@@ -91,7 +91,7 @@ export default interface MinecraftBehaviorAvoidBlock {
    * Hoglin: [{"event":"escaped_event","target":"self"}]
    *
    */
-  on_escape: string[];
+  on_escape: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks

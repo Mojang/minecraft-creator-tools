@@ -12,14 +12,16 @@ import StorageUtilities from "../storage/StorageUtilities";
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
 export enum PackSizeInfoGeneratorTest {
-  overallSize = 1,
-  fileCount = 2,
-  folderCount = 3,
-  contentSize = 4,
-  contentFileCount = 5,
-  contentFolderCount = 6,
+  overallSize = 101,
+  fileCount = 102,
+  folderCount = 103,
+  contentSize = 104,
+  contentFileCount = 105,
+  contentFolderCount = 106,
   exceedsRecommendedAddonSize = 401,
   exceedsRecommendedPackageSize = 402,
+
+  zipFileCouldNotBeProcessed = 410,
 }
 
 export interface IPackSizeInfoGeneratorResults {
@@ -45,12 +47,12 @@ export default class PackSizeInfoGenerator implements IProjectInfoGenerator {
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
-    info.overallSize = infoSet.getFirstNumberValue(this.id, PackSizeInfoGeneratorTest.overallSize);
-    info.fileCounts = infoSet.getFirstNumberValue(this.id, PackSizeInfoGeneratorTest.fileCount);
-    info.folderCounts = infoSet.getFirstNumberValue(this.id, PackSizeInfoGeneratorTest.folderCount);
-    info.contentSize = infoSet.getFirstNumberValue(this.id, PackSizeInfoGeneratorTest.contentSize);
-    info.contentFileCounts = infoSet.getFirstNumberValue(this.id, PackSizeInfoGeneratorTest.contentFileCount);
-    info.contentFolderCounts = infoSet.getFirstNumberValue(this.id, PackSizeInfoGeneratorTest.contentFolderCount);
+    info.overallSize = infoSet.getFirstNumberDataValue(this.id, PackSizeInfoGeneratorTest.overallSize);
+    info.fileCounts = infoSet.getFirstNumberDataValue(this.id, PackSizeInfoGeneratorTest.fileCount);
+    info.folderCounts = infoSet.getFirstNumberDataValue(this.id, PackSizeInfoGeneratorTest.folderCount);
+    info.contentSize = infoSet.getFirstNumberDataValue(this.id, PackSizeInfoGeneratorTest.contentSize);
+    info.contentFileCounts = infoSet.getFirstNumberDataValue(this.id, PackSizeInfoGeneratorTest.contentFileCount);
+    info.contentFolderCounts = infoSet.getFirstNumberDataValue(this.id, PackSizeInfoGeneratorTest.contentFolderCount);
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
@@ -189,9 +191,11 @@ export default class PackSizeInfoGenerator implements IProjectInfoGenerator {
         results.fileCounts++;
 
         if (StorageUtilities.isContainerFile(file.fullPath)) {
-          const storageFolder = await StorageUtilities.getFileStorageFolder(file);
+          let storageFolder = undefined;
 
-          if (storageFolder) {
+          storageFolder = await StorageUtilities.getFileStorageFolder(file);
+
+          if (storageFolder && typeof storageFolder !== "string") {
             await this.processFolder(
               project,
               storageFolder,
@@ -200,6 +204,20 @@ export default class PackSizeInfoGenerator implements IProjectInfoGenerator {
               results,
               depth + 1,
               isInContent
+            );
+          } else if (typeof storageFolder === "string") {
+            genItems.push(
+              new ProjectInfoItem(
+                InfoItemType.error,
+                this.id,
+                PackSizeInfoGeneratorTest.zipFileCouldNotBeProcessed,
+                ProjectInfoUtilities.getTitleFromEnum(
+                  PackSizeInfoGeneratorTest,
+                  PackSizeInfoGeneratorTest.exceedsRecommendedPackageSize
+                ),
+                undefined,
+                file.errorStateMessage
+              )
             );
           }
         } else {

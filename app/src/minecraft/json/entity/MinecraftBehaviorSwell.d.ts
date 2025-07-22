@@ -39,6 +39,7 @@ export default interface MinecraftBehaviorSwell {
    * Sample Values:
    * Creeper: 2
    *
+   *
    */
   priority: number;
 
@@ -50,6 +51,7 @@ export default interface MinecraftBehaviorSwell {
    * Sample Values:
    * Creeper: 2.5
    *
+   *
    */
   start_distance: number;
 
@@ -60,6 +62,7 @@ export default interface MinecraftBehaviorSwell {
    * 
    * Sample Values:
    * Creeper: 6
+   *
    *
    */
   stop_distance: number;

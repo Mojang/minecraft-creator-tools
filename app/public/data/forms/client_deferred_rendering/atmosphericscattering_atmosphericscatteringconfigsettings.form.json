@@ -229,6 +229,7 @@
       }
     }
   ],
+  "id": "minecraft:atmosphere_settings",
   "title": "Atmospheric Scattering",
   "description": "Customize atmospherics effects"
 }

@@ -1,0 +1,246 @@
+{
+  "info": {
+    "capabilities": [
+      "behaviorPack"
+    ],
+    "behaviorPackManifestCount": 0,
+    "unknownJsonCount": 0,
+    "entityTypeManifestCount": 0,
+    "itemTypeManifestCount": 0,
+    "blockTypeManifestCount": 0,
+    "resourcePackManifestCount": 0,
+    "worldCount": 0,
+    "entityTypeResourceCount": 0,
+    "behaviorPackAnimationCount": 0,
+    "behaviorPackAnimationControllerCount": 0,
+    "overallSize": 515,
+    "fileCounts": 2,
+    "folderCounts": 1,
+    "contentSize": 515,
+    "contentFileCounts": 2,
+    "contentFolderCounts": 1,
+    "minBehaviorPackMinEngineVersion": 0,
+    "minResourcePackMinEngineVersion": 0,
+    "subpackCount": 0,
+    "entityTypeComponents": [],
+    "blockTypeComponents": [],
+    "itemTypeComponents": [],
+    "apisUsed": [],
+    "mctoolsVersion": 10000001,
+    "itemTypes": [
+      "Behavior pack",
+      "Behavior pack manifest",
+      "Entity type"
+    ],
+    "animationCount": 0,
+    "textureCount": 0,
+    "textureTexelSize": 0,
+    "minimumSupportablePerformanceTier": 0,
+    "invalidCommandSyntaxCount": 0,
+    "linesWithSlashCount": 0,
+    "multipleSoundsManifests": 0,
+    "soundsDefinitionManifestFormatIsValid": 0,
+    "soundsDefinitionManifestIsNotValidJson": 0,
+    "minBaseGameVersion": 0,
+    "chunkCount": 0,
+    "subchunkLessChunkCount": 0,
+    "worldLoadErrors": 0,
+    "commands": [],
+    "featureSets": {},
+    "errorCount": 1,
+    "internalProcessingErrorCount": 0,
+    "warningCount": 0,
+    "testSuccessCount": 5,
+    "testFailCount": 1,
+    "testNotApplicableCount": 1,
+    "errorSummary": "ERROR: [CADDONREQ164] Did not find a valid resource pack manifest.",
+    "internalProcessingErrorSummary": "",
+    "warningSummary": "",
+    "testFailSummary": "TESTFAIL: [CADDONREQ000] Found 1 errors for Cooperative Add-On Requirements (CADDONREQ).",
+    "summary": {
+      "PACKSIZE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Overall Size"
+        },
+        "102": {
+          "title": "File Count"
+        },
+        "103": {
+          "title": "Folder Count"
+        },
+        "104": {
+          "title": "Content Size"
+        },
+        "105": {
+          "title": "Content File Count"
+        },
+        "106": {
+          "title": "Content Folder Count"
+        }
+      },
+      "CADDONREQ": {
+        "0": {
+          "title": "Test Failure",
+          "defaultMessage": "Found 1 errors for Cooperative Add-On Requirements (CADDONREQ).",
+          "testCompleteFails": 1
+        },
+        "164": {
+          "title": "Resource Pack Manifest Not Valid",
+          "defaultMessage": "Did not find a valid resource pack manifest.",
+          "errors": 1
+        },
+        "200": {
+          "title": "Found Behavior Pack",
+          "defaultMessage": "Behavior pack manifest found."
+        }
+      },
+      "TEXTURE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Texture Validation (TEXTURE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Textures"
+        }
+      },
+      "MINENGINEVER": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "605": {
+          "title": "605",
+          "defaultMessage": "Behavior pack manifest min_engine_version"
+        }
+      },
+      "STRICT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "WORLDDATA": {
+        "2": {
+          "defaultMessage": "No applicable items found for test World Data Validation (WORLDDATA)"
+        }
+      },
+      "CADDONIREQ": {
+        "1": {
+          "defaultMessage": "Cooperative Add-On Item Requirements Generator (CADDONIREQ) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      }
+    }
+  },
+  "items": [
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 101,
+      "d": 515
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 102,
+      "d": 2
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 103,
+      "d": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 104,
+      "d": 515
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 105,
+      "d": 2
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 106,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "CADDONREQ",
+      "gIx": 200,
+      "p": "/manifest.json"
+    },
+    {
+      "iTp": 3,
+      "gId": "CADDONREQ",
+      "gIx": 164
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTURE",
+      "gIx": 101
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 605,
+      "p": "/manifest.json",
+      "d": [
+        1,
+        20,
+        10
+      ]
+    },
+    {
+      "iTp": 1,
+      "gId": "PACKSIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "CADDONREQ",
+      "gIx": 0
+    },
+    {
+      "iTp": 1,
+      "gId": "STRICT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "TEXTURE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "MINENGINEVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "WORLDDATA",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CADDONIREQ",
+      "gIx": 1
+    }
+  ],
+  "generatorName": "Minecraft Creator Tools",
+  "suite": 2,
+  "generatorVersion": "0.0.1"
+}

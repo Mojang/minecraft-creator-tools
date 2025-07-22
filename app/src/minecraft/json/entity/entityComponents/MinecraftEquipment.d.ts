@@ -90,7 +90,7 @@ Vex - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
 }
 
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:equipment": {
   "slot_drop_chance": [
@@ -106,19 +106,6 @@ Wither Skeleton - https://github.com/Mojang/bedrock-samples/tree/preview/behavio
 
 "minecraft:equipment": {
   "table": "loot_tables/entities/wither_skeleton_gear.json"
-}
-
-
-Zombie Pigman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_pigman.json
-
- * At /minecraft:entity/component_groups/minecraft:pig_zombie_adult/minecraft:equipment/: 
-"minecraft:equipment": {
-  "table": "loot_tables/entities/zombie_pigman_gear.json"
-}
-
- * At /minecraft:entity/component_groups/minecraft:strider_jockey/minecraft:equipment/: 
-"minecraft:equipment": {
-  "table": "loot_tables/entities/zombified_piglin_rider_gear.json"
 }
 
  */
@@ -141,7 +128,7 @@ export default interface MinecraftEquipment {
    *
    * Fox: [{"slot":"slot.weapon.mainhand","drop_chance":1}]
    *
-   * Villager V2: [{"slot":"slot.weapon.mainhand","drop_chance":0}]
+   * Villager v2: [{"slot":"slot.weapon.mainhand","drop_chance":0}]
    *
    */
   slot_drop_chance: string[];

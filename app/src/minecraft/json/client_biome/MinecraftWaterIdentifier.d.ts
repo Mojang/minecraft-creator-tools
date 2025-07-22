@@ -26,6 +26,6 @@ export default interface MinecraftWaterIdentifier {
    * @remarks
    * Identifier of water definition to use
    */
-  water_identifier: string;
+  water_identifier: object;
 
 }

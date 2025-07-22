@@ -138,6 +138,10 @@
       }
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests whether a named game rule is active.",
   "title": "Is Game Rule",
   "samples": {

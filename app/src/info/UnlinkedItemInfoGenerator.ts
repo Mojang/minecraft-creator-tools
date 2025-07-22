@@ -14,9 +14,10 @@ import { ProjectItemType } from "../app/IProjectItemData";
 
 export enum UnlinkedItemInfoGeneratorTest {
   unlinkedItemIsNotUsed = 191,
-  itemNotFoundInPack = 204,
   avoidLinksToVanillaItems = 205,
 }
+
+export const UnlinkedItemNotFoundByType = 300;
 
 export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenerator {
   id = "UNLINK";
@@ -44,24 +45,27 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
               this.id,
               UnlinkedItemInfoGeneratorTest.avoidLinksToVanillaItems,
               `Link to vanilla ` +
-                ProjectItemUtilities.getDescriptionForType(rel.itemType) +
+                ProjectItemUtilities.getDescriptionForType(rel.itemType).toLowerCase() +
                 ` item; avoid if possible`,
               projectItem,
               rel.path
             )
           );
         } else {
-          // UNLINK204
+          const message =
+            `Link to ` +
+            ProjectItemUtilities.getDescriptionForType(rel.itemType).toLowerCase() +
+            ` is not found in this pack`;
+
+          // UNLINK300+
           items.push(
             new ProjectInfoItem(
               InfoItemType.warning,
               this.id,
-              UnlinkedItemInfoGeneratorTest.itemNotFoundInPack,
-              `Link to ` +
-                ProjectItemUtilities.getDescriptionForType(rel.itemType).toLowerCase() +
-                ` is not found in this pack`,
+              UnlinkedItemNotFoundByType + rel.itemType,
+              message,
               projectItem,
-              rel.path
+              projectItem.projectPath + " to `" + rel.path + "`"
             )
           );
         }
@@ -70,7 +74,7 @@ export default class UnlinkedItemInfoGenerator implements IProjectInfoItemGenera
 
     if (projectItem.itemType === ProjectItemType.texture || projectItem.itemType === ProjectItemType.audio) {
       if (projectItem.parentItemCount <= 0 && projectItem.childItemCount <= 0) {
-        const path = projectItem.getPackRelativePath();
+        const path = await projectItem.getPackRelativePath();
 
         if (path) {
           const isVanilla = await Database.matchesVanillaPath(path);

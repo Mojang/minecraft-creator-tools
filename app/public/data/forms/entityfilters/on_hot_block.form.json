@@ -111,8 +111,12 @@
       "dataType": 1
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests if the subject is on a hot block.",
-  "title": "On Hot Block",
+  "title": "Hot Block",
   "samples": {
     "samples": [
       {

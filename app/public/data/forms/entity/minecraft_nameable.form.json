@@ -55,7 +55,7 @@
           },
           {
             "id": "on_named",
-            "title": "On Named",
+            "title": "Named",
             "description": "Event to be called when this entity acquires the name specified in 'name_filter'",
             "dataType": 22
           }
@@ -763,6 +763,12 @@
       }
     ],
     "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/entities/beachager.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:nameable/",
+        "content": {}
+      }
+    ],
+    "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
       {
         "path": "/minecraft:entity/components/minecraft:nameable/",
         "content": {}

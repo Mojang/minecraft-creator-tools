@@ -7,23 +7,24 @@ import StorageUtilities from "./StorageUtilities";
 
   available data is based on image format, see Exifr docs for info
 */
-export function parseImageData(file: IFile): Promise<any | null> {
+export async function parseImageMetadata(file: IFile): Promise<any | null> {
   try {
+    await file.loadContent();
     const imageReader = new Exifr();
     const fileData = StorageUtilities.getContentsAsBinary(file);
 
     if (!fileData) {
-      return Promise.resolve(null);
+      return null;
     }
 
-    return imageReader.read(fileData).then(() => imageReader.parse());
+    return await imageReader.read(fileData).then(() => imageReader.parse());
   } catch (error) {
     console.error(error);
-    return Promise.resolve(null);
+    return null;
   }
 }
 
-export function isPackIcon(file?: IFile): boolean {
+export function isPackIcon(file?: IFile | null): boolean {
   return !!file && file.name.includes("pack_icon") && file.name.endsWith(".png");
 }
 

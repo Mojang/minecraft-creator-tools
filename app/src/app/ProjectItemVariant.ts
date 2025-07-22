@@ -17,7 +17,7 @@ export default class ProjectItemVariant {
   private _data: IProjectItemVariant;
   private _file: IFile | null = null;
   private _folder: IFolder | null = null;
-  private _projectVariant?: ProjectVariant;
+  private _projectVariant: ProjectVariant;
   private _isFileContentProcessed = false;
   private _isLoaded = false;
   private _onFileRetrieved = new EventDispatcher<ProjectItemVariant, IFile>();
@@ -26,12 +26,16 @@ export default class ProjectItemVariant {
 
   private _isDefault: boolean;
 
-  constructor(parentItem: ProjectItem, data: IProjectItemVariant, projectVariant?: ProjectVariant) {
+  constructor(parentItem: ProjectItem, data: IProjectItemVariant, projectVariant: ProjectVariant) {
     this._item = parentItem;
     this._data = data;
     this._projectVariant = projectVariant;
 
     this._isDefault = this._data.label === "";
+  }
+
+  get projectVariant() {
+    return this._projectVariant;
   }
 
   get errorMessage() {
@@ -184,7 +188,7 @@ export default class ProjectItemVariant {
     ) {
       await this._item.project.ensurePacksAsync();
 
-      const pack = this._item.getPack();
+      const pack = await this._item.getPack();
 
       if (pack && pack.type === PackType.resource && this._item.projectPath) {
         const manifest = (await pack.ensureManifest()) as ResourceManifestDefinition | undefined;

@@ -30,12 +30,8 @@ import { MinecraftTrack } from "../app/ICartoData";
 import IBiomesMetadata from "./IBiomesMetadata";
 import IBlocksMetadata from "./IBlocksMetadata";
 import ILegacyDocumentationNode from "./docs/ILegacyDocumentation";
-import BlocksCatalogDefinition from "./BlocksCatalogDefinition";
-import TerrainTextureCatalogDefinition from "./TerrainTextureCatalogDefinition";
 import IEntitiesMetadata from "./IEntitiesMetadata";
 import IItemsMetadata from "./IItemsMetadata";
-import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition";
-import ItemTextureCatalogDefinition from "./ItemTextureCatalogDefinition";
 import ZipStorage from "../storage/ZipStorage";
 
 export default class Database {
@@ -46,9 +42,9 @@ export default class Database {
   static _creatorToolsIngameProject: Project | null = null;
   static uxCatalog: { [formName: string]: IFormDefinition } = {};
   static formsFolders: { [folderName: string]: IFolder } = {};
-  static betaTypeDefs: ITypeDefCatalog | null = null;
+  static stable20TypeDefs: ITypeDefCatalog | null = null;
   static libs: ITypeDefCatalog | null = null;
-  static stableTypeDefs: ITypeDefCatalog | null = null;
+  static stable10TypeDefs: ITypeDefCatalog | null = null;
   static contentFolder: IFolder | null = null;
   static snippetsFolder: IFolder | null = null;
   static previewMetadataFolder: IFolder | null = null;
@@ -70,10 +66,6 @@ export default class Database {
   static blocksMetadata: IBlocksMetadata | null = null;
   static entitiesMetadata: IEntitiesMetadata | null = null;
   static itemsMetadata: IItemsMetadata | null = null;
-  static blocksCatalog: BlocksCatalogDefinition | null = null;
-  static itemTextureCatalog: ItemTextureCatalogDefinition | null = null;
-  static terrainTextureCatalog: TerrainTextureCatalogDefinition | null = null;
-  static soundDefinitionCatalog: SoundDefinitionCatalogDefinition | null = null;
 
   static latestVersion: string | undefined;
   static latestPreviewVersion: string | undefined;
@@ -91,6 +83,8 @@ export default class Database {
 
   static minecraftEduVersion = "1.21.0";
   static minecraftEduPreviewVersion = "1.21.0";
+  static fallbackMinecraftVersion = "1.21.80"; // used if we fail to retrieve the latest version from the network
+  static fallbackMinecraftPreviewVersion = "1.21.90.26"; // should be occasionally statically updated.
 
   static minecraftModuleNames = [
     "@minecraft/server-gametest",
@@ -104,7 +98,7 @@ export default class Database {
   static maxMinecraftPatchVersions = {
     "1.19": "80",
     "1.20": "80",
-    "1.21": "50",
+    "1.21": "80",
   };
 
   static moduleDescriptors: { [id: string]: NpmModule } = {};
@@ -138,9 +132,11 @@ export default class Database {
 
   static async ensureFormLoaded(subFolder: string, name: string): Promise<IFormDefinition | undefined> {
     name = name.toLowerCase();
+    const extendedName = (subFolder ? subFolder + "." : "") + name;
+    const expectedPath = (subFolder ? subFolder + "/" : "") + name;
 
-    if (Database.uxCatalog[name] !== undefined) {
-      return Database.uxCatalog[name];
+    if (Database.uxCatalog[extendedName] !== undefined) {
+      return Database.uxCatalog[extendedName];
     }
 
     let path = "data/forms/";
@@ -162,21 +158,21 @@ export default class Database {
           return StorageUtilities.getJsonObject(file) as IFormDefinition;
         }
 
-        Log.fail("Could not load file locally for '" + (subFolder ? subFolder + "/" : "") + name + "'.");
+        Log.fail("Could not load file locally for '" + expectedPath + "'.");
         return undefined;
       }
     } else {
-      path = CartoApp.contentRoot + path;
+      path = CartoApp.contentRoot + path + name + ".form.json";
 
       try {
-        const response = await axios.get(path + name + ".form.json");
+        const response = await axios.get(path);
 
-        Database.uxCatalog[(subFolder ? subFolder + "." : "") + name] = response.data;
+        Database.uxCatalog[extendedName] = response.data;
         Database.loadedFormCount++;
 
         return response.data as IFormDefinition;
       } catch {
-        Log.fail("Could not load UX file for '" + (subFolder ? subFolder + "/" : "") + name + "'.");
+        Log.fail("Could not load UX file for '" + expectedPath + "/" + path + "'.");
       }
     }
 
@@ -190,7 +186,7 @@ export default class Database {
 
     const folderPath = "data/forms/" + subFolder + "/";
 
-    if (Database.local) {
+    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
       const storage = await Database.local.createStorage(folderPath);
 
       if (storage) {
@@ -254,12 +250,20 @@ export default class Database {
       return Database.moduleDescriptors[moduleId];
     }
 
+    const url = "https://registry.npmjs.org/" + moduleId;
+
     try {
-      const response = await axios.get("https://registry.npmjs.org/" + moduleId);
+      const response = await axios.get(url);
 
       Database.moduleDescriptors[moduleId] = new NpmModule(response.data);
-    } catch {
-      Log.fail("Could not load registry for '" + moduleId + "'");
+    } catch (e: any) {
+      if (e && (!e.message || !e.message.indexOf || e.message.indexOf("etwork ") < 0)) {
+        Log.debugAlert("Could not load registry for '" + moduleId + "': " + e.toString());
+      } else {
+        CartoApp.carto?.notifyStatusUpdate(
+          "Could not connect to network to retrieve latest script package details. Url: " + url
+        );
+      }
     }
 
     return Database.moduleDescriptors[moduleId];
@@ -337,6 +341,25 @@ export default class Database {
     }
 
     return true;
+  }
+
+  static async getContentFolderContent(fileRelativePath: string) {
+    if (Database._creatorToolsIngameProject) {
+      return Database._creatorToolsIngameProject;
+    }
+
+    await Database.loadContent();
+
+    if (Database.contentFolder === null || !CartoApp.carto) {
+      Log.unexpectedContentState();
+      return undefined;
+    }
+
+    const file = await Database.contentFolder.ensureFileFromRelativePath(fileRelativePath);
+
+    await file.loadContent();
+
+    return file.content;
   }
 
   static async ensureCreatorToolsIngameProject() {
@@ -418,8 +441,23 @@ export default class Database {
     try {
       minecraftInfoResponse = await axios.get(versionUrl);
     } catch (e: any) {
-      console.log("Could not access Minecraft version details." + e);
-      throw new Error(e.toString());
+      if (e && (!e.message || !e.message.indexOf || e.message.indexOf("etwork ") < 0)) {
+        Log.debugAlert("Could not load version info from '" + versionUrl + "': " + e.toString());
+      } else {
+        CartoApp.carto?.notifyStatusUpdate(
+          "Could not connect to network to retrieve latest Minecraft version details. Url: " + versionUrl
+        );
+      }
+
+      if (track === MinecraftTrack.preview) {
+        Database.latestPreviewVersion = Database.fallbackMinecraftPreviewVersion;
+        return Database.fallbackMinecraftPreviewVersion;
+      }
+
+      if (track === MinecraftTrack.main) {
+        Database.latestVersion = Database.fallbackMinecraftVersion;
+        return Database.fallbackMinecraftVersion;
+      }
     }
 
     let latestVersionIndex = 0;
@@ -602,7 +640,7 @@ export default class Database {
       return;
     }
 
-    if (Database.local) {
+    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
       const storage = await Database.local.createStorage("data/content/");
 
       if (storage) {
@@ -639,7 +677,7 @@ export default class Database {
 
       let folder: IFolder | undefined;
 
-      if (Database.local) {
+      if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
         const storage = await Database.local.createStorage("data/snippets/");
 
         if (storage) {
@@ -741,82 +779,6 @@ export default class Database {
     }
 
     return Database.biomesMetadata;
-  }
-
-  static getVanillaBlocksCatalogDirect() {
-    return this.blocksCatalog;
-  }
-
-  static async getVanillaBlocksCatalog() {
-    if (!Database.blocksCatalog) {
-      const file = await Database.getPreviewVanillaFile("/resource_pack/blocks.json");
-
-      if (file) {
-        const blockCat = new BlocksCatalogDefinition();
-        blockCat.file = file;
-
-        await blockCat.load();
-
-        this.blocksCatalog = blockCat;
-      }
-    }
-
-    return this.blocksCatalog;
-  }
-
-  static getVanillaTerrainTexturesCatalogDirect() {
-    return this.terrainTextureCatalog;
-  }
-
-  static async getVanillaTerrainTexturesCatalog() {
-    if (!Database.terrainTextureCatalog) {
-      const file = await Database.getPreviewVanillaFile("/resource_pack/textures/terrain_texture.json");
-
-      if (file) {
-        const terrainCat = new TerrainTextureCatalogDefinition();
-        terrainCat.file = file;
-
-        await terrainCat.load();
-
-        Database.terrainTextureCatalog = terrainCat;
-      }
-    }
-
-    return Database.terrainTextureCatalog;
-  }
-
-  static async getVanillaItemTexturesCatalog() {
-    if (!Database.itemTextureCatalog) {
-      const file = await Database.getPreviewVanillaFile("/resource_pack/textures/item_texture.json");
-
-      if (file) {
-        const itemCat = new ItemTextureCatalogDefinition();
-        itemCat.file = file;
-
-        await itemCat.load();
-
-        Database.itemTextureCatalog = itemCat;
-      }
-    }
-
-    return Database.itemTextureCatalog;
-  }
-
-  static async getVanillaSoundDefinitionCatalog() {
-    if (!Database.soundDefinitionCatalog) {
-      const file = await Database.getPreviewVanillaFile("/resource_pack/sounds/sound_definitions.json");
-
-      if (file) {
-        const soundDefinitionCat = new SoundDefinitionCatalogDefinition();
-        soundDefinitionCat.file = file;
-
-        await soundDefinitionCat.load();
-
-        Database.soundDefinitionCatalog = soundDefinitionCat;
-      }
-    }
-
-    return Database.soundDefinitionCatalog;
   }
 
   static async getBlocksMetadata() {
@@ -999,7 +961,7 @@ export default class Database {
       return Database.samplesFolder;
     }
 
-    if (Database.local) {
+    if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
       const storage = await Database.local.createStorage("res/samples/microsoft/minecraft-samples-main/");
 
       if (storage) {
@@ -1143,47 +1105,47 @@ export default class Database {
     }
   }
 
-  static async loadBetaScriptTypes() {
-    if (Database.betaTypeDefs) {
+  static async loadStable20ScriptTypes() {
+    if (Database.stable20TypeDefs) {
       return;
     }
 
     try {
       // @ts-ignore
       if (typeof window !== "undefined") {
-        const response = await axios.get(CartoApp.contentRoot + "data/typedefs.beta.json");
+        const response = await axios.get(CartoApp.contentRoot + "data/typedefs.stable20.json");
 
-        Database.betaTypeDefs = response.data;
+        Database.stable20TypeDefs = response.data;
       } else if (Database.local) {
-        const result = await Database.local.readJsonFile("data/typedefs.beta.json");
+        const result = await Database.local.readJsonFile("data/typedefs.stable20.json");
         if (result !== null) {
-          Database.betaTypeDefs = result as ITypeDefCatalog;
+          Database.stable20TypeDefs = result as ITypeDefCatalog;
         }
       }
     } catch {
-      Log.fail("Could not load beta Minecraft types catalog.");
+      Log.fail("Could not load stable 2.0 Minecraft types catalog.");
     }
   }
 
-  static async loadStableScriptTypes() {
-    if (Database.stableTypeDefs) {
+  static async loadStable10ScriptTypes() {
+    if (Database.stable10TypeDefs) {
       return;
     }
 
     try {
       // @ts-ignore
       if (typeof window !== "undefined") {
-        const response = await axios.get(CartoApp.contentRoot + "data/typedefs.stable.json");
+        const response = await axios.get(CartoApp.contentRoot + "data/typedefs.stable10.json");
 
-        Database.stableTypeDefs = response.data;
+        Database.stable10TypeDefs = response.data;
       } else if (Database.local) {
-        const result = await Database.local.readJsonFile("data/typedefs.stable.json");
+        const result = await Database.local.readJsonFile("data/typedefs.stable10.json");
         if (result !== null) {
-          Database.stableTypeDefs = result as ITypeDefCatalog;
+          Database.stable10TypeDefs = result as ITypeDefCatalog;
         }
       }
     } catch {
-      Log.fail("Could not load stable Minecraft types catalog.");
+      Log.fail("Could not load stable 1.0 Minecraft types catalog.");
     }
   }
 
@@ -1263,7 +1225,9 @@ export default class Database {
     }
 
     if (!result) {
-      if (!path.startsWith("/resource_pack/") && path.startsWith("/")) {
+      path = Utilities.ensureStartsWithSlash(path);
+
+      if (!path.startsWith("/resource_pack/")) {
         result = Database.vanillaContentIndex.hasPathMatches("/resource_pack" + path);
 
         if (!result) {

@@ -12,6 +12,7 @@ import FileExplorer, { FileExplorerMode } from "./FileExplorer";
 import IFolder from "../storage/IFolder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import Utilities from "../core/Utilities";
 
 interface IImportFromUrlProps extends IAppProps {
   project: Project | null;
@@ -62,7 +63,9 @@ export default class ImportFromUrl extends Component<IImportFromUrlProps, IImpor
               key = key.substring(1);
             }
 
-            queryVals[key] = params[i].substring(firstEqual + 1);
+            if (Utilities.isUsableAsObjectKey(key)) {
+              queryVals[key] = params[i].substring(firstEqual + 1);
+            }
           }
         }
       }

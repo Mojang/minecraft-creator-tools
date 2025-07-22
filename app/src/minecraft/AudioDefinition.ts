@@ -5,8 +5,8 @@ import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import IDefinition from "./IDefinition";
 import Project from "../app/Project";
-import { AllowedExtensions } from "../storage/StorageUtilities";
 import ProjectItemCreateManager from "../app/ProjectItemCreateManager";
+import { AllowedExtensionsSet } from "../storage/StorageUtilities";
 
 export default class AudioDefinition implements IDefinition {
   private _file?: IFile;
@@ -84,7 +84,7 @@ export default class AudioDefinition implements IDefinition {
     if (lastPeriod >= 0) {
       const removedPart = projectPath.substring(lastPeriod + 1);
 
-      if (AllowedExtensions.includes(removedPart)) {
+      if (AllowedExtensionsSet.has(removedPart)) {
         projectPath = projectPath.substring(0, lastPeriod);
       }
     }

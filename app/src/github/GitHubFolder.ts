@@ -9,6 +9,7 @@ import StorageUtilities from "../storage/StorageUtilities";
 import FolderBase from "../storage/FolderBase";
 import { Endpoints } from "@octokit/types";
 import Log from "../core/Log";
+import Utilities from "../core/Utilities";
 
 type getContentReposResponse = Endpoints["GET /repos/{owner}/{repo}/contents/{path}"]["response"];
 
@@ -82,6 +83,11 @@ export default class GitHubFolder extends FolderBase implements IFolder {
 
   ensureFile(name: string): GitHubFile {
     const nameCanon = StorageUtilities.canonicalizeName(name);
+
+    if (!Utilities.isUsableAsObjectKey(nameCanon)) {
+      Log.unsupportedToken(nameCanon);
+      throw new Error();
+    }
 
     let candFile = this.files[nameCanon];
 

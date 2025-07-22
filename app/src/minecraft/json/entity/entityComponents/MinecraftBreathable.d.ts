@@ -95,20 +95,20 @@ Fish - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
 
 Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
 
- * At /minecraft:entity/component_groups/minecraft:adult/minecraft:breathable/: 
-"minecraft:breathable": {
-  "total_supply": 5,
-  "suffocate_time": 0,
-  "breathes_air": true,
-  "breathes_water": false
-}
-
  * At /minecraft:entity/component_groups/minecraft:baby/minecraft:breathable/: 
 "minecraft:breathable": {
   "total_supply": 5,
   "suffocate_time": 0,
   "breathes_air": true,
   "breathes_water": true
+}
+
+ * At /minecraft:entity/component_groups/minecraft:adult/minecraft:breathable/: 
+"minecraft:breathable": {
+  "total_supply": 5,
+  "suffocate_time": 0,
+  "breathes_air": true,
+  "breathes_water": false
 }
 
 

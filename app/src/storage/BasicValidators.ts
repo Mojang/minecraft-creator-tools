@@ -1,3 +1,4 @@
+import Utilities from "../core/Utilities";
 import IFile from "./IFile";
 import IFolder from "./IFolder";
 import StorageUtilities from "./StorageUtilities";
@@ -70,6 +71,10 @@ export class BasicValidators {
       return false;
     }
 
+    if (!Utilities.isUsableAsObjectKey(fileName)) {
+      return false;
+    }
+
     return true;
   }
 
@@ -121,6 +126,7 @@ export class BasicValidators {
     if (this.contentMatcher.hasMatch(content)) {
       const matches = this.contentMatcher.getAllMatches(content);
       let strMatches: string[] = [];
+      const strMatchesSet = new Set<string>();
 
       for (let i = 0; i < matches.length && i < 100; i++) {
         const match = matches[i];
@@ -128,8 +134,9 @@ export class BasicValidators {
         if (match) {
           const result = content.substring(match.startIndex, match.endIndex + 1);
 
-          if (!strMatches.includes(result)) {
+          if (!strMatchesSet.has(result)) {
             strMatches.push(result);
+            strMatchesSet.add(result);
           }
         }
       }

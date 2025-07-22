@@ -36,7 +36,7 @@ My Sword Singing - https://github.com/microsoft/minecraft-samples/tree/main/cust
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Block Placer (minecraft:block_placer)
+ * Minecraft Block Placer Item (minecraft:block_placer)
  * Sets the item as a planter item component for blocks. Items with
  * this component will place a block when used.
  * Note: This component can also be used instead of the
@@ -53,7 +53,7 @@ export default interface MinecraftBlockPlacer {
    * My Sword Singing: "minecraft:dirt"
    *
    */
-  block: { [key: string]: string };
+  block: object;
 
   /**
    * @remarks

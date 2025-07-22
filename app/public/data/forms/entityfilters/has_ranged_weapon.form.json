@@ -168,7 +168,9 @@
   ],
   "note": "dandelion not require any parameters to work properly. It can be used as a standalone filter.",
   "tags": [
-    "standalone"
+    "standalone",
+    "conditional",
+    "entityevent"
   ],
   "description": "Returns true when the subject entity is holding a ranged weapon like a bow or crossbow.",
   "title": "Has Ranged Weapon",

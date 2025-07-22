@@ -253,6 +253,7 @@
       }
     }
   ],
+  "id": "minecraft:lighting_settings",
   "title": "Lighting Settings",
   "description": "Lighting Settings"
 }

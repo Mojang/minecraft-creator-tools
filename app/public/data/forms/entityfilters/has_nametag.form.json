@@ -128,6 +128,10 @@
       }
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests if the subject has been given a custom name.",
   "title": "Has Nametag",
   "samples": {

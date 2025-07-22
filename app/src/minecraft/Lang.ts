@@ -7,6 +7,7 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import LocToken from "./LocToken";
 import StorageUtilities from "../storage/StorageUtilities";
 import ZipStorage from "../storage/ZipStorage";
+import Utilities from "../core/Utilities";
 
 export default class Lang {
   private _file?: IFile;
@@ -40,6 +41,10 @@ export default class Lang {
 
   public get language() {
     return this._language;
+  }
+
+  public getLocKeys(): string[] {
+    return Object.keys(this.tokens);
   }
 
   static async ensureOnFile(file: IFile, loadHandler?: IEventHandler<Lang, Lang>) {
@@ -174,11 +179,23 @@ export default class Lang {
 
       if (lastEqual > 0 && lastEqual < line.length - 1) {
         const tokenName = line.substring(0, lastEqual);
-        const tokenVal = line.substring(lastEqual + 1);
-        this.tokens[tokenName] = {
-          value: tokenVal,
-          isModified: false,
-        };
+        let tokenVal = line.substring(lastEqual + 1);
+
+        let comment = undefined;
+        let lastHash = tokenVal.indexOf("#");
+
+        if (lastHash >= 0) {
+          comment = tokenVal.substring(lastHash + 1);
+          tokenVal = tokenVal.substring(0, lastHash).trim();
+        }
+
+        if (Utilities.isUsableAsObjectKey(tokenName)) {
+          this.tokens[tokenName] = {
+            value: tokenVal,
+            comment: comment,
+            isModified: false,
+          };
+        }
       }
     }
 

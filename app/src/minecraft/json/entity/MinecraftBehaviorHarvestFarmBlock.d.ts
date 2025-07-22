@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.harvest_farm_block Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/job_specific_goals/minecraft:behavior.harvest_farm_block/: 
 "minecraft:behavior.harvest_farm_block": {}
@@ -66,7 +66,7 @@ export default interface MinecraftBehaviorHarvestFarmBlock {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 7
+   * Villager v2: 7
    *
    * Villager: 9
    *

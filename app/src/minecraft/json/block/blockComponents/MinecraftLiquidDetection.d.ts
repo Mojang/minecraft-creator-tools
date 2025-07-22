@@ -22,6 +22,18 @@ Block Fabricator - https://github.com/microsoft/minecraft-samples/tree/main/casu
   ]
 }
 
+
+Block Leaf Pile - https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/blocks/leaf_pile.block.json
+
+"minecraft:liquid_detection": {
+  "detection_rules": [
+    {
+      "liquid_type": "water",
+      "on_liquid_touches": "popped"
+    }
+  ]
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';

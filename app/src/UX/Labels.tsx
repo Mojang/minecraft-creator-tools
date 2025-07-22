@@ -266,6 +266,24 @@ export const DocumentationTypesLabel: React.FC<React.HTMLAttributes<HTMLSpanElem
   </span>
 );
 
+export const CustomSelectableDropdownLabel: React.FC<
+  React.HTMLAttributes<HTMLSpanElement> & ISelectableCustomLabelProps
+> = (props: ISelectableCustomLabelProps) => (
+  <span
+    className={"label-dropdown"}
+    style={{
+      borderColor: props.isSelected ? props.theme.siteVariables?.colorScheme.brand.background2 : "inherit",
+      color: props.isSelected ? props.theme.siteVariables?.colorScheme.brand.foreground : "inherit",
+      fontWeight: props.isSelected ? "bold" : "normal",
+      textDecoration: props.isSelected ? "underline" : "none",
+      backgroundColor: props.isSelected ? props.theme.siteVariables?.colorScheme.brand.background2 : "inherit",
+    }}
+  >
+    {props.icon}
+    {!props.isCompact ? <span className="label-text">{props.text}</span> : <></>}
+  </span>
+);
+
 export const CustomSelectableLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ISelectableCustomLabelProps> = (
   props: ISelectableCustomLabelProps
 ) => (
@@ -529,13 +547,32 @@ export const DownArrowLabel: React.FC<React.HTMLAttributes<HTMLSpanElement>> = (
   </span>
 );
 
-export const CustomLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICustomLabelProps> = (
+export const CustomDropdownLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICustomLabelProps> = (
   props: ICustomLabelProps
 ) => (
   <span className="label label-toolbar3">
     {props.icon}
     {!props.isCompact ? <span className="label-text">{props.text}</span> : <></>}
+    <FontAwesomeIcon icon={faSortDown} className="fa-lg label-arrow" />
   </span>
+);
+
+export const CustomLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICustomLabelProps> = (
+  props: ICustomLabelProps
+) => (
+  <div className="label label-toolbar3">
+    <div className="label-iconGrid">{props.icon}</div>
+    {!props.isCompact ? <span className="label-text">{props.text}</span> : <></>}
+  </div>
+);
+
+export const CustomSlimLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICustomLabelProps> = (
+  props: ICustomLabelProps
+) => (
+  <div className="label-slim label-toolbar-slim">
+    <div className="label-iconGrid">{props.icon}</div>
+    {!props.isCompact ? <span className="label-text">{props.text}</span> : <></>}
+  </div>
 );
 
 export const DeployLabel: React.FC<React.HTMLAttributes<HTMLSpanElement> & ICompactableLabelProps> = (

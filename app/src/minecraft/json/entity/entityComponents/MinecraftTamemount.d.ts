@@ -32,6 +32,10 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "temper_mod": 3
     },
     {
+      "item": "carrot",
+      "temper_mod": 3
+    },
+    {
       "item": "golden_carrot",
       "temper_mod": 5
     },
@@ -163,7 +167,7 @@ export default interface MinecraftTamemount {
    * and speed up the taming process.
    * 
    * Sample Values:
-   * Donkey: [{"item":"wheat","temper_mod":3},{"item":"sugar","temper_mod":3},{"item":"apple","temper_mod":3},{"item":"golden_carrot","temper_mod":5},{"item":"golden_apple","temper_mod":10},{"item":"appleEnchanted","temper_mod":10}]
+   * Donkey: [{"item":"wheat","temper_mod":3},{"item":"sugar","temper_mod":3},{"item":"apple","temper_mod":3},{"item":"carrot","temper_mod":3},{"item":"golden_carrot","temper_mod":5},{"item":"golden_apple","temper_mod":10},{"item":"appleEnchanted","temper_mod":10}]
    *
    *
    */

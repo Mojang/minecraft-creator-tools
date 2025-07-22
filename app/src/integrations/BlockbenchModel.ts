@@ -141,7 +141,7 @@ export default class BlockbenchModel {
         for (const animatorName in animation.animators) {
           const animator = animation.animators[animatorName];
 
-          if (animator) {
+          if (animator && Utilities.isUsableAsObjectKey(animatorName)) {
             if (animator.type === "bone" && animator.name && animator.keyframes) {
               for (const keyframe of animator.keyframes) {
                 if (keyframe.data_points && keyframe.data_points.length > 0) {
@@ -180,63 +180,69 @@ export default class BlockbenchModel {
         }
 
         for (const boneName in rotationKeyframes) {
-          const boneKeyframes = rotationKeyframes[boneName];
+          if (Utilities.isUsableAsObjectKey(boneName)) {
+            const boneKeyframes = rotationKeyframes[boneName];
 
-          if (boneKeyframes) {
-            if (!targetMcAnimation.bones[boneName]) {
-              targetMcAnimation.bones[boneName] = {};
-            }
+            if (boneKeyframes) {
+              if (!targetMcAnimation.bones[boneName]) {
+                targetMcAnimation.bones[boneName] = {};
+              }
 
-            const boneKeys = Object.keys(boneKeyframes);
+              const boneKeys = Object.keys(boneKeyframes);
 
-            if (boneKeys.length === 1 && boneKeys[0] === "0") {
-              targetMcAnimation.bones[boneName].rotation = boneKeyframes["0"];
-            } else {
-              targetMcAnimation.bones[boneName].rotation = boneKeyframes;
+              if (boneKeys.length === 1 && boneKeys[0] === "0") {
+                targetMcAnimation.bones[boneName].rotation = boneKeyframes["0"];
+              } else {
+                targetMcAnimation.bones[boneName].rotation = boneKeyframes;
+              }
             }
           }
         }
 
         for (const boneName in positionKeyframes) {
-          const boneKeyframes = positionKeyframes[boneName];
+          if (Utilities.isUsableAsObjectKey(boneName)) {
+            const boneKeyframes = positionKeyframes[boneName];
 
-          if (boneKeyframes) {
-            if (!targetMcAnimation.bones[boneName]) {
-              targetMcAnimation.bones[boneName] = {
-                rotation: {},
-                position: {},
-                scale: {},
-              };
-            }
+            if (boneKeyframes) {
+              if (!targetMcAnimation.bones[boneName]) {
+                targetMcAnimation.bones[boneName] = {
+                  rotation: {},
+                  position: {},
+                  scale: {},
+                };
+              }
 
-            const boneKeys = Object.keys(boneKeyframes);
+              const boneKeys = Object.keys(boneKeyframes);
 
-            if (boneKeys.length === 1 && boneKeys[0] === "0") {
-              targetMcAnimation.bones[boneName].position = boneKeyframes["0"];
-            } else {
-              targetMcAnimation.bones[boneName].position = boneKeyframes;
+              if (boneKeys.length === 1 && boneKeys[0] === "0") {
+                targetMcAnimation.bones[boneName].position = boneKeyframes["0"];
+              } else {
+                targetMcAnimation.bones[boneName].position = boneKeyframes;
+              }
             }
           }
         }
 
         for (const boneName in scaleKeyframes) {
-          const boneKeyframes = scaleKeyframes[boneName];
+          if (Utilities.isUsableAsObjectKey(boneName)) {
+            const boneKeyframes = scaleKeyframes[boneName];
 
-          if (boneKeyframes) {
-            if (!targetMcAnimation.bones[boneName]) {
-              targetMcAnimation.bones[boneName] = {
-                rotation: {},
-                position: {},
-                scale: {},
-              };
-            }
+            if (boneKeyframes) {
+              if (!targetMcAnimation.bones[boneName]) {
+                targetMcAnimation.bones[boneName] = {
+                  rotation: {},
+                  position: {},
+                  scale: {},
+                };
+              }
 
-            const boneKeys = Object.keys(boneKeyframes);
+              const boneKeys = Object.keys(boneKeyframes);
 
-            if (boneKeys.length === 1 && boneKeys[0] === "0") {
-              targetMcAnimation.bones[boneName].scale = boneKeyframes["0"];
-            } else {
-              targetMcAnimation.bones[boneName].scale = boneKeyframes;
+              if (boneKeys.length === 1 && boneKeys[0] === "0") {
+                targetMcAnimation.bones[boneName].scale = boneKeyframes["0"];
+              } else {
+                targetMcAnimation.bones[boneName].scale = boneKeyframes;
+              }
             }
           }
         }
@@ -314,10 +320,14 @@ export default class BlockbenchModel {
               cube.pivot = elt.origin;
             }
 
-            cubesById[elt.uuid] = cube;
+            if (Utilities.isUsableAsObjectKey(elt.uuid)) {
+              cubesById[elt.uuid] = cube;
+            }
           }
         } else if (elt.type === "locator") {
-          locatorsById[elt.uuid] = elt;
+          if (Utilities.isUsableAsObjectKey(elt.uuid)) {
+            locatorsById[elt.uuid] = elt;
+          }
         }
       }
     }
@@ -327,9 +337,11 @@ export default class BlockbenchModel {
     }
 
     for (const boneName in bonesByName) {
-      const bone = bonesByName[boneName];
+      if (Utilities.isUsableAsObjectKey(boneName)) {
+        const bone = bonesByName[boneName];
 
-      geo.bones.push(bone);
+        geo.bones.push(bone);
+      }
     }
   }
 
@@ -387,7 +399,7 @@ export default class BlockbenchModel {
         } else {
           const lead = locatorsById[outlineItem];
 
-          if (lead && lead.name && lead.position) {
+          if (lead && lead.name && lead.position && Utilities.isUsableAsObjectKey(lead.name)) {
             if (!parent.locators) {
               parent.locators = {};
             }
@@ -395,7 +407,12 @@ export default class BlockbenchModel {
             parent.locators[lead.name] = lead.position;
           }
         }
-      } else if (outlineItem && typeof outlineItem !== "string" && outlineItem.name) {
+      } else if (
+        outlineItem &&
+        typeof outlineItem !== "string" &&
+        outlineItem.name &&
+        Utilities.isUsableAsObjectKey(outlineItem.name)
+      ) {
         let bone = bonesByName[outlineItem.name];
 
         if (!bone) {
@@ -480,7 +497,9 @@ export default class BlockbenchModel {
                   cube.pivot = undefined;
                   cube.rotation = undefined;
 
-                  bonesByName[newBone.name] = newBone;
+                  if (Utilities.isUsableAsObjectKey(newBone.name)) {
+                    bonesByName[newBone.name] = newBone;
+                  }
                 }
               }
 
@@ -745,22 +764,7 @@ export default class BlockbenchModel {
 
         animationToUpdate.persist();
 
-        if (animationFile && project.projectFolder) {
-          const projectPath = animationFile.getFolderRelativePath(project.projectFolder);
-
-          if (projectPath) {
-            project.ensureItemByProjectPath(
-              projectPath,
-              ProjectItemStorageType.singleFile,
-              animationFile.name,
-              ProjectItemType.animationResourceJson,
-              FolderContext.resourcePack,
-              undefined,
-              ProjectItemCreationType.normal,
-              animationFile
-            );
-          }
-        }
+        project.ensureItemFromFile(animationFile, ProjectItemType.animationResourceJson, FolderContext.resourcePack);
       }
 
       if (geoToUpdate && modelGeometryDefinitionToUpdate) {
@@ -1039,7 +1043,9 @@ export default class BlockbenchModel {
         children: [],
       };
 
-      outlinerEltsByName[bone.name] = outLinerElt;
+      if (Utilities.isUsableAsObjectKey(bone.name)) {
+        outlinerEltsByName[bone.name] = outLinerElt;
+      }
 
       colorIndex++;
       if (colorIndex > 7) {

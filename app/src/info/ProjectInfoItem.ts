@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import ProjectItem from "../app/ProjectItem";
+import Log from "../core/Log";
 import Utilities from "../core/Utilities";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import IInfoItemData from "./IInfoItemData";
@@ -162,6 +163,11 @@ export default class ProjectInfoItem {
       this.#data.fs = {};
     }
 
+    if (!Utilities.isUsableAsObjectKey(setName)) {
+      Log.unsupportedToken(setName);
+      throw new Error();
+    }
+
     let setVal = this.#data.fs[setName];
 
     if (setVal === undefined) {
@@ -184,6 +190,11 @@ export default class ProjectInfoItem {
   maxFeature(setName: string, measureName: string, newValue: number) {
     if (this.#data.fs === undefined) {
       this.#data.fs = {};
+    }
+
+    if (!Utilities.isUsableAsObjectKey(setName)) {
+      Log.unsupportedToken(setName);
+      throw new Error();
     }
 
     let setVal = this.#data.fs[setName];
@@ -223,9 +234,62 @@ export default class ProjectInfoItem {
     return undefined;
   }
 
+  getFeatureMeasureNumber(setName: string, measure: string) {
+    measure = measure.toLowerCase();
+
+    if (!this.#data.fs) {
+      return 0;
+    }
+
+    const featureSet = this.#data.fs[setName];
+
+    if (featureSet) {
+      for (const measureName in featureSet) {
+        if (measureName.toLowerCase() === measure) {
+          return featureSet[measureName];
+        }
+      }
+    }
+
+    return 0;
+  }
+
+  getNonZeroFeatureMeasures(): string[] {
+    const results: string[] = [];
+
+    if (!this.#data.fs) {
+      return results;
+    }
+
+    for (const setName in this.#data.fs) {
+      const featureSet = this.#data.fs[setName];
+
+      if (featureSet) {
+        for (const measureName in featureSet) {
+          const val = featureSet[measureName];
+          if (
+            val !== undefined &&
+            typeof val === "number" &&
+            val > 0 &&
+            (measureName === "Count" || measureName === "Instance Count")
+          ) {
+            results.push(setName);
+          }
+        }
+      }
+    }
+
+    return results;
+  }
+
   spectrumFeature(setName: string, newValue: number) {
     if (this.#data.fs === undefined) {
       this.#data.fs = {};
+    }
+
+    if (!Utilities.isUsableAsObjectKey(setName)) {
+      Log.unsupportedToken(setName);
+      throw new Error();
     }
 
     this.incrementFeature(setName, "Instance Count", 1);
@@ -276,38 +340,21 @@ export default class ProjectInfoItem {
     }
   }
 
-  incrementFeature(setName: string, measureName?: string, incrementalValue?: number) {
+  incrementFeature(setName: string, measureName: string = "Count", incrementalValue: number = 1) {
     if (this.#data.fs === undefined) {
       this.#data.fs = {};
     }
 
-    if (measureName === undefined) {
-      measureName = "Count";
-    }
-
-    if (incrementalValue === 0) {
-      incrementalValue = 0;
-    } else if (incrementalValue === undefined) {
-      incrementalValue = 1;
+    if (!Utilities.isUsableAsObjectKey(setName)) {
+      return;
     }
 
     let setVal = this.#data.fs[setName];
-
     if (setVal === undefined) {
-      setVal = {};
-
-      this.#data.fs[setName] = setVal;
+      setVal = this.#data.fs[setName] = {};
     }
 
-    let curVal = setVal[measureName];
-
-    if (!curVal) {
-      curVal = incrementalValue;
-    } else {
-      curVal += incrementalValue;
-    }
-
-    setVal[measureName] = curVal;
+    setVal[measureName] = (setVal[measureName] ?? 0) + incrementalValue;
   }
 
   constructor(

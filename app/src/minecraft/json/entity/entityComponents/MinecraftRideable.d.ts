@@ -71,7 +71,7 @@ Chicken - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
   "seats": {
     "position": [
       0,
-      0.4,
+      0.48,
       0
     ]
   }
@@ -80,6 +80,7 @@ Chicken - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 
 Cow - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cow.json
 
+ * At /minecraft:entity/component_groups/minecraft:cow_baby/minecraft:rideable/: 
 "minecraft:rideable": {
   "seat_count": 1,
   "family_types": [
@@ -88,7 +89,22 @@ Cow - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
   "seats": {
     "position": [
       0,
-      1.105,
+      1,
+      0
+    ]
+  }
+}
+
+ * At /minecraft:entity/component_groups/minecraft:cow_adult/minecraft:rideable/: 
+"minecraft:rideable": {
+  "seat_count": 1,
+  "family_types": [
+    "zombie"
+  ],
+  "seats": {
+    "position": [
+      0,
+      1.15,
       0
     ]
   }
@@ -149,8 +165,8 @@ Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
       "max_rider_count": 4,
       "position": [
         0,
-        0.95,
-        0.45
+        3.8,
+        1.7
       ],
       "third_person_camera_radius": 8,
       "camera_relax_distance_smoothing": 6
@@ -159,8 +175,8 @@ Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
       "min_rider_count": 1,
       "max_rider_count": 4,
       "position": [
-        -0.45,
-        0.95,
+        -1.7,
+        3.8,
         0
       ],
       "third_person_camera_radius": 8,
@@ -171,8 +187,8 @@ Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
       "max_rider_count": 4,
       "position": [
         0,
-        0.95,
-        -0.45
+        3.8,
+        -1.7
       ],
       "third_person_camera_radius": 8,
       "camera_relax_distance_smoothing": 6
@@ -181,8 +197,8 @@ Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
       "min_rider_count": 3,
       "max_rider_count": 4,
       "position": [
-        0.45,
-        0.95,
+        1.7,
+        3.8,
         0
       ],
       "third_person_camera_radius": 8,
@@ -203,7 +219,7 @@ Hoglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
     {
       "position": [
         0,
-        0.9,
+        1.125,
         -0.3
       ],
       "lock_rider_rotation": 0
@@ -211,7 +227,7 @@ Hoglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
     {
       "position": [
         0,
-        2.4,
+        2.625,
         -0.3
       ],
       "lock_rider_rotation": 0
@@ -219,7 +235,7 @@ Hoglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
     {
       "position": [
         0,
-        3.9,
+        4.125,
         -0.3
       ],
       "lock_rider_rotation": 0
@@ -275,46 +291,10 @@ Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
   "seats": {
     "position": [
       0,
-      1.1,
+      1.175,
       -0.35
     ],
     "lock_rider_rotation": 0
-  }
-}
-
-
-Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/llama.json
-
- * At /minecraft:entity/component_groups/minecraft:llama_wild/minecraft:rideable/: 
-"minecraft:rideable": {
-  "seat_count": 1,
-  "family_types": [
-    "player"
-  ],
-  "interact_text": "action.interact.mount",
-  "seats": {
-    "position": [
-      0,
-      1.17,
-      -0.3
-    ]
-  }
-}
-
- * At /minecraft:entity/component_groups/minecraft:llama_tamed/minecraft:rideable/: 
-"minecraft:rideable": {
-  "seat_count": 1,
-  "crouching_skip_interact": true,
-  "family_types": [
-    "player"
-  ],
-  "interact_text": "action.interact.ride.horse",
-  "seats": {
-    "position": [
-      0,
-      1.17,
-      -0.3
-    ]
   }
 }
 
@@ -433,8 +413,11 @@ export default interface MinecraftRideable {
 
   /**
    * @remarks
-   * If true, this entity will pull in entities that are in the
-   * correct "family_types" into any available seats.
+   * If true, this entity will pull entities matching the specified
+   * "family_types" into any available seats. Entities that are
+   * leashed will only be pulled in if their distance to their leash
+   * holder is less than the "hard_distance" defined in their own
+   * "minecraft:leashable" component.
    * 
    * Sample Values:
    * Camel: true
@@ -478,7 +461,7 @@ export default interface MinecraftRideable {
    *
    * Cat: {"position":[0,0.35,0]}
    *
-   * Chicken: {"position":[0,0.4,0]}
+   * Chicken: {"position":[0,0.48,0]}
    *
    */
   seats: MinecraftRideableSeats[];

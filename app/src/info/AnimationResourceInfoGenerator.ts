@@ -12,8 +12,8 @@ import AnimationResourceDefinition from "../minecraft/AnimationResourceDefinitio
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
 export enum AnimationResourceInfoGeneratorTest {
-  animations = 1,
-  bones = 2,
+  animations = 101,
+  bones = 102,
 }
 
 export default class AnimationResourceInfoGenerator implements IProjectInfoGenerator {
@@ -29,7 +29,7 @@ export default class AnimationResourceInfoGenerator implements IProjectInfoGener
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
-    info.animationCount = infoSet.getSummedNumberValue("RESOURCEANIMATION", 1);
+    info.animationCount = infoSet.getSummedDataValue("RESOURCEANIMATION", 1);
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {

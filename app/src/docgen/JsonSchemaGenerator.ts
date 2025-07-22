@@ -2,6 +2,8 @@ import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import IFormDefinition from "../dataform/IFormDefinition";
 import IField, { FieldDataType } from "../dataform/IField";
 import Database from "../minecraft/Database";
+import Utilities from "../core/Utilities";
+import FieldUtilities from "../dataform/FieldUtilities";
 
 export default class JsonSchemaGenerator {
   static async convertFormDefinitionToJsonSchema(formDef: IFormDefinition, parentId?: string): Promise<JSONSchema7> {
@@ -33,11 +35,14 @@ export default class JsonSchemaGenerator {
 
     for (const field of formDef.fields) {
       schema.properties = schema.properties || {};
-      schema.properties[field.id] = await JsonSchemaGenerator.convertFieldToJsonSchema(field);
 
-      if (field.isRequired) {
-        schema.required = schema.required || [];
-        schema.required.push(field.id);
+      if (Utilities.isUsableAsObjectKey(field.id)) {
+        schema.properties[field.id] = await JsonSchemaGenerator.convertFieldToJsonSchema(field);
+
+        if (field.isRequired) {
+          schema.required = schema.required || [];
+          schema.required.push(field.id);
+        }
       }
     }
 
@@ -50,11 +55,7 @@ export default class JsonSchemaGenerator {
       description: field.description,
     };
 
-    let subForm = field.subForm;
-
-    if (!subForm && field.subFormId) {
-      subForm = await Database.ensureFormLoadedByPath(field.subFormId);
-    }
+    let subForm = await FieldUtilities.getSubForm(field);
 
     switch (field.dataType) {
       case FieldDataType.int:
@@ -80,7 +81,9 @@ export default class JsonSchemaGenerator {
         if (field.subForm) {
           for (const subField of field.subForm?.fields || []) {
             schema.properties = schema.properties || {};
-            schema.properties[subField.id] = await JsonSchemaGenerator.convertFieldToJsonSchema(subField);
+            if (Utilities.isUsableAsObjectKey(subField.id)) {
+              schema.properties[subField.id] = await JsonSchemaGenerator.convertFieldToJsonSchema(subField);
+            }
           }
         }
         break;
@@ -92,9 +95,11 @@ export default class JsonSchemaGenerator {
         };
         for (const subField of field.subForm?.fields || []) {
           (schema.items as JSONSchema7).properties = (schema.items as JSONSchema7).properties || {};
-          (schema.items as JSONSchema7).properties![subField.id] = await JsonSchemaGenerator.convertFieldToJsonSchema(
-            subField
-          );
+          if (Utilities.isUsableAsObjectKey(subField.id)) {
+            (schema.items as JSONSchema7).properties![subField.id] = await JsonSchemaGenerator.convertFieldToJsonSchema(
+              subField
+            );
+          }
         }
         break;
       case FieldDataType.intRange:

@@ -112,7 +112,9 @@
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
   "tags": [
-    "standalone"
+    "standalone",
+    "conditional",
+    "entityevent"
   ],
   "description": "Tests whether the Subject has the specified mob effect.",
   "title": "Has Mob Effect",

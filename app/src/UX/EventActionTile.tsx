@@ -1,15 +1,15 @@
 import { Component, SyntheticEvent } from "react";
 import "./EventActionTile.css";
 import { ThemeInput } from "@fluentui/styles";
-import ManagedEventAction from "../minecraft/ManagedEventAction";
+import ManagedEventActionOrActionSet from "../minecraft/ManagedEventActionOrActionSet";
 import FunctionEditor from "./FunctionEditor";
 import Utilities from "../core/Utilities";
-import { Button, Toolbar } from "@fluentui/react-northstar";
+import { Button, MenuButton } from "@fluentui/react-northstar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faRemove } from "@fortawesome/free-solid-svg-icons";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import Carto from "../app/Carto";
-import { CustomLabel } from "./Labels";
+import { CustomSlimLabel } from "./Labels";
 import MinecraftFilterEditor from "../dataform/MinecraftFilterEditor";
 import { faCheckSquare, faSquare } from "@fortawesome/free-regular-svg-icons";
 import Database from "../minecraft/Database";
@@ -20,9 +20,11 @@ interface IEventActionDesignProps {
   readOnly: boolean;
   entityType: EntityTypeDefinition;
   displayWeight?: boolean;
+  displayAddRemoveGroups: boolean;
+  displayNarrow?: boolean;
   eventContextId: string;
   project: Project;
-  event: ManagedEventAction;
+  event: ManagedEventActionOrActionSet;
   theme: ThemeInput<any>;
   carto: Carto;
 }
@@ -180,76 +182,88 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
     if (this.props.entityType.data === undefined) {
       return <div>Loading behavior pack...</div>;
     }
+    let areaClass = "eat-area";
 
+    const actionMenuItems = [];
     const groupToggleButtons = [];
 
-    const groups = this.props.entityType.getComponentGroups();
+    if (this.props.displayAddRemoveGroups) {
+      const groups = this.props.entityType.getComponentGroups();
 
-    const groupIds = [];
+      const groupIds = [];
 
-    for (const etg of groups) {
-      groupIds.push(etg.id);
-    }
+      for (const etg of groups) {
+        groupIds.push(etg.id);
+      }
 
-    groupIds.sort();
+      groupIds.sort();
 
-    for (const groupId of groupIds) {
-      let icon = <span className="eat-icon">&nbsp;</span>;
+      for (const groupId of groupIds) {
+        let icon = <span className="eat-icon">&nbsp;</span>;
 
-      let cssAdjust = "";
-      if (this.props.event.hasAddComponentGroup(groupId)) {
-        cssAdjust = " eat-cgAdd";
-        icon = (
-          <span className="eat-icon">
-            <FontAwesomeIcon icon={faCheck} className="fa-lg" />
-          </span>
-        );
-      } else if (this.props.event.hasRemoveComponentGroup(groupId)) {
-        cssAdjust = " eat-cgRemove";
-        icon = (
-          <span className="eat-icon">
-            <FontAwesomeIcon icon={faRemove} className="fa-lg" />
-          </span>
+        let cssAdjust = "";
+        if (this.props.event.hasAddComponentGroup(groupId)) {
+          cssAdjust = " eat-cgAdd";
+          icon = (
+            <span className="eat-icon">
+              <FontAwesomeIcon icon={faCheck} className="fa-lg" />
+            </span>
+          );
+        } else if (this.props.event.hasRemoveComponentGroup(groupId)) {
+          cssAdjust = " eat-cgRemove";
+          icon = (
+            <span className="eat-icon">
+              <FontAwesomeIcon icon={faRemove} className="fa-lg" />
+            </span>
+          );
+        }
+
+        groupToggleButtons.push(
+          <Button
+            key={"eadcg." + groupId}
+            className={"eat-cgToggle" + cssAdjust + " cg." + groupId}
+            onClick={this._handleToggleGroup}
+            style={{
+              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1 + " !important",
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
+            }}
+          >
+            {icon}
+            <span className={"eat-cgText cg." + groupId}>
+              {Utilities.humanifyMinecraftNameRemoveNamespaces(groupId)}
+            </span>
+          </Button>
         );
       }
 
-      groupToggleButtons.push(
-        <Button
-          key={"eadcg." + groupId}
-          className={"eat-cgToggle" + cssAdjust + " cg." + groupId}
-          onClick={this._handleToggleGroup}
-          style={{
-            backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background1 + " !important",
-            borderColor: this.props.theme.siteVariables?.colorScheme.brand.background4,
-          }}
-        >
-          {icon}
-          <span className={"eat-cgText cg." + groupId}>{Utilities.humanifyMinecraftName(groupId)}</span>
-        </Button>
-      );
+      actionMenuItems.push({
+        icon: (
+          <CustomSlimLabel
+            icon={
+              <FontAwesomeIcon
+                icon={this.props.event.hasAddRemove !== undefined ? faCheckSquare : faSquare}
+                className="fa-lg"
+              />
+            }
+            text={"Add/remove groups"}
+            isCompact={false}
+          />
+        ),
+        key: "add",
+        onClick: this._toggleAddRemove,
+        title: "Add/remove groups",
+      });
     }
 
-    let areaClass = "eat-area";
-
-    const toolbarItems = [];
-
-    toolbarItems.push({
+    actionMenuItems.push({
       icon: (
-        <CustomLabel
-          icon={<FontAwesomeIcon icon={this.props.event.hasAddRemove ? faCheckSquare : faSquare} className="fa-lg" />}
-          text={"Add/remove groups"}
-          isCompact={false}
-        />
-      ),
-      key: "add",
-      onClick: this._toggleAddRemove,
-      title: "Add/remove groups",
-    });
-
-    toolbarItems.push({
-      icon: (
-        <CustomLabel
-          icon={<FontAwesomeIcon icon={this.props.event.hasCommand ? faCheckSquare : faSquare} className="fa-lg" />}
+        <CustomSlimLabel
+          icon={
+            <FontAwesomeIcon
+              icon={this.props.event.hasCommand !== undefined ? faCheckSquare : faSquare}
+              className="fa-lg"
+            />
+          }
           text={"Command"}
           isCompact={false}
         />
@@ -259,9 +273,9 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
       title: "Command",
     });
 
-    toolbarItems.push({
+    actionMenuItems.push({
       icon: (
-        <CustomLabel
+        <CustomSlimLabel
           icon={<FontAwesomeIcon icon={this.props.event.hasSound ? faCheckSquare : faSquare} className="fa-lg" />}
           text={"Sound"}
           isCompact={false}
@@ -272,9 +286,9 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
       title: "Sound",
     });
 
-    toolbarItems.push({
+    actionMenuItems.push({
       icon: (
-        <CustomLabel
+        <CustomSlimLabel
           icon={<FontAwesomeIcon icon={this.props.event.hasParticle ? faCheckSquare : faSquare} className="fa-lg" />}
           text={"Particle"}
           isCompact={false}
@@ -285,9 +299,9 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
       title: "particle",
     });
 
-    toolbarItems.push({
+    actionMenuItems.push({
       icon: (
-        <CustomLabel
+        <CustomSlimLabel
           icon={<FontAwesomeIcon icon={this.props.event.hasTrigger ? faCheckSquare : faSquare} className="fa-lg" />}
           text={"Trigger"}
           isCompact={false}
@@ -298,9 +312,9 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
       title: "trigger",
     });
 
-    toolbarItems.push({
+    actionMenuItems.push({
       icon: (
-        <CustomLabel
+        <CustomSlimLabel
           icon={<FontAwesomeIcon icon={this.props.event.hasVibration ? faCheckSquare : faSquare} className="fa-lg" />}
           text={"Vibration"}
           isCompact={false}
@@ -313,7 +327,7 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
 
     const actionElements = [];
 
-    if (this.props.event.hasAddRemove) {
+    if (this.props.event.hasAddRemove && this.props.displayAddRemoveGroups) {
       actionElements.push(
         <div>
           <div className="eat-componentGroupsHeaderInfo">(click to toggle add/remove/neutral component groups)</div>
@@ -408,7 +422,7 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
           <FunctionEditor
             preferredTextSize={this.props.carto.preferredTextSize}
             theme={this.props.theme}
-            initialContent={this.props.event.command}
+            content={this.props.event.command}
             title="Run commands"
             readOnly={this.props.readOnly}
             isCommandEditor={false}
@@ -434,11 +448,19 @@ export default class EventActionDesign extends Component<IEventActionDesignProps
         }}
       >
         Run this action when:
-        <MinecraftFilterEditor data={this.props.event.filters} filterContextId={this.props.eventContextId} />
+        <MinecraftFilterEditor
+          data={this.props.event.filters}
+          displayNarrow={this.props.displayNarrow}
+          filterContextId={this.props.eventContextId}
+        />
         <div className="eat-toolbarArea">
-          <div className="eat-toolbarLabel">Do:</div>
           <div className="eat-toolbar">
-            <Toolbar aria-label="Minecraft filter management" items={toolbarItems} />
+            <MenuButton
+              menu={actionMenuItems}
+              trigger={
+                <Button content="Actions..." aria-label="Show or hide different categories of items on the list" />
+              }
+            />
           </div>
         </div>
         {actionElements}

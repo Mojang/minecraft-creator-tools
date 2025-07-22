@@ -331,6 +331,7 @@
       }
     }
   ],
+  "id": "minecraft:water_settings",
   "title": "Water Settings",
   "description": "Struct WaterConfig WaterConfigSettingsV1 Client Deferred Rendering"
 }

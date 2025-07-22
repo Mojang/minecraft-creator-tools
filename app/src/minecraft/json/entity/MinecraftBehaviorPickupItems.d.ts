@@ -86,7 +86,7 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.pickup_items": {
   "priority": 4,
@@ -131,7 +131,7 @@ Zombie Pigman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_
 }
 
 
-Zombie Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_villager_v2.json
+Zombie Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_villager_v2.json
 
 "minecraft:behavior.pickup_items": {
   "priority": 8,

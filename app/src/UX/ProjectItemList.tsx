@@ -9,7 +9,11 @@ import {
   ProjectItemType,
 } from "./../app/IProjectItemData";
 import ProjectItem from "./../app/ProjectItem";
-import ProjectEditorUtilities, { ProjectEditorItemAction, ProjectEditorMode } from "./ProjectEditorUtilities";
+import ProjectEditorUtilities, {
+  ProjectEditorItemAction,
+  ProjectEditorMode,
+  ProjectItemEditorView,
+} from "./ProjectEditorUtilities";
 import StorageUtilities from "./../storage/StorageUtilities";
 import {
   List,
@@ -21,6 +25,8 @@ import {
   selectableListBehavior,
   selectableListItemBehavior,
   listItemBehavior,
+  MenuItemProps,
+  ShorthandCollection,
 } from "@fluentui/react-northstar";
 
 import { AssetsIcon, AdvancedFilesIcon, FunctionsIcon, TypesIcon, CheckIcon } from "./Labels";
@@ -61,7 +67,7 @@ export enum ListItemType {
 
 interface IProjectItemListProps extends IAppProps {
   theme: ThemeInput<any>;
-  onActiveProjectItemChangeRequested?: (projectItem: ProjectItem, forceRawView: boolean) => void;
+  onActiveProjectItemChangeRequested?: (projectItem: ProjectItem, itemView: ProjectItemEditorView) => void;
   onActiveReferenceChangeRequested?: (reference: IGitHubInfo) => void;
   onProjectItemAction?: (projectPath: string, itemAction: ProjectEditorItemAction) => void;
   onModeChangeRequested?: (mode: ProjectEditorMode) => void;
@@ -101,7 +107,6 @@ export enum ProjectItemListDialogType {
 
 export default class ProjectItemList extends Component<IProjectItemListProps, IProjectItemListState> {
   private _activeProject: Project | null = null;
-  private _projectListItems: ListItemProps[] = [];
   private _itemIndices: any[] = [];
   private _itemTypes: any[] = [];
   private _updatePending: boolean = false;
@@ -314,7 +319,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     this._loadItems();
   }
 
-  private _showPackClick(elt: any, event: ListProps | undefined) {
+  private _showPackClick(elt: any, event: MenuItemProps | undefined) {
     if (event && (event as any).content) {
       this.setState({
         activeItem: this.state.activeItem,
@@ -365,14 +370,19 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       }
     } else if (this.props.filteredItems === undefined && event.selectedIndex === 2) {
       if (this.props && this.props.onModeChangeRequested !== undefined) {
-        this.props.onModeChangeRequested(ProjectEditorMode.properties);
+        this.props.onModeChangeRequested(ProjectEditorMode.map);
       }
     } else if (this.props.filteredItems === undefined && event.selectedIndex === 3) {
+      if (this.props && this.props.onModeChangeRequested !== undefined) {
+        this.props.onModeChangeRequested(ProjectEditorMode.properties);
+      }
+    } else if (this.props.filteredItems === undefined && event.selectedIndex === 4) {
       if (this.props && this.props.onModeChangeRequested !== undefined) {
         this.props.onModeChangeRequested(ProjectEditorMode.inspector);
       }
     } else if (this._itemTypes[event.selectedIndex] === ListItemType.item) {
-      const newItem = this.props.project.items[this._itemIndices[event.selectedIndex]];
+      const items = this._getSortedItems();
+      const newItem = items[this._itemIndices[event.selectedIndex]];
 
       if (newItem && (newItem !== this.props.activeProjectItem || !isContextMenuAreaClick)) {
         if (
@@ -380,7 +390,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           this.props.onActiveProjectItemChangeRequested !== undefined &&
           this._lastSelectedAsMenuItem <= 0
         ) {
-          this.props.onActiveProjectItemChangeRequested(newItem as ProjectItem, false);
+          this.props.onActiveProjectItemChangeRequested(newItem as ProjectItem, ProjectItemEditorView.singleFileEditor);
         } else {
           this._lastSelectedAsMenuItem--;
         }
@@ -479,7 +489,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     });
 
     if (projectItem && this.props.onActiveProjectItemChangeRequested) {
-      this.props.onActiveProjectItemChangeRequested(projectItem, false);
+      this.props.onActiveProjectItemChangeRequested(projectItem, ProjectItemEditorView.singleFileEditor);
     }
   }
 
@@ -639,7 +649,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     e.preventDefault();
   }
 
-  _addTypeSpacer(itemType: ProjectItemType, isToggleable: boolean, itemIndex: number) {
+  _addTypeSpacer(
+    projectListItems: ListItemProps[],
+    itemType: ProjectItemType,
+    isToggleable: boolean,
+    itemIndex: number
+  ) {
     const name = ProjectItemUtilities.getPluralDescriptionForType(itemType);
     const color = ProjectItemUtilities.getColorForType(itemType);
 
@@ -679,9 +694,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       );
     }
 
-    this._projectListItems.push({
+    (projectListItems as any).push({
       accessibility: selectableListItemBehavior,
       onClick: this._handleItemTypeToggle,
+      key: "type" + itemType + "|",
       content: (
         <div
           className="pil-itemTypeHeader"
@@ -712,6 +728,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
   }
 
   _addStoragePathSpacer(
+    projectListItems: ListItemProps[],
     storagePathFolder: string,
     itemType: ProjectItemType,
     isToggleable: boolean,
@@ -751,9 +768,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       );
     }
 
-    this._projectListItems.push({
+    (projectListItems as any).push({
       accessibility: selectableListItemBehavior,
       onClick: this._handleStoragePathToggle,
+      key: "eitb." + itemType + "." + storagePathFolder,
       content: (
         <div
           className="pil-pathHeader"
@@ -803,7 +821,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     });
   }
 
-  _addProjectItem(projectItem: ProjectItem, isGitHubRef: boolean, itemIndex: number) {
+  _addProjectItem(
+    projectListItems: ListItemProps[],
+    projectItem: ProjectItem,
+    isGitHubRef: boolean,
+    itemIndex: number
+  ) {
     let name = StorageUtilities.getBaseFromName(projectItem.name);
     let sourceImage = "";
 
@@ -883,8 +906,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         nameSpan++;
       }
 
-      this._projectListItems.push({
+      (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
+        key: "pila-ro" + projectItem.projectPath,
         content: (
           <div className="pil-item" key={"pil-ro" + projectItem.projectPath}>
             <div
@@ -1056,9 +1080,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         );
       }
 
-      this._projectListItems.push({
+      (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
-
+        key: "pila-eoa" + projectItem.projectPath,
         content: (
           <div className="pil-item" key={"pil-eoa" + projectItem.projectPath} aria-haspopup={true}>
             {itemItems}
@@ -1068,13 +1092,14 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     }
   }
 
-  _addReference(reference: IGitHubInfo, itemIndex: number) {
+  _addReference(projectListItems: ListItemProps[], reference: IGitHubInfo, itemIndex: number) {
     const name = reference.repoName;
     const sig = ProjectItem.getGitHubSignature(reference);
 
     if (this.props.readOnly) {
-      this._projectListItems.push({
+      (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
+        key: "pil-ghitemr." + sig,
         content: (
           <div className="pil-item" key={"pil-ghitem." + sig}>
             <span className="pil-name">{name}</span>
@@ -1091,8 +1116,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
 
       const nameCss = "pil-name";
 
-      this._projectListItems.push({
+      (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
+        key: "pil-ghitemz." + sig,
         content: (
           <div className="pil-item" key={"pil-ghitema." + sig} style={{ minWidth: 310 }}>
             <MenuButton
@@ -1133,7 +1159,9 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       terms = this.props.searchFilter.toLowerCase().split(" ");
     }
 
-    return this.props.project.items.sort((a: ProjectItem, b: ProjectItem) => {
+    const itemsCopy = this.props.project.getItemsCopy();
+
+    return itemsCopy.sort((a: ProjectItem, b: ProjectItem) => {
       const aType = ProjectItemUtilities.getSortOrder(a.itemType);
       const bType = ProjectItemUtilities.getSortOrder(b.itemType);
 
@@ -1161,7 +1189,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             return bTermScore - aTermScore;
           }
         }
+
         if (a.projectPath && b.projectPath) {
+          const folderPathA = StorageUtilities.getFolderPath(a.projectPath);
+          const folderPathB = StorageUtilities.getFolderPath(b.projectPath);
+
+          if (folderPathA !== folderPathB) {
+            return folderPathA.localeCompare(folderPathB);
+          }
+
           return a.projectPath.localeCompare(b.projectPath);
         }
 
@@ -1278,16 +1314,18 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       cat === ProjectItemCategory.package ||
       projectItem.itemType === ProjectItemType.lang || // should be handled by Text editor
       projectItem.itemType === ProjectItemType.languagesCatalogResourceJson || // should be handled by Text editor
-      projectItem.itemType === ProjectItemType.iconImage ||
+      projectItem.itemType === ProjectItemType.packIconImage ||
       projectItem.itemType === ProjectItemType.fileListArrayJson ||
       projectItem.itemType === ProjectItemType.buildProcessedJs ||
       projectItem.itemType === ProjectItemType.catalogIndexJs ||
       projectItem.itemType === ProjectItemType.behaviorPackFolder || // some day we may explicitly show pack folders
       projectItem.itemType === ProjectItemType.resourcePackFolder ||
       projectItem.itemType === ProjectItemType.skinPackFolder ||
+      projectItem.itemType === ProjectItemType.designPackFolder ||
       projectItem.itemType === ProjectItemType.soundCatalog ||
       projectItem.itemType === ProjectItemType.itemTextureJson ||
       projectItem.itemType === ProjectItemType.attachableResourceJson ||
+      projectItem.itemType === ProjectItemType.terrainTextureCatalogResourceJson || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.blocksCatalogResourceJson || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.blockTypeResourceJsonDoNotUse || // this should be handled by block type editor for bp block type
       projectItem.itemType === ProjectItemType.behaviorPackListJson || // this should be handled by world editor
@@ -1335,21 +1373,21 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         projectItem.creationType === ProjectItemCreationType.normal ||
         this.props.project.showHiddenItems) &&
       perTypeShouldShow &&
-      (projectItem.itemType !== ProjectItemType.json || !fileName.startsWith(".")) && // hide files like .prettierrc.json from view
-      (projectItem.itemType !== ProjectItemType.json || !fileName.startsWith("extensions")) && // hide files like extensions.json from view
-      (projectItem.itemType !== ProjectItemType.json || !fileName.startsWith("settings")) && // hide files like settings.json from view
+      (projectItem.itemType !== ProjectItemType.unknownJson || !fileName.startsWith(".")) && // hide files like .prettierrc.json from view
+      (projectItem.itemType !== ProjectItemType.unknownJson || !fileName.startsWith("extensions")) && // hide files like extensions.json from view
+      (projectItem.itemType !== ProjectItemType.unknownJson || !fileName.startsWith("settings")) && // hide files like settings.json from view
       (projectItem.gitHubReference === undefined || projectItem.gitHubReference.owner === undefined)
     );
   }
 
   render() {
-    this._projectListItems = [];
+    const projectListItems: ListItemProps[] = [];
 
     const searchSummaryText = this.props.filteredItems ? this.props.filteredItems.length + " items found" : "";
     const searchSummaryContent = (
       <div
         className="pil-fixedLineRow"
-        key="pil-fixpropj"
+        key="pil-summarySearch"
         style={{
           height: this.props.filteredItems ? "32px" : "0px",
         }}
@@ -1367,17 +1405,29 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       </div>
     );
 
-    this._projectListItems.push({
+    (projectListItems as any).push({
       accessibility: listItemBehavior,
+      key: "pilb-searchsum",
       content: searchSummaryContent,
     });
 
     if (this.props.filteredItems === undefined) {
-      this._projectListItems.push({
+      (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
+        key: "pilats",
         content: (
           <div className="pil-fixedLine" key="pil-ats">
             Actions
+          </div>
+        ),
+      });
+
+      (projectListItems as any).push({
+        accessibility: selectableListItemBehavior,
+        key: "pilmap",
+        content: (
+          <div className="pil-fixedLine" key="pil-map">
+            Map
           </div>
         ),
       });
@@ -1399,19 +1449,21 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         );
       } else {
         projectContent = (
-          <div className="pil-fixedLine" key="pil-fixpropj">
+          <div className="pil-fixedLine" key="pil-fixpropa">
             {whatIsThis}
           </div>
         );
       }
 
-      this._projectListItems.push({
+      (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
+        key: "pilb-proje",
         content: projectContent,
       });
 
-      this._projectListItems.push({
+      (projectListItems as any).push({
         accessibility: selectableListItemBehavior,
+        key: "pilb-insp",
         content: (
           <div className="pil-fixedLine" key="pil-insp">
             Inspector
@@ -1424,13 +1476,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
     let itemsAdded = 1;
 
     if (this.props.filteredItems === undefined) {
-      if (this.props.editorMode === ProjectEditorMode.properties) {
+      if (this.props.editorMode === ProjectEditorMode.map) {
         selectedItemIndex = 2;
-      } else if (this.props.editorMode === ProjectEditorMode.inspector) {
+      } else if (this.props.editorMode === ProjectEditorMode.properties) {
         selectedItemIndex = 3;
+      } else if (this.props.editorMode === ProjectEditorMode.inspector) {
+        selectedItemIndex = 4;
       }
 
-      itemsAdded = 4;
+      itemsAdded = 5;
     }
 
     let lastItemType = -1;
@@ -1448,7 +1502,12 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
         if (projectItem !== undefined && projectItem.projectPath !== null && projectItem.projectPath !== undefined) {
           if (this.shouldShowProjectItem(projectItem)) {
             if (projectItem.itemType !== lastItemType) {
-              this._addTypeSpacer(projectItem.itemType, this.props.filteredItems === undefined, itemsAdded);
+              this._addTypeSpacer(
+                projectListItems,
+                projectItem.itemType,
+                this.props.filteredItems === undefined,
+                itemsAdded
+              );
               this._itemTypes[itemsAdded] = ListItemType.typeSpacer;
               this._itemIndices[itemsAdded] = projectItem.itemType;
               itemsAdded++;
@@ -1468,6 +1527,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
                   projectItem.itemType !== ProjectItemType.soundCatalog
                 ) {
                   this._addStoragePathSpacer(
+                    projectListItems,
                     folderGroupingPath,
                     projectItem.itemType,
                     this.props.filteredItems === undefined,
@@ -1488,10 +1548,10 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
                   projectItem === this.props.activeProjectItem &&
                   this.props.editorMode === ProjectEditorMode.activeItem
                 ) {
-                  selectedItemIndex = this._projectListItems.length;
+                  selectedItemIndex = projectListItems.length;
                 }
 
-                this._addProjectItem(projectItem, false, itemsAdded);
+                this._addProjectItem(projectListItems, projectItem, false, itemsAdded);
                 this._itemIndices[itemsAdded] = i;
                 this._itemTypes[itemsAdded] = ListItemType.item;
                 itemsAdded++;
@@ -1506,7 +1566,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       for (let i = 0; i < references.length; i++) {
         const ref = references[i];
 
-        this._addReference(ref, itemsAdded);
+        this._addReference(projectListItems, ref, itemsAdded);
 
         this._itemTypes[itemsAdded] = ListItemType.references;
         this._itemIndices[itemsAdded] = i;
@@ -1519,7 +1579,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
             projectItem.gitHubReference !== undefined &&
             ProjectItem.gitHubReferencesEqual(ref, projectItem.gitHubReference)
           ) {
-            this._addProjectItem(projectItem, true, itemsAdded);
+            this._addProjectItem(projectListItems, projectItem, true, itemsAdded);
             this._itemIndices[itemsAdded] = j;
             this._itemTypes[itemsAdded] = ListItemType.item;
             itemsAdded++;
@@ -1528,17 +1588,15 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       }
     }
 
-    const showMenuItems = [];
+    const showMenuItems: ShorthandCollection<MenuItemProps> = [];
 
     if (this.props.project?.editPreference === ProjectEditPreference.summarized) {
       showMenuItems.push({
         icon: (
           <FunctionsIcon theme={this.props.theme} isSelected={this.props.project?.showFunctions} isCompact={true} />
         ),
-        content: "Script & Functions",
+        content: "Script and Functions",
         key: "pil-hideShowFunctions",
-        kind: "toggle",
-        active: this.props.project?.showFunctions,
         onClick: this._showFunctionsClick,
         title: "Toggle whether functions and scripts are shown",
       });
@@ -1546,9 +1604,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       showMenuItems.push({
         icon: <TypesIcon theme={this.props.theme} isSelected={this.props.project?.showTypes} isCompact={true} />,
         key: "pil-hideShowTypes",
-        kind: "toggle",
         content: "Types",
-        active: this.props.project?.showTypes,
         onClick: this._showTypesClick,
         title: "Toggle whether world details and entity, block, and item types are shown",
       });
@@ -1556,9 +1612,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       showMenuItems.push({
         icon: <AssetsIcon theme={this.props.theme} isSelected={this.props.project?.showAssets} isCompact={true} />,
         key: "pil-hideShowAssets",
-        kind: "toggle",
         content: "Assets",
-        active: this.props.project?.showAssets,
         onClick: this._showAssetsClick,
         title: "Toggle whether assets (models, images, UI and sound) are shown",
       });
@@ -1572,9 +1626,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
           />
         ),
         key: "pil-hideShowSlash",
-        kind: "toggle",
         content: "All Single Files (Advanced)",
-        active: this.props.project?.showHiddenItems,
         onClick: this._showAllClick,
         title: "Toggle whether hidden items are shown",
       });
@@ -1663,7 +1715,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
               accessibility={selectableListBehavior}
               defaultSelectedIndex={selectedItemIndex}
               selectedIndex={selectedItemIndex}
-              items={this._projectListItems}
+              items={projectListItems}
               onContextMenu={this._handleContextMenu}
               onSelectedIndexChange={this._handleItemSelected}
             />

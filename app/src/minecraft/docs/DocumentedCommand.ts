@@ -6,6 +6,7 @@ import IFile from "../../storage/IFile";
 import DocumentedCommandSet from "./DocumentedCommandSet";
 import IDocCommand from "./IDocCommand";
 import IDocCommandOverloadParam from "./IDocCommandOverloadParam";
+import Utilities from "../../core/Utilities";
 
 export default class DocumentedCommand {
   private _id?: string;
@@ -159,7 +160,9 @@ export default class DocumentedCommand {
 
           await enumFile.loadContent();
 
-          this.infoJsonFiles[enumVal.name] = enumFile;
+          if (Utilities.isUsableAsObjectKey(enumVal.name)) {
+            this.infoJsonFiles[enumVal.name] = enumFile;
+          }
         }
       }
     }

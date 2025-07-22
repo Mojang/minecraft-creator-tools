@@ -152,6 +152,10 @@
       }
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests the health of the subject.",
   "title": "Actor Health",
   "samples": {

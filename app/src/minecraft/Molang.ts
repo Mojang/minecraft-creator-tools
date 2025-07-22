@@ -34,6 +34,8 @@ export default class Molang {
       "/": 2,
     };
 
+    const operatorSet = new Set(["+", "-", "*", "/"]);
+
     const applyOperator = () => {
       const operator = operators.pop();
       const right = stack.pop();
@@ -61,7 +63,7 @@ export default class Molang {
           applyOperator();
         }
         operators.pop(); // Remove '('
-      } else if (["+", "-", "*", "/"].includes(token)) {
+      } else if (operatorSet.has(token)) {
         while (operators.length && precedence[operators[operators.length - 1]] >= precedence[token]) {
           applyOperator();
         }

@@ -4,7 +4,8 @@
       "id": "fog_identifier",
       "title": "Fog Identifier",
       "description": "Identifier of fog definition to use",
-      "dataType": 2
+      "dataType": 16,
+      "isRequired": true
     }
   ],
   "description": "Sets the fog settings used during rendering. Biomes without this component will have default fog settings.",

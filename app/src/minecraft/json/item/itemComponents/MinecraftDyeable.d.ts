@@ -19,7 +19,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Dyeable (minecraft:dyeable)
+ * Minecraft Dyeable Item (minecraft:dyeable)
  * Enables custom items to be dyed in cauldrons. To use the dyeable
  * component, the format version on the item and the attachable needs
  * to have a format_version of 1.21.30 or greater.

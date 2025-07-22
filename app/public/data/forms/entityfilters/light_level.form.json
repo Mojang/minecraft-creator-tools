@@ -110,6 +110,10 @@
       "dataType": 0
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests is the mob is outside of the specified light level range (0, 16).",
   "title": "Light Level",
   "samples": {

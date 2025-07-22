@@ -11,7 +11,12 @@ import ProjectInfoSet from "./ProjectInfoSet";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import ContentIndex from "../core/ContentIndex";
 
-const TopicTestIdBase = 100;
+const TopicTestIdBase = 200;
+
+export enum ItemCountsInfoGeneratorTest {
+  behaviorPackManifest = 102,
+  resourcePackManifest = 103,
+}
 
 export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
   id = "ITEMS";
@@ -29,43 +34,43 @@ export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
-    info.behaviorPackManifestCount = infoSet.getFirstNumberValue(
+    info.behaviorPackManifestCount = infoSet.getFirstNumberDataValue(
       this.id,
       TopicTestIdBase + ProjectItemType.behaviorPackManifestJson
     );
-    info.unknownJsonCount = infoSet.getFirstNumberValue(this.id, TopicTestIdBase + ProjectItemType.json);
-    info.entityTypeManifestCount = infoSet.getFirstNumberValue(
+    info.unknownJsonCount = infoSet.getFirstNumberDataValue(this.id, TopicTestIdBase + ProjectItemType.unknownJson);
+    info.entityTypeManifestCount = infoSet.getFirstNumberDataValue(
       this.id,
       TopicTestIdBase + ProjectItemType.entityTypeBehavior
     );
-    info.itemTypeManifestCount = infoSet.getFirstNumberValue(
+    info.itemTypeManifestCount = infoSet.getFirstNumberDataValue(
       this.id,
       TopicTestIdBase + ProjectItemType.itemTypeBehavior
     );
-    info.blockTypeManifestCount = infoSet.getFirstNumberValue(
+    info.blockTypeManifestCount = infoSet.getFirstNumberDataValue(
       this.id,
       TopicTestIdBase + ProjectItemType.blockTypeBehavior
     );
-    info.resourcePackManifestCount = infoSet.getFirstNumberValue(
+    info.resourcePackManifestCount = infoSet.getFirstNumberDataValue(
       this.id,
       TopicTestIdBase + ProjectItemType.resourcePackManifestJson
     );
 
     info.worldCount =
-      infoSet.getFirstNumberValue(this.id, TopicTestIdBase + ProjectItemType.MCWorld) +
-      infoSet.getFirstNumberValue(this.id, TopicTestIdBase + ProjectItemType.worldFolder);
+      infoSet.getFirstNumberDataValue(this.id, TopicTestIdBase + ProjectItemType.MCWorld) +
+      infoSet.getFirstNumberDataValue(this.id, TopicTestIdBase + ProjectItemType.worldFolder);
 
-    info.entityTypeResourceCount = infoSet.getFirstNumberValue(
+    info.entityTypeResourceCount = infoSet.getFirstNumberDataValue(
       this.id,
       TopicTestIdBase + ProjectItemType.entityTypeResource
     );
 
-    info.behaviorPackAnimationCount = infoSet.getFirstNumberValue(
+    info.behaviorPackAnimationCount = infoSet.getFirstNumberDataValue(
       this.id,
       TopicTestIdBase + ProjectItemType.animationBehaviorJson
     );
 
-    info.behaviorPackAnimationControllerCount = infoSet.getFirstNumberValue(
+    info.behaviorPackAnimationControllerCount = infoSet.getFirstNumberDataValue(
       this.id,
       TopicTestIdBase + ProjectItemType.animationControllerBehaviorJson
     );
@@ -87,9 +92,25 @@ export default class ItemCountsInfoGenerator implements IProjectInfoGenerator {
       typeCounts[pi.itemType]++;
 
       if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
-        items.push(new ProjectInfoItem(InfoItemType.info, this.id, 2, "Behavior pack manifest found", pi));
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.info,
+            this.id,
+            ItemCountsInfoGeneratorTest.behaviorPackManifest,
+            "Behavior pack manifest found",
+            pi
+          )
+        );
       } else if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
-        items.push(new ProjectInfoItem(InfoItemType.info, this.id, 3, "Resource pack manifest found", pi));
+        items.push(
+          new ProjectInfoItem(
+            InfoItemType.info,
+            this.id,
+            ItemCountsInfoGeneratorTest.resourcePackManifest,
+            "Resource pack manifest found",
+            pi
+          )
+        );
       }
     }
 

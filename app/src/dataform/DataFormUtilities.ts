@@ -14,7 +14,11 @@ export default class DataFormUtilities {
       const field = formDefinition.fields[i];
 
       if (field.defaultValue !== undefined) {
-        if (typeof field.defaultValue === "string" && DataFormUtilities.isObjectFieldType(field.dataType)) {
+        if (
+          typeof field.defaultValue === "string" &&
+          DataFormUtilities.isObjectFieldType(field.dataType) &&
+          Utilities.isUsableAsObjectKey(field.id)
+        ) {
           // sometimes our docs say the default value for an object is "N/A", which is not awesome
           newDataObject[field.id] = {};
         } else {
@@ -67,7 +71,9 @@ export default class DataFormUtilities {
         }
       } else {
         fields.push(field);
-        fieldsByName[field.id] = field;
+        if (Utilities.isUsableAsObjectKey(field.id)) {
+          fieldsByName[field.id] = field;
+        }
       }
     }
 
@@ -172,21 +178,23 @@ export default class DataFormUtilities {
       loadedForms = "";
     }
 
-    for (const field of form.fields) {
-      let subForm: IFormDefinition | undefined = undefined;
+    if (form.fields) {
+      for (const field of form.fields) {
+        let subForm: IFormDefinition | undefined = undefined;
 
-      if (field.subForm) {
-        subForm = field.subForm;
-      } else if (field.subFormId) {
-        if (loadedForms.indexOf("|" + field.subFormId + "|") < 0) {
-          subForm = await Database.ensureFormLoadedByPath(field.subFormId);
+        if (field.subForm) {
+          subForm = field.subForm;
+        } else if (field.subFormId) {
+          if (loadedForms.indexOf("|" + field.subFormId + "|") < 0) {
+            subForm = await Database.ensureFormLoadedByPath(field.subFormId);
 
-          loadedForms += "|" + field.subFormId + "|";
+            loadedForms += "|" + field.subFormId + "|";
+          }
         }
-      }
 
-      if (subForm) {
-        await this.loadSubForms(subForm, loadedForms);
+        if (subForm) {
+          await this.loadSubForms(subForm, loadedForms);
+        }
       }
     }
 
@@ -427,6 +435,8 @@ export default class DataFormUtilities {
         return "Range of floats";
       case FieldDataType.minecraftFilter:
         return "Minecraft filter";
+      case FieldDataType.minecraftEventTriggerArray:
+        return "Array of Minecraft Event Triggers";
       case FieldDataType.percentRange:
         return "Percent Range";
       case FieldDataType.minecraftEventTrigger:

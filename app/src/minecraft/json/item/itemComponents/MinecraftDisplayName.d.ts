@@ -56,6 +56,13 @@ Wind Charge - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
 }
 
 
+Bag o Leaves - https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/items/bag_o_leaves.json
+
+"minecraft:display_name": {
+  "value": "Bag o' Leaves"
+}
+
+
 Chestplate - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/chestplate.json
 
 "minecraft:display_name": {
@@ -83,19 +90,12 @@ My Helm - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/
   "value": "My Custom Helmet"
 }
 
-
-My Leggings - https://github.com/microsoft/minecraft-samples/tree/main/custom_items/behavior_packs/custom_item/items/my_leggings.json
-
-"minecraft:display_name": {
-  "value": "My Custom Leggings"
-}
-
  */
 
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Display Name (minecraft:display_name)
+ * Minecraft Display Name Item (minecraft:display_name)
  * Sets the item display name within Minecraft: Bedrock Edition. This
  * component may also be used to pull from the localization file by
  * referencing a key from it.

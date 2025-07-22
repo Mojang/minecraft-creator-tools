@@ -35,7 +35,7 @@ My Sword Chuck - https://github.com/microsoft/minecraft-samples/tree/main/custom
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Projectile (minecraft:projectile)
+ * Minecraft Projectile Item (minecraft:projectile)
  * Compels the item to shoot, similarly to an arrow. Items with
  * minecraft:projectile can be shot from dispensers or used as
  * ammunition for items with the minecraft:shooter item component.

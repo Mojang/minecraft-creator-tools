@@ -2,6 +2,7 @@ import { IAnnotatedValue } from "../core/AnnotatedValue";
 import { AnnotationCategory } from "../core/ContentIndex";
 import ISimpleReference from "../core/ISimpleReference";
 import Utilities from "../core/Utilities";
+import VanillaProjectManager from "../minecraft/VanillaProjectManager";
 import Database from "../minecraft/Database";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 
@@ -54,7 +55,7 @@ export default class LookupUtilities {
       return this.soundDefRefs;
     }
 
-    const soundData = await Database.getVanillaSoundDefinitionCatalog();
+    const soundData = await VanillaProjectManager.getSoundDefinitionCatalog();
 
     const refs: ISimpleReference[] = [];
 
@@ -83,7 +84,7 @@ export default class LookupUtilities {
       return this.itemTextureRefs;
     }
 
-    const itemData = await Database.getVanillaItemTexturesCatalog();
+    const itemData = await VanillaProjectManager.getItemTexturesCatalog();
 
     const refs: ISimpleReference[] = [];
 
@@ -112,7 +113,7 @@ export default class LookupUtilities {
       return this.terrainTextureRefs;
     }
 
-    const terrainData = await Database.getVanillaTerrainTexturesCatalog();
+    const terrainData = await VanillaProjectManager.getTerrainTexturesCatalog();
 
     const refs: ISimpleReference[] = [];
 

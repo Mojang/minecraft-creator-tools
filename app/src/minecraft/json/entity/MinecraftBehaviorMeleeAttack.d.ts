@@ -210,6 +210,7 @@ export default interface MinecraftBehaviorMeleeAttack {
    *
    * Axe Turret: 5
    *
+   *
    */
   speed_multiplier: number;
 

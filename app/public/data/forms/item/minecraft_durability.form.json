@@ -5,22 +5,7 @@
       "title": "Damage Chance",
       "description": "Specifies the percentage chance of this item losing durability. Default is set to 100. Defined as an int range with min and max value.",
       "dataType": 16,
-      "subForm": {
-        "id": "_IntRange",
-        "title": "IntRange",
-        "fields": [
-          {
-            "id": "max",
-            "title": "Max",
-            "dataType": 0
-          },
-          {
-            "id": "min",
-            "title": "Min",
-            "dataType": 0
-          }
-        ]
-      },
+      "subFormId": "item/intrange",
       "samples": {
         "/samples/custom_items/behavior_packs/custom_item/items/my_sword_chuck.json": [
           {
@@ -65,6 +50,7 @@
       "title": "Max Durability",
       "description": "Max durability is the amount of damage that this item can take before breaking. This is a required parameter and has a minimum of 0.",
       "dataType": 0,
+      "isRequired": true,
       "samples": {
         "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
           {
@@ -278,6 +264,6 @@
       }
     ]
   },
-  "title": "Durability",
+  "title": "Minecraft Durability Item",
   "id": "minecraft:durability"
 }

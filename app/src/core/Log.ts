@@ -122,7 +122,7 @@ export default class Log {
     }
   }
 
-  static assert(condition: boolean, message?: string, context?: string) {
+  static assert(condition: boolean, message?: string, context?: string): asserts condition {
     if (!condition) {
       if (!message) {
         Log.debugAlert("Assertion failed.", context);
@@ -144,6 +144,12 @@ export default class Log {
 
   static fail(message: string, context?: string) {
     Log.debugAlert("Failure case: " + message, context);
+  }
+
+  static unsupportedToken(token: string, context?: string) {
+    if (Utilities.isDebug) {
+      Log.debugAlert("Unsupported token: " + token, context);
+    }
   }
 
   static unexpectedError(errorMessage: string, context?: string) {

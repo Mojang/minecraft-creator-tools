@@ -70,6 +70,7 @@ import ProjectEditorUtilities, {
   ProjectEditorAction,
   MaxModeActions,
   ProjectEditorItemAction,
+  ProjectItemEditorView,
 } from "./ProjectEditorUtilities";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
 import WorldSettingsArea from "../UX/WorldSettingsArea";
@@ -90,10 +91,37 @@ import BlockbenchModel from "../integrations/BlockbenchModel";
 import NewVariant from "./NewVariant";
 import IProjectItemVariantSeed from "../app/IProjectItemVariantSeed";
 import ProjectItemVariantCreateManager from "../app/ProjectItemVariantCreateManager";
+import ProjectMap from "./ProjectMap";
+
+// UI and layout constants
+const FULLY_COMPACT_WIDTH = 744;
+const BUTTON_COMPACT_WIDTH = 616;
+const DEFAULT_WIDTH_OFFSET = 10;
+const SIDE_PANE_WIDTH_OFFSET = 330;
+const SIDE_PANE_AND_TOOLBOX_WIDTH_OFFSET = 590;
+const TOOLBAR_MIN_HEIGHT = 50;
+const HEIGHT_OFFSET_DEFAULT = 96;
+const HEIGHT_OFFSET_STATUSBAR = 200;
+const HEIGHT_OFFSET_TOOLBAR_COLLAPSED = 55;
+const HEIGHT_OFFSET_STATUSBAR_HIDDEN = 45;
+const HEIGHT_OFFSET_VSCODE = 9;
+const BORDER_INSET_LIGHT = "inset 4px #f1f1f1";
+const BORDER_INSET_DARK = "inset 4px #6b6562";
+const SPLITTER_DRAG_TIMEOUT = 2;
+const ASYNC_LOADING_TIMEOUT = 2000;
+const FILE_DRAG_OUT_THRESHOLD = 10;
+const FILE_DRAG_OVER_THRESHOLD = 10;
+const MAX_ADDED_ITEMS = 4;
+const GRID_COMPACT_COLUMNS = "30px 4px 1fr 30px";
+const GRID_MAIN_FOCUS_COLUMNS = "1fr 1fr 1fr 1fr ";
+const GRID_ITEMS_ON_LEFT_COLUMNS = "300px 1fr 1fr 1fr";
+const GRID_ITEMS_ON_RIGHT_COLUMNS = "300px 1fr 4px ";
+const GRID_DEFAULT_COLUMNS = "1fr 1fr 300px";
+const HEIGHT_OFFSET_MINUS = 11;
 
 interface IProjectEditorProps extends IAppProps {
   onModeChangeRequested?: (mode: AppMode) => void;
-  onActiveProjectItemChangeRequested?: (projectItem: ProjectItem, forceRawView: boolean) => void;
+  onActiveProjectItemChangeRequested?: (projectItem: ProjectItem, itemView: ProjectItemEditorView) => void;
   project: Project;
   readOnly: boolean;
   isHosted?: boolean;
@@ -114,7 +142,7 @@ interface IProjectEditorState {
   tentativeProjectItem: ProjectItem | null;
   activeReference: IGitHubInfo | null;
   mode: ProjectEditorMode;
-  forceRawView: boolean;
+  itemView: ProjectItemEditorView;
   filteredItems?: IAnnotatedValue[];
   searchFilter?: string;
   displayFileView: boolean;
@@ -368,7 +396,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       statusAreaMode: sam,
       displayFileView: false,
       viewMode: viewMode,
-      forceRawView: false,
+      itemView: ProjectItemEditorView.singleFileEditor,
       tab: ProjectEditorTab.itemList,
       lastDeployKey: undefined,
       lastExportKey: undefined,
@@ -467,7 +495,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               allInfoSet: this.props.project.infoSet,
               allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
               tab: state.tab,
-              forceRawView: state.forceRawView,
+              itemView: state.itemView,
               filteredItems: state.filteredItems,
               searchFilter: state.searchFilter,
               statusAreaMode: state.statusAreaMode,
@@ -493,7 +521,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
                 allInfoSet: this.props.project.infoSet,
                 allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
                 tab: state.tab,
-                forceRawView: state.forceRawView,
+                itemView: state.itemView,
                 filteredItems: state.filteredItems,
                 searchFilter: state.searchFilter,
                 statusAreaMode: state.statusAreaMode,
@@ -525,7 +553,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       allInfoSet: this.props.project.infoSet,
       allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
       displayFileView: this.state.displayFileView,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       effectMode: this.state.effectMode,
@@ -559,7 +587,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
       displayFileView: this.state.displayFileView,
       menuState: this.state.menuState,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       statusAreaMode: this.state.statusAreaMode,
@@ -575,6 +603,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   async _doAsyncLoading() {
     if (this._isMountedInternal && this.state) {
       if (!this.state.allInfoSet || !this.state.allInfoSet.completedGeneration) {
+        await this.props.project.processRelations();
         await this.props.project.infoSet.generateForProject(false);
         this._onNotifyNewAllItemSetLoaded();
       }
@@ -628,7 +657,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     const right = document.body.clientWidth - left;
     const bottom = document.body.clientHeight - top;
 
-    if (top < 10 || right < 10 || bottom < 10 || left < 10) {
+    if (
+      top < FILE_DRAG_OUT_THRESHOLD ||
+      right < FILE_DRAG_OUT_THRESHOLD ||
+      bottom < FILE_DRAG_OUT_THRESHOLD ||
+      left < FILE_DRAG_OUT_THRESHOLD
+    ) {
       this._stopDragEffect();
     }
   }
@@ -649,7 +683,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
           displayFileView: this.state.displayFileView,
           menuState: this.state.menuState,
-          forceRawView: this.state.forceRawView,
+          itemView: this.state.itemView,
           filteredItems: this.state.filteredItems,
           searchFilter: this.state.searchFilter,
           statusAreaMode: this.state.statusAreaMode,
@@ -679,7 +713,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
         displayFileView: this.state.displayFileView,
         menuState: this.state.menuState,
-        forceRawView: this.state.forceRawView,
+        itemView: this.state.itemView,
         filteredItems: this.state.filteredItems,
         searchFilter: this.state.searchFilter,
         statusAreaMode: this.state.statusAreaMode,
@@ -712,7 +746,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
           displayFileView: this.state.displayFileView,
           menuState: this.state.menuState,
-          forceRawView: this.state.forceRawView,
+          itemView: this.state.itemView,
           filteredItems: this.state.filteredItems,
           searchFilter: this.state.searchFilter,
           statusAreaMode: this.state.statusAreaMode,
@@ -748,7 +782,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
         displayFileView: this.state.displayFileView,
         menuState: this.state.menuState,
-        forceRawView: this.state.forceRawView,
+        itemView: this.state.itemView,
         filteredItems: this.state.filteredItems,
         searchFilter: this.state.searchFilter,
         statusAreaMode: this.state.statusAreaMode,
@@ -854,7 +888,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         const right = document.body.clientWidth - left;
         const bottom = document.body.clientHeight - top;
 
-        if (top > 10 && right > 10 && bottom > 10 && left > 10) {
+        if (
+          top > FILE_DRAG_OVER_THRESHOLD &&
+          right > FILE_DRAG_OVER_THRESHOLD &&
+          bottom > FILE_DRAG_OVER_THRESHOLD &&
+          left > FILE_DRAG_OVER_THRESHOLD
+        ) {
           let dragStyle = ProjectEditorDragStyle.addOverwrite;
 
           if (
@@ -882,7 +921,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             allInfoSet: this.props.project.infoSet,
             allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
             displayFileView: this.state.displayFileView,
-            forceRawView: this.state.forceRawView,
+            itemView: this.state.itemView,
             filteredItems: this.state.filteredItems,
             searchFilter: this.state.searchFilter,
             effectMode: ProjectEditorEffect.dragOver,
@@ -922,7 +961,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     this._isMountedInternal = true;
 
-    window.setTimeout(this._doAsyncLoading, 2000);
+    window.setTimeout(this._doAsyncLoading, ASYNC_LOADING_TIMEOUT);
   }
 
   componentWillUnmount() {
@@ -1061,7 +1100,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
               allInfoSet: this.props.project.infoSet,
               allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
               displayFileView: this.state.displayFileView,
-              forceRawView: this.state.forceRawView,
+              itemView: this.state.itemView,
               filteredItems: this.state.filteredItems,
               searchFilter: this.state.searchFilter,
               effectMode: undefined,
@@ -1141,7 +1180,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   private _setItemsOnLeft() {
     // the menu change to hide the dropdown will fire at the same time, and its state changes will overwrite this one.
     // so wait a beat and update state then.
-    window.setTimeout(this._setItemsOnLeftImpl, 2);
+    window.setTimeout(this._setItemsOnLeftImpl, SPLITTER_DRAG_TIMEOUT);
   }
 
   private _setItemsOnLeftImpl() {
@@ -1175,7 +1214,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       dialog: this.state.dialog,
       dialogData: this.state.dialogData,
       dialogActiveItem: this.state.dialogActiveItem,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       lastExportKey: this.state.lastExportKey,
@@ -1202,7 +1241,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       dialog: this.state.dialog,
       dialogData: this.state.dialogData,
       dialogActiveItem: this.state.dialogActiveItem,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
@@ -1227,7 +1266,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       menuState: this.state.menuState,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       dialog: this.state.dialog,
@@ -1243,7 +1282,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _setItemsOnRight() {
-    window.setTimeout(this._setItemsOnRightImpl, 2);
+    window.setTimeout(this._setItemsOnRightImpl, SPLITTER_DRAG_TIMEOUT);
   }
 
   private async _setItemsOnRightImpl() {
@@ -1277,7 +1316,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       dialog: this.state.dialog,
       dialogData: this.state.dialogData,
       dialogActiveItem: this.state.dialogActiveItem,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       lastExportKey: this.state.lastExportKey,
@@ -1289,7 +1328,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _viewAsItems() {
-    window.setTimeout(this._viewAsItemsImpl, 2);
+    window.setTimeout(this._viewAsItemsImpl, SPLITTER_DRAG_TIMEOUT);
   }
 
   private _viewAsItemsImpl() {
@@ -1302,7 +1341,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
       displayFileView: false,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       dialog: this.state.dialog,
@@ -1317,7 +1356,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _viewAsFiles() {
-    window.setTimeout(this._viewAsFilesImpl, 2);
+    window.setTimeout(this._viewAsFilesImpl, SPLITTER_DRAG_TIMEOUT);
   }
 
   private _viewAsFilesImpl() {
@@ -1330,7 +1369,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
       displayFileView: true,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       dialog: this.state.dialog,
@@ -1345,7 +1384,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _setMainFocus() {
-    window.setTimeout(this._setMainFocusImpl, 2);
+    window.setTimeout(this._setMainFocusImpl, SPLITTER_DRAG_TIMEOUT);
   }
 
   private async _setMainFocusImpl() {
@@ -1357,7 +1396,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _setToolboxFocus() {
-    window.setTimeout(this._setToolboxFocusImpl, 2);
+    window.setTimeout(this._setToolboxFocusImpl, SPLITTER_DRAG_TIMEOUT);
   }
 
   private async _setToolboxFocusImpl() {
@@ -1369,7 +1408,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _setItemsFocus() {
-    window.setTimeout(this._setItemsFocusImpl, 2);
+    window.setTimeout(this._setItemsFocusImpl, SPLITTER_DRAG_TIMEOUT);
   }
 
   private async _setItemsFocusImpl() {
@@ -1381,7 +1420,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _setToolboxLandingFocus() {
-    window.setTimeout(this._setToolboxLandingFocusImpl, 2);
+    window.setTimeout(this._setToolboxLandingFocusImpl, SPLITTER_DRAG_TIMEOUT);
   }
 
   private async _setToolboxLandingFocusImpl() {
@@ -1403,7 +1442,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       viewMode: newViewMode,
       menuState: ProjectEditorMenuState.noMenu,
       statusAreaMode: this.state.statusAreaMode,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
@@ -1420,7 +1459,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
   }
 
   private _toggleMinecraftToolbox() {
-    window.setTimeout(this._toggleWorldToolsImpl, 2);
+    window.setTimeout(this._toggleWorldToolsImpl, SPLITTER_DRAG_TIMEOUT);
   }
 
   private async _toggleWorldToolsImpl() {
@@ -1452,7 +1491,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       menuState: ProjectEditorMenuState.noMenu,
       statusAreaMode: this.state.statusAreaMode,
       displayFileView: this.state.displayFileView,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       lastDeployKey: this.state.lastDeployKey,
@@ -1548,7 +1587,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       dialog: this.state.dialog,
       dialogData: this.state.dialogData,
       dialogActiveItem: this.state.dialogActiveItem,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       lastDeployFunction: this.state.lastDeployFunction,
@@ -1580,7 +1619,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       statusAreaMode: this.state.statusAreaMode,
       displayFileView: this.state.displayFileView,
       lastDeployKey: this.state.lastDeployKey,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       dialog: this.state.dialog,
@@ -1607,7 +1646,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: menuVal,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
@@ -1637,7 +1676,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: menuVal,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
@@ -1667,7 +1706,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: menuVal,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
@@ -1697,7 +1736,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       mode: this.state.mode,
       viewMode: this.state.viewMode,
       menuState: menuVal,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
@@ -1730,7 +1769,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         allInfoSet: this.props.project.infoSet,
         allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
         displayFileView: this.state.displayFileView,
-        forceRawView: this.state.forceRawView,
+        itemView: this.state.itemView,
         filteredItems: this.state.filteredItems,
         searchFilter: this.state.searchFilter,
         effectMode: this.state.effectMode,
@@ -1770,7 +1809,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         allInfoSet: this.props.project.infoSet,
         allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
         displayFileView: this.state.displayFileView,
-        forceRawView: this.state.forceRawView,
+        itemView: this.state.itemView,
         filteredItems: this.state.filteredItems,
         searchFilter: this.state.searchFilter,
         effectMode: this.state.effectMode,
@@ -1852,7 +1891,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           allInfoSet: this.props.project.infoSet,
           allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
           displayFileView: this.state.displayFileView,
-          forceRawView: this.state.forceRawView,
+          itemView: this.state.itemView,
           filteredItems: this.state.filteredItems,
           searchFilter: this.state.searchFilter,
           effectMode: this.state.effectMode,
@@ -1893,7 +1932,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
   private async _handleInfoItemCommand(command: InfoItemCommand, item: ProjectInfoItem | IProjectUpdaterReference) {
     if (command === InfoItemCommand.itemSelect && item instanceof ProjectInfoItem && item.projectItem) {
-      this._handleProjectItemSelected(item.projectItem, false);
+      this._handleProjectItemSelected(item.projectItem, ProjectItemEditorView.singleFileEditor);
     } else if (
       command === InfoItemCommand.runUpdater &&
       (item as IProjectUpdaterReference).updaterId &&
@@ -2357,7 +2396,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       menuState: this.state.menuState,
       viewMode: newStateViewMode,
       mode: newMode,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
@@ -2381,7 +2420,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       dialog: this.state.dialog,
       dialogData: dialogData,
       dialogActiveItem: this.state.dialogActiveItem,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
@@ -2632,14 +2671,14 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
             itemType = ProjectItemType.ts;
             break;
           case "json":
-            itemType = ProjectItemType.json;
+            itemType = ProjectItemType.unknownJson;
             break;
         }
 
         if (itemType !== ProjectItemType.unknown) {
           let creationType = ProjectItemCreationType.normal;
 
-          if (relativeFolderPath?.indexOf("generated") >= 0) {
+          if (relativeFolderPath?.indexOf("/generated/") >= 0 || relativeFolderPath?.indexOf("/_gen/") >= 0) {
             creationType = ProjectItemCreationType.generated;
           } else if (relativeFolderPath?.indexOf("/dist/") >= 0) {
             creationType = ProjectItemCreationType.dist;
@@ -2683,7 +2722,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
         statusAreaMode: this.state.statusAreaMode,
         lastDeployKey: this.state.lastDeployKey,
-        forceRawView: this.state.forceRawView,
+        itemView: this.state.itemView,
         filteredItems: this.state.filteredItems,
         searchFilter: this.state.searchFilter,
         displayFileView: this.state.displayFileView,
@@ -2709,7 +2748,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       menuState: this.state.menuState,
       statusAreaMode: mode,
       displayFileView: this.state.displayFileView,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       lastDeployKey: this.state.lastDeployKey,
@@ -2788,7 +2827,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
       statusAreaMode: this.state.statusAreaMode,
       lastDeployKey: this.state.lastDeployKey,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: this.state.filteredItems,
       searchFilter: this.state.searchFilter,
       displayFileView: this.state.displayFileView,
@@ -2804,10 +2843,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     this.forceUpdate();
   }
 
-  private async _handleProjectItemSelected(newProjectItem: ProjectItem, forceRawView: boolean) {
+  private async _handleProjectItemSelected(newProjectItem: ProjectItem, itemView: ProjectItemEditorView) {
     if (this.state.viewMode === CartoEditorViewMode.toolboxFocus) {
       if (this.props.onActiveProjectItemChangeRequested) {
-        this.props.onActiveProjectItemChangeRequested(newProjectItem, forceRawView);
+        this.props.onActiveProjectItemChangeRequested(newProjectItem, itemView);
       }
     } else {
       let newMode = this.state.mode;
@@ -2841,7 +2880,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
         viewMode: newStateViewMode,
         allInfoSet: this.props.project.infoSet,
         allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
-        forceRawView: forceRawView,
+        itemView: itemView,
         filteredItems: this.state.filteredItems,
         searchFilter: this.state.searchFilter,
         statusAreaMode: this.state.statusAreaMode,
@@ -2880,7 +2919,10 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           this.downloadBbmodel(projectItem);
           break;
         case ProjectEditorItemAction.viewAsJson:
-          this._handleProjectItemSelected(projectItem, true);
+          this._handleProjectItemSelected(projectItem, ProjectItemEditorView.singleFileRaw);
+          break;
+        case ProjectEditorItemAction.viewOnMap:
+          this._handleProjectItemSelected(projectItem, ProjectItemEditorView.map);
           break;
         case ProjectEditorItemAction.deleteItem:
           this._handleDialogDoneAndClear(false, ProjectEditorDialog.deleteItem);
@@ -2964,7 +3006,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
       displayFileView: this.state.displayFileView,
       menuState: this.state.menuState,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: undefined,
       searchFilter: undefined,
       statusAreaMode: this.state.statusAreaMode,
@@ -3015,7 +3057,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
           displayFileView: this.state.displayFileView,
           menuState: this.state.menuState,
-          forceRawView: this.state.forceRawView,
+          itemView: this.state.itemView,
           filteredItems: this.state.filteredItems,
           searchFilter: this.state.searchFilter,
           statusAreaMode: this.state.statusAreaMode,
@@ -3067,7 +3109,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
       allInfoSetGenerated: this.props.project.infoSet.completedGeneration,
       displayFileView: this.state.displayFileView,
       menuState: this.state.menuState,
-      forceRawView: this.state.forceRawView,
+      itemView: this.state.itemView,
       filteredItems: searchResults,
       searchFilter: newFilterText,
       statusAreaMode: this.state.statusAreaMode,
@@ -3093,27 +3135,27 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     let isFullyCompact = false;
     const viewMode = this.state.viewMode;
 
-    if (width < 744) {
+    if (width < FULLY_COMPACT_WIDTH) {
       isFullyCompact = true;
     }
 
     let gridTemplateColumns = this.props.carto.itemSidePaneWidth + "px 4px 1fr 300px";
 
     if (isFullyCompact) {
-      gridTemplateColumns = "30px 4px 1fr 30px";
+      gridTemplateColumns = GRID_COMPACT_COLUMNS;
 
       if (viewMode === CartoEditorViewMode.mainFocus) {
-        gridTemplateColumns = "1fr 1fr 1fr 1fr ";
+        gridTemplateColumns = GRID_MAIN_FOCUS_COLUMNS;
       } else if (viewMode === CartoEditorViewMode.itemsFocus) {
       } else if (viewMode === CartoEditorViewMode.codeLanding) {
       } else if (viewMode === CartoEditorViewMode.toolboxFocus) {
-        gridTemplateColumns = "1fr 1fr 1fr 1fr ";
+        gridTemplateColumns = GRID_MAIN_FOCUS_COLUMNS;
       } else if (viewMode === CartoEditorViewMode.itemsOnLeft) {
-        gridTemplateColumns = "300px 1fr 1fr 1fr";
-      } else if (viewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox) {
-      } else if (viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox) {
+        gridTemplateColumns = GRID_ITEMS_ON_LEFT_COLUMNS;
+      } else if (viewMode === CartoEditorViewMode.itemsOnRight) {
+        gridTemplateColumns = GRID_ITEMS_ON_RIGHT_COLUMNS;
       } else {
-        gridTemplateColumns = "1fr 1fr 300px";
+        gridTemplateColumns = GRID_DEFAULT_COLUMNS;
       }
     } else {
       if (viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox) {
@@ -3148,29 +3190,29 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
   render() {
     const width = WebUtilities.getWidth();
-    let isButtonCompact = false; // toolbar button compact, that is
+    let isButtonCompact = false;
     let isFullyCompact = false;
 
-    if (width < 616) {
+    if (width < BUTTON_COMPACT_WIDTH) {
       isButtonCompact = true;
     }
 
-    if (width < 744) {
+    if (width < FULLY_COMPACT_WIDTH) {
       isFullyCompact = true;
     }
 
-    let widthOffset = 10;
+    let widthOffset = DEFAULT_WIDTH_OFFSET;
 
     if (
       this.state.viewMode === CartoEditorViewMode.itemsOnLeft ||
       this.state.viewMode === CartoEditorViewMode.itemsOnRight
     ) {
-      widthOffset = 330;
+      widthOffset = SIDE_PANE_WIDTH_OFFSET;
     } else if (
       this.state.viewMode === CartoEditorViewMode.itemsOnLeftAndMinecraftToolbox ||
       this.state.viewMode === CartoEditorViewMode.itemsOnRightAndMinecraftToolbox
     ) {
-      widthOffset = 590;
+      widthOffset = SIDE_PANE_AND_TOOLBOX_WIDTH_OFFSET;
     }
 
     let viewMode = this.state.viewMode;
@@ -3550,7 +3592,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     let addedItems = 0;
 
-    for (let i = 0; i < this.props.project.items.length && addedItems < 4; i++) {
+    for (let i = 0; i < this.props.project.items.length && addedItems < MAX_ADDED_ITEMS; i++) {
       const pi = this.props.project.items[i];
 
       if (pi.itemType === ProjectItemType.MCWorld) {
@@ -3873,27 +3915,27 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     let interior = <></>;
 
     let gridStyle = "pe-gridOuter ";
-    let heightOffset = this.props.heightOffset + 96;
+    let heightOffset = this.props.heightOffset + HEIGHT_OFFSET_DEFAULT;
 
     let areaHeight = "calc(100vh - " + this.props.heightOffset + "px)";
 
     if (CartoApp.hostType === HostType.vsCodeMainWeb || CartoApp.hostType === HostType.vsCodeWebWeb) {
       areaHeight = "calc(100vh)";
-      heightOffset += 9;
+      heightOffset += HEIGHT_OFFSET_VSCODE;
     }
 
     if (this.props.hideMainToolbar) {
       gridStyle += "pe-gridOuterNtbCollapsed";
-      heightOffset -= 55;
+      heightOffset -= HEIGHT_OFFSET_TOOLBAR_COLLAPSED;
     } else if (this.state.statusAreaMode === ProjectStatusAreaMode.expanded) {
       gridStyle += "pe-gridOuterExpanded";
-      heightOffset += 200;
+      heightOffset += HEIGHT_OFFSET_STATUSBAR;
     } else {
       gridStyle += "pe-gridOuterCollapsed";
     }
 
     if (this.props.statusAreaMode === ProjectStatusAreaMode.hidden) {
-      heightOffset -= 45;
+      heightOffset -= HEIGHT_OFFSET_STATUSBAR_HIDDEN;
     }
 
     if (this.state.mode === ProjectEditorMode.properties) {
@@ -3933,6 +3975,17 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     } else if (this.state.mode === ProjectEditorMode.actions) {
       interior = (
         <ProjectActions
+          theme={this.props.theme}
+          heightOffset={heightOffset}
+          onModeChangeRequested={this._handleModeChangeRequested}
+          onActionRequested={this._handleActionRequested}
+          project={this.props.project}
+          carto={this.props.carto}
+        />
+      );
+    } else if (this.state.mode === ProjectEditorMode.map) {
+      interior = (
+        <ProjectMap
           theme={this.props.theme}
           heightOffset={heightOffset}
           onModeChangeRequested={this._handleModeChangeRequested}
@@ -3981,7 +4034,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           heightOffset={heightOffset}
           activeVariant={this.state.activeVariant}
           visualSeed={this.state.visualSeed}
-          forceRawView={this.state.forceRawView}
+          initialView={this.state.itemView}
           project={this.props.project}
           onNewVariantRequested={this._handleNewVariantRequested}
           onVariantChangeRequested={this.setNewProjectVariantName}
@@ -4236,9 +4289,9 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     let border = "";
 
     if (CartoApp.theme === CartoThemeStyle.dark) {
-      border = "inset 4px #6b6562";
+      border = BORDER_INSET_DARK;
     } else {
-      border = "inset 4px #f1f1f1";
+      border = BORDER_INSET_LIGHT;
     }
 
     if (viewMode === CartoEditorViewMode.mainFocus) {
@@ -4248,7 +4301,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
           aria-label="Main content area"
           style={{
             border: border,
-            height: "calc(100vh - " + String(heightOffset - 11) + "px)",
+            height: "calc(100vh - " + String(heightOffset - HEIGHT_OFFSET_MINUS) + "px)",
             backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
           }}
         >
@@ -4415,7 +4468,12 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
     if (!this.props.hideMainToolbar) {
       toolbarArea = (
         <section aria-label="ToolBar" className={toolbarStyle}>
-          <Toolbar aria-label="Project Editor main toolbar" items={toolbarItems} overflow style={{ minHeight: 50 }} />
+          <Toolbar
+            aria-label="Project Editor main toolbar"
+            items={toolbarItems}
+            overflow
+            style={{ minHeight: TOOLBAR_MIN_HEIGHT }}
+          />
         </section>
       );
     }

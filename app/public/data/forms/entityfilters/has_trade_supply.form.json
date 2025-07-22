@@ -111,6 +111,10 @@
       "dataType": 1
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests whether the target has any trade supply left. Will return false if the target cannot be traded with.",
   "title": "Has Trade Supply",
   "samples": {

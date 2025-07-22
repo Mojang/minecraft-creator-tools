@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.hide Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.hide": {
   "priority": 0,
@@ -38,7 +38,7 @@ export default interface MinecraftBehaviorHide {
    * Amount of time in seconds that the mob reacts.
    * 
    * Sample Values:
-   * Villager V2: 30
+   * Villager v2: 30
    *
    *
    */
@@ -49,7 +49,7 @@ export default interface MinecraftBehaviorHide {
    * Defines what POI type to hide at.
    * 
    * Sample Values:
-   * Villager V2: "bed"
+   * Villager v2: "bed"
    *
    *
    */
@@ -68,7 +68,7 @@ export default interface MinecraftBehaviorHide {
    * Movement speed multiplier of the mob when using this AI Goal
    * 
    * Sample Values:
-   * Villager V2: 0.8
+   * Villager v2: 0.8
    *
    *
    */

@@ -1,0 +1,20 @@
+{
+  "id": "ConstantHeightProviderType",
+  "fields": [
+    {
+      "id": "type",
+      "title": "HeightProviderType",
+      "dataType": 2,
+      "isRequired": true
+    },
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Constant anchor point",
+      "dataType": 16,
+      "isRequired": true
+    }
+  ],
+  "description": "Constant anchor point",
+  "title": "ConstantHeightProviderType World"
+}

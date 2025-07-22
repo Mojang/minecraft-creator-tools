@@ -20,14 +20,32 @@ Allay - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
         "filters": {
           "all_of": [
             {
-              "test": "is_family",
+              "test": "has_equipment",
               "subject": "other",
-              "value": "player"
+              "domain": "hand",
+              "operator": "not",
+              "value": "lead"
             },
             {
               "test": "is_sneak_held",
               "subject": "other",
               "value": false
+            },
+            {
+              "any_of": [
+                {
+                  "test": "all_slots_empty",
+                  "subject": "other",
+                  "operator": "not",
+                  "value": "hand"
+                },
+                {
+                  "test": "all_slots_empty",
+                  "subject": "self",
+                  "operator": "not",
+                  "value": "hand"
+                }
+              ]
             }
           ]
         }
@@ -240,7 +258,7 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
       "drop_item_slot": "0",
       "drop_item_y_offset": 2,
       "interact_text": "action.interact.removesaddle",
-      "play_sounds": "shear",
+      "play_sounds": "unsaddle",
       "vibration": "shear"
     },
     {
@@ -281,7 +299,7 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
       "drop_item_slot": "0",
       "drop_item_y_offset": 1,
       "interact_text": "action.interact.removesaddle",
-      "play_sounds": "shear",
+      "play_sounds": "unsaddle",
       "vibration": "shear"
     }
   ]
@@ -424,7 +442,7 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "drop_item_slot": "0",
       "drop_item_y_offset": 1.1,
       "interact_text": "action.interact.removesaddle",
-      "play_sounds": "shear",
+      "play_sounds": "unsaddle",
       "vibration": "shear"
     }
   ]
@@ -497,7 +515,7 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "drop_item_slot": "0",
       "drop_item_y_offset": 1.1,
       "interact_text": "action.interact.removesaddle",
-      "play_sounds": "shear",
+      "play_sounds": "unsaddle",
       "vibration": "shear"
     },
     {
@@ -599,7 +617,7 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "drop_item_slot": "0",
       "drop_item_y_offset": 1.1,
       "interact_text": "action.interact.removesaddle",
-      "play_sounds": "shear",
+      "play_sounds": "unsaddle",
       "vibration": "shear"
     }
   ]
@@ -754,7 +772,7 @@ export default interface MinecraftInteract {
    * @remarks
    * 
    * Sample Values:
-   * Allay: [{"on_interact":{"filters":{"all_of":[{"test":"is_family","subject":"other","value":"player"},{"test":"is_sneak_held","subject":"other","value":false}]}},"give_item":true,"take_item":true,"interact_text":"action.interact.allay"}]
+   * Allay: [{"on_interact":{"filters":{"all_of":[{"test":"has_equipment","subject":"other","domain":"hand","operator":"not","value":"lead"},{"test":"is_sneak_held","subject":"other","value":false},{"any_of":[{"test":"all_slots_empty","subject":"other","operator":"not","value":"hand"},{"test":"all_slots_empty","subject":"self","operator":"not","value":"hand"}]}]}},"give_item":true,"take_item":true,"interact_text":"action.interact.allay"}]
    *
    * Armadillo: [{"on_interact":{"filters":{"all_of":[{"test":"is_family","subject":"other","value":"player"},{"test":"has_equipment","subject":"other","domain":"hand","value":"brush"}]}},"play_sounds":"mob.armadillo.brush","interact_text":"action.interact.brush","hurt_item":16,"swing":true,"spawn_items":{"table":"loot_tables/entities/armadillo_brush.json"}}]
    *
@@ -793,7 +811,7 @@ export interface MinecraftInteractInteractions {
    * @remarks
    * 
    * Sample Values:
-   * Allay: {"filters":{"all_of":[{"test":"is_family","subject":"other","value":"player"},{"test":"is_sneak_held","subject":"other","value":false}]}}
+   * Allay: {"filters":{"all_of":[{"test":"has_equipment","subject":"other","domain":"hand","operator":"not","value":"lead"},{"test":"is_sneak_held","subject":"other","value":false},{"any_of":[{"test":"all_slots_empty","subject":"other","operator":"not","value":"hand"},{"test":"all_slots_empty","subject":"self","operator":"not","value":"hand"}]}]}}
    *
    */
   on_interact: string;

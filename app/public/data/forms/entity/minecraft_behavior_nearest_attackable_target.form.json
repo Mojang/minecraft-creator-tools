@@ -1,24 +1,75 @@
 {
   "fields": [
     {
-      "id": "attack_interval|attack_interval_min",
-      "title": "Attack Interval|attack Interval Min",
-      "description": "Time range (in seconds) between searching for an attack target, range is in (0, \"attack_interval\"]. Only used if \"attack_interval\" is greater than 0, otherwise \"scan_interval\" is used.",
-      "defaultValue": 0,
-      "dataType": 0
-    },
-    {
-      "id": "attack_owner",
-      "title": "Attack Owner",
-      "description": "If true, this entity can attack its owner.",
-      "defaultValue": false,
-      "dataType": 1
-    },
-    {
       "id": "entity_types",
       "title": "Entity Types",
-      "description": "Filters which types of targets are valid for this entity.",
-      "dataType": 20,
+      "description": "List of entity types that this mob considers valid targets",
+      "dataType": 15,
+      "subForm": {
+        "description": "List of entity types that this mob considers valid targets",
+        "fields": [
+          {
+            "id": "cooldown",
+            "title": "Cooldown",
+            "description": "The amount of time in seconds that the mob has to wait before selecting a target of the same type again",
+            "defaultValue": 0,
+            "dataType": 3
+          },
+          {
+            "id": "filters",
+            "title": "Filters",
+            "description": "Conditions that make this entry in the list valid",
+            "dataType": 20
+          },
+          {
+            "id": "max_dist",
+            "title": "Max Dist",
+            "description": "Maximum distance this mob can be away to be a valid choice",
+            "defaultValue": 16,
+            "dataType": 3
+          },
+          {
+            "id": "must_see",
+            "title": "Must See",
+            "description": "If true, the mob has to be visible to be a valid choice",
+            "defaultValue": false,
+            "dataType": 1
+          },
+          {
+            "id": "must_see_forget_duration",
+            "title": "Must See Forget Duration",
+            "description": "Determines the amount of time in seconds that this mob will look for a target before forgetting about it and looking for a new one when the target isn't visible any more",
+            "defaultValue": 3,
+            "dataType": 3
+          },
+          {
+            "id": "reevaluate_description",
+            "title": "Reevaluate Description",
+            "description": "If true, the mob will stop being targeted if it stops meeting any conditions.",
+            "defaultValue": false,
+            "dataType": 1
+          },
+          {
+            "id": "sprint_speed_multiplier",
+            "title": "Sprint Speed Multiplier",
+            "description": "Multiplier for the running speed. A value of 1.0 means the speed is unchanged",
+            "defaultValue": 1,
+            "dataType": 3
+          },
+          {
+            "id": "walk_speed_multiplier",
+            "title": "Walk Speed Multiplier",
+            "description": "Multiplier for the walking speed. A value of 1.0 means the speed is unchanged",
+            "defaultValue": 1,
+            "dataType": 3
+          },
+          {
+            "id": "priority",
+            "title": "Priority",
+            "dataType": 7
+          }
+        ]
+      },
       "samples": {
         "/vanilla/behavior_pack/entities/axolotl.json": [
           {
@@ -1764,6 +1815,13 @@
       }
     },
     {
+      "id": "attack_owner",
+      "title": "Attack Owner",
+      "description": "If true, this entity can attack its owner.",
+      "defaultValue": false,
+      "dataType": 1
+    },
+    {
       "id": "must_reach",
       "title": "Must Reach",
       "description": "If true, this entity requires a path to the target.",
@@ -1844,6 +1902,12 @@
           {
             "path": "/minecraft:entity/component_groups/minecraft:default_targeting/minecraft:behavior.nearest_attackable_target/",
             "content": 40
+          }
+        ],
+        "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.nearest_attackable_target/",
+            "content": 3
           }
         ]
       }
@@ -4605,6 +4669,26 @@
             "max_dist": 16
           },
           "must_see": true
+        }
+      }
+    ],
+    "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.nearest_attackable_target/",
+        "content": {
+          "priority": 1,
+          "must_see": true,
+          "must_see_forget_duration": 3,
+          "entity_types": [
+            {
+              "filters": {
+                "test": "is_family",
+                "subject": "other",
+                "value": "player"
+              },
+              "max_dist": 16
+            }
+          ]
         }
       }
     ]

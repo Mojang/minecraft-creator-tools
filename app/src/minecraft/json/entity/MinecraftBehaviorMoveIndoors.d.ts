@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.move_indoors Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.move_indoors": {
   "priority": 6,
@@ -44,7 +44,7 @@ export default interface MinecraftBehaviorMoveIndoors {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 6
+   * Villager v2: 6
    *
    * Villager: 4
    *
@@ -58,7 +58,7 @@ export default interface MinecraftBehaviorMoveIndoors {
    * moving indoors.
    * 
    * Sample Values:
-   * Villager V2: 0.8
+   * Villager v2: 0.8
    *
    *
    */
@@ -70,7 +70,7 @@ export default interface MinecraftBehaviorMoveIndoors {
    * pathfinding fails
    * 
    * Sample Values:
-   * Villager V2: 8
+   * Villager v2: 8
    *
    *
    */

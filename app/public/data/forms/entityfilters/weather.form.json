@@ -110,6 +110,10 @@
       "dataType": 2
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests the current weather in the dimension against a provided weather value.",
   "title": "Weather",
   "samples": {

@@ -33,7 +33,7 @@ Apple - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ite
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Tags (minecraft:tags)
+ * Minecraft Tags Item (minecraft:tags)
  * Determines which tags are included on a given item.
  */
 export default interface MinecraftTags {

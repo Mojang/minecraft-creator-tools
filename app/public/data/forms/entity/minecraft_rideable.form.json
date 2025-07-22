@@ -28,7 +28,7 @@
         ],
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:rideable/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:rideable/",
             "content": 4
           }
         ],
@@ -97,13 +97,13 @@
       "samples": {
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:rideable/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:rideable/",
             "content": "minecraft:on_passenger_mount"
           }
         ]
       },
       "description": "Event to execute on the owner entity when an entity starts riding it.",
-      "title": "On Rider Enter Event"
+      "title": "Rider Enter Event"
     },
     {
       "id": "on_rider_exit_event",
@@ -112,13 +112,13 @@
       "samples": {
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:rideable/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:rideable/",
             "content": "minecraft:on_passenger_dismount"
           }
         ]
       },
       "description": "Event to execute on the owner entity when an entity stops riding it.",
-      "title": "On Rider Exit Event"
+      "title": "Rider Exit Event"
     },
     {
       "id": "dismount_mode",
@@ -135,7 +135,7 @@
       "samples": {
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:rideable/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:rideable/",
             "content": "on_top_center"
           }
         ]
@@ -248,7 +248,7 @@
             "content": {
               "position": [
                 0,
-                0.4,
+                0.48,
                 0
               ]
             }
@@ -256,11 +256,21 @@
         ],
         "/vanilla/behavior_pack/entities/cow.json": [
           {
-            "path": "/minecraft:entity/components/minecraft:rideable/",
+            "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:rideable/",
             "content": {
               "position": [
                 0,
-                1.105,
+                1,
+                0
+              ]
+            }
+          },
+          {
+            "path": "/minecraft:entity/component_groups/minecraft:cow_adult/minecraft:rideable/",
+            "content": {
+              "position": [
+                0,
+                1.15,
                 0
               ]
             }
@@ -290,15 +300,15 @@
         ],
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:rideable/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:rideable/",
             "content": [
               {
                 "min_rider_count": 0,
                 "max_rider_count": 4,
                 "position": [
                   0,
-                  0.95,
-                  0.45
+                  3.8,
+                  1.7
                 ],
                 "third_person_camera_radius": 8,
                 "camera_relax_distance_smoothing": 6
@@ -307,8 +317,8 @@
                 "min_rider_count": 1,
                 "max_rider_count": 4,
                 "position": [
-                  -0.45,
-                  0.95,
+                  -1.7,
+                  3.8,
                   0
                 ],
                 "third_person_camera_radius": 8,
@@ -319,8 +329,8 @@
                 "max_rider_count": 4,
                 "position": [
                   0,
-                  0.95,
-                  -0.45
+                  3.8,
+                  -1.7
                 ],
                 "third_person_camera_radius": 8,
                 "camera_relax_distance_smoothing": 6
@@ -329,8 +339,8 @@
                 "min_rider_count": 3,
                 "max_rider_count": 4,
                 "position": [
-                  0.45,
-                  0.95,
+                  1.7,
+                  3.8,
                   0
                 ],
                 "third_person_camera_radius": 8,
@@ -503,7 +513,7 @@
     {
       "id": "pull_in_entities",
       "title": "Pull In Entities",
-      "description": "If true, this entity will pull in entities that are in the correct \"family_types\" into any available seats.",
+      "description": "If true, this entity will pull entities matching the specified \"family_types\" into any available seats. Entities that are leashed will only be pulled in if their distance to their leash holder is less than the \"hard_distance\" defined in their own \"minecraft:leashable\" component.",
       "defaultValue": false,
       "dataType": 1,
       "samples": {
@@ -586,7 +596,7 @@
           "seats": {
             "position": [
               0,
-              0.4,
+              0.48,
               0
             ]
           }
@@ -595,7 +605,7 @@
     ],
     "/vanilla/behavior_pack/entities/cow.json": [
       {
-        "path": "/minecraft:entity/components/minecraft:rideable/",
+        "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:rideable/",
         "content": {
           "seat_count": 1,
           "family_types": [
@@ -604,7 +614,23 @@
           "seats": {
             "position": [
               0,
-              1.105,
+              1,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:cow_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.15,
               0
             ]
           }
@@ -651,7 +677,7 @@
     ],
     "/vanilla/behavior_pack/entities/happy_ghast.json": [
       {
-        "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:rideable/",
+        "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:rideable/",
         "content": {
           "seat_count": 4,
           "family_types": [
@@ -667,8 +693,8 @@
               "max_rider_count": 4,
               "position": [
                 0,
-                0.95,
-                0.45
+                3.8,
+                1.7
               ],
               "third_person_camera_radius": 8,
               "camera_relax_distance_smoothing": 6
@@ -677,8 +703,8 @@
               "min_rider_count": 1,
               "max_rider_count": 4,
               "position": [
-                -0.45,
-                0.95,
+                -1.7,
+                3.8,
                 0
               ],
               "third_person_camera_radius": 8,
@@ -689,8 +715,8 @@
               "max_rider_count": 4,
               "position": [
                 0,
-                0.95,
-                -0.45
+                3.8,
+                -1.7
               ],
               "third_person_camera_radius": 8,
               "camera_relax_distance_smoothing": 6
@@ -699,8 +725,8 @@
               "min_rider_count": 3,
               "max_rider_count": 4,
               "position": [
-                0.45,
-                0.95,
+                1.7,
+                3.8,
                 0
               ],
               "third_person_camera_radius": 8,
@@ -722,7 +748,7 @@
             {
               "position": [
                 0,
-                0.9,
+                1.125,
                 -0.3
               ],
               "lock_rider_rotation": 0
@@ -730,7 +756,7 @@
             {
               "position": [
                 0,
-                2.4,
+                2.625,
                 -0.3
               ],
               "lock_rider_rotation": 0
@@ -738,7 +764,7 @@
             {
               "position": [
                 0,
-                3.9,
+                4.125,
                 -0.3
               ],
               "lock_rider_rotation": 0
@@ -796,7 +822,7 @@
           "seats": {
             "position": [
               0,
-              1.1,
+              1.175,
               -0.35
             ],
             "lock_rider_rotation": 0
@@ -860,7 +886,7 @@
     ],
     "/vanilla/behavior_pack/entities/mooshroom.json": [
       {
-        "path": "/minecraft:entity/components/minecraft:rideable/",
+        "path": "/minecraft:entity/component_groups/minecraft:cow_baby/minecraft:rideable/",
         "content": {
           "seat_count": 1,
           "family_types": [
@@ -869,7 +895,23 @@
           "seats": {
             "position": [
               0,
-              1.105,
+              1,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:cow_adult/minecraft:rideable/",
+        "content": {
+          "seat_count": 1,
+          "family_types": [
+            "zombie"
+          ],
+          "seats": {
+            "position": [
+              0,
+              1.15,
               0
             ]
           }
@@ -943,7 +985,7 @@
           "seats": {
             "position": [
               0,
-              1.105,
+              1.085,
               0
             ]
           }
@@ -961,7 +1003,7 @@
           "seats": {
             "position": [
               0,
-              0.63,
+              0.7,
               0
             ]
           }
@@ -1032,7 +1074,7 @@
           "seats": {
             "position": [
               0,
-              2.1,
+              2.025,
               -0.3
             ]
           }
@@ -1086,7 +1128,7 @@
           "seats": {
             "position": [
               0,
-              1.6,
+              1.7,
               -0.2
             ]
           }
@@ -1105,7 +1147,7 @@
           "seats": {
             "position": [
               0,
-              1.65,
+              1.7,
               -0.2
             ]
           }
@@ -1121,7 +1163,7 @@
           "seats": {
             "position": [
               0,
-              1.6,
+              1.7,
               0
             ]
           }
@@ -1176,7 +1218,7 @@
           "seats": {
             "position": [
               0,
-              0.675,
+              0.625,
               -0.1
             ]
           }
@@ -1192,7 +1234,7 @@
           "seats": {
             "position": [
               0,
-              0.675,
+              0.625,
               -0.1
             ]
           }
@@ -1211,7 +1253,7 @@
           "seats": {
             "position": [
               0,
-              1.2,
+              1.1,
               -0.2
             ]
           }
@@ -1229,7 +1271,7 @@
           "seats": {
             "position": [
               0,
-              1.1,
+              1.175,
               -0.35
             ],
             "lock_rider_rotation": 0
@@ -1248,7 +1290,7 @@
           "seats": {
             "position": [
               0,
-              1.1,
+              1.175,
               -0.35
             ]
           }
@@ -1284,7 +1326,7 @@
           "seats": {
             "position": [
               0,
-              1.1,
+              1.175,
               -0.35
             ],
             "lock_rider_rotation": 0

@@ -10,13 +10,15 @@
           "comparison": "<=",
           "value": 1
         }
-      ]
+      ],
+      "isRequired": true
     },
     {
       "id": "dimension",
       "title": "Dimension",
       "description": "Dimension in which this replacement can happen. Must be 'minecraft:overworld'.",
-      "dataType": 2
+      "dataType": 2,
+      "isRequired": true
     },
     {
       "id": "noise_frequency_scale",
@@ -28,20 +30,16 @@
           "comparison": "<=",
           "value": 100
         }
-      ]
+      ],
+      "isRequired": true
     },
     {
       "id": "targets",
       "title": "Targets",
       "description": "Biomes that are going to be replaced by the overriding biome. Target biomes must not contain namespaces.",
-      "dataType": 24,
+      "dataType": 15,
       "minLength": 1,
-      "alternates": [
-        {
-          "id": "targets",
-          "dataType": 24
-        }
-      ]
+      "isRequired": true
     }
   ],
   "description": "Represents the replacement information used to determine the placement of the overriding biome.",

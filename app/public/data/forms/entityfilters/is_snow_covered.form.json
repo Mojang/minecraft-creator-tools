@@ -144,7 +144,9 @@
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
   "tags": [
-    "standalone"
+    "standalone",
+    "conditional",
+    "entityevent"
   ],
   "description": "Tests whether the Subject is in an area with snow cover",
   "title": "Is Snow Covered",

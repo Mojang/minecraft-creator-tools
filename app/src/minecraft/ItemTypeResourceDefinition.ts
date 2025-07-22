@@ -14,6 +14,8 @@ import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 import IDefinition from "./IDefinition";
 import IItemTypeResourcePack from "./IItemTypeResourcePack";
+import { Util } from "leaflet";
+import Utilities from "../core/Utilities";
 
 // this is a type that is "legacy" version 1.10 definitions of item types
 export default class ItemTypeResourceDefinition implements IManagedComponentSetItem, IDefinition {
@@ -64,10 +66,13 @@ export default class ItemTypeResourceDefinition implements IManagedComponentSetI
   }
 
   public get id() {
+    if (this._id === undefined) {
+      return "";
+    }
     return this._id;
   }
 
-  public set id(newId: string | undefined) {
+  public set id(newId: string) {
     this._id = newId;
   }
 
@@ -186,7 +191,7 @@ export default class ItemTypeResourceDefinition implements IManagedComponentSetI
     const newManagedComponents: { [name: string]: IManagedComponent | undefined } = {};
 
     for (const name in this._data.components) {
-      if (name !== id) {
+      if (name !== id && Utilities.isUsableAsObjectKey(name)) {
         const component = this._data.components[name];
 
         newBehaviorPacks[name] = component;
@@ -194,7 +199,7 @@ export default class ItemTypeResourceDefinition implements IManagedComponentSetI
     }
 
     for (const name in this._managed) {
-      if (name !== id) {
+      if (name !== id && Utilities.isUsableAsObjectKey(name)) {
         newManagedComponents[name] = this._managed[name];
       }
     }

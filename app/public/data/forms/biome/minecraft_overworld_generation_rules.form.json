@@ -12,11 +12,12 @@
       "alternates": [
         {
           "id": "hills_transformation",
-          "dataType": 24
-        },
-        {
-          "id": "hills_transformation",
-          "dataType": 24
+          "dataType": 16,
+          "subForm": {
+            "id": "hills_transformation",
+            "title": "Hills Transformation",
+            "fields": []
+          }
         }
       ],
       "title": "Hills Transformation",
@@ -30,11 +31,12 @@
       "alternates": [
         {
           "id": "mutate_transformation",
-          "dataType": 24
-        },
-        {
-          "id": "mutate_transformation",
-          "dataType": 24
+          "dataType": 16,
+          "subForm": {
+            "id": "mutate_transformation",
+            "title": "Mutate Transformation",
+            "fields": []
+          }
         }
       ]
     },
@@ -46,11 +48,12 @@
       "alternates": [
         {
           "id": "river_transformation",
-          "dataType": 24
-        },
-        {
-          "id": "river_transformation",
-          "dataType": 24
+          "dataType": 16,
+          "subForm": {
+            "id": "river_transformation",
+            "title": "River Transformation",
+            "fields": []
+          }
         }
       ]
     },
@@ -62,11 +65,12 @@
       "alternates": [
         {
           "id": "shore_transformation",
-          "dataType": 24
-        },
-        {
-          "id": "shore_transformation",
-          "dataType": 24
+          "dataType": 16,
+          "subForm": {
+            "id": "shore_transformation",
+            "title": "Shore Transformation",
+            "fields": []
+          }
         }
       ]
     }

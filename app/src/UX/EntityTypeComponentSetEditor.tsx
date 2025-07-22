@@ -10,6 +10,8 @@ import {
   selectableListBehavior,
   ButtonProps,
   Dialog,
+  Dropdown,
+  DropdownProps,
 } from "@fluentui/react-northstar";
 import IManagedComponentSetItem from "../minecraft/IManagedComponentSetItem";
 import DataFormUtilities from "../dataform/DataFormUtilities";
@@ -29,6 +31,7 @@ interface IEntityTypeComponentSetEditorProps {
   componentSetItem: IManagedComponentSetItem;
   entityTypeItem: EntityTypeDefinition;
   isDefault: boolean;
+  displayNarrow?: boolean;
   heightOffset: number;
   project: Project;
   carto: Carto;
@@ -53,6 +56,7 @@ export default class EntityTypeComponentSetEditor extends Component<
   IEntityTypeComponentSetEditorState
 > {
   _componentIdsByIndex: { [index: string]: string } = {};
+  _componentIdsByValue: { [index: string]: string } = {};
 
   constructor(props: IEntityTypeComponentSetEditorProps) {
     super(props);
@@ -63,6 +67,7 @@ export default class EntityTypeComponentSetEditor extends Component<
     this._handleDialogCancel = this._handleDialogCancel.bind(this);
     this._handleAddComponentOK = this._handleAddComponentOK.bind(this);
     this.setSelectedNewComponentId = this.setSelectedNewComponentId.bind(this);
+    this._handleComponentSelectedFromDropdown = this._handleComponentSelectedFromDropdown.bind(this);
 
     let id = undefined;
 
@@ -161,6 +166,21 @@ export default class EntityTypeComponentSetEditor extends Component<
     });
   }
 
+  _handleComponentSelectedFromDropdown(
+    event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
+    data: DropdownProps
+  ) {
+    if (data !== undefined && data.value !== undefined && typeof data.value === "string") {
+      const id = this._componentIdsByValue[data.value];
+
+      if (id) {
+        this.setState({
+          activeComponentId: id,
+        });
+      }
+    }
+  }
+
   _handleComponentSelected(elt: any, event: ListProps | undefined) {
     if (event === undefined || event.selectedIndex === undefined || this.state == null) {
       return;
@@ -240,6 +260,8 @@ export default class EntityTypeComponentSetEditor extends Component<
       return <div className="etcse-loading">Loading...</div>;
     }
 
+    const isNarrow = this.props.displayNarrow;
+
     if (this.state.dialogMode === EntityTypeComponentEditorDialog.addComponent) {
       return (
         <Dialog
@@ -259,11 +281,14 @@ export default class EntityTypeComponentSetEditor extends Component<
       const components = this.props.componentSetItem.getComponents();
       const componentForms = [];
       const componentList = [];
+      const componentDropdown = [];
 
       let selectedIndex = 0;
+      let selectedIndexDropdown = 0;
+      let itemsAddedDropdown = 0;
 
       this._componentIdsByIndex = {};
-
+      this._componentIdsByValue = {};
       // sort by category, then priority (for behaviors, mostly), then by alpha
       components.sort((a: IManagedComponent, b: IManagedComponent) => {
         const aCategory = EntityTypeDefinition.getComponentCategory(a.id);
@@ -313,14 +338,20 @@ export default class EntityTypeComponentSetEditor extends Component<
           }
 
           this._componentIdsByIndex[itemsAdded.toString()] = component.id;
+          const humanVersion = Utilities.humanifyMinecraftName(component.id);
+
+          this._componentIdsByValue[humanVersion] = component.id;
+
+          componentDropdown.push(humanVersion);
           componentList.push({
-            key: component.id,
+            key: "compButtonList" + component.id,
             content: (
               <MinecraftButton theme={this.props.theme} className="etcse-componentWrapper">
                 <div className="etcse-componentWrapperInner">{Utilities.humanifyMinecraftName(component.id)}</div>
               </MinecraftButton>
             ),
           });
+          itemsAddedDropdown++;
           itemsAdded++;
 
           if (component && component.id) {
@@ -344,7 +375,9 @@ export default class EntityTypeComponentSetEditor extends Component<
             });
 
             if (component.id === this.state?.activeComponentId) {
-              componentForms.push(<Toolbar aria-label="Component editing toolbar" items={perComponentToolbarItems} />);
+              componentForms.push(
+                <Toolbar aria-label="Component editing toolbar" key="etcse.toolbar" items={perComponentToolbarItems} />
+              );
 
               if (this.state.activeComponentId) {
                 if (this.props.isDefault) {
@@ -352,7 +385,7 @@ export default class EntityTypeComponentSetEditor extends Component<
 
                   if (cgs.length === 1) {
                     componentForms.push(
-                      <div className="etcse-note">
+                      <div className="etcse-note" key="etcse.note">
                         This component is used in the {Utilities.getHumanifiedObjectName(cgs[0].id)} component group.
                         Its settings will be overridden when that group is applied.
                       </div>
@@ -369,7 +402,7 @@ export default class EntityTypeComponentSetEditor extends Component<
                     }
 
                     componentForms.push(
-                      <div className="etcse-note">
+                      <div className="etcse-note" key="etcse.note2">
                         This component is used in the {strCgList} component groups. Its settings will be overridden when
                         one of those groups is applied.
                       </div>
@@ -420,13 +453,15 @@ export default class EntityTypeComponentSetEditor extends Component<
                 }
               }
 
+              selectedIndex = itemsAdded - 1;
+              selectedIndexDropdown = itemsAddedDropdown - 1;
               if (form !== undefined) {
-                selectedIndex = itemsAdded - 1;
                 componentForms.push(
-                  <div className="etcse-componentForm">
+                  <div className="etcse-componentForm" key={"etcse-form" + component.id}>
                     <DataForm
                       displayTitle={true}
                       displayDescription={true}
+                      displayNarrow={this.props.displayNarrow}
                       readOnly={false}
                       carto={this.props.carto}
                       project={this.props.project}
@@ -442,9 +477,10 @@ export default class EntityTypeComponentSetEditor extends Component<
                   </div>
                 );
               } else {
-                selectedIndex = itemsAdded - 1;
                 componentForms.push(
-                  <div className="etcse-noeditor">(No editor is available for the {component.id} type.)</div>
+                  <div className="etcse-noeditor" key="etcse-noed">
+                    (No editor is available for the {component.id} type.)
+                  </div>
                 );
               }
             }
@@ -475,22 +511,34 @@ export default class EntityTypeComponentSetEditor extends Component<
 
       const areaHeight = "calc(100vh - " + String(this.props.heightOffset + 34) + "px)";
 
-      return (
-        <div className="etcse-area">
-          <div className="etcse-componentArea">
-            <div className="etcse-titleArea">{title}</div>
-            <div className="etcse-componentToolBarArea">
-              <Toolbar aria-label="Component editing toolbar" items={toolbarItems} />
-            </div>
+      let areaClass = "etcse-area";
+
+      if (isNarrow) {
+        areaClass = "etcse-area-narrow";
+      }
+
+      let listElement = <></>;
+
+      if (isNarrow) {
+        listElement = (
+          <div className="etcse-componentDropdown">
+            <Dropdown
+              items={componentDropdown}
+              value={componentDropdown[selectedIndexDropdown]}
+              onChange={this._handleComponentSelectedFromDropdown}
+            />
           </div>
+        );
+      } else {
+        listElement = (
           <div
             className="etcse-componentList"
             style={{
-              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
-              backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
-              color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
-              minHeight: areaHeight,
-              maxHeight: areaHeight,
+              borderColor: isNarrow ? undefined : this.props.theme.siteVariables?.colorScheme.brand.background6,
+              backgroundColor: isNarrow ? undefined : this.props.theme.siteVariables?.colorScheme.brand.background3,
+              color: isNarrow ? undefined : this.props.theme.siteVariables?.colorScheme.brand.foreground3,
+              minHeight: isNarrow ? undefined : areaHeight,
+              maxHeight: isNarrow ? undefined : areaHeight,
             }}
           >
             <List
@@ -503,11 +551,30 @@ export default class EntityTypeComponentSetEditor extends Component<
               onSelectedIndexChange={this._handleComponentSelected}
             />
           </div>
+        );
+      }
+
+      let componentBinClassName = "etcse-componentBin";
+
+      if (this.props.displayNarrow) {
+        componentBinClassName += " etcse-componentBin-narrow";
+      }
+
+      return (
+        <div className={areaClass}>
+          <div className="etcse-componentArea">
+            <div className="etcse-titleArea">{title}</div>
+            <div className="etcse-componentToolBarArea">
+              <Toolbar aria-label="Component editing toolbar" items={toolbarItems} />
+            </div>
+          </div>
+
+          {listElement}
           <div
-            className="etcse-componentBin"
+            className={componentBinClassName}
             style={{
-              minHeight: areaHeight,
-              maxHeight: areaHeight,
+              minHeight: isNarrow ? "100%" : areaHeight,
+              maxHeight: isNarrow ? "100%" : areaHeight,
               borderColor: this.props.theme.siteVariables?.colorScheme.brand.background6,
               backgroundColor: this.props.theme.siteVariables?.colorScheme.brand.background2,
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground2,

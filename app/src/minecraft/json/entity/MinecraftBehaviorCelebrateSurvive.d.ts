@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.celebrate_survive Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.celebrate_survive": {
   "priority": 5,
@@ -43,7 +43,7 @@ export default interface MinecraftBehaviorCelebrateSurvive {
    * The duration in seconds that the celebration lasts for.
    * 
    * Sample Values:
-   * Villager V2: 30
+   * Villager v2: 30
    *
    *
    */
@@ -55,7 +55,7 @@ export default interface MinecraftBehaviorCelebrateSurvive {
    * seconds).
    * 
    * Sample Values:
-   * Villager V2: {"range_min":2,"range_max":7}
+   * Villager v2: {"range_min":2,"range_max":7}
    *
    *
    */
@@ -66,7 +66,7 @@ export default interface MinecraftBehaviorCelebrateSurvive {
    * The event to trigger when the goal's duration expires.
    * 
    * Sample Values:
-   * Villager V2: {"event":"minecraft:stop_celebrating","target":"self"}
+   * Villager v2: {"event":"minecraft:stop_celebrating","target":"self"}
    *
    *
    */
@@ -79,7 +79,7 @@ export default interface MinecraftBehaviorCelebrateSurvive {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 5
+   * Villager v2: 5
    *
    *
    */

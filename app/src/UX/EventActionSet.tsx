@@ -4,7 +4,7 @@ import { ThemeInput } from "@fluentui/styles";
 import IEventActionSet from "../minecraft/IEventActionSet";
 import IEventAction from "../minecraft/IEventAction";
 import EventActionTile from "./EventActionTile";
-import ManagedEventAction from "../minecraft/ManagedEventAction";
+import ManagedEventActionOrActionSet from "../minecraft/ManagedEventActionOrActionSet";
 import { Toolbar } from "@fluentui/react-northstar";
 import Carto from "../app/Carto";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
@@ -16,6 +16,8 @@ import Project from "../app/Project";
 interface IEventActionSetProps {
   readOnly: boolean;
   event: IEventActionSet | IEventAction;
+  displayAddRemoveGroups: boolean;
+  displayNarrow?: boolean;
   entityType: EntityTypeDefinition;
   isRandomize: boolean;
   eventContextId: string;
@@ -93,10 +95,13 @@ export default class EventActionSet extends Component<IEventActionSetProps, IEve
         <EventActionTile
           readOnly={this.props.readOnly}
           entityType={this.props.entityType}
+          displayNarrow={this.props.displayNarrow}
+          displayAddRemoveGroups={this.props.displayAddRemoveGroups}
           eventContextId={this.props.eventContextId}
           carto={this.props.carto}
+          key={"eata"}
           project={this.props.project}
-          event={new ManagedEventAction(this.props.event)}
+          event={new ManagedEventActionOrActionSet(this.props.event)}
           theme={this.props.theme}
         />
       );
@@ -106,12 +111,16 @@ export default class EventActionSet extends Component<IEventActionSetProps, IEve
         : (this.props.event as IEventActionSet).sequence;
 
       if (elements) {
+        let i = 0;
         for (const elt of elements) {
           if ((elt as IEventActionSet).sequence || (elt as IEventActionSet).randomize) {
             interior.push(
               <EventActionSet
                 readOnly={this.props.readOnly}
                 entityType={this.props.entityType}
+                displayNarrow={this.props.displayNarrow}
+                displayAddRemoveGroups={this.props.displayAddRemoveGroups}
+                key={"easeas-" + i}
                 project={this.props.project}
                 eventContextId={this.props.eventContextId}
                 isRandomize={(elt as IEventActionSet).randomize !== undefined}
@@ -125,15 +134,18 @@ export default class EventActionSet extends Component<IEventActionSetProps, IEve
               <EventActionTile
                 readOnly={this.props.readOnly}
                 entityType={this.props.entityType}
+                key={"easeat-" + i}
                 project={this.props.project}
+                displayAddRemoveGroups={this.props.displayAddRemoveGroups}
                 displayWeight={this.props.isRandomize}
                 eventContextId={this.props.eventContextId}
-                event={new ManagedEventAction(elt as IEventAction)}
+                event={new ManagedEventActionOrActionSet(elt as IEventAction)}
                 carto={this.props.carto}
                 theme={this.props.theme}
               />
             );
           }
+          i++;
         }
       }
     }

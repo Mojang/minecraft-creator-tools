@@ -1,5 +1,6 @@
 import { Component } from "react";
 import ProjectEditor, { ProjectStatusAreaMode } from "./ProjectEditor";
+import ExporterTool from "./ExporterTool";
 import Home from "./Home";
 import "./App.css";
 import Carto from "./../app/Carto";
@@ -9,7 +10,7 @@ import IFolder from "../storage/IFolder";
 import { GalleryProjectCommand } from "./ProjectGallery";
 import Log from "../core/Log";
 import { ProjectFocus, ProjectScriptLanguage } from "../app/IProjectData";
-import CartoApp from "../app/CartoApp";
+import CartoApp, { HostType } from "../app/CartoApp";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ThemeInput } from "@fluentui/react-northstar";
 import { CartoEditorViewMode } from "../app/ICartoData";
@@ -19,6 +20,7 @@ import ProjectUtilities from "../app/ProjectUtilities";
 import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
 import WebUtilities from "./WebUtilities";
 import ProjectEditorUtilities, { ProjectEditorMode } from "./ProjectEditorUtilities";
+import AppServiceProxy from "../core/AppServiceProxy";
 import HttpStorage from "../storage/HttpStorage";
 import { ProjectImportExclusions } from "../app/ProjectExporter";
 import Database from "../minecraft/Database";
@@ -57,6 +59,14 @@ interface AppState {
   visualSeed?: number;
   additionalLoadingMessage?: string;
 }
+
+// Layout and UI constants
+const ELECTRON_TITLEBAR_HEIGHT = 41;
+const DEFAULT_BANNER_HEIGHT = 96;
+const MIN_BANNER_OFFSET_HEIGHT = 20;
+const BANNER_EXTRA_HEIGHT = 17;
+const LOADING_INTERVAL_MS = 50;
+const TOOLBAR_MENU_TRANSFORM_OFFSET = " 235px";
 
 export default class App extends Component<AppProps, AppState> {
   static instanceCount = 0;
@@ -420,7 +430,15 @@ export default class App extends Component<AppProps, AppState> {
 
         let selectedItem = undefined;
 
-        if (
+        if (CartoApp.modeParameter && CartoApp.modeParameter.startsWith("project/")) {
+          const segments = CartoApp.modeParameter.split("/");
+
+          if (segments.length === 2) {
+            this._handleNewProject({ name: "Project" }, NewProjectTemplateType.gameTest);
+
+            selectedItem = segments[1];
+          }
+        } else if (
           CartoApp.initialMode &&
           (CartoApp.modeParameter || CartoApp.initialMode === "info") &&
           CartoApp.projectPath
@@ -438,7 +456,7 @@ export default class App extends Component<AppProps, AppState> {
       if (typeof window !== "undefined") {
         window.addEventListener("hashchange", this._handleHashChange, false);
         window.addEventListener("resize", this._incrementVisualSeed, false);
-        window.setInterval(this._tick, 50);
+        window.setInterval(this._tick, LOADING_INTERVAL_MS);
       }
     }
 
@@ -508,7 +526,7 @@ export default class App extends Component<AppProps, AppState> {
         ProjectScriptLanguage.typeScript
       );
     } else {
-      newProject = await CartoApp.carto.ensureProjectForFolder(newProjectSeed.path, newProjectName, false);
+      newProject = await CartoApp.carto.ensureProjectForLocalFolder(newProjectSeed.path, newProjectName, false);
 
       await newProject.ensureProjectFolder();
 
@@ -556,7 +574,7 @@ export default class App extends Component<AppProps, AppState> {
       return;
     }
 
-    const newProject = await CartoApp.carto.ensureProjectForFolder(folderPath);
+    const newProject = await CartoApp.carto.ensureProjectForLocalFolder(folderPath);
 
     newProject.save();
     CartoApp.carto.save();
@@ -829,27 +847,37 @@ export default class App extends Component<AppProps, AppState> {
     if (gitHubOwner !== undefined && gitHubRepoName !== undefined) {
       let gh = undefined;
 
+      let repoUrl = undefined;
+
       if (
         galleryType === GalleryItemType.entityType ||
         galleryType === GalleryItemType.blockType ||
         galleryType === GalleryItemType.itemType
       ) {
-        gh = new HttpStorage(
-          CartoApp.contentRoot + "res/samples/microsoft/minecraft-samples-main/addon_starter/start/"
-        );
+        repoUrl = CartoApp.contentRoot + "res/samples/microsoft/minecraft-samples-main/addon_starter/start/";
       } else {
-        gh = new HttpStorage(
+        repoUrl =
           CartoApp.contentRoot +
-            "res/samples/" +
-            gitHubOwner +
-            "/" +
-            gitHubRepoName +
-            "-" +
-            (gitHubBranch ? gitHubBranch : "main") +
-            "/" +
-            gitHubFolder
-        ); //new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
+          "res/samples/" +
+          gitHubOwner +
+          "/" +
+          gitHubRepoName +
+          "-" +
+          (gitHubBranch ? gitHubBranch : "main") +
+          "/" +
+          gitHubFolder;
       }
+
+      if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
+        gh = await Database.local.createStorage(repoUrl);
+
+        if (!gh) {
+          throw new Error("Could not load local storage: " + repoUrl);
+        }
+      } else {
+        gh = new HttpStorage(repoUrl);
+      }
+
       let projName = suggestedName
         ? suggestedName
         : ProjectUtilities.getSuggestedProjectNameFromElements(galleryId, gitHubFolder, gitHubRepoName);
@@ -1021,7 +1049,7 @@ export default class App extends Component<AppProps, AppState> {
       proposedProjectName = mcw.name;
     }
 
-    const newProject = await CartoApp.carto.ensureProjectForFolder(folder.fullPath, proposedProjectName);
+    const newProject = await CartoApp.carto.ensureProjectForLocalFolder(folder.fullPath, proposedProjectName);
 
     newProject.save();
     CartoApp.carto.save();
@@ -1226,7 +1254,9 @@ export default class App extends Component<AppProps, AppState> {
 
             if (secondComma > 0) {
               (elt as HTMLElement).style.transform =
-                transform.substring(0, firstComma + 2) + " 235px" + transform.substring(secondComma);
+                transform.substring(0, firstComma + 2) +
+                TOOLBAR_MENU_TRANSFORM_OFFSET +
+                transform.substring(secondComma);
             }
           }
         }
@@ -1283,17 +1313,6 @@ export default class App extends Component<AppProps, AppState> {
     let borderStr = "";
     let height = "100vh";
     let heightOffset = 0;
-
-    if (this.state.hasBanner) {
-      let bannerHeight = 96;
-      const elt = window.document.getElementById("cookie-banner");
-      if (elt && elt.offsetHeight > 20) {
-        bannerHeight = elt.offsetHeight + 17;
-      }
-
-      height = "calc(100vh - " + bannerHeight + "px)";
-      heightOffset = bannerHeight;
-    }
 
     if (CartoApp.carto === undefined || !CartoApp.carto.isLoaded) {
       interior = (
@@ -1400,8 +1419,8 @@ export default class App extends Component<AppProps, AppState> {
       if (this.state.activeProject.errorState === ProjectErrorState.projectFolderOrFileDoesNotExist) {
         let error = "Could not find project data folder: ";
 
-        if (this.state.activeProject.mainDeployFolderPath) {
-          error += this.state.activeProject.mainDeployFolderPath;
+        if (this.state.activeProject.localFolderPath) {
+          error += this.state.activeProject.localFolderPath;
         }
 
         error += ". It may not be available on this device?";

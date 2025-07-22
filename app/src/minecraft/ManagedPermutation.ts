@@ -8,6 +8,7 @@ import IManagedComponentSetItem from "./IManagedComponentSetItem";
 import IManagedComponent from "./IManagedComponent";
 import Molang from "./Molang";
 import IComponent from "./IComponent";
+import Utilities from "../core/Utilities";
 
 export default class ManagedPermutation implements IManagedComponentSetItem {
   _data?: IBlockPermutation;
@@ -24,6 +25,8 @@ export default class ManagedPermutation implements IManagedComponentSetItem {
 
     this._managed = {};
   }
+
+  id: string = "";
 
   public get onComponentAdded() {
     return this._onComponentAdded.asEvent();
@@ -89,8 +92,10 @@ export default class ManagedPermutation implements IManagedComponentSetItem {
         ? componentOrData
         : new ManagedComponent(this._data.components, id, componentOrData);
 
-    this._data.components[mc.id] = mc.getData();
-    this._managed[mc.id] = mc;
+    if (Utilities.isUsableAsObjectKey(mc.id)) {
+      this._data.components[mc.id] = mc.getData();
+      this._managed[mc.id] = mc;
+    }
 
     return mc;
   }
@@ -98,6 +103,9 @@ export default class ManagedPermutation implements IManagedComponentSetItem {
   removeComponent(id: string) {
     if (!this._data) {
       return;
+    }
+    if (!Utilities.isUsableAsObjectKey(id)) {
+      throw new Error();
     }
 
     this._data.components[id] = undefined;
@@ -114,6 +122,9 @@ export default class ManagedPermutation implements IManagedComponentSetItem {
 
     if (!this._managed) {
       this._managed = {};
+    }
+    if (!Utilities.isUsableAsObjectKey(id)) {
+      throw new Error();
     }
 
     if (!this._managed[id]) {

@@ -110,6 +110,10 @@
       "dataType": 3
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests the current temperature against a provided value in the range (0.0, 1.0) where 0.0f is the coldest temp and 1.0f is the hottest.",
   "title": "Is Temperature Value",
   "samples": {

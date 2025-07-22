@@ -58,13 +58,21 @@ export default class ZipFile extends FileBase implements IFile {
         const type = forceEncoding ?? StorageUtilities.getEncodingByFileName(this.name);
 
         if (type === EncodingType.ByteBuffer) {
-          this._content = await this._jszipo.async("uint8array"); /*, (metadata) => {
+          try {
+            this._content = await this._jszipo.async("uint8array");
+          } catch (e: any) {
+            this.errorStateMessage = e.toString();
+          } /*, (metadata) => {
             Log.verbose("Extracting " + this.storageRelativePath + " (" + metadata.percent.toFixed(2) + ")%");
           });*/
 
           Log.assert(this._content !== null, "Unexpectedly could not load content.");
         } else {
-          this._content = await this._jszipo.async("string");
+          try {
+            this._content = await this._jszipo.async("string");
+          } catch (e: any) {
+            this.errorStateMessage = e.toString();
+          }
         }
       }
 

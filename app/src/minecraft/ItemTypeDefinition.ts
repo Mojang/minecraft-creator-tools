@@ -19,6 +19,7 @@ import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
 import AttachableResourceDefinition from "./AttachableResourceDefinition";
 import TypeScriptDefinition from "./TypeScriptDefinition";
+import Utilities from "../core/Utilities";
 
 export default class ItemTypeDefinition implements IManagedComponentSetItem, IDefinition {
   public wrapper: IItemTypeWrapper | null = null;
@@ -68,10 +69,14 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
   }
 
   public get id() {
+    if (this._id === undefined) {
+      return "";
+    }
+
     return this._id;
   }
 
-  public set id(newId: string | undefined) {
+  public set id(newId: string) {
     this._id = newId;
   }
 
@@ -118,6 +123,11 @@ export default class ItemTypeDefinition implements IManagedComponentSetItem, IDe
   getComponent(id: string) {
     if (!this._data || !this._data.components) {
       return undefined;
+    }
+
+    if (!Utilities.isUsableAsObjectKey(id)) {
+      Log.unsupportedToken(id);
+      throw new Error();
     }
 
     if (!this._managed[id]) {

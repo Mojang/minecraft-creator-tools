@@ -25,7 +25,7 @@
     },
     {
       "id": "on_end",
-      "title": "On End",
+      "title": "End",
       "description": "Event(s) to run when the goal end.",
       "dataType": 22,
       "samples": {
@@ -42,7 +42,7 @@
     },
     {
       "id": "on_start",
-      "title": "On Start",
+      "title": "Start",
       "description": "Event(s) to run when the goal starts.",
       "dataType": 22
     },

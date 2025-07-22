@@ -39,6 +39,8 @@ const UnsupportedForSharingTypes = [
   ProjectItemType.spawnGroupJson,
 ];
 
+const UnsupportedForSharingTypesSet = new Set(UnsupportedForSharingTypes);
+
 export default class SharingInfoGenerator implements IProjectInfoGenerator {
   id = "SHARING";
   title = "Sharing Best Practices Information";
@@ -92,7 +94,7 @@ export default class SharingInfoGenerator implements IProjectInfoGenerator {
           }*/
         }
       }
-      if (ProjectItemUtilities.isVibrantVisualsRelated(pi.itemType)) {
+      if (ProjectItemUtilities.isVibrantVisualsRelated(pi)) {
         // SHARING210
         items.push(
           new ProjectInfoItem(
@@ -103,7 +105,7 @@ export default class SharingInfoGenerator implements IProjectInfoGenerator {
             pi
           )
         );
-      } else if (UnsupportedForSharingTypes.includes(pi.itemType)) {
+      } else if (UnsupportedForSharingTypesSet.has(pi.itemType)) {
         projInfoItem = new ProjectInfoItem(
           InfoItemType.error,
           this.id,

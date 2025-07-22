@@ -1,8 +1,11 @@
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
-import IAddonManifest from "../minecraft/IAddonManifest";
+import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition";
+import DesignManifestDefinition from "../minecraft/DesignManifestDefinition";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import { PackType } from "../minecraft/Pack";
+import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
+import SkinManifestDefinition from "../minecraft/SkinManifestDefinition";
 import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import { ProjectRole } from "./IProjectData";
@@ -93,6 +96,8 @@ export default class ProjectItemInference {
       folderContext = FolderContext.mctoolsWorkingFolder;
     } else if (MinecraftUtilities.pathLooksLikeBehaviorPackName(folderPathCanon)) {
       folderContext = FolderContext.behaviorPack;
+    } else if (MinecraftUtilities.pathLooksLikeDesignPackName(folderPathCanon)) {
+      folderContext = FolderContext.designPack;
     } else if (MinecraftUtilities.pathLooksLikeSubPacksFolderName(folderPathCanon)) {
       // note this check must be above the .resourcePack check
       folderContext = FolderContext.resourcePackSubPack;
@@ -160,13 +165,10 @@ export default class ProjectItemInference {
         folder.folders["ui"]
       ) {
         folderContext = FolderContext.resourcePack;
-      } else if (
-        folder.fullPath.indexOf("/rp/") >= 0 ||
-        folder.fullPath.indexOf(" rp/") >= 0 ||
-        folder.fullPath.indexOf("/rp ") >= 0 ||
-        folder.fullPath.indexOf("esource") >= 0
-      ) {
+      } else if (MinecraftUtilities.pathLooksLikeResourcePackName(folder.fullPath)) {
         folderContext = FolderContext.resourcePack;
+      } else if (MinecraftUtilities.pathLooksLikeDesignPackName(folder.fullPath)) {
+        folderContext = FolderContext.designPack;
       } else {
         folderContext = FolderContext.behaviorPack;
       }
@@ -227,61 +229,6 @@ export default class ProjectItemInference {
 
               await candidateFile.loadContent(false);
 
-              if (
-                candidateFile.content !== undefined &&
-                candidateFile.content !== "" &&
-                !variantLabel &&
-                typeof candidateFile.content === "string"
-              ) {
-                try {
-                  const manifest: IAddonManifest = JSON.parse(candidateFile.content);
-
-                  if (manifest.header.uuid !== undefined) {
-                    if (folderContext === FolderContext.behaviorPack) {
-                      project.defaultBehaviorPackUniqueId = manifest.header.uuid;
-                      project.defaultBehaviorPackVersion = manifest.header.version;
-                      project.defaultBehaviorPackFolder = folder;
-                      project.behaviorPacksContainer = parentFolder;
-                      project.ensurePackByFolder(folder, PackType.behavior);
-                    } else if (folderContext === FolderContext.resourcePack) {
-                      project.defaultResourcePackUniqueId = manifest.header.uuid;
-                      project.defaultResourcePackVersion = manifest.header.version;
-                      project.defaultResourcePackFolder = folder;
-                      project.resourcePacksContainer = parentFolder;
-                      project.ensurePackByFolder(folder, PackType.resource);
-                    }
-                  }
-
-                  if (manifest.modules) {
-                    for (let i = 0; i < manifest.modules.length; i++) {
-                      const mod = manifest.modules[i];
-
-                      if (mod.type === "script") {
-                        project.defaultScriptModuleUniqueId = mod.uuid;
-                      }
-                    }
-                  }
-
-                  if (manifest.header.description !== undefined) {
-                    project.description = manifest.header.description;
-                  }
-
-                  if (manifest.header.name !== undefined) {
-                    project.title = manifest.header.name;
-                  }
-
-                  if (
-                    manifest.header.version !== undefined &&
-                    manifest.header.version.length === 3 &&
-                    folderContext === FolderContext.behaviorPack
-                  ) {
-                    project.versionMajor = manifest.header.version[0];
-                    project.versionMinor = manifest.header.version[1];
-                    project.versionPatch = manifest.header.version[2];
-                  }
-                } catch (e) {}
-              }
-
               let newPiType = ProjectItemType.unknown;
               let tag = "";
 
@@ -291,6 +238,9 @@ export default class ProjectItemInference {
               } else if (folderContext === FolderContext.resourcePack) {
                 newPiType = ProjectItemType.resourcePackManifestJson;
                 tag = "resourcepackmanifest";
+              } else if (folderContext === FolderContext.designPack) {
+                newPiType = ProjectItemType.designPackManifestJson;
+                tag = "designpackmanifest";
               } else if (folderContext === FolderContext.skinPack) {
                 newPiType = ProjectItemType.skinPackManifestJson;
                 tag = "skinpackmanifest";
@@ -300,6 +250,124 @@ export default class ProjectItemInference {
               } else if (folderContext === FolderContext.world) {
                 newPiType = ProjectItemType.worldTemplateManifestJson;
                 tag = "worldtemplatemanifest";
+              }
+
+              if (
+                candidateFile.content !== undefined &&
+                candidateFile.content !== "" &&
+                !variantLabel &&
+                typeof candidateFile.content === "string"
+              ) {
+                if (newPiType === ProjectItemType.behaviorPackManifestJson) {
+                  const bpManifest = await BehaviorManifestDefinition.ensureOnFile(candidateFile);
+                  if (bpManifest && bpManifest.id) {
+                    project.defaultBehaviorPackUniqueId = bpManifest.id;
+
+                    if (bpManifest.name) {
+                      project.title = bpManifest.name;
+                    }
+
+                    if (bpManifest.description) {
+                      project.description = bpManifest.description;
+                    }
+
+                    if (bpManifest.version) {
+                      project.defaultBehaviorPackVersion = bpManifest.version;
+
+                      if (bpManifest.version !== undefined && bpManifest.version.length === 3) {
+                        project.versionMajor = bpManifest.version[0];
+                        project.versionMinor = bpManifest.version[1];
+                        project.versionPatch = bpManifest.version[2];
+                      }
+                    }
+                    project.defaultBehaviorPackFolder = folder;
+                    project.behaviorPacksContainer = parentFolder;
+
+                    const scriptModuleId = bpManifest.getScriptModule()?.uuid;
+                    if (scriptModuleId) {
+                      project.defaultScriptModuleUniqueId = scriptModuleId;
+                    }
+
+                    project.ensurePackByFolder(folder, PackType.behavior);
+                  }
+                } else if (newPiType === ProjectItemType.resourcePackManifestJson) {
+                  const rpManifest = await ResourceManifestDefinition.ensureOnFile(candidateFile);
+                  if (rpManifest && rpManifest.id) {
+                    project.defaultResourcePackUniqueId = rpManifest.id;
+
+                    if (rpManifest.name) {
+                      project.title = rpManifest.name;
+                    }
+
+                    if (rpManifest.description) {
+                      project.description = rpManifest.description;
+                    }
+
+                    if (rpManifest.version) {
+                      project.defaultResourcePackVersion = rpManifest.version;
+
+                      if (rpManifest.version !== undefined && rpManifest.version.length === 3) {
+                        project.versionMajor = rpManifest.version[0];
+                        project.versionMinor = rpManifest.version[1];
+                        project.versionPatch = rpManifest.version[2];
+                      }
+                    }
+                    project.defaultResourcePackFolder = folder;
+                    project.resourcePacksContainer = parentFolder;
+
+                    const subpacks = rpManifest.subpacks;
+
+                    if (subpacks) {
+                      for (const subpack of subpacks) {
+                        if (subpack.folder_name) {
+                          const pv = project.ensureVariant(subpack.folder_name);
+
+                          if (subpack.memory_tier) {
+                            pv.memoryTier = subpack.memory_tier;
+                          }
+
+                          if (subpack.name) {
+                            pv.title = subpack.name;
+                          }
+                        }
+                      }
+                    }
+
+                    project.ensurePackByFolder(folder, PackType.resource);
+                  }
+                } else if (newPiType === ProjectItemType.skinPackManifestJson) {
+                  const spManifest = await SkinManifestDefinition.ensureOnFile(candidateFile);
+                  if (spManifest) {
+                    if (spManifest.name) {
+                      project.title = spManifest.name;
+                    }
+
+                    if (spManifest.description) {
+                      project.description = spManifest.description;
+                    }
+
+                    project.defaultSkinPackFolder = folder;
+                    project.skinPacksContainer = parentFolder;
+
+                    project.ensurePackByFolder(folder, PackType.skin);
+                  }
+                } else if (newPiType === ProjectItemType.designPackManifestJson) {
+                  const dpManifest = await DesignManifestDefinition.ensureOnFile(candidateFile);
+                  if (dpManifest) {
+                    if (dpManifest.name) {
+                      project.title = dpManifest.name;
+                    }
+
+                    if (dpManifest.description) {
+                      project.description = dpManifest.description;
+                    }
+
+                    project.defaultDesignPackFolder = folder;
+                    project.designPacksContainer = parentFolder;
+
+                    project.ensurePackByFolder(folder, PackType.design);
+                  }
+                }
               }
 
               // Log.assert(newPiType !== ProjectItemType.unknown, "Unknown manifest.json file found.");
@@ -663,6 +731,7 @@ export default class ProjectItemInference {
               fileExtension === "png" ||
               fileExtension === "jpg" ||
               fileExtension === "gif" ||
+              fileExtension === "psd" ||
               fileExtension === "jpeg" ||
               fileExtension === "tga"
             ) {
@@ -674,10 +743,12 @@ export default class ProjectItemInference {
                 imageType = ProjectItemType.storeAssetImage;
               } else if (folderPathLower.indexOf("/textures/ui/") >= 0) {
                 imageType = ProjectItemType.uiTexture;
-              } else if (baseName === "pack_icon" || folder.files["manifest.json"]) {
-                imageType = ProjectItemType.iconImage;
-              } else if (folderPathLower.indexOf("/textures/") >= 0) {
+              } else if (folderPathLower.indexOf("/design_textures/") >= 0) {
+                imageType = ProjectItemType.designTexture;
+              } else if (folderPathLower.indexOf("/textures/") >= 0 || folderContext === FolderContext.skinPack) {
                 imageType = ProjectItemType.texture;
+              } else if (baseName === "pack_icon" || folder.files["manifest.json"]) {
+                imageType = ProjectItemType.packIconImage;
               }
 
               project.ensureItemByProjectPath(
@@ -692,7 +763,12 @@ export default class ProjectItemInference {
                 undefined,
                 isInWorld
               );
-            } else if (fileExtension === "ogg" || fileExtension === "mp3" || fileExtension === "wav") {
+            } else if (
+              fileExtension === "ogg" ||
+              fileExtension === "flac" ||
+              fileExtension === "mp3" ||
+              fileExtension === "wav"
+            ) {
               project.ensureItemByProjectPath(
                 projectPath,
                 ProjectItemStorageType.singleFile,
@@ -732,7 +808,7 @@ export default class ProjectItemInference {
                 isInWorld
               );
             } else if (fileExtension === "json") {
-              let newJsonType = ProjectItemType.json;
+              let newJsonType = ProjectItemType.unknownJson;
               let itemName = candidateFile.name;
 
               if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/loot_tables/") >= 0) {
@@ -776,7 +852,9 @@ export default class ProjectItemInference {
               } else if (isResourcePack && folderPathLower.indexOf("/color_grading/") >= 0) {
                 newJsonType = ProjectItemType.colorGradingJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/cameras/") >= 0) {
-                newJsonType = ProjectItemType.cameraJson;
+                newJsonType = ProjectItemType.cameraBehaviorJson;
+              } else if (folderContext === FolderContext.resourcePack && folderPathLower.indexOf("/cameras/") >= 0) {
+                newJsonType = ProjectItemType.cameraResourceJson;
               } else if (folderContext === FolderContext.behaviorPack && folderPathLower.indexOf("/trading/") >= 0) {
                 newJsonType = ProjectItemType.tradingBehaviorJson;
               } else if (
@@ -902,9 +980,11 @@ export default class ProjectItemInference {
               } else if (folderContext === FolderContext.docs && baseName === "example_files") {
                 newJsonType = ProjectItemType.fileListArrayJson;
               } else if (isResourcePack && baseName === "biomes_client") {
-                newJsonType = ProjectItemType.biomeResourceJson;
+                newJsonType = ProjectItemType.biomesClientResource;
+              } else if (isResourcePack && folderPathLower.indexOf("/biomes/") >= 0) {
+                newJsonType = ProjectItemType.biomeResource;
               } else if (folderPathLower.indexOf("/biomes/") >= 0) {
-                newJsonType = ProjectItemType.biomeBehaviorJson;
+                newJsonType = ProjectItemType.biomeBehavior;
               } else if (isResourcePack && baseName === "blocks") {
                 newJsonType = ProjectItemType.blocksCatalogResourceJson;
               } else if (
@@ -942,6 +1022,28 @@ export default class ProjectItemInference {
                 newJsonType = ProjectItemType.packageLockJson;
               } else if (baseName === ".prettierrc") {
                 newJsonType = ProjectItemType.prettierRcJson;
+              } else if (folderPathLower.indexOf("/persona/") >= 0) {
+                newJsonType = ProjectItemType.personaJson;
+              } else if (folderPathLower.indexOf("/sdl_layouts/") >= 0) {
+                newJsonType = ProjectItemType.sdlLayout;
+              } else if (folderPathLower.indexOf("/renderer/") >= 0) {
+                newJsonType = ProjectItemType.rendererJson;
+              } else if (folderPathLower.indexOf("/sdl_layouts/") >= 0) {
+                newJsonType = ProjectItemType.sdlLayout;
+              } else if (baseName === "splashes") {
+                newJsonType = ProjectItemType.splashesJson;
+              } else if (baseName === "loading_messages") {
+                newJsonType = ProjectItemType.loadingMessagesJson;
+              } else if (isResourcePack && baseName === "font_metadata") {
+                newJsonType = ProjectItemType.fontMetadataJson;
+              } else if (isResourcePack && baseName === "emoticons") {
+                newJsonType = ProjectItemType.emoticonsJson;
+              } else if (folderContext === FolderContext.skinPack && baseName === "geometry") {
+                newJsonType = ProjectItemType.skinPackGeometryJson;
+              } else if (baseName === "texture_backwards_compatibility_mapping") {
+                newJsonType = ProjectItemType.skinPackTextureBackCompatJson;
+              } else if (baseName === "uniforms") {
+                newJsonType = ProjectItemType.uniformsJson;
               } else if (folderContext === FolderContext.docs && baseName === "info") {
                 newJsonType = ProjectItemType.docInfoJson;
                 project.role = ProjectRole.documentation;
@@ -1037,8 +1139,14 @@ export default class ProjectItemInference {
           project.distBuildFolder = folder;
         } else if (name === "lib") {
           project.libFolder = folder;
+        } else if (name === "project_item_data" && folderContext === FolderContext.designPack) {
+          if (!project.projectItemAccessoryFolder) {
+            project.projectItemAccessoryFolder = folder;
+          }
         } else if (
-          (name.startsWith(".mct") || name.startsWith(".vscode") || !name.startsWith(".")) &&
+          (name.startsWith(".mct") || name.startsWith(".vscode") || !name.startsWith(".")) && // disallow any "." folders, except for .mct or .vscode
+          name !== "project_item_data" &&
+          name !== "node_modules" &&
           !childFolder.canIgnore &&
           (folderContext !== FolderContext.unknown || depth < 4) &&
           depth < 10

@@ -167,6 +167,8 @@ export default class MinecraftEventTriggerEditor extends Component<
             <EventActionDesign
               carto={this.props.carto}
               readOnly={this.props.readOnly}
+              displayAddRemoveGroups={true}
+              displayHelperText={true}
               theme={this.props.theme}
               displayTriggers={false}
               project={this.props.project}

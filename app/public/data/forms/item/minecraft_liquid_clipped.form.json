@@ -9,5 +9,6 @@
   ],
   "scalarFieldUpgradeName": "value",
   "description": "The liquid_clipped component determines whether the item interacts with liquid blocks on use.",
-  "title": "Liquid Clipped"
+  "title": "Liquid Clipped",
+  "id": "minecraft:liquid_clipped"
 }

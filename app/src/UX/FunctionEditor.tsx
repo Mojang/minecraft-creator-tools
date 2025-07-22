@@ -20,6 +20,7 @@ interface IFunctionEditorProps {
   theme: ThemeInput<any>;
   isCommandEditor: boolean;
   initialContent?: string;
+  content?: string;
   singleCommandMode?: boolean;
   roleId?: string;
   setActivePersistable?: (persistObject: IPersistable) => void;
@@ -56,7 +57,7 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
 
     this.state = {
       fileToEdit: props.file,
-      content: props.initialContent,
+      content: props.initialContent ? props.initialContent : props.content,
     };
   }
 
@@ -68,11 +69,16 @@ export default class FunctionEditor extends Component<IFunctionEditorProps, IFun
 
       return state;
     }
+
     if (props.file !== state.fileToEdit) {
       state.fileToEdit = props.file;
       return state;
     }
 
+    if (props.content !== undefined && props.content !== state.content) {
+      state.content = props.content;
+      return state;
+    }
     return null; // No change to state
   }
 

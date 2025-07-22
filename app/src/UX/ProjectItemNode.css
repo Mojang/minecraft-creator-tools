@@ -1,0 +1,21 @@
+.pino-outer {
+  width: 180px;
+  height: 56px;
+}
+
+.pino-type {
+  font-size: x-small;
+  padding-left: 4px;
+  padding-top: 1px;
+  padding-bottom: 2px;
+}
+
+.pino-name {
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-bottom: 4px;
+}
+
+.pino-inner-selected {
+  border: solid 2px green;
+}
