@@ -33,6 +33,7 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
 
     let path = file.storageRelativePath;
     let pathSub = path;
+
     pathSub = pathSub.replace("/Content/", "/content/");
     pathSub = pathSub.replace("/Marketing Art/", "/marketing art/");
     pathSub = pathSub.replace("/Store Art/", "/store art/");
@@ -44,6 +45,12 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
 
       if (packsIndex >= 0) {
         pathSub = pathSub.substring(packsIndex);
+      }
+    } else {
+      // else, try to find the first subfolder after the second slash
+      packsIndex = pathSub.indexOf("/", 2);
+      if (packsIndex >= 0) {
+        pathSub = pathSub.substring(packsIndex + 1);
       }
     }
 
