@@ -38,6 +38,15 @@ export default class PathLengthFileGenerator implements IProjectFileInfoGenerato
     pathSub = pathSub.replace("/Marketing Art/", "/marketing art/");
     pathSub = pathSub.replace("/Store Art/", "/store art/");
 
+    // we don't want to check the marketing art or store art folders, as they are not part of the content
+    if (pathSub.indexOf("/marketing art/") >= 0 || pathSub.indexOf("/store art/") >= 0) {
+      return items;
+    }
+
+    if (pathSub.startsWith("/content/")) {
+      pathSub = pathSub.substring(9);
+    }
+
     let packsIndex = pathSub.indexOf("_packs/");
 
     if (packsIndex > 0) {
