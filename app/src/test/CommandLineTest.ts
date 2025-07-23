@@ -17,6 +17,7 @@ import IFile from "../storage/IFile";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
 import ProjectUtilities from "../app/ProjectUtilities";
+import { ensureReportJsonMatchesScenario, folderMatches } from "./TestUtilities";
 
 CartoApp.hostType = HostType.testLocal;
 
@@ -95,8 +96,6 @@ localEnv = new LocalEnvironment(false);
   }
 
   await carto.load();
-
-  run();
 })();
 
 function _ensureLocalFolder(path: string) {
@@ -184,7 +183,7 @@ describe("worldCommand", async () => {
   }).timeout(10000);
 
   it("output matches", async () => {
-    await folderMatches("worldCommand");
+    await folderMatches(scenariosFolder, resultsFolder, "worldCommand");
   });
 });
 
@@ -238,7 +237,7 @@ describe("serveCommandValidate", async () => {
                 method: "POST",
               })
               .then((response: AxiosResponse) => {
-                ensureReportJsonMatchesScenario(response.data, "serveCommandValidate");
+                ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, response.data, "serveCommandValidate");
 
                 if (response === undefined) {
                   throw new Error("Could not connect to server.");
@@ -274,7 +273,7 @@ describe("serveCommandValidate", async () => {
   }).timeout(10000);
 
   it("output matches", async () => {
-    await folderMatches("serveCommandValidate");
+    await folderMatches(scenariosFolder, resultsFolder, "serveCommandValidate");
   });
 
   after(function () {
@@ -336,7 +335,12 @@ describe("serveCommandValidateAddon", async () => {
                 method: "POST",
               })
               .then((response: AxiosResponse) => {
-                ensureReportJsonMatchesScenario(response.data, "serveCommandValidateAddon");
+                ensureReportJsonMatchesScenario(
+                  scenariosFolder,
+                  resultsFolder,
+                  response.data,
+                  "serveCommandValidateAddon"
+                );
 
                 if (response === undefined) {
                   throw new Error("Could not connect to server.");
@@ -372,7 +376,7 @@ describe("serveCommandValidateAddon", async () => {
   }).timeout(10000);
 
   it("output matches", async () => {
-    await folderMatches("serveCommandValidateAddon");
+    await folderMatches(scenariosFolder, resultsFolder, "serveCommandValidateAddon");
   });
 
   after(function () {
@@ -434,7 +438,12 @@ describe("serveCommandValidateAdvanced", async () => {
                 method: "POST",
               })
               .then((response: AxiosResponse) => {
-                ensureReportJsonMatchesScenario(response.data, "serveCommandValidateAdvanced");
+                ensureReportJsonMatchesScenario(
+                  scenariosFolder,
+                  resultsFolder,
+                  response.data,
+                  "serveCommandValidateAdvanced"
+                );
 
                 if (response === undefined) {
                   throw new Error("Could not connect to server.");
@@ -470,7 +479,7 @@ describe("serveCommandValidateAdvanced", async () => {
   }).timeout(10000);
 
   it("output matches", async () => {
-    await folderMatches("serveCommandValidateAdvanced");
+    await folderMatches(scenariosFolder, resultsFolder, "serveCommandValidateAdvanced");
   });
 
   after(function () {
@@ -569,7 +578,7 @@ describe("createCommandAddonStarter", async () => {
   }).timeout(10000);
 
   it("output matches", async () => {
-    await folderMatches("createCommandAddonStarter", ["manifest.json"]);
+    await folderMatches(scenariosFolder, resultsFolder, "createCommandAddonStarter", ["manifest.json"]);
   });
 });
 
@@ -645,7 +654,7 @@ describe("addLootTable", async () => {
   }).timeout(10000);
 
   it("output matches", async () => {
-    await folderMatches("createCommandAddonStarter", ["manifest.json"]);
+    await folderMatches(scenariosFolder, resultsFolder, "createCommandAddonStarter", ["manifest.json"]);
   });
 });
 
@@ -689,7 +698,7 @@ describe("validateAddons1WellFormedCommand", async () => {
   }).timeout(10000);
 
   it("output matches", async function () {
-    await folderMatches("validateAddons1WellFormedCommand");
+    await folderMatches(scenariosFolder, resultsFolder, "validateAddons1WellFormedCommand");
   }).timeout(10000);
 });
 
@@ -733,7 +742,7 @@ describe("validateAddons2AnimationManifestErrorsCommand", async () => {
   }).timeout(10000);
 
   it("output matches", async function () {
-    await folderMatches("validateAddons2AnimationManifestErrorsCommand");
+    await folderMatches(scenariosFolder, resultsFolder, "validateAddons2AnimationManifestErrorsCommand");
   }).timeout(10000);
 });
 
@@ -777,7 +786,7 @@ describe("validateAddons3ExtraneousStuffUsesMinecraftCommand", async () => {
   }).timeout(10000);
 
   it("output matches", async function () {
-    await folderMatches("validateAddons3ExtraneousStuffUsesMinecraftCommand");
+    await folderMatches(scenariosFolder, resultsFolder, "validateAddons3ExtraneousStuffUsesMinecraftCommand");
   });
 });
 
@@ -821,7 +830,7 @@ describe("validateAddons3PlatformVersions", async () => {
   }).timeout(10000);
 
   it("output matches", async function () {
-    await folderMatches("validateAddons3PlatformVersions");
+    await folderMatches(scenariosFolder, resultsFolder, "validateAddons3PlatformVersions");
   });
 });
 
@@ -863,7 +872,7 @@ describe("deployCommand", async () => {
   });
 
   it("output matches", async () => {
-    await folderMatches("deployCommand");
+    await folderMatches(scenariosFolder, resultsFolder, "deployCommand");
   });
 });
 
@@ -907,7 +916,7 @@ describe("validateLinkErrors", async () => {
   }).timeout(10000);
 
   it("output matches", async function () {
-    await folderMatches("validateLinkErrors");
+    await folderMatches(scenariosFolder, resultsFolder, "validateLinkErrors");
   });
 });
 
@@ -951,7 +960,7 @@ describe("validateVibrantVisuals", async () => {
   }).timeout(10000);
 
   it("output matches", async function () {
-    await folderMatches("validateVibrantVisuals");
+    await folderMatches(scenariosFolder, resultsFolder, "validateVibrantVisuals");
   });
 });
 
@@ -995,7 +1004,7 @@ describe("validateComprehensiveContent", async () => {
   }).timeout(10000);
 
   it("output matches", async function () {
-    await folderMatches("validateComprehensiveContent");
+    await folderMatches(scenariosFolder, resultsFolder, "validateComprehensiveContent");
   });
 });
 
@@ -1039,7 +1048,7 @@ describe("validateBehaviorPackOnly", async () => {
   }).timeout(10000);
 
   it("output matches", async function () {
-    await folderMatches("validateBehaviorPackOnly");
+    await folderMatches(scenariosFolder, resultsFolder, "validateBehaviorPackOnly");
   });
 });
 
@@ -1083,7 +1092,7 @@ describe("validateResourcePackOnly", async () => {
   }).timeout(10000);
 
   it("output matches", async function () {
-    await folderMatches("validateResourcePackOnly");
+    await folderMatches(scenariosFolder, resultsFolder, "validateResourcePackOnly");
   });
 });
 
@@ -1100,67 +1109,6 @@ async function collectLines(readable: Readable, data: string[]) {
       }
     }
   }
-}
-
-async function folderMatches(scenarioName: string, excludeFileList?: string[]) {
-  if (!scenariosFolder || !resultsFolder) {
-    assert.fail("Not properly initialized");
-  }
-
-  const scenarioOutFolder = resultsFolder.ensureFolder(scenarioName);
-  await scenarioOutFolder.ensureExists();
-
-  const scenarioFolder = scenariosFolder.ensureFolder(scenarioName);
-
-  const isEqual = await StorageUtilities.folderContentsEqual(scenarioFolder, scenarioOutFolder, excludeFileList, true, [
-    "generatorVersion",
-    "uuid",
-    "version",
-  ]);
-
-  assert(
-    isEqual.result,
-    "Folder '" + scenarioFolder.fullPath + "' does not match for scenario '" + scenarioName + "', " + isEqual.reason
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function ensureReportJsonMatchesScenario(obj: object, scenarioName: string) {
-  if (!scenariosFolder || !resultsFolder) {
-    assert.fail("Not properly initialized");
-  }
-
-  const dataObjectStr = JSON.stringify(obj, null, 2);
-
-  const resultOutFolder = resultsFolder.ensureFolder(scenarioName);
-  await resultOutFolder.ensureExists();
-
-  const outFile = resultOutFolder.ensureFile("report.json");
-  outFile.setContent(dataObjectStr);
-  await outFile.saveContent();
-
-  const scenarioFile = scenariosFolder.ensureFolder(scenarioName).ensureFile("report.json");
-
-  const exists = await scenarioFile.exists();
-
-  assert(
-    dataObjectStr.indexOf('"internalProcessingErrorSummary": ""') >= 0 ||
-      dataObjectStr.indexOf('"internalProcessingErrorSummary"') < 0,
-    "report.json file contains internal processing errors for scenario '" + scenarioName + "'"
-  );
-
-  assert(exists, "report.json file for scenario '" + scenarioName + "' does not exist.");
-
-  const isEqual = await StorageUtilities.fileContentsEqual(scenarioFile, outFile, true, [
-    "generatorVersion",
-    "uuid",
-    "version",
-  ]);
-
-  assert(
-    isEqual,
-    "report.json file '" + scenarioFile.fullPath + "' does not match for scenario '" + scenarioName + "'"
-  );
 }
 
 describe("spawnRulesDependency validate", async () => {

@@ -70,8 +70,8 @@
     "corebuild": "npm run-script jsnbuild",
     "preparedevenvandjsnbuild": "npm run-script preparedevenv && npm run-script jsnbuild && npm run-script process",
     "updateversionsandbuild": "npx gulp updateversions && npm run-script webbuild && npm run-script jsnbuild && npm run-script process && npx gulp customizesite",
-    "test": "ts-mocha -delay -p tsconfig.test.json src/test/**/*.ts",
-    "test-ci": "ts-mocha -delay -p tsconfig.test.json src/test/**/*.ts --reporter json > test/test-results.json",
+    "test": "ts-mocha -p tsconfig.test.json src/test/**/*.ts",
+    "test-ci": "ts-mocha -p tsconfig.test.json src/test/**/*.ts --reporter json > test/test-results.json",
     "eject": "react-scripts eject"
   },
   "bin": {

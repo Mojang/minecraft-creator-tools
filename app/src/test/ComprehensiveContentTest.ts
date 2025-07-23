@@ -5,16 +5,14 @@ import { expect, assert } from "chai";
 import Carto from "../app/Carto";
 import Project, { ProjectAutoDeploymentMode } from "../app/Project";
 import CartoApp, { HostType } from "../app/CartoApp";
-import Status from "../app/Status";
 import NodeStorage from "../local/NodeStorage";
 import Database from "../minecraft/Database";
 import LocalEnvironment from "../local/LocalEnvironment";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { ProjectInfoSuite } from "../info/IProjectInfoData";
 import IFolder from "../storage/IFolder";
-import StorageUtilities from "../storage/StorageUtilities";
 import { ProjectItemType } from "../app/IProjectItemData";
-import ProjectItem from "../app/ProjectItem";
+import { ensureReportJsonMatchesScenario } from "./TestUtilities";
 
 CartoApp.hostType = HostType.testLocal;
 
@@ -84,8 +82,6 @@ localEnv = new LocalEnvironment(false);
 
   Database.local = localEnv.utilities;
   carto.local = localEnv.utilities;
-
-  run();
 })();
 
 function _ensureLocalFolder(path: string) {
@@ -109,31 +105,6 @@ async function _loadProject(name: string) {
 
   await project.inferProjectItemsFromFiles();
   return project;
-}
-
-async function ensureJsonMatchesScenario(obj: object, scenarioName: string) {
-  if (!scenariosFolder || !resultsFolder) {
-    assert.fail("Not properly initialized");
-  }
-
-  const dataObjectStr = JSON.stringify(obj, null, 2);
-  const scenarioOutFolder = resultsFolder.ensureFolder(scenarioName);
-  await scenarioOutFolder.ensureExists();
-
-  const outFile = scenarioOutFolder.ensureFile("report.json");
-  outFile.setContent(dataObjectStr);
-  await outFile.saveContent();
-
-  const scenarioFile = scenariosFolder.ensureFolder(scenarioName).ensureFile("report.json");
-  const exists = await scenarioFile.exists();
-
-  assert(exists, "report.json file for scenario '" + scenarioName + "' does not exist.");
-
-  const isEqual = await StorageUtilities.fileContentsEqual(scenarioFile, outFile, true, ["generatorVersion"]);
-  assert(
-    isEqual,
-    "report.json file '" + scenarioFile.fullPath + "' does not match for scenario '" + scenarioName + "'"
-  );
 }
 
 describe("Comprehensive Content Types", async () => {
@@ -329,7 +300,7 @@ describe("Comprehensive Content Types", async () => {
     await pis.generateForProject();
 
     const dataObject = pis.getDataObject();
-    await ensureJsonMatchesScenario(dataObject, "comprehensive");
+    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "comprehensive");
   });
 });
 

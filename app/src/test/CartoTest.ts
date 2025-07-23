@@ -21,6 +21,7 @@ import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType, ProjectItemStorageType } from "../app/IProjectItemData";
 import ProjectUtilities from "../app/ProjectUtilities";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
+import { ensureReportJsonMatchesScenario, folderMatches } from "./TestUtilities";
 
 CartoApp.hostType = HostType.testLocal;
 
@@ -98,8 +99,6 @@ localEnv = new LocalEnvironment(false);
   carto.local = localEnv.utilities;
 
   carto.onStatusAdded.subscribe(handleStatusAdded);
-
-  run();
 })();
 
 function handleStatusAdded(carto: Carto, status: Status) {
@@ -170,7 +169,7 @@ describe("simple", async () => {
 
     const dataObject = pis.getDataObject();
 
-    await ensureJsonMatchesScenario(dataObject, "simple");
+    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "simple");
   });
 });
 
@@ -205,7 +204,7 @@ describe("deployJs", async () => {
 
     await ProjectExporter.deployProjectAndGeneratedWorldTo(carto, project, worldSettings, resultsOutFolder);
 
-    await folderMatches("deployJs", ["level.dat", "level.dat_old"]);
+    await folderMatches(scenariosFolder, resultsFolder, "deployJs", ["level.dat", "level.dat_old"]);
   });
 });
 
@@ -257,58 +256,6 @@ describe("Project utility methods", () => {
     }
   });
 });
-
-async function folderMatches(scenarioName: string, excludeList?: string[]) {
-  if (!scenariosFolder || !resultsFolder) {
-    assert.fail("Not properly initialized");
-  }
-
-  const scenarioOutFolder = resultsFolder.ensureFolder(scenarioName);
-  await scenarioOutFolder.ensureExists();
-
-  const scenarioFolder = scenariosFolder.ensureFolder(scenarioName);
-
-  const isEqual = await StorageUtilities.folderContentsEqual(scenarioFolder, scenarioOutFolder, excludeList, true, [
-    '"uuid":',
-    '"pack_id":',
-    '"version":',
-    "generator_version",
-    "generatorVersion",
-  ]);
-
-  assert(
-    isEqual.result,
-    "Folder '" + scenarioFolder.fullPath + "' does not match for scenario '" + scenarioName + "'. " + isEqual.reason
-  );
-}
-
-async function ensureJsonMatchesScenario(obj: object, scenarioName: string) {
-  if (!scenariosFolder || !resultsFolder) {
-    assert.fail("Not properly initialized");
-  }
-
-  const dataObjectStr = JSON.stringify(obj, null, 2);
-
-  const scenarioOutFolder = resultsFolder.ensureFolder(scenarioName);
-  await scenarioOutFolder.ensureExists();
-
-  const outFile = scenarioOutFolder.ensureFile("report.json");
-  outFile.setContent(dataObjectStr);
-  await outFile.saveContent();
-
-  const scenarioFile = scenariosFolder.ensureFolder(scenarioName).ensureFile("report.json");
-
-  const exists = await scenarioFile.exists();
-
-  assert(exists, "report.json file for scenario '" + scenarioName + "' does not exist.");
-
-  const isEqual = await StorageUtilities.fileContentsEqual(scenarioFile, outFile, true, ["generatorVersion"]);
-
-  assert(
-    isEqual,
-    "report.json file '" + scenarioFile.fullPath + "' does not match for scenario '" + scenarioName + "'"
-  );
-}
 
 describe("spawnRulesDependency", async () => {
   let project: Project;
