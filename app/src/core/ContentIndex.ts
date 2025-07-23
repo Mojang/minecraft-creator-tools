@@ -420,6 +420,21 @@ export default class ContentIndex implements IContentIndex {
     let curNode: any = this.#data.trie;
 
     let hasAdvanced = true;
+
+    let pathMatches: number[] | undefined = undefined;
+
+    let i = 0;
+    for (const item of this.#data.items) {
+      if (item.indexOf(term) >= 0) {
+        if (!pathMatches) {
+          pathMatches = [];
+        }
+        pathMatches.push(i);
+      }
+
+      i++;
+    }
+
     while (termIndex < term.length && hasAdvanced) {
       hasAdvanced = false;
       if (curNode.constructor === Array) {
@@ -460,16 +475,60 @@ export default class ContentIndex implements IContentIndex {
     }
 
     if (curNode.constructor === Array) {
+      if (pathMatches) {
+        return ContentIndex.mergeResults(curNode, pathMatches);
+      }
       return curNode;
     } else if (curNode["±"] !== undefined) {
+      if (pathMatches) {
+        return ContentIndex.mergeResults(curNode["±"], pathMatches);
+      }
       return curNode["±"];
     } else {
       const arr: number[] = [];
 
       this.aggregateIndices(curNode, arr);
 
+      if (pathMatches) {
+        return ContentIndex.mergeResults(arr, pathMatches);
+      }
+
       return arr;
     }
+  }
+
+  static mergeResults(resultsArrA: (IAnnotatedValue | number)[], resultsArrB: (IAnnotatedValue | number)[]) {
+    const results: (IAnnotatedValue | number)[] = [];
+
+    for (const item of resultsArrA) {
+      if (typeof item === "object") {
+        if (
+          !results.some(
+            (res) => typeof res === "object" && res.value === item.value && res.annotation === item.annotation
+          )
+        ) {
+          results.push(item);
+        }
+      } else if (!results.includes(item)) {
+        results.push(item);
+      }
+    }
+
+    for (const item of resultsArrB) {
+      if (typeof item === "object") {
+        if (
+          !results.some(
+            (res) => typeof res === "object" && res.value === item.value && res.annotation === item.annotation
+          )
+        ) {
+          results.push(item);
+        }
+      } else if (!results.includes(item)) {
+        results.push(item);
+      }
+    }
+
+    return results;
   }
 
   aggregateIndices(curNode: any, arr: number[]) {

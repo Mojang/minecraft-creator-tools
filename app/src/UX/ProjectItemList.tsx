@@ -352,7 +352,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       return;
     }
 
-    // this is suboptimal, but based on the ordering of events it doesn't seem striaghtforward
+    // this is suboptimal, but based on the ordering of events it doesn't seem straightforward
     // to have the context menu click event mute the selection event.
     let isContextMenuAreaClick = false;
 
