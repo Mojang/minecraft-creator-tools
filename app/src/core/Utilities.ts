@@ -677,6 +677,22 @@ export default class Utilities {
     return name;
   }
 
+  static lowerCaseStartOfString(name: string) {
+    if (name.length <= 0) {
+      return name;
+    }
+
+    if (name.length <= 1) {
+      return name.toLowerCase();
+    }
+
+    if (name.charAt(1) < "A" || name.charAt(1) > "Z") {
+      return name.charAt(0).toLowerCase() + name.substring(1);
+    }
+
+    return name;
+  }
+
   static dehumanifyMinecraftName(name: string | boolean | number) {
     if (!name || typeof name === "boolean" || typeof name === "number") {
       return name;

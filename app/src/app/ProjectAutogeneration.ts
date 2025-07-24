@@ -14,6 +14,7 @@ import VsCodeExtensionsDefinition from "../devproject/VsCodeExtensionsDefinition
 import VsCodeSettingsDefinition from "../devproject/VsCodeSettingsDefinition";
 import PrettierRcConfig from "../devproject/PrettierRcConfig";
 import JustConfig from "../devproject/JustConfig";
+import NpmPackageDefinition from "../devproject/NpmPackageDefinition";
 
 export default class ProjectAutogeneration {
   static async updateProjectAutogeneration(project: Project) {
@@ -245,6 +246,13 @@ export default class ProjectAutogeneration {
       if (prettierrc) {
         await prettierrc.ensureMinContent();
         await prettierrc.save();
+      }
+    } else if (item.itemType === ProjectItemType.packageJson) {
+      const packageJson = await NpmPackageDefinition.ensureOnFile(item.primaryFile);
+
+      if (packageJson) {
+        await packageJson.ensureMinContent(item.project);
+        await packageJson.save();
       }
     } else if (item.itemType === ProjectItemType.behaviorPackManifestJson) {
       item.primaryFile.setContent(await BehaviorManifestDefinition.getContent(item.project, contentOnlyUpdate));

@@ -1205,7 +1205,7 @@ export default class Project {
     }
   }
 
-  get version(): number[] {
+  get versionAsArray(): number[] {
     let vmj = this.#data.versionMajor;
     if (vmj === undefined) {
       vmj = 0;
@@ -1222,6 +1222,25 @@ export default class Project {
     }
 
     return [vmj, vmi, vmp];
+  }
+
+  get versionAsString(): string {
+    let vmj = this.#data.versionMajor;
+    if (vmj === undefined) {
+      vmj = 0;
+    }
+
+    let vmi = this.#data.versionMinor;
+    if (vmi === undefined) {
+      vmi = 0;
+    }
+
+    let vmp = this.#data.versionPatch;
+    if (vmp === undefined) {
+      vmp = 0;
+    }
+
+    return vmj + "." + vmi + "." + vmp;
   }
 
   get versionMajor(): number | undefined {

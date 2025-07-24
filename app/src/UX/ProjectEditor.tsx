@@ -4244,7 +4244,7 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     let itemList = <></>;
 
-    if (this.state.displayFileView) {
+    if (this.state.displayFileView && this.state.searchFilter === undefined) {
       if (this.props.project.projectFolder) {
         const selectedFile = this.state.activeProjectItem ? this.state.activeProjectItem.primaryFile : undefined;
 

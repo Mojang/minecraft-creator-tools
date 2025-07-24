@@ -249,10 +249,11 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
             descrip += " - No file for variant `" + this.props.activeVariant + "`.";
           }
         } else if (file.isContentLoaded) {
+          descrip = Utilities.lowerCaseStartOfString(descrip);
           if (file.content === null) {
-            descrip = "No default content for " + descrip[0].toLowerCase() + descrip.substring(1);
+            descrip = "No default content for " + descrip;
           } else {
-            descrip = "Loaded " + descrip[0].toLowerCase() + descrip.substring(1);
+            descrip = "Loaded " + descrip;
           }
         }
       }
@@ -314,7 +315,11 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
 
         const formCategoryData = FormMappings["" + projItem.itemType];
 
-        if (file.type === "js" || file.type === "ts" || file.type === "mjs") {
+        if (
+          (file.type === "js" || file.type === "ts" || file.type === "mjs") &&
+          file.name !== "just.config.ts" &&
+          file.name !== "eslint.config.mjs"
+        ) {
           let pref = this.props.project.preferredScriptLanguage;
 
           if (file.type === "ts") {
@@ -602,7 +607,9 @@ export default class ProjectItemEditor extends Component<IProjectItemEditorProps
           file.type === "geometry" ||
           file.type === "vertex" ||
           file.type === "fragment" ||
-          file.type === ".env"
+          file.type === "env" ||
+          file.name === "just.config.ts" ||
+          file.name === "eslint.config.mjs"
         ) {
           interior = (
             <TextEditor

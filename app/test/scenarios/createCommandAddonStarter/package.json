@@ -1,6 +1,6 @@
 {
-  "name": "testerName",
-  "version": "0.1.0",
+  "name": "createCommandAddonStarter",
+  "version": "1.0.0",
   "productName": "Minecraft Add-On Starter Project",
   "description": "testerDescription",
   "private": true,

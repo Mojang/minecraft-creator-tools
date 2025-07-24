@@ -654,7 +654,7 @@ describe("addLootTable", async () => {
   }).timeout(10000);
 
   it("output matches", async () => {
-    await folderMatches(scenariosFolder, resultsFolder, "createCommandAddonStarter", ["manifest.json"]);
+    await folderMatches(scenariosFolder, resultsFolder, "addLootTable", ["manifest.json"]);
   });
 });
 
