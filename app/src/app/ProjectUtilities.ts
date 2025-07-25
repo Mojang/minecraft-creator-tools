@@ -22,7 +22,6 @@ import { IAnnotatedValue } from "../core/AnnotatedValue";
 import ProjectItem from "./ProjectItem";
 import HttpStorage from "../storage/HttpStorage";
 import CartoApp from "./CartoApp";
-import ProjectExporter from "./ProjectExporter";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 import ProjectStandard from "./ProjectStandard";
 import ProjectAutogeneration from "./ProjectAutogeneration";
@@ -32,6 +31,8 @@ import TypeScriptDefinition from "../minecraft/TypeScriptDefinition";
 import { constants } from "../core/Constants";
 import ProjectContent from "./ProjectContent";
 
+export const STANDARD_NAME_TOKEN = "_name_";
+
 export enum NewEntityTypeAddMode {
   baseId,
 }
@@ -40,13 +41,53 @@ export enum NewItemTypeAddMode {
   baseId,
 }
 
+export enum ProjectMetaCategory {
+  mix = 0,
+  worldTemplate = 1,
+  texturePack = 2,
+  addOn = 3,
+  skinPack = 4,
+  persona = 5,
+}
+
 export default class ProjectUtilities {
+  static async ensureContentInDefaultScriptFile(
+    project: Project,
+    signatureToken: string,
+    content: string,
+    placeAtBottom?: boolean
+  ) {
+    const defaultScriptFile = await project.getDefaultScriptsFile();
+
+    if (defaultScriptFile) {
+      await defaultScriptFile.loadContent();
+
+      if (typeof defaultScriptFile.content === "string" && defaultScriptFile.content.length > 0) {
+        if (defaultScriptFile.content.indexOf(signatureToken) < 0) {
+          let newContent = defaultScriptFile.content;
+
+          if (!placeAtBottom) {
+            newContent = content + newContent;
+          } else {
+            newContent = newContent + content;
+          }
+
+          defaultScriptFile.setContent(newContent);
+
+          await defaultScriptFile.saveContent();
+        }
+      }
+    }
+  }
+
   static async getDefaultFolderForPack(project: Project, packType: PackType) {
     if (packType === PackType.behavior) {
       return await project.getDefaultBehaviorPackFolder();
     } else if (packType === PackType.resource) {
       return await project.getDefaultResourcePackFolder();
     } else if (packType === PackType.skin) {
+      return await project.getDefaultSkinPackFolder();
+    } else if (packType === PackType.design) {
       return await project.getDefaultSkinPackFolder();
     }
 
@@ -198,6 +239,45 @@ export default class ProjectUtilities {
         }
       }
     }
+  }
+
+  static hasEntities(project: Project) {
+    const projectItems = project.getItemsCopy();
+
+    for (const projectItem of projectItems) {
+      if (
+        projectItem.itemType === ProjectItemType.entityTypeBehavior ||
+        projectItem.itemType === ProjectItemType.entityTypeResource
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  static hasBlocks(project: Project) {
+    const projectItems = project.getItemsCopy();
+
+    for (const projectItem of projectItems) {
+      if (projectItem.itemType === ProjectItemType.blockTypeBehavior) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  static hasItems(project: Project) {
+    const projectItems = project.getItemsCopy();
+
+    for (const projectItem of projectItems) {
+      if (projectItem.itemType === ProjectItemType.itemTypeBehavior) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   static async hasDocumentationMetadata(folder: IFolder, depth?: number) {
@@ -596,6 +676,28 @@ export default class ProjectUtilities {
 
     return scriptsFolder.getFolderRelativePath(project.projectFolder);
   }
+  static async renameDefaultFolders(project: Project, newTokenName: string) {
+    const bpFolder = await project.getDefaultBehaviorPackFolder(true);
+    const rpFolder = await project.getDefaultResourcePackFolder(true);
+
+    newTokenName = MinecraftUtilities.makeNameFolderSafe(newTokenName);
+
+    if (bpFolder) {
+      try {
+        await bpFolder.rename(newTokenName);
+      } catch (e) {
+        // perhaps folder could not be renamed because a folder exists; continue in this case.
+      }
+    }
+
+    if (rpFolder) {
+      try {
+        await rpFolder.rename(newTokenName);
+      } catch (e) {
+        // perhaps folder could not be renamed because a folder exists; continue in this case.
+      }
+    }
+  }
 
   static async processNewProject(
     project: Project,
@@ -607,7 +709,7 @@ export default class ProjectUtilities {
     await project.inferProjectItemsFromFiles();
 
     if (suggestedShortName) {
-      await ProjectExporter.renameDefaultFolders(project, suggestedShortName);
+      await ProjectUtilities.renameDefaultFolders(project, suggestedShortName);
     }
 
     await ProjectAutogeneration.updateProjectAutogeneration(project);
@@ -714,6 +816,105 @@ export default class ProjectUtilities {
     }
 
     return bpCount === 1 && rpCount === 1;
+  }
+
+  static async getMetaCategory(project: Project) {
+    const itemsCopy = project.getItemsCopy();
+    let rpCount = 0;
+    let bpCount = 0;
+    let spCount = 0;
+    let personaCount = 0;
+    let worldTemplateCount = 0;
+
+    let hasPacksWithAddOnProperties = false;
+    let hasPacksWithoutAddOnProperties = false;
+
+    for (let i = 0; i < itemsCopy.length; i++) {
+      const pi = itemsCopy[i];
+
+      if (!pi.primaryFile) {
+        continue;
+      }
+
+      if (pi.itemType === ProjectItemType.resourcePackManifestJson) {
+        rpCount++;
+        const rpManifestJson = await ResourceManifestDefinition.ensureOnFile(pi.primaryFile);
+
+        if (rpManifestJson) {
+          let hasAddonProperties = rpManifestJson.hasAddonProperties();
+
+          if (hasAddonProperties) {
+            hasPacksWithAddOnProperties = true;
+          } else {
+            hasPacksWithoutAddOnProperties = true;
+          }
+        }
+      } else if (pi.itemType === ProjectItemType.behaviorPackManifestJson) {
+        bpCount++;
+        const bpManifestJson = await BehaviorManifestDefinition.ensureOnFile(pi.primaryFile);
+
+        if (bpManifestJson) {
+          let hasAddonProperties = bpManifestJson.hasAddonProperties();
+
+          if (hasAddonProperties) {
+            hasPacksWithAddOnProperties = true;
+          } else {
+            hasPacksWithoutAddOnProperties = true;
+          }
+        }
+      } else if (pi.itemType === ProjectItemType.skinPackManifestJson) {
+        spCount++;
+      } else if (pi.itemType === ProjectItemType.personaManifestJson) {
+        personaCount++;
+      } else if (pi.itemType === ProjectItemType.worldTemplateManifestJson) {
+        worldTemplateCount++;
+      }
+    }
+
+    if (personaCount > 0) {
+      return ProjectMetaCategory.persona;
+    }
+
+    if (worldTemplateCount > 0) {
+      return ProjectMetaCategory.worldTemplate;
+    }
+
+    if (
+      bpCount === 1 &&
+      rpCount === 1 &&
+      spCount === 0 &&
+      !hasPacksWithoutAddOnProperties &&
+      hasPacksWithAddOnProperties
+    ) {
+      return ProjectMetaCategory.addOn;
+    }
+
+    if (bpCount === 0 && rpCount >= 1 && !hasPacksWithAddOnProperties) {
+      return ProjectMetaCategory.texturePack;
+    }
+
+    if (spCount >= 0) {
+      return ProjectMetaCategory.skinPack;
+    }
+
+    return ProjectMetaCategory.mix;
+  }
+
+  static getMetaCategoryDescription(category: ProjectMetaCategory) {
+    switch (category) {
+      case ProjectMetaCategory.addOn:
+        return "Add-On";
+      case ProjectMetaCategory.worldTemplate:
+        return "World Template";
+      case ProjectMetaCategory.texturePack:
+        return "Texture Pack";
+      case ProjectMetaCategory.skinPack:
+        return "Skin Pack";
+      case ProjectMetaCategory.persona:
+        return "Persona";
+      default:
+        return "Mix";
+    }
   }
 
   static async setIsAddon(project: Project) {
@@ -836,10 +1037,79 @@ export default class ProjectUtilities {
     await project.save();
   }
 
+  static getReplacedCreationData(project: Project, galleryItem: IGalleryItem, newName: string) {
+    if (galleryItem.creationData === undefined) {
+      return undefined;
+    }
+
+    try {
+      let creationDataStr = JSON.stringify(galleryItem.creationData);
+
+      creationDataStr = this.replaceNamesInContent(creationDataStr, project, galleryItem, newName, []);
+
+      return JSON.parse(creationDataStr);
+    } catch (e) {
+      return galleryItem.creationData;
+    }
+  }
+
+  static getReplacedCreationDataInObject(project: Project, creationObject: object, newName: string) {
+    if (creationObject === undefined) {
+      return undefined;
+    }
+
+    try {
+      let creationDataStr = JSON.stringify(creationObject);
+
+      creationDataStr = this.replaceNamesInContentFromReplacers(
+        creationDataStr,
+        project,
+        [STANDARD_NAME_TOKEN],
+        newName,
+        []
+      );
+
+      return JSON.parse(creationDataStr);
+    } catch (e) {
+      return creationObject;
+    }
+  }
+
+  static sanitizeProjectName(name: string) {
+    const lastDash = name.lastIndexOf("-");
+
+    // this is the token format of Electron Storage - remove the random token at the end
+    if (lastDash === name.length - 6) {
+      name = name.substring(0, name.length - 6);
+    }
+
+    return name;
+  }
+
   static async addBlockTypeFromGallery(project: Project, blockTypeProject: IGalleryItem, blockTypeName?: string) {
-    await ProjectUtilities.copyGalleryPackFilesAndFixupIds(project, blockTypeProject, blockTypeName);
+    blockTypeName = await ProjectUtilities.copyGalleryPackFilesAndFixupIds(project, blockTypeProject, blockTypeName);
 
     await project.inferProjectItemsFromFiles(true);
+
+    const blockTypeItem = ProjectItemUtilities.getItemByTypeAndName(
+      project,
+      blockTypeName,
+      ProjectItemType.blockTypeBehavior
+    );
+
+    if (blockTypeItem) {
+      await blockTypeItem.ensureStorage();
+
+      if (blockTypeItem.primaryFile) {
+        const blockType = await BlockTypeDefinition.ensureOnFile(blockTypeItem.primaryFile);
+
+        const creationData = this.getReplacedCreationData(project, blockTypeProject, blockTypeName);
+
+        if (blockType) {
+          await blockType.ensureBlockAndTerrainLinks(project, creationData);
+        }
+      }
+    }
 
     await project.save();
   }
@@ -858,17 +1128,18 @@ export default class ProjectUtilities {
     newTypeName?: string,
     messagerUpdater?: (message: string) => Promise<void>,
     dontOverwriteExistingFiles?: boolean
-  ) {
+  ): Promise<string> {
     const files = galleryProject.fileList;
-
-    if (files === undefined) {
-      Log.unexpectedUndefined("AETFLS");
-      return;
-    }
 
     if (newTypeName === undefined) {
       newTypeName = galleryProject.id;
     }
+
+    if (files === undefined) {
+      Log.unexpectedUndefined("AETFLS");
+      return newTypeName;
+    }
+
     let sourceBpFolder = undefined;
     let sourceRpFolder = undefined;
 
@@ -894,7 +1165,7 @@ export default class ProjectUtilities {
 
       if (!bps || !rps) {
         Log.unexpectedUndefined("AETFLT");
-        return;
+        return newTypeName;
       }
 
       await rps.load();
@@ -902,7 +1173,7 @@ export default class ProjectUtilities {
 
       if (rps.folderCount < 1 || bps.folderCount < 1) {
         Log.unexpectedUndefined("AETFLY");
-        return;
+        return newTypeName;
       }
 
       sourceBpFolder = bps.getFolderByIndex(0);
@@ -921,7 +1192,7 @@ export default class ProjectUtilities {
       !targetRpFolder
     ) {
       Log.unexpectedUndefined("AETVA");
-      return;
+      return newTypeName;
     }
 
     let contentReplacements = ['"identifier"', '"materials"'];
@@ -941,7 +1212,7 @@ export default class ProjectUtilities {
 
           if (nextSlash < 0) {
             Log.unexpectedUndefined("AETVB");
-            return;
+            return newTypeName;
           }
 
           subPath = filePath.substring(nextSlash);
@@ -999,7 +1270,7 @@ export default class ProjectUtilities {
 
           if (nextSlash < 0) {
             Log.unexpectedUndefined("AETVC");
-            return;
+            return newTypeName;
           }
 
           subPath = filePath.substring(nextSlash);
@@ -1049,6 +1320,8 @@ export default class ProjectUtilities {
         }
       }
     }
+
+    return newTypeName;
   }
 
   static replaceNamesInPath(path: string, project: Project, galleryProject: IGalleryItem, newName: string) {
@@ -1067,6 +1340,8 @@ export default class ProjectUtilities {
       path = Utilities.replaceAll(path, "\\" + pathReplacer + ".", "\\" + newName + ".");
       path = Utilities.replaceAll(path, "/" + pathReplacer + "/", "/" + newName + "/");
       path = Utilities.replaceAll(path, "\\" + pathReplacer + "\\", "\\" + newName + "\\");
+      path = Utilities.replaceAll(path, "\\" + pathReplacer + "_", "\\" + newName + "_");
+      path = Utilities.replaceAll(path, "/" + pathReplacer + "_", "/" + newName + "_");
 
       path = Utilities.replaceAll(path, "/" + pathReplacer + "_ico.", "/" + newName + "_ico.");
       path = Utilities.replaceAll(path, "\\" + pathReplacer + "_ico.", "\\" + newName + "_ico.");
@@ -1090,6 +1365,20 @@ export default class ProjectUtilities {
       replacers = [galleryProject.id];
     }
 
+    // copy & extend
+    replacers = replacers.slice();
+    replacers.push(STANDARD_NAME_TOKEN);
+
+    return this.replaceNamesInContentFromReplacers(content, project, replacers, newName, replaceAllExclusions);
+  }
+
+  static replaceNamesInContentFromReplacers(
+    content: string,
+    project: Project,
+    replacers: string[],
+    newName: string,
+    replaceAllExclusions: string[]
+  ) {
     newName = newName.toLowerCase();
     newName = newName.replace(/-/g, "_");
     newName = newName.replace(/ /g, "_");
@@ -1111,6 +1400,8 @@ export default class ProjectUtilities {
 
       content = Utilities.replaceAllExceptInLines(content, "." + replacer, "." + newName, replaceAllExclusions);
 
+      content = Utilities.replaceAllExceptInLines(content, replacer + "_", newName + "_", replaceAllExclusions);
+
       content = Utilities.replaceAllExceptInLines(
         content,
         '"' + replacer + '"',
@@ -1118,6 +1409,7 @@ export default class ProjectUtilities {
         replaceAllExclusions
       );
     }
+
     return content;
   }
 

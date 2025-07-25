@@ -1,0 +1,33 @@
+.eten-outer {
+  border: 3px solid;
+  padding: 4px;
+  width: 220px;
+}
+
+.eten-inner {
+  padding: 4px;
+  background-color: #669966;
+  white-space: nowrap;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.eten-selected {
+  border: solid 3px red;
+}
+
+.eten-focused {
+  border: solid 3px #cccccc;
+}
+
+.eten-unselected {
+  border: solid 3px transparent;
+}
+
+.eten-label {
+  padding-left: 4px;
+}
+
+.eten-icon {
+  padding-top: 2px;
+}

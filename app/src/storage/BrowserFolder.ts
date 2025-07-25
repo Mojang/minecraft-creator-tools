@@ -130,7 +130,9 @@ export default class BrowserFolder extends FolderBase implements IFolder {
   _addExistingFile(file: BrowserFile) {
     const nameCanon = StorageUtilities.canonicalizeName(file.name);
 
-    this.files[nameCanon] = file;
+    if (Utilities.isUsableAsObjectKey(nameCanon)) {
+      this.files[nameCanon] = file;
+    }
   }
 
   async moveTo(newStorageRelativePath: string, ignoreParentSave?: boolean): Promise<boolean> {

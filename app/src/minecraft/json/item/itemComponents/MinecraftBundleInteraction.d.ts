@@ -51,7 +51,8 @@ Black Bundle - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_p
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Bundle Interaction (minecraft:bundle_interaction)
+ * Minecraft Bundle Interaction Item 
+ * (minecraft:bundle_interaction)
  * Enables the bundle-specific interaction scheme and tooltip for
  * an item.
  * Note: To use this component, the item must have a

@@ -36,7 +36,7 @@ My Sword Chuck - https://github.com/microsoft/minecraft-samples/tree/main/custom
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Throwable (minecraft:throwable)
+ * Minecraft Throwable Item (minecraft:throwable)
  * Sets the throwable item component.
  */
 export default interface MinecraftThrowable {

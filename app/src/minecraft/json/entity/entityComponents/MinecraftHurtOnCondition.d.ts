@@ -51,9 +51,7 @@ Blaze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
   "damage_conditions": [
     {
       "filters": {
-        "test": "in_contact_with_water",
-        "operator": "==",
-        "value": true
+        "test": "in_contact_with_water"
       },
       "cause": "drowning",
       "damage_per_tick": 1
@@ -138,21 +136,6 @@ Snow Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pac
         "test": "in_contact_with_water",
         "operator": "==",
         "value": true
-      },
-      "cause": "drowning",
-      "damage_per_tick": 1
-    }
-  ]
-}
-
-
-Strider - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/strider.json
-
-"minecraft:hurt_on_condition": {
-  "damage_conditions": [
-    {
-      "filters": {
-        "test": "in_contact_with_water"
       },
       "cause": "drowning",
       "damage_per_tick": 1

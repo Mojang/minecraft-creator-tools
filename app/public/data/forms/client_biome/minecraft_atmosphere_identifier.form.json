@@ -5,7 +5,8 @@
       "id": "atmosphere_identifier",
       "title": "Atmosphere Identifier",
       "description": "Identifier of atmosphere definition to use",
-      "dataType": 2
+      "dataType": 16,
+      "isRequired": true
     }
   ],
   "description": "Set the identifier used for atmospherics in Vibrant Visuals mode. Identifiers must resolve to identifiers in valid Atmospheric Scattering JSON schemas under the \"atmospherics\" directory. Biomes without this component will have default atmosphere settings.",

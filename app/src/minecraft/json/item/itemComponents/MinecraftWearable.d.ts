@@ -55,7 +55,7 @@ My Leggings - https://github.com/microsoft/minecraft-samples/tree/main/custom_it
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Wearable (minecraft:wearable)
+ * Minecraft Wearable Item (minecraft:wearable)
  * Sets the wearable item component.
  * Note: Here are the following equipment slots that can be set for
  * the value of slot: slot.weapon.mainhand, slot.weapon.offhand, slot.armor.head,
@@ -74,6 +74,14 @@ export default interface MinecraftWearable {
    *
    */
   dispensable: boolean;
+
+  /**
+   * @remarks
+   * Determines whether the Player's location is hidden on Locator Maps
+   * and the Locator Bar when the wearable item is worn. Default is
+   * false.
+   */
+  hides_player_location: boolean;
 
   /**
    * @remarks

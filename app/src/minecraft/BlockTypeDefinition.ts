@@ -26,6 +26,8 @@ import ModelGeometryDefinition from "./ModelGeometryDefinition";
 import BlocksCatalogDefinition from "./BlocksCatalogDefinition";
 import TerrainTextureCatalogDefinition from "./TerrainTextureCatalogDefinition";
 import TypeScriptDefinition from "./TypeScriptDefinition";
+import { IBlockTypeCreationData } from "./IBlockTypeCreationData";
+import { ITerrainTextureDataItem } from "./ITerrainTextureCatalog";
 
 export enum BlockStateType {
   string = 0,
@@ -82,6 +84,71 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     }
 
     return Database.defaultBlockBaseType;
+  }
+
+  public get geometryIdentifier() {
+    const geoComponent = this.getComponent("minecraft:geometry");
+
+    if (!geoComponent) {
+      return undefined;
+    }
+
+    return geoComponent.getProperty("identifier");
+  }
+
+  public async setBlockCatalogTexture(
+    project: Project,
+    sideId: "north" | "east" | "west" | "south" | "up" | "down",
+    textureId: string
+  ) {
+    if (this.geometryIdentifier === "minecraft:geometry.full_block") {
+      const blockCatalog = await BlocksCatalogDefinition.ensureBlockCatalog(project);
+
+      if (blockCatalog) {
+        const blockResource = blockCatalog?.ensureBlockDefinition(this.id);
+
+        if (blockResource.textures && typeof blockResource.textures !== "string") {
+          blockResource.textures[sideId] = textureId;
+        }
+
+        blockCatalog.persist();
+      }
+    }
+  }
+
+  public async setTerrainTexture(project: Project, terrainTextureId: string, textureData: ITerrainTextureDataItem) {
+    if (this.geometryIdentifier === "minecraft:geometry.full_block") {
+      const terrainTextureCatalog = await TerrainTextureCatalogDefinition.ensureTerrainTextureCatalog(project);
+
+      if (terrainTextureCatalog) {
+        terrainTextureCatalog.setTexture(terrainTextureId, textureData);
+        terrainTextureCatalog.persist();
+      }
+    }
+  }
+
+  public async ensureBlockAndTerrainLinks(project: Project, creationData: IBlockTypeCreationData) {
+    if (this.geometryIdentifier === "minecraft:geometry.full_block") {
+      const blockCatalog = await BlocksCatalogDefinition.ensureBlockCatalog(project);
+      const terrainTextureCatalog = await TerrainTextureCatalogDefinition.ensureTerrainTextureCatalog(project);
+
+      if (creationData && creationData.resource && blockCatalog) {
+        blockCatalog?.setBlockDefinition(this.id, creationData.resource);
+      }
+      if (creationData && creationData.texture_data && terrainTextureCatalog) {
+        for (const textureId in creationData.texture_data) {
+          const textureData = creationData.texture_data[textureId];
+          terrainTextureCatalog.setTexture(textureId, textureData);
+        }
+
+        const carriedTexturesId = creationData.resource.carried_textures;
+
+        if (carriedTexturesId) {
+          const textureData = creationData.texture_data[carriedTexturesId];
+          terrainTextureCatalog.setTexture(carriedTexturesId, textureData);
+        }
+      }
+    }
   }
 
   public async getFormatVersionIsCurrent() {
@@ -399,7 +466,10 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     if (!this._data || !this._data.description) {
       return;
     }
-
+    if (!Utilities.isUsableAsObjectKey(stateName)) {
+      Log.unsupportedToken(stateName);
+      throw new Error();
+    }
     let dataArr: string[] | number[] | boolean[] = [];
 
     if (stateType === BlockStateType.boolean) {
@@ -517,10 +587,14 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
       return this._data.description.identifier;
     }
 
+    if (!this._id) {
+      return "";
+    }
+
     return this._id;
   }
 
-  public set id(newId: string | undefined) {
+  public set id(newId: string) {
     this._id = newId;
 
     if (this._data && this._data.description && newId) {
@@ -598,9 +672,11 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
     }
 
     if (!this._managed[id]) {
-      const comp = this._data.components[id];
-      if (comp) {
-        this._managed[id] = new ManagedComponent(this._data.components, id, comp);
+      if (this._data.components) {
+        const comp = this._data.components[id];
+        if (comp) {
+          this._managed[id] = new ManagedComponent(this._data.components, id, comp);
+        }
       }
     }
 
@@ -700,9 +776,11 @@ export default class BlockTypeDefinition implements IManagedComponentSetItem, ID
 
     for (const name in this._data.components) {
       if (name !== id) {
-        const component = this._data.components[name];
+        if (Utilities.isUsableAsObjectKey(name)) {
+          const component = this._data.components[name];
 
-        newBehaviorPacks[name] = component;
+          newBehaviorPacks[name] = component;
+        }
       }
     }
 

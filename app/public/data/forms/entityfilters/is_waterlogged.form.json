@@ -110,6 +110,10 @@
       "dataType": 1
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests if the subject block is submerged in water.",
   "title": "Is Waterlogged",
   "samples": {

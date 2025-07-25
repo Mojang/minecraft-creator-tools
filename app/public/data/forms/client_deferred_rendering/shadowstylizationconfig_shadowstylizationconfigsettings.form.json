@@ -41,6 +41,7 @@
       }
     }
   ],
+  "id": "minecraft:shadow_settings",
   "title": "Shadow settings",
   "description": "Struct ShadowStylizationConfig ShadowStylizationConfigSettings Client Deferred Rendering"
 }

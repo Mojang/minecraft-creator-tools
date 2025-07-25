@@ -22,6 +22,7 @@ export const PT_TILE_SMALL = 1;
 interface IProjectInfoItemDisplayProps extends IAppProps {
   item: ProjectInfoItem;
   itemSet: ProjectInfoSet;
+  isBand: boolean;
   theme: ThemeInput<any>;
   onInfoItemCommand: (command: InfoItemCommand, item: ProjectInfoItem) => Promise<void>;
 }
@@ -163,7 +164,14 @@ export default class ProjectInfoItemDisplay extends Component<
     }
 
     return (
-      <tr className="piid-outer">
+      <tr
+        className="piid-outer"
+        style={{
+          backgroundColor: this.props.isBand
+            ? this.props.theme.siteVariables?.colorScheme.brand.background2
+            : "transparent",
+        }}
+      >
         <td
           className={"piid-cell piid-indicator " + indicatorCellBg}
           style={{

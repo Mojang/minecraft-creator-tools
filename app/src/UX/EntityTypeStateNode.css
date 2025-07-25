@@ -1,0 +1,31 @@
+.etsn-outer {
+  border: 3px solid;
+  width: 260px;
+  height: 120px;
+}
+
+.etsn-box {
+  width: 254px;
+  height: 120px;
+}
+
+.etsn-inner {
+  height: 98px;
+  margin: 4px;
+}
+
+.etsn-selected {
+  border: solid 3px red;
+}
+
+.etsn-focused {
+  border: solid 3px #cccccc;
+}
+
+.etsn-unselected {
+  border: solid 3px transparent;
+}
+
+.etsn-icon {
+  padding-top: 2px;
+}

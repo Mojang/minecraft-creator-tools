@@ -43,6 +43,8 @@ import Database from "../minecraft/Database";
 import DataFormUtilities from "./DataFormUtilities";
 import ILookupProvider from "./ILookupProvider";
 import { MinecraftEventTrigger } from "../minecraft/jsoncommon";
+import { CustomLabel } from "../UX/Labels";
+import VanillaProjectManager from "../minecraft/VanillaProjectManager";
 
 export interface IDataFormProps extends IDataContainer {
   definition: IFormDefinition;
@@ -54,6 +56,7 @@ export interface IDataFormProps extends IDataContainer {
   titleFieldBinding?: string;
   subTitle?: string;
   indentLevel?: number;
+  displayNarrow?: boolean;
   tag?: any;
   parentField?: IField;
   carto?: Carto;
@@ -172,14 +175,18 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         const unrolledFields = DataFormUtilities.getFieldAndAlternates(coreField);
 
         for (const field of unrolledFields) {
-          if (field.lookupId && lookUps[field.lookupId] === undefined) {
+          if (
+            field.lookupId &&
+            lookUps[field.lookupId] === undefined &&
+            Utilities.isUsableAsObjectKey(field.lookupId)
+          ) {
             lookUps[field.lookupId] = await this.props.lookupProvider.getLookupChoices(field.lookupId);
           }
         }
       }
 
-      await Database.getVanillaBlocksCatalog();
-      await Database.getVanillaTerrainTexturesCatalog();
+      await VanillaProjectManager.getBlocksCatalog();
+      await VanillaProjectManager.getTerrainTexturesCatalog();
 
       this.setState({
         objectIncrement: this.state.objectIncrement,
@@ -243,7 +250,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     if (value === undefined) {
       if (typeof defaultValue === "object") {
-        if (directObject && directObject[name] === undefined) {
+        if (directObject && directObject[name] === undefined && Utilities.isUsableAsObjectKey(name)) {
           directObject[name] = defaultValue;
         }
 
@@ -327,6 +334,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     const protoObj = this.props.dataPropertyObject;
 
+    if (!Utilities.isUsableAsObjectKey(id)) {
+      Log.unsupportedToken(id);
+      return;
+    }
+
     const field = this._getFieldById(id);
 
     this._workingValues[id] = data;
@@ -409,8 +421,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         if (fi) {
           const retObj: { [name: string]: string | number | boolean } = {};
 
-          retObj[fi.id] = directObject;
-
+          if (Utilities.isUsableAsObjectKey(fi.id)) {
+            retObj[fi.id] = directObject;
+          } else {
+            Log.unsupportedToken(fi.id);
+          }
           return retObj;
         }
       }
@@ -446,7 +461,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
           }
 
           if (!hasContent) {
-            directObject[field.id] = undefined;
+            if (Utilities.isUsableAsObjectKey(field.id)) {
+              directObject[field.id] = undefined;
+            }
           }
         }
       }
@@ -471,7 +488,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
     data: DropdownProps | undefined
   ) {
-    if (data && data.value && (data.value as any).id && (data as any).id) {
+    if (data && data.value !== undefined && (data.value as any).id && (data as any).id) {
       this.processInputUpdate((data as any).id, (data.value as any).id);
     }
   }
@@ -507,12 +524,16 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
 
     const val = arrayOfDataVal[keySplit[1]];
-    arrayOfDataVal[keySplit[1]] = undefined;
-
-    arrayOfDataVal[data.value] = val;
-
     const keyAliases = this.state.keyAliases;
-    keyAliases[data.value] = this.state.keyAliases[keySplit[1]] ? this.state.keyAliases[keySplit[1]] : keySplit[1];
+
+    if (Utilities.isUsableAsObjectKey(keySplit[1])) {
+      arrayOfDataVal[keySplit[1]] = undefined;
+
+      if (Utilities.isUsableAsObjectKey(data.value)) {
+        arrayOfDataVal[data.value] = val;
+        keyAliases[data.value] = this.state.keyAliases[keySplit[1]] ? this.state.keyAliases[keySplit[1]] : keySplit[1];
+      }
+    }
 
     this.setState({
       objectIncrement: this.state.objectIncrement,
@@ -543,9 +564,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       Log.unexpectedUndefined("DFKBVFC3");
       return;
     }
-
-    arrayOfDataVal[keySplit[1]] = data.checked;
-
+    if (Utilities.isUsableAsObjectKey(keySplit[1])) {
+      arrayOfDataVal[keySplit[1]] = data.checked;
+    }
     this.forceUpdate();
   }
 
@@ -573,7 +594,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       return;
     }
 
-    arrayOfDataVal[keySplit[1]] = undefined;
+    if (Utilities.isUsableAsObjectKey(keySplit[1])) {
+      arrayOfDataVal[keySplit[1]] = undefined;
+    }
 
     this.forceUpdate();
   }
@@ -602,12 +625,16 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
 
     const val = arrayOfDataVal[keySplit[1]];
-    arrayOfDataVal[keySplit[1]] = undefined;
-
-    arrayOfDataVal[data.value] = val;
 
     const keyAliases = this.state.keyAliases;
-    keyAliases[data.value] = this.state.keyAliases[keySplit[1]] ? this.state.keyAliases[keySplit[1]] : keySplit[1];
+
+    if (Utilities.isUsableAsObjectKey(keySplit[1]) && Utilities.isUsableAsObjectKey(data.value)) {
+      arrayOfDataVal[keySplit[1]] = undefined;
+
+      arrayOfDataVal[data.value] = val;
+
+      keyAliases[data.value] = this.state.keyAliases[keySplit[1]] ? this.state.keyAliases[keySplit[1]] : keySplit[1];
+    }
 
     this.setState({
       objectIncrement: this.state.objectIncrement,
@@ -641,7 +668,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       return;
     }
 
-    arrayOfDataVal[keySplit[1]] = data.value;
+    if (Utilities.isUsableAsObjectKey(keySplit[1])) {
+      arrayOfDataVal[keySplit[1]] = data.value;
+    }
 
     this.forceUpdate();
   }
@@ -1048,18 +1077,19 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       if (directO !== undefined) {
         directO = this._upscaleDirectObject(directO);
 
-        if (!directO[propertyName]) {
-          directO[propertyName] = {};
-        }
+        if (Utilities.isUsableAsObjectKey(propertyName)) {
+          if (!directO[propertyName]) {
+            directO[propertyName] = {};
+          }
 
-        if (newValue !== directO[propertyName][propertyIndex]) {
-          const obj = directO[propertyName];
+          if (newValue !== directO[propertyName][propertyIndex]) {
+            const obj = directO[propertyName];
 
-          if (this.props.onPropertyChanged !== undefined) {
-            this.props.onPropertyChanged(this.props, { id: props.formId, value: newValue }, obj[propertyIndex]);
+            if (this.props.onPropertyChanged !== undefined) {
+              this.props.onPropertyChanged(this.props, { id: props.formId, value: newValue }, obj[propertyIndex]);
+            }
           }
         }
-
         this._downscaleDirectObject(directO);
       }
     }
@@ -1158,6 +1188,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     return def;
   }
 
+  getCssClassName(className: string) {
+    if (this.props.displayNarrow) {
+      return "df-" + className + " dfn-" + className;
+    }
+
+    return "df-" + className + " dfw-" + className;
+  }
+
   render() {
     const formInterior = [];
 
@@ -1225,7 +1263,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             }
 
             descriptionElements.push(
-              <div key={baseKey + "desc"} className="df-fieldDescription">
+              <div key={baseKey + "desc"} className={this.getCssClassName("fieldDescription")}>
                 {divDescrips}
               </div>
             );
@@ -1235,7 +1273,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             let defVal = Utilities.humanify(field.defaultValue, field.humanifyValues);
 
             sampleElements.push(
-              <div key={baseKey + "defValHeader"} className="df-defaultValueDescription">
+              <div key={baseKey + "defValHeader"} className={this.getCssClassName("defaultValueDescription")}>
                 Default Value: {defVal}
               </div>
             );
@@ -1251,7 +1289,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             field.dataType !== FieldDataType.minecraftFilter
           ) {
             sampleElements.push(
-              <div key={baseKey + "sampHeader"} className="df-sampleDescription">
+              <div key={baseKey + "sampHeader"} className={this.getCssClassName("sampleDescription")}>
                 Example Values:
               </div>
             );
@@ -1279,15 +1317,15 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                 }
 
                 sampleRows.push(
-                  <div className="df-sampleRow" key={baseKey + "descHeaderA" + name}>
-                    <div className="df-ro-value">{name}</div>
-                    <div className="df-ro-sampleValue">{sampleVals}</div>
+                  <div className={this.getCssClassName("sampleRow")} key={baseKey + "descHeaderA" + name + path}>
+                    <div className={this.getCssClassName("ro-value")}>{name}</div>
+                    <div className={this.getCssClassName("ro-sampleValue")}>{sampleVals}</div>
                   </div>
                 );
               }
             }
 
-            sampleElements.push(<div className="df-sampleTable">{sampleRows}</div>);
+            sampleElements.push(<div className={this.getCssClassName("sampleTable")}>{sampleRows}</div>);
           }
 
           const title = FieldUtilities.getFieldTitle(field);
@@ -1298,9 +1336,9 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                 curVal = JSON.stringify(curVal, undefined, 2);
               }
               formInterior.push(
-                <div className="df-ro-row" key={baseKey + "row" + title}>
-                  <div className="df-ro-title">{title}</div>
-                  <div className="df-ro-value">{curVal}</div>
+                <div className={this.getCssClassName("ro-row")} key={baseKey + "row" + title}>
+                  <div className={this.getCssClassName("ro-title")}>{title}</div>
+                  <div className={this.getCssClassName("ro-value")}>{curVal}</div>
                 </div>
               );
             }
@@ -1357,7 +1395,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               this.dropdownItems.push(items);
               formInterior.push(
                 <div
-                  className="df-fieldWrap"
+                  className={this.getCssClassName("fieldWrap")}
                   key={"fwg" + baseKey}
                   style={{
                     borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -1369,7 +1407,12 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                   {sampleElements}
                 </div>
               );
-            } else if (field.dataType === FieldDataType.point3) {
+            } else if (
+              field.dataType === FieldDataType.point3 ||
+              field.dataType === FieldDataType.intPoint3 ||
+              field.dataType === FieldDataType.location ||
+              field.dataType === FieldDataType.locationOffset
+            ) {
               const val = this._getProperty(field.id, [0, 0, 0]);
               let objKey = field.id;
 
@@ -1394,7 +1437,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
               this.formComponents.push(point3);
               formInterior.push(
                 <div
-                  className="df-fieldWrap"
+                  className={this.getCssClassName("fieldWrap")}
                   key={"fwh" + baseKey}
                   style={{
                     borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -1430,7 +1473,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
               formInterior.push(
                 <div
-                  className="df-fieldWrap"
+                  className={this.getCssClassName("fieldWrap")}
                   key={"fwj" + baseKey}
                   style={{
                     borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -1477,14 +1520,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
               formInterior.push(
                 <div
-                  className="df-fieldWrap"
+                  className={this.getCssClassName("fieldWrap")}
                   key={"fwk" + baseKey}
                   style={{
                     borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
                     borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
                   }}
                 >
-                  <div className={isValid ? "df-elementTitle" : "df-elementTitleInvalid"}>{title}</div>
+                  <div className={this.getCssClassName(isValid ? "elementTitle" : "elementTitleInvalid")}>{title}</div>
                   {descriptionElements}
                   {sarrt}
                   {sampleElements}
@@ -1517,7 +1560,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
               formInterior.push(
                 <div
-                  className="df-fieldWrap"
+                  className={this.getCssClassName("fieldWrap")}
                   key={"fwl" + baseKey}
                   style={{
                     borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -1546,14 +1589,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
               formInterior.push(
                 <div
-                  className="df-fieldWrap"
+                  className={this.getCssClassName("fieldWrap")}
                   key={"fwm" + baseKey}
                   style={{
                     borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
                     borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
                   }}
                 >
-                  <div className="df-elementTitle">{title}</div>
+                  <div className={this.getCssClassName("elementTitle")}>{title}</div>
                   {descriptionElements}
                   {sarr}
                   {sampleElements}
@@ -1598,14 +1641,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
                 formInterior.push(
                   <div
-                    className="df-fieldWrap"
+                    className={this.getCssClassName("fieldWrap")}
                     key={"fwm" + baseKey}
                     style={{
                       borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
                       borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
                     }}
                   >
-                    <div className="df-elementTitle">{title}</div>
+                    <div className={this.getCssClassName("elementTitle")}>{title}</div>
                     {descriptionElements}
                     {sarr}
                     {sampleElements}
@@ -1643,7 +1686,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
               formInterior.push(
                 <div
-                  className="df-fieldWrap"
+                  className={this.getCssClassName("fieldWrap")}
                   key={"fwn" + baseKey}
                   style={{
                     borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -1651,8 +1694,10 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                   }}
                 >
                   {descriptionElements}
-                  <div key={baseKey + "titleA"} className="df-fieldTitle">
-                    <div className={isValid ? "df-elementTitle" : "df-elementTitleInvalid"}>{title}</div>
+                  <div key={baseKey + "titleA"} className={this.getCssClassName("fieldTitle")}>
+                    <div className={this.getCssClassName(isValid ? "elementTitle" : "elementTitleInvalid")}>
+                      {title}
+                    </div>
                     {fieldInput}
                   </div>
                   {sampleElements}
@@ -1667,21 +1712,21 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
             ) {
               formInterior.push(
                 <div
-                  className="df-fieldWrap"
+                  className={this.getCssClassName("fieldWrap")}
                   key={"fwa" + baseKey}
                   style={{
                     borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
                     borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
                   }}
                 >
-                  <div className="df-sliderTitle">{title}</div>
+                  <div className={this.getCssClassName("sliderTitle")}>{title}</div>
                   {descriptionElements}
                   <div className="df-sliderSet" key={baseKey + "W"}>
                     <Slider
                       key={"sli" + baseKey}
                       id={field.id}
                       fluid={true}
-                      className="df-slider"
+                      className={this.getCssClassName("slider")}
                       step={field.step ? field.step : 1}
                       min={field.minValue ? field.minValue : field.suggestedMinValue}
                       max={field.maxValue ? field.maxValue : field.suggestedMaxValue}
@@ -1690,7 +1735,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
                       onChange={this._handleSliderChange}
                     />
                     <FormInput
-                      className="df-sliderInput"
+                      className={this.getCssClassName("sliderInput")}
                       key={baseKey + "TSL"}
                       id={field.id}
                       fluid={true}
@@ -1735,13 +1780,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
       if (this.props.indentLevel || this.props.defaultVisualExperience === FieldVisualExperience.deemphasized) {
         header.push(
-          <div key={"header"} className="df-subHeaderTitle">
+          <div key={"header"} className={this.getCssClassName("subHeaderTitle")}>
             {title}
           </div>
         );
       } else {
         header.push(
-          <div key="headera" className="df-headerTitle">
+          <div key="headera" className={this.getCssClassName("headerTitle")}>
             {title}
           </div>
         );
@@ -1757,13 +1802,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
       if (this.props.indentLevel || this.props.defaultVisualExperience === FieldVisualExperience.deemphasized) {
         header.push(
-          <div key="stheader" className="df-subHeaderSubTitle">
+          <div key="stheader" className={this.getCssClassName("subHeaderSubTitle")}>
             {subTitle}
           </div>
         );
       } else {
         header.push(
-          <div key="stheadera" className="df-headerSubTitle">
+          <div key="stheadera" className={this.getCssClassName("headerSubTitle")}>
             {subTitle}
           </div>
         );
@@ -1781,14 +1826,14 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       });
 
       header.push(
-        <div className="df-closeArea" key="closeArea">
+        <div className={this.getCssClassName("closeArea")} key="closeArea">
           <Toolbar aria-label="Form accesory toolbar overflow menu" items={accessoryToolbar} />
         </div>
       );
     }
     if (this.props.displayDescription) {
       subheader.push(
-        <div key="description" className="df-description">
+        <div key="description" className={this.getCssClassName("description")}>
           {this.props.definition.description}
         </div>
       );
@@ -1799,7 +1844,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     if (!this.props.readOnly) {
       contents = (
         <div
-          className="df-form"
+          className={this.getCssClassName("form")}
           style={{
             borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background1,
             borderBottomColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -1809,21 +1854,21 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         </div>
       );
     } else {
-      contents = <div className="df-ro-table">{formInterior}</div>;
+      contents = <div className={this.getCssClassName("ro-table")}>{formInterior}</div>;
     }
 
     if (header.length > 0) {
-      headerOuter = <div className="df-headerOuter">{header}</div>;
+      headerOuter = <div className={this.getCssClassName("headerOuter")}>{header}</div>;
     }
 
     return (
-      <div className="df-outer">
+      <div className={this.getCssClassName("outer")}>
         <div
-          className={
+          className={this.getCssClassName(
             this.props.indentLevel || this.props.defaultVisualExperience === FieldVisualExperience.deemphasized
-              ? "df-cardWrapper"
-              : "df-wrapper"
-          }
+              ? "cardWrapper"
+              : "wrapper"
+          )}
           style={
             this.props.indentLevel || this.props.defaultVisualExperience === FieldVisualExperience.deemphasized
               ? {
@@ -1835,7 +1880,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         >
           {headerOuter}
           {subheader}
-          <div className="df-formArea">{contents}</div>
+          <div className={this.getCssClassName("formArea")}>{contents}</div>
         </div>
       </div>
     );
@@ -1854,13 +1899,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     let baseKey = this._getObjectId() + "." + field.id;
 
     let strVal = curVal ? String(curVal) : "";
-    let cssClass = "df-fieldWrap";
+    let cssClass = this.getCssClassName("fieldWrap");
 
     // if the user is dealing with floating point numbers and has typed in "3." on their way to
     // typing in "3.5", using _workingValues to "remember" that and substitute it back in.
     // otherwise we'd always replace "3." with "3" and you wouldn't be able to add decimal vals
     if (field.dataType === FieldDataType.float || field.dataType === FieldDataType.number) {
-      cssClass += " df-fieldWrapNumber";
+      cssClass += " " + this.getCssClassName("fieldWrapNumber");
       if (this._workingValues[field.id]) {
         const val = this._getTypedData(field, this._workingValues[field.id]);
 
@@ -1887,11 +1932,11 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
       let dropdownValue = strVal;
 
       for (let i = 0; i < choices.length; i++) {
-        if (strVal === choices[i].id) {
-          selectedIndex = i;
+        const title = choices[i].title;
+        const id = choices[i].id;
 
-          const title = choices[i].title;
-          const id = choices[i].id;
+        if (strVal.toString() === id.toString()) {
+          selectedIndex = i;
 
           if (title || id) {
             dropdownValue = title ? title : id.toString();
@@ -1899,13 +1944,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
         }
 
         items.push({
-          header: choices[i].title ? choices[i].title : choices[i].id,
+          header: title ? title : id,
           content: choices[i].description,
           id: choices[i].id,
           selected: choices[i].id === curVal,
         });
 
-        if (choices[i].id === curVal && choices[i].description) {
+        if (id === curVal && choices[i].description) {
           choiceDescriptionArea = <div>{choices[i].description}</div>;
         }
       }
@@ -1985,7 +2030,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     formInterior.push(
       <div
-        className="df-fieldWrap"
+        className={this.getCssClassName("fieldWrap")}
         key={"fwc" + field.id}
         style={{
           borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -2134,7 +2179,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     formInterior.push(
       <div
-        className="df-fieldWrap"
+        className={this.getCssClassName("fieldWrap")}
         key={"fwd" + field.id}
         style={{
           borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -2248,7 +2293,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     formInterior.push(
       <div
-        className="df-fieldWrap"
+        className={this.getCssClassName("fieldWrap")}
         key={"fwe" + baseKey}
         style={{
           borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -2358,7 +2403,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     formInterior.push(
       <div
-        className="df-fieldWrap"
+        className={this.getCssClassName("fieldWrap")}
         key={baseKey + "fwf"}
         style={{
           borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -2528,7 +2573,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     formInterior.push(
       <div
-        className="df-fieldWrap"
+        className={this.getCssClassName("fieldWrap")}
         key={"fwg" + baseKey}
         style={{
           borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -2707,7 +2752,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     formInterior.push(
       <div
-        className="df-fieldWrap"
+        className={this.getCssClassName("fieldWrap")}
         key={"fwo" + field.id}
         style={{
           borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -2845,7 +2890,13 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
         if (field.allowCreateDelete !== false) {
           toolbarItems.push({
-            icon: <FontAwesomeIcon icon={faPlus} className="fa-lg" />,
+            icon: (
+              <CustomLabel
+                isCompact={false}
+                icon={<FontAwesomeIcon icon={faPlus} className="fa-lg" />}
+                text={field.noun ? "Add " + field.noun.toLowerCase() : "Add"}
+              />
+            ),
             key: "add",
             tag: field.id,
             onClick: this._addObjectArrayItem,
@@ -3039,7 +3090,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     formInterior.push(
       <div
-        className="df-fieldWrap"
+        className={this.getCssClassName("fieldWrap")}
         key={"fwp" + field.id}
         style={{
           borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -3142,7 +3193,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
     }
     formInterior.push(
       <div
-        className="df-fieldWrap"
+        className={this.getCssClassName("fieldWrap")}
         key={"fwq" + field.id}
         style={{
           borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
@@ -3214,7 +3265,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
     formInterior.push(
       <div
-        className="df-fieldWrap"
+        className={this.getCssClassName("fieldWrap")}
         key={baseKey + "fwr"}
         style={{
           borderTopColor: this.props.theme.siteVariables?.colorScheme.brand.background3,

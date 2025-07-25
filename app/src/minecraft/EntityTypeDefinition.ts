@@ -24,6 +24,8 @@ import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
 import SpawnRulesBehaviorDefinition from "./SpawnRulesBehaviorDefinition";
 import IDefinition from "./IDefinition";
 import IEventWrapper from "./IEventWrapper";
+import Utilities from "../core/Utilities";
+import IComponentGroup from "./IComponentGroup";
 
 export enum EntityTypeComponentCategory {
   attribute = 0,
@@ -113,6 +115,10 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
 
   public get data() {
     return this._data;
+  }
+
+  public get componentGroups() {
+    return this._componentGroups;
   }
 
   public static getFormIdFromComponentId(componentId: string) {
@@ -269,10 +275,14 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   }
 
   public get id() {
+    if (this._id === undefined) {
+      return "";
+    }
+
     return this._id;
   }
 
-  public set id(newId: string | undefined) {
+  public set id(newId: string) {
     this._id = newId;
   }
 
@@ -355,6 +365,11 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
       return undefined;
     }
 
+    if (!Utilities.isUsableAsObjectKey(id)) {
+      Log.unsupportedToken(id);
+      throw new Error();
+    }
+
     if (!this._managedComponents[id]) {
       const comp = this._data.components[id];
 
@@ -391,6 +406,16 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     }
 
     return results;
+  }
+
+  public getCoreAndComponentGroupList() {
+    const componentSets: IManagedComponentSetItem[] = [this];
+
+    const cgs = this.getComponentGroups();
+
+    componentSets.push(...cgs);
+
+    return componentSets;
   }
 
   getAllComponents(): IManagedComponent[] {
@@ -470,8 +495,8 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   }
 
   getComponentGroup(componentGroupName: string): ManagedComponentGroup | undefined {
-    if (this._data !== undefined) {
-      if (!this._componentGroups[componentGroupName]) {
+    if (this._data && this._data.component_groups) {
+      if (!this._componentGroups[componentGroupName] && this._data.component_groups[componentGroupName]) {
         const componentGroupData = this._data.component_groups[componentGroupName];
 
         const cg = new ManagedComponentGroup(componentGroupData, componentGroupName);
@@ -508,7 +533,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
   }
 
   getEvent(eventName: string): IEventActionSet | IEventAction | undefined {
-    if (this._data !== undefined) {
+    if (this._data !== undefined && Utilities.isUsableAsObjectKey(eventName)) {
       if (!this._events[eventName]) {
         const eventData = this._data.events[eventName];
 
@@ -521,12 +546,43 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     return undefined;
   }
 
+  getEffectiveComponents(componentGroupAddRemoveList: string[]) {
+    const componentState = JSON.parse(JSON.stringify(this._data?.components)); // clone
+
+    for (let componentGroupId of componentGroupAddRemoveList) {
+      let isAdd = true;
+      if (componentGroupId.startsWith("-")) {
+        componentGroupId = componentGroupId.substring(1);
+        isAdd = false;
+      } else if (componentGroupId.startsWith("+")) {
+        componentGroupId = componentGroupId.substring(1);
+      }
+
+      const componentGroup = this.getComponentGroup(componentGroupId);
+
+      if (componentGroup) {
+        const cgComps = componentGroup.getComponents();
+        if (isAdd) {
+          for (const cgComp of cgComps) {
+            componentState[cgComp.id] = cgComp.getData();
+          }
+        } else if (!isAdd) {
+          for (const cgComp of cgComps) {
+            componentState[cgComp.id] = undefined;
+          }
+        }
+      }
+    }
+
+    return new ManagedComponentGroup(componentState, this.id);
+  }
+
   getEvents(): IEventWrapper[] {
     const events: IEventWrapper[] = [];
 
     if (this._data !== undefined) {
       for (const eventName in this._data.events) {
-        if (!this._events[eventName]) {
+        if (!this._events[eventName] && Utilities.isUsableAsObjectKey(eventName)) {
           const eventData = this._data.events[eventName];
 
           this._events[eventName] = eventData;
@@ -562,6 +618,45 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     return mc;
   }
 
+  addComponentGroup(id?: string, componentOrData?: ManagedComponentGroup | IComponentGroup | undefined) {
+    this._ensureBehaviorPackDataInitialized();
+
+    if (id === undefined) {
+      id = "group";
+      let increment = 0;
+
+      let cg = this.getComponentGroup(id);
+
+      while (cg !== undefined && increment < 100) {
+        increment++;
+        id = "group" + increment;
+
+        cg = this.getComponentGroup(id);
+      }
+    }
+
+    if (componentOrData === undefined) {
+      componentOrData = {};
+    }
+
+    const bpData = this._data as IEntityTypeBehaviorPack;
+
+    const mcg =
+      componentOrData instanceof ManagedComponentGroup
+        ? componentOrData
+        : new ManagedComponentGroup(componentOrData, id);
+
+    const cgData = mcg.getData();
+
+    if (cgData) {
+      bpData.component_groups[id] = cgData;
+    }
+
+    this._componentGroups[id] = mcg;
+
+    return mcg;
+  }
+
   removeComponent(id: string) {
     if (this._data === undefined) {
       return;
@@ -573,7 +668,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     const newManagedComponents: { [name: string]: IManagedComponent | undefined } = {};
 
     for (const name in this._data.components) {
-      if (name !== id) {
+      if (name !== id && Utilities.isUsableAsObjectKey(name)) {
         const componentData = this._data.components[name];
 
         newBehaviorPacks[name] = componentData;
@@ -581,7 +676,7 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     }
 
     for (const name in this._managedComponents) {
-      if (name !== id && this._managedComponents[name]) {
+      if (name !== id && this._managedComponents[name] && Utilities.isUsableAsObjectKey(name)) {
         newManagedComponents[name] = this._managedComponents[name];
       }
     }
@@ -664,13 +759,27 @@ export default class EntityTypeDefinition implements IManagedComponentSetItem, I
     this._data.description.properties[propertyName] = dataArr;
   }
 
-  public addEvent(eventName: string) {
+  public addEvent(eventName?: string) {
     if (!this._data) {
       return;
     }
 
     if (!this._data.events) {
       this._data.events = {};
+    }
+
+    if (eventName === undefined) {
+      eventName = "eventName";
+      let increment = 0;
+
+      let eve = this.getEvent(eventName);
+
+      while (eve !== undefined && increment < 100) {
+        increment++;
+        eventName = "eventName" + increment;
+
+        eve = this.getEvent(eventName);
+      }
     }
 
     this._data.events[eventName] = {};

@@ -10,11 +10,13 @@ import Log from "../core/Log";
 import { InfoItemType } from "./IInfoItemData";
 import ProjectInfoSet from "./ProjectInfoSet";
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
+import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 
 export enum WorldItemInfoGeneratorTest {
   betaApisExperiment = 101,
   dataDrivenItemsExperiment = 102,
   deferredTechnicalPreviewExperiment = 103,
+  baseGameVersion = 107,
   worldName = 108,
   worldDescription = 109,
 }
@@ -30,7 +32,14 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
-    info.baseGameVersion = infoSet.getFirstStringValue(this.id, 107);
+    info.baseGameVersion = infoSet.getFirstStringValue(this.id, WorldItemInfoGeneratorTest.baseGameVersion);
+
+    info.minBaseGameVersionString = infoSet.getMinNumberArrayValueAsVersionString(
+      this.id,
+      WorldItemInfoGeneratorTest.baseGameVersion
+    );
+
+    info.minBaseGameVersion = MinecraftUtilities.getVersionNumber(info.minBaseGameVersionString);
   }
 
   async generate(projectItem: ProjectItem): Promise<ProjectInfoItem[]> {
@@ -105,7 +114,15 @@ export default class WorldItemInfoGenerator implements IProjectInfoItemGenerator
         val = val.toString();
 
         items.push(
-          new ProjectInfoItem(InfoItemType.info, this.id, 107, "Base game version", projectItem, val, mcworld.name)
+          new ProjectInfoItem(
+            InfoItemType.info,
+            this.id,
+            WorldItemInfoGeneratorTest.baseGameVersion,
+            "Base game version",
+            projectItem,
+            val,
+            mcworld.name
+          )
         );
 
         items.push(

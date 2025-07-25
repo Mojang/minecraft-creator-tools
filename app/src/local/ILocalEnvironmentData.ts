@@ -10,4 +10,5 @@ export default interface ILocalEnvironmentData {
   serverTitle?: string;
   serverDomainName?: string;
   serverMessageOfTheDay?: string;
+  pathMappings?: { [path: string]: string };
 }

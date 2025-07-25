@@ -348,10 +348,14 @@ export default class BlockType implements IManagedComponentSetItem {
       return this.behaviorPackBlockTypeDef.description.identifier;
     }
 
+    if (this._id === undefined) {
+      return "";
+    }
+
     return this._id;
   }
 
-  public set id(newId: string | undefined) {
+  public set id(newId: string) {
     this._id = newId;
 
     if (this.behaviorPackBlockTypeDef && this.behaviorPackBlockTypeDef.description && newId) {
@@ -402,6 +406,11 @@ export default class BlockType implements IManagedComponentSetItem {
   getComponent(id: string) {
     if (this.behaviorPackBlockTypeDef === undefined) {
       return undefined;
+    }
+
+    if (!Utilities.isUsableAsObjectKey(id)) {
+      Log.unsupportedToken(id);
+      throw new Error();
     }
 
     if (!this._managed[id]) {

@@ -4,10 +4,11 @@
 import { EventDispatcher } from "ste-events";
 import IComponent from "./IComponent";
 import IManagedComponent from "./IManagedComponent";
+import Utilities from "../core/Utilities";
 
 export class ManagedComponent implements IManagedComponent {
   private _data: IComponent | string | string[] | boolean | number[] | number | undefined;
-  private _parent: { [componentId: string]: IComponent | string | string[] | boolean | number[] | number | undefined };
+  private _parent: IComponent;
   id: string;
 
   private _onPropertyChanged = new EventDispatcher<ManagedComponent, string>();
@@ -17,7 +18,7 @@ export class ManagedComponent implements IManagedComponent {
   }
 
   constructor(
-    parent: { [componentId: string]: IComponent | string | string[] | boolean | number[] | number | undefined },
+    parent: IComponent,
     id: string,
     data: IComponent | string | string[] | boolean | number[] | number | undefined
   ) {
@@ -35,7 +36,9 @@ export class ManagedComponent implements IManagedComponent {
   }
 
   setData(newData: IComponent | string | string[] | boolean | number[] | number | undefined) {
-    this._parent[this.id] = newData;
+    if (Utilities.isUsableAsObjectKey(this.id)) {
+      this._parent[this.id] = newData;
+    }
     this._data = newData;
   }
 
@@ -65,7 +68,7 @@ export class ManagedComponent implements IManagedComponent {
       }
     }
 
-    if (this._data && typeof this._data !== "string") {
+    if (this._data && typeof this._data !== "string" && Utilities.isUsableAsObjectKey(propertyId)) {
       (this._data as any)[propertyId] = value;
     }
   }

@@ -1,0 +1,19 @@
+{
+  "format_version": 2,
+  "header": {
+    "description": "Test behavior pack for spawn rules dependency tracking",
+    "name": "Test Spawn Rules BP",
+    "uuid": "12345678-1234-1234-1234-123456789012",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 20, 0]
+  },
+  "modules": [
+    {
+      "description": "Test behavior pack",
+      "type": "data",
+      "uuid": "22345678-1234-1234-1234-123456789012",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": []
+}

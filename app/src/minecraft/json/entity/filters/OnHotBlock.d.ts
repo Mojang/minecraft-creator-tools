@@ -19,7 +19,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * On Hot Block (on_hot_block)
+ * Hot Block (on_hot_block)
  * Tests if the subject is on a hot block.
  */
 export default interface OnHotBlock {

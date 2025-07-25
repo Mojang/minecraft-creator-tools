@@ -183,6 +183,10 @@
       }
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Returns true if the subject entity is the variant number provided.",
   "title": "Is Variant",
   "samples": {

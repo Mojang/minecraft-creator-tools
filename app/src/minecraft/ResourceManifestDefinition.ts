@@ -83,6 +83,30 @@ export default class ResourceManifestDefinition {
     this.definition.metadata.product_type = value;
   }
 
+  get subpacks() {
+    if (!this.definition || !this.definition.subpacks) {
+      return undefined;
+    }
+
+    return this.definition.subpacks;
+  }
+
+  get capabilities() {
+    if (!this.definition || !this.definition.capabilities) {
+      return undefined;
+    }
+
+    return this.definition.capabilities;
+  }
+
+  get version() {
+    if (!this.definition || !this.definition.header || !this.definition.header.version) {
+      return undefined;
+    }
+
+    return this.definition.header.version;
+  }
+
   public get name() {
     if (this.definition && this.definition.header) {
       return this.definition.header.name;

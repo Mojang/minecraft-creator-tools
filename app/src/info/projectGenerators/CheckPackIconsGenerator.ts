@@ -5,7 +5,7 @@ import ProjectInfoItem from "../ProjectInfoItem";
 import Pack, { PackType } from "../../minecraft/Pack";
 import { InfoItemType } from "../IInfoItemData";
 import ProjectInfoUtilities from "../ProjectInfoUtilities";
-import { isPackIcon, parseImageData } from "../../storage/ImageUtilites";
+import { isPackIcon, parseImageMetadata } from "../../storage/ImageUtilites";
 
 enum CheckPacksIconsGeneratorTest {
   NoIconFound = 101,
@@ -28,7 +28,7 @@ const IconMinWidth = 2;
  *
  */
 export default class CheckPackIconsGenerator implements IProjectInfoGenerator {
-  id: string = "CPI";
+  id: string = "CPACKICON";
   title: string = "Check Pack Icon Generator";
   canAlwaysProcess = true;
 
@@ -38,7 +38,7 @@ export default class CheckPackIconsGenerator implements IProjectInfoGenerator {
     const results: ProjectInfoItem[] = [];
 
     for (const pack of project.packs) {
-      if (pack.type !== PackType.skin) {
+      if (requiresPackIcon(pack)) {
         const result = await this.getResultForPack(pack);
         if (result) {
           results.push(result);
@@ -68,7 +68,7 @@ export default class CheckPackIconsGenerator implements IProjectInfoGenerator {
     }
 
     const file = icons[0];
-    const image = await parseImageData(file);
+    const image = await parseImageMetadata(file);
 
     if (!image?.ImageWidth || !image?.ImageHeight) {
       const message = `Pack Image (${file.name}) is not valid`;
@@ -90,4 +90,7 @@ export default class CheckPackIconsGenerator implements IProjectInfoGenerator {
   private isValidSize(width: number, height: number) {
     return width !== height || width < IconMinWidth || width > IconMaxWidth || (width & (width - 1)) !== 0;
   }
+}
+function requiresPackIcon(pack: Pack): pack is Pack {
+  return pack.type !== PackType.skin && pack.type !== PackType.design;
 }

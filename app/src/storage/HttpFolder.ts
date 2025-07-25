@@ -63,6 +63,8 @@ export default class HttpFolder extends FolderBase implements IFolder {
   }
 
   ensureFile(name: string): HttpFile {
+    Log.assert(name.indexOf("/") < 0, "Unexpected to find / in file name: " + name);
+
     const nameCanon = StorageUtilities.canonicalizeName(name);
 
     let candFile = this.files[nameCanon];
@@ -97,6 +99,7 @@ export default class HttpFolder extends FolderBase implements IFolder {
   }
 
   ensureFolder(name: string): HttpFolder {
+    Log.assert(name.indexOf("/") < 0, "Unexpected to find / in folder name: " + name);
     const nameCanon = StorageUtilities.canonicalizeName(name);
 
     let candFolder = this.folders[nameCanon];

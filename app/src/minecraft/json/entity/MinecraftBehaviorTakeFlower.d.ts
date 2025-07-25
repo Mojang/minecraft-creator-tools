@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.take_flower Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.take_flower": {
   "priority": 9,
@@ -63,7 +63,7 @@ export default interface MinecraftBehaviorTakeFlower {
    * Conditions that need to be met for the behavior to start.
    * 
    * Sample Values:
-   * Villager V2: {"all_of":[{"test":"is_daytime","value":true}]}
+   * Villager v2: {"all_of":[{"test":"is_daytime","value":true}]}
    *
    *
    */
@@ -111,7 +111,7 @@ export default interface MinecraftBehaviorTakeFlower {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 9
+   * Villager v2: 9
    *
    * Villager: 7
    *

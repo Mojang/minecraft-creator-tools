@@ -19,7 +19,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * On Fire (on_fire)
+ * Fire (on_fire)
  * Tests if the subject is on fire.
  */
 export default interface OnFire {

@@ -43,7 +43,7 @@ export default abstract class FolderBase implements IFolder {
   }
 
   get canIgnore() {
-    return StorageUtilities.canIgnoreFolders(this.name);
+    return StorageUtilities.isIgnorableFolder(this.name);
   }
 
   get allFiles(): AsyncIterable<IFile> {
@@ -221,13 +221,17 @@ export default abstract class FolderBase implements IFolder {
   _addExistingFolder(folder: IFolder) {
     const nameCanon = StorageUtilities.canonicalizeName(folder.name);
 
-    this.folders[nameCanon] = folder as this;
+    if (Utilities.isUsableAsObjectKey(nameCanon)) {
+      this.folders[nameCanon] = folder as this;
+    }
   }
 
   _clearExistingFolder(folder: IFolder) {
     const nameCanon = StorageUtilities.canonicalizeName(folder.name);
 
-    this.folders[nameCanon] = undefined;
+    if (Utilities.isUsableAsObjectKey(nameCanon)) {
+      this.folders[nameCanon] = undefined;
+    }
   }
 
   folderExists(name: string): boolean {
@@ -595,6 +599,10 @@ export default abstract class FolderBase implements IFolder {
 
   removeFolder(name: string): boolean {
     const nameCanon = StorageUtilities.canonicalizeName(name);
+
+    if (!Utilities.isUsableAsObjectKey(nameCanon)) {
+      throw new Error();
+    }
 
     const exists = this.folders[nameCanon] !== undefined;
 

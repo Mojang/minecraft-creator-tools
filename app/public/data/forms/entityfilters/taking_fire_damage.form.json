@@ -111,6 +111,10 @@
       "dataType": 1
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests if the subject is taking fire damage. Requires the damage_sensor component",
   "title": "Taking Fire Damage",
   "samples": {

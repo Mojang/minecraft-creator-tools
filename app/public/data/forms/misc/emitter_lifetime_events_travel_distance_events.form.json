@@ -3,7 +3,8 @@
     {
       "id": "distance",
       "title": "Distance",
-      "dataType": 3
+      "dataType": 3,
+      "isRequired": true
     },
     {
       "id": "effects",
@@ -19,7 +20,8 @@
             "fields": []
           }
         }
-      ]
+      ],
+      "isRequired": true
     }
   ],
   "title": "Emitter Lifetime Events Travel Distance Events Misc",

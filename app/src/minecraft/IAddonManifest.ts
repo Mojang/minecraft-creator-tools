@@ -48,6 +48,16 @@ export interface ISkinPackManifest {
   capabilities?: string[];
 }
 
+export interface IDesignPackManifest {
+  format_version: number;
+  __comment__?: string;
+  header: IResourceAddonManifestHeader;
+  modules: IAddonModule[];
+  dependencies: IAddonDependency[];
+  metadata?: IAddonMetadata;
+  capabilities?: string[];
+}
+
 export interface IAddonManifestHeader {
   description: string;
   name: string;

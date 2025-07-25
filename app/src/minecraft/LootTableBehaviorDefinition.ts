@@ -5,6 +5,12 @@ import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import ILootTableBehavior from "./ILootTableBehavior";
+import Project from "../app/Project";
+import ProjectItem from "../app/ProjectItem";
+import { ProjectItemType } from "../app/IProjectItemData";
+import ItemTypeDefinition from "./ItemTypeDefinition";
+import Utilities from "../core/Utilities";
+import Database from "./Database";
 
 export default class LootTableBehaviorDefinition {
   private _file?: IFile;
@@ -63,6 +69,46 @@ export default class LootTableBehaviorDefinition {
     return ltb;
   }
 
+  getTargetItemTypeIdList() {
+    if (!this.data || !this.data.pools) {
+      return;
+    }
+
+    const targetItems: string[] = [];
+
+    for (const pool of this.data.pools) {
+      if (pool.entries) {
+        for (const entry of pool.entries) {
+          if (entry.type === "item" && entry.name) {
+            targetItems.push(entry.name);
+          }
+        }
+      }
+    }
+
+    return targetItems;
+  }
+
+  getTargetLootTablePathList() {
+    if (!this.data || !this.data.pools) {
+      return;
+    }
+
+    const targetLootTablePaths: string[] = [];
+
+    for (const pool of this.data.pools) {
+      if (pool.entries) {
+        for (const entry of pool.entries) {
+          if (entry.type === "loot_table" && entry.name) {
+            targetLootTablePaths.push(this.canonicalizeLootTablePath(entry.name));
+          }
+        }
+      }
+    }
+
+    return targetLootTablePaths;
+  }
+
   persist() {
     if (this._file === undefined) {
       return;
@@ -87,5 +133,71 @@ export default class LootTableBehaviorDefinition {
     this.data = StorageUtilities.getJsonObject(this._file);
 
     this._isLoaded = true;
+  }
+
+  canonicalizeLootTablePath(lootTablePath: string) {
+    lootTablePath = Utilities.ensureNotStartsWithSlash(lootTablePath);
+
+    const lastPeriod = lootTablePath.lastIndexOf(".");
+
+    if (lastPeriod > 0) {
+      lootTablePath = lootTablePath.substring(0, lastPeriod);
+    }
+
+    return lootTablePath.toLowerCase();
+  }
+
+  async addChildItems(project: Project, item: ProjectItem) {
+    const itemsCopy = project.getItemsCopy();
+
+    let itemList = this.getTargetItemTypeIdList();
+    let lootTableList = this.getTargetLootTablePathList();
+
+    for (const candItem of itemsCopy) {
+      if (candItem.itemType === ProjectItemType.itemTypeBehavior && itemList) {
+        await candItem.ensureStorage();
+
+        if (candItem.defaultFile) {
+          const itemType = await ItemTypeDefinition.ensureOnFile(candItem.defaultFile);
+
+          if (itemType) {
+            if (itemList.includes(itemType.id)) {
+              item.addChildItem(candItem);
+              itemList = Utilities.removeItemInArray(itemType.id, itemList);
+              continue;
+            }
+          }
+        }
+      } else if (candItem.itemType === ProjectItemType.lootTableBehavior && lootTableList) {
+        await candItem.ensureStorage();
+
+        if (candItem.defaultFile) {
+          let lootTablePath = await candItem.getPackRelativePath();
+
+          if (lootTablePath) {
+            lootTablePath = this.canonicalizeLootTablePath(lootTablePath);
+            if (lootTableList.includes(lootTablePath)) {
+              item.addChildItem(candItem);
+              lootTableList = Utilities.removeItemInArray(lootTablePath, lootTableList);
+              continue;
+            }
+          }
+        }
+      }
+    }
+
+    if (itemList) {
+      for (const itemTypeId of itemList) {
+        const isVanilla = await Database.isVanillaToken(itemTypeId);
+        item.addUnfulfilledRelationship(itemTypeId, ProjectItemType.itemTypeBehavior, isVanilla);
+      }
+    }
+
+    if (lootTableList) {
+      for (const lootTablePath of lootTableList) {
+        const isVanilla = await Database.matchesVanillaPathFromIndex(lootTablePath);
+        item.addUnfulfilledRelationship(lootTablePath, ProjectItemType.lootTableBehavior, isVanilla);
+      }
+    }
   }
 }

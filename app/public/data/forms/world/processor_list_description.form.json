@@ -1,0 +1,13 @@
+{
+  "id": "Processor List Description",
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "description": "Identifier of the Processor List. This is referenced by Template Pools when pairing processors with Structure Templates.",
+      "dataType": 2,
+      "isRequired": true
+    }
+  ],
+  "title": "Processor List Description World"
+}

@@ -15,7 +15,7 @@
  * At Short (using Defaults)..: 
 { "test": "is_skin_id", "value": "0" }
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/events/minecraft:entity_transformed/sequence/2/sequence/0/filters/: 
 {
@@ -81,7 +81,7 @@ export default interface IsSkinId {
    * (Optional) The subject of this filter test.
    * 
    * Sample Values:
-   * Villager V2: "other"
+   * Villager v2: "other"
    *
    */
   subject: string;
@@ -90,7 +90,7 @@ export default interface IsSkinId {
    * @remarks
    * 
    * Sample Values:
-   * Villager V2: "is_skin_id"
+   * Villager v2: "is_skin_id"
    *
    */
   test: string;
@@ -100,7 +100,7 @@ export default interface IsSkinId {
    * (Required) An integer value.
    * 
    * Sample Values:
-   * Villager V2: 1, 2, 3, 4, 5
+   * Villager v2: 1, 2, 3, 4, 5
    *
    */
   value: number;

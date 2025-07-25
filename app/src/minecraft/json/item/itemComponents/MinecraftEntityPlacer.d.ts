@@ -77,7 +77,7 @@ My Sword Turtle - https://github.com/microsoft/minecraft-samples/tree/main/custo
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Entity Placer (minecraft:entity_placer)
+ * Minecraft Entity Placer Item (minecraft:entity_placer)
  * Allows an item to place entities into the world. Additionally, in
  * version 1.19.80 and above, the component allows the item to set
  * the spawn type of a monster spawner.
@@ -99,7 +99,7 @@ export default interface MinecraftEntityPlacer {
    * My Sword Turtle: "minecraft:turtle"
    *
    */
-  entity: { [key: string]: string };
+  entity: object;
 
   /**
    * @remarks

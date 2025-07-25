@@ -55,7 +55,7 @@ My Leggings - https://github.com/microsoft/minecraft-samples/tree/main/custom_it
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Enchantable (minecraft:enchantable)
+ * Minecraft Enchantable Item (minecraft:enchantable)
  * Determines what enchantments can be applied to the item. Not all
  * enchantments will have an effect on all item components.
  * Note: The following enchantment slot types that can be set for

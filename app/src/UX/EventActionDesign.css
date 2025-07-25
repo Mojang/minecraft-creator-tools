@@ -6,6 +6,14 @@
   padding: 4px 20px 4px 20px;
 }
 
+.ead-n-area {
+  width: calc(100% - 2px);
+  min-width: calc(100% - 2px);
+  max-width: calc(100% - 2px);
+  overflow-y: auto;
+  padding: 4px 4px 4px 4px;
+}
+
 .ead-areaNoScroll {
   width: calc(100% - 2px);
   min-width: calc(100% - 2px);
@@ -24,6 +32,13 @@
   padding-bottom: 8px;
   font-weight: bold;
   font-size: large;
+}
+
+.ead-n-header {
+  padding-top: 4px;
+  padding-bottom: 8px;
+  font-weight: bold;
+  font-size: medium;
 }
 
 .ead-codeSnippet {
@@ -50,12 +65,20 @@
   margin-bottom: 10px;
 }
 
+.ead-n-addTriggerArea {
+  margin-bottom: 10px;
+}
+
 .ead-addTriggerInstruction {
   grid-column: 1;
   padding-top: 6px;
 }
 
 .ead-addTriggerArea .ui-dropdown__container {
+  width: 220px;
+}
+
+.ead-n-addTriggerArea .ui-dropdown__container {
   width: 220px;
 }
 

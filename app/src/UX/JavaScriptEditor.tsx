@@ -145,12 +145,12 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       tslang.javascriptDefaults.setCompilerOptions({
         target: tslang.ScriptTarget.ESNext,
         module: tslang.ModuleKind.ESNext,
-        lib: ["es2020"],
+        lib: ["es2022"],
         allowNonTsExtensions: true,
       });
 
       tslang.typescriptDefaults.setCompilerOptions({
-        lib: ["es2020"],
+        lib: ["es2022"],
         allowJs: true,
         target: 99,
         allowNonTsExtensions: true,
@@ -189,9 +189,9 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
         let typeDefs: ITypeDefCatalog | null = null;
 
         if (this.props.project && this.props.project.scriptVersion === ProjectScriptVersion.stable10) {
-          typeDefs = Database.stableTypeDefs;
+          typeDefs = Database.stable10TypeDefs;
         } else {
-          typeDefs = Database.betaTypeDefs;
+          typeDefs = Database.stable20TypeDefs;
         }
 
         let globalUri = encodeURI("file://fs/global.d.ts");
@@ -255,11 +255,11 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
     let typeDefs: ITypeDefCatalog | null = null;
 
     if (this.props.project && this.props.project.scriptVersion === ProjectScriptVersion.stable10) {
-      await Database.loadStableScriptTypes();
-      typeDefs = Database.stableTypeDefs;
+      await Database.loadStable10ScriptTypes();
+      typeDefs = Database.stable10TypeDefs;
     } else {
-      await Database.loadBetaScriptTypes();
-      typeDefs = Database.betaTypeDefs;
+      await Database.loadStable20ScriptTypes();
+      typeDefs = Database.stable20TypeDefs;
     }
 
     await this._doUpdate();
@@ -334,6 +334,10 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
       return;
     }
 
+    if (this._modelReloadPending) {
+      return;
+    }
+
     this._modelReloadPending = true;
 
     window.setTimeout(this._updateModels, 50);
@@ -369,7 +373,7 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
         } else if (StorageUtilities.isFileStorageItem(childFile)) {
           const folder = await StorageUtilities.getFileStorageFolder(childFile);
 
-          if (folder) {
+          if (folder && typeof folder !== "string") {
             await this._loadModelsFromFolder(monacoInstance, folder);
           }
         }
@@ -579,11 +583,11 @@ export default class JavaScriptEditor extends Component<IJavaScriptEditorProps, 
   }
   async _doUpdate() {
     if (this.props.project && this.props.project.scriptVersion === ProjectScriptVersion.stable10) {
-      if (!Database.stableTypeDefs) {
-        await Database.loadStableScriptTypes();
+      if (!Database.stable10TypeDefs) {
+        await Database.loadStable10ScriptTypes();
       }
-    } else if (!Database.betaTypeDefs) {
-      await Database.loadBetaScriptTypes();
+    } else if (!Database.stable20TypeDefs) {
+      await Database.loadStable20ScriptTypes();
     }
   }
 

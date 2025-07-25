@@ -18,6 +18,14 @@ Block Fabricator - https://github.com/microsoft/minecraft-samples/tree/main/casu
   "catch_chance_modifier": 5
 }
 
+
+Block Leaf Pile - https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/blocks/leaf_pile.block.json
+
+"minecraft:flammable": {
+  "destroy_chance_modifier": 100,
+  "catch_chance_modifier": 100
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -54,6 +62,8 @@ export default interface MinecraftFlammable {
    * Block Fabricator: 5
    *
    *
+   * Block Leaf Pile: 100
+   *
    */
   catch_chance_modifier: number;
 
@@ -70,6 +80,8 @@ export default interface MinecraftFlammable {
    * Sample Values:
    * Block Fabricator: 20
    *
+   *
+   * Block Leaf Pile: 100
    *
    */
   destroy_chance_modifier: number;

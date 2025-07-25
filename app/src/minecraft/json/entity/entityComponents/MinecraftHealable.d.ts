@@ -60,6 +60,10 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "heal_amount": 3
     },
     {
+      "item": "carrot",
+      "heal_amount": 3
+    },
+    {
       "item": "golden_carrot",
       "heal_amount": 4
     },

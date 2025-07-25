@@ -13,7 +13,8 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Damage Absorption (minecraft:damage_absorption)
+ * Minecraft Damage Absorption Item 
+ * (minecraft:damage_absorption)
  * It allows an item to absorb damage that would otherwise be
  * dealt to its wearer. For this to happen, the item needs to be
  * equipped in an armor slot. The absorbed damage reduces the

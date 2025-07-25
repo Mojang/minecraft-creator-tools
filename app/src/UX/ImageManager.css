@@ -1,0 +1,26 @@
+.ifm-outer {
+  image-rendering: pixelated;
+}
+
+.ifm-image {
+  padding: 6px;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.ifm-float {
+  position: absolute;
+  margin-top: 3px;
+  margin-left: 3px;
+  z-index: 100;
+}
+
+.ifm-float BUTTON {
+  padding-left: 0px;
+  padding-right: 0px;
+  width: 36px;
+  min-width: inherit;
+}

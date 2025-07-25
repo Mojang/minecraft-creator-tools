@@ -51,17 +51,11 @@
       "id": "entity",
       "title": "Entity",
       "description": "The entity to be placed in the world.",
-      "dataType": 24,
+      "dataType": 16,
       "validity": [
         {
           "comparison": "pattern",
           "value": "^(?:\\w+(?:\\.\\w+)*:(?=\\w))?(?:\\w+(?:\\.\\w+)*)(?:<((?:\\w+(?:\\.\\w+)*:(?=\\w))?\\w+(?:\\.\\w+)*)*>)?$"
-        }
-      ],
-      "alternates": [
-        {
-          "id": "entity",
-          "dataType": 24
         }
       ],
       "samples": {
@@ -207,6 +201,6 @@
       }
     ]
   },
-  "title": "Entity Placer",
+  "title": "Minecraft Entity Placer Item",
   "id": "minecraft:entity_placer"
 }

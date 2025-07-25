@@ -7,6 +7,7 @@ import IComponentGroup from "./IComponentGroup";
 import IManagedComponentSetItem from "./IManagedComponentSetItem";
 import IManagedComponent from "./IManagedComponent";
 import IComponent from "./IComponent";
+import Utilities from "../core/Utilities";
 
 export default class ManagedComponentGroup implements IManagedComponentSetItem {
   _data?: IComponentGroup;
@@ -24,6 +25,10 @@ export default class ManagedComponentGroup implements IManagedComponentSetItem {
     this._managed = {};
 
     this.id = id;
+  }
+
+  getData() {
+    return this._data;
   }
 
   public get onComponentAdded() {
@@ -55,14 +60,16 @@ export default class ManagedComponentGroup implements IManagedComponentSetItem {
         ? componentOrData
         : new ManagedComponent(this._data, id, componentOrData);
 
-    this._data[mc.id] = mc.getData();
-    this._managed[mc.id] = mc;
+    if (Utilities.isUsableAsObjectKey(mc.id)) {
+      this._data[mc.id] = mc.getData();
+      this._managed[mc.id] = mc;
+    }
 
     return mc;
   }
 
   removeComponent(id: string) {
-    if (!this._data) {
+    if (!this._data || !Utilities.isUsableAsObjectKey(id)) {
       return;
     }
 
@@ -80,6 +87,10 @@ export default class ManagedComponentGroup implements IManagedComponentSetItem {
 
     if (!this._managed) {
       this._managed = {};
+    }
+
+    if (!Utilities.isUsableAsObjectKey(id)) {
+      throw new Error();
     }
 
     if (!this._managed[id]) {

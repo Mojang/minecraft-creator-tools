@@ -1,5 +1,11 @@
 {
   "info": {
+    "capabilities": [
+      "behaviorAnimations",
+      "behaviorPack",
+      "resourcePack",
+      "scripting"
+    ],
     "behaviorPackManifestCount": 1,
     "unknownJsonCount": 0,
     "entityTypeManifestCount": 3,
@@ -10,67 +16,154 @@
     "entityTypeResourceCount": 3,
     "behaviorPackAnimationCount": 1,
     "behaviorPackAnimationControllerCount": 1,
-    "overallSize": 108507,
-    "fileCounts": 41,
-    "folderCounts": 25,
+    "overallSize": 7069154,
+    "fileCounts": 57,
+    "folderCounts": 28,
     "contentSize": 108507,
     "contentFileCounts": 41,
-    "contentFolderCounts": 20,
+    "contentFolderCounts": 21,
     "defaultBehaviorPackUuid": "9ec8af93-4b38-429f-a4bd-7e277a50d238",
     "defaultIcon": "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",
     "defaultBehaviorPackMinEngineVersion": "1.20.0",
+    "minBehaviorPackMinEngineVersionString": "1.20.0",
+    "minBehaviorPackMinEngineVersion": 11020000,
     "defaultBehaviorPackName": "Add-on Pack More Mobs Behaviors - (pack.name)",
     "defaultBehaviorPackDescription": "Adds a set of mobs you can use in your worlds - (pack.description)",
     "defaultResourcePackUuid": "9d6dad89-6e29-46ba-83d5-490a4901caef",
     "defaultResourcePackMinEngineVersion": "1.20.0",
+    "minResourcePackMinEngineVersionString": "1.20.0",
+    "minResourcePackMinEngineVersion": 11020000,
     "defaultResourcePackName": "Add-on Pack More Mobs Behaviors - (pack.name)",
     "defaultResourcePackDescription": "Adds a set of mobs you can use in your worlds - (pack.description)",
     "subpackCount": 0,
-    "subpackTier1Count": 0,
-    "subpackTier2Count": 0,
-    "subpackTier3Count": 0,
-    "subpackTier4Count": 0,
-    "subpackTier5Count": 0,
-    "subpackTier6Count": 0,
-    "subpackTier7Count": 0,
-    "subpackTier8Count": 0,
-    "subpackTier9Count": 0,
-    "subpackTier10Count": 0,
-    "subpackTier11Count": 0,
-    "subpackTier12Count": 0,
-    "subpackTier13Count": 0,
-    "subpackTier14Count": 0,
-    "subpackTier15Count": 0,
-    "subpackTier16Count": 0,
-    "subpackTier17Count": 0,
-    "subpackTier18Count": 0,
-    "subpackTier19Count": 0,
-    "subpackTier20Count": 0,
-    "subpackTier21Count": 0,
-    "subpackTier22Count": 0,
-    "subpackTier23Count": 0,
-    "subpackTier24Count": 0,
-    "subpackTier25Count": 0,
-    "subpackTier26Count": 0,
-    "subpackTier27Count": 0,
-    "subpackTier28Count": 0,
-    "subpackTier29Count": 0,
-    "subpackTier30Count": 0,
-    "subpackTier31Count": 0,
-    "subpackTier32Count": 0,
-    "subpackTier33Count": 0,
-    "subpackTier34Count": 0,
-    "subpackTier35Count": 0,
-    "subpackTier36Count": 0,
-    "subpackTier37Count": 0,
-    "subpackTier38Count": 0,
-    "subpackTier39Count": 0,
-    "subpackTier40Count": 0,
+    "entityTypeComponents": [
+      "ageable",
+      "angry",
+      "attack",
+      "balloonable",
+      "behavior.breed",
+      "behavior.eat_block",
+      "behavior.float",
+      "behavior.follow_parent",
+      "behavior.go_home",
+      "behavior.hurt_by_target",
+      "behavior.lay_egg",
+      "behavior.look_at_player",
+      "behavior.melee_attack",
+      "behavior.mount_pathing",
+      "behavior.move_to_land",
+      "behavior.move_to_water",
+      "behavior.nearest_attackable_target",
+      "behavior.panic",
+      "behavior.random_look_around",
+      "behavior.random_stroll",
+      "behavior.random_swim",
+      "behavior.stomp_attack",
+      "behavior.tempt",
+      "breathable",
+      "breedable",
+      "can_climb",
+      "collision_box",
+      "conditional_bandwidth_optimization",
+      "damage_sensor",
+      "despawn",
+      "experience_reward",
+      "follow_range",
+      "health",
+      "home",
+      "hurt_on_condition",
+      "interact",
+      "is_baby",
+      "is_sheared",
+      "jump.static",
+      "leashable",
+      "loot",
+      "movement",
+      "movement.amphibious",
+      "movement.basic",
+      "nameable",
+      "navigation.generic",
+      "navigation.walk",
+      "on_friendly_anger",
+      "on_target_acquired",
+      "physics",
+      "pushable",
+      "rideable",
+      "scale",
+      "type_family",
+      "underwater_movement",
+      "water_movement"
+    ],
+    "blockTypeComponents": [],
+    "itemTypeComponents": [],
+    "apisUsed": [
+      "BlockPermutation",
+      "afterEvents",
+      "block",
+      "button",
+      "buttonPush",
+      "getBlock",
+      "getDefaultSpawnLocation",
+      "getDimension",
+      "getPlayers",
+      "location",
+      "matches",
+      "overworld",
+      "permutation",
+      "players",
+      "resolve",
+      "sendMessage",
+      "setPermutation",
+      "spawnEntity",
+      "static",
+      "subscribe",
+      "system",
+      "world"
+    ],
+    "mctoolsVersion": 10002009,
+    "itemTypes": [
+      "Animation",
+      "Audio",
+      "Behavior pack",
+      "Behavior pack animation",
+      "Behavior pack animation controller",
+      "Behavior pack manifest",
+      "Entity type",
+      "Entity type visuals/audio",
+      "Icon",
+      "JavaScript",
+      "Language catalog",
+      "Language translations",
+      "Loot table",
+      "Marketing image",
+      "Material",
+      "Model",
+      "Music catalog",
+      "Particle",
+      "Resource pack",
+      "Resource pack manifest",
+      "Sound catalog",
+      "Spawn rule",
+      "Store image",
+      "Texture"
+    ],
     "animationCount": 0,
-    "textureCount": 0,
+    "textureCount": 4,
+    "textureTexelSize": 20480,
+    "minimumSupportablePerformanceTier": 0,
+    "invalidCommandSyntaxCount": 0,
+    "linesWithSlashCount": 0,
+    "multipleSoundsManifests": 0,
+    "soundsDefinitionManifestFormatIsValid": 0,
+    "soundsDefinitionManifestIsNotValidJson": 0,
+    "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
     "worldLoadErrors": 0,
+    "commands": [
+      "say",
+      "summon"
+    ],
     "featureSets": {
       "Behavior pack manifest Size": {
         "Instance Count": 1,
@@ -331,6 +424,20 @@
         "Min": 1489,
         "Average": 2293
       },
+      "Marketing image Size": {
+        "Instance Count": 8,
+        "Total": 5565201,
+        "Max": 809093,
+        "Min": 369231,
+        "Average": 695650
+      },
+      "Store image Size": {
+        "Instance Count": 8,
+        "Total": 1395446,
+        "Max": 508820,
+        "Min": 26393,
+        "Average": 174431
+      },
       "Entity Type Default Components": {
         "minecraft:type_family": 2,
         "minecraft:breathable": 3,
@@ -404,6 +511,72 @@
       },
       "Sound Individual sounds": {
         "events": 1
+      },
+      "apisUsed world": {
+        "Count": 2
+      },
+      "apisUsed system": {
+        "Count": 1
+      },
+      "apisUsed BlockPermutation": {
+        "Count": 1
+      },
+      "apisUsed sendMessage": {
+        "Count": 1
+      },
+      "apisUsed getDefaultSpawnLocation": {
+        "Count": 1
+      },
+      "apisUsed getDimension": {
+        "Count": 2
+      },
+      "apisUsed players": {
+        "Count": 1
+      },
+      "apisUsed getPlayers": {
+        "Count": 1
+      },
+      "apisUsed location": {
+        "Count": 1
+      },
+      "apisUsed block": {
+        "Count": 1
+      },
+      "apisUsed getBlock": {
+        "Count": 2
+      },
+      "apisUsed permutation": {
+        "Count": 1
+      },
+      "apisUsed matches": {
+        "Count": 1
+      },
+      "apisUsed overworld": {
+        "Count": 2
+      },
+      "apisUsed button": {
+        "Count": 1
+      },
+      "apisUsed setPermutation": {
+        "Count": 2
+      },
+      "apisUsed resolve": {
+        "Count": 1
+      },
+      "apisUsed afterEvents": {
+        "Count": 1
+      },
+      "apisUsed buttonPush": {
+        "Count": 1
+      },
+      "apisUsed subscribe": {
+        "Count": 1
+      },
+      "apisUsed spawnEntity": {
+        "Count": 1
+      },
+      "apisUsed static": {
+        "Count": 1
       },
       "Animations Resource": {
         "Count": 8
@@ -607,6 +780,132 @@
         "Min": 16384,
         "Average": 16384
       },
+      "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 81920,
+        "Max": 81920,
+        "Min": 81920,
+        "Average": 81920
+      },
+      "Texture Images Tier0 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier0 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier1 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 81920,
+        "Max": 81920,
+        "Min": 81920,
+        "Average": 81920
+      },
+      "Texture Images Tier1 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier1 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier2 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 81920,
+        "Max": 81920,
+        "Min": 81920,
+        "Average": 81920
+      },
+      "Texture Images Tier2 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier2 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier3 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 81920,
+        "Max": 81920,
+        "Min": 81920,
+        "Average": 81920
+      },
+      "Texture Images Tier3 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier3 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier4 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 81920,
+        "Max": 81920,
+        "Min": 81920,
+        "Average": 81920
+      },
+      "Texture Images Tier4 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier4 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier5 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 81920,
+        "Max": 81920,
+        "Min": 81920,
+        "Average": 81920
+      },
+      "Texture Images Tier5 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier5 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
       "Entity Geometry Cubes": {
         "Instance Count": 3,
         "Total": 34,
@@ -633,16 +932,16 @@
         "Count": 1
       }
     },
-    "errorCount": 0,
+    "errorCount": 1,
     "internalProcessingErrorCount": 0,
-    "warningCount": 36,
-    "testSuccessCount": 27,
-    "testFailCount": 0,
-    "testNotApplicableCount": 6,
-    "errorSummary": "",
+    "warningCount": 10,
+    "testSuccessCount": 32,
+    "testFailCount": 1,
+    "testNotApplicableCount": 7,
+    "errorSummary": "ERROR: [SOUNDSDEFINITION102] Invalid Sounds Definition Manifest: Expected number, received null at sound_definitions/ambientsounds.co2/max_distance, Expected number, received null at sound_definitions/ambientsounds.co2/min_distance, Expected number, received null at sound_definitions/ambientsounds.co_doesnotexist/max_distance, Expected number, received null at sound_definitions/ambientsounds.co_doesnotexist/min_distance, Expected object, received string at format_version, Required at sound_definitions/sounds",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "WARNING: [JSON144] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) minimum /minecraft:spawn_rules/conditions/0/minecraft:distance_filter/min must be >= 24\r\nWARNING: [JSON144] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) minimum /minecraft:spawn_rules/conditions/1/minecraft:distance_filter/min must be >= 24\r\nWARNING: [JSON144] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) minimum /minecraft:spawn_rules/conditions/2/minecraft:distance_filter/min must be >= 24\r\nWARNING: [JSON144] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) minimum /minecraft:spawn_rules/conditions/3/minecraft:distance_filter/min must be >= 24\r\nWARNING: [JSON144] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) minimum /minecraft:spawn_rules/conditions/4/minecraft:distance_filter/min must be >= 24\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: ambientsounds.co2_notexists\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: ambientsounds.co2_extranotexists\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: individual_event_sound_that_does_not_exist\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: aop_mobs:mob_that_does_not_exist\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: ambientsounds.co2_notexists\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: ambientsounds.co2_extranotexists\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: individual_event_sound_that_does_not_exist\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: aop_mobs:mob_that_does_not_exist\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Link to texture is not found in this pack: textures/aop/moremobs/biceson_filethatdoesnotexist\r\nWARNING: [UNLINK204] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Link to texture is not found in this pack: textures/aop/moremobs/biceson_filethatdoesnotexist",
-    "testFailSummary": "",
+    "warningSummary": "WARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_notexists`\r\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_extranotexists`\r\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `individual_event_sound_that_does_not_exist`\r\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:mob_that_does_not_exist`\r\nWARNING: [UNLINK399] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Link to texture is not found in this pack: /Content/resource_packs/aop_mobsrp/entity/biceson.entity.json to `textures/aop/moremobs/biceson_filethatdoesnotexist`\r\nWARNING: [UNLINK351] (/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json) Link to sound catalog is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds/music_definitions.json to `ambientsounds.cofoo_doesnotexist`\r\nWARNING: [UNLINK408] (/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json) Link to audio is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json to `sounds/ambientsounds/co_doesnotexist`\r\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/sounds/ambientsounds/co3_unlinked.ogg) Audio does not have any items in this pack that are using this.\r\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.png) Texture does not have any items in this pack that are using this.\r\nWARNING: [UNLINK191] (/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png) Texture does not have any items in this pack that are using this.",
+    "testFailSummary": "TESTFAIL: [SOUNDSDEFINITION000] Found 1 errors for Sounds Definition Manifest Validation (SOUNDSDEFINITION).",
     "summary": {
       "ITEMS": {
         "1": {
@@ -650,103 +949,111 @@
           "defaultMessage": "Minimum Definition of a Pack (ITEMS) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "2": {
-          "title": "2",
+        "102": {
+          "title": "102",
           "defaultMessage": "Behavior pack manifest found"
         },
-        "3": {
-          "title": "3",
+        "103": {
+          "title": "103",
           "defaultMessage": "Resource pack manifest found"
         },
-        "102": {
+        "202": {
           "title": "JavaScript count",
           "defaultMessage": "JavaScript item count"
         },
-        "105": {
+        "205": {
           "title": "Behavior pack manifest count",
           "defaultMessage": "Behavior pack manifest item count"
         },
-        "110": {
+        "210": {
           "title": "Entity type count",
           "defaultMessage": "Entity type item count"
         },
-        "114": {
+        "214": {
           "title": "Resource pack manifest count",
           "defaultMessage": "Resource pack manifest item count"
         },
-        "119": {
+        "219": {
           "title": "Behavior pack animation count",
           "defaultMessage": "Behavior pack animation item count"
         },
-        "120": {
+        "220": {
           "title": "Behavior pack animation controller count",
           "defaultMessage": "Behavior pack animation controller item count"
         },
-        "124": {
+        "224": {
           "title": "Loot table count",
           "defaultMessage": "Loot table item count"
         },
-        "127": {
+        "227": {
           "title": "Sound catalog count",
           "defaultMessage": "Sound catalog item count"
         },
-        "128": {
+        "228": {
           "title": "Animation count",
           "defaultMessage": "Animation item count"
         },
-        "130": {
+        "230": {
           "title": "Entity type visuals/audio count",
           "defaultMessage": "Entity type visuals/audio item count"
         },
-        "132": {
+        "232": {
           "title": "Model count",
           "defaultMessage": "Model item count"
         },
-        "133": {
+        "233": {
           "title": "Particle count",
           "defaultMessage": "Particle item count"
         },
-        "137": {
+        "237": {
           "title": "Language catalog count",
           "defaultMessage": "Language catalog item count"
         },
-        "144": {
+        "244": {
           "title": "Spawn rule count",
           "defaultMessage": "Spawn rule item count"
         },
-        "150": {
+        "250": {
           "title": "Music catalog count",
           "defaultMessage": "Music catalog item count"
         },
-        "151": {
+        "251": {
           "title": "Sound catalog count",
           "defaultMessage": "Sound catalog item count"
         },
-        "179": {
+        "279": {
           "title": "Language translations count",
           "defaultMessage": "Language translations item count"
         },
-        "183": {
+        "283": {
           "title": "Material count",
           "defaultMessage": "Material item count"
         },
-        "199": {
+        "299": {
           "title": "Texture count",
           "defaultMessage": "Texture item count"
         },
-        "203": {
+        "300": {
+          "title": "Marketing image count",
+          "defaultMessage": "Marketing image item count"
+        },
+        "301": {
+          "title": "Store image count",
+          "defaultMessage": "Store image item count"
+        },
+        "303": {
           "title": "Icon count",
           "defaultMessage": "Icon item count"
         },
-        "208": {
+        "308": {
           "title": "Audio count",
           "defaultMessage": "Audio item count"
         },
-        "209": {
+        "309": {
           "title": "Behavior pack count",
           "defaultMessage": "Behavior pack item count"
         },
-        "210": {
+        "310": {
           "title": "Resource pack count",
           "defaultMessage": "Resource pack item count"
         }
@@ -833,6 +1140,14 @@
           "title": "Texture",
           "defaultMessage": "Texture file size"
         },
+        "200": {
+          "title": "Marketing image",
+          "defaultMessage": "Marketing image file size"
+        },
+        "201": {
+          "title": "Store image",
+          "defaultMessage": "Store image file size"
+        },
         "203": {
           "title": "Icon",
           "defaultMessage": "Icon file size"
@@ -852,23 +1167,26 @@
       },
       "PACKSIZE": {
         "1": {
-          "title": "Overall Size",
+          "title": "Test Success",
           "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "2": {
+        "101": {
+          "title": "Overall Size"
+        },
+        "102": {
           "title": "File Count"
         },
-        "3": {
+        "103": {
           "title": "Folder Count"
         },
-        "4": {
+        "104": {
           "title": "Content Size"
         },
-        "5": {
+        "105": {
           "title": "Content File Count"
         },
-        "6": {
+        "106": {
           "title": "Content Folder Count"
         }
       },
@@ -878,78 +1196,82 @@
           "defaultMessage": "General info (PACK) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "4": {
-          "title": "4",
+        "104": {
+          "title": "104",
           "defaultMessage": "Behavior Pack Name"
         },
-        "5": {
-          "title": "5",
+        "105": {
+          "title": "105",
           "defaultMessage": "Behavior Pack Description"
         },
-        "6": {
-          "title": "6",
+        "106": {
+          "title": "106",
           "defaultMessage": "Behavior Pack Id"
         },
-        "7": {
-          "title": "7",
+        "107": {
+          "title": "107",
           "defaultMessage": "Behavior Pack Min Engine Version"
         },
-        "8": {
-          "title": "8",
+        "108": {
+          "title": "108",
           "defaultMessage": "Behavior Pack Uuid"
         },
-        "9": {
-          "title": "9",
+        "109": {
+          "title": "109",
           "defaultMessage": "Behavior Pack Manfiest"
         },
-        "11": {
-          "title": "11",
+        "111": {
+          "title": "111",
           "defaultMessage": "Resource Pack Min Engine Version"
         },
-        "12": {
-          "title": "12",
+        "112": {
+          "title": "112",
           "defaultMessage": "Resource Pack Uuid"
         },
-        "13": {
-          "title": "13",
+        "113": {
+          "title": "113",
           "defaultMessage": "Resource Pack Manifest"
         },
-        "14": {
-          "title": "14",
+        "114": {
+          "title": "114",
           "defaultMessage": "Resource Pack Name"
         },
-        "15": {
-          "title": "15",
+        "115": {
+          "title": "115",
           "defaultMessage": "Resource Pack Description"
         },
-        "16": {
-          "title": "16",
+        "116": {
+          "title": "116",
           "defaultMessage": "Resource Pack Id"
         },
-        "17": {
-          "title": "17",
+        "117": {
+          "title": "117",
           "defaultMessage": "Resource Pack Format Version"
         },
-        "145": {
-          "title": "145",
+        "245": {
+          "title": "245",
           "defaultMessage": "Entity Geometry"
         }
       },
       "JSONTAGS": {
         "1": {
-          "title": "Entity Type",
-          "defaultMessage": "Entity file",
+          "title": "Test Success",
+          "defaultMessage": "JSON Tags (JSONTAGS) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "6": {
+        "101": {
+          "title": "Entity Type",
+          "defaultMessage": "Entity file"
+        },
+        "106": {
           "title": "Sound Definition",
           "defaultMessage": "Sound definitions file"
         },
-        "7": {
+        "107": {
           "title": "Music Definition",
           "defaultMessage": "Music definitions file"
         },
-        "8": {
+        "108": {
           "title": "Sound",
           "defaultMessage": "Sounds file"
         }
@@ -972,7 +1294,7 @@
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.80)",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)",
           "recommendations": 3
         },
         "619": {
@@ -996,56 +1318,135 @@
           "defaultMessage": "Spawn rule format_version"
         }
       },
+      "SCRIPT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Script (SCRIPT) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "apisUsed"
+        }
+      },
+      "SUMMARY": {
+        "1": {
+          "title": "",
+          "defaultMessage": "Summary Information (SUMMARY) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "",
+          "defaultMessage": "Resource Manifests"
+        },
+        "102": {
+          "title": "",
+          "defaultMessage": "Behavior Manifests"
+        }
+      },
       "RESOURCEANIMATION": {
         "1": {
-          "title": "Animations",
+          "title": "Test Success",
           "defaultMessage": "Resource Animation (RESOURCEANIMATION) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "2": {
+        "101": {
+          "title": "Animations"
+        },
+        "102": {
           "title": "Bones"
         }
       },
       "TEXTURE": {
         "1": {
-          "title": "Textures",
+          "title": "Test Success",
           "defaultMessage": "Texture Validation (TEXTURE) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Textures"
         }
       },
       "TEXTUREREF": {
         "1": {
-          "title": "Texture References",
-          "defaultMessage": "Texture Refrences",
+          "title": "Test Success",
+          "defaultMessage": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Texture References"
         }
       },
       "TYPES": {
         "1": {
-          "title": "Types",
+          "title": "Test Success",
           "defaultMessage": "Types Info Aggregation (TYPES) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Types"
         }
       },
       "TEXTUREIMAGE": {
         "1": {
-          "title": "Texture Images",
+          "title": "Test Success",
           "defaultMessage": "Texture Image Validation (TEXTUREIMAGE) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Texture Images"
+        },
+        "200": {
+          "title": "Texture Images Tier0",
+          "defaultMessage": "Texture Images Tier 0"
+        },
+        "201": {
+          "title": "Texture Images Tier1",
+          "defaultMessage": "Texture Images Tier 1"
+        },
+        "202": {
+          "title": "Texture Images Tier2",
+          "defaultMessage": "Texture Images Tier 2"
+        },
+        "203": {
+          "title": "Texture Images Tier3",
+          "defaultMessage": "Texture Images Tier 3"
+        },
+        "204": {
+          "title": "Texture Images Tier4",
+          "defaultMessage": "Texture Images Tier 4"
+        },
+        "205": {
+          "title": "Texture Images Tier5",
+          "defaultMessage": "Texture Images Tier 5"
         }
       },
       "GEOMETRY": {
         "1": {
-          "title": "Block Geometry",
+          "title": "Test Success",
           "defaultMessage": "Model Geometry Validation (GEOMETRY) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "2": {
+        "101": {
+          "title": "Block Geometry"
+        },
+        "102": {
           "title": "Entity Geometry"
         },
-        "3": {
+        "103": {
           "title": "Item Geometry",
           "defaultMessage": "Items Geometry"
+        }
+      },
+      "SOUNDSDEFINITION": {
+        "0": {
+          "title": "Test Failure",
+          "defaultMessage": "Found 1 errors for Sounds Definition Manifest Validation (SOUNDSDEFINITION).",
+          "testCompleteFails": 1
+        },
+        "102": {
+          "title": "Invalid Sounds Definition Manifest",
+          "defaultMessage": "Invalid Sounds Definition Manifest: Expected number, received null at sound_definitions/ambientsounds.co2/max_distance, Expected number, received null at sound_definitions/ambientsounds.co2/min_distance, Expected number, received null at sound_definitions/ambientsounds.co_doesnotexist/max_distance, Expected number, received null at sound_definitions/ambientsounds.co_doesnotexist/min_distance, Expected object, received string at format_version, Required at sound_definitions/sounds",
+          "errors": 1
         }
       },
       "SCRIPTMODULE": {
@@ -1094,7 +1495,7 @@
         },
         "120": {
           "title": "Format Version Minor Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.80.03)",
+          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90.03)",
           "recommendations": 3
         }
       },
@@ -1115,20 +1516,8 @@
       },
       "JSON": {
         "1": {
-          "defaultMessage": "JSON Schema Validation (JSON) completed successfully",
+          "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
           "testCompleteSuccesses": 1
-        },
-        "132": {
-          "defaultMessage": "Property \"minecraft:geometry\" missing",
-          "warnings": 4
-        },
-        "133": {
-          "defaultMessage": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color type must be array",
-          "warnings": 10
-        },
-        "144": {
-          "defaultMessage": "minimum /minecraft:spawn_rules/conditions/0/minecraft:distance_filter/min must be >= 24",
-          "warnings": 5
         },
         "1110": {
           "defaultMessage": "Entity type is not at a current format version (is at 1.16.0)"
@@ -1142,22 +1531,25 @@
       },
       "WORLDDATA": {
         "1": {
-          "defaultMessage": "Blocks",
+          "defaultMessage": "World Data Validation (WORLDDATA) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "2": {
+        "121": {
+          "defaultMessage": "Blocks"
+        },
+        "122": {
           "defaultMessage": "Block Data"
         },
-        "3": {
+        "123": {
           "defaultMessage": "Command"
         },
-        "4": {
+        "124": {
           "defaultMessage": "Execute Sub Command"
         },
-        "5": {
+        "125": {
           "defaultMessage": "Level Dat"
         },
-        "6": {
+        "126": {
           "defaultMessage": "Level Dat Experiments"
         }
       },
@@ -1170,13 +1562,25 @@
           "defaultMessage": "Audio does not have any items in this pack that are using this.",
           "warnings": 3
         },
-        "204": {
-          "defaultMessage": "Link to sound catalog is not found in this pack",
-          "warnings": 14
-        },
         "205": {
-          "defaultMessage": "Link to vanilla Model item; avoid if possible",
+          "defaultMessage": "Link to vanilla item type item; avoid if possible",
           "recommendations": 6
+        },
+        "310": {
+          "defaultMessage": "Link to entity type is not found in this pack",
+          "warnings": 1
+        },
+        "351": {
+          "defaultMessage": "Link to sound catalog is not found in this pack",
+          "warnings": 4
+        },
+        "399": {
+          "defaultMessage": "Link to texture is not found in this pack",
+          "warnings": 1
+        },
+        "408": {
+          "defaultMessage": "Link to audio is not found in this pack",
+          "warnings": 1
         }
       },
       "SHARING": {
@@ -1199,10 +1603,16 @@
           "testCompleteSuccesses": 1
         }
       },
-      "CPI": {
+      "MCFUNCTION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test MC Function Validation (MCFUNCTION)"
+        }
+      },
+      "CPACKICON": {
         "1": {
           "title": "Test Success",
-          "defaultMessage": "Check Pack Icon Generator (CPI) completed successfully",
+          "defaultMessage": "Check Pack Icon Generator (CPACKICON) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
@@ -1210,6 +1620,20 @@
         "1": {
           "title": "Test Success",
           "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CPARTI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CSPJ": {
+        "1": {
+          "title": "Unknown Test: 1",
+          "defaultMessage": "Check Skin Pack Json Generator (CSPJ) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
@@ -1234,6 +1658,12 @@
       "UNKJSON": {
         "1": {
           "defaultMessage": "Unknown JSON (UNKJSON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "JSONF": {
+        "1": {
+          "defaultMessage": "JSON Structure Validation (via Minecraft docs) (JSONF) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
@@ -1271,151 +1701,163 @@
     {
       "iTp": 2,
       "gId": "ITEMS",
-      "gIx": 2,
+      "gIx": 102,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json"
     },
     {
       "iTp": 2,
       "gId": "ITEMS",
-      "gIx": 3,
+      "gIx": 103,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json"
     },
     {
       "iTp": 2,
       "gId": "ITEMS",
-      "gIx": 102,
+      "gIx": 202,
       "d": 2
     },
     {
       "iTp": 2,
       "gId": "ITEMS",
-      "gIx": 105,
-      "d": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 110,
-      "d": 3
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 114,
-      "d": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 119,
-      "d": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 120,
-      "d": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 124,
-      "d": 2
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 127,
-      "d": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 128,
-      "d": 3
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 130,
-      "d": 3
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 132,
-      "d": 3
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 133,
-      "d": 2
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 137,
-      "d": 2
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 144,
-      "d": 3
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 150,
-      "d": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 151,
-      "d": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 179,
-      "d": 2
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 183,
-      "d": 1
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 199,
-      "d": 4
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 203,
-      "d": 2
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 208,
-      "d": 2
-    },
-    {
-      "iTp": 2,
-      "gId": "ITEMS",
-      "gIx": 209,
+      "gIx": 205,
       "d": 1
     },
     {
       "iTp": 2,
       "gId": "ITEMS",
       "gIx": 210,
+      "d": 3
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 214,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 219,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 220,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 224,
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 227,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 228,
+      "d": 3
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 230,
+      "d": 3
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 232,
+      "d": 3
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 233,
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 237,
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 244,
+      "d": 3
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 250,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 251,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 279,
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 283,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 299,
+      "d": 4
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 300,
+      "d": 8
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 301,
+      "d": 8
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 303,
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 308,
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 309,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 310,
       "d": 1
     },
     {
@@ -1531,7 +1973,7 @@
       "iTp": 7,
       "gId": "LINESIZE",
       "gIx": 124,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json",
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/aop/mobs/sheepomelon.json",
       "fs": {
         "Size": {
           "Instance Count": 2,
@@ -1873,91 +2315,121 @@
     },
     {
       "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 200,
+      "p": "/Marketing Art/aopmoremobs_MarketingKeyArt.jpg",
+      "fs": {
+        "Size": {
+          "Instance Count": 8,
+          "Total": 5565201,
+          "Max": 809093,
+          "Min": 369231,
+          "Average": 695650
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 201,
+      "p": "/Store Art/aopmoremobs_packicon.jpg",
+      "fs": {
+        "Size": {
+          "Instance Count": 8,
+          "Total": 1395446,
+          "Max": 508820,
+          "Min": 26393,
+          "Average": 174431
+        }
+      }
+    },
+    {
+      "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 1,
+      "gIx": 101,
+      "d": 7069154
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 102,
+      "d": 57
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 103,
+      "d": 28
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 104,
       "d": 108507
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 2,
+      "gIx": 105,
       "d": 41
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 3,
-      "d": 25
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 4,
-      "d": 108507
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 5,
-      "d": 41
-    },
-    {
-      "iTp": 7,
-      "gId": "PACKSIZE",
-      "gIx": 6,
-      "d": 20
+      "gIx": 106,
+      "d": 21
     },
     {
       "iTp": 7,
       "gId": "PACK",
-      "gIx": 145
+      "gIx": 245
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 9,
+      "gIx": 109,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": "{\"format_version\":2,\"header\":{\"name\":\"pack.name\",\"description\":\"pack.description\",\"uuid\":\"9ec8af93-4b38-429f-a4bd-7e277a50d238\",\"version\":[1,0,0],\"min_engine_version\":[1,20,0]},\"metadata\":{\"product_type\":\"addon\"},\"modules\":[{\"description\":\"Behavior\",\"version\":[1,0,0],\"uuid\":\"2d59a3f6-d348-496d-a0c7-6d59ddb05c5e\",\"type\":\"data\"},{\"description\":\"Script resources\",\"language\":\"javascript\",\"type\":\"script\",\"uuid\":\"f43bb32a-c814-45e4-a428-3f4f1f59b2a3\",\"version\":[1,0,0],\"entry\":\"scripts/main.js\"}],\"dependencies\":[{\"uuid\":\"9d6dad89-6e29-46ba-83d5-490a4901caef\",\"version\":[1,0,0]},{\"module_name\":\"@minecraft/server\",\"version\":\"1.5.0\"},{\"module_name\":\"@minecraft/server-ui\",\"version\":\"1.1.0\"}]}"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 7,
+      "gIx": 107,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": 2
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 8,
+      "gIx": 108,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": "9ec8af93-4b38-429f-a4bd-7e277a50d238"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 6,
+      "gIx": 106,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": "9ec8af93-4b38-429f-a4bd-7e277a50d238|1.0.0"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 4,
+      "gIx": 104,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": "Add-on Pack More Mobs Behaviors - (pack.name)"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 5,
+      "gIx": 105,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": "Adds a set of mobs you can use in your worlds - (pack.description)"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 7,
+      "gIx": 107,
       "p": "/Content/behavior_packs/aop_mobsbp/manifest.json",
       "d": [
         1,
@@ -1968,49 +2440,49 @@
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 13,
+      "gIx": 113,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
       "d": "{\"format_version\":2,\"header\":{\"name\":\"pack.name\",\"description\":\"pack.description\",\"uuid\":\"9d6dad89-6e29-46ba-83d5-490a4901caef\",\"version\":[1,0,0],\"pack_scope\":\"world\",\"min_engine_version\":[1,20,0]},\"modules\":[{\"description\":\"Add-on Pack Resources\",\"type\":\"resources\",\"uuid\":\"523d72d2-3ba9-498a-bc63-8beb5fe268cb\",\"version\":[1,0,0]}],\"dependencies\":[{\"uuid\":\"9ec8af93-4b38-429f-a4bd-7e277a50d238\",\"version\":[1,0,0]}],\"metadata\":{\"product_type\":\"addon\"}}"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 17,
+      "gIx": 117,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
       "d": 2
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 12,
+      "gIx": 112,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
       "d": "9d6dad89-6e29-46ba-83d5-490a4901caef"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 16,
+      "gIx": 116,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
       "d": "9d6dad89-6e29-46ba-83d5-490a4901caef|1.0.0"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 14,
+      "gIx": 114,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
       "d": "Add-on Pack More Mobs Behaviors - (pack.name)"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 15,
+      "gIx": 115,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
       "d": "Adds a set of mobs you can use in your worlds - (pack.description)"
     },
     {
       "iTp": 2,
       "gId": "PACK",
-      "gIx": 11,
+      "gIx": 111,
       "p": "/Content/resource_packs/aop_mobsrp/manifest.json",
       "d": [
         1,
@@ -2021,7 +2493,7 @@
     {
       "iTp": 2,
       "gId": "JSONTAGS",
-      "gIx": 1,
+      "gIx": 101,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json",
       "d": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json",
       "fs": {
@@ -2075,7 +2547,7 @@
     {
       "iTp": 2,
       "gId": "JSONTAGS",
-      "gIx": 1,
+      "gIx": 101,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json",
       "d": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json",
       "fs": {
@@ -2130,7 +2602,7 @@
     {
       "iTp": 2,
       "gId": "JSONTAGS",
-      "gIx": 1,
+      "gIx": 101,
       "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json",
       "d": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json",
       "fs": {
@@ -2188,21 +2660,7 @@
     {
       "iTp": 2,
       "gId": "JSONTAGS",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json",
-      "d": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "JSONTAGS",
-      "gIx": 1,
-      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json",
-      "d": "/Content/behavior_packs/aop_mobsbp/loot_tables/entities/sheepomelon_shear.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "JSONTAGS",
-      "gIx": 8,
+      "gIx": 108,
       "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
       "d": "/Content/resource_packs/aop_mobsrp/sounds.json",
       "fs": {
@@ -2214,14 +2672,14 @@
     {
       "iTp": 2,
       "gId": "JSONTAGS",
-      "gIx": 7,
+      "gIx": 107,
       "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json",
       "d": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json"
     },
     {
       "iTp": 2,
       "gId": "JSONTAGS",
-      "gIx": 6,
+      "gIx": 106,
       "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json",
       "d": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json"
     },
@@ -2387,7 +2845,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.80)",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -2403,8 +2861,91 @@
     },
     {
       "iTp": 7,
+      "gId": "SCRIPT",
+      "gIx": 101,
+      "fs": {
+        "world": {
+          "Count": 2
+        },
+        "system": {
+          "Count": 1
+        },
+        "BlockPermutation": {
+          "Count": 1
+        },
+        "sendMessage": {
+          "Count": 1
+        },
+        "getDefaultSpawnLocation": {
+          "Count": 1
+        },
+        "getDimension": {
+          "Count": 2
+        },
+        "players": {
+          "Count": 1
+        },
+        "getPlayers": {
+          "Count": 1
+        },
+        "location": {
+          "Count": 1
+        },
+        "block": {
+          "Count": 1
+        },
+        "getBlock": {
+          "Count": 2
+        },
+        "permutation": {
+          "Count": 1
+        },
+        "matches": {
+          "Count": 1
+        },
+        "overworld": {
+          "Count": 2
+        },
+        "button": {
+          "Count": 1
+        },
+        "setPermutation": {
+          "Count": 2
+        },
+        "resolve": {
+          "Count": 1
+        },
+        "afterEvents": {
+          "Count": 1
+        },
+        "buttonPush": {
+          "Count": 1
+        },
+        "subscribe": {
+          "Count": 1
+        },
+        "spawnEntity": {
+          "Count": 1
+        },
+        "static": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 102
+    },
+    {
+      "iTp": 7,
       "gId": "RESOURCEANIMATION",
-      "gIx": 1,
+      "gIx": 101,
       "fs": {
         "Resource": {
           "Count": 8
@@ -2414,7 +2955,7 @@
     {
       "iTp": 7,
       "gId": "RESOURCEANIMATION",
-      "gIx": 2,
+      "gIx": 102,
       "fs": {
         "Resource Animation Bone": {
           "Count": 23
@@ -2436,7 +2977,7 @@
     {
       "iTp": 7,
       "gId": "TEXTURE",
-      "gIx": 1,
+      "gIx": 101,
       "fs": {
         "Entity Resource Count": {
           "Count": 3
@@ -2470,17 +3011,17 @@
     {
       "iTp": 7,
       "gId": "TEXTUREREF",
-      "gIx": 1
+      "gIx": 101
     },
     {
       "iTp": 7,
       "gId": "TYPES",
-      "gIx": 1
+      "gIx": 101
     },
     {
       "iTp": 7,
       "gId": "TEXTUREIMAGE",
-      "gIx": 1,
+      "gIx": 101,
       "fs": {
         "Custom Texture": {
           "Count": 4
@@ -2643,13 +3184,181 @@
     },
     {
       "iTp": 7,
-      "gId": "GEOMETRY",
-      "gIx": 1
+      "gId": "TEXTUREIMAGE",
+      "gIx": 200,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 81920,
+          "Max": 81920,
+          "Min": 81920,
+          "Average": 81920
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 201,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 81920,
+          "Max": 81920,
+          "Min": 81920,
+          "Average": 81920
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 202,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 81920,
+          "Max": 81920,
+          "Min": 81920,
+          "Average": 81920
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 203,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 81920,
+          "Max": 81920,
+          "Min": 81920,
+          "Average": 81920
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 204,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 81920,
+          "Max": 81920,
+          "Min": 81920,
+          "Average": 81920
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 205,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 81920,
+          "Max": 81920,
+          "Min": 81920,
+          "Average": 81920
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
     },
     {
       "iTp": 7,
       "gId": "GEOMETRY",
-      "gIx": 2,
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 102,
       "fs": {
         "Cubes": {
           "Instance Count": 3,
@@ -2663,7 +3372,12 @@
     {
       "iTp": 7,
       "gId": "GEOMETRY",
-      "gIx": 3
+      "gIx": 103
+    },
+    {
+      "iTp": 3,
+      "gId": "SOUNDSDEFINITION",
+      "gIx": 102
     },
     {
       "iTp": 2,
@@ -2774,19 +3488,19 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 1,
+      "gIx": 121,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 2,
+      "gIx": 122,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 3,
+      "gIx": 123,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
       "fs": {
         "say": {
@@ -2800,55 +3514,55 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 4,
+      "gIx": 124,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 5,
+      "gIx": 125,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 6,
+      "gIx": 126,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 1,
+      "gIx": 121,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 2,
+      "gIx": 122,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 3,
+      "gIx": 123,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 4,
+      "gIx": 124,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 5,
+      "gIx": 125,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 6,
+      "gIx": 126,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
@@ -2870,96 +3584,53 @@
       "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
     },
     {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 144,
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/aop/mobs/sheepomelon.json",
+      "d": "minecraft:melon"
     },
     {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 144,
-      "m": "minimum /minecraft:spawn_rules/conditions/1/minecraft:distance_filter/min must be >= 24",
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/aop/mobs/sheepomelon.json",
+      "d": "minecraft:muttonRaw"
     },
     {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 144,
-      "m": "minimum /minecraft:spawn_rules/conditions/2/minecraft:distance_filter/min must be >= 24",
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 144,
-      "m": "minimum /minecraft:spawn_rules/conditions/3/minecraft:distance_filter/min must be >= 24",
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 144,
-      "m": "minimum /minecraft:spawn_rules/conditions/4/minecraft:distance_filter/min must be >= 24",
-      "p": "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json"
+      "iTp": 6,
+      "gId": "UNLINK",
+      "gIx": 205,
+      "p": "/Content/behavior_packs/aop_mobsbp/loot_tables/aop/mobs/sheepomelon_shear.json",
+      "d": "minecraft:melon"
     },
     {
       "iTp": 4,
       "gId": "UNLINK",
-      "gIx": 204,
+      "gIx": 351,
       "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "ambientsounds.co2_notexists"
+      "d": "/Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_notexists`"
     },
     {
       "iTp": 4,
       "gId": "UNLINK",
-      "gIx": 204,
+      "gIx": 351,
       "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "ambientsounds.co2_extranotexists"
+      "d": "/Content/resource_packs/aop_mobsrp/sounds.json to `ambientsounds.co2_extranotexists`"
     },
     {
       "iTp": 4,
       "gId": "UNLINK",
-      "gIx": 204,
+      "gIx": 351,
       "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "individual_event_sound_that_does_not_exist"
+      "d": "/Content/resource_packs/aop_mobsrp/sounds.json to `individual_event_sound_that_does_not_exist`"
     },
     {
       "iTp": 4,
       "gId": "UNLINK",
-      "gIx": 204,
-      "m": "Link to entity type is not found in this pack",
+      "gIx": 310,
       "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "aop_mobs:mob_that_does_not_exist"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "ambientsounds.co2_notexists"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "ambientsounds.co2_extranotexists"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "individual_event_sound_that_does_not_exist"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "m": "Link to entity type is not found in this pack",
-      "p": "/Content/resource_packs/aop_mobsrp/sounds.json",
-      "d": "aop_mobs:mob_that_does_not_exist"
+      "d": "/Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:mob_that_does_not_exist`"
     },
     {
       "iTp": 2,
@@ -2982,23 +3653,15 @@
     {
       "iTp": 4,
       "gId": "UNLINK",
-      "gIx": 204,
-      "m": "Link to texture is not found in this pack",
+      "gIx": 399,
       "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
-      "d": "textures/aop/moremobs/biceson_filethatdoesnotexist"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "m": "Link to texture is not found in this pack",
-      "p": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
-      "d": "textures/aop/moremobs/biceson_filethatdoesnotexist"
+      "d": "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json to `textures/aop/moremobs/biceson_filethatdoesnotexist`"
     },
     {
       "iTp": 6,
       "gId": "UNLINK",
       "gIx": 205,
+      "m": "Link to vanilla model item; avoid if possible",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
       "d": "geometry.sheep.sheared.v1.8"
     },
@@ -3006,125 +3669,7 @@
       "iTp": 6,
       "gId": "UNLINK",
       "gIx": 205,
-      "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
-      "d": "geometry.sheep.sheared.v1.8"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 132,
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
-      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"te"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 132,
-      "m": "additionalProperties  must NOT have additional properties",
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
-      "d": "(additionalProperty: geometry.aop_mobs.nardolphle)",
-      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"te"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 132,
-      "m": "if  must match \"else\" schema",
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
-      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"te"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 132,
-      "m": "if  must match \"else\" schema",
-      "p": "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
-      "c": "{\n  \"format_version\": \"1.10.0\",\n  \"geometry.aop_mobs.nardolphle\": {\n    \"texturewidth\": 64,\n    \"te"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 133,
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n   "
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 133,
-      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color type must be string",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n   "
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 133,
-      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient type must be array",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "{\n  \"0.0\": [\n    1,\n    0,\n    0\n  ],\n  \"0.25\": [\n    1,\n    0,\n    0\n  ],\n  \"0.5\": [\n    0,\n    1,"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 133,
-      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient/0.0 type must be string",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "[\n  1,\n  0,\n  0\n]"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 133,
-      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient/0.25 type must be string",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "[\n  1,\n  0,\n  0\n]"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 133,
-      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient/0.5 type must be string",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "[\n  0,\n  1,\n  0\n]"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 133,
-      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient/1.0 type must be string",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "[\n  0,\n  0,\n  1\n]"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 133,
-      "m": "Wrong type: /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient type must be array",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "{\n  \"0.0\": [\n    1,\n    0,\n    0\n  ],\n  \"0.25\": [\n    1,\n    0,\n    0\n  ],\n  \"0.5\": [\n    0,\n    1,"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 133,
-      "m": "oneOf /particle_effect/components/minecraft:particle_appearance_tinting/color/gradient must match exactly one schema in oneOf",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "{\n  \"0.0\": [\n    1,\n    0,\n    0\n  ],\n  \"0.25\": [\n    1,\n    0,\n    0\n  ],\n  \"0.5\": [\n    0,\n    1,"
-    },
-    {
-      "iTp": 4,
-      "gId": "JSON",
-      "gIx": 133,
-      "m": "anyOf /particle_effect/components/minecraft:particle_appearance_tinting/color must match a schema in anyOf",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "c": "{\n  \"gradient\": {\n    \"0.0\": [\n      1,\n      0,\n      0\n    ],\n    \"0.25\": [\n      1,\n      0,\n   "
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla Texture item; avoid if possible",
+      "m": "Link to vanilla texture item; avoid if possible",
       "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
       "d": "textures/particle/particles"
     },
@@ -3132,55 +3677,23 @@
       "iTp": 6,
       "gId": "UNLINK",
       "gIx": 205,
-      "m": "Link to vanilla Texture item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
-      "d": "textures/particle/particles"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla Texture item; avoid if possible",
-      "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
-      "d": "textures/particle/particles"
-    },
-    {
-      "iTp": 6,
-      "gId": "UNLINK",
-      "gIx": 205,
-      "m": "Link to vanilla Texture item; avoid if possible",
+      "m": "Link to vanilla texture item; avoid if possible",
       "p": "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
       "d": "textures/particle/particles"
     },
     {
       "iTp": 4,
       "gId": "UNLINK",
-      "gIx": 204,
+      "gIx": 351,
       "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json",
-      "d": "ambientsounds.cofoo_doesnotexist"
+      "d": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json to `ambientsounds.cofoo_doesnotexist`"
     },
     {
       "iTp": 4,
       "gId": "UNLINK",
-      "gIx": 204,
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/music_definitions.json",
-      "d": "ambientsounds.cofoo_doesnotexist"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "m": "Link to audio is not found in this pack",
+      "gIx": 408,
       "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json",
-      "d": "sounds/ambientsounds/co_doesnotexist"
-    },
-    {
-      "iTp": 4,
-      "gId": "UNLINK",
-      "gIx": 204,
-      "m": "Link to audio is not found in this pack",
-      "p": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json",
-      "d": "sounds/ambientsounds/co_doesnotexist"
+      "d": "/Content/resource_packs/aop_mobsrp/sounds/sound_definitions.json to `sounds/ambientsounds/co_doesnotexist`"
     },
     {
       "iTp": 4,
@@ -3203,39 +3716,48 @@
       "p": "/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/nardolphle_imageisnotlinked.png"
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "ITEMS",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "LINESIZE",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "PACKSIZE",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "PACK",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "JSONTAGS",
-      "gIx": 1,
-      "m": "JSON Tags (JSONTAGS) completed successfully"
+      "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "FORMATVER",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
+      "gId": "SCRIPT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
       "gId": "SHARING",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SUMMARY",
       "gIx": 1
     },
     {
@@ -3244,53 +3766,72 @@
       "gIx": 2
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "RESOURCEANIMATION",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "STRICT",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "TEXTURE",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "TEXTUREREF",
-      "gIx": 1,
-      "m": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully"
+      "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "TYPES",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "TEXTUREIMAGE",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "GEOMETRY",
       "gIx": 1
     },
     {
-      "iTp": 0,
-      "gId": "CPI",
+      "iTp": 8,
+      "gId": "MCFUNCTION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CPACKICON",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "CWI",
       "gIx": 1
     },
     {
       "iTp": 0,
+      "gId": "SOUNDSDEFINITION",
+      "gIx": 0
+    },
+    {
+      "iTp": 1,
+      "gId": "CPARTI",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CSPJ",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
       "gId": "SCRIPTMODULE",
       "gIx": 1
     },
@@ -3300,7 +3841,7 @@
       "gIx": 2
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "MINENGINEVER",
       "gIx": 1
     },
@@ -3315,22 +3856,27 @@
       "gIx": 2
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "ENTITYTYPE",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "ITEMTYPE",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "UNKJSON",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
+      "gId": "JSONF",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
       "gId": "JSON",
       "gIx": 1
     },
@@ -3340,18 +3886,17 @@
       "gIx": 2
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "WORLDDATA",
-      "gIx": 1,
-      "m": "World Data Validation (WORLDDATA) completed successfully"
+      "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "UNLINK",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "UNKFILE",
       "gIx": 1
     },
@@ -3361,12 +3906,12 @@
       "gIx": 2
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "PATHLENGTH",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "NOBOM",
       "gIx": 1
     }

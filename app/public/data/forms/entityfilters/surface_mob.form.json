@@ -113,7 +113,9 @@
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
   "tags": [
-    "standalone"
+    "standalone",
+    "conditional",
+    "entityevent"
   ],
   "description": "Tests if the subject is a surface mob.",
   "title": "Surface Mob",

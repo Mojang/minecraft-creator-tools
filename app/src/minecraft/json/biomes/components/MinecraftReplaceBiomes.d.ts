@@ -26,13 +26,13 @@ export default interface MinecraftReplaceBiomes {
    * generation to change. Please add any new replacements to the end
    * of the list.
    */
-  replacements: MinecraftReplaceBiomesReplacements[];
+  replacements: MinecraftReplaceBiomesReplacements;
 
 }
 
 
 /**
- * Biome Replacement (Biome Replacement)
+ * Biome Replacement Biome (Biome Replacement)
  * Represents the replacement information used to determine the
  * placement of the overriding biome.
  */
@@ -68,6 +68,6 @@ export interface MinecraftReplaceBiomesReplacements {
    * Biomes that are going to be replaced by the overriding biome.
    * Target biomes must not contain namespaces.
    */
-  targets: { [key: string]: string };
+  targets: object[];
 
 }

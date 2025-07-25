@@ -49,7 +49,7 @@
     },
     {
       "id": "on_admire_item_start",
-      "title": "On Admire Item Start",
+      "title": "Admire Item Start",
       "dataType": 22,
       "samples": {
         "/vanilla/behavior_pack/entities/piglin.json": [
@@ -65,7 +65,7 @@
     },
     {
       "id": "on_admire_item_stop",
-      "title": "On Admire Item Stop",
+      "title": "Admire Item Stop",
       "dataType": 22,
       "samples": {
         "/vanilla/behavior_pack/entities/piglin.json": [

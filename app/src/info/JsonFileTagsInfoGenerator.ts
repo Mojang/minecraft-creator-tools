@@ -24,14 +24,14 @@ const inspectTagList: string[] = [
 ];
 
 export enum JsonFileTagsInfoGeneratorTest {
-  entityType = 1,
-  blockType = 2,
-  itemType = 3,
-  terrainTexture = 4,
-  itemTexture = 5,
-  soundDefinition = 6,
-  musicDefinition = 7,
-  sound = 8,
+  entityType = 101,
+  blockType = 102,
+  itemType = 103,
+  terrainTexture = 104,
+  itemTexture = 105,
+  soundDefinition = 106,
+  musicDefinition = 107,
+  sound = 108,
 }
 
 export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator {
@@ -55,7 +55,106 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
     return items;
   }
 
-  summarize(info: any, infoSet: ProjectInfoSet) {}
+  summarize(info: any, infoSet: ProjectInfoSet) {
+    const entityTypeComponents = infoSet.getItems(this.id, JsonFileTagsInfoGeneratorTest.entityType);
+    const blockTypeComponents = infoSet.getItems(this.id, JsonFileTagsInfoGeneratorTest.blockType);
+    const itemTypeComponents = infoSet.getItems(this.id, JsonFileTagsInfoGeneratorTest.itemType);
+
+    info.entityTypeComponents = [];
+    info.blockTypeComponents = [];
+    info.itemTypeComponents = [];
+
+    for (const entityTypeComponent of entityTypeComponents) {
+      let entityComponentSets = entityTypeComponent.featureSets;
+
+      if (entityComponentSets) {
+        const ecInCg = entityComponentSets["Components Used in Component Groups"];
+
+        if (ecInCg) {
+          for (let cgId in ecInCg) {
+            if (cgId.startsWith("minecraft:")) {
+              cgId = cgId.substring(10);
+            }
+
+            if (!info.entityTypeComponents.includes(cgId)) {
+              info.entityTypeComponents.push(cgId);
+            }
+          }
+        }
+        const defaultEcInCg = entityComponentSets["Default Components"];
+
+        if (defaultEcInCg) {
+          for (let cgId in defaultEcInCg) {
+            if (cgId.startsWith("minecraft:")) {
+              cgId = cgId.substring(10);
+            }
+
+            if (!info.entityTypeComponents.includes(cgId)) {
+              info.entityTypeComponents.push(cgId);
+            }
+          }
+        }
+      }
+    }
+
+    for (const blockTypeComponent of blockTypeComponents) {
+      let blockComponentSets = blockTypeComponent.featureSets;
+
+      if (blockComponentSets) {
+        const blockTypeComponents = blockComponentSets["Block Default Components"];
+
+        if (blockTypeComponents) {
+          for (let cgId in blockTypeComponents) {
+            if (cgId.startsWith("minecraft:")) {
+              cgId = cgId.substring(10);
+            }
+
+            if (!info.blockTypeComponents.includes(cgId)) {
+              info.blockTypeComponents.push(cgId);
+            }
+          }
+        }
+
+        const blockPermutationTypeComponents = blockComponentSets["Block Permutation Components"];
+
+        if (blockPermutationTypeComponents) {
+          for (let cgId in blockPermutationTypeComponents) {
+            if (cgId.startsWith("minecraft:")) {
+              cgId = cgId.substring(10);
+            }
+
+            if (!info.blockTypeComponents.includes(cgId)) {
+              info.blockTypeComponents.push(cgId);
+            }
+          }
+        }
+      }
+    }
+
+    for (const itemTypeComponent of itemTypeComponents) {
+      let itemComponentSets = itemTypeComponent.featureSets;
+
+      if (itemComponentSets) {
+        const itemTypeComponents = itemComponentSets["Components"];
+
+        if (itemTypeComponents) {
+          for (let cgId in itemTypeComponents) {
+            if (cgId.startsWith("minecraft:")) {
+              cgId = cgId.substring(10);
+            }
+
+            if (!info.itemTypeComponents.includes(cgId)) {
+              info.itemTypeComponents.push(cgId);
+            }
+          }
+        }
+      }
+    }
+
+    info.entityTypeComponents.sort();
+    info.itemTypeComponents.sort();
+    info.blockTypeComponents.sort();
+  }
 
   async generateFromFolder(project: Project, folder: IFolder, items: ProjectInfoItem[], index: ContentIndex) {
     await folder.load();
@@ -117,7 +216,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         const entityNode = jsonO["minecraft:entity"];
 
         if (entityNode) {
-          this.addSubTags(
+          await this.addSubTags(
             pi,
             "Default Components",
             index,
@@ -129,7 +228,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
           if (compGroupsNode) {
             for (const compNodeName in compGroupsNode) {
-              this.addSubTags(
+              await this.addSubTags(
                 pi,
                 "Components Used in Component Groups",
                 index,
@@ -142,7 +241,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
           if (eventsNode) {
             for (const evNodeName in eventsNode) {
-              this.addSubTags(pi, "Entity Events", index, AnnotationCategory.entityEvent, eventsNode[evNodeName]);
+              await this.addSubTags(pi, "Entity Events", index, AnnotationCategory.entityEvent, eventsNode[evNodeName]);
             }
           }
         }
@@ -169,7 +268,13 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         const itemNode = jsonO["minecraft:item"];
 
         if (itemNode) {
-          this.addSubTags(pi, "Components", index, AnnotationCategory.itemComponentDependent, itemNode["components"]);
+          await this.addSubTags(
+            pi,
+            "Components",
+            index,
+            AnnotationCategory.itemComponentDependent,
+            itemNode["components"]
+          );
         }
       }
 
@@ -194,7 +299,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         const blockNode = jsonO["minecraft:block"];
 
         if (blockNode) {
-          this.addSubTags(
+          await this.addSubTags(
             pi,
             "Block Default Components",
             index,
@@ -236,7 +341,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
               const permComponentsNode = permNode["components"];
 
               if (permComponentsNode) {
-                this.addSubTags(
+                await this.addSubTags(
                   pi,
                   "Block Permutation Components",
                   index,
@@ -267,7 +372,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       const jsonO = StorageUtilities.getJsonObject(file);
 
       if (jsonO && jsonO.texture_data) {
-        this.addSubTags(
+        await this.addSubTags(
           pi,
           "Terrain Texture Elements",
           index,
@@ -293,7 +398,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       const jsonO = StorageUtilities.getJsonObject(file);
 
       if (jsonO && jsonO.texture_data) {
-        this.addSubTags(
+        await this.addSubTags(
           pi,
           "Item Texture Elements",
           index,
@@ -322,7 +427,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
         const soundDef = jsonO["sound_definitions"];
 
         if (soundDef) {
-          this.addSubTags(
+          await this.addSubTags(
             pi,
             "Sound definition elements",
             index,
@@ -349,7 +454,14 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       const jsonO = StorageUtilities.getJsonObject(file);
 
       if (jsonO) {
-        this.addSubTags(pi, "Music definition elements", index, AnnotationCategory.musicDefinitionSource, jsonO, true);
+        await this.addSubTags(
+          pi,
+          "Music definition elements",
+          index,
+          AnnotationCategory.musicDefinitionSource,
+          jsonO,
+          true
+        );
       }
 
       items.push(pi);
@@ -370,17 +482,17 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
       if (jsonO) {
         const blockSounds = jsonO["block_sounds"];
         if (blockSounds) {
-          this.addSubTags(pi, "Block sounds", index, AnnotationCategory.blockSounds, blockSounds, true);
+          await this.addSubTags(pi, "Block sounds", index, AnnotationCategory.blockSounds, blockSounds, true);
         }
 
         const entitySounds = jsonO["entity_sounds"];
         if (entitySounds) {
-          this.addSubTags(pi, "Entity sounds", index, AnnotationCategory.entitySounds, entitySounds, true);
+          await this.addSubTags(pi, "Entity sounds", index, AnnotationCategory.entitySounds, entitySounds, true);
         }
 
         const individualEventSounds = jsonO["individual_event_sounds"];
         if (individualEventSounds) {
-          this.addSubTags(
+          await this.addSubTags(
             pi,
             "Individual sounds",
             index,
@@ -391,7 +503,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
 
         const interactiveSounds = jsonO["interactive_sounds"];
         if (interactiveSounds) {
-          this.addSubTags(
+          await this.addSubTags(
             pi,
             "Interactive sounds",
             index,
@@ -406,7 +518,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
     }
   }
 
-  addSubTags(
+  async addSubTags(
     pi: ProjectInfoItem,
     prefix: string,
     index: ContentIndex,
@@ -435,7 +547,7 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
           }
 
           if (pi.projectItem && pi.projectItem.projectPath) {
-            let packRelativePath = pi.projectItem.getPackRelativePath();
+            let packRelativePath = await pi.projectItem.getPackRelativePath();
 
             if (packRelativePath) {
               packRelativePath = StorageUtilities.getBaseFromName(

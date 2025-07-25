@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import ProjectItem from "../app/ProjectItem";
-import Project from "./../app/Project";
+import Project, { ProjectErrorState } from "./../app/Project";
 import IProjectInfoGenerator from "./IProjectInfoGenerator";
 import IProjectItemInfoGenerator from "./IProjectItemInfoGenerator";
 import IProjectFileInfoGenerator from "./IProjectFileInfoGenerator";
@@ -20,6 +20,8 @@ import GeneratorRegistrations from "./GeneratorRegistrations";
 import StorageUtilities from "../storage/StorageUtilities";
 import ContentIndex from "../core/ContentIndex";
 import IProjectMetaState from "./IProjectMetaState";
+import MinecraftUtilities from "../minecraft/MinecraftUtilities";
+import SummaryInfoGenerator from "./SummaryInfoGenerator";
 
 export default class ProjectInfoSet {
   project?: Project;
@@ -213,6 +215,11 @@ export default class ProjectInfoSet {
   static getTopicData(id: string, index: number): IProjectInfoTopicData | undefined {
     const gen = ProjectInfoSet._generatorsById[id];
 
+    if (!Utilities.isUsableAsObjectKey(id)) {
+      Log.unsupportedToken(id);
+      throw new Error();
+    }
+
     if (gen) {
       return gen.getTopicData(index);
     }
@@ -302,6 +309,8 @@ export default class ProjectInfoSet {
       return;
     }
 
+    await this.project?.processRelations();
+
     if (this._isGenerating) {
       const pendingGenerate = this._pendingGenerateRequests;
 
@@ -337,70 +346,92 @@ export default class ProjectInfoSet {
 
       await this.project.loc.load();
 
-      for (let i = 0; i < projGenerators.length; i++) {
-        const gen = projGenerators[i];
+      if (this.project?.errorState === ProjectErrorState.cabinetFileCouldNotBeProcessed) {
+        genItems.push(
+          new ProjectInfoItem(
+            InfoItemType.internalProcessingError,
+            "PROJECTMETA",
+            500,
+            this.project.name + ": " + this.project.errorMessage
+          )
+        );
+      } else {
+        for (let i = 0; i < projGenerators.length; i++) {
+          const gen = projGenerators[i];
 
-        if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && gen && this.matchesSuite(gen)) {
-          GeneratorRegistrations.configureForSuite(gen, this.suite);
-
-          try {
-            const results = await gen.generate(this.project, genContentIndex);
-
-            for (const item of results) {
-              this.pushItem(genItems, genItemsByStoragePath, item);
-            }
-          } catch (e: any) {
-            // V--- add a breakpoint to the line below to catch validator exceptions (1 of 3) ---V
-            genItems.push(
-              new ProjectInfoItem(InfoItemType.internalProcessingError, gen.id, 500, this.project.name + ": " + e)
-            );
-            Log.debugAlert(e);
-          }
-        }
-      }
-
-      const itemsCopy = this.project.getItemsCopy();
-
-      for (let i = 0; i < itemsCopy.length; i++) {
-        const pi = itemsCopy[i];
-
-        await pi.load();
-
-        for (let j = 0; j < itemGenerators.length; j++) {
-          const gen = itemGenerators[j];
-
-          if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && this.matchesSuite(gen)) {
+          if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && gen && this.matchesSuite(gen)) {
             GeneratorRegistrations.configureForSuite(gen, this.suite);
+
             try {
-              const results = await gen.generate(pi, genContentIndex);
+              const results = await gen.generate(this.project, genContentIndex);
 
               for (const item of results) {
                 this.pushItem(genItems, genItemsByStoragePath, item);
               }
             } catch (e: any) {
-              // V--- add a breakpoint to the line below to catch validator exceptions (2 of 3) ---V
+              // V--- add a breakpoint to the line below to catch validator exceptions (1 of 3) ---V
               genItems.push(
                 new ProjectInfoItem(
                   InfoItemType.internalProcessingError,
                   gen.id,
-                  501,
-                  this.project.name + ": " + e.toString()
+                  500,
+                  this.project.name + ": " + e.message + (e.stack ? " (" + e.stack + ")" : "")
                 )
               );
+              if (e && (!e.message || !e.message.indexOf || e.message.indexOf("etwork ") < 0)) {
+                Log.debugAlert(e);
+              } else {
+                this.project?.carto.notifyStatusUpdate(
+                  "Could not connect to network to retrieve resources for validation. Details: " + e.toString()
+                );
+              }
             }
           }
         }
-      }
 
-      await this.processFolder(
-        this.project,
-        await this.project.ensureProjectFolder(),
-        genItems,
-        genItemsByStoragePath,
-        genContentIndex,
-        fileGenerators,
-        0
-      );
+        const itemsCopy = this.project.getItemsCopy();
+
+        for (let i = 0; i < itemsCopy.length; i++) {
+          const pi = itemsCopy[i];
+
+          await pi.load();
+
+          for (let j = 0; j < itemGenerators.length; j++) {
+            const gen = itemGenerators[j];
+
+            if ((!this._excludeTests || !this._excludeTests.includes(gen.id)) && this.matchesSuite(gen)) {
+              GeneratorRegistrations.configureForSuite(gen, this.suite);
+              try {
+                const results = await gen.generate(pi, genContentIndex);
+
+                for (const item of results) {
+                  this.pushItem(genItems, genItemsByStoragePath, item);
+                }
+              } catch (e: any) {
+                // V--- add a breakpoint to the line below to catch validator exceptions (2 of 3) ---V
+                genItems.push(
+                  new ProjectInfoItem(
+                    InfoItemType.internalProcessingError,
+                    gen.id,
+                    501,
+                    "IP2:" + this.project.name + ": " + e.toString()
+                  )
+                );
+              }
+            }
+          }
+        }
+
+        await this.processFolder(
+          this.project,
+          await this.project.ensureProjectFolder(),
+          genItems,
+          genItemsByStoragePath,
+          genContentIndex,
+          fileGenerators,
+          0
+        );
+      }
 
       this.addTestSummations(genItems, genItemsByStoragePath, projGenerators, this._excludeTests);
       this.addTestSummations(genItems, genItemsByStoragePath, itemGenerators, this._excludeTests);
@@ -513,7 +544,7 @@ export default class ProjectInfoSet {
                   InfoItemType.testCompleteFail,
                   gen.id,
                   0,
-                  `Found ${errorCount} internal errors for ${gen.title} (${gen.id}). This may be a temporary issue with the test run`
+                  `Found ${internalErrorCount} internal errors for ${gen.title} (${gen.id}). This may be a temporary issue with the test run.`
                 )
               );
             } else if (errorCount + internalErrorCount > 0) {
@@ -576,14 +607,16 @@ export default class ProjectInfoSet {
 
     for (const str in this.info) {
       if (str !== "features") {
-        allFields[str] = true;
+        if (Utilities.isUsableAsObjectKey(str)) {
+          allFields[str] = true;
+        }
       }
     }
 
     for (const str in allFields) {
       let inf = this.info as any;
 
-      if (ProjectInfoSet.isAggregableFieldName(str)) {
+      if (ProjectInfoSet.isAggregableFieldName(str) && Utilities.isUsableAsObjectKey(str)) {
         if (inf[str] === undefined) {
           inf[str] = "";
         }
@@ -591,29 +624,33 @@ export default class ProjectInfoSet {
     }
 
     for (const featureName in this.info.featureSets) {
-      const myFeature = this.info.featureSets[featureName];
+      if (Utilities.isUsableAsObjectKey(featureName)) {
+        const myFeature = this.info.featureSets[featureName];
 
-      if (myFeature !== undefined) {
-        let allFeature = allFeatureSets[featureName];
+        if (myFeature !== undefined) {
+          let allFeature = allFeatureSets[featureName];
 
-        if (allFeature === undefined) {
-          allFeature = {};
-          allFeatureSets[featureName] = allFeature;
-        }
+          if (allFeature === undefined) {
+            allFeature = {};
+            allFeatureSets[featureName] = allFeature;
+          }
 
-        for (const measureName in myFeature) {
-          const measureVal = myFeature[measureName];
+          for (const measureName in myFeature) {
+            if (Utilities.isUsableAsObjectKey(measureName)) {
+              const measureVal = myFeature[measureName];
 
-          if (measureVal !== undefined) {
-            let allMeasureVal = allFeature[measureName];
+              if (measureVal !== undefined) {
+                let allMeasureVal = allFeature[measureName];
 
-            if (allMeasureVal === undefined) {
-              allMeasureVal = measureVal;
-            } else {
-              allMeasureVal += measureVal;
+                if (allMeasureVal === undefined) {
+                  allMeasureVal = measureVal;
+                } else {
+                  allMeasureVal += measureVal;
+                }
+
+                allFeature[measureName] = allMeasureVal;
+              }
             }
-
-            allFeature[measureName] = allMeasureVal;
           }
         }
       }
@@ -738,6 +775,12 @@ export default class ProjectInfoSet {
     }
 
     return summaryString;
+  }
+
+  static getExtendedMessageFromData(data: IProjectInfoData, item: IInfoItemData) {
+    return (
+      this.getEffectiveMessageFromData(data, item) + (item.d ? ": " + item.d : "") + (item.p ? " - " + item.p : "")
+    );
   }
 
   static getEffectiveMessageFromData(data: IProjectInfoData, item: IInfoItemData) {
@@ -1131,6 +1174,18 @@ function _addReportJson(data) {
   static getDataSummary(data: any | undefined) {
     if (typeof data === "number" || typeof data === "boolean") {
       return data.toString();
+    }
+    if (Array.isArray(data)) {
+      const repData = data.slice();
+
+      for (let i = 0; i < repData.length; i++) {
+        repData[i] = "'" + repData[i].toString().replace(/'/gi, "") + "'";
+      }
+      let arrStr = repData.join(", ");
+
+      arrStr = arrStr.replace(/"/gi, "'");
+
+      return '"[' + arrStr + ']"';
     } else if (data) {
       return '"' + data.replace(/"/gi, "'") + '"';
     }
@@ -1621,64 +1676,69 @@ function _addReportJson(data) {
       const file = folder.files[fileName];
 
       if (file) {
-        const projectItem = project.getItemByFile(file);
-        if (projectItem && projectItem.projectPath) {
-          genContentIndex.insert(StorageUtilities.getBaseFromName(fileName), projectItem.projectPath);
-          genContentIndex.insert(file.storageRelativePath, projectItem.projectPath);
+        await file.loadContent();
 
-          await file.loadContent();
+        if (file.content !== null) {
+          const projectItem = project.getItemByFile(file);
 
-          if (file.content && typeof file.content === "string") {
-            const fileExtension = StorageUtilities.getTypeFromName(fileName);
+          if (projectItem && projectItem.projectPath) {
+            genContentIndex.insert(StorageUtilities.getBaseFromName(fileName), projectItem.projectPath);
+            genContentIndex.insert(file.storageRelativePath, projectItem.projectPath);
 
-            if (projectItem && projectItem.projectPath) {
-              switch (fileExtension) {
-                case "json":
-                  genContentIndex.parseJsonContent(projectItem.projectPath, file.content);
-                  break;
-                case "ts":
-                case "js":
-                case "mjs":
-                  genContentIndex.parseJsContent(projectItem.projectPath, file.content);
-                  break;
+            await file.loadContent();
+
+            if (file.content && typeof file.content === "string") {
+              const fileExtension = StorageUtilities.getTypeFromName(fileName);
+
+              if (projectItem && projectItem.projectPath) {
+                switch (fileExtension) {
+                  case "json":
+                    genContentIndex.parseJsonContent(projectItem.projectPath, file.content);
+                    break;
+                  case "ts":
+                  case "js":
+                  case "mjs":
+                    genContentIndex.parseJsContent(projectItem.projectPath, file.content);
+                    break;
+                }
               }
             }
-          }
 
-          for (const fileGen of fileGenerators) {
-            if (this.matchesSuite(fileGen)) {
-              try {
-                const results = await fileGen.generate(project, file, genContentIndex);
+            for (const fileGen of fileGenerators) {
+              if (this.matchesSuite(fileGen)) {
+                try {
+                  const results = await fileGen.generate(project, file, genContentIndex);
 
-                for (const item of results) {
-                  this.pushItem(genItems, genItemsByStoragePath, item);
+                  for (const item of results) {
+                    this.pushItem(genItems, genItemsByStoragePath, item);
+                  }
+                } catch (e: any) {
+                  // V--- add a breakpoint to the line below to catch validator exceptions (3 of 3) ---V
+                  genItems.push(
+                    new ProjectInfoItem(
+                      InfoItemType.internalProcessingError,
+                      fileGen.id,
+                      502,
+                      file.fullPath + ": " + e.toString()
+                    )
+                  );
                 }
-              } catch (e: any) {
-                // V--- add a breakpoint to the line below to catch validator exceptions (3 of 3) ---V
-                genItems.push(
-                  new ProjectInfoItem(
-                    InfoItemType.internalProcessingError,
-                    fileGen.id,
-                    502,
-                    file.fullPath + ": " + e.toString()
-                  )
+              }
+            }
+            if (StorageUtilities.isContainerFile(file.storageRelativePath)) {
+              const zipFolder = await StorageUtilities.getFileStorageFolder(file);
+
+              if (zipFolder && typeof zipFolder !== "string") {
+                await this.processFolder(
+                  project,
+                  zipFolder,
+                  genItems,
+                  genItemsByStoragePath,
+                  genContentIndex,
+                  fileGenerators,
+                  depth + 1
                 );
               }
-            }
-          }
-          if (StorageUtilities.isContainerFile(file.storageRelativePath)) {
-            const zipFolder = await StorageUtilities.getFileStorageFolder(file);
-
-            if (zipFolder) {
-              await this.processFolder(
-                project,
-                zipFolder,
-                genItems,
-                genItemsByStoragePath,
-                genContentIndex,
-                fileGenerators,
-                depth + 1
-              );
             }
           }
         }
@@ -1709,7 +1769,9 @@ function _addReportJson(data) {
   }
 
   generateProjectMetaInfo() {
-    this.info = {};
+    this.info = {
+      capabilities: [],
+    };
 
     const projGenerators: IProjectInfoGenerator[] = GeneratorRegistrations.projectGenerators;
     const itemGenerators: IProjectItemInfoGenerator[] = GeneratorRegistrations.itemGenerators;
@@ -1725,6 +1787,12 @@ function _addReportJson(data) {
 
     for (let j = 0; j < fileGenerators.length; j++) {
       fileGenerators[j].summarize(this.info, this);
+    }
+
+    for (let j = 0; j < projGenerators.length; j++) {
+      if (projGenerators[j] instanceof SummaryInfoGenerator) {
+        (projGenerators[j] as SummaryInfoGenerator).summarizePhase2(this.info, this);
+      }
     }
 
     this.aggregateFeatures();
@@ -1849,7 +1917,7 @@ function _addReportJson(data) {
     }
   }
 
-  getFirstNumberValue(validatorName: string, validatorId: number) {
+  getFirstNumberDataValue(validatorName: string, validatorId: number) {
     for (const item of this.items) {
       if (item.generatorId === validatorName && item.generatorIndex === validatorId && item.data) {
         if (typeof item.data === "number") {
@@ -1861,7 +1929,32 @@ function _addReportJson(data) {
     return 0;
   }
 
-  getSummedNumberValue(validatorName: string, validatorId: number) {
+  getSummedFeatureValue(validatorName: string, validatorId: number, setName: string, measureName: string) {
+    let sum = 0;
+    for (const item of this.items) {
+      if (item.generatorId === validatorName && item.generatorIndex === validatorId) {
+        const feat = item.getFeatureMeasureNumber(setName, measureName);
+
+        if (typeof feat === "number") {
+          sum += feat;
+        }
+      }
+    }
+
+    return sum;
+  }
+
+  getFeaturesWithInstances(validatorName: string, validatorId: number) {
+    for (const item of this.items) {
+      if (item.generatorId === validatorName && item.generatorIndex === validatorId) {
+        return item.getNonZeroFeatureMeasures();
+      }
+    }
+
+    return [];
+  }
+
+  getSummedDataValue(validatorName: string, validatorId: number) {
     let sum = 0;
     for (const item of this.items) {
       if (item.generatorId === validatorName && item.generatorIndex === validatorId && item.data) {
@@ -1886,7 +1979,54 @@ function _addReportJson(data) {
     return sum;
   }
 
-  getFirstNumberArrayValue(validatorName: string, validatorId: number) {
+  getMinNumberArrayValueAsVersionString(validatorName: string, validatorId: number) {
+    let minVerNum = -1;
+    let minVerStr = undefined;
+
+    for (const item of this.items) {
+      if (item.generatorId === validatorName && item.generatorIndex === validatorId && item.data) {
+        let val = item.data;
+        if (typeof val === "string") {
+          const strArr = val.split(".");
+          const numArr: number[] = [];
+
+          for (const strNum of strArr) {
+            try {
+              const num = parseInt(strNum);
+              if (!isNaN(num)) {
+                numArr.push(num);
+              }
+            } catch (e) {
+              throw e;
+            }
+          }
+
+          val = numArr;
+        }
+
+        if (val instanceof Array && val.length && val.length > 0) {
+          let ret = "";
+          for (let i = 0; i < val.length; i++) {
+            if (ret.length > 0) {
+              ret += ".";
+            }
+
+            ret += val[i];
+          }
+
+          const verNum = MinecraftUtilities.getVersionNumber(ret);
+
+          if (minVerNum < 0 || verNum < minVerNum) {
+            minVerNum = verNum;
+            minVerStr = ret;
+          }
+        }
+      }
+    }
+    return minVerStr;
+  }
+
+  getFirstNumberArrayValueAsVersionString(validatorName: string, validatorId: number) {
     for (const item of this.items) {
       if (item.generatorId === validatorName && item.generatorIndex === validatorId && item.data) {
         const val = item.data;

@@ -13,12 +13,26 @@ const _allowedExtensions = [
   "fsb",
   "map",
   "ogg",
+  "flac",
+  "psd",
   "env",
   "gif",
   "wav",
   "tga",
   "env",
   "mjs",
+  "wlist",
+  "brarchive",
+  "nbt",
+  "webm",
+  "svg",
+  "otf",
+  "ttf",
+  "bin",
+  "obj",
+  "pdn",
+  "h",
+  "fontdata",
   "properties",
   "cartobackup",
   "mctbackup",
@@ -60,13 +74,19 @@ function _getTypeFromName(name) {
   return nameW.substring(lastPeriod + 1, nameW.length);
 }
 
-function _canonicalizePath(path) {
-  if (path[0] !== "<" || path[5] !== ">") {
+function _canonicalizePathForValidation(path) {
+  if ((path[0] !== "<" || path[5] !== ">") && !path.startsWith("<pt_")) {
     throw new Error("PLD: Unsupported canon path: " + path);
   }
 
   if (path.startsWith("<UDRP>") || path.startsWith("<UDLP>") || path.startsWith("<DOCP>")) {
     path = path.substring(6);
+  } else if (path.startsWith("<pt_")) {
+    const endGreater = path.indexOf(">", 4);
+
+    if (endGreater > 4) {
+      path = path.substring(endGreater + 1);
+    }
   } else {
     throw new Error("PLD: Unsupported canon path A: " + path);
   }
@@ -75,7 +95,7 @@ function _canonicalizePath(path) {
 }
 
 function _validateFolderPath(path) {
-  path = _canonicalizePath(path);
+  path = _canonicalizePathForValidation(path);
   // banned character combos
   if (path.indexOf("..") >= 0 || path.indexOf("\\\\") >= 0 || path.indexOf("//") >= 0) {
     throw new Error("Unsupported path combinations: " + path);
@@ -191,7 +211,7 @@ contextBridge.exposeInMainWorld("api", {
         case "asyncupdateIAgree":
         case "asyncgetWindowState":
         case "asyncgetDirname":
-        case "asyncaugerLogin":
+        case "asynccontentSourceLogin":
           return ipcRenderer.invoke(commandName, position + "|" + data);
 
         case "getIsDev":
@@ -200,7 +220,6 @@ contextBridge.exposeInMainWorld("api", {
         case "asyncfsExists":
         case "bsyncfsReadFile":
         case "asyncfsReadUtf8File":
-        case "asyncfsStat":
           _validateFilePath(data);
 
           return ipcRenderer.invoke(commandName, position + "|" + data);
@@ -208,6 +227,7 @@ contextBridge.exposeInMainWorld("api", {
         case "asyncfsFolderExists":
         case "asyncfsMkdir":
         case "asyncfsReaddir":
+        case "asyncfsStat":
           _validateFolderPath(data);
 
           return ipcRenderer.invoke(commandName, position + "|" + data);

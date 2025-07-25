@@ -33,6 +33,7 @@
       }
     }
   ],
+  "id": "minecraft:point_light_settings",
   "title": "Point Light Settings",
   "description": "Struct PointLightConfig PointLightConfigSettings Client Deferred Rendering"
 }

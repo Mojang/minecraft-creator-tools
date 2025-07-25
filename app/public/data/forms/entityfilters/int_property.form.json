@@ -173,6 +173,9 @@
       }
     }
   ],
+  "tags": [
+    "conditional"
+  ],
   "description": "Returns true when the int actor property matches the value provided.",
   "title": "Int Property",
   "samples": {

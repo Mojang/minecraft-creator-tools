@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.inspect_bookshelf Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/job_specific_goals/minecraft:behavior.inspect_bookshelf/: 
 "minecraft:behavior.inspect_bookshelf": {}
@@ -44,7 +44,7 @@ export default interface MinecraftBehaviorInspectBookshelf {
    * and forth trying to reach a specific spot
    * 
    * Sample Values:
-   * Villager V2: 0.8
+   * Villager v2: 0.8
    *
    */
   goal_radius: number;
@@ -56,7 +56,7 @@ export default interface MinecraftBehaviorInspectBookshelf {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 8
+   * Villager v2: 8
    *
    */
   priority: number;
@@ -75,7 +75,7 @@ export default interface MinecraftBehaviorInspectBookshelf {
    * The height that the mob will search for bookshelves
    * 
    * Sample Values:
-   * Villager V2: 3
+   * Villager v2: 3
    *
    */
   search_height: number;
@@ -85,7 +85,7 @@ export default interface MinecraftBehaviorInspectBookshelf {
    * Distance in blocks the mob will look for books to inspect
    * 
    * Sample Values:
-   * Villager V2: 4
+   * Villager v2: 4
    *
    */
   search_range: number;
@@ -95,7 +95,7 @@ export default interface MinecraftBehaviorInspectBookshelf {
    * Movement speed multiplier of the mob when using this AI Goal
    * 
    * Sample Values:
-   * Villager V2: 0.6
+   * Villager v2: 0.6
    *
    */
   speed_multiplier: number;

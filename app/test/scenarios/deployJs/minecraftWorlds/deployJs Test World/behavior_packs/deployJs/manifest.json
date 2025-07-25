@@ -21,7 +21,7 @@
       "description": "deployJs script",
       "language": "javascript",
       "type": "script",
-      "uuid": "bae79ded-3acc-4d22-ae8f-9a7a91b34d12",
+      "uuid": "064e1a64-f69e-4abb-a40c-69d476cb6149",
       "version": [
         0,
         0,
@@ -33,7 +33,7 @@
   "dependencies": [
     {
       "module_name": "@minecraft/server",
-      "version": "2.0.0-beta"
+      "version": "2.2.0-beta"
     },
     {
       "module_name": "@minecraft/server-gametest",

@@ -128,6 +128,10 @@
       ]
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests whether the current temperature is a given type.",
   "title": "Is Temperature Type",
   "samples": {

@@ -33,7 +33,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Digger (minecraft:digger)
+ * Minecraft Digger Item (minecraft:digger)
  * Allows a creator to determine how quickly an item can dig
  * specific blocks.
  */
@@ -43,7 +43,7 @@ export default interface MinecraftDigger {
    * @remarks
    * A list of blocks to dig with correlating speeds of digging.
    */
-  destroy_speeds: MinecraftDiggerDestroySpeeds[];
+  destroy_speeds: MinecraftDiggerDestroySpeeds;
 
   /**
    * @remarks
@@ -56,8 +56,7 @@ export default interface MinecraftDigger {
 
 
 /**
- * V1 20 50 DiggerItemComponent BlockInfo
- * (_v1_20_50_DiggerItemComponent_BlockInfo)
+ * BlockInfo Item (BlockInfo)
  */
 export interface MinecraftDiggerDestroySpeeds {
 

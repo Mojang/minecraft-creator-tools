@@ -102,7 +102,7 @@ export default class HttpFile extends FileBase implements IFile {
               Log.verbose("Could not retrieve file from '" + path + "' - result is null.");
             }
           } catch (e) {
-            Log.verbose("Could not retrieve file from '" + path + "' - " + e);
+            Log.verbose("Could not retrieve file from '" + path + "' - " + e + " - " + (e as any)?.stack);
           }
 
           this._content = result;

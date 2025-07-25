@@ -166,7 +166,9 @@
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
   "tags": [
-    "standalone"
+    "standalone",
+    "conditional",
+    "entityevent"
   ],
   "description": "Returns true when the subject entity is under water. An entity is considered underwater if it is completely submerged in water blocks.",
   "title": "Is Underwater",

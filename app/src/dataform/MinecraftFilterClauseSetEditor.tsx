@@ -18,6 +18,7 @@ export enum FilterClauseSetType {
 export interface IMinecraftFilterClauseSetEditorProps {
   data: MinecraftFilterClauseSet | MinecraftFilterClause;
   displayCloseButton: boolean;
+  displayNarrow?: boolean;
   filterContextId: string;
   onChange?: (
     event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
@@ -174,11 +175,14 @@ export default class MinecraftFilterClauseSetEditor extends Component<
     const clauseElements: any[] = [];
 
     if (clauseColl) {
+      let i = 0;
       for (const clauseOrSet of clauseColl) {
         if ((clauseOrSet as MinecraftFilterClauseSet).any_of || (clauseOrSet as MinecraftFilterClauseSet).all_of) {
           clauseElements.push(
             <MinecraftFilterClauseSetEditor
               displayCloseButton={true}
+              displayNarrow={this.props.displayNarrow}
+              key={"fcse-" + i + this.props.filterContextId}
               data={clauseOrSet as MinecraftFilterClauseSet}
               filterContextId={this.props.filterContextId}
             />
@@ -187,17 +191,22 @@ export default class MinecraftFilterClauseSetEditor extends Component<
           clauseElements.push(
             <MinecraftFilterClauseEditor
               displayCloseButton={true}
+              displayNarrow={this.props.displayNarrow}
+              key={"fce-" + i + this.props.filterContextId}
               data={clauseOrSet as MinecraftFilterClause}
               filterContextId={this.props.filterContextId}
               onClose={this._removeClause}
             />
           );
         }
+        i++;
       }
     } else if (!this._isEmpty()) {
       clauseElements.push(
         <MinecraftFilterClauseEditor
           displayCloseButton={true}
+          displayNarrow={this.props.displayNarrow}
+          key={"fcsea-" + this.props.filterContextId}
           filterContextId={this.props.filterContextId}
           data={this.props.data as MinecraftFilterClause}
           onClose={this._removeClause}
@@ -262,8 +271,10 @@ export default class MinecraftFilterClauseSetEditor extends Component<
       });
     }
 
+    let outerClass = this.props.displayNarrow ? "mifics-outer" : "mifics-outer-narrow";
+
     return (
-      <div className="mifics-outer">
+      <div className={outerClass}>
         <Toolbar aria-label="Minecraft filter management" items={toolbarItems} />
         <div className="mifics-inner">
           <div className="mifics-cell">{clauseElements}</div>

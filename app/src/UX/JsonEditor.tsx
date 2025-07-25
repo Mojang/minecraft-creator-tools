@@ -1,5 +1,4 @@
 import { Component } from "react";
-import IFileProps from "./IFileProps";
 import IFile from "./../storage/IFile";
 import Editor, { DiffEditor } from "@monaco-editor/react";
 import "./JsonEditor.css";
@@ -13,21 +12,26 @@ import Database from "../minecraft/Database";
 import CartoApp, { CartoThemeStyle } from "../app/CartoApp";
 import Project from "../app/Project";
 import { constants } from "../core/Constants";
+import IPersistable from "./IPersistable";
 
-interface IJsonEditorProps extends IFileProps {
+interface IJsonEditorProps {
   heightOffset: number;
   readOnly: boolean;
   project: Project;
   isDiffEditor?: boolean;
+  content?: string;
   theme: ThemeInput<any>;
   preferredTextSize: number;
-  item: ProjectItem;
+  item?: ProjectItem;
   diffFile?: IFile;
-  onUpdatePreferredTextSize: (newSize: number) => void;
+  file?: IFile;
+  setActivePersistable?: (persistObject: IPersistable) => void;
+  onUpdatePreferredTextSize?: (newSize: number) => void;
 }
 
 interface IJsonEditorState {
   fileToEdit?: IFile;
+  content?: string;
   isLoaded: boolean;
 }
 
@@ -51,6 +55,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
 
     this.state = {
       fileToEdit: undefined,
+      content: props.content,
       isLoaded: false,
     };
   }
@@ -59,6 +64,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     if (state === undefined || state === null) {
       state = {
         fileToEdit: props.file,
+        content: props.content,
         isLoaded: false,
       };
 
@@ -91,7 +97,9 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
   }
 
   async _ensureModels(monacoInstance: any) {
-    await this._ensureModelForFile(monacoInstance, this.props.file);
+    if (this.props.file) {
+      await this._ensureModelForFile(monacoInstance, this.props.file);
+    }
 
     if (this.props.diffFile) {
       await this._ensureModelForFile(monacoInstance, this.props.diffFile);
@@ -100,6 +108,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
     if (this.state !== undefined && !this.state.isLoaded) {
       this.setState({
         fileToEdit: this.state.fileToEdit,
+        content: this.state.content,
         isLoaded: true,
       });
     }
@@ -127,29 +136,31 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
         model = monacoInstance.editor.createModel(content, lang, modelUri);
       }
 
-      const schemaPath = this.props.item.getSchemaPath();
+      if (this.props.item) {
+        const schemaPath = this.props.item.getSchemaPath();
 
-      if (schemaPath !== undefined) {
-        const schemaContent = await Database.getSchema(schemaPath);
+        if (schemaPath !== undefined) {
+          const schemaContent = await Database.getSchema(schemaPath);
 
-        const modelUriToStr = modelUri.toString();
+          const modelUriToStr = modelUri.toString();
 
-        if (schemaContent) {
-          const jsonlang = monacoInstance.languages.json;
-          const schemaUri = constants.homeUrl + "/res/latest/schemas/" + schemaPath;
+          if (schemaContent) {
+            const jsonlang = monacoInstance.languages.json;
+            const schemaUri = constants.homeUrl + "/res/latest/schemas/" + schemaPath;
 
-          jsonlang.jsonDefaults.setDiagnosticsOptions({
-            validate: true,
-            enableSchemaRequest: false,
-            allowComments: true,
-            schemas: [
-              {
-                uri: schemaUri,
-                fileMatch: [modelUriToStr],
-                schema: schemaContent,
-              },
-            ],
-          });
+            jsonlang.jsonDefaults.setDiagnosticsOptions({
+              validate: true,
+              enableSchemaRequest: false,
+              allowComments: true,
+              schemas: [
+                {
+                  uri: schemaUri,
+                  fileMatch: [modelUriToStr],
+                  schema: schemaContent,
+                },
+              ],
+            });
+          }
         }
       }
     }
@@ -232,7 +243,7 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
 
     const val = this.editor.getOption(monaco.editor.EditorOptions.fontSize.id);
 
-    if (val !== undefined) {
+    if (val !== undefined && this.props.onUpdatePreferredTextSize) {
       this.props.onUpdatePreferredTextSize(Math.round(val));
     }
   }
@@ -255,74 +266,78 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
       }
     }
 
-    if (this.state !== null && this.state.fileToEdit !== null) {
-      if (this.state.fileToEdit && this.state.fileToEdit.content !== null) {
-        if (this.props.setActivePersistable !== undefined) {
-          this.props.setActivePersistable(this);
-        }
+    if (
+      this.state !== null &&
+      (this.state.content || (this.state.fileToEdit && this.state.fileToEdit.content !== null))
+    ) {
+      if (this.props.setActivePersistable !== undefined) {
+        this.props.setActivePersistable(this);
+      }
 
-        let theme = "vs-dark";
+      let theme = "vs-dark";
 
-        if (CartoApp.theme === CartoThemeStyle.light) {
-          theme = "vs";
-        }
+      if (CartoApp.theme === CartoThemeStyle.light) {
+        theme = "vs";
+      }
 
-        if (
-          this.props.isDiffEditor &&
-          this.state.fileToEdit.content &&
-          this.props.diffFile?.content &&
-          typeof this.state.fileToEdit.content === "string" &&
-          typeof this.props.diffFile?.content === "string"
-        ) {
-          // diff editor doesn't seem to update its diffs in response to different URI switches properly,
-          // so we set the content explicitly instead
-          // originalModelPath={coreUri}
-          // modifiedModelPath={diffUri}
+      if (
+        this.props.isDiffEditor &&
+        this.state.fileToEdit &&
+        this.state.fileToEdit.content &&
+        this.props.diffFile?.content &&
+        typeof this.state.fileToEdit.content === "string" &&
+        typeof this.props.diffFile?.content === "string"
+      ) {
+        // diff editor doesn't seem to update its diffs in response to different URI switches properly,
+        // so we set the content explicitly instead
+        // originalModelPath={coreUri}
+        // modifiedModelPath={diffUri}
 
-          interior = (
-            <div>
-              <div className="jse-dffEditorHeader">
-                <div className="jse-coreLabel">{coreUri}</div>
-                <div className="jse-diffLabel">{diffUri}</div>
-              </div>
-              <div>
-                <DiffEditor
-                  height={editorHeight}
-                  theme={theme}
-                  originalLanguage="json"
-                  modifiedLanguage="json"
-                  original={this.state.fileToEdit.content}
-                  modified={this.props.diffFile.content}
-                  options={{
-                    fontSize: this.props.preferredTextSize,
-                    readOnly: this.props.readOnly,
-                    renderSideBySide: true,
-                    automaticLayout: true,
-                    originalEditable: false,
-                    renderValidationDecorations: this.props.readOnly ? "on" : "editable",
-                  }}
-                  beforeMount={this._handleEditorWillMount}
-                  onMount={this._handleDiffEditorDidMount}
-                />
-              </div>
+        interior = (
+          <div>
+            <div className="jse-dffEditorHeader">
+              <div className="jse-coreLabel">{coreUri}</div>
+              <div className="jse-diffLabel">{diffUri}</div>
             </div>
-          );
-        } else {
-          toolbarItems = [
-            {
-              icon: <FontAwesomeIcon icon={faSearchPlus} className="fa-lg" />,
-              key: "zoomIn",
-              onClick: this._zoomIn,
-              title: "Toggle whether hidden items are shown",
-            },
-            {
-              icon: <FontAwesomeIcon icon={faSearchMinus} className="fa-lg" />,
-              key: "zoomOut",
-              onClick: this._zoomOut,
-              title: "Toggle whether hidden items are shown",
-            },
-          ];
+            <div>
+              <DiffEditor
+                height={editorHeight}
+                theme={theme}
+                originalLanguage="json"
+                modifiedLanguage="json"
+                original={this.state.fileToEdit.content}
+                modified={this.props.diffFile.content}
+                options={{
+                  fontSize: this.props.preferredTextSize,
+                  readOnly: this.props.readOnly,
+                  renderSideBySide: true,
+                  automaticLayout: true,
+                  originalEditable: false,
+                  renderValidationDecorations: this.props.readOnly ? "on" : "editable",
+                }}
+                beforeMount={this._handleEditorWillMount}
+                onMount={this._handleDiffEditorDidMount}
+              />
+            </div>
+          </div>
+        );
+      } else {
+        toolbarItems = [
+          {
+            icon: <FontAwesomeIcon icon={faSearchPlus} className="fa-lg" />,
+            key: "zoomIn",
+            onClick: this._zoomIn,
+            title: "Toggle whether hidden items are shown",
+          },
+          {
+            icon: <FontAwesomeIcon icon={faSearchMinus} className="fa-lg" />,
+            key: "zoomOut",
+            onClick: this._zoomOut,
+            title: "Toggle whether hidden items are shown",
+          },
+        ];
 
+        if (this.state.fileToEdit) {
           interior = (
             <Editor
               height={editorHeight}
@@ -334,6 +349,23 @@ export default class JsonEditor extends Component<IJsonEditorProps, IJsonEditorS
                 renderValidationDecorations: this.props.readOnly ? "on" : "editable",
               }}
               path={coreUri}
+              beforeMount={this._handleEditorWillMount}
+              onMount={this._handleEditorDidMount}
+              onChange={this._handleContentUpdated}
+            />
+          );
+        } else if (this.state.content) {
+          interior = (
+            <Editor
+              height={editorHeight}
+              theme={theme}
+              defaultLanguage="json"
+              options={{
+                fontSize: this.props.preferredTextSize,
+                readOnly: this.props.readOnly,
+                renderValidationDecorations: this.props.readOnly ? "on" : "editable",
+              }}
+              value={this.state.content}
               beforeMount={this._handleEditorWillMount}
               onMount={this._handleEditorDidMount}
               onChange={this._handleContentUpdated}

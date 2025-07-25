@@ -26,7 +26,7 @@ Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
 }
 
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/play_schedule_villager/minecraft:behavior.play/friend_types/0/filters/all_of/1/: 
 "minecraft:is_baby": {
@@ -51,7 +51,7 @@ export default interface MinecraftIsBaby {
    * @remarks
    * 
    * Sample Values:
-   * Villager V2: "=="
+   * Villager v2: "=="
    *
    */
   operator: string;
@@ -80,7 +80,7 @@ export default interface MinecraftIsBaby {
    * @remarks
    * 
    * Sample Values:
-   * Villager V2: true
+   * Villager v2: true
    *
    */
   value: string;

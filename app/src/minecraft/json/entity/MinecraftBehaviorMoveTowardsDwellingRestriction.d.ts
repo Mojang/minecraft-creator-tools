@@ -26,7 +26,7 @@ Iron Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pac
 }
 
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.move_towards_dwelling_restriction": {
   "priority": 11,
@@ -57,7 +57,7 @@ export default interface MinecraftBehaviorMoveTowardsDwellingRestriction {
    *
    * Iron Golem: 4
    *
-   * Villager V2: 11
+   * Villager v2: 11
    *
    */
   priority: number;
@@ -70,7 +70,7 @@ export default interface MinecraftBehaviorMoveTowardsDwellingRestriction {
    * Sample Values:
    * Iron Golem: 1
    *
-   * Villager V2: 0.6
+   * Villager v2: 0.6
    *
    */
   speed_multiplier: number;

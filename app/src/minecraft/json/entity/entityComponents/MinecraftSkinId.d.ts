@@ -11,7 +11,7 @@
  * 
  * minecraft:skin_id Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/villager_skin_0/minecraft:skin_id/: 
 "minecraft:skin_id": {
@@ -62,7 +62,7 @@ export default interface MinecraftSkinId {
    * skin.
    * 
    * Sample Values:
-   * Villager V2: 1, 2, 3, 4, 5
+   * Villager v2: 1, 2, 3, 4, 5
    *
    */
   value: number;

@@ -111,6 +111,10 @@
       "dataType": 1
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Returns true if the subject entity has the sneak input held.",
   "title": "Is Sneak Held",
   "samples": {

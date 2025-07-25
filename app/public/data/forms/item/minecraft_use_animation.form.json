@@ -53,5 +53,6 @@
         "content": "eat"
       }
     ]
-  }
+  },
+  "id": "minecraft:use_animation"
 }

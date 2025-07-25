@@ -1,6 +1,6 @@
 {
   "id": "query.actor_count",
   "fields": [],
-  "description": "Returns the number of actors rendered in the last frame.",
+  "description": "Returns the number of entities (actors) rendered in the last frame.",
   "title": "Actor Count Query"
 }

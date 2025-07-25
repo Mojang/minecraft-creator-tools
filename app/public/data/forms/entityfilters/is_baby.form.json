@@ -111,6 +111,10 @@
       "dataType": 1
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Returns true when the subject entity is a baby.",
   "title": "Is Baby",
   "samples": {

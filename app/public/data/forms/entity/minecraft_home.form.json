@@ -82,7 +82,7 @@
             "content": 32
           },
           {
-            "path": "/minecraft:entity/component_groups/minecraft:unharnessed/minecraft:home/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_unharnessed/minecraft:home/",
             "content": 64
           }
         ]
@@ -141,14 +141,14 @@
         }
       },
       {
-        "path": "/minecraft:entity/component_groups/minecraft:unharnessed/minecraft:home/",
+        "path": "/minecraft:entity/component_groups/minecraft:adult_unharnessed/minecraft:home/",
         "content": {
           "restriction_radius": 64,
           "restriction_type": "random_movement"
         }
       },
       {
-        "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:home/",
+        "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:home/",
         "content": {
           "restriction_radius": 32,
           "restriction_type": "random_movement"

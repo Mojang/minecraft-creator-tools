@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.work Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/job_specific_goals/minecraft:behavior.work/: 
 "minecraft:behavior.work": {}
@@ -48,7 +48,7 @@ export default interface MinecraftBehaviorWork {
    * location
    * 
    * Sample Values:
-   * Villager V2: 250
+   * Villager v2: 250
    *
    */
   active_time: number;
@@ -66,7 +66,7 @@ export default interface MinecraftBehaviorWork {
    * be used again
    * 
    * Sample Values:
-   * Villager V2: 200
+   * Villager v2: 200
    *
    */
   goal_cooldown: number;
@@ -76,7 +76,7 @@ export default interface MinecraftBehaviorWork {
    * Event to run when the mob reaches their jobsite.
    * 
    * Sample Values:
-   * Villager V2: {"event":"minecraft:resupply_trades","target":"self"}
+   * Villager v2: {"event":"minecraft:resupply_trades","target":"self"}
    *
    */
   on_arrival: jsoncommon.MinecraftEventTrigger;
@@ -88,7 +88,7 @@ export default interface MinecraftBehaviorWork {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 7
+   * Villager v2: 7
    *
    */
   priority: number;
@@ -98,7 +98,7 @@ export default interface MinecraftBehaviorWork {
    * The max interval in which a sound will play.
    * 
    * Sample Values:
-   * Villager V2: 200
+   * Villager v2: 200
    *
    */
   sound_delay_max: number;
@@ -108,7 +108,7 @@ export default interface MinecraftBehaviorWork {
    * The min interval in which a sound will play.
    * 
    * Sample Values:
-   * Villager V2: 100
+   * Villager v2: 100
    *
    */
   sound_delay_min: number;
@@ -118,7 +118,7 @@ export default interface MinecraftBehaviorWork {
    * Movement speed multiplier of the mob when using this AI Goal
    * 
    * Sample Values:
-   * Villager V2: 0.5
+   * Villager v2: 0.5
    *
    */
   speed_multiplier: number;
@@ -130,7 +130,7 @@ export default interface MinecraftBehaviorWork {
    * goal
    * 
    * Sample Values:
-   * Villager V2: 100
+   * Villager v2: 100
    *
    */
   work_in_rain_tolerance: number;

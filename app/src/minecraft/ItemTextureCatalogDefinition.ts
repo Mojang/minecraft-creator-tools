@@ -69,7 +69,7 @@ export default class ItemTextureCatalogDefinition {
           if (path) {
             textureList.push(path);
           }
-        } else if (Array.isArray(texturePathArr)) {
+        } else if (Array.isArray(texturePathArr.textures)) {
           for (const texturePath of texturePathArr.textures) {
             const path = TextureDefinition.canonicalizeTexturePath(texturePath);
             if (path) {
@@ -96,7 +96,7 @@ export default class ItemTextureCatalogDefinition {
       if (texturePathArr && texturePathArr.textures) {
         if (typeof texturePathArr.textures === "string") {
           textureList.push(texturePathArr.textures);
-        } else if (Array.isArray(texturePathArr)) {
+        } else if (Array.isArray(texturePathArr.textures)) {
           for (const texturePath of texturePathArr.textures) {
             textureList.push(texturePath);
           }

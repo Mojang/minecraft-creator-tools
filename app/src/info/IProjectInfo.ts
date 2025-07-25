@@ -34,6 +34,7 @@ export default interface IProjectInfo {
   entityTypeResourceCount?: number;
   behaviorPackAnimationCount?: number;
   behaviorPackAnimationControllerCount?: number;
+  capabilities?: string[];
   summary?: { [name: string]: { [index: number]: IGeneratorSummary | undefined } | undefined };
   featureSets?: { [setName: string]: { [measureName: string]: number | undefined } | undefined } | undefined;
 }

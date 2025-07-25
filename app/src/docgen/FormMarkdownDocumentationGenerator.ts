@@ -9,6 +9,7 @@ import IField, { FieldDataType } from "../dataform/IField";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import Database from "../minecraft/Database";
 import { ComparisonType } from "../dataform/ICondition";
+import FieldUtilities from "../dataform/FieldUtilities";
 
 export const MarkdownTop = `---
 author: mammerla
@@ -286,6 +287,44 @@ export default class FormMarkdownDocumentationGenerator {
       "/biome/minecraft_",
       "- name: Components List\r\n  href: ../ComponentList.md",
       "minecraftBiomes_"
+    );
+
+    this.exportMarkdownDocListPage(
+      formsByPath,
+      outputFolder,
+      ExportMode.blockComponents,
+      "/BlockReference/Examples/BlockComponents/BlockComponentsList.md",
+      "/block/minecraft_",
+      "Block Components",
+      "Block Component"
+    );
+
+    this.exportListYml(
+      formsByPath,
+      outputFolder,
+      ExportMode.blockComponents,
+      "/BlockReference/Examples/BlockComponents/TOC.yml",
+      "/block/minecraft_",
+      "- name: Block Components List\r\n  href: BlockComponentsList.md"
+    );
+
+    this.exportMarkdownDocListPage(
+      formsByPath,
+      outputFolder,
+      ExportMode.itemComponents,
+      "/ItemReference/Examples/ItemComponentList.md",
+      "/item/minecraft_",
+      "Item Components",
+      "Item Component"
+    );
+
+    this.exportListYml(
+      formsByPath,
+      outputFolder,
+      ExportMode.itemComponents,
+      "/ItemReference/Examples/ItemComponents/TOC.yml",
+      "/item/minecraft_",
+      "- name: Item Components List\r\n  href: ../ItemComponentList.md"
     );
 
     this.exportMarkdownCatalogDocs(
@@ -620,6 +659,7 @@ export default class FormMarkdownDocumentationGenerator {
 
     let internalDepCount = 0;
 
+    content.push("# " + category + " Documentation\r\n");
     content.push("| " + category + " | Description |");
     content.push("|:-----|:----------|");
 
@@ -1170,11 +1210,7 @@ export default class FormMarkdownDocumentationGenerator {
         const fieldLink =
           "(#" + this.getMarkdownBookmark(fieldName) + "-" + (field.choices ? "choices" : "item-type") + ")";
 
-        let subForm = field.subForm;
-
-        if (!subForm && field.subFormId) {
-          subForm = await Database.ensureFormLoadedByPath(field.subFormId);
-        }
+        let subForm = await FieldUtilities.getSubForm(field);
 
         if (subForm && subForm.fields && subForm.fields.length > 0) {
           if (field.dataType === FieldDataType.objectArray) {
@@ -1321,7 +1357,7 @@ export default class FormMarkdownDocumentationGenerator {
     if (field.validity) {
       for (const cond of field.validity) {
         if (cond.comparison === ComparisonType.matchesPattern) {
-          descrip += 'Value must be match patern "' + cond.value + '". ';
+          descrip += 'Value must match a regular expression pattern of "' + cond.value + '". ';
         } else if (cond.comparison) {
           descrip += "Value must be " + cond.comparison + " " + cond.value + ". ";
         }
@@ -1485,6 +1521,7 @@ export default class FormMarkdownDocumentationGenerator {
         includeFile &&
         formPath.toLowerCase().startsWith(formsPath) &&
         formsByPath[formPath] &&
+        Utilities.isUsableAsObjectKey(formPath) &&
         (formsPath.indexOf("behavior") >= 0 || formPath.indexOf("behavior") < 0) &&
         (formsPath.indexOf("_on") >= 0 || formPath.indexOf("minecraft_on") < 0)
       ) {

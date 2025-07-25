@@ -4,8 +4,8 @@
 const TextReplace = require("./TextReplace");
 const through2 = require("through2");
 
-module.exports = (fromRegEx, toStr) => {
-  const textReplace = TextReplace.create(fromRegEx, toStr);
+module.exports = (targetFilePath, fromRegEx, toStr) => {
+  const textReplace = TextReplace.create(targetFilePath, fromRegEx, toStr);
 
   return through2.obj((chunk, encoding, callback) => {
     try {

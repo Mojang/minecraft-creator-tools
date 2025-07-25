@@ -193,6 +193,10 @@
       }
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Returns true if the subject entity is the mark variant number provided.",
   "title": "Is Mark Variant",
   "samples": {

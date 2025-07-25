@@ -161,6 +161,10 @@ export default interface MinecraftBehaviorLookAtPlayer {
   /**
    * @remarks
    * Time range to look at the nearest player.
+   * 
+   * Sample Values:
+   * Campghost: [0,100]
+   *
    */
   look_time: number[];
 

@@ -169,6 +169,10 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
   ensureFile(name: string, file?: FileSystemFileHandle): FileSystemFile {
     const nameCanon = StorageUtilities.canonicalizeName(name);
 
+    if (!Utilities.isUsableAsObjectKey(nameCanon)) {
+      throw new Error();
+    }
+
     let candFile = this.files[nameCanon];
 
     if (candFile == null) {
@@ -216,13 +220,15 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
   _removeFile(file: IFile) {
     const nameCanon = StorageUtilities.canonicalizeName(file.name);
 
-    const candFile = this.files[nameCanon];
+    if (Utilities.isUsableAsObjectKey(nameCanon)) {
+      const candFile = this.files[nameCanon];
 
-    Log.assert(candFile === file, "Files don't match.");
+      Log.assert(candFile === file, "Files don't match.");
 
-    this.files[nameCanon] = undefined;
+      this.files[nameCanon] = undefined;
 
-    this.storage.notifyFileRemoved(this.storageRelativePath + file.name);
+      this.storage.notifyFileRemoved(this.storageRelativePath + file.name);
+    }
   }
 
   async deleteThisFolder(): Promise<boolean> {
@@ -244,13 +250,17 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
   _addExistingFile(file: FileSystemFile) {
     const nameCanon = StorageUtilities.canonicalizeName(file.name);
 
-    this.files[nameCanon] = file;
+    if (Utilities.isUsableAsObjectKey(nameCanon)) {
+      this.files[nameCanon] = file;
+    }
   }
 
   _addExistingFolder(folder: FileSystemFolder) {
     const nameCanon = StorageUtilities.canonicalizeName(folder.name);
 
-    this.folders[nameCanon] = folder;
+    if (Utilities.isUsableAsObjectKey(nameCanon)) {
+      this.folders[nameCanon] = folder;
+    }
   }
 
   async moveTo(newStorageRelativePath: string): Promise<boolean> {
@@ -359,8 +369,7 @@ export default class FileSystemFolder extends FolderBase implements IFolder {
         if (value.kind === "file") {
           this.ensureFile(key, value as FileSystemFileHandle);
         } else if (value.kind === "directory") {
-          const keyLower = key.toLowerCase();
-          if (keyLower !== ".git" && keyLower !== "node_modules") {
+          if (!StorageUtilities.isIgnorableFolder(key)) {
             this.ensureFolder(key, value as FileSystemDirectoryHandle);
           }
         }

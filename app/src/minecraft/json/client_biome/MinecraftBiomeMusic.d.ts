@@ -24,7 +24,7 @@ export default interface MinecraftBiomeMusic {
    * found the default music will be determined by the dimension. Empty
    * string will result in no music.
    */
-  music_definition: string;
+  music_definition: object;
 
   /**
    * @remarks

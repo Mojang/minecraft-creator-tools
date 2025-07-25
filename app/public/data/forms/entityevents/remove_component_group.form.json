@@ -1,5 +1,8 @@
 {
   "fields": [],
+  "tags": [
+    "entityevent"
+  ],
   "description": "Removes component groups from the current entity. This can be any group you have defined in the 'component_groups' section of the file.",
   "title": "Remove Component Group",
   "samples": {
@@ -10,5 +13,5 @@
       }
     ]
   },
-  "id": "Remove Component Group"
+  "id": "remove_component_group"
 }

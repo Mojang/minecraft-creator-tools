@@ -9,7 +9,7 @@ import { FileDifferenceType } from "./IFileDifference";
 import Utilities from "../core/Utilities";
 import ZipStorage from "./ZipStorage";
 import Log from "../core/Log";
-import IStorage from "./IStorage";
+import IStorage, { StorageErrorStatus } from "./IStorage";
 import Storage from "./Storage";
 import { BasicValidators } from "./BasicValidators";
 
@@ -17,7 +17,7 @@ export const MaxShareableContentStringLength = 65536;
 
 // part of security/reliability and defense in depth is to only allow our file functions to work with files from an allow list
 // this list is also replicated in /public/preload.js
-export const AllowedExtensions = [
+export const AllowedExtensionsSet = new Set([
   "js",
   "ts",
   "json",
@@ -37,6 +37,8 @@ export const AllowedExtensions = [
   "yml",
   "ico",
   "ogg",
+  "flac",
+  "psd",
   "nojekyll",
   "mjs",
   "env",
@@ -52,9 +54,11 @@ export const AllowedExtensions = [
   "webm",
   "svg",
   "otf",
+  "ttf",
   "bin",
   "obj",
   "pdn",
+  "hdr",
   "h",
   "fontdata",
   "mcstructure",
@@ -76,9 +80,11 @@ export const AllowedExtensions = [
   "txt",
   "ldb",
   "log",
-];
+]);
 
-const IgnoreExtensions = ["ds_store", "brarchive"];
+const IgnoreExtensionsSet = new Set(["ds_store", "brarchive"]);
+
+const IgnoreFileNames = new Set(["thumbs.db", "desktop.ini"]);
 
 const IgnoreFolders = ["__MACOSX", "credits", "shaders", "hbui", "ray_tracing", "node_modules", "test", "__brarchive"];
 
@@ -125,15 +131,23 @@ export default class StorageUtilities {
   public static isUsableFile(path: string) {
     const extension = StorageUtilities.getTypeFromName(path);
 
-    return AllowedExtensions.includes(extension);
+    return AllowedExtensionsSet.has(extension);
+  }
+
+  public static canIgnoreFileName(fileName: string) {
+    return IgnoreFileNames.has(fileName.toLowerCase());
   }
 
   public static canIgnoreFileExtension(extension: string) {
-    return IgnoreExtensions.includes(extension);
+    return IgnoreExtensionsSet.has(extension);
   }
 
-  public static canIgnoreFolders(folder: string) {
-    return IgnoreFolders.includes(folder);
+  public static isIgnorableFolder(folderName: string) {
+    const folderNameLower = folderName.toLowerCase();
+    return (
+      (folderNameLower.startsWith(".") && folderNameLower !== ".mcp" && folderNameLower !== ".vscode") ||
+      IgnoreFolders.includes(folderNameLower)
+    );
   }
 
   public static getEncodingByFileName(name: string): EncodingType {
@@ -149,11 +163,13 @@ export default class StorageUtilities {
       case "ico":
       case "tga":
       case "ogg":
+      case "flac":
       case "wav":
       case "gif":
       case "jpeg":
       case "jpg":
       case "png":
+      case "psd":
       case "mp3":
       case "fsb":
       case "woff":
@@ -334,6 +350,11 @@ export default class StorageUtilities {
         return "audio/mp3";
       case "ogg":
         return "audio/ogg";
+      case "flac":
+        return "audio/flac";
+
+      case "psd":
+        return "image/vnd.adobe.photoshop";
 
       case "jpg":
       case "jpeg":
@@ -361,7 +382,7 @@ export default class StorageUtilities {
     return undefined;
   }
 
-  public static async getFileStorageFolder(file: IFile) {
+  public static async getFileStorageFolder(file: IFile): Promise<IFolder | undefined | string> {
     let zipStorage = file.fileContainerStorage as ZipStorage;
 
     if (!zipStorage) {
@@ -374,6 +395,11 @@ export default class StorageUtilities {
       zipStorage = new ZipStorage();
 
       await zipStorage.loadFromUint8Array(file.content, file.name);
+
+      if (zipStorage.errorStatus === StorageErrorStatus.unprocessable) {
+        file.errorStateMessage = zipStorage.errorMessage;
+        return file.errorStateMessage;
+      }
 
       file.fileContainerStorage = zipStorage;
       file.fileContainerStorage.storagePath = file.storageRelativePath + "#";
@@ -441,6 +467,10 @@ export default class StorageUtilities {
     name = name.replace(/%20/g, " ");
     name = name.replace(/%28/g, "(");
     name = name.replace(/%29/g, ")");
+
+    if (!Utilities.isUsableAsObjectKey(name)) {
+      name = "named_" + name;
+    }
 
     return name;
   }
@@ -598,6 +628,47 @@ export default class StorageUtilities {
     }
 
     return nameW.substring(0, lastPeriod);
+  }
+
+  public static convertFolderPlaceholdersComplete(path: string) {
+    return this.convertFolderPlaceholders(path, 0);
+  }
+
+  public static convertFolderPlaceholders(path: string, startIndex?: number) {
+    if (startIndex === undefined) {
+      startIndex = 4; // default is to ignore the <pt_ at the start.
+    }
+
+    let pathTokenStart = path.indexOf("<pt_", startIndex);
+
+    while (pathTokenStart >= startIndex) {
+      let pathTokenEnd = path.indexOf(">", pathTokenStart + 4);
+
+      if (pathTokenEnd > pathTokenStart) {
+        path =
+          path.substring(0, pathTokenStart) +
+          path.substring(pathTokenStart + 4, pathTokenEnd) +
+          path.substring(pathTokenEnd + 1);
+
+        pathTokenStart = path.indexOf("<pt_", pathTokenStart);
+      } else {
+        pathTokenStart = path.indexOf("<pt_", pathTokenStart + 1);
+      }
+    }
+
+    return path;
+  }
+
+  public static getCoreBaseFromName(name: string): string {
+    const nameW = name.trim();
+
+    let firstPeriod = nameW.indexOf(".");
+
+    if (firstPeriod < 0) {
+      return name;
+    }
+
+    return nameW.substring(0, firstPeriod);
   }
 
   public static getTypeFromName(name: string): string {
@@ -1171,7 +1242,7 @@ export default class StorageUtilities {
       file.isInErrorState = true;
       file.errorStateMessage = e.message;
       didFailToParse = true;
-      Log.fail("Could not parse JSON from '" + file.fullPath + "': " + e.message);
+      // Log.fail("Could not parse JSON from '" + file.fullPath + "': " + e.message);
     }
 
     if (file.isInErrorState && !didFailToParse && contents.length > 0) {
@@ -1180,10 +1251,6 @@ export default class StorageUtilities {
     }
 
     return jsonObject;
-  }
-
-  public static isIgnorableFolder(folderName: string) {
-    return folderName.startsWith(".") && !folderName.toLowerCase().startsWith(".vscode");
   }
 
   public static async getUniqueFileName(baseName: string, extension: string, folder: IFolder) {

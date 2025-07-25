@@ -174,7 +174,9 @@
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
   "tags": [
-    "standalone"
+    "standalone",
+    "conditional",
+    "entityevent"
   ],
   "description": "Returns true when the subject entity is in lava.",
   "title": "In Lava",
@@ -1267,6 +1269,17 @@
       }
     ],
     "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/entities/beachager.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
+        "content": {
+          "test": "in_lava",
+          "subject": "self",
+          "operator": "==",
+          "value": true
+        }
+      }
+    ],
+    "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
       {
         "path": "/minecraft:entity/components/minecraft:hurt_on_condition/damage_conditions/0/filters/",
         "content": {

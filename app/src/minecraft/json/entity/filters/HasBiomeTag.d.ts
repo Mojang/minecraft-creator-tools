@@ -15,6 +15,27 @@
  * At Short (using Defaults)..: 
 { "test": "has_biome_tag", "value": " " }
 
+Cave Spider - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cave_spider.json
+
+ * At /minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid/1/filters/all_of/2/any_of/0/: 
+{
+  "test": "has_biome_tag",
+  "value": "swamp"
+}
+
+ * At /minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid/1/filters/all_of/2/any_of/1/: 
+{
+  "test": "has_biome_tag",
+  "value": "mangrove_swamp"
+}
+
+ * At /minecraft:entity/events/minecraft:entity_spawned_with_biome_specific_jockey/first_valid/2/filters/: 
+{
+  "test": "has_biome_tag",
+  "value": "nether"
+}
+
+
 Chicken - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/chicken.json
 
  * At /minecraft:entity/events/minecraft:entity_spawned/sequence/1/first_valid/0/filters/: 
@@ -30,7 +51,7 @@ Chicken - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 }
 
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/events/minecraft:entity_spawned/sequence/2/filters/any_of/0/: 
 {
@@ -75,18 +96,6 @@ Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
   "value": "frozen"
 }
 
- * At /minecraft:entity/events/minecraft:entity_spawned/sequence/6/filters/any_of/0/: 
-{
-  "test": "has_biome_tag",
-  "value": "swamp"
-}
-
- * At /minecraft:entity/events/minecraft:entity_spawned/sequence/6/filters/any_of/1/: 
-{
-  "test": "has_biome_tag",
-  "value": "mangrove_swamp"
-}
-
  * At /minecraft:entity/events/minecraft:entity_spawned/sequence/7/filters/all_of/0/any_of/0/: 
 {
   "test": "has_biome_tag",
@@ -122,7 +131,7 @@ export default interface HasBiomeTag {
    * (Optional) The comparison to apply with 'value'.
    * 
    * Sample Values:
-   * Villager V2: "!="
+   * Villager v2: "!="
    *
    * Wolf: "not"
    *
@@ -139,7 +148,7 @@ export default interface HasBiomeTag {
    * @remarks
    * 
    * Sample Values:
-   * Chicken: "has_biome_tag"
+   * Cave Spider: "has_biome_tag"
    *
    */
   test: string;
@@ -149,10 +158,7 @@ export default interface HasBiomeTag {
    * (Required) The tag to look for
    * 
    * Sample Values:
-   * Chicken: "spawns_warm_variant_farm_animals", "spawns_cold_variant_farm_animals"
-   *
-   *
-   * Villager V2: "desert", "mesa", "jungle", "savanna", "cold", "ocean", "frozen", "swamp", "mangrove_swamp", "taiga", "extreme_hills"
+   * Cave Spider: "swamp", "mangrove_swamp", "nether"
    *
    */
   value: string;

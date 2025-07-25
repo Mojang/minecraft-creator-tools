@@ -13,7 +13,8 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Durability Sensor (minecraft:durability_sensor)
+ * Minecraft Durability Sensor Item 
+ * (minecraft:durability_sensor)
  * Enables an item to emit effects when it receives damage. Because of
  * this, the item also needs a `minecraft:durability` 
  * component.
@@ -34,7 +35,7 @@ export default interface MinecraftDurabilitySensor {
    * threshold with the lowest durability after applying the damage is
    * considered.
    */
-  durability_thresholds: MinecraftDurabilitySensorDurabilityThresholds[];
+  durability_thresholds: MinecraftDurabilitySensorDurabilityThresholds;
 
   /**
    * @remarks
@@ -52,8 +53,8 @@ export default interface MinecraftDurabilitySensor {
 
 
 /**
- * Durability Sensor Durability Threshold (minecraft:durability_sensor 
- * durability_threshold)
+ * Minecraft Durability Sensor Durability Threshold Item
+ * (minecraft:durability_sensor durability_threshold)
  * Defines both the durability threshold, and the effects emitted when
  * that threshold is met.
  */

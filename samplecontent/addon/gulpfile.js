@@ -31,6 +31,7 @@ function clean_build(callbackFunction) {
   del([
     "build/behavior_packs/", 
     "build/content_linkerrors/", 
+    "build/content_vibrantvisuals/", 
     "build/content1/", 
     "build/content2/", 
     "build/content3/", 
@@ -245,7 +246,6 @@ function create_content_4_zip() {
     .pipe(gulp.dest("build/packages/"));
 }
 
-
 function create_content_layout_linkerrors_rp() {
   return gulp
     .src(["altdiffs/linkerrors/resource_packs/" + rpfoldername + "/**/*"])
@@ -269,6 +269,35 @@ function create_content_layout_linkerrors_base_acc() {
 }
 
 function create_content_linkerrors_zip() {
+  return gulp
+    .src(["build/content_linkerrors/**/*"])
+    .pipe(zip("aop_moremobs_linkerrors.zip"))
+    .pipe(gulp.dest("build/packages/"));
+}
+
+function create_content_layout_vibrantvisuals_rp() {
+  return gulp
+    .src(["altdiffs/vibrantvisuals/resource_packs/" + rpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_vibrantvisuals/Content/resource_packs/" + rpfoldername + "/"));
+}
+
+function create_content_layout_vibrantvisuals_base_bp() {
+  return gulp
+    .src(["build/behavior_packs/" + bpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_vibrantvisuals/Content/behavior_packs/" + bpfoldername + "/"));
+}
+
+function create_content_layout_vibrantvisuals_base_rp() {
+  return gulp
+    .src(["build/resource_packs/" + rpfoldername + "/**/*"])
+    .pipe(gulp.dest("build/content_vibrantvisuals/Content/resource_packs/" + rpfoldername + "/"));
+}
+
+function create_content_layout_vibrantvisuals_base_acc() {
+  return gulp.src(["accessory_files/**/*"]).pipe(gulp.dest("build/content_vibrantvisuals/"));
+}
+
+function create_content_vibrantvisuals_zip() {
   return gulp
     .src(["build/content_linkerrors/**/*"])
     .pipe(zip("aop_moremobs_linkerrors.zip"))
@@ -765,6 +794,9 @@ exports.package = gulp.series(
     create_content_layout_linkerrors_base_bp,
     create_content_layout_linkerrors_base_rp, 
     create_content_layout_linkerrors_base_acc,
+    create_content_layout_vibrantvisuals_base_bp,
+    create_content_layout_vibrantvisuals_base_rp, 
+    create_content_layout_vibrantvisuals_base_acc,
     create_content_layout_vnext_base_rp,
     create_content_layout_vnext_base_bp,
     create_content_layout_vnext_scripts,
@@ -799,6 +831,7 @@ exports.package = gulp.series(
     create_content_layout_4_scripts,
     create_content_layout_4_acc,
     create_content_layout_linkerrors_rp,
+    create_content_layout_vibrantvisuals_rp,
     create_content_layout_vnext_rp,
     create_content_layout_vnext_bp,
     create_content_layout_vnext_acc,    
@@ -825,6 +858,7 @@ exports.package = gulp.series(
     create_content_3_zip,
     create_content_4_zip,
     create_content_linkerrors_zip, 
+    create_content_vibrantvisuals_zip, 
     create_content_vnext_zip,
     create_content_vnext_mcaddon,
     create_content_vnext2_zip,

@@ -5,6 +5,7 @@
       "title": "Category",
       "description": "The type of cool down for this item. All items with a cool down component with the same category are put on cool down when one is used.",
       "dataType": 2,
+      "isRequired": true,
       "samples": {
         "/vanilla/behavior_pack/items/wind_charge.json": [
           {
@@ -19,6 +20,7 @@
       "title": "Duration",
       "description": "The duration of time (in seconds) items with a matching category will spend cooling down before becoming usable again.",
       "dataType": 3,
+      "isRequired": true,
       "samples": {
         "/vanilla/behavior_pack/items/wind_charge.json": [
           {
@@ -50,6 +52,6 @@
       }
     ]
   },
-  "title": "Cooldown",
+  "title": "Minecraft Cooldown Item",
   "id": "minecraft:cooldown"
 }

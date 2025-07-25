@@ -117,35 +117,75 @@ export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterials {
    * Controls the block type used deep underground in this biome when
    * this adjustment is active.
    */
-  foundation_material: { [key: string]: string };
+  foundation_material: MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsFoundationMaterial;
 
   /**
    * @remarks
    * Controls the block type used in a layer below the surface of
    * this biome when this adjustment is active.
    */
-  mid_material: { [key: string]: string };
+  mid_material: MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsMidMaterial;
 
   /**
    * @remarks
    * Controls the block type used as a floor for bodies of water in
    * this biome when this adjustment is active.
    */
-  sea_floor_material: { [key: string]: string };
+  sea_floor_material: MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsSeaFloorMaterial;
 
   /**
    * @remarks
    * Controls the block type used in the bodies of water in this biome
    * when this adjustment is active.
    */
-  sea_material: { [key: string]: string };
+  sea_material: MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsSeaMaterial;
 
   /**
    * @remarks
    * Controls the block type used for the surface of this biome when
    * this adjustment is active.
    */
-  top_material: { [key: string]: string };
+  top_material: MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsTopMaterial;
+
+}
+
+
+/**
+ * Foundation Material (foundation_material)
+ */
+export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsFoundationMaterial {
+
+}
+
+
+/**
+ * Mid Material (mid_material)
+ */
+export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsMidMaterial {
+
+}
+
+
+/**
+ * Sea Floor Material (sea_floor_material)
+ */
+export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsSeaFloorMaterial {
+
+}
+
+
+/**
+ * Sea Material (sea_material)
+ */
+export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsSeaMaterial {
+
+}
+
+
+/**
+ * Top Material (top_material)
+ */
+export interface MinecraftSurfaceMaterialAdjustmentsAdjustmentsMaterialsTopMaterial {
 
 }
 

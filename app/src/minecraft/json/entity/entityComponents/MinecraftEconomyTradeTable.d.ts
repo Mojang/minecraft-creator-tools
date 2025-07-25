@@ -11,7 +11,7 @@
  * 
  * minecraft:economy_trade_table Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/trade_components/minecraft:economy_trade_table/: 
 "minecraft:economy_trade_table": {}
@@ -257,7 +257,7 @@ export default interface MinecraftEconomyTradeTable {
    * is the minor positive gossip and major positive gossip.)
    * 
    * Sample Values:
-   * Villager V2: [-25,-20]
+   * Villager v2: [-25,-20]
    *
    */
   cured_discount: number[];
@@ -267,7 +267,7 @@ export default interface MinecraftEconomyTradeTable {
    * Name to be displayed while trading with this entity
    * 
    * Sample Values:
-   * Villager V2: "entity.villager.farmer", "entity.villager.fisherman", "entity.villager.shepherd", "entity.villager.fletcher", "entity.villager.librarian", "entity.villager.cartographer", "entity.villager.cleric", "entity.villager.armor", "entity.villager.weapon", "entity.villager.tool", "entity.villager.butcher", "entity.villager.leather", "entity.villager.mason"
+   * Villager v2: "entity.villager.farmer", "entity.villager.fisherman", "entity.villager.shepherd", "entity.villager.fletcher", "entity.villager.librarian", "entity.villager.cartographer", "entity.villager.cleric", "entity.villager.armor", "entity.villager.weapon", "entity.villager.tool", "entity.villager.butcher", "entity.villager.leather", "entity.villager.mason"
    *
    */
   display_name: string;
@@ -289,7 +289,7 @@ export default interface MinecraftEconomyTradeTable {
    * is the minor positive gossip and major positive gossip.)
    * 
    * Sample Values:
-   * Villager V2: [-25,-20]
+   * Villager v2: [-25,-20]
    *
    */
   max_cured_discount: number[];
@@ -316,7 +316,7 @@ export default interface MinecraftEconomyTradeTable {
    * screen
    * 
    * Sample Values:
-   * Villager V2: true
+   * Villager v2: true
    *
    */
   new_screen: boolean;
@@ -329,7 +329,7 @@ export default interface MinecraftEconomyTradeTable {
    * keeps their trades.
    * 
    * Sample Values:
-   * Villager V2: true
+   * Villager v2: true
    *
    */
   persist_trades: boolean;
@@ -346,7 +346,7 @@ export default interface MinecraftEconomyTradeTable {
    * trades
    * 
    * Sample Values:
-   * Villager V2: "trading/economy_trades/farmer_trades.json", "trading/economy_trades/fisherman_trades.json", "trading/economy_trades/shepherd_trades.json", "trading/economy_trades/fletcher_trades.json", "trading/economy_trades/librarian_trades.json", "trading/economy_trades/cartographer_trades.json", "trading/economy_trades/cleric_trades.json", "trading/economy_trades/armorer_trades.json", "trading/economy_trades/weapon_smith_trades.json", "trading/economy_trades/tool_smith_trades.json", "trading/economy_trades/butcher_trades.json", "trading/economy_trades/leather_worker_trades.json", "trading/economy_trades/stone_mason_trades.json"
+   * Villager v2: "trading/economy_trades/farmer_trades.json", "trading/economy_trades/fisherman_trades.json", "trading/economy_trades/shepherd_trades.json", "trading/economy_trades/fletcher_trades.json", "trading/economy_trades/librarian_trades.json", "trading/economy_trades/cartographer_trades.json", "trading/economy_trades/cleric_trades.json", "trading/economy_trades/armorer_trades.json", "trading/economy_trades/weapon_smith_trades.json", "trading/economy_trades/tool_smith_trades.json", "trading/economy_trades/butcher_trades.json", "trading/economy_trades/leather_worker_trades.json", "trading/economy_trades/stone_mason_trades.json"
    *
    */
   table: string;

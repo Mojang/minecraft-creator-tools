@@ -161,6 +161,10 @@
       }
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests the current brightness against a provided value in the range (0.0f, 1.0f).",
   "title": "Is Brightness",
   "samples": {

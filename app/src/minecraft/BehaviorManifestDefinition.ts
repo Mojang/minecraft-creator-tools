@@ -83,6 +83,14 @@ export default class BehaviorManifestDefinition implements IDefinition {
     }
   }
 
+  get capabilities() {
+    if (!this.definition || !this.definition.capabilities) {
+      return undefined;
+    }
+
+    return this.definition.capabilities;
+  }
+
   public get id() {
     if (this.definition && this.definition.header) {
       return this.definition.header.uuid;
@@ -246,6 +254,14 @@ export default class BehaviorManifestDefinition implements IDefinition {
     }
 
     return bmj;
+  }
+
+  get version() {
+    if (!this.definition || !this.definition.header || !this.definition.header.version) {
+      return undefined;
+    }
+
+    return this.definition.header.version;
   }
 
   get minEngineVersion() {

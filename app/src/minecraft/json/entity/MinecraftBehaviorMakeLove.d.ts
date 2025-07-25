@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.make_love Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.make_love": {
   "priority": 5
@@ -42,7 +42,7 @@ export default interface MinecraftBehaviorMakeLove {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 5
+   * Villager v2: 5
    *
    * Villager: 6
    *

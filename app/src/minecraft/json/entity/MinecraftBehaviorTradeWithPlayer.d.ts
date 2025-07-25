@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.trade_with_player Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.trade_with_player": {
   "priority": 2,
@@ -96,7 +96,7 @@ export default interface MinecraftBehaviorTradeWithPlayer {
    * Conditions that need to be met for the behavior to start.
    * 
    * Sample Values:
-   * Villager V2: {"all_of":[{"all_of":[{"test":"in_water","value":false}]},{"any_of":[{"test":"on_ground","value":true},{"test":"is_sleeping","value":true}]}]}
+   * Villager v2: {"all_of":[{"all_of":[{"test":"in_water","value":false}]},{"any_of":[{"test":"on_ground","value":true},{"test":"is_sleeping","value":true}]}]}
    *
    *
    */
@@ -116,7 +116,7 @@ export default interface MinecraftBehaviorTradeWithPlayer {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 2
+   * Villager v2: 2
    *
    * Villager: 1
    *

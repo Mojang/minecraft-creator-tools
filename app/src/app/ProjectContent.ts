@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import Utilities from "../core/Utilities";
 import BlockCube from "../minecraft/BlockCube";
 import Structure from "../minecraft/Structure";
 
@@ -53,10 +54,7 @@ function myFunction()
   static getItemName(name: string) {
     name = name.trim();
     name = name.replace(/ /gi, "");
-
-    if (name.length > 3 && name.charAt(0) >= "A" && name.charAt(0) <= "Z") {
-      name = name[0].toLowerCase() + name.substring(1, name.length);
-    }
+    name = Utilities.lowerCaseStartOfString(name);
 
     return name;
   }

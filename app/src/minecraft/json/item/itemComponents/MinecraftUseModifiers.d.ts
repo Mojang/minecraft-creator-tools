@@ -38,7 +38,7 @@ My Sword Shoot - https://github.com/microsoft/minecraft-samples/tree/main/custom
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Use Modifiers (minecraft:use_modifiers)
+ * Minecraft Use Modifiers Item (minecraft:use_modifiers)
  * Determines how long an item takes to use in combination with
  * components such as Shooter, Throwable, or Food.
  */

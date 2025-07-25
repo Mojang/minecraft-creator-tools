@@ -5,19 +5,18 @@ export interface ITerrainTextureCatalog {
   num_mip_levels: number;
   padding: number;
   resource_pack_name: string;
-  texture_data: ITextureDataSet;
+  texture_data: ITerrainTextureDataSet;
 }
 
-export interface ITextureDataSet {
-  [name: string]: ITextureDataItem;
+export interface ITerrainTextureDataSet {
+  [name: string]: ITerrainTextureDataItem;
 }
 
-export interface ITextureDataItem {
-  sound: string;
-  textures: string | string[] | ITextureInstance[];
+export interface ITerrainTextureDataItem {
+  textures: string | string[] | ITerainTextureInstance[];
 }
 
-export interface ITextureInstance {
+export interface ITerainTextureInstance {
   path: string;
   overlay_color: string;
 }

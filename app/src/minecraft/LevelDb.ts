@@ -233,7 +233,7 @@ export default class LevelDb implements IErrorable {
     if (!indexContent) {
       indexContent = indexContentCompressed;
 
-      this._pushError("Treating level DB content as compressed.", context);
+      // this._pushError("Treating level DB content as compressed.", context);
     }
 
     if (indexContent) {
@@ -330,7 +330,9 @@ export default class LevelDb implements IErrorable {
       const key = lb.key;
       lastKeyValuePair = lb;
 
-      indexKeys[key] = lb;
+      if (Utilities.isUsableAsObjectKey(key)) {
+        indexKeys[key] = lb;
+      }
 
       if (lb.length === undefined) {
         this._pushError("Unexpected parse of level key value " + key, context);
@@ -371,7 +373,9 @@ export default class LevelDb implements IErrorable {
       const key = lb.key;
       lastKeyValuePair = lb;
 
-      this.keys[key] = lb;
+      if (Utilities.isUsableAsObjectKey(key)) {
+        this.keys[key] = lb;
+      }
 
       if (lb.length === undefined || lb.length < 0) {
         throw new Error(this._pushError("Unexpected parse of key " + key, context));
@@ -510,10 +514,14 @@ export default class LevelDb implements IErrorable {
 
             kv.value = data;
 
-            this.keys[key] = kv;
+            if (Utilities.isUsableAsObjectKey(key)) {
+              this.keys[key] = kv;
+            }
           }
         } else {
-          this.keys[key] = false;
+          if (Utilities.isUsableAsObjectKey(key)) {
+            this.keys[key] = false;
+          }
         }
       }
     }

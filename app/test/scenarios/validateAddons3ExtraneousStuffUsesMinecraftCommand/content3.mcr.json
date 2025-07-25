@@ -1,5 +1,11 @@
 {
   "info": {
+    "capabilities": [
+      "behaviorAnimations",
+      "behaviorPack",
+      "resourcePack",
+      "scripting"
+    ],
     "behaviorPackManifestCount": 0,
     "unknownJsonCount": 0,
     "entityTypeManifestCount": 0,
@@ -10,76 +16,81 @@
     "entityTypeResourceCount": 0,
     "behaviorPackAnimationCount": 0,
     "behaviorPackAnimationControllerCount": 0,
-    "overallSize": 62112,
-    "fileCounts": 46,
-    "folderCounts": 28,
-    "contentSize": 62112,
-    "contentFileCounts": 46,
-    "contentFolderCounts": 22,
+    "overallSize": 7028637,
+    "fileCounts": 65,
+    "folderCounts": 31,
+    "contentSize": 67990,
+    "contentFileCounts": 49,
+    "contentFolderCounts": 23,
+    "minBehaviorPackMinEngineVersion": 0,
+    "minResourcePackMinEngineVersion": 0,
     "subpackCount": 0,
-    "subpackTier1Count": 0,
-    "subpackTier2Count": 0,
-    "subpackTier3Count": 0,
-    "subpackTier4Count": 0,
-    "subpackTier5Count": 0,
-    "subpackTier6Count": 0,
-    "subpackTier7Count": 0,
-    "subpackTier8Count": 0,
-    "subpackTier9Count": 0,
-    "subpackTier10Count": 0,
-    "subpackTier11Count": 0,
-    "subpackTier12Count": 0,
-    "subpackTier13Count": 0,
-    "subpackTier14Count": 0,
-    "subpackTier15Count": 0,
-    "subpackTier16Count": 0,
-    "subpackTier17Count": 0,
-    "subpackTier18Count": 0,
-    "subpackTier19Count": 0,
-    "subpackTier20Count": 0,
-    "subpackTier21Count": 0,
-    "subpackTier22Count": 0,
-    "subpackTier23Count": 0,
-    "subpackTier24Count": 0,
-    "subpackTier25Count": 0,
-    "subpackTier26Count": 0,
-    "subpackTier27Count": 0,
-    "subpackTier28Count": 0,
-    "subpackTier29Count": 0,
-    "subpackTier30Count": 0,
-    "subpackTier31Count": 0,
-    "subpackTier32Count": 0,
-    "subpackTier33Count": 0,
-    "subpackTier34Count": 0,
-    "subpackTier35Count": 0,
-    "subpackTier36Count": 0,
-    "subpackTier37Count": 0,
-    "subpackTier38Count": 0,
-    "subpackTier39Count": 0,
-    "subpackTier40Count": 0,
+    "entityTypeComponents": [],
+    "blockTypeComponents": [],
+    "itemTypeComponents": [],
+    "apisUsed": [],
+    "mctoolsVersion": 10002009,
+    "itemTypes": [
+      "Animation",
+      "Behavior pack",
+      "Behavior pack animation",
+      "Behavior pack animation controller",
+      "Behavior pack manifest",
+      "Entity type",
+      "Entity type visuals/audio",
+      "Feature",
+      "Icon",
+      "Image",
+      "JavaScript",
+      "Language catalog",
+      "Language translations",
+      "Loot table",
+      "Marketing image",
+      "Material",
+      "Model",
+      "Particle",
+      "Resource pack",
+      "Resource pack manifest",
+      "Sound catalog",
+      "Spawn rule",
+      "Store image",
+      "Texture"
+    ],
     "animationCount": 0,
     "textureCount": 0,
+    "textureTexelSize": 0,
+    "minimumSupportablePerformanceTier": 0,
+    "invalidCommandSyntaxCount": 0,
+    "linesWithSlashCount": 0,
+    "multipleSoundsManifests": 0,
+    "soundsDefinitionManifestFormatIsValid": 0,
+    "soundsDefinitionManifestIsNotValidJson": 0,
+    "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
     "worldLoadErrors": 0,
+    "commands": [
+      "say",
+      "summon"
+    ],
     "featureSets": {
       "Textures Entity Resource Count": {
-        "Count": 3
+        "Count": 4
       },
       "Textures Texture References": {
-        "Count": 3
+        "Count": 5
       },
       "Textures Entity References": {
-        "Count": 3
+        "Count": 5
       },
       "Textures File Count": {
-        "Count": 3
+        "Count": 4
       },
       "Textures Unique Texture Handles (estimated)": {
-        "Count": 3
+        "Count": 4
       },
       "Textures Unique Texture Paths": {
-        "Count": 3
+        "Count": 4
       },
       "Textures Unique Particle Texture Paths": {
         "Count": 0
@@ -88,7 +99,10 @@
         "Count": 1
       },
       "Textures Unique Entity Texture Paths": {
-        "Count": 3
+        "Count": 4
+      },
+      "Textures Unique Entity Texture Vanilla Paths": {
+        "Count": 1
       },
       "Command say": {
         "Count": 1
@@ -110,23 +124,26 @@
     "summary": {
       "PACKSIZE": {
         "1": {
-          "title": "Overall Size",
+          "title": "Test Success",
           "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "2": {
+        "101": {
+          "title": "Overall Size"
+        },
+        "102": {
           "title": "File Count"
         },
-        "3": {
+        "103": {
           "title": "Folder Count"
         },
-        "4": {
+        "104": {
           "title": "Content Size"
         },
-        "5": {
+        "105": {
           "title": "Content File Count"
         },
-        "6": {
+        "106": {
           "title": "Content Folder Count"
         }
       },
@@ -158,9 +175,12 @@
       },
       "TEXTURE": {
         "1": {
-          "title": "Textures",
+          "title": "Test Success",
           "defaultMessage": "Texture Validation (TEXTURE) completed successfully",
           "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Textures"
         }
       },
       "MINENGINEVER": {
@@ -181,22 +201,25 @@
       },
       "WORLDDATA": {
         "1": {
-          "defaultMessage": "Blocks",
+          "defaultMessage": "World Data Validation (WORLDDATA) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "2": {
+        "121": {
+          "defaultMessage": "Blocks"
+        },
+        "122": {
           "defaultMessage": "Block Data"
         },
-        "3": {
+        "123": {
           "defaultMessage": "Command"
         },
-        "4": {
+        "124": {
           "defaultMessage": "Execute Sub Command"
         },
-        "5": {
+        "125": {
           "defaultMessage": "Level Dat"
         },
-        "6": {
+        "126": {
           "defaultMessage": "Level Dat Experiments"
         }
       },
@@ -223,38 +246,38 @@
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 1,
-      "d": 62112
+      "gIx": 101,
+      "d": 7028637
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 2,
-      "d": 46
+      "gIx": 102,
+      "d": 65
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 3,
-      "d": 28
+      "gIx": 103,
+      "d": 31
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 4,
-      "d": 62112
+      "gIx": 104,
+      "d": 67990
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 5,
-      "d": 46
+      "gIx": 105,
+      "d": 49
     },
     {
       "iTp": 7,
       "gId": "PACKSIZE",
-      "gIx": 6,
-      "d": 22
+      "gIx": 106,
+      "d": 23
     },
     {
       "iTp": 2,
@@ -283,25 +306,25 @@
     {
       "iTp": 7,
       "gId": "TEXTURE",
-      "gIx": 1,
+      "gIx": 101,
       "fs": {
         "Entity Resource Count": {
-          "Count": 3
+          "Count": 4
         },
         "Texture References": {
-          "Count": 3
+          "Count": 5
         },
         "Entity References": {
-          "Count": 3
+          "Count": 5
         },
         "File Count": {
-          "Count": 3
+          "Count": 4
         },
         "Unique Texture Handles (estimated)": {
-          "Count": 3
+          "Count": 4
         },
         "Unique Texture Paths": {
-          "Count": 3
+          "Count": 4
         },
         "Unique Particle Texture Paths": {
           "Count": 0
@@ -310,7 +333,10 @@
           "Count": 1
         },
         "Unique Entity Texture Paths": {
-          "Count": 3
+          "Count": 4
+        },
+        "Unique Entity Texture Vanilla Paths": {
+          "Count": 1
         }
       }
     },
@@ -340,19 +366,19 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 1,
+      "gIx": 121,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 2,
+      "gIx": 122,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 3,
+      "gIx": 123,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
       "fs": {
         "say": {
@@ -366,55 +392,55 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 4,
+      "gIx": 124,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 5,
+      "gIx": 125,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 6,
+      "gIx": 126,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 1,
+      "gIx": 121,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 2,
+      "gIx": 122,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 3,
+      "gIx": 123,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 4,
+      "gIx": 124,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 5,
+      "gIx": 125,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 6,
+      "gIx": 126,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
@@ -432,38 +458,37 @@
       "d": "aopthisisnotagoodname:entity_flat_color_line"
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "PACKSIZE",
       "gIx": 1
     },
     {
-      "iTp": 1,
+      "iTp": 0,
       "gId": "CADDONREQ",
       "gIx": 0
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "STRICT",
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "TEXTURE",
       "gIx": 1
     },
     {
-      "iTp": 1,
+      "iTp": 0,
       "gId": "MINENGINEVER",
       "gIx": 0
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "WORLDDATA",
-      "gIx": 1,
-      "m": "World Data Validation (WORLDDATA) completed successfully"
+      "gIx": 1
     },
     {
-      "iTp": 1,
+      "iTp": 0,
       "gId": "CADDONIREQ",
       "gIx": 0
     }

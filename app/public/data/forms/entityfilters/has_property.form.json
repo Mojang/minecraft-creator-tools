@@ -110,6 +110,10 @@
       "dataType": 2
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests for the presence of a property of the subject entity.",
   "title": "Has Property",
   "samples": {

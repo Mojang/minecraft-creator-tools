@@ -233,7 +233,7 @@ export default class CooperativeAddOnRequirementsGenerator implements IProjectIn
 
     for (const projectItem of itemsCopy) {
       if (projectItem.primaryFile) {
-        if (ProjectItemUtilities.isVibrantVisualsRelated(projectItem.itemType)) {
+        if (ProjectItemUtilities.isVibrantVisualsRelated(projectItem)) {
           // CADDONREQ210
           items.push(
             new ProjectInfoItem(

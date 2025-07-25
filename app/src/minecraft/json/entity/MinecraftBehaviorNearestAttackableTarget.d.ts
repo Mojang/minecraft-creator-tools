@@ -518,22 +518,13 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
 
   /**
    * @remarks
-   * Time range (in seconds) between searching for an attack target,
-   * range is in (0, "attack_interval"]. Only used if
-   * "attack_interval" is greater than 0, otherwise "scan_interval" is
-   * used.
-   */
-  attack_intervalattack_interval_min: number;
-
-  /**
-   * @remarks
    * If true, this entity can attack its owner.
    */
   attack_owner: boolean;
 
   /**
    * @remarks
-   * Filters which types of targets are valid for this entity.
+   * List of entity types that this mob considers valid targets
    * 
    * Sample Values:
    * Axolotl: [{"filters":{"all_of":[{"test":"in_water","subject":"other","value":true},{"test":"has_component","subject":"self","operator":"!=","value":"minecraft:attack_cooldown"},{"any_of":[{"test":"is_family","subject":"other","value":"squid"},{"test":"is_family","subject":"other","value":"fish"},{"test":"is_family","subject":"other","value":"tadpole"}]}]},"max_dist":8},{"filters":{"all_of":[{"test":"in_water","subject":"other","value":true},{"any_of":[{"test":"is_family","subject":"other","value":"drowned"},{"test":"is_family","subject":"other","value":"guardian"},{"test":"is_family","subject":"other","value":"guardian_elder"}]}]},"max_dist":8}]
@@ -543,7 +534,7 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    * Blaze: [{"filters":{"test":"is_family","subject":"other","value":"player"},"max_dist":48}]
    *
    */
-  entity_types: jsoncommon.MinecraftFilter;
+  entity_types: MinecraftBehaviorNearestAttackableTargetEntityTypes[];
 
   /**
    * @remarks
@@ -689,5 +680,69 @@ export default interface MinecraftBehaviorNearestAttackableTarget {
    *
    */
   within_radius: number;
+
+}
+
+
+/**
+ * List of entity types that this mob considers valid targets.
+ */
+export interface MinecraftBehaviorNearestAttackableTargetEntityTypes {
+
+  /**
+   * @remarks
+   * The amount of time in seconds that the mob has to wait before
+   * selecting a target of the same type again
+   */
+  cooldown: number;
+
+  /**
+   * @remarks
+   * Conditions that make this entry in the list valid
+   */
+  filters: jsoncommon.MinecraftFilter;
+
+  /**
+   * @remarks
+   * Maximum distance this mob can be away to be a valid choice
+   */
+  max_dist: number;
+
+  /**
+   * @remarks
+   * If true, the mob has to be visible to be a valid choice
+   */
+  must_see: boolean;
+
+  /**
+   * @remarks
+   * Determines the amount of time in seconds that this mob will look
+   * for a target before forgetting about it and looking for a new
+   * one when the target isn't visible any more
+   */
+  must_see_forget_duration: number;
+
+  priority: number;
+
+  /**
+   * @remarks
+   * If true, the mob will stop being targeted if it stops meeting any
+   * conditions.
+   */
+  reevaluate_description: boolean;
+
+  /**
+   * @remarks
+   * Multiplier for the running speed. A value of 1.0 means the speed
+   * is unchanged
+   */
+  sprint_speed_multiplier: number;
+
+  /**
+   * @remarks
+   * Multiplier for the walking speed. A value of 1.0 means the speed
+   * is unchanged
+   */
+  walk_speed_multiplier: number;
 
 }

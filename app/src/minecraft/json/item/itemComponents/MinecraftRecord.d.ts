@@ -30,7 +30,7 @@ My Sword Singing - https://github.com/microsoft/minecraft-samples/tree/main/cust
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Record (minecraft:record)
+ * Minecraft Record Item (minecraft:record)
  * Used by record items to play music.
  */
 export default interface MinecraftRecord {

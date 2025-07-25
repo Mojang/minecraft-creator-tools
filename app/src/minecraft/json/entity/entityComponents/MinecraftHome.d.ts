@@ -47,7 +47,7 @@ Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
   "restriction_type": "random_movement"
 }
 
- * At /minecraft:entity/component_groups/minecraft:unharnessed/minecraft:home/: 
+ * At /minecraft:entity/component_groups/minecraft:adult_unharnessed/minecraft:home/: 
 "minecraft:home": {
   "restriction_radius": 64,
   "restriction_type": "random_movement"

@@ -348,7 +348,9 @@ export default class DocJsonMarkdownDocumentationGenerator {
         const jsonO = StorageUtilities.getJsonObject(file);
 
         if (jsonO) {
-          formsByPath[file.storageRelativePath] = jsonO;
+          if (Utilities.isUsableAsObjectKey(file.storageRelativePath)) {
+            formsByPath[file.storageRelativePath] = jsonO;
+          }
         }
       }
     }

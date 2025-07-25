@@ -2,5 +2,5 @@
   "id": "query.body_y_rotation",
   "fields": [],
   "description": "Returns the body yaw rotation if called on an actor, else it returns 0.0.",
-  "title": "Body Y Rotation Query"
+  "title": "Body y Rotation Query"
 }

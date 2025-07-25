@@ -29,7 +29,7 @@
     }
   ],
   "description": "Specifies the maximum weight limit that a storage item can hold",
-  "title": "Storage Weight Limit",
+  "title": "Minecraft Storage Weight Limit Item",
   "samples": {
     "/vanilla/behavior_pack/items/black_bundle.json": [
       {

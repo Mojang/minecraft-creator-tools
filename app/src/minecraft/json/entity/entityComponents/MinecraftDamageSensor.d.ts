@@ -137,6 +137,16 @@ Bee - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
 }
 
 
+Blaze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/blaze.json
+
+"minecraft:damage_sensor": {
+  "triggers": {
+    "cause": "fall",
+    "deals_damage": "no"
+  }
+}
+
+
 Breeze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/breeze.json
 
 "minecraft:damage_sensor": {
@@ -158,16 +168,6 @@ Breeze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "deals_damage": false
     }
   ]
-}
-
-
-Cat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cat.json
-
-"minecraft:damage_sensor": {
-  "triggers": {
-    "cause": "fall",
-    "deals_damage": "no"
-  }
 }
 
 
@@ -291,7 +291,7 @@ export default interface MinecraftDamageSensor {
    * Armadillo: {"on_damage":{"filters":{"any_of":[{"test":"is_family","subject":"other","value":"mob"},{"test":"is_family","subject":"other","value":"player"}]},"event":"minecraft:threat_detected"}}, [{"on_damage":{"filters":{"any_of":[{"test":"is_family","subject":"other","value":"mob"},{"test":"is_family","subject":"other","value":"player"}]},"event":"minecraft:threat_detected"},"damage_multiplier":0.5,"damage_modifier":-1},{"damage_multiplier":0.5,"damage_modifier":-1}]
    *
    */
-  triggers: MinecraftDamageSensorTriggers[];
+  triggers: jsoncommon.MinecraftEventTrigger[];
 
 }
 

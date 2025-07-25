@@ -19,25 +19,27 @@ import { NbtTagType } from "../minecraft/NbtBinaryTag";
 import AnimationControllerBehaviorDefinition from "../minecraft/AnimationControllerBehaviorDefinition";
 import AnimationBehaviorDefinition from "../minecraft/AnimationBehaviorDefinition";
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
+import { GameType } from "../minecraft/WorldLevelDat";
 
 export enum WorldDataInfoGeneratorTest {
-  blocks = 1,
-  blockData = 2,
-  command = 3,
-  executeSubCommand = 4,
-  levelDat = 5,
-  levelDatExperiments = 6,
-  subchunklessChunks = 7,
-  chunks = 8,
   unexpectedCommandInMCFunction = 101,
+  unexpectedCommandInCommandBlock = 102,
   minX = 103,
   minZ = 104,
   maxX = 105,
   maxZ = 106,
-  unexpectedCommandInCommandBlock = 102,
   containsWorldImpactingCommand = 112,
+  blocks = 121,
+  blockData = 122,
+  command = 123,
+  executeSubCommand = 124,
+  levelDat = 125,
+  levelDatExperiments = 126,
+  subchunklessChunks = 127,
+  chunks = 128,
   commandIsFromOlderMinecraftVersion = 212,
   errorProcessingWorld = 400,
+  unexpectedError = 401,
 }
 
 export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator {
@@ -56,17 +58,78 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
-    info.chunkCount = infoSet.getSummedNumberValue(
-      "WORLDDATA",
-      WorldDataInfoGeneratorTest.unexpectedCommandInMCFunction
-    );
+    info.chunkCount = infoSet.getSummedDataValue("WORLDDATA", WorldDataInfoGeneratorTest.chunks);
 
-    info.subchunkLessChunkCount = infoSet.getSummedNumberValue(
+    info.subchunkLessChunkCount = infoSet.getSummedDataValue(
       "WORLDDATA",
       WorldDataInfoGeneratorTest.subchunklessChunks
     );
 
     info.worldLoadErrors = infoSet.getCount("WORLDDATA", WorldDataInfoGeneratorTest.errorProcessingWorld);
+
+    const levelItems = infoSet.getItems(this.id, WorldDataInfoGeneratorTest.levelDat);
+    const capabilitiesSet = new Set(info.capabilities);
+
+    for (const levelItem of levelItems) {
+      if (levelItem && levelItem.featureSets) {
+        const gameType = levelItem.featureSets.GameType;
+
+        if (gameType !== undefined) {
+          if (gameType[GameType.adventure] !== undefined && gameType[GameType.adventure] > 0) {
+            if (!capabilitiesSet.has("adventure")) {
+              info.capabilities.push("adventure");
+              capabilitiesSet.add("adventure");
+            }
+          }
+          if (gameType[GameType.survival] !== undefined && gameType[GameType.survival] > 0) {
+            if (!capabilitiesSet.has("survival")) {
+              info.capabilities.push("survival");
+              capabilitiesSet.add("survival");
+            }
+          }
+          if (gameType[GameType.creative] !== undefined && gameType[GameType.creative] > 0) {
+            if (!capabilitiesSet.has("creative")) {
+              info.capabilities.push("creative");
+              capabilitiesSet.add("creative");
+            }
+          }
+        }
+      }
+    }
+
+    info.commands = [];
+    const commandsSet = new Set<string>();
+
+    const commandItems = infoSet.getItems(this.id, WorldDataInfoGeneratorTest.command);
+    const subCommandItems = infoSet.getItems(this.id, WorldDataInfoGeneratorTest.executeSubCommand);
+
+    for (const commandItem of commandItems) {
+      let commandNames = commandItem.featureSets;
+
+      if (commandNames) {
+        for (const commandName in commandNames) {
+          if (!commandsSet.has(commandName)) {
+            info.commands.push(commandName);
+            commandsSet.add(commandName);
+          }
+        }
+      }
+    }
+
+    for (const commandItem of subCommandItems) {
+      let commandNames = commandItem.featureSets;
+
+      if (commandNames) {
+        for (const commandName in commandNames) {
+          if (!commandsSet.has(commandName)) {
+            info.commands.push(commandName);
+            commandsSet.add(commandName);
+          }
+        }
+      }
+    }
+
+    info.commands.sort();
   }
 
   processListOfCommands(
@@ -116,7 +179,7 @@ export default class WorldDataInfoGenerator implements IProjectInfoItemGenerator
             new ProjectInfoItem(
               InfoItemType.error,
               this.id,
-              401,
+              WorldDataInfoGeneratorTest.unexpectedCommandInCommandBlock,
               "Unexpected command '" + command.name + "'",
               projectItem,
               command.name,

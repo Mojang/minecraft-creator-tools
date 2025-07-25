@@ -17,11 +17,11 @@
       "samples": {
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:unharnessed/minecraft:behavior.float_tempt/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_unharnessed/minecraft:behavior.float_tempt/",
             "content": true
           },
           {
-            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:behavior.float_tempt/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:behavior.float_tempt/",
             "content": true
           }
         ]
@@ -43,7 +43,7 @@
       "samples": {
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:unharnessed/minecraft:behavior.float_tempt/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_unharnessed/minecraft:behavior.float_tempt/",
             "content": [
               "minecraft:snowball",
               "minecraft:black_harness",
@@ -65,7 +65,7 @@
             ]
           },
           {
-            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:behavior.float_tempt/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:behavior.float_tempt/",
             "content": [
               "minecraft:snowball"
             ]
@@ -95,11 +95,11 @@
       "samples": {
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:unharnessed/minecraft:behavior.float_tempt/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_unharnessed/minecraft:behavior.float_tempt/",
             "content": 7
           },
           {
-            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:behavior.float_tempt/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:behavior.float_tempt/",
             "content": 7
           }
         ]
@@ -120,11 +120,11 @@
       "samples": {
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:unharnessed/minecraft:behavior.float_tempt/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_unharnessed/minecraft:behavior.float_tempt/",
             "content": 16
           },
           {
-            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:behavior.float_tempt/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:behavior.float_tempt/",
             "content": 16
           }
         ]
@@ -139,11 +139,11 @@
       "samples": {
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:unharnessed/minecraft:behavior.float_tempt/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_unharnessed/minecraft:behavior.float_tempt/",
             "content": 4
           },
           {
-            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:behavior.float_tempt/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:behavior.float_tempt/",
             "content": 5
           }
         ]
@@ -151,18 +151,18 @@
     },
     {
       "id": "on_tempt_end",
-      "title": "On Tempt End",
+      "title": "Tempt End",
       "dataType": 22,
       "samples": {
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:unharnessed/minecraft:behavior.float_tempt/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_unharnessed/minecraft:behavior.float_tempt/",
             "content": {
               "event": "minecraft:on_stop_tempting"
             }
           },
           {
-            "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:behavior.float_tempt/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:behavior.float_tempt/",
             "content": {
               "event": "minecraft:on_stop_tempting"
             }
@@ -176,7 +176,7 @@
   "samples": {
     "/vanilla/behavior_pack/entities/happy_ghast.json": [
       {
-        "path": "/minecraft:entity/component_groups/minecraft:unharnessed/minecraft:behavior.float_tempt/",
+        "path": "/minecraft:entity/component_groups/minecraft:adult_unharnessed/minecraft:behavior.float_tempt/",
         "content": {
           "priority": 4,
           "can_tempt_vertically": true,
@@ -207,7 +207,7 @@
         }
       },
       {
-        "path": "/minecraft:entity/component_groups/minecraft:harnessed/minecraft:behavior.float_tempt/",
+        "path": "/minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:behavior.float_tempt/",
         "content": {
           "priority": 5,
           "can_tempt_vertically": true,

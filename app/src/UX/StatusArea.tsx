@@ -169,6 +169,10 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
       Log.onItemAdded.subscribe(this._handleLogItemAdded);
     }
 
+    for (const status of this.props.carto.status) {
+      this._handleStatusAdded(this.props.carto, status);
+    }
+
     this.props.carto.subscribeStatusAddedAsync(this._handleStatusAdded);
     this.props.carto.onOperationCompleted.subscribe(this._handleOperationCompleted);
   }
@@ -274,7 +278,7 @@ export default class StatusArea extends Component<IStatusAreaProps, IStatusAreaS
               setInterior = true;
               interior = (
                 <span className="sa-placeHolder" title={lastStatus.message}>
-                  <img className="sa-placeHolderIcon sa-loading" src="/loading.gif" alt="Waiting spinner" />
+                  <img className="sa-placeHolderIcon sa-loading" src="loading.gif" alt="Waiting spinner" />
                   <span className="sa-placeHolderText">{lastStatus.message}</span>
                 </span>
               );

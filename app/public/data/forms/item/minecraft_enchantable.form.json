@@ -5,6 +5,7 @@
       "title": "Slot",
       "description": "Specifies which types of enchantments can be applied. For example, `bow` would allow this item to be enchanted as if it were a bow.",
       "dataType": 2,
+      "isRequired": true,
       "samples": {
         "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
           {
@@ -37,6 +38,7 @@
       "title": "Value",
       "description": "Specifies the value of the enchantment (minimum of 0).",
       "dataType": 0,
+      "isRequired": true,
       "samples": {
         "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
           {
@@ -55,7 +57,7 @@
   ],
   "description": "Determines what enchantments can be applied to the item. Not all enchantments will have an effect on all item components.",
   "note": "The following enchantment slot types that can be set for the value of `slot`: sword, bow, pickaxe, armor_head, armor_torso, armor_legs, armor_feet",
-  "title": "Enchantable",
+  "title": "Minecraft Enchantable Item",
   "samples": {
     "/samples/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/items/axe_turret_kit.item.json": [
       {

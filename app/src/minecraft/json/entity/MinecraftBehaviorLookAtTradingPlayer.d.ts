@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.look_at_trading_player Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.look_at_trading_player": {
   "priority": 7
@@ -79,7 +79,7 @@ export default interface MinecraftBehaviorLookAtTradingPlayer {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 7
+   * Villager v2: 7
    *
    * Villager: 2
    *

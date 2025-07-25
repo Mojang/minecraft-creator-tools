@@ -3,5 +3,6 @@
 
 export default interface LocToken {
   value: string;
+  comment?: string;
   isModified: boolean;
 }

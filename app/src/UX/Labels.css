@@ -2,24 +2,49 @@
   padding-left: 7px;
   padding-right: 7px;
   padding-bottom: 6px;
-  display: block;
+  display: grid;
   margin-top: 3px;
+}
+
+.label-slim {
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 6px;
+  display: grid;
+}
+
+.label-toolbar-slim {
+  padding-top: 0px !important;
+  display: grid !important;
+}
+
+.label-iconGrid {
+  grid-column: 1;
 }
 
 .label-text {
   padding-left: 6px;
   padding-right: 6px;
+  grid-column: 2;
   vertical-align: top;
+  white-space: nowrap;
 }
 
 .label-toolbar3 {
   padding-top: 3px !important;
-  display: inline-block;
+  display: grid !important;
 }
 
 .label-toolbar {
   padding-top: 3px !important;
   display: inline-block;
+}
+
+.label-dropdown {
+  padding-top: 3px !important;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
 }
 
 .label-rpad {
@@ -83,6 +108,8 @@
   padding-left: 2px;
   padding-right: 2px;
   position: relative;
+  grid-column: 3;
+
   top: -4px;
 }
 

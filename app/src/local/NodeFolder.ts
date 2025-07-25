@@ -73,6 +73,8 @@ export default class NodeFolder extends FolderBase implements IFolder {
   }
 
   ensureFile(name: string): NodeFile {
+    Log.assert(name.indexOf("/") < 0, "Unexpected to find / in file name: " + name);
+
     const nameCanon = StorageUtilities.canonicalizeName(name);
 
     let candFile = this.files[nameCanon];
@@ -140,6 +142,8 @@ export default class NodeFolder extends FolderBase implements IFolder {
   }
 
   ensureFolder(name: string): NodeFolder {
+    Log.assert(name.indexOf("/") < 0, "Unexpected to find / in folder name: " + name);
+
     const nameCanon = StorageUtilities.canonicalizeName(name);
 
     let candFolder = this.folders[nameCanon];
@@ -512,21 +516,21 @@ export default class NodeFolder extends FolderBase implements IFolder {
     if (fs.existsSync(this.fullPath)) {
       const results = fs.readdirSync(this.fullPath);
 
-      results.forEach((fileName: string) => {
+      results.forEach((fileOrFolderName: string) => {
         let filePath = this.fullPath;
 
         if (!filePath.endsWith(NodeStorage.platformFolderDelimiter)) {
           filePath += NodeStorage.platformFolderDelimiter;
         }
 
-        filePath += fileName;
+        filePath += fileOrFolderName;
 
         try {
           const stat = fs.statSync(filePath);
-          if (stat.isDirectory()) {
-            this.ensureFolder(fileName);
+          if (stat.isDirectory() && !StorageUtilities.isIgnorableFolder(fileOrFolderName)) {
+            this.ensureFolder(fileOrFolderName);
           } else if (stat.isFile() && StorageUtilities.isUsableFile(filePath)) {
-            const file = this.ensureFile(fileName);
+            const file = this.ensureFile(fileOrFolderName);
 
             if (stat.mtime) {
               file.modifiedAtLoad = new Date(stat.mtime);

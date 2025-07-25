@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.mingle Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/job_specific_goals/minecraft:behavior.mingle/: 
 "minecraft:behavior.mingle": {}
@@ -43,7 +43,7 @@ export default interface MinecraftBehaviorMingle {
    * again
    * 
    * Sample Values:
-   * Villager V2: 10
+   * Villager v2: 10
    *
    */
   cooldown_time: number;
@@ -54,7 +54,7 @@ export default interface MinecraftBehaviorMingle {
    * entity
    * 
    * Sample Values:
-   * Villager V2: 30
+   * Villager v2: 30
    *
    */
   duration: number;
@@ -66,7 +66,7 @@ export default interface MinecraftBehaviorMingle {
    * be identical on both entities.
    * 
    * Sample Values:
-   * Villager V2: 2
+   * Villager v2: 2
    *
    */
   mingle_distance: number;
@@ -76,7 +76,7 @@ export default interface MinecraftBehaviorMingle {
    * The entity type that this entity is allowed to mingle with
    * 
    * Sample Values:
-   * Villager V2: "minecraft:villager_v2"
+   * Villager v2: "minecraft:villager_v2"
    *
    */
   mingle_partner_type: string[];
@@ -88,7 +88,7 @@ export default interface MinecraftBehaviorMingle {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 7
+   * Villager v2: 7
    *
    */
   priority: number;
@@ -98,7 +98,7 @@ export default interface MinecraftBehaviorMingle {
    * Movement speed multiplier of the mob when using this AI Goal
    * 
    * Sample Values:
-   * Villager V2: 0.5
+   * Villager v2: 0.5
    *
    */
   speed_multiplier: number;

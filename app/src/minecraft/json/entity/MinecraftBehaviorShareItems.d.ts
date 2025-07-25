@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.share_items Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.share_items": {
   "priority": 10,
@@ -82,7 +82,7 @@ export default interface MinecraftBehaviorShareItems {
    * List of entities this mob will share items with
    * 
    * Sample Values:
-   * Villager V2: [{"filters":{"test":"is_family","subject":"other","value":"villager"}}]
+   * Villager v2: [{"filters":{"test":"is_family","subject":"other","value":"villager"}}]
    *
    *
    */

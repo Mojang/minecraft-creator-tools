@@ -4,7 +4,7 @@
 import IGitHubInfo from "./IGitHubInfo";
 import IProjectItemVariant from "./IProjectItemVariant";
 
-export const MaxItemTypes = 146;
+export const MaxItemTypes = 162;
 
 export enum ProjectItemCategory {
   assets,
@@ -18,6 +18,7 @@ export enum ProjectItemCategory {
   mctools,
 }
 
+// these integer numbers are used in the project data file formats, so do not change them. See ProjectItemUtilities/Sort Order for a more logical sort order.
 export enum ProjectItemType {
   unknown = 0,
   testJs = 1,
@@ -25,12 +26,12 @@ export enum ProjectItemType {
   catalogIndexJs = 3,
   structure = 4,
   behaviorPackManifestJson = 5,
-  json = 6,
+  unknownJson = 6,
   MCWorld = 7,
   MCTemplate = 8,
   MCFunction = 9,
   entityTypeBehavior = 10,
-  entityTypeBaseJs = 11,
+  entityTypeBaseJs = 11, // <--- not in use, in favor of just general .js + generated
   actionSet = 12,
   ts = 13,
   resourcePackManifestJson = 14,
@@ -44,7 +45,7 @@ export enum ProjectItemType {
   blockMaterialsBehaviorJson = 22,
   itemTypeBehavior = 23,
   lootTableBehavior = 24,
-  biomeResourceJson = 25,
+  biomesClientResource = 25,
   blocksCatalogResourceJson = 26,
   soundCatalog = 27,
   animationResourceJson = 28,
@@ -57,7 +58,7 @@ export enum ProjectItemType {
   ninesliceJson = 35,
   uiJson = 36,
   languagesCatalogResourceJson = 37,
-  biomeBehaviorJson = 38,
+  biomeBehavior = 38,
   dialogueBehaviorJson = 39,
   featureRuleBehavior = 40,
   featureBehavior = 41,
@@ -89,9 +90,9 @@ export enum ProjectItemType {
   skinPackManifestJson = 67,
   worldTemplateManifestJson = 68,
   buildProcessedJs = 69,
-  entityTypeBaseTs = 70,
-  blockTypeBaseJs = 71,
-  blockTypeBaseTs = 72,
+  entityTypeBaseTs = 70, // <--- not in use, in favor of just general .ts + generated
+  blockTypeBaseJs = 71, // <--- not in use, in favor of just general .js + generated
+  blockTypeBaseTs = 72, // <--- not in use, in favor of just general .ts + generated
   MCProject = 73,
   image = 74,
   vsCodeLaunchJson = 75,
@@ -101,7 +102,7 @@ export enum ProjectItemType {
   lang = 79,
   projectSummaryMetadata = 80,
   tickJson = 81,
-  cameraJson = 82,
+  cameraBehaviorJson = 82,
   material = 83,
   materialSetJson = 84,
   materialVertex = 85,
@@ -121,7 +122,7 @@ export enum ProjectItemType {
   marketingAssetImage = 100,
   storeAssetImage = 101,
   uiTexture = 102,
-  iconImage = 103,
+  packIconImage = 103,
   textureListJson = 104,
   fileListArrayJson = 105,
   vanillaDataJson = 106,
@@ -164,6 +165,22 @@ export enum ProjectItemType {
   aimAssistCategoryJson = 143,
   behaviorTreeJson = 144,
   spawnGroupJson = 145,
+  designPackManifestJson = 146,
+  designPackFolder = 147,
+  designTexture = 148,
+  personaJson = 149,
+  sdlLayout = 150,
+  lodJson = 151,
+  rendererJson = 152,
+  loadingMessagesJson = 153,
+  splashesJson = 154,
+  cameraResourceJson = 155,
+  fontMetadataJson = 156,
+  emoticonsJson = 157,
+  skinPackGeometryJson = 158,
+  skinPackTextureBackCompatJson = 159,
+  uniformsJson = 160,
+  biomeResource = 161,
 }
 
 export enum ProjectItemStorageType {

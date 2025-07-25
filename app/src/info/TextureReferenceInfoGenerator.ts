@@ -14,7 +14,7 @@ import ContentIndex, { AnnotationCategory } from "../core/ContentIndex";
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
 export enum TextureReferenceInfoGeneratorTest {
-  textureReferences = 1,
+  textureReferences = 101,
 }
 
 export default class TextureReferenceInfoGenerator implements IProjectInfoGenerator {
@@ -30,13 +30,18 @@ export default class TextureReferenceInfoGenerator implements IProjectInfoGenera
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
-    info.textureCount = infoSet.getSummedNumberValue(this.id, TextureReferenceInfoGeneratorTest.textureReferences);
+    info.textureCount = infoSet.getSummedDataValue(this.id, TextureReferenceInfoGeneratorTest.textureReferences);
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
-    const textureRefCountPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 1, "Texture Refrences");
+    const textureRefCountPi = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      TextureReferenceInfoGeneratorTest.textureReferences,
+      "Texture References"
+    );
     items.push(textureRefCountPi);
 
     const itemsCopy = project.getItemsCopy();

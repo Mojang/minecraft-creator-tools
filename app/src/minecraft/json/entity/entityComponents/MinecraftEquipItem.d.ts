@@ -26,6 +26,13 @@ Evocation Illager - https://github.com/Mojang/bedrock-samples/tree/preview/behav
 
 "minecraft:equip_item": {}
 
+
+Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/fox.json
+
+"minecraft:equip_item": {
+  "can_wear_armor": false
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -35,6 +42,8 @@ import * as jsoncommon from './../../../jsoncommon';
  * The entity puts on the desired equipment.
  */
 export default interface MinecraftEquipItem {
+
+  can_wear_armor: string;
 
   /**
    * @remarks

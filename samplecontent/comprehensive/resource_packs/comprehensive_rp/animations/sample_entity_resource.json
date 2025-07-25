@@ -1,0 +1,38 @@
+{
+  "format_version": "1.20.10",
+  "animations": {
+    "animation.sample_entity.resource.walk": {
+      "animation_length": 1.0,
+      "loop": true,
+      "bones": {
+        "body": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0]
+        },
+        "head": {
+          "rotation": {
+            "0.0": [0, 0, 0],
+            "0.25": [5, 0, 0],
+            "0.5": [10, 0, 0],
+            "0.75": [5, 0, 0],
+            "1.0": [0, 0, 0]
+          }
+        },
+        "leg1": {
+          "rotation": {
+            "0.0": [0, 0, 0],
+            "0.5": [45, 0, 0],
+            "1.0": [0, 0, 0]
+          }
+        },
+        "leg2": {
+          "rotation": {
+            "0.0": [0, 0, 0],
+            "0.5": [-45, 0, 0],
+            "1.0": [0, 0, 0]
+          }
+        }
+      }
+    }
+  }
+}

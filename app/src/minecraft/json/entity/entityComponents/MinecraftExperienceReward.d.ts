@@ -119,7 +119,7 @@ export default interface MinecraftExperienceReward {
    *
    *
    */
-  on_bred: jsoncommon.MinecraftEventTrigger;
+  on_bred: string;
 
   /**
    * @remarks
@@ -136,6 +136,6 @@ export default interface MinecraftExperienceReward {
    * Bogged: "query.last_hit_by_player ? 5 + (query.equipment_count * Math.Random(1,3)) : 0"
    *
    */
-  on_death: jsoncommon.MinecraftEventTrigger;
+  on_death: string;
 
 }

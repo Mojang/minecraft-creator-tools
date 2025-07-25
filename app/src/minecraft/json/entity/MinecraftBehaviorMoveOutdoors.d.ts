@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.move_outdoors Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.move_outdoors": {
   "priority": 2,
@@ -43,7 +43,7 @@ export default interface MinecraftBehaviorMoveOutdoors {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 2
+   * Villager v2: 2
    *
    *
    */
@@ -74,7 +74,7 @@ export default interface MinecraftBehaviorMoveOutdoors {
    * moving outdoors.
    * 
    * Sample Values:
-   * Villager V2: 0.8
+   * Villager v2: 0.8
    *
    *
    */
@@ -86,7 +86,7 @@ export default interface MinecraftBehaviorMoveOutdoors {
    * pathfinding fails
    * 
    * Sample Values:
-   * Villager V2: 8
+   * Villager v2: 8
    *
    *
    */

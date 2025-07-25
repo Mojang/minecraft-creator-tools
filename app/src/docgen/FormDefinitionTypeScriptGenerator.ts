@@ -759,6 +759,8 @@ export default class FormDefinitionTypeScriptGenerator {
         return "jsoncommon.MinecraftEventTrigger";
       case FieldDataType.minecraftEventReference:
         return "string";
+      case FieldDataType.minecraftEventTriggerArray:
+        return "jsoncommon.MinecraftEventTrigger[]";
       case FieldDataType.longFormStringArray:
         return strDescription + "[]";
       case FieldDataType.keyedStringCollection:

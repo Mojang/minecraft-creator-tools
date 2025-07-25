@@ -13,7 +13,7 @@
 
 Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
 
- * At /minecraft:entity/component_groups/minecraft:unharnessed/minecraft:behavior.float_tempt/: 
+ * At /minecraft:entity/component_groups/minecraft:adult_unharnessed/minecraft:behavior.float_tempt/: 
 "minecraft:behavior.float_tempt": {
   "priority": 4,
   "can_tempt_vertically": true,
@@ -43,7 +43,7 @@ Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
   }
 }
 
- * At /minecraft:entity/component_groups/minecraft:harnessed/minecraft:behavior.float_tempt/: 
+ * At /minecraft:entity/component_groups/minecraft:adult_harnessed/minecraft:behavior.float_tempt/: 
 "minecraft:behavior.float_tempt": {
   "priority": 5,
   "can_tempt_vertically": true,

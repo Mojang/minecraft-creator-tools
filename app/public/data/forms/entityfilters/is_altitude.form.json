@@ -110,6 +110,10 @@
       "dataType": 0
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests the current altitude against a provided value. 0= bedrock elevation.",
   "title": "Is Altitude",
   "samples": {

@@ -53,6 +53,7 @@ export enum GitHubPropertyType {
   title = 6,
 }
 
+export const ScriptVersionStrings = ["Latest Stable (2.0)", "Stable 1.x"];
 export const ProjectFocusStrings = ["General", "GameTests", "World", "Sample Behavior", "Editor Extension"];
 
 export default class ProjectPropertyEditor extends Component<IProjectPropertyEditorProps, IProjectPropertyEditorState> {
@@ -430,7 +431,7 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
     data: DropdownProps
   ) {
     if (data.value === "Latest Beta") {
-      this.props.project.scriptVersion = ProjectScriptVersion.latestBeta;
+      this.props.project.scriptVersion = ProjectScriptVersion.latestStable;
     } else {
       this.props.project.scriptVersion = ProjectScriptVersion.stable10;
     }
@@ -787,10 +788,10 @@ export default class ProjectPropertyEditor extends Component<IProjectPropertyEdi
           <div className="ppe-label ppe-scriptVersionlabel">Script Version</div>
           <div className="ppe-scriptVersioninput">
             <Dropdown
-              items={["Latest Beta", "Stable 1.x"]}
+              items={ScriptVersionStrings}
               placeholder="Select your language"
               defaultValue={
-                this.props.project.scriptVersion === ProjectScriptVersion.latestBeta ? "Latest Beta" : "Stable 1.x"
+                this.props.project.scriptVersion === ProjectScriptVersion.latestStable ? "Latest Stable" : "Stable 1.x"
               }
               onChange={this._handleVersionChange}
             />

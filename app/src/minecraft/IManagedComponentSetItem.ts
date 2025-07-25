@@ -16,6 +16,8 @@ export default interface IManagedComponentSetItem {
   getAllComponents(): IManagedComponent[];
   notifyComponentUpdated(id: string): void;
 
+  id: string;
+
   onComponentAdded: IEvent<IManagedComponentSetItem, IManagedComponent>;
   onComponentRemoved: IEvent<IManagedComponentSetItem, string>;
   onComponentChanged: IEvent<IManagedComponentSetItem, IManagedComponent>;

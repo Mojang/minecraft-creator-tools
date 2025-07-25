@@ -227,8 +227,8 @@ export default class Point3 extends Component<IPoint3Props, IPoint3State> {
               <FormInput
                 id="x"
                 className="p3-input"
-                defaultValue={curX.toString()}
-                value={curX.toString()}
+                defaultValue={curX ? curX.toString() : undefined}
+                value={curX ? curX.toString() : undefined}
                 onChange={this._handleXChange}
               />
             </div>
@@ -236,8 +236,8 @@ export default class Point3 extends Component<IPoint3Props, IPoint3State> {
               <FormInput
                 id="y"
                 className="p3-input"
-                defaultValue={curY.toString()}
-                value={curY.toString()}
+                defaultValue={curY ? curY.toString() : undefined}
+                value={curY ? curY.toString() : undefined}
                 onChange={this._handleYChange}
               />
             </div>
@@ -245,8 +245,8 @@ export default class Point3 extends Component<IPoint3Props, IPoint3State> {
               <FormInput
                 id="z"
                 className="p3-input"
-                defaultValue={curZ.toString()}
-                value={curZ.toString()}
+                defaultValue={curZ ? curZ.toString() : undefined}
+                value={curZ ? curZ.toString() : undefined}
                 onChange={this._handleZChange}
               />
             </div>

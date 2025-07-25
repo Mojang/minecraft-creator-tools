@@ -227,6 +227,7 @@
       }
     }
   ],
+  "id": "minecraft:pbr_fallback_settings",
   "title": "PBR Fallback Settings",
   "description": "Struct PBRFallbackConfig PBRFallbackConfigSettings Client Deferred Rendering"
 }

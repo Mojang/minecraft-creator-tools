@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Comprehensive Test Behavior Pack",
+    "description": "A comprehensive behavior pack for testing different content types",
+    "uuid": "85c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2b",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 20, 10]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "95c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2c",
+      "version": [1, 0, 0]
+    },
+    {
+      "type": "script",
+      "uuid": "a5c5e4b8-8b93-4e3f-9a5b-7c8d9e0f1a2d",
+      "version": [1, 0, 0],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "1.8.0-beta"
+    }
+  ]
+}

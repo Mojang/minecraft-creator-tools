@@ -1,13 +1,12 @@
 .pact-outer {
-  padding-left: 10px;
-  padding-top: 2px;
+  padding-left: 20px;
   overflow-y: auto;
 }
 
 .pact-binHeader {
   font-size: large;
   font-weight: bold;
-  padding-top: 14px;
+  padding-top: 4px;
   line-height: 1;
 }
 

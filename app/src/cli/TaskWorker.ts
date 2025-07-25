@@ -16,6 +16,7 @@ import { InfoItemType } from "../info/IInfoItemData";
 import LocalEnvironment from "../local/LocalEnvironment";
 import ProjectUtilities from "../app/ProjectUtilities";
 import ZipStorage from "../storage/ZipStorage";
+import { isMainThread } from "worker_threads";
 
 let carto: Carto | undefined;
 let localEnv: LocalEnvironment | undefined;
@@ -24,7 +25,7 @@ let outputStoragePath: string | undefined;
 
 let activeContext: string | undefined;
 
-async function executeTask(task: ITask) {
+export async function executeTask(task: ITask) {
   if (!task.project) {
     Log.error("Could not find an associated project for the associated task.");
     return undefined;
@@ -76,19 +77,15 @@ async function executeTask(task: ITask) {
         );
     }
   } catch (e) {
-    let err = "Error while running task: " + e.toString();
-
-    if (e.stack) {
-      err += "\nStack: " + e.stack;
-    }
-
-    return err;
+    return e.toString();
   }
 
   return undefined;
 }
 
-expose(executeTask);
+if (!isMainThread) {
+  expose(executeTask);
+}
 
 async function validate(
   carto: Carto,
@@ -229,12 +226,6 @@ async function validateAndDisposeProject(
   try {
     await outputResults(projectSet, pis, "", outputStorage, mcrJsonFile, outputMci, outputType);
   } catch (e) {
-    let err = "Error while getting results of a task: " + e.toString();
-
-    if (e.stack) {
-      err += "\nStack: " + e.stack;
-    }
-
     Log.error(e);
   }
 

@@ -183,12 +183,6 @@
         }
       ],
       "samples": {
-        "/vanilla/behavior_pack/entities/cave_spider.json": [
-          {
-            "path": "/minecraft:entity/events/minecraft:entity_spawned/randomize/0/randomize/1/filters/",
-            "content": "the_nether"
-          }
-        ],
         "/vanilla/behavior_pack/entities/fishing_hook.json": [
           {
             "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence/0/filters/",
@@ -204,12 +198,6 @@
             "path": "/minecraft:entity/events/minecraft:entity_born/sequence/2/filters/",
             "content": "desert"
           }
-        ],
-        "/vanilla/behavior_pack/entities/spider.json": [
-          {
-            "path": "/minecraft:entity/events/minecraft:entity_spawned/randomize/0/randomize/1/filters/",
-            "content": "the_nether"
-          }
         ]
       }
     },
@@ -218,20 +206,24 @@
       "title": "Test",
       "dataType": 2,
       "samples": {
-        "/vanilla/behavior_pack/entities/cave_spider.json": [
-          {
-            "path": "/minecraft:entity/events/minecraft:entity_spawned/randomize/0/randomize/1/filters/",
-            "content": "is_biome"
-          }
-        ],
         "/vanilla/behavior_pack/entities/fishing_hook.json": [
           {
             "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence/0/filters/",
             "content": "is_biome"
           }
+        ],
+        "/vanilla/behavior_pack/entities/rabbit.json": [
+          {
+            "path": "/minecraft:entity/events/minecraft:entity_spawned/sequence/2/filters/",
+            "content": "is_biome"
+          }
         ]
       }
     }
+  ],
+  "tags": [
+    "conditional",
+    "entityevent"
   ],
   "description": "Tests whether the Subject is currently in the named biome.",
   "title": "Is Biome",
@@ -244,15 +236,6 @@
       {
         "path": "Short (using Defaults)..",
         "content": "{ \"test\": \"is_biome\", \"value\": \"beach\" }"
-      }
-    ],
-    "/vanilla/behavior_pack/entities/cave_spider.json": [
-      {
-        "path": "/minecraft:entity/events/minecraft:entity_spawned/randomize/0/randomize/1/filters/",
-        "content": {
-          "test": "is_biome",
-          "value": "the_nether"
-        }
       }
     ],
     "/vanilla/behavior_pack/entities/fishing_hook.json": [
@@ -277,15 +260,6 @@
         "content": {
           "test": "is_biome",
           "value": "desert"
-        }
-      }
-    ],
-    "/vanilla/behavior_pack/entities/spider.json": [
-      {
-        "path": "/minecraft:entity/events/minecraft:entity_spawned/randomize/0/randomize/1/filters/",
-        "content": {
-          "test": "is_biome",
-          "value": "the_nether"
         }
       }
     ]

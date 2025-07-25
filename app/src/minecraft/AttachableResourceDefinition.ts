@@ -354,19 +354,21 @@ export default class AttachableResourceDefinition {
 
         if (relativePath) {
           for (const key in this._data.textures) {
-            const texturePath = this._data.textures[key];
+            if (Utilities.isUsableAsObjectKey(key)) {
+              const texturePath = this._data.textures[key];
 
-            if (texturePath === relativePath) {
-              this._data.textures[key] = undefined;
+              if (texturePath === relativePath) {
+                this._data.textures[key] = undefined;
 
-              if (etrChildItems) {
-                for (const otherChild of etrChildItems) {
-                  if (otherChild.childItem.itemType === ProjectItemType.renderControllerJson) {
-                    const renderController = (await MinecraftDefinitions.get(
-                      otherChild.childItem
-                    )) as RenderControllerSetDefinition;
+                if (etrChildItems) {
+                  for (const otherChild of etrChildItems) {
+                    if (otherChild.childItem.itemType === ProjectItemType.renderControllerJson) {
+                      const renderController = (await MinecraftDefinitions.get(
+                        otherChild.childItem
+                      )) as RenderControllerSetDefinition;
 
-                    renderController.removeTexture(key);
+                      renderController.removeTexture(key);
+                    }
                   }
                 }
               }
@@ -427,7 +429,7 @@ export default class AttachableResourceDefinition {
 
           if (animIds) {
             for (const animId of animationIdList) {
-              if (animIds.includes(animId)) {
+              if (animIds.has(animId)) {
                 item.addChildItem(candItem);
                 continue;
               }
@@ -444,7 +446,7 @@ export default class AttachableResourceDefinition {
 
           if (renderIds) {
             for (const rcId of renderControllerIdList) {
-              if (renderIds.includes(rcId)) {
+              if (renderIds.has(rcId)) {
                 item.addChildItem(candItem);
                 continue;
               }

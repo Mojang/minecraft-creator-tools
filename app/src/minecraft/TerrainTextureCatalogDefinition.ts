@@ -5,8 +5,8 @@ import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import { ITerrainTextureCatalog } from "./ITerrainTextureCatalog";
-import Project from "../app/Project";
+import { ITerrainTextureCatalog, ITerrainTextureDataItem } from "./ITerrainTextureCatalog";
+import Project, { FolderContext } from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
 import { ProjectItemType } from "../app/IProjectItemData";
 import Utilities from "../core/Utilities";
@@ -55,7 +55,7 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
     return this._data.texture_data;
   }
 
-  public get texturePathList() {
+  public getTexturePathList() {
     if (!this._data || !this._data.texture_data) {
       return undefined;
     }
@@ -68,12 +68,16 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
       if (texturePathArr && texturePathArr.textures) {
         if (typeof texturePathArr.textures === "string") {
           textureList.push(texturePathArr.textures.toLowerCase());
-        } else if (Array.isArray(texturePathArr)) {
+        } else if (Array.isArray(texturePathArr.textures)) {
           for (const texturePath of texturePathArr.textures) {
             if (typeof texturePath === "string") {
               textureList.push(texturePath.toLowerCase());
             } else if (texturePath.path) {
               textureList.push(texturePath.path.toLowerCase());
+            } else if (typeof texturePath === "object" && (texturePath as any).variations) {
+              for (const variation of (texturePath as any).variations) {
+                textureList.push(variation.path.toLowerCase());
+              }
             }
           }
         }
@@ -95,6 +99,53 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
     }
 
     return textureIdList;
+  }
+
+  static async getTerrainTextureCatalog(project: Project) {
+    const terrainTextureItems = project.getItemsByType(ProjectItemType.terrainTextureCatalogResourceJson);
+
+    if (terrainTextureItems && terrainTextureItems.length > 0) {
+      await terrainTextureItems[0].ensureStorage();
+
+      if (terrainTextureItems[0].primaryFile) {
+        return await TerrainTextureCatalogDefinition.ensureOnFile(terrainTextureItems[0].primaryFile);
+      }
+    }
+
+    return undefined;
+  }
+
+  static async ensureTerrainTextureCatalog(project: Project) {
+    let terrainTextureCatalog = await this.getTerrainTextureCatalog(project);
+
+    if (terrainTextureCatalog) {
+      return terrainTextureCatalog;
+    }
+
+    const defaultRp = await project.getDefaultResourcePackFolder();
+
+    if (defaultRp) {
+      const terrainTextureCatalogFile = await defaultRp.ensureFileFromRelativePath("/textures/terrain_texture.json");
+
+      terrainTextureCatalogFile.setContent(
+        JSON.stringify({
+          texture_name: "atlas.terrain",
+          padding: 8,
+          num_mip_levels: 4,
+          texture_data: {},
+        })
+      );
+
+      project.ensureItemFromFile(
+        terrainTextureCatalogFile,
+        ProjectItemType.terrainTextureCatalogResourceJson,
+        FolderContext.resourcePack
+      );
+
+      return await TerrainTextureCatalogDefinition.ensureOnFile(terrainTextureCatalogFile);
+    }
+
+    return undefined;
   }
 
   static async ensureOnFile(
@@ -160,6 +211,16 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
     }
 
     return this.data.texture_data[textureId];
+  }
+
+  setTexture(textureId: string, textureData: ITerrainTextureDataItem) {
+    if (!this.data || !this.data.texture_data) {
+      return;
+    }
+
+    this.data.texture_data[textureId] = textureData;
+
+    this.persist();
   }
 
   getDefaultTexturePath(textureId: string) {
@@ -244,7 +305,7 @@ export default class TerrainTextureCatalogDefinition implements IDefinition {
 
     let packRootFolder = this.getPackRootFolder();
 
-    let texturePathList = this.texturePathList;
+    let texturePathList = this.getTexturePathList();
 
     for (const candItem of itemsCopy) {
       if (candItem.itemType === ProjectItemType.texture && packRootFolder && texturePathList) {

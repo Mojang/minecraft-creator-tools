@@ -19,7 +19,7 @@ Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
-Zombie Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_villager_v2.json
+Zombie Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_villager_v2.json
 
 "minecraft:behavior.flee_sun": {
   "priority": 4,
@@ -47,7 +47,7 @@ export default interface MinecraftBehaviorFleeSun {
    * Bogged: 2
    *
    *
-   * Zombie Villager V2: 4
+   * Zombie Villager v2: 4
    *
    *
    */

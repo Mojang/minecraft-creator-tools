@@ -82,18 +82,20 @@ export default class SoundDefinitionCatalogDefinition {
       for (const key in this._data.sound_definitions) {
         const soundDefSet = this._data.sound_definitions[key];
 
-        for (const sound of soundDefSet.sounds) {
-          if (typeof sound === "string") {
-            let path = AudioDefinition.canonicalizeAudioPath(sound);
+        if (soundDefSet.sounds && Array.isArray(soundDefSet.sounds)) {
+          for (const sound of soundDefSet.sounds) {
+            if (typeof sound === "string") {
+              let path = AudioDefinition.canonicalizeAudioPath(sound);
 
-            if (path) {
-              soundList.push(path);
-            }
-          } else if (typeof sound.name === "string") {
-            let path = AudioDefinition.canonicalizeAudioPath(sound.name);
+              if (path) {
+                soundList.push(path);
+              }
+            } else if (typeof sound.name === "string") {
+              let path = AudioDefinition.canonicalizeAudioPath(sound.name);
 
-            if (path) {
-              soundList.push(path);
+              if (path) {
+                soundList.push(path);
+              }
             }
           }
         }
@@ -310,24 +312,26 @@ export default class SoundDefinitionCatalogDefinition {
 
     const soundDefName = StorageUtilities.getBaseFromName(file.name).toLowerCase();
 
-    let soundDef: ISoundDefinition | undefined = this._data.sound_definitions[soundDefName];
+    if (Utilities.isUsableAsObjectKey(soundDefName)) {
+      let soundDef: ISoundDefinition | undefined = this._data.sound_definitions[soundDefName];
 
-    if (!soundDef) {
-      soundDef = {
-        category: "neutral",
-        sounds: [],
-      };
+      if (!soundDef) {
+        soundDef = {
+          category: "neutral",
+          sounds: [],
+        };
 
-      this._data.sound_definitions[soundDefName] = soundDef;
-    }
+        this._data.sound_definitions[soundDefName] = soundDef;
+      }
 
-    if (soundDef && !this.hasSoundByPath(soundDef, relativePath)) {
-      soundDef.sounds.push({
-        is3D: false,
-        name: relativePath,
-        volume: 1,
-        weight: 10,
-      });
+      if (soundDef && !this.hasSoundByPath(soundDef, relativePath)) {
+        soundDef.sounds.push({
+          is3D: false,
+          name: relativePath,
+          volume: 1,
+          weight: 10,
+        });
+      }
     }
   }
 
@@ -357,26 +361,28 @@ export default class SoundDefinitionCatalogDefinition {
       const keys = this.getSoundDefinitionSetNameList();
 
       for (const key in keys) {
-        let soundDefSet = this._data.sound_definitions[key];
+        if (Utilities.isUsableAsObjectKey(key)) {
+          let soundDefSet = this._data.sound_definitions[key];
 
-        if (!soundDefSet) {
-          soundDefSet = (this._data as any)[key];
-        }
+          if (!soundDefSet) {
+            soundDefSet = (this._data as any)[key];
+          }
 
-        if (soundDefSet && soundDefSet.sounds) {
-          for (const soundInstance of soundDefSet.sounds) {
-            if (typeof soundInstance === "string") {
-              if (StorageUtilities.isPathEqual(soundInstance, relativePath)) {
+          if (soundDefSet && soundDefSet.sounds) {
+            for (const soundInstance of soundDefSet.sounds) {
+              if (typeof soundInstance === "string") {
+                if (StorageUtilities.isPathEqual(soundInstance, relativePath)) {
+                  if (!retSoundRefs[key]) {
+                    retSoundRefs[key] = [];
+                  }
+                  retSoundRefs[key].push({ name: soundInstance });
+                }
+              } else if (StorageUtilities.isPathEqual(soundInstance.name, relativePath)) {
                 if (!retSoundRefs[key]) {
                   retSoundRefs[key] = [];
                 }
-                retSoundRefs[key].push({ name: soundInstance });
+                retSoundRefs[key].push(soundInstance);
               }
-            } else if (StorageUtilities.isPathEqual(soundInstance.name, relativePath)) {
-              if (!retSoundRefs[key]) {
-                retSoundRefs[key] = [];
-              }
-              retSoundRefs[key].push(soundInstance);
             }
           }
         }

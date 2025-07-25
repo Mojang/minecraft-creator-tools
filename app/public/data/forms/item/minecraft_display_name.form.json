@@ -161,6 +161,14 @@
         }
       }
     ],
+    "/samples/creator_camp/behavior_packs/creator_camp/items/bag_o_leaves.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:display_name/",
+        "content": {
+          "value": "Bag o' Leaves"
+        }
+      }
+    ],
     "/samples/custom_items/behavior_packs/custom_item/items/chestplate.json": [
       {
         "path": "/minecraft:item/components/minecraft:display_name/",
@@ -250,6 +258,6 @@
       }
     ]
   },
-  "title": "Display Name",
+  "title": "Minecraft Display Name Item",
   "id": "minecraft:display_name"
 }

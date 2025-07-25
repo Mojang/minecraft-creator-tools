@@ -11,7 +11,7 @@ import Project from "../app/Project";
 import ContentIndex from "../core/ContentIndex";
 
 export enum UnknownFileGeneratorTest {
-  unknownTypeFileFound = 2,
+  unknownTypeFileFound = 102,
 }
 
 export default class UnknownFileGenerator implements IProjectFileInfoGenerator {

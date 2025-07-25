@@ -171,7 +171,7 @@ export default interface MinecraftBehaviorGoHome {
    * Piglin Brute: [{"event":"go_back_to_spawn_failed","target":"self"}]
    *
    */
-  on_failed: string[];
+  on_failed: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks
@@ -185,7 +185,7 @@ export default interface MinecraftBehaviorGoHome {
    * Nardolphle: {"event":"minecraft:go_lay_egg","target":"self"}
    *
    */
-  on_home: string[];
+  on_home: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks

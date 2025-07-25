@@ -10,6 +10,14 @@
   grid-template-columns: 280px 1fr;
 }
 
+.etcse-area-narrow {
+  width: 100%;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-right: 12px;
+  max-width: 590px;
+}
+
 .etcse-header {
   font-size: 12pt;
   font-size: 17pt;
@@ -74,6 +82,11 @@
   margin-bottom: 5px;
 }
 
+.etcse-componentDropdown .ui-dropdown__container {
+  width: 205px;
+  margin: 4px;
+}
+
 .etcse-componentList {
   grid-column: 1;
   overflow-y: scroll;
@@ -81,6 +94,10 @@
   border-left: solid 1px;
   border-bottom: solid 1px;
   border-top: solid 1px;
+}
+
+.etcse-componentList .ui-dropdown__container {
+  width: 200px;
 }
 
 .etcse-componentList li {
@@ -103,6 +120,14 @@
   border-right: solid 1px;
   border-bottom: solid 1px;
   border-top: solid 1px;
+}
+
+.etcse-componentBin-narrow {
+  padding: 0px;
+  padding-top: 8px;
+  border-right: solid 0px;
+  border-bottom: solid 0px;
+  border-top: solid 0px;
 }
 
 .etcse-componentBin:first-child {

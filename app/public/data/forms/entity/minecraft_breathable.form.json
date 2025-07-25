@@ -30,11 +30,11 @@
         ],
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
-            "path": "/minecraft:entity/component_groups/minecraft:adult/minecraft:breathable/",
+            "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:breathable/",
             "content": 5
           },
           {
-            "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:breathable/",
+            "path": "/minecraft:entity/component_groups/minecraft:adult/minecraft:breathable/",
             "content": 5
           }
         ],
@@ -455,21 +455,21 @@
     ],
     "/vanilla/behavior_pack/entities/happy_ghast.json": [
       {
-        "path": "/minecraft:entity/component_groups/minecraft:adult/minecraft:breathable/",
-        "content": {
-          "total_supply": 5,
-          "suffocate_time": 0,
-          "breathes_air": true,
-          "breathes_water": false
-        }
-      },
-      {
         "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:breathable/",
         "content": {
           "total_supply": 5,
           "suffocate_time": 0,
           "breathes_air": true,
           "breathes_water": true
+        }
+      },
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:adult/minecraft:breathable/",
+        "content": {
+          "total_supply": 5,
+          "suffocate_time": 0,
+          "breathes_air": true,
+          "breathes_water": false
         }
       }
     ],
@@ -1172,6 +1172,15 @@
       }
     ],
     "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/entities/beachager.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:breathable/",
+        "content": {
+          "total_supply": 15,
+          "suffocate_time": 0
+        }
+      }
+    ],
+    "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
       {
         "path": "/minecraft:entity/components/minecraft:breathable/",
         "content": {

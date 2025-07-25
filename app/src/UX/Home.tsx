@@ -131,7 +131,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     this._onCartoLoaded = this._onCartoLoaded.bind(this);
     this._onDeploymentStorageChanged = this._onDeploymentStorageChanged.bind(this);
     this._onDeploymentStorageChanged = this._onDeploymentStorageChanged.bind(this);
-    this._handleOpenFolderClick = this._handleOpenFolderClick.bind(this);
+    this._handleOpenFolderViaAppServiceClick = this._handleOpenFolderViaAppServiceClick.bind(this);
     this._handleOpenLocalFolderClick = this._handleOpenLocalFolderClick.bind(this);
     this._handleOpenWebLocalDeployClick = this._handleOpenWebLocalDeployClick.bind(this);
     this._handleOpenLocalFolderForDocumentationClick = this._handleOpenLocalFolderForDocumentationClick.bind(this);
@@ -408,6 +408,10 @@ export default class Home extends Component<IHomeProps, IHomeState> {
   }
 
   private _onGalleryLoaded() {
+    if (this.carto) {
+      this.carto.onGalleryLoaded.unsubscribe(this._onGalleryLoaded);
+    }
+
     this.setState({
       gallery: this.props.carto.gallery,
       dialogMode: this.state.dialogMode,
@@ -613,7 +617,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     }
   }
 
-  private async _handleOpenFolderClick() {
+  private async _handleOpenFolderViaAppServiceClick() {
     const result = await AppServiceProxy.sendAsync(AppServiceProxyCommands.openFolder, "");
 
     if (result && result.length > 0) {
@@ -905,7 +909,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
               color: this.props.theme.siteVariables?.colorScheme.brand.foreground3,
             }}
           >
-            <img className="home-loadingIcon" src="/loading.gif" alt="Waiting spinner" />
+            <img className="home-loadingIcon" src="loading.gif" alt="Waiting spinner" />
             {this.state.inlineLoadingMessage}
           </div>
         );

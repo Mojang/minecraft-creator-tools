@@ -1,0 +1,17 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Behavior Pack Only Test",
+    "description": "Testing behavior pack content only",
+    "uuid": "eff83af7-c6b3-4ffb-9c2f-08fe9a83b2b6",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 20, 10]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "af46dbc1-0dfd-47f1-8296-a4c57b9d6105",
+      "version": [1, 0, 0]
+    }
+  ]
+}

@@ -340,12 +340,12 @@
     },
     {
       "id": "on_use_action",
-      "title": "On Use Action",
+      "title": "Use Action",
       "dataType": 22
     },
     {
       "id": "on_use_range",
-      "title": "On Use Range",
+      "title": "Use Range",
       "dataType": 22
     },
     {
@@ -952,6 +952,6 @@
       }
     ]
   },
-  "title": "Food",
+  "title": "Minecraft Food Item",
   "id": "minecraft:food"
 }

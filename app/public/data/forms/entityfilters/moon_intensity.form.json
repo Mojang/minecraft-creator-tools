@@ -110,6 +110,10 @@
       "dataType": 3
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Compares the current moon intensity with a float value in the range (0.0, 1.0)",
   "title": "Moon Intensity",
   "samples": {

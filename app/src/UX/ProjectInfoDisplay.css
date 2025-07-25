@@ -25,6 +25,7 @@
 .pid-outer {
   height: 100%;
   text-align: left;
+  vertical-align: top;
 }
 
 .pid-header {
@@ -134,6 +135,7 @@
   padding-right: 6px;
   font-size: smaller;
 }
+
 .pid-headerTypeCell {
   max-width: 37px;
   width: 37px;

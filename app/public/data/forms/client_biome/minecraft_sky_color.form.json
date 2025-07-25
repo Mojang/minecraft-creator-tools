@@ -12,7 +12,8 @@
           "minLength": 3,
           "maxLength": 3
         }
-      ]
+      ],
+      "isRequired": true
     }
   ],
   "description": "Sets the sky color used during rendering. Biomes without this component will have default sky color behavior.",

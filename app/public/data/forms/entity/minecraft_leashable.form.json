@@ -58,7 +58,7 @@
     },
     {
       "id": "on_leash",
-      "title": "On Leash",
+      "title": "Leash",
       "description": "Event to call when this entity is leashed.",
       "dataType": 22,
       "samples": {
@@ -84,7 +84,7 @@
     },
     {
       "id": "on_unleash",
-      "title": "On Unleash",
+      "title": "Unleash",
       "description": "Event to call when this entity is unleashed.",
       "dataType": 22,
       "samples": {
@@ -119,7 +119,7 @@
     },
     {
       "id": "on_unleash_interact_only",
-      "title": "On Unleash Interact Only",
+      "title": "Unleash Interact Only",
       "description": "When set to true, \"on_unleash\" does not trigger when the entity gets unleashed for reasons other than the player directly interacting with it.",
       "defaultValue": false,
       "dataType": 1
@@ -141,7 +141,7 @@
           {
             "id": "hard_distance",
             "title": "Hard Distance",
-            "description": "Distance (in blocks) over which the entity starts being pulled toward the leash holder with an spring-like force.",
+            "description": "Distance (in blocks) over which the entity starts being pulled towards the leash holder with a spring-like force. Entities can enter and stay in vehicles if the leash is stretched under this distance, but will dismount once it exceeds it.",
             "defaultValue": 7,
             "dataType": 3
           },
@@ -162,7 +162,7 @@
           {
             "id": "soft_distance",
             "title": "Soft Distance",
-            "description": "Distance (in blocks) over which the entity begins pathfinding toward the leash holder, if able.",
+            "description": "Distance (in blocks) over which the entity starts pathfinding toward the leash holder, if able.",
             "defaultValue": 4,
             "dataType": 3
           },
@@ -301,7 +301,9 @@
               "rotation_adjustment": 90
             },
             {
-              "rotation_adjustment": 90
+              "rotation_adjustment": 90,
+              "soft_distance": 2,
+              "hard_distance": 4
             }
           ]
         }
@@ -436,7 +438,18 @@
     "/vanilla/behavior_pack/entities/mule.json": [
       {
         "path": "/minecraft:entity/components/minecraft:leashable/",
-        "content": {}
+        "content": {
+          "presets": [
+            {
+              "filter": {
+                "test": "is_family",
+                "subject": "other",
+                "value": "happy_ghast"
+              },
+              "spring_type": "quad_dampened"
+            }
+          ]
+        }
       }
     ],
     "/vanilla/behavior_pack/entities/ocelot.json": [
@@ -553,7 +566,7 @@
     ],
     "/vanilla/behavior_pack/entities/wolf.json": [
       {
-        "path": "/minecraft:entity/components/minecraft:leashable/",
+        "path": "/minecraft:entity/component_groups/minecraft:wolf_leashable/minecraft:leashable/",
         "content": {
           "on_leash": {
             "event": "minecraft:on_leash",

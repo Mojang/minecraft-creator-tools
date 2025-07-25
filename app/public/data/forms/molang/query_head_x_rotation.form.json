@@ -1,6 +1,6 @@
 {
   "id": "query.head_x_rotation",
   "fields": [],
-  "description": "Takes one argument as a parameter.  Returns the nth head x rotation of the entity if it makes sense, else it returns 0.0.",
-  "title": "Head X Rotation Query"
+  "description": "Returns the nth head x rotation of the entity if it makes sense, else it returns 0.0. Takes one argument as a parameter.",
+  "title": "Head x Rotation Query"
 }

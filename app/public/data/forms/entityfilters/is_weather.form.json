@@ -110,6 +110,10 @@
       "dataType": 2
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "DEPRECATED",
   "title": "Is Weather",
   "samples": {

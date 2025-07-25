@@ -52,7 +52,7 @@ export default interface MinecraftBehaviorGoAndGiveItemsToNoteblock {
    * Allay: [{"event":"pickup_item_delay","target":"self"}]
    *
    */
-  on_item_throw: string[];
+  on_item_throw: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks

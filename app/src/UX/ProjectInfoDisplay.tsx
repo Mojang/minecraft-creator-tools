@@ -21,7 +21,7 @@ import {
   WarningFilterLabel,
 } from "./Labels";
 
-import { InfoItemType } from "../info/IInfoItemData";
+import { InfoItemType, NumberInfoItemTypes } from "../info/IInfoItemData";
 import WebUtilities from "./WebUtilities";
 import Carto from "../app/Carto";
 import IStatus, { StatusTopic } from "../app/Status";
@@ -140,7 +140,11 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   }
 
   private async _handleStatusUpdates(carto: Carto, status: IStatus): Promise<void> {
-    if (status.topic === StatusTopic.projectLoad || status.topic === StatusTopic.validation) {
+    if (
+      status.topic === StatusTopic.projectLoad ||
+      status.topic === StatusTopic.validation ||
+      status.topic === StatusTopic.processing
+    ) {
       return new Promise((resolve: () => void, reject: () => void) => {
         if (this._isMountedInternal) {
           this.setState(
@@ -271,15 +275,15 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
   getDataSummary(data: string | number | boolean | undefined) {
     if (data) {
-      if (typeof data === "object") {
+      if (typeof data === "number") {
+        return Utilities.addApostrophesToNumericString(data.toString());
+      } else if (typeof data === "boolean") {
+        return data.toString();
+      } else if (typeof data === "object") {
         return "(object)";
       }
 
       return data;
-    }
-
-    if (typeof data === "number" || typeof data === "boolean") {
-      return data.toString();
     }
 
     return "(not defined)";
@@ -704,13 +708,13 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
 
     const countsByType: number[] = [];
 
+    for (let i = 0; i < NumberInfoItemTypes; i++) {
+      countsByType[i] = 0;
+    }
+
     if (this.state && this.state.selectedInfoSet) {
       for (const item of this.state.selectedInfoSet.items) {
-        if (!countsByType[item.itemType]) {
-          countsByType[item.itemType] = 1;
-        } else {
-          countsByType[item.itemType]++;
-        }
+        countsByType[item.itemType]++;
       }
     }
 
@@ -720,7 +724,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
           <ErrorFilterLabel
             theme={this.props.theme}
             isSelected={this.state.displayErrors}
-            value={countsByType[InfoItemType.error]}
+            value={countsByType[InfoItemType.error] + countsByType[InfoItemType.internalProcessingError]}
             isCompact={width < 1116}
           />
         ),
@@ -1013,14 +1017,40 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
       let itemsShown = 0;
       const itemTiles = [];
       if (this.state && this.state.selectedInfoSet && this.props.allInfoSet) {
-        for (let i = 0; i < this.state.selectedInfoSet.items.length && itemsShown < this.state.maxItems; i++) {
-          const item = this.state.selectedInfoSet.items[i];
+        const items = this.state.selectedInfoSet.items.slice();
+
+        items.sort((a: ProjectInfoItem, b: ProjectInfoItem): number => {
+          if (a.generatorId !== b.generatorId) {
+            return a.generatorId.localeCompare(b.generatorId);
+          }
+
+          if (a.generatorIndex !== b.generatorIndex) {
+            // sort summary results which should be consistently < 10 across tests (e.g., test success or fail)
+            // to the bottom in their category
+            if ((a.generatorIndex < 10 && b.generatorIndex > 10) || (b.generatorIndex < 10 && a.generatorIndex > 10)) {
+              return b.generatorIndex - a.generatorIndex;
+            }
+            return a.generatorIndex - b.generatorIndex;
+          }
+
+          if (a.projectItem?.projectPath && b.projectItem?.projectPath) {
+            return a.projectItem?.projectPath.localeCompare(b.projectItem?.projectPath);
+          }
+
+          if (a.message && b.message) {
+            return a.message.localeCompare(b.message);
+          }
+          return 0;
+        });
+
+        for (let i = 0; i < items.length && itemsShown < this.state.maxItems; i++) {
+          const item = items[i];
 
           if (
-            item.itemType === InfoItemType.internalProcessingError ||
             (this.state.displayWarnings && item.itemType === InfoItemType.warning) ||
             (this.state.displayRecommendation && item.itemType === InfoItemType.recommendation) ||
-            (this.state.displayErrors && item.itemType === InfoItemType.error) ||
+            (this.state.displayErrors &&
+              (item.itemType === InfoItemType.error || item.itemType === InfoItemType.internalProcessingError)) ||
             (this.state.displaySuccess && item.itemType === InfoItemType.testCompleteSuccess) ||
             (this.state.displayFailure && item.itemType === InfoItemType.testCompleteFail) ||
             (this.state.displayInfo && item.itemType === InfoItemType.info)
@@ -1029,6 +1059,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
               <ProjectInfoItemDisplay
                 itemSet={this.state.selectedInfoSet}
                 item={item}
+                isBand={itemsShown % 2 === 1}
                 theme={this.props.theme}
                 key={"pid" + i}
                 carto={this.props.carto}

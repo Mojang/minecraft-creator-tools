@@ -42,8 +42,6 @@ export enum AnnotationCategory {
   experiment = "X",
 }
 
-const AvoidTermList = ["__proto__", "prototype", "[[Prototype]]"];
-
 export interface IAnnotatedIndexData {
   n: number;
   a: string;
@@ -60,6 +58,7 @@ export interface IContentIndex {
 }
 
 export default class ContentIndex implements IContentIndex {
+  private _processedPathsCache?: string[];
   #data: IContextIndexData = {
     items: [],
     trie: {},
@@ -107,6 +106,7 @@ export default class ContentIndex implements IContentIndex {
 
   setItems(items: string[]) {
     this.#data.items = items;
+    this._processedPathsCache = undefined; // reset processed paths cache
   }
 
   setTrie(trie: {}) {
@@ -119,10 +119,6 @@ export default class ContentIndex implements IContentIndex {
     this._appendToResults("", this.#data.trie, results, withAnnotation);
 
     return results;
-  }
-
-  _isTermToAvoid(term: string) {
-    return AvoidTermList.includes(term);
   }
 
   _appendToResults(
@@ -139,7 +135,7 @@ export default class ContentIndex implements IContentIndex {
           const arr = subNode;
 
           if (arr.constructor === Array) {
-            if (!this._isTermToAvoid(prefix)) {
+            if (Utilities.isUsableAsObjectKey(prefix)) {
               let res = this.getValuesFromIndexArray(arr, withAnnotation);
 
               if (res) {
@@ -148,7 +144,7 @@ export default class ContentIndex implements IContentIndex {
             }
           }
         } else if (subNode.constructor === Array) {
-          if (!this._isTermToAvoid(prefix + token)) {
+          if (Utilities.isUsableAsObjectKey(prefix + token)) {
             let res = this.getValuesFromIndexArray(subNode, withAnnotation);
 
             if (res) {
@@ -242,32 +238,31 @@ export default class ContentIndex implements IContentIndex {
 
   loadFromData(data: IContextIndexData) {
     this.#data = data;
+    this._processedPathsCache = undefined; // reset processed paths cache
+  }
+
+  private _getProcessedPaths() {
+    if (this._processedPathsCache) return this._processedPathsCache;
+
+    this._processedPathsCache = this.data.items
+      .filter((item) => item.startsWith("/"))
+      .map((item) => {
+        const lastPeriod = item.lastIndexOf(".");
+        return lastPeriod >= 0 ? item.substring(0, lastPeriod) : item;
+      });
+
+    return this._processedPathsCache;
   }
 
   hasPathMatches(pathEnd: string) {
     pathEnd = pathEnd.toLowerCase();
 
     const lastPeriodEnd = pathEnd.lastIndexOf(".");
-
     if (lastPeriodEnd >= 0) {
       pathEnd = pathEnd.substring(0, lastPeriodEnd);
     }
 
-    for (let path of this.data.items) {
-      if (path.startsWith("/")) {
-        const lastPeriod = path.lastIndexOf(".");
-
-        if (lastPeriod >= 0) {
-          path = path.substring(0, lastPeriod);
-        }
-
-        if (path.endsWith(pathEnd)) {
-          return true;
-        }
-      }
-    }
-
-    return false;
+    return this._getProcessedPaths().some((path) => path.endsWith(pathEnd));
   }
 
   async getMatches(searchString: string, wholeTermSearch?: boolean, withAnyAnnotation?: AnnotationCategory[]) {
@@ -425,6 +420,21 @@ export default class ContentIndex implements IContentIndex {
     let curNode: any = this.#data.trie;
 
     let hasAdvanced = true;
+
+    let pathMatches: number[] | undefined = undefined;
+
+    let i = 0;
+    for (const item of this.#data.items) {
+      if (item.indexOf(term) >= 0) {
+        if (!pathMatches) {
+          pathMatches = [];
+        }
+        pathMatches.push(i);
+      }
+
+      i++;
+    }
+
     while (termIndex < term.length && hasAdvanced) {
       hasAdvanced = false;
       if (curNode.constructor === Array) {
@@ -465,16 +475,60 @@ export default class ContentIndex implements IContentIndex {
     }
 
     if (curNode.constructor === Array) {
+      if (pathMatches) {
+        return ContentIndex.mergeResults(curNode, pathMatches);
+      }
       return curNode;
     } else if (curNode["±"] !== undefined) {
+      if (pathMatches) {
+        return ContentIndex.mergeResults(curNode["±"], pathMatches);
+      }
       return curNode["±"];
     } else {
       const arr: number[] = [];
 
       this.aggregateIndices(curNode, arr);
 
+      if (pathMatches) {
+        return ContentIndex.mergeResults(arr, pathMatches);
+      }
+
       return arr;
     }
+  }
+
+  static mergeResults(resultsArrA: (IAnnotatedValue | number)[], resultsArrB: (IAnnotatedValue | number)[]) {
+    const results: (IAnnotatedValue | number)[] = [];
+
+    for (const item of resultsArrA) {
+      if (typeof item === "object") {
+        if (
+          !results.some(
+            (res) => typeof res === "object" && res.value === item.value && res.annotation === item.annotation
+          )
+        ) {
+          results.push(item);
+        }
+      } else if (!results.includes(item)) {
+        results.push(item);
+      }
+    }
+
+    for (const item of resultsArrB) {
+      if (typeof item === "object") {
+        if (
+          !results.some(
+            (res) => typeof res === "object" && res.value === item.value && res.annotation === item.annotation
+          )
+        ) {
+          results.push(item);
+        }
+      } else if (!results.includes(item)) {
+        results.push(item);
+      }
+    }
+
+    return results;
   }
 
   aggregateIndices(curNode: any, arr: number[]) {
@@ -534,6 +588,7 @@ export default class ContentIndex implements IContentIndex {
     if (dataIndex < 0) {
       dataIndex = this.#data.items.length;
       this.#data.items.push(item);
+      this._processedPathsCache = undefined;
     }
 
     let hasAdvanced = true;
@@ -568,7 +623,7 @@ export default class ContentIndex implements IContentIndex {
 
               const term = item.substring(itemIndex);
 
-              if (!this._isTermToAvoid(term)) {
+              if (Utilities.isUsableAsObjectKey(term)) {
                 newNode[term] = curNode;
               }
 
@@ -594,14 +649,14 @@ export default class ContentIndex implements IContentIndex {
       const substr = key.substring(keyIndex);
 
       if (substr !== "±") {
-        if (!this._isTermToAvoid(substr)) {
+        if (Utilities.isUsableAsObjectKey(substr)) {
           // create a new leaf array
           curNode[substr] = this.ensureAnnotatedContentInArray([], dataIndex, annotationChar);
         }
       }
     } else {
       if (curNode.constructor === Array && curNodeIndex) {
-        if (!this._isTermToAvoid(curNodeIndex)) {
+        if (Utilities.isUsableAsObjectKey(curNodeIndex)) {
           parentNode[curNodeIndex] = this.ensureAnnotatedContentInArray(curNode, dataIndex, annotationChar);
         }
       } else {
@@ -707,7 +762,7 @@ export default class ContentIndex implements IContentIndex {
         curChar === "'"
       ) {
         if (curWord.length > 0) {
-          if (curWord.length > 3 && !Utilities.isNumericIsh(curWord)) {
+          if (curWord.length > 3 && !Utilities.isNumericIsh(curWord) && Utilities.isUsableAsObjectKey(curWord)) {
             dictionaryOfTerms[curWord] = true;
           }
           curWord = "";
@@ -748,7 +803,7 @@ export default class ContentIndex implements IContentIndex {
         curChar === "'"
       ) {
         if (curWord.length > 0) {
-          if (curWord.length > 3 && !Utilities.isNumericIsh(curWord)) {
+          if (curWord.length > 3 && !Utilities.isNumericIsh(curWord) && Utilities.isUsableAsObjectKey(curWord)) {
             dictionaryOfTerms[curWord] = true;
           }
           curWord = "";

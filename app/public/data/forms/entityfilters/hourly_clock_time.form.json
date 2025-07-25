@@ -110,6 +110,10 @@
       "dataType": 0
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Compares the current 24 hour time with an int value in the range[0, 24000]",
   "title": "Hourly Clock Time",
   "samples": {

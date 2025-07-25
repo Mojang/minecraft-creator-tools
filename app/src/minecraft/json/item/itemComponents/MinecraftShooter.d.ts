@@ -46,7 +46,7 @@ My Sword Shoot - https://github.com/microsoft/minecraft-samples/tree/main/custom
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Shooter (minecraft:shooter)
+ * Minecraft Shooter Item (minecraft:shooter)
  * Compels an item to shoot projectiles, similarly to a bow or
  * crossbow. Must have the minecraft:use_modifiers component in
  * order to function properly.
@@ -67,7 +67,7 @@ export default interface MinecraftShooter {
    * My Sword Shoot: [{"item":"minecraft:snowball","use_offhand":true,"search_inventory":true,"use_in_creative":true}]
    *
    */
-  ammunition: MinecraftShooterAmmunition[];
+  ammunition: MinecraftShooterAmmunition;
 
   /**
    * @remarks
@@ -99,8 +99,7 @@ export default interface MinecraftShooter {
 
 
 /**
- * V1 20 50 ShooterItemComponent Ammunition
- * (_v1_20_50_ShooterItemComponent_Ammunition)
+ * Ammunition Item (Ammunition)
  */
 export interface MinecraftShooterAmmunition {
 

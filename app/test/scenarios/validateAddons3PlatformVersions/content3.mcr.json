@@ -1,5 +1,11 @@
 {
   "info": {
+    "capabilities": [
+      "behaviorAnimations",
+      "behaviorPack",
+      "resourcePack",
+      "scripting"
+    ],
     "behaviorPackManifestCount": 0,
     "unknownJsonCount": 0,
     "entityTypeManifestCount": 0,
@@ -16,52 +22,57 @@
     "contentSize": 0,
     "contentFileCounts": 0,
     "contentFolderCounts": 0,
+    "minBehaviorPackMinEngineVersion": 0,
+    "minResourcePackMinEngineVersion": 0,
     "subpackCount": 0,
-    "subpackTier1Count": 0,
-    "subpackTier2Count": 0,
-    "subpackTier3Count": 0,
-    "subpackTier4Count": 0,
-    "subpackTier5Count": 0,
-    "subpackTier6Count": 0,
-    "subpackTier7Count": 0,
-    "subpackTier8Count": 0,
-    "subpackTier9Count": 0,
-    "subpackTier10Count": 0,
-    "subpackTier11Count": 0,
-    "subpackTier12Count": 0,
-    "subpackTier13Count": 0,
-    "subpackTier14Count": 0,
-    "subpackTier15Count": 0,
-    "subpackTier16Count": 0,
-    "subpackTier17Count": 0,
-    "subpackTier18Count": 0,
-    "subpackTier19Count": 0,
-    "subpackTier20Count": 0,
-    "subpackTier21Count": 0,
-    "subpackTier22Count": 0,
-    "subpackTier23Count": 0,
-    "subpackTier24Count": 0,
-    "subpackTier25Count": 0,
-    "subpackTier26Count": 0,
-    "subpackTier27Count": 0,
-    "subpackTier28Count": 0,
-    "subpackTier29Count": 0,
-    "subpackTier30Count": 0,
-    "subpackTier31Count": 0,
-    "subpackTier32Count": 0,
-    "subpackTier33Count": 0,
-    "subpackTier34Count": 0,
-    "subpackTier35Count": 0,
-    "subpackTier36Count": 0,
-    "subpackTier37Count": 0,
-    "subpackTier38Count": 0,
-    "subpackTier39Count": 0,
-    "subpackTier40Count": 0,
+    "entityTypeComponents": [],
+    "blockTypeComponents": [],
+    "itemTypeComponents": [],
+    "apisUsed": [],
+    "mctoolsVersion": 10002009,
+    "itemTypes": [
+      "Animation",
+      "Behavior pack",
+      "Behavior pack animation",
+      "Behavior pack animation controller",
+      "Behavior pack manifest",
+      "Entity type",
+      "Entity type visuals/audio",
+      "Feature",
+      "Icon",
+      "Image",
+      "JavaScript",
+      "Language catalog",
+      "Language translations",
+      "Loot table",
+      "Marketing image",
+      "Material",
+      "Model",
+      "Particle",
+      "Resource pack",
+      "Resource pack manifest",
+      "Sound catalog",
+      "Spawn rule",
+      "Store image",
+      "Texture"
+    ],
     "animationCount": 0,
     "textureCount": 0,
+    "textureTexelSize": 0,
+    "minimumSupportablePerformanceTier": 0,
+    "invalidCommandSyntaxCount": 0,
+    "linesWithSlashCount": 0,
+    "multipleSoundsManifests": 0,
+    "soundsDefinitionManifestFormatIsValid": 0,
+    "soundsDefinitionManifestIsNotValidJson": 0,
+    "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
     "worldLoadErrors": 0,
+    "commands": [
+      "say",
+      "summon"
+    ],
     "featureSets": {
       "Command say": {
         "Count": 1
@@ -76,7 +87,7 @@
     "testSuccessCount": 1,
     "testFailCount": 2,
     "testNotApplicableCount": 1,
-    "errorSummary": "ERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/ghost.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/ghost.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.70)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.70)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json) Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.70)\r\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp/manifest.json) Behavior pack manifest does not define a header/min_engine_version.\r\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Behavior pack manifest does not define a header/min_engine_version.",
+    "errorSummary": "ERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/ghost.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/ghost.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/ghost.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json) Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)\r\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp/manifest.json) Behavior pack manifest does not define a header/min_engine_version.\r\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Behavior pack manifest does not define a header/min_engine_version.",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [FORMATVER000] Found 12 errors for Format Version (FORMATVER).\r\nTESTFAIL: [MINENGINEVER000] Found 2 errors for Min Engine Version (MINENGINEVER).",
@@ -90,7 +101,7 @@
         "216": {
           "title": "Resource animation Version Minor Version Higher than Current",
           "defaultMessage": "Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)",
-          "errors": 5
+          "errors": 4
         },
         "256": {
           "title": "256",
@@ -99,8 +110,8 @@
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.70)",
-          "errors": 3
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)",
+          "errors": 4
         },
         "619": {
           "title": "619",
@@ -141,22 +152,25 @@
       },
       "WORLDDATA": {
         "1": {
-          "defaultMessage": "Blocks",
+          "defaultMessage": "World Data Validation (WORLDDATA) completed successfully",
           "testCompleteSuccesses": 1
         },
-        "2": {
+        "121": {
+          "defaultMessage": "Blocks"
+        },
+        "122": {
           "defaultMessage": "Block Data"
         },
-        "3": {
+        "123": {
           "defaultMessage": "Command"
         },
-        "4": {
+        "124": {
           "defaultMessage": "Execute Sub Command"
         },
-        "5": {
+        "125": {
           "defaultMessage": "Level Dat"
         },
-        "6": {
+        "126": {
           "defaultMessage": "Level Dat Experiments"
         }
       },
@@ -314,23 +328,6 @@
       "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 216,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json"
-    },
-    {
-      "iTp": 2,
-      "gId": "FORMATVER",
-      "gIx": 628,
-      "p": "/Content/resource_packs/aop_mobsrp/animations/narwhal.animation.json",
-      "d": [
-        1,
-        8,
-        0
-      ]
-    },
-    {
-      "iTp": 3,
-      "gId": "FORMATVER",
-      "gIx": 216,
       "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
     },
     {
@@ -365,6 +362,23 @@
       "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 296,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/ghost.entity.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 630,
+      "p": "/Content/resource_packs/aop_mobsrp/entity/ghost.entity.json",
+      "d": [
+        1,
+        8,
+        0
+      ]
+    },
+    {
+      "iTp": 3,
+      "gId": "FORMATVER",
+      "gIx": 296,
       "p": "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json"
     },
     {
@@ -382,7 +396,7 @@
       "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.70)",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -422,19 +436,19 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 1,
+      "gIx": 121,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 2,
+      "gIx": 122,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 3,
+      "gIx": 123,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
       "fs": {
         "say": {
@@ -448,64 +462,64 @@
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 4,
+      "gIx": 124,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 5,
+      "gIx": 125,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 6,
+      "gIx": 126,
       "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 1,
+      "gIx": 121,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 2,
+      "gIx": 122,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 3,
+      "gIx": 123,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 4,
+      "gIx": 124,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 5,
+      "gIx": 125,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
       "iTp": 7,
       "gId": "WORLDDATA",
-      "gIx": 6,
+      "gIx": 126,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
     },
     {
-      "iTp": 1,
+      "iTp": 0,
       "gId": "FORMATVER",
       "gIx": 0
     },
     {
-      "iTp": 1,
+      "iTp": 0,
       "gId": "MINENGINEVER",
       "gIx": 0
     },
@@ -515,10 +529,9 @@
       "gIx": 2
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "WORLDDATA",
-      "gIx": 1,
-      "m": "World Data Validation (WORLDDATA) completed successfully"
+      "gIx": 1
     }
   ],
   "generatorName": "Minecraft Creator Tools",

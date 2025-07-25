@@ -14,7 +14,7 @@
     },
     {
       "id": "sound_event",
-      "title": "Legacy LevelSoundEvent",
+      "title": "LevelSoundEvent",
       "description": "Sound effect to emit when the threshold is met.",
       "dataType": 2
     }

@@ -35,7 +35,7 @@ export default abstract class FileBase implements IFile {
   }
 
   get canIgnore() {
-    return StorageUtilities.canIgnoreFileExtension(this.type);
+    return StorageUtilities.canIgnoreFileName(this.name) || StorageUtilities.canIgnoreFileExtension(this.type);
   }
 
   get isBinary() {

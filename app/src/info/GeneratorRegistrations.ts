@@ -13,7 +13,7 @@ import PathLengthFileGenerator from "./PathLengthFileGenerator";
 import ItemCountsInfoGenerator from "./ItemCountsInfoGenerator";
 import PackInfoGenerator from "./PackInfoGenerator";
 import LineSizeInfoGenerator from "./LineSizeInfoGenerator";
-import SchemaItemInfoGenerator from "./SchemaItemInfoGenerator";
+import FormSchemaItemInfoGenerator from "./FormSchemaItemInfoGenerator";
 import UnknownItemGenerator from "./UnknownItemGenerator";
 import UnknownFileGenerator from "./UnknownFileGenerator";
 import WorldItemInfoGenerator from "./WorldItemInfoGenerator";
@@ -39,8 +39,15 @@ import EntityTypeManager from "../manager/EntityTypeManager";
 import ItemTypeManager from "../manager/ItemTypeManager";
 import SharingInfoGenerator from "./SharingInfoGenerator";
 import CheckNoBOMGenerator from "./fileGenerators/CheckNoBOMGenerator";
+import MCFunctionInfoGenerator from "./MCFunctionInfoGenerator";
 import CheckPackIconsGenerator from "./projectGenerators/CheckPackIconsGenerator";
 import CheckWorldIconsGenerator from "./projectGenerators/CheckWorldIconsGenerator";
+import SoundsDefinitionInfoGenerator from "./projectGenerators/SoundDefinitionsInfoGenerator";
+import SummaryInfoGenerator from "./SummaryInfoGenerator";
+import ScriptInfoGenerator from "./ScriptInfoGenerator";
+import CheckParticleIdentifierGenerator from "./projectGenerators/CheckParticleIdentifierGenerator";
+import CheckSkinPackJsonGenerator from "./projectGenerators/CheckSkinPackJsonGenerator";
+import SchemaItemInfoGenerator from "./SchemaItemInfoGenerator";
 
 export default class GeneratorRegistrations {
   static managers = [
@@ -60,7 +67,9 @@ export default class GeneratorRegistrations {
     new PackInfoGenerator(),
     new JsonFileTagsInfoGenerator(),
     new FormatVersionManager(),
+    new ScriptInfoGenerator(),
     new SharingInfoGenerator(),
+    new SummaryInfoGenerator(),
     new PackMetaDataInformationGenerator(),
     new AnimationResourceInfoGenerator(),
     new CooperativeAddOnRequirementsGenerator(),
@@ -70,8 +79,12 @@ export default class GeneratorRegistrations {
     new TypesInfoGenerator(),
     new TextureImageInfoGenerator(),
     new GeometryInfoGenerator(),
+    new MCFunctionInfoGenerator(),
     new CheckPackIconsGenerator(),
     new CheckWorldIconsGenerator(),
+    new SoundsDefinitionInfoGenerator(),
+    new CheckParticleIdentifierGenerator(),
+    new CheckSkinPackJsonGenerator(),
     ...this.managers,
   ];
 
@@ -79,6 +92,7 @@ export default class GeneratorRegistrations {
 
   static itemGenerators = [
     new UnknownItemGenerator(),
+    new FormSchemaItemInfoGenerator(),
     new SchemaItemInfoGenerator(),
     new WorldItemInfoGenerator(),
     new WorldDataInfoGenerator(),

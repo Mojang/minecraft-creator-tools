@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import Utilities from "../core/Utilities";
 import Anchor from "./Anchor";
 import IAnchorData from "./IAnchorData";
 import IVector3 from "./IVector3";
@@ -12,8 +13,10 @@ export default class AnchorSet {
   clear(anchorName: string) {
     const exists = this.data[anchorName] !== undefined || this.anchors[anchorName] !== undefined;
 
-    this.data[anchorName] = undefined;
-    this.anchors[anchorName] = undefined;
+    if (Utilities.isUsableAsObjectKey(anchorName)) {
+      this.data[anchorName] = undefined;
+      this.anchors[anchorName] = undefined;
+    }
 
     return exists;
   }
@@ -45,6 +48,10 @@ export default class AnchorSet {
   }
 
   get(name: string) {
+    if (!Utilities.isUsableAsObjectKey(name)) {
+      throw new Error();
+    }
+
     if (this.anchors[name]) {
       return this.anchors[name];
     }
@@ -60,6 +67,9 @@ export default class AnchorSet {
 
   ensure(name: string, from: IVector3, to?: IVector3) {
     let anchor: Anchor | undefined;
+    if (!Utilities.isUsableAsObjectKey(name)) {
+      throw new Error();
+    }
 
     if (this.anchors[name]) {
       anchor = this.anchors[name];

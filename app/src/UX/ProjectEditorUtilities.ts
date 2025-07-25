@@ -23,7 +23,15 @@ export enum ProjectEditorItemAction {
   deleteItem,
   renameItem,
   viewAsJson,
+  viewOnMap,
   download,
+}
+
+export enum ProjectItemEditorView {
+  singleFileEditor = 0,
+  diff = 1,
+  singleFileRaw = 2,
+  map = 3,
 }
 
 export enum ProjectEditorMode {
@@ -34,6 +42,7 @@ export enum ProjectEditorMode {
   cartoSettings,
   minecraft,
   actions,
+  map,
 }
 
 export enum ProjectEditorAction {
@@ -73,6 +82,8 @@ export default class ProjectEditorUtilities {
         return "minecraft";
       case ProjectEditorMode.minecraftToolSettings:
         return "minecrafttoolsettings";
+      case ProjectEditorMode.map:
+        return "map";
     }
   }
 
@@ -99,19 +110,25 @@ export default class ProjectEditorUtilities {
   }
 
   static getItemMenuItems(projectItem: ProjectItem) {
+    let path = "";
+
+    if (projectItem.projectPath !== null && projectItem.projectPath !== undefined) {
+      path = projectItem.projectPath;
+    }
+
     const itemMenu = [
       {
-        key: "download",
+        key: "download|" + path,
         content: "Download",
         tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.download },
       },
       {
-        key: "rename",
+        key: "rename|" + path,
         content: "Rename",
         tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.renameItem },
       },
       {
-        key: "delete",
+        key: "delete|" + path,
         content: "Delete",
         tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.deleteItem },
       },
@@ -119,25 +136,25 @@ export default class ProjectEditorUtilities {
 
     if (projectItem.itemType === ProjectItemType.modelGeometryJson) {
       itemMenu.push({
-        key: "downloadBbmodel",
+        key: "downloadBbmodel|" + path,
         content: "Download Blockbench Model",
         tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.downloadBlockbenchModel },
       });
     }
 
-    let path = "";
-
-    if (projectItem.projectPath !== null && projectItem.projectPath !== undefined) {
-      path = projectItem.projectPath;
-    }
-
     if (StorageUtilities.getTypeFromName(path) === "json") {
       itemMenu.push({
-        key: "viewAsJson" + projectItem.projectPath,
+        key: "viewAsJson|" + path,
         content: "View as JSON",
         tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.viewAsJson },
       });
     }
+
+    itemMenu.push({
+      key: "viewAsMap|" + path,
+      content: "View on map",
+      tag: { path: projectItem.projectPath, action: ProjectEditorItemAction.viewOnMap },
+    });
 
     return itemMenu;
   }
@@ -600,7 +617,7 @@ export default class ProjectEditorUtilities {
       }
 
       await project.carto.notifyOperationEnded(operId, "New structure file '" + file.name + "' added");
-    } else if (extension === "mp3" || extension === "ogg" || extension === "wav") {
+    } else if (extension === "mp3" || extension === "ogg" || extension === "flac" || extension === "wav") {
       const operId = await project.carto.notifyOperationStarted("Saving new audio file '" + file.name + "'");
 
       const buffer = await file.arrayBuffer();

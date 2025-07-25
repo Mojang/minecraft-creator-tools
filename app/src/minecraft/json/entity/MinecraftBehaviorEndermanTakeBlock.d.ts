@@ -8,15 +8,6 @@
  * Contains types for working with various Minecraft Bedrock Edition JSON schemas.
  * 
  * Entity Documentation - minecraft:behavior.enderman_take_block
- * 
- * minecraft:behavior.enderman_take_block Samples
-
-Enderman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/enderman.json
-
-"minecraft:behavior.enderman_take_block": {
-  "priority": 11
-}
-
  */
 
 import * as jsoncommon from './../../jsoncommon';
@@ -33,10 +24,6 @@ export default interface MinecraftBehaviorEndermanTakeBlock {
    * As priority approaches 0, the priority is increased. The higher the
    * priority, the sooner this behavior will be executed as a 
    * goal.
-   * 
-   * Sample Values:
-   * Enderman: 11
-   *
    */
   priority: number;
 

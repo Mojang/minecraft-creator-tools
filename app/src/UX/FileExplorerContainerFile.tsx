@@ -53,6 +53,10 @@ export default class FileExplorerContainerFile extends Component<
       await this.props.file.loadContent(false);
 
       rootFolder = await StorageUtilities.getFileStorageFolder(this.props.file);
+
+      if (typeof rootFolder === "string") {
+        return;
+      }
     }
 
     this.setState({

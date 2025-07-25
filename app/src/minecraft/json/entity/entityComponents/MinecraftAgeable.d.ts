@@ -175,6 +175,10 @@ Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "growth": 0.05
     },
     {
+      "item": "carrot",
+      "growth": 0.05
+    },
+    {
       "item": "golden_carrot",
       "growth": 0.05
     },

@@ -3,6 +3,11 @@
   margin-top: 2px !important;
 }
 
+.mifics-outer-narrow {
+  display: block;
+  margin-top: 2px !important;
+}
+
 .mifics-inner {
   display: table-row;
 }

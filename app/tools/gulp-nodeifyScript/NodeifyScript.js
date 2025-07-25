@@ -12,7 +12,7 @@ class NodeifyScript {
     if (filePath.toLowerCase().indexOf("/cli/index") <= 0 && filePath.toLowerCase().indexOf("\\cli\\index") <= 0) {
       return content;
     }
-    return "#!/usr/bin/env node\r\n" + content;
+    return "#!/usr/bin/env node\n" + content;
   }
 }
 

@@ -3,12 +3,15 @@
 
 import { ProjectItemType } from "../app/IProjectItemData";
 import Project from "../app/Project";
+import Utilities from "../core/Utilities";
+import Log from "../core/Log";
 import Lang from "./Lang";
 import LocToken from "./LocToken";
 
 export default class LocManager {
   private _project: Project;
   private _isLoaded: boolean;
+  private _languages: { [language: string]: Lang[] } = {};
 
   public tokens: { [name: string]: { [locale: string]: { [packContainer: string]: LocToken } } } = {};
 
@@ -23,6 +26,44 @@ export default class LocManager {
     }
 
     return this.getTokenValueOrDefault(tokenName);
+  }
+
+  getAllTokenKeys() {
+    return Object.keys(this.tokens);
+  }
+
+  getAllLanguages(): Lang[] {
+    let langs: Lang[] = [];
+
+    for (const langKey in this._languages) {
+      langs.push(...this._languages[langKey]);
+    }
+
+    return langs;
+  }
+
+  static canonicalizeLanguageKey(locKey: string) {
+    return locKey.toLowerCase().trim();
+  }
+
+  getEnUsLang(): Lang[] | undefined {
+    const primary = this._languages["en_us"];
+
+    Log.assert(!!primary, "No en-us language found.");
+
+    return primary;
+  }
+
+  getNonEnUsLangs(): Lang[] {
+    let langs: Lang[] = [];
+
+    for (const langKey in this._languages) {
+      if (LocManager.canonicalizeLanguageKey(langKey) !== "en_us") {
+        langs.push(...this._languages[langKey]);
+      }
+    }
+
+    return langs;
   }
 
   getExpandedValue(tokenName: string): string {
@@ -54,14 +95,14 @@ export default class LocManager {
   }
 
   getToken(tokenName: string, locale?: string, packContainer?: string): LocToken | undefined {
-    const loc = this.tokens[tokenName];
+    const tokenSets = this.tokens[tokenName];
 
-    if (loc) {
+    if (tokenSets) {
       if (!locale) {
         locale = "en_US";
       }
 
-      const tokenSetByLocale = loc[locale];
+      const tokenSetByLocale = tokenSets[LocManager.canonicalizeLanguageKey(locale)];
 
       if (tokenSetByLocale) {
         if (packContainer) {
@@ -99,17 +140,29 @@ export default class LocManager {
           if (lang) {
             await lang.load();
 
-            if (lang.language && lang.containerName !== undefined) {
+            if (lang.language && lang.containerName !== undefined && Utilities.isUsableAsObjectKey(lang.language)) {
+              const language = LocManager.canonicalizeLanguageKey(lang.language);
+
+              if (!this._languages[language]) {
+                this._languages[language] = [];
+              }
+
+              this._languages[language].push(lang);
+
               for (const tokenName in lang.tokens) {
-                if (this.tokens[tokenName] === undefined) {
-                  this.tokens[tokenName] = {};
-                }
+                if (Utilities.isUsableAsObjectKey(tokenName)) {
+                  if (this.tokens[tokenName] === undefined) {
+                    this.tokens[tokenName] = {};
+                  }
 
-                if (this.tokens[tokenName][lang.language] === undefined) {
-                  this.tokens[tokenName][lang.language] = {};
-                }
+                  if (Utilities.isUsableAsObjectKey(lang.containerName)) {
+                    if (this.tokens[tokenName][language] === undefined) {
+                      this.tokens[tokenName][language] = {};
+                    }
 
-                this.tokens[tokenName][lang.language][lang.containerName] = lang.tokens[tokenName];
+                    this.tokens[tokenName][language][lang.containerName] = lang.tokens[tokenName];
+                  }
+                }
               }
             }
           }

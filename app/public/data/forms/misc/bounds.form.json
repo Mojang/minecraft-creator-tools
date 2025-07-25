@@ -13,7 +13,8 @@
           "comparison": "<=",
           "value": 512
         }
-      ]
+      ],
+      "isRequired": true
     },
     {
       "id": "min",
@@ -28,7 +29,8 @@
           "comparison": "<=",
           "value": 512
         }
-      ]
+      ],
+      "isRequired": true
     }
   ],
   "title": "Bounds Misc",

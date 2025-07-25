@@ -19,7 +19,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * On Ladder (on_ladder)
+ * Ladder (on_ladder)
  * Returns true when the subject entity is on a ladder.
  * Note: Does not require any parameters to work properly. It can
  * be used as a standalone filter.

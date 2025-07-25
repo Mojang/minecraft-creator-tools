@@ -11,9 +11,9 @@ import Project from "../app/Project";
 import ContentIndex from "../core/ContentIndex";
 
 export enum ValidGeneratorTest {
-  nonCompliantJson = 2,
-  emptyJson = 3,
-  jsonNotString = 4,
+  nonCompliantJson = 102,
+  emptyJson = 103,
+  jsonNotString = 104,
 }
 
 export default class ValidFileGenerator implements IProjectFileInfoGenerator {

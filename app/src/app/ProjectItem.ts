@@ -31,6 +31,7 @@ import ProjectItemRelations from "./ProjectItemRelations";
 import ProjectItemVariant from "./ProjectItemVariant";
 import { ProjectItemVariantType } from "./IProjectItemVariant";
 import Database from "../minecraft/Database";
+import ProjectVariant from "./ProjectVariant";
 
 export default class ProjectItem {
   private _data: IProjectItemData;
@@ -47,18 +48,21 @@ export default class ProjectItem {
   private _imageUrlBase64Cache: string | undefined;
   private _pack: Pack | undefined;
 
+  private _accessoryFolder: IFolder | null;
+
   public parentItems: ProjectItemRelationship[] | undefined;
   public childItems: ProjectItemRelationship[] | undefined;
   public unfulfilledRelationships: IProjectItemUnfulfilledRelationship[] | undefined;
 
-  public variants: { [label: string]: ProjectItemVariant };
+  private _variants: { [label: string]: ProjectItemVariant };
 
   constructor(parent: Project, incomingData?: IProjectItemData) {
     this._project = parent;
     this._defaultFile = null;
     this._defaultFolder = null;
+    this._accessoryFolder = null;
     this._isFileContentProcessed = false;
-    this.variants = {};
+    this._variants = {};
     this._handleMCWorldLoaded = this._handleMCWorldLoaded.bind(this);
     this.sortVariantsMostImportantFirst = this.sortVariantsMostImportantFirst.bind(this);
     this.sortVariantsMostImportantLast = this.sortVariantsMostImportantLast.bind(this);
@@ -151,6 +155,38 @@ export default class ProjectItem {
     );
   }
 
+  hasCustomVariants() {
+    for (const key in this._data.variants) {
+      if (key !== "") {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  hasVersionSliceCustomVariants() {
+    for (const key in this._data.variants) {
+      if (key !== "" && this._data.variants[key].variantType === ProjectItemVariantType.versionSlice) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private _shouldEnsureDefaultVariant() {
+    return (this.defaultFile && (this.defaultFile.content || !this.hasCustomVariants())) || this.defaultFolder;
+  }
+
+  getVariant(variantName: string) {
+    if (variantName === "" && this._shouldEnsureDefaultVariant()) {
+      return this.ensureDefaultVariant();
+    }
+
+    return this._variants[variantName];
+  }
+
   public get isWorld() {
     return (
       this.itemType === ProjectItemType.MCProject ||
@@ -175,10 +211,40 @@ export default class ProjectItem {
   }
 
   get defaultVariant() {
+    if (this._shouldEnsureDefaultVariant()) {
+      return this.ensureDefaultVariant();
+    }
+
+    return this._variants[""];
+  }
+
+  async ensureAccessoryFolder() {
+    if (this._accessoryFolder) {
+      return this._accessoryFolder;
+    }
+
+    const rootAccessoryFolder = await this.project.ensureProjectItemAccessoryFolder();
+
+    const folderPath = ProjectItemUtilities.getAccessoryFolderPathFromFilePath(this);
+
+    this._accessoryFolder = await rootAccessoryFolder.ensureFolderFromRelativePath(folderPath);
+
+    return this._accessoryFolder;
+  }
+
+  ensureDefaultVariant() {
     return this.ensureVariant("");
   }
 
   getVariantList() {
+    if (this.defaultFile || this.defaultFolder) {
+      this.ensureDefaultVariant();
+    }
+
+    return this._getVariantList();
+  }
+
+  _getVariantList() {
     const vararr = [];
 
     for (const key in this._data.variants) {
@@ -218,7 +284,7 @@ export default class ProjectItem {
   }
 
   hasNonDefaultVariant() {
-    const vararr = this.getVariantList();
+    const vararr = this._getVariantList();
 
     if (vararr.length === 0) {
       return false;
@@ -236,7 +302,14 @@ export default class ProjectItem {
   }
 
   ensureVariant(label: string) {
-    if (!this.variants[label]) {
+    label = ProjectVariant.canonicalizeVariantLabel(label);
+
+    if (!Utilities.isUsableAsObjectKey(label)) {
+      Log.unsupportedToken(label);
+      throw new Error();
+    }
+
+    if (!this._variants[label]) {
       const pv = this.project.ensureVariant(label);
 
       if (!this._data.variants) {
@@ -247,12 +320,13 @@ export default class ProjectItem {
         this._data.variants[label] = { label: label, variantType: ProjectItemVariantType.general };
       }
 
-      this.variants[label] = new ProjectItemVariant(this, this._data.variants[label], pv);
+      this._variants[label] = new ProjectItemVariant(this, this._data.variants[label], pv);
     }
 
-    return this.variants[label];
+    return this._variants[label];
   }
 
+  /// NOTE: ProjectItem.ensureFileStorage or ensureStorage should be called before this method.
   getFile(variantName?: string) {
     if (variantName === undefined || variantName === "") {
       return this._defaultFile;
@@ -263,6 +337,7 @@ export default class ProjectItem {
     return variant.file;
   }
 
+  /// NOTE: ProjectItem.ensureFolderStorage or ensureStorage should be called before this method.
   getFolder(variantName?: string) {
     if (variantName === undefined || variantName === "") {
       return this._defaultFolder;
@@ -273,7 +348,8 @@ export default class ProjectItem {
     return variant.folder;
   }
 
-  getPack() {
+  /// NOTE: ProjectItem.ensure*Storage should be called before this method.
+  async getPack() {
     if (this._pack) {
       return this._pack;
     }
@@ -290,10 +366,12 @@ export default class ProjectItem {
       return undefined;
     }
 
-    this.project.ensurePacks();
+    thisPath = StorageUtilities.canonicalizePath(thisPath);
+
+    await this.project.ensurePacks();
 
     for (const pack of this.project.packs) {
-      if (thisPath.startsWith(pack.folder.storageRelativePath)) {
+      if (thisPath.startsWith(StorageUtilities.canonicalizePath(pack.folder.storageRelativePath))) {
         this._pack = pack;
         return this._pack;
       }
@@ -318,14 +396,22 @@ export default class ProjectItem {
   }
 
   addChildItem(childItem: ProjectItem) {
+    if (this.childItems) {
+      for (const rel of this.childItems) {
+        if (rel.childItem === childItem && rel.parentItem === this) {
+          return;
+        }
+      }
+    }
+
     if (ProjectItemUtilities.wouldBeCircular(childItem)) {
+      Log.debugAlert("Circular relationship detected: " + this.projectPath + " -> " + childItem.projectPath);
       return;
     }
 
-    let pir: IProjectItemRelationship = {
-      parentItem: this,
-      childItem: childItem,
-    };
+    let hasChild = false;
+    let childHasParent = false;
+
     if (this.childItems === undefined) {
       this.childItems = [];
     }
@@ -334,16 +420,81 @@ export default class ProjectItem {
       childItem.parentItems = [];
     }
 
-    this.childItems.push(pir);
-    childItem.parentItems.push(pir);
+    for (const existingRelation of this.childItems) {
+      if (existingRelation.childItem === childItem && existingRelation.parentItem === this) {
+        hasChild = true;
+      }
+    }
+
+    for (const existingRelation of childItem.parentItems) {
+      if (existingRelation.childItem === childItem && existingRelation.parentItem === this) {
+        childHasParent = true;
+      }
+    }
+
+    const pir: IProjectItemRelationship = {
+      parentItem: this,
+      childItem: childItem,
+    };
+
+    if (!hasChild) {
+      this.childItems.push(pir);
+    }
+
+    if (!childHasParent) {
+      childItem.parentItems.push(pir);
+    }
+  }
+
+  addParentItem(parentItem: ProjectItem) {
+    if (ProjectItemUtilities.wouldBeCircular(parentItem)) {
+      return;
+    }
+
+    if (this.parentItems === undefined) {
+      this.parentItems = [];
+    }
+
+    if (parentItem.childItems === undefined) {
+      parentItem.childItems = [];
+    }
+
+    let hasParent = false;
+    let parentHasChild = false;
+
+    for (const existingRelation of this.parentItems) {
+      if (existingRelation.parentItem === parentItem && existingRelation.childItem === this) {
+        hasParent = true;
+      }
+    }
+
+    for (const existingRelation of parentItem.childItems) {
+      if (existingRelation.parentItem === parentItem && existingRelation.childItem === this) {
+        parentHasChild = true;
+      }
+    }
+
+    const pir: IProjectItemRelationship = {
+      parentItem: parentItem,
+      childItem: this,
+    };
+
+    if (!hasParent) {
+      this.parentItems.push(pir);
+    }
+
+    if (!parentHasChild) {
+      parentItem.childItems.push(pir);
+    }
   }
 
   toString() {
     return this.itemType + ": " + this.projectPath;
   }
 
-  getPackRelativePath() {
-    const pack = this.getPack();
+  /// NOTE: ProjectItem.ensure*Storage should be called before this method.
+  async getPackRelativePath() {
+    const pack = await this.getPack();
 
     if (!pack) {
       return undefined;
@@ -474,6 +625,10 @@ export default class ProjectItem {
     return ProjectItemUtilities.getSchemaPathForType(this.itemType);
   }
 
+  getFormPath() {
+    return ProjectItemUtilities.getFormPathForType(this.itemType);
+  }
+
   get errorStatus() {
     return this._data.errorStatus;
   }
@@ -565,16 +720,16 @@ export default class ProjectItem {
   }
 
   sortVariantsMostImportantLast(a: string, b: string) {
-    if (!this.variants) {
-      this.getVariantList();
+    if (!this._variants) {
+      this._getVariantList();
     }
 
-    if (!this.variants) {
+    if (!this._variants) {
       return a.localeCompare(b);
     }
 
-    const va = this.variants[a];
-    const vb = this.variants[b];
+    const va = this._variants[a];
+    const vb = this._variants[b];
 
     if (!va || !vb || !va.label || !vb.label) {
       return 0;
@@ -594,16 +749,16 @@ export default class ProjectItem {
   }
 
   sortVariantsMostImportantFirst(a: string, b: string) {
-    if (!this.variants) {
-      this.getVariantList();
+    if (!this._variants) {
+      this._getVariantList();
     }
 
-    if (!this.variants) {
+    if (!this._variants) {
       return a.localeCompare(b);
     }
 
-    const va = this.variants[a];
-    const vb = this.variants[b];
+    const va = this._variants[a];
+    const vb = this._variants[b];
 
     if (!va || !vb || !va.label || !vb.label) {
       return 0;
@@ -623,14 +778,14 @@ export default class ProjectItem {
   }
 
   get primaryVariantLabel(): string | undefined {
-    const variantKeys = Object.keys(this.variants);
+    const variantKeys = Object.keys(this._variants);
 
     // if we have version slices, return the latest one that has a file
     if (variantKeys.length > 0) {
       variantKeys.sort(this.sortVariantsMostImportantFirst);
 
       for (const variantName of variantKeys) {
-        const variant = this.variants[variantName];
+        const variant = this._variants[variantName];
 
         if (variant.variantType === ProjectItemVariantType.versionSlice) {
           if (variant.file) {
@@ -646,7 +801,7 @@ export default class ProjectItem {
 
     for (const variantName of variantKeys) {
       if (variantName) {
-        const variant = this.variants[variantName];
+        const variant = this._variants[variantName];
 
         if (variant.file) {
           return variant.label;
@@ -658,14 +813,14 @@ export default class ProjectItem {
   }
 
   get primaryFile(): IFile | null {
-    const variantKeys = Object.keys(this.variants);
-
     // if we have version slices, return the latest one that has a file
-    if (variantKeys.length > 0) {
+    if (this.hasVersionSliceCustomVariants()) {
+      const variantKeys = Object.keys(this._variants);
+
       variantKeys.sort(this.sortVariantsMostImportantFirst);
 
       for (const variantName of variantKeys) {
-        const variant = this.variants[variantName];
+        const variant = this._variants[variantName];
 
         if (variant.variantType === ProjectItemVariantType.versionSlice) {
           if (variant.file) {
@@ -675,18 +830,27 @@ export default class ProjectItem {
       }
     }
 
-    if (this._defaultFile) {
+    if (this._defaultFile && (!this._defaultFile.isContentLoaded || this._defaultFile.content)) {
       return this._defaultFile;
     }
 
+    const variantKeys = Object.keys(this._variants);
+
+    variantKeys.sort(this.sortVariantsMostImportantFirst);
+
     for (const variantName of variantKeys) {
       if (variantName) {
-        const variant = this.variants[variantName];
+        const variant = this._variants[variantName];
 
         if (variant.file) {
           return variant.file;
         }
       }
+    }
+
+    // as a last fallback, return an assumedly content-less default file
+    if (this._defaultFile) {
+      return this._defaultFile;
     }
 
     return null;
@@ -758,9 +922,10 @@ export default class ProjectItem {
     return this._data.tags;
   }
 
-  setFile(file: IFile) {
+  async setFile(file: IFile) {
     if (file !== this._defaultFile) {
       this._defaultFile = file;
+
       this._isFileContentProcessed = false;
     }
   }
@@ -1050,6 +1215,10 @@ export default class ProjectItem {
   }
 
   async ensureFileStorage() {
+    if (this._isFileContentProcessed && this._defaultFile) {
+      return this._defaultFile;
+    }
+
     if (
       this.storageType === ProjectItemStorageType.singleFile &&
       this._defaultFile === null &&
@@ -1090,6 +1259,7 @@ export default class ProjectItem {
 
         if (folderToLoadFrom) {
           this._defaultFile = await folderToLoadFrom.ensureFileFromRelativePath(prefixPaths[prefixPaths.length - 1]);
+
           this._isFileContentProcessed = false;
         } else {
           Log.debugAlert("Unable to parse a containerized file path of '" + this.projectPath + "'");
@@ -1097,11 +1267,12 @@ export default class ProjectItem {
         }
       } else {
         this._defaultFile = await this._project.projectFolder.ensureFileFromRelativePath(this.projectPath);
+
         this._isFileContentProcessed = false;
       }
     }
 
-    const variants = this.getVariantList();
+    const variants = this._getVariantList();
 
     for (const variant of variants) {
       await variant.ensureFileStorage();

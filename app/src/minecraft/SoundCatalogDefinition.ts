@@ -8,7 +8,7 @@ import StorageUtilities from "../storage/StorageUtilities";
 import { IEntitySounds, ISoundCatalog, ISoundEventCatalog, ISoundEventSet } from "./ISoundCatalog";
 import Project, { FolderContext } from "../app/Project";
 import ProjectItem from "../app/ProjectItem";
-import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
+import { ProjectItemType } from "../app/IProjectItemData";
 import SoundDefinitionCatalogDefinition from "./SoundDefinitionCatalogDefinition";
 import Database from "./Database";
 import EntityTypeResourceDefinition from "./EntityTypeResourceDefinition";
@@ -64,7 +64,7 @@ export default class SoundCatalogDefinition implements IDefinition {
     return entityIdList;
   }
 
-  public get soundEventNameList() {
+  public getSoundEventNameList() {
     if (!this._data) {
       return undefined;
     }
@@ -190,7 +190,7 @@ export default class SoundCatalogDefinition implements IDefinition {
     let elt: ISoundEventSet | undefined = entities[idSound];
 
     if (!elt) {
-      if (idSound.startsWith("minecraft:")) {
+      if (idSound.startsWith("minecraft:") && Utilities.isUsableAsObjectKey(idSound.substring(10))) {
         elt = entities[idSound.substring(10)];
       }
 
@@ -200,7 +200,9 @@ export default class SoundCatalogDefinition implements IDefinition {
         };
       }
 
-      entities[idSound] = elt;
+      if (Utilities.isUsableAsObjectKey(idSound)) {
+        entities[idSound] = elt;
+      }
 
       return elt;
     }
@@ -241,22 +243,7 @@ export default class SoundCatalogDefinition implements IDefinition {
       if (soundGen) {
         soundGen.ensureDefault();
 
-        if (project.projectFolder) {
-          const projectPath = newFile.getFolderRelativePath(project.projectFolder);
-
-          if (projectPath) {
-            project.ensureItemByProjectPath(
-              projectPath,
-              ProjectItemStorageType.singleFile,
-              newFile.name,
-              ProjectItemType.soundCatalog,
-              FolderContext.resourcePack,
-              undefined,
-              ProjectItemCreationType.normal,
-              newFile
-            );
-          }
-        }
+        project.ensureItemFromFile(newFile, ProjectItemType.soundCatalog, FolderContext.resourcePack);
 
         return soundGen;
       }
@@ -333,7 +320,7 @@ export default class SoundCatalogDefinition implements IDefinition {
   async addChildItems(project: Project, item: ProjectItem) {
     const itemsCopy = project.getItemsCopy();
 
-    let soundEventList = this.soundEventNameList;
+    let soundEventList = this.getSoundEventNameList();
     let entityIdList = this.entityIdList;
 
     for (const candItem of itemsCopy) {
@@ -348,7 +335,7 @@ export default class SoundCatalogDefinition implements IDefinition {
           | EntityTypeDefinition;
 
         if (entityDef && entityDef.id && entityIdList?.includes(entityDef?.id)) {
-          item.addChildItem(candItem);
+          item.addParentItem(candItem);
 
           entityIdList = Utilities.removeItemInArray(entityDef.id, entityIdList);
         }
@@ -361,10 +348,12 @@ export default class SoundCatalogDefinition implements IDefinition {
           const soundSetNames = soundDef?.getSoundDefinitionSetNameList();
           if (soundSetNames) {
             for (const soundEventName of soundEventList) {
-              if (soundSetNames.includes(soundEventName)) {
-                item.addChildItem(candItem);
+              if (soundEventName.trim().length > 0) {
+                if (soundSetNames.includes(soundEventName)) {
+                  item.addChildItem(candItem);
 
-                soundEventList = Utilities.removeItemInArray(soundEventName, soundEventList);
+                  soundEventList = Utilities.removeItemInArray(soundEventName, soundEventList);
+                }
               }
             }
           }
@@ -374,7 +363,7 @@ export default class SoundCatalogDefinition implements IDefinition {
 
     if (soundEventList) {
       for (const soundEvent of soundEventList) {
-        if (soundEvent.length > 0) {
+        if (soundEvent.trim().length > 0) {
           const isVanilla = await Database.isVanillaToken(soundEvent);
           item.addUnfulfilledRelationship(soundEvent, ProjectItemType.soundDefinitionCatalog, isVanilla);
         }

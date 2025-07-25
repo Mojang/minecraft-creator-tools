@@ -27,11 +27,12 @@ import MinecraftUtilities from "./MinecraftUtilities";
 import NbtBinary from "./NbtBinary";
 import { NbtTagType } from "./NbtBinaryTag";
 import AnchorSet from "./AnchorSet";
-import Project from "../app/Project";
+import Project, { FolderContext } from "../app/Project";
 import ActorItem from "./ActorItem";
 import { StatusTopic } from "../app/Status";
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
 import ProjectItem from "../app/ProjectItem";
+import { ProjectItemCreationType, ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData";
 
 const BEHAVIOR_PACKS_RELPATH = "/world_behavior_packs.json";
 const BEHAVIOR_PACK_HISTORY_RELPATH = "/world_behavior_pack_history.json";
@@ -64,7 +65,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
   private _folder?: IFolder;
   private _project?: Project;
 
-  private _autogenJsFile?: IFile;
+  private _autogenTsFile?: IFile;
 
   private _anchors = new AnchorSet();
 
@@ -1268,7 +1269,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
       await manifestJsonFile.loadContent();
 
       if (manifestJsonFile.content !== undefined && typeof manifestJsonFile.content === "string") {
-        this._manifest = JSON.parse(manifestJsonFile.content);
+        this._manifest = StorageUtilities.getJsonObject(manifestJsonFile);
       }
     }
 
@@ -1279,7 +1280,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
       if (packsFile.content !== undefined && typeof packsFile.content === "string") {
         try {
-          this.worldBehaviorPacks = JSON.parse(packsFile.content);
+          this.worldBehaviorPacks = StorageUtilities.getJsonObject(packsFile);
         } catch {
           this._pushError("Could not parse behavior pack file content");
           this.worldBehaviorPacks = undefined;
@@ -1294,7 +1295,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
       if (packsFile.content !== undefined && typeof packsFile.content === "string") {
         try {
-          this.worldResourcePacks = JSON.parse(packsFile.content);
+          this.worldResourcePacks = StorageUtilities.getJsonObject(packsFile);
         } catch {
           this._pushError("Could not parse resource pack file content." + packsFile.fullPath);
           this.worldResourcePacks = undefined;
@@ -1309,7 +1310,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
       if (packHistoryFile.content !== undefined && typeof packHistoryFile.content === "string") {
         try {
-          this.worldBehaviorPackHistory = JSON.parse(packHistoryFile.content);
+          this.worldBehaviorPackHistory = StorageUtilities.getJsonObject(packHistoryFile);
         } catch {
           this._pushError("Could not parse behavior pack history file content");
           this.worldBehaviorPackHistory = undefined;
@@ -1324,7 +1325,7 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
 
       if (packHistoryFile.content !== undefined && typeof packHistoryFile.content === "string") {
         try {
-          this.worldResourcePackHistory = JSON.parse(packHistoryFile.content);
+          this.worldResourcePackHistory = StorageUtilities.getJsonObject(packHistoryFile);
         } catch {
           this._pushError("Could not parse resource pack history file content: " + packHistoryFile.fullPath);
           this.worldResourcePackHistory = undefined;
@@ -1565,7 +1566,12 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
                 const bpChildren = child.getTagChildren();
 
                 for (const propChild of bpChildren) {
-                  if (propChild.name && propChild.type === NbtTagType.string) {
+                  if (
+                    propChild.name &&
+                    propChild.type === NbtTagType.string &&
+                    Utilities.isUsableAsObjectKey(child.name) &&
+                    Utilities.isUsableAsObjectKey(propChild.name)
+                  ) {
                     this._dynamicProperties[child.name][propChild.name] = propChild.valueAsString;
 
                     if (child.name === CREATOR_TOOLS_EDITOR_BPUUID) {
@@ -1876,34 +1882,34 @@ export default class MCWorld implements IGetSetPropertyObject, IDimension, IErro
     if (!this._project) {
       return;
     }
-    /*
-    if (this._autogenJsFile === undefined) {
-      const newFileName = "LocalWorld.js";
 
-      const scriptFolder = await this._project.ensureDefaultScriptsFolder();
+    if (this._autogenTsFile === undefined) {
+      const newFileName = "LocalWorld.ts";
 
-      if (scriptFolder) {
-        const genFolder = scriptFolder.ensureFolder("generated");
+      const genFolder = await this._project.ensureScriptGenFolder();
 
-        this._autogenJsFile = genFolder.ensureFile(newFileName);
+      if (genFolder) {
+        this._autogenTsFile = genFolder.ensureFile(newFileName);
 
         this._project.ensureItemByProjectPath(
-          this._autogenJsFile.storageRelativePath,
+          this._autogenTsFile.storageRelativePath,
           ProjectItemStorageType.singleFile,
-          this._autogenJsFile.name,
-          ProjectItemType.js,
+          this._autogenTsFile.name,
+          ProjectItemType.ts,
+          FolderContext.behaviorPack,
           undefined,
           ProjectItemCreationType.generated
         );
       }
     }
 
-    if (this._autogenJsFile) {
+    if (this._autogenTsFile) {
       const content = this.getAutoGenScript();
-      this._autogenJsFile.setContent(content);
 
-      await this._autogenJsFile.saveContent(false);
-    }*/
+      this._autogenTsFile.setContent(content);
+
+      await this._autogenTsFile.saveContent(false);
+    }
   }
 
   private getAutoGenScript() {

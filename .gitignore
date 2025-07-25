@@ -5,12 +5,12 @@
 bin/
 obj/
 dist/
-debugoutput/
 lib/
 PublishProfiles/
 wwwroot/
 .pnp.js
 .tgz
+.cpuprofile
 profile.arm.json
 appsettings.json
 *.csproj.user
@@ -19,6 +19,8 @@ appsettings.json
 /app/out
 .vs/
 /data/~$MinecraftData.xlsm
+debugoutput
+/app/public/data/content/creator_tools_ingame.mcaddon
 
 # testing
 /coverage
@@ -29,17 +31,18 @@ build/
 /res/index.json
 /res/latest/index.json
 ed_build/
+server-data/
+copyserver*
+~*.pptx
 toolbuild/
 out/
 results/
 dist/
 mci/
-public/res/index.json
 /app/forge.config.js
 .vscode-test-web/
 node_modules/
-app/public/data/typedefs.beta.json
-app/public/data/typedefs.stable.json
+app/public/data/typedefs.*.json
 app/public/data/libs.json
 app/public/res/latest/
 app/public/min-maps/

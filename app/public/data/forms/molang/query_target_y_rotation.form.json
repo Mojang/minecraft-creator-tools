@@ -2,5 +2,5 @@
   "id": "query.target_y_rotation",
   "fields": [],
   "description": "Returns the y rotation required to aim at the entity's current target if it has one, else it returns 0.0.",
-  "title": "Target Y Rotation Query"
+  "title": "Target y Rotation Query"
 }

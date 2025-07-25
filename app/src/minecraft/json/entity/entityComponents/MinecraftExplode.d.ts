@@ -142,6 +142,29 @@ Wither Skull - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_p
   "destroy_affected_by_griefing": true
 }
 
+
+Campghost - https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/entities/campghost.json
+
+ * At /minecraft:entity/component_groups/minecraft:exploding/minecraft:explode/: 
+"minecraft:explode": {
+  "fuse_length": 1.5,
+  "fuse_lit": true,
+  "power": 3,
+  "causes_fire": false,
+  "destroy_affected_by_griefing": true,
+  "sound_effect": "scary"
+}
+
+ * At /minecraft:entity/component_groups/minecraft:charged_exploding/minecraft:explode/: 
+"minecraft:explode": {
+  "fuse_length": 1.5,
+  "fuse_lit": true,
+  "power": 6,
+  "causes_fire": false,
+  "destroy_affected_by_griefing": true,
+  "sound_effect": "scary"
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -318,6 +341,8 @@ export default interface MinecraftExplode {
    * Breeze Wind Charge Projectile: "breeze_wind_charge.burst"
    *
    * Wind Charge Projectile: "wind_charge.burst"
+   *
+   * Campghost: "scary"
    *
    */
   sound_effect: string;

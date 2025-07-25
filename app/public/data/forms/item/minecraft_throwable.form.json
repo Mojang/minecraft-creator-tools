@@ -80,7 +80,7 @@
     }
   ],
   "description": "Sets the throwable item component.",
-  "title": "Throwable",
+  "title": "Minecraft Throwable Item",
   "samples": {
     "/vanilla/behavior_pack/items/wind_charge.json": [
       {

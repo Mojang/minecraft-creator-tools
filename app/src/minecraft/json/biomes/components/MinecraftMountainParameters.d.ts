@@ -94,7 +94,7 @@ export interface MinecraftMountainParametersSteepMaterialAdjustment {
    * @remarks
    * Block type use as steep material
    */
-  material: { [key: string]: string };
+  material: MinecraftMountainParametersSteepMaterialAdjustmentMaterial;
 
   /**
    * @remarks
@@ -113,6 +113,14 @@ export interface MinecraftMountainParametersSteepMaterialAdjustment {
    * Enable for west-facing slopes
    */
   west_slopes: boolean;
+
+}
+
+
+/**
+ * Material (material)
+ */
+export interface MinecraftMountainParametersSteepMaterialAdjustmentMaterial {
 
 }
 

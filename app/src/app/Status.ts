@@ -14,6 +14,7 @@ export enum StatusTopic {
   projectLoad = 2,
   worldLoad = 3,
   scriptBuild = 4,
+  processing = 5,
 }
 
 export default interface IStatus {

@@ -2,9 +2,7 @@
   "fields": [
     {
       "id": "triggers",
-      "title": "Triggers",
-      "description": "The list of triggers that fire when the environment conditions match the given filter criteria.",
-      "dataType": 17,
+      "dataType": 42,
       "samples": {
         "/vanilla/behavior_pack/entities/armadillo.json": [
           {
@@ -762,6 +760,14 @@
                   ]
                 },
                 "event": "minecraft:become_armorable"
+              },
+              {
+                "filters": {
+                  "test": "bool_property",
+                  "operator": "!=",
+                  "domain": "minecraft:was_upgraded_to_1_21_100"
+                },
+                "event": "minecraft:upgrade_to_1_21_100"
               }
             ]
           }
@@ -812,7 +818,9 @@
             }
           }
         ]
-      }
+      },
+      "description": "The list of triggers that fire when the environment conditions match the given filter criteria.",
+      "title": "Triggers"
     }
   ],
   "description": "Creates a trigger based on environment conditions.",
@@ -1657,6 +1665,14 @@
                 ]
               },
               "event": "minecraft:become_armorable"
+            },
+            {
+              "filters": {
+                "test": "bool_property",
+                "operator": "!=",
+                "domain": "minecraft:was_upgraded_to_1_21_100"
+              },
+              "event": "minecraft:upgrade_to_1_21_100"
             }
           ]
         }

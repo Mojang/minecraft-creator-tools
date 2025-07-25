@@ -446,6 +446,13 @@
     ],
     "/vanilla/behavior_pack/entities/happy_ghast.json": [
       {
+        "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:pushable/",
+        "content": {
+          "is_pushable": true,
+          "is_pushable_by_piston": true
+        }
+      },
+      {
         "path": "/minecraft:entity/component_groups/minecraft:adult_mobile/minecraft:pushable/",
         "content": {
           "is_pushable": true,
@@ -456,27 +463,6 @@
         "path": "/minecraft:entity/component_groups/minecraft:adult_immobile/minecraft:pushable/",
         "content": {
           "is_pushable": false,
-          "is_pushable_by_piston": true
-        }
-      },
-      {
-        "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:pushable/",
-        "content": {
-          "is_pushable": true,
-          "is_pushable_by_piston": true
-        }
-      },
-      {
-        "path": "/minecraft:entity/component_groups/minecraft:has_passengers/minecraft:pushable/",
-        "content": {
-          "is_pushable": false,
-          "is_pushable_by_piston": true
-        }
-      },
-      {
-        "path": "/minecraft:entity/component_groups/minecraft:has_no_passengers/minecraft:pushable/",
-        "content": {
-          "is_pushable": true,
           "is_pushable_by_piston": true
         }
       }
@@ -1208,6 +1194,15 @@
       }
     ],
     "/samples/chill_oasis_blocks_and_features/chill_oasis_assets/behavior_packs/chill_oasis_assets/entities/beachager.behavior.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:pushable/",
+        "content": {
+          "is_pushable": true,
+          "is_pushable_by_piston": true
+        }
+      }
+    ],
+    "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
       {
         "path": "/minecraft:entity/components/minecraft:pushable/",
         "content": {
