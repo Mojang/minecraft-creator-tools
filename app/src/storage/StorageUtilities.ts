@@ -84,6 +84,8 @@ export const AllowedExtensionsSet = new Set([
 
 const IgnoreExtensionsSet = new Set(["ds_store", "brarchive"]);
 
+const IgnoreFileNames = new Set(["thumbs.db", "desktop.ini"]);
+
 const IgnoreFolders = ["__MACOSX", "credits", "shaders", "hbui", "ray_tracing", "node_modules", "test", "__brarchive"];
 
 const _minecraftProjectFolderNames = [
@@ -130,6 +132,10 @@ export default class StorageUtilities {
     const extension = StorageUtilities.getTypeFromName(path);
 
     return AllowedExtensionsSet.has(extension);
+  }
+
+  public static canIgnoreFileName(fileName: string) {
+    return IgnoreFileNames.has(fileName.toLowerCase());
   }
 
   public static canIgnoreFileExtension(extension: string) {
