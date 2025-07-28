@@ -560,14 +560,28 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       const tierTotalTextureMemoryBudget = 1024 * 1024 * TextureMemoryLimitsByTier[category][i];
 
       if (curMemoryUsedInTier > tierTotalTextureMemoryBudget) {
+        let errorOrWarningType = InfoItemType.warning;
+        let warningMessage = `Total texture memory exceeds budget of ${tierTotalTextureMemoryBudget} bytes for items of type ${ProjectUtilities.getMetaCategoryDescription(
+          category
+        )} at tier ${i}.`;
+
+        for (const pvLabel in project.variants) {
+          const pv = project.variants[pvLabel];
+
+          if (pv && pv.effectiveUnifiedTier === i) {
+            errorOrWarningType = InfoItemType.error;
+            warningMessage += "Because this project specifically targets this tier, it is an error.";
+          }
+        }
+
+        warningMessage += " Total memory used";
+
         items.push(
           new ProjectInfoItem(
-            InfoItemType.error,
+            errorOrWarningType,
             this.id,
             TextureImageInfoGeneratorTest.totalTextureMemoryExceedsBudgetBase + i,
-            `Total texture memory exceeds budget of ${tierTotalTextureMemoryBudget} bytes for items of type ${ProjectUtilities.getMetaCategoryDescription(
-              category
-            )} at tier ${i}. Total memory used`,
+            warningMessage,
             undefined,
             curMemoryUsedInTier
           )

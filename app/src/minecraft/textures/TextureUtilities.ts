@@ -142,7 +142,9 @@ export async function isOuterAreaIsBlank(texture: ITexture, size: SkinTarget) {
     : TextureUtilities.getBySize(size).allowedTextures;
 
   if (!allowedAlphaMask) {
-    throw new Error("Could not find reference for texture");
+    throw new Error(
+      "Could not find reference for texture for size " + (size === SkinTarget.Custom ? "Custom" : "CustomSlim")
+    );
   }
 
   for (let x = 0; x < texture.width; ++x) {

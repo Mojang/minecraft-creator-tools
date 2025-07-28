@@ -1,4 +1,4 @@
 {
-  "files": ["creator_tools_ingame.mcaddon", "blank.ogg"],
-  "folders": ["newitemjson"]
+  "files": ["blank.ogg", "blank64.png", "flatcreativegt.mcworld"],
+  "folders": ["newitemjson", "textures"]
 }

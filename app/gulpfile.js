@@ -233,7 +233,9 @@ function copyVscData() {
 }
 
 function copyJsNodeData() {
-  return gulp.src(["public/data/**/*.json", "public/data/**/*.mcworld"]).pipe(gulp.dest("toolbuild/jsn/data/"));
+  return gulp
+    .src(["public/data/**/*.ogg", "public/data/**/*.png", "public/data/**/*.json", "public/data/**/*.mcworld"])
+    .pipe(gulp.dest("toolbuild/jsn/data/"));
 }
 
 function copyMonacoNpmDist() {
@@ -249,7 +251,7 @@ function copyEsbuildWasmDist() {
 }
 
 function copyJsNodeDocs() {
-  return gulp.src(["../CHANGELOG.md", "../NOTICE.md", "../LICENSE.md"]).pipe(gulp.dest("toolbuild/jsn/"));
+  return gulp.src(["../CHANGELOG.md", "../NOTICE.md"]).pipe(gulp.dest("toolbuild/jsn/"));
 }
 
 function copyVscRes() {

@@ -15,8 +15,8 @@ export const VibrantVisualsFileExtensionVariants = [
   "_mer.tga",
   "_mers.png",
   "_mers.tga",
-  "_normal.png",
-  "_normal.tga",
+  // "_normal.png", <-- too many false positives
+  // "_normal.tga",
   ".texture_set.json",
 ];
 

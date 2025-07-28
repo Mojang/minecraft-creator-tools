@@ -9,7 +9,7 @@ import NodeStorage from "../local/NodeStorage";
 import IProjectInfoData, { ProjectInfoSuite } from "../info/IProjectInfoData";
 import Project from "../app/Project";
 import IProjectMetaState from "../info/IProjectMetaState";
-import { expose } from "threads/worker";
+import { parentPort } from "worker_threads";
 import CartoApp, { HostType } from "../app/CartoApp";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { InfoItemType } from "../info/IInfoItemData";
@@ -84,7 +84,17 @@ export async function executeTask(task: ITask) {
 }
 
 if (!isMainThread) {
-  expose(executeTask);
+  if (parentPort) {
+    // Native Node.js worker_threads
+    parentPort.on("message", async (task) => {
+      try {
+        const result = await executeTask(task);
+        parentPort!.postMessage(result);
+      } catch (error) {
+        parentPort!.postMessage(error.toString());
+      }
+    });
+  }
 }
 
 async function validate(

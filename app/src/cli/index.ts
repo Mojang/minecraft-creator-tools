@@ -1,38 +1,49 @@
 import { Argument, Command } from "commander";
 import Carto from "./../app/Carto.js";
+import Project, { FolderContext, ProjectAutoDeploymentMode } from "./../app/Project.js";
 import CartoApp, { HostType } from "./../app/CartoApp.js";
+import Utilities from "./../core/Utilities.js";
+import ServerManager, { ServerManagerFeatures } from "../local/ServerManager.js";
 
 import LocalUtilities from "./../local/LocalUtilities.js";
+import LocalTools from "../local/LocalTools.js";
 import * as process from "process";
+import * as inquirer from "inquirer";
 import NodeStorage from "../local/NodeStorage.js";
+import ProjectExporter from "../app/ProjectExporter.js";
 import StorageUtilities from "../storage/StorageUtilities.js";
 import { constants } from "../core/Constants.js";
+import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem.js";
 import ProjectInfoSet from "../info/ProjectInfoSet.js";
 import { InfoItemType } from "../info/IInfoItemData.js";
 import LocalEnvironment from "../local/LocalEnvironment.js";
+import { IPackageReference, IWorldSettings } from "../minecraft/IWorldSettings.js";
+import { GameType, Generator } from "../minecraft/WorldLevelDat.js";
+import ProjectUtilities from "../app/ProjectUtilities.js";
 import { ProjectItemStorageType, ProjectItemType } from "../app/IProjectItemData.js";
 import MCWorld from "../minecraft/MCWorld.js";
 import ProjectItem from "../app/ProjectItem.js";
 import Log from "../core/Log.js";
+import IProjectMetaState from "../info/IProjectMetaState.js";
 import IProjectStartInfo from "./IProjectStartInfo.js";
 import ClUtils, { OutputType, TaskType } from "./ClUtils.js";
-import { spawn, Pool, Worker } from "threads";
+import { Worker as NodeWorker } from "worker_threads";
+import * as path from "path";
+import NodeFolder from "../local/NodeFolder.js";
 import ContentIndex from "../core/ContentIndex.js";
 import IIndexJson from "../storage/IIndexJson.js";
-import * as inquirer from "inquirer";
-import IGalleryItem, { GalleryItemType } from "../app/IGalleryItem.js";
-import ProjectUtilities from "../app/ProjectUtilities.js";
-import Project, { FolderContext, ProjectAutoDeploymentMode } from "../app/Project.js";
-import ProjectExporter from "../app/ProjectExporter.js";
-import Utilities from "../core/Utilities.js";
 import { ProjectInfoSuite } from "../info/IProjectInfoData.js";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities.js";
-import { IWorldSettings } from "../minecraft/IWorldSettings.js";
-import { IMinecraftStartMessage } from "../app/IMinecraftStartMessage.js";
-import ServerManager, { ServerManagerFeatures } from "../local/ServerManager.js";
-import IProjectMetaState from "../info/IProjectMetaState.js";
+import IFolder from "../storage/IFolder.js";
+import FormJsonDocumentationGenerator from "../docgen/FormJsonDocumentationGenerator.js";
+import FormMarkdownDocumentationGenerator from "../docgen/FormMarkdownDocumentationGenerator.js";
+import TableMarkdownDocumentationGenerator from "../docgen/TableMarkdownDocumentationGenerator.js";
+import DocJsonMarkdownDocumentationGenerator from "../docgen/DocJsonMarkdownDocumentationGenerator.js";
+import FormDefinitionTypeScriptGenerator from "../docgen/FormDefinitionTypeScriptGenerator.js";
+import NodeFile from "../local/NodeFile.js";
 import ProjectItemCreateManager from "../app/ProjectItemCreateManager.js";
-import LocalTools from "../local/LocalTools.js";
+import { executeTask } from "./TaskWorker.js";
+import ProfilerWrapper from "./ProfilerWrapper.js";
 
 if (typeof btoa === "undefined") {
   // @ts-ignore
@@ -52,6 +63,8 @@ CartoApp.hostType = HostType.toolsNodejs;
 
 const MAX_LINES_PER_CSV_FILE = 500000;
 
+// const ERROR_INSUFFICIENT_ARGUMENTS = 42;
+// const ERROR_BAD_ARGUMENTS = 43;
 const ERROR_INIT_ERROR = 44;
 const ERROR_VALIDATION_INTERNALPROCESSINGERROR = 53;
 const ERROR_VALIDATION_TESTFAIL = 56;
@@ -66,6 +79,8 @@ let mode: string | undefined;
 let type: string | undefined;
 let newName: string | undefined;
 let newDescription: string | undefined;
+let propertyValue: string | undefined;
+let subCommand: string | undefined;
 let template: string | undefined;
 let creator: string | undefined;
 let serverHostPort: number | undefined;
@@ -84,6 +99,7 @@ let serverCandidateUpdateStatePasscode: string | undefined;
 let serverRunOnce: boolean | undefined;
 
 let aggregateReportsAfterValidation: boolean | undefined = false;
+let buildAggregatedIndex: boolean | undefined = true;
 let threads: number = 8;
 let errorLevel: number | undefined;
 
@@ -105,6 +121,14 @@ program
     "-o, --output-folder <path to folder>",
     "Path to the output project folder. If not specified, the current working directory + 'out' is used.",
     "out"
+  )
+  .option(
+    "-psw, --project-starts-with <starter term>",
+    "Only process a project if it starts with the starter term; this can be used to subdivide processing."
+  )
+  .option(
+    "-bp, --base-path <path to folder>",
+    "Path, relative to the current working folder, where common data files and folders are found."
   )
   .option("-afs, --additional-files [path to file]", "Comma-separated list of additional files to add to projects.")
   .option("-of, --output-file [path to file]", "Path to the export file, if applicable for the command you are using.")
@@ -128,7 +152,10 @@ program
   .option("-editor", "Ensures that the world is an Editor world.")
   .option("-once", "When running as a server, only process one request and then shutdown.", false)
   .option("-no-editor", "Removes that the world is an editor.")
-  .option("--threads [thread count]", "Targeted number of threads to use.")
+  .option(
+    "--threads [thread count]",
+    "Targeted number of threads to use. Use 1 for sequential processing, >1 for parallel processing with worker threads."
+  )
   .option("-show, --display-only", "Whether to only show messages, vs. output report files.")
   .option("-lv, --log-verbose", "Whether to show verbose log messages.")
   .option(
@@ -141,6 +168,40 @@ program.addHelpText("before", "\x1b[32m│ ▄ ▄ │\x1b[0m Minecraft Creator 
 program.addHelpText("before", "\x1b[32m│ ┏▀┓ │\x1b[0m See " + constants.homeUrl + " for more info.");
 program.addHelpText("before", "\x1b[32m└─────┘\x1b[0m");
 program.addHelpText("before", " ");
+
+program
+  .command("set")
+  .description("Sets a project property.")
+  .addArgument(
+    new Argument("[property name]", "Property name to set. Valid values include: " + getProjectPropertyList())
+  )
+  .addArgument(new Argument("[property value]", "Property value to set."))
+  .action((nameIn, valueIn) => {
+    subCommand = nameIn;
+    propertyValue = valueIn;
+    executionTaskType = TaskType.setProjectProperty;
+  });
+
+program
+  .command("docsgenerateformjson")
+  .description("Generates finalized form json for consumption.")
+  .action(() => {
+    executionTaskType = TaskType.docsGenerateFormJson;
+  });
+
+program
+  .command("docsgeneratemarkdown")
+  .description("Generates markdown documentation from form json for consumption.")
+  .action(() => {
+    executionTaskType = TaskType.docsGenerateMarkdown;
+  });
+
+program
+  .command("docsgeneratetypes")
+  .description("Generates types from form json.")
+  .action(() => {
+    executionTaskType = TaskType.docsGenerateTypes;
+  });
 
 program
   .command("deploy")
@@ -195,6 +256,17 @@ program
     creator = creatorIn;
     newDescription = descriptionIn;
     executionTaskType = TaskType.create;
+  });
+
+program
+  .command("fix")
+  .description("Fixes or updates the project with a set of desired fixes")
+  .addArgument(
+    new Argument("[fix]", "Desired fix name. Options include: " + getSubFunctionCommaSeparatedList().join(", "))
+  )
+  .action((fixIn) => {
+    subCommand = fixIn;
+    executionTaskType = TaskType.fix;
   });
 
 program
@@ -275,15 +347,16 @@ program
   .addArgument(
     new Argument("[suite]", "Specifies the type of validation suite to run.")
       .choices(["all", "default", "addon", "currentplatform", "main"])
-      .default("main", "main (same as default) - runs most available validation tests.")
+      .default("main", "main - runs most available validation tests.")
   )
   .addArgument(
     new Argument("[exclusions]", "Specifies a comma-separated list of tests to exclude, e.g., PATHLENGTH,PACKSIZE")
   )
   .addArgument(
-    new Argument("[aggregateReports]", "Whether to aggregate reports across projects at the end of the run.")
-      .choices(["true", "false"])
-      .default("false", "false - does not aggregate reports at the end of processing.")
+    new Argument(
+      "[aggregateReports]",
+      "Specify 'aggregate' to aggregate reports across projects at the end of the run."
+    ).choices(["aggregatenoindex", "aggregate", "true", "false", "1", "0"])
   )
   .action((suiteIn?: string, exclusionListIn?: string, aggregateReportsIn?: string) => {
     suite = suiteIn;
@@ -291,23 +364,46 @@ program
     executionTaskType = TaskType.validate;
 
     if (
+      aggregateReportsIn === "aggregatenoindex" ||
       aggregateReportsIn === "aggregate" ||
       aggregateReportsIn === "true" ||
       aggregateReportsIn === "1" ||
       aggregateReportsIn === "t"
     ) {
       aggregateReportsAfterValidation = true;
+
+      if (aggregateReportsIn === "aggregatenoindex") {
+        buildAggregatedIndex = false;
+      }
     } else {
       aggregateReportsAfterValidation = false;
     }
   });
 
 program
+  .command("profileValidation")
+  .description("Profile validating a single project with default settings")
+  .action(() => {
+    executionTaskType = TaskType.profileValidation;
+  });
+
+program
   .command("aggregatereports")
   .alias("aggr")
   .description("Aggregates exported metadata about projects.")
-  .action(() => {
+  .addArgument(new Argument("[buildContentIndex]").choices(["index", "noindex", "true", "false", "1", "0"]))
+  .action((buildContentIndexIn?: string) => {
     executionTaskType = TaskType.aggregateReports;
+    if (
+      buildContentIndexIn === "noindex" ||
+      buildContentIndexIn === "false" ||
+      buildContentIndexIn === "0" ||
+      buildContentIndexIn === "f"
+    ) {
+      buildAggregatedIndex = false;
+    } else {
+      buildAggregatedIndex = true;
+    }
   });
 
 program
@@ -326,6 +422,9 @@ localEnv = new LocalEnvironment(true);
 
 let sm: ServerManager | undefined;
 
+const packageReferenceSets: IPackageReference[] = [];
+const templateReferenceSets: IPackageReference[] = [];
+
 if (options.force) {
   force = true;
 }
@@ -336,7 +435,11 @@ if (options.threads) {
 
     if (tc > 0) {
       threads = tc;
-      console.log("Using " + threads + " threads.");
+      if (threads === 1) {
+        console.log("Using sequential processing (threads=1).");
+      } else {
+        console.log("Using " + threads + " worker threads.");
+      }
     }
   } catch (e) {
     Log.error("Could not process the threads parameter: " + e);
@@ -358,11 +461,14 @@ if (options.displayOnly) {
   }
 } else if (options.outputFolder === "out") {
   if ((executionTaskType as TaskType) !== TaskType.serve) {
-    Log.message("Outputting full results to the `out` folder.");
+    Log.message(
+      "Outputting results to the \x1b[32mout\x1b[0m folder. Use the `-o <foldername>` parameter to select a different path.\r\n"
+    );
   }
 
   localEnv.displayInfo = true;
 }
+
 if (options.adminPasscode) {
   serverCandidateAdminPasscode = options.adminPasscode;
 }
@@ -388,7 +494,7 @@ if (options.logVerbose) {
 }
 
 (async () => {
-  carto = ClUtils.getCarto(localEnv);
+  carto = ClUtils.getCarto(localEnv, options.basePath);
 
   if (!carto) {
     return;
@@ -401,6 +507,7 @@ if (options.logVerbose) {
 
   carto.onStatusAdded.subscribe(ClUtils.handleStatusAdded);
 
+  await loadPacks();
   await loadProjects();
 
   if (
@@ -430,22 +537,53 @@ if (options.logVerbose) {
       await validate();
       break;
 
-    case TaskType.deploy:
-      await deploy();
-
-      if (options.ensureWorld) {
-        await ensureRefWorld();
-      }
-      break;
-
     case TaskType.aggregateReports:
       await aggregateReports();
+      break;
+
+    case TaskType.docsUpdateFormSource:
+      await docsUpdateFormSource();
+      break;
+
+    case TaskType.docsGenerateFormJson:
+      await docsGenerateFormJson();
+      break;
+
+    case TaskType.docsGenerateMarkdown:
+      await docsGenerateMarkdown();
+      break;
+
+    case TaskType.docsGenerateTypes:
+      await docsGenerateTypes();
       break;
 
     case TaskType.serve:
       hookInput();
       await applyServerProps();
       await serve();
+      break;
+
+    case TaskType.profileValidation:
+      await profileValidation();
+      break;
+
+    case TaskType.fix:
+      await fix();
+      break;
+
+    case TaskType.setProjectProperty:
+      if (subCommand && propertyValue) {
+        try {
+          for (const projectStart of projectStarts) {
+            if (projectStart) {
+              await setProjectProperty(ClUtils.createProject(carto, projectStart), subCommand, propertyValue);
+            }
+          }
+        } catch (e) {
+          errorLevel = ERROR_INIT_ERROR;
+          console.error("Error adding to a project. " + e.toString());
+        }
+      }
       break;
 
     case TaskType.add:
@@ -474,6 +612,14 @@ if (options.logVerbose) {
       }
       break;
 
+    case TaskType.deploy:
+      await deploy();
+
+      if (options.ensureWorld) {
+        await ensureRefWorld();
+      }
+      break;
+
     case TaskType.minecraftEulaAndPrivacyStatement:
       await minecraftEulaAndPrivacyStatement();
       break;
@@ -482,12 +628,71 @@ if (options.logVerbose) {
       await setAndDisplayAllWorlds();
       break;
   }
+
+  if ((executionTaskType as TaskType) !== TaskType.serve) {
+    await doExit();
+  }
 })();
+
+async function fix() {
+  if (!carto) {
+    throw new Error("Not properly configured.");
+  }
+
+  if (!subCommand) {
+    throw new Error(
+      "No sub-fix was specified. Use the [fix] subcommand to specify a fix. Available commands: " +
+        getSubFunctionCommaSeparatedList().join(", ")
+    );
+  }
+
+  const subCommandCanon = subCommand.toLowerCase().trim();
+
+  for (const projectStart of projectStarts) {
+    if (projectStart) {
+      const project = ClUtils.createProject(carto, projectStart);
+      await project.inferProjectItemsFromFiles();
+
+      switch (subCommandCanon) {
+        case "latestbetascriptversion":
+          break;
+        case "usepackageversionscript":
+          break;
+        case "usemanifestversionscript":
+          break;
+        case "randomizealluids":
+          await ProjectUtilities.randomizeAllUids(project);
+          break;
+        case "setnewestformatversions":
+          break;
+        case "setnewestminengineversion":
+          break;
+      }
+    }
+  }
+}
+
+function getProjectPropertyList(): string[] {
+  return ["name", "title", "description", "bpscriptentrypoint", "bpuuid", "rpuuid"];
+}
+
+function getSubFunctionCommaSeparatedList(): string[] {
+  return [
+    "latestbetascriptversion",
+    "usepackageversionscript",
+    "usemanifestversionscript",
+    "randomizealluids",
+    "setnewestformatversions",
+    "setnewestminengineversion",
+  ];
+}
 
 async function loadProjects() {
   if (!carto || !carto.ensureLocalFolder) {
     throw new Error("Not properly configured.");
   }
+
+  const psw = options.projectStartsWith;
 
   const additionalFiles: string[] = [];
 
@@ -512,6 +717,8 @@ async function loadProjects() {
     }
 
     const containingFolder = carto.ensureLocalFolder(inputFolderPath);
+
+    containingFolder.storage.readOnly = true;
 
     const file = containingFolder.ensureFile(inputFileName);
 
@@ -555,7 +762,7 @@ async function loadProjects() {
   if (workFolder.fileCount > 0) {
     for (const subFileName in workFolder.files) {
       const file = workFolder.files[subFileName];
-      if (file && !StorageUtilities.isFileStorageItem(file)) {
+      if (file && !StorageUtilities.isFileStorageItem(file) && !file.fullPath.endsWith(".mci.json.zip")) {
         isMultiLevelMultiProject = false;
         break;
       }
@@ -574,7 +781,7 @@ async function loadProjects() {
             const subFile = subFolder.files[subFileName];
 
             if (subFile) {
-              if (StorageUtilities.isFileStorageItem(subFile)) {
+              if (StorageUtilities.isFileStorageItem(subFile) && !subFile.fullPath.endsWith(".mci.json.zip")) {
                 storageItemCount++;
               }
 
@@ -582,6 +789,7 @@ async function loadProjects() {
 
               if (
                 !StorageUtilities.isFileStorageItem(subFile) &&
+                !subFile.fullPath.endsWith(".mci.json.zip") &&
                 typeFromName !== "json" &&
                 typeFromName !== "csv" &&
                 typeFromName !== "" &&
@@ -612,7 +820,7 @@ async function loadProjects() {
           for (const fileName in subFolder.files) {
             const file = subFolder.files[fileName];
 
-            if (file && StorageUtilities.isFileStorageItem(file)) {
+            if (file && StorageUtilities.isFileStorageItem(file) && !file.fullPath.endsWith(".mci.json.zip")) {
               const ps: IProjectStartInfo = { ctorProjectName: file.name, accessoryFiles: additionalFiles.slice() };
 
               let baseName = StorageUtilities.getBaseFromName(file.name);
@@ -633,13 +841,18 @@ async function loadProjects() {
 
               ps.localFilePath = file.fullPath;
 
-              projectStarts.push(ps);
+              if (!psw || baseName.toLowerCase().startsWith(psw)) {
+                projectStarts.push(ps);
+              }
             }
           }
         }
       }
 
-      if (projectStarts.length > 0) {
+      if (projectStarts.length > 0 || psw) {
+        if (psw) {
+          Log.message("No projects matched project starts with of `" + psw + "`");
+        }
         return;
       }
     } else {
@@ -707,15 +920,16 @@ async function loadProjects() {
         for (const fileName in workFolder.files) {
           const file = workFolder.files[fileName];
 
-          if (file && StorageUtilities.isFileStorageItem(file)) {
+          if (file && StorageUtilities.isFileStorageItem(file) && !file.fullPath.endsWith(".mci.json.zip")) {
             const mainProject: IProjectStartInfo = {
               ctorProjectName: file.name,
               accessoryFiles: additionalFiles.slice(),
             };
 
             mainProject.localFilePath = file.fullPath;
-
-            projectStarts.push(mainProject);
+            if (!psw || file.name.toLowerCase().startsWith(psw)) {
+              projectStarts.push(mainProject);
+            }
           }
         }
 
@@ -733,12 +947,17 @@ async function loadProjects() {
 
               mainProject.localFolderPath = folder.fullPath;
 
-              projectStarts.push(mainProject);
+              if (!psw || folder.name.toLowerCase().startsWith(psw)) {
+                projectStarts.push(mainProject);
+              }
             }
           }
         }
 
-        if (projectStarts.length > 0) {
+        if (projectStarts.length > 0 || psw) {
+          if (psw) {
+            Log.message("No projects matched project starts with of `" + psw + "`");
+          }
           return;
         }
       }
@@ -777,43 +996,6 @@ async function applyServerProps() {
   }
 }
 
-async function doExit() {
-  if (sm) {
-    sm.stopWebServer();
-  }
-
-  if (!errorLevel) {
-    (process as any).exitCode = errorLevel;
-  }
-}
-
-async function ensureRefWorld() {
-  const ns: NodeStorage | undefined = getTargetFolderFromMode();
-  if (!carto || !carto.local || projectStarts.length === 0) {
-    errorLevel = ERROR_INIT_ERROR;
-    console.error("Not configured correctly to export a project.");
-    return;
-  }
-
-  for (const projectStart of projectStarts) {
-    if (projectStart) {
-      if (!ns) {
-        return;
-      }
-
-      const project = ClUtils.createProject(carto, projectStart);
-
-      await ns.rootFolder.ensureExists();
-
-      await LocalTools.ensureFlatPackRefWorldTo(carto, project, ns.rootFolder, project.name);
-
-      if (options.launch) {
-        await LocalTools.launchWorld(carto, project.name);
-      }
-    }
-  }
-}
-
 function hookInput() {
   process.stdin.setEncoding("utf-8");
 
@@ -836,8 +1018,8 @@ async function displayVersion() {
     console.log("Minecraft path: " + local.minecraftPath);
     console.log("Server working path: " + local.serversPath);
     console.log("Environment prefs path: " + local.envPrefsPath);
+    console.log("Pack cache path: " + local.packCachePath);
   }
-
   console.log("\n");
   console.log(constants.copyright);
   console.log(constants.disclaimer);
@@ -891,10 +1073,6 @@ function getFriendlyPasscode(str: string) {
   }
 
   return str;
-}
-
-async function stop() {
-  process.exit();
 }
 
 async function minecraftEulaAndPrivacyStatement() {
@@ -1137,124 +1315,19 @@ async function setAndDisplayWorld(item: ProjectItem, isSettable: boolean) {
   }
 }
 
-async function displayServerProps() {
-  if (!localEnv) {
-    return;
-  }
-
-  let domainName = localEnv.serverDomainName;
-
-  if (!domainName) {
-    domainName = "(unspecified; used for display purposes only)";
-  }
-
-  let port = localEnv.serverHostPort;
-
-  if (!port) {
-    port = 80;
-  }
-
-  let title = localEnv.serverTitle;
-
-  if (!title) {
-    title = "(unspecified; used for display purposes only)";
-  }
-
-  let motd = localEnv.serverMessageOfTheDay;
-
-  if (!motd) {
-    motd = "(unspecified; used for display purposes only)";
-  }
-
-  console.log("Server host domain name: " + domainName);
-  console.log("Server port: " + port);
-  console.log("Server title: " + title);
-  console.log("Server message of the day: " + motd);
-}
-
 async function validate() {
   if (!carto || !localEnv) {
     return;
   }
 
   const projectList: IProjectMetaState[] = [];
-  const pool = Pool(
-    () =>
-      spawn(new Worker("./TaskWorker"), {
-        timeout: 25000,
-      }),
-    threads
-  );
 
-  const suiteConst = suite;
-  const exclusionListConst = exclusionList;
-  const aggregateReportsAfterValidationConst = aggregateReportsAfterValidation;
-  const localEnvConst = localEnv;
-
-  for (let i = 0; i < projectStarts.length; i++) {
-    const ps = projectStarts[i];
-
-    pool.queue(async (doTask) => {
-      const result = await doTask({
-        task: TaskType.validate,
-        project: ps,
-        arguments: {
-          suite: suiteConst,
-          exclusionList: exclusionListConst,
-          outputMci: aggregateReportsAfterValidationConst || outputType === OutputType.noReports ? true : false,
-          outputType: outputType,
-        },
-        outputFolder: options.outputFolder,
-        inputFolder: options.inputFolder,
-        displayInfo: localEnvConst.displayInfo,
-        displayVerbose: localEnvConst.displayVerbose,
-        force: force,
-      });
-
-      if (result !== undefined) {
-        if (typeof result === "string") {
-          if (ps) {
-            Log.error(ps.ctorProjectName + " error: " + result);
-          }
-        } else {
-          for (const metaState of result) {
-            // clear out icons since the aggregation won't need them, and it should save memory.
-            if (metaState.infoSetData && metaState.infoSetData.info && metaState.infoSetData.info["defaultIcon"]) {
-              metaState.infoSetData.info["defaultIcon"] = undefined;
-            }
-
-            projectList.push(metaState as IProjectMetaState);
-
-            const infoSet = (metaState as IProjectMetaState).infoSetData;
-
-            if (infoSet) {
-              const items = infoSet.items;
-
-              if (items) {
-                for (const item of items) {
-                  if (item.iTp === InfoItemType.internalProcessingError) {
-                    console.error(
-                      "Internal Processing Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item)
-                    );
-                    setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
-                  } else if (item.iTp === InfoItemType.testCompleteFail && !options.outputFolder) {
-                    console.error("Test Fail: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
-                    setErrorLevel(ERROR_VALIDATION_TESTFAIL);
-                  } else if (item.iTp === InfoItemType.error && !options.outputFolder) {
-                    console.error("Error: " + ProjectInfoSet.getEffectiveMessageFromData(infoSet, item));
-                    setErrorLevel(ERROR_VALIDATION_ERROR);
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    });
+  // Use sequential processing if threads=1, otherwise use native Node.js workers
+  if (threads === 1) {
+    await processProjectsSequentially(projectList);
+  } else {
+    await processProjectsWithWorkers(projectList);
   }
-
-  await pool.settled();
-  await pool.terminate();
 
   if (aggregateReportsAfterValidation) {
     Log.message("Aggregating reports across " + projectList.length + " projects.");
@@ -1262,10 +1335,226 @@ async function validate() {
   }
 }
 
+async function processProjectsSequentially(projectList: IProjectMetaState[]) {
+  for (let i = 0; i < projectStarts.length; i++) {
+    const ps = projectStarts[i];
+    if (!ps) continue;
+
+    console.log(`Processing project ${i + 1}/${projectStarts.length}: ${ps.ctorProjectName}`);
+
+    try {
+      const result = await executeTask({
+        task: TaskType.validate,
+        project: ps,
+        arguments: {
+          suite: suite,
+          exclusionList: exclusionList,
+          outputMci: aggregateReportsAfterValidation || outputType === OutputType.noReports,
+          outputType: outputType,
+        },
+        outputFolder: options.outputFolder,
+        inputFolder: options.inputFolder,
+        displayInfo: localEnv!.displayInfo,
+        displayVerbose: localEnv!.displayVerbose,
+        force: force,
+      });
+
+      if (result !== undefined) {
+        await processValidationResult(result, ps, projectList);
+      }
+
+      // Force garbage collection after each project if available
+      if (global.gc) {
+        global.gc();
+      }
+    } catch (e) {
+      console.error(
+        "Processing Error for " + ps.ctorProjectName + ": " + e.toString() + (e.stack ? "\n" + e.stack : "")
+      );
+      setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
+    }
+  }
+}
+
+async function processProjectsWithWorkers(projectList: IProjectMetaState[]) {
+  const maxConcurrency = Math.min(8, threads);
+  let currentIndex = 0;
+
+  const processProject = async (ps: IProjectStartInfo): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      // Use the compiled TaskWorker.js path
+      const workerPath = path.resolve(__dirname, "TaskWorker.js");
+      const worker = new NodeWorker(workerPath, {
+        resourceLimits: {
+          maxOldGenerationSizeMb: 16384, // 16GB memory limit per worker
+        },
+      });
+
+      const taskData = {
+        task: TaskType.validate,
+        project: ps,
+        arguments: {
+          suite: suite,
+          exclusionList: exclusionList,
+          outputMci: aggregateReportsAfterValidation || outputType === OutputType.noReports,
+          outputType: outputType,
+        },
+        outputFolder: options.outputFolder,
+        inputFolder: options.inputFolder,
+        displayInfo: localEnv!.displayInfo,
+        displayVerbose: localEnv!.displayVerbose,
+        force: force,
+      };
+
+      // Define cleanup function to remove all event listeners
+      const cleanup = () => {
+        worker.removeAllListeners("message");
+        worker.removeAllListeners("error");
+        worker.removeAllListeners("exit");
+      };
+
+      const onMessage = (result: any) => {
+        cleanup();
+        worker.terminate();
+        resolve(result);
+      };
+
+      const onError = (error: Error) => {
+        console.error(`Worker error for ${ps.ctorProjectName}:`, error);
+        cleanup();
+        worker.terminate();
+        reject(error);
+      };
+
+      const onExit = (code: number) => {
+        cleanup();
+        if (code !== 0) {
+          reject(new Error(`Worker for ${ps.ctorProjectName} stopped with exit code ${code}`));
+        }
+      };
+
+      worker.on("message", onMessage);
+      worker.on("error", onError);
+      worker.on("exit", onExit);
+
+      worker.postMessage(taskData);
+    });
+  };
+
+  // Process projects with limited concurrency
+  const processNextBatch = async () => {
+    const promises: Promise<any>[] = [];
+    const batchProjects: IProjectStartInfo[] = [];
+
+    for (let i = 0; i < maxConcurrency && currentIndex < projectStarts.length; i++) {
+      const ps = projectStarts[currentIndex++];
+      if (ps) {
+        batchProjects.push(ps);
+        promises.push(processProject(ps));
+      }
+    }
+
+    const results = await Promise.allSettled(promises);
+
+    for (let i = 0; i < results.length; i++) {
+      const result = results[i];
+      const ps = batchProjects[i];
+
+      if (result.status === "fulfilled" && result.value !== undefined) {
+        await processValidationResult(result.value, ps, projectList);
+      } else if (result.status === "rejected") {
+        console.error("Worker processing error for " + ps.ctorProjectName + ": " + result.reason);
+        setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
+      }
+    }
+  };
+
+  while (currentIndex < projectStarts.length) {
+    await processNextBatch();
+  }
+}
+
+async function processValidationResult(result: any, ps: IProjectStartInfo, projectList: IProjectMetaState[]) {
+  if (typeof result === "string") {
+    Log.error(ps.ctorProjectName + " error: " + result);
+  } else if (Array.isArray(result)) {
+    for (const metaState of result) {
+      // clear out icons since the aggregation won't need them, and it should save memory.
+      if (metaState.infoSetData && metaState.infoSetData.info && metaState.infoSetData.info["defaultIcon"]) {
+        metaState.infoSetData.info["defaultIcon"] = undefined;
+      }
+
+      projectList.push(metaState as IProjectMetaState);
+
+      const infoSet = (metaState as IProjectMetaState).infoSetData;
+
+      if (infoSet) {
+        const items = infoSet.items;
+
+        if (items) {
+          for (const item of items) {
+            if (item.iTp === InfoItemType.internalProcessingError) {
+              const errorMessage =
+                "Internal Processing Error: " + ProjectInfoSet.getExtendedMessageFromData(infoSet, item);
+              console.error(errorMessage);
+              setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
+            } else if (item.iTp === InfoItemType.testCompleteFail && !options.outputFolder) {
+              console.error("Test Fail: " + ProjectInfoSet.getExtendedMessageFromData(infoSet, item));
+              setErrorLevel(ERROR_VALIDATION_TESTFAIL);
+            } else if (item.iTp === InfoItemType.error && !options.outputFolder) {
+              console.error("Error: " + ProjectInfoSet.getExtendedMessageFromData(infoSet, item));
+              setErrorLevel(ERROR_VALIDATION_ERROR);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+async function profileValidation() {
+  if (!carto || !localEnv) {
+    return;
+  }
+
+  await ProfilerWrapper.generateCpuTrace("validate", async () => {
+    const suiteConst = suite;
+    const exclusionListConst = exclusionList;
+    const aggregateReportsAfterValidationConst = aggregateReportsAfterValidation;
+    const localEnvConst = localEnv;
+
+    for (let i = 0; i < projectStarts.length; i++) {
+      const ps = projectStarts[i];
+
+      if (ps) {
+        try {
+          await executeTask({
+            task: TaskType.validate,
+            project: ps,
+            arguments: {
+              suite: suiteConst,
+              exclusionList: exclusionListConst,
+              outputMci: aggregateReportsAfterValidationConst || outputType === OutputType.noReports,
+              outputType: outputType,
+            },
+            outputFolder: options.outputFolder,
+            inputFolder: options.inputFolder,
+            displayInfo: localEnvConst.displayInfo,
+            displayVerbose: localEnvConst.displayVerbose,
+            force: force,
+          });
+        } catch (e) {
+          console.error("Internal Processing Error 3: " + e.toString());
+          setErrorLevel(ERROR_VALIDATION_INTERNALPROCESSINGERROR);
+        }
+      }
+    }
+  });
+}
+
 function setErrorLevel(newErrorLevel: number) {
   if (errorLevel === undefined || newErrorLevel < errorLevel) {
     errorLevel = newErrorLevel;
-
     (process as any).exitCode = newErrorLevel;
   }
 }
@@ -1283,7 +1572,9 @@ async function aggregateReports() {
   }
 
   await inpFolder.load();
+
   let projectsLoaded = 0;
+
   for (const fileName in inpFolder.files) {
     let file = inpFolder.files[fileName];
 
@@ -1305,12 +1596,17 @@ async function aggregateReports() {
 
         if (baseName.endsWith("addon")) {
           suite = ProjectInfoSuite.cooperativeAddOn;
-          baseName = baseName.substring(0, baseName.length - 6);
+          baseName = baseName.substring(0, baseName.length - 5);
         }
 
         if (baseName.endsWith("currentplatform")) {
           suite = ProjectInfoSuite.currentPlatformVersions;
-          baseName = baseName.substring(0, baseName.length - 16);
+          baseName = baseName.substring(0, baseName.length - 15);
+        }
+
+        if (baseName.endsWith("sharing")) {
+          suite = ProjectInfoSuite.sharing;
+          baseName = baseName.substring(0, baseName.length - 7);
         }
 
         let title = StorageUtilities.getBaseFromName(fileName);
@@ -1348,14 +1644,17 @@ async function aggregateReports() {
   }
 
   if (projectList.length > 0) {
-    await saveAggregatedReports(projectList);
+    await saveAggregatedReports(projectList, inpFolder);
   } else {
     Log.message("Did not find any report JSON files.");
   }
 }
 
-async function saveAggregatedReports(projectList: IProjectMetaState[]) {
+async function saveAggregatedReports(projectList: IProjectMetaState[], inputFolder?: IFolder) {
   let outputStorage: NodeStorage | undefined;
+  let measureFolder: NodeFolder | undefined;
+  let indexFolder: NodeFolder | undefined;
+  let mciFolder: NodeFolder | undefined;
   const csvHeader = ProjectInfoSet.CommonCsvHeader;
 
   let sampleProjectInfoSets: {
@@ -1371,15 +1670,18 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
   const issueLines: { [name: string]: string[] } = {};
   const summaryLines: { [name: string]: string[] } = {};
   const mciFileList: IIndexJson = { files: [], folders: [] };
+  const measureFileList: IIndexJson = { files: [], folders: [] };
   const megaContentIndex: ContentIndex = new ContentIndex();
   const measures: { [featureSetName: string]: { name: string; items: { [featureName: string]: any } } } = {};
   const dataMeasures: { [featureSetName: string]: { name: string; items: { [featureName: string]: any } } } = {};
 
   if (options.outputFolder) {
     outputStorage = new NodeStorage(options.outputFolder, "");
+    indexFolder = outputStorage.rootFolder.ensureFolder("index");
+    mciFolder = outputStorage.rootFolder.ensureFolder("mci");
   }
 
-  let projectsConsidered = 0;
+  let projectsProcessedOne = 0;
 
   for (const projectSet of projectList) {
     let suiteName = "all";
@@ -1391,16 +1693,30 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
     const pisData = projectSet.infoSetData;
 
     const contentIndex = new ContentIndex();
+    const projectBaseName = StorageUtilities.removeContainerExtension(projectSet.projectContainerName);
 
     if (pisData.index) {
       contentIndex.loadFromData(pisData.index);
+    } else if (inputFolder) {
+      await inputFolder.load();
+      const childFile = await inputFolder.getFileFromRelativePath(
+        "/mci/" + projectBaseName.toLowerCase() + ".mci.json"
+      );
+
+      if (childFile) {
+        await childFile.loadContent();
+        const indexContent = StorageUtilities.getJsonObject(childFile);
+
+        if (indexContent) {
+          pisData.index = indexContent.index;
+          contentIndex.loadFromData(indexContent.index);
+        }
+      }
     }
 
     const pis = new ProjectInfoSet(undefined, undefined, undefined, pisData.info, pisData.items, contentIndex);
 
-    const projectBaseName = StorageUtilities.removeContainerExtension(projectSet.projectContainerName);
-
-    if (pis.contentIndex) {
+    if (pis.contentIndex && buildAggregatedIndex) {
       megaContentIndex.mergeFrom(pis.contentIndex, projectBaseName);
     }
 
@@ -1408,8 +1724,29 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
       mciFileList.files.push(projectBaseName.toLowerCase() + ".mci.json");
     }
 
-    if (projectsConsidered > 0 && projectsConsidered % 500 === 0) {
-      console.warn("Processed " + projectsConsidered + " reports, @ " + projectBaseName);
+    if (projectsProcessedOne > 0 && projectsProcessedOne % 500 === 0) {
+      let fsCount = countFeatureSets(featureSetsByName);
+      let fsMeasureCount = countFeatureSetMeasures(featureSetsByName);
+      let fieldCount = countFeatures(fieldsByName);
+
+      console.warn(
+        "Processed " +
+          projectsProcessedOne +
+          " reports in phase 1, @ " +
+          projectBaseName +
+          " ( Feature Sets " +
+          fsCount +
+          " Measures: " +
+          fsMeasureCount +
+          ", Fields: " +
+          fieldCount +
+          ")"
+      );
+    }
+
+    if (!Utilities.isUsableAsObjectKey(suiteName)) {
+      Log.unsupportedToken(suiteName);
+      return;
     }
 
     if (featureSetsByName[suiteName] === undefined) {
@@ -1425,7 +1762,7 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
     const fields = fieldsByName[suiteName];
 
     pis.mergeFeatureSetsAndFieldsTo(featureSets, fields);
-    projectsConsidered++;
+    projectsProcessedOne++;
   }
 
   for (const setName in featureSetsByName) {
@@ -1444,6 +1781,8 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
       }
     }
   }
+
+  let projectsProcessedTwo = 0;
 
   for (const projectSet of projectList) {
     let suiteName = "all";
@@ -1470,6 +1809,26 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
 
     pis.mergeFeatureSetsAndFieldsTo(featureSets, fields);
 
+    if (projectsProcessedTwo > 0 && projectsProcessedTwo % 500 === 0) {
+      let fsCount = countFeatureSets(featureSetsByName);
+      let fsMeasureCount = countFeatureSetMeasures(featureSetsByName);
+      let fieldCount = countFeatures(fieldsByName);
+
+      console.warn(
+        "Processed " +
+          projectsProcessedOne +
+          " reports in phase 2, @ " +
+          projectBaseName +
+          " ( Feature Sets " +
+          fsCount +
+          " Measures: " +
+          fsMeasureCount +
+          ", Fields: " +
+          fieldCount +
+          ")"
+      );
+    }
+
     sampleProjectInfoSets[suiteName] = pis;
 
     if (projectSet.suite === undefined || projectSet.suite === ProjectInfoSuite.default) {
@@ -1484,6 +1843,11 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
             }
 
             if ((projectSet.infoSetData.info as any)[memberName] !== undefined) {
+              if (!Utilities.isUsableAsObjectKey(projectBaseName)) {
+                Log.unsupportedToken(projectBaseName);
+                throw new Error();
+              }
+
               data.items[projectBaseName] = (projectSet.infoSetData.info as any)[memberName];
             }
           }
@@ -1520,7 +1884,14 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
     if (outputStorage) {
       summaryLines[suiteName].push(pis.getSummaryCsvLine(projectBaseName, projectSet.projectTitle, featureSets));
     }
+
+    projectsProcessedTwo++;
   }
+  let fsCount = countFeatureSets(featureSetsByName);
+  let fsMeasureCount = countFeatureSetMeasures(featureSetsByName);
+  let fieldCount = countFeatures(fieldsByName);
+
+  console.warn("Saving out content. Feature Set " + fsCount + " Measures:" + fsMeasureCount + " Fields:" + fieldCount);
 
   if (outputStorage) {
     for (const issueLinesName in issueLines) {
@@ -1539,7 +1910,21 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
       }
     }
 
+    console.warn("Saving out index json.");
+    if (mciFolder) {
+      const mciFile = mciFolder.ensureFile("index.json");
+      mciFile.setContent(JSON.stringify(mciFileList));
+      await mciFile.saveContent();
+    }
+
+    console.warn("Saving out summary lines.");
+
     for (const summaryLinesName in summaryLines) {
+      if (!Utilities.isUsableAsObjectKey(summaryLinesName)) {
+        Log.unsupportedToken(summaryLinesName);
+        throw new Error();
+      }
+
       if (featureSetsByName[summaryLinesName] === undefined) {
         featureSetsByName[summaryLinesName] = {};
       }
@@ -1556,14 +1941,332 @@ async function saveAggregatedReports(projectList: IProjectMetaState[]) {
           featureSets
         );
 
-        projectsCsvContent += "\r\n" + summaryLinesSet.join("\n");
+        const allLines: string[] = [];
 
-        projectsCsvFile.setContent(projectsCsvContent);
+        allLines.push(projectsCsvContent);
 
-        await projectsCsvFile.saveContent();
+        for (const projectsCsvContentLine of summaryLinesSet) {
+          allLines.push(projectsCsvContentLine);
+        }
+
+        (projectsCsvFile as NodeFile).writeContent(allLines);
       }
     }
   }
+}
+
+function countFeatures(features: { [suiteName: string]: { [featureName: string]: boolean | undefined } }) {
+  let count = 0;
+
+  for (const suiteName in features) {
+    const featureSet = features[suiteName];
+
+    if (featureSet) {
+      for (const featureName in featureSet) {
+        if (featureName) {
+          count++;
+        }
+      }
+    }
+  }
+
+  return count;
+}
+
+function countFeatureSets(featureSets: {
+  [suiteName: string]: { [setName: string]: { [measureName: string]: number | undefined } | undefined };
+}) {
+  let count = 0;
+
+  for (const suiteName in featureSets) {
+    const featureSet = featureSets[suiteName];
+
+    if (featureSet) {
+      for (const setName in featureSet) {
+        if (setName) {
+          count++;
+        }
+      }
+    }
+  }
+
+  return count;
+}
+
+function countFeatureSetMeasures(featureSets: {
+  [suiteName: string]: { [setName: string]: { [measureName: string]: number | undefined } | undefined };
+}) {
+  let count = 0;
+
+  for (const suiteName in featureSets) {
+    const featureSet = featureSets[suiteName];
+
+    if (featureSet) {
+      for (const setName in featureSet) {
+        const measureSet = featureSet[setName];
+
+        if (measureSet) {
+          for (const measureName in measureSet) {
+            if (measureName) {
+              count++;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return count;
+}
+
+async function docsUpdateFormSource() {
+  if (!carto) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to generate documents.");
+    return;
+  }
+
+  let outFolder: IFolder | undefined = undefined;
+
+  if (options.outputFolder) {
+    const ns = new NodeStorage(options.outputFolder, "");
+    outFolder = ns.rootFolder;
+  } else {
+    const outputStorage = new NodeStorage(process.cwd(), "");
+    outFolder = outputStorage.rootFolder;
+  }
+
+  if (!outFolder) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Could not find an output folder for generate documents.");
+    return;
+  }
+
+  await outFolder.ensureExists();
+
+  const formJsonDocGen = new FormJsonDocumentationGenerator();
+
+  await formJsonDocGen.updateFormSource(outFolder, true);
+}
+
+async function docsGenerateFormJson() {
+  if (!carto) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to generate documents.");
+    return;
+  }
+
+  let outFolder: IFolder | undefined = undefined;
+
+  if (options.outputFolder) {
+    const ns = new NodeStorage(options.outputFolder, "");
+    outFolder = ns.rootFolder;
+  } else {
+    const outputStorage = new NodeStorage(process.cwd(), "");
+    outFolder = outputStorage.rootFolder;
+  }
+
+  if (!outFolder) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Could not find an output folder for generate documents.");
+    return;
+  }
+
+  await outFolder.ensureExists();
+
+  const inputFolder = await ClUtils.getMainWorkFolder(executionTaskType, options.inputFolder, options.outputFolder);
+
+  const docGen = new FormJsonDocumentationGenerator();
+
+  await docGen.generateFormJson(inputFolder, outFolder);
+}
+
+async function docsGenerateMarkdown() {
+  if (!carto) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to generate documents.");
+    return;
+  }
+
+  let outFolder: IFolder | undefined = undefined;
+
+  if (options.outputFolder) {
+    const ns = new NodeStorage(options.outputFolder, "");
+    outFolder = ns.rootFolder;
+  } else {
+    const outputStorage = new NodeStorage(process.cwd(), "");
+    outFolder = outputStorage.rootFolder;
+  }
+
+  if (!outFolder) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Could not find an output folder for generate documents.");
+    return;
+  }
+
+  await outFolder.ensureExists();
+
+  const inputFolder = await ClUtils.getMainWorkFolder(executionTaskType, options.inputFolder, options.outputFolder);
+
+  await outFolder.deleteAllFolderContents();
+
+  const formDocGen = new FormMarkdownDocumentationGenerator();
+
+  await formDocGen.generateMarkdown(inputFolder, outFolder);
+
+  const tableDocGen = new TableMarkdownDocumentationGenerator();
+
+  await tableDocGen.generateMarkdown(outFolder);
+
+  const markdownFromDocDocGen = new DocJsonMarkdownDocumentationGenerator();
+
+  await markdownFromDocDocGen.generateMarkdown(inputFolder, outFolder);
+}
+
+async function docsGenerateTypes() {
+  if (!carto) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to generate types and schemas.");
+    return;
+  }
+
+  let outFolder: IFolder | undefined = undefined;
+
+  if (options.outputFolder) {
+    const ns = new NodeStorage(options.outputFolder, "");
+    outFolder = ns.rootFolder;
+  } else {
+    const outputStorage = new NodeStorage(process.cwd(), "");
+    outFolder = outputStorage.rootFolder;
+  }
+
+  if (!outFolder) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Could not find an output folder for generate documents.");
+    return;
+  }
+
+  await outFolder.ensureExists();
+
+  const inputFolder = await ClUtils.getMainWorkFolder(executionTaskType, options.inputFolder, options.outputFolder);
+
+  await outFolder.deleteAllFolderContents();
+
+  const formDocGen = new FormDefinitionTypeScriptGenerator();
+
+  await formDocGen.generateTypes(inputFolder, outFolder);
+}
+
+async function exportWorld() {
+  if (!carto || projectStarts.length === 0) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to export a project.");
+    return;
+  }
+
+  for (const projectStart of projectStarts) {
+    if (projectStart) {
+      const project = ClUtils.createProject(carto, projectStart);
+
+      await project.inferProjectItemsFromFiles();
+
+      const path = getFilePath(project.name + ".mcworld");
+
+      console.log("Exporting flat pack world to '" + path + "'");
+
+      await LocalTools.exportWorld(carto, project, path);
+    }
+  }
+}
+
+async function stop() {
+  process.exit();
+}
+
+async function doExit() {
+  if (sm) {
+    sm.stopWebServer();
+  }
+
+  if (!errorLevel) {
+    (process as any).exitCode = errorLevel;
+  }
+}
+
+async function ensureRefWorld() {
+  const ns: NodeStorage | undefined = getTargetFolderFromMode();
+  if (!carto || !carto.local || projectStarts.length === 0) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to export a project.");
+    return;
+  }
+
+  for (const projectStart of projectStarts) {
+    if (projectStart) {
+      if (!ns) {
+        return;
+      }
+
+      const project = ClUtils.createProject(carto, projectStart);
+
+      await ns.rootFolder.ensureExists();
+
+      await LocalTools.ensureFlatPackRefWorldTo(carto, project, ns.rootFolder, project.name);
+
+      if (options.launch) {
+        await LocalTools.launchWorld(carto, project.name);
+      }
+    }
+  }
+}
+
+async function setProjectProperty(project: Project, propertyName: string, propertyValue: string) {
+  outputLogo("Minecraft Creator Tools (preview)");
+
+  if (!carto) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to create a project (no mctools core).");
+    return;
+  }
+
+  if (!propertyValue || !propertyValue.length || propertyValue.length < 3) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Please specify a valid property value");
+    return;
+  }
+
+  switch (propertyName.trim().toLowerCase()) {
+    case "name":
+      ProjectUtilities.applyTitle(project, propertyValue);
+      break;
+
+    case "title":
+      ProjectUtilities.applyTitle(project, propertyValue);
+      break;
+
+    case "description":
+      ProjectUtilities.applyDescription(project, propertyValue);
+      break;
+
+    case "bpscriptentrypoint":
+      ProjectUtilities.applyScriptEntryPoint(project, propertyValue);
+      break;
+
+    case "bpuuid":
+      ProjectUtilities.applyBehaviorPackUniqueId(project, propertyValue);
+      break;
+
+    case "rpuuid":
+      ProjectUtilities.applyResourcePackUniqueId(project, propertyValue);
+      break;
+
+    default:
+      errorLevel = ERROR_INIT_ERROR;
+      console.error("Please specify a valid property value");
+      break;
+  }
+
+  await project.save();
 }
 
 async function create(project: Project, isSingleFolder: boolean) {
@@ -1590,8 +2293,6 @@ async function create(project: Project, isSingleFolder: boolean) {
       return;
     }
   }
-
-  CartoApp.contentRoot = Utilities.ensureEndsWithSlash(constants.webContentUrl);
 
   await carto.loadGallery();
 
@@ -1819,8 +2520,6 @@ async function add(project: Project) {
       return;
     }
   }
-
-  CartoApp.contentRoot = Utilities.ensureEndsWithSlash(constants.webContentUrl);
 
   let typeDesc = "Item";
 
@@ -2095,6 +2794,45 @@ function getTargetFolderFromMode() {
   return ns;
 }
 
+async function deployTestWorld() {
+  const ns: NodeStorage | undefined = getTargetFolderFromMode();
+
+  if (!carto || !carto.local || projectStarts.length === 0) {
+    errorLevel = ERROR_INIT_ERROR;
+    console.error("Not configured correctly to sync a project.");
+    return;
+  }
+  for (const projectStart of projectStarts) {
+    if (projectStart) {
+      if (!ns) {
+        console.log("Could not determine storage for this project.");
+        return;
+      }
+
+      const project = ClUtils.createProject(carto, projectStart);
+
+      await ns.rootFolder.ensureExists();
+
+      const worldSettings: IWorldSettings = {
+        generator: Generator.infinite,
+        gameType: GameType.creative,
+        commandsEnabled: true,
+      };
+
+      const worldName = await ProjectExporter.deployProjectAndGeneratedWorldTo(
+        carto,
+        project,
+        worldSettings,
+        ns.rootFolder
+      );
+
+      if (options.launch && worldName && typeof worldName === "string") {
+        await LocalTools.launchWorld(carto, worldName);
+      }
+    }
+  }
+}
+
 async function serve() {
   if (!carto || !carto.local || projectStarts.length === 0 || !localEnv || !sm) {
     errorLevel = ERROR_INIT_ERROR;
@@ -2115,47 +2853,38 @@ async function serve() {
   await sm.prepare();
 }
 
-function getStartInfoFromProject(project: Project): IMinecraftStartMessage | undefined {
+async function loadPacks() {
   if (!carto) {
-    console.log("Could not instantiate carto.");
-    return undefined;
+    return;
   }
 
-  let path = carto.dedicatedServerPath;
+  if (options.mctemplate) {
+    const file = await this.getFileFromPath(options.mctemplate);
 
-  if (!path) {
-    path = "";
+    const pack = await carto.ensurePackForFile(file);
+
+    templateReferenceSets.push(pack.createReference());
   }
 
-  let worldSettings: IWorldSettings | undefined = carto.worldSettings;
+  if (options.mcpack) {
+    const file = await this.getFileFromPath(options.mcpack);
 
-  if (project.worldSettings) {
-    if (project.worldSettings.useCustomSettings) {
-      worldSettings = project.worldSettings;
-    }
+    const pack = await carto.ensurePackForFile(file);
+
+    packageReferenceSets.push(pack.createReference());
   }
-
-  if (worldSettings && !worldSettings.name) {
-    worldSettings.name = "world";
-  }
-
-  let track = carto.track;
-
-  return {
-    path: Utilities.ensureEndsWithBackSlash(path),
-    iagree: carto.iAgreeToTheMinecraftEndUserLicenseAgreementAndPrivacyStatementAtMinecraftDotNetSlashEula
-      ? true
-      : false,
-    mode: carto.dedicatedServerMode,
-    track: track,
-    projectKey: project.key,
-    backupContainerPath: "",
-    worldSettings: worldSettings,
-  };
 }
 
-function sleep(ms: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
+function getFilePath(defaultFileName: string) {
+  let path = options.outputFolder;
+
+  if (!path) {
+    path = "out";
+  }
+
+  const ns = new NodeStorage(path, "");
+
+  ns.rootFolder.ensureExists();
+
+  return path + "/" + defaultFileName;
 }

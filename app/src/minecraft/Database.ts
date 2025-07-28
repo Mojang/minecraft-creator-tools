@@ -355,6 +355,8 @@ export default class Database {
       return undefined;
     }
 
+    fileRelativePath = StorageUtilities.ensureStartsWithDelimiter(fileRelativePath);
+
     const file = await Database.contentFolder.ensureFileFromRelativePath(fileRelativePath);
 
     await file.loadContent();

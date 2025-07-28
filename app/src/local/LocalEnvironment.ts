@@ -420,7 +420,6 @@ export default class LocalEnvironment {
     const content = JSON.stringify(this.#data, null, 2);
     this.#configFile.setContent(JSON.stringify(this.#data, null, 2));
 
-    Log.debugAlert("Saving " + content + " to " + this.#configFile.fullPath);
     this.#configFile.saveContent();
   }
 }

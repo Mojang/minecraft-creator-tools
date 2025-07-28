@@ -22,5 +22,6 @@ SOFTWARE.
 
 --
 
-Assets and resources under the /res/latest/van path are subject to terms of the
+Assets and resources under the res/latest/van path are subject to terms of the
 Minecraft End User License Agreement (https://www.minecraft.net/eula).
+
