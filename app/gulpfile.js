@@ -461,7 +461,6 @@ function runUpdateVersions() {
         "./package.json",
         "./package-lock.json",
         "./jsnode/package.json",
-        "./vscode/package.json",
         "./src/core/Constants.ts",
       ])
     );
