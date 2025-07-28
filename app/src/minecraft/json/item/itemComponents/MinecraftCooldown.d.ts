@@ -28,7 +28,7 @@ Wind Charge - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Cooldown (minecraft:cooldown)
+ * Minecraft Cooldown Item (minecraft:cooldown)
  * The duration of time (in seconds) items with a matching category will
  * spend cooling down before becoming usable again.
  */

@@ -111,6 +111,10 @@
       "dataType": 1
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests that the Creaking Heart that spawned the subject Creaking still exists.",
   "title": "Is Bound To Creaking Heart",
   "samples": {

@@ -1,4 +1,8 @@
 {
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "fields": [
     {
       "id": "operator",
@@ -215,6 +219,20 @@
             "content": "minecraft:skin_id"
           }
         ],
+        "/vanilla/behavior_pack/entities/wolf.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:environment_sensor/triggers/0/filters/all_of/1/",
+            "content": "minecraft:is_tamed"
+          },
+          {
+            "path": "/minecraft:entity/components/minecraft:environment_sensor/triggers/1/filters/all_of/2/",
+            "content": "minecraft:is_tamed"
+          },
+          {
+            "path": "/minecraft:entity/events/minecraft:upgrade_to_1_21_100/sequence/0/filters/",
+            "content": "minecraft:angry"
+          }
+        ],
         "/vanilla/behavior_pack/entities/zombie_villager_v2.json": [
           {
             "path": "/minecraft:entity/components/minecraft:interact/interactions/on_interact/filters/all_of/1/",
@@ -229,6 +247,12 @@
           {
             "path": "/minecraft:entity/components/minecraft:interact/interactions/on_interact/filters/all_of/1/",
             "content": "minecraft:effect.weakness"
+          }
+        ],
+        "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:interact/interactions/on_interact/filters/all_of/2/",
+            "content": "minecraft:explode"
           }
         ]
       }
@@ -525,6 +549,38 @@
           "subject": "other",
           "operator": "!=",
           "value": "minecraft:is_baby"
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/wolf.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:environment_sensor/triggers/0/filters/all_of/1/",
+        "content": {
+          "test": "has_component",
+          "value": "minecraft:is_tamed"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:environment_sensor/triggers/1/filters/all_of/1/",
+        "content": {
+          "test": "has_component",
+          "operator": "!=",
+          "value": "minecraft:is_baby"
+        }
+      },
+      {
+        "path": "/minecraft:entity/components/minecraft:environment_sensor/triggers/1/filters/all_of/2/",
+        "content": {
+          "test": "has_component",
+          "value": "minecraft:is_tamed"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:upgrade_to_1_21_100/sequence/0/filters/",
+        "content": {
+          "test": "has_component",
+          "operator": "!=",
+          "value": "minecraft:angry"
         }
       }
     ],
@@ -857,6 +913,55 @@
           "test": "has_component",
           "operator": "!=",
           "value": "minecraft:skin_id"
+        }
+      }
+    ],
+    "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:interact/interactions/on_interact/filters/all_of/2/",
+        "content": {
+          "test": "has_component",
+          "operator": "!=",
+          "value": "minecraft:explode"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:start_exploding_forced/sequence/0/filters/",
+        "content": {
+          "test": "has_component",
+          "operator": "!=",
+          "value": "minecraft:is_charged"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:start_exploding_forced/sequence/1/filters/",
+        "content": {
+          "test": "has_component",
+          "value": "minecraft:is_charged"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:start_exploding/sequence/0/filters/",
+        "content": {
+          "test": "has_component",
+          "operator": "!=",
+          "value": "minecraft:is_charged"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:start_exploding/sequence/1/filters/",
+        "content": {
+          "test": "has_component",
+          "value": "minecraft:is_charged"
+        }
+      },
+      {
+        "path": "/minecraft:entity/events/minecraft:start_exploding/sequence/2/filters/",
+        "content": {
+          "operator": "!=",
+          "test": "has_component",
+          "value": "minecraft:is_charged",
+          "subject": "self"
         }
       }
     ]

@@ -102,6 +102,10 @@ export default class ZipFolder extends FolderBase implements IFolder {
   ensureFile(name: string): ZipFile {
     const nameCanon = StorageUtilities.canonicalizeName(name);
 
+    if (!Utilities.isUsableAsObjectKey(nameCanon)) {
+      throw new Error();
+    }
+
     let candFile = this.files[nameCanon];
 
     if (candFile == null) {
@@ -121,6 +125,10 @@ export default class ZipFolder extends FolderBase implements IFolder {
 
   ensureFolder(name: string): ZipFolder {
     const nameCanon = StorageUtilities.canonicalizeName(name);
+
+    if (!Utilities.isUsableAsObjectKey(nameCanon)) {
+      throw new Error();
+    }
 
     let candFolder = this.folders[nameCanon];
 
@@ -170,6 +178,10 @@ export default class ZipFolder extends FolderBase implements IFolder {
       if (countDelim === 0) {
         const nameCanon = StorageUtilities.canonicalizeName(relativePath);
 
+        if (!Utilities.isUsableAsObjectKey(nameCanon)) {
+          throw new Error();
+        }
+
         let candFile = this.files[nameCanon];
 
         if (candFile == null && StorageUtilities.isUsableFile(StorageUtilities.getLeafName(relativePath))) {
@@ -196,8 +208,12 @@ export default class ZipFolder extends FolderBase implements IFolder {
 
         if (subPath.length > 0 && file) {
           Log.assert(!file.dir, "Unexpected non directory file.");
-          const zipFile = lastFolder.ensureFile(subPath) as ZipFile;
-          zipFile.updateZipNativeFile(file);
+          if (StorageUtilities.isUsableFile(StorageUtilities.getLeafName(subPath))) {
+            const zipFile = lastFolder.ensureFile(subPath) as ZipFile;
+            zipFile.updateZipNativeFile(file);
+          } else {
+            Log.message("Unexpected file type found in zip file: " + subPath);
+          }
         }
       }
     });

@@ -6,10 +6,11 @@ import { EventDispatcher, IEventHandler } from "ste-events";
 import { Dependencies, NpmScripts, PackageJson } from "@npm/types";
 import StorageUtilities from "../storage/StorageUtilities";
 import Log from "../core/Log";
+import Project from "../app/Project";
 
 export const DevDependenciesDefault: Dependencies = {
-  "@minecraft/core-build-tasks": "^1.1.3",
-  "eslint-plugin-minecraft-linting": "^1.2.2",
+  "@minecraft/core-build-tasks": "^5.2.0",
+  "eslint-plugin-minecraft-linting": "^2.0.2",
   "source-map": "^0.7.4",
   "ts-node": "^10.9.1",
   typescript: "^5.5.4",
@@ -29,11 +30,11 @@ export const ScriptsDefault: NpmScripts = {
 };
 
 export const DependenciesDefault: Dependencies = {
-  "@minecraft/math": "^1.4.0",
-  "@minecraft/server": "^1.13.0",
+  "@minecraft/math": "^2.2.7",
+  "@minecraft/server": "^2.0.0",
   "@minecraft/server-editor": "^0.1.0-beta.1.21.30-preview.24",
-  "@minecraft/server-ui": "^1.2.0",
-  "@minecraft/vanilla-data": "^1.21.20",
+  "@minecraft/server-ui": "^2.0.0",
+  "@minecraft/vanilla-data": "^1.21.90",
 };
 
 export const OverridesDefault: { [name: string]: any } = {
@@ -46,6 +47,16 @@ export const OverridesDefault: { [name: string]: any } = {
   "@minecraft/server-ui": {
     "@minecraft/server": "$@minecraft/server",
   },
+};
+
+export const PackageJsonDefault: PackageJson = {
+  name: "my-project",
+  version: "0.1.0",
+  description: "My Minecraft Addon Project",
+  private: true,
+  devDependencies: DevDependenciesDefault,
+  scripts: ScriptsDefault,
+  dependencies: DependenciesDefault,
 };
 
 export const NpmPackageSettingAllowList = [
@@ -158,6 +169,29 @@ export default class NpmPackageDefinition {
     await this._file.saveContent(false);
   }
 
+  async ensureMinContent(project: Project) {
+    await this.load();
+
+    if (!this.definition) {
+      this.definition = PackageJsonDefault;
+    }
+
+    await this.updateContent(project);
+    await this.ensureStandardContent();
+  }
+
+  async updateContent(project: Project) {
+    await this.load();
+
+    if (!this.definition) {
+      return;
+    }
+
+    this.definition.name = project.name;
+    this.definition.description = project.description;
+    this.definition.version = project.versionAsString;
+  }
+
   async ensureStandardContent() {
     await this.load();
 
@@ -219,6 +253,7 @@ export default class NpmPackageDefinition {
         (this.definition as any).overrides = OverridesDefault;
       }
     }
+
     if (this.definition.scripts) {
       let isValidScripts = true;
 

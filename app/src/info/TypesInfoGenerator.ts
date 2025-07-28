@@ -15,7 +15,7 @@ import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
 import BlocksCatalogDefinition from "../minecraft/BlocksCatalogDefinition";
 
 export enum TypesInfoGeneratorTest {
-  types = 1,
+  types = 101,
 }
 
 export default class TypesInfoGenerator implements IProjectInfoGenerator {
@@ -31,13 +31,18 @@ export default class TypesInfoGenerator implements IProjectInfoGenerator {
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
-    info.textureCount = infoSet.getSummedNumberValue(this.id, TypesInfoGeneratorTest.types);
+    info.textureCount = infoSet.getSummedDataValue(this.id, TypesInfoGeneratorTest.types);
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
-    const typesCountPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 1, "Types");
+    const typesCountPi = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      TypesInfoGeneratorTest.types,
+      "Types"
+    );
     items.push(typesCountPi);
 
     const itemsCopy = project.getItemsCopy();

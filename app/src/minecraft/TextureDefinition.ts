@@ -5,7 +5,20 @@ import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import IDefinition from "./IDefinition";
-import { AllowedExtensions } from "../storage/StorageUtilities";
+import StorageUtilities, { AllowedExtensionsSet } from "../storage/StorageUtilities";
+import ProjectItem from "../app/ProjectItem";
+import Project from "../app/Project";
+import { ProjectItemType } from "../app/IProjectItemData";
+
+export const VibrantVisualsFileExtensionVariants = [
+  "_mer.png",
+  "_mer.tga",
+  "_mers.png",
+  "_mers.tga",
+  // "_normal.png", <-- too many false positives
+  // "_normal.tga",
+  ".texture_set.json",
+];
 
 export default class TextureDefinition implements IDefinition {
   private _file?: IFile;
@@ -84,7 +97,7 @@ export default class TextureDefinition implements IDefinition {
     if (lastPeriod >= 0) {
       const removedPart = projectPath.substring(lastPeriod + 1);
 
-      if (AllowedExtensions.includes(removedPart)) {
+      if (AllowedExtensionsSet.has(removedPart)) {
         projectPath = projectPath.substring(0, lastPeriod);
       }
     }
@@ -142,5 +155,38 @@ export default class TextureDefinition implements IDefinition {
     this._isLoaded = true;
 
     this._onLoaded.dispatch(this, this);
+  }
+
+  async addChildItems(project: Project, item: ProjectItem) {
+    const itemsCopy = project.getItemsCopy();
+
+    for (const candItem of itemsCopy) {
+      if (candItem.itemType === ProjectItemType.texture) {
+        await candItem.ensureStorage();
+
+        if (candItem.primaryFile) {
+          const parentFolder = candItem.primaryFile.parentFolder;
+
+          if (!parentFolder) {
+            continue;
+          }
+
+          await parentFolder.load();
+
+          let baseName = StorageUtilities.getBaseFromName(candItem.primaryFile.name);
+
+          for (const ext of VibrantVisualsFileExtensionVariants) {
+            const vvSidecarFile = parentFolder.files[baseName + ext];
+            if (vvSidecarFile !== undefined && vvSidecarFile.extendedPath) {
+              const sidecarItem = project.getItemByExtendedOrProjectPath(vvSidecarFile.extendedPath);
+
+              if (sidecarItem && sidecarItem !== candItem) {
+                candItem.addChildItem(sidecarItem);
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

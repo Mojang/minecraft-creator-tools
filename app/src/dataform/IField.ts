@@ -57,6 +57,9 @@ export enum FieldDataType {
   localizableString = 37,
   keyedNumberArrayCollection = 38, // { "foo": [255, 0.0, 2555], "barg" : [128, 0, 0] }
   minecraftEventReference = 39,
+  location = 40, // a point3 by another name
+  locationOffset = 41, // a point3 by another name
+  minecraftEventTriggerArray = 42,
 }
 
 export enum FieldValueHumanify {

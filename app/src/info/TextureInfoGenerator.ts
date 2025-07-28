@@ -21,7 +21,8 @@ import ProjectInfoUtilities from "./ProjectInfoUtilities";
 import TextureDefinition from "../minecraft/TextureDefinition";
 
 export enum TextureInfoGeneratorTest {
-  textures = 1,
+  tooManyTextureHandles = 100,
+  textures = 101,
 }
 
 export default class TextureInfoGenerator implements IProjectInfoGenerator {
@@ -37,7 +38,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
   }
 
   summarize(info: any, infoSet: ProjectInfoSet) {
-    info.textureCount = infoSet.getSummedNumberValue("TEXTURE", TextureInfoGeneratorTest.textures);
+    info.textureCount = infoSet.getSummedDataValue("TEXTURE", TextureInfoGeneratorTest.textures);
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
@@ -63,7 +64,12 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
     const itemTexturePaths: string[] = [];
     const itemTextureVanillaPaths: string[] = [];
     const entitySpawnEggTextures: string[] = [];
-    const textureCountPi = new ProjectInfoItem(InfoItemType.featureAggregate, this.id, 1, "Textures");
+    const textureCountPi = new ProjectInfoItem(
+      InfoItemType.featureAggregate,
+      this.id,
+      TextureInfoGeneratorTest.textures,
+      "Textures"
+    );
     items.push(textureCountPi);
 
     const itemsCopy = project.getItemsCopy();
@@ -486,7 +492,7 @@ export default class TextureInfoGenerator implements IProjectInfoGenerator {
         new ProjectInfoItem(
           InfoItemType.error,
           this.id,
-          100,
+          TextureInfoGeneratorTest.tooManyTextureHandles,
           "Uses more than 800 texture handles, which could impact overall Minecraft usage",
           undefined,
           textureHandles.length

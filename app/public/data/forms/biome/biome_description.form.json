@@ -8,9 +8,10 @@
       "validity": [
         {
           "comparison": "pattern",
-          "value": "^[a-z0-9._%+-:]+$"
+          "value": "^[a-z0-9._%+-]+:[a-z0-9._%+-]+$"
         }
-      ]
+      ],
+      "isRequired": true
     }
   ],
   "description": "Contains non-component settings for a Biome.",

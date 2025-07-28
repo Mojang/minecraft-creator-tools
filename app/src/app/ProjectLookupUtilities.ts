@@ -8,38 +8,38 @@ export default class ProjectLookupUtilities {
   static cacheIteration: number = 0;
 
   static async getLookup(project: Project, lookupId: string): Promise<ISimpleReference[] | undefined> {
-    switch (lookupId) {
-      case "blockType":
+    switch (lookupId.toLowerCase()) {
+      case "blocktype":
         return await this.getBlockTypeReferences(project);
 
-      case "entityType":
+      case "entitytype":
         return await this.getEntityTypeReferences(project);
 
-      case "itemType":
+      case "itemtype":
         return await this.getItemTypeReferences(project);
 
-      case "entityTypeEvents":
+      case "entitytypeevents":
         break;
 
       case "difficulty":
         break;
 
-      case "damageCause":
+      case "damagecause":
         break;
 
-      case "lootTable":
+      case "loottable":
         break;
 
-      case "soundDefinition":
+      case "sounddefinition":
         return await this.getSoundDefinitionReferences(project);
 
-      case "itemTexture":
+      case "itemtexture":
         return await this.getItemTextureReferences(project);
 
-      case "terrainTexture":
+      case "terraintexture":
         return await this.getTerrainTextureReferences(project);
 
-      case "entityTypePlusVariants":
+      case "entitytypeplusvariants":
         break;
     }
 

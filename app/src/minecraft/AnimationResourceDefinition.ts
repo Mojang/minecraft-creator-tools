@@ -8,6 +8,7 @@ import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 import IResourceAnimationWrapper, { IAnimationResource } from "./IAnimationResource";
 import IDefinition from "./IDefinition";
+import Utilities from "../core/Utilities";
 
 export default class AnimationResourceDefinition implements IDefinition {
   private _file?: IFile;
@@ -63,13 +64,13 @@ export default class AnimationResourceDefinition implements IDefinition {
       return undefined;
     }
 
-    const idList = [];
+    const idList = new Set<string>();
 
     for (const key in this._data.animations) {
       const animation = this._data.animations[key];
 
       if (key && animation) {
-        idList.push(key);
+        idList.add(key);
       }
     }
 
@@ -123,7 +124,7 @@ export default class AnimationResourceDefinition implements IDefinition {
   ensureAnimation(animationName: string): IAnimationResource {
     this.ensureDefault();
 
-    if (!this._data || !this._data.animations) {
+    if (!this._data || !this._data.animations || !Utilities.isUsableAsObjectKey(animationName)) {
       throw new Error();
     }
 

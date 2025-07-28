@@ -89,6 +89,7 @@ export default class AppServiceProxy {
         CartoApp.hostType !== HostType.vsCodeWebWeb
       ) {
         CartoApp.hostType = HostType.electronWeb;
+        CartoApp.fullLocalStorage = true;
       }
     }
 

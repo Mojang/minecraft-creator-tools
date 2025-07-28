@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.trade_interest Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/trade_components/minecraft:behavior.trade_interest/: 
 "minecraft:behavior.trade_interest": {}
@@ -56,7 +56,7 @@ export default interface MinecraftBehaviorTradeInterest {
    * trade
    * 
    * Sample Values:
-   * Villager V2: 2
+   * Villager v2: 2
    *
    */
   carried_item_switch_time: number;
@@ -67,7 +67,7 @@ export default interface MinecraftBehaviorTradeInterest {
    * again
    * 
    * Sample Values:
-   * Villager V2: 2
+   * Villager v2: 2
    *
    */
   cooldown: number;
@@ -78,7 +78,7 @@ export default interface MinecraftBehaviorTradeInterest {
    * showing its trade items
    * 
    * Sample Values:
-   * Villager V2: 45
+   * Villager v2: 45
    *
    */
   interest_time: number;
@@ -90,7 +90,7 @@ export default interface MinecraftBehaviorTradeInterest {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 5
+   * Villager v2: 5
    *
    * Wandering Trader: 3
    *
@@ -103,7 +103,7 @@ export default interface MinecraftBehaviorTradeInterest {
    * longer have items to trade
    * 
    * Sample Values:
-   * Villager V2: 1
+   * Villager v2: 1
    *
    */
   remove_item_time: number;
@@ -114,7 +114,7 @@ export default interface MinecraftBehaviorTradeInterest {
    * item they like
    * 
    * Sample Values:
-   * Villager V2: 6
+   * Villager v2: 6
    *
    */
   within_radius: number;

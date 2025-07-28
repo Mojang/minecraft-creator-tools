@@ -270,7 +270,7 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
         await this.props.file.loadContent();
 
         if (this.props.file.content && this.props.file.content instanceof Uint8Array) {
-          const blob = new Blob([this.props.file.content], { type: "audio/x-mpeg-3" });
+          const blob = new Blob([this.props.file.content], { type: StorageUtilities.getMimeType(this.props.file) });
 
           while (this.rootElt.current && this.rootElt.current.childNodes.length > 0) {
             this.rootElt.current.removeChild(this.rootElt.current.childNodes[0]);
@@ -347,7 +347,9 @@ export default class AudioManager extends Component<IAudioManagerProps, IAudioMa
                 if (workingFile) {
                   await workingFile.loadContent();
                   if (workingFile.content && workingFile.content instanceof Uint8Array) {
-                    const workingBlob = new Blob([workingFile.content], { type: "audio/x-mpeg-3" });
+                    const workingBlob = new Blob([workingFile.content], {
+                      type: StorageUtilities.getMimeType(this.props.file),
+                    });
 
                     files.push({
                       src: workingBlob,

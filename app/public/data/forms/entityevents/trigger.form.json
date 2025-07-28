@@ -1,5 +1,8 @@
 {
   "fields": [],
+  "tags": [
+    "entityevent"
+  ],
   "scalarField": {
     "id": "trigger",
     "title": "Trigger Value",
@@ -15,5 +18,5 @@
       }
     ]
   },
-  "id": "Trigger"
+  "id": "trigger"
 }

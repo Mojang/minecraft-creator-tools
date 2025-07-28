@@ -15,14 +15,6 @@
  * At Short (using Defaults)..: 
 { "test": "is_biome", "value": "beach" }
 
-Cave Spider - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cave_spider.json
-
-{
-  "test": "is_biome",
-  "value": "the_nether"
-}
-
-
 Fishing Hook - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/fishing_hook.json
 
 {
@@ -65,7 +57,7 @@ export default interface IsBiome {
    * @remarks
    * 
    * Sample Values:
-   * Cave Spider: "is_biome"
+   * Fishing Hook: "is_biome"
    *
    *
    */
@@ -76,8 +68,6 @@ export default interface IsBiome {
    * (Required) The Biome type to test
    * 
    * Sample Values:
-   * Cave Spider: "the_nether"
-   *
    * Fishing Hook: "jungle"
    *
    * Rabbit: "desert"

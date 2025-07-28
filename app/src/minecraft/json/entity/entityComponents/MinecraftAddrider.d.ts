@@ -20,12 +20,17 @@ Cave Spider - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
 
  * At /minecraft:entity/component_groups/minecraft:spider_stray_jockey/minecraft:addrider/: 
 "minecraft:addrider": {
-  "entity_type": "minecraft:skeleton.stray"
+  "entity_type": "minecraft:stray"
+}
+
+ * At /minecraft:entity/component_groups/minecraft:spider_bogged_jockey/minecraft:addrider/: 
+"minecraft:addrider": {
+  "entity_type": "minecraft:bogged"
 }
 
  * At /minecraft:entity/component_groups/minecraft:spider_wither_jockey/minecraft:addrider/: 
 "minecraft:addrider": {
-  "entity_type": "minecraft:skeleton.wither"
+  "entity_type": "minecraft:wither_skeleton"
 }
 
 
@@ -95,7 +100,7 @@ export default interface MinecraftAddrider {
    * Type of entity to acquire as a rider
    * 
    * Sample Values:
-   * Cave Spider: "minecraft:skeleton", "minecraft:skeleton.stray", "minecraft:skeleton.wither"
+   * Cave Spider: "minecraft:skeleton", "minecraft:stray", "minecraft:bogged", "minecraft:wither_skeleton"
    *
    */
   entity_type: string;

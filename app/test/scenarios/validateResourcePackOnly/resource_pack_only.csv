@@ -1,0 +1,11 @@
+Test,TestId,Type,Item,Message,Data,Path
+CADDONREQ,163,Error,,"Did not find a valid behavior pack manifest.",,,
+MINENGINEVER,614,Info,,"Resource pack manifest format_version",1,20,10,/manifest.json,
+CADDONIREQ,170,Error,,"Resource pack manifest does not specify that header/pack_scope that should be 'world'",,/manifest.json,
+PACKSIZE,1,Test success,,"Pack Size Information (PACKSIZE) completed successfully",,,
+CADDONREQ,0,Test fail,,"Found 1 errors for Cooperative Add-On Requirements (CADDONREQ).",,,
+STRICT,1,Test success,,"Strict Platform Info Generator (STRICT) completed successfully",,,
+TEXTURE,1,Test success,,"Texture Validation (TEXTURE) completed successfully",,,
+MINENGINEVER,1,Test success,,"Min Engine Version (MINENGINEVER) completed successfully",,,
+WORLDDATA,2,Unknown,,"No applicable items found for test World Data Validation (WORLDDATA)",,,
+CADDONIREQ,0,Test fail,,"Found 1 errors for Cooperative Add-On Item Requirements Generator (CADDONIREQ).",,,

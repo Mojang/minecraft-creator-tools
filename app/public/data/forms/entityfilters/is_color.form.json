@@ -176,6 +176,10 @@
       ]
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Returns true if the subject entity is the named color.",
   "title": "Is Color",
   "samples": {

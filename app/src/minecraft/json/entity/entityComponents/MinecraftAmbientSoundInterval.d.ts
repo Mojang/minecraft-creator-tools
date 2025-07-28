@@ -96,12 +96,12 @@ Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
 
 Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
 
- * At /minecraft:entity/component_groups/minecraft:has_passengers/minecraft:ambient_sound_interval/: 
+ * At /minecraft:entity/component_groups/minecraft:adult_with_passengers/minecraft:ambient_sound_interval/: 
 "minecraft:ambient_sound_interval": {
   "value": 30
 }
 
- * At /minecraft:entity/component_groups/minecraft:has_no_passengers/minecraft:ambient_sound_interval/: 
+ * At /minecraft:entity/component_groups/minecraft:adult_without_passengers/minecraft:ambient_sound_interval/: 
 "minecraft:ambient_sound_interval": {
   "value": 5
 }

@@ -93,10 +93,12 @@
       }
     }
   ],
-  "requires": {
-    "id": "minecraft:suspect_tracking",
-    "type": "entity_type"
-  },
+  "requires": [
+    {
+      "id": "minecraft:suspect_tracking",
+      "type": "entity_type"
+    }
+  ],
   "description": "Allows this entity to detect the nearest player within \"sniffing_radius\" and update its \"minecraft:suspect_tracking\" component state",
   "title": "Sniff Behavior",
   "samples": {

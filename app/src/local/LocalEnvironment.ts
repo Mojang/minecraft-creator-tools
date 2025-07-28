@@ -66,6 +66,18 @@ export default class LocalEnvironment {
   _inmemAdminPasscode?: string;
   _inmemAdminPasscodeComplement?: string;
 
+  public get pathMappings() {
+    if (this.#data.pathMappings === undefined) {
+      return {};
+    }
+
+    return this.#data.pathMappings;
+  }
+
+  public set pathMappings(newVal: { [path: string]: string } | undefined) {
+    this.#data.pathMappings = newVal;
+  }
+
   public get displayInfo() {
     return this.#displayInfo;
   }
@@ -405,6 +417,7 @@ export default class LocalEnvironment {
   }
 
   async save() {
+    const content = JSON.stringify(this.#data, null, 2);
     this.#configFile.setContent(JSON.stringify(this.#data, null, 2));
 
     this.#configFile.saveContent();

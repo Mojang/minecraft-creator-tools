@@ -6,6 +6,7 @@ import { MinecraftFilterClauseSet } from "../minecraft/jsoncommon/MinecraftFilte
 
 export interface IMinecraftFilterEditorProps {
   data: MinecraftFilterClauseSet;
+  displayNarrow?: boolean;
   filterContextId: string;
   onChange?: (
     event: SyntheticEvent<HTMLElement, Event> | React.KeyboardEvent<Element> | null,
@@ -32,6 +33,7 @@ export default class MinecraftFilterEditor extends Component<IMinecraftFilterEdi
         <div className="mifi-clauseBin">
           <MinecraftFilterClauseSetEditor
             displayCloseButton={false}
+            displayNarrow={this.props.displayNarrow}
             data={this.props.data}
             filterContextId={this.props.filterContextId}
           />

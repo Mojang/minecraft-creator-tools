@@ -21,6 +21,7 @@ export enum CommandScope {
 }
 
 const MinecraftCommands = [
+  "aimassist",
   "allowlist",
   "alwaysday",
   "camera",
@@ -30,6 +31,7 @@ const MinecraftCommands = [
   "clearspawnpoint",
   "clone",
   "connect",
+  "controlscheme",
   "damage",
   "daylock",
   "deop",
@@ -47,6 +49,7 @@ const MinecraftCommands = [
   "gametest",
   "give",
   "help",
+  "hud",
   "inputpermission",
   "kick",
   "kill",
@@ -61,12 +64,14 @@ const MinecraftCommands = [
   "ops",
   "particle",
   "permission",
+  "place",
   "playanimation",
   "playsound",
   "project",
   "recipe",
   "reload",
   "reloadconfig",
+  "reloadpacketlimitconfig",
   "replaceitem",
   "ride",
   "save",
@@ -75,6 +80,7 @@ const MinecraftCommands = [
   "scoreboard",
   "script",
   "scriptevent",
+  "sendshowstoreoffer",
   "setblock",
   "setmaxplayers",
   "setworldspawn",
@@ -186,8 +192,13 @@ export default class CommandRegistry {
     command: (context: IContext, name: string, argumentCollection: string[]) => Promise<ICommandResult>
   ) {
     commandName = commandName.toLowerCase();
-    this._commandsByName[commandName] = command;
-    this._commandsByScope[commandName] = commandScope;
+
+    if (Utilities.isUsableAsObjectKey(commandName)) {
+      this._commandsByName[commandName] = command;
+      this._commandsByScope[commandName] = commandScope;
+    } else {
+      Log.unsupportedToken(commandName);
+    }
   }
 
   logHelp() {

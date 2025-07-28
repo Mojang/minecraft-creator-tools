@@ -113,7 +113,9 @@
   ],
   "note": "Does not require any parameters to work properly. It can be used as a standalone filter.",
   "tags": [
-    "standalone"
+    "standalone",
+    "conditional",
+    "entityevent"
   ],
   "description": "Returns true if the subject entity leashed to the calling entity.",
   "title": "Is Leashed To",

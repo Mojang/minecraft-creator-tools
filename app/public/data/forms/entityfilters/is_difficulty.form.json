@@ -193,6 +193,10 @@
       }
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests the current difficulty level of the game.",
   "title": "Is Difficulty",
   "samples": {

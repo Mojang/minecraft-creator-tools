@@ -1,0 +1,211 @@
+<html><head>
+<script>
+const _reportObjects = [];
+
+function _addReportJson(data) {
+  _reportObjects.push(data);
+}
+
+_addReportJson({"info":{"capabilities":["behaviorPack"],"behaviorPackManifestCount":0,"unknownJsonCount":0,"entityTypeManifestCount":0,"itemTypeManifestCount":0,"blockTypeManifestCount":0,"resourcePackManifestCount":0,"worldCount":0,"entityTypeResourceCount":0,"behaviorPackAnimationCount":0,"behaviorPackAnimationControllerCount":0,"overallSize":515,"fileCounts":2,"folderCounts":1,"contentSize":515,"contentFileCounts":2,"contentFolderCounts":1,"minBehaviorPackMinEngineVersion":0,"minResourcePackMinEngineVersion":0,"subpackCount":0,"entityTypeComponents":[],"blockTypeComponents":[],"itemTypeComponents":[],"apisUsed":[],"mctoolsVersion":10002009,"itemTypes":["Behavior pack","Behavior pack manifest","Entity type"],"animationCount":0,"textureCount":0,"textureTexelSize":0,"minimumSupportablePerformanceTier":0,"invalidCommandSyntaxCount":0,"linesWithSlashCount":0,"multipleSoundsManifests":0,"soundsDefinitionManifestFormatIsValid":0,"soundsDefinitionManifestIsNotValidJson":0,"minBaseGameVersion":0,"chunkCount":0,"subchunkLessChunkCount":0,"worldLoadErrors":0,"commands":[],"featureSets":{},"errorCount":1,"internalProcessingErrorCount":0,"warningCount":0,"testSuccessCount":5,"testFailCount":1,"testNotApplicableCount":1,"errorSummary":"ERROR: [CADDONREQ164] Did not find a valid resource pack manifest.","internalProcessingErrorSummary":"","warningSummary":"","testFailSummary":"TESTFAIL: [CADDONREQ000] Found 1 errors for Cooperative Add-On Requirements (CADDONREQ).","summary":{"PACKSIZE":{"1":{"title":"Test Success","defaultMessage":"Pack Size Information (PACKSIZE) completed successfully","testCompleteSuccesses":1},"101":{"title":"Overall Size"},"102":{"title":"File Count"},"103":{"title":"Folder Count"},"104":{"title":"Content Size"},"105":{"title":"Content File Count"},"106":{"title":"Content Folder Count"}},"CADDONREQ":{"0":{"title":"Test Failure","defaultMessage":"Found 1 errors for Cooperative Add-On Requirements (CADDONREQ).","testCompleteFails":1},"164":{"title":"Resource Pack Manifest Not Valid","defaultMessage":"Did not find a valid resource pack manifest.","errors":1},"200":{"title":"Found Behavior Pack","defaultMessage":"Behavior pack manifest found."}},"TEXTURE":{"1":{"title":"Test Success","defaultMessage":"Texture Validation (TEXTURE) completed successfully","testCompleteSuccesses":1},"101":{"title":"Textures"}},"MINENGINEVER":{"1":{"title":"1","defaultMessage":"Min Engine Version (MINENGINEVER) completed successfully","testCompleteSuccesses":1},"605":{"title":"605","defaultMessage":"Behavior pack manifest min_engine_version"}},"STRICT":{"1":{"title":"Test Success","defaultMessage":"Strict Platform Info Generator (STRICT) completed successfully","testCompleteSuccesses":1}},"WORLDDATA":{"2":{"defaultMessage":"No applicable items found for test World Data Validation (WORLDDATA)"}},"CADDONIREQ":{"1":{"defaultMessage":"Cooperative Add-On Item Requirements Generator (CADDONIREQ) completed successfully","testCompleteSuccesses":1}}}},"items":[{"iTp":7,"gId":"PACKSIZE","gIx":101,"d":515},{"iTp":7,"gId":"PACKSIZE","gIx":102,"d":2},{"iTp":7,"gId":"PACKSIZE","gIx":103,"d":1},{"iTp":7,"gId":"PACKSIZE","gIx":104,"d":515},{"iTp":7,"gId":"PACKSIZE","gIx":105,"d":2},{"iTp":7,"gId":"PACKSIZE","gIx":106,"d":1},{"iTp":2,"gId":"CADDONREQ","gIx":200,"p":"/manifest.json"},{"iTp":3,"gId":"CADDONREQ","gIx":164},{"iTp":7,"gId":"TEXTURE","gIx":101},{"iTp":2,"gId":"MINENGINEVER","gIx":605,"p":"/manifest.json","d":[1,20,10]},{"iTp":1,"gId":"PACKSIZE","gIx":1},{"iTp":0,"gId":"CADDONREQ","gIx":0},{"iTp":1,"gId":"STRICT","gIx":1},{"iTp":1,"gId":"TEXTURE","gIx":1},{"iTp":1,"gId":"MINENGINEVER","gIx":1},{"iTp":8,"gId":"WORLDDATA","gIx":2},{"iTp":1,"gId":"CADDONIREQ","gIx":1}],"generatorName":"Minecraft Creator Tools","suite":2,"generatorVersion":"0.2.9","sourceName":"behavior_pack_only","sourcePath":"/"});
+</script><script>
+
+    function getDataName(name) {
+      if (typeof name === "boolean" || typeof name === "number") {
+        return name.toString();
+      }
+    
+      let retVal = "";
+    
+      for (let i = 0; i < name.length; i++) {
+        if (i === 0) {
+          retVal += name[i].toUpperCase();
+        } else {
+          if (name[i] >= "A" && name[i] <= "Z") {
+            retVal += " ";
+          }
+          retVal += name[i];
+        }
+      }
+      return retVal;
+    }
+    
+    function getDataSummary(data) {
+      if (data) {
+        return data;
+      }
+      
+      if (typeof data === "number" || typeof data === "boolean") {
+        return data.toString();
+      }
+      
+      if (typeof data === "object") {
+        return JSON.stringify(data);
+      }
+    
+      return "(not defined)";
+    }  
+    
+    function getEmptySummary(data) {
+    
+      if (typeof data === "object") {
+        return JSON.stringify(data);
+      }
+      
+      if (typeof data === "number" || typeof data === "boolean") {
+        return data.toString();
+      }
+    
+      if (data) {
+        return data;
+      }
+      
+      return "";
+    }  
+
+    function getEffectiveMessage(reportObj, item) {
+      if (item.m !== undefined) {
+        return item.m;
+      }
+
+      if (reportObj.info === undefined || reportObj.info.summary === undefined) {
+        return undefined;
+      }
+
+      let gen = reportObj.info.summary[item.gId];
+
+      if (gen === undefined) {
+        return undefined;
+      }
+
+      let genI = gen[item.gIx];
+ 
+      if (genI === undefined) {
+        return undefined;
+      }
+
+      return genI.defaultMessage;
+    }	    
+    
+    function generateReports() {
+      for (let i=0; i<_reportObjects.length; i++) {
+        document.write("<h1>" + _reportObjects[i].sourceName + "</h1>");
+        document.write("<h3>Summary</h3>");
+    
+        document.write("<table class='summary-table'>");
+        document.write("<tr><th>Measure</th><th>Value</th></tr>");
+        const info = _reportObjects[i].info;
+    
+        if (info) {
+          for (const key in info) {
+            const val = info[key];
+    
+            if (key !== 'featureSets' && key !== 'defaultIcon' && key !== 'summary') {
+              document.write("<tr>");
+              document.write("<td class='summary-key items-cell'>" + getDataName(key) + "</td>");
+              document.write("<td class='summary-value items-cell'>" + getDataSummary(val) + "</td>");
+              document.write("</tr>");
+            }
+          }
+    
+          if (info["featureSets"]) {
+            for (const featureName in info.featureSets) {
+              const feature = info.featureSets[featureName];
+    
+              for (const measureName in feature) {
+                const val = feature[measureName];
+
+                 document.write("<tr>");
+                document.write("<td class='summary-key items-cell'>" + featureName + " " + measureName + "</td>");
+                document.write("<td class='summary-value items-cell'>" + getDataSummary(val) + "</td>");
+                document.write("</tr>");
+              }
+            }
+          }
+        }
+        document.write("</table>");
+      }
+    
+      for (let i=0; i<_reportObjects.length; i++) {
+        document.write("<h3>Items</h3>");
+        document.write("<table class='items-table'>");
+        document.write("<tr><th>Type</th><th>Test Category</th><th>Category Id</th><th>Message</th><th>Data</th><th>Path</th></tr>");
+        const info = _reportObjects[i].info;
+        
+        const items = _reportObjects[i].items;
+    
+        if (items && items.length) {
+          for (const item of items) {
+            if (item.itemType !== 2) {
+              document.write("<tr>");
+              document.write("<td class='items-type items-cell'>" + getDescriptionForItemType(item.iTp) + "</td>");
+              document.write("<td class='items-generator items-cell'>" + item.gId + "</td>");
+              document.write("<td class='items-generatorIndex items-cell'>" + item.gIx + "</td>");
+              document.write("<td class='items-message items-cell'>" + getEmptySummary(getEffectiveMessage(_reportObjects[i], item)) + "</td>");
+              document.write("<td class='items-data items-cell'>" + getEmptySummary(item.d) + "</td>");
+              document.write("<td class='items-path items-cell'>" + getEmptySummary(item.p) + "</td>");
+              document.write("</tr>");
+            }
+          }
+        }
+        document.write("</table>");
+      }
+    } 
+
+    function getDescriptionForItemType(itemType) {
+      switch (itemType) {
+        case 0: 
+          return "SUCCESS";
+          break;
+        case 1: 
+          return "FAIL";
+          break;
+        case 3: 
+          return "ERROR";
+          break;
+        case 4: 
+          return "WARN";
+          break;
+        case 5: 
+          return "INTERNALERR";
+          break;
+        case 6: 
+          return "RECOMMEND";
+          break;          
+      }
+      return "INFO";
+    }
+
+    </script>
+    <style>
+      body {
+        font-family: Noto Sans, Arial, Helvetica, sans-serif;
+        padding: 8px;
+      }
+    
+      .items-table {
+        border: solid 1px #606060;
+        padding: 0px;
+        max-width: 100vw;
+      }
+    
+      .items-cell {
+        border: solid 1px #606060;
+        padding: 4px;
+        vertical-align: top;
+        font-size: x-small;
+        overflow-wrap: anywhere;
+        max-width: 25vw;
+      }
+    
+      .summary-table {
+        border: solid 1px #606060;
+        padding: 0px;
+        max-width: 100vw;
+      }
+    </style>
+    </head><body> 
+
+<script>
+generateReports();
+</script>
+</body></html>

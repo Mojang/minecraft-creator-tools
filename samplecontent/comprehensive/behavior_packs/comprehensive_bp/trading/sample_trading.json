@@ -1,0 +1,40 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:trading": {
+    "tiers": [
+      {
+        "trades": [
+          {
+            "wants": [
+              {
+                "item": "minecraft:emerald",
+                "quantity": 1
+              }
+            ],
+            "gives": [
+              {
+                "item": "test:sample_item",
+                "quantity": 1
+              }
+            ]
+          },
+          {
+            "wants": [
+              {
+                "item": "minecraft:diamond",
+                "quantity": 2
+              }
+            ],
+            "gives": [
+              {
+                "item": "test:simple_tool",
+                "quantity": 1
+              }
+            ],
+            "max_uses": 3
+          }
+        ]
+      }
+    ]
+  }
+}

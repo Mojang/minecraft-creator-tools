@@ -17,26 +17,24 @@ import ProjectInfoUtilities from "./ProjectInfoUtilities";
 const MemoryTierBase = 40;
 
 export enum PackInfoGeneratorTest {
-  behaviorPackName = 4,
-  behaviorPackDescription = 5,
-  behaviorPackId = 6,
-  behaviorPackMinEngineVersion = 7,
-  behaviorPackUuid = 8,
-  behaviorPackManfiest = 9,
-  resourcePackMinEngineVersion = 11,
-  resourcePackUuid = 12,
-  resourcePackManifest = 13,
-  resourcePackName = 14,
-  resourcePackDescription = 15,
-  resourcePackId = 16,
-  resourcePackFormatVersion = 17,
-  subPacks = 18,
-  resourcePackIcon = 21,
-  behaviorPackIcon = 22,
-  skinPackIcon = 23,
-  subpackTier1Count = 41,
-  subpackTier40Count = 80,
-  subpackTiers = 145,
+  behaviorPackName = 104,
+  behaviorPackDescription = 105,
+  behaviorPackId = 106,
+  behaviorPackMinEngineVersion = 107,
+  behaviorPackUuid = 108,
+  behaviorPackManfiest = 109,
+  resourcePackMinEngineVersion = 111,
+  resourcePackUuid = 112,
+  resourcePackManifest = 113,
+  resourcePackName = 114,
+  resourcePackDescription = 115,
+  resourcePackId = 116,
+  resourcePackFormatVersion = 117,
+  subPacks = 118,
+  resourcePackIcon = 121,
+  behaviorPackIcon = 122,
+  skinPackIcon = 123,
+  subpackTiers = 245,
 }
 
 export default class PackInfoGenerator implements IProjectInfoGenerator {
@@ -63,31 +61,57 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
     // the wrong place to do this.
     infoSet.removeItems(this.id, [PackInfoGeneratorTest.resourcePackIcon, PackInfoGeneratorTest.behaviorPackIcon]);
 
-    info.defaultBehaviorPackMinEngineVersion = infoSet.getFirstNumberArrayValue(
+    info.defaultBehaviorPackMinEngineVersion = infoSet.getFirstNumberArrayValueAsVersionString(
       this.id,
       PackInfoGeneratorTest.behaviorPackMinEngineVersion
     );
-    info.defaultBehaviorPackName = infoSet.getFirstNumberArrayValue(this.id, PackInfoGeneratorTest.behaviorPackName);
-    info.defaultBehaviorPackDescription = infoSet.getFirstNumberArrayValue(
+
+    info.minBehaviorPackMinEngineVersionString = infoSet.getMinNumberArrayValueAsVersionString(
+      this.id,
+      PackInfoGeneratorTest.behaviorPackMinEngineVersion
+    );
+
+    info.minBehaviorPackMinEngineVersion = MinecraftUtilities.getVersionNumber(
+      info.minBehaviorPackMinEngineVersionString
+    );
+
+    info.defaultBehaviorPackName = infoSet.getFirstNumberArrayValueAsVersionString(
+      this.id,
+      PackInfoGeneratorTest.behaviorPackName
+    );
+
+    info.defaultBehaviorPackDescription = infoSet.getFirstNumberArrayValueAsVersionString(
       this.id,
       PackInfoGeneratorTest.behaviorPackDescription
     );
+
     info.defaultResourcePackUuid = infoSet.getFirstStringValue(this.id, PackInfoGeneratorTest.resourcePackUuid);
-    info.defaultResourcePackMinEngineVersion = infoSet.getFirstNumberArrayValue(
+
+    info.defaultResourcePackMinEngineVersion = infoSet.getFirstNumberArrayValueAsVersionString(
       this.id,
       PackInfoGeneratorTest.resourcePackMinEngineVersion
     );
-    info.defaultResourcePackName = infoSet.getFirstNumberArrayValue(this.id, PackInfoGeneratorTest.resourcePackName);
-    info.defaultResourcePackDescription = infoSet.getFirstNumberArrayValue(
+
+    info.minResourcePackMinEngineVersionString = infoSet.getMinNumberArrayValueAsVersionString(
+      this.id,
+      PackInfoGeneratorTest.resourcePackMinEngineVersion
+    );
+
+    info.minResourcePackMinEngineVersion = MinecraftUtilities.getVersionNumber(
+      info.minResourcePackMinEngineVersionString
+    );
+
+    info.defaultResourcePackName = infoSet.getFirstNumberArrayValueAsVersionString(
+      this.id,
+      PackInfoGeneratorTest.resourcePackName
+    );
+
+    info.defaultResourcePackDescription = infoSet.getFirstNumberArrayValueAsVersionString(
       this.id,
       PackInfoGeneratorTest.resourcePackDescription
     );
 
-    info.subpackCount = infoSet.getFirstNumberValue(this.id, PackInfoGeneratorTest.subPacks);
-
-    for (let i = 1; i < 41; i++) {
-      info["subpackTier" + i + "Count"] = infoSet.getCount(this.id, MemoryTierBase + i);
-    }
+    info.subpackCount = infoSet.getFirstNumberDataValue(this.id, PackInfoGeneratorTest.subPacks);
   }
 
   async generate(project: Project, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
@@ -105,7 +129,7 @@ export default class PackInfoGenerator implements IProjectInfoGenerator {
     for (let i = 0; i < itemsCopy.length; i++) {
       const pi = itemsCopy[i];
 
-      if (pi.itemType === ProjectItemType.iconImage) {
+      if (pi.itemType === ProjectItemType.packIconImage) {
         const itemFile = pi.primaryFile;
         if (itemFile) {
           if (

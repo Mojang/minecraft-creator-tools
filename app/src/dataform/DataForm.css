@@ -89,7 +89,7 @@
   border-bottom: solid 1px;
 }
 
-.df-fieldWrap .ui-form__label {
+.dfw-fieldWrap .ui-form__label {
   vertical-align: middle;
   padding-right: 14px;
   display: inline-block !important;
@@ -216,11 +216,11 @@
   padding-top: 11px;
 }
 
-.df-ro-row {
+.dfw-ro-row {
   display: table-row;
 }
 
-.df-ro-title {
+.dfw-ro-title {
   display: table-cell;
   padding-left: 1px;
   padding-top: 4px;
@@ -229,7 +229,7 @@
   font-weight: bold;
 }
 
-.df-ro-value {
+.dfw-ro-value {
   display: table-cell;
   padding: 4px;
 }

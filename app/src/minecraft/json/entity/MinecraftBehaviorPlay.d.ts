@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.play Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.play": {
   "priority": 8,
@@ -83,7 +83,7 @@ export default interface MinecraftBehaviorPlay {
    * to play with.
    * 
    * Sample Values:
-   * Villager V2: [{"filters":{"all_of":[{"test":"is_family","subject":"other","value":"villager"},{"test":"is_baby","subject":"other","operator":"==","value":true}]}}]
+   * Villager v2: [{"filters":{"all_of":[{"test":"is_family","subject":"other","value":"villager"},{"test":"is_baby","subject":"other","operator":"==","value":true}]}}]
    *
    */
   friend_types: jsoncommon.MinecraftFilter;
@@ -102,7 +102,7 @@ export default interface MinecraftBehaviorPlay {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 8
+   * Villager v2: 8
    *
    *
    */
@@ -128,7 +128,7 @@ export default interface MinecraftBehaviorPlay {
    * Goal.
    * 
    * Sample Values:
-   * Villager V2: 0.6
+   * Villager v2: 0.6
    *
    * Villager: 0.32
    *

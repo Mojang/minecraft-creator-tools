@@ -191,6 +191,10 @@
       }
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Returns true when the block has the given name.",
   "title": "Is Block",
   "samples": {

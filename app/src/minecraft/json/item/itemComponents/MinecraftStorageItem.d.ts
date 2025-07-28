@@ -29,7 +29,7 @@ Black Bundle - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_p
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Storage Item (minecraft:storage_item)
+ * Minecraft Storage Item Item (minecraft:storage_item)
  * Enables an item to store data of the dynamic container associated with
  * it. A dynamic container is a container for storing items that is
  * linked to an item instead of a block or an entity.

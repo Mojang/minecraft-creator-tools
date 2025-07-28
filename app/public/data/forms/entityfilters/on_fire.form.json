@@ -111,8 +111,12 @@
       "dataType": 1
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests if the subject is on fire.",
-  "title": "On Fire",
+  "title": "Fire",
   "samples": {
     "samples": [
       {

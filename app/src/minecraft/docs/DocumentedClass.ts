@@ -7,6 +7,7 @@ import IFolder from "../../storage/IFolder";
 import IFile from "../../storage/IFile";
 import IDocFunction from "./IDocFunction";
 import IDocProperty from "./IDocProperty";
+import Utilities from "../../core/Utilities";
 
 export default class DocumentedClass {
   private _id?: string;
@@ -224,7 +225,9 @@ export default class DocumentedClass {
 
         await memberFile.loadContent();
 
-        this.infoJsonFiles[docFunction.name] = memberFile;
+        if (Utilities.isUsableAsObjectKey(docFunction.name)) {
+          this.infoJsonFiles[docFunction.name] = memberFile;
+        }
       }
     }
 
@@ -237,7 +240,9 @@ export default class DocumentedClass {
 
         await memberFile.loadContent();
 
-        this.infoJsonFiles[docProp.name] = memberFile;
+        if (Utilities.isUsableAsObjectKey(docProp.name)) {
+          this.infoJsonFiles[docProp.name] = memberFile;
+        }
       }
     }
 

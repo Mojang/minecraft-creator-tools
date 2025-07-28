@@ -58,6 +58,10 @@ interface AppState {
   additionalLoadingMessage?: string;
 }
 
+// Layout and UI constants
+const LOADING_INTERVAL_MS = 50;
+const TOOLBAR_MENU_TRANSFORM_OFFSET = " 235px";
+
 export default class App extends Component<AppProps, AppState> {
   static instanceCount = 0;
   private _loadingMessage?: string;
@@ -420,7 +424,15 @@ export default class App extends Component<AppProps, AppState> {
 
         let selectedItem = undefined;
 
-        if (
+        if (CartoApp.modeParameter && CartoApp.modeParameter.startsWith("project/")) {
+          const segments = CartoApp.modeParameter.split("/");
+
+          if (segments.length === 2) {
+            this._handleNewProject({ name: "Project" }, NewProjectTemplateType.gameTest);
+
+            selectedItem = segments[1];
+          }
+        } else if (
           CartoApp.initialMode &&
           (CartoApp.modeParameter || CartoApp.initialMode === "info") &&
           CartoApp.projectPath
@@ -438,7 +450,7 @@ export default class App extends Component<AppProps, AppState> {
       if (typeof window !== "undefined") {
         window.addEventListener("hashchange", this._handleHashChange, false);
         window.addEventListener("resize", this._incrementVisualSeed, false);
-        window.setInterval(this._tick, 50);
+        window.setInterval(this._tick, LOADING_INTERVAL_MS);
       }
     }
 
@@ -508,7 +520,7 @@ export default class App extends Component<AppProps, AppState> {
         ProjectScriptLanguage.typeScript
       );
     } else {
-      newProject = await CartoApp.carto.ensureProjectForFolder(newProjectSeed.path, newProjectName, false);
+      newProject = await CartoApp.carto.ensureProjectForLocalFolder(newProjectSeed.path, newProjectName, false);
 
       await newProject.ensureProjectFolder();
 
@@ -556,7 +568,7 @@ export default class App extends Component<AppProps, AppState> {
       return;
     }
 
-    const newProject = await CartoApp.carto.ensureProjectForFolder(folderPath);
+    const newProject = await CartoApp.carto.ensureProjectForLocalFolder(folderPath);
 
     newProject.save();
     CartoApp.carto.save();
@@ -829,27 +841,37 @@ export default class App extends Component<AppProps, AppState> {
     if (gitHubOwner !== undefined && gitHubRepoName !== undefined) {
       let gh = undefined;
 
+      let repoUrl = undefined;
+
       if (
         galleryType === GalleryItemType.entityType ||
         galleryType === GalleryItemType.blockType ||
         galleryType === GalleryItemType.itemType
       ) {
-        gh = new HttpStorage(
-          CartoApp.contentRoot + "res/samples/microsoft/minecraft-samples-main/addon_starter/start/"
-        );
+        repoUrl = CartoApp.contentRoot + "res/samples/microsoft/minecraft-samples-main/addon_starter/start/";
       } else {
-        gh = new HttpStorage(
+        repoUrl =
           CartoApp.contentRoot +
-            "res/samples/" +
-            gitHubOwner +
-            "/" +
-            gitHubRepoName +
-            "-" +
-            (gitHubBranch ? gitHubBranch : "main") +
-            "/" +
-            gitHubFolder
-        ); //new GitHubStorage(carto.anonGitHub, gitHubRepoName, gitHubOwner, gitHubBranch, gitHubFolder);
+          "res/samples/" +
+          gitHubOwner +
+          "/" +
+          gitHubRepoName +
+          "-" +
+          (gitHubBranch ? gitHubBranch : "main") +
+          "/" +
+          gitHubFolder;
       }
+
+      if (Database.local && (CartoApp.fullLocalStorage || !CartoApp.contentRoot)) {
+        gh = await Database.local.createStorage(repoUrl);
+
+        if (!gh) {
+          throw new Error("Could not load local storage: " + repoUrl);
+        }
+      } else {
+        gh = new HttpStorage(repoUrl);
+      }
+
       let projName = suggestedName
         ? suggestedName
         : ProjectUtilities.getSuggestedProjectNameFromElements(galleryId, gitHubFolder, gitHubRepoName);
@@ -1021,7 +1043,7 @@ export default class App extends Component<AppProps, AppState> {
       proposedProjectName = mcw.name;
     }
 
-    const newProject = await CartoApp.carto.ensureProjectForFolder(folder.fullPath, proposedProjectName);
+    const newProject = await CartoApp.carto.ensureProjectForLocalFolder(folder.fullPath, proposedProjectName);
 
     newProject.save();
     CartoApp.carto.save();
@@ -1226,7 +1248,9 @@ export default class App extends Component<AppProps, AppState> {
 
             if (secondComma > 0) {
               (elt as HTMLElement).style.transform =
-                transform.substring(0, firstComma + 2) + " 235px" + transform.substring(secondComma);
+                transform.substring(0, firstComma + 2) +
+                TOOLBAR_MENU_TRANSFORM_OFFSET +
+                transform.substring(secondComma);
             }
           }
         }
@@ -1400,8 +1424,8 @@ export default class App extends Component<AppProps, AppState> {
       if (this.state.activeProject.errorState === ProjectErrorState.projectFolderOrFileDoesNotExist) {
         let error = "Could not find project data folder: ";
 
-        if (this.state.activeProject.mainDeployFolderPath) {
-          error += this.state.activeProject.mainDeployFolderPath;
+        if (this.state.activeProject.localFolderPath) {
+          error += this.state.activeProject.localFolderPath;
         }
 
         error += ". It may not be available on this device?";

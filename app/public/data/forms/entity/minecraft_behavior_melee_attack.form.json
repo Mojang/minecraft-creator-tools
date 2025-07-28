@@ -73,13 +73,13 @@
     },
     {
       "id": "on_attack",
-      "title": "On Attack",
+      "title": "Attack",
       "description": "Defines the event to trigger when this entity successfully attacks.",
       "dataType": 22
     },
     {
       "id": "on_kill",
-      "title": "On Kill",
+      "title": "Kill",
       "description": "Defines the event to trigger when this entity kills the target.",
       "dataType": 22
     },
@@ -150,6 +150,12 @@
             "path": "/minecraft:entity/component_groups/mikeamm_gwve:active/minecraft:behavior.melee_attack/",
             "content": 5
           }
+        ],
+        "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.melee_attack/",
+            "content": 1.25
+          }
         ]
       }
     },
@@ -170,7 +176,7 @@
     },
     {
       "id": "x_max_rotation",
-      "title": "X Max Rotation",
+      "title": "x Max Rotation",
       "description": "Maximum rotation (in degrees), on the X-axis, this entity can rotate while trying to look at the target.",
       "defaultValue": 30,
       "dataType": 3,
@@ -185,7 +191,7 @@
     },
     {
       "id": "y_max_head_rotation",
-      "title": "Y Max Head Rotation",
+      "title": "y Max Head Rotation",
       "description": "Maximum rotation (in degrees), on the Y-axis, this entity can rotate its head while trying to look at the target.",
       "defaultValue": 30,
       "dataType": 3,
@@ -239,6 +245,12 @@
           {
             "path": "/minecraft:entity/components/minecraft:behavior.melee_attack/",
             "content": 3
+          }
+        ],
+        "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.melee_attack/",
+            "content": 4
           }
         ]
       }
@@ -312,6 +324,17 @@
         "path": "/minecraft:entity/components/minecraft:behavior.melee_attack/",
         "content": {
           "priority": 3
+        }
+      }
+    ],
+    "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.melee_attack/",
+        "content": {
+          "priority": 4,
+          "speed_multiplier": 1.25,
+          "track_target": false,
+          "reach_multiplier": 0
         }
       }
     ]

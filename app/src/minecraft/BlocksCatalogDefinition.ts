@@ -5,12 +5,13 @@ import IFile from "../storage/IFile";
 import Log from "../core/Log";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
-import { IBlocksCatalogResource } from "./IBlocksCatalog";
-import Project from "../app/Project";
+import { IBlockResource, IBlocksCatalogResource } from "./IBlocksCatalog";
+import Project, { FolderContext } from "../app/Project";
 import { AnnotationCategory } from "../core/ContentIndex";
 import Database from "./Database";
 import { ProjectItemType } from "../app/IProjectItemData";
 import BlockTypeDefinition from "./BlockTypeDefinition";
+import Utilities from "../core/Utilities";
 
 export interface BlocksCatalogDependendencies {
   unused: string[];
@@ -107,6 +108,69 @@ export default class BlocksCatalogDefinition {
     return this.blocksCatalog[id];
   }
 
+  setBlockDefinition(id: string, catalogResource: IBlockResource) {
+    if (!this.blocksCatalog) {
+      this.blocksCatalog = {};
+    }
+
+    if (this.blocksCatalog[id]) {
+      return this.blocksCatalog[id];
+    }
+
+    const colon = id.indexOf(":");
+
+    if (colon >= 0) {
+      let noColonId = id.substring(colon + 1);
+      if (this.blocksCatalog[noColonId]) {
+        return this.blocksCatalog[noColonId];
+      }
+    }
+
+    this.blocksCatalog[id] = catalogResource;
+
+    this.persist();
+    return this.blocksCatalog[id];
+  }
+
+  static async getBlockCatalog(project: Project) {
+    const blockCatalogItems = project.getItemsByType(ProjectItemType.blocksCatalogResourceJson);
+
+    if (blockCatalogItems && blockCatalogItems.length > 0) {
+      await blockCatalogItems[0].ensureStorage();
+
+      if (blockCatalogItems[0].primaryFile) {
+        return await BlocksCatalogDefinition.ensureOnFile(blockCatalogItems[0].primaryFile);
+      }
+    }
+
+    return undefined;
+  }
+
+  static async ensureBlockCatalog(project: Project) {
+    let blockCatalog = await this.getBlockCatalog(project);
+
+    if (blockCatalog) {
+      return blockCatalog;
+    }
+
+    const defaultRp = await project.getDefaultResourcePackFolder();
+
+    if (defaultRp) {
+      const blockCatalogFile = defaultRp.ensureFile("blocks.json");
+      blockCatalogFile.setContent('{"format_version": "1.21.40"}');
+
+      project.ensureItemFromFile(
+        blockCatalogFile,
+        ProjectItemType.blocksCatalogResourceJson,
+        FolderContext.resourcePack
+      );
+
+      return await BlocksCatalogDefinition.ensureOnFile(blockCatalogFile);
+    }
+
+    return undefined;
+  }
+
   getDefaultTextureId(id: string) {
     const ref = this.getBlockDefinition(id);
 
@@ -164,7 +228,7 @@ export default class BlocksCatalogDefinition {
           if (item.primaryFile) {
             const blockTypeDef = await BlockTypeDefinition.ensureOnFile(item.primaryFile);
 
-            if (blockTypeDef && blockTypeDef.id) {
+            if (blockTypeDef && blockTypeDef.id && Utilities.isUsableAsObjectKey(blockTypeDef.id)) {
               myBlockIds[blockTypeDef.id] = true;
 
               const colon = blockTypeDef.id.indexOf(":");

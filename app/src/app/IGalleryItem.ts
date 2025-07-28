@@ -12,6 +12,7 @@ export enum GalleryItemType {
   editorCodeSample = 5,
   editorProject = 6,
   itemType = 7,
+  actionSet = 8,
   spawnLootRecipes = 21,
   worldGen = 22,
   visuals = 23,
@@ -47,6 +48,7 @@ export default interface IGalleryItem {
   containsStructures?: boolean;
   containsGameTests?: boolean;
   itemImages?: string[];
+  creationData?: object | any;
   codeLineStart?: number;
   fileList?: string[];
   tags?: string[];

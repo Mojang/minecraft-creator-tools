@@ -110,6 +110,10 @@
       "dataType": 0
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Compares the current moon phase with an integer value in the range (0, 7).",
   "title": "Moon Phase",
   "samples": {

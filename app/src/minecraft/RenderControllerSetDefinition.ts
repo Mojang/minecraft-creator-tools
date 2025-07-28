@@ -28,13 +28,13 @@ export default class RenderControllerSetDefinition implements IDefinition {
       return undefined;
     }
 
-    const idList = [];
+    const idList = new Set<string>();
 
     for (const key in this._data.render_controllers) {
       const rc = this._data.render_controllers[key];
 
       if (key && rc) {
-        idList.push(key);
+        idList.add(key);
       }
     }
 

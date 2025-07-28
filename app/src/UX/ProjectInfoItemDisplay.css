@@ -4,6 +4,7 @@
   display: table-row;
   word-wrap: break-word;
   font-size: small;
+  vertical-align: top;
 }
 
 .piid-cell {

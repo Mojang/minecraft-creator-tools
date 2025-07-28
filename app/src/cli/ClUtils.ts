@@ -13,6 +13,7 @@ import IProjectStartInfo from "./IProjectStartInfo";
 
 export enum TaskType {
   noCommand = 0,
+  deploy = 5,
   info = 7,
   add = 8,
   create = 9,
@@ -23,10 +24,16 @@ export enum TaskType {
   setPasscode = 14,
   setServerProperties = 15,
   minecraftEulaAndPrivacyStatement = 16,
+  deployTestWorld = 17,
   world = 18,
   fix = 19,
   setProjectProperty = 20,
   aggregateReports = 22,
+  docsUpdateFormSource = 23,
+  docsGenerateFormJson = 24,
+  docsGenerateMarkdown = 25,
+  docsGenerateTypes = 27,
+  profileValidation = 28,
 }
 
 export enum OutputType {

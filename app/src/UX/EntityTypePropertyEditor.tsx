@@ -306,7 +306,7 @@ export default class EntityTypePropertyEditor extends Component<
         title = <span>{this.props.title}</span>;
       }
 
-      const areaHeight = "calc(100vh - " + String(this.props.heightOffset + 34) + "px)";
+      const areaHeight = "calc(100vh - " + String(this.props.heightOffset + 74) + "px)";
 
       const toolbarItems: any[] = [];
 

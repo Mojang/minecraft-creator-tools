@@ -34,9 +34,11 @@
 }
 
 .eat-toolbarArea {
-  display: grid;
   padding-top: 8px;
-  grid-template-columns: 27px 1fr;
+}
+
+.eat-toolbarArea .ui-toolbar__item {
+  height: 50px;
 }
 
 .eat-toolbarLabel {

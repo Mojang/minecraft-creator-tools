@@ -19,5 +19,6 @@
     ]
   },
   "description": "The damage component determines how much extra damage the item does on attack.",
-  "title": "Damage"
+  "title": "Damage",
+  "id": "minecraft:damage"
 }

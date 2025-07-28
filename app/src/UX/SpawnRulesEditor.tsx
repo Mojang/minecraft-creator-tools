@@ -161,7 +161,7 @@ export default class SpawnRulesEditor extends Component<ISpawnRulesEditorProps, 
     const definitionFile = this.state.fileToEdit.manager as SpawnRulesBehaviorDefinition;
     const def = definitionFile.data;
 
-    if (def === undefined) {
+    if (def === undefined || !this.state.isLoaded) {
       return <div className="sre-loading">Loading definition...</div>;
     }
 

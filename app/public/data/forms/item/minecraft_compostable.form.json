@@ -14,11 +14,22 @@
           "comparison": "<=",
           "value": 100
         }
-      ]
+      ],
+      "isRequired": true
     }
   ],
   "versionIntroduced": "1.21.60",
   "description": "Specifies that an item is compostable and provides the chance of creating a composting layer in the composter",
-  "title": "Compostable",
+  "title": "Minecraft Compostable Item",
+  "samples": {
+    "/samples/creator_camp/behavior_packs/creator_camp/items/bag_o_leaves.json": [
+      {
+        "path": "/minecraft:item/components/minecraft:compostable/",
+        "content": {
+          "composting_chance": 100
+        }
+      }
+    ]
+  },
   "id": "minecraft:compostable"
 }

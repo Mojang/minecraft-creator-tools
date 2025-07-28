@@ -107,7 +107,7 @@ Tadpole - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 }
 
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/become_witch/minecraft:transformation/: 
 "minecraft:transformation": {
@@ -144,7 +144,7 @@ export default interface MinecraftTransformation {
    * Sound to play when the transformation starts
    * 
    * Sample Values:
-   * Zombie Villager V2: "remedy"
+   * Zombie Villager v2: "remedy"
    *
    *
    */
@@ -160,7 +160,7 @@ export default interface MinecraftTransformation {
    * Pig: 0.5
    *
    *
-   * Zombie Villager V2: {"value":100,"range_min":80,"range_max":200,"block_assist_chance":0.01,"block_radius":4,"block_chance":0.3,"block_types":["minecraft:bed","minecraft:iron_bars"]}
+   * Zombie Villager v2: {"value":100,"range_min":80,"range_max":200,"block_assist_chance":0.01,"block_radius":4,"block_chance":0.3,"block_types":["minecraft:bed","minecraft:iron_bars"]}
    *
    */
   delay: MinecraftTransformationDelay[];

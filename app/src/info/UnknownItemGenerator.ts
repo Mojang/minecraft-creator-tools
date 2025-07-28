@@ -8,7 +8,7 @@ import ContentIndex from "../core/ContentIndex";
 import ProjectInfoUtilities from "./ProjectInfoUtilities";
 
 export enum UnknownItemGeneratorTest {
-  unknownItemTypeFound,
+  unknownItemTypeFound = 101,
 }
 
 export default class UnknownItemGenerator implements IProjectInfoItemGenerator {
@@ -27,7 +27,7 @@ export default class UnknownItemGenerator implements IProjectInfoItemGenerator {
   async generate(projectItem: ProjectItem, contentIndex: ContentIndex): Promise<ProjectInfoItem[]> {
     const items: ProjectInfoItem[] = [];
 
-    if (projectItem.itemType === ProjectItemType.json) {
+    if (projectItem.itemType === ProjectItemType.unknownJson) {
       items.push(
         new ProjectInfoItem(
           InfoItemType.error,

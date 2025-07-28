@@ -12,9 +12,9 @@ import ProjectInfoUtilities from "./ProjectInfoUtilities";
 import ModelGeometryDefinition from "../minecraft/ModelGeometryDefinition";
 
 export enum GeometryInfoGeneratorTest {
-  blockGeometry = 1,
-  entityGeometry = 2,
-  itemGeometry = 3,
+  blockGeometry = 101,
+  entityGeometry = 102,
+  itemGeometry = 103,
   overlyComplexBlockGeometry = 501,
 }
 

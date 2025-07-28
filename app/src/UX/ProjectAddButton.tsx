@@ -3,7 +3,7 @@ import IAppProps from "./IAppProps";
 import Project from "./../app/Project";
 import { ProjectItemType } from "./../app/IProjectItemData";
 import ProjectItem from "./../app/ProjectItem";
-import { ProjectEditorMode } from "./ProjectEditorUtilities";
+import { ProjectEditorMode, ProjectItemEditorView } from "./ProjectEditorUtilities";
 import { Dialog, ThemeInput, MenuButton, Button, MenuItemProps } from "@fluentui/react-northstar";
 
 import { GitHubPropertyType } from "./ProjectPropertyEditor";
@@ -24,6 +24,7 @@ import ProjectItemCreateManager from "../app/ProjectItemCreateManager";
 import SetName from "./SetName";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import SetNameAndFolder from "./SetNameAndFolder";
 
 export enum EntityTypeCommand {
   select,
@@ -42,7 +43,7 @@ export enum ListItemType {
 
 interface IProjectAddButtonProps extends IAppProps {
   theme: ThemeInput<any>;
-  onActiveProjectItemChangeRequested?: (projectItem: ProjectItem, forceRawView: boolean) => void;
+  onActiveProjectItemChangeRequested?: (projectItem: ProjectItem, itemView: ProjectItemEditorView) => void;
   onActiveReferenceChangeRequested?: (reference: IGitHubInfo) => void;
   onModeChangeRequested?: (mode: ProjectEditorMode) => void;
   heightOffset: number;
@@ -55,7 +56,7 @@ interface IProjectAddButtonState {
   dialogMode: ProjectAddButtonDialogType;
   maxItemsToShow: number;
   isLoaded: boolean;
-  newItemType?: ProjectItemType;
+  newItemSeed?: IProjectItemSeed;
   activeProjectInfoSet?: ProjectInfoSet | undefined;
   collapsedItemTypes: number[];
   contextFocusedItem?: number;
@@ -68,12 +69,11 @@ export enum ProjectAddButtonDialogType {
   newBlockTypeDialog = 5,
   newItemTypeDialog = 6,
   newNamespacedDefinitionDialog = 7,
-  newNamedDefinitionDialog = 8,
+  newNamedGenericDialog = 8,
+  newNamedGenericPlusFolderDialog = 9,
 }
 
 export default class ProjectAddButton extends Component<IProjectAddButtonProps, IProjectAddButtonState> {
-  private _tentativeNewItem: IProjectItemSeed | undefined;
-
   tentativeGitHubMode: string = "existing";
   tentativeGitHubRepoName?: string;
   tentativeGitHubOwner?: string;
@@ -93,13 +93,16 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
 
     this._newItemTypeUpdated = this._newItemTypeUpdated.bind(this);
 
-    this._handleNewDefinition = this._handleNewDefinition.bind(this);
+    this._handleNewGeneric = this._handleNewGeneric.bind(this);
     this._handleNewTestClick = this._handleNewTestClick.bind(this);
+    this._handleNewTextureClick = this._handleNewTextureClick.bind(this);
     this._handleNewScriptClick = this._handleNewScriptClick.bind(this);
+    this._handleNewDesignTextureClick = this._handleNewDesignTextureClick.bind(this);
     this._handleNewActionSetClick = this._handleNewActionSetClick.bind(this);
     this._handleNewWorldTestClick = this._handleNewWorldTestClick.bind(this);
     this._handleNewStructureClick = this._handleNewStructureClick.bind(this);
     this._handleNewFormClick = this._handleNewFormClick.bind(this);
+    this._setNewItemSeed = this._setNewItemSeed.bind(this);
     this._handleCancel = this._handleCancel.bind(this);
     this._handleGalleryItemClick = this._handleGalleryItemClick.bind(this);
     this._handleNewLootTableClick = this._handleNewLootTableClick.bind(this);
@@ -147,9 +150,21 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
   _setNewName(name: string) {
     this.tentativeNewName = name;
 
-    if (this._tentativeNewItem) {
-      this._tentativeNewItem.name = name;
+    const tentItem = this.state.newItemSeed;
+
+    if (tentItem) {
+      tentItem.name = name;
+
+      this.setState({
+        newItemSeed: tentItem,
+      });
     }
+  }
+
+  _setNewItemSeed(seed: IProjectItemSeed) {
+    this.setState({
+      newItemSeed: seed,
+    });
   }
 
   componentDidMount(): void {
@@ -164,7 +179,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       dialogMode: this.state.dialogMode,
       maxItemsToShow: this.state.maxItemsToShow,
       isLoaded: true,
-      newItemType: this.state.newItemType,
+      newItemSeed: this.state.newItemSeed,
       activeProjectInfoSet: this.state.activeProjectInfoSet,
       contextFocusedItem: this.state.contextFocusedItem,
     });
@@ -208,7 +223,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
 
   _handleNewScriptClick() {
     if (this.props.project !== null) {
-      this.launchNewItemType(
+      this.launchNewGeneric(
         this.props.project.preferredScriptLanguage === ProjectScriptLanguage.javaScript
           ? ProjectItemType.js
           : ProjectItemType.ts
@@ -217,7 +232,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
   }
 
   _handleNewActionSetClick() {
-    this.launchNewItemType(ProjectItemType.actionSet);
+    this.launchNewGeneric(ProjectItemType.actionSet);
   }
 
   _handleNewGeodeFeatureClick() {
@@ -225,11 +240,19 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
   }
 
   _handleNewLootTableClick() {
-    this.launchNewNamedDefinition(ProjectItemType.lootTableBehavior);
+    this.launchNewNamedGeneric(ProjectItemType.lootTableBehavior);
   }
 
   _handleNewAudioClick() {
-    this.launchNewItemType(ProjectItemType.audio);
+    this.launchNewResourcePackItemPlusFolder(ProjectItemType.audio, "audio", "sounds");
+  }
+
+  _handleNewDesignTextureClick() {
+    this.launchNewDesignPackItemPlusFolder(ProjectItemType.designTexture, "design_texture", "design_textures");
+  }
+
+  _handleNewTextureClick() {
+    this.launchNewResourcePackItemPlusFolder(ProjectItemType.texture, "texture", "textures");
   }
 
   async _handleGalleryItemClick(event: React.SyntheticEvent<HTMLElement>, menuItem: MenuItemProps | undefined) {
@@ -258,16 +281,16 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
 
   async _handleNewStructureClick() {}
 
-  launchNewItemType(itemType: ProjectItemType, suggestedName?: string) {
-    this._tentativeNewItem = {
+  launchNewGeneric(itemType: ProjectItemType, suggestedName?: string) {
+    let newSeed = {
       name: suggestedName,
       itemType: itemType,
     };
 
     this.setState({
       activeItem: this.state.activeItem,
-      dialogMode: ProjectAddButtonDialogType.newItemTypeDialog,
-      newItemType: itemType,
+      dialogMode: ProjectAddButtonDialogType.newNamedGenericPlusFolderDialog,
+      newItemSeed: newSeed,
       isLoaded: this.state.isLoaded,
       maxItemsToShow: this.state.maxItemsToShow,
       contextFocusedItem: this.state.contextFocusedItem,
@@ -409,7 +432,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
   }
 
   launchNewNamespacedDefinition(itemType: ProjectItemType, contentTemplateName?: string) {
-    this._tentativeNewItem = {
+    const newItemSeed = {
       name: ProjectItemUtilities.getNewItemTechnicalName(itemType),
       itemType: itemType,
       contentTemplateName: contentTemplateName,
@@ -418,7 +441,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     this.setState({
       activeItem: this.state.activeItem,
       dialogMode: ProjectAddButtonDialogType.newNamespacedDefinitionDialog,
-      newItemType: itemType,
+      newItemSeed: newItemSeed,
       maxItemsToShow: this.state.maxItemsToShow,
       contextFocusedItem: this.state.contextFocusedItem,
       collapsedItemTypes: this.state.collapsedItemTypes,
@@ -426,16 +449,16 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     });
   }
 
-  launchNewNamedDefinition(itemType: ProjectItemType, suggestedName?: string) {
-    this._tentativeNewItem = {
+  launchNewNamedGeneric(itemType: ProjectItemType, suggestedName?: string) {
+    const newItemSeed = {
       name: suggestedName ? suggestedName : ProjectItemUtilities.getNewItemTechnicalName(itemType),
       itemType: itemType,
     };
 
     this.setState({
       activeItem: this.state.activeItem,
-      dialogMode: ProjectAddButtonDialogType.newNamedDefinitionDialog,
-      newItemType: itemType,
+      dialogMode: ProjectAddButtonDialogType.newNamedGenericDialog,
+      newItemSeed: newItemSeed,
       maxItemsToShow: this.state.maxItemsToShow,
       contextFocusedItem: this.state.contextFocusedItem,
       collapsedItemTypes: this.state.collapsedItemTypes,
@@ -443,15 +466,78 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     });
   }
 
-  async _handleNewDefinition() {
+  async launchNewResourcePackItemPlusFolder(
+    itemType: ProjectItemType,
+    suggestedName?: string,
+    resourcePackSubFolder?: string
+  ) {
+    let defaultRpFolder = await this.props.project?.ensureDefaultResourcePackFolder();
+
+    if (resourcePackSubFolder) {
+      resourcePackSubFolder = Utilities.ensureEndsWithSlash(Utilities.ensureStartsWithSlash(resourcePackSubFolder));
+
+      defaultRpFolder = await defaultRpFolder?.ensureFolderFromRelativePath(resourcePackSubFolder);
+    }
+
+    const newItemSeed: IProjectItemSeed = {
+      name: suggestedName ? suggestedName : ProjectItemUtilities.getNewItemTechnicalName(itemType),
+      itemType: itemType,
+      folder: defaultRpFolder,
+    };
+
+    this.setState({
+      activeItem: this.state.activeItem,
+      dialogMode: ProjectAddButtonDialogType.newNamedGenericPlusFolderDialog,
+      newItemSeed: newItemSeed,
+      maxItemsToShow: this.state.maxItemsToShow,
+      contextFocusedItem: this.state.contextFocusedItem,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
+    });
+  }
+
+  async launchNewDesignPackItemPlusFolder(
+    itemType: ProjectItemType,
+    suggestedName?: string,
+    designPackSubFolder?: string,
+    creationData?: object
+  ) {
+    let defaultDpFolder = await this.props.project?.ensureDefaultDesignPackFolder();
+
+    if (designPackSubFolder) {
+      designPackSubFolder = Utilities.ensureEndsWithSlash(Utilities.ensureStartsWithSlash(designPackSubFolder));
+
+      defaultDpFolder = await defaultDpFolder?.ensureFolderFromRelativePath(designPackSubFolder);
+    }
+
+    const newItemSeed: IProjectItemSeed = {
+      name: suggestedName ? suggestedName : ProjectItemUtilities.getNewItemTechnicalName(itemType),
+      itemType: itemType,
+      creationData: creationData,
+      folder: defaultDpFolder,
+    };
+
+    this.setState({
+      activeItem: this.state.activeItem,
+      dialogMode: ProjectAddButtonDialogType.newNamedGenericPlusFolderDialog,
+      newItemSeed: newItemSeed,
+      maxItemsToShow: this.state.maxItemsToShow,
+      contextFocusedItem: this.state.contextFocusedItem,
+      collapsedItemTypes: this.state.collapsedItemTypes,
+      collapsedStoragePaths: this.state.collapsedStoragePaths,
+    });
+  }
+
+  async _handleNewGeneric() {
     if (!this.state || !this.props.project) {
       return;
     }
 
     let projectItem = undefined;
+    const tentativeNewItem = this.state.newItemSeed;
 
-    if (this._tentativeNewItem !== undefined && this.props.project !== null) {
-      projectItem = await ProjectItemCreateManager.createNewItem(this.props.project, this._tentativeNewItem);
+    if (tentativeNewItem !== undefined && this.props.project !== null) {
+      projectItem = await ProjectItemCreateManager.createNewItem(this.props.project, tentativeNewItem);
     }
 
     await this.props.project.save();
@@ -466,7 +552,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
     });
 
     if (projectItem && this.props.onActiveProjectItemChangeRequested) {
-      this.props.onActiveProjectItemChangeRequested(projectItem, false);
+      this.props.onActiveProjectItemChangeRequested(projectItem, ProjectItemEditorView.singleFileEditor);
     }
   }
 
@@ -558,17 +644,83 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
         content: "New Item Type",
       },
       {
+        id: "designItems",
+        key: "designItems",
+        content: "Designers",
+        menu: {
+          items: [
+            {
+              id: "blockBillboard3x3",
+              key: "blockBillboard3x3",
+              onClick: () => {
+                this.launchNewDesignPackItemPlusFolder(
+                  ProjectItemType.designTexture,
+                  "block_billboard",
+                  "design_textures",
+                  { width: 48, height: 48, outputs: [{ name: "_name_", type: 11 }] }
+                );
+              },
+              content: "Block Billboard 3x3",
+            },
+            {
+              id: "blockBillboard4x6",
+              key: "blockBillboard4x6",
+              onClick: () => {
+                this.launchNewDesignPackItemPlusFolder(
+                  ProjectItemType.designTexture,
+                  "block_billboard",
+                  "design_textures",
+                  { width: 96, height: 64, outputs: [{ name: "_name_", type: 12 }] }
+                );
+              },
+              content: "Block Billboard 4x6",
+            },
+            {
+              id: "blockBillboard5x8",
+              key: "blockBillboard5x8",
+              onClick: () => {
+                this.launchNewDesignPackItemPlusFolder(
+                  ProjectItemType.designTexture,
+                  "block_billboard",
+                  "design_textures",
+                  { width: 128, height: 80, outputs: [{ name: "_name_", type: 13 }] }
+                );
+              },
+              content: "Block Billboard 5x8",
+            },
+            {
+              id: "painting",
+              key: "painting",
+              onClick: () => {
+                this.launchNewDesignPackItemPlusFolder(ProjectItemType.designTexture, "painting", "design_textures", {
+                  width: 16,
+                  height: 16,
+                  outputs: [{ name: "_name_", type: 3, paintingSize: 1 }],
+                });
+              },
+              content: "Single-Block Painting",
+            },
+          ],
+        },
+      },
+      {
         id: "av",
         key: "av",
         content: "Textures/Audio",
-
         menu: {
           items: [
+            {
+              id: "texture",
+              key: "newTexture",
+              onClick: this._handleNewTextureClick,
+              content: "Texture",
+            },
+
             {
               id: "audio",
               key: "newAudio",
               onClick: this._handleNewAudioClick,
-              content: "New Audio file",
+              content: "Audio file",
             },
           ],
         },
@@ -644,8 +796,8 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
         {
           id: "actionset",
           key: "pab-actionset",
-          onClick: this._handleNewActionSetClick,
-          content: "New action set",
+          onClick: this._handleGalleryItemClick,
+          content: "Action Set",
         },
         {
           id: "worldtest",
@@ -679,6 +831,7 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
       }
     }
 
+    const newItemState = this.state.newItemSeed;
     let dialogArea = <></>;
     if (
       this.state !== null &&
@@ -767,25 +920,22 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
           confirmButton="Add"
           key="btse-addComponentOuter"
           onCancel={this._handleCancel}
-          onConfirm={this._handleNewDefinition}
+          onConfirm={this._handleNewGeneric}
           content={
             <SetNamespacedId
               onNameChanged={this._setNewName}
               defaultNamespace={this.props.project.effectiveDefaultNamespace}
-              defaultName={this._tentativeNewItem?.name ? this._tentativeNewItem.name : "item"}
+              defaultName={newItemState?.name ? newItemState.name : "item"}
               theme={this.props.theme}
             />
           }
-          header={
-            "Add new " +
-            ProjectItemUtilities.getNewItemName(this._tentativeNewItem?.itemType ?? ProjectItemType.unknown)
-          }
+          header={"Add new " + ProjectItemUtilities.getNewItemName(newItemState?.itemType ?? ProjectItemType.unknown)}
         />
       );
     } else if (
       this.state !== null &&
       this.props.project !== null &&
-      this.state.dialogMode === ProjectAddButtonDialogType.newNamedDefinitionDialog
+      this.state.dialogMode === ProjectAddButtonDialogType.newNamedGenericDialog
     ) {
       dialogArea = (
         <Dialog
@@ -794,18 +944,46 @@ export default class ProjectAddButton extends Component<IProjectAddButtonProps, 
           confirmButton="Add"
           key="btse-addComponentOuter"
           onCancel={this._handleCancel}
-          onConfirm={this._handleNewDefinition}
+          onConfirm={this._handleNewGeneric}
           content={
             <SetName
               onNameChanged={this._setNewName}
-              defaultName={this._tentativeNewItem?.name ? this._tentativeNewItem.name : "item"}
+              defaultName={newItemState?.name ? newItemState.name : "item"}
               theme={this.props.theme}
             />
           }
-          header={
-            "Add new " +
-            ProjectItemUtilities.getNewItemName(this._tentativeNewItem?.itemType ?? ProjectItemType.unknown)
+          header={"Add new " + ProjectItemUtilities.getNewItemName(newItemState?.itemType ?? ProjectItemType.unknown)}
+        />
+      );
+    } else if (
+      this.state !== null &&
+      this.props.project !== null &&
+      this.state.dialogMode === ProjectAddButtonDialogType.newNamedGenericPlusFolderDialog
+    ) {
+      dialogArea = (
+        <Dialog
+          open={true}
+          cancelButton="Cancel"
+          confirmButton="Add"
+          key="pab-addComponentOuter"
+          onCancel={this._handleCancel}
+          onConfirm={this._handleNewGeneric}
+          content={
+            <SetNameAndFolder
+              heightOffset={this.props.heightOffset}
+              theme={this.props.theme}
+              project={this.props.project}
+              carto={this.props.carto}
+              rootFolder={this.state.newItemSeed?.folder}
+              defaultName={this.state.newItemSeed?.name}
+              creationData={this.state.newItemSeed?.creationData}
+              itemType={
+                this.state.newItemSeed?.itemType ? this.state.newItemSeed?.itemType : ProjectItemType.unknownJson
+              }
+              onNewItemSeedUpdated={this._setNewItemSeed}
+            />
           }
+          header={"Add new " + ProjectItemUtilities.getNewItemName(newItemState?.itemType ?? ProjectItemType.unknown)}
         />
       );
     }

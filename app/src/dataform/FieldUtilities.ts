@@ -3,6 +3,7 @@
 
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
+import Database from "../minecraft/Database";
 import ICondition, { ComparisonType } from "./ICondition";
 import IDataContainer from "./IDataContainer";
 import IField, { FieldDataType } from "./IField";
@@ -49,6 +50,19 @@ export default class FieldUtilities {
     }
 
     return defaultValue;
+  }
+
+  static async getSubForm(field: IField): Promise<IFormDefinition | undefined> {
+    if (field.subForm) {
+      return field.subForm;
+    }
+
+    if (field.subFormId) {
+      const subForm = await Database.ensureFormLoadedByPath(field.subFormId);
+      return subForm;
+    }
+
+    return undefined;
   }
 
   static getFieldValue(field: IField, container: IDataContainer) {
@@ -119,6 +133,18 @@ export default class FieldUtilities {
     }
 
     return title;
+  }
+
+  static getFieldId(field: IField) {
+    if (field.id) {
+      return field.id;
+    }
+
+    if (field.title) {
+      return field.title;
+    }
+
+    return "<no id>";
   }
 
   static getFieldById(id: string, form: IFormDefinition) {

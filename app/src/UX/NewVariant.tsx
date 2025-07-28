@@ -100,7 +100,7 @@ export default class NewVariant extends Component<INewVariantProps, INewVariantS
     }
 
     for (const allVar of allVariants) {
-      if (!this.props.projectItem.variants[allVar] && allVar !== this.state.nextVersion) {
+      if (!this.props.projectItem.getVariant(allVar) && allVar !== this.state.nextVersion) {
         newLabelChoices.push(allVar);
       }
     }

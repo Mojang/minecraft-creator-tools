@@ -131,18 +131,54 @@
       "logoImage": "resource_packs/custom_blocks/textures/blocks/die_1.png",
       "id": "basicDieBlock",
       "nameReplacers": ["die"],
+      "creationData": {
+        "texture_data": {
+          "die_1": {
+            "textures": "textures/blocks/die_1"
+          },
+          "die_2": {
+            "textures": "textures/blocks/die_2"
+          },
+          "die_3": {
+            "textures": "textures/blocks/die_3"
+          },
+          "die_4": {
+            "textures": "textures/blocks/die_4"
+          },
+          "die_5": {
+            "textures": "textures/blocks/die_5"
+          },
+          "die_6": {
+            "textures": "textures/blocks/die_6"
+          },
+          "die_red": {
+            "textures": "textures/blocks/die_red"
+          }
+        },
+        "resource": {
+          "textures": {
+            "up": "die_1",
+            "down": "die_6",
+            "north": "die_3",
+            "south": "die_4",
+            "east": "die_2",
+            "west": "die_5"
+          },
+          "carried_textures": "die_red",
+          "isotropic": true,
+          "ambient_occlusion_exponent": 1,
+          "sound": "stone"
+        }
+      },
       "fileList": [
         "/behavior_packs/custom_blocks/blocks/die.json",
-        "/resource_packs/custom_blocks/blocks.json",
-        "/resource_packs/custom_blocks/texts/en_US.lang",
         "/resource_packs/custom_blocks/textures/blocks/die_1.png",
         "/resource_packs/custom_blocks/textures/blocks/die_2.png",
         "/resource_packs/custom_blocks/textures/blocks/die_3.png",
         "/resource_packs/custom_blocks/textures/blocks/die_4.png",
         "/resource_packs/custom_blocks/textures/blocks/die_5.png",
         "/resource_packs/custom_blocks/textures/blocks/die_6.png",
-        "/resource_packs/custom_blocks/textures/blocks/die_red.png",
-        "/resource_packs/custom_blocks/textures/terrain_texture.json"
+        "/resource_packs/custom_blocks/textures/blocks/die_red.png"
       ],
       "type": 2
     },
@@ -1605,6 +1641,13 @@
       "type": 43,
       "targetType": 28
     },
+    {
+      "title": "Action Set",
+      "id": "action_set",
+      "type": 8,
+      "targetType": 12
+    },
+
     {
       "title": "Animation Controller",
       "id": "animation_controller",

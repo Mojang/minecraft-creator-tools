@@ -27,6 +27,22 @@
 Block Fabricator - https://github.com/microsoft/minecraft-samples/tree/main/casual_creator/gray_wave/behavior_packs/mikeamm_gwve/blocks/fabricator.block.json
 
 "minecraft:collision_box": true
+
+Block Leaf Pile - https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/blocks/leaf_pile.block.json
+
+"minecraft:collision_box": {
+  "origin": [
+    -8,
+    2,
+    -8
+  ],
+  "size": [
+    16,
+    4,
+    16
+  ]
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
@@ -52,6 +68,10 @@ export default interface MinecraftCollisionBox {
    * Minimal position of the bounds of the collision box. "origin" is
    * specified as [x, y, z] and must be in the range (-8, 0, -8) to
    * (8, 16, 8), inclusive.
+   * 
+   * Sample Values:
+   * Block Leaf Pile: [-8,2,-8]
+   *
    */
   origin: number[];
 
@@ -60,6 +80,10 @@ export default interface MinecraftCollisionBox {
    * Size of each side of the collision box. Size is specified as
    * [x, y, z]. "origin" + "size" must be in the range (-8, 0, -8) to
    * (8, 16, 8), inclusive.
+   * 
+   * Sample Values:
+   * Block Leaf Pile: [16,4,16]
+   *
    */
   size: number[];
 

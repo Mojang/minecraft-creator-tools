@@ -392,7 +392,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
           if (srbdef) {
             const ver = srbdef.getFormatVersion();
 
-            this.checkVersions(ver, ["1", "10", "0"], infoItems, pi, "Attachables", 270);
+            this.checkVersions(ver, ["1", "10", "0"], infoItems, pi, "Attachables", 270, true);
             infoItems.push(
               new ProjectInfoItem(
                 InfoItemType.info,
@@ -462,7 +462,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
     infoItems: ProjectInfoItem[],
     pi: ProjectItem,
     typeString: string,
-    identifierOffset: number
+    identifierOffset: number,
+    allowHigherVersions?: boolean
   ) {
     const verShort = currentVersion[0] + "." + currentVersion[1] + "." + currentVersion[2];
 
@@ -493,7 +494,7 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             pi
           )
         );
-      } else if (ver[0] > parseInt(currentVersion[0])) {
+      } else if (ver[0] > parseInt(currentVersion[0]) && !allowHigherVersions) {
         infoItems.push(
           new ProjectInfoItem(
             InfoItemType.error,
@@ -524,7 +525,11 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
             pi
           )
         );
-      } else if (ver[1] > parseInt(currentVersion[1]) && !this.performPlatformVersionValidations) {
+      } else if (
+        ver[1] > parseInt(currentVersion[1]) &&
+        !this.performPlatformVersionValidations &&
+        !allowHigherVersions
+      ) {
         infoItems.push(
           new ProjectInfoItem(
             InfoItemType.warning,
@@ -558,7 +563,8 @@ export default class FormatVersionManager implements IProjectInfoGenerator, IPro
       } else if (
         ver[2] > parseInt(currentVersion[2]) &&
         ver[1] === parseInt(currentVersion[1]) &&
-        !this.performPlatformVersionValidations
+        !this.performPlatformVersionValidations &&
+        !allowHigherVersions
       ) {
         infoItems.push(
           new ProjectInfoItem(

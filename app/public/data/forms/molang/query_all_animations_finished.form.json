@@ -1,6 +1,6 @@
 {
   "id": "query.all_animations_finished",
   "fields": [],
-  "description": "Only valid in an animation controller.  Returns 1.0 if all animations in the current animation controller state have played through at least once, else it returns 0.0.",
+  "description": "Returns 1.0 if all animations in the current animation controller state have played through at least once, else it returns 0.0 (note: Only valid in an animation controller).",
   "title": "All Animations Finished Query"
 }

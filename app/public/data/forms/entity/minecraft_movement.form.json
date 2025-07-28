@@ -120,7 +120,7 @@
         "/vanilla/behavior_pack/entities/happy_ghast.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:adult_mobile/minecraft:movement/",
-            "content": 0.03
+            "content": 0.016
           }
         ],
         "/vanilla/behavior_pack/entities/hoglin.json": [
@@ -489,21 +489,21 @@
     ],
     "/vanilla/behavior_pack/entities/happy_ghast.json": [
       {
+        "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:movement/",
+        "content": {
+          "value": 0.3
+        }
+      },
+      {
         "path": "/minecraft:entity/component_groups/minecraft:adult_mobile/minecraft:movement/",
         "content": {
-          "value": 0.03
+          "value": 0.016
         }
       },
       {
         "path": "/minecraft:entity/component_groups/minecraft:adult_immobile/minecraft:movement/",
         "content": {
           "value": 0
-        }
-      },
-      {
-        "path": "/minecraft:entity/component_groups/minecraft:baby/minecraft:movement/",
-        "content": {
-          "value": 0.3
         }
       }
     ],
@@ -1191,6 +1191,14 @@
         "path": "/minecraft:entity/components/minecraft:movement/",
         "content": {
           "value": 0.5
+        }
+      }
+    ],
+    "/samples/creator_camp/behavior_packs/creator_camp/entities/campghost.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.2
         }
       }
     ]

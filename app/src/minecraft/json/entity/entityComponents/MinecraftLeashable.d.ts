@@ -54,26 +54,6 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
-Chest Boat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/chest_boat.json
-
-"minecraft:leashable": {
-  "presets": [
-    {
-      "filter": {
-        "test": "is_family",
-        "subject": "other",
-        "value": "happy_ghast"
-      },
-      "spring_type": "quad_dampened",
-      "rotation_adjustment": 90
-    },
-    {
-      "rotation_adjustment": 90
-    }
-  ]
-}
-
-
 Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
 
 "minecraft:leashable": {
@@ -236,7 +216,9 @@ export interface MinecraftLeashablePresets {
   /**
    * @remarks
    * Distance (in blocks) over which the entity starts being pulled
-   * toward the leash holder with an spring-like force.
+   * towards the leash holder with a spring-like force. Entities can
+   * enter and stay in vehicles if the leash is stretched under this
+   * distance, but will dismount once it exceeds it.
    */
   hard_distance: number;
 
@@ -255,7 +237,7 @@ export interface MinecraftLeashablePresets {
 
   /**
    * @remarks
-   * Distance (in blocks) over which the entity begins pathfinding toward
+   * Distance (in blocks) over which the entity starts pathfinding toward
    * the leash holder, if able.
    */
   soft_distance: number;

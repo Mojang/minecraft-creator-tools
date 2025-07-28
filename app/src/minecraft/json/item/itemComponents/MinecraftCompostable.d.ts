@@ -8,12 +8,21 @@
  * Contains types for working with various Minecraft Bedrock Edition JSON schemas.
  * 
  * Items Documentation - minecraft:compostable
+ * 
+ * minecraft:compostable Samples
+
+Bag o Leaves - https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/items/bag_o_leaves.json
+
+"minecraft:compostable": {
+  "composting_chance": 100
+}
+
  */
 
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Compostable (minecraft:compostable)
+ * Minecraft Compostable Item (minecraft:compostable)
  * Specifies that an item is compostable and provides the chance of
  * creating a composting layer in the composter.
  */

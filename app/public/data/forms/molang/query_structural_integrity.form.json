@@ -1,6 +1,6 @@
 {
   "id": "query.structural_integrity",
   "fields": [],
-  "description": "Returns the structural integrity for the actor, otherwise returns 0.",
+  "description": "Returns the structural integrity for the entity, otherwise returns 0.",
   "title": "Structural Integrity Query"
 }

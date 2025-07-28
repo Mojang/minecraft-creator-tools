@@ -23,14 +23,9 @@
           }
         ]
       },
-      "alternates": [
-        {
-          "id": "projectile_entity",
-          "dataType": 24
-        }
-      ],
       "description": "Which entity is to be fired as a projectile.",
       "title": "Projectile Entity",
+      "isRequired": true,
       "validity": [
         {
           "comparison": "pattern",
@@ -97,6 +92,6 @@
       }
     ]
   },
-  "title": "Projectile",
+  "title": "Minecraft Projectile Item",
   "id": "minecraft:projectile"
 }

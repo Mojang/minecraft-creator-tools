@@ -14,6 +14,7 @@ import IProperty from "../dataform/IProperty";
 import Log from "../core/Log";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import IFormDefinition from "../dataform/IFormDefinition";
+import Utilities from "../core/Utilities";
 
 interface IDocumentedClassEditorProps extends IFileProps {
   heightOffset: number;
@@ -176,6 +177,10 @@ export default class DocumentedClassEditor extends Component<IDocumentedClassEdi
               const subFields: { [name: string]: IField } = {};
 
               for (const arg of func.arguments) {
+                if (!Utilities.isUsableAsObjectKey(arg.name)) {
+                  Log.unsupportedToken(arg.name);
+                  throw new Error();
+                }
                 allowedKeys.push(arg.name);
 
                 subFields[arg.name] = {

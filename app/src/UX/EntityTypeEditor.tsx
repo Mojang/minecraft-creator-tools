@@ -10,7 +10,7 @@ import { List, ListProps, Toolbar, selectableListBehavior } from "@fluentui/reac
 import ManagedComponentGroup from "../minecraft/ManagedComponentGroup";
 import { CustomTabLabel } from "./Labels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBolt, faBone, faCow, faEgg, faSliders } from "@fortawesome/free-solid-svg-icons";
+import { faBolt, faBone, faCow, faDiagramProject, faEgg, faSliders } from "@fortawesome/free-solid-svg-icons";
 import WebUtilities from "./WebUtilities";
 import Log from "../core/Log";
 import Utilities from "../core/Utilities";
@@ -25,16 +25,30 @@ import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
 import Carto from "../app/Carto";
 import Project from "../app/Project";
 import IEventWrapper from "../minecraft/IEventWrapper";
+import EntityTypeDiagramEditor from "./EntityTypeDiagramEditor";
 
 export enum EntityTypeEditorMode {
-  properties = 0,
-  components = 1,
-  actions = 2,
-  visuals = 3,
-  audio = 4,
-  spawnRules = 5,
-  loot = 6,
+  diagram = 0,
+  properties = 1,
+  components = 2,
+  actions = 3,
+  visuals = 4,
+  audio = 5,
+  spawnRules = 6,
+  loot = 7,
 }
+
+// Layout constants
+const COMPONENTS_MODE_DEFAULT = EntityTypeEditorMode.components;
+const DIAGRAM_MODE_INTERIOR_HEIGHT_OFFSET = 72;
+const PROPERTIES_MODE_INTERIOR_HEIGHT_OFFSET = 72;
+const COMPONENTS_LIST_TOP_HEIGHT = 144;
+const COMPONENTS_MODE_HEIGHT_OFFSET = 115;
+const ACTIONS_MODE_HEIGHT_OFFSET = 115;
+const SPAWN_RULES_MODE_HEIGHT_OFFSET = 170;
+const VISUALS_MODE_HEIGHT_OFFSET = 72;
+const LOOT_MODE_HEIGHT_OFFSET = 72;
+const COMPACT_MODE_TRIGGER_WIDTH = 1016;
 
 interface IEntityTypeEditorProps extends IFileProps {
   heightOffset: number;
@@ -61,6 +75,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     this._setActionsMode = this._setActionsMode.bind(this);
     this._setComponentsMode = this._setComponentsMode.bind(this);
     this._updateManager = this._updateManager.bind(this);
+    this._setDiagramMode = this._setDiagramMode.bind(this);
     this._doUpdate = this._doUpdate.bind(this);
 
     this._setAudioMode = this._setAudioMode.bind(this);
@@ -72,11 +87,9 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     this.state = {
       fileToEdit: props.file,
       isLoaded: false,
-      mode: EntityTypeEditorMode.components,
+      mode: COMPONENTS_MODE_DEFAULT,
       selectedItem: undefined,
     };
-
-    window.setTimeout(this._updateManager, 1);
   }
 
   static getDerivedStateFromProps(props: IEntityTypeEditorProps, state: IEntityTypeEditorState) {
@@ -84,7 +97,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
       state = {
         fileToEdit: props.file,
         isLoaded: false,
-        mode: EntityTypeEditorMode.components,
+        mode: COMPONENTS_MODE_DEFAULT,
         selectedItem: undefined,
       };
 
@@ -162,6 +175,9 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
         et.persist();
       }
     }
+  }
+  _setDiagramMode() {
+    this._setMode(EntityTypeEditorMode.diagram);
   }
 
   _setPropertiesMode() {
@@ -332,17 +348,17 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
   }
 
   render() {
-    const height = "calc(100vh - " + this.props.heightOffset + "px)";
+    const height = "calc(100vh - " + (this.props.heightOffset - 1) + "px)";
     const toolbarItems = [];
     const width = WebUtilities.getWidth();
     let isButtonCompact = false;
     let selectedIndex = 0;
 
-    if (width < 1016) {
+    if (width < COMPACT_MODE_TRIGGER_WIDTH) {
       isButtonCompact = true;
     }
 
-    let topHeight = 144;
+    let topHeight = COMPONENTS_LIST_TOP_HEIGHT;
 
     if (
       this.state === null ||
@@ -356,6 +372,21 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
     if (this.props.setActivePersistable !== undefined) {
       this.props.setActivePersistable(this);
     }
+
+    toolbarItems.push({
+      icon: (
+        <CustomTabLabel
+          icon={<FontAwesomeIcon icon={faDiagramProject} className="fa-lg" />}
+          text={"Overview"}
+          isCompact={isButtonCompact}
+          isSelected={this.state.mode === EntityTypeEditorMode.diagram}
+          theme={this.props.theme}
+        />
+      ),
+      key: "eteDiagramTab",
+      onClick: this._setDiagramMode,
+      title: "Edit properties",
+    });
 
     toolbarItems.push({
       icon: (
@@ -455,7 +486,31 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
 
     let modeArea = <></>;
 
-    if (this.state.mode === EntityTypeEditorMode.properties) {
+    if (this.state.mode === EntityTypeEditorMode.diagram) {
+      let selItem = undefined;
+      if (this.state.fileToEdit && this.state.fileToEdit.manager) {
+        selItem = this.state.fileToEdit.manager as EntityTypeDefinition;
+      }
+
+      if (selItem) {
+        modeArea = (
+          <div
+            className="ete-componentEditorInteriorFull"
+            style={{
+              borderColor: this.props.theme.siteVariables?.colorScheme.brand.background3,
+            }}
+          >
+            <EntityTypeDiagramEditor
+              carto={this.props.carto}
+              project={this.props.project}
+              heightOffset={this.props.heightOffset + DIAGRAM_MODE_INTERIOR_HEIGHT_OFFSET}
+              theme={this.props.theme}
+              entityType={selItem}
+            />
+          </div>
+        );
+      }
+    } else if (this.state.mode === EntityTypeEditorMode.properties) {
       let selItem = undefined;
       if (this.state.fileToEdit && this.state.fileToEdit.manager) {
         selItem = this.state.fileToEdit.manager as EntityTypeDefinition;
@@ -473,7 +528,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               theme={this.props.theme}
               project={this.props.project}
               entityTypeItem={selItem}
-              heightOffset={this.props.heightOffset}
+              heightOffset={this.props.heightOffset + PROPERTIES_MODE_INTERIOR_HEIGHT_OFFSET}
             />
           </div>
         );
@@ -507,7 +562,8 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
 
         if (
           (selItem instanceof EntityTypeDefinition || selItem instanceof ManagedComponentGroup) &&
-          entityTypeDefinition
+          entityTypeDefinition &&
+          selItem.id
         ) {
           itemInterior = (
             <EntityTypeComponentSetEditor
@@ -518,7 +574,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               theme={this.props.theme}
               title={selItem.id}
               isDefault={selItem instanceof EntityTypeDefinition}
-              heightOffset={this.props.heightOffset + 115}
+              heightOffset={this.props.heightOffset + COMPONENTS_MODE_HEIGHT_OFFSET}
             />
           );
         } else {
@@ -587,9 +643,11 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
                 carto={this.props.carto}
                 displayTriggers={true}
                 readOnly={this.props.readOnly}
+                displayAddRemoveGroups={true}
+                displayHelperText={true}
                 theme={this.props.theme}
                 project={this.props.project}
-                heightOffset={this.props.heightOffset + 115}
+                heightOffset={this.props.heightOffset + ACTIONS_MODE_HEIGHT_OFFSET}
                 entityType={et}
                 event={selItem.event}
                 id={selItem.id}
@@ -660,7 +718,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               theme={this.props.theme}
               displayHeader={false}
               file={spawnItem.primaryFile}
-              heightOffset={this.props.heightOffset + 170}
+              heightOffset={this.props.heightOffset + SPAWN_RULES_MODE_HEIGHT_OFFSET}
             />
           </div>
         );
@@ -690,7 +748,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               projectItem={resourceItem}
               project={this.props.project}
               file={resourceItem.primaryFile}
-              heightOffset={this.props.heightOffset + 170}
+              heightOffset={this.props.heightOffset + VISUALS_MODE_HEIGHT_OFFSET}
             />
           </div>
         );
@@ -718,7 +776,7 @@ export default class EntityTypeEditor extends Component<IEntityTypeEditorProps, 
               theme={this.props.theme}
               project={this.props.project}
               file={lootTableItem.primaryFile}
-              heightOffset={this.props.heightOffset + 88}
+              heightOffset={this.props.heightOffset + LOOT_MODE_HEIGHT_OFFSET}
             />
           </div>
         );

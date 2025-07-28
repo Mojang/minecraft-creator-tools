@@ -13,7 +13,8 @@
 import * as jsoncommon from './../../jsoncommon';
 
 /**
- * Ambient Sounds (minecraft:ambient_sounds)
+ * Minecraft Ambient Sounds Client Biome 
+ * (minecraft:ambient_sounds)
  * Sets the ambient sounds for the biome. These sounds must be in
  * the 'individual_named_sounds' in a 'sounds.json' file.
  */
@@ -23,14 +24,14 @@ export default interface MinecraftAmbientSounds {
    * @remarks
    * Named sound that occasionally plays at the listener position
    */
-  addition: string;
+  addition: object;
 
   /**
    * @remarks
    * Named sound that loops while the listener position is inside the
    * biome
    */
-  loop: string;
+  loop: object;
 
   /**
    * @remarks
@@ -38,6 +39,6 @@ export default interface MinecraftAmbientSounds {
    * the light level is low. Biomes without an ambient mood sound will
    * use the 'ambient.cave' sound.
    */
-  mood: string;
+  mood: object;
 
 }

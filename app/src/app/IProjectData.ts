@@ -28,8 +28,9 @@ export enum ProjectScriptLanguage {
 }
 
 export enum ProjectScriptVersion {
-  latestBeta = 0,
+  latestStable = 0,
   stable10 = 1,
+  latestBeta = 999,
 }
 
 export enum ProjectEditPreference {

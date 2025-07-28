@@ -6,6 +6,7 @@ import Utilities from "./../core/Utilities";
 import INbtTag from "./INbtTag";
 import Log from "../core/Log";
 import { IErrorMessage, IErrorable } from "../core/IErrorable";
+import DataUtilities from "../core/DataUtilities";
 
 export default class NbtBinary implements IErrorable {
   roots: NbtBinaryTag[] | null = null;
@@ -52,87 +53,6 @@ export default class NbtBinary implements IErrorable {
     });
   }
 
-  private _getSignedByte(num: number) {
-    const buffer = new ArrayBuffer(1);
-    const bytes = new Uint8Array(buffer);
-
-    bytes[0] = num;
-
-    const view = new DataView(buffer);
-
-    return view.getInt8(0);
-  }
-
-  private _getFloat(num1: number, num2: number, num3: number, num4: number, littleEndian: boolean) {
-    const buffer = new ArrayBuffer(4);
-    const bytes = new Uint8Array(buffer);
-
-    bytes[0] = num1;
-    bytes[1] = num2;
-    bytes[2] = num3;
-    bytes[3] = num4;
-
-    const view = new DataView(buffer);
-
-    return view.getFloat32(0, littleEndian);
-  }
-
-  private _getSignedLong(
-    num1: number,
-    num2: number,
-    num3: number,
-    num4: number,
-    num5: number,
-    num6: number,
-    num7: number,
-    num8: number,
-    littleEndian: boolean
-  ) {
-    const buffer = new ArrayBuffer(8);
-    const bytes = new Uint8Array(buffer);
-
-    bytes[0] = num1;
-    bytes[1] = num2;
-    bytes[2] = num3;
-    bytes[3] = num4;
-    bytes[4] = num5;
-    bytes[5] = num6;
-    bytes[6] = num7;
-    bytes[7] = num8;
-
-    const view = new DataView(buffer);
-
-    return view.getBigInt64(0, littleEndian);
-  }
-
-  private _getSignedDouble(
-    num1: number,
-    num2: number,
-    num3: number,
-    num4: number,
-    num5: number,
-    num6: number,
-    num7: number,
-    num8: number,
-    littleEndian: boolean
-  ) {
-    const buffer = new ArrayBuffer(8);
-    const bytes = new Uint8Array(buffer);
-
-    bytes[0] = num1;
-    bytes[1] = num2;
-    bytes[2] = num3;
-    bytes[3] = num4;
-    bytes[4] = num5;
-    bytes[5] = num6;
-    bytes[6] = num7;
-    bytes[7] = num8;
-
-    const view = new DataView(buffer);
-
-    return view.getFloat64(0, littleEndian);
-  }
-
   private _getVarInt(data: Uint8Array, index: number) {
     let bytesRead = 0;
     let result = 0;
@@ -156,64 +76,6 @@ export default class NbtBinary implements IErrorable {
       value: result,
       bytesRead: bytesRead,
     };
-  }
-
-  private _getSignedShort(num1: number, num2: number, littleEndian: boolean) {
-    const buffer = new ArrayBuffer(2);
-
-    const bytes = new Uint8Array(buffer);
-
-    bytes[0] = num1;
-    bytes[1] = num2;
-
-    const view = new DataView(buffer);
-
-    return view.getInt16(0, littleEndian);
-  }
-
-  private _getUnsignedShort(num1: number, num2: number, littleEndian: boolean) {
-    const buffer = new ArrayBuffer(2);
-
-    const bytes = new Uint8Array(buffer);
-
-    bytes[0] = num1;
-    bytes[1] = num2;
-
-    const view = new DataView(buffer);
-
-    return view.getUint16(0, littleEndian);
-  }
-
-  private _getSignedInteger(num1: number, num2: number, num3: number, num4: number, littleEndian: boolean) {
-    const buffer = new ArrayBuffer(4);
-
-    const bytes = new Uint8Array(buffer);
-
-    bytes[0] = num1;
-    bytes[1] = num2;
-    bytes[2] = num3;
-    bytes[3] = num4;
-
-    const view = new DataView(buffer);
-
-    const val = view.getInt32(0, littleEndian);
-
-    return val;
-  }
-
-  private _getUnsignedInteger(num1: number, num2: number, num3: number, num4: number, littleEndian: boolean) {
-    const buffer = new ArrayBuffer(4);
-
-    const bytes = new Uint8Array(buffer);
-
-    bytes[0] = num1;
-    bytes[1] = num2;
-    bytes[2] = num3;
-    bytes[3] = num4;
-
-    const view = new DataView(buffer);
-
-    return view.getUint32(0, littleEndian);
   }
 
   getJsonString() {
@@ -365,14 +227,14 @@ export default class NbtBinary implements IErrorable {
           break;
         }
       } else if (activeTag.type === NbtTagType.byte) {
-        activeTag.value = this._getSignedByte(data[i++]);
+        activeTag.value = DataUtilities.getSignedByte(data[i++]);
       } else if (activeTag.type === NbtTagType.byteArray) {
-        const arrayLength = this._getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian);
+        const arrayLength = DataUtilities.getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian);
 
         const numberArray: number[] = [];
 
         for (let j = 0; j < arrayLength; j++) {
-          numberArray.push(this._getSignedByte(data[i++]));
+          numberArray.push(DataUtilities.getSignedByte(data[i++]));
         }
 
         activeTag.value = numberArray;
@@ -381,7 +243,7 @@ export default class NbtBinary implements IErrorable {
         tagStack.push(activeTag);
 
         listTypeStack[tagStack.length - 1] = data[i++] as NbtTagType;
-        listCountStack[tagStack.length - 1] = this._getSignedInteger(
+        listCountStack[tagStack.length - 1] = DataUtilities.getSignedInteger(
           data[i++],
           data[i++],
           data[i++],
@@ -389,23 +251,23 @@ export default class NbtBinary implements IErrorable {
           littleEndian
         );
       } else if (activeTag.type === NbtTagType.intArray) {
-        const arrayLength = this._getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian);
+        const arrayLength = DataUtilities.getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian);
 
         const numberArray: number[] = [];
 
         for (let j = 0; j < arrayLength; j++) {
-          numberArray.push(this._getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian));
+          numberArray.push(DataUtilities.getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian));
         }
 
         activeTag.value = numberArray;
       } else if (activeTag.type === NbtTagType.longArray) {
-        const arrayLength = this._getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian);
+        const arrayLength = DataUtilities.getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian);
 
         const numberArray: bigint[] = [];
 
         for (let j = 0; j < arrayLength; j++) {
           numberArray.push(
-            this._getSignedLong(
+            DataUtilities.getSignedLong(
               data[i++],
               data[i++],
               data[i++],
@@ -421,13 +283,13 @@ export default class NbtBinary implements IErrorable {
 
         activeTag.value = numberArray;
       } else if (activeTag.type === NbtTagType.short) {
-        activeTag.value = this._getSignedShort(data[i++], data[i++], littleEndian);
+        activeTag.value = DataUtilities.getSignedShort(data[i++], data[i++], littleEndian);
       } else if (activeTag.type === NbtTagType.int) {
-        activeTag.value = this._getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian);
+        activeTag.value = DataUtilities.getSignedInteger(data[i++], data[i++], data[i++], data[i++], littleEndian);
       } else if (activeTag.type === NbtTagType.float) {
-        activeTag.value = this._getFloat(data[i++], data[i++], data[i++], data[i++], littleEndian);
+        activeTag.value = DataUtilities.getFloat(data[i++], data[i++], data[i++], data[i++], littleEndian);
       } else if (activeTag.type === NbtTagType.double) {
-        activeTag.value = this._getSignedDouble(
+        activeTag.value = DataUtilities.getSignedDouble(
           data[i++],
           data[i++],
           data[i++],
@@ -439,7 +301,7 @@ export default class NbtBinary implements IErrorable {
           littleEndian
         );
       } else if (activeTag.type === NbtTagType.long) {
-        activeTag.value = this._getSignedLong(
+        activeTag.value = DataUtilities.getSignedLong(
           data[i++],
           data[i++],
           data[i++],
@@ -460,7 +322,7 @@ export default class NbtBinary implements IErrorable {
 
           i += result.bytesRead;
         } else {
-          stringLength = this._getUnsignedShort(data[i++], data[i++], littleEndian);
+          stringLength = DataUtilities.getUnsignedShort(data[i++], data[i++], littleEndian);
         }
 
         const view = new DataView(data.buffer);

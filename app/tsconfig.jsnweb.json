@@ -1,11 +1,11 @@
 {
 	"compilerOptions": {
 		"module": "commonjs",
-		"target": "ES2020",
+		"target": "es2022",
 		"outDir": "dist",
 		"moduleResolution": "node",
 		"lib": [
-			"ES2020","dom"
+			"es2022","dom"
 		],
 		"types": [ "@types/wicg-file-system-access"],
 		"sourceMap": true,

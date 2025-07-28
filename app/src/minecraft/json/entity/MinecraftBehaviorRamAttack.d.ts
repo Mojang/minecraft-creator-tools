@@ -126,7 +126,7 @@ export default interface MinecraftBehaviorRamAttack {
    * Goat: [{"event":"start_event","target":"self"}]
    *
    */
-  on_start: string[];
+  on_start: jsoncommon.MinecraftEventTrigger;
 
   /**
    * @remarks

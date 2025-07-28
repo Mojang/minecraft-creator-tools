@@ -11,7 +11,7 @@
  * 
  * minecraft:behavior.explore_outskirts Samples
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/component_groups/job_specific_goals/minecraft:behavior.explore_outskirts/: 
 "minecraft:behavior.explore_outskirts": {}
@@ -55,7 +55,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * to explore the outskirts.
    * 
    * Sample Values:
-   * Villager V2: [5,0,5]
+   * Villager v2: [5,0,5]
    *
    */
   dist_from_boundary: number[];
@@ -66,7 +66,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * village bounds when choosing its travel point.
    * 
    * Sample Values:
-   * Villager V2: 6
+   * Villager v2: 6
    *
    */
   explore_dist: number;
@@ -78,7 +78,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * goal exits.
    * 
    * Sample Values:
-   * Villager V2: 60
+   * Villager v2: 60
    *
    */
   max_travel_time: number;
@@ -91,7 +91,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * the entity will explore random points before the goal stops.
    * 
    * Sample Values:
-   * Villager V2: 10
+   * Villager v2: 10
    *
    */
   max_wait_time: number;
@@ -102,7 +102,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * has successfully reached its target.
    * 
    * Sample Values:
-   * Villager V2: 2.5
+   * Villager v2: 2.5
    *
    */
   min_dist_from_target: number;
@@ -113,7 +113,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 1
+   * Villager v2: 1
    *
    */
   min_perimeter: number;
@@ -125,7 +125,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * maximum wait time.
    * 
    * Sample Values:
-   * Villager V2: 3
+   * Villager v2: 3
    *
    */
   min_wait_time: number;
@@ -137,7 +137,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * finished and the wait timer has elapsed.
    * 
    * Sample Values:
-   * Villager V2: 5
+   * Villager v2: 5
    *
    */
   next_xz: number;
@@ -149,7 +149,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * finished and the wait timer has elapsed.
    * 
    * Sample Values:
-   * Villager V2: 3
+   * Villager v2: 3
    *
    */
   next_y: number;
@@ -161,7 +161,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * goal.
    * 
    * Sample Values:
-   * Villager V2: 9
+   * Villager v2: 9
    *
    */
   priority: number;
@@ -172,7 +172,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * speed.
    * 
    * Sample Values:
-   * Villager V2: 0.6
+   * Villager v2: 0.6
    *
    */
   speed_multiplier: number;
@@ -185,7 +185,7 @@ export default interface MinecraftBehaviorExploreOutskirts {
    * runs.
    * 
    * Sample Values:
-   * Villager V2: 2
+   * Villager v2: 2
    *
    */
   timer_ratio: number;

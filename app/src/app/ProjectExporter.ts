@@ -15,7 +15,6 @@ import AppServiceProxy, { AppServiceProxyCommands } from "./../core/AppServicePr
 import ZipStorage from "../storage/ZipStorage";
 import { ProjectFocus } from "../app/IProjectData";
 import { IWorldSettings } from "../minecraft/IWorldSettings";
-import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import ProjectUpdateRunner from "../updates/ProjectUpdateRunner";
 import CartoApp from "./CartoApp";
 import HttpStorage from "../storage/HttpStorage";
@@ -23,6 +22,7 @@ import ProjectBuild from "./ProjectBuild";
 import { Generator } from "../minecraft/WorldLevelDat";
 import IConversionSettings from "../core/IConversionSettings";
 import { ProjectItemType } from "./IProjectItemData";
+import ProjectUtilities from "./ProjectUtilities";
 
 export const enum FolderDeploy {
   retailFolders = 0,
@@ -147,7 +147,7 @@ export default class ProjectExporter {
     await rootFolder.saveAll();
 
     if (isNewProject) {
-      await this.renameDefaultFolders(project, projName);
+      await ProjectUtilities.renameDefaultFolders(project, projName);
 
       project.originalGitHubOwner = gitHubOwner;
       project.originalGitHubRepoName = gitHubRepoName;
@@ -167,29 +167,6 @@ export default class ProjectExporter {
     await carto.save();
 
     return project;
-  }
-
-  static async renameDefaultFolders(project: Project, newTokenName: string) {
-    const bpFolder = await project.getDefaultBehaviorPackFolder(true);
-    const rpFolder = await project.getDefaultResourcePackFolder(true);
-
-    newTokenName = MinecraftUtilities.makeNameFolderSafe(newTokenName);
-
-    if (bpFolder) {
-      try {
-        await bpFolder.rename(newTokenName);
-      } catch (e) {
-        // perhaps folder could not be renamed because a folder exists; continue in this case.
-      }
-    }
-
-    if (rpFolder) {
-      try {
-        await rpFolder.rename(newTokenName);
-      } catch (e) {
-        // perhaps folder could not be renamed because a folder exists; continue in this case.
-      }
-    }
   }
 
   static async getPackFolder(folder: IFolder, seekingResource: boolean) {

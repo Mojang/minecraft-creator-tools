@@ -214,23 +214,12 @@ export default class BlockTypeActionEditor extends Component<IBlockTypeActionEdi
         }
       );
 
-      const defaultScriptFile = await this.props.project.getDefaultScriptsFile();
-
-      if (defaultScriptFile) {
-        await defaultScriptFile.loadContent();
-
-        if (typeof defaultScriptFile.content === "string" && defaultScriptFile.content.length > 0) {
-          if (defaultScriptFile.content.indexOf("init" + fileNameSugg) <= 0) {
-            let newContent = "import { init" + fileNameSugg + ' } from "./' + fileNameSugg + '"\r\n';
-
-            newContent += defaultScriptFile.content + "\r\ninit" + fileNameSugg + "();\r\n";
-
-            defaultScriptFile.setContent(newContent);
-
-            await defaultScriptFile.saveContent();
-          }
-        }
-      }
+      await ProjectUtilities.ensureContentInDefaultScriptFile(
+        this.props.project,
+        "init" + fileNameSugg,
+        "import { init" + fileNameSugg + ' } from "./' + fileNameSugg + '"\r\n',
+        false
+      );
 
       this.forceUpdate();
     }

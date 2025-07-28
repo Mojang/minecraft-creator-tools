@@ -38,7 +38,6 @@ import { MaxItemTypes, ProjectItemType } from "./IProjectItemData";
 import DeploymentStorageMinecraft from "./DeploymentStorageMinecraft";
 import MinecraftUtilities from "../minecraft/MinecraftUtilities";
 import IGalleryItem, { GalleryItemType } from "./IGalleryItem";
-import ProjectItemRelations from "./ProjectItemRelations";
 import ProjectUtilities from "./ProjectUtilities";
 
 export enum CartoMinecraftState {
@@ -151,6 +150,10 @@ export default class Carto {
     }
 
     return this.#data.collapsedTypes;
+  }
+
+  public get data() {
+    return this.#data;
   }
 
   public set collapsedTypes(newCollapsedTypes: number[]) {
@@ -281,6 +284,7 @@ export default class Carto {
   public set windowX(newVal: number | undefined) {
     this.#data.windowX = newVal;
   }
+
   public get windowY() {
     if (this.#data.windowY === undefined) {
       return 0;
@@ -1000,7 +1004,10 @@ export default class Carto {
 
     if (arr === undefined) {
       arr = [];
-      this.mcLogs[fileName] = arr;
+
+      if (Utilities.isUsableAsObjectKey(fileName)) {
+        this.mcLogs[fileName] = arr;
+      }
     }
 
     const logItems = contents.split("\r");
@@ -1346,7 +1353,7 @@ export default class Carto {
     const newProject = new Project(this, targetProjectName, projectPrefs);
 
     if (newProjectPath && !newProjectFolder) {
-      newProject.mainDeployFolderPath = newProjectPath;
+      newProject.localFolderPath = newProjectPath;
     }
 
     if (projectLanguage) {
@@ -1374,7 +1381,7 @@ export default class Carto {
   async createNewProjectFromFolder(path: string) {
     await this.load();
 
-    let newProjectName = StorageUtilities.getLeafName(path);
+    let newProjectName = StorageUtilities.convertFolderPlaceholdersComplete(StorageUtilities.getLeafName(path));
 
     let counter = 0;
 
@@ -1389,7 +1396,7 @@ export default class Carto {
     const projectPrefs = await this.prefsProjectsFolder.createFile(newProjectName + ".json");
 
     const newProject = new Project(this, newProjectName, projectPrefs);
-    newProject.mainDeployFolderPath = path;
+    newProject.localFolderPath = path;
 
     await newProject.ensureProjectFolder();
 
@@ -1457,7 +1464,7 @@ export default class Carto {
     for (let i = 0; i < this.projects.length; i++) {
       const proj = this.projects[i];
 
-      if (proj.mainDeployFolderPath && StorageUtilities.canonicalizePath(proj.mainDeployFolderPath) === localPath) {
+      if (proj.localFolderPath && StorageUtilities.canonicalizePath(proj.localFolderPath) === localPath) {
         return proj;
       }
     }
@@ -1482,8 +1489,8 @@ export default class Carto {
     if (project !== undefined) {
       await project.ensurePreferencesAndFolderLoadedFromFile();
 
-      if (project.mainDeployFolderPath !== undefined) {
-        if (canonPath === StorageUtilities.canonicalizePath(project.mainDeployFolderPath)) {
+      if (project.localFolderPath !== undefined) {
+        if (canonPath === StorageUtilities.canonicalizePath(project.localFolderPath)) {
           await project.ensureInflated();
           await project.inferProjectItemsFromFiles();
 
@@ -1506,7 +1513,8 @@ export default class Carto {
     const projectPrefs = await this.prefsProjectsFolder.createFile(desiredProjectName + ".json");
 
     const newProject = new Project(this, desiredProjectName, projectPrefs);
-    newProject.mainDeployFolderPath = messageProjectPath;
+
+    newProject.localFolderPath = messageProjectPath;
     newProject.originalFullPath = messageProjectPath;
 
     const localStorage = await this.local.createStorage(messageProjectPath);
@@ -1520,8 +1528,6 @@ export default class Carto {
 
     await newProject.ensureProjectFolder();
 
-    await ProjectItemRelations.calculate(newProject);
-
     await newProject.inferProjectItemsFromFiles();
 
     this.projects.push(newProject);
@@ -1529,8 +1535,10 @@ export default class Carto {
     return newProject;
   }
 
-  async ensureProjectForFolder(folderPath: string, newProjectName?: string, openDirect?: boolean) {
+  async ensureProjectForLocalFolder(folderPath: string, newProjectName?: string, openDirect?: boolean) {
     await this.load();
+
+    folderPath = StorageUtilities.convertFolderPlaceholders(folderPath);
 
     let desiredProjectName = "";
 
@@ -1539,6 +1547,8 @@ export default class Carto {
     } else {
       desiredProjectName = StorageUtilities.getLeafName(folderPath);
     }
+
+    desiredProjectName = StorageUtilities.convertFolderPlaceholdersComplete(desiredProjectName);
 
     let canonPath = StorageUtilities.canonicalizePath(folderPath);
 
@@ -1552,8 +1562,8 @@ export default class Carto {
     if (project !== undefined && !openDirect) {
       await project.ensurePreferencesAndFolderLoadedFromFile();
 
-      if (project.mainDeployFolderPath !== undefined) {
-        if (canonPath === StorageUtilities.canonicalizePath(project.mainDeployFolderPath)) {
+      if (project.localFolderPath !== undefined) {
+        if (canonPath === StorageUtilities.canonicalizePath(project.localFolderPath)) {
           await project.ensureInflated();
           await project.inferProjectItemsFromFiles();
 
@@ -1584,8 +1594,8 @@ export default class Carto {
 
       await project.ensurePreferencesAndFolderLoadedFromFile();
 
-      if (project.mainDeployFolderPath !== undefined) {
-        if (canonPath === StorageUtilities.canonicalizePath(project.mainDeployFolderPath)) {
+      if (project.localFolderPath !== undefined) {
+        if (canonPath === StorageUtilities.canonicalizePath(project.localFolderPath)) {
           await project.ensureInflated();
           await project.inferProjectItemsFromFiles();
 
@@ -1607,8 +1617,9 @@ export default class Carto {
 
     const projectPrefs = await this.prefsProjectsFolder.createFile(desiredProjectName + ".json");
 
-    const newProject = new Project(this, desiredProjectName, projectPrefs);
-    newProject.mainDeployFolderPath = folderPath;
+    const newProject = new Project(this, desiredProjectName, projectPrefs, true);
+
+    newProject.localFolderPath = folderPath;
     newProject.originalFullPath = folderPath;
 
     await newProject.ensureProjectFolder();
@@ -1870,12 +1881,11 @@ export default class Carto {
         this.lastActiveMinecraftFlavor = MinecraftFlavor.remote;
         this.save();
       }
+      this._onMinecraftStateChanged.dispatch(this.activeMinecraft, CartoMinecraftState.newMinecraft);
 
       if (this.activeMinecraft === undefined) {
         Log.unexpectedUndefined("EMA");
         return undefined;
-      } else {
-        this._onMinecraftStateChanged.dispatch(this.activeMinecraft, CartoMinecraftState.newMinecraft);
       }
 
       this.activeMinecraft.onStateChanged.subscribe(this._bubbleMinecraftStateChanged);

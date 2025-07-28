@@ -12,6 +12,7 @@ import ComponentProperty from "./ComponentProperty";
 import NbtBinaryTag from "./NbtBinaryTag";
 import IManagedComponent from "./IManagedComponent";
 import { ManagedComponent } from "./ManagedComponent";
+import Utilities from "../core/Utilities";
 
 export default class ComponentizedBase implements IManagedComponentSetItem {
   private _components: { [id: string]: IComponent | string | string[] | boolean | number[] | number | undefined };
@@ -35,6 +36,8 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
     return this._onComponentChanged.asEvent();
   }
 
+  id: string = "";
+
   constructor() {
     this._componentProperties = {};
     this._components = {};
@@ -54,7 +57,7 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
       return undefined;
     }
 
-    if (!this._managedComponents[id]) {
+    if (!this._managedComponents[id] && Utilities.isUsableAsObjectKey(id)) {
       this._managedComponents[id] = new ManagedComponent(this._components, id, component);
     }
 
@@ -122,7 +125,7 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
 
     id = MinecraftUtilities.canonicalizeFullName(id);
 
-    if (this._components === undefined || this._managedComponents === undefined) {
+    if (this._components === undefined || this._managedComponents === undefined || !Utilities.isUsableAsObjectKey(id)) {
       Log.unexpectedUndefined("CBEC");
       throw new Error();
     }
@@ -143,6 +146,11 @@ export default class ComponentizedBase implements IManagedComponentSetItem {
     this._ensureComponentsInitialized();
 
     id = MinecraftUtilities.canonicalizeFullName(id);
+
+    if (!Utilities.isUsableAsObjectKey(id)) {
+      Log.unsupportedToken(id);
+      throw new Error();
+    }
 
     component.id = id;
 

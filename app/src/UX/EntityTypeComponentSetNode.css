@@ -1,0 +1,43 @@
+.ecsn-box {
+  width: 220px;
+}
+
+.ecsn-inner {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  max-width: 211px;
+}
+
+.ecsn-header {
+  height: 30px;
+  padding-left: 6px;
+  vertical-align: middle;
+}
+
+.ecsn-unselected {
+  border: 3px solid transparent;
+}
+.ecsn-selected {
+  border: 3px solid red;
+}
+
+.ecsn-connectionPoint {
+  height: 30px;
+  max-width: 220px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  border-top: solid 1px;
+  border-bottom: solid 1px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  padding-top: 5px;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-bottom: 5px;
+}
+
+.ecsn-connectBin {
+  padding-top: 4px;
+  padding-bottom: 14px;
+}

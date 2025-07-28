@@ -3,32 +3,42 @@
     {
       "id": "distance_to_players",
       "title": "Distance To Players",
-      "description": "The distance at which the closest player has to be before this entity despawns. This option will be ignored if never_despawn is true. Min: 128 blocks.",
-      "defaultValue": 128,
-      "dataType": 3
+      "description": "The distance at which the closest player has to be before this entity despawns. This option will be ignored if never_despawn is true. Default value: 128.",
+      "dataType": 3,
+      "validity": [
+        {
+          "comparison": ">=",
+          "value": 128
+        }
+      ],
+      "defaultValue": 128
     },
     {
       "id": "never_despawn",
       "title": "Never Despawn",
-      "description": "If true, this entity will not despawn even if players are far away. If false, distance_to_players will be used to determine when to despawn.",
-      "defaultValue": true,
-      "dataType": 1
+      "description": "If true, this entity will not despawn even if players are far away. If false, distance_to_players will be used to determine when to despawn. Default value: true.",
+      "dataType": 1,
+      "defaultValue": true
     },
     {
       "id": "radius",
       "title": "Radius",
-      "description": "The area around the entity to tick. Default: 2. Allowed range: 2-6.",
-      "defaultValue": 2,
+      "description": "The area around the entity to tick. Allowed range: 2-6. Default value: 2.",
       "dataType": 0,
       "validity": [
         {
           "comparison": ">=",
-          "value": 0
+          "value": 2
+        },
+        {
+          "comparison": "<=",
+          "value": 6
         }
-      ]
+      ],
+      "defaultValue": 2
     }
   ],
   "description": "Defines if the entity ticks the world and the radius around it to tick.",
-  "title": "Tick World",
+  "title": "Minecraft Tick World Entity",
   "id": "minecraft:tick_world"
 }

@@ -24,7 +24,8 @@
                     "comparison": "pattern",
                     "value": "^(?:.)+:(?:.)+$"
                   }
-                ]
+                ],
+                "isRequired": true
               }
             ]
           }
@@ -41,7 +42,8 @@
           "comparison": "pattern",
           "value": "^(?:.)+:(?:.)+$"
         }
-      ]
+      ],
+      "isRequired": true
     }
   ],
   "description": "The identifier of a group of items.",

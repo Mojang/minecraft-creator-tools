@@ -7,6 +7,10 @@ import StorageUtilities from "../storage/StorageUtilities";
 import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 import ISpawnRulesBehavior, { ISpawnRulesInner } from "./ISpawnRulesBehavior";
+import Project from "../app/Project";
+import ProjectItem from "../app/ProjectItem";
+import { ProjectItemType } from "../app/IProjectItemData";
+import EntityTypeDefinition from "./EntityTypeDefinition";
 
 export default class SpawnRulesBehaviorDefinition {
   private _file?: IFile;
@@ -125,6 +129,41 @@ export default class SpawnRulesBehaviorDefinition {
     const bpString = JSON.stringify(this.data, null, 2);
 
     this._file.setContent(bpString);
+  }
+
+  async addChildItems(project: Project, item: ProjectItem) {
+    if (!this.id) {
+      return;
+    }
+
+    const itemsCopy = project.getItemsCopy();
+    let foundMatch = false;
+
+    // Check if there's a matching entity type behavior
+    for (const candItem of itemsCopy) {
+      if (candItem.itemType === ProjectItemType.entityTypeBehavior) {
+        await candItem.ensureStorage();
+
+        if (candItem.primaryFile) {
+          const entityType = await EntityTypeDefinition.ensureOnFile(candItem.primaryFile);
+
+          if (entityType) {
+            const entityId = entityType.id;
+
+            if (entityId === this.id) {
+              foundMatch = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    // If no matching entity type was found, add as unfulfilled relationship
+    if (!foundMatch) {
+      const isVanilla = await Database.isVanillaToken(this.id);
+      item.addUnfulfilledRelationship(this.id, ProjectItemType.entityTypeBehavior, isVanilla);
+    }
   }
 
   async load() {

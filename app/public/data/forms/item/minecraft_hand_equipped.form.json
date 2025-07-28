@@ -23,5 +23,6 @@
         "content": true
       }
     ]
-  }
+  },
+  "id": "minecraft:hand_equipped"
 }

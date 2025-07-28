@@ -1,9 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+export const NumberInfoItemTypes = 9;
+
 export enum InfoItemType {
-  testCompleteSuccess = 0,
-  testCompleteFail = 1,
+  testCompleteFail = 0,
+  testCompleteSuccess = 1,
   info = 2,
   error = 3,
   warning = 4,

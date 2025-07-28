@@ -13,6 +13,7 @@ import { MinecraftFilterClause } from "../minecraft/jsoncommon/MinecraftFilterCl
 export interface IMinecraftFilterClauseEditorProps {
   data: MinecraftFilterClause;
   displayCloseButton: boolean;
+  displayNarrow?: boolean;
   filterContextId: string;
   onChange?: (data: IMinecraftFilterClauseEditorProps) => void;
   onClose?: (data: IMinecraftFilterClauseEditorProps) => void;
@@ -310,10 +311,16 @@ export default class MinecraftFilterClauseEditor extends Component<
       descript = MinecraftUtilities.shortenFilterDescription(form.description);
     }
 
+    let prefix = "mificl-";
+
+    if (this.props.displayNarrow) {
+      prefix = "mificln-";
+    }
+
     return (
-      <div className="mificl-outer">
-        <div className="mificl-inner">
-          <div className="mificl-cell">
+      <div className={prefix + "outer"}>
+        <div className={prefix + "inner"}>
+          <div className={prefix + "cell"}>
             <Dropdown
               items={[
                 {
@@ -331,18 +338,17 @@ export default class MinecraftFilterClauseEditor extends Component<
               onChange={this._handleSubjectChange}
             />
           </div>
-          <div className="mificl-cell mificl-test">
+          <div className={prefix + "cell " + prefix + "test"}>
             <Dropdown
               items={filterItems}
               defaultValue={this.state.test}
               value={this.state.test}
               onChange={this._handleTestChange}
             />
-            <div className="mificl-descript">{descript}</div>
+            <div className={prefix + "descript"}>{descript}</div>
           </div>
           {eq}
           {val}
-
           {closeButtonSpace}
         </div>
       </div>

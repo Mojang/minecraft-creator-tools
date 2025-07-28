@@ -1,0 +1,15 @@
+{
+  "id": "test_simulated_player_spawn",
+  "title": "Spawn Entity",
+  "tags": [
+    "test",
+    "action"
+  ],
+  "fields": [
+    {
+      "id": "location",
+      "title": "Location",
+      "dataType": 11
+    }
+  ]
+}

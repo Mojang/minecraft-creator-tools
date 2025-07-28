@@ -54,13 +54,13 @@ export default class AnimationControllerResourceDefinition implements IDefinitio
       return undefined;
     }
 
-    const idList = [];
+    const idList = new Set<string>();
 
     for (const key in this._data.animation_controllers) {
       const ac = this._data.animation_controllers[key];
 
       if (key && ac) {
-        idList.push(key);
+        idList.add(key);
       }
     }
 

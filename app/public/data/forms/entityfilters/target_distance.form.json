@@ -110,6 +110,10 @@
       "dataType": 3
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests the distance between the calling entity and its target.",
   "title": "Target Distance",
   "samples": {

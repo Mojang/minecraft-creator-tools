@@ -38,7 +38,7 @@ Bee - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
 }
 
 
-Villager V2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
+Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
  * At /minecraft:entity/components/minecraft:damage_sensor/triggers/0/on_damage/filters/1/: 
 {
@@ -62,7 +62,7 @@ export default interface IsDifficulty {
    * (Optional) The comparison to apply with 'value'.
    * 
    * Sample Values:
-   * Villager V2: "!="
+   * Villager v2: "!="
    *
    */
   operator: string;

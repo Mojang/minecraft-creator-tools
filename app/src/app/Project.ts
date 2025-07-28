@@ -52,6 +52,7 @@ export enum ProjectAutoDeploymentMode {
 export enum ProjectErrorState {
   noError = 0,
   projectFolderOrFileDoesNotExist = 1,
+  cabinetFileCouldNotBeProcessed = 2,
 }
 
 export enum FolderContext {
@@ -69,6 +70,7 @@ export enum FolderContext {
   libFolder = 11,
   persona = 12,
   mctoolsWorkingFolder = 13,
+  designPack = 14,
 }
 
 export const ProjectTargetStrings = [
@@ -118,11 +120,14 @@ export default class Project {
   #carto: Carto;
   loc: LocManager;
   #errorState = ProjectErrorState.noError;
+  #errorMessage?: string | undefined;
   #infoSet: ProjectInfoSet | null = null;
 
   #gitHubStorage?: GitHubStorage;
 
   public differencesFromGitHub?: DifferenceSet;
+
+  #relationsProcessed: boolean = false;
 
   #folderStructureLoaded: boolean = false;
   #infoSetNeedsUpdating: boolean = false;
@@ -150,6 +155,13 @@ export default class Project {
 
   skinPacksContainer: IFolder | null;
   defaultSkinPackFolder: IFolder | null;
+
+  personaPacksContainer: IFolder | null;
+  defaultPersonaPackFolder: IFolder | null;
+
+  designPacksContainer: IFolder | null;
+  defaultDesignPackFolder: IFolder | null;
+  projectItemAccessoryFolder: IFolder | null;
 
   #packs: Pack[] = [];
 
@@ -184,6 +196,9 @@ export default class Project {
   private _onItemChanged = new EventDispatcher<Project, ProjectItem>();
   private _onItemAdded = new EventDispatcher<Project, ProjectItem>();
   private _onItemRemoved = new EventDispatcher<Project, ProjectItem>();
+
+  #isProcessingRelations: boolean = false;
+  #pendingProcessingRelationsRequests: ((value: unknown) => void)[] = [];
 
   public variants: { [label: string]: ProjectVariant };
 
@@ -220,6 +235,10 @@ export default class Project {
 
   public get errorState() {
     return this.#errorState;
+  }
+
+  public get errorMessage() {
+    return this.#errorMessage;
   }
 
   public get preferencesFile() {
@@ -394,6 +413,10 @@ export default class Project {
 
   public get editorWorldSettings() {
     return this.#data.editorWorldSettings;
+  }
+
+  public get isMinecraftCreator(): boolean {
+    return this.#data.creator?.toLowerCase() === "minecraft";
   }
 
   public async getLookupChoices(lookupId: string): Promise<ISimpleReference[] | undefined> {
@@ -586,6 +609,22 @@ export default class Project {
     return this.#projectFolder.folders["scripts"];
   }
 
+  async ensureProjectItemAccessoryFolder() {
+    if (this.projectItemAccessoryFolder) {
+      return this.projectItemAccessoryFolder;
+    }
+    await this.loadFolderStructure();
+    if (this.#projectFolder === undefined || this.#projectFolder === null) {
+      throw new Error("Unexpectedly could not create project folder");
+    }
+
+    const defaultDesignFolder = await this.ensureDefaultDesignPackFolder();
+
+    this.projectItemAccessoryFolder = defaultDesignFolder.ensureFolder("project_item_data");
+
+    return this.projectItemAccessoryFolder;
+  }
+
   async ensureMainScriptsFolder() {
     await this.loadFolderStructure();
 
@@ -594,6 +633,16 @@ export default class Project {
     }
 
     return this.#projectFolder.ensureFolder("scripts");
+  }
+
+  async ensureScriptGenFolder() {
+    const scriptsFolder = await this.ensureMainScriptsFolder();
+
+    if (!scriptsFolder) {
+      throw new Error("Unexpectedly could not create a main scripts folder");
+    }
+
+    return scriptsFolder.ensureFolder("_gen");
   }
 
   get preferredScriptLanguage() {
@@ -613,7 +662,7 @@ export default class Project {
 
   get scriptVersion() {
     if (this.#data.scriptVersion === undefined) {
-      return ProjectScriptVersion.latestBeta;
+      return ProjectScriptVersion.latestStable;
     }
 
     return this.#data.scriptVersion;
@@ -748,8 +797,13 @@ export default class Project {
         newArr.push(this.items[i]);
       }
     }
+    const path = ProjectUtilities.canonicalizeStoragePath(item.projectPath);
 
-    this.#itemsByProjectPath[ProjectUtilities.canonicalizeStoragePath(item.projectPath)] = undefined;
+    if (!Utilities.isUsableAsObjectKey(path)) {
+      return;
+    }
+
+    this.#itemsByProjectPath[path] = undefined;
 
     this.#items = newArr;
 
@@ -1151,7 +1205,7 @@ export default class Project {
     }
   }
 
-  get version(): number[] {
+  get versionAsArray(): number[] {
     let vmj = this.#data.versionMajor;
     if (vmj === undefined) {
       vmj = 0;
@@ -1168,6 +1222,25 @@ export default class Project {
     }
 
     return [vmj, vmi, vmp];
+  }
+
+  get versionAsString(): string {
+    let vmj = this.#data.versionMajor;
+    if (vmj === undefined) {
+      vmj = 0;
+    }
+
+    let vmi = this.#data.versionMinor;
+    if (vmi === undefined) {
+      vmi = 0;
+    }
+
+    let vmp = this.#data.versionPatch;
+    if (vmp === undefined) {
+      vmp = 0;
+    }
+
+    return vmj + "." + vmi + "." + vmp;
   }
 
   get versionMajor(): number | undefined {
@@ -1422,7 +1495,7 @@ export default class Project {
     }
   }
 
-  constructor(carto: Carto, name: string, preferencesFile: IFile | null) {
+  constructor(carto: Carto, name: string, preferencesFile: IFile | null, sanitizeName?: boolean) {
     this._handleDeployUpdated = this._handleDeployUpdated.bind(this);
     this._handleProjectFileContentsUpdated = this._handleProjectFileContentsUpdated.bind(this);
     this.applyUpdate = this.applyUpdate.bind(this);
@@ -1432,6 +1505,12 @@ export default class Project {
 
     this.loc = new LocManager(this);
 
+    let sanName = name;
+
+    if (sanitizeName) {
+      sanName = ProjectUtilities.sanitizeProjectName(sanName);
+    }
+
     this.#data = {
       dataType: ProjectDataType.clientStorage,
       variants: {},
@@ -1439,9 +1518,9 @@ export default class Project {
       contentsModified: null,
       dataStorageRelativePath: "/" + name + "/",
       editPreference: ProjectEditPreference.summarized,
-      name: name,
-      title: name,
-      description: name + " description",
+      name: sanName,
+      title: sanName,
+      description: sanName + " description",
       defaultBehaviorPackUniqueId: Utilities.createUuid(),
       defaultResourcePackUniqueId: Utilities.createUuid(),
       defaultScriptModuleUniqueId: Utilities.createUuid(),
@@ -1456,14 +1535,18 @@ export default class Project {
     this.defaultBehaviorPackFolder = null;
     this.defaultWorldFolder = null;
     this.defaultSkinPackFolder = null;
+    this.defaultDesignPackFolder = null;
     this.#defaultScriptsFolder = null;
     this.behaviorPacksContainer = null;
     this.docsContainer = null;
     this.defaultResourcePackFolder = null;
     this.resourcePacksContainer = null;
+    this.designPacksContainer = null;
     this.skinPacksContainer = null;
     this.worldContainer = null;
-
+    this.defaultPersonaPackFolder = null;
+    this.personaPacksContainer = null;
+    this.projectItemAccessoryFolder = null;
     this.#carto = carto;
     this.#items = [];
     this.variants = {};
@@ -1484,6 +1567,7 @@ export default class Project {
     this.defaultBehaviorPackFolder = null;
     this.defaultWorldFolder = null;
     this.defaultSkinPackFolder = null;
+    this.defaultDesignPackFolder = null;
     this.#defaultScriptsFolder = null;
     this.behaviorPacksContainer = null;
     this.docsContainer = null;
@@ -1496,16 +1580,20 @@ export default class Project {
   }
 
   ensureVariant(label: string) {
+    label = ProjectVariant.canonicalizeVariantLabel(label);
+
     if (!this.variants[label]) {
       if (!this.#data.variants) {
         this.#data.variants = {};
       }
 
-      if (this.#data.variants[label] === undefined) {
-        this.#data.variants[label] = { label: label };
-      }
+      if (Utilities.isUsableAsObjectKey(label)) {
+        if (this.#data.variants[label] === undefined) {
+          this.#data.variants[label] = { label: label };
+        }
 
-      this.variants[label] = new ProjectVariant(this, this.#data.variants[label]);
+        this.variants[label] = new ProjectVariant(this, this.#data.variants[label]);
+      }
     }
 
     return this.variants[label];
@@ -1556,8 +1644,6 @@ export default class Project {
     const defaultBehaviorPack = await this.getDefaultBehaviorPack();
 
     if (defaultBehaviorPack) {
-      await defaultBehaviorPack.ensureManifest();
-
       if (defaultBehaviorPack.manifest) {
         const manifest = defaultBehaviorPack.manifest as BehaviorManifestDefinition;
 
@@ -1614,8 +1700,6 @@ export default class Project {
       if (processingCallback) {
         processingCallback("Analyzing " + this.items.length + " project items...");
       }
-
-      await ProjectItemRelations.calculate(this);
     }
 
     await this.carto.notifyOperationEnded(
@@ -1718,7 +1802,7 @@ export default class Project {
     const newProjectItems: ProjectItem[] = [];
 
     for (const projectItem of this.items) {
-      if (projectItem.itemType !== ProjectItemType.unknown && projectItem.itemType !== ProjectItemType.json) {
+      if (projectItem.itemType !== ProjectItemType.unknown && projectItem.itemType !== ProjectItemType.unknownJson) {
         newProjectItems.push(projectItem);
       }
     }
@@ -1745,7 +1829,7 @@ export default class Project {
 
     for (const pathCollapsed of this.collapsedStoragePaths) {
       if (pathCollapsed !== storagePath) {
-        newCollapsedPaths.push(storagePath);
+        newCollapsedPaths.push(pathCollapsed);
       }
     }
 
@@ -1812,11 +1896,6 @@ export default class Project {
           );
         }
       }
-
-      if (processingCallback) {
-        processingCallback("Analyzing " + this.items.length + " project items..");
-      }
-      await ProjectItemRelations.calculate(this);
     }
   }
 
@@ -1830,7 +1909,10 @@ export default class Project {
 
     const rootFolder = await StorageUtilities.getFileStorageFolder(this.#projectCabinetFile);
 
-    if (rootFolder !== this.#projectFolder) {
+    if (rootFolder && typeof rootFolder === "string") {
+      this.#errorState = ProjectErrorState.cabinetFileCouldNotBeProcessed;
+      this.#errorMessage = rootFolder;
+    } else if (rootFolder !== this.#projectFolder && typeof rootFolder !== "string") {
       this._unapplyFromProjectFolder();
       if (rootFolder) {
         this.#projectFolder = rootFolder;
@@ -1842,13 +1924,15 @@ export default class Project {
     }
   }
 
-  async inferProjectItemsFromZipFile(projectPath: string, file: IFile, force?: boolean) {
+  async inferProjectItemsFromZipFile(projectPath: string, file: IFile, force?: boolean): Promise<string | undefined> {
     let operId = await this.carto.notifyOperationStarted("Loading package file " + file.name);
     await file.loadContent();
 
     const rootFolder = await StorageUtilities.getFileStorageFolder(file);
 
-    if (rootFolder) {
+    if (typeof rootFolder === "string") {
+      return rootFolder;
+    } else if (rootFolder) {
       await ProjectItemInference.inferProjectItemsFromFolder(
         this,
         rootFolder,
@@ -1861,11 +1945,56 @@ export default class Project {
         undefined,
         force
       );
-
-      await ProjectItemRelations.calculate(this);
     }
 
     await this.carto.notifyOperationEnded(operId, "Done loading package file " + file.name);
+    return undefined;
+  }
+
+  async processRelations(force?: boolean) {
+    if (this.#relationsProcessed && !force) {
+      return;
+    }
+
+    if (this.#isProcessingRelations) {
+      const pendingProcessing = this.#pendingProcessingRelationsRequests;
+
+      const prom = (resolve: (value: unknown) => void, reject: (reason?: any) => void) => {
+        pendingProcessing.push(resolve);
+      };
+
+      await new Promise(prom);
+
+      return;
+    } else {
+      this.#isProcessingRelations = true;
+
+      const processOperId = await this.carto.notifyOperationStarted(
+        "Processing relations for '" + this.name + "'",
+        StatusTopic.processing
+      );
+
+      await ProjectItemRelations.calculate(this);
+
+      this.#relationsProcessed = true;
+
+      if (processOperId !== undefined) {
+        await this.carto.notifyOperationEnded(
+          processOperId,
+          "Completed processing of '" + this.name + "'",
+          StatusTopic.processing
+        );
+      }
+
+      this.#isProcessingRelations = false;
+
+      const pendingProcessing = this.#pendingProcessingRelationsRequests;
+      this.#pendingProcessingRelationsRequests = [];
+
+      for (const prom of pendingProcessing) {
+        prom(undefined);
+      }
+    }
   }
 
   async ensureJsIndexFile() {
@@ -1926,7 +2055,9 @@ export default class Project {
               const mod = minecraftScriptModules[i];
 
               if (content.indexOf(mod.id) >= 0) {
-                state.hasModule[mod.id] = true;
+                if (Utilities.isUsableAsObjectKey(mod.id)) {
+                  state.hasModule[mod.id] = true;
+                }
               }
             }
           }
@@ -1987,14 +2118,20 @@ export default class Project {
         parentFolder = null;
       }
 
-      let isResource = false;
+      let folderContext = FolderContext.behaviorPack;
       let isWorld = false;
 
       if (parentFolder !== null) {
-        const name = StorageUtilities.canonicalizeName(parentFolder.name);
-
-        if (name.indexOf("resource") >= 0) {
-          isResource = true;
+        if (MinecraftUtilities.pathLooksLikeResourcePackName(parentFolder.fullPath)) {
+          folderContext = FolderContext.resourcePack;
+        } else if (MinecraftUtilities.pathLooksLikeDesignPackName(parentFolder.fullPath)) {
+          folderContext = FolderContext.designPack;
+        } else if (MinecraftUtilities.pathLooksLikeSkinPackName(parentFolder.fullPath)) {
+          folderContext = FolderContext.skinPack;
+        } else if (MinecraftUtilities.pathLooksLikePersonaPackName(parentFolder.fullPath)) {
+          folderContext = FolderContext.persona;
+        } else if (MinecraftUtilities.pathLooksLikePersonaPackName(parentFolder.fullPath)) {
+          folderContext = FolderContext.persona;
         }
       }
 
@@ -2010,13 +2147,31 @@ export default class Project {
         if (parentFolder !== null) {
           this.worldContainer = parentFolder;
         }
-      } else if (!isWorld && isResource && this.defaultResourcePackFolder === null) {
+      } else if (!isWorld && folderContext === FolderContext.resourcePack && this.defaultResourcePackFolder === null) {
         this.defaultResourcePackFolder = folder;
 
         if (parentFolder !== null) {
           this.resourcePacksContainer = parentFolder;
         }
-      } else if (!isWorld && !isResource && this.defaultBehaviorPackFolder === null) {
+      } else if (!isWorld && folderContext === FolderContext.designPack && this.defaultDesignPackFolder === null) {
+        this.defaultDesignPackFolder = folder;
+
+        if (parentFolder !== null) {
+          this.designPacksContainer = parentFolder;
+        }
+      } else if (!isWorld && folderContext === FolderContext.skinPack && this.defaultSkinPackFolder === null) {
+        this.defaultSkinPackFolder = folder;
+
+        if (parentFolder !== null) {
+          this.skinPacksContainer = parentFolder;
+        }
+      } else if (!isWorld && folderContext === FolderContext.persona && this.defaultPersonaPackFolder === null) {
+        this.defaultPersonaPackFolder = folder;
+
+        if (parentFolder !== null) {
+          this.personaPacksContainer = parentFolder;
+        }
+      } else if (!isWorld && folderContext === FolderContext.behaviorPack && this.defaultBehaviorPackFolder === null) {
         this.defaultBehaviorPackFolder = folder;
 
         if (parentFolder !== null) {
@@ -2077,6 +2232,32 @@ export default class Project {
         if (result) {
           return result;
         }
+      }
+    }
+
+    return undefined;
+  }
+
+  public ensureItemFromFile(
+    file: IFile,
+    itemType: ProjectItemType,
+    folderContext: FolderContext,
+    creationType?: ProjectItemCreationType
+  ) {
+    if (this.projectFolder) {
+      const projectPath = file.getFolderRelativePath(this.projectFolder);
+
+      if (projectPath) {
+        return this.ensureItemByProjectPath(
+          projectPath,
+          ProjectItemStorageType.singleFile,
+          file.name,
+          itemType,
+          folderContext,
+          undefined,
+          creationType ? creationType : ProjectItemCreationType.normal,
+          file
+        );
       }
     }
 
@@ -2190,7 +2371,7 @@ export default class Project {
       pi.isInWorld = isInWorld;
     }
 
-    if (pi.itemType === ProjectItemType.json && itemType !== ProjectItemType.json) {
+    if (pi.itemType === ProjectItemType.unknownJson && itemType !== ProjectItemType.unknownJson) {
       pi.itemType = itemType;
     }
 
@@ -2259,7 +2440,7 @@ export default class Project {
       pi.setFile(file);
     }
 
-    if (pi.itemType === ProjectItemType.json && itemType !== ProjectItemType.json) {
+    if (pi.itemType === ProjectItemType.unknownJson && itemType !== ProjectItemType.unknownJson) {
       pi.itemType = itemType;
     }
 
@@ -2291,10 +2472,14 @@ export default class Project {
 
     const pi = new ProjectItem(this, initialSettings);
 
-    this.#itemsByProjectPath[ProjectUtilities.canonicalizeStoragePath(pi.projectPath)] = pi;
-    this.#items.push(pi);
-    this.#infoSetNeedsUpdating = true;
-    this._onItemAdded.dispatch(this, pi);
+    const path = ProjectUtilities.canonicalizeStoragePath(pi.projectPath);
+
+    if (Utilities.isUsableAsObjectKey(path)) {
+      this.#itemsByProjectPath[path] = pi;
+      this.#items.push(pi);
+      this.#infoSetNeedsUpdating = true;
+      this._onItemAdded.dispatch(this, pi);
+    }
 
     return pi;
   }
@@ -2345,10 +2530,14 @@ export default class Project {
         const projectItemData = this.#data.items[i];
 
         const projectItem = new ProjectItem(this, projectItemData);
-        this.#itemsByProjectPath[ProjectUtilities.canonicalizeStoragePath(projectItem.projectPath)] = projectItem;
-        this.#items.push(projectItem);
+        const path = ProjectUtilities.canonicalizeStoragePath(projectItem.projectPath);
 
-        this._onItemAdded.dispatch(this, projectItem);
+        if (Utilities.isUsableAsObjectKey(path)) {
+          this.#itemsByProjectPath[path] = projectItem;
+          this.#items.push(projectItem);
+
+          this._onItemAdded.dispatch(this, projectItem);
+        }
       }
     }
 
@@ -2356,8 +2545,6 @@ export default class Project {
 
     this.initializeWorldSettings();
     this.ensureDefaultWorldName();
-
-    await ProjectItemRelations.calculate(this);
 
     this.#isInflated = true;
   }
@@ -2530,7 +2717,7 @@ export default class Project {
         }
       } else {
         const folder = this.#carto.projectsStorage.rootFolder.ensureFolder(
-          ProjectUtilities.canonicalizeStoragePath(this.#data.name)
+          StorageUtilities.convertFolderPlaceholdersComplete(ProjectUtilities.canonicalizeStoragePath(this.#data.name))
         );
 
         if (folder !== this.#projectFolder) {
@@ -2637,8 +2824,10 @@ export default class Project {
         await this.ensureProjectFolderFromCabinet();
 
         Log.assert(
-          this.#projectFolder !== undefined,
-          "Could not create a project folder from " + this.#data.localFilePath
+          this.#projectFolder !== null && this.#projectFolder !== undefined,
+          "Could not create a project folder from " + this.#data.localFilePath + "." + this.errorMessage
+            ? " " + this.errorMessage
+            : ""
         );
 
         if (this.#accessoryFilePaths && this.#projectFolder) {
@@ -2822,15 +3011,17 @@ export default class Project {
 
     const storagePath = ProjectUtilities.canonicalizeStoragePath(rootRelativePath);
 
-    if (!this.changedFilesSinceLastSaved[storagePath]) {
-      this.changedFilesSinceLastSaved[storagePath] = file;
+    if (Utilities.isUsableAsObjectKey(storagePath)) {
+      if (!this.changedFilesSinceLastSaved[storagePath]) {
+        this.changedFilesSinceLastSaved[storagePath] = file;
 
-      this._onNeedsSaveChanged.dispatch(this, this);
-    }
+        this._onNeedsSaveChanged.dispatch(this, this);
+      }
 
-    const item = this.#itemsByProjectPath[storagePath];
-    if (item) {
-      this.notifyProjectItemChanged(item);
+      const item = this.#itemsByProjectPath[storagePath];
+      if (item) {
+        this.notifyProjectItemChanged(item);
+      }
     }
   }
 
@@ -3053,31 +3244,42 @@ export default class Project {
     return this.defaultWorldFolder;
   }
 
-  ensurePacks() {
+  async ensurePacks() {
     for (const item of this.items) {
       if (item.itemType === ProjectItemType.behaviorPackManifestJson) {
+        await item.ensureStorage();
         const file = item.primaryFile;
 
         if (file && file.parentFolder) {
-          this.ensurePackByFolder(file.parentFolder, PackType.behavior);
+          await this.ensurePackByFolder(file.parentFolder, PackType.behavior);
         }
       } else if (item.itemType === ProjectItemType.resourcePackManifestJson) {
+        await item.ensureStorage();
         const file = item.primaryFile;
 
         if (file && file.parentFolder) {
-          this.ensurePackByFolder(file.parentFolder, PackType.resource);
+          await this.ensurePackByFolder(file.parentFolder, PackType.resource);
         }
       } else if (item.itemType === ProjectItemType.skinPackManifestJson) {
+        await item.ensureStorage();
         const file = item.primaryFile;
 
         if (file && file.parentFolder) {
-          this.ensurePackByFolder(file.parentFolder, PackType.skin);
+          await this.ensurePackByFolder(file.parentFolder, PackType.skin);
+        }
+      } else if (item.itemType === ProjectItemType.designPackManifestJson) {
+        await item.ensureStorage();
+        const file = item.primaryFile;
+
+        if (file && file.parentFolder) {
+          await this.ensurePackByFolder(file.parentFolder, PackType.design);
         }
       } else if (item.itemType === ProjectItemType.personaManifestJson) {
+        await item.ensureStorage();
         const file = item.primaryFile;
 
         if (file && file.parentFolder) {
-          this.ensurePackByFolder(file.parentFolder, PackType.persona);
+          await this.ensurePackByFolder(file.parentFolder, PackType.persona);
         }
       }
     }
@@ -3090,28 +3292,35 @@ export default class Project {
         const file = item.primaryFile;
 
         if (file && file.parentFolder) {
-          this.ensurePackByFolder(file.parentFolder, PackType.behavior);
+          await this.ensurePackByFolder(file.parentFolder, PackType.behavior);
         }
       } else if (item.itemType === ProjectItemType.resourcePackManifestJson) {
         await item.ensureFileStorage();
         const file = item.primaryFile;
 
         if (file && file.parentFolder) {
-          this.ensurePackByFolder(file.parentFolder, PackType.resource);
+          await this.ensurePackByFolder(file.parentFolder, PackType.resource);
         }
       } else if (item.itemType === ProjectItemType.skinPackManifestJson) {
         await item.ensureFileStorage();
         const file = item.primaryFile;
 
         if (file && file.parentFolder) {
-          this.ensurePackByFolder(file.parentFolder, PackType.skin);
+          await this.ensurePackByFolder(file.parentFolder, PackType.skin);
+        }
+      } else if (item.itemType === ProjectItemType.designPackManifestJson) {
+        await item.ensureFileStorage();
+        const file = item.primaryFile;
+
+        if (file && file.parentFolder) {
+          await this.ensurePackByFolder(file.parentFolder, PackType.design);
         }
       } else if (item.itemType === ProjectItemType.personaManifestJson) {
         await item.ensureFileStorage();
         const file = item.primaryFile;
 
         if (file && file.parentFolder) {
-          this.ensurePackByFolder(file.parentFolder, PackType.persona);
+          await this.ensurePackByFolder(file.parentFolder, PackType.persona);
         }
       }
     }
@@ -3193,9 +3402,41 @@ export default class Project {
 
     await this.defaultBehaviorPackFolder.ensureExists();
 
-    this.ensurePackByFolder(this.defaultBehaviorPackFolder, PackType.behavior, false);
+    const pack = await this.ensurePackByFolder(this.defaultBehaviorPackFolder, PackType.behavior, false);
+    await pack.ensureManifest();
 
     return this.defaultBehaviorPackFolder;
+  }
+
+  async ensureDefaultDesignPackFolder(force?: boolean): Promise<IFolder> {
+    if (this.defaultDesignPackFolder !== null && !force) {
+      return this.defaultDesignPackFolder;
+    }
+
+    await this.getDefaultDesignPackFolder(force);
+
+    if (this.defaultDesignPackFolder !== null) {
+      return this.defaultDesignPackFolder;
+    }
+
+    if (this.#projectFolder === undefined || this.#projectFolder === null) {
+      throw new Error("Unexpectedly could not create project folder");
+    }
+
+    if (this.designPacksContainer === null) {
+      this.designPacksContainer = this.#projectFolder.ensureFolder("design_packs");
+      await this.designPacksContainer.ensureExists();
+    }
+
+    this.defaultDesignPackFolder = this.designPacksContainer.ensureFolder(
+      MinecraftUtilities.makeNameFolderSafe(this.effectiveShortName + "_dp")
+    );
+
+    await this.defaultDesignPackFolder.ensureExists();
+
+    await this.ensurePackByFolder(this.defaultDesignPackFolder, PackType.design, false);
+
+    return this.defaultDesignPackFolder;
   }
 
   async ensurePackByFolder(folder: IFolder, packType: PackType, isInWorld?: boolean) {
@@ -3215,12 +3456,6 @@ export default class Project {
       }
     }
 
-    const newPack = Pack.ensureOnFolder(folder, packType, this);
-
-    if (!this.#packs.includes(newPack)) {
-      this.#packs.push(newPack);
-    }
-
     let itemType = ProjectItemType.behaviorPackFolder;
     let folderContext = FolderContext.behaviorPack;
 
@@ -3233,6 +3468,9 @@ export default class Project {
     } else if (packType === PackType.persona) {
       itemType = ProjectItemType.personaPackFolder;
       folderContext = FolderContext.persona;
+    } else if (packType === PackType.design) {
+      itemType = ProjectItemType.designPackFolder;
+      folderContext = FolderContext.designPack;
     }
 
     const folderPath = folder.getFolderRelativePath(this.projectFolder);
@@ -3254,9 +3492,51 @@ export default class Project {
       isInWorld
     );
 
-    newPack.projectItem = folderProjectItem;
+    const newPack = Pack.ensureOnFolder(folder, packType, this, folderProjectItem);
+
+    if (!this.#packs.includes(newPack)) {
+      this.#packs.push(newPack);
+    }
+
+    await newPack.ensureManifest();
 
     return newPack;
+  }
+
+  async getDefaultDesignPackFolder(force?: boolean): Promise<IFolder | null> {
+    if (this.defaultDesignPackFolder !== null && !force) {
+      return this.defaultDesignPackFolder;
+    }
+
+    await this.loadFolderStructure();
+
+    if (this.defaultDesignPackFolder !== null && !force) {
+      return this.defaultDesignPackFolder;
+    }
+
+    if (force) {
+      this.defaultDesignPackFolder = null;
+    }
+
+    for (let i = 0; i < this.items.length; i++) {
+      const pi = this.items[i];
+
+      if (pi.itemType === ProjectItemType.designPackManifestJson) {
+        await pi.ensureFileStorage();
+
+        if (pi.primaryFile) {
+          this.defaultDesignPackFolder = pi.primaryFile.parentFolder;
+
+          await this.ensurePackByFolder(this.defaultDesignPackFolder, PackType.design, pi.isInWorld);
+
+          if (this.defaultDesignPackFolder !== null) {
+            return this.defaultDesignPackFolder;
+          }
+        }
+      }
+    }
+
+    return null;
   }
 
   async getDefaultSkinPackFolder(force?: boolean): Promise<IFolder | null> {
@@ -3283,7 +3563,7 @@ export default class Project {
         if (pi.primaryFile) {
           this.defaultSkinPackFolder = pi.primaryFile.parentFolder;
 
-          this.ensurePackByFolder(this.defaultSkinPackFolder, PackType.skin, pi.isInWorld);
+          await this.ensurePackByFolder(this.defaultSkinPackFolder, PackType.skin, pi.isInWorld);
 
           if (this.defaultSkinPackFolder !== null) {
             return this.defaultSkinPackFolder;
@@ -3319,7 +3599,7 @@ export default class Project {
         if (pi.primaryFile) {
           this.defaultResourcePackFolder = pi.primaryFile.parentFolder;
 
-          this.ensurePackByFolder(this.defaultResourcePackFolder, PackType.resource, pi.isInWorld);
+          await this.ensurePackByFolder(this.defaultResourcePackFolder, PackType.resource, pi.isInWorld);
 
           if (this.defaultResourcePackFolder !== null) {
             return this.defaultResourcePackFolder;
@@ -3367,7 +3647,7 @@ export default class Project {
 
     await this.defaultResourcePackFolder.ensureExists();
 
-    this.ensurePackByFolder(this.defaultResourcePackFolder, PackType.resource);
+    await this.ensurePackByFolder(this.defaultResourcePackFolder, PackType.resource);
 
     return this.defaultResourcePackFolder;
   }

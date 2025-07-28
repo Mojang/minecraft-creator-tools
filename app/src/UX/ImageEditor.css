@@ -1,21 +1,9 @@
-.tui-image-editor-header {
-  display: none;
-}
-
-.tui-image-editor-container .tui-image-editor-main {
-  top: 0;
-}
-
-.tui-image-editor-container .tui-image-editor-help-menu {
-  border-radius: 0px !important;
-}
-
-.tui-image-editor-container .tui-image-editor-controls-buttons div {
-  border-radius: 0px !important;
-}
-
 .ie-outer {
   image-rendering: pixelated;
+}
+
+.ie-toolBar {
+  padding-left: 80px;
 }
 
 .ie-image {

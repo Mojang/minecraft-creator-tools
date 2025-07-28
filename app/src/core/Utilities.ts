@@ -3,17 +3,41 @@
 
 import CartoApp, { HostType } from "../app/CartoApp";
 import { FieldValueHumanify } from "../dataform/IField";
+import AppServiceProxy from "./AppServiceProxy";
 import { IErrorable } from "./IErrorable";
 import Log from "./Log";
 
 const singleComment = Symbol("singleComment");
 const multiComment = Symbol("multiComment");
 
+export const ObjectKeyAvoidTermList = new Set([
+  "__proto__",
+  "prototype",
+  "[[Prototype]]",
+  "this",
+  "delete",
+  "constructor",
+  "hasOwnProperty",
+  "isPrototypeOf",
+  "__defineGetter__",
+  "__defineSetter__",
+  "__lookupGetter__",
+  "__lookupSetter__",
+]);
+
 export default class Utilities {
   static _isDebug?: boolean;
   static _isAppSim?: boolean;
   static defaultEncoding = "UTF-8";
   static replacementChar = 0xfffd;
+
+  static isUsableAsObjectKey(term: string) {
+    if (term === undefined || term === null) {
+      return false;
+    }
+
+    return !ObjectKeyAvoidTermList.has(term);
+  }
 
   static async sleep(ms: number) {
     return new Promise((resolve) => {
@@ -22,12 +46,24 @@ export default class Utilities {
   }
 
   static get isPreview(): boolean {
-    return false;
+    return true;
   }
 
   static get isAppSim(): boolean {
     if (Utilities._isAppSim === undefined) {
-      Utilities._isAppSim = false;
+      // @ts-ignore
+      if (typeof window !== "undefined") {
+        // @ts-ignore
+        const query = window.location.search.toLowerCase();
+
+        if (query.indexOf("appsim=true") >= 0) {
+          Utilities._isAppSim = true;
+        } else {
+          Utilities._isAppSim = false;
+        }
+      } else {
+        Utilities._isAppSim = false;
+      }
     }
 
     return Utilities._isAppSim;
@@ -35,7 +71,31 @@ export default class Utilities {
 
   static get isDebug(): boolean {
     if (Utilities._isDebug === undefined) {
-      Utilities._isDebug = false;
+      if (AppServiceProxy.hasAppService) {
+        // @ts-ignore
+        if (typeof window !== "undefined") {
+          // @ts-ignore
+          if (window.location.href.indexOf("localhost") >= 0) {
+            Utilities._isDebug = true;
+          }
+        }
+
+        if (!Utilities._isDebug) {
+          Utilities._isDebug = false;
+        }
+        // @ts-ignore
+      } else if (typeof window !== "undefined") {
+        // @ts-ignore
+        const query = window.location.search.toLowerCase();
+
+        if (query.indexOf("debug=true") >= 0) {
+          Utilities._isDebug = true;
+        } else {
+          Utilities._isDebug = false;
+        }
+      } else {
+        Utilities._isDebug = false;
+      }
     }
 
     return Utilities._isDebug;
@@ -231,13 +291,23 @@ export default class Utilities {
       return name.toString();
     }
 
+    if (name.indexOf("Apis Used") >= 0 || name.indexOf("apisUsed") >= 0) {
+      return name;
+    }
+
     let retVal = "";
 
     for (let i = 0; i < name.length; i++) {
       if (i === 0) {
         retVal += name[i].toUpperCase();
       } else {
-        if (name[i] >= "A" && name[i] <= "Z") {
+        if (
+          name[i] >= "A" &&
+          name[i] <= "Z" &&
+          (i === name.length - 1 ||
+            i === 0 ||
+            ((name[i + 1] < "A" || name[i + 1] > "Z") && (name[i - 1] < "A" || name[i - 1] > "Z")))
+        ) {
           retVal += " ";
         }
 
@@ -248,6 +318,14 @@ export default class Utilities {
     retVal = retVal.replace("Java Script", "JavaScript");
 
     return retVal;
+  }
+
+  static getTitleFromEnum(categoryEnum: { [name: number]: string }, topicId: number) {
+    if (categoryEnum[topicId]) {
+      return Utilities.humanifyJsName(categoryEnum[topicId]);
+    }
+
+    return "General";
   }
 
   static humanifyObject(sampVal: any) {
@@ -395,6 +473,17 @@ export default class Utilities {
     return name;
   }
 
+  static addApostrophesToNumericString(number: string) {
+    let i = number.length;
+
+    while (i > 3) {
+      i -= 3;
+      number = number.substring(0, i) + "," + number.substring(i);
+    }
+
+    return number;
+  }
+
   static sanitizeJavascriptName(name: string) {
     name = name.trim();
 
@@ -469,7 +558,24 @@ export default class Utilities {
     return retVal;
   }
 
-  static humanifyMinecraftName(name: string | boolean | number) {
+  static humanifyMinecraftNameRemoveNamespaces(name: string) {
+    const firstPeriod = name.indexOf(".");
+
+    if (firstPeriod >= 0) {
+      name = name.substring(firstPeriod + 1);
+    }
+
+    const firstColon = name.indexOf(":");
+    if (firstColon >= 0) {
+      name = name.substring(firstColon + 1);
+    }
+
+    name = Utilities.humanifyMinecraftName(name);
+
+    return name;
+  }
+
+  static humanifyMinecraftName(name: string | boolean | number, doNotReverse?: boolean) {
     if (typeof name === "boolean" || typeof name === "number") {
       return name.toString();
     }
@@ -480,6 +586,17 @@ export default class Utilities {
       name = name.substring(0, name.length - 4);
     } else if (name.endsWith(".entity")) {
       name = name.substring(0, name.length - 7);
+    }
+
+    name = name.replace("breeds_with.", "");
+    name = name.replace("interactions.", "");
+    name = name.replace("name_actions.", "");
+    name = name.replace("tempt.", "");
+    name = name.replace("triggers.", "");
+    name = name.replace(" on_", " ");
+
+    if (name.startsWith("on_")) {
+      name = name.substring(3, name.length);
     }
 
     const colon = name.indexOf(":");
@@ -520,8 +637,14 @@ export default class Utilities {
 
     const lastPeriod = name.indexOf(".");
 
-    if (lastPeriod >= 4) {
-      name = name.substring(lastPeriod + 1) + " " + name.substring(0, lastPeriod);
+    if (doNotReverse) {
+      if (lastPeriod >= 4) {
+        name = name.substring(0, lastPeriod) + ": " + name.substring(lastPeriod + 1);
+      }
+    } else {
+      if (lastPeriod >= 4) {
+        name = name.substring(lastPeriod + 1) + " " + name.substring(0, lastPeriod);
+      }
     }
 
     /*
@@ -537,7 +660,12 @@ export default class Utilities {
       if (name[i] === " ") {
         lastCharWasSpace = true;
       } else {
-        if ((lastCharWasSpace || i === 0) && name[i] >= "a" && name[i] <= "z") {
+        if (
+          (lastCharWasSpace || i === 0) &&
+          name[i] >= "a" &&
+          name[i] <= "z" &&
+          (i === name.length - 1 || (name[i + 1] >= "a" && name[i] <= "z"))
+        ) {
           name = name.substring(0, i) + name[i].toUpperCase() + name.substring(i + 1);
         }
         lastCharWasSpace = false;
@@ -545,6 +673,22 @@ export default class Utilities {
     }
 
     name = name.trim();
+
+    return name;
+  }
+
+  static lowerCaseStartOfString(name: string) {
+    if (name.length <= 0) {
+      return name;
+    }
+
+    if (name.length <= 1) {
+      return name.toLowerCase();
+    }
+
+    if (name.charAt(1) < "A" || name.charAt(1) > "Z") {
+      return name.charAt(0).toLowerCase() + name.substring(1);
+    }
 
     return name;
   }
@@ -1464,6 +1608,22 @@ export default class Utilities {
         id += String.fromCharCode(Math.floor(Math.random() * 10) + 48);
       } else if (main < 4) {
         id += String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+      } else {
+        id += String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+      }
+    }
+
+    return id;
+  }
+
+  static createRandomLowerId(length: number) {
+    let id = "";
+
+    for (let i = 0; i < length; i++) {
+      const main = Math.random() * 4;
+
+      if (main < 1) {
+        id += String.fromCharCode(Math.floor(Math.random() * 10) + 48);
       } else {
         id += String.fromCharCode(Math.floor(Math.random() * 26) + 97);
       }

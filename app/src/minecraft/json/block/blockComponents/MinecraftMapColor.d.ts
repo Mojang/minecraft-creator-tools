@@ -35,6 +35,10 @@ Block White Sand - https://github.com/microsoft/minecraft-samples/tree/main/chil
 
 "minecraft:map_color": "#fdfdfd
 
+Block Leaf Pile - https://github.com/microsoft/minecraft-samples/tree/main/creator_camp/behavior_packs/creator_camp/blocks/leaf_pile.block.json
+
+"minecraft:map_color": "#ffffff
+
 Block Orange Ore - https://github.com/microsoft/minecraft-samples/tree/main/custom_features/basic_orange_ore/behavior_packs/basic_orange_ore/blocks/orange_ore.block.json
 
 "minecraft:map_color": "#a69787

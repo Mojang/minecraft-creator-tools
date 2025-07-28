@@ -1,6 +1,29 @@
 {
   "entity_sounds": {
     "entities": {
+      "aop_mobs:black_bear": {
+        "events": {
+          "ambient": "mob.polarbear.idle",
+          "ambient.baby": "mob.polarbear_baby.idle",
+          "death": "mob.polarbear.death",
+          "hurt": {
+            "sound": "mob.polarbear.hurt",
+            "volume": 0.7
+          },
+          "mob.warning": {
+            "pitch": 1,
+            "sound": "mob.polarbear.warning",
+            "volume": 1.2
+          },
+          "step": {
+            "pitch": 1,
+            "sound": "mob.polarbear.step",
+            "volume": 0.7
+          }
+        },
+        "pitch": [0.8, 1.2],
+        "volume": 1
+      },
       "aop_mobs:nardolphle": {
         "events": {
           "ambient": "mob.dolphin.idle",
@@ -26,6 +49,21 @@
         },
         "pitch": [0.8, 1.2],
         "volume": 1
+      },
+      "aop_mobs:boomfly": {
+        "events": {
+          "ambient": "mob.phantom.idle",
+          "attack": "mob.phantom.bite",
+          "death": "mob.phantom.death",
+          "flap": "mob.phantom.flap",
+          "hurt": "mob.phantom.hurt",
+          "swoop": {
+            "pitch": [0.95, 1.05],
+            "sound": "mob.phantom.swoop"
+          }
+        },
+        "pitch": [0.8, 1.2],
+        "volume": 10
       },
       "aop_mobs:biceson": {
         "events": {

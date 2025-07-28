@@ -26,4 +26,10 @@ export default interface MinecraftGrassAppearance {
    */
   color: object;
 
+  /**
+   * @remarks
+   * Adds a shading effect to the grass as if there was a roof.
+   */
+  grass_is_shaded: boolean;
+
 }

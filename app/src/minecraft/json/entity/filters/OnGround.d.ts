@@ -19,7 +19,7 @@
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * On Ground (on_ground)
+ * Ground (on_ground)
  * Returns true when the subject entity is on ground.
  * Note: Does not require any parameters to work properly. It can
  * be used as a standalone filter.

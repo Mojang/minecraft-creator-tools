@@ -70,7 +70,7 @@ My Sword Weak - https://github.com/microsoft/minecraft-samples/tree/main/custom_
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Durability (minecraft:durability)
+ * Minecraft Durability Item (minecraft:durability)
  * Sets how much damage the item can take before breaking, and
  * allows the item to be combined at an anvil, grindstone, or
  * crafting table.
@@ -116,7 +116,7 @@ export default interface MinecraftDurability {
 
 
 /**
- * IntRange (_IntRange)
+ * IntRange Item (IntRange)
  */
 export interface MinecraftDurabilityDamageChance {
 

@@ -8,6 +8,10 @@ import Database from "./Database";
 import MinecraftUtilities from "./MinecraftUtilities";
 import IRecipeBehavior, { IRecipeShaped, IRecipeShapeless } from "./IRecipeBehavior";
 import IDefinition from "./IDefinition";
+import Project from "../app/Project";
+import ProjectItem from "../app/ProjectItem";
+import { ProjectItemType } from "../app/IProjectItemData";
+import ItemTypeDefinition from "./ItemTypeDefinition";
 
 export default class RecipeBehaviorDefinition implements IDefinition {
   private _file?: IFile;
@@ -108,6 +112,58 @@ export default class RecipeBehaviorDefinition implements IDefinition {
   _ensureDataInitialized() {
     if (this._data === undefined) {
       this._data = {};
+    }
+  }
+
+  async addChildItems(project: Project, recipeItem: ProjectItem) {
+    const itemsCopy = project.getItemsCopy();
+    const dependentItemIds: string[] = [];
+
+    // Collect all item IDs that this recipe depends on
+    if (this._interior) {
+      // For shapeless recipes, collect ingredients
+      if ("ingredients" in this._interior && this._interior.ingredients) {
+        for (const ingredient of this._interior.ingredients) {
+          if (ingredient && ingredient.item) {
+            dependentItemIds.push(ingredient.item);
+          }
+        }
+      }
+
+      // For shaped recipes, collect key items
+      if ("key" in this._interior && this._interior.key) {
+        for (const keyItem of Object.values(this._interior.key)) {
+          if (keyItem && keyItem.item) {
+            dependentItemIds.push(keyItem.item);
+          }
+        }
+      }
+    }
+
+    // Check each dependent item ID against project items
+    for (const dependentItemId of dependentItemIds) {
+      let foundMatch = false;
+
+      for (const candItem of itemsCopy) {
+        if (candItem.itemType === ProjectItemType.itemTypeBehavior) {
+          await candItem.ensureStorage();
+
+          if (candItem.primaryFile) {
+            const itd = await ItemTypeDefinition.ensureOnFile(candItem.primaryFile);
+
+            if (itd && itd.id === dependentItemId) {
+              recipeItem.addChildItem(candItem);
+              foundMatch = true;
+              break;
+            }
+          }
+        }
+      }
+
+      // If no matching item type was found, add as unfulfilled relationship
+      if (!foundMatch) {
+        recipeItem.addUnfulfilledRelationship(dependentItemId, ProjectItemType.itemTypeBehavior, false);
+      }
     }
   }
 

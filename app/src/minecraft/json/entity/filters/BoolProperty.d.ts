@@ -40,18 +40,42 @@ Bee - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
 
 Happy Ghast - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/happy_ghast.json
 
- * At /minecraft:entity/events/minecraft:on_player_detected_above/filters/: 
+ * At /minecraft:entity/events/minecraft:become_immobile/filters/: 
 {
   "test": "bool_property",
   "domain": "minecraft:can_move",
   "value": true
 }
 
- * At /minecraft:entity/events/minecraft:on_no_player_detected_above/filters/: 
+ * At /minecraft:entity/events/minecraft:become_mobile/filters/: 
 {
   "test": "bool_property",
   "domain": "minecraft:can_move",
   "value": false
+}
+
+
+Wolf - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/wolf.json
+
+ * At /minecraft:entity/components/minecraft:environment_sensor/triggers/0/filters/all_of/0/: 
+{
+  "test": "bool_property",
+  "operator": "!=",
+  "domain": "minecraft:has_increased_max_health"
+}
+
+ * At /minecraft:entity/components/minecraft:environment_sensor/triggers/1/filters/all_of/0/: 
+{
+  "test": "bool_property",
+  "operator": "!=",
+  "domain": "minecraft:is_armorable"
+}
+
+ * At /minecraft:entity/components/minecraft:environment_sensor/triggers/2/filters/: 
+{
+  "test": "bool_property",
+  "operator": "!=",
+  "domain": "minecraft:was_upgraded_to_1_21_100"
 }
 
  */
@@ -73,6 +97,8 @@ export default interface BoolProperty {
    * Bee: "minecraft:has_nectar"
    *
    * Happy Ghast: "minecraft:can_move"
+   *
+   * Wolf: "minecraft:has_increased_max_health", "minecraft:is_armorable", "minecraft:was_upgraded_to_1_21_100"
    *
    */
   domain: string;

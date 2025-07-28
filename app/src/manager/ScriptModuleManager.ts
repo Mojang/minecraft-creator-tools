@@ -17,6 +17,7 @@ import { IProjectInfoTopicData } from "../info/IProjectInfoGeneratorBase";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import ContentIndex from "../core/ContentIndex";
 import EnvSettings from "../devproject/EnvSettings";
+import Utilities from "../core/Utilities";
 
 export default class ScriptModuleManager implements IProjectInfoGenerator, IProjectUpdater {
   id = "SCRIPTMODULE";
@@ -70,23 +71,25 @@ export default class ScriptModuleManager implements IProjectInfoGenerator, IProj
                   verStr = dep.version.join(".");
                 }
 
-                if (!this.modulesInUse[dep.module_name]) {
-                  this.modulesInUse[dep.module_name] = [];
+                if (Utilities.isUsableAsObjectKey(dep.module_name)) {
+                  if (!this.modulesInUse[dep.module_name]) {
+                    this.modulesInUse[dep.module_name] = [];
+                  }
+
+                  items.push(
+                    new ProjectInfoItem(
+                      InfoItemType.info,
+                      this.id,
+                      100,
+                      "Behavior pack dependency on " + verStr + " at " + dep.module_name,
+                      pi,
+                      verStr,
+                      dep.module_name
+                    )
+                  );
+
+                  this.modulesInUse[dep.module_name].push({ version: verStr, manifest: bpManifest, item: pi });
                 }
-
-                items.push(
-                  new ProjectInfoItem(
-                    InfoItemType.info,
-                    this.id,
-                    100,
-                    "Behavior pack dependency on " + verStr + " at " + dep.module_name,
-                    pi,
-                    verStr,
-                    dep.module_name
-                  )
-                );
-
-                this.modulesInUse[dep.module_name].push({ version: verStr, manifest: bpManifest, item: pi });
               }
             }
           }

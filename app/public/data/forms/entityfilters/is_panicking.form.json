@@ -111,6 +111,10 @@
       "dataType": 1
     }
   ],
+  "tags": [
+    "conditional",
+    "entityevent"
+  ],
   "description": "Tests if the subject is panicking.",
   "title": "Is Panicking",
   "samples": {

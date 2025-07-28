@@ -12,6 +12,7 @@ import { EventDispatcher } from "ste-events";
 import Log from "../core/Log";
 import IPropertyObject from "../dataform/IPropertyObject";
 import ComponentizedBase from "./ComponentizedBase";
+import Utilities from "../core/Utilities";
 
 export enum BlockFacingDirection {
   Down = 0,
@@ -365,6 +366,11 @@ export default class Block extends ComponentizedBase implements IPropertyObject 
   }
 
   public addProperty(name: string) {
+    if (!Utilities.isUsableAsObjectKey(name)) {
+      Log.unsupportedToken(name);
+      throw new Error();
+    }
+
     let property = this.properties[name];
 
     if (property == null) {

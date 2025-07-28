@@ -1,12 +1,9 @@
 Test,TestId,Type,Item,Message,Data,Path
 CADDONREQ,200,Info,,"Behavior pack manifest found.",,/Content/behavior_packs/aop_mobsbp/manifest.json,
-CADDONREQ,102,Error,,"Found an cooperative add-on common name folder 'entities' in a parent folder pack\loot_tables. Should be named 'creatorshortname' and not a common term","entities",,
-CADDONREQ,104,Error,,"Found a loose file 'sheepomelon.json' in loot_tables\entities. Files should only be in the folder loot_tables\entities\<mygamename>","sheepomelon.json",,
-CADDONREQ,104,Error,,"Found a loose file 'sheepomelon_shear.json' in loot_tables\entities. Files should only be in the folder loot_tables\entities\<mygamename>","sheepomelon_shear.json",,
 MINENGINEVER,605,Info,,"Behavior pack manifest min_engine_version",1,20,0,/Content/behavior_packs/aop_mobsbp/manifest.json,
 MINENGINEVER,614,Info,,"Resource pack manifest format_version",1,20,0,/Content/resource_packs/aop_mobsrp/manifest.json,
 PACKSIZE,1,Test success,,"Pack Size Information (PACKSIZE) completed successfully",,,
-CADDONREQ,0,Test fail,,"Found 3 errors for Cooperative Add-On Requirements (CADDONREQ).",,,
+CADDONREQ,1,Test success,,"Cooperative Add-On Requirements (CADDONREQ) completed successfully",,,
 STRICT,1,Test success,,"Strict Platform Info Generator (STRICT) completed successfully",,,
 TEXTURE,1,Test success,,"Texture Validation (TEXTURE) completed successfully",,,
 MINENGINEVER,1,Test success,,"Min Engine Version (MINENGINEVER) completed successfully",,,

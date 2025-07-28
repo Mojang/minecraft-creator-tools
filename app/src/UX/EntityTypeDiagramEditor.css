@@ -1,0 +1,85 @@
+.etde-outer {
+  margin-left: 17px;
+  margin-top: 20px;
+  width: 200px;
+  height: 46px;
+  border: solid 3px black;
+  background: rgb(37, 111, 177);
+  background: linear-gradient(180deg, rgba(37, 111, 177, 1) 0%, rgba(48, 127, 193, 1) 37%, rgba(73, 150, 217, 1) 100%);
+  display: inline-block;
+}
+
+.etde-outer-selected {
+  margin-left: 17px;
+  margin-top: 20px;
+  width: 200px;
+  height: 46px;
+  border: solid 3px green;
+  background: rgb(37, 111, 177);
+  background: linear-gradient(180deg, rgba(37, 111, 177, 1) 0%, rgba(48, 127, 193, 1) 37%, rgba(73, 150, 217, 1) 100%);
+  display: inline-block;
+}
+
+.etde-grid {
+  display: grid;
+  height: 100%;
+  grid-template-rows: 35px 1fr;
+  grid-template-columns: 1fr 350px;
+}
+
+.etde-mainArea {
+  grid-row: 1;
+  padding: 10px;
+}
+
+.etde-loading {
+  padding: 4px;
+}
+
+.etde-title {
+  font-weight: bold;
+  padding-bottom: 10px;
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+
+.etde-toolBarArea {
+  display: grid;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-template-columns: 220px 1fr;
+}
+
+.etde-dropdownArea {
+  grid-column: 1;
+  padding: 2px;
+}
+
+.etde-dropdownArea .ui-dropdown__container {
+  width: 210px;
+}
+
+.etde-toolBar {
+  grid-column: 2;
+  padding-top: 2px;
+}
+
+.etde-container {
+  grid-row: 2;
+  grid-column: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.etde-container-wide {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.etde-pane {
+  grid-row: 2;
+  grid-column: 2;
+  width: 350px;
+  max-width: 350px;
+  overflow-x: hidden;
+}

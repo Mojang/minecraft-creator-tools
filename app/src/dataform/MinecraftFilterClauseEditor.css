@@ -4,6 +4,26 @@
   margin-top: 2px !important;
 }
 
+.mificln-outer {
+  display: block;
+  width: 100%;
+  margin-top: 2px !important;
+}
+
+.mificln-cell {
+  display: block;
+  padding-top: 2px;
+  padding-right: 4px;
+}
+
+.mificln-inner .ui-dropdown__container {
+  width: 180px;
+}
+
+.mificln-test .ui-dropdown__container {
+  width: 180px;
+}
+
 .mificl-inner {
   display: flex;
 }
