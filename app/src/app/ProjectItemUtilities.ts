@@ -903,6 +903,8 @@ export default class ProjectItemUtilities {
         return "TypeScript";
       case ProjectItemType.unknownJson:
         return "General json file";
+      case ProjectItemType.designPackManifestJson:
+        return "Design pack manifest";
       case ProjectItemType.behaviorPackManifestJson:
         return "Behavior pack manifest";
       case ProjectItemType.resourcePackManifestJson:
@@ -1580,9 +1582,9 @@ export default class ProjectItemUtilities {
   }
 
   static async getDefaultFolderForType(project: Project, itemType: ProjectItemType) {
-    const path = ProjectItemUtilities.getFolderRootsForType(itemType);
+    const paths = ProjectItemUtilities.getFolderRootsForType(itemType);
 
-    if (path === undefined || path.length === 0) {
+    if (paths === undefined || paths.length === 0) {
       return undefined;
     }
 
@@ -1607,7 +1609,7 @@ export default class ProjectItemUtilities {
           return undefined;
         }
 
-        return defaultBpFolder.ensureFolderFromRelativePath(path[0]);
+        return defaultBpFolder.ensureFolderFromRelativePath(paths[0]);
 
       case ProjectItemType.entityTypeResource:
       case ProjectItemType.modelGeometryJson:
@@ -1617,7 +1619,7 @@ export default class ProjectItemUtilities {
           return undefined;
         }
 
-        return defaultRpFolder.ensureFolderFromRelativePath(path[0]);
+        return defaultRpFolder.ensureFolderFromRelativePath(paths[0]);
 
       case ProjectItemType.spawnRuleBehavior:
       case ProjectItemType.lootTableBehavior:
@@ -1628,7 +1630,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.jigsawStructure:
       case ProjectItemType.jigsawTemplatePool:
       case ProjectItemType.jigsawStructureSet:
-        return await ProjectUtilities.getDefaultBehaviorPackFolder(project, path);
+        return await ProjectUtilities.getDefaultBehaviorPackFolder(project, paths);
 
       case ProjectItemType.designTexture:
         const defaultDpFolder = await project.getDefaultDesignPackFolder();
@@ -1637,7 +1639,7 @@ export default class ProjectItemUtilities {
           return undefined;
         }
 
-        return defaultDpFolder.ensureFolderFromRelativePath(path.join("/"));
+        return defaultDpFolder.ensureFolderFromRelativePath(StorageUtilities.ensureStartsWithDelimiter(paths[0]));
 
       case ProjectItemType.uiTexture:
         const defaultRpFolderA = await project.getDefaultResourcePackFolder();
@@ -1646,7 +1648,7 @@ export default class ProjectItemUtilities {
           return undefined;
         }
 
-        return defaultRpFolderA.ensureFolderFromRelativePath(path.join("/"));
+        return defaultRpFolderA.ensureFolderFromRelativePath(paths.join("/"));
     }
 
     return undefined;

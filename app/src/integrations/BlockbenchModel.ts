@@ -5,6 +5,9 @@ import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
 import StorageUtilities from "../storage/StorageUtilities";
 import IBlockbenchModel, {
+  IBlockbenchAnimation,
+  IBlockbenchAnimationAnimator,
+  IBlockbenchAnimationKeyframe,
   IBlockbenchElement,
   IBlockbenchFace,
   IBlockbenchOutlineItem,
@@ -942,6 +945,127 @@ export default class BlockbenchModel {
     };
   }
 
+  /**
+   * Exports Minecraft animations to Blockbench format
+   * @param animationDef The Minecraft animation resource definition to export from
+   * @param bbmodel The Blockbench model to export animations to
+   */
+  static async exportAnimationsToBlockbench(animationDef: AnimationResourceDefinition, bbmodel: IBlockbenchModel) {
+    if (!animationDef.animations || !bbmodel.animations) {
+      return;
+    }
+
+    for (const animationName in animationDef.animations) {
+      const mcAnimation = animationDef.animations[animationName];
+
+      if (mcAnimation && mcAnimation.bones) {
+        const bbAnimation: IBlockbenchAnimation = {
+          uuid: Utilities.createUuid(),
+          name: animationName,
+          loop: mcAnimation.loop ? "loop" : "once",
+          override: false,
+          length: mcAnimation.animation_length || 1.0,
+          snapping: 20,
+          selected: false,
+          saved: true,
+          path: "",
+          anim_time_update: "",
+          blend_weight: "",
+          loop_delay: "",
+          animators: {},
+        };
+
+        // Convert Minecraft animation bones to Blockbench animators
+        for (const boneName in mcAnimation.bones) {
+          const mcBone = mcAnimation.bones[boneName];
+
+          if (mcBone) {
+            const animator: IBlockbenchAnimationAnimator = {
+              name: boneName,
+              type: "bone",
+              keyframes: [],
+            };
+
+            // Process rotation keyframes
+            if (mcBone.rotation) {
+              this.convertKeyframesToBlockbench(mcBone.rotation, "rotation", animator);
+            }
+
+            // Process position keyframes
+            if (mcBone.position) {
+              this.convertKeyframesToBlockbench(mcBone.position, "position", animator);
+            }
+
+            // Process scale keyframes
+            if (mcBone.scale) {
+              this.convertKeyframesToBlockbench(mcBone.scale, "scale", animator);
+            }
+
+            if (animator.keyframes.length > 0) {
+              bbAnimation.animators[boneName] = animator;
+            }
+          }
+        }
+
+        bbmodel.animations.push(bbAnimation);
+      }
+    }
+  }
+
+  /**
+   * Converts Minecraft keyframe data to Blockbench keyframe format
+   * @param keyframeData The Minecraft keyframe data (can be static values or time-based keyframes)
+   * @param channel The animation channel (rotation, position, scale)
+   * @param animator The Blockbench animator to add keyframes to
+   */
+  static convertKeyframesToBlockbench(
+    keyframeData: any, // Using any to handle the complex union types from Minecraft
+    channel: string,
+    animator: IBlockbenchAnimationAnimator
+  ) {
+    if (Array.isArray(keyframeData)) {
+      // Single static value - create a keyframe at time 0
+      const keyframe: IBlockbenchAnimationKeyframe = {
+        channel: channel,
+        data_points: [
+          {
+            x: keyframeData[0]?.toString() || "0",
+            y: keyframeData[1]?.toString() || "0",
+            z: keyframeData[2]?.toString() || "0",
+          },
+        ],
+        uuid: Utilities.createUuid(),
+        time: 0,
+        color: 0,
+        interpolation: "linear",
+      };
+      animator.keyframes.push(keyframe);
+    } else if (keyframeData && typeof keyframeData === "object") {
+      // Multiple keyframes with time codes
+      for (const timeCode in keyframeData) {
+        const values = keyframeData[timeCode];
+
+        if (Array.isArray(values)) {
+          const keyframe: IBlockbenchAnimationKeyframe = {
+            channel: channel,
+            data_points: [
+              {
+                x: values[0]?.toString() || "0",
+                y: values[1]?.toString() || "0",
+                z: values[2]?.toString() || "0",
+              },
+            ],
+            uuid: Utilities.createUuid(),
+            time: parseFloat(timeCode),
+            color: 0,
+            interpolation: "linear",
+          };
+          animator.keyframes.push(keyframe);
+        }
+      }
+    }
+  }
+
   static async exportModel(modelProjectItem: ProjectItem, modelIndex?: number): Promise<IBlockbenchModel | undefined> {
     if (modelIndex === undefined) {
       modelIndex = 0;
@@ -1175,6 +1299,57 @@ export default class BlockbenchModel {
 
         if (parentOutlinerElt) {
           parentOutlinerElt.children.push(thisOutlinerElt);
+        }
+      }
+    }
+
+    // Export animations from related animation resource files
+    bbmodel.animations = [];
+
+    // Find related animation files from the entity or other parent project items
+    if (modelProjectItem.parentItems) {
+      for (const parentItemOuter of modelProjectItem.parentItems) {
+        if (parentItemOuter.parentItem.childItems) {
+          for (const childItemOuter of parentItemOuter.parentItem.childItems) {
+            if (childItemOuter.childItem.itemType === ProjectItemType.animationResourceJson) {
+              await childItemOuter.childItem.ensureFileStorage();
+
+              if (childItemOuter.childItem.primaryFile) {
+                const animationDef = await AnimationResourceDefinition.ensureOnFile(
+                  childItemOuter.childItem.primaryFile
+                );
+
+                if (animationDef && animationDef.animations) {
+                  await this.exportAnimationsToBlockbench(animationDef, bbmodel);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Also search for animation files by name matching if no direct child relationships exist
+    if (bbmodel.animations.length === 0 && modelProjectItem.project) {
+      const project = modelProjectItem.project;
+      const modelBaseName = StorageUtilities.getBaseFromName(model.file.name);
+
+      for (const projectItem of project.items) {
+        if (projectItem.itemType === ProjectItemType.animationResourceJson) {
+          const animationBaseName = StorageUtilities.getBaseFromName(projectItem.name);
+
+          // Check if animation file name is related to model file name
+          if (animationBaseName.includes(modelBaseName) || modelBaseName.includes(animationBaseName)) {
+            await projectItem.ensureFileStorage();
+
+            if (projectItem.primaryFile) {
+              const animationDef = await AnimationResourceDefinition.ensureOnFile(projectItem.primaryFile);
+
+              if (animationDef && animationDef.animations) {
+                await this.exportAnimationsToBlockbench(animationDef, bbmodel);
+              }
+            }
+          }
         }
       }
     }
