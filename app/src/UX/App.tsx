@@ -305,11 +305,7 @@ export default class App extends Component<AppProps, AppState> {
       const firstSlash = openQuery.indexOf("/");
 
       if (firstSlash > 1) {
-        return {
-          mode: AppMode.importFromUrl,
-          activeProject: null,
-        };
-        /*     const openToken = openQuery.substring(0, firstSlash).toLowerCase();
+        const openToken = openQuery.substring(0, firstSlash).toLowerCase();
 
         let openData = openQuery.substring(firstSlash + 1, openQuery.length);
 
@@ -320,8 +316,13 @@ export default class App extends Component<AppProps, AppState> {
             openData = openData.substring(0, lastPeriod);
           }
 
-          this._ensureProjectFromGalleryId(openData, updateContent);
-        }*/
+          this._ensureProjectFromGalleryId(openData);
+        } else {
+          return {
+            mode: AppMode.importFromUrl,
+            activeProject: null,
+          };
+        }
       }
     }
 
