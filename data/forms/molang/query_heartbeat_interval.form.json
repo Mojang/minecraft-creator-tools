@@ -1,0 +1,6 @@
+{
+  "id": "query.heartbeat_interval",
+  "fields": [],
+  "description": "Returns the heartbeat interval of the actor in seconds. Returns 0 when the actor has no heartbeat.",
+  "title": "Heartbeat Interval Query"
+}

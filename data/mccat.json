@@ -1,0 +1,1337 @@
+{
+  "blockBaseTypes": [
+    {
+      "id": 9999,
+      "name": "unknown"
+    },
+    {
+      "id": 8,
+      "name": "flowing_water",
+      "isOpaque": false,
+      "shape": 1,
+      "mapColor": "#4040FF",
+      "shortId": "wtf"
+    },
+    {
+      "id": 9,
+      "name": "water",
+      "shortId": "wt_",
+      "mapColor": "#4040FF",
+      "isOpaque": false,
+      "shape": 1,
+      "altShortId": "wtr"
+    },
+    {
+      "id": 13,
+      "name": "gravel",
+      "icon": "gravel",
+      "mapColor": "#707070",
+      "isOpaque": true,
+      "shape": 1,
+      "shortId": "gvl"
+    },
+    {
+      "id": 12,
+      "name": "sand",
+      "isOpaque": true,
+      "shape": 1,
+      "mapColor": "#F7E9A3",
+      "shortId": "snd",
+      "icon": "sand"
+    },
+    {
+      "id": 1,
+      "name": "stone",
+      "isOpaque": true,
+      "shape": 1,
+      "shortId": "sne",
+      "icon": "stone",
+      "mapColor": "#707070",
+      "variants": [
+        { "name": "glowstone", "shortId": "glo", "id": 89 },
+        { "name": "grindstone", "shortId": "gne", "id": 450 },
+        {
+          "name": "sandstone",
+          "shortId": "sas",
+          "id": 24
+        },
+        {
+          "name": "smooth_stone",
+          "shortId": "sms",
+          "id": 438
+        }
+      ]
+    },
+    {
+      "id": 216,
+      "name": "block",
+      "abstract": true,
+      "isOpaque": true,
+      "shape": 1,
+      "mapColor": "#707070",
+      "variants": [
+        { "name": "bone_block", "shortId": "blb", "mapColor": "#D1B1A1", "id": 216 },
+        { "name": "coal_block", "shortId": "blc", "mapColor": "#251610", "id": 173 },
+        { "name": "hay_block", "shortId": "blh", "mapColor": "#F7E9A3", "id": 170 },
+        { "name": "iron_block", "shortId": "bli", "mapColor": "#D8AF93", "id": 42 },
+        { "name": "lapis_block", "shortId": "bll", "mapColor": "#4A80FF", "id": 22 },
+        { "name": "melon_block", "shortId": "blm", "mapColor": "#4C522A", "id": 103 },
+        { "name": "nether_wart_block", "shortId": "blw", "mapColor": "#700200", "id": 214 },
+        { "name": "netherite_block", "shortId": "blx", "mapColor": "#700200", "id": 525 },
+        { "name": "purpur_block", "shortId": "blp", "mapColor": "#7A4958", "id": 201 },
+        { "name": "quartz_block", "shortId": "blq", "mapColor": "#00D93A", "id": 155 }
+      ]
+    },
+    {
+      "name": "ore",
+      "abstract": true,
+      "isOpaque": true,
+      "shape": 1,
+      "mapColor": "#D8AF93",
+      "variants": [
+        { "name": "iron_ore", "shortId": "ori", "icon": "_", "mapColor": "#D8AF93", "id": 15 },
+        { "name": "lapis_ore", "shortId": "orl", "icon": "_", "mapColor": "#4A80FF", "id": 21 },
+        { "name": "lit_redstone_ore", "shortId": "ors", "icon": "_", "mapColor": "#FF0000", "id": 74 },
+        { "name": "nether_gold_ore", "shortId": "orn", "icon": "_", "mapColor": "#FAEE4D", "id": 543 },
+        { "name": "quartz_ore", "shortId": "orq", "icon": "_", "id": 153 },
+        { "name": "redstone_ore", "shortId": "orr", "icon": "_", "mapColor": "#FF0000", "id": 73 },
+        { "name": "coal_ore", "shortId": "orc", "icon": "_", "id": 16 },
+        { "name": "diamond_ore", "shortId": "ord", "icon": "_", "mapColor": "#5CDBD5", "id": 56 },
+        { "name": "emerald_ore", "shortId": "ore", "icon": "_", "mapColor": "#00D93A", "id": 129 },
+        { "name": "gold_ore", "shortId": "org", "icon": "_", "mapColor": "#FAEE4D", "id": 14 },
+        { "name": "copper_ore", "shortId": "oru", "icon": "_", "id": 566 },
+        { "name": "deepslate_iron_ore", "shortId": "dri", "icon": "_", "mapColor": "#D8AF93", "id": 656 },
+        { "name": "deepslate_copper_ore", "shortId": "dru", "icon": "_", "id": 663 },
+        { "name": "deepslate_lapis_ore", "shortId": "drl", "icon": "_", "mapColor": "#4A80FF", "id": 655 },
+        { "name": "deepslate_gold_ore", "shortId": "drn", "icon": "_", "id": 657 },
+        { "name": "deepslate_redstone_ore", "shortId": "drr", "icon": "_", "mapColor": "#FF0000", "id": 658 },
+        { "name": "deepslate_coal_ore", "shortId": "drc", "icon": "_", "id": 661 },
+        { "name": "deepslate_diamond_ore", "shortId": "drd", "icon": "_", "mapColor": "#5CDBD5", "id": 660 },
+        { "name": "deepslate_emerald_ore", "shortId": "dre", "icon": "_", "mapColor": "#00D93A", "id": 662 }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "material",
+      "title": "Block",
+      "abstract": true,
+      "isOpaque": true,
+      "shape": 1,
+      "icon": "_",
+      "variants": [
+        { "name": "cobblestone", "mapColor": "#707070", "shortId": "cbl" },
+        { "name": "prismarine", "shortId": "pri", "id": 168 },
+        { "name": "basalt", "shortId": "bas", "id": 489 },
+        { "name": "bedrock", "shortId": "bd_", "altShortId": "bdr", "id": 7 },
+        { "name": "blackstone", "shortId": "bst", "id": 528 }
+      ]
+    },
+    {
+      "id": 66,
+      "abstract": false,
+      "name": "rail",
+      "shortId": "rl_",
+      "altShortId": "ral",
+      "icon": "_n",
+      "variants": [
+        { "name": "activator_rail", "icon": "rv", "shortId": "rla", "id": 126 },
+        { "name": "detector_rail", "icon": "rv", "shortId": "rld", "id": 28 },
+        { "name": "golden_rail", "icon": "rv", "shortId": "rlg", "id": 27 }
+      ]
+    },
+    {
+      "id": 20,
+      "name": "glass",
+      "shortId": "gs_",
+      "altShortId": "gls",
+      "mapColor": "#5CDBD5",
+      "isOpaque": false,
+      "shape": 1
+    },
+    {
+      "id": 55,
+      "name": "redstone_wire",
+      "mapColor": "#FF0000",
+      "shortId": "wrr",
+      "isOpaque": false
+    },
+    {
+      "id": 79,
+      "name": "ice",
+      "isOpaque": true,
+      "shape": 1,
+      "mapColor": "#A0A0FF",
+      "shortId": "ic_",
+      "altShortId": "ice",
+      "variants": [
+        { "name": "blue_ice", "shortId": "icl", "id": 266 },
+        { "name": "frosted_ice", "shortId": "fic", "id": 207 }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "dirt",
+      "isOpaque": true,
+      "shape": 1,
+      "mapColor": "#976D4D",
+      "icon": "_",
+      "variants": [{ "name": "coarse_dirt", "data": 1, "id": 9998 }]
+    },
+    {
+      "id": 2,
+      "name": "grass",
+      "shortId": "gr_",
+      "icon": "_car",
+      "isOpaque": true,
+      "shape": 1,
+      "mapColor": "#7FB238",
+      "altShortId": "gra"
+    },
+    {
+      "name": "log",
+      "shortId": "lg_",
+      "isOpaque": true,
+      "id": 17,
+      "shape": 1,
+      "mapColor": "#976D4D",
+      "altShortId": "log"
+    },
+    {
+      "name": "log2",
+      "id": 162,
+      "isOpaque": true,
+      "shape": 1,
+      "mapColor": "#976D4D",
+      "shortId": "lg2"
+    },
+    {
+      "id": 0,
+      "name": "air",
+      "shortId": "…"
+    },
+    {
+      "id": 145,
+      "name": "anvil",
+      "shortId": "anv",
+      "properties": [
+        {
+          "id": "damage",
+          "default": "undamaged",
+          "type": 4,
+          "values": [
+            {
+              "id": "undamaged"
+            },
+            {
+              "id": "broken"
+            },
+            {
+              "id": "slightly_damaged",
+              "data": 4
+            },
+            {
+              "id": "very_damaged",
+              "data": 8
+            }
+          ]
+        },
+        {
+          "id": "direction",
+          "title": "Facing Direction",
+          "type": 5,
+          "default": 0,
+          "values": [
+            {
+              "id": 0,
+              "title": "North",
+              "data": 3
+            },
+            {
+              "id": 1,
+              "title": "East",
+              "data": 0
+            },
+            {
+              "id": 2,
+              "title": "South",
+              "data": 2
+            },
+            {
+              "id": 3,
+              "title": "West",
+              "data": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 467,
+      "name": "wood",
+      "isOpaque": true,
+      "shape": 1,
+      "shortId": "wod"
+    },
+    {
+      "id": 418,
+      "name": "bamboo",
+      "shortId": "bmb",
+      "mapColor": "#F7E9A3",
+      "properties": [
+        {
+          "id": "age_bit",
+          "type": 1,
+          "default": false,
+          "values": [
+            {
+              "id": false,
+              "title": "Younger"
+            },
+            {
+              "id": true,
+              "title": "Older"
+            }
+          ]
+        },
+        {
+          "id": "bamboo_leaf_size",
+          "type": 4,
+          "values": [
+            {
+              "id": "no_leaves",
+              "title": "None",
+              "data": 0
+            },
+            {
+              "id": "small_leaves",
+              "title": "Small",
+              "data": 2
+            },
+            {
+              "id": "large_leaves",
+              "title": "Large",
+              "data": 4
+            }
+          ],
+          "default": "no_leaves"
+        },
+        {
+          "id": "bamboo_stalk_thickness",
+          "type": 4,
+          "values": [
+            {
+              "id": "thin"
+            },
+            {
+              "id": "thick",
+              "data": 1
+            }
+          ],
+          "default": "thin"
+        }
+      ]
+    },
+    {
+      "id": 419,
+      "name": "bamboo_sapling",
+      "shortId": "sab",
+      "mapColor": "#F7E9A3",
+      "properties": [
+        {
+          "id": "age_bit",
+          "type": 1,
+          "default": false,
+          "values": [
+            {
+              "id": false,
+              "title": "Younger"
+            },
+            {
+              "id": true,
+              "title": "Older"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 77,
+      "name": "button",
+      "abstract": true,
+      "variants": [
+        { "name": "acacia_button", "icon": "pl_", "shortId": "bna", "id": 395 },
+        { "name": "birch_button", "icon": "pl_", "shortId": "bnb", "id": 396 },
+        { "name": "crimson_button", "icon": "pl_", "shortId": "bnm", "id": 515 },
+        { "name": "dark_oak_button", "icon": "pl_", "shortId": "bno", "id": 397 },
+        { "name": "jungle_button", "icon": "pl_", "shortId": "bnj", "id": 398 },
+        { "name": "polished_blackstone_button", "icon": "|", "shortId": "bnp", "id": 551 },
+        { "name": "spruce_button", "icon": "pl_", "shortId": "bnr", "id": 399 },
+        { "name": "stone_button", "icon": "l", "shortId": "bns" },
+        { "name": "warped_button", "shortId": "bnx", "id": 516 },
+        { "name": "wooden_button", "shortId": "bnw", "id": 143 }
+      ]
+    },
+    {
+      "id": 53,
+      "name": "stairs",
+      "abstract": true,
+      "mapColor": "#976D4D",
+      "variants": [
+        { "name": "acacia_stairs", "icon": "pl_", "shortId": "sta", "id": 163 },
+        { "name": "andesite_stairs", "icon": "st_", "shortId": "ste", "id": 426 },
+        { "name": "birch_stairs", "icon": "pl_", "shortId": "stb", "id": 135 },
+        { "name": "blackstone_stairs", "icon": "_t", "shortId": "stl", "id": 531 },
+        { "name": "brick_stairs", "icon": "|", "shortId": "bs_", "altShortId": "brs", "id": 108 },
+        { "name": "crimson_stairs", "icon": "pl_", "shortId": "stm", "id": 509 },
+        { "name": "dark_oak_stairs", "icon": "pl_", "shortId": "std", "id": 164 },
+        { "name": "dark_prismarine_stairs", "icon": "|rv", "shortId": "stk", "id": 258 },
+        { "name": "diorite_stairs", "icon": "st_", "shortId": "sti", "id": 425 },
+        { "name": "end_brick_stairs", "icon": "|s", "shortId": "bse", "id": 433 },
+        { "name": "granite_stairs", "icon": "st_", "shortId": "stg", "id": 424 },
+        { "name": "jungle_stairs", "icon": "pl_", "shortId": "stj", "id": 136 },
+        { "name": "nether_brick_stairs", "icon": "|", "shortId": "bsn", "mapColor": "#700200", "id": 114 },
+        { "name": "normal_stone_stairs", "icon": "l", "shortId": "st2", "id": 435 },
+        { "name": "oak_stairs", "icon": "pl_", "shortId": "sto", "id": 53 },
+        { "name": "polished_andesite_stairs", "icon": "st_l_sm", "shortId": "psa", "id": 429 },
+        { "name": "polished_blackstone_stairs", "icon": "|", "shortId": "psl", "id": 547 },
+        { "name": "prismarine_bricks_stairs", "icon": "|", "shortId": "bsi", "id": 259 },
+        { "name": "prismarine_stairs", "icon": "_br", "shortId": "str", "id": 257 },
+        { "name": "purpur_stairs", "icon": "_bl", "shortId": "stp", "id": 203 },
+        { "name": "quartz_stairs", "icon": "_blt", "shortId": "stq", "id": 156 },
+        { "name": "red_nether_brick_stairs", "icon": "|", "shortId": "bsr", "mapColor": "#700200", "id": 439 },
+        { "name": "mossy_cobblestone_stairs", "icon": "|rv", "mapColor": "#707070", "shortId": "sty", "id": 434 },
+        { "name": "mossy_stone_brick_stairs", "icon": "sb_", "shortId": "bsx", "id": 430 },
+        { "name": "polished_blackstone_brick_stairs", "icon": "|s", "shortId": "bsk", "id": 530 },
+        { "name": "polished_diorite_stairs", "shortId": "psq", "id": 428 },
+        { "name": "polished_granite_stairs", "icon": "st_l_sm", "shortId": "psg", "id": 427 },
+        { "name": "red_sandstone_stairs", "icon": "_t", "shortId": "stf", "id": 180 },
+        { "name": "sandstone_stairs", "icon": "_n", "shortId": "sts", "id": 128 },
+        { "name": "smooth_quartz_stairs", "icon": "l_blt", "shortId": "ssq", "id": 440 },
+        { "name": "smooth_red_sandstone_stairs", "icon": "ml_sm", "shortId": "ssr", "id": 431 },
+        { "name": "smooth_sandstone_stairs", "icon": "|rv", "shortId": "sss", "id": 432 },
+        { "name": "spruce_stairs", "icon": "pl_", "shortId": "stu", "id": 134 },
+        { "name": "stone_brick_stairs", "icon": "l", "shortId": "bsb", "id": 109 },
+        { "name": "stone_stairs", "icon": "l", "shortId": "stn", "id": 67 }
+      ],
+      "properties": [
+        {
+          "name": "upside_down_bit",
+          "type": 1,
+          "title": "Upside down",
+          "values": [
+            {
+              "id": false,
+              "title": "Stairs are placed downward"
+            },
+            {
+              "id": true,
+              "title": "Stairs are upside-down"
+            }
+          ],
+          "default": false
+        },
+        {
+          "name": "weirdo_direction",
+          "title": "Direction",
+          "type": 5,
+          "values": [
+            {
+              "id": 0,
+              "title": "North facing",
+              "data": 3
+            },
+            {
+              "id": 1,
+              "title": "East facing",
+              "data": 0
+            },
+            {
+              "id": 2,
+              "title": "South facing",
+              "data": 2
+            },
+            {
+              "id": 3,
+              "title": "West facing",
+              "data": 1
+            }
+          ],
+          "default": 0
+        }
+      ]
+    },
+    {
+      "id": 220,
+      "name": "terracotta",
+      "mapColor": "#392923",
+      "abstract": true,
+      "variants": [
+        { "name": "black_glazed_terracotta", "icon": "2rv", "shortId": "tck", "mapColor": "#251610", "id": 235 },
+        { "name": "blue_glazed_terracotta", "icon": "2rv", "shortId": "tca", "mapColor": "#4C3E5C", "id": 231 },
+        { "name": "brown_glazed_terracotta", "icon": "2rv", "shortId": "tcb", "mapColor": "#4C3223", "id": 232 },
+        { "name": "cyan_glazed_terracotta", "icon": "2rv", "shortId": "tcc", "mapColor": "#575C5C", "id": 229 },
+        { "name": "gray_glazed_terracotta", "icon": "2rv", "shortId": "tce", "id": 227 },
+        { "name": "green_glazed_terracotta", "icon": "2rv", "shortId": "tcg", "mapColor": "#4C522A", "id": 233 },
+        { "name": "light_blue_glazed_terracotta", "icon": "2rv", "shortId": "tcl", "mapColor": "#706C8A", "id": 223 },
+        { "name": "lime_glazed_terracotta", "icon": "2rv", "shortId": "tci", "mapColor": "#677535", "id": 225 },
+        { "name": "magenta_glazed_terracotta", "icon": "2rv", "shortId": "tcm", "mapColor": "#95576C", "id": 222 },
+        { "name": "orange_glazed_terracotta", "icon": "2rv", "shortId": "tco", "mapColor": "#9F5224", "id": 221 },
+        { "name": "pink_glazed_terracotta", "icon": "2rv", "shortId": "tcp", "mapColor": "#A04D4E", "id": 226 },
+        { "name": "purple_glazed_terracotta", "icon": "2rv", "shortId": "tcu", "mapColor": "#7A4958", "id": 219 },
+        { "name": "red_glazed_terracotta", "icon": "2rv", "shortId": "tcr", "mapColor": "#8E3C2E", "id": 234 },
+        { "name": "silver_glazed_terracotta", "icon": "2rv", "shortId": "tcv", "mapColor": "#876B62", "id": 228 },
+        { "name": "white_glazed_terracotta", "icon": "2rv", "shortId": "tcw", "mapColor": "#D1B1A1", "id": 220 },
+        { "name": "yellow_glazed_terracotta", "icon": "2rv", "shortId": "tcy", "mapColor": "#BA8524", "id": 224 }
+      ]
+    },
+    {
+      "id": 139,
+      "name": "wall",
+      "mapColor": "#707070",
+      "abstract": true,
+      "variants": [
+        { "name": "blackstone_wall", "icon": "|", "shortId": "wll", "id": 532 },
+        { "name": "cobblestone_wall", "icon": "|", "shortId": "wlc", "id": 139 },
+        { "name": "polished_blackstone_brick_wall", "icon": "|", "shortId": "wlk", "id": 533 },
+        { "name": "polished_blackstone_wall", "icon": "|", "shortId": "wlp", "id": 552 }
+      ]
+    },
+    {
+      "id": 177,
+      "name": "wall_banner",
+      "shortId": "ban",
+      "properties": [
+        {
+          "name": "facing",
+          "type": 4,
+          "values": [
+            {
+              "id": "east",
+              "data": 5
+            },
+            {
+              "id": "west",
+              "data": 4
+            },
+            {
+              "id": "north",
+              "data": 2
+            },
+            {
+              "id": "south",
+              "data": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 176,
+      "name": "standing_banner",
+      "shortId": "sbn",
+      "properties": [
+        {
+          "name": "ground_sign_direction",
+          "type": 5,
+          "values": [
+            {
+              "id": 0,
+              "title": "South",
+              "data": 0
+            },
+            {
+              "id": 1,
+              "title": "South Southwest",
+              "data": 1
+            },
+            {
+              "id": 2,
+              "title": "Southwest",
+              "data": 2
+            },
+            {
+              "id": 3,
+              "title:": "West Southwest",
+              "data": 3
+            },
+            {
+              "id": 4,
+              "title": "West",
+              "data": 4
+            },
+            {
+              "id": 5,
+              "title": "West Northwest",
+              "data": 5
+            },
+            {
+              "id": 6,
+              "title": "Northwest",
+              "data": 6
+            },
+            {
+              "id": 7,
+              "title:": "North Northwest",
+              "data": 7
+            },
+            {
+              "id": 8,
+              "title": "North",
+              "data": 8
+            },
+            {
+              "id": 9,
+              "title": "North Northeast",
+              "data": 9
+            },
+            {
+              "id": 10,
+              "title": "Northeast",
+              "data": 10
+            },
+            {
+              "id": 11,
+              "title:": "East Northeast",
+              "data": 11
+            },
+            {
+              "id": 12,
+              "title": "East",
+              "data": 12
+            },
+            {
+              "id": 13,
+              "title": "East Southeast",
+              "data": 13
+            },
+            {
+              "id": 14,
+              "title": "Southeast",
+              "data": 14
+            },
+            {
+              "id": 15,
+              "title:": "South Southeast",
+              "data": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 198,
+      "name": "grass_path",
+      "isOpaque": true,
+      "shape": 1,
+      "mapColor": "#7FB238",
+      "shortId": "grp"
+    },
+    {
+      "id": 458,
+      "name": "barrel",
+      "properties": [
+        {
+          "name": "facing_direction",
+          "type": 0,
+          "values": [
+            {
+              "id": 0,
+              "title": "North",
+              "data": 0
+            },
+            {
+              "id": 1,
+              "title": "East",
+              "data": 1
+            },
+            {
+              "id": 2,
+              "title": "South",
+              "data": 2
+            },
+            {
+              "id": 3,
+              "title": "West",
+              "data": 3
+            },
+            {
+              "id": 4,
+              "title": "Up",
+              "data": 4
+            },
+            {
+              "id": 5,
+              "title": "Down",
+              "data": 5
+            }
+          ]
+        },
+        {
+          "name": "open_bit",
+          "type": 0,
+          "values": [
+            {
+              "id": 0,
+              "title": "Open"
+            },
+            {
+              "id": 1,
+              "title": "Closed",
+              "data": 6
+            }
+          ],
+          "default": 0
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "name": "bed",
+      "shortId": "be_",
+      "altShortId": "bed",
+      "mapColor": "#8E3C2E",
+      "properties": [
+        {
+          "name": "facing_bit",
+          "title": "Facing",
+          "type": 4,
+          "values": [
+            {
+              "id": "east",
+              "data": 3
+            },
+            {
+              "id": "north",
+              "data": 2
+            },
+            {
+              "id": "south",
+              "data": 0
+            },
+            {
+              "id": "west",
+              "data": 1
+            }
+          ]
+        },
+        {
+          "name": "head_bit",
+          "title": "Bed foot/head",
+          "type": 1,
+          "values": [
+            {
+              "id": false,
+              "title": "Foot of the bed"
+            },
+            {
+              "id": true,
+              "title": "Head of the bed",
+              "data": 4
+            }
+          ]
+        },
+        {
+          "name": "occupied_bit",
+          "title": "Occupied",
+          "type": 1,
+          "values": [
+            {
+              "id": false,
+              "title": "Foot of the bed"
+            },
+            {
+              "id": true,
+              "title": "Head of the bed",
+              "data": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 64,
+      "name": "wooden_door",
+      "abstract": false,
+      "mapColor": "#976D4D",
+      "variants": [
+        { "name": "acacia_door", "shortId": "dra", "id": 196 },
+        { "name": "birch_door", "shortId": "drb", "id": 194 },
+        { "name": "crimson_door", "shortId": "drm", "id": 499 },
+        { "name": "dark_oak_door", "shortId": "dro", "id": 197 },
+        { "name": "iron_door", "shortId": "dri", "id": 71 },
+        { "name": "jungle_door", "shortId": "drj", "id": 195 },
+        { "name": "spruce_door", "shortId": "drr", "id": 193 },
+        { "name": "warped_door", "shortId": "drx", "id": 500 }
+      ],
+      "properties": [
+        {
+          "name": "direction",
+          "title": "Facing",
+          "type": 5,
+          "values": [
+            {
+              "id": 0,
+              "title": "North",
+              "data": 3
+            },
+            {
+              "id": 1,
+              "title": "East",
+              "data": 0
+            },
+            {
+              "id": 2,
+              "title": "South",
+              "data": 1
+            },
+            {
+              "id": 3,
+              "title": "West",
+              "data": 2
+            }
+          ],
+          "default": 0
+        },
+        {
+          "name": "door_hinge_bit",
+          "title": "Door hinge side",
+          "type": 6,
+          "values": [
+            {
+              "id": 0,
+              "title": "Hinge on left"
+            },
+            {
+              "id": 1,
+              "title": "Hinge on right",
+              "data": 8
+            }
+          ],
+          "default": 0
+        },
+        {
+          "name": "open_bit",
+          "title": "Is open",
+          "type": 6,
+          "values": [
+            {
+              "id": 0,
+              "title": "Closed"
+            },
+            {
+              "id": 1,
+              "title": "Open",
+              "data": 4
+            }
+          ],
+          "default": 0
+        },
+        {
+          "name": "upper_block_bit",
+          "title": "Upper part of door",
+          "type": 6,
+          "values": [
+            {
+              "id": 0,
+              "title": "Lower"
+            },
+            {
+              "id": 1,
+              "title": "Upper",
+              "data": 8
+            }
+          ],
+          "default": 0
+        }
+      ]
+    },
+    {
+      "name": "planks",
+      "shortId": "pl_",
+      "icon": "pl_",
+      "id": 5,
+      "isOpaque": true,
+      "mapColor": "#976D4D",
+      "shape": 1,
+      "altShortId": "pla",
+      "variants": [
+        { "name": "crimson_planks", "shortId": "plm", "id": 497 },
+        { "name": "warped_planks", "shortId": "plx", "id": 498 }
+      ]
+    },
+    {
+      "id": 37,
+      "name": "flower",
+      "abstract": true,
+      "variants": [
+        { "name": "red_flower", "shortId": "flr", "icon": "flower_rose", "id": 38 },
+        { "name": "yellow_flower", "shortId": "fly", "icon": "flower_dandelion", "id": 37 }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "leaves",
+      "shortId": "le_",
+      "icon": "le_",
+      "altShortId": "lvs",
+      "mapColor": "#4C522A",
+      "properties": [
+        {
+          "name": "upper_block_bit",
+          "title": "Upper part of door",
+          "type": 6,
+          "values": [
+            {
+              "id": 0,
+              "title": "Lower"
+            },
+            {
+              "id": 1,
+              "title": "Upper",
+              "data": 8
+            }
+          ],
+          "default": 0
+        }
+      ]
+    },
+    {
+      "id": 161,
+      "name": "leaves2",
+      "shortId": "le2",
+      "mapColor": "#4C522A",
+      "icon": "le_"
+    },
+    {
+      "id": 48,
+      "name": "mossy_cobblestone",
+      "icon": "cobblestone_mossy",
+      "mapColor": "#707070",
+      "shortId": "msc"
+    },
+    {
+      "name": "mushroom_block",
+      "abstract": true,
+      "isOpaque": true,
+      "shape": 1,
+      "variants": [
+        { "name": "brown_mushroom_block", "icon": "mshblk", "shortId": "mbw", "id": 99 },
+        { "name": "red_mushroom_block", "icon": "mshblk", "shortId": "mbr", "id": 100 }
+      ]
+    },
+    {
+      "name": "vine",
+      "id": 106,
+      "shortId": "vn_",
+      "abstract": false,
+      "mapColor": "#4C522A",
+      "icon": "_carr",
+      "altShortId": "vin"
+    },
+    { "name": "acacia_fence_gate", "shortId": "fga", "id": 187 },
+    { "name": "acacia_pressure_plate", "shortId": "ppa", "id": 405 },
+    { "name": "acacia_standing_sign", "shortId": "sna", "id": 445 },
+    { "name": "acacia_trapdoor", "shortId": "tda", "id": 400 },
+    { "name": "acacia_wall_sign", "shortId": "wsa", "id": 446 },
+    { "name": "air", "shortId": "…", "id": 0 },
+    { "name": "allow", "shortId": "alw", "id": 210 },
+    { "name": "ancient_debris", "shortId": "dba", "id": 526 },
+    { "name": "barrier", "shortId": "bar", "id": 416 },
+    { "name": "beacon", "shortId": "bcn", "id": 138 },
+    { "name": "bee_nest", "shortId": "ben", "id": 473 },
+    { "name": "beehive", "shortId": "bhv", "id": 474 },
+    { "name": "beetroot", "shortId": "btr", "id": 244 },
+    { "name": "bell", "shortId": "bel", "id": 461 },
+    { "name": "birch_fence_gate", "shortId": "fgb", "id": 184 },
+    { "name": "birch_pressure_plate", "shortId": "ppb", "id": 406 },
+    { "name": "birch_standing_sign", "shortId": "snb", "id": 441 },
+    { "name": "birch_trapdoor", "shortId": "tdb", "id": 401 },
+    { "name": "birch_wall_sign", "shortId": "wsb", "id": 442 },
+    { "name": "blackstone_double_slab", "shortId": "dsl", "id": 538 },
+    { "name": "blackstone_slab", "shortId": "sll", "id": 537 },
+    { "name": "blast_furnace", "shortId": "bfr", "id": 451 },
+    { "name": "bookshelf", "shortId": "bsl", "id": 47 },
+    { "name": "border_block", "shortId": "bob", "id": 212 },
+    { "name": "brewing_stand", "shortId": "bws", "id": 117 },
+    { "name": "brick_block", "shortId": "br_", "altShortId": "brk", "id": 45 },
+    { "name": "brown_mushroom", "shortId": "msw", "id": 39 },
+    { "name": "bubble_column", "shortId": "bbc", "id": 415 },
+    { "name": "cactus", "shortId": "cct", "id": 81, "isOpaque": true, "shape": 1 },
+    { "name": "cake", "shortId": "cak", "id": 92 },
+    { "name": "camera", "shortId": "cam", "id": 242 },
+    { "name": "campfire", "shortId": "ca_", "id": 464 },
+    { "name": "carpet", "shortId": "cp_", "altShortId": "car", "id": 171 },
+    { "name": "carrots", "shortId": "cts", "id": 141 },
+    { "name": "cartography_table", "shortId": "tbc", "id": 455 },
+    { "name": "carved_pumpkin", "shortId": "pmc", "id": 410 },
+    { "name": "cauldron", "shortId": "cau", "id": 118 },
+    { "name": "chain", "shortId": "cha", "id": 541 },
+    { "name": "chain_command_block", "shortId": "cbc", "id": 189 },
+    { "name": "chalkboard", "shortId": "clk", "id": 230 },
+    { "name": "chemical_heat", "shortId": "htc", "id": 192 },
+    { "name": "chemistry_table", "shortId": "tbh", "id": 238 },
+    { "name": "chest", "shortId": "ch_", "altShortId": "chs", "icon": "chest_front", "id": 54 },
+    { "name": "chiseled_nether_bricks", "shortId": "csn", "mapColor": "#700200", "id": 557 },
+    { "name": "chorus_flower", "shortId": "flc", "id": 200 },
+    { "name": "chorus_plant", "shortId": "plc", "id": 240 },
+    { "name": "clay", "shortId": "cl_", "altShortId": "cly", "mapColor": "#A4A8B8", "icon": "_", "id": 82 },
+    { "name": "cocoa", "shortId": "cca", "id": 127 },
+    { "name": "colored_torch_bp", "shortId": "ctb", "id": 204 },
+    { "name": "colored_torch_rg", "shortId": "ctr", "id": 202 },
+    { "name": "command_block", "shortId": "cb_", "altShortId": "com", "id": 137 },
+    { "name": "composter", "shortId": "cps", "id": 468 },
+    { "name": "concrete", "shortId": "ccr", "id": 236 },
+    { "name": "concretePowder", "shortId": "ccp", "id": 237 },
+    { "name": "conduit", "shortId": "con", "id": 412 },
+    { "name": "coral", "shortId": "cor", "id": 386 },
+    { "name": "coral_block", "shortId": "blo", "id": 387 },
+    { "name": "coral_fan", "shortId": "fao", "id": 388 },
+    { "name": "coral_fan_dead", "shortId": "fdo", "id": 389 },
+    { "name": "coral_fan_hang", "shortId": "fho", "id": 390 },
+    { "name": "coral_fan_hang2", "shortId": "f2o", "id": 391 },
+    { "name": "coral_fan_hang3", "shortId": "f3o", "id": 392 },
+    { "name": "cracked_nether_bricks", "shortId": "brc", "mapColor": "#700200", "id": 558 },
+    { "name": "cracked_polished_blackstone_bricks", "shortId": "brx", "id": 535 },
+    { "name": "crafting_table", "shortId": "tbr", "id": 58 },
+    { "name": "crimson_double_slab", "shortId": "dsm", "id": 521 },
+    { "name": "crimson_fence", "shortId": "fnm", "id": 511 },
+    { "name": "crimson_fence_gate", "shortId": "fgm", "id": 513 },
+    { "name": "crimson_fungus", "shortId": "fum", "id": 483 },
+    { "name": "crimson_hyphae", "shortId": "hym", "mapColor": "#5C191D", "id": 554 },
+    { "name": "crimson_nylium", "shortId": "nym", "mapColor": "#BD3031", "id": 487 },
+    { "name": "crimson_pressure_plate", "shortId": "ppm", "id": 517 },
+    { "name": "crimson_roots", "shortId": "rtm", "id": 478 },
+    { "name": "crimson_slab", "shortId": "slm", "id": 519 },
+    { "name": "crimson_standing_sign", "shortId": "snm", "id": 505 },
+    { "name": "crimson_stem", "shortId": "smm", "mapColor": "#943F61", "id": 480 },
+    { "name": "crimson_trapdoor", "shortId": "tdm", "id": 501 },
+    { "name": "crimson_wall_sign", "shortId": "wsm", "id": 507 },
+    { "name": "crying_obsidian", "shortId": "cro", "icon": "_", "id": 544 },
+    { "name": "dark_oak_fence_gate", "shortId": "fgo", "id": 186 },
+    { "name": "dark_oak_pressure_plate", "shortId": "ppo", "id": 407 },
+    { "name": "dark_oak_trapdoor", "shortId": "tdo", "id": 402 },
+    { "name": "darkoak_standing_sign", "shortId": "snk", "id": 447 },
+    { "name": "darkoak_wall_sign", "shortId": "wsd", "id": 448 },
+    { "name": "daylight_detector", "shortId": "dad", "id": 151 },
+    { "name": "daylight_detector_inverted", "shortId": "dai", "id": 178 },
+    { "name": "deadbush", "shortId": "ddb", "id": 32 },
+    { "name": "deny", "shortId": "utd", "id": 211 },
+    { "name": "diamond_block", "shortId": "bld", "mapColor": "#5CDBD5", "id": 57 },
+    { "name": "dispenser", "shortId": "dis", "id": 23 },
+    { "name": "double_plant", "shortId": "plu", "icon": "plant_", "id": 175 },
+    { "name": "double_stone_slab", "shortId": "dt_", "id": 43 },
+    { "name": "double_stone_slab2", "shortId": "dt2", "id": 181 },
+    { "name": "double_stone_slab3", "shortId": "dt3", "id": 422 },
+    { "name": "double_stone_slab4", "shortId": "dt4", "id": 423 },
+    { "name": "double_wooden_slab", "shortId": "dtw", "id": 157 },
+    { "name": "dragon_egg", "shortId": "egd", "id": 122 },
+    { "name": "dried_kelp_block", "shortId": "blk", "id": 394 },
+    { "name": "dropper", "shortId": "dpr", "id": 125 },
+    { "name": "emerald_block", "shortId": "ble", "mapColor": "#00D93A", "id": 133 },
+    { "name": "enchanting_table", "shortId": "tbn", "id": 116 },
+    { "name": "end_bricks", "shortId": "bre", "id": 206 },
+    { "name": "end_gateway", "shortId": "gtn", "id": 209 },
+    { "name": "end_portal", "shortId": "pon", "id": 119 },
+    { "name": "end_portal_frame", "shortId": "fmn", "id": 120 },
+    { "name": "end_rod", "shortId": "rdn", "id": 208 },
+    { "name": "ender_chest", "shortId": "chn", "id": 130 },
+    { "name": "farmland", "shortId": "fnd", "id": 60 },
+    { "name": "fence", "shortId": "fn_", "altShortId": "fen", "icon": "log_acacia_f", "id": 85 },
+    { "name": "fence_gate", "shortId": "fg_", "altShortId": "feg", "id": 107 },
+    { "name": "fire", "shortId": "fir", "mapColor": "#FF0000", "id": 51 },
+    { "name": "fletching_table", "shortId": "tbf", "id": 456 },
+    { "name": "flower_pot", "shortId": "frp", "id": 140 },
+    { "name": "flowing_lava", "shortId": "lvf", "id": 10 },
+    { "name": "frame", "shortId": "frm", "id": 199 },
+    { "name": "furnace", "shortId": "fr_", "altShortId": "frn", "id": 61 },
+    { "name": "glass_pane", "shortId": "gp_", "altShortId": "glp", "id": 102 },
+    { "name": "glowingobsidian", "shortId": "gob", "icon": "glowing_obsidian", "id": 246 },
+    { "name": "gold_block", "shortId": "blg", "mapColor": "#FAEE4D", "id": 41 },
+    { "name": "hard_glass", "shortId": "gsh", "id": 253 },
+    { "name": "hard_glass_pane", "shortId": "gph", "id": 190 },
+    { "name": "hard_stained_glass", "shortId": "gst", "id": 254 },
+    { "name": "hard_stained_glass_pane", "shortId": "gpt", "id": 191 },
+    { "name": "hardened_clay", "shortId": "clh", "id": 172 },
+    { "name": "heavy_weighted_pressure_plate", "shortId": "pph", "id": 148 },
+    { "name": "honey_block", "shortId": "bly", "id": 475 },
+    { "name": "honeycomb_block", "shortId": "blz", "id": 476 },
+    { "name": "hopper", "shortId": "hpr", "id": 154 },
+    { "name": "info_update", "shortId": "uti", "id": 248 },
+    { "name": "info_update2", "shortId": "ut2", "id": 249 },
+    { "name": "invisibleBedrock", "shortId": "ibr", "id": 95 },
+    { "name": "iron_bars", "shortId": "bai", "id": 101 },
+    { "name": "iron_trapdoor", "shortId": "tdi", "id": 167 },
+    { "name": "jigsaw", "shortId": "jig", "id": 466 },
+    { "name": "jukebox", "shortId": "juk", "id": 84 },
+    { "name": "jungle_fence_gate", "shortId": "fgj", "id": 185 },
+    { "name": "jungle_pressure_plate", "shortId": "ppj", "id": 408 },
+    { "name": "jungle_standing_sign", "shortId": "snj", "id": 443 },
+    { "name": "jungle_trapdoor", "shortId": "tdj", "id": 403 },
+    { "name": "jungle_wall_sign", "shortId": "wsj", "id": 444 },
+    { "name": "kelp", "shortId": "kel", "icon": "dried_kelp_f", "id": 335 },
+    { "name": "ladder", "shortId": "lad", "id": 65 },
+    { "name": "lantern", "shortId": "lnt", "id": 463 },
+    { "name": "lava", "shortId": "lv_", "altShortId": "lva", "id": 11 },
+    { "name": "lava_cauldron", "shortId": "cul", "id": 465 },
+    { "name": "lectern", "shortId": "lec", "id": 449 },
+    { "name": "lever", "shortId": "lvr", "id": 69 },
+    { "name": "light_block", "shortId": "blt", "id": 470 },
+    { "name": "light_weighted_pressure_plate", "shortId": "ppl", "id": 147 },
+    { "name": "lit_blast_furnace", "shortId": "frb", "id": 469 },
+    { "name": "lit_furnace", "shortId": "frl", "id": 62 },
+    { "name": "lit_pumpkin", "shortId": "pml", "id": 91 },
+    { "name": "lit_redstone_lamp", "shortId": "lml", "mapColor": "#FF0000", "id": 124 },
+    { "name": "lit_smoker", "shortId": "skf", "id": 454 },
+    { "name": "chiseled_polished_blackstone", "shortId": "chb", "id": 534 },
+    { "name": "end_stone", "shortId": "ens", "id": 121 },
+    { "name": "gilded_blackstone", "shortId": "gsl", "id": 536 },
+    { "name": "lodestone", "shortId": "lod", "id": 477 },
+    { "name": "loom", "shortId": "lom", "id": 459 },
+    { "name": "magma", "shortId": "mgm", "icon": "_", "id": 213 },
+    { "name": "melon_stem", "shortId": "mst", "id": 105 },
+    { "name": "mob_spawner", "shortId": "spw", "icon": "_", "id": 52 },
+    { "name": "monster_egg", "shortId": "egm", "id": 97 },
+    { "name": "movingBlock", "shortId": "mov", "id": 250 },
+    { "name": "mycelium", "shortId": "myc", "id": 110 },
+    { "name": "nether_brick", "shortId": "brn", "mapColor": "#700200", "id": 112 },
+    { "name": "nether_brick_fence", "shortId": "fnn", "mapColor": "#700200", "id": 113 },
+    { "name": "nether_sprouts", "shortId": "nsp", "mapColor": "#700200", "id": 493 },
+    { "name": "nether_wart", "shortId": "nwr", "mapColor": "#700200", "id": 115 },
+    { "name": "netherrack", "shortId": "nrk", "mapColor": "#700200", "id": 87 },
+    { "name": "netherreactor", "shortId": "nre", "mapColor": "#700200", "id": 247 },
+    { "name": "noteblock", "shortId": "not", "id": 25 },
+    { "name": "observer", "shortId": "obs", "id": 251 },
+    { "name": "obsidian", "shortId": "osd", "icon": "_", "id": 49 },
+    { "name": "packed_ice", "shortId": "icp", "id": 174 },
+    { "name": "piston", "shortId": "pt_", "altShortId": "pst", "id": 33 },
+    { "name": "pistonArmCollision", "shortId": "pa_", "id": 34 },
+    { "name": "podzol", "shortId": "pdz", "mapColor": "#815631", "id": 243 },
+    { "name": "polished_basalt", "shortId": "pob", "id": 490 },
+    { "name": "polished_blackstone", "shortId": "pbs", "id": 546 },
+    { "name": "polished_blackstone_brick_double_slab", "shortId": "dsr", "id": 540 },
+    { "name": "polished_blackstone_brick_slab", "shortId": "slk", "id": 539 },
+    { "name": "polished_blackstone_bricks", "shortId": "brp", "id": 529 },
+    { "name": "polished_blackstone_double_slab", "shortId": "dsb", "id": 549 },
+    { "name": "polished_blackstone_pressure_plate", "shortId": "ppk", "id": 550 },
+    { "name": "polished_blackstone_slab", "shortId": "slp", "id": 548 },
+    { "name": "portal", "shortId": "po_", "id": 90 },
+    { "name": "potatoes", "shortId": "pot", "id": 142 },
+    { "name": "powered_comparator", "shortId": "cmp", "id": 150 },
+    { "name": "powered_repeater", "shortId": "rpp", "id": 94 },
+    { "name": "pumpkin", "shortId": "pm_", "altShortId": "pmp", "id": 86 },
+    { "name": "pumpkin_stem", "shortId": "pms", "id": 104 },
+    { "name": "quartz_bricks", "shortId": "brq", "id": 559 },
+    { "name": "red_mushroom", "shortId": "msr", "id": 40 },
+    { "name": "red_nether_brick", "shortId": "blr", "mapColor": "#700200", "id": 215 },
+    { "name": "red_sandstone", "shortId": "res", "id": 179 },
+    { "name": "redstone_block", "shortId": "bls", "mapColor": "#FF0000", "id": 152 },
+    { "name": "redstone_lamp", "shortId": "lmr", "mapColor": "#FF0000", "id": 123 },
+    { "name": "redstone_torch", "shortId": "trr", "mapColor": "#FF0000", "id": 76 },
+    { "name": "reeds", "shortId": "ree", "icon": "reeds", "id": 83 },
+    { "name": "repeating_command_block", "shortId": "cbr", "id": 188 },
+    { "name": "respawn_anchor", "shortId": "ran", "id": 527 },
+    { "name": "reserved", "shortId": "rsv", "id": 255 },
+    { "name": "sapling", "shortId": "sap", "id": 6 },
+    { "name": "scaffolding", "shortId": "scf", "id": 420 },
+    { "name": "sea_pickle", "shortId": "pkl", "id": 411 },
+    { "name": "seagrass", "shortId": "grs", "icon": "_car", "id": 385 },
+    { "name": "seaLantern", "shortId": "lne", "id": 169 },
+    { "name": "shroomlight", "shortId": "shl", "id": 485 },
+    { "name": "shulker_box", "shortId": "sh_", "altShortId": "shk", "id": 218 },
+    { "name": "skull", "shortId": "skl", "id": 144 },
+    { "name": "slime", "shortId": "sli", "id": 165 },
+    { "name": "smithing_table", "shortId": "tbm", "id": 457 },
+    { "name": "smoker", "shortId": "sk_", "id": 453 },
+    { "name": "snow", "shortId": "sno", "mapColor": "#FFFFFF", "id": 80 },
+    { "name": "snow_layer", "shortId": "snl", "id": 78 },
+    { "name": "soul_campfire", "shortId": "cas", "id": 545 },
+    { "name": "soul_fire", "shortId": "slf", "id": 492 },
+    { "name": "soul_lantern", "shortId": "lns", "id": 524 },
+    { "name": "soul_sand", "shortId": "sos", "id": 88 },
+    { "name": "soul_soil", "shortId": "drs", "id": 491 },
+    { "name": "soul_torch", "shortId": "trs", "id": 523 },
+    { "name": "sponge", "shortId": "spg", "id": 19 },
+    { "name": "spruce_fence_gate", "shortId": "fgr", "id": 183 },
+    { "name": "spruce_pressure_plate", "shortId": "ppr", "id": 409 },
+    { "name": "spruce_standing_sign", "shortId": "sns", "id": 436 },
+    { "name": "spruce_trapdoor", "shortId": "tdr", "id": 404 },
+    { "name": "spruce_wall_sign", "shortId": "wsr", "id": 437 },
+    { "name": "stained_glass", "shortId": "gss", "id": 241 },
+    { "name": "stained_glass_pane", "shortId": "gps", "id": 160 },
+    { "name": "stained_hardened_clay", "shortId": "cls", "id": 159 },
+    { "name": "standing_sign", "shortId": "sn_", "id": 63 },
+    { "name": "sticky_piston", "shortId": "pts", "id": 29 },
+    { "name": "stickyPistonArmCollision", "shortId": "pas", "id": 472 },
+    { "name": "stone_pressure_plate", "shortId": "pps", "id": 70 },
+    { "name": "stone_slab", "shortId": "sls", "id": 44 },
+    { "name": "stone_slab2", "shortId": "sl2", "id": 182 },
+    { "name": "stone_slab3", "shortId": "sl3", "id": 417 },
+    { "name": "stone_slab4", "shortId": "sl4", "id": 421 },
+    { "name": "stonebrick", "shortId": "sbk", "icon": "_", "id": 98 },
+    { "name": "stonecutter", "shortId": "sct", "id": 245 },
+    { "name": "stonecutter_block", "shortId": "scb", "id": 452 },
+    { "name": "stripped_acacia_log", "shortId": "lsa", "id": 263 },
+    { "name": "stripped_birch_log", "shortId": "lsb", "id": 261 },
+    { "name": "stripped_crimson_hyphae", "shortId": "hyc", "id": 555 },
+    { "name": "stripped_crimson_stem", "shortId": "smr", "id": 495 },
+    { "name": "stripped_dark_oak_log", "shortId": "lsd", "id": 264 },
+    { "name": "stripped_jungle_log", "shortId": "lsj", "id": 262 },
+    { "name": "stripped_oak_log", "shortId": "lso", "id": 265 },
+    { "name": "stripped_spruce_log", "shortId": "lsr", "id": 260 },
+    { "name": "stripped_warped_hyphae", "shortId": "hyw", "id": 556 },
+    { "name": "stripped_warped_stem", "shortId": "smp", "id": 496 },
+    { "name": "structure_block", "shortId": "sbl", "id": 252 },
+    { "name": "structure_void", "shortId": "svd", "id": 217 },
+    { "name": "sweet_berry_bush", "shortId": "bbs", "id": 462 },
+    { "name": "tallgrass", "shortId": "tgr", "icon": "_car", "id": 31 },
+    { "name": "target", "shortId": "tgt", "id": 494 },
+    { "name": "tnt", "shortId": "tnt", "id": 46 },
+    { "name": "torch", "shortId": "tr_", "altShortId": "trc", "id": 50 },
+    { "name": "trapdoor", "shortId": "td_", "id": 96 },
+    { "name": "trapped_chest", "shortId": "cht", "id": 146 },
+    { "name": "tripwire", "shortId": "wrt", "id": 132 },
+    { "name": "tripwire_hook", "shortId": "twh", "id": 131 },
+    { "name": "turtle_egg", "shortId": "egt", "id": 414 },
+    { "name": "twisting_vines", "shortId": "vnt", "id": 542 },
+    { "name": "underwater_torch", "shortId": "trw", "id": 239 },
+    { "name": "undyed_shulker_box", "shortId": "shu", "id": 205 },
+    { "name": "unknown", "shortId": "unk", "id": 560 },
+    { "name": "unlit_redstone_torch", "shortId": "tru", "mapColor": "#FF0000", "id": 75 },
+    { "name": "unpowered_comparator", "shortId": "cmu", "id": 149 },
+    { "name": "unpowered_repeater", "shortId": "rpu", "id": 93 },
+    { "name": "wall_sign", "shortId": "ws_", "id": 68 },
+    { "name": "warped_double_slab", "shortId": "dsx", "id": 522 },
+    { "name": "warped_fence", "shortId": "fnx", "id": 512 },
+    { "name": "warped_fence_gate", "shortId": "fgx", "id": 514 },
+    { "name": "warped_fungus", "shortId": "fux", "id": 484 },
+    { "name": "warped_hyphae", "shortId": "hyx", "mapColor": "#562C3E", "id": 553 },
+    { "name": "warped_nylium", "shortId": "nyx", "mapColor": "#167e86", "id": 488 },
+    { "name": "warped_pressure_plate", "shortId": "ppx", "id": 518 },
+    { "name": "warped_roots", "shortId": "rtx", "id": 479 },
+    { "name": "warped_slab", "shortId": "slx", "id": 520 },
+    { "name": "warped_stairs", "shortId": "stx", "id": 510 },
+    { "name": "warped_standing_sign", "shortId": "snx", "id": 506 },
+    { "name": "warped_stem", "shortId": "smx", "mapColor": "#3A8E8C", "id": 481 },
+    { "name": "warped_trapdoor", "shortId": "tdx", "id": 502 },
+    { "name": "warped_wall_sign", "shortId": "wsx", "id": 508 },
+    { "name": "warped_wart_block", "shortId": "wbx", "mapColor": "#14B485", "id": 482 },
+    { "name": "waterlily", "shortId": "wly", "icon": "carried_waterlily", "id": 111 },
+    { "name": "web", "shortId": "web", "icon": "_", "id": 30 },
+    { "name": "weeping_vines", "shortId": "vne", "id": 486 },
+    { "name": "wheat", "shortId": "wht", "id": 59 },
+    { "name": "wither_rose", "shortId": "wrs", "id": 471 },
+    { "name": "wooden_pressure_plate", "shortId": "ppw", "id": 72 },
+    { "name": "wooden_slab", "shortId": "slw", "id": 158 },
+    { "name": "wool", "shortId": "woo", "mapColor": "#C7C7C7", "id": 35 },
+    { "name": "deepslate", "shortId": "dsl", "icon": "_", "mapColor": "#646464", "id": 633 },
+    { "name": "tuff", "shortId": "tuf", "icon": "_", "id": 588 },
+    { "name": "monster_egg", "shortId": "meg", "icon": "stonebrick_cracked", "id": 97 },
+    { "name": "glow_lichen", "shortId": "gli", "icon": "_", "id": 666 },
+    { "name": "pointed_dripstone", "shortId": "pdr", "icon": "pointed_dripstone_down_base", "id": 563 },
+    { "name": "dripstone_block", "shortId": "dpb", "icon": "_", "id": 572 }
+  ],
+  "entities": [
+    { "id": "area_effect_cloud", "type": 1 },
+    { "id": "armor_stand", "type": 1 },
+    { "id": "arrow", "type": 2 },
+    { "id": "bat", "type": 3 },
+    { "id": "bee", "type": 3 },
+    { "id": "blaze", "type": 3 },
+    { "id": "boat", "type": 4 },
+    { "id": "cat", "type": 3 },
+    { "id": "cave_spider", "type": 3 },
+    { "id": "chest_minecart", "type": 4 },
+    { "id": "chicken", "type": 3 },
+    { "id": "command_block_minecart", "type": 4 },
+    { "id": "cow", "type": 3 },
+    { "id": "creeper", "type": 3 },
+    { "id": "dolphin", "type": 3 },
+    { "id": "donkey", "type": 3 },
+    { "id": "dragon_fireball", "type": 1 },
+    { "id": "drowned", "type": 3 },
+    { "id": "egg", "type": 5 },
+    { "id": "elder_guardian", "type": 3 },
+    { "id": "enderman", "type": 3 },
+    { "id": "endermite", "type": 3 },
+    { "id": "ender_crystal", "type": 3 },
+    { "id": "ender_dragon", "type": 3 },
+    { "id": "ender_pearl", "type": 5 },
+    { "id": "evocation_illager", "type": 3 },
+    { "id": "eye_of_ender_signal", "type": 5 },
+    { "id": "fireball", "type": 1 },
+    { "id": "fireworks_rocket", "type": 2 },
+    { "id": "fish", "type": 3 },
+    { "id": "fishing_hook", "type": 2 },
+    { "id": "fox", "type": 3 },
+    { "id": "ghast", "type": 3 },
+    { "id": "guardian", "type": 3 },
+    { "id": "hoglin", "type": 3 },
+    { "id": "hopper_minecart", "type": 4 },
+    { "id": "horse", "type": 3 },
+    { "id": "husk", "type": 3 },
+    { "id": "iron_golem", "type": 3 },
+    { "id": "lightning_bolt", "type": 2 },
+    { "id": "lingering_potion", "type": 1 },
+    { "id": "llama", "type": 3 },
+    { "id": "llama_spit", "type": 2 },
+    { "id": "magma_cube", "type": 3 },
+    { "id": "minecart", "type": 4 },
+    { "id": "mooshroom", "type": 5 },
+    { "id": "mule", "type": 3 },
+    { "id": "npc", "type": 3 },
+    { "id": "ocelot", "type": 3 },
+    { "id": "panda", "type": 3 },
+    { "id": "parrot", "type": 3 },
+    { "id": "phantom", "type": 3 },
+    { "id": "pig", "type": 3 },
+    { "id": "piglin", "type": 3 },
+    { "id": "piglin_brute", "type": 3 },
+    { "id": "pillager", "type": 3 },
+    { "id": "player", "type": 6 },
+    { "id": "polar_bear", "type": 3 },
+    { "id": "pufferfish", "type": 3 },
+    { "id": "rabbit", "type": 3 },
+    { "id": "ravager", "type": 3 },
+    { "id": "salmon", "type": 3 },
+    { "id": "sheep", "type": 3 },
+    { "id": "shulker", "type": 3 },
+    { "id": "shulker_bullet", "type": 2 },
+    { "id": "silverfish", "type": 3 },
+    { "id": "skeleton", "type": 3 },
+    { "id": "skeleton_horse", "type": 3 },
+    { "id": "slime", "type": 2 },
+    { "id": "small_fireball", "type": 2 },
+    { "id": "snowball", "type": 2 },
+    { "id": "snow_golem", "type": 3 },
+    { "id": "spider", "type": 3 },
+    { "id": "splash_potion", "type": 1 },
+    { "id": "squid", "type": 3 },
+    { "id": "stray", "type": 3 },
+    { "id": "strider", "type": 3 },
+    { "id": "thrown_trident", "type": 2 },
+    { "id": "tnt", "type": 1 },
+    { "id": "tnt_minecart", "type": 4 },
+    { "id": "tripod_camera", "type": 5 },
+    { "id": "tropicalfish", "type": 3 },
+    { "id": "turtle", "type": 3 },
+    { "id": "vex", "type": 3 },
+    { "id": "villager", "type": 3 },
+    { "id": "villager_v2", "type": 3 },
+    { "id": "vindicator", "type": 3 },
+    { "id": "wandering_trader", "type": 3 },
+    { "id": "witch", "type": 3 },
+    { "id": "wither", "type": 3 },
+    { "id": "wither_skeleton", "type": 3 },
+    { "id": "wither_skull", "type": 2 },
+    { "id": "wither_skull_dangerous", "type": 2 },
+    { "id": "wolf", "type": 3 },
+    { "id": "xp_bottle", "type": 5 },
+    { "id": "xp_orb", "type": 5 },
+    { "id": "zoglin", "type": 3 },
+    { "id": "zombie", "type": 3 },
+    { "id": "zombie_horse", "type": 3 },
+    { "id": "zombie_pigman", "type": 3 },
+    { "id": "zombie_villager", "type": 3 },
+    { "id": "zombie_villager_v2", "type": 3 }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "fields": [
+    {
+      "id": "type",
+      "title": "PositionalBlockRuleAxis",
+      "description": "PositionalBlockRuleAxis",
+      "dataType": 2
+    }
+  ],
+  "description": "Modifier that leaves the state unchanged. This is the default block modifier if no other block modifier is specified.",
+  "title": "JigsawStructure ProcessorRule Passthrough"
+}

@@ -1,0 +1,9 @@
+{
+  "files": [
+    "CustomComponents.json",
+    "Components.json"
+  ],
+  "folders": [
+    "components"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "files": [
+    "Biome Replacement.json"
+  ],
+  "folders": [
+    "biome",
+    "entity",
+    "item"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "id": "minecraft:custom_components",
+  "fields": [],
+  "description": "Specifies an array of custom components defined in a script that should be added to this item.",
+  "title": "Custom Components"
+}

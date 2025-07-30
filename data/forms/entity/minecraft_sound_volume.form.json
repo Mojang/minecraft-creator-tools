@@ -1,0 +1,14 @@
+{
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "The value of the volume the entity uses for sound effects.",
+      "defaultValue": 1,
+      "dataType": 3
+    }
+  ],
+  "description": "Sets the entity's base volume for sound effects.",
+  "title": "Sound Volume",
+  "id": "minecraft:sound_volume"
+}

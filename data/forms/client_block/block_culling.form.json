@@ -1,0 +1,20 @@
+{
+  "fields": [
+    {
+      "id": "description",
+      "title": "Description",
+      "dataType": 16,
+      "subFormId": "client_block/description",
+      "isRequired": true
+    },
+    {
+      "id": "rules",
+      "title": "Rules",
+      "dataType": 16,
+      "subFormId": "client_block/rule",
+      "isRequired": true
+    }
+  ],
+  "title": "Block Culling Client Block",
+  "id": "Block Culling"
+}

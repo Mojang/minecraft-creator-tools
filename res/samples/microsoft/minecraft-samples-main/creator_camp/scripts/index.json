@@ -1,0 +1,9 @@
+{
+  "files": [
+    "CommonUtils.ts",
+    "LeafPileInteractionCustomComponent.ts",
+    "ThrowLeavesCustomComponent.ts",
+    "main.ts"
+  ],
+  "folders": []
+}

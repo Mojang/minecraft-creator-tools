@@ -1,0 +1,6 @@
+{
+  "id": "query.sneeze_counter",
+  "fields": [],
+  "description": "Returns the sneeze counter of the entity.",
+  "title": "Sneeze Counter Query"
+}

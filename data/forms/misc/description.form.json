@@ -1,0 +1,12 @@
+{
+  "fields": [
+    {
+      "id": "identifier",
+      "title": "Identifier",
+      "dataType": 2,
+      "isRequired": true
+    }
+  ],
+  "title": "Description Misc",
+  "id": "Description"
+}

@@ -1,0 +1,191 @@
+{
+  "id": "Image Editor",
+  "title": "Image Editor",
+  "fields": [
+    {
+      "id": "width",
+      "title": "Width",
+      "type": 0,
+      "priority": 1
+    },
+    {
+      "id": "height",
+      "title": "Height",
+      "type": 0,
+      "priority": 2
+    },
+    {
+      "id": "outputs",
+      "title": "Outputs",
+      "noun": "Output",
+      "dataType": 15,
+      "priority": 10,
+      "subForm": {
+        "id": "output",
+        "title": "Output",
+        "fields": [
+          {
+            "id": "name",
+            "title": "Name",
+            "description": "Name of the block",
+            "dataType": 2
+          },
+          {
+            "id": "type",
+            "title": "Type",
+            "description": "Type of fun thing you want to create from this image.",
+            "dataType": 9,
+            "mustMatchChoices": true,
+            "choices": [
+              {
+                "id": 1,
+                "title": "Block Texture"
+              },
+              {
+                "id": 2,
+                "title": "Item Texture"
+              },
+              {
+                "id": 3,
+                "title": "Painting"
+              },
+              {
+                "id": 11,
+                "title": "Block Billboard 3x3"
+              },
+              {
+                "id": 12,
+                "title": "Block Billboard 4x6"
+              },
+              {
+                "id": 13,
+                "title": "Block Billboard 5x8"
+              }
+            ]
+          },
+          {
+            "id": "paintingOverrideName",
+            "title": "Override Painting",
+            "priority": 50,
+            "visibility": [
+              {
+                "field": "type",
+                "comparison": "=",
+                "value": 3
+              }
+            ],
+            "mustMatchChoices": true,
+            "choices": [
+              {
+                "id": "meditative",
+                "title": "Meditative (1x1 block)"
+              },
+              {
+                "id": "prairie_ride",
+                "title": "Prairie Ride (1x2 block)"
+              },
+              {
+                "id": "baroque",
+                "title": "Baroque (2x2 blocks)"
+              },
+              {
+                "id": "humble",
+                "title": "Humble (2x2 blocks)"
+              },
+              {
+                "id": "bouquet",
+                "title": "Bouquet (3x3 blocks)"
+              },
+              {
+                "id": "cavebird",
+                "title": "Cavebird (3x3 blocks)"
+              },
+              {
+                "id": "cotan",
+                "title": "Cotan (3x3 blocks)"
+              },
+              {
+                "id": "sunflowers",
+                "title": "Sunflowers (3x3 blocks)"
+              },
+              {
+                "id": "tides",
+                "title": "Tides (3x3 blocks)"
+              },
+              {
+                "id": "owlemons",
+                "title": "Owlemons (3x3 blocks)"
+              },
+              {
+                "id": "endboss",
+                "title": "Endboss (3x3 blocks)"
+              },
+              {
+                "id": "fern",
+                "title": "Fern (3x3 blocks)"
+              },
+              {
+                "id": "backyard",
+                "title": "Backyard (3x4 blocks)"
+              },
+              {
+                "id": "pond",
+                "title": "Pond (3x4 blocks)"
+              },
+              {
+                "id": "finding",
+                "title": "Finding (4x2 blocks)"
+              },
+              {
+                "id": "lowmist",
+                "title": "Low Mist (4x2 blocks)"
+              },
+              {
+                "id": "passage",
+                "title": "Passage (4x2 blocks)"
+              },
+              {
+                "id": "changing",
+                "title": "Changing (4x2 blocks)"
+              },
+              {
+                "id": "unpacked",
+                "title": "Unpacked (4x4 blocks)"
+              },
+              {
+                "id": "orb",
+                "title": "Orb (4x4 blocks)"
+              }
+            ]
+          },
+          {
+            "id": "paintingSize",
+            "title": "Painting Size",
+            "visibility": [
+              {
+                "field": "type",
+                "comparison": "=",
+                "value": 3
+              }
+            ],
+            "mustMatchChoices": true,
+            "choices": [
+              {
+                "id": 1,
+                "title": "One Block"
+              },
+              {
+                "id": 3,
+                "title": "Three By Three Blocks"
+              },
+              {
+                "id": 5,
+                "title": "Three By Four Portrait"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

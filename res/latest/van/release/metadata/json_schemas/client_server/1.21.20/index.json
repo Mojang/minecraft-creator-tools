@@ -1,0 +1,22 @@
+{
+  "files": [
+    "ConstantHeightProviderType.json",
+    "DimensionPadding.json",
+    "DimensionPaddingRange.json",
+    "DirectPoolAlias.json",
+    "GenerationStep.json",
+    "HeightProviderType.json",
+    "HeightmapProjection.json",
+    "JigsawDescriptionIdentifier.json",
+    "LiquidSettings.json",
+    "RandomGroupPoolAlias.json",
+    "RandomPoolAlias.json",
+    "TerrainAdaptation.json",
+    "UniformHeightProviderType.json",
+    "VerticalAnchorType.json",
+    "WeightedRandomItem.json"
+  ],
+  "folders": [
+    "world"
+  ]
+}

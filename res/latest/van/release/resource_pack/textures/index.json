@@ -1,0 +1,25 @@
+{
+  "files": [
+    "flame_atlas.png",
+    "flipbook_textures.json",
+    "forcefield_atlas.png",
+    "item_texture.json",
+    "terrain_texture.json"
+  ],
+  "folders": [
+    "blocks",
+    "colormap",
+    "entity",
+    "environment",
+    "gui",
+    "items",
+    "map",
+    "misc",
+    "models",
+    "painting",
+    "particle",
+    "particles",
+    "trims",
+    "ui"
+  ]
+}

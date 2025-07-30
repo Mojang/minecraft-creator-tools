@@ -1,0 +1,11 @@
+{
+  "files": [
+    "content_section.json",
+    "faq_section.json",
+    "landing_section.json",
+    "realmsPlus_buy_now_screen.json",
+    "realmsPlus_purchase_warning_screen.json",
+    "realmsPlus_view_packs_screen.json"
+  ],
+  "folders": []
+}
