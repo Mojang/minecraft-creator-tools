@@ -77,32 +77,84 @@
             "mustMatchChoices": true,
             "choices": [
               {
-                "id": "backyard",
-                "title": "Backyard"
+                "id": "meditative",
+                "title": "Meditative (1x1 block)"
+              },
+              {
+                "id": "prairie_ride",
+                "title": "Prairie Ride (1x2 block)"
               },
               {
                 "id": "baroque",
-                "title": "Baroque"
+                "title": "Baroque (2x2 blocks)"
+              },
+              {
+                "id": "humble",
+                "title": "Humble (2x2 blocks)"
               },
               {
                 "id": "bouquet",
-                "title": "Bouquet"
+                "title": "Bouquet (3x3 blocks)"
               },
               {
                 "id": "cavebird",
-                "title": "Cavebird"
-              },
-              {
-                "id": "changing",
-                "title": "Changing"
+                "title": "Cavebird (3x3 blocks)"
               },
               {
                 "id": "cotan",
-                "title": "Cotan"
+                "title": "Cotan (3x3 blocks)"
               },
               {
-                "id": "meditative",
-                "title": "Meditative (one block)"
+                "id": "sunflowers",
+                "title": "Sunflowers (3x3 blocks)"
+              },
+              {
+                "id": "tides",
+                "title": "Tides (3x3 blocks)"
+              },
+              {
+                "id": "owlemons",
+                "title": "Owlemons (3x3 blocks)"
+              },
+              {
+                "id": "endboss",
+                "title": "Endboss (3x3 blocks)"
+              },
+              {
+                "id": "fern",
+                "title": "Fern (3x3 blocks)"
+              },
+              {
+                "id": "backyard",
+                "title": "Backyard (3x4 blocks)"
+              },
+              {
+                "id": "pond",
+                "title": "Pond (3x4 blocks)"
+              },
+              {
+                "id": "finding",
+                "title": "Finding (4x2 blocks)"
+              },
+              {
+                "id": "lowmist",
+                "title": "Low Mist (4x2 blocks)"
+              },
+              {
+                "id": "passage",
+                "title": "Passage (4x2 blocks)"
+              },
+              {
+                "id": "changing",
+                "title": "Changing (4x2 blocks)"
+              },
+              {
+                "id": "unpacked",
+                "title": "Unpacked (4x4 blocks)"
+              },
+              {
+                "id": "orb",
+                "title": "Orb (4x4 blocks)"
               }
             ]
           },
@@ -128,7 +180,7 @@
               },
               {
                 "id": 5,
-                "title": "Three By Four Portraitn"
+                "title": "Three By Four Portrait"
               }
             ]
           }
