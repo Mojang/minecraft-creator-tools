@@ -264,16 +264,16 @@ export default class App extends Component<AppProps, AppState> {
 
   private _getStateFromUrlWithSideEffects(dontProcessQueryStrings?: boolean): AppState | undefined {
     let hash = window.location.hash;
-    let query = window.location.search;
-    const queryVals: { [path: string]: string } = {};
+    let search = window.location.search;
+    const searchVals: { [path: string]: string } = {};
 
-    if (!query && hash.startsWith("#open=")) {
-      query = hash;
+    if (!search && hash.startsWith("#open=")) {
+      search = hash;
       hash = "";
     }
 
-    if (query) {
-      const params = query.split("&");
+    if (search) {
+      const params = search.split("&");
 
       if (params.length > 0) {
         for (let i = 0; i < params.length; i++) {
@@ -289,27 +289,27 @@ export default class App extends Component<AppProps, AppState> {
               key = key.substring(1);
             }
 
-            queryVals[key] = params[i].substring(firstEqual + 1);
+            searchVals[key] = params[i].substring(firstEqual + 1);
           }
         }
       }
     }
 
-    if (!dontProcessQueryStrings && (queryVals["open"] !== undefined || queryVals["view"] !== undefined)) {
-      let openQuery = queryVals["view"];
+    if (!dontProcessQueryStrings && (searchVals["open"] !== undefined || searchVals["view"] !== undefined)) {
+      let openSearch = searchVals["view"];
 
-      if (queryVals["open"]) {
-        openQuery = queryVals["open"];
+      if (searchVals["open"]) {
+        openSearch = searchVals["open"];
       }
 
-      const firstSlash = openQuery.indexOf("/");
+      const firstSlash = openSearch.indexOf("/");
 
       if (firstSlash > 1) {
-        const openToken = openQuery.substring(0, firstSlash).toLowerCase();
+        const openToken = openSearch.substring(0, firstSlash).toLowerCase();
 
-        let openData = openQuery.substring(firstSlash + 1, openQuery.length);
+        let openData = openSearch.substring(firstSlash + 1, openSearch.length);
 
-        if (openToken === "gp") {
+        if (openToken === "gp" && search.indexOf("updatesJson=") <= 0) {
           const lastPeriod = openData.lastIndexOf(".");
 
           if (lastPeriod > 0) {
