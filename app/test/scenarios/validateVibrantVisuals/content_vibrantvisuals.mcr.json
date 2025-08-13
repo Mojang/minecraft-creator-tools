@@ -111,7 +111,6 @@
       "getPlayers",
       "location",
       "matches",
-      "overworld",
       "permutation",
       "players",
       "resolve",
@@ -595,9 +594,6 @@
       },
       "apisUsed matches": {
         "Count": 1
-      },
-      "apisUsed overworld": {
-        "Count": 2
       },
       "apisUsed button": {
         "Count": 1
@@ -3033,9 +3029,6 @@
         },
         "matches": {
           "Count": 1
-        },
-        "overworld": {
-          "Count": 2
         },
         "button": {
           "Count": 1
