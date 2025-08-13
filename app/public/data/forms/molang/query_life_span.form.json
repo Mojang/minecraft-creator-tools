@@ -1,6 +1,6 @@
 {
   "id": "query.life_span",
   "fields": [],
-  "description": "Returns the limited life span of an entity, or 0.0 if it lives forever",
+  "description": "Returns the limited life span of an entity, or 0.0 if it lives forever. Applies generally to the evocation fang.",
   "title": "Life Span Query"
 }

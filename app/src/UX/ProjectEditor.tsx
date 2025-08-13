@@ -3321,7 +3321,6 @@ export default class ProjectEditor extends Component<IProjectEditorProps, IProje
 
     nextExportKey = "exportZip";
     exportKeys[nextExportKey] = {
-      kind: "toggle",
       icon: <FontAwesomeIcon icon={faFileArchive} key={nextExportKey} className="fa-lg" />,
       key: nextExportKey,
       content: "Project full zip",

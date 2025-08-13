@@ -1,6 +1,6 @@
 {
   "id": "query.hurt_direction",
   "fields": [],
-  "description": "Returns the hurt direction for the entity (actor), otherwise returns 0.",
+  "description": "Returns the hurt direction for the entity, otherwise returns 0.",
   "title": "Hurt Direction Query"
 }

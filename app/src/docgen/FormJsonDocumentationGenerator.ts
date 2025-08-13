@@ -13,7 +13,7 @@ import IIndexJson from "../storage/IIndexJson";
 import { AnnotationCategory } from "../core/ContentIndex";
 import DataFormUtilities from "../dataform/DataFormUtilities";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
-import ISimpleReference from "../core/ISimpleReference";
+import ISimpleReference from "../dataform/ISimpleReference";
 import { ComparisonType } from "../dataform/ICondition";
 import FieldUtilities from "../dataform/FieldUtilities";
 

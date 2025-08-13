@@ -66,7 +66,7 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
-Creeper - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/creeper.json
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
 
 "minecraft:movement": {
   "value": 0.2

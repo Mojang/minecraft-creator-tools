@@ -1,0 +1,16 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Vibrant Extreme Visuals",
+    "description": "Sample project with extreme vibrant visuals and PBR attributes.",
+    "uuid": "22222222-2222-4222-8222-222222222222",
+    "version": [1, 0, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "22222222-2222-4222-8222-222222222223",
+      "version": [1, 0, 0]
+    }
+  ]
+}

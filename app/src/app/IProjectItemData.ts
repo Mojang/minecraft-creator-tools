@@ -57,7 +57,7 @@ export enum ProjectItemType {
   renderControllerJson = 34,
   ninesliceJson = 35,
   uiJson = 36,
-  languagesCatalogResourceJson = 37,
+  languagesCatalogJson = 37,
   biomeBehavior = 38,
   dialogueBehaviorJson = 39,
   featureRuleBehavior = 40,

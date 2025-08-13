@@ -33,7 +33,6 @@ import { LocalFolderLabel, ExportBackupLabel } from "./Labels";
 import FileSystemStorage from "../storage/FileSystemStorage";
 import CartoApp from "../app/CartoApp";
 import { ProjectTileDisplayMode } from "./ProjectTile";
-import { LocalFolderType, LocalGalleryCommand } from "./LocalGalleryCommand";
 import ProjectUtilities from "../app/ProjectUtilities";
 import { ProjectEditorMode } from "./ProjectEditorUtilities";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -70,7 +69,6 @@ interface IHomeProps extends IAppProps {
   onLog: (message: string) => Promise<void>;
   onSetProject: (project: Project) => void;
   onGalleryItemCommand: (command: GalleryProjectCommand, newProjectSeed: IProjectSeed) => void;
-  onLocalGalleryItemCommand: (command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) => void;
   onNewProjectSelected?: (
     newProjectSeed: IProjectSeed,
     newProjectType: NewProjectTemplateType,
@@ -109,7 +107,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
     super(props);
 
     this._handleProjectGalleryCommand = this._handleProjectGalleryCommand.bind(this);
-    this._handleLocalGalleryCommand = this._handleLocalGalleryCommand.bind(this);
 
     if (this.props.errorMessage) {
       this.state = {
@@ -647,12 +644,16 @@ export default class Home extends Component<IHomeProps, IHomeState> {
   }
 
   private async openLocalFolder(isDocumentationProject?: boolean) {
-    const result = (await window.showDirectoryPicker({
-      mode: "readwrite",
-    })) as FileSystemDirectoryHandle | undefined;
+    try {
+      const result = (await window.showDirectoryPicker({
+        mode: "readwrite",
+      })) as FileSystemDirectoryHandle | undefined;
 
-    if (result) {
-      await this._handleDirectoryHandle(result as FileSystemDirectoryHandle, isDocumentationProject);
+      if (result) {
+        await this._handleDirectoryHandle(result as FileSystemDirectoryHandle, isDocumentationProject);
+      }
+    } catch (e) {
+      // likely an AbortError, which is the user canceling the dialog.
     }
   }
 
@@ -711,12 +712,6 @@ export default class Home extends Component<IHomeProps, IHomeState> {
           galleryProject: project,
         });
       }
-    }
-  }
-
-  private _handleLocalGalleryCommand(command: LocalGalleryCommand, folderType: LocalFolderType, folder: IFolder) {
-    if (this.props.onLocalGalleryItemCommand !== undefined) {
-      this.props.onLocalGalleryItemCommand(command, folderType, folder);
     }
   }
 
@@ -969,7 +964,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
                 <span>&#160;Documentation Editor</span>
               </h3>
               <div className="home-toolTile-instruction">
-                Open on the MinecraftApiDocumentation git repo docs folder on your PC.
+                Open on the GitHub minecraft-creator/content folder on your PC.
               </div>
               <div
                 style={{
@@ -978,7 +973,7 @@ export default class Home extends Component<IHomeProps, IHomeState> {
                 }}
                 className="home-toolTile-button"
               >
-                Open MinecraftApiDocumentation/docs
+                Open minecraft-creator/content
               </div>
             </div>
           </MinecraftButton>

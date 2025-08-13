@@ -1,0 +1,12 @@
+{
+  "id": "Placement Position",
+  "fields": [
+    {
+      "id": "enabled_states",
+      "title": "Enabled States",
+      "dataType": 17,
+      "isRequired": true
+    }
+  ],
+  "title": "Placement Position Misc"
+}

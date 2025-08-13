@@ -77,58 +77,42 @@ Armadillo - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack
 }
 
 
-Creaking - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/creaking.json
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
 
- * At /minecraft:entity/component_groups/minecraft:spawned_by_player/minecraft:environment_sensor/triggers/0/filters/all_of/0/any_of/0/: 
+ * At /minecraft:entity/components/minecraft:interact/interactions/1/on_interact/filters/all_of/1/: 
 {
   "test": "enum_property",
-  "domain": "minecraft:creaking_state",
-  "value": "hostile_observed"
-}
-
- * At /minecraft:entity/component_groups/minecraft:spawned_by_player/minecraft:environment_sensor/triggers/0/filters/all_of/0/any_of/1/: 
-{
-  "test": "enum_property",
-  "domain": "minecraft:creaking_state",
-  "value": "hostile_unobserved"
-}
-
- * At /minecraft:entity/component_groups/minecraft:spawned_by_creaking_heart/minecraft:environment_sensor/triggers/1/filters/all_of/0/none_of/0/: 
-{
-  "test": "enum_property",
-  "domain": "minecraft:creaking_state",
-  "value": "twitching"
-}
-
- * At /minecraft:entity/component_groups/minecraft:spawned_by_creaking_heart/minecraft:environment_sensor/triggers/2/filters/all_of/0/: 
-{
-  "test": "enum_property",
-  "domain": "minecraft:creaking_state",
+  "domain": "minecraft:oxidation_level",
   "operator": "not",
-  "value": "twitching"
+  "value": "unoxidized"
 }
 
- * At /minecraft:entity/component_groups/minecraft:spawned_by_creaking_heart/minecraft:environment_sensor/triggers/2/filters/all_of/1/: 
+ * At /minecraft:entity/events/minecraft:wax_off/sequence/0/first_valid/0/filters/: 
 {
   "test": "enum_property",
-  "domain": "minecraft:creaking_state",
-  "operator": "not",
-  "value": "crumbling"
+  "domain": "minecraft:oxidation_level",
+  "value": "oxidized"
 }
 
- * At /minecraft:entity/events/minecraft:become_hostile/filters/: 
+ * At /minecraft:entity/events/minecraft:oxidize_copper/first_valid/0/filters/: 
 {
   "test": "enum_property",
-  "domain": "minecraft:creaking_state",
-  "value": "neutral"
+  "domain": "minecraft:oxidation_level",
+  "value": "unoxidized"
 }
 
- * At /minecraft:entity/events/minecraft:become_neutral/filters/: 
+ * At /minecraft:entity/events/minecraft:oxidize_copper/first_valid/1/filters/: 
 {
   "test": "enum_property",
-  "domain": "minecraft:creaking_state",
-  "operator": "not",
-  "value": "neutral"
+  "domain": "minecraft:oxidation_level",
+  "value": "exposed"
+}
+
+ * At /minecraft:entity/events/minecraft:oxidize_copper/first_valid/2/filters/: 
+{
+  "test": "enum_property",
+  "domain": "minecraft:oxidation_level",
+  "value": "weathered"
 }
 
  */
@@ -149,9 +133,9 @@ export default interface EnumProperty {
    * Sample Values:
    * Armadillo: "minecraft:armadillo_state"
    *
-   * Creaking: "minecraft:creaking_state"
+   * Copper Golem: "minecraft:oxidation_level"
    *
-   * Egg: "minecraft:climate_variant"
+   * Creaking: "minecraft:creaking_state"
    *
    */
   domain: string;

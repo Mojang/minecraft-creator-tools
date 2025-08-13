@@ -171,6 +171,39 @@ Breeze - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
+
+"minecraft:damage_sensor": {
+  "triggers": [
+    {
+      "cause": "fall",
+      "deals_damage": "no"
+    },
+    {
+      "on_damage": {
+        "filters": {
+          "all_of": [
+            {
+              "test": "is_family",
+              "subject": "other",
+              "value": "lightning"
+            },
+            {
+              "test": "is_variant",
+              "subject": "self",
+              "operator": "==",
+              "value": 0
+            }
+          ]
+        },
+        "event": "minecraft:remove_oxidation_layer"
+      },
+      "deals_damage": "no"
+    }
+  ]
+}
+
+
 Creaking - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/creaking.json
 
 "minecraft:damage_sensor": {
@@ -250,17 +283,6 @@ Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
       "deals_damage": "no"
     }
   ]
-}
-
-
-Frog - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/frog.json
-
-"minecraft:damage_sensor": {
-  "triggers": {
-    "cause": "fall",
-    "deals_damage": "yes",
-    "damage_modifier": -5
-  }
 }
 
  */

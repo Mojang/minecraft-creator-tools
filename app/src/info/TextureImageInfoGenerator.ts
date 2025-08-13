@@ -15,8 +15,9 @@ import ProjectInfoUtilities from "./ProjectInfoUtilities";
 import { decodeTga } from "@lunapaint/tga-codec";
 import ProjectItemUtilities from "../app/ProjectItemUtilities";
 import TextureDefinition from "../minecraft/TextureDefinition";
-import ProjectUtilities from "../app/ProjectUtilities";
+import ProjectUtilities, { ProjectMetaCategory } from "../app/ProjectUtilities";
 import ProjectItemVariant from "../app/ProjectItemVariant";
+import Utilities from "../core/Utilities";
 
 export enum TextureImageInfoGeneratorTest {
   textureImages = 101,
@@ -34,6 +35,8 @@ export enum TextureImageInfoGeneratorTest {
   totalAtlasTextureMemoryExceedsBudgetWarn = 406,
   totalAtlasTextureMemoryExceedsBudgetError = 407,
   pngJpgImageProcessingNoResults = 408,
+  invalidTieringConfiguration = 409,
+  invalidTieringForVibrantVisuals = 410,
   totalTextureMemoryExceedsBudgetBase = 420,
 }
 
@@ -54,7 +57,7 @@ export enum ProjectMetaCategory {
 const TextureMemoryLimitsByTier: { [category: number]: { [tier: number]: number } } = {
   0 /*mix*/: { 0: 750, 1: 750, 2: 1000, 3: 1500, 4: 3000, 5: 4000 },
   1 /*world template*/: { 0: 750, 1: 750, 2: 1000, 3: 1500, 4: 3000, 5: 4000 },
-  2 /*texture pack*/: { 0: 300, 1: 300, 2: 450, 3: 600, 4: 1200, 5: 1600 },
+  2 /*texture pack*/: { 0: 350, 1: 350, 2: 500, 3: 650, 4: 1250, 5: 1650 }, // added 50mb as a "discount" assuming texture packs override vanilla textures, and therefore save the 50mb of vanilla texture overhead
   3 /*add-on*/: { 0: 150, 1: 150, 2: 225, 3: 300, 4: 600, 5: 800 },
   4 /*skin pack*/: { 0: 150, 1: 150, 2: 225, 3: 300, 4: 600, 5: 800 },
   5 /*persona*/: { 0: 150, 1: 150, 2: 225, 3: 300, 4: 600, 5: 800 },
@@ -115,13 +118,19 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
 
     items.push(textureImagePi);
 
-    const textureMemoryByTier: { [path: string]: number }[] = [];
+    const nonVanillaTextureMemoryByTier: { [path: string]: number }[] = [];
+    const totalTextureMemoryByTier: { [path: string]: number }[] = [];
     const itemAtlasTextureMemoryByTier: { [path: string]: number }[] = [];
     const blockAtlasTextureMemoryByTier: { [path: string]: number }[] = [];
     const textureTierImagePi: ProjectInfoItem[] = [];
+    const hasSupportForTier: boolean[] = [];
+    const tierTotalMemorySizes: number[] = [];
+    let isExplicitlyTargetingTiers = false;
 
     for (let i = 0; i < TexturePerformanceTierCount; i++) {
-      textureMemoryByTier.push({});
+      hasSupportForTier[i] = false;
+      nonVanillaTextureMemoryByTier.push({});
+      totalTextureMemoryByTier.push({});
 
       itemAtlasTextureMemoryByTier.push({});
       blockAtlasTextureMemoryByTier.push({});
@@ -136,6 +145,15 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       items.push(textureTierImagePi[i]);
     }
 
+    for (const projectVariant in project.variants) {
+      const variant = project.variants[projectVariant];
+
+      if (!variant.isDefault && variant.effectiveUnifiedTier !== undefined) {
+        hasSupportForTier[variant.effectiveUnifiedTier] = true;
+        isExplicitlyTargetingTiers = true;
+      }
+    }
+
     const itemsCopy = project.getItemsCopy();
 
     for (const projectItem of itemsCopy) {
@@ -144,6 +162,8 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
 
         const variantList = projectItem.getVariantList();
 
+        // we assume that the default (base) variant, with a label of "", must go
+        // first.
         variantList.sort((a: ProjectItemVariant, b: ProjectItemVariant) => {
           return a.label.localeCompare(b.label);
         });
@@ -152,19 +172,28 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
           const variantFile = variant.file;
 
           if (variantFile) {
-            let textureMemoryByTierToUpdate: { [path: string]: number }[] = [];
+            let nonVanillaTextureMemoryByTierToUpdate: { [path: string]: number }[] = [];
+            let totalTextureMemoryByTierToUpdate: { [path: string]: number }[] = [];
             let itemAtlasTextureMemoryByTierToUpdate: { [path: string]: number }[] = [];
             let blockAtlasTextureMemoryByTierToUpdate: { [path: string]: number }[] = [];
             let textureTierItem: ProjectInfoItem | undefined = undefined;
 
             if (variant.projectVariant) {
               if (variant.projectVariant.isDefault) {
-                textureMemoryByTierToUpdate = textureMemoryByTier;
+                // if this is the default, set texture sizes by path for all tiers
+                nonVanillaTextureMemoryByTierToUpdate = nonVanillaTextureMemoryByTier;
+                totalTextureMemoryByTierToUpdate = totalTextureMemoryByTier;
                 itemAtlasTextureMemoryByTierToUpdate = itemAtlasTextureMemoryByTier;
                 blockAtlasTextureMemoryByTierToUpdate = blockAtlasTextureMemoryByTier;
               } else if (variant.projectVariant.effectiveUnifiedTier !== undefined) {
+                // otherwise, set the texture sizes by path for the effective tier
                 textureTierItem = textureTierImagePi[variant.projectVariant.effectiveUnifiedTier];
-                textureMemoryByTierToUpdate.push(textureMemoryByTier[variant.projectVariant.effectiveUnifiedTier]);
+                nonVanillaTextureMemoryByTierToUpdate.push(
+                  nonVanillaTextureMemoryByTier[variant.projectVariant.effectiveUnifiedTier]
+                );
+                totalTextureMemoryByTierToUpdate.push(
+                  totalTextureMemoryByTier[variant.projectVariant.effectiveUnifiedTier]
+                );
                 itemAtlasTextureMemoryByTierToUpdate.push(
                   itemAtlasTextureMemoryByTier[variant.projectVariant.effectiveUnifiedTier]
                 );
@@ -292,13 +321,19 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
               textureImagePi.spectrumIntFeature("Texels", imageWidth * imageHeight);
               textureImagePi.spectrumIntFeature("Texture Memory", textureMem);
 
+              if (pathInRp) {
+                for (const totalTextureMemoryByTier of totalTextureMemoryByTierToUpdate) {
+                  totalTextureMemoryByTier[pathInRp] = textureMem;
+                }
+              }
+
               if (!isVanilla) {
                 textureImagePi.spectrumIntFeature("Non-Vanilla Texels", imageWidth * imageHeight);
                 textureImagePi.spectrumIntFeature("Non-Vanilla Texture Memory", textureMem);
 
                 if (pathInRp) {
-                  for (const textureMemoryByTier of textureMemoryByTierToUpdate) {
-                    textureMemoryByTier[pathInRp] = textureMem;
+                  for (const nonVanillaTextureMemoryByTier of nonVanillaTextureMemoryByTierToUpdate) {
+                    nonVanillaTextureMemoryByTier[pathInRp] = textureMem;
                   }
                 }
               }
@@ -461,41 +496,56 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
       }
     }
 
-    let maxTextureMemory = 0;
+    let maxTotalTextureMemory = 0;
+    let maxNonVanillaTextureMemory = 0;
     let maxBlockAtlasTextureMemory = 0;
     let maxItemAtlasTextureMemory = 0;
 
     const category = await ProjectUtilities.getMetaCategory(project);
 
-    for (let i = 0; i < TexturePerformanceTierCount; i++) {
+    for (let curTier = 0; curTier < TexturePerformanceTierCount; curTier++) {
+      let tierNonVanillaTextureMemory = 0;
       let tierTotalTextureMemory = 0;
       let tierTotalBlockAtlasTextureMemory = 0;
       let tierTotalItemAtlasTextureMemory = 0;
 
-      for (const texturePath in textureMemoryByTier[i]) {
-        tierTotalTextureMemory += textureMemoryByTier[i][texturePath];
+      for (const texturePath in nonVanillaTextureMemoryByTier[curTier]) {
+        tierNonVanillaTextureMemory += nonVanillaTextureMemoryByTier[curTier][texturePath];
       }
 
-      for (const texturePath in blockAtlasTextureMemoryByTier[i]) {
-        tierTotalBlockAtlasTextureMemory += blockAtlasTextureMemoryByTier[i][texturePath];
+      for (const texturePath in totalTextureMemoryByTier[curTier]) {
+        tierTotalTextureMemory += totalTextureMemoryByTier[curTier][texturePath];
       }
 
-      for (const texturePath in itemAtlasTextureMemoryByTier[i]) {
-        tierTotalItemAtlasTextureMemory += itemAtlasTextureMemoryByTier[i][texturePath];
+      for (const texturePath in blockAtlasTextureMemoryByTier[curTier]) {
+        tierTotalBlockAtlasTextureMemory += blockAtlasTextureMemoryByTier[curTier][texturePath];
       }
 
-      maxItemAtlasTextureMemory = Math.max(maxItemAtlasTextureMemory, tierTotalItemAtlasTextureMemory);
-      maxBlockAtlasTextureMemory = Math.max(maxBlockAtlasTextureMemory, tierTotalBlockAtlasTextureMemory);
-      maxTextureMemory = Math.max(maxTextureMemory, tierTotalTextureMemory);
+      for (const texturePath in itemAtlasTextureMemoryByTier[curTier]) {
+        tierTotalItemAtlasTextureMemory += itemAtlasTextureMemoryByTier[curTier][texturePath];
+      }
 
-      textureTierImagePi[i].spectrumIntFeature("Non-Vanilla Texture Memory Tier", tierTotalTextureMemory);
+      if (curTier > 0 && !hasSupportForTier[curTier]) {
+        textureTierImagePi[curTier].spectrumIntFeature("Non-Vanilla Texture Memory Tier", maxNonVanillaTextureMemory);
+        textureTierImagePi[curTier].spectrumIntFeature("Total Texture Memory Tier", maxTotalTextureMemory);
+      } else {
+        maxItemAtlasTextureMemory = Math.max(maxItemAtlasTextureMemory, tierTotalItemAtlasTextureMemory);
+        maxBlockAtlasTextureMemory = Math.max(maxBlockAtlasTextureMemory, tierTotalBlockAtlasTextureMemory);
+        maxNonVanillaTextureMemory = Math.max(maxNonVanillaTextureMemory, tierNonVanillaTextureMemory);
+        maxTotalTextureMemory = Math.max(maxTotalTextureMemory, tierTotalTextureMemory);
+        textureTierImagePi[curTier].spectrumIntFeature("Non-Vanilla Texture Memory Tier", tierNonVanillaTextureMemory);
+        textureTierImagePi[curTier].spectrumIntFeature("Total Texture Memory Tier", tierTotalTextureMemory);
+      }
 
       // Expand atlases to power of 2
       tierTotalBlockAtlasTextureMemory = Math.pow(2, Math.ceil(Math.log2(tierTotalBlockAtlasTextureMemory)));
       tierTotalItemAtlasTextureMemory = Math.pow(2, Math.ceil(Math.log2(tierTotalItemAtlasTextureMemory)));
 
-      textureTierImagePi[i].spectrumIntFeature("Block Atlas Texture Memory Tier", tierTotalBlockAtlasTextureMemory);
-      textureTierImagePi[i].spectrumIntFeature("Item Atlas Texture Memory Tier", tierTotalItemAtlasTextureMemory);
+      textureTierImagePi[curTier].spectrumIntFeature(
+        "Block Atlas Texture Memory Tier",
+        tierTotalBlockAtlasTextureMemory
+      );
+      textureTierImagePi[curTier].spectrumIntFeature("Item Atlas Texture Memory Tier", tierTotalItemAtlasTextureMemory);
 
       // 4K limit for warn, 8K as hard limit
       const totalAtlasTextureMemoryBudgetWarn = 4096 * 4096 * 4;
@@ -507,7 +557,9 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
             InfoItemType.error,
             this.id,
             TextureImageInfoGeneratorTest.totalAtlasTextureMemoryExceedsBudgetError,
-            `Texture memory of block atlas exceeds hard limit of ${totalAtlasTextureMemoryBudgetError} bytes. Total memory used`,
+            `Texture memory of block atlas exceeds hard limit of ${Utilities.addCommasToNumber(
+              totalAtlasTextureMemoryBudgetError
+            )} bytes. Total memory used`,
             undefined,
             tierTotalBlockAtlasTextureMemory
           )
@@ -518,7 +570,9 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
             InfoItemType.warning,
             this.id,
             TextureImageInfoGeneratorTest.totalAtlasTextureMemoryExceedsBudgetWarn,
-            `Texture memory of block atlas exceeds budget of ${totalAtlasTextureMemoryBudgetWarn} bytes. Total memory used`,
+            `Texture memory of block atlas exceeds budget of ${Utilities.addCommasToNumber(
+              totalAtlasTextureMemoryBudgetWarn
+            )} bytes. Total memory used`,
             undefined,
             tierTotalBlockAtlasTextureMemory
           )
@@ -531,7 +585,9 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
             InfoItemType.error,
             this.id,
             TextureImageInfoGeneratorTest.totalAtlasTextureMemoryExceedsBudgetError,
-            `Texture memory of item atlas exceeds hard limit of ${totalAtlasTextureMemoryBudgetError} bytes. Total memory used`,
+            `Texture memory of item atlas exceeds hard limit of ${Utilities.addCommasToNumber(
+              totalAtlasTextureMemoryBudgetError
+            )} bytes. Total memory used`,
             undefined,
             tierTotalItemAtlasTextureMemory
           )
@@ -542,63 +598,133 @@ export default class TextureImageInfoGenerator implements IProjectInfoGenerator 
             InfoItemType.warning,
             this.id,
             TextureImageInfoGeneratorTest.totalAtlasTextureMemoryExceedsBudgetWarn,
-            `Texture memory of item atlas exceeds budget of ${totalAtlasTextureMemoryBudgetWarn} bytes. Total memory used`,
+            `Texture memory of item atlas exceeds budget of ${Utilities.addCommasToNumber(
+              totalAtlasTextureMemoryBudgetWarn
+            )} bytes. Total memory used`,
             undefined,
             tierTotalItemAtlasTextureMemory
           )
         );
       }
 
+      tierNonVanillaTextureMemory += tierTotalBlockAtlasTextureMemory + tierTotalItemAtlasTextureMemory;
       tierTotalTextureMemory += tierTotalBlockAtlasTextureMemory + tierTotalItemAtlasTextureMemory;
 
       let curMemoryUsedInTier = tierTotalTextureMemory;
 
       if (curMemoryUsedInTier <= 0) {
-        curMemoryUsedInTier = maxTextureMemory;
+        curMemoryUsedInTier = maxTotalTextureMemory;
       }
 
-      const tierTotalTextureMemoryBudget = 1024 * 1024 * TextureMemoryLimitsByTier[category][i];
+      if (curTier > 0 && !hasSupportForTier[curTier]) {
+        curMemoryUsedInTier = maxTotalTextureMemory;
+      }
+
+      tierTotalMemorySizes[curTier] = curMemoryUsedInTier;
+
+      // check for non linear tier scaling (e.g., tier 2 occupies more memory than tier 3)
+      if (hasSupportForTier[curTier]) {
+        for (let prevTier = 0; prevTier < curTier; prevTier++) {
+          if (tierTotalMemorySizes[prevTier] && tierTotalMemorySizes[prevTier] > curMemoryUsedInTier) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.error,
+                this.id,
+                TextureImageInfoGeneratorTest.invalidTieringConfiguration,
+                `Lower tier ${prevTier} has a higher memory requirement (${Utilities.addCommasToNumber(
+                  tierTotalMemorySizes[prevTier]
+                )}) than tier ${curTier}`,
+                undefined,
+                curMemoryUsedInTier
+              )
+            );
+          }
+        }
+      }
+
+      const tierTotalTextureMemoryBudget = 1024 * 1024 * TextureMemoryLimitsByTier[category][curTier];
 
       if (curMemoryUsedInTier > tierTotalTextureMemoryBudget) {
         let errorOrWarningType = InfoItemType.warning;
-        let warningMessage = `Total texture memory exceeds budget of ${tierTotalTextureMemoryBudget} bytes for items of type ${ProjectUtilities.getMetaCategoryDescription(
-          category
-        )} at tier ${i}.`;
+        let warningMessage = `Total texture memory exceeds budget of ${Utilities.addCommasToNumber(
+          tierTotalTextureMemoryBudget
+        )} bytes for items of type ${ProjectUtilities.getMetaCategoryDescription(category)} at tier ${curTier}.`;
 
         for (const pvLabel in project.variants) {
           const pv = project.variants[pvLabel];
 
-          if (pv && pv.effectiveUnifiedTier === i) {
+          if (pv && pv.effectiveUnifiedTier === curTier && errorOrWarningType === InfoItemType.warning) {
             errorOrWarningType = InfoItemType.error;
-            warningMessage += "Because this project specifically targets this tier, it is an error.";
+            warningMessage += " Because this project specifically targets this tier, it is an error.";
           }
         }
 
-        warningMessage += " Total memory used";
+        warningMessage += " Total texture memory used";
 
         items.push(
           new ProjectInfoItem(
             errorOrWarningType,
             this.id,
-            TextureImageInfoGeneratorTest.totalTextureMemoryExceedsBudgetBase + i,
+            TextureImageInfoGeneratorTest.totalTextureMemoryExceedsBudgetBase + curTier,
             warningMessage,
             undefined,
             curMemoryUsedInTier
           )
         );
+
+        // vibrant visuals content must support tier 2 memory limits.
+        if (curTier === 2) {
+          const isVibrantVisualsCompatible = await ProjectUtilities.isVibrantVisualsCompatible(project);
+
+          if (isVibrantVisualsCompatible) {
+            items.push(
+              new ProjectInfoItem(
+                InfoItemType.error,
+                this.id,
+                TextureImageInfoGeneratorTest.invalidTieringForVibrantVisuals,
+                `Project is marked to support vibrant visuals, but does not support texture limits at tiers ${curTier}. Texture memory`,
+                undefined,
+                curMemoryUsedInTier
+              )
+            );
+          }
+        }
       }
     }
-    const totalTextureMemoryBudget = 1024 * 1024 * 800;
 
-    if (maxTextureMemory > totalTextureMemoryBudget) {
+    // if add-on content is not managing its texture memory across tiers and is exceeding a base limit, throw an error
+    if (
+      !isExplicitlyTargetingTiers &&
+      category === ProjectMetaCategory.addOn &&
+      maxTotalTextureMemory > TextureMemoryLimitsByTier[category][0] * 1024 * 1024
+    ) {
       items.push(
         new ProjectInfoItem(
           InfoItemType.error,
           this.id,
           TextureImageInfoGeneratorTest.totalTextureMemoryExceedsBudget,
-          `Total texture memory exceeds budget of ${totalTextureMemoryBudget} bytes. Total memory used`,
+          `Total texture memory exceeds base budget of ${Utilities.addCommasToNumber(
+            TextureMemoryLimitsByTier[category][0] * 1024 * 1024
+          )} bytes and is not using subpacks to target specific tiers. Total memory used`,
           undefined,
-          maxTextureMemory
+          maxTotalTextureMemory
+        )
+      );
+    }
+
+    const totalTextureMemoryBudget = 1024 * 1024 * TextureMemoryLimitsByTier[category][5];
+    // if content exceeds absolute limits, throw an error
+    if (maxTotalTextureMemory > totalTextureMemoryBudget) {
+      items.push(
+        new ProjectInfoItem(
+          InfoItemType.error,
+          this.id,
+          TextureImageInfoGeneratorTest.totalTextureMemoryExceedsBudget,
+          `Total texture memory exceeds absolute budget of ${Utilities.addCommasToNumber(
+            totalTextureMemoryBudget
+          )} bytes. Total memory used`,
+          undefined,
+          maxTotalTextureMemory
         )
       );
     }

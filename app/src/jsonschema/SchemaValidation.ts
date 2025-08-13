@@ -1,6 +1,6 @@
 import { JSONSchema4, JSONSchema6, JSONSchema7, validate } from "json-schema";
 
-type ValidationError = {
+export type ValidationError = {
   message: string;
 };
 

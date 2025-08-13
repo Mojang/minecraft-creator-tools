@@ -14,7 +14,7 @@ import {
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ILookupProvider from "./ILookupProvider";
-import ISimpleReference from "../core/ISimpleReference";
+import ISimpleReference from "./ISimpleReference";
 import Utilities from "../core/Utilities";
 
 export interface IScalarArrayProps extends IFormComponentProps {

@@ -67,6 +67,13 @@ Chicken - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 }
 
 
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
+
+"minecraft:loot": {
+  "table": "loot_tables/entities/copper_golem.json"
+}
+
+
 Cow - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cow.json
 
 "minecraft:loot": {
@@ -85,13 +92,6 @@ Dolphin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 
 "minecraft:loot": {
   "table": "loot_tables/entities/dolphin.json"
-}
-
-
-Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/donkey.json
-
-"minecraft:loot": {
-  "table": "loot_tables/entities/horse.json"
 }
 
  */

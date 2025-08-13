@@ -351,3 +351,218 @@ describe("Content Type Validation", async () => {
     // Test specific function validation if needed
   });
 });
+
+describe("Diverse Content Types", async () => {
+  it("loads diverse content with behavior and resource packs", async () => {
+    const project = await _loadProject("diverse_content");
+
+    // Should have multiple types of content across both packs
+    expect(project.items.length).to.be.greaterThan(5);
+
+    // Check for different content types across both packs
+    const itemTypes = project.items.map((item) => item.itemType);
+    expect(itemTypes).to.include(ProjectItemType.behaviorPackManifestJson);
+    expect(itemTypes).to.include(ProjectItemType.resourcePackManifestJson);
+    expect(itemTypes).to.include(ProjectItemType.entityTypeBehavior);
+    expect(itemTypes).to.include(ProjectItemType.blockTypeBehavior);
+    expect(itemTypes).to.include(ProjectItemType.itemTypeBehavior);
+    expect(itemTypes).to.include(ProjectItemType.recipeBehavior);
+    expect(itemTypes).to.include(ProjectItemType.lootTableBehavior);
+    expect(itemTypes).to.include(ProjectItemType.animationResourceJson);
+    expect(itemTypes).to.include(ProjectItemType.animationControllerResourceJson);
+    expect(itemTypes).to.include(ProjectItemType.spawnRuleBehavior);
+    expect(itemTypes).to.include(ProjectItemType.dialogueBehaviorJson);
+    expect(itemTypes).to.include(ProjectItemType.tradingBehaviorJson);
+  });
+
+  it("validates diverse item content", async () => {
+    const project = await _loadProject("diverse_content");
+
+    const itemItems = project.items.filter((item) => item.itemType === ProjectItemType.itemTypeBehavior);
+    expect(itemItems.length).to.be.equal(2); // sword and food
+
+    const itemNames = itemItems.map(item => item.name);
+    expect(itemNames).to.include("sample_sword.json");
+    expect(itemNames).to.include("sample_food.json");
+
+    const swordItem = itemItems.find(item => item.name === "sample_sword.json");
+    expect(swordItem?.projectPath).to.contain("items");
+  });
+
+  it("validates diverse block content", async () => {
+    const project = await _loadProject("diverse_content");
+
+    const blockItems = project.items.filter((item) => item.itemType === ProjectItemType.blockTypeBehavior);
+    expect(blockItems.length).to.be.equal(1);
+
+    const blockItem = blockItems[0];
+    expect(blockItem.name).to.equal("sample_block.json");
+    expect(blockItem.projectPath).to.contain("blocks");
+  });
+
+  it("validates diverse entity content", async () => {
+    const project = await _loadProject("diverse_content");
+
+    const entityItems = project.items.filter((item) => item.itemType === ProjectItemType.entityTypeBehavior);
+    expect(entityItems.length).to.be.equal(1);
+
+    const entityItem = entityItems[0];
+    expect(entityItem.name).to.equal("sample_mob.json");
+    expect(entityItem.projectPath).to.contain("entities");
+  });
+
+  it("validates recipe content", async () => {
+    const project = await _loadProject("diverse_content");
+
+    const recipeItems = project.items.filter((item) => item.itemType === ProjectItemType.recipeBehavior);
+    expect(recipeItems.length).to.be.equal(1);
+
+    const recipeItem = recipeItems[0];
+    expect(recipeItem.name).to.equal("sample_sword_recipe.json");
+    expect(recipeItem.projectPath).to.contain("recipes");
+  });
+
+  it("validates loot table content", async () => {
+    const project = await _loadProject("diverse_content");
+
+    const lootTableItems = project.items.filter((item) => item.itemType === ProjectItemType.lootTableBehavior);
+    expect(lootTableItems.length).to.be.equal(1);
+
+    const lootTableItem = lootTableItems[0];
+    expect(lootTableItem.name).to.equal("sample_loot.json");
+    expect(lootTableItem.projectPath).to.contain("loot_tables");
+  });
+
+  it("validates spawn rules content", async () => {
+    const project = await _loadProject("diverse_content");
+
+    const spawnRuleItems = project.items.filter((item) => item.itemType === ProjectItemType.spawnRuleBehavior);
+    expect(spawnRuleItems.length).to.be.equal(1);
+
+    const spawnRuleItem = spawnRuleItems[0];
+    expect(spawnRuleItem.name).to.equal("sample_mob_spawn.json");
+    expect(spawnRuleItem.projectPath).to.contain("spawn_rules");
+  });
+
+  it("validates animation content", async () => {
+    const project = await _loadProject("diverse_content");
+
+    const animationItems = project.items.filter((item) => item.itemType === ProjectItemType.animationResourceJson);
+    expect(animationItems.length).to.be.equal(1);
+
+    const animationItem = animationItems[0];
+    expect(animationItem.name).to.equal("sample_mob_animations.json");
+    expect(animationItem.projectPath).to.contain("animations");
+  });
+
+  it("validates animation controller content", async () => {
+    const project = await _loadProject("diverse_content");
+
+    const animationControllerItems = project.items.filter((item) => item.itemType === ProjectItemType.animationControllerResourceJson);
+    expect(animationControllerItems.length).to.be.equal(1);
+
+    const animationControllerItem = animationControllerItems[0];
+    expect(animationControllerItem.name).to.equal("sample_mob_controller.json");
+    expect(animationControllerItem.projectPath).to.contain("animation_controllers");
+  });
+
+  it("validates dialogue content", async () => {
+    const project = await _loadProject("diverse_content");
+
+    const dialogueItems = project.items.filter((item) => item.itemType === ProjectItemType.dialogueBehaviorJson);
+    expect(dialogueItems.length).to.be.equal(1);
+
+    const dialogueItem = dialogueItems[0];
+    expect(dialogueItem.name).to.equal("sample_dialogue.json");
+    expect(dialogueItem.projectPath).to.contain("dialogue");
+  });
+
+  it("validates trading content", async () => {
+    const project = await _loadProject("diverse_content");
+
+    const tradingItems = project.items.filter((item) => item.itemType === ProjectItemType.tradingBehaviorJson);
+    expect(tradingItems.length).to.be.equal(1);
+
+    const tradingItem = tradingItems[0];
+    expect(tradingItem.name).to.equal("sample_trading.json");
+    expect(tradingItem.projectPath).to.contain("trading");
+  });
+
+  it("diverse content pack validation report", async () => {
+    const project = await _loadProject("diverse_content");
+
+    const pis = new ProjectInfoSet(project, ProjectInfoSuite.default);
+    await pis.generateForProject();
+
+    const dataObject = pis.getDataObject();
+    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "diverse_content");
+  });
+});
+
+describe("Skin Pack Content", async () => {
+  it("loads sample skin pack", async () => {
+    const project = await _loadProject("sample_skins");
+
+    // Should have skin pack content 
+    expect(project.items.length).to.be.greaterThan(3);
+
+    // Check for skin pack specific content types
+    const itemTypes = project.items.map((item) => item.itemType);
+    expect(itemTypes).to.include(ProjectItemType.skinPackManifestJson);
+    expect(itemTypes).to.include(ProjectItemType.skinCatalogJson);
+    expect(itemTypes).to.include(ProjectItemType.texture);
+    expect(itemTypes).to.include(ProjectItemType.lang);
+  });
+
+  it("validates skin pack manifest", async () => {
+    const project = await _loadProject("sample_skins");
+
+    const manifestItems = project.items.filter((item) => item.itemType === ProjectItemType.skinPackManifestJson);
+    expect(manifestItems.length).to.be.equal(1);
+
+    const manifestItem = manifestItems[0];
+    expect(manifestItem.name).to.equal("manifest.json");
+  });
+
+  it("validates skins.json catalog", async () => {
+    const project = await _loadProject("sample_skins");
+
+    const skinCatalogItems = project.items.filter((item) => item.itemType === ProjectItemType.skinCatalogJson);
+    expect(skinCatalogItems.length).to.be.equal(1);
+
+    const skinCatalogItem = skinCatalogItems[0];
+    expect(skinCatalogItem.name).to.equal("skins.json");
+  });
+
+  it("validates skin texture files", async () => {
+    const project = await _loadProject("sample_skins");
+
+    const textureItems = project.items.filter((item) => item.itemType === ProjectItemType.texture);
+    expect(textureItems.length).to.be.greaterThanOrEqual(2); // steve and alex skins
+
+    const textureNames = textureItems.map(item => item.name);
+    expect(textureNames).to.include("steve_skin.png");
+    expect(textureNames).to.include("alex_skin.png");
+  });
+
+  it("validates skin pack language files", async () => {
+    const project = await _loadProject("sample_skins");
+
+    const langItems = project.items.filter((item) => item.itemType === ProjectItemType.lang);
+    expect(langItems.length).to.be.greaterThanOrEqual(2); // en_US and es_ES
+
+    const langNames = langItems.map(item => item.name);
+    expect(langNames).to.include("en_US.lang");
+    expect(langNames).to.include("es_ES.lang");
+  });
+
+  it("skin pack validation report", async () => {
+    const project = await _loadProject("sample_skins");
+
+    const pis = new ProjectInfoSet(project, ProjectInfoSuite.default);
+    await pis.generateForProject();
+
+    const dataObject = pis.getDataObject();
+    await ensureReportJsonMatchesScenario(scenariosFolder, resultsFolder, dataObject, "sample_skins");
+  });
+});

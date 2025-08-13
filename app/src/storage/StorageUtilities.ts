@@ -162,6 +162,7 @@ export default class StorageUtilities {
       case "ldb":
       case "ico":
       case "tga":
+      case "hdr":
       case "ogg":
       case "flac":
       case "wav":
@@ -335,6 +336,8 @@ export default class StorageUtilities {
         return "application/zip";
 
       case "mcstucture":
+      case "hdr":
+      case "fsb":
         return "application/octet-stream";
 
       case "mcfunction":

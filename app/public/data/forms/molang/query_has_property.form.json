@@ -1,6 +1,6 @@
 {
   "id": "query.has_property",
   "fields": [],
-  "description": "Takes one argument: the name of the property on the Actor. Returns 1.0 if a property with the given name exists, 0 otherwise.",
+  "description": "Returns 1.0 if a property with the given name exists, 0 otherwise. Takes one argument: the name of the property on the entity.",
   "title": "Has Property Query"
 }

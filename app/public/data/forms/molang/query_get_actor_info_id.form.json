@@ -1,6 +1,6 @@
 {
   "id": "query.get_actor_info_id",
   "fields": [],
-  "description": "Returns the integer id of an entity (actor) by its string name.",
+  "description": "Returns the integer id of an entity (actor) by its string name. Relates to item data fields in recipes. Applies to game versions 1.19.80 and higher.",
   "title": "Get Actor Info Id Query"
 }

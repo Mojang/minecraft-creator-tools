@@ -9,6 +9,10 @@ import ZipStorage from "../storage/ZipStorage";
 import Carto from "../app/Carto";
 import Utilities from "../core/Utilities";
 import Project from "../app/Project";
+import { ProjectInfoSuite } from "../info/IProjectInfoData";
+import ProjectInfoSet from "../info/ProjectInfoSet";
+import IProjectMetaState from "../info/IProjectMetaState";
+import ProjectInfoUtilities from "../info/ProjectInfoUtilities";
 
 // these definitions are duplicated for the client and should be kept in sync in CartoAuthentication.ts
 export interface CartoServerAuthenticationResponse {
@@ -250,19 +254,38 @@ export default class HttpServer {
 
               await packProject.inferProjectItemsFromFiles();
 
-              const pis = packProject.infoSet;
+              let suiteInst: ProjectInfoSuite = ProjectInfoSuite.default;
+              let excludeTests: string[] = [];
+
+              if (req.headers["mctsuite"] && typeof req.headers["mctsuite"] == "string") {
+                suiteInst = ProjectInfoSet.getSuiteFromString(req.headers["mctsuite"]);
+              }
+
+              if (req.headers["mctexcludeTests"] && typeof req.headers["mctexcludeTests"] == "string") {
+                excludeTests = req.headers["mctexcludeTests"].split(",");
+              }
+
+              const pis = new ProjectInfoSet(packProject, suiteInst, excludeTests);
 
               await pis.generateForProject();
-              const result = pis.getIndexJson();
 
-              res.write(result);
-              res.end();
+              let subsetReports: IProjectMetaState[] = [];
 
-              if (this._serverManager.runOnce) {
-                this._serverManager.shutdown(
-                  "Shutting down due to completion of one validation operation in runOnce mode."
-                );
+              if (req.headers["mctsuite"] === "all") {
+                subsetReports = await ProjectInfoUtilities.getDerivedStates(packProject, pis);
               }
+
+              const result = JSON.stringify(pis.getDataObject(undefined, undefined, undefined, false, subsetReports));
+
+              res.write(result, () => {
+                res.end();
+
+                if (this._serverManager.runOnce) {
+                  this._serverManager.shutdown(
+                    "Shutting down due to completion of one validation operation in runOnce mode."
+                  );
+                }
+              });
 
               return;
             } else {

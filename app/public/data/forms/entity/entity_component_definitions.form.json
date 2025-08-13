@@ -146,7 +146,7 @@
       "title": "Breed Minecraft Behavior",
       "description": "Dynamic value",
       "dataType": 16,
-      "subFormId": "entity/minecraft_behavior_breed"
+      "subFormId": "entity/breed"
     },
     {
       "id": "minecraft:behavior.defend_trusted_target",
@@ -2163,6 +2163,450 @@
       "description": "Dynamic value",
       "dataType": 16,
       "subFormId": "entity/minecraft_wither_target_highest_damage"
+    },
+    {
+      "id": "minecraft:behavior.avoid_block",
+      "title": "Avoid Block Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.avoid_mob_type",
+      "title": "Avoid Mob Type Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.celebrate",
+      "title": "Celebrate Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.celebrate_survive",
+      "title": "Celebrate Survive Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.charge_attack",
+      "title": "Charge Attack Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.charge_held_item",
+      "title": "Charge Held Item Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.circle_around_anchor",
+      "title": "Circle Around Anchor Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.controlled_by_player",
+      "title": "Controlled By Player Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.croak",
+      "title": "Croak Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.defend_village_target",
+      "title": "Defend Village Target Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.delayed_attack",
+      "title": "Delayed Attack Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.dig",
+      "title": "Dig Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.dragonchargeplayer",
+      "title": "Dragonchargeplayer Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.dragonflaming",
+      "title": "Dragonflaming Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.dragonstrafeplayer",
+      "title": "Dragonstrafeplayer Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.drink_milk",
+      "title": "Drink Milk Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.drop_item_for",
+      "title": "Drop Item For Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.eat_block",
+      "title": "Eat Block Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.eat_mob",
+      "title": "Eat Mob Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.emerge",
+      "title": "Emerge Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.equip_item",
+      "title": "Equip Item Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.explore_outskirts",
+      "title": "Explore Outskirts Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.fertilize_farm_block",
+      "title": "Fertilize Farm Block Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.fire_at_target",
+      "title": "Fire At Target Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.go_and_give_items_to_noteblock",
+      "title": "Go And Give Items To Noteblock Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.go_and_give_items_to_owner",
+      "title": "Go And Give Items To Owner Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.go_home",
+      "title": "Go Home Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.guardian_attack",
+      "title": "Guardian Attack Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.harvest_farm_block",
+      "title": "Harvest Farm Block Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.investigate_suspicious_location",
+      "title": "Investigate Suspicious Location Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.jump_around_target",
+      "title": "Jump Around Target Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.jump_to_block",
+      "title": "Jump To Block Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.knockback_roar",
+      "title": "Knockback Roar Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.melee_attack",
+      "title": "Melee Attack Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.melee_box_attack",
+      "title": "Melee Box Attack Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.move_around_target",
+      "title": "Move Around Target Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.move_indoors",
+      "title": "Move Indoors Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.move_outdoors",
+      "title": "Move Outdoors Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.move_towards_dwelling_restriction",
+      "title": "Move Towards Dwelling Restriction Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.move_towards_home_restriction",
+      "title": "Move Towards Home Restriction Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.ocelotattack",
+      "title": "Ocelotattack Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.offer_flower",
+      "title": "Offer Flower Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.place_block",
+      "title": "Place Block Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.play",
+      "title": "Play Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.play_dead",
+      "title": "Play Dead Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.ram_attack",
+      "title": "Ram Attack Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.random_search_and_dig",
+      "title": "Random Search And Dig Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.ranged_attack",
+      "title": "Ranged Attack Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.roar",
+      "title": "Roar Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.slime_attack",
+      "title": "Slime Attack Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.slime_float",
+      "title": "Slime Float Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.slime_keep_on_jumping",
+      "title": "Slime Keep On Jumping Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.slime_random_direction",
+      "title": "Slime Random Direction Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.sniff",
+      "title": "Sniff Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.sonic_boom",
+      "title": "Sonic Boom Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.stay_near_noteblock",
+      "title": "Stay Near Noteblock Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.stomp_attack",
+      "title": "Stomp Attack Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.swim_idle",
+      "title": "Swim Idle Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.swim_up_for_breath",
+      "title": "Swim Up For Breath Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.swim_wander",
+      "title": "Swim Wander Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.swim_with_entity",
+      "title": "Swim With Entity Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.swoop_attack",
+      "title": "Swoop Attack Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.take_block",
+      "title": "Take Block Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.take_flower",
+      "title": "Take Flower Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.teleport_to_owner",
+      "title": "Teleport To Owner Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.timer_flag_1",
+      "title": "Timer Flag 1 Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.timer_flag_2",
+      "title": "Timer Flag 2 Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.timer_flag_3",
+      "title": "Timer Flag 3 Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.trade_with_player",
+      "title": "Trade With Player Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.work",
+      "title": "Work Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:behavior.work_composter",
+      "title": "Work Composter Minecraft Behavior",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:dash_action",
+      "title": "Minecraft Dash Action",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:free_camera_controlled",
+      "title": "Minecraft Free Camera Controlled",
+      "description": "Dynamic value",
+      "dataType": 16
+    },
+    {
+      "id": "minecraft:vertical_movement_action",
+      "title": "Minecraft Vertical Movement Action",
+      "description": "Dynamic value",
+      "dataType": 16
     }
   ],
   "title": "Entity Component Definitions Entity"

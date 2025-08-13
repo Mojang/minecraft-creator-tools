@@ -310,11 +310,15 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
           const descriptionNode = blockNode["description"];
 
           if (descriptionNode) {
-            const stateNode = descriptionNode["states"];
+            let stateNode = descriptionNode["states"];
+
+            if (stateNode === undefined) {
+              stateNode = descriptionNode["properties"];
+            }
+
+            let permutations = 0;
 
             if (stateNode) {
-              let permutations = 0;
-
               for (const obj in stateNode) {
                 const val = stateNode[obj];
 
@@ -328,7 +332,53 @@ export default class JsonFileTagsInfoGenerator implements IProjectInfoGenerator 
                   pi.maxFeature("Permutation", "Values per property", val.length);
                 }
               }
+            }
 
+            let traitsNode = descriptionNode["traits"];
+
+            if (traitsNode) {
+              if (traitsNode["minecraft:placement_direction"]) {
+                const enabledStates = traitsNode["minecraft:placement_direction"]["enabled_states"];
+
+                if (enabledStates && enabledStates.includes("minecraft:cardinal_direction")) {
+                  if (permutations === 0) {
+                    permutations = 4;
+                  } else {
+                    permutations *= 4;
+                  }
+                }
+
+                if (enabledStates && enabledStates.includes("minecraft:facing_direction")) {
+                  if (permutations === 0) {
+                    permutations = 6;
+                  } else {
+                    permutations *= 6;
+                  }
+                }
+              }
+
+              if (traitsNode["minecraft:placement_position"]) {
+                const enabledStates = traitsNode["minecraft:placement_position"]["enabled_states"];
+
+                if (enabledStates && enabledStates.includes("minecraft:block_face")) {
+                  if (permutations === 0) {
+                    permutations = 6;
+                  } else {
+                    permutations *= 6;
+                  }
+                }
+
+                if (enabledStates && enabledStates.includes("minecraft:vertical_half")) {
+                  if (permutations === 0) {
+                    permutations = 2;
+                  } else {
+                    permutations *= 2;
+                  }
+                }
+              }
+            }
+
+            if (stateNode || traitsNode) {
               pi.maxFeature("Permutation", "Values per type", permutations);
               pi.incrementFeature("Permutation", "Values", permutations);
             }

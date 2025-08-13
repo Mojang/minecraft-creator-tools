@@ -30,7 +30,7 @@ export enum SoundsDefinitionInfoGeneratorTest {
  */
 
 export default class SoundsDefinitionInfoGenerator implements IProjectInfoGenerator {
-  id = "SOUNDSDEFINITION";
+  id = "SNDSDEF";
   title = "Sounds Definition Manifest Validation";
 
   getTopicData(topicId: number) {

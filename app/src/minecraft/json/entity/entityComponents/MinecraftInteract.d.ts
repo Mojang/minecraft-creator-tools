@@ -306,6 +306,174 @@ Camel - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 }
 
 
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
+
+"minecraft:interact": {
+  "interactions": [
+    {
+      "on_interact": {
+        "filters": {
+          "all_of": [
+            {
+              "test": "bool_property",
+              "domain": "minecraft:is_waxed",
+              "value": false
+            },
+            {
+              "test": "is_family",
+              "subject": "other",
+              "value": "player"
+            },
+            {
+              "test": "has_equipment",
+              "domain": "hand",
+              "subject": "other",
+              "value": "honeycomb"
+            }
+          ]
+        },
+        "event": "minecraft:wax_on"
+      },
+      "use_item": true,
+      "swing": true,
+      "interact_text": "action.interact.wax_on",
+      "particle_on_start": {
+        "copper_event": "wax_on"
+      }
+    },
+    {
+      "on_interact": {
+        "filters": {
+          "all_of": [
+            {
+              "test": "bool_property",
+              "domain": "minecraft:is_waxed",
+              "value": false
+            },
+            {
+              "test": "enum_property",
+              "domain": "minecraft:oxidation_level",
+              "operator": "not",
+              "value": "unoxidized"
+            },
+            {
+              "test": "is_family",
+              "subject": "other",
+              "value": "player"
+            },
+            {
+              "test": "has_equipment_tag",
+              "domain": "hand",
+              "subject": "other",
+              "value": "minecraft:is_axe"
+            }
+          ]
+        },
+        "event": "minecraft:remove_oxidation_layer"
+      },
+      "swing": true,
+      "hurt_item": 1,
+      "interact_text": "action.interact.scrape",
+      "particle_on_start": {
+        "copper_event": "scrape"
+      }
+    },
+    {
+      "on_interact": {
+        "filters": {
+          "all_of": [
+            {
+              "test": "bool_property",
+              "domain": "minecraft:is_waxed",
+              "value": true
+            },
+            {
+              "test": "is_family",
+              "subject": "other",
+              "value": "player"
+            },
+            {
+              "test": "has_equipment_tag",
+              "domain": "hand",
+              "subject": "other",
+              "value": "minecraft:is_axe"
+            }
+          ]
+        },
+        "event": "minecraft:wax_off"
+      },
+      "swing": true,
+      "hurt_item": 1,
+      "interact_text": "action.interact.wax_off",
+      "particle_on_start": {
+        "copper_event": "wax_off"
+      }
+    },
+    {
+      "on_interact": {
+        "filters": {
+          "all_of": [
+            {
+              "test": "all_slots_empty",
+              "domain": "hand",
+              "operator": "not"
+            },
+            {
+              "test": "is_family",
+              "subject": "other",
+              "value": "player"
+            },
+            {
+              "test": "all_slots_empty",
+              "domain": "hand",
+              "subject": "other"
+            }
+          ]
+        }
+      },
+      "drop_item_slot": "slot.weapon.mainhand",
+      "swing": true,
+      "interact_text": "action.interact.drop_item"
+    },
+    {
+      "cooldown": 2.5,
+      "use_item": false,
+      "hurt_item": 1,
+      "play_sounds": "shear",
+      "interact_text": "action.interact.shear",
+      "vibration": "shear",
+      "spawn_items": {
+        "table": "loot_tables/entities/copper_golem_shear.json"
+      },
+      "on_interact": {
+        "filters": {
+          "all_of": [
+            {
+              "test": "bool_property",
+              "domain": "minecraft:has_flower",
+              "value": true
+            },
+            {
+              "test": "is_family",
+              "subject": "other",
+              "value": "player"
+            },
+            {
+              "test": "has_equipment",
+              "subject": "other",
+              "domain": "hand",
+              "value": "shears"
+            }
+          ]
+        },
+        "event": "minecraft:on_sheared",
+        "target": "self"
+      }
+    }
+  ]
+}
+
+
 Cow - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/cow.json
 
 "minecraft:interact": {
@@ -724,8 +892,9 @@ export default interface MinecraftInteract {
    * @remarks
    * The entity's slot to remove and drop the item from, if any, upon
    * successful interaction. Inventory slots are denoted by positive
-   * numbers. Armor slots are denoted by 'slot.armor.head', 'slot.armor.chest',
-   * 'slot.armor.legs', 'slot.armor.feet' and 'slot.armor.body'.
+   * numbers. Equipment slots are denoted by 'slot.weapon.mainhand',
+   * 'slot.weapon.offhand', 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs',
+   * 'slot.armor.feet' and 'slot.armor.body'.
    */
   drop_item_slot: string;
 
@@ -739,9 +908,10 @@ export default interface MinecraftInteract {
   /**
    * @remarks
    * The entity's slot to equip the item to, if any, upon successful
-   * interaction. Inventory slots are denoted by positive numbers. Armor
-   * slots are denoted by 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs',
-   * 'slot.armor.feet' and 'slot.armor.body'.
+   * interaction. Inventory slots are denoted by positive numbers.
+   * Equipment slots are denoted by 'slot.weapon.mainhand', 'slot.weapon.offhand',
+   * 'slot.armor.head', 'slot.armor.chest', 'slot.armor.legs', 'slot.armor.feet'
+   * and 'slot.armor.body'.
    */
   equip_item_slot: string;
 

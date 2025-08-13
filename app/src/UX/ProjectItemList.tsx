@@ -1313,7 +1313,7 @@ export default class ProjectItemList extends Component<IProjectItemListProps, IP
       cat === ProjectItemCategory.mctools ||
       cat === ProjectItemCategory.package ||
       projectItem.itemType === ProjectItemType.lang || // should be handled by Text editor
-      projectItem.itemType === ProjectItemType.languagesCatalogResourceJson || // should be handled by Text editor
+      projectItem.itemType === ProjectItemType.languagesCatalogJson || // should be handled by Text editor
       projectItem.itemType === ProjectItemType.packIconImage ||
       projectItem.itemType === ProjectItemType.fileListArrayJson ||
       projectItem.itemType === ProjectItemType.buildProcessedJs ||

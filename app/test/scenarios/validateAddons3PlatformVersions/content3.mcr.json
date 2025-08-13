@@ -65,6 +65,14 @@
     "multipleSoundsManifests": 0,
     "soundsDefinitionManifestFormatIsValid": 0,
     "soundsDefinitionManifestIsNotValidJson": 0,
+    "flagIsOrWasTrue": 0,
+    "levelDatNotFound": 0,
+    "worldNotFound": 0,
+    "deprecatedBlockOverride": 0,
+    "deprecatedTerrainTexture": 0,
+    "deprecatedTexture": 0,
+    "restrictedPolyMeshFound": 0,
+    "jsonParseError": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -87,7 +95,7 @@
     "testSuccessCount": 1,
     "testFailCount": 2,
     "testNotApplicableCount": 1,
-    "errorSummary": "ERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/ghost.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/ghost.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/ghost.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json) Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)\r\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp/manifest.json) Behavior pack manifest does not define a header/min_engine_version.\r\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Behavior pack manifest does not define a header/min_engine_version.",
+    "errorSummary": "ERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/ghost.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER256] (/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json) Spawn rules version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.12.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/ghost.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER216] (/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json) Resource animation version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.10.0)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/ghost.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json) Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)\r\nERROR: [FORMATVER296] (/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json) Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)\r\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp/manifest.json) Behavior pack manifest does not define a header/min_engine_version.\r\nERROR: [MINENGINEVER100] (/Content/behavior_packs/aop_mobsbp_2/manifest.json) Behavior pack manifest does not define a header/min_engine_version.",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
     "testFailSummary": "TESTFAIL: [FORMATVER000] Found 12 errors for Format Version (FORMATVER).\r\nTESTFAIL: [MINENGINEVER000] Found 2 errors for Min Engine Version (MINENGINEVER).",
@@ -110,7 +118,7 @@
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
           "errors": 4
         },
         "619": {
@@ -396,7 +404,7 @@
       "iTp": 3,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {

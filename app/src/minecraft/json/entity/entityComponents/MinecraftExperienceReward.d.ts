@@ -103,7 +103,8 @@ Magma Cube - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pac
 import * as jsoncommon from './../../../jsoncommon';
 
 /**
- * Experience Reward (minecraft:experience_reward)
+ * Minecraft Experience Reward Entity 
+ * (minecraft:experience_reward)
  * .
  */
 export default interface MinecraftExperienceReward {
@@ -111,8 +112,7 @@ export default interface MinecraftExperienceReward {
   /**
    * @remarks
    * A Molang expression defining the amount of experience rewarded when
-   * this entity is successfully bred. An array of expressions adds
-   * each expression's result together for a final total.
+   * this entity is successfully bred.
    * 
    * Sample Values:
    * Armadillo: "Math.Random(1,7)"
@@ -121,11 +121,12 @@ export default interface MinecraftExperienceReward {
    */
   on_bred: string;
 
+  on_bred_array: { [key: string]: string };
+
   /**
    * @remarks
    * A Molang expression defining the amount of experience rewarded when
-   * this entity dies. An array of expressions adds each expression's result
-   * together for a final total.
+   * this entity dies.
    * 
    * Sample Values:
    * Armadillo: "query.last_hit_by_player ? Math.Random(1,3) : 0"
@@ -137,5 +138,7 @@ export default interface MinecraftExperienceReward {
    *
    */
   on_death: string;
+
+  on_death_array: { [key: string]: string };
 
 }

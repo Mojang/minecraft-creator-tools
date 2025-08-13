@@ -8,21 +8,44 @@ export type TestDefinition = {
   severity?: InfoItemType;
   projectItem?: ProjectItem;
   defaultMessage?: string;
+  generatorId?: string;
 };
 
-export function resultFromTest(
+export function resultFromTestWithMessage(
   test: TestDefinition,
   generatorId: string,
   message?: string,
-  projectItem?: ProjectItem,
-  data?: string
+  projectItem?: ProjectItem
 ) {
   return new ProjectInfoItem(
     test.severity || InfoItemType.error,
     generatorId,
     test.id,
     message ?? test.defaultMessage ?? test.title,
-    projectItem,
+    projectItem
+  );
+}
+
+export function resultFromTest(
+  test: TestDefinition,
+  {
+    id,
+    message,
+    item,
+    data,
+  }: {
+    id?: string;
+    message?: string;
+    item?: ProjectItem;
+    data?: string | boolean | number | number[];
+  }
+) {
+  return new ProjectInfoItem(
+    test.severity || InfoItemType.error,
+    test.generatorId || id || "",
+    test.id,
+    message ?? test.defaultMessage ?? test.title,
+    item,
     data
   );
 }
@@ -35,4 +58,8 @@ export function notApplicable(): ProjectInfoItem[] {
 // confirms a result has been returned and/or filters nulls in a way the compiler will understand
 export function isResult(value: ProjectInfoItem | null | undefined): value is ProjectInfoItem {
   return !!value;
+}
+
+export function getTestTitleById(record: Record<string | number, TestDefinition>, testId: number) {
+  return Object.values(record).find((test) => test.id === testId)?.title || `Unknown Test: ${testId}`;
 }

@@ -120,6 +120,20 @@ Boat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
 }
 
 
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
+
+"minecraft:timer": {
+  "time": [
+    25200,
+    27600
+  ],
+  "looping": true,
+  "time_down_event": {
+    "event": "minecraft:oxidize_copper"
+  }
+}
+
+
 Guardian - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/guardian.json
 
 "minecraft:timer": {
@@ -142,17 +156,6 @@ Hoglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
   "time": 15,
   "time_down_event": {
     "event": "become_zombie_event"
-  }
-}
-
-
-Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/husk.json
-
-"minecraft:timer": {
-  "looping": false,
-  "time": 30,
-  "time_down_event": {
-    "event": "minecraft:convert_to_zombie"
   }
 }
 

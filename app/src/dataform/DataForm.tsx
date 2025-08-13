@@ -28,7 +28,7 @@ import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import ScalarArray, { IScalarArrayProps } from "./ScalarArray";
 import Range, { IRangeProps } from "./Range";
 import MinecraftFilterEditor, { IMinecraftFilterEditorProps } from "./MinecraftFilterEditor";
-import ISimpleReference from "../core/ISimpleReference";
+import ISimpleReference from "./ISimpleReference";
 import Utilities from "../core/Utilities";
 import IDataContainer from "./IDataContainer";
 import FieldUtilities from "./FieldUtilities";
@@ -1820,7 +1820,7 @@ export default class DataForm extends Component<IDataFormProps, IDataFormState> 
 
       accessoryToolbar.push({
         icon: <FontAwesomeIcon key="closeClick" icon={faXmark} className="fa-lg" />,
-        key: "close",
+        key: "dfClose",
         onClick: this._handleCloseClick,
         title: "Close",
       });

@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Button, MenuButton, ThemeInput } from "@fluentui/react-northstar";
 import ProjectInfoSet from "../info/ProjectInfoSet";
+import Utilities from "../core/Utilities";
 
 export const PT_TILE_LARGE = 0;
 export const PT_TILE_SMALL = 1;
@@ -69,7 +70,11 @@ export default class ProjectInfoItemDisplay extends Component<
         message += ": ";
       }
 
-      message += item.data.toString();
+      if (typeof item.data === "number") {
+        message += Utilities.addCommasToNumber(item.data);
+      } else {
+        message += item.data.toString();
+      }
     }
 
     const topicData = ProjectInfoSet.getTopicData(item.generatorId, item.generatorIndex);

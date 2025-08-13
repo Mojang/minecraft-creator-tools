@@ -504,9 +504,7 @@ describe("Advanced Content Type Tests", async () => {
     const project = await _loadProject("comprehensive");
 
     const langFiles = project.items.filter((item) => item.itemType === ProjectItemType.lang);
-    const languagesCatalog = project.items.filter(
-      (item) => item.itemType === ProjectItemType.languagesCatalogResourceJson
-    );
+    const languagesCatalog = project.items.filter((item) => item.itemType === ProjectItemType.languagesCatalogJson);
 
     expect(langFiles.length).to.be.greaterThan(0);
     expect(languagesCatalog.length).to.be.greaterThan(0);
@@ -761,5 +759,86 @@ describe("Specialized Content Types", async () => {
     expect(totalItems).to.be.greaterThan(20);
     expect(uniqueTypes.length).to.be.greaterThan(18);
     expect(uniqueCategories.length).to.be.greaterThan(3);
+  });
+});
+
+describe("jigsawDependency", async () => {
+  let project: Project;
+
+  beforeEach(async () => {
+    project = await _loadProject("jigsawDependency");
+  });
+
+  it("has expected structure", async () => {
+    assert.isDefined(project);
+    assert.isTrue(project.projectFolder !== null);
+    assert.isTrue(project.projectFolder !== undefined);
+  });
+
+  it("jigsaw structures track dependency relationships", async () => {
+    assert.isDefined(project);
+
+    // Load the project items
+    await project.inferProjectItemsFromFiles();
+
+    // Find the jigsaw structure set item
+    const structureSetItem = project.items.find(
+      (item) => item.itemType === ProjectItemType.jigsawStructureSet && item.name === "test_structure_set.json"
+    );
+
+    assert.isDefined(structureSetItem, "Jigsaw structure set item should exist");
+
+    // Find the jigsaw structure item
+    const structureItem = project.items.find(
+      (item) => item.itemType === ProjectItemType.jigsawStructure && item.name === "test_structure.json"
+    );
+
+    assert.isDefined(structureItem, "Jigsaw structure item should exist");
+
+    // Find the template pool item
+    const templatePoolItem = project.items.find(
+      (item) => item.itemType === ProjectItemType.jigsawTemplatePool && item.name === "test_pool.json"
+    );
+
+    assert.isDefined(templatePoolItem, "Jigsaw template pool item should exist");
+
+    // Find the processor list item
+    const processorListItem = project.items.find(
+      (item) => item.itemType === ProjectItemType.jigsawProcessorList && item.name === "test_processors.json"
+    );
+
+    assert.isDefined(processorListItem, "Jigsaw processor list item should exist");
+
+    // Process relations to set up dependencies
+    await project.processRelations();
+
+    // Check that the structure set has the jigsaw structure as a child
+    assert.isDefined(structureSetItem?.childItems, "Structure set should have child items");
+    if (structureSetItem && structureSetItem.childItems) {
+      assert.isTrue(structureSetItem.childItems.length > 0, "Structure set should have at least one child item");
+
+      const hasStructureChild = structureSetItem.childItems.some((childRel) => childRel.childItem === structureItem);
+      assert.isTrue(hasStructureChild, "Structure set should have jigsaw structure as child");
+    }
+
+    // Check that the jigsaw structure has the template pool as a child
+    assert.isDefined(structureItem?.childItems, "Jigsaw structure should have child items");
+    if (structureItem && structureItem.childItems) {
+      assert.isTrue(structureItem.childItems.length > 0, "Jigsaw structure should have at least one child item");
+
+      const hasTemplatePoolChild = structureItem.childItems.some((childRel) => childRel.childItem === templatePoolItem);
+      assert.isTrue(hasTemplatePoolChild, "Jigsaw structure should have template pool as child");
+    }
+
+    // Check that the template pool has the processor list as a child
+    assert.isDefined(templatePoolItem?.childItems, "Template pool should have child items");
+    if (templatePoolItem && templatePoolItem.childItems) {
+      assert.isTrue(templatePoolItem.childItems.length > 0, "Template pool should have at least one child item");
+
+      const hasProcessorChild = templatePoolItem.childItems.some(
+        (childRel) => childRel.childItem === processorListItem
+      );
+      assert.isTrue(hasProcessorChild, "Template pool should have processor list as child");
+    }
   });
 });

@@ -1,0 +1,14 @@
+{
+  "texture_set": {
+    "color": "textures/vibrant_basic_color.png",
+    "normal": "textures/vibrant_basic_normal.png",
+    "metalness": "textures/vibrant_basic_metalness.png"
+  },
+  "capabilities": ["pbr"],
+  "vibrant_visuals": {
+    "brightness": 1.2,
+    "contrast": 1.5,
+    "saturation": 2.0,
+    "color": "#FF00FF"
+  }
+}

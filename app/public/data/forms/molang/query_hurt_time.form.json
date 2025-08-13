@@ -1,6 +1,6 @@
 {
   "id": "query.hurt_time",
   "fields": [],
-  "description": "Returns the hurt time for the actor, otherwise returns 0.",
+  "description": "Returns the hurt time for the entity, otherwise returns 0.",
   "title": "Hurt Time Query"
 }

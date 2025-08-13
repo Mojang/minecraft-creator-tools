@@ -26,6 +26,7 @@ export interface IAddonSubpack {
   folder_name?: string;
   name: string;
   memory_tier: number;
+  memory_performance_tier: number;
 }
 
 export interface IPersonaManifest {

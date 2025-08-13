@@ -1,0 +1,21 @@
+{
+  "format_version": "1.21.20",
+  "minecraft:structure_set": {
+    "description": {
+      "identifier": "test:test_structure_set"
+    },
+    "placement": {
+      "type": "minecraft:random_spread",
+      "salt": 39281139,
+      "separation": 12,
+      "spacing": 40,
+      "spread_type": "linear"
+    },
+    "structures": [
+      {
+        "structure": "test:test_structure",
+        "weight": 1
+      }
+    ]
+  }
+}

@@ -3,6 +3,12 @@
   "note": "Requires the entity's `navigation` component to have the parameter `can_open_doors` set to `true`.",
   "description": "Allows the entity to open doors.",
   "samples": {
+    "/vanilla/behavior_pack/entities/copper_golem.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:annotation.open_door/",
+        "content": {}
+      }
+    ],
     "/vanilla/behavior_pack/entities/piglin_brute.json": [
       {
         "path": "/minecraft:entity/components/minecraft:annotation.open_door/",

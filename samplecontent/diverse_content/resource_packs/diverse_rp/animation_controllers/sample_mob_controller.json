@@ -1,0 +1,26 @@
+{
+  "format_version": "1.21.0",
+  "animation_controllers": {
+    "controller.animation.sample_mob.movement": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [
+            {
+              "moving": "query.modified_move_speed > 0.1"
+            }
+          ],
+          "animations": ["idle"]
+        },
+        "moving": {
+          "transitions": [
+            {
+              "default": "query.modified_move_speed <= 0.1"
+            }
+          ],
+          "animations": ["walk"]
+        }
+      }
+    }
+  }
+}

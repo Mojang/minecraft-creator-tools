@@ -3,9 +3,9 @@
   "fields": [
     {
       "id": "processor_type",
-      "title": "Jigsaw Processro Type",
-      "dataType": 2,
-      "isRequired": true
+      "title": "Jigsaw Processor Type",
+      "isRequired": true,
+      "dataType": 2
     },
     {
       "id": "rules",

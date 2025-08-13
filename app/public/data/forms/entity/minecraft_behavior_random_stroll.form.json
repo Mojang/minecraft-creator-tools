@@ -115,6 +115,12 @@
       "defaultValue": 10,
       "dataType": 0,
       "samples": {
+        "/vanilla/behavior_pack/entities/copper_golem.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
+            "content": 3
+          }
+        ],
         "/vanilla/behavior_pack/entities/iron_golem.json": [
           {
             "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
@@ -181,6 +187,12 @@
             "content": 8
           }
         ],
+        "/vanilla/behavior_pack/entities/copper_golem.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
+            "content": 5
+          }
+        ],
         "/vanilla/behavior_pack/entities/creaking.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:neutral/minecraft:behavior.random_stroll/",
@@ -233,12 +245,6 @@
           {
             "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
             "content": 10
-          }
-        ],
-        "/vanilla/behavior_pack/entities/polar_bear.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
-            "content": 5
           }
         ],
         "/vanilla/behavior_pack/entities/snow_golem.json": [
@@ -355,6 +361,15 @@
         "content": {
           "priority": 6,
           "speed_multiplier": 1
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/copper_golem.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:behavior.random_stroll/",
+        "content": {
+          "priority": 5,
+          "xz_dist": 3
         }
       }
     ],

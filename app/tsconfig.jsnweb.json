@@ -24,6 +24,7 @@
 		"src/vscode/**/*",
 		"src/vscodeweb/**/*",
 		"src/test/**/*",
+		"src/testweb/**/*",
 		"out/**/*",
 		"public/**/*",
 		"dist/**/*",

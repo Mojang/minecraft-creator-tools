@@ -276,7 +276,7 @@ export default class ProjectInfoDisplay extends Component<IProjectInfoDisplayPro
   getDataSummary(data: string | number | boolean | undefined) {
     if (data) {
       if (typeof data === "number") {
-        return Utilities.addApostrophesToNumericString(data.toString());
+        return Utilities.addCommasToNumber(data);
       } else if (typeof data === "boolean") {
         return data.toString();
       } else if (typeof data === "object") {

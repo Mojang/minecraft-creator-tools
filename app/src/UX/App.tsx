@@ -1375,7 +1375,6 @@ export default class App extends Component<AppProps, AppState> {
           key="app-h"
           onSetProject={this._setProject}
           onGalleryItemCommand={this._handleProjectGalleryCommand}
-          onLocalGalleryItemCommand={this._handleLocalGalleryCommand}
           onModeChangeRequested={this._handleModeChangeRequested}
           onNewProjectSelected={this._handleNewProject}
           onProgressLog={this._doLog}
@@ -1441,7 +1440,6 @@ export default class App extends Component<AppProps, AppState> {
             key="app-hoa"
             onSetProject={this._setProject}
             onGalleryItemCommand={this._handleProjectGalleryCommand}
-            onLocalGalleryItemCommand={this._handleLocalGalleryCommand}
             onModeChangeRequested={this._handleModeChangeRequested}
             onNewProjectSelected={this._handleNewProject}
             onNewProjectFromFolderSelected={this._handleNewProjectFromFolder}

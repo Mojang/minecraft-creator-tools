@@ -9,14 +9,13 @@ import NodeStorage from "../local/NodeStorage";
 import IProjectInfoData, { ProjectInfoSuite } from "../info/IProjectInfoData";
 import Project from "../app/Project";
 import IProjectMetaState from "../info/IProjectMetaState";
-import { parentPort } from "worker_threads";
+import { parentPort, isMainThread } from "worker_threads";
 import CartoApp, { HostType } from "../app/CartoApp";
 import ProjectInfoSet from "../info/ProjectInfoSet";
 import { InfoItemType } from "../info/IInfoItemData";
 import LocalEnvironment from "../local/LocalEnvironment";
 import ProjectUtilities from "../app/ProjectUtilities";
 import ZipStorage from "../storage/ZipStorage";
-import { isMainThread } from "worker_threads";
 
 let carto: Carto | undefined;
 let localEnv: LocalEnvironment | undefined;

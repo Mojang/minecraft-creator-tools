@@ -9,7 +9,7 @@ import IField, { FieldDataType } from "../dataform/IField";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import Database from "../minecraft/Database";
 import Log from "../core/Log";
-import ISimpleReference from "../core/ISimpleReference";
+import ISimpleReference from "../dataform/ISimpleReference";
 
 export enum ExportMode {
   other = 0,

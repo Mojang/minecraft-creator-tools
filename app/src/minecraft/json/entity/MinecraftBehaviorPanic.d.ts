@@ -62,6 +62,14 @@ Chicken - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
 }
 
 
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
+
+"minecraft:behavior.panic": {
+  "priority": 2,
+  "speed_multiplier": 1.5
+}
+
+
 Donkey - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/donkey.json
 
 "minecraft:behavior.panic": {
@@ -99,14 +107,6 @@ Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
 
 "minecraft:behavior.panic": {
   "priority": 3,
-  "speed_multiplier": 1.2
-}
-
-
-Llama - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/llama.json
-
-"minecraft:behavior.panic": {
-  "priority": 4,
   "speed_multiplier": 1.2
 }
 
@@ -186,7 +186,7 @@ export default interface MinecraftBehaviorPanic {
    * Allay: 1
    *
    *
-   * Fox: 2
+   * Copper Golem: 2
    *
    *
    * Horse: 3

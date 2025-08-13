@@ -54,6 +54,14 @@
     "multipleSoundsManifests": 0,
     "soundsDefinitionManifestFormatIsValid": 0,
     "soundsDefinitionManifestIsNotValidJson": 0,
+    "flagIsOrWasTrue": 0,
+    "levelDatNotFound": 0,
+    "worldNotFound": 0,
+    "deprecatedBlockOverride": 0,
+    "deprecatedTerrainTexture": 0,
+    "deprecatedTexture": 0,
+    "restrictedPolyMeshFound": 0,
+    "jsonParseError": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -117,6 +125,13 @@
         "Min": 0,
         "Average": 0
       },
+      "Texture Images Tier0 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
       "Texture Images Tier0 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
         "Total": 0,
@@ -132,6 +147,13 @@
         "Average": 0
       },
       "Texture Images Tier1 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier1 Total Texture Memory Tier": {
         "Instance Count": 1,
         "Total": 0,
         "Max": 0,
@@ -159,6 +181,13 @@
         "Min": 0,
         "Average": 0
       },
+      "Texture Images Tier2 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
       "Texture Images Tier2 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
         "Total": 0,
@@ -174,6 +203,13 @@
         "Average": 0
       },
       "Texture Images Tier3 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier3 Total Texture Memory Tier": {
         "Instance Count": 1,
         "Total": 0,
         "Max": 0,
@@ -201,6 +237,13 @@
         "Min": 0,
         "Average": 0
       },
+      "Texture Images Tier4 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
       "Texture Images Tier4 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
         "Total": 0,
@@ -216,6 +259,13 @@
         "Average": 0
       },
       "Texture Images Tier5 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier5 Total Texture Memory Tier": {
         "Instance Count": 1,
         "Total": 0,
         "Max": 0,
@@ -249,16 +299,16 @@
         "Count": 1
       }
     },
-    "errorCount": 1,
+    "errorCount": 2,
     "internalProcessingErrorCount": 0,
     "warningCount": 0,
-    "testSuccessCount": 29,
-    "testFailCount": 1,
-    "testNotApplicableCount": 10,
-    "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for test_bp. It must use the .png extension.",
+    "testSuccessCount": 33,
+    "testFailCount": 2,
+    "testNotApplicableCount": 12,
+    "errorSummary": "ERROR: [CPACKICON101] pack_icon image file not found for test_bp. It must use the .png extension.\r\nERROR: [LANGFILES101] languages.json Not Found",
     "internalProcessingErrorSummary": "",
     "warningSummary": "",
-    "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 errors for Check Pack Icon Generator (CPACKICON).",
+    "testFailSummary": "TESTFAIL: [CPACKICON000] Found 1 errors for Check Pack Icon Generator (CPACKICON).\r\nTESTFAIL: [LANGFILES000] Found 1 errors for Check Lang File Generator (LANGFILES).",
     "summary": {
       "ITEMS": {
         "1": {
@@ -528,6 +578,17 @@
           "errors": 1
         }
       },
+      "LANGFILES": {
+        "0": {
+          "title": "Test Failure",
+          "defaultMessage": "Found 1 errors for Check Lang File Generator (LANGFILES).",
+          "testCompleteFails": 1
+        },
+        "101": {
+          "title": "languages.json Not Found",
+          "errors": 1
+        }
+      },
       "MINENGINEVER": {
         "1": {
           "title": "1",
@@ -559,7 +620,7 @@
         },
         "130": {
           "title": "Format Version Patch Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.20.0) has a lower patch version number compared to current version (1.21.90.03)",
+          "defaultMessage": "Behavior pack entity type format version (1.20.0) has a lower patch version number compared to current version (1.21.100.06)",
           "recommendations": 1
         }
       },
@@ -611,10 +672,10 @@
           "testCompleteSuccesses": 1
         }
       },
-      "SOUNDSDEFINITION": {
+      "SNDSDEF": {
         "2": {
           "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SOUNDSDEFINITION)"
+          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)"
         }
       },
       "CPARTI": {
@@ -628,6 +689,46 @@
         "1": {
           "title": "Unknown Test: 1",
           "defaultMessage": "Check Skin Pack Json Generator (CSPJ) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "EXPFLAG": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Experimental Flag (EXPFLAG)"
+        }
+      },
+      "CHECKFEATUREDEPRECATION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)"
+        }
+      },
+      "FORBFILE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Forbidden Files Generator (FORBFILE) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "PRJINT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Project Integrity Generator (PRJINT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "GEOFMT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Geometry Format (GEOFMT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CBFG": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Beta Features Generator (CBFG) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
@@ -1002,6 +1103,13 @@
           "Min": 0,
           "Average": 0
         },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
           "Total": 0,
@@ -1024,6 +1132,13 @@
       "gIx": 201,
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Total Texture Memory Tier": {
           "Instance Count": 1,
           "Total": 0,
           "Max": 0,
@@ -1058,6 +1173,13 @@
           "Min": 0,
           "Average": 0
         },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
           "Total": 0,
@@ -1080,6 +1202,13 @@
       "gIx": 203,
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Total Texture Memory Tier": {
           "Instance Count": 1,
           "Total": 0,
           "Max": 0,
@@ -1114,6 +1243,13 @@
           "Min": 0,
           "Average": 0
         },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
           "Total": 0,
@@ -1136,6 +1272,13 @@
       "gIx": 205,
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Total Texture Memory Tier": {
           "Instance Count": 1,
           "Total": 0,
           "Max": 0,
@@ -1176,6 +1319,11 @@
     {
       "iTp": 3,
       "gId": "CPACKICON",
+      "gIx": 101
+    },
+    {
+      "iTp": 3,
+      "gId": "LANGFILES",
       "gIx": 101
     },
     {
@@ -1340,7 +1488,7 @@
     },
     {
       "iTp": 8,
-      "gId": "SOUNDSDEFINITION",
+      "gId": "SNDSDEF",
       "gIx": 2
     },
     {
@@ -1352,6 +1500,41 @@
       "iTp": 1,
       "gId": "CSPJ",
       "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "EXPFLAG",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "CHECKFEATUREDEPRECATION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "FORBFILE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PRJINT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOFMT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CBFG",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "LANGFILES",
+      "gIx": 0
     },
     {
       "iTp": 8,

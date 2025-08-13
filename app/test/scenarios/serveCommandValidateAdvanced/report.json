@@ -138,6 +138,14 @@
     "multipleSoundsManifests": 0,
     "soundsDefinitionManifestFormatIsValid": 0,
     "soundsDefinitionManifestIsNotValidJson": 0,
+    "flagIsOrWasTrue": 0,
+    "levelDatNotFound": 0,
+    "worldNotFound": 0,
+    "deprecatedBlockOverride": 0,
+    "deprecatedTerrainTexture": 0,
+    "deprecatedTexture": 0,
+    "restrictedPolyMeshFound": 0,
+    "jsonParseError": 0,
     "minBaseGameVersion": 0,
     "chunkCount": 0,
     "subchunkLessChunkCount": 0,
@@ -735,6 +743,13 @@
         "Min": 114688,
         "Average": 114688
       },
+      "Texture Images Tier0 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 114688,
+        "Max": 114688,
+        "Min": 114688,
+        "Average": 114688
+      },
       "Texture Images Tier0 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
         "Total": 0,
@@ -750,6 +765,13 @@
         "Average": 0
       },
       "Texture Images Tier1 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 114688,
+        "Max": 114688,
+        "Min": 114688,
+        "Average": 114688
+      },
+      "Texture Images Tier1 Total Texture Memory Tier": {
         "Instance Count": 1,
         "Total": 114688,
         "Max": 114688,
@@ -777,6 +799,13 @@
         "Min": 114688,
         "Average": 114688
       },
+      "Texture Images Tier2 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 114688,
+        "Max": 114688,
+        "Min": 114688,
+        "Average": 114688
+      },
       "Texture Images Tier2 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
         "Total": 0,
@@ -792,6 +821,13 @@
         "Average": 0
       },
       "Texture Images Tier3 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 114688,
+        "Max": 114688,
+        "Min": 114688,
+        "Average": 114688
+      },
+      "Texture Images Tier3 Total Texture Memory Tier": {
         "Instance Count": 1,
         "Total": 114688,
         "Max": 114688,
@@ -819,6 +855,13 @@
         "Min": 114688,
         "Average": 114688
       },
+      "Texture Images Tier4 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 114688,
+        "Max": 114688,
+        "Min": 114688,
+        "Average": 114688
+      },
       "Texture Images Tier4 Block Atlas Texture Memory Tier": {
         "Instance Count": 1,
         "Total": 0,
@@ -834,6 +877,13 @@
         "Average": 0
       },
       "Texture Images Tier5 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 114688,
+        "Max": 114688,
+        "Min": 114688,
+        "Average": 114688
+      },
+      "Texture Images Tier5 Total Texture Memory Tier": {
         "Instance Count": 1,
         "Total": 114688,
         "Max": 114688,
@@ -880,16 +930,16 @@
         "Count": 1
       }
     },
-    "errorCount": 11,
+    "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 2,
-    "testSuccessCount": 31,
-    "testFailCount": 1,
-    "testNotApplicableCount": 8,
-    "errorSummary": "ERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/atmospherics/atmospherics.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/color_grading/color_grading.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/lighting/global.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/pbr/global.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/point_lights/global.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/shadows/shadows.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/textures/entity/biceson_mers.png) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon_mers.png) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).\r\nERROR: [SHARING210] (/Content/resource_packs/aop_mobsrp/water/water.json) Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).",
+    "testSuccessCount": 37,
+    "testFailCount": 0,
+    "testNotApplicableCount": 10,
+    "errorSummary": "",
     "internalProcessingErrorSummary": "",
     "warningSummary": "WARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:boomfly`\r\nWARNING: [UNLINK310] (/Content/resource_packs/aop_mobsrp/sounds.json) Link to entity type is not found in this pack: /Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`",
-    "testFailSummary": "TESTFAIL: [SHARING000] Found 11 errors for Sharing Best Practices Information (SHARING).",
+    "testFailSummary": "",
     "summary": {
       "ITEMS": {
         "1": {
@@ -1266,7 +1316,7 @@
         },
         "296": {
           "title": "296",
-          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)",
+          "defaultMessage": "Entity type resource version (1.8.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
           "recommendations": 3
         },
         "619": {
@@ -1298,18 +1348,6 @@
         },
         "101": {
           "title": "apisUsed"
-        }
-      },
-      "SHARING": {
-        "0": {
-          "title": "0",
-          "defaultMessage": "Found 11 errors for Sharing Best Practices Information (SHARING).",
-          "testCompleteFails": 1
-        },
-        "210": {
-          "title": "210",
-          "defaultMessage": "Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).",
-          "errors": 11
         }
       },
       "SUMMARY": {
@@ -1467,7 +1505,7 @@
         },
         "120": {
           "title": "Format Version Minor Version Lower Than Current",
-          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90.03)",
+          "defaultMessage": "Behavior pack entity type format version (1.16.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100.06)",
           "recommendations": 3
         }
       },
@@ -1539,6 +1577,13 @@
           "warnings": 2
         }
       },
+      "SHARING": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Sharing Best Practices Information (SHARING) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
       "PACKMETADATA": {
         "2": {
           "title": "2",
@@ -1572,10 +1617,10 @@
           "testCompleteSuccesses": 1
         }
       },
-      "SOUNDSDEFINITION": {
+      "SNDSDEF": {
         "2": {
           "title": "Test Not Applicable",
-          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SOUNDSDEFINITION)"
+          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)"
         }
       },
       "CPARTI": {
@@ -1589,6 +1634,53 @@
         "1": {
           "title": "Unknown Test: 1",
           "defaultMessage": "Check Skin Pack Json Generator (CSPJ) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "EXPFLAG": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Experimental Flag (EXPFLAG)"
+        }
+      },
+      "CHECKFEATUREDEPRECATION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)"
+        }
+      },
+      "FORBFILE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Forbidden Files Generator (FORBFILE) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "PRJINT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Project Integrity Generator (PRJINT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "GEOFMT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Geometry Format (GEOFMT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CBFG": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Beta Features Generator (CBFG) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "LANGFILES": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Lang File Generator (LANGFILES) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
@@ -2900,7 +2992,7 @@
       "iTp": 6,
       "gId": "FORMATVER",
       "gIx": 296,
-      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.90)",
+      "m": "Entity type resource version (1.10.0) has a lower minor version number compared to the current version or the previous current minor version (1.21.100)",
       "p": "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json"
     },
     {
@@ -2918,72 +3010,6 @@
       "iTp": 7,
       "gId": "SCRIPT",
       "gIx": 101
-    },
-    {
-      "iTp": 3,
-      "gId": "SHARING",
-      "gIx": 210,
-      "p": "/Content/resource_packs/aop_mobsrp/atmospherics/atmospherics.json"
-    },
-    {
-      "iTp": 3,
-      "gId": "SHARING",
-      "gIx": 210,
-      "p": "/Content/resource_packs/aop_mobsrp/color_grading/color_grading.json"
-    },
-    {
-      "iTp": 3,
-      "gId": "SHARING",
-      "gIx": 210,
-      "p": "/Content/resource_packs/aop_mobsrp/lighting/global.json"
-    },
-    {
-      "iTp": 3,
-      "gId": "SHARING",
-      "gIx": 210,
-      "p": "/Content/resource_packs/aop_mobsrp/pbr/global.json"
-    },
-    {
-      "iTp": 3,
-      "gId": "SHARING",
-      "gIx": 210,
-      "p": "/Content/resource_packs/aop_mobsrp/point_lights/global.json"
-    },
-    {
-      "iTp": 3,
-      "gId": "SHARING",
-      "gIx": 210,
-      "p": "/Content/resource_packs/aop_mobsrp/shadows/shadows.json"
-    },
-    {
-      "iTp": 3,
-      "gId": "SHARING",
-      "gIx": 210,
-      "p": "/Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json"
-    },
-    {
-      "iTp": 3,
-      "gId": "SHARING",
-      "gIx": 210,
-      "p": "/Content/resource_packs/aop_mobsrp/textures/entity/biceson_mers.png"
-    },
-    {
-      "iTp": 3,
-      "gId": "SHARING",
-      "gIx": 210,
-      "p": "/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json"
-    },
-    {
-      "iTp": 3,
-      "gId": "SHARING",
-      "gIx": 210,
-      "p": "/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon_mers.png"
-    },
-    {
-      "iTp": 3,
-      "gId": "SHARING",
-      "gIx": 210,
-      "p": "/Content/resource_packs/aop_mobsrp/water/water.json"
     },
     {
       "iTp": 7,
@@ -3205,6 +3231,13 @@
           "Min": 114688,
           "Average": 114688
         },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 114688,
+          "Max": 114688,
+          "Min": 114688,
+          "Average": 114688
+        },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
           "Total": 0,
@@ -3227,6 +3260,13 @@
       "gIx": 201,
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 114688,
+          "Max": 114688,
+          "Min": 114688,
+          "Average": 114688
+        },
+        "Total Texture Memory Tier": {
           "Instance Count": 1,
           "Total": 114688,
           "Max": 114688,
@@ -3261,6 +3301,13 @@
           "Min": 114688,
           "Average": 114688
         },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 114688,
+          "Max": 114688,
+          "Min": 114688,
+          "Average": 114688
+        },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
           "Total": 0,
@@ -3283,6 +3330,13 @@
       "gIx": 203,
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 114688,
+          "Max": 114688,
+          "Min": 114688,
+          "Average": 114688
+        },
+        "Total Texture Memory Tier": {
           "Instance Count": 1,
           "Total": 114688,
           "Max": 114688,
@@ -3317,6 +3371,13 @@
           "Min": 114688,
           "Average": 114688
         },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 114688,
+          "Max": 114688,
+          "Min": 114688,
+          "Average": 114688
+        },
         "Block Atlas Texture Memory Tier": {
           "Instance Count": 1,
           "Total": 0,
@@ -3339,6 +3400,13 @@
       "gIx": 205,
       "fs": {
         "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 114688,
+          "Max": 114688,
+          "Min": 114688,
+          "Average": 114688
+        },
+        "Total Texture Memory Tier": {
           "Instance Count": 1,
           "Total": 114688,
           "Max": 114688,
@@ -3486,6 +3554,12 @@
       "gIx": 55
     },
     {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1119,
+      "p": "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json"
+    },
+    {
       "iTp": 7,
       "gId": "WORLDDATA",
       "gIx": 121,
@@ -3564,6 +3638,24 @@
       "gId": "WORLDDATA",
       "gIx": 126,
       "p": "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1110,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1110,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1110,
+      "p": "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json"
     },
     {
       "iTp": 6,
@@ -3825,6 +3917,24 @@
       "d": "/Content/resource_packs/aop_mobsrp/sounds.json to `aop_mobs:robot`"
     },
     {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1128,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1128,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "JSON",
+      "gIx": 1128,
+      "p": "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json"
+    },
+    {
       "iTp": 6,
       "gId": "UNLINK",
       "gIx": 205,
@@ -3884,9 +3994,9 @@
       "gIx": 1
     },
     {
-      "iTp": 0,
+      "iTp": 1,
       "gId": "SHARING",
-      "gIx": 0
+      "gIx": 1
     },
     {
       "iTp": 1,
@@ -3950,7 +4060,7 @@
     },
     {
       "iTp": 8,
-      "gId": "SOUNDSDEFINITION",
+      "gId": "SNDSDEF",
       "gIx": 2
     },
     {
@@ -3961,6 +4071,41 @@
     {
       "iTp": 1,
       "gId": "CSPJ",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "EXPFLAG",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "CHECKFEATUREDEPRECATION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "FORBFILE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PRJINT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOFMT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CBFG",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "LANGFILES",
       "gIx": 1
     },
     {
@@ -4006,6 +4151,11 @@
     {
       "iTp": 1,
       "gId": "JSONF",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "JSON",
       "gIx": 1
     },
     {
@@ -10960,5 +11110,3651 @@
   },
   "generatorName": "Minecraft Creator Tools",
   "suite": 0,
+  "subsetReports": [
+    {
+      "projectContainerName": "",
+      "projectPath": "/",
+      "projectName": "Test",
+      "projectTitle": "pack.name",
+      "infoSetData": {
+        "info": {
+          "capabilities": [
+            "behaviorAnimations",
+            "behaviorPack",
+            "resourcePack",
+            "vvfiles"
+          ],
+          "behaviorPackManifestCount": 0,
+          "unknownJsonCount": 0,
+          "entityTypeManifestCount": 0,
+          "itemTypeManifestCount": 0,
+          "blockTypeManifestCount": 0,
+          "resourcePackManifestCount": 0,
+          "worldCount": 0,
+          "entityTypeResourceCount": 0,
+          "behaviorPackAnimationCount": 0,
+          "behaviorPackAnimationControllerCount": 0,
+          "overallSize": 0,
+          "fileCounts": 0,
+          "folderCounts": 0,
+          "contentSize": 0,
+          "contentFileCounts": 0,
+          "contentFolderCounts": 0,
+          "minBehaviorPackMinEngineVersion": 0,
+          "minResourcePackMinEngineVersion": 0,
+          "subpackCount": 0,
+          "entityTypeComponents": [],
+          "blockTypeComponents": [],
+          "itemTypeComponents": [],
+          "apisUsed": [],
+          "mctoolsVersion": 10002009,
+          "itemTypes": [
+            "Animation",
+            "Atmospherics",
+            "Behavior pack",
+            "Behavior pack animation",
+            "Behavior pack animation controller",
+            "Behavior pack manifest",
+            "Color Grading",
+            "Crafting Item catalog",
+            "Entity type",
+            "Entity type visuals/audio",
+            "Icon",
+            "Language catalog",
+            "Language translations",
+            "Lighting",
+            "Loot table",
+            "Marketing image",
+            "Model",
+            "PBR",
+            "Particle",
+            "Point Light",
+            "Resource pack",
+            "Resource pack manifest",
+            "Shadow",
+            "Sound catalog",
+            "Spawn rule",
+            "Store image",
+            "Texture",
+            "Texture set",
+            "Water"
+          ],
+          "animationCount": 0,
+          "textureCount": 0,
+          "textureTexelSize": 0,
+          "minimumSupportablePerformanceTier": 0,
+          "invalidCommandSyntaxCount": 0,
+          "linesWithSlashCount": 0,
+          "multipleSoundsManifests": 0,
+          "soundsDefinitionManifestFormatIsValid": 0,
+          "soundsDefinitionManifestIsNotValidJson": 0,
+          "flagIsOrWasTrue": 0,
+          "levelDatNotFound": 0,
+          "worldNotFound": 0,
+          "deprecatedBlockOverride": 0,
+          "deprecatedTerrainTexture": 0,
+          "deprecatedTexture": 0,
+          "restrictedPolyMeshFound": 0,
+          "jsonParseError": 0,
+          "minBaseGameVersion": 0,
+          "chunkCount": 0,
+          "subchunkLessChunkCount": 0,
+          "worldLoadErrors": 0,
+          "commands": [],
+          "featureSets": {},
+          "errorCount": 0,
+          "internalProcessingErrorCount": 0,
+          "warningCount": 0,
+          "testSuccessCount": 1,
+          "testFailCount": 0,
+          "testNotApplicableCount": 0,
+          "errorSummary": "",
+          "internalProcessingErrorSummary": "",
+          "warningSummary": "",
+          "testFailSummary": "",
+          "summary": {
+            "SHARING": {
+              "1": {
+                "title": "1",
+                "defaultMessage": "Sharing Best Practices Information (SHARING) completed successfully",
+                "testCompleteSuccesses": 1
+              }
+            }
+          }
+        },
+        "items": [
+          {
+            "iTp": 1,
+            "gId": "SHARING",
+            "gIx": 1
+          }
+        ],
+        "index": {
+          "items": [
+            "/Content/behavior_packs/aop_mobsbp/manifest.json",
+            "/Content/behavior_packs/aop_mobsbp/pack_icon.png",
+            "/Content/behavior_packs/aop_mobsbp/animations/sheepomelon.bp_anims.json",
+            "/Content/behavior_packs/aop_mobsbp/animation_controllers/sheepomelon.bp_ac.json",
+            "/Content/behavior_packs/aop_mobsbp/entities/biceson.behavior.json",
+            "/Content/behavior_packs/aop_mobsbp/entities/nardolphle.behavior.json",
+            "/Content/behavior_packs/aop_mobsbp/entities/sheepomelon.behavior.json",
+            "/Content/behavior_packs/aop_mobsbp/item_catalog/crafting_item_catalog.json",
+            "/Content/behavior_packs/aop_mobsbp/loot_tables/aop/mobs/sheepomelon.json",
+            "/Content/behavior_packs/aop_mobsbp/loot_tables/aop/mobs/sheepomelon_shear.json",
+            "/Content/behavior_packs/aop_mobsbp/spawn_rules/biceson.json",
+            "/Content/behavior_packs/aop_mobsbp/spawn_rules/nardolphle.json",
+            "/Content/behavior_packs/aop_mobsbp/spawn_rules/sheepomelon.json",
+            "/Content/behavior_packs/aop_mobsbp/texts/en_US.lang",
+            "/Content/behavior_packs/aop_mobsbp/texts/languages.json",
+            "/Content/resource_packs/aop_mobsrp/manifest.json",
+            "/Content/resource_packs/aop_mobsrp/pack_icon.png",
+            "/Content/resource_packs/aop_mobsrp/sounds.json",
+            "/Content/resource_packs/aop_mobsrp/animations/biceson.animation.json",
+            "/Content/resource_packs/aop_mobsrp/animations/nardolphle.animation.json",
+            "/Content/resource_packs/aop_mobsrp/animations/sheepomelon.animation.json",
+            "/Content/resource_packs/aop_mobsrp/atmospherics/atmospherics.json",
+            "/Content/resource_packs/aop_mobsrp/color_grading/color_grading.json",
+            "/Content/resource_packs/aop_mobsrp/entity/biceson.entity.json",
+            "/Content/resource_packs/aop_mobsrp/entity/nardolphle.entity.json",
+            "/Content/resource_packs/aop_mobsrp/entity/sheepomelon.entity.json",
+            "/Content/resource_packs/aop_mobsrp/lighting/global.json",
+            "/Content/resource_packs/aop_mobsrp/models/entity/biceson.geometry.json",
+            "/Content/resource_packs/aop_mobsrp/models/entity/nardolphle.geometry.json",
+            "/Content/resource_packs/aop_mobsrp/models/entity/sheepomelon.geometry.json",
+            "/Content/resource_packs/aop_mobsrp/particles/fireworks_pop.json",
+            "/Content/resource_packs/aop_mobsrp/particles/smoke_puff.json",
+            "/Content/resource_packs/aop_mobsrp/pbr/global.json",
+            "/Content/resource_packs/aop_mobsrp/point_lights/global.json",
+            "/Content/resource_packs/aop_mobsrp/shadows/shadows.json",
+            "/Content/resource_packs/aop_mobsrp/texts/en_US.lang",
+            "/Content/resource_packs/aop_mobsrp/texts/languages.json",
+            "/Content/resource_packs/aop_mobsrp/textures/entity/biceson.png",
+            "/Content/resource_packs/aop_mobsrp/textures/entity/biceson.texture_set.json",
+            "/Content/resource_packs/aop_mobsrp/textures/entity/biceson_mers.png",
+            "/Content/resource_packs/aop_mobsrp/textures/entity/nardolphle.png",
+            "/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.png",
+            "/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon.texture_set.json",
+            "/Content/resource_packs/aop_mobsrp/textures/entity/sheepomelon_mers.png",
+            "/Content/resource_packs/aop_mobsrp/water/water.json",
+            "/Marketing Art/aopmoremobs_MarketingKeyArt.jpg",
+            "/Marketing Art/aopmoremobs_MarketingScreenshot_0.jpg",
+            "/Marketing Art/aopmoremobs_MarketingScreenshot_1.jpg",
+            "/Marketing Art/aopmoremobs_MarketingScreenshot_2.jpg",
+            "/Marketing Art/aopmoremobs_MarketingScreenshot_3.jpg",
+            "/Marketing Art/aopmoremobs_MarketingScreenshot_4.jpg",
+            "/Marketing Art/aopmoremobs_MarketingScreenshot_5.jpg",
+            "/Marketing Art/aopmoremobs_PartnerArt.jpg",
+            "/Store Art/aopmoremobs_packicon.jpg",
+            "/Store Art/aopmoremobs_panorama.jpg",
+            "/Store Art/aopmoremobs_screenshot_1.jpg",
+            "/Store Art/aopmoremobs_screenshot_2.jpg",
+            "/Store Art/aopmoremobs_screenshot_3.jpg",
+            "/Store Art/aopmoremobs_screenshot_4.jpg",
+            "/Store Art/aopmoremobs_screenshot_5.jpg",
+            "/Store Art/aopmoremobs_Thumbnail.jpg"
+          ],
+          "trie": {
+            "9": {
+              "ec8af93-4b38-429f-a4bd-7e277a50d238": [
+                0
+              ],
+              "d6dad89-6e29-46ba-83d5-490a4901caef": [
+                0,
+                15
+              ]
+            },
+            "m": {
+              "a": {
+                "t": {
+                  "h.": {
+                    "random": [
+                      30,
+                      -1,
+                      4,
+                      -2
+                    ],
+                    "cos": [
+                      18,
+                      -2
+                    ],
+                    "sin": [
+                      20
+                    ]
+                  },
+                  "e": {
+                    "_type": [
+                      5,
+                      -1
+                    ],
+                    "rial": {
+                      "s": [
+                        23,
+                        -2
+                      ],
+                      "±": [
+                        30,
+                        -1
+                      ]
+                    }
+                  }
+                },
+                "x_": {
+                  "dist": {
+                    "±": [
+                      4,
+                      6
+                    ],
+                    "ance": [
+                      4,
+                      6
+                    ]
+                  },
+                  "turn": [
+                    5
+                  ],
+                  "size": [
+                    10,
+                    -2
+                  ],
+                  "lifetime": [
+                    30,
+                    -1
+                  ],
+                  "frame": [
+                    30,
+                    -1
+                  ]
+                },
+                "ss": [
+                  6
+                ],
+                "n": {
+                  "ifest": [
+                    0,
+                    15
+                  ],
+                  "grove_swamp": [
+                    11
+                  ]
+                },
+                "genta_candle": {
+                  "±": [
+                    33
+                  ],
+                  "_cake": [
+                    33
+                  ]
+                }
+              },
+              "o": {
+                "dule": {
+                  "s": [
+                    0,
+                    15
+                  ],
+                  "_name": [
+                    0
+                  ]
+                },
+                "b.": {
+                  "dolphin.": {
+                    "idle": {
+                      "±": [
+                        17
+                      ],
+                      "_water": [
+                        17
+                      ]
+                    },
+                    "attack": [
+                      17
+                    ],
+                    "blowhole": [
+                      17
+                    ],
+                    "death": [
+                      17
+                    ],
+                    "eat": [
+                      17
+                    ],
+                    "hurt": [
+                      17
+                    ],
+                    "jump": [
+                      17
+                    ],
+                    "s": {
+                      "plash": [
+                        17
+                      ],
+                      "wim": [
+                        17
+                      ]
+                    }
+                  },
+                  "p": {
+                    "hantom.": {
+                      "idle": [
+                        17
+                      ],
+                      "bite": [
+                        17
+                      ],
+                      "death": [
+                        17
+                      ],
+                      "flap": [
+                        17
+                      ],
+                      "hurt": [
+                        17
+                      ],
+                      "swoop": [
+                        17
+                      ]
+                    },
+                    "olarbear": {
+                      "_baby.idle": [
+                        17
+                      ],
+                      ".": {
+                        "idle": [
+                          17
+                        ],
+                        "death": [
+                          17
+                        ],
+                        "hurt": [
+                          17
+                        ],
+                        "warning": [
+                          17
+                        ],
+                        "step": [
+                          17
+                        ]
+                      }
+                    }
+                  },
+                  "warning": [
+                    17
+                  ],
+                  "sheep.s": {
+                    "ay": [
+                      17
+                    ],
+                    "tep": [
+                      17
+                    ]
+                  },
+                  "zombie.": {
+                    "death": [
+                      17
+                    ],
+                    "hurt": [
+                      17
+                    ],
+                    "s": {
+                      "ay": [
+                        17
+                      ],
+                      "tep": [
+                        17
+                      ]
+                    }
+                  }
+                },
+                "ve": {
+                  "ment": {
+                    "±": [
+                      4,
+                      -2
+                    ],
+                    ".": {
+                      "basic": [
+                        4,
+                        6
+                      ],
+                      "amphibious": [
+                        5
+                      ]
+                    }
+                  },
+                  "±": [
+                    23,
+                    -2
+                  ]
+                },
+                "on": {
+                  "_mie_strength": [
+                    21
+                  ],
+                  "±": [
+                    26
+                  ]
+                }
+              },
+              "y": {
+                "namespace": [
+                  7
+                ],
+                "_": {
+                  "item": {
+                    "1": [
+                      7
+                    ],
+                    "2": [
+                      7
+                    ],
+                    "3": [
+                      7
+                    ],
+                    "4": [
+                      7
+                    ],
+                    "5": [
+                      7
+                    ],
+                    "6": [
+                      7
+                    ]
+                  },
+                  "group_name": [
+                    7
+                  ]
+                }
+              },
+              "u": {
+                "st_see": [
+                  4,
+                  6
+                ],
+                "ttonraw": [
+                  8
+                ]
+              },
+              "i": {
+                "n": {
+                  "ecraft": [
+                    10,
+                    -2,
+                    21,
+                    -6,
+                    29,
+                    -5,
+                    38,
+                    4,
+                    42,
+                    44,
+                    5,
+                    -4
+                  ],
+                  "_": {
+                    "engine_version": [
+                      0,
+                      15,
+                      25
+                    ],
+                    "size": [
+                      10,
+                      -2
+                    ]
+                  }
+                },
+                "e_start": [
+                  21
+                ],
+                "dtones": [
+                  22
+                ],
+                "rror": [
+                  27
+                ]
+              },
+              "e": {
+                "lon": {
+                  "±": [
+                    2,
+                    8,
+                    -1
+                  ],
+                  "_": {
+                    "slice": [
+                      6
+                    ],
+                    "block": [
+                      6
+                    ]
+                  }
+                },
+                "talness_emissive_roughness": [
+                  38,
+                  42
+                ]
+              }
+            },
+            "2d59a3f6-d348-496d-a0c7-6d59ddb05c5e": [
+              0
+            ],
+            "d": {
+              "e": {
+                "fault": {
+                  "±": [
+                    10,
+                    -2,
+                    23,
+                    -2,
+                    3
+                  ],
+                  "_": {
+                    "atmospherics": [
+                      21
+                    ],
+                    "color_grading": [
+                      22
+                    ],
+                    "lighting": [
+                      26
+                    ],
+                    "water": [
+                      44
+                    ]
+                  }
+                },
+                "s": {
+                  "cription": [
+                    0,
+                    10,
+                    -2,
+                    15,
+                    21,
+                    -6,
+                    29,
+                    -2,
+                    4,
+                    44,
+                    5,
+                    -1
+                  ],
+                  "pawn": {
+                    "±": [
+                      4,
+                      -2
+                    ],
+                    "_from_distance": [
+                      4,
+                      -2
+                    ]
+                  },
+                  "aturation": [
+                    26
+                  ]
+                },
+                "nsity_limit": [
+                  11
+                ],
+                "a": {
+                  "ls_damage": [
+                    5
+                  ],
+                  "th": {
+                    "±": [
+                      17
+                    ],
+                    ".in.water": [
+                      17
+                    ]
+                  }
+                },
+                "p": {
+                  "endencies": [
+                    0
+                  ],
+                  "th": [
+                    44
+                  ]
+                }
+              },
+              "uration": [
+                4,
+                -2
+              ],
+              "a": {
+                "ta": [
+                  0
+                ],
+                "mage": {
+                  "±": [
+                    4,
+                    6
+                  ],
+                  "_": {
+                    "conditions": [
+                      4,
+                      -2
+                    ],
+                    "per_tick": [
+                      4,
+                      -2
+                    ],
+                    "sensor": [
+                      5
+                    ],
+                    "multiplier": [
+                      5
+                    ]
+                  }
+                }
+              },
+              "r": {
+                "ag_factor": [
+                  4,
+                  -1
+                ],
+                "op_items": [
+                  5
+                ]
+              },
+              "o": {
+                "main": [
+                  6
+                ],
+                "lphin": [
+                  24
+                ]
+              },
+              "i": {
+                "stance_filter": [
+                  11
+                ],
+                "rection": {
+                  "al_lights": [
+                    26
+                  ],
+                  "±": [
+                    30,
+                    -1
+                  ],
+                  "_increment": [
+                    44
+                  ]
+                }
+              }
+            },
+            "f": {
+              "43bb32a-c814-45e4-a428-3f4f1f59b2a3": [
+                0
+              ],
+              "a": {
+                "lse": {
+                  ",": [
+                    2,
+                    22,
+                    4,
+                    44,
+                    5,
+                    -1
+                  ],
+                  "±": [
+                    10,
+                    12,
+                    27,
+                    30,
+                    -1,
+                    4,
+                    -1
+                  ]
+                },
+                "mily": {
+                  "±": [
+                    4,
+                    -2
+                  ],
+                  "_types": [
+                    6
+                  ]
+                },
+                "cing_camera_mode": [
+                  30,
+                  -1
+                ]
+              },
+              "o": {
+                "rmat_version": [
+                  0,
+                  10,
+                  -2,
+                  15,
+                  18,
+                  -1,
+                  2,
+                  20,
+                  -9,
+                  3,
+                  30,
+                  -4,
+                  38,
+                  4,
+                  42,
+                  44,
+                  5,
+                  -2
+                ],
+                "llow_range": [
+                  4,
+                  -1
+                ]
+              },
+              "eed_items": [
+                5,
+                -1
+              ],
+              "u": {
+                "nction": {
+                  "s": [
+                    8,
+                    -1
+                  ],
+                  "±": [
+                    8,
+                    -1
+                  ]
+                },
+                "rnace_smelt": [
+                  8
+                ]
+              },
+              "i": {
+                "lters": [
+                  4,
+                  -2
+                ],
+                "reworks_": {
+                  "pop": [
+                    30
+                  ],
+                  "twinkles": [
+                    30
+                  ]
+                }
+              },
+              "l": {
+                "ap": [
+                  17
+                ],
+                "ipbook": [
+                  30,
+                  -1
+                ]
+              },
+              "r": {
+                "ame": {
+                  "s_per_second": [
+                    30,
+                    -1
+                  ],
+                  "_length": [
+                    44
+                  ]
+                },
+                "equency": {
+                  "±": [
+                    44
+                  ],
+                  "_scaling": [
+                    44
+                  ]
+                }
+              }
+            },
+            "@minecraft/server": {
+              "±": [
+                0
+              ],
+              "-ui": [
+                0
+              ]
+            },
+            "s": {
+              "c": {
+                "ript": {
+                  "±": [
+                    0
+                  ],
+                  "s": {
+                    "/main.js": [
+                      0
+                    ],
+                    "±": [
+                      23,
+                      25,
+                      6
+                    ]
+                  }
+                },
+                "ale": [
+                  18,
+                  20,
+                  23,
+                  4,
+                  44,
+                  5,
+                  -1
+                ]
+              },
+              "p": {
+                "awn": {
+                  "±": [
+                    3,
+                    6
+                  ],
+                  "_": {
+                    "items": [
+                      6
+                    ],
+                    "adult": [
+                      6
+                    ],
+                    "baby": [
+                      6
+                    ],
+                    "rules": [
+                      10,
+                      -2
+                    ],
+                    "egg": [
+                      23,
+                      -2
+                    ]
+                  },
+                  "s_": {
+                    "on_": {
+                      "surface": [
+                        10,
+                        -2
+                      ],
+                      "block_filter": [
+                        10,
+                        12
+                      ]
+                    },
+                    "under": {
+                      "water": [
+                        11
+                      ],
+                      "ground": [
+                        11
+                      ]
+                    }
+                  }
+                },
+                "lash": [
+                  17
+                ],
+                "eed": {
+                  "±": [
+                    44
+                  ],
+                  "_": {
+                    "multiplier": [
+                      4,
+                      -2
+                    ],
+                    "scaling": [
+                      44
+                    ]
+                  }
+                }
+              },
+              "t": {
+                "omp_range_multiplier": [
+                  4
+                ],
+                "ep": {
+                  "±": [
+                    17
+                  ],
+                  "_uv": [
+                    30,
+                    -1
+                  ]
+                },
+                "a": {
+                  "tes": [
+                    3
+                  ],
+                  "rt": [
+                    21
+                  ]
+                },
+                "retch_to_lifetime": [
+                  30,
+                  -1
+                ]
+              },
+              "u": {
+                "bject": [
+                  4,
+                  -2
+                ],
+                "ffocate_time": [
+                  4,
+                  -2
+                ],
+                "ccess_chance": [
+                  6
+                ],
+                "rface": [
+                  11
+                ],
+                "n_": {
+                  "mie_strength": [
+                    21
+                  ],
+                  "glare_shape": [
+                    21
+                  ]
+                },
+                "spended_sediment": [
+                  44
+                ]
+              },
+              "e": {
+                "lf": [
+                  4,
+                  -2
+                ],
+                "a": {
+                  "rch_": {
+                    "range": [
+                      5
+                    ],
+                    "height": [
+                      5
+                    ]
+                  },
+                  "grass": [
+                    5
+                  ],
+                  "t": {
+                    "_count": [
+                      6
+                    ],
+                    "s": [
+                      6
+                    ]
+                  }
+                },
+                "quence": [
+                  6
+                ],
+                "t": {
+                  "_count": [
+                    8,
+                    -1
+                  ],
+                  "up": [
+                    25
+                  ]
+                }
+              },
+              "a": {
+                "lmon": [
+                  2
+                ],
+                "vanna": [
+                  10,
+                  12
+                ],
+                "turation": [
+                  22
+                ],
+                "mplewidth": [
+                  44
+                ]
+              },
+              "o": {
+                "ft_distance": [
+                  4,
+                  6
+                ],
+                "u": {
+                  "nd": {
+                    "s": [
+                      17
+                    ],
+                    "±": [
+                      17
+                    ]
+                  },
+                  "l_": {
+                    "torch": [
+                      33
+                    ],
+                    "lantern": [
+                      33
+                    ]
+                  }
+                }
+              },
+              "w": {
+                "im": [
+                  17
+                ],
+                "oop": [
+                  17
+                ]
+              },
+              "ky_": {
+                "zenith_color": [
+                  21
+                ],
+                "horizon_color": [
+                  21
+                ]
+              },
+              "h": {
+                "e": {
+                  "ep": {
+                    "omelon": {
+                      "±": [
+                        12,
+                        17,
+                        25,
+                        41,
+                        -1,
+                        6,
+                        8
+                      ],
+                      ".": {
+                        "b": {
+                          "p_a": {
+                            "nims": [
+                              2
+                            ],
+                            "c": [
+                              3
+                            ]
+                          },
+                          "ehavior": [
+                            6
+                          ]
+                        },
+                        "animation": [
+                          20
+                        ],
+                        "entity": [
+                          25
+                        ],
+                        "geometry": [
+                          29
+                        ],
+                        "texture_set": [
+                          42
+                        ]
+                      },
+                      "_": {
+                        "shear": [
+                          9
+                        ],
+                        "mer": {
+                          "±": [
+                            42
+                          ],
+                          "s": [
+                            43
+                          ]
+                        }
+                      }
+                    },
+                    "_": {
+                      "baby": [
+                        6
+                      ],
+                      "adult": [
+                        6
+                      ],
+                      "sheared": [
+                        6
+                      ]
+                    },
+                    "±": [
+                      25,
+                      6
+                    ]
+                  },
+                  "ar": {
+                    "ed": [
+                      25,
+                      3,
+                      6
+                    ],
+                    "±": [
+                      6
+                    ],
+                    "s": [
+                      6
+                    ]
+                  }
+                },
+                "a": {
+                  "dow": {
+                    "s": {
+                      "±": [
+                        22,
+                        34
+                      ],
+                      "max": [
+                        22
+                      ]
+                    },
+                    "_s": {
+                      "ettings": [
+                        34
+                      ],
+                      "tyle": [
+                        34
+                      ]
+                    }
+                  },
+                  "pe": [
+                    44
+                  ]
+                }
+              },
+              "ize": {
+                "±": [
+                  27,
+                  -4
+                ],
+                "_uv": [
+                  30,
+                  -1
+                ]
+              },
+              "moke_puff": [
+                31
+              ]
+            },
+            "l": {
+              "a": {
+                "va": [
+                  4,
+                  -2
+                ],
+                "id_egg": [
+                  5
+                ],
+                "n": {
+                  "guage": {
+                    "±": [
+                      0
+                    ],
+                    "s": [
+                      14,
+                      36
+                    ]
+                  },
+                  "tern": [
+                    33
+                  ]
+                }
+              },
+              "u": {
+                "kewarm": [
+                  11
+                ],
+                "sh_caves": [
+                  11
+                ]
+              },
+              "e": {
+                "g": {
+                  "0": [
+                    18,
+                    20,
+                    27,
+                    29
+                  ],
+                  "1": [
+                    18,
+                    20,
+                    27,
+                    29
+                  ],
+                  "2": [
+                    18,
+                    20,
+                    27,
+                    29
+                  ],
+                  "3": [
+                    18,
+                    20,
+                    27,
+                    29
+                  ]
+                },
+                "ft_fin": [
+                  19,
+                  28
+                ],
+                "a": {
+                  "shable": [
+                    4,
+                    6
+                  ],
+                  "d": [
+                    27,
+                    -2
+                  ]
+                }
+              },
+              "o": {
+                "o": {
+                  "p": [
+                    18,
+                    -1,
+                    2,
+                    20,
+                    30,
+                    -1
+                  ],
+                  "t": {
+                    "±": [
+                      4,
+                      -2
+                    ],
+                    "_": {
+                      "tables/entities/": {
+                        "polar_bear.json": [
+                          4
+                        ],
+                        "s": {
+                          "ea_turtle.json": [
+                            5
+                          ],
+                          "heep": {
+                            "_sheared.json": [
+                              6
+                            ],
+                            "omelon": {
+                              ".json": [
+                                6
+                              ],
+                              "_shear.json": [
+                                6
+                              ]
+                            }
+                          }
+                        }
+                      },
+                      "sheared": [
+                        6
+                      ],
+                      "wooly": [
+                        6
+                      ]
+                    },
+                    "ing_enchant": [
+                      8
+                    ]
+                  },
+                  "k": {
+                    "_": {
+                      "distance": [
+                        6
+                      ],
+                      "at_target": [
+                        23,
+                        25
+                      ]
+                    },
+                    "at_xyz": [
+                      30,
+                      -1
+                    ]
+                  }
+                },
+                "cators": [
+                  27,
+                  -2
+                ]
+              },
+              "i": {
+                "ght": {
+                  "ning": [
+                    5
+                  ],
+                  "ing_settings": [
+                    26
+                  ],
+                  "_": {
+                    "blue_candle": {
+                      "±": [
+                        33
+                      ],
+                      "_cake": [
+                        33
+                      ]
+                    },
+                    "gray_candle": {
+                      "_cake": [
+                        33
+                      ],
+                      "±": [
+                        33
+                      ]
+                    }
+                  }
+                },
+                "near_": {
+                  "acceleration": [
+                    30,
+                    -1
+                  ],
+                  "drag_coefficient": [
+                    30,
+                    -1
+                  ]
+                },
+                "me_candle": {
+                  "±": [
+                    33
+                  ],
+                  "_cake": [
+                    33
+                  ]
+                }
+              }
+            },
+            "t": {
+              "ype": {
+                "±": [
+                  0,
+                  15,
+                  30,
+                  8,
+                  -1
+                ],
+                "_family": [
+                  4,
+                  -2
+                ]
+              },
+              "r": {
+                "a": {
+                  "nsitions": [
+                    3
+                  ],
+                  "ck_target": [
+                    4,
+                    6
+                  ]
+                },
+                "ue": {
+                  ",": [
+                    18,
+                    -2,
+                    27,
+                    30,
+                    -1,
+                    4,
+                    44,
+                    5,
+                    -1
+                  ],
+                  "±": [
+                    4,
+                    -2,
+                    8
+                  ]
+                },
+                "igger": {
+                  "s": [
+                    5
+                  ],
+                  "±": [
+                    6
+                  ]
+                }
+              },
+              "a": {
+                "rget": {
+                  "±": [
+                    4,
+                    -2
+                  ],
+                  "_dist": {
+                    "ance": [
+                      4,
+                      -1
+                    ],
+                    "±": [
+                      6
+                    ]
+                  }
+                },
+                "ble": [
+                  4,
+                  -2
+                ],
+                "il": {
+                  "±": [
+                    19,
+                    28
+                  ],
+                  "_fin": [
+                    19,
+                    28
+                  ]
+                }
+              },
+              "urtle": {
+                "±": [
+                  5
+                ],
+                "_shell_piece": [
+                  5
+                ]
+              },
+              "ime": {
+                "line": [
+                  2
+                ],
+                "_until_eat": [
+                  6
+                ]
+              },
+              "o": {
+                "tal_supply": [
+                  4,
+                  -2
+                ],
+                "ne_mapping": [
+                  22
+                ],
+                "rch": [
+                  33
+                ]
+              },
+              "e": {
+                "st": [
+                  10,
+                  -2,
+                  4,
+                  -2
+                ],
+                "x": {
+                  "ture": {
+                    "s": {
+                      "±": [
+                        23,
+                        -2
+                      ],
+                      "/": {
+                        "entity/": {
+                          "biceson": [
+                            23
+                          ],
+                          "nardolphle": [
+                            24
+                          ],
+                          "sheepomelon": [
+                            25
+                          ]
+                        },
+                        "particle/particles": [
+                          30,
+                          -1
+                        ]
+                      }
+                    },
+                    "_": {
+                      "width": [
+                        27,
+                        29,
+                        -2
+                      ],
+                      "height": [
+                        27,
+                        29,
+                        -2
+                      ],
+                      "set": [
+                        38,
+                        42
+                      ]
+                    },
+                    "width": [
+                      28
+                    ],
+                    "height": [
+                      28
+                    ],
+                    "±": [
+                      30,
+                      -1,
+                      44
+                    ]
+                  },
+                  "el_size": [
+                    34
+                  ]
+                }
+              },
+              "winkle": [
+                30
+              ]
+            },
+            "/": {
+              "s": {
+                "ay": [
+                  2
+                ],
+                "ummon": [
+                  2
+                ],
+                "tore art/aopmoremobs_": {
+                  "pa": {
+                    "ckicon.jpg": [
+                      53
+                    ],
+                    "norama.jpg": [
+                      54
+                    ]
+                  },
+                  "screenshot_": {
+                    "1.jpg": [
+                      55
+                    ],
+                    "2.jpg": [
+                      56
+                    ],
+                    "3.jpg": [
+                      57
+                    ],
+                    "4.jpg": [
+                      58
+                    ],
+                    "5.jpg": [
+                      59
+                    ]
+                  },
+                  "thumbnail.jpg": [
+                    60
+                  ]
+                }
+              },
+              "content/": {
+                "behavior_packs/aop_mobsbp/": {
+                  "manifest.json": [
+                    0
+                  ],
+                  "pack_icon.png": [
+                    1
+                  ],
+                  "entities/": {
+                    "biceson.behavior.json": [
+                      4
+                    ],
+                    "nardolphle.behavior.json": [
+                      5
+                    ],
+                    "sheepomelon.behavior.json": [
+                      6
+                    ]
+                  },
+                  "spawn_rules/": {
+                    "biceson.json": [
+                      10
+                    ],
+                    "nardolphle.json": [
+                      11
+                    ],
+                    "sheepomelon.json": [
+                      12
+                    ]
+                  },
+                  "texts/": {
+                    "en_us.lang": [
+                      13
+                    ],
+                    "languages.json": [
+                      14
+                    ]
+                  }
+                },
+                "resource_packs/aop_mobsrp/": {
+                  "a": {
+                    "nimations/biceson.animation.json": [
+                      18
+                    ],
+                    "tmospherics/atmospherics.json": [
+                      21
+                    ]
+                  },
+                  "color_grading/color_grading.json": [
+                    22
+                  ],
+                  "entity/": {
+                    "biceson.entity.json": [
+                      23
+                    ],
+                    "nardolphle.entity.json": [
+                      24
+                    ],
+                    "sheepomelon.entity.json": [
+                      25
+                    ]
+                  },
+                  "lighting/global.json": [
+                    26
+                  ],
+                  "m": {
+                    "anifest.json": [
+                      15
+                    ],
+                    "odels/entity/biceson.geometry.json": [
+                      27
+                    ]
+                  },
+                  "p": {
+                    "a": {
+                      "ck_icon.png": [
+                        16
+                      ],
+                      "rticles/": {
+                        "fireworks_pop.json": [
+                          30
+                        ],
+                        "smoke_puff.json": [
+                          31
+                        ]
+                      }
+                    },
+                    "br/global.json": [
+                      32
+                    ],
+                    "oint_lights/global.json": [
+                      33
+                    ]
+                  },
+                  "s": {
+                    "ounds.json": [
+                      17
+                    ],
+                    "hadows/shadows.json": [
+                      34
+                    ]
+                  },
+                  "text": {
+                    "s/": {
+                      "en_us.lang": [
+                        35
+                      ],
+                      "languages.json": [
+                        36
+                      ]
+                    },
+                    "ures/entity/": {
+                      "biceson": {
+                        ".png": [
+                          37
+                        ],
+                        "_mers.png": [
+                          39
+                        ]
+                      },
+                      "nardolphle.png": [
+                        40
+                      ],
+                      "sheepomelon.png": [
+                        41
+                      ]
+                    }
+                  },
+                  "water/water.json": [
+                    44
+                  ]
+                }
+              },
+              "marketing art/aopmoremobs_": {
+                "marketing": {
+                  "keyart.jpg": [
+                    45
+                  ],
+                  "screenshot_": {
+                    "0.jpg": [
+                      46
+                    ],
+                    "1.jpg": [
+                      47
+                    ],
+                    "2.jpg": [
+                      48
+                    ],
+                    "3.jpg": [
+                      49
+                    ],
+                    "4.jpg": [
+                      50
+                    ],
+                    "5.jpg": [
+                      51
+                    ]
+                  }
+                },
+                "partnerart.jpg": [
+                  52
+                ]
+              }
+            },
+            "b": {
+              "a": {
+                "hhhh": [
+                  2
+                ],
+                "by": {
+                  "±": [
+                    23,
+                    4,
+                    -1
+                  ],
+                  "_": {
+                    "wild": [
+                      4
+                    ],
+                    "scared": [
+                      4
+                    ],
+                    "on_calm": [
+                      4
+                    ],
+                    "t": {
+                      "urtle": [
+                        5
+                      ],
+                      "ype": [
+                        5,
+                        -1
+                      ],
+                      "ransform": [
+                        23,
+                        25
+                      ]
+                    }
+                  }
+                },
+                "lloonable": [
+                  6
+                ],
+                "ck_fin": [
+                  28
+                ],
+                "s": {
+                  "ic_render_parameters": [
+                    30,
+                    -1
+                  ],
+                  "e_": {
+                    "color": [
+                      23,
+                      -2
+                    ],
+                    "uv": [
+                      30,
+                      -1
+                    ]
+                  }
+                }
+              },
+              "r": {
+                "e": {
+                  "ed": {
+                    "able": [
+                      5,
+                      -1
+                    ],
+                    "s_with": [
+                      5,
+                      -1
+                    ],
+                    "_": {
+                      "event": [
+                        5
+                      ],
+                      "items": [
+                        5,
+                        -1
+                      ]
+                    }
+                  },
+                  "ath": {
+                    "able": [
+                      4,
+                      -2
+                    ],
+                    "e": {
+                      "s_": {
+                        "water": [
+                          5
+                        ],
+                        "air": [
+                          5
+                        ]
+                      },
+                      "±": [
+                        17
+                      ]
+                    }
+                  }
+                },
+                "ightness_filter": [
+                  10,
+                  12
+                ],
+                "o": {
+                  "adcast_": {
+                    "anger": [
+                      4
+                    ],
+                    "range": [
+                      4
+                    ]
+                  },
+                  "wn_candle": {
+                    "_cake": [
+                      33
+                    ],
+                    "±": [
+                      33
+                    ]
+                  }
+                }
+              },
+              "e": {
+                "havior": {
+                  "±": [
+                    0
+                  ],
+                  ".": {
+                    "nearest_attackable_target": [
+                      4,
+                      6
+                    ],
+                    "stomp_attack": [
+                      4
+                    ],
+                    "f": {
+                      "ollow_parent": [
+                        4,
+                        6
+                      ],
+                      "loat": [
+                        4,
+                        6
+                      ]
+                    },
+                    "hurt_by_target": [
+                      4,
+                      -1
+                    ],
+                    "random_": {
+                      "look_around": [
+                        4,
+                        6
+                      ],
+                      "s": {
+                        "troll": [
+                          4,
+                          -2
+                        ],
+                        "wim": [
+                          5
+                        ]
+                      }
+                    },
+                    "panic": [
+                      4,
+                      -2
+                    ],
+                    "breed": [
+                      5,
+                      -1
+                    ],
+                    "go_home": [
+                      5
+                    ],
+                    "l": {
+                      "ook_at_player": [
+                        4,
+                        -2
+                      ],
+                      "ay_egg": [
+                        5
+                      ]
+                    },
+                    "tempt": [
+                      5,
+                      -1
+                    ],
+                    "m": {
+                      "elee_attack": [
+                        6
+                      ],
+                      "o": {
+                        "ve_to_": {
+                          "water": [
+                            5
+                          ],
+                          "land": [
+                            5
+                          ]
+                        },
+                        "unt_pathing": [
+                          6
+                        ]
+                      }
+                    },
+                    "eat_block": [
+                      6
+                    ]
+                  }
+                },
+                "come_pregnant": [
+                  5
+                ]
+              },
+              "i": {
+                "ceson": {
+                  "±": [
+                    10,
+                    17,
+                    23,
+                    37,
+                    -1,
+                    4
+                  ],
+                  ".": {
+                    "behavior": [
+                      4
+                    ],
+                    "animation": [
+                      18
+                    ],
+                    "entity": [
+                      23
+                    ],
+                    "geometry": [
+                      27
+                    ],
+                    "texture_set": [
+                      38
+                    ]
+                  },
+                  "_mer": {
+                    "±": [
+                      38
+                    ],
+                    "s": [
+                      39
+                    ]
+                  }
+                },
+                "ome_filter": [
+                  10,
+                  -2
+                ]
+              },
+              "o": {
+                "omfly": [
+                  17
+                ],
+                "nes": [
+                  18,
+                  -2,
+                  27,
+                  -2
+                ],
+                "dy": [
+                  18,
+                  -2,
+                  27,
+                  -2
+                ]
+              },
+              "l": {
+                "ue_candle": {
+                  "±": [
+                    33
+                  ],
+                  "_cake": [
+                    33
+                  ]
+                },
+                "ack_candle": {
+                  "±": [
+                    33
+                  ],
+                  "_cake": [
+                    33
+                  ]
+                },
+                "ock": {
+                  "s": [
+                    32
+                  ],
+                  "y_shadows": [
+                    34
+                  ]
+                }
+              }
+            },
+            "!query.is_sheared": [
+              3
+            ],
+            "a": {
+              "geable": {
+                "±": [
+                  4,
+                  -2
+                ],
+                "_grow_up": [
+                  4,
+                  -2
+                ]
+              },
+              "n": {
+                "gry": [
+                  4
+                ],
+                "jelika": [
+                  5
+                ],
+                "y_of": [
+                  11
+                ],
+                "im": {
+                  "a": {
+                    "t": {
+                      "ion": {
+                        "s": [
+                          18,
+                          -1,
+                          2,
+                          20,
+                          23,
+                          -2,
+                          3,
+                          6
+                        ],
+                        "_": {
+                          "length": [
+                            2,
+                            20
+                          ],
+                          "controllers": [
+                            23,
+                            -1,
+                            3
+                          ]
+                        },
+                        ".": {
+                          "biceson.": {
+                            "baby_transform": [
+                              18,
+                              23
+                            ],
+                            "move": [
+                              18,
+                              23
+                            ],
+                            "walk": [
+                              18,
+                              23
+                            ]
+                          },
+                          "nardolphle.move": [
+                            19,
+                            24
+                          ],
+                          "sheepomelon.": {
+                            "s": {
+                              "pawn": [
+                                2,
+                                6
+                              ],
+                              "heared": [
+                                2,
+                                6
+                              ],
+                              "etup": [
+                                20,
+                                25
+                              ]
+                            },
+                            "baby_transform": [
+                              20,
+                              25
+                            ],
+                            "grazing": [
+                              20,
+                              25
+                            ],
+                            "walk": [
+                              20,
+                              25
+                            ]
+                          },
+                          "common.look_at_target": [
+                            23,
+                            25
+                          ]
+                        }
+                      },
+                      "e": [
+                        25,
+                        6
+                      ]
+                    },
+                    "l": [
+                      10,
+                      12
+                    ]
+                  },
+                  "_time_update": [
+                    18,
+                    20
+                  ]
+                }
+              },
+              "void_": {
+                "damage_blocks": [
+                  4,
+                  -1
+                ],
+                "water": [
+                  6
+                ]
+              },
+              "ll_of": [
+                6
+              ],
+              "d": {
+                "ult": {
+                  "±": [
+                    4,
+                    -1
+                  ],
+                  "_": {
+                    "wild": [
+                      4
+                    ],
+                    "hostile": [
+                      4
+                    ]
+                  }
+                },
+                "just_for_weather": [
+                  10,
+                  12
+                ],
+                "d-on": [
+                  15
+                ]
+              },
+              "mbient": {
+                "±": [
+                  17,
+                  26
+                ],
+                ".": {
+                  "in.water": [
+                    17
+                  ],
+                  "baby": [
+                    17
+                  ]
+                }
+              },
+              "t": {
+                "tack": [
+                  17,
+                  4,
+                  6
+                ],
+                "mospher": {
+                  "ics": [
+                    21
+                  ],
+                  "e_settings": [
+                    21
+                  ]
+                }
+              },
+              "ct": {
+                "i": {
+                  "on.interact.shear": [
+                    6
+                  ],
+                  "ve_time": [
+                    30,
+                    -1
+                  ]
+                },
+                "ors": [
+                  32
+                ]
+              },
+              "op": {
+                "_mobs": [
+                  10,
+                  -2,
+                  17,
+                  23,
+                  -2,
+                  30,
+                  -1,
+                  4,
+                  -2
+                ],
+                "moremobs_": {
+                  "marketing": {
+                    "keyart": [
+                      45
+                    ],
+                    "screenshot_": {
+                      "0": [
+                        46
+                      ],
+                      "1": [
+                        47
+                      ],
+                      "2": [
+                        48
+                      ],
+                      "3": [
+                        49
+                      ],
+                      "4": [
+                        50
+                      ],
+                      "5": [
+                        51
+                      ]
+                    }
+                  },
+                  "pa": {
+                    "rtnerart": [
+                      52
+                    ],
+                    "ckicon": [
+                      53
+                    ],
+                    "norama": [
+                      54
+                    ]
+                  },
+                  "screenshot_": {
+                    "1": [
+                      55
+                    ],
+                    "2": [
+                      56
+                    ],
+                    "3": [
+                      57
+                    ],
+                    "4": [
+                      58
+                    ],
+                    "5": [
+                      59
+                    ]
+                  },
+                  "thumbnail": [
+                    60
+                  ]
+                }
+              }
+            },
+            "i": {
+              "dentifier": [
+                10,
+                -2,
+                21,
+                -6,
+                29,
+                -2,
+                4,
+                44,
+                5,
+                -1
+              ],
+              "s_": {
+                "s": {
+                  "pawnable": [
+                    4,
+                    -2
+                  ],
+                  "ummonable": [
+                    4,
+                    -2
+                  ],
+                  "heared": [
+                    6
+                  ]
+                },
+                "experimental": [
+                  4,
+                  -2
+                ],
+                "baby": [
+                  4,
+                  -2
+                ],
+                "family": [
+                  4,
+                  6
+                ],
+                "pushable": {
+                  "±": [
+                    4,
+                    -2
+                  ],
+                  "_by_piston": [
+                    4,
+                    -2
+                  ]
+                },
+                "amphibious": [
+                  5
+                ]
+              },
+              "n": {
+                "_lava": [
+                  4,
+                  -2
+                ],
+                "te": {
+                  "r": {
+                    "val": [
+                      5
+                    ],
+                    "act": {
+                      "±": [
+                        6
+                      ],
+                      "ions": [
+                        6
+                      ],
+                      "_text": [
+                        6
+                      ]
+                    },
+                    "polant": [
+                      30
+                    ]
+                  },
+                  "nsity": [
+                    26
+                  ]
+                },
+                "flate": [
+                  29
+                ]
+              },
+              "con": [
+                7
+              ],
+              "tem": {
+                "s": [
+                  32,
+                  5,
+                  -2
+                ],
+                "group.name.helmet": [
+                  7
+                ],
+                "±": [
+                  8,
+                  -1
+                ]
+              },
+              "lluminance": [
+                26
+              ]
+            },
+            "v": {
+              "ersion": [
+                0,
+                15
+              ],
+              "olume": [
+                17
+              ],
+              "isible_bounds_": {
+                "width": [
+                  27,
+                  -2
+                ],
+                "height": [
+                  27,
+                  -2
+                ],
+                "offset": [
+                  27,
+                  -2
+                ]
+              },
+              "a": {
+                "lue": [
+                  10,
+                  -2,
+                  4,
+                  -2
+                ],
+                "riable.particle_": {
+                  "random_1": {
+                    "±": [
+                      30
+                    ],
+                    "*0.5": [
+                      31
+                    ]
+                  },
+                  "age": [
+                    30,
+                    -1
+                  ]
+                }
+              }
+            },
+            "e": {
+              "vent": {
+                "±": [
+                  4,
+                  -2
+                ],
+                "s": [
+                  17,
+                  30,
+                  4,
+                  -2
+                ]
+              },
+              "at_": {
+                "and_replace_block_pairs": [
+                  6
+                ],
+                "block": [
+                  6
+                ]
+              },
+              "quipment": [
+                7
+              ],
+              "n": {
+                "t": {
+                  "r": {
+                    "y": [
+                      0
+                    ],
+                    "ies": [
+                      8,
+                      -1
+                    ]
+                  },
+                  "it": {
+                    "y": {
+                      "±": [
+                        4,
+                        -2,
+                        8
+                      ],
+                      "_": {
+                        "types": [
+                          4,
+                          6
+                        ],
+                        "born": [
+                          4,
+                          -2
+                        ],
+                        "properties": [
+                          8
+                        ],
+                        "s": {
+                          "pawned": [
+                            4,
+                            -2
+                          ],
+                          "ounds": [
+                            17
+                          ]
+                        }
+                      }
+                    },
+                    "ies": [
+                      17
+                    ]
+                  }
+                },
+                "_us": [
+                  13,
+                  -1,
+                  35,
+                  -1
+                ],
+                "abled": [
+                  22,
+                  44
+                ],
+                "d_rod": [
+                  33
+                ]
+              },
+              "x": {
+                "ample": [
+                  26
+                ],
+                "p": {
+                  "erience_reward": [
+                    4,
+                    -2
+                  ],
+                  "iration_event": [
+                    30
+                  ]
+                }
+              },
+              "ffect": [
+                30
+              ],
+              "mi": {
+                "ssive": [
+                  26
+                ],
+                "tter_": {
+                  "rate_instant": [
+                    30,
+                    -1
+                  ],
+                  "lifetime_once": [
+                    30,
+                    -1
+                  ],
+                  "shape_sphere": [
+                    30,
+                    -1
+                  ]
+                }
+              }
+            },
+            "p": {
+              "r": {
+                "iority": [
+                  4,
+                  -2
+                ],
+                "e": {
+                  "gnant": [
+                    5
+                  ],
+                  "fer_water": [
+                    5
+                  ]
+                },
+                "o": {
+                  "bability": [
+                    4,
+                    -2
+                  ],
+                  "perties": [
+                    8
+                  ]
+                }
+              },
+              "hysics": [
+                4,
+                -2
+              ],
+              "o": {
+                "ols": [
+                  8,
+                  -1
+                ],
+                "pulation_control": [
+                  10,
+                  -2
+                ],
+                "s": {
+                  "ition": [
+                    18,
+                    20,
+                    6
+                  ],
+                  "t": [
+                    20
+                  ]
+                },
+                "lar": {
+                  "bear": [
+                    4
+                  ],
+                  "_bear": [
+                    23
+                  ]
+                },
+                "int_light_settings": [
+                  33
+                ],
+                "wer": [
+                  44
+                ]
+              },
+              "la": {
+                "y": {
+                  "er": [
+                    4,
+                    6
+                  ],
+                  "_sounds": [
+                    6
+                  ]
+                },
+                "ins": [
+                  10,
+                  12
+                ]
+              },
+              "i": {
+                "tch": [
+                  17
+                ],
+                "vot": [
+                  27,
+                  -2
+                ],
+                "nk_candle": {
+                  "_cake": [
+                    33
+                  ],
+                  "±": [
+                    33
+                  ]
+                }
+              },
+              "a": {
+                "ck": {
+                  ".": {
+                    "name": [
+                      0,
+                      15
+                    ],
+                    "description": [
+                      0,
+                      15
+                    ]
+                  },
+                  "_icon": [
+                    1,
+                    16
+                  ],
+                  "±": [
+                    15
+                  ]
+                },
+                "r": {
+                  "ent": [
+                    27,
+                    -2
+                  ],
+                  "ticle": {
+                    "_": {
+                      "effect": [
+                        30,
+                        -1
+                      ],
+                      "with_velocity": [
+                        30
+                      ],
+                      "initial_sp": {
+                        "eed": [
+                          30,
+                          -1
+                        ],
+                        "in": [
+                          30,
+                          -1
+                        ]
+                      },
+                      "lifetime_e": {
+                        "xpression": [
+                          30,
+                          -1
+                        ],
+                        "vents": [
+                          30
+                        ]
+                      },
+                      "motion_dynamic": [
+                        30,
+                        -1
+                      ],
+                      "appearance_": {
+                        "billboard": [
+                          30,
+                          -1
+                        ],
+                        "tinting": [
+                          30,
+                          -1
+                        ],
+                        "lighting": [
+                          31
+                        ]
+                      },
+                      "concentrations": [
+                        44
+                      ]
+                    },
+                    "s": {
+                      "_alpha": [
+                        30,
+                        -1
+                      ],
+                      "±": [
+                        32
+                      ]
+                    }
+                  }
+                }
+              },
+              "br_fallback_settings": [
+                32
+              ],
+              "u": {
+                "shable": [
+                  4,
+                  -2
+                ],
+                "rple_candle": {
+                  "±": [
+                    33
+                  ],
+                  "_cake": [
+                    33
+                  ]
+                },
+                "ll": [
+                  44
+                ]
+              }
+            },
+            "o": {
+              "n_": {
+                "target_acquired": [
+                  4
+                ],
+                "death": [
+                  4,
+                  -2
+                ],
+                "anger": [
+                  4
+                ],
+                "calm": [
+                  4
+                ],
+                "bred": [
+                  5,
+                  -1
+                ],
+                "home": [
+                  5
+                ],
+                "lay": [
+                  5
+                ],
+                "interact": [
+                  6
+                ],
+                "s": {
+                  "cared": [
+                    4
+                  ],
+                  "heared": [
+                    6
+                  ]
+                },
+                "eat": {
+                  "±": [
+                    6
+                  ],
+                  "_block": [
+                    6
+                  ]
+                },
+                "f": {
+                  "riendly_anger": [
+                    4
+                  ],
+                  "ire": [
+                    8
+                  ]
+                }
+              },
+              "ther": [
+                4,
+                6
+              ],
+              "perator": [
+                10,
+                -2,
+                22,
+                4,
+                -2
+              ],
+              "ffset": [
+                22
+              ],
+              "verlay_color": [
+                23,
+                -2
+              ],
+              "r": {
+                "bital_offset_degrees": [
+                  26
+                ],
+                "igin": [
+                  27,
+                  -2
+                ],
+                "ange_candle": {
+                  "_cake": [
+                    33
+                  ],
+                  "±": [
+                    33
+                  ]
+                }
+              },
+              "utwards": [
+                30,
+                -1
+              ],
+              "c": {
+                "ean": [
+                  11
+                ],
+                "taves": [
+                  44
+                ]
+              }
+            },
+            "c": {
+              "o": {
+                "n": {
+                  "struction": [
+                    7
+                  ],
+                  "dition": {
+                    "al_bandwidth_optimization": [
+                      4,
+                      -2
+                    ],
+                    "s": [
+                      10,
+                      -2,
+                      8
+                    ],
+                    "±": [
+                      8
+                    ]
+                  },
+                  "tr": {
+                    "ast": [
+                      22
+                    ],
+                    "oller.": {
+                      "animation.": {
+                        "polarbear.": {
+                          "move": [
+                            23
+                          ],
+                          "baby": [
+                            23
+                          ]
+                        },
+                        "dolphin.general": [
+                          24
+                        ],
+                        "sheep": {
+                          "omelon_commands": [
+                            3,
+                            6
+                          ],
+                          ".move": [
+                            25
+                          ]
+                        }
+                      },
+                      "render.": {
+                        "polarbear": [
+                          23
+                        ],
+                        "default": [
+                          24
+                        ],
+                        "sheep": [
+                          25
+                        ]
+                      }
+                    }
+                  }
+                },
+                "m": {
+                  "ponent": {
+                    "_groups": [
+                      4,
+                      -2
+                    ],
+                    "s": [
+                      30,
+                      -1,
+                      4,
+                      -2
+                    ]
+                  },
+                  "mand_controller": [
+                    6
+                  ]
+                },
+                "oldown": [
+                  6
+                ],
+                "unt": [
+                  8,
+                  -1
+                ],
+                "l": {
+                  "lision_box": [
+                    4,
+                    -2
+                  ],
+                  "or": {
+                    "_grading": {
+                      "±": [
+                        22
+                      ],
+                      "_settings": [
+                        22
+                      ]
+                    },
+                    "±": [
+                      26,
+                      30,
+                      -1,
+                      38,
+                      42
+                    ],
+                    "s": [
+                      33
+                    ]
+                  }
+                }
+              },
+              "a": {
+                "lm_event": [
+                  4
+                ],
+                "tegor": {
+                  "ies": [
+                    7
+                  ],
+                  "y_name": [
+                    7
+                  ]
+                },
+                "n": {
+                  "_": {
+                    "path_over_water": [
+                      4,
+                      -2
+                    ],
+                    "climb": [
+                      4,
+                      6
+                    ],
+                    "walk": [
+                      5
+                    ],
+                    "s": {
+                      "wim": [
+                        5
+                      ],
+                      "ink": [
+                        5
+                      ]
+                    }
+                  },
+                  "dle": {
+                    "±": [
+                      33
+                    ],
+                    "_cake": [
+                      33
+                    ]
+                  }
+                },
+                "us": {
+                  "e": {
+                    "±": [
+                      4,
+                      -2
+                    ],
+                    "s_pregnancy": [
+                      5
+                    ]
+                  },
+                  "tics": [
+                    44
+                  ]
+                }
+              },
+              "rafting_item": {
+                "_catalog": [
+                  7
+                ],
+                "s_catalog": [
+                  7
+                ]
+              },
+              "lient_entity": [
+                23,
+                -2
+              ],
+              "ubes": [
+                27,
+                -2
+              ],
+              "yan_candle": {
+                "_cake": [
+                  33
+                ],
+                "±": [
+                  33
+                ]
+              },
+              "hlorophyll": [
+                44
+              ],
+              "dom": [
+                44
+              ]
+            },
+            "query.": {
+              "is_": {
+                "sheared": [
+                  3
+                ],
+                "baby": [
+                  25,
+                  6
+                ]
+              },
+              "standing_scale": [
+                18
+              ],
+              "modified_distance_moved": [
+                18,
+                20
+              ],
+              "anim_time": [
+                18,
+                20
+              ],
+              "l": {
+                "ast_hit_by_player": [
+                  4,
+                  -2
+                ],
+                "ife_time": [
+                  19
+                ]
+              },
+              "target_": {
+                "x_rotation": [
+                  19
+                ],
+                "y_rotation": [
+                  19
+                ]
+              },
+              "key_frame_lerp_time": [
+                20
+              ]
+            },
+            "n": {
+              "a": {
+                "me": {
+                  "±": [
+                    0,
+                    15,
+                    27,
+                    -2,
+                    7,
+                    -2
+                  ],
+                  "able": [
+                    4,
+                    -2
+                  ]
+                },
+                "rdolphle": {
+                  "±": [
+                    11,
+                    17,
+                    24,
+                    40,
+                    5
+                  ],
+                  ".": {
+                    "behavior": [
+                      5
+                    ],
+                    "animation": [
+                      19
+                    ],
+                    "entity": [
+                      24
+                    ],
+                    "geometry": [
+                      28
+                    ]
+                  }
+                },
+                "vigation.": {
+                  "walk": [
+                    4,
+                    6
+                  ],
+                  "generic": [
+                    5
+                  ]
+                }
+              },
+              "o": {
+                "_damage_range_multiplier": [
+                  4
+                ],
+                "se": [
+                  28
+                ]
+              },
+              "um_particles": [
+                30,
+                -1
+              ]
+            },
+            "h": {
+              "e": {
+                "a": {
+                  "lth": [
+                    4,
+                    -2
+                  ],
+                  "d": {
+                    "er": [
+                      0,
+                      15
+                    ],
+                    "±": [
+                      18,
+                      20,
+                      27,
+                      -2
+                    ]
+                  }
+                },
+                "ight": {
+                  "±": [
+                    4,
+                    -2
+                  ],
+                  "_filter": [
+                    11
+                  ]
+                },
+                "rd": [
+                  10,
+                  -2
+                ]
+              },
+              "a": {
+                "rd_distance": [
+                  4,
+                  6
+                ],
+                "nd": [
+                  6
+                ],
+                "s_": {
+                  "equipment": [
+                    6
+                  ],
+                  "component": [
+                    6
+                  ],
+                  "biome_tag": [
+                    10,
+                    -2
+                  ]
+                }
+              },
+              "urt": {
+                "_": {
+                  "on_condition": [
+                    4,
+                    -2
+                  ],
+                  "item": [
+                    6
+                  ]
+                },
+                "±": [
+                  17
+                ],
+                ".in.water": [
+                  17
+                ]
+              },
+              "o": {
+                "me": [
+                  5
+                ],
+                "rizon_blend_stops": [
+                  21
+                ]
+              },
+              "ighlights": {
+                "±": [
+                  22
+                ],
+                "min": [
+                  22
+                ]
+              }
+            },
+            "w": {
+              "eight": [
+                10,
+                -2,
+                4,
+                -2,
+                8,
+                -1
+              ],
+              "a": {
+                "nts_to_lay_egg": [
+                  5
+                ],
+                "rm": [
+                  11
+                ],
+                "lk": [
+                  23,
+                  25
+                ],
+                "ter": {
+                  "_": {
+                    "movement": [
+                      4,
+                      -1
+                    ],
+                    "animal": [
+                      11
+                    ],
+                    "settings": [
+                      44
+                    ]
+                  },
+                  "±": [
+                    44
+                  ]
+                },
+                "ves": [
+                  44
+                ]
+              },
+              "i": {
+                "dth": [
+                  4,
+                  -2
+                ],
+                "thin_radius": [
+                  6
+                ]
+              },
+              "hite_candle": {
+                "±": [
+                  33
+                ],
+                "_cake": [
+                  33
+                ]
+              }
+            },
+            "j": {
+              "avascript": [
+                0
+              ],
+              "ump": {
+                ".static": [
+                  4,
+                  -2
+                ],
+                "±": [
+                  17
+                ]
+              }
+            },
+            "r": {
+              "e": {
+                "move": [
+                  4,
+                  -2
+                ],
+                "quire_": {
+                  "complete_path": [
+                    4
+                  ],
+                  "tame": [
+                    5,
+                    -1
+                  ]
+                },
+                "s": {
+                  "ources": [
+                    0,
+                    15
+                  ],
+                  "elect_targets": [
+                    6
+                  ]
+                },
+                "place_block": [
+                  6
+                ],
+                "nder_controllers": [
+                  23,
+                  -2
+                ],
+                "d": {
+                  "stone_torch": [
+                    33
+                  ],
+                  "_candle": {
+                    "±": [
+                      33
+                    ],
+                    "_cake": [
+                      33
+                    ]
+                  }
+                }
+              },
+              "o": {
+                "lls": [
+                  8,
+                  -1
+                ],
+                "bot": [
+                  17
+                ],
+                "tation": {
+                  "±": [
+                    18,
+                    -2,
+                    27,
+                    -4
+                  ],
+                  "_": {
+                    "rate": [
+                      30,
+                      -1
+                    ],
+                    "drag_coefficient": [
+                      30,
+                      -1
+                    ]
+                  }
+                }
+              },
+              "i": {
+                "deable": {
+                  "±": [
+                    6
+                  ],
+                  "_": {
+                    "sheared": [
+                      6
+                    ],
+                    "wooly": [
+                      6
+                    ]
+                  }
+                },
+                "ght_fin": [
+                  19,
+                  28
+                ]
+              },
+              "a": {
+                "ndomize": [
+                  4,
+                  -2
+                ],
+                "yleigh_strength": [
+                  21
+                ],
+                "dius": [
+                  30,
+                  -1
+                ]
+              }
+            },
+            "u": {
+              "uid": [
+                0,
+                15
+              ],
+              "se_item": [
+                6
+              ],
+              "nder": {
+                "water_movement": [
+                  5
+                ],
+                "ground": [
+                  11
+                ]
+              }
+            },
+            "g": {
+              "o": {
+                "al_radius": [
+                  5
+                ],
+                "_lay_egg": [
+                  5
+                ]
+              },
+              "r": {
+                "o": {
+                  "w_up": [
+                    4,
+                    -2
+                  ],
+                  "up": {
+                    "s": [
+                      7
+                    ],
+                    "_identifier": [
+                      7
+                    ]
+                  }
+                },
+                "a": {
+                  "ss": [
+                    10,
+                    12
+                  ],
+                  "zing": [
+                    25
+                  ],
+                  "dient": [
+                    30
+                  ],
+                  "y_candle": {
+                    "±": [
+                      33
+                    ],
+                    "_cake": [
+                      33
+                    ]
+                  }
+                },
+                "een_candle": {
+                  "±": [
+                    33
+                  ],
+                  "_cake": [
+                    33
+                  ]
+                }
+              },
+              "a": {
+                "in": [
+                  22
+                ],
+                "mma": [
+                  22
+                ]
+              },
+              "e": {
+                "ner": {
+                  "ic": [
+                    22
+                  ],
+                  "a": {
+                    "tes_bubbles": [
+                      5
+                    ],
+                    "l": [
+                      24
+                    ]
+                  }
+                },
+                "ometry": {
+                  "±": [
+                    23,
+                    -2,
+                    27,
+                    29
+                  ],
+                  ".": {
+                    "aop_mobs.": {
+                      "biceson": [
+                        23,
+                        27
+                      ],
+                      "nardolphle": [
+                        24,
+                        28
+                      ],
+                      "sheepomelon": [
+                        25,
+                        29
+                      ]
+                    },
+                    "sheep.sheared.v1.8": [
+                      25
+                    ]
+                  }
+                }
+              },
+              "lobal": {
+                "±": [
+                  26,
+                  32,
+                  -1
+                ],
+                "_metalness_emissive_roughness_subsurface": [
+                  32
+                ]
+              }
+            },
+            "xz_dist": [
+              5
+            ],
+            "zombie": [
+              6
+            ],
+            "523d72d2-3ba9-498a-bc63-8beb5fe268cb": [
+              15
+            ],
+            "-this": [
+              20
+            ],
+            "#": {
+              "00a4ff": [
+                23
+              ],
+              "4b95c6": [
+                23
+              ],
+              "b421d1": [
+                24
+              ],
+              "f407b1": [
+                24
+              ],
+              "5e9e13": [
+                25
+              ],
+              "e06b77": [
+                25
+              ]
+            },
+            "0.3f": [
+              30,
+              -1
+            ],
+            "y": {
+              "_dist": [
+                5
+              ],
+              "ellow_candle": {
+                "±": [
+                  33
+                ],
+                "_cake": [
+                  33
+                ]
+              }
+            }
+          }
+        },
+        "generatorName": "Minecraft Creator Tools",
+        "suite": 3,
+        "generatorVersion": "0.2.9"
+      },
+      "suite": 2
+    }
+  ],
   "generatorVersion": "0.2.9"
 }

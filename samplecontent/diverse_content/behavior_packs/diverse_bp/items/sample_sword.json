@@ -1,0 +1,25 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:item": {
+    "description": {
+      "identifier": "test:sample_sword",
+      "category": "equipment"
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:hand_equipped": true,
+      "minecraft:durability": {
+        "max_durability": 300
+      },
+      "minecraft:weapon": {
+        "on_hurt_entity": {
+          "event": "sample_sword_hit",
+          "target": "self"
+        }
+      },
+      "minecraft:damage": {
+        "value": 7
+      }
+    }
+  }
+}

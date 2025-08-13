@@ -247,44 +247,48 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
   }
 
   private async _useLocalStorage() {
-    const dirHandle = (await window.showDirectoryPicker({
-      mode: "readwrite",
-    })) as FileSystemDirectoryHandle | undefined;
+    try {
+      const dirHandle = (await window.showDirectoryPicker({
+        mode: "readwrite",
+      })) as FileSystemDirectoryHandle | undefined;
 
-    if (dirHandle) {
-      let fss = new FileSystemStorage(dirHandle as FileSystemDirectoryHandle, dirHandle.name);
+      if (dirHandle) {
+        let fss = new FileSystemStorage(dirHandle as FileSystemDirectoryHandle, dirHandle.name);
 
-      const safeMessage = await (fss.rootFolder as FileSystemFolder).getIsEmptyError();
+        const safeMessage = await (fss.rootFolder as FileSystemFolder).getIsEmptyError();
 
-      if (safeMessage !== undefined) {
-        this.setState({
-          errorMessage: "You can only create new projects in empty folders.\r\n\r\n" + safeMessage,
+        if (safeMessage !== undefined) {
+          this.setState({
+            errorMessage: "You can only create new projects in empty folders.\r\n\r\n" + safeMessage,
+            newProjectName: this.state.newProjectName,
+            newProjectPath: undefined,
+            newProjectFolder: undefined,
+            newProjectFolderTitle: undefined,
+            newProjectShortName: this.state.newProjectShortName,
+            newProjectCreator: this.state.newProjectCreator,
+            newProjectDescription: this.state.newProjectDescription,
+            newProjectTrack: this.state.newProjectTrack,
+          });
+          return;
+        }
+
+        const newState = {
+          errorMessage: undefined,
+          newProjectFolder: fss.rootFolder,
           newProjectName: this.state.newProjectName,
+          newProjectFolderTitle: dirHandle.name,
           newProjectPath: undefined,
-          newProjectFolder: undefined,
-          newProjectFolderTitle: undefined,
           newProjectShortName: this.state.newProjectShortName,
           newProjectCreator: this.state.newProjectCreator,
           newProjectDescription: this.state.newProjectDescription,
           newProjectTrack: this.state.newProjectTrack,
-        });
-        return;
+        };
+
+        this.setState(newState);
+        this._updateSeed(newState);
       }
-
-      const newState = {
-        errorMessage: undefined,
-        newProjectFolder: fss.rootFolder,
-        newProjectName: this.state.newProjectName,
-        newProjectFolderTitle: dirHandle.name,
-        newProjectPath: undefined,
-        newProjectShortName: this.state.newProjectShortName,
-        newProjectCreator: this.state.newProjectCreator,
-        newProjectDescription: this.state.newProjectDescription,
-        newProjectTrack: this.state.newProjectTrack,
-      };
-
-      this.setState(newState);
-      this._updateSeed(newState);
+    } catch (e) {
+      // likely an AbortError, which is the user canceling the dialog.
     }
   }
 
@@ -352,7 +356,7 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
             isCompact={false}
           />
         ),
-        key: "close",
+        key: "npUseBrowserStorage",
         onClick: this._useBrowserStorage,
         title: "Use browser storage",
       });
@@ -367,7 +371,7 @@ export default class NewProject extends Component<INewProjectProps, INewProjectS
             isCompact={false}
           />
         ),
-        key: "close",
+        key: "npUsdeLocalStorage",
         onClick: this._useLocalStorage,
         title: "Use local storage",
       });

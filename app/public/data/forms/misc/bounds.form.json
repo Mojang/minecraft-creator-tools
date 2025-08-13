@@ -1,4 +1,5 @@
 {
+  "id": "Bounds",
   "fields": [
     {
       "id": "max",
@@ -33,6 +34,5 @@
       "isRequired": true
     }
   ],
-  "title": "Bounds Misc",
-  "id": "Bounds"
+  "title": "Bounds Misc"
 }

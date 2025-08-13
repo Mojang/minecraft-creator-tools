@@ -4,6 +4,10 @@ import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
 import EntityTypeResourceDefinition from "../minecraft/EntityTypeResourceDefinition";
 import ItemTextureCatalogDefinition from "../minecraft/ItemTextureCatalogDefinition";
 import ItemTypeDefinition from "../minecraft/ItemTypeDefinition";
+import JigsawProcessorListDefinition from "../minecraft/JigsawProcessorListDefinition";
+import JigsawStructureDefinition from "../minecraft/JigsawStructureDefinition";
+import JigsawStructureSetDefinition from "../minecraft/JigsawStructureSetDefinition";
+import JigsawTemplatePoolDefinition from "../minecraft/JigsawTemplatePoolDefinition";
 import JsonUIResourceDefinition from "../minecraft/JsonUIResourceDefinition";
 import LootTableBehaviorDefinition from "../minecraft/LootTableBehaviorDefinition";
 import MusicDefinitionCatalogDefinition from "../minecraft/MusicDefinitionCatalogDefinition";
@@ -42,6 +46,10 @@ const ITEM_TYPE_CONFIG = new Map<ProjectItemType, { ensureOnFile: EnsureOnFileMe
   [ProjectItemType.soundCatalog, SoundCatalogDefinition],
   [ProjectItemType.recipeBehavior, RecipeBehaviorDefinition],
   [ProjectItemType.spawnRuleBehavior, SpawnRulesBehaviorDefinition],
+  [ProjectItemType.jigsawStructureSet, JigsawStructureSetDefinition],
+  [ProjectItemType.jigsawStructure, JigsawStructureDefinition],
+  [ProjectItemType.jigsawTemplatePool, JigsawTemplatePoolDefinition],
+  [ProjectItemType.jigsawProcessorList, JigsawProcessorListDefinition],
   [ProjectItemType.texture, TextureDefinition],
 ]);
 

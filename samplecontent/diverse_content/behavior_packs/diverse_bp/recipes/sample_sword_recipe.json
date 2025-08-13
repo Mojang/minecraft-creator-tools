@@ -1,0 +1,25 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "test:sample_sword_recipe"
+    },
+    "tags": ["crafting_table"],
+    "pattern": [
+      " S ",
+      " S ",
+      " T "
+    ],
+    "key": {
+      "S": {
+        "item": "minecraft:iron_ingot"
+      },
+      "T": {
+        "item": "minecraft:stick"
+      }
+    },
+    "result": {
+      "item": "test:sample_sword"
+    }
+  }
+}

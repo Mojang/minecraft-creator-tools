@@ -1,6 +1,6 @@
 {
   "id": "query.skin_id",
   "fields": [],
-  "description": "Returns the entity's skin ID",
+  "description": "Returns the entity's skin ID (related to the `skin_id` component).",
   "title": "Skin Id Query"
 }

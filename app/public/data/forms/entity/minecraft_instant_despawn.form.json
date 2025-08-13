@@ -11,6 +11,12 @@
   "description": "Despawns the Actor immediately.",
   "title": "Instant Despawn",
   "samples": {
+    "/vanilla/behavior_pack/entities/copper_golem.json": [
+      {
+        "path": "/minecraft:entity/component_groups/minecraft:became_statue/minecraft:instant_despawn/",
+        "content": {}
+      }
+    ],
     "/vanilla/behavior_pack/entities/creaking.json": [
       {
         "path": "/minecraft:entity/component_groups/minecraft:crumbling/minecraft:instant_despawn/",

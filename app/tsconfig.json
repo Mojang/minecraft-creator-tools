@@ -35,6 +35,7 @@
     "src/cli/**/*.ts",
     "src/cli/*.ts",
     "src/test/**/*",
+    "src/testweb/**/*",
     "src/local/**/*.ts",
     "src/local/LocalUtilities.ts",
     "src/local/*.ts"

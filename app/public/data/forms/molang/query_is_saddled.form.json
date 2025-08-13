@@ -1,6 +1,6 @@
 {
   "id": "query.is_saddled",
   "fields": [],
-  "description": "Returns 1.0 if the entity has a saddle, else it returns 0.0.",
+  "description": "Returns 1.0 if the entity has a saddle (has the `is_saddled` component), else it returns 0.0.",
   "title": "Is Saddled Query"
 }

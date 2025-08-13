@@ -1,6 +1,6 @@
 {
   "id": "query.day",
   "fields": [],
-  "description": "Returns the day of the current level.",
+  "description": "Returns the day of the current world. When the world is first created, that is day `1`.",
   "title": "Day Query"
 }

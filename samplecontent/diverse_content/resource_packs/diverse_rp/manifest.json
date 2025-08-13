@@ -1,0 +1,17 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Diverse Content Resource Pack",
+    "description": "A resource pack with animations and visual content for testing",
+    "uuid": "123e4567-e89b-12d3-a456-426614174002",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "123e4567-e89b-12d3-a456-426614174003",
+      "version": [1, 0, 0]
+    }
+  ]
+}

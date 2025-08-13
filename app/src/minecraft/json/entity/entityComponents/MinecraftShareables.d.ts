@@ -35,22 +35,28 @@ Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "priority": 2
     },
     {
-      "item": "minecraft:stone_sword",
+      "item": "minecraft:golden_sword",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 3
     },
     {
-      "item": "minecraft:golden_sword",
+      "item": "minecraft:copper_sword",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 4
     },
     {
-      "item": "minecraft:wooden_sword",
+      "item": "minecraft:stone_sword",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:wooden_sword",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     },
     {
       "item": "minecraft:bow",
@@ -89,34 +95,40 @@ Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "priority": 4
     },
     {
-      "item": "minecraft:leather_helmet",
+      "item": "minecraft:copper_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
     },
     {
-      "item": "minecraft:turtle_helmet",
+      "item": "minecraft:leather_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 6
     },
     {
-      "item": "minecraft:skull:0",
+      "item": "minecraft:turtle_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 7
+    },
+    {
+      "item": "minecraft:skull:0",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 8
     },
     {
       "item": "minecraft:skull:1",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 7
+      "priority": 8
     },
     {
       "item": "minecraft:carved_pumpkin",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 7
+      "priority": 8
     },
     {
       "item": "minecraft:netherite_chestplate",
@@ -149,10 +161,16 @@ Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "priority": 4
     },
     {
-      "item": "minecraft:leather_chestplate",
+      "item": "minecraft:copper_chestplate",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:leather_chestplate",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     },
     {
       "item": "minecraft:netherite_leggings",
@@ -185,10 +203,16 @@ Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "priority": 4
     },
     {
-      "item": "minecraft:leather_leggings",
+      "item": "minecraft:copper_leggings",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:leather_leggings",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     },
     {
       "item": "minecraft:netherite_boots",
@@ -221,10 +245,16 @@ Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "priority": 4
     },
     {
-      "item": "minecraft:leather_boots",
+      "item": "minecraft:copper_boots",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:leather_boots",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     }
   ]
 }
@@ -266,22 +296,28 @@ Drowned - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
       "priority": 4
     },
     {
-      "item": "minecraft:stone_sword",
+      "item": "minecraft:golden_sword",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
     },
     {
-      "item": "minecraft:golden_sword",
+      "item": "minecraft:copper_sword",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 6
     },
     {
-      "item": "minecraft:wooden_sword",
+      "item": "minecraft:stone_sword",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 7
+    },
+    {
+      "item": "minecraft:wooden_sword",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 8
     },
     {
       "item": "minecraft:netherite_helmet",
@@ -314,34 +350,40 @@ Drowned - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
       "priority": 4
     },
     {
-      "item": "minecraft:leather_helmet",
+      "item": "minecraft:copper_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
     },
     {
-      "item": "minecraft:turtle_helmet",
+      "item": "minecraft:leather_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 6
     },
     {
-      "item": "minecraft:skull:0",
+      "item": "minecraft:turtle_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 7
+    },
+    {
+      "item": "minecraft:skull:0",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 8
     },
     {
       "item": "minecraft:skull:1",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 7
+      "priority": 8
     },
     {
       "item": "minecraft:carved_pumpkin",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 7
+      "priority": 8
     },
     {
       "item": "minecraft:netherite_chestplate",
@@ -374,10 +416,16 @@ Drowned - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
       "priority": 4
     },
     {
-      "item": "minecraft:leather_chestplate",
+      "item": "minecraft:copper_chestplate",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:leather_chestplate",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     },
     {
       "item": "minecraft:netherite_leggings",
@@ -410,10 +458,16 @@ Drowned - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
       "priority": 4
     },
     {
-      "item": "minecraft:leather_leggings",
+      "item": "minecraft:copper_leggings",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:leather_leggings",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     },
     {
       "item": "minecraft:netherite_boots",
@@ -446,10 +500,16 @@ Drowned - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
       "priority": 4
     },
     {
-      "item": "minecraft:leather_boots",
+      "item": "minecraft:copper_boots",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:leather_boots",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     }
   ]
 }
@@ -477,192 +537,7 @@ Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
   "all_items_max_amount": 1,
   "items": [
     {
-      "item": "minecraft:apple",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:appleEnchanted",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:baked_potato",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:beef",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:beetroot",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:beetroot_soup",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:bread",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:bundle",
-      "priority": 1,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:carrot",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:chicken",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:chorus_fruit",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:clownfish",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:cooked_beef",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:cooked_chicken",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:cooked_fish",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:cooked_porkchop",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:cooked_rabbit",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:cooked_salmon",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:cookie",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:dried_kelp",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:fish",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:golden_apple",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:golden_carrot",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:melon",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:mushroom_stew",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:muttonCooked",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:muttonRaw",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:poisonous_potato",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:porkchop",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:potato",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:pufferfish",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:pumpkin_pie",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:rabbit",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:rabbit_stew",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:rotten_flesh",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:salmon",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:spider_eye",
-      "priority": 0,
-      "max_amount": 1
-    },
-    {
-      "item": "minecraft:sweet_berries",
+      "item": "minecraft:is_food",
       "priority": 0,
       "max_amount": 1
     },
@@ -672,8 +547,8 @@ Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
       "max_amount": 1
     },
     {
-      "item": "minecraft:suspicious_stew",
-      "priority": 0,
+      "item": "minecraft:bundle",
+      "priority": 1,
       "max_amount": 1
     }
   ]
@@ -710,16 +585,22 @@ Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
       "priority": 3
     },
     {
-      "item": "minecraft:stone_sword",
+      "item": "minecraft:copper_sword",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 4
     },
     {
-      "item": "minecraft:wooden_sword",
+      "item": "minecraft:stone_sword",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:wooden_sword",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     },
     {
       "item": "minecraft:netherite_helmet",
@@ -752,34 +633,40 @@ Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
       "priority": 4
     },
     {
-      "item": "minecraft:leather_helmet",
+      "item": "minecraft:copper_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
     },
     {
-      "item": "minecraft:turtle_helmet",
+      "item": "minecraft:leather_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 6
     },
     {
-      "item": "minecraft:skull:0",
+      "item": "minecraft:turtle_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 7
+    },
+    {
+      "item": "minecraft:skull:0",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 8
     },
     {
       "item": "minecraft:skull:1",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 7
+      "priority": 8
     },
     {
       "item": "minecraft:carved_pumpkin",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 7
+      "priority": 8
     },
     {
       "item": "minecraft:netherite_chestplate",
@@ -812,10 +699,16 @@ Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
       "priority": 4
     },
     {
-      "item": "minecraft:leather_chestplate",
+      "item": "minecraft:copper_chestplate",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:leather_chestplate",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     },
     {
       "item": "minecraft:netherite_leggings",
@@ -848,10 +741,16 @@ Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
       "priority": 4
     },
     {
-      "item": "minecraft:leather_leggings",
+      "item": "minecraft:copper_leggings",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:leather_leggings",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     },
     {
       "item": "minecraft:netherite_boots",
@@ -884,10 +783,16 @@ Husk - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/enti
       "priority": 4
     },
     {
-      "item": "minecraft:leather_boots",
+      "item": "minecraft:copper_boots",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:leather_boots",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     }
   ]
 }
@@ -1076,56 +981,60 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "priority": 6
     },
     {
-      "item": "minecraft:leather_helmet",
+      "item": "minecraft:copper_helmet",
       "priority": 7
+    },
+    {
+      "item": "minecraft:leather_helmet",
+      "priority": 8
     },
     {
       "item": "minecraft:skull:0",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 8
+      "priority": 9
     },
     {
       "item": "minecraft:skull:1",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 8
+      "priority": 9
     },
     {
       "item": "minecraft:skull:2",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 8
+      "priority": 9
     },
     {
       "item": "minecraft:skull:3",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 8
+      "priority": 9
     },
     {
       "item": "minecraft:skull:4",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 8
+      "priority": 9
     },
     {
       "item": "minecraft:skull:5",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 8
+      "priority": 9
     },
     {
       "item": "minecraft:carved_pumpkin",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 8
+      "priority": 9
     },
     {
       "item": "minecraft:turtle_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 8
+      "priority": 9
     },
     {
       "item": "minecraft:netherite_chestplate",
@@ -1144,12 +1053,16 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "priority": 6
     },
     {
-      "item": "minecraft:leather_chestplate",
+      "item": "minecraft:copper_chestplate",
       "priority": 7
     },
     {
+      "item": "minecraft:leather_chestplate",
+      "priority": 8
+    },
+    {
       "item": "minecraft:elytra",
-      "priority": 7
+      "priority": 8
     },
     {
       "item": "minecraft:netherite_leggings",
@@ -1168,8 +1081,12 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "priority": 6
     },
     {
-      "item": "minecraft:leather_leggings",
+      "item": "minecraft:copper_leggings",
       "priority": 7
+    },
+    {
+      "item": "minecraft:leather_leggings",
+      "priority": 8
     },
     {
       "item": "minecraft:netherite_boots",
@@ -1216,8 +1133,12 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "stored_in_inventory": true
     },
     {
-      "item": "minecraft:leather_boots",
+      "item": "minecraft:copper_boots",
       "priority": 7
+    },
+    {
+      "item": "minecraft:leather_boots",
+      "priority": 8
     },
     {
       "item": "minecraft:netherite_sword",
@@ -1232,16 +1153,20 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "priority": 5
     },
     {
-      "item": "minecraft:stone_sword",
+      "item": "minecraft:copper_sword",
       "priority": 6
     },
     {
-      "item": "minecraft:wooden_sword",
+      "item": "minecraft:stone_sword",
       "priority": 7
     },
     {
+      "item": "minecraft:wooden_sword",
+      "priority": 8
+    },
+    {
       "item": "minecraft:shield",
-      "priority": 7
+      "priority": 9
     },
     {
       "item": "minecraft:gold_ingot",
@@ -1249,6 +1174,255 @@ Piglin - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
       "pickup_limit": 1,
       "admire": true,
       "barter": true
+    }
+  ]
+}
+
+
+Skeleton - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/skeleton.json
+
+"minecraft:shareables": {
+  "singular_pickup": true,
+  "items": [
+    {
+      "item": "minecraft:netherite_sword",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 0
+    },
+    {
+      "item": "minecraft:diamond_sword",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 1
+    },
+    {
+      "item": "minecraft:iron_sword",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 2
+    },
+    {
+      "item": "minecraft:golden_sword",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 3
+    },
+    {
+      "item": "minecraft:copper_sword",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 4
+    },
+    {
+      "item": "minecraft:stone_sword",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 5
+    },
+    {
+      "item": "minecraft:wooden_sword",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
+    },
+    {
+      "item": "minecraft:bow",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 7
+    },
+    {
+      "item": "minecraft:netherite_helmet",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 0
+    },
+    {
+      "item": "minecraft:diamond_helmet",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 1
+    },
+    {
+      "item": "minecraft:iron_helmet",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 2
+    },
+    {
+      "item": "minecraft:chainmail_helmet",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 3
+    },
+    {
+      "item": "minecraft:golden_helmet",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 4
+    },
+    {
+      "item": "minecraft:copper_helmet",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 5
+    },
+    {
+      "item": "minecraft:leather_helmet",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
+    },
+    {
+      "item": "minecraft:turtle_helmet",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 7
+    },
+    {
+      "item": "minecraft:skull:0",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 8
+    },
+    {
+      "item": "minecraft:skull:1",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 8
+    },
+    {
+      "item": "minecraft:carved_pumpkin",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 8
+    },
+    {
+      "item": "minecraft:netherite_chestplate",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 0
+    },
+    {
+      "item": "minecraft:diamond_chestplate",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 1
+    },
+    {
+      "item": "minecraft:iron_chestplate",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 2
+    },
+    {
+      "item": "minecraft:chainmail_chestplate",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 3
+    },
+    {
+      "item": "minecraft:golden_chestplate",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 4
+    },
+    {
+      "item": "minecraft:copper_chestplate",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 5
+    },
+    {
+      "item": "minecraft:leather_chestplate",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
+    },
+    {
+      "item": "minecraft:netherite_leggings",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 0
+    },
+    {
+      "item": "minecraft:diamond_leggings",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 1
+    },
+    {
+      "item": "minecraft:iron_leggings",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 2
+    },
+    {
+      "item": "minecraft:chainmail_leggings",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 3
+    },
+    {
+      "item": "minecraft:golden_leggings",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 4
+    },
+    {
+      "item": "minecraft:copper_leggings",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 5
+    },
+    {
+      "item": "minecraft:leather_leggings",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
+    },
+    {
+      "item": "minecraft:netherite_boots",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 0
+    },
+    {
+      "item": "minecraft:diamond_boots",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 1
+    },
+    {
+      "item": "minecraft:iron_boots",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 2
+    },
+    {
+      "item": "minecraft:chainmail_boots",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 3
+    },
+    {
+      "item": "minecraft:golden_boots",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 4
+    },
+    {
+      "item": "minecraft:copper_boots",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 5
+    },
+    {
+      "item": "minecraft:leather_boots",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     }
   ]
 }
@@ -1487,166 +1661,196 @@ Wither Skeleton - https://github.com/Mojang/bedrock-samples/tree/preview/behavio
       "priority": 2
     },
     {
-      "item": "minecraft:stone_sword",
+      "item": "minecraft:golden_sword",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 3
     },
     {
-      "item": "minecraft:golden_sword",
+      "item": "minecraft:stone_sword",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 4
     },
     {
-      "item": "minecraft:wooden_sword",
+      "item": "minecraft:copper_sword",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:wooden_sword",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     },
     {
       "item": "minecraft:wooden_shovel",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:stone_shovel",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
+    },
+    {
+      "item": "minecraft:copper_shovel",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 7
     },
     {
       "item": "minecraft:golden_shovel",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:iron_shovel",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:diamond_shovel",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:netherite_shovel",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:wooden_pickaxe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:stone_pickaxe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
+    },
+    {
+      "item": "minecraft:copper_pickaxe",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 7
     },
     {
       "item": "minecraft:golden_pickaxe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:iron_pickaxe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:diamond_pickaxe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:netherite_pickaxe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:wooden_axe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:stone_axe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
+    },
+    {
+      "item": "minecraft:copper_axe",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 7
     },
     {
       "item": "minecraft:golden_axe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:iron_axe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:diamond_axe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:netherite_axe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:wooden_hoe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:stone_hoe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
+    },
+    {
+      "item": "minecraft:copper_hoe",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 7
     },
     {
       "item": "minecraft:golden_hoe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:iron_hoe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:diamond_hoe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:netherite_hoe",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 6
+      "priority": 7
     },
     {
       "item": "minecraft:netherite_helmet",
@@ -1679,34 +1883,40 @@ Wither Skeleton - https://github.com/Mojang/bedrock-samples/tree/preview/behavio
       "priority": 4
     },
     {
-      "item": "minecraft:leather_helmet",
+      "item": "minecraft:copper_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
     },
     {
-      "item": "minecraft:turtle_helmet",
+      "item": "minecraft:leather_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 6
     },
     {
-      "item": "minecraft:skull:0",
+      "item": "minecraft:turtle_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 7
+    },
+    {
+      "item": "minecraft:skull:0",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 8
     },
     {
       "item": "minecraft:skull:1",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 7
+      "priority": 8
     },
     {
       "item": "minecraft:carved_pumpkin",
       "want_amount": 1,
       "surplus_amount": 1,
-      "priority": 7
+      "priority": 8
     },
     {
       "item": "minecraft:netherite_chestplate",
@@ -1739,224 +1949,18 @@ Wither Skeleton - https://github.com/Mojang/bedrock-samples/tree/preview/behavio
       "priority": 4
     },
     {
+      "item": "minecraft:copper_chestplate",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 5
+    },
+    {
       "item": "minecraft:leather_chestplate",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 5
-    },
-    {
-      "item": "minecraft:netherite_leggings",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 0
-    },
-    {
-      "item": "minecraft:diamond_leggings",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 1
-    },
-    {
-      "item": "minecraft:iron_leggings",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 2
-    },
-    {
-      "item": "minecraft:chainmail_leggings",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 3
-    },
-    {
-      "item": "minecraft:golden_leggings",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 4
-    },
-    {
-      "item": "minecraft:leather_leggings",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 5
-    },
-    {
-      "item": "minecraft:netherite_boots",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 0
-    },
-    {
-      "item": "minecraft:diamond_boots",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 1
-    },
-    {
-      "item": "minecraft:iron_boots",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 2
-    },
-    {
-      "item": "minecraft:chainmail_boots",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 3
-    },
-    {
-      "item": "minecraft:golden_boots",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 4
-    },
-    {
-      "item": "minecraft:leather_boots",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 5
-    }
-  ]
-}
-
-
-Zombie Pigman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/zombie_pigman.json
-
-"minecraft:shareables": {
-  "items": [
-    {
-      "item": "minecraft:netherite_sword",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 0
-    },
-    {
-      "item": "minecraft:diamond_sword",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 0
-    },
-    {
-      "item": "minecraft:iron_sword",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 1
-    },
-    {
-      "item": "minecraft:stone_sword",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 2
-    },
-    {
-      "item": "minecraft:golden_sword",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 3
-    },
-    {
-      "item": "minecraft:wooden_sword",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 4
-    },
-    {
-      "item": "minecraft:netherite_helmet",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 0
-    },
-    {
-      "item": "minecraft:diamond_helmet",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 1
-    },
-    {
-      "item": "minecraft:iron_helmet",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 2
-    },
-    {
-      "item": "minecraft:chainmail_helmet",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 3
-    },
-    {
-      "item": "minecraft:golden_helmet",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 4
-    },
-    {
-      "item": "minecraft:leather_helmet",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 5
-    },
-    {
-      "item": "minecraft:turtle_helmet",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 6
     },
     {
-      "item": "minecraft:skull:0",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 7
-    },
-    {
-      "item": "minecraft:skull:1",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 7
-    },
-    {
-      "item": "minecraft:carved_pumpkin",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 7
-    },
-    {
-      "item": "minecraft:netherite_chestplate",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 0
-    },
-    {
-      "item": "minecraft:diamond_chestplate",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 1
-    },
-    {
-      "item": "minecraft:iron_chestplate",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 2
-    },
-    {
-      "item": "minecraft:chainmail_chestplate",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 3
-    },
-    {
-      "item": "minecraft:golden_chestplate",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 4
-    },
-    {
-      "item": "minecraft:leather_chestplate",
-      "want_amount": 1,
-      "surplus_amount": 1,
-      "priority": 5
-    },
-    {
       "item": "minecraft:netherite_leggings",
       "want_amount": 1,
       "surplus_amount": 1,
@@ -1987,10 +1991,16 @@ Zombie Pigman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_
       "priority": 4
     },
     {
-      "item": "minecraft:leather_leggings",
+      "item": "minecraft:copper_leggings",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:leather_leggings",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     },
     {
       "item": "minecraft:netherite_boots",
@@ -2023,10 +2033,16 @@ Zombie Pigman - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_
       "priority": 4
     },
     {
-      "item": "minecraft:leather_boots",
+      "item": "minecraft:copper_boots",
       "want_amount": 1,
       "surplus_amount": 1,
       "priority": 5
+    },
+    {
+      "item": "minecraft:leather_boots",
+      "want_amount": 1,
+      "surplus_amount": 1,
+      "priority": 6
     }
   ]
 }
@@ -2037,8 +2053,8 @@ import * as jsoncommon from './../../../jsoncommon';
 
 /**
  * Shareables (minecraft:shareables)
- * Defines a list of items the mob wants to share or pick up. Each
- * item must have the following parameters:
+ * Defines a list of items the mob wants to share. Each item must
+ * have the following parameters:
  */
 export default interface MinecraftShareables {
 
@@ -2078,20 +2094,23 @@ export default interface MinecraftShareables {
 
   /**
    * @remarks
-   * List of items that the entity wants to share.
+   * List of items or item tags that the entity wants to share. Items
+   * in-game will match to this list from top to bottom, meaning that
+   * the first occurance of a match, be it name or tag, will shadow
+   * those coming after.
    * 
    * Sample Values:
-   * Bogged: [{"item":"minecraft:netherite_sword","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_sword","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_sword","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:stone_sword","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_sword","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:wooden_sword","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:bow","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:netherite_helmet","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_helmet","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_helmet","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_helmet","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_helmet","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:leather_helmet","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:turtle_helmet","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:skull:0","want_amount":1,"surplus_amount":1,"priority":7},{"item":"minecraft:skull:1","want_amount":1,"surplus_amount":1,"priority":7},{"item":"minecraft:carved_pumpkin","want_amount":1,"surplus_amount":1,"priority":7},{"item":"minecraft:netherite_chestplate","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_chestplate","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_chestplate","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_chestplate","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_chestplate","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:leather_chestplate","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:netherite_leggings","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_leggings","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_leggings","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_leggings","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_leggings","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:leather_leggings","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:netherite_boots","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_boots","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_boots","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_boots","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_boots","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:leather_boots","want_amount":1,"surplus_amount":1,"priority":5}]
+   * Bogged: [{"item":"minecraft:netherite_sword","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_sword","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_sword","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:golden_sword","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:copper_sword","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:stone_sword","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:wooden_sword","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:bow","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:netherite_helmet","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_helmet","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_helmet","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_helmet","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_helmet","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_helmet","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_helmet","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:turtle_helmet","want_amount":1,"surplus_amount":1,"priority":7},{"item":"minecraft:skull:0","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:skull:1","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:carved_pumpkin","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:netherite_chestplate","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_chestplate","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_chestplate","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_chestplate","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_chestplate","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_chestplate","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_chestplate","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:netherite_leggings","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_leggings","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_leggings","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_leggings","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_leggings","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_leggings","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_leggings","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:netherite_boots","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_boots","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_boots","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_boots","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_boots","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_boots","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_boots","want_amount":1,"surplus_amount":1,"priority":6}]
    *
-   * Drowned: [{"item":"minecraft:nautilus_shell","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:trident","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:netherite_sword","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:diamond_sword","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:iron_sword","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:stone_sword","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:golden_sword","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:wooden_sword","want_amount":1,"surplus_amount":1,"priority":7},{"item":"minecraft:netherite_helmet","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_helmet","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_helmet","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_helmet","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_helmet","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:leather_helmet","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:turtle_helmet","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:skull:0","want_amount":1,"surplus_amount":1,"priority":7},{"item":"minecraft:skull:1","want_amount":1,"surplus_amount":1,"priority":7},{"item":"minecraft:carved_pumpkin","want_amount":1,"surplus_amount":1,"priority":7},{"item":"minecraft:netherite_chestplate","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_chestplate","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_chestplate","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_chestplate","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_chestplate","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:leather_chestplate","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:netherite_leggings","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_leggings","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_leggings","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_leggings","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_leggings","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:leather_leggings","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:netherite_boots","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_boots","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_boots","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_boots","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_boots","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:leather_boots","want_amount":1,"surplus_amount":1,"priority":5}]
+   * Drowned: [{"item":"minecraft:nautilus_shell","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:trident","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:netherite_sword","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:diamond_sword","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:iron_sword","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:golden_sword","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:copper_sword","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:stone_sword","want_amount":1,"surplus_amount":1,"priority":7},{"item":"minecraft:wooden_sword","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:netherite_helmet","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_helmet","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_helmet","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_helmet","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_helmet","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_helmet","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_helmet","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:turtle_helmet","want_amount":1,"surplus_amount":1,"priority":7},{"item":"minecraft:skull:0","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:skull:1","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:carved_pumpkin","want_amount":1,"surplus_amount":1,"priority":8},{"item":"minecraft:netherite_chestplate","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_chestplate","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_chestplate","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_chestplate","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_chestplate","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_chestplate","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_chestplate","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:netherite_leggings","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_leggings","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_leggings","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_leggings","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_leggings","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_leggings","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_leggings","want_amount":1,"surplus_amount":1,"priority":6},{"item":"minecraft:netherite_boots","want_amount":1,"surplus_amount":1,"priority":0},{"item":"minecraft:diamond_boots","want_amount":1,"surplus_amount":1,"priority":1},{"item":"minecraft:iron_boots","want_amount":1,"surplus_amount":1,"priority":2},{"item":"minecraft:chainmail_boots","want_amount":1,"surplus_amount":1,"priority":3},{"item":"minecraft:golden_boots","want_amount":1,"surplus_amount":1,"priority":4},{"item":"minecraft:copper_boots","want_amount":1,"surplus_amount":1,"priority":5},{"item":"minecraft:leather_boots","want_amount":1,"surplus_amount":1,"priority":6}]
    *
    */
   items: MinecraftShareablesItems[];
 
   /**
    * @remarks
-   * Controls if the mob is able to pick up more of the same item if
-   * it is already holding that item
+   * Boolean value that controls if the mob is able to pick up more of
+   * the same item if it is already holding that item
    */
   singular_pickup: boolean;
 
@@ -2099,7 +2118,10 @@ export default interface MinecraftShareables {
 
 
 /**
- * List of items that the entity wants to share.
+ * List of items or item tags that the entity wants to share. Items
+ * in-game will match to this list from top to bottom, meaning that
+ * the first occurance of a match, be it name or tag, will shadow
+ * those coming after.
  */
 export interface MinecraftShareablesItems {
 
@@ -2135,7 +2157,8 @@ export interface MinecraftShareablesItems {
   /**
    * @remarks
    * The name of the item. Aux value can be specified, for instance
-   * 'minecraft:skull:1'.
+   * 'minecraft:skull:1'. Alternatively, a tag can be specified to
+   * match all items with that tag.
    */
   item: string;
 
@@ -2147,8 +2170,8 @@ export interface MinecraftShareablesItems {
 
   /**
    * @remarks
-   * Maximum number of this item the mob will pick up during a
-   * single goal tick.
+   * Maximum number items the mob will pick up during a single goal
+   * tick.
    */
   pickup_limit: number;
 
@@ -2183,7 +2206,7 @@ export interface MinecraftShareablesItems {
 
   /**
    * @remarks
-   * Number of this item this entity wants to have.
+   * Number of this item this entity wants to share.
    */
   want_amount: number;
 

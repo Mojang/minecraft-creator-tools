@@ -27,6 +27,15 @@ export default interface MinecraftSwamp {
 
   /**
    * @remarks
+   * Controls the depth at which surface level blocks can be
+   * replaced with water for puddles. The number represents the
+   * number of blocks (0, 127) below sea level that we will go down to
+   * look for a surface block.
+   */
+  max_puddle_depth_below_sea_level: number;
+
+  /**
+   * @remarks
    * Controls the block type used in a layer below the surface of
    * this biome.
    */

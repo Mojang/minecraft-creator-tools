@@ -1,0 +1,9 @@
+{
+  "texture_set": {
+    "color": "textures/vibrant_missing_color.png"
+  },
+  "capabilities": ["pbr"],
+  "vibrant_visuals": {
+    "color": "#FFFFFF"
+  }
+}

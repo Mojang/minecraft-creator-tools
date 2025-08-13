@@ -183,6 +183,32 @@ export default class ProjectUtilities {
     return undefined;
   }
 
+  static async isVibrantVisualsCompatible(project: Project) {
+    for (const item of project.items) {
+      await item.ensureFileStorage();
+
+      if (item.primaryFile) {
+        const manifestJson = await ResourceManifestDefinition.ensureOnFile(item.primaryFile);
+
+        if (manifestJson && manifestJson.capabilities && manifestJson.capabilities.includes("pbr")) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  static isVibrantVisualsEnhanced(project: Project) {
+    for (const item of project.items) {
+      if (ProjectItemUtilities.isVibrantVisualsRelated(item)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   static async ensureDefaultItems(project: Project) {
     if (project.focus === ProjectFocus.gameTests && project.projectFolder !== null) {
       const bpFolder = await project.ensureDefaultBehaviorPackFolder();

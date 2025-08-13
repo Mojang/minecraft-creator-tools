@@ -2,6 +2,6 @@
   "id": "query.get_name",
   "fields": [],
   "isDeprecated": true,
-  "description": "DEPRECATED (Use query.is_name_any instead if possible so names can be changed later without breaking content.)Get the name of the mob if there is one, otherwise return ''.",
+  "description": "Get the name of the mob if there is one, otherwise return ''. Deprecated; use `query.is_name_any` instead if possible so names can be changed later without breaking content.",
   "title": "Get Name Query"
 }

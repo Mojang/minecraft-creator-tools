@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import ISimpleReference from "../core/ISimpleReference";
+import ISimpleReference from "../dataform/ISimpleReference";
 
 export const DamageCause: ISimpleReference[] = [
   { id: "anvil" },

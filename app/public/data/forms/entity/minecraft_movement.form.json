@@ -69,6 +69,12 @@
             "content": 0.25
           }
         ],
+        "/vanilla/behavior_pack/entities/copper_golem.json": [
+          {
+            "path": "/minecraft:entity/components/minecraft:movement/",
+            "content": 0.2
+          }
+        ],
         "/vanilla/behavior_pack/entities/creaking.json": [
           {
             "path": "/minecraft:entity/component_groups/minecraft:mobile/minecraft:movement/",
@@ -103,12 +109,6 @@
           {
             "path": "/minecraft:entity/components/minecraft:movement/",
             "content": 0.03
-          }
-        ],
-        "/vanilla/behavior_pack/entities/glow_squid.json": [
-          {
-            "path": "/minecraft:entity/components/minecraft:movement/",
-            "content": 0.2
           }
         ],
         "/vanilla/behavior_pack/entities/guardian.json": [
@@ -336,6 +336,14 @@
         "path": "/minecraft:entity/components/minecraft:movement/",
         "content": {
           "value": 0.25
+        }
+      }
+    ],
+    "/vanilla/behavior_pack/entities/copper_golem.json": [
+      {
+        "path": "/minecraft:entity/components/minecraft:movement/",
+        "content": {
+          "value": 0.2
         }
       }
     ],

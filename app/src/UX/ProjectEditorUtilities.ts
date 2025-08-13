@@ -698,38 +698,41 @@ export default class ProjectEditorUtilities {
     if (project === null || project.projectFolder === null) {
       return;
     }
+    try {
+      const result = (await window.showDirectoryPicker({
+        mode: "readwrite",
+      })) as FileSystemDirectoryHandle | undefined;
 
-    const result = (await window.showDirectoryPicker({
-      mode: "readwrite",
-    })) as FileSystemDirectoryHandle | undefined;
+      if (result) {
+        const storage = new FileSystemStorage(result);
 
-    if (result) {
-      const storage = new FileSystemStorage(result);
+        const operId = await carto.notifyOperationStarted("Exporting project to  '" + result.name + "'");
 
-      const operId = await carto.notifyOperationStarted("Exporting project to  '" + result.name + "'");
+        const safeMessage = await (storage.rootFolder as FileSystemFolder).getFirstUnsafeError();
 
-      const safeMessage = await (storage.rootFolder as FileSystemFolder).getFirstUnsafeError();
+        if (safeMessage) {
+          await carto.notifyOperationEnded(operId, "Could not export to a folder on your device: " + safeMessage);
+        } else {
+          await StorageUtilities.syncFolderTo(
+            project.projectFolder,
+            storage.rootFolder,
+            true,
+            true,
+            false,
+            [],
+            undefined,
+            async (message: string) => {
+              await carto.notifyStatusUpdate(message);
+            },
+            true
+          );
 
-      if (safeMessage) {
-        await carto.notifyOperationEnded(operId, "Could not export to a folder on your device: " + safeMessage);
-      } else {
-        await StorageUtilities.syncFolderTo(
-          project.projectFolder,
-          storage.rootFolder,
-          true,
-          true,
-          false,
-          [],
-          undefined,
-          async (message: string) => {
-            await carto.notifyStatusUpdate(message);
-          },
-          true
-        );
-
-        await storage.rootFolder.saveAll();
-        await carto.notifyOperationEnded(operId, "Export completed.");
+          await storage.rootFolder.saveAll();
+          await carto.notifyOperationEnded(operId, "Export completed.");
+        }
       }
+    } catch (e) {
+      // likely an AbortError, which is the user canceling the dialog.
     }
   }
 
