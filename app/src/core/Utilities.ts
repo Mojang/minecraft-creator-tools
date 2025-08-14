@@ -46,7 +46,7 @@ export default class Utilities {
   }
 
   static get isPreview(): boolean {
-    return true;
+    return false;
   }
 
   static get isAppSim(): boolean {
@@ -473,15 +473,30 @@ export default class Utilities {
     return name;
   }
 
-  static addApostrophesToNumericString(number: string) {
-    let i = number.length;
-
-    while (i > 3) {
-      i -= 3;
-      number = number.substring(0, i) + "," + number.substring(i);
+  static addCommasToNumber(num: number): string {
+    if (typeof num !== "number" || isNaN(num)) {
+      return num.toString();
     }
 
-    return number;
+    // Handle negative numbers
+    const isNegative = num < 0;
+    const absoluteNum = Math.abs(num);
+
+    // Split into integer and decimal parts
+    const parts = absoluteNum.toString().split(".");
+    const integerPart = parts[0];
+    const decimalPart = parts[1];
+
+    // Add commas to integer part
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    // Reconstruct the number
+    let result = formattedInteger;
+    if (decimalPart) {
+      result += "." + decimalPart;
+    }
+
+    return isNegative ? "-" + result : result;
   }
 
   static sanitizeJavascriptName(name: string) {

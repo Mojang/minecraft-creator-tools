@@ -26,6 +26,14 @@ export interface IGeometryDescription {
   visible_bounds_offset: number[];
 }
 
+export interface IGeometryPolyMesh {
+  normalized_uvs?: boolean;
+  positions?: number[][]; // Array of [x, y, z] coordinates
+  normals?: number[][]; // Array of [x, y, z] normal vectors
+  uvs?: number[][]; // Array of [u, v] texture coordinates
+  polys?: number[][][] | "tri_list" | "quad_list"; // Either array of polygons or string type
+}
+
 export interface IGeometryBone {
   name: string;
   pivot: number[];
@@ -35,6 +43,7 @@ export interface IGeometryBone {
   bind_pose_rotation?: number[];
   cubes?: IGeometryBoneCube[];
   locators?: { [name: string]: number[] };
+  poly_mesh?: IGeometryPolyMesh; // Add this property
 }
 
 export interface IGeometryBoneCube {

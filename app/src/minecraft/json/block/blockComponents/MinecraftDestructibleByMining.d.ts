@@ -190,6 +190,6 @@ export interface MinecraftDestructibleByMiningItemSpecificSpeeds {
  */
 export interface MinecraftDestructibleByMiningItemSpecificSpeedsItem {
 
-  tags: string;
+  tags: number[];
 
 }

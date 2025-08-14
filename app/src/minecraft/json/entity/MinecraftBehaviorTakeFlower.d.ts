@@ -11,6 +11,29 @@
  * 
  * minecraft:behavior.take_flower Samples
 
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
+
+"minecraft:behavior.take_flower": {
+  "priority": 4,
+  "filters": {
+    "all_of": [
+      {
+        "test": "is_daytime",
+        "value": true
+      },
+      {
+        "test": "bool_property",
+        "domain": "minecraft:has_flower",
+        "value": false
+      }
+    ]
+  },
+  "on_take_flower": {
+    "event": "minecraft:on_take_flower"
+  }
+}
+
+
 Villager v2 - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/villager_v2.json
 
 "minecraft:behavior.take_flower": {
@@ -63,6 +86,8 @@ export default interface MinecraftBehaviorTakeFlower {
    * Conditions that need to be met for the behavior to start.
    * 
    * Sample Values:
+   * Copper Golem: {"all_of":[{"test":"is_daytime","value":true},{"test":"bool_property","domain":"minecraft:has_flower","value":false}]}
+   *
    * Villager v2: {"all_of":[{"test":"is_daytime","value":true}]}
    *
    *
@@ -106,15 +131,27 @@ export default interface MinecraftBehaviorTakeFlower {
 
   /**
    * @remarks
+   * Event triggered when the entity takes a flower from another 
+   * entity.
+   * 
+   * Sample Values:
+   * Copper Golem: {"event":"minecraft:on_take_flower"}
+   *
+   */
+  on_take_flower: jsoncommon.MinecraftEventTrigger;
+
+  /**
+   * @remarks
    * As priority approaches 0, the priority is increased. The higher the
    * priority, the sooner this behavior will be executed as a 
    * goal.
    * 
    * Sample Values:
+   * Copper Golem: 4
+   *
    * Villager v2: 9
    *
    * Villager: 7
-   *
    *
    */
   priority: number;

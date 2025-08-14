@@ -1,0 +1,16 @@
+{
+  "id": "Spawn SpawnAboveBlockFilter",
+  "fields": [
+    {
+      "id": "blocks",
+      "title": "Blocks",
+      "dataType": 16
+    },
+    {
+      "id": "distance",
+      "title": "Distance",
+      "dataType": 0
+    }
+  ],
+  "title": "Spawn SpawnAboveBlockFilter Spawn"
+}

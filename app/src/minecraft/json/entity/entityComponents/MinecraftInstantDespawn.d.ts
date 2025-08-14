@@ -11,7 +11,7 @@
  * 
  * minecraft:instant_despawn Samples
 
-Creaking - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/creaking.json
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
 
 "minecraft:instant_despawn": {}
 

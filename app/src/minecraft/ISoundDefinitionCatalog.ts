@@ -50,8 +50,8 @@ const SoundReferenceSchema = z.object({
 const SoundDefinitionSchema = z.object({
   category: z.string().optional(),
   __use_legacy_max_distance: z.union([z.literal("true"), z.literal("false"), z.boolean()]).optional(),
-  max_distance: z.number().optional(),
-  min_distance: z.number().optional(),
+  max_distance: z.number().optional().nullable(),
+  min_distance: z.number().optional().nullable(),
   sounds: z.array(z.union([z.string(), SoundReferenceSchema])),
 });
 

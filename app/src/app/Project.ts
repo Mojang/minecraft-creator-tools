@@ -38,7 +38,7 @@ import ProjectDeploySync from "./ProjectDeploySync";
 import { MinecraftTrack } from "./ICartoData";
 import ProjectItemRelations from "./ProjectItemRelations";
 import ResourceManifestDefinition from "../minecraft/ResourceManifestDefinition";
-import ISimpleReference from "../core/ISimpleReference";
+import ISimpleReference from "../dataform/ISimpleReference";
 import ProjectLookupUtilities from "./ProjectLookupUtilities";
 import ProjectVariant from "./ProjectVariant";
 import { ProjectItemVariantType } from "./IProjectItemVariant";
@@ -204,6 +204,16 @@ export default class Project {
 
   hasInferredFiles = false;
   #readOnlySafety = false;
+
+  get unknownFiles(): IFile[] {
+    return [...this._unknownFiles];
+  }
+
+  private _unknownFiles = new Set<IFile>();
+
+  addUnknownFile(file: IFile) {
+    this._unknownFiles.add(file);
+  }
 
   public get readOnlySafety() {
     return this.#readOnlySafety;

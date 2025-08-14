@@ -18,6 +18,18 @@ Bogged - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/en
 }
 
 
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
+
+"minecraft:equipment": {
+  "slot_drop_chance": [
+    {
+      "slot": "slot.weapon.mainhand",
+      "drop_chance": 1
+    }
+  ]
+}
+
+
 Drowned - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/drowned.json
 
  * At /minecraft:entity/component_groups/minecraft:ranged_equipment/minecraft:equipment/: 
@@ -124,9 +136,10 @@ export default interface MinecraftEquipment {
    * that slot.
    * 
    * Sample Values:
+   * Copper Golem: [{"slot":"slot.weapon.mainhand","drop_chance":1}]
+   *
    * Drowned: [{"slot":"slot.weapon.offhand","drop_chance":1}]
    *
-   * Fox: [{"slot":"slot.weapon.mainhand","drop_chance":1}]
    *
    * Villager v2: [{"slot":"slot.weapon.mainhand","drop_chance":0}]
    *

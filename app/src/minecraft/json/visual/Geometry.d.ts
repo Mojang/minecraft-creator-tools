@@ -132,4 +132,6 @@ export interface GeometryGeometryazAZ09PlusBonesTextureMeshes {
 
   texture: string;
 
+  use_pixel_depth: boolean;
+
 }

@@ -1,9 +1,2 @@
 Test,TestId,Type,Item,Message,Data,Path
-SHARING,210,Error,atmospherics.json,"Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).",,/Content/resource_packs/aop_mobsrp/atmospherics/atmospherics.json,
-SHARING,210,Error,color_grading.json,"Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).",,/Content/resource_packs/aop_mobsrp/color_grading/color_grading.json,
-SHARING,210,Error,biceson.texture_set.json,"Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).",,/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson.texture_set.json,
-SHARING,210,Error,biceson_mers.png,"Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).",,/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/biceson_mers.png,
-SHARING,210,Error,sheepomelon.texture_set.json,"Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).",,/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/sheepomelon.texture_set.json,
-SHARING,210,Error,sheepomelon_mers.png,"Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).",,/Content/resource_packs/aop_mobsrp/textures/aop/moremobs/sheepomelon_mers.png,
-SHARING,210,Error,water.json,"Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).",,/Content/resource_packs/aop_mobsrp/water/water.json,
-SHARING,0,Test fail,,"Found 7 errors for Sharing Best Practices Information (SHARING).",,,
+SHARING,1,Test success,,"Sharing Best Practices Information (SHARING) completed successfully",,,

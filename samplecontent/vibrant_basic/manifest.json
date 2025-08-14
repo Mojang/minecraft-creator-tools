@@ -1,0 +1,16 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Vibrant Basic Visuals",
+    "description": "Sample project with basic vibrant visuals and PBR attributes.",
+    "uuid": "11111111-1111-4111-8111-111111111111",
+    "version": [1, 0, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "11111111-1111-4111-8111-111111111112",
+      "version": [1, 0, 0]
+    }
+  ]
+}

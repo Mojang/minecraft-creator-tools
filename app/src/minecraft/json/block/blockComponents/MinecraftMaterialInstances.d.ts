@@ -486,19 +486,20 @@ export interface MinecraftMaterialInstancesMaterialInstance {
 
   /**
    * @remarks
-   * The render method to use. Must be one of these options:
-"opaque" -
-   * Used for a regular block texture without an alpha layer. Does not
-   * allow for transparency or translucency.
-"double_sided" - Used
-   * for completely disabling backface culling.
-"blend" - Used for a
-   * block like stained glass. Allows for transparency and
-   * translucency (slightly transparent textures).
-"alpha_test" -
-   * Used for a block like the vanilla (unstained) glass. Does not
-   * allow for translucency, only fully opaque or fully transparent textures.
-   * Also disables backface culling.
+   * The render method to use. Must be one of these options and must
+   * be the same for each:
+"opaque" - Used for a regular block texture
+   * without an alpha layer. Does not allow for transparency or
+   * translucency.
+"double_sided" - Used for completely disabling backface
+   * culling.
+"blend" - Used for a block like stained glass. Allows for
+   * transparency and translucency (slightly transparent
+   * textures).
+"alpha_test" - Used for a block like the vanilla
+   * (unstained) glass. Does not allow for translucency, only fully
+   * opaque or fully transparent textures. Also disables backface 
+   * culling.
    */
   render_method: string;
 

@@ -47,7 +47,14 @@ import SummaryInfoGenerator from "./SummaryInfoGenerator";
 import ScriptInfoGenerator from "./ScriptInfoGenerator";
 import CheckParticleIdentifierGenerator from "./projectGenerators/CheckParticleIdentifierGenerator";
 import CheckSkinPackJsonGenerator from "./projectGenerators/CheckSkinPackJsonGenerator";
+import CheckExperimentalFlagInfoGenerator from "./projectGenerators/CheckExperimentalFlagInfoGenerator";
+import CheckFeatureDeprecationInfoGenerator from "./projectGenerators/CheckFeatureDeprecationInfoGenerator";
 import SchemaItemInfoGenerator from "./SchemaItemInfoGenerator";
+import CheckForbiddenFilesGenerator from "./projectGenerators/CheckForbiddenFiles";
+import CheckProjectIntegrityGenerator from "./projectGenerators/CheckProjectIntegrityGenerator";
+import CheckGeometryFormatInfoGenerator from "./projectGenerators/CheckGeometryFormatInfoGenerator";
+import CheckBetaFeaturesGenerator from "./projectGenerators/CheckBetaFeaturesGenerator";
+import CheckLangFilesGenerator from "./projectGenerators/CheckLangFilesGenerator";
 
 export default class GeneratorRegistrations {
   static managers = [
@@ -85,6 +92,13 @@ export default class GeneratorRegistrations {
     new SoundsDefinitionInfoGenerator(),
     new CheckParticleIdentifierGenerator(),
     new CheckSkinPackJsonGenerator(),
+    new CheckExperimentalFlagInfoGenerator(),
+    new CheckFeatureDeprecationInfoGenerator(),
+    new CheckForbiddenFilesGenerator(),
+    new CheckProjectIntegrityGenerator(),
+    new CheckGeometryFormatInfoGenerator(),
+    new CheckBetaFeaturesGenerator(),
+    new CheckLangFilesGenerator(),
     ...this.managers,
   ];
 

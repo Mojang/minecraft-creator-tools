@@ -39,7 +39,7 @@ export default interface MinecraftClimate {
 
   /**
    * @remarks
-   * Density of blue spore precipitation visuals
+   * Density of red spore precipitation visuals
    */
   red_spores: number;
 

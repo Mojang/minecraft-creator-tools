@@ -1,0 +1,16 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Vibrant Missing Visuals",
+    "description": "Sample project missing some vibrant visuals attributes.",
+    "uuid": "44444444-4444-4444-8444-444444444444",
+    "version": [1, 0, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "44444444-4444-4444-8444-444444444445",
+      "version": [1, 0, 0]
+    }
+  ]
+}

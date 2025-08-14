@@ -1,0 +1,16 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Vibrant Invalid Visuals",
+    "description": "Sample project with invalid vibrant visuals attributes.",
+    "uuid": "33333333-3333-4333-8333-333333333333",
+    "version": [1, 0, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "33333333-3333-4333-8333-333333333334",
+      "version": [1, 0, 0]
+    }
+  ]
+}

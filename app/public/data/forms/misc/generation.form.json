@@ -1,4 +1,5 @@
 {
+  "id": "Generation",
   "fields": [
     {
       "id": "generator_type",
@@ -7,6 +8,5 @@
       "isRequired": true
     }
   ],
-  "title": "Generation Misc",
-  "id": "Generation"
+  "title": "Generation Misc"
 }

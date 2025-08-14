@@ -1,0 +1,33 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:npc_dialogue": {
+    "scenes": [
+      {
+        "scene_tag": "sample_greeting",
+        "npc_name": {"rawtext": [{"text": "Sample NPC"}]},
+        "text": {"rawtext": [{"text": "Hello! Welcome to our test world!"}]},
+        "buttons": [
+          {
+            "name": {"rawtext": [{"text": "Thanks!"}]},
+            "commands": ["/say Thank you for visiting!"]
+          },
+          {
+            "name": {"rawtext": [{"text": "Goodbye"}]},
+            "commands": ["/say See you later!"]
+          }
+        ]
+      },
+      {
+        "scene_tag": "sample_trade",
+        "npc_name": {"rawtext": [{"text": "Sample Trader"}]},
+        "text": {"rawtext": [{"text": "I have some items to trade!"}]},
+        "buttons": [
+          {
+            "name": {"rawtext": [{"text": "What do you have?"}]},
+            "commands": ["/give @p test:sample_food 1"]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -2,6 +2,6 @@
   "id": "query.owner_identifier",
   "fields": [],
   "isDeprecated": true,
-  "description": "DEPRECATED (Use query.is_owner_identifier_any instead if possible so names can be changed later without breaking content.) Returns the root actor identifier.",
+  "description": "Returns the root entity identifier. Deprecated; use `query.is_owner_identifier_any` instead if possible so names can be changed later without breaking content.",
   "title": "Owner Identifier Query"
 }

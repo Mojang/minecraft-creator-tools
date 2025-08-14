@@ -15,7 +15,6 @@ import BehaviorManifestDefinition from "../minecraft/BehaviorManifestDefinition"
 export enum SharingInfoGeneratorTest {
   requiresCustomCapabilities = 100,
   hasStrongLanguageContent = 101,
-  noVibrantVisualsForNow = 210,
 }
 
 const TopicTestIdBase = 500;
@@ -25,14 +24,6 @@ const UnsupportedForSharingTypes = [
   ProjectItemType.jigsawStructure,
   ProjectItemType.jigsawStructureSet,
   ProjectItemType.jigsawTemplatePool,
-  ProjectItemType.textureSetJson,
-  ProjectItemType.atmosphericsJson,
-  ProjectItemType.shadowsJson,
-  ProjectItemType.pbrJson,
-  ProjectItemType.pointLightsJson,
-  ProjectItemType.waterJson,
-  ProjectItemType.colorGradingJson,
-  ProjectItemType.lightingJson,
   ProjectItemType.aimAssistPresetJson,
   ProjectItemType.aimAssistCategoryJson,
   ProjectItemType.behaviorTreeJson,
@@ -94,18 +85,8 @@ export default class SharingInfoGenerator implements IProjectInfoGenerator {
           }*/
         }
       }
-      if (ProjectItemUtilities.isVibrantVisualsRelated(pi)) {
-        // SHARING210
-        items.push(
-          new ProjectInfoItem(
-            InfoItemType.error,
-            this.id,
-            SharingInfoGeneratorTest.noVibrantVisualsForNow,
-            `Found a Vibrant Visuals related file, which is not supported in sharing scenarios (for now).`,
-            pi
-          )
-        );
-      } else if (UnsupportedForSharingTypesSet.has(pi.itemType)) {
+
+      if (UnsupportedForSharingTypesSet.has(pi.itemType)) {
         projInfoItem = new ProjectInfoItem(
           InfoItemType.error,
           this.id,

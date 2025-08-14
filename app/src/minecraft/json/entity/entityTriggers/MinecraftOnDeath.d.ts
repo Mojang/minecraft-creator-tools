@@ -24,8 +24,7 @@ import * as jsoncommon from './../../../jsoncommon';
 
 /**
  * On Death (minecraft:on_death)
- * Only usable by the Ender Dragon. Adds a trigger to call on this
- * entity's death.
+ * Adds a trigger to call on this entity's death.
  */
 export default interface MinecraftOnDeath {
 

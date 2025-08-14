@@ -1,0 +1,14 @@
+{
+  "texture_set": {
+    "color": "textures/vibrant_invalid_color.png",
+    "normal": "textures/vibrant_invalid_normal.png",
+    "metalness": "textures/vibrant_invalid_metalness.png"
+  },
+  "capabilities": ["pbr"],
+  "vibrant_visuals": {
+    "brightness": -1,
+    "contrast": "high",
+    "saturation": null,
+    "color": "not-a-color"
+  }
+}

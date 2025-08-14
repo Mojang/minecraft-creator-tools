@@ -2,7 +2,15 @@ import IFolder from "../storage/IFolder";
 import StorageUtilities from "../storage/StorageUtilities";
 import { expect, assert } from "chai";
 
-const volatileLineTokens = ['"uuid":', '"pack_id":', '"version":', "generator_version", "generatorVersion", "version:"];
+const volatileLineTokens = [
+  '"uuid":',
+  '"pack_id":',
+  '"version":',
+  "generator_version",
+  "generatorVersion",
+  "version:",
+  "version number",
+];
 
 export async function ensureReportJsonMatchesScenario(
   scenariosFolder: IFolder | undefined,

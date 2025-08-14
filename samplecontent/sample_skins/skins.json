@@ -1,0 +1,18 @@
+{
+  "serialize_name": "sample_skin_pack",
+  "localization_name": "sample_skin_pack",
+  "skins": [
+    {
+      "localization_name": "TestSkin1",
+      "geometry": "geometry.humanoid.custom",
+      "texture": "steve_skin.png",
+      "type": "free"
+    },
+    {
+      "localization_name": "TestSkin2",
+      "geometry": "geometry.humanoid.customSlim",
+      "texture": "alex_skin.png",
+      "type": "paid"
+    }
+  ]
+}

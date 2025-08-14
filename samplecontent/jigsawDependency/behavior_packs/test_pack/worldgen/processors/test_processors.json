@@ -1,0 +1,25 @@
+{
+  "format_version": "1.21.20",
+  "minecraft:processor_list": {
+    "description": {
+      "identifier": "test:test_processors"
+    },
+    "processors": [
+      {
+        "processor_type": "minecraft:rule",
+        "rules": [
+          {
+            "input_predicate": {
+              "predicate_type": "minecraft:random_block_match",
+              "block": "minecraft:stone",
+              "probability": 0.1
+            },
+            "output_state": {
+              "name": "minecraft:cobblestone"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

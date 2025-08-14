@@ -1,6 +1,34 @@
 {
   "fields": [
     {
+      "id": "on_start",
+      "dataType": 42,
+      "samples": {
+        "/vanilla/behavior_pack/entities/goat.json": [
+          {
+            "path": "/minecraft:entity/component_groups/ram_default/minecraft:behavior.ram_attack/",
+            "content": [
+              {
+                "event": "start_event",
+                "target": "self"
+              }
+            ]
+          },
+          {
+            "path": "/minecraft:entity/component_groups/ram_screamer/minecraft:behavior.ram_attack/",
+            "content": [
+              {
+                "event": "start_event",
+                "target": "self"
+              }
+            ]
+          }
+        ]
+      },
+      "description": "The event to trigger when attacking",
+      "title": "Start"
+    },
+    {
       "id": "baby_knockback_modifier",
       "title": "Baby Knockback Modifier",
       "description": "The modifier to knockback that babies have.",
@@ -84,34 +112,6 @@
           {
             "path": "/minecraft:entity/component_groups/ram_screamer/minecraft:behavior.ram_attack/",
             "content": 4
-          }
-        ]
-      }
-    },
-    {
-      "id": "on_start",
-      "title": "Start",
-      "description": "The event to trigger when attacking",
-      "dataType": 22,
-      "samples": {
-        "/vanilla/behavior_pack/entities/goat.json": [
-          {
-            "path": "/minecraft:entity/component_groups/ram_default/minecraft:behavior.ram_attack/",
-            "content": [
-              {
-                "event": "start_event",
-                "target": "self"
-              }
-            ]
-          },
-          {
-            "path": "/minecraft:entity/component_groups/ram_screamer/minecraft:behavior.ram_attack/",
-            "content": [
-              {
-                "event": "start_event",
-                "target": "self"
-              }
-            ]
           }
         ]
       }

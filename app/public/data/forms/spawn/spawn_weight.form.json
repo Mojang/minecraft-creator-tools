@@ -1,0 +1,17 @@
+{
+  "id": "Spawn Weight",
+  "fields": [
+    {
+      "id": "default",
+      "title": "Default",
+      "dataType": 0,
+      "isRequired": true
+    },
+    {
+      "id": "rarity",
+      "title": "Rarity",
+      "dataType": 0
+    }
+  ],
+  "title": "Spawn Weight Spawn"
+}

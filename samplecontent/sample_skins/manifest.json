@@ -1,0 +1,17 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Sample Skin Pack",
+    "description": "A sample skin pack for testing",
+    "uuid": "550e8400-e29b-41d4-a716-446655440000",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "skin_pack",
+      "uuid": "550e8400-e29b-41d4-a716-446655440001",
+      "version": [1, 0, 0]
+    }
+  ]
+}

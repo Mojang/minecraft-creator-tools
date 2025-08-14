@@ -1,8 +1,4 @@
 {
-  "tags": [
-    "conditional",
-    "entityevent"
-  ],
   "id": "has_equipment_tag",
   "fields": [
     {
@@ -159,6 +155,10 @@
       "description": "(Required) The item name to look for",
       "dataType": 2
     }
+  ],
+  "tags": [
+    "conditional",
+    "entityevent"
   ],
   "description": "Tests for the presence of an item with the named tag in the designated slot of the subject entity.",
   "title": "Has Equipment Tag",

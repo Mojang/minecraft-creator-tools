@@ -1,6 +1,6 @@
 import { IAnnotatedValue } from "../core/AnnotatedValue";
 import { AnnotationCategory } from "../core/ContentIndex";
-import ISimpleReference from "../core/ISimpleReference";
+import ISimpleReference from "../dataform/ISimpleReference";
 import Utilities from "../core/Utilities";
 import VanillaProjectManager from "../minecraft/VanillaProjectManager";
 import Database from "../minecraft/Database";

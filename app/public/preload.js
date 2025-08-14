@@ -14,6 +14,7 @@ const _allowedExtensions = [
   "map",
   "ogg",
   "flac",
+  "hdr",
   "psd",
   "env",
   "gif",

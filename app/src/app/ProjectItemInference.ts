@@ -135,6 +135,14 @@ export default class ProjectItemInference {
     if (
       folderContext === FolderContext.unknown &&
       (folder.files["manifest.json"] || folder.files["pack_manifest.json"]) &&
+      folder.files["skins.json"]
+    ) {
+      folderContext = FolderContext.skinPack;
+    }
+
+    if (
+      folderContext === FolderContext.unknown &&
+      (folder.files["manifest.json"] || folder.files["pack_manifest.json"]) &&
       !folder.files["level.dat"] &&
       !folder.files["levelname.txt"]
     ) {
@@ -322,7 +330,11 @@ export default class ProjectItemInference {
                         if (subpack.folder_name) {
                           const pv = project.ensureVariant(subpack.folder_name);
 
-                          if (subpack.memory_tier) {
+                          if (subpack.memory_performance_tier !== undefined) {
+                            pv.memoryPerformanceTier = subpack.memory_performance_tier;
+                          }
+
+                          if (subpack.memory_tier !== undefined) {
                             pv.memoryTier = subpack.memory_tier;
                           }
 
@@ -488,6 +500,18 @@ export default class ProjectItemInference {
                 undefined,
                 isInWorld
               );
+            } else if (
+              projectPathLower.endsWith("/levelname.txt") ||
+              projectPathLower.endsWith("/current") ||
+              projectPathLower.endsWith("/log") ||
+              projectPathLower.endsWith("/log.old") ||
+              projectPathLower.endsWith("/lock") ||
+              projectPathLower.indexOf("/db/manifest") >= 0 ||
+              projectPathLower.indexOf("/db/lost/manifest") >= 0
+            ) {
+              // don't explicitly create an item for constituent world files at the moment
+            } else if (fileExtension === "ldb" || fileExtension === "log") {
+              // don't explicitly create an item for ldb or log files at the moment.
             } else if (fileExtension === "mcstructure") {
               project.ensureItemByProjectPath(
                 projectPath,
@@ -732,6 +756,7 @@ export default class ProjectItemInference {
               fileExtension === "jpg" ||
               fileExtension === "gif" ||
               fileExtension === "psd" ||
+              fileExtension === "hdr" ||
               fileExtension === "jpeg" ||
               fileExtension === "tga"
             ) {
@@ -766,6 +791,7 @@ export default class ProjectItemInference {
             } else if (
               fileExtension === "ogg" ||
               fileExtension === "flac" ||
+              fileExtension === "fsb" ||
               fileExtension === "mp3" ||
               fileExtension === "wav"
             ) {
@@ -939,8 +965,8 @@ export default class ProjectItemInference {
                 baseName === "music_definitions"
               ) {
                 newJsonType = ProjectItemType.musicDefinitionJson;
-              } else if (folderPathLower.indexOf("/texts/") >= 0 || baseName === "languages") {
-                newJsonType = ProjectItemType.languagesCatalogResourceJson;
+              } else if (folderPathLower.indexOf("/texts/") >= 0 && baseName === "languages") {
+                newJsonType = ProjectItemType.languagesCatalogJson;
               } else if (isResourcePack && folderPathLower.indexOf("/textures/ui/") >= 0) {
                 newJsonType = ProjectItemType.ninesliceJson;
               } else if (isResourcePack && folderPathLower.indexOf("/texture_sets/") >= 0) {
@@ -1112,6 +1138,8 @@ export default class ProjectItemInference {
                 undefined,
                 isInWorld
               );
+            } else {
+              project.addUnknownFile(candidateFile);
             }
           } else if (pi && projectPath !== undefined) {
             if (

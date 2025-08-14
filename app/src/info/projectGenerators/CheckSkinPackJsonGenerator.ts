@@ -13,7 +13,7 @@ import {
   Skin,
 } from "../../minecraft/skins/Skin";
 import StorageUtilities from "../../storage/StorageUtilities";
-import { isResult, notApplicable, resultFromTest } from "../tests/TestDefinition";
+import { isResult, notApplicable, resultFromTest, resultFromTestWithMessage } from "../tests/TestDefinition";
 import { findEnsuredFiles, getEnsuredFile, getEnsuredFileOfType } from "../../app/ProjectItemUtilities";
 import { getLocKeysFromSkinPack, SkinPack, validateSkinPackJson } from "../../minecraft/skins/SkinPack";
 import IFile from "../../storage/IFile";
@@ -64,7 +64,11 @@ const Tests = {
   OuterAreaIsBlank: { id: 117, title: "Outer Area Blank" },
   ModelInvisible: { id: 118, title: "Model Invisible From Some Angles" },
   ModelPartiallyInvisible: { id: 119, title: "Model Partially Invisible", severity: InfoItemType.warning },
-  CouldNotFindRelatedPack: { id: 120, title: "Could Not Find Related Skin Pack" },
+  CouldNotFindRelatedPack: {
+    id: 120,
+    title: "Could Not Find Related Skin Pack",
+    defaultMessage: "Could not read skin pack manifest pack",
+  },
 } as const;
 
 export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator {
@@ -86,13 +90,11 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
 
       if (!skinPack) {
         allResults.push(
-          resultFromTest(
-            Tests.CouldNotFindRelatedPack,
-            this.id,
-            "Could not read skin pack manifest pack",
-            skinPackManifestItem,
-            skinPackManifestItem.name
-          )
+          resultFromTest(Tests.CouldNotFindRelatedPack, {
+            id: this.id,
+            item: skinPackManifestItem,
+            data: skinPackManifestItem.name,
+          })
         );
         continue;
       }
@@ -102,7 +104,12 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
 
       if (!skinCatalogJsonFile) {
         return [
-          resultFromTest(Tests.JsonNotFoundFile, this.id, "Could not find skins.json file", skinPackManifestItem),
+          resultFromTestWithMessage(
+            Tests.JsonNotFoundFile,
+            this.id,
+            "Could not find skins.json file",
+            skinPackManifestItem
+          ),
         ];
       }
 
@@ -112,12 +119,12 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
 
       if (errors) {
         return errors.map((error) =>
-          resultFromTest(Tests.InvalidJsonFile, this.id, error.message, skinPackManifestItem)
+          resultFromTestWithMessage(Tests.InvalidJsonFile, this.id, error.message, skinPackManifestItem)
         );
       }
 
       if (!hasValidLocalizationNames(skinPackManifestObj.localization_name, skinPackManifestObj.serialize_name)) {
-        return [resultFromTest(Tests.InvalidPackLocName, this.id, undefined, skinPackManifestItem)];
+        return [resultFromTest(Tests.InvalidPackLocName, { id: this.id, item: skinPackManifestItem })];
       }
 
       allResults.push(...this.validateSkins(skinPackManifestObj.skins, project.isMinecraftCreator));
@@ -143,13 +150,13 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
 
     const invalidSkins = skins
       .filter((skin) => !isValidSkinPurchaseType(skin.type))
-      .map(() => resultFromTest(Tests.InvalidSkinType, this.id));
+      .map(() => resultFromTestWithMessage(Tests.InvalidSkinType, this.id));
     results.push(...invalidSkins);
 
     const freeSkins = skins.filter((skin) => skin.type === "free");
     if (freeSkins.length > MaxFreeSkins) {
       const message = `${freeSkins.length} free skins found. Only ${MaxFreeSkins} allowed.`;
-      results.push(resultFromTest(Tests.TooManyFreeSkins, this.id, message));
+      results.push(resultFromTestWithMessage(Tests.TooManyFreeSkins, this.id, message));
     }
 
     if (!isMCCreator) {
@@ -172,7 +179,7 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
     const duplicateCapeTexturesResults = capeTextureNames
       .filter((name, index) => capeTextureNames.indexOf(name) !== index)
       .map((duplicate) =>
-        resultFromTest(Tests.DuplicateTextures, this.id, `Duplicate cape texture found: ${duplicate}`)
+        resultFromTestWithMessage(Tests.DuplicateTextures, this.id, `Duplicate cape texture found: ${duplicate}`)
       );
 
     //check cape textures
@@ -187,7 +194,7 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
     const duplicateTextureResults = skinTextureNames
       .filter((name, index) => skinTextureNames.indexOf(name) !== index)
       .map((duplicate) =>
-        resultFromTest(Tests.DuplicateTextures, this.id, `Duplicate skin texture found: ${duplicate}`)
+        resultFromTestWithMessage(Tests.DuplicateTextures, this.id, `Duplicate skin texture found: ${duplicate}`)
       );
 
     //check skin textures
@@ -203,7 +210,7 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
 
     // CSPJ110
     const orphanResults = orphaned.map((orphan) =>
-      resultFromTest(Tests.OrphanedTexture, this.id, `${orphan.name} in skin pack not found in skins.json`)
+      resultFromTestWithMessage(Tests.OrphanedTexture, this.id, `${orphan.name} in skin pack not found in skins.json`)
     );
 
     // combine and return results
@@ -220,16 +227,16 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
     const results = [];
 
     if (skins.length > MaxSkinsInAPack) {
-      results.push(resultFromTest(Tests.InvalidNumberOfSkins, this.id));
+      results.push(resultFromTestWithMessage(Tests.InvalidNumberOfSkins, this.id));
     }
 
     if (skins.find((skin) => hasMCOnlyProperties(skin))) {
       const message = "animations and enable_attachables not allowed if not Minecraft Creator";
-      results.push(resultFromTest(Tests.MCCreatorPropertyNotAllowed, this.id, message));
+      results.push(resultFromTestWithMessage(Tests.MCCreatorPropertyNotAllowed, this.id, message));
     }
 
     if (skins.find((skin) => !!skin.cape)) {
-      results.push(resultFromTest(Tests.CapeTextureNotAllowed, this.id));
+      results.push(resultFromTestWithMessage(Tests.CapeTextureNotAllowed, this.id));
     }
 
     return results;
@@ -244,12 +251,12 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
 
     if (!texture) {
       const message = `Failed to read file: ${textureFile.name}`;
-      return resultFromTest(Tests.FailedToReadFile, this.id, message);
+      return resultFromTestWithMessage(Tests.FailedToReadFile, this.id, message);
     }
 
     if (!isValidCapeSize([texture.width, texture.height])) {
       const message = `Texture: ${textureFile.name} is invalid size (${texture.width}x${texture.height})`;
-      return resultFromTest(Tests.InvalidTextureSize, this.id, message);
+      return resultFromTestWithMessage(Tests.InvalidTextureSize, this.id, message);
     }
 
     return null;
@@ -270,12 +277,12 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
 
     if (!texture) {
       const message = `Failed to read file: ${textureName}`;
-      return [resultFromTest(Tests.FailedToReadFile, this.id, message)];
+      return [resultFromTestWithMessage(Tests.FailedToReadFile, this.id, message)];
     }
 
     if (!isValidSkinModelTarget([texture.width, texture.height])) {
       const message = `Texture: ${textureName} is invalid size (${texture.width}x${texture.height})`;
-      return [resultFromTest(Tests.InvalidTextureSize, this.id, message)];
+      return [resultFromTestWithMessage(Tests.InvalidTextureSize, this.id, message)];
     }
 
     // remaining checks do not apply to MC creator
@@ -287,7 +294,7 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
 
     if (!skinTarget) {
       return [
-        resultFromTest(
+        resultFromTestWithMessage(
           Tests.InvalidSkinModelTarget,
           this.id,
           `No intended model tag in name. Slim model skins must have the prefix or suffix of  'a', 'alex', 'slim', 'customSlim' separated by an '_' ex. <name>_customSlim. Custom model skins must have the prefix or suffix of  's', 'steve', 'custom' separated by an '_' ex. <name>_custom.`
@@ -298,7 +305,13 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
     const geoSkinSize = getModelTargetGeometry(skin);
 
     if (!geoSkinSize) {
-      return [resultFromTest(Tests.InvalidSkinModelTarget, this.id, `geometry property: ${skin.geometry} not allowed`)];
+      return [
+        resultFromTestWithMessage(
+          Tests.InvalidSkinModelTarget,
+          this.id,
+          `geometry property: ${skin.geometry} not allowed`
+        ),
+      ];
     }
 
     const pixelSkinSize = getSkinTargetByUniquePixelLocations(texture);
@@ -306,12 +319,12 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
     const isSizeConsistent = skinTarget === geoSkinSize && skinTarget === pixelSkinSize;
     if (!isSizeConsistent) {
       const message = `Model size indicators are inconsistent. name: ${skinTarget}, geometry: ${geoSkinSize}, image data: ${pixelSkinSize}`;
-      return [resultFromTest(Tests.InvalidSkinModelTarget, this.id, message)];
+      return [resultFromTestWithMessage(Tests.InvalidSkinModelTarget, this.id, message)];
     }
 
     if (!isOuterAreaIsBlank(texture, skinTarget)) {
       const message = `[${textureFile.name}]: Ensure that no pixels not visible on the model are filled in with an alpha greater than 0`;
-      return [resultFromTest(Tests.OuterAreaIsBlank, this.id, message)];
+      return [resultFromTestWithMessage(Tests.OuterAreaIsBlank, this.id, message)];
     }
 
     const segmentVisibilities = getSegmentsVisibilities(texture, skinTarget);
@@ -339,7 +352,7 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
 
         return messages;
       })
-      .map((message) => resultFromTest(Tests.ModelInvisible, this.id, message));
+      .map((message) => resultFromTestWithMessage(Tests.ModelInvisible, this.id, message));
 
     const visWarnings = segmentVisibilities
       .flatMap((segment) =>
@@ -347,7 +360,7 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
           .filter(([_side, isVisible]) => !isVisible)
           .map(([side]) => `Side: [${side}] of segment: [${segment.segmentName}] is not visible!`)
       )
-      .map((message) => resultFromTest(Tests.ModelPartiallyInvisible, this.id, message));
+      .map((message) => resultFromTestWithMessage(Tests.ModelPartiallyInvisible, this.id, message));
 
     return [...visErrors, ...visWarnings];
   }
@@ -359,7 +372,11 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
     const orphanLocKeyResults = locKeysFromSkinPack
       .filter((key) => !knownKeys.has(key))
       .map((key) =>
-        resultFromTest(Tests.OrphanedLocKey, this.id, `Loc key [${key}] in skins.json not found in en_US.lang file`)
+        resultFromTestWithMessage(
+          Tests.OrphanedLocKey,
+          this.id,
+          `Loc key [${key}] in skins.json not found in en_US.lang file`
+        )
       );
 
     const knownSkinsKeys = new Set(locKeysFromSkinPack);
@@ -372,7 +389,7 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
         .getLocKeys()
         .filter((key) => !knownSkinsKeys.has(key) && (key.startsWith("skin.") || key.startsWith("skinpack.")))
         .map((orphanedKey) => `Loc Key: [${orphanedKey}] found in ${lang.language}.lang not found in skins.json`)
-        .map((message) => resultFromTest(Tests.LocalizedKeyNotFoundInSkinsJson, this.id, message));
+        .map((message) => resultFromTestWithMessage(Tests.LocalizedKeyNotFoundInSkinsJson, this.id, message));
 
       const invalidSpaceResultsForLang = lang
         .getLocKeys()
@@ -381,7 +398,7 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
           (invalidSpacedKey) =>
             `Loc string for key [${invalidSpacedKey}] in ${lang.language}.lang must not contain leading or trailing spaces.`
         )
-        .map((message) => resultFromTest(Tests.InvalidSpacingOnLocalizedKey, this.id, message));
+        .map((message) => resultFromTestWithMessage(Tests.InvalidSpacingOnLocalizedKey, this.id, message));
 
       localizedOrphansResults.push(...orphansResultsForLang);
       invalidSpaceResults.push(...invalidSpaceResultsForLang);

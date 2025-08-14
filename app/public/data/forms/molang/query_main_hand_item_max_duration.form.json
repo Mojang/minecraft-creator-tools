@@ -1,6 +1,6 @@
 {
   "id": "query.main_hand_item_max_duration",
   "fields": [],
-  "description": "Returns the use time maximum duration for the main hand item if it makes sense, else it returns 0.0.",
+  "description": "Returns the use time maximum duration for the main hand item if it makes sense, else it returns 0.0. Used for item use computations.",
   "title": "Main Hand Item Max Duration Query"
 }

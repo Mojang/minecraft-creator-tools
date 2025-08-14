@@ -23,6 +23,10 @@ export default class ProjectVariant {
   }
 
   get effectiveUnifiedTier() {
+    if (this.memoryPerformanceTier !== undefined) {
+      return this.memoryPerformanceTier;
+    }
+
     if (this.memoryTier === undefined) {
       return undefined;
     }
@@ -50,6 +54,14 @@ export default class ProjectVariant {
     }
 
     return 5;
+  }
+
+  get memoryPerformanceTier() {
+    return this._data.memoryPerformanceTier;
+  }
+
+  set memoryPerformanceTier(newTier: number | undefined) {
+    this._data.memoryPerformanceTier = newTier;
   }
 
   get memoryTier() {

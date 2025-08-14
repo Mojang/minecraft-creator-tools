@@ -1,0 +1,17 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Diverse Content Behavior Pack",
+    "description": "A behavior pack with multiple diverse content types for testing",
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "123e4567-e89b-12d3-a456-426614174001",
+      "version": [1, 0, 0]
+    }
+  ]
+}

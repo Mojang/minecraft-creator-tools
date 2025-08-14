@@ -7,7 +7,6 @@ import StorageUtilities from "../storage/StorageUtilities";
 import DataFormUtilities from "../dataform/DataFormUtilities";
 import IField, { FieldDataType } from "../dataform/IField";
 import EntityTypeDefinition from "../minecraft/EntityTypeDefinition";
-import Database from "../minecraft/Database";
 import { ComparisonType } from "../dataform/ICondition";
 import FieldUtilities from "../dataform/FieldUtilities";
 
@@ -41,6 +40,7 @@ export enum ExportMode {
   deferredRendering = 16,
   molang = 17,
   culling = 18,
+  manifest = 19,
 }
 
 export default class FormMarkdownDocumentationGenerator {
@@ -219,6 +219,16 @@ export default class FormMarkdownDocumentationGenerator {
       "Client Biome"
     );
 
+    this.exportMarkdownCatalogDocs(
+      formsByPath,
+      outputFolder,
+      ExportMode.manifest,
+      "/ManifestReference/",
+      "/3.0.0/",
+      "Pack Manifest",
+      "Pack Manifest"
+    );
+
     this.exportMarkdownDocListPage(
       formsByPath,
       outputFolder,
@@ -236,7 +246,7 @@ export default class FormMarkdownDocumentationGenerator {
       "/ClientBiomesReference/Examples/Components/TOC.yml",
       "/client_biome/minecraft_",
       "- name: Components List\r\n  href: ../ComponentList.md",
-      "minecraftBiomes_"
+      "minecraftClientBiomes_"
     );
 
     this.exportMarkdownDocListPage(
@@ -296,7 +306,7 @@ export default class FormMarkdownDocumentationGenerator {
       "/BlockReference/Examples/BlockComponents/BlockComponentsList.md",
       "/block/minecraft_",
       "Block Components",
-      "Block Component"
+      "."
     );
 
     this.exportListYml(
@@ -315,7 +325,7 @@ export default class FormMarkdownDocumentationGenerator {
       "/ItemReference/Examples/ItemComponentList.md",
       "/item/minecraft_",
       "Item Components",
-      "Item Component"
+      "./ItemComponents"
     );
 
     this.exportListYml(
@@ -332,16 +342,6 @@ export default class FormMarkdownDocumentationGenerator {
       outputFolder,
       ExportMode.culling,
       "/BlockCullingReference/",
-      "/block_culling/",
-      "Block Culling",
-      "Block Culling"
-    );
-
-    this.exportMarkdownDocListPage(
-      formsByPath,
-      outputFolder,
-      ExportMode.culling,
-      "/BlockCullingReference/BlockCulling.md",
       "/block_culling/",
       "Block Culling",
       "Block Culling"

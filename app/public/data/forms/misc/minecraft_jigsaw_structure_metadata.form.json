@@ -1,6 +1,5 @@
 {
   "id": "minecraft:jigsaw_structure_metadata",
-  "title": "Minecraft Jigsaw Structure Metadata Misc",
   "fields": [
     {
       "id": "format_version",
@@ -17,5 +16,6 @@
       "subFormId": "misc/jigsaw_structure_metadata_registry",
       "isRequired": true
     }
-  ]
+  ],
+  "title": "Minecraft Jigsaw Structure Metadata Misc"
 }

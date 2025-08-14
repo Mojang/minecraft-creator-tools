@@ -1,0 +1,4014 @@
+{
+  "info": {
+    "capabilities": [
+      "behaviorPack",
+      "resourcePack"
+    ],
+    "behaviorPackManifestCount": 1,
+    "unknownJsonCount": 0,
+    "entityTypeManifestCount": 1,
+    "itemTypeManifestCount": 2,
+    "blockTypeManifestCount": 1,
+    "resourcePackManifestCount": 1,
+    "worldCount": 0,
+    "entityTypeResourceCount": 0,
+    "behaviorPackAnimationCount": 0,
+    "behaviorPackAnimationControllerCount": 0,
+    "overallSize": 5430,
+    "fileCounts": 15,
+    "folderCounts": 14,
+    "contentSize": 5430,
+    "contentFileCounts": 15,
+    "contentFolderCounts": 10,
+    "defaultBehaviorPackUuid": "123e4567-e89b-12d3-a456-426614174000",
+    "defaultIcon": "wolQTkcNChoKAAAADUlIRFIAAADCgAAAAMKACAIAAABMXMO2wpwAAADDt0lEQVR4wpzDrcORQQkAMAzDgMOAasKqw5jDqcKdwow+chABwoHCm33Cq8ODw6bDvCAeAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtAMAwqAdAADDrQAAaAcAQDsAAMOaAQDDkA4AwoB2AADCtMO7T8KPwoPCowzDlcKGYQAAAABJRU5Ewq5CYMKC",
+    "defaultBehaviorPackMinEngineVersion": "1.21.0",
+    "minBehaviorPackMinEngineVersionString": "1.21.0",
+    "minBehaviorPackMinEngineVersion": 11021000,
+    "defaultBehaviorPackName": "Diverse Content Behavior Pack",
+    "defaultBehaviorPackDescription": "A behavior pack with multiple diverse content types for testing",
+    "defaultResourcePackUuid": "123e4567-e89b-12d3-a456-426614174002",
+    "defaultResourcePackMinEngineVersion": "1.21.0",
+    "minResourcePackMinEngineVersionString": "1.21.0",
+    "minResourcePackMinEngineVersion": 11021000,
+    "defaultResourcePackName": "Diverse Content Resource Pack",
+    "defaultResourcePackDescription": "A resource pack with animations and visual content for testing",
+    "subpackCount": 0,
+    "entityTypeComponents": [
+      "attack",
+      "can_climb",
+      "collision_box",
+      "experience_reward",
+      "health",
+      "jump.static",
+      "movement",
+      "movement.basic",
+      "nameable",
+      "navigation.walk",
+      "type_family"
+    ],
+    "blockTypeComponents": [
+      "destructible_by_explosion",
+      "destructible_by_mining",
+      "friction",
+      "map_color"
+    ],
+    "itemTypeComponents": [
+      "damage",
+      "durability",
+      "food",
+      "hand_equipped",
+      "max_stack_size",
+      "use_duration",
+      "weapon"
+    ],
+    "apisUsed": [],
+    "mctoolsVersion": 10002009,
+    "itemTypes": [
+      "Animation",
+      "Animation controller",
+      "Behavior pack",
+      "Behavior pack manifest",
+      "Block type",
+      "Entity dialogue",
+      "Entity type",
+      "Icon",
+      "Item type",
+      "Loot table",
+      "Recipe",
+      "Resource pack",
+      "Resource pack manifest",
+      "Spawn rule",
+      "Trading"
+    ],
+    "animationCount": 0,
+    "textureCount": 0,
+    "textureTexelSize": 0,
+    "minimumSupportablePerformanceTier": 0,
+    "invalidCommandSyntaxCount": 0,
+    "linesWithSlashCount": 0,
+    "multipleSoundsManifests": 0,
+    "soundsDefinitionManifestFormatIsValid": 0,
+    "soundsDefinitionManifestIsNotValidJson": 0,
+    "flagIsOrWasTrue": 0,
+    "levelDatNotFound": 0,
+    "worldNotFound": 0,
+    "deprecatedBlockOverride": 0,
+    "deprecatedTerrainTexture": 0,
+    "deprecatedTexture": 0,
+    "restrictedPolyMeshFound": 0,
+    "jsonParseError": 0,
+    "minBaseGameVersion": 0,
+    "chunkCount": 0,
+    "subchunkLessChunkCount": 0,
+    "worldLoadErrors": 0,
+    "commands": [
+      "give",
+      "say"
+    ],
+    "featureSets": {
+      "Behavior pack manifest Size": {
+        "Instance Count": 1,
+        "Total": 324,
+        "Max": 324,
+        "Min": 324,
+        "Average": 324
+      },
+      "Behavior pack manifest Lines": {
+        "Instance Count": 1,
+        "Total": 13,
+        "Max": 13,
+        "Min": 13,
+        "Average": 13
+      },
+      "Icon Size": {
+        "Instance Count": 2,
+        "Total": 608,
+        "Max": 304,
+        "Min": 304,
+        "Average": 304
+      },
+      "Block type Size": {
+        "Instance Count": 1,
+        "Total": 341,
+        "Max": 341,
+        "Min": 341,
+        "Average": 341
+      },
+      "Block type Lines": {
+        "Instance Count": 1,
+        "Total": 17,
+        "Max": 17,
+        "Min": 17,
+        "Average": 17
+      },
+      "Entity dialogue Size": {
+        "Instance Count": 1,
+        "Total": 606,
+        "Max": 606,
+        "Min": 606,
+        "Average": 606
+      },
+      "Entity dialogue Lines": {
+        "Instance Count": 1,
+        "Total": 20,
+        "Max": 20,
+        "Min": 20,
+        "Average": 20
+      },
+      "Entity type Size": {
+        "Instance Count": 1,
+        "Total": 770,
+        "Max": 770,
+        "Min": 770,
+        "Average": 770
+      },
+      "Entity type Lines": {
+        "Instance Count": 1,
+        "Total": 45,
+        "Max": 45,
+        "Min": 45,
+        "Average": 45
+      },
+      "Item type Size": {
+        "Instance Count": 2,
+        "Total": 625,
+        "Max": 353,
+        "Min": 272,
+        "Average": 313
+      },
+      "Item type Lines": {
+        "Instance Count": 2,
+        "Total": 34,
+        "Max": 20,
+        "Min": 14,
+        "Average": 17
+      },
+      "Loot table Size": {
+        "Instance Count": 1,
+        "Total": 205,
+        "Max": 205,
+        "Min": 205,
+        "Average": 205
+      },
+      "Loot table Lines": {
+        "Instance Count": 1,
+        "Total": 16,
+        "Max": 16,
+        "Min": 16,
+        "Average": 16
+      },
+      "Recipe Size": {
+        "Instance Count": 1,
+        "Total": 274,
+        "Max": 274,
+        "Min": 274,
+        "Average": 274
+      },
+      "Recipe Lines": {
+        "Instance Count": 1,
+        "Total": 21,
+        "Max": 21,
+        "Min": 21,
+        "Average": 21
+      },
+      "Spawn rule Size": {
+        "Instance Count": 1,
+        "Total": 442,
+        "Max": 442,
+        "Min": 442,
+        "Average": 442
+      },
+      "Spawn rule Lines": {
+        "Instance Count": 1,
+        "Total": 25,
+        "Max": 25,
+        "Min": 25,
+        "Average": 25
+      },
+      "Trading Size": {
+        "Instance Count": 1,
+        "Total": 264,
+        "Max": 264,
+        "Min": 264,
+        "Average": 264
+      },
+      "Trading Lines": {
+        "Instance Count": 1,
+        "Total": 19,
+        "Max": 19,
+        "Min": 19,
+        "Average": 19
+      },
+      "Resource pack manifest Size": {
+        "Instance Count": 1,
+        "Total": 328,
+        "Max": 328,
+        "Min": 328,
+        "Average": 328
+      },
+      "Resource pack manifest Lines": {
+        "Instance Count": 1,
+        "Total": 13,
+        "Max": 13,
+        "Min": 13,
+        "Average": 13
+      },
+      "Animation Size": {
+        "Instance Count": 1,
+        "Total": 321,
+        "Max": 321,
+        "Min": 321,
+        "Average": 321
+      },
+      "Animation Lines": {
+        "Instance Count": 1,
+        "Total": 22,
+        "Max": 22,
+        "Min": 22,
+        "Average": 22
+      },
+      "Animation controller Size": {
+        "Instance Count": 1,
+        "Total": 322,
+        "Max": 322,
+        "Min": 322,
+        "Average": 322
+      },
+      "Animation controller Lines": {
+        "Instance Count": 1,
+        "Total": 17,
+        "Max": 17,
+        "Min": 17,
+        "Average": 17
+      },
+      "Block Type Block Default Components": {
+        "minecraft:destructible_by_mining": 1,
+        "minecraft:destructible_by_explosion": 1,
+        "minecraft:friction": 1,
+        "minecraft:map_color": 1
+      },
+      "Entity Type Default Components": {
+        "minecraft:type_family": 1,
+        "minecraft:health": 1,
+        "minecraft:attack": 1,
+        "minecraft:movement": 1,
+        "minecraft:navigation.walk": 1,
+        "minecraft:movement.basic": 1,
+        "minecraft:jump.static": 1,
+        "minecraft:can_climb": 1,
+        "minecraft:collision_box": 1,
+        "minecraft:nameable": 1
+      },
+      "Entity Type Components Used in Component Groups": {
+        "minecraft:experience_reward": 1
+      },
+      "Entity Type Entity Events": {
+        "add": 1
+      },
+      "Item Type Components": {
+        "minecraft:max_stack_size": 2,
+        "minecraft:use_duration": 1,
+        "minecraft:food": 1,
+        "minecraft:hand_equipped": 1,
+        "minecraft:durability": 1,
+        "minecraft:weapon": 1,
+        "minecraft:damage": 1
+      },
+      "Animations Resource": {
+        "Count": 2
+      },
+      "Bones Resource Animation Bone": {
+        "Count": 2
+      },
+      "Bones Resource Animation Bone Rotation Keyframe": {
+        "Count": 20
+      },
+      "Texture Images Tier0 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier0 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier0 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier0 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier1 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier1 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier1 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier1 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier2 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier2 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier2 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier2 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier3 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier3 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier3 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier3 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier4 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier4 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier4 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier4 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier5 Non-Vanilla Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier5 Total Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier5 Block Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Texture Images Tier5 Item Atlas Texture Memory Tier": {
+        "Instance Count": 1,
+        "Total": 0,
+        "Max": 0,
+        "Min": 0,
+        "Average": 0
+      },
+      "Runtime Identifier (no runtime identifier)": {
+        "Count": 1
+      },
+      "Identifier (no override identifier)": {
+        "Count": 3
+      },
+      "Metadata Spawnable Entity Type": {
+        "Count": 1
+      },
+      "Metadata Summonable Entity Type": {
+        "Count": 1
+      },
+      "Category nature": {
+        "Count": 1
+      },
+      "Category equipment": {
+        "Count": 1
+      },
+      "Command say": {
+        "Count": 2
+      },
+      "Command give": {
+        "Count": 1
+      }
+    },
+    "errorCount": 2,
+    "internalProcessingErrorCount": 2,
+    "warningCount": 6,
+    "testSuccessCount": 34,
+    "testFailCount": 2,
+    "testNotApplicableCount": 11,
+    "errorSummary": "ERROR: [LANGFILES101] languages.json Not Found\r\nERROR: [LANGFILES101] languages.json Not Found",
+    "internalProcessingErrorSummary": "UNKNOWN: [JSONF402] Could not find expected form: entity/actor_document\r\nUNKNOWN: [JSONF402] Could not find expected form: spawn/spawn_rules",
+    "warningSummary": "WARNING: [FORMATVER258] (/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json) Spawn rules version (1.21.0) has a higher minor version number compared to current version (1.12.0)\r\nWARNING: [FORMATVER218] (/resource_packs/diverse_rp/animations/sample_mob_animations.json) Resource animation version (1.21.0) has a higher minor version number compared to current version (1.10.0)\r\nWARNING: [FORMATVER238] (/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json) Resource animation controller version (1.21.0) has a higher minor version number compared to current version (1.10.0)\r\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/loot_tables/sample_loot.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/loot_tables/sample_loot.json to `minecraft:stick`\r\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`\r\nWARNING: [UNLINK323] (/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json) Link to item type is not found in this pack: /behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`",
+    "testFailSummary": "TESTFAIL: [LANGFILES000] Found 2 errors for Check Lang File Generator (LANGFILES).\r\nTESTFAIL: [JSONF000] Found 2 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
+    "summary": {
+      "ITEMS": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Minimum Definition of a Pack (ITEMS) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "102": {
+          "title": "102",
+          "defaultMessage": "Behavior pack manifest found"
+        },
+        "103": {
+          "title": "103",
+          "defaultMessage": "Resource pack manifest found"
+        },
+        "205": {
+          "title": "Behavior pack manifest count",
+          "defaultMessage": "Behavior pack manifest item count"
+        },
+        "210": {
+          "title": "Entity type count",
+          "defaultMessage": "Entity type item count"
+        },
+        "214": {
+          "title": "Resource pack manifest count",
+          "defaultMessage": "Resource pack manifest item count"
+        },
+        "221": {
+          "title": "Block type count",
+          "defaultMessage": "Block type item count"
+        },
+        "223": {
+          "title": "Item type count",
+          "defaultMessage": "Item type item count"
+        },
+        "224": {
+          "title": "Loot table count",
+          "defaultMessage": "Loot table item count"
+        },
+        "228": {
+          "title": "Animation count",
+          "defaultMessage": "Animation item count"
+        },
+        "229": {
+          "title": "Animation controller count",
+          "defaultMessage": "Animation controller item count"
+        },
+        "239": {
+          "title": "Entity dialogue count",
+          "defaultMessage": "Entity dialogue item count"
+        },
+        "243": {
+          "title": "Recipe count",
+          "defaultMessage": "Recipe item count"
+        },
+        "244": {
+          "title": "Spawn rule count",
+          "defaultMessage": "Spawn rule item count"
+        },
+        "245": {
+          "title": "Trading count",
+          "defaultMessage": "Trading item count"
+        },
+        "303": {
+          "title": "Icon count",
+          "defaultMessage": "Icon item count"
+        },
+        "309": {
+          "title": "Behavior pack count",
+          "defaultMessage": "Behavior pack item count"
+        },
+        "310": {
+          "title": "Resource pack count",
+          "defaultMessage": "Resource pack item count"
+        }
+      },
+      "LINESIZE": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "File Line/Size Information (LINESIZE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "105": {
+          "title": "Behavior pack manifest",
+          "defaultMessage": "Behavior pack manifest file lines"
+        },
+        "110": {
+          "title": "Entity type",
+          "defaultMessage": "Entity type file lines"
+        },
+        "114": {
+          "title": "Resource pack manifest",
+          "defaultMessage": "Resource pack manifest file lines"
+        },
+        "121": {
+          "title": "Block type",
+          "defaultMessage": "Block type file lines"
+        },
+        "123": {
+          "title": "Item type",
+          "defaultMessage": "Item type file lines"
+        },
+        "124": {
+          "title": "Loot table",
+          "defaultMessage": "Loot table file lines"
+        },
+        "128": {
+          "title": "Animation",
+          "defaultMessage": "Animation file lines"
+        },
+        "129": {
+          "title": "Animation controller",
+          "defaultMessage": "Animation controller file lines"
+        },
+        "139": {
+          "title": "Entity dialogue",
+          "defaultMessage": "Entity dialogue file lines"
+        },
+        "143": {
+          "title": "Recipe",
+          "defaultMessage": "Recipe file lines"
+        },
+        "144": {
+          "title": "Spawn rule",
+          "defaultMessage": "Spawn rule file lines"
+        },
+        "145": {
+          "title": "Trading",
+          "defaultMessage": "Trading file lines"
+        },
+        "203": {
+          "title": "Icon",
+          "defaultMessage": "Icon file size"
+        },
+        "209": {
+          "title": "Behavior pack",
+          "defaultMessage": "Behavior pack file lines"
+        },
+        "210": {
+          "title": "Resource pack",
+          "defaultMessage": "Resource pack file lines"
+        }
+      },
+      "PACKSIZE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Pack Size Information (PACKSIZE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Overall Size"
+        },
+        "102": {
+          "title": "File Count"
+        },
+        "103": {
+          "title": "Folder Count"
+        },
+        "104": {
+          "title": "Content Size"
+        },
+        "105": {
+          "title": "Content File Count"
+        },
+        "106": {
+          "title": "Content Folder Count"
+        }
+      },
+      "PACK": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "General info (PACK) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "104": {
+          "title": "104",
+          "defaultMessage": "Behavior Pack Name"
+        },
+        "105": {
+          "title": "105",
+          "defaultMessage": "Behavior Pack Description"
+        },
+        "106": {
+          "title": "106",
+          "defaultMessage": "Behavior Pack Id"
+        },
+        "107": {
+          "title": "107",
+          "defaultMessage": "Behavior Pack Min Engine Version"
+        },
+        "108": {
+          "title": "108",
+          "defaultMessage": "Behavior Pack Uuid"
+        },
+        "109": {
+          "title": "109",
+          "defaultMessage": "Behavior Pack Manfiest"
+        },
+        "111": {
+          "title": "111",
+          "defaultMessage": "Resource Pack Min Engine Version"
+        },
+        "112": {
+          "title": "112",
+          "defaultMessage": "Resource Pack Uuid"
+        },
+        "113": {
+          "title": "113",
+          "defaultMessage": "Resource Pack Manifest"
+        },
+        "114": {
+          "title": "114",
+          "defaultMessage": "Resource Pack Name"
+        },
+        "115": {
+          "title": "115",
+          "defaultMessage": "Resource Pack Description"
+        },
+        "116": {
+          "title": "116",
+          "defaultMessage": "Resource Pack Id"
+        },
+        "117": {
+          "title": "117",
+          "defaultMessage": "Resource Pack Format Version"
+        },
+        "245": {
+          "title": "245",
+          "defaultMessage": "Entity Geometry"
+        }
+      },
+      "JSONTAGS": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "JSON Tags (JSONTAGS) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Entity Type",
+          "defaultMessage": "Entity file"
+        },
+        "102": {
+          "title": "Block Type",
+          "defaultMessage": "Block file"
+        },
+        "103": {
+          "title": "Item Type",
+          "defaultMessage": "Item file"
+        }
+      },
+      "FORMATVER": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Format Version (FORMATVER) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "120": {
+          "title": "Block type Version Patch Version Higher than Current",
+          "defaultMessage": "Block type version (1.21.0) has a lower patch version number compared to current version (1.21.100)",
+          "recommendations": 1
+        },
+        "140": {
+          "title": "Item type Version Patch Version Higher than Current",
+          "defaultMessage": "Item type version (1.21.0) has a lower patch version number compared to current version (1.21.100)",
+          "recommendations": 2
+        },
+        "160": {
+          "title": "Recipe Version Patch Version Higher than Current",
+          "defaultMessage": "Recipe version (1.21.0) has a lower patch version number compared to current version (1.21.100)",
+          "recommendations": 1
+        },
+        "218": {
+          "title": "Resource animation Version Patch Version Lower than Current",
+          "defaultMessage": "Resource animation version (1.21.0) has a higher minor version number compared to current version (1.10.0)",
+          "warnings": 1
+        },
+        "238": {
+          "title": "Resource animation controller Version Patch Version Lower than Current",
+          "defaultMessage": "Resource animation controller version (1.21.0) has a higher minor version number compared to current version (1.10.0)",
+          "warnings": 1
+        },
+        "258": {
+          "title": "258",
+          "defaultMessage": "Spawn rules version (1.21.0) has a higher minor version number compared to current version (1.12.0)",
+          "warnings": 1
+        },
+        "621": {
+          "title": "621",
+          "defaultMessage": "Block type format_version"
+        },
+        "623": {
+          "title": "623",
+          "defaultMessage": "Item type format_version"
+        },
+        "628": {
+          "title": "628",
+          "defaultMessage": "Animation format_version"
+        },
+        "629": {
+          "title": "629",
+          "defaultMessage": "Animation controller format_version"
+        },
+        "643": {
+          "title": "643",
+          "defaultMessage": "Recipe format_version"
+        },
+        "644": {
+          "title": "644",
+          "defaultMessage": "Spawn rule format_version"
+        }
+      },
+      "SCRIPT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Script (SCRIPT) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "apisUsed"
+        }
+      },
+      "SUMMARY": {
+        "1": {
+          "title": "",
+          "defaultMessage": "Summary Information (SUMMARY) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "",
+          "defaultMessage": "Resource Manifests"
+        },
+        "102": {
+          "title": "",
+          "defaultMessage": "Behavior Manifests"
+        }
+      },
+      "RESOURCEANIMATION": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Resource Animation (RESOURCEANIMATION) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Animations"
+        },
+        "102": {
+          "title": "Bones"
+        }
+      },
+      "TEXTURE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Texture Validation (TEXTURE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Textures"
+        }
+      },
+      "TEXTUREREF": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Texture Reference Info Aggregation (TEXTUREREF) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Texture References"
+        }
+      },
+      "TYPES": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Types Info Aggregation (TYPES) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Types"
+        }
+      },
+      "TEXTUREIMAGE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Texture Image Validation (TEXTUREIMAGE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Texture Images"
+        },
+        "200": {
+          "title": "Texture Images Tier0",
+          "defaultMessage": "Texture Images Tier 0"
+        },
+        "201": {
+          "title": "Texture Images Tier1",
+          "defaultMessage": "Texture Images Tier 1"
+        },
+        "202": {
+          "title": "Texture Images Tier2",
+          "defaultMessage": "Texture Images Tier 2"
+        },
+        "203": {
+          "title": "Texture Images Tier3",
+          "defaultMessage": "Texture Images Tier 3"
+        },
+        "204": {
+          "title": "Texture Images Tier4",
+          "defaultMessage": "Texture Images Tier 4"
+        },
+        "205": {
+          "title": "Texture Images Tier5",
+          "defaultMessage": "Texture Images Tier 5"
+        }
+      },
+      "GEOMETRY": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Model Geometry Validation (GEOMETRY) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "101": {
+          "title": "Block Geometry"
+        },
+        "102": {
+          "title": "Entity Geometry"
+        },
+        "103": {
+          "title": "Item Geometry",
+          "defaultMessage": "Items Geometry"
+        }
+      },
+      "LANGFILES": {
+        "0": {
+          "title": "Test Failure",
+          "defaultMessage": "Found 2 errors for Check Lang File Generator (LANGFILES).",
+          "testCompleteFails": 1
+        },
+        "101": {
+          "title": "languages.json Not Found",
+          "errors": 2
+        }
+      },
+      "MINENGINEVER": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Min Engine Version (MINENGINEVER) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "605": {
+          "title": "605",
+          "defaultMessage": "Behavior pack manifest min_engine_version"
+        },
+        "614": {
+          "title": "614",
+          "defaultMessage": "Resource pack manifest format_version"
+        }
+      },
+      "ENTITYTYPE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Entity Type (ENTITYTYPE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "52": {
+          "title": "Runtime Identifier",
+          "defaultMessage": "Entity Type Runtime Identifier"
+        },
+        "53": {
+          "title": "Identifier",
+          "defaultMessage": "Entity Type Identifier"
+        },
+        "54": {
+          "title": "Metadata",
+          "defaultMessage": "Entity Type Metadata"
+        },
+        "130": {
+          "title": "Format Version Patch Version Lower Than Current",
+          "defaultMessage": "Behavior pack entity type format version (1.21.0) has a lower patch version number compared to current version (1.21.100.06)",
+          "recommendations": 1
+        }
+      },
+      "ITEMTYPE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Item Type (ITEMTYPE) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "53": {
+          "title": "Identifier",
+          "defaultMessage": "Item Type Identifier"
+        },
+        "55": {
+          "title": "Category",
+          "defaultMessage": "Item Type Category"
+        },
+        "130": {
+          "title": "Format Version Patch Version Lower Than Current",
+          "defaultMessage": "Behavior pack item type format version (1.21.0) has a lower patch version number compared to current version (1.21.100.06)",
+          "recommendations": 2
+        }
+      },
+      "WORLDDATA": {
+        "1": {
+          "defaultMessage": "World Data Validation (WORLDDATA) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "121": {
+          "defaultMessage": "Blocks"
+        },
+        "122": {
+          "defaultMessage": "Block Data"
+        },
+        "123": {
+          "defaultMessage": "Command"
+        },
+        "124": {
+          "defaultMessage": "Execute Sub Command"
+        },
+        "125": {
+          "defaultMessage": "Level Dat"
+        },
+        "126": {
+          "defaultMessage": "Level Dat Experiments"
+        }
+      },
+      "JSONF": {
+        "0": {
+          "defaultMessage": "Found 2 internal errors for JSON Structure Validation (via Minecraft docs) (JSONF). This may be a temporary issue with the test run.",
+          "testCompleteFails": 1
+        },
+        "402": {
+          "defaultMessage": "Could not find expected form",
+          "internalProcessingErrors": 2
+        }
+      },
+      "UNLINK": {
+        "1": {
+          "defaultMessage": "Unlinked item info generator (UNLINK) completed successfully",
+          "testCompleteSuccesses": 1
+        },
+        "323": {
+          "defaultMessage": "Link to item type is not found in this pack",
+          "warnings": 3
+        }
+      },
+      "SHARING": {
+        "1": {
+          "title": "1",
+          "defaultMessage": "Sharing Best Practices Information (SHARING) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "PACKMETADATA": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test General info (PACKMETADATA)"
+        }
+      },
+      "STRICT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Strict Platform Info Generator (STRICT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "MCFUNCTION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test MC Function Validation (MCFUNCTION)"
+        }
+      },
+      "CPACKICON": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Pack Icon Generator (CPACKICON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CWI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check World Icon Generator (CWI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "SNDSDEF": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)"
+        }
+      },
+      "CPARTI": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CSPJ": {
+        "1": {
+          "title": "Unknown Test: 1",
+          "defaultMessage": "Check Skin Pack Json Generator (CSPJ) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "EXPFLAG": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Experimental Flag (EXPFLAG)"
+        }
+      },
+      "CHECKFEATUREDEPRECATION": {
+        "2": {
+          "title": "Test Not Applicable",
+          "defaultMessage": "No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)"
+        }
+      },
+      "FORBFILE": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Forbidden Files Generator (FORBFILE) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "PRJINT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Project Integrity Generator (PRJINT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "GEOFMT": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Geometry Format (GEOFMT) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "CBFG": {
+        "1": {
+          "title": "Test Success",
+          "defaultMessage": "Check Beta Features Generator (CBFG) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "SCRIPTMODULE": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Script Modules (SCRIPTMODULE)"
+        }
+      },
+      "VSCODEFILE": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test VSCode Files (VSCODEFILE)"
+        }
+      },
+      "BASEGAMEVER": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Base Game Version (BASEGAMEVER)"
+        }
+      },
+      "BLOCKSCAT": {
+        "2": {
+          "title": "2",
+          "defaultMessage": "No applicable items found for test Blocks Catalog (BLOCKSCAT)"
+        }
+      },
+      "UNKJSON": {
+        "1": {
+          "defaultMessage": "Unknown JSON (UNKJSON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "JSON": {
+        "1": {
+          "defaultMessage": "JSON Structure Validation (JSON) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "WORLD": {
+        "2": {
+          "defaultMessage": "No applicable items found for test World Validation (WORLD)"
+        }
+      },
+      "UNKFILE": {
+        "1": {
+          "defaultMessage": "Unknown files (UNKFILE) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "VALFILE": {
+        "2": {
+          "defaultMessage": "No applicable items found for test Valid files (VALFILE)"
+        }
+      },
+      "PATHLENGTH": {
+        "1": {
+          "defaultMessage": "Path Length (PATHLENGTH) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      },
+      "NOBOM": {
+        "1": {
+          "defaultMessage": "No Byte Order Mark allowed in json file. (NOBOM) completed successfully",
+          "testCompleteSuccesses": 1
+        }
+      }
+    }
+  },
+  "items": [
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 102,
+      "p": "/behavior_packs/diverse_bp/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 103,
+      "p": "/resource_packs/diverse_rp/manifest.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 205,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 210,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 214,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 221,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 223,
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 224,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 228,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 229,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 239,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 243,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 244,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 245,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 303,
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 309,
+      "d": 1
+    },
+    {
+      "iTp": 2,
+      "gId": "ITEMS",
+      "gIx": 310,
+      "d": 1
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 209,
+      "p": "/behavior_packs/diverse_bp/"
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 105,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 324,
+          "Max": 324,
+          "Min": 324,
+          "Average": 324
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 13,
+          "Max": 13,
+          "Min": 13,
+          "Average": 13
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 203,
+      "p": "/behavior_packs/diverse_bp/pack_icon.png",
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 608,
+          "Max": 304,
+          "Min": 304,
+          "Average": 304
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 121,
+      "p": "/behavior_packs/diverse_bp/blocks/sample_block.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 341,
+          "Max": 341,
+          "Min": 341,
+          "Average": 341
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 17,
+          "Max": 17,
+          "Min": 17,
+          "Average": 17
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 139,
+      "p": "/behavior_packs/diverse_bp/dialogue/sample_dialogue.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 606,
+          "Max": 606,
+          "Min": 606,
+          "Average": 606
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 20,
+          "Max": 20,
+          "Min": 20,
+          "Average": 20
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 110,
+      "p": "/behavior_packs/diverse_bp/entities/sample_mob.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 770,
+          "Max": 770,
+          "Min": 770,
+          "Average": 770
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 45,
+          "Max": 45,
+          "Min": 45,
+          "Average": 45
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 123,
+      "p": "/behavior_packs/diverse_bp/items/sample_food.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 2,
+          "Total": 625,
+          "Max": 353,
+          "Min": 272,
+          "Average": 313
+        },
+        "Lines": {
+          "Instance Count": 2,
+          "Total": 34,
+          "Max": 20,
+          "Min": 14,
+          "Average": 17
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 124,
+      "p": "/behavior_packs/diverse_bp/loot_tables/sample_loot.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 205,
+          "Max": 205,
+          "Min": 205,
+          "Average": 205
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 16,
+          "Max": 16,
+          "Min": 16,
+          "Average": 16
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 143,
+      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 274,
+          "Max": 274,
+          "Min": 274,
+          "Average": 274
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 21,
+          "Max": 21,
+          "Min": 21,
+          "Average": 21
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 144,
+      "p": "/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 442,
+          "Max": 442,
+          "Min": 442,
+          "Average": 442
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 25,
+          "Max": 25,
+          "Min": 25,
+          "Average": 25
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 145,
+      "p": "/behavior_packs/diverse_bp/trading/sample_trading.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 264,
+          "Max": 264,
+          "Min": 264,
+          "Average": 264
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 19,
+          "Max": 19,
+          "Min": 19,
+          "Average": 19
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 210,
+      "p": "/resource_packs/diverse_rp/"
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 114,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 328,
+          "Max": 328,
+          "Min": 328,
+          "Average": 328
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 13,
+          "Max": 13,
+          "Min": 13,
+          "Average": 13
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 128,
+      "p": "/resource_packs/diverse_rp/animations/sample_mob_animations.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 321,
+          "Max": 321,
+          "Min": 321,
+          "Average": 321
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 22,
+          "Max": 22,
+          "Min": 22,
+          "Average": 22
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "LINESIZE",
+      "gIx": 129,
+      "p": "/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json",
+      "fs": {
+        "Size": {
+          "Instance Count": 1,
+          "Total": 322,
+          "Max": 322,
+          "Min": 322,
+          "Average": 322
+        },
+        "Lines": {
+          "Instance Count": 1,
+          "Total": 17,
+          "Max": 17,
+          "Min": 17,
+          "Average": 17
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 101,
+      "d": 5430
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 102,
+      "d": 15
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 103,
+      "d": 14
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 104,
+      "d": 5430
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 105,
+      "d": 15
+    },
+    {
+      "iTp": 7,
+      "gId": "PACKSIZE",
+      "gIx": 106,
+      "d": 10
+    },
+    {
+      "iTp": 7,
+      "gId": "PACK",
+      "gIx": 245
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 109,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": "{\"format_version\":2,\"header\":{\"name\":\"Diverse Content Behavior Pack\",\"description\":\"A behavior pack with multiple diverse content types for testing\",\"uuid\":\"123e4567-e89b-12d3-a456-426614174000\",\"version\":[1,0,0],\"min_engine_version\":[1,21,0]},\"modules\":[{\"type\":\"data\",\"uuid\":\"123e4567-e89b-12d3-a456-426614174001\",\"version\":[1,0,0]}]}"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 108,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": "123e4567-e89b-12d3-a456-426614174000"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 106,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": "123e4567-e89b-12d3-a456-426614174000|1.0.0"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 104,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": "Diverse Content Behavior Pack"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 105,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": "A behavior pack with multiple diverse content types for testing"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 107,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 113,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": "{\"format_version\":2,\"header\":{\"name\":\"Diverse Content Resource Pack\",\"description\":\"A resource pack with animations and visual content for testing\",\"uuid\":\"123e4567-e89b-12d3-a456-426614174002\",\"version\":[1,0,0],\"min_engine_version\":[1,21,0]},\"modules\":[{\"type\":\"resources\",\"uuid\":\"123e4567-e89b-12d3-a456-426614174003\",\"version\":[1,0,0]}]}"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 117,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": 2
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 112,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": "123e4567-e89b-12d3-a456-426614174002"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 116,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": "123e4567-e89b-12d3-a456-426614174002|1.0.0"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 114,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": "Diverse Content Resource Pack"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 115,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": "A resource pack with animations and visual content for testing"
+    },
+    {
+      "iTp": 2,
+      "gId": "PACK",
+      "gIx": 111,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 102,
+      "p": "/behavior_packs/diverse_bp/blocks/sample_block.json",
+      "d": "/behavior_packs/diverse_bp/blocks/sample_block.json",
+      "fs": {
+        "Block Default Components": {
+          "minecraft:destructible_by_mining": 1,
+          "minecraft:destructible_by_explosion": 1,
+          "minecraft:friction": 1,
+          "minecraft:map_color": 1
+        }
+      }
+    },
+    {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 101,
+      "p": "/behavior_packs/diverse_bp/entities/sample_mob.json",
+      "d": "/behavior_packs/diverse_bp/entities/sample_mob.json",
+      "fs": {
+        "Default Components": {
+          "minecraft:type_family": 1,
+          "minecraft:health": 1,
+          "minecraft:attack": 1,
+          "minecraft:movement": 1,
+          "minecraft:navigation.walk": 1,
+          "minecraft:movement.basic": 1,
+          "minecraft:jump.static": 1,
+          "minecraft:can_climb": 1,
+          "minecraft:collision_box": 1,
+          "minecraft:nameable": 1
+        },
+        "Components Used in Component Groups": {
+          "minecraft:experience_reward": 1
+        },
+        "Entity Events": {
+          "add": 1
+        }
+      }
+    },
+    {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 103,
+      "p": "/behavior_packs/diverse_bp/items/sample_food.json",
+      "d": "/behavior_packs/diverse_bp/items/sample_food.json",
+      "fs": {
+        "Components": {
+          "minecraft:max_stack_size": 1,
+          "minecraft:use_duration": 1,
+          "minecraft:food": 1
+        }
+      }
+    },
+    {
+      "iTp": 2,
+      "gId": "JSONTAGS",
+      "gIx": 103,
+      "p": "/behavior_packs/diverse_bp/items/sample_sword.json",
+      "d": "/behavior_packs/diverse_bp/items/sample_sword.json",
+      "fs": {
+        "Components": {
+          "minecraft:max_stack_size": 1,
+          "minecraft:hand_equipped": 1,
+          "minecraft:durability": 1,
+          "minecraft:weapon": 1,
+          "minecraft:damage": 1
+        }
+      }
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 120,
+      "p": "/behavior_packs/diverse_bp/blocks/sample_block.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 621,
+      "p": "/behavior_packs/diverse_bp/blocks/sample_block.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 140,
+      "p": "/behavior_packs/diverse_bp/items/sample_food.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 623,
+      "p": "/behavior_packs/diverse_bp/items/sample_food.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 140,
+      "p": "/behavior_packs/diverse_bp/items/sample_sword.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 623,
+      "p": "/behavior_packs/diverse_bp/items/sample_sword.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 6,
+      "gId": "FORMATVER",
+      "gIx": 160,
+      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 643,
+      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 4,
+      "gId": "FORMATVER",
+      "gIx": 258,
+      "p": "/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 644,
+      "p": "/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 4,
+      "gId": "FORMATVER",
+      "gIx": 218,
+      "p": "/resource_packs/diverse_rp/animations/sample_mob_animations.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 628,
+      "p": "/resource_packs/diverse_rp/animations/sample_mob_animations.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 4,
+      "gId": "FORMATVER",
+      "gIx": 238,
+      "p": "/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json"
+    },
+    {
+      "iTp": 2,
+      "gId": "FORMATVER",
+      "gIx": 629,
+      "p": "/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 7,
+      "gId": "SCRIPT",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "SUMMARY",
+      "gIx": 102
+    },
+    {
+      "iTp": 7,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 101,
+      "fs": {
+        "Resource": {
+          "Count": 2
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 102,
+      "fs": {
+        "Resource Animation Bone": {
+          "Count": 2
+        },
+        "Resource Animation Bone Rotation Keyframe": {
+          "Count": 20
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTURE",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREREF",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "TYPES",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 200,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 201,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 202,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 203,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 204,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 205,
+      "fs": {
+        "Non-Vanilla Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Total Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Block Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        },
+        "Item Atlas Texture Memory Tier": {
+          "Instance Count": 1,
+          "Total": 0,
+          "Max": 0,
+          "Min": 0,
+          "Average": 0
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 101
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 102
+    },
+    {
+      "iTp": 7,
+      "gId": "GEOMETRY",
+      "gIx": 103
+    },
+    {
+      "iTp": 3,
+      "gId": "LANGFILES",
+      "gIx": 101
+    },
+    {
+      "iTp": 3,
+      "gId": "LANGFILES",
+      "gIx": 101
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 605,
+      "p": "/behavior_packs/diverse_bp/manifest.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 2,
+      "gId": "MINENGINEVER",
+      "gIx": 614,
+      "p": "/resource_packs/diverse_rp/manifest.json",
+      "d": [
+        1,
+        21,
+        0
+      ]
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 52,
+      "fs": {
+        "(no runtime identifier)": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 53,
+      "fs": {
+        "(no override identifier)": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ENTITYTYPE",
+      "gIx": 54,
+      "fs": {
+        "Spawnable Entity Type": {
+          "Count": 1
+        },
+        "Summonable Entity Type": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 6,
+      "gId": "ENTITYTYPE",
+      "gIx": 130,
+      "p": "/behavior_packs/diverse_bp/entities/sample_mob.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "ITEMTYPE",
+      "gIx": 53,
+      "fs": {
+        "(no override identifier)": {
+          "Count": 2
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "ITEMTYPE",
+      "gIx": 55,
+      "fs": {
+        "nature": {
+          "Count": 1
+        },
+        "equipment": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 6,
+      "gId": "ITEMTYPE",
+      "gIx": 130,
+      "p": "/behavior_packs/diverse_bp/items/sample_food.json"
+    },
+    {
+      "iTp": 6,
+      "gId": "ITEMTYPE",
+      "gIx": 130,
+      "p": "/behavior_packs/diverse_bp/items/sample_sword.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 121,
+      "p": "/behavior_packs/diverse_bp/dialogue/sample_dialogue.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 122,
+      "p": "/behavior_packs/diverse_bp/dialogue/sample_dialogue.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 123,
+      "p": "/behavior_packs/diverse_bp/dialogue/sample_dialogue.json",
+      "fs": {
+        "say": {
+          "Count": 2
+        },
+        "give": {
+          "Count": 1
+        }
+      }
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 124,
+      "p": "/behavior_packs/diverse_bp/dialogue/sample_dialogue.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 125,
+      "p": "/behavior_packs/diverse_bp/dialogue/sample_dialogue.json"
+    },
+    {
+      "iTp": 7,
+      "gId": "WORLDDATA",
+      "gIx": 126,
+      "p": "/behavior_packs/diverse_bp/dialogue/sample_dialogue.json"
+    },
+    {
+      "iTp": 5,
+      "gId": "JSONF",
+      "gIx": 402,
+      "d": "entity/actor_document"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 323,
+      "p": "/behavior_packs/diverse_bp/loot_tables/sample_loot.json",
+      "d": "/behavior_packs/diverse_bp/loot_tables/sample_loot.json to `minecraft:stick`"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 323,
+      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
+      "d": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:iron_ingot`"
+    },
+    {
+      "iTp": 4,
+      "gId": "UNLINK",
+      "gIx": 323,
+      "p": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
+      "d": "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json to `minecraft:stick`"
+    },
+    {
+      "iTp": 5,
+      "gId": "JSONF",
+      "gIx": 402,
+      "d": "spawn/spawn_rules"
+    },
+    {
+      "iTp": 1,
+      "gId": "ITEMS",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "LINESIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PACKSIZE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PACK",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "JSONTAGS",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "FORMATVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SCRIPT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SHARING",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "SUMMARY",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "PACKMETADATA",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "RESOURCEANIMATION",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "STRICT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "TEXTURE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "TEXTUREREF",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "TYPES",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "TEXTUREIMAGE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOMETRY",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "MCFUNCTION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CPACKICON",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CWI",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "SNDSDEF",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "CPARTI",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CSPJ",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "EXPFLAG",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "CHECKFEATUREDEPRECATION",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "FORBFILE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "PRJINT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "GEOFMT",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "CBFG",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "LANGFILES",
+      "gIx": 0
+    },
+    {
+      "iTp": 8,
+      "gId": "SCRIPTMODULE",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "VSCODEFILE",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "MINENGINEVER",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "BASEGAMEVER",
+      "gIx": 2
+    },
+    {
+      "iTp": 8,
+      "gId": "BLOCKSCAT",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "ENTITYTYPE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "ITEMTYPE",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "UNKJSON",
+      "gIx": 1
+    },
+    {
+      "iTp": 0,
+      "gId": "JSONF",
+      "gIx": 0
+    },
+    {
+      "iTp": 1,
+      "gId": "JSON",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "WORLD",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "WORLDDATA",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "UNLINK",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "UNKFILE",
+      "gIx": 1
+    },
+    {
+      "iTp": 8,
+      "gId": "VALFILE",
+      "gIx": 2
+    },
+    {
+      "iTp": 1,
+      "gId": "PATHLENGTH",
+      "gIx": 1
+    },
+    {
+      "iTp": 1,
+      "gId": "NOBOM",
+      "gIx": 1
+    }
+  ],
+  "index": {
+    "items": [
+      "blocks/sample_block",
+      "/behavior_packs/diverse_bp/blocks/sample_block.json",
+      "entities/sample_mob",
+      "/behavior_packs/diverse_bp/entities/sample_mob.json",
+      "items/sample_food",
+      "/behavior_packs/diverse_bp/items/sample_food.json",
+      "items/sample_sword",
+      "/behavior_packs/diverse_bp/items/sample_sword.json",
+      "/behavior_packs/diverse_bp/manifest.json",
+      "/behavior_packs/diverse_bp/pack_icon.png",
+      "/behavior_packs/diverse_bp/dialogue/sample_dialogue.json",
+      "/behavior_packs/diverse_bp/loot_tables/sample_loot.json",
+      "/behavior_packs/diverse_bp/recipes/sample_sword_recipe.json",
+      "/behavior_packs/diverse_bp/spawn_rules/sample_mob_spawn.json",
+      "/behavior_packs/diverse_bp/trading/sample_trading.json",
+      "/resource_packs/diverse_rp/manifest.json",
+      "/resource_packs/diverse_rp/pack_icon.png",
+      "/resource_packs/diverse_rp/animations/sample_mob_animations.json",
+      "/resource_packs/diverse_rp/animation_controllers/sample_mob_controller.json"
+    ],
+    "trie": {
+      "t": {
+        "ype": {
+          "_family": {
+            "±": [
+              {
+                "n": 2,
+                "a": "c"
+              },
+              {
+                "n": 3,
+                "a": "c"
+              }
+            ],
+            ".family": {
+              "±": [
+                {
+                  "n": 3,
+                  "a": "c"
+                }
+              ],
+              ".": {
+                "test_mob": [
+                  {
+                    "n": 3,
+                    "a": "c"
+                  }
+                ],
+                "monster": [
+                  {
+                    "n": 3,
+                    "a": "c"
+                  }
+                ]
+              }
+            }
+          },
+          "s": [
+            8
+          ],
+          "±": [
+            11,
+            15,
+            8
+          ]
+        },
+        "e": {
+          "st": {
+            "_mob": [
+              {
+                "n": 3,
+                "a": "c"
+              }
+            ],
+            ":": {
+              "adult": [
+                {
+                  "n": 3,
+                  "a": "v"
+                }
+              ],
+              "sample_": {
+                "block": [
+                  {
+                    "n": 1,
+                    "a": "B"
+                  }
+                ],
+                "mob": [
+                  {
+                    "n": 3,
+                    "a": "E"
+                  }
+                ],
+                "food": [
+                  {
+                    "n": 5,
+                    "a": "I"
+                  }
+                ],
+                "sword": [
+                  {
+                    "n": 7,
+                    "a": "I"
+                  }
+                ]
+              }
+            },
+            "ing": [
+              15,
+              8
+            ],
+            "±": [
+              1,
+              10,
+              -4,
+              3,
+              5,
+              7
+            ]
+          },
+          "xt": [
+            10
+          ]
+        },
+        "hank": {
+          "s!": [
+            10
+          ],
+          "±": [
+            10
+          ]
+        },
+        "r": {
+          "ue": {
+            ",": [
+              17,
+              3,
+              7
+            ],
+            "±": [
+              13,
+              3
+            ]
+          },
+          "a": {
+            "de": {
+              "r": [
+                10
+              ],
+              "!": [
+                10
+              ],
+              "s": [
+                14
+              ]
+            },
+            "nsitions": [
+              18
+            ]
+          }
+        },
+        "a": {
+          "rget": [
+            7
+          ],
+          "gs": [
+            12
+          ]
+        },
+        "iers": [
+          14
+        ]
+      },
+      "m": {
+        "o": {
+          "nster": [
+            {
+              "n": 3,
+              "a": "c"
+            },
+            13
+          ],
+          "dules": [
+            15,
+            8
+          ],
+          "v": {
+            "ement": {
+              "±": [
+                {
+                  "n": 2,
+                  "a": "c"
+                },
+                {
+                  "n": 3,
+                  "a": "c"
+                }
+              ],
+              ".": {
+                "value": [
+                  {
+                    "n": 3,
+                    "a": "c"
+                  }
+                ],
+                "basic": [
+                  {
+                    "n": 2,
+                    "a": "c"
+                  },
+                  {
+                    "n": 3,
+                    "a": "c"
+                  }
+                ]
+              }
+            },
+            "ing": [
+              18
+            ]
+          }
+        },
+        "a": {
+          "p_color": [
+            {
+              "n": 0,
+              "a": "d"
+            },
+            {
+              "n": 1,
+              "a": "d"
+            }
+          ],
+          "nifest": [
+            15,
+            8
+          ],
+          "x_": {
+            "durability": [
+              7
+            ],
+            "s": {
+              "tack_size": {
+                "±": [
+                  {
+                    "n": 4,
+                    "a": "j"
+                  },
+                  {
+                    "n": 5,
+                    "a": "j"
+                  },
+                  {
+                    "n": 6,
+                    "a": "j"
+                  },
+                  {
+                    "n": 7,
+                    "a": "j"
+                  }
+                ],
+                "==": {
+                  "1": [
+                    {
+                      "n": 7,
+                      "a": "j"
+                    }
+                  ],
+                  "64": [
+                    {
+                      "n": 5,
+                      "a": "j"
+                    }
+                  ]
+                }
+              },
+              "ize": [
+                13
+              ]
+            }
+          }
+        },
+        "ultiple": [
+          8
+        ],
+        "in": {
+          "ecraft": [
+            1,
+            10,
+            -4,
+            3,
+            5,
+            7
+          ],
+          "_": {
+            "engine_version": [
+              15,
+              8
+            ],
+            "size": [
+              13
+            ]
+          }
+        },
+        "enu_category": [
+          1
+        ]
+      },
+      "jump.static": [
+        {
+          "n": 2,
+          "a": "c"
+        },
+        {
+          "n": 3,
+          "a": "c"
+        }
+      ],
+      "c": {
+        "o": {
+          "llision_box": {
+            "±": [
+              {
+                "n": 2,
+                "a": "c"
+              },
+              {
+                "n": 3,
+                "a": "c"
+              }
+            ],
+            ".": {
+              "width": [
+                {
+                  "n": 3,
+                  "a": "c"
+                }
+              ],
+              "height": [
+                {
+                  "n": 3,
+                  "a": "c"
+                }
+              ]
+            }
+          },
+          "n": {
+            "struction": [
+              1
+            ],
+            "ditions": [
+              13
+            ],
+            "t": {
+              "ent": [
+                15,
+                8
+              ],
+              "roller.animation.sample_mob.movement": [
+                18
+              ]
+            }
+          },
+          "m": {
+            "mands": [
+              10
+            ],
+            "ponent": {
+              "s": [
+                1,
+                3,
+                5,
+                7
+              ],
+              "_groups": [
+                3
+              ]
+            }
+          },
+          "unt": [
+            11
+          ]
+        },
+        "a": {
+          "tegory": [
+            1,
+            5,
+            7
+          ],
+          "n_": {
+            "climb": [
+              {
+                "n": 2,
+                "a": "c"
+              },
+              {
+                "n": 3,
+                "a": "c"
+              }
+            ],
+            "path_over_water": [
+              3
+            ],
+            "always_eat": [
+              5
+            ]
+          }
+        },
+        "rafting_table": [
+          12
+        ]
+      },
+      "a": {
+        "ttack": {
+          "±": [
+            {
+              "n": 2,
+              "a": "c"
+            },
+            {
+              "n": 3,
+              "a": "c"
+            }
+          ],
+          ".damage": [
+            {
+              "n": 3,
+              "a": "c"
+            }
+          ]
+        },
+        "d": {
+          "d": {
+            "±": [
+              {
+                "n": 2,
+                "a": "v"
+              },
+              {
+                "n": 3,
+                "a": "v"
+              }
+            ],
+            ".component_groups": {
+              "±": [
+                {
+                  "n": 3,
+                  "a": "v"
+                }
+              ],
+              ".test:adult": [
+                {
+                  "n": 3,
+                  "a": "v"
+                }
+              ]
+            }
+          },
+          "ult": [
+            3
+          ],
+          "just_for_weather": [
+            13
+          ]
+        },
+        "void_water": [
+          3
+        ],
+        "nimation": {
+          "s": [
+            15,
+            17,
+            -1
+          ],
+          ".sample_mob.": {
+            "idle": [
+              17
+            ],
+            "walk": [
+              17
+            ]
+          },
+          "_": {
+            "length": [
+              17
+            ],
+            "controllers": [
+              18
+            ]
+          }
+        }
+      },
+      "f": {
+        "riction": [
+          {
+            "n": 0,
+            "a": "d"
+          },
+          {
+            "n": 1,
+            "a": "d"
+          }
+        ],
+        "o": {
+          "od": {
+            "±": [
+              {
+                "n": 4,
+                "a": "j"
+              },
+              {
+                "n": 5,
+                "a": "j"
+              }
+            ],
+            ".": {
+              "nutrition": [
+                {
+                  "n": 5,
+                  "a": "j"
+                }
+              ],
+              "saturation_modifier": [
+                {
+                  "n": 5,
+                  "a": "j"
+                }
+              ],
+              "can_always_eat": [
+                {
+                  "n": 5,
+                  "a": "j"
+                }
+              ]
+            }
+          },
+          "rmat_version": [
+            1,
+            10,
+            12,
+            -3,
+            17,
+            -1,
+            3,
+            5,
+            7,
+            -1
+          ]
+        },
+        "a": {
+          "lse": {
+            "±": [
+              3,
+              5
+            ],
+            ",": [
+              3
+            ]
+          },
+          "mily": [
+            3
+          ]
+        },
+        "unction": {
+          "s": [
+            11
+          ],
+          "±": [
+            11
+          ]
+        }
+      },
+      "h": {
+        "e": {
+          "a": {
+            "lth": {
+              "±": [
+                {
+                  "n": 2,
+                  "a": "c"
+                },
+                {
+                  "n": 3,
+                  "a": "c"
+                }
+              ],
+              ".": {
+                "value": [
+                  {
+                    "n": 3,
+                    "a": "c"
+                  }
+                ],
+                "max": [
+                  {
+                    "n": 3,
+                    "a": "c"
+                  }
+                ]
+              }
+            },
+            "der": [
+              15,
+              8
+            ]
+          },
+          "llo!": [
+            10
+          ],
+          "ight": [
+            3
+          ],
+          "rd": [
+            13
+          ]
+        },
+        "a": {
+          "nd_equipped": {
+            "±": [
+              {
+                "n": 6,
+                "a": "j"
+              },
+              {
+                "n": 7,
+                "a": "j"
+              }
+            ],
+            "==t": [
+              {
+                "n": 7,
+                "a": "j"
+              }
+            ]
+          },
+          "ve": {
+            "±": [
+              10
+            ],
+            "?": [
+              10
+            ]
+          }
+        }
+      },
+      "d": {
+        "urability": {
+          "±": [
+            {
+              "n": 6,
+              "a": "j"
+            },
+            {
+              "n": 7,
+              "a": "j"
+            }
+          ],
+          ".max_durability": [
+            {
+              "n": 7,
+              "a": "j"
+            }
+          ]
+        },
+        "iverse": [
+          15,
+          8
+        ],
+        "a": {
+          "mage": {
+            "±": [
+              {
+                "n": 6,
+                "a": "j"
+              },
+              {
+                "n": 7,
+                "a": "j"
+              },
+              3
+            ],
+            ".value": [
+              {
+                "n": 7,
+                "a": "j"
+              }
+            ]
+          },
+          "ta": [
+            8
+          ]
+        },
+        "e": {
+          "s": {
+            "tructible_by_": {
+              "mining": {
+                "±": [
+                  {
+                    "n": 0,
+                    "a": "d"
+                  },
+                  {
+                    "n": 1,
+                    "a": "d"
+                  }
+                ],
+                ".seconds_to_destroy": [
+                  {
+                    "n": 1,
+                    "a": "d"
+                  }
+                ]
+              },
+              "explosion": {
+                "±": [
+                  {
+                    "n": 0,
+                    "a": "d"
+                  },
+                  {
+                    "n": 1,
+                    "a": "d"
+                  }
+                ],
+                ".explosion_resistance": [
+                  {
+                    "n": 1,
+                    "a": "d"
+                  }
+                ]
+              }
+            },
+            "cription": [
+              1,
+              12,
+              -1,
+              15,
+              3,
+              5,
+              7,
+              -1
+            ]
+          },
+          "fault": [
+            13,
+            18
+          ]
+        }
+      },
+      "w": {
+        "e": {
+          "apon": {
+            "±": [
+              {
+                "n": 6,
+                "a": "j"
+              },
+              {
+                "n": 7,
+                "a": "j"
+              }
+            ],
+            ".on_hurt_entity": {
+              "±": [
+                {
+                  "n": 7,
+                  "a": "j"
+                }
+              ],
+              ".": {
+                "event": [
+                  {
+                    "n": 7,
+                    "a": "j"
+                  }
+                ],
+                "target": [
+                  {
+                    "n": 7,
+                    "a": "j"
+                  }
+                ]
+              }
+            }
+          },
+          "lcome": [
+            10
+          ],
+          "ight": [
+            11,
+            13
+          ]
+        },
+        "orld!": [
+          10
+        ],
+        "hat": [
+          10
+        ],
+        "i": {
+          "th": [
+            15,
+            8
+          ],
+          "dth": [
+            3
+          ]
+        },
+        "a": {
+          "nts": [
+            14
+          ],
+          "lk": [
+            18
+          ]
+        }
+      },
+      "u": {
+        "se_duration": [
+          {
+            "n": 4,
+            "a": "j"
+          },
+          {
+            "n": 5,
+            "a": "j"
+          }
+        ],
+        "uid": [
+          15,
+          8
+        ]
+      },
+      "123e4567-e89b-12d3-a456-42661417400": {
+        "0": [
+          8
+        ],
+        "1": [
+          8
+        ],
+        "2": [
+          15
+        ],
+        "3": [
+          15
+        ]
+      },
+      "b": {
+        "ehavior": [
+          8
+        ],
+        "lock": [
+          1
+        ],
+        "uttons": [
+          10
+        ],
+        "rightness_filter": [
+          13
+        ],
+        "o": {
+          "nes": [
+            17
+          ],
+          "dy": [
+            17
+          ]
+        }
+      },
+      "s": {
+        "cene": {
+          "s": [
+            10
+          ],
+          "_tag": [
+            10
+          ]
+        },
+        "ome": [
+          10
+        ],
+        "a": {
+          "mple": {
+            "_": {
+              "block": [
+                {
+                  "n": 1,
+                  "a": "B"
+                }
+              ],
+              "dialogue": [
+                10
+              ],
+              "greeting": [
+                10
+              ],
+              "food": [
+                10,
+                -1,
+                14,
+                5
+              ],
+              "mob": {
+                "±": [
+                  13,
+                  3
+                ],
+                "_": {
+                  "spawn": [
+                    13
+                  ],
+                  "animations": [
+                    17
+                  ],
+                  "controller": [
+                    18
+                  ]
+                }
+              },
+              "sword": {
+                "±": [
+                  12,
+                  14,
+                  7
+                ],
+                "_": {
+                  "hit": [
+                    7
+                  ],
+                  "recipe": [
+                    12
+                  ]
+                }
+              },
+              "loot": [
+                11
+              ],
+              "trad": {
+                "e": [
+                  10
+                ],
+                "ing": [
+                  14
+                ]
+              }
+            },
+            "±": [
+              10
+            ]
+          },
+          "turation_modifier": [
+            5
+          ]
+        },
+        "e": {
+          "conds_to_destroy": [
+            1
+          ],
+          "lf": [
+            7
+          ],
+          "t_count": [
+            11
+          ]
+        },
+        "pawn": {
+          "_rules": [
+            13
+          ],
+          "s_": {
+            "on_surface": [
+              13
+            ],
+            "underground": [
+              13
+            ]
+          }
+        },
+        "t": {
+          "ick": [
+            11,
+            -1
+          ],
+          "ates": [
+            18
+          ]
+        }
+      },
+      "#ff0000": [
+        1
+      ],
+      "n": {
+        "a": {
+          "vigation.walk": {
+            "±": [
+              {
+                "n": 2,
+                "a": "c"
+              },
+              {
+                "n": 3,
+                "a": "c"
+              }
+            ],
+            ".": {
+              "can_path_over_water": [
+                {
+                  "n": 3,
+                  "a": "c"
+                }
+              ],
+              "avoid_water": [
+                {
+                  "n": 3,
+                  "a": "c"
+                }
+              ]
+            }
+          },
+          "me": {
+            "able": [
+              {
+                "n": 2,
+                "a": "c"
+              },
+              {
+                "n": 3,
+                "a": "c"
+              }
+            ],
+            "±": [
+              10,
+              -1,
+              15,
+              8
+            ]
+          },
+          "ture": [
+            5
+          ]
+        },
+        "pc_": {
+          "dialogue": [
+            10
+          ],
+          "name": [
+            10
+          ]
+        },
+        "utrition": [
+          5
+        ]
+      },
+      "/": {
+        "behavior_packs/diverse_bp/": {
+          "manifest.json": [
+            8
+          ],
+          "pack_icon.png": [
+            9
+          ],
+          "blocks/sample_block.json": [
+            1
+          ],
+          "dialogue/sample_dialogue.json": [
+            10
+          ],
+          "entities/sample_mob.json": [
+            3
+          ],
+          "items/sample_": {
+            "food.json": [
+              5
+            ],
+            "sword.json": [
+              7
+            ]
+          },
+          "loot_tables/sample_loot.json": [
+            11
+          ],
+          "recipes/sample_sword_recipe.json": [
+            12
+          ],
+          "spawn_rules/sample_mob_spawn.json": [
+            13
+          ],
+          "trading/sample_trading.json": [
+            14
+          ]
+        },
+        "say": [
+          10
+        ],
+        "give": [
+          10
+        ],
+        "resource_packs/diverse_rp/": {
+          "manifest.json": [
+            15
+          ],
+          "pack_icon.png": [
+            16
+          ],
+          "animations/sample_mob_animations.json": [
+            17
+          ]
+        }
+      },
+      "v": {
+        "ersion": [
+          15,
+          8
+        ],
+        "alue": [
+          3,
+          7
+        ],
+        "is": {
+          "iting!": [
+            10
+          ],
+          "ual": [
+            15
+          ]
+        }
+      },
+      "i": {
+        "s_": {
+          "s": {
+            "pawnable": [
+              3
+            ],
+            "ummonable": [
+              3
+            ]
+          },
+          "experimental": [
+            3
+          ]
+        },
+        "tem": {
+          "s": [
+            10
+          ],
+          "±": [
+            11,
+            -1,
+            14,
+            5,
+            7
+          ]
+        },
+        "ron_ingot": [
+          12,
+          14
+        ],
+        "nitial_state": [
+          18
+        ],
+        "d": {
+          "entifier": [
+            1,
+            12,
+            -1,
+            3,
+            5,
+            7
+          ],
+          "le": [
+            18
+          ]
+        }
+      },
+      "e": {
+        "xp": {
+          "erience_reward": {
+            "±": [
+              {
+                "n": 2,
+                "a": "g"
+              },
+              {
+                "n": 3,
+                "a": "g"
+              }
+            ],
+            ".on_death": [
+              {
+                "n": 3,
+                "a": "g"
+              }
+            ]
+          },
+          "losion_resistance": [
+            1
+          ]
+        },
+        "quipment": [
+          7
+        ],
+        "vent": {
+          "s": [
+            3
+          ],
+          "±": [
+            7
+          ]
+        },
+        "nt": {
+          "ity": {
+            "±": [
+              3
+            ],
+            "_": {
+              "spawned": [
+                3
+              ],
+              "type": [
+                13
+              ]
+            }
+          },
+          "ries": [
+            11
+          ]
+        },
+        "merald": [
+          14
+        ]
+      },
+      "on_": {
+        "death": [
+          3
+        ],
+        "hurt_entity": [
+          7
+        ]
+      },
+      "p": {
+        "a": {
+          "ck": {
+            "±": [
+              15,
+              8
+            ],
+            "_icon": [
+              16,
+              9
+            ]
+          },
+          "ttern": [
+            12
+          ]
+        },
+        "o": {
+          "ols": [
+            11
+          ],
+          "pulation_control": [
+            13
+          ]
+        },
+        "ermute_type": [
+          13
+        ]
+      },
+      "r": {
+        "awtext": [
+          10
+        ],
+        "e": {
+          "cipe_shaped": [
+            12
+          ],
+          "s": {
+            "ult": [
+              12
+            ],
+            "ource": {
+              "±": [
+                15
+              ],
+              "s": [
+                15
+              ]
+            }
+          }
+        },
+        "o": {
+          "lls": [
+            11
+          ],
+          "tation": [
+            17
+          ]
+        }
+      },
+      "qu": {
+        "antity": [
+          14
+        ],
+        "ery.": {
+          "last_hit_by_player": [
+            3
+          ],
+          "modified_move_speed": [
+            18
+          ]
+        }
+      },
+      "g": {
+        "ood": {
+          "bye": [
+            10
+          ],
+          "±": [
+            5
+          ]
+        },
+        "ives": [
+          14
+        ]
+      },
+      "l": {
+        "ater!": [
+          10
+        ],
+        "oop": [
+          17
+        ]
+      }
+    }
+  },
+  "generatorName": "Minecraft Creator Tools",
+  "suite": 0,
+  "generatorVersion": "0.2.9"
+}

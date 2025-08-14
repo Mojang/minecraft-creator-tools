@@ -1,5 +1,5 @@
 import { AnnotationCategory } from "../core/ContentIndex";
-import ISimpleReference from "../core/ISimpleReference";
+import ISimpleReference from "../dataform/ISimpleReference";
 import LookupUtilities from "./LookupUtilities";
 import Project from "./Project";
 

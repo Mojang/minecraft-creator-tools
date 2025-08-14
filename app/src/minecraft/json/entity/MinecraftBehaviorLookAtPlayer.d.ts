@@ -81,6 +81,15 @@ Cave Spider - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
 }
 
 
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
+
+"minecraft:behavior.look_at_player": {
+  "priority": 6,
+  "look_distance": 6,
+  "probability": 0.02
+}
+
+
 Creeper - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/creeper.json
 
 "minecraft:behavior.look_at_player": {
@@ -103,15 +112,6 @@ Drowned - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/e
   "priority": 8,
   "look_distance": 6,
   "probability": 0.02
-}
-
-
-Elder Guardian - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/elder_guardian.json
-
-"minecraft:behavior.look_at_player": {
-  "priority": 8,
-  "look_distance": 12,
-  "probability": 0.01
 }
 
  */

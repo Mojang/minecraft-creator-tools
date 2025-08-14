@@ -59,6 +59,14 @@ Cave Spider - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pa
 }
 
 
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
+
+"minecraft:behavior.random_stroll": {
+  "priority": 5,
+  "xz_dist": 3
+}
+
+
 Creaking - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/creaking.json
 
 "minecraft:behavior.random_stroll": {
@@ -96,14 +104,6 @@ Evocation Illager - https://github.com/Mojang/bedrock-samples/tree/preview/behav
 "minecraft:behavior.random_stroll": {
   "priority": 8,
   "speed_multiplier": 0.6
-}
-
-
-Fox - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/fox.json
-
-"minecraft:behavior.random_stroll": {
-  "priority": 13,
-  "speed_multiplier": 0.8
 }
 
  */
@@ -165,6 +165,8 @@ export default interface MinecraftBehaviorRandomStroll {
    * spot to move to. Must be at least 1
    * 
    * Sample Values:
+   * Copper Golem: 3
+   *
    * Iron Golem: 16
    *
    * Rabbit: 2

@@ -1,4 +1,5 @@
 {
+  "id": "Biome Replacement",
   "fields": [
     {
       "id": "amount",
@@ -43,6 +44,5 @@
     }
   ],
   "description": "Represents the replacement information used to determine the placement of the overriding biome.",
-  "title": "Biome Replacement Misc",
-  "id": "Biome Replacement"
+  "title": "Biome Replacement Misc"
 }

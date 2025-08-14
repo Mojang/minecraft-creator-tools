@@ -66,6 +66,16 @@ Cat - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entit
 }
 
 
+Copper Golem - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/copper_golem.json
+
+"minecraft:navigation.walk": {
+  "avoid_water": true,
+  "avoid_damage_blocks": true,
+  "can_pass_doors": true,
+  "can_open_doors": true
+}
+
+
 Creaking - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/creaking.json
 
  * At /minecraft:entity/component_groups/minecraft:spawned_by_player/minecraft:navigation.walk/: 
@@ -105,14 +115,6 @@ Evocation Illager - https://github.com/Mojang/bedrock-samples/tree/preview/behav
   "can_pass_doors": true,
   "can_open_doors": true,
   "avoid_water": true
-}
-
-
-Glow Squid - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/entities/glow_squid.json
-
-"minecraft:navigation.walk": {
-  "can_path_over_water": true,
-  "can_sink": false
 }
 
  */
@@ -225,7 +227,7 @@ export default interface MinecraftNavigationWalk {
    * assuming the AI will open the door
    * 
    * Sample Values:
-   * Evocation Illager: true
+   * Copper Golem: true
    *
    *
    */
@@ -243,7 +245,7 @@ export default interface MinecraftNavigationWalk {
    * Whether a path can be created through a door
    * 
    * Sample Values:
-   * Evocation Illager: true
+   * Copper Golem: true
    *
    *
    */

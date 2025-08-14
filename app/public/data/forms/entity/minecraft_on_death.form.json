@@ -36,7 +36,7 @@
       }
     }
   ],
-  "description": "Only usable by the Ender Dragon. Adds a trigger to call on this entity's death.",
+  "description": "Adds a trigger to call on this entity's death.",
   "title": "On Death",
   "samples": {
     "/vanilla/behavior_pack/entities/ender_dragon.json": [

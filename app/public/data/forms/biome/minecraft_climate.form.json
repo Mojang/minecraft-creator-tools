@@ -1,27 +1,9 @@
 {
   "fields": [
     {
-      "id": "ash",
-      "title": "Ash",
-      "description": "Density of ash precipitation visuals",
-      "dataType": 3
-    },
-    {
-      "id": "blue_spores",
-      "title": "Blue Spores",
-      "description": "Density of blue spore precipitation visuals",
-      "dataType": 3
-    },
-    {
       "id": "downfall",
       "title": "Downfall",
       "description": "Amount that precipitation affects colors and block changes",
-      "dataType": 3
-    },
-    {
-      "id": "red_spores",
-      "title": "Red Spores",
-      "description": "Density of blue spore precipitation visuals",
       "dataType": 3
     },
     {
@@ -39,9 +21,27 @@
       "dataType": 3
     },
     {
+      "id": "blue_spores",
+      "title": "blue_spores",
+      "description": "Density of blue spore precipitation visuals",
+      "dataType": 3
+    },
+    {
       "id": "white_ash",
-      "title": "White Ash",
+      "title": "white_ash",
       "description": "Density of white ash precipitation visuals",
+      "dataType": 3
+    },
+    {
+      "id": "red_spores",
+      "title": "red_spores",
+      "description": "Density of red spore precipitation visuals",
+      "dataType": 3
+    },
+    {
+      "id": "ash",
+      "title": "ash",
+      "description": "Density of ash precipitation visuals",
       "dataType": 3
     }
   ],

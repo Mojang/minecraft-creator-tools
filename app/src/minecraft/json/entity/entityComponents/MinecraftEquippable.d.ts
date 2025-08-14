@@ -77,7 +77,8 @@ Horse - https://github.com/Mojang/bedrock-samples/tree/preview/behavior_pack/ent
         "horsearmorleather",
         "horsearmoriron",
         "horsearmorgold",
-        "horsearmordiamond"
+        "horsearmordiamond",
+        "minecraft:copper_horse_armor"
       ]
     }
   ]

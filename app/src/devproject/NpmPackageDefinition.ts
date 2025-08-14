@@ -3,12 +3,12 @@
 
 import IFile from "../storage/IFile";
 import { EventDispatcher, IEventHandler } from "ste-events";
-import { Dependencies, NpmScripts, PackageJson } from "@npm/types";
 import StorageUtilities from "../storage/StorageUtilities";
 import Log from "../core/Log";
 import Project from "../app/Project";
+import { PackageJSON } from "@npm/types";
 
-export const DevDependenciesDefault: Dependencies = {
+export const DevDependenciesDefault: Record<string, string> = {
   "@minecraft/core-build-tasks": "^5.2.0",
   "eslint-plugin-minecraft-linting": "^2.0.2",
   "source-map": "^0.7.4",
@@ -16,7 +16,7 @@ export const DevDependenciesDefault: Dependencies = {
   typescript: "^5.5.4",
 };
 
-export const ScriptsDefault: NpmScripts = {
+export const ScriptsDefault: Record<string, string> = {
   lint: "just-scripts lint",
   build: "just-scripts build",
   clean: "just-scripts clean",
@@ -29,7 +29,7 @@ export const ScriptsDefault: NpmScripts = {
   buildsnippets: "just-scripts buildSnippets",
 };
 
-export const DependenciesDefault: Dependencies = {
+export const DependenciesDefault: Record<string, string> = {
   "@minecraft/math": "^2.2.7",
   "@minecraft/server": "^2.0.0",
   "@minecraft/server-editor": "^0.1.0-beta.1.21.30-preview.24",
@@ -49,7 +49,7 @@ export const OverridesDefault: { [name: string]: any } = {
   },
 };
 
-export const PackageJsonDefault: PackageJson = {
+export const PackageJsonDefault: PackageJSON = {
   name: "my-project",
   version: "0.1.0",
   description: "My Minecraft Addon Project",
@@ -79,7 +79,7 @@ export default class NpmPackageDefinition {
   private _id?: string;
   private _isLoaded: boolean = false;
 
-  public definition?: PackageJson;
+  public definition?: PackageJSON;
 
   private _onLoaded = new EventDispatcher<NpmPackageDefinition, NpmPackageDefinition>();
 

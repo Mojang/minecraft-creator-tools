@@ -120,7 +120,7 @@ export const ProjectItemSortOrder = [
   ProjectItemType.materialVertex,
   ProjectItemType.materialFragment,
   ProjectItemType.materialGeometry,
-  ProjectItemType.languagesCatalogResourceJson,
+  ProjectItemType.languagesCatalogJson,
   ProjectItemType.lang,
   ProjectItemType.resourcePackManifestJson,
   ProjectItemType.textureListJson,
@@ -366,7 +366,7 @@ export default class ProjectItemUtilities {
         return "behavior/item_catalog/crafting_item_catalog.json";
       //     case ProjectItemType.uiTextureJson:
       //        return "resource/textures/ui_texture_definition.json";
-      case ProjectItemType.languagesCatalogResourceJson:
+      case ProjectItemType.languagesCatalogJson:
         return "language/languages.json";
       case ProjectItemType.featureBehavior:
         return "behavior/features/features.json";
@@ -561,7 +561,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.globalVariablesJson:
       case ProjectItemType.uiJson:
       case ProjectItemType.lang:
-      case ProjectItemType.languagesCatalogResourceJson:
+      case ProjectItemType.languagesCatalogJson:
       case ProjectItemType.ninesliceJson:
       case ProjectItemType.attachableResourceJson:
       case ProjectItemType.audio:
@@ -800,7 +800,7 @@ export default class ProjectItemUtilities {
       case ProjectItemType.renderControllerJson:
       case ProjectItemType.ninesliceJson:
       case ProjectItemType.uiJson:
-      case ProjectItemType.languagesCatalogResourceJson:
+      case ProjectItemType.languagesCatalogJson:
       case ProjectItemType.biomeBehavior:
       case ProjectItemType.biomeResource:
       case ProjectItemType.dialogueBehaviorJson:
@@ -1037,7 +1037,7 @@ export default class ProjectItemUtilities {
         return "Block culling";
       case ProjectItemType.uiJson:
         return "User interface";
-      case ProjectItemType.languagesCatalogResourceJson:
+      case ProjectItemType.languagesCatalogJson:
         return "Language catalog";
       case ProjectItemType.biomeBehavior:
         return "Biome Behavior";
@@ -1817,20 +1817,65 @@ export default class ProjectItemUtilities {
   }
 }
 
-export function getEnsuredFile(items: ProjectItem[], predicate: (item: ProjectItem) => boolean) {
+export function getEnsuredFile(items: readonly ProjectItem[], predicate: (item: ProjectItem) => boolean) {
   const foundItem = items.find(predicate);
 
   return foundItem ? foundItem.ensureFileStorage() : Promise.resolve(undefined);
 }
 
-export const getEnsuredFileOfType = (items: ProjectItem[], type: ProjectItemType) =>
+export const getEnsuredFileOfType = (items: readonly ProjectItem[], type: ProjectItemType) =>
   getEnsuredFile(items, (item) => item.itemType === type);
 
-export function findEnsuredFiles(items: ProjectItem[], predicate: (item: ProjectItem) => boolean) {
+export function findEnsuredFiles(items: readonly ProjectItem[], predicate: (item: ProjectItem) => boolean) {
   const filteredItems = items.filter(predicate);
 
   return Promise.all(filteredItems.map((item) => item.ensureFileStorage()));
 }
 
-export const findEnsuredFilesOfType = (items: ProjectItem[], type: ProjectItemType) =>
+export const findEnsuredFilesOfType = (items: readonly ProjectItem[], type: ProjectItemType) =>
   findEnsuredFiles(items, (item) => item.itemType === type);
+
+export function getNeighborFiles(items: readonly ProjectItem[], subject: ProjectItem): ProjectItem[] {
+  const projectPath = subject.projectPath?.toLowerCase();
+  if (!projectPath) {
+    throw new Error(`No Project path found for project item: ${subject.name}`);
+  }
+  const folderProjectPath = projectPath.substring(0, projectPath.length - subject.name.length);
+
+  const neighbors =
+    folderProjectPath && items.filter((item) => item.projectPath?.toLocaleLowerCase().startsWith(folderProjectPath));
+  return neighbors || [];
+}
+
+export function getWorldTemplates(items: readonly ProjectItem[]) {
+  return items
+    .filter((item) => item.itemType === ProjectItemType.worldTemplateManifestJson)
+    .map((worldManifest) => ({ name: worldManifest.name, items: getNeighborFiles(items, worldManifest) }));
+}
+
+export function getMarketContent(items: readonly ProjectItem[]) {
+  const marketContentTypes = new Set([ProjectItemType.storeAssetImage, ProjectItemType.marketingAssetImage]);
+
+  return items.filter((item) => marketContentTypes.has(item.itemType));
+}
+
+export async function tryEnsureFiles(items: ProjectItem[], predicate: (item: ProjectItem) => boolean = () => true) {
+  const filteredItems = items.filter(predicate);
+
+  const fileReads = await Promise.all(
+    filteredItems.map(async (item) => [item, await item.ensureFileStorage()] as const)
+  );
+
+  const success: ProjectItem[] = [];
+  const failed: ProjectItem[] = [];
+
+  for (const [item, file] of fileReads) {
+    if (!file) {
+      failed.push(item);
+    } else {
+      success.push(item);
+    }
+  }
+
+  return [success, failed] as const;
+}

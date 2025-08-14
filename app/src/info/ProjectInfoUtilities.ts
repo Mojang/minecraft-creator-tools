@@ -6,20 +6,26 @@ import IProjectMetaState from "./IProjectMetaState";
 import ProjectInfoSet from "./ProjectInfoSet";
 
 export default class ProjectInfoUtilities {
+  private static _generalTopicsById: Record<number, string> = {
+    0: "Test Failure",
+    1: "Test Success",
+    2: "Test Not Applicable",
+  };
   static getTitleFromEnum(categoryEnum: { [name: number]: string }, topicId: number) {
     if (categoryEnum[topicId]) {
       return Utilities.humanifyJsName(categoryEnum[topicId]);
     }
 
-    if (topicId === 0) {
-      return "Test Failure";
-    } else if (topicId === 1) {
-      return "Test Success";
-    } else if (topicId === 2) {
-      return "Test Not Applicable";
+    const generalTitle = this._generalTopicsById[topicId];
+    if (!!generalTitle) {
+      return generalTitle;
     }
 
     return "General Item " + topicId;
+  }
+
+  static getGeneralTopicTitle(topicId: number) {
+    return this._generalTopicsById[topicId];
   }
 
   static async getDerivedStates(project: Project, pisData: ProjectInfoSet) {
