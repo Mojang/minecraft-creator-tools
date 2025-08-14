@@ -1,0 +1,12 @@
+{
+  "files": [
+    "ChargeAttackGoalDefinition.json",
+    "CircleAroundAnchorGoalDefinition.json",
+    "ControlledByPlayerGoalDefinition.json",
+    "DragonFlamingGoalDefinition.json",
+    "EatMobGoalDefinition.json",
+    "TickWorldDefinition.json",
+    "TransportItemsGoalDefinition.json"
+  ],
+  "folders": []
+}

@@ -1,0 +1,23 @@
+{
+  "files": [
+    "pig.png",
+    "pig.texture_set.json",
+    "pig_cold.png",
+    "pig_cold.texture_set.json",
+    "pig_cold_mers.tga",
+    "pig_mers.tga",
+    "pig_saddle.png",
+    "pig_saddle.texture_set.json",
+    "pig_saddle_mers.tga",
+    "pig_v3.png",
+    "pig_v3.texture_set.json",
+    "pig_v3_mers.tga",
+    "pig_warm.png",
+    "pig_warm.texture_set.json",
+    "pig_warm_mers.tga",
+    "pigzombie.png",
+    "pigzombie.texture_set.json",
+    "pigzombie_mers.tga"
+  ],
+  "folders": []
+}

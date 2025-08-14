@@ -1,0 +1,22 @@
+{
+  "id": "RandomPoolAlias",
+  "fields": [
+    {
+      "id": "alias",
+      "title": "Alias",
+      "description": "Alias of Random Pool",
+      "dataType": 2,
+      "isRequired": true
+    },
+    {
+      "id": "targets",
+      "title": "Targets",
+      "description": "List of potential pools",
+      "dataType": 16,
+      "subFormId": "world/weightedrandomitem",
+      "isRequired": true
+    }
+  ],
+  "description": "Pool alias for a Random list of targets",
+  "title": "RandomPoolAlias World"
+}

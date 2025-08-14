@@ -1,0 +1,13 @@
+{
+  "id": "Passthrough",
+  "fields": [
+    {
+      "id": "type",
+      "title": "BlockEntityModifierType",
+      "dataType": 2,
+      "isRequired": true
+    }
+  ],
+  "description": "Modifier that leaves the state unchanged. This is the default block modifier if no other block modifier is specified.",
+  "title": "Passthrough World"
+}

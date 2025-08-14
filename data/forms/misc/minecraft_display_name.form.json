@@ -1,0 +1,13 @@
+{
+  "id": "minecraft:display_name",
+  "fields": [
+    {
+      "id": "value",
+      "title": "Value",
+      "description": "Name shown for an item.",
+      "dataType": 2
+    }
+  ],
+  "description": "The display_name item component specifies the text shown whenever an item's name is displayed, like in hover text.",
+  "title": "Minecraft Display Name Misc"
+}

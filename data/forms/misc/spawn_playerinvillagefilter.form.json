@@ -1,0 +1,17 @@
+{
+  "id": "Spawn PlayerInVillageFilter",
+  "fields": [
+    {
+      "id": "distance",
+      "title": "Distance",
+      "dataType": 0,
+      "isRequired": true
+    },
+    {
+      "id": "village_border_tolerance",
+      "title": "Village Border Tolerance",
+      "dataType": 0
+    }
+  ],
+  "title": "Spawn PlayerInVillageFilter Misc"
+}

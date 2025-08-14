@@ -1,0 +1,12 @@
+{
+  "fields": [
+    {
+      "id": "event_name",
+      "title": "Event Name",
+      "dataType": 2,
+      "isRequired": true
+    }
+  ],
+  "title": "Particle Sound Effect Event Client Misc",
+  "id": "particle_sound_effect_event"
+}

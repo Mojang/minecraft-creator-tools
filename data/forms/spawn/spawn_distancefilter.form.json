@@ -1,0 +1,16 @@
+{
+  "id": "Spawn DistanceFilter",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": 0
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": 0
+    }
+  ],
+  "title": "Spawn DistanceFilter Spawn"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "FloatRange",
+  "fields": [
+    {
+      "id": "max",
+      "title": "Max",
+      "dataType": 3
+    },
+    {
+      "id": "min",
+      "title": "Min",
+      "dataType": 3
+    }
+  ],
+  "title": "FloatRange Entity"
+}
