@@ -1,0 +1,16 @@
+{
+  "name": "@minecraft/common",
+  "version": "1.2.0",
+  "description": "",
+  "contributors": [
+    {
+      "name": "Jake Shirley",
+      "email": "jake@xbox.com"
+    },
+    {
+      "name": "Mike Ammerlaan",
+      "email": "mikeam@microsoft.com"
+    }
+  ],
+  "license": "MIT"
+}

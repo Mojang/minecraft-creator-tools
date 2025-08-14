@@ -283,39 +283,39 @@ function copyVscDocs() {
 }
 
 gulp.task("clean-jsnbuild", function () {
-  return del(["toolbuild/jsn"]);
+  return del.deleteAsync(["toolbuild/jsn"]);
 });
 
 gulp.task("clean-vscbuild", function () {
-  return del(["toolbuild/vsc"]);
+  return del.deleteAsync(["toolbuild/vsc"]);
 });
 
 gulp.task("clean-vsccorebuild", function () {
-  return del(["toolbuild/vsc/core"]);
+  return del.deleteAsync( ["toolbuild/vsc/core"]);
 });
 
 gulp.task("clean-vscwebbuild", function () {
-  return del(["toolbuild/vsc/web"]);
+  return del.deleteAsync( ["toolbuild/vsc/web"]);
 });
 
 gulp.task("clean-jsnwebbuild", function () {
-  return del(["toolbuild/jsn/web"]);
+  return del.deleteAsync( ["toolbuild/jsn/web"]);
 });
 
 gulp.task("clean-mcbuild", function () {
-  return del(["toolbuild/mc"]);
+  return del.deleteAsync( ["toolbuild/mc"]);
 });
 
 gulp.task("postclean-jsnwebbuild-node_modules", function () {
-  return del(["toolbuild/jsn/app/node_modules"]);
+  return del.deleteAsync( ["toolbuild/jsn/app/node_modules"]);
 });
 
 gulp.task("postclean-jsnwebbuild-toolbuild", function () {
-  return del(["toolbuild/jsn/app/toolbuild"]);
+  return del.deleteAsync( ["toolbuild/jsn/app/toolbuild"]);
 });
 
 gulp.task("postclean-jsnwebbuild-build", function () {
-  return del(["toolbuild/jsn/app/build"]);
+  return del.deleteAsync( ["toolbuild/jsn/app/build"]);
 });
 
 gulp.task(
@@ -354,15 +354,15 @@ gulp.task("vsccoreexebuild", compileVscCoreExeBuild);
 gulp.task("vsccorewebbuild", compileVscCoreExeBuild);
 
 gulp.task("postclean-vscwebbuild-node_modules", function () {
-  return del(["toolbuild/vsc/app/node_modules"]);
+  return del.deleteAsync( ["toolbuild/vsc/app/node_modules"]);
 });
 
 gulp.task("postclean-vscwebbuild-toolbuild", function () {
-  return del(["toolbuild/vsc/app/toolbuild"]);
+  return del.deleteAsync( ["toolbuild/vsc/app/toolbuild"]);
 });
 
 gulp.task("postclean-vscwebbuild-build", function () {
-  return del(["toolbuild/vsc/app/build"]);
+  return del.deleteAsync( ["toolbuild/vsc/app/build"]);
 });
 
 gulp.task(
@@ -491,11 +491,11 @@ gulp.task("vscwebbuild", gulp.series("clean-vscwebbuild", compileVscWebBuild, "p
 gulp.task("jsnwebbuild", gulp.series("clean-jsnwebbuild", compileJsnWebBuild, "postclean-jsnwebbuild"));
 
 gulp.task("clean-webbuild", function () {
-  return del(["out/web"]);
+  return del.deleteAsync( ["out/web"]);
 });
 
 gulp.task("clean-res", function () {
-  return del(["public/res/latest", "public/res/samples"]);
+  return del.deleteAsync( ["public/res/latest", "public/res/samples"]);
 });
 
 gulp.task("customizesite", gulp.series(customizeSiteHead, customizeSiteBody));

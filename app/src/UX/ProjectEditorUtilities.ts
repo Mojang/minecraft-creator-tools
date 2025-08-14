@@ -292,7 +292,7 @@ export default class ProjectEditorUtilities {
           }
         }
 
-        descrip += "and textures";
+        descrip += " and textures";
 
         if (bd.data && bd.data.textures) {
           descrip += " (";
@@ -310,7 +310,7 @@ export default class ProjectEditorUtilities {
           descrip += ")";
         }
       } else {
-        descrip += "and textures";
+        descrip += " and textures";
       }
 
       return descrip;
