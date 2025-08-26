@@ -366,16 +366,16 @@
         "Average": 0
       }
     },
-    "errorCount": 2,
+    "errorCount": 0,
     "internalProcessingErrorCount": 0,
-    "warningCount": 2,
+    "warningCount": 1,
     "testSuccessCount": 32,
-    "testFailCount": 1,
+    "testFailCount": 0,
     "testNotApplicableCount": 14,
-    "errorSummary": "ERROR: [CSPJ115] Model size indicators are inconsistent. name: CustomSlim, geometry: CustomSlim, image data: Custom\r\nERROR: [CSPJ110] pack_icon.png in skin pack not found in skins.json",
+    "errorSummary": "",
     "internalProcessingErrorSummary": "",
-    "warningSummary": "WARNING: [CSPJ119] Side: [back] of segment: [Head] is not visible!\r\nWARNING: [UNLINK191] (/pack_icon.png) Texture does not have any items in this pack that are using this.",
-    "testFailSummary": "TESTFAIL: [CSPJ000] Found 2 errors for Check Skin Pack Json Generator (CSPJ).",
+    "warningSummary": "WARNING: [UNLINK191] (/pack_icon.png) Texture does not have any items in this pack that are using this.",
+    "testFailSummary": "",
     "summary": {
       "ITEMS": {
         "1": {
@@ -592,28 +592,6 @@
         "103": {
           "title": "Item Geometry",
           "defaultMessage": "Items Geometry"
-        }
-      },
-      "CSPJ": {
-        "0": {
-          "title": "Unknown Test: 0",
-          "defaultMessage": "Found 2 errors for Check Skin Pack Json Generator (CSPJ).",
-          "testCompleteFails": 1
-        },
-        "110": {
-          "title": "Texture Not Found in skins.json",
-          "defaultMessage": "pack_icon.png in skin pack not found in skins.json",
-          "errors": 1
-        },
-        "115": {
-          "title": "Invalid Skin Model Target",
-          "defaultMessage": "Model size indicators are inconsistent. name: CustomSlim, geometry: CustomSlim, image data: Custom",
-          "errors": 1
-        },
-        "119": {
-          "title": "Model Partially Invisible",
-          "defaultMessage": "Side: [back] of segment: [Head] is not visible!",
-          "warnings": 1
         }
       },
       "ENTITYTYPE": {
@@ -1394,21 +1372,6 @@
       "gIx": 103
     },
     {
-      "iTp": 4,
-      "gId": "CSPJ",
-      "gIx": 119
-    },
-    {
-      "iTp": 3,
-      "gId": "CSPJ",
-      "gIx": 115
-    },
-    {
-      "iTp": 3,
-      "gId": "CSPJ",
-      "gIx": 110
-    },
-    {
       "iTp": 7,
       "gId": "ENTITYTYPE",
       "gIx": 52
@@ -1548,11 +1511,6 @@
       "iTp": 1,
       "gId": "CPARTI",
       "gIx": 1
-    },
-    {
-      "iTp": 0,
-      "gId": "CSPJ",
-      "gIx": 0
     },
     {
       "iTp": 8,
