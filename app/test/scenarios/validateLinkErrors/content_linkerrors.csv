@@ -118,7 +118,6 @@ CPACKICON,1,Test success,,"Check Pack Icon Generator (CPACKICON) completed succe
 CWI,1,Test success,,"Check World Icon Generator (CWI) completed successfully",,,
 SNDSDEF,2,Unknown,,"No applicable items found for test Sounds Definition Manifest Validation (SNDSDEF)",,,
 CPARTI,1,Test success,,"Check Particle Identifier Generator (CPARTI) completed successfully",,,
-CSPJ,1,Test success,,"Check Skin Pack Json Generator (CSPJ) completed successfully",,,
 EXPFLAG,2,Unknown,,"No applicable items found for test Check Experimental Flag (EXPFLAG)",,,
 CHECKFEATUREDEPRECATION,2,Unknown,,"No applicable items found for test Check Feature Deprecation (CHECKFEATUREDEPRECATION)",,,
 FORBFILE,1,Test success,,"Check Forbidden Files Generator (FORBFILE) completed successfully",,,

@@ -898,7 +898,7 @@
     "errorCount": 0,
     "internalProcessingErrorCount": 0,
     "warningCount": 2,
-    "testSuccessCount": 37,
+    "testSuccessCount": 36,
     "testFailCount": 0,
     "testNotApplicableCount": 10,
     "errorSummary": "",
@@ -1528,13 +1528,6 @@
         "1": {
           "title": "Test Success",
           "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "CSPJ": {
-        "1": {
-          "title": "Unknown Test: 1",
-          "defaultMessage": "Check Skin Pack Json Generator (CSPJ) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
@@ -3808,11 +3801,6 @@
     {
       "iTp": 1,
       "gId": "CPARTI",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "CSPJ",
       "gIx": 1
     },
     {

@@ -520,7 +520,7 @@
     "errorCount": 2,
     "internalProcessingErrorCount": 2,
     "warningCount": 6,
-    "testSuccessCount": 34,
+    "testSuccessCount": 33,
     "testFailCount": 2,
     "testNotApplicableCount": 11,
     "errorSummary": "ERROR: [LANGFILES101] languages.json Not Found\r\nERROR: [LANGFILES101] languages.json Not Found",
@@ -1121,13 +1121,6 @@
         "1": {
           "title": "Test Success",
           "defaultMessage": "Check Particle Identifier Generator (CPARTI) completed successfully",
-          "testCompleteSuccesses": 1
-        }
-      },
-      "CSPJ": {
-        "1": {
-          "title": "Unknown Test: 1",
-          "defaultMessage": "Check Skin Pack Json Generator (CSPJ) completed successfully",
           "testCompleteSuccesses": 1
         }
       },
@@ -2543,11 +2536,6 @@
     {
       "iTp": 1,
       "gId": "CPARTI",
-      "gIx": 1
-    },
-    {
-      "iTp": 1,
-      "gId": "CSPJ",
       "gIx": 1
     },
     {

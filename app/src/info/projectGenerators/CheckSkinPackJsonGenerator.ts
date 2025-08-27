@@ -5,26 +5,13 @@ import { InfoItemType } from "../IInfoItemData";
 import IProjectInfoGenerator from "../IProjectInfoGenerator";
 import { IProjectInfoTopicData } from "../IProjectInfoGeneratorBase";
 import ProjectInfoItem from "../ProjectInfoItem";
-import {
-  getModelTargetGeometry,
-  isValidCapeSize,
-  isValidSkinPurchaseType,
-  isValidSkinModelTarget,
-  Skin,
-} from "../../minecraft/skins/Skin";
+import { isValidSkinPurchaseType, Skin } from "../../minecraft/skins/Skin";
 import StorageUtilities from "../../storage/StorageUtilities";
-import { isResult, notApplicable, resultFromTest, resultFromTestWithMessage } from "../tests/TestDefinition";
-import { findEnsuredFiles, getEnsuredFile, getEnsuredFileOfType } from "../../app/ProjectItemUtilities";
+import { notApplicable, resultFromTest, resultFromTestWithMessage } from "../tests/TestDefinition";
+import { getEnsuredFileOfType } from "../../app/ProjectItemUtilities";
 import { getLocKeysFromSkinPack, SkinPack, validateSkinPackJson } from "../../minecraft/skins/SkinPack";
 import IFile from "../../storage/IFile";
 import LocManager from "../../minecraft/LocManager";
-import {
-  getSegmentsVisibilities,
-  getSkinTargetFromName,
-  isOuterAreaIsBlank,
-  getSkinTargetByUniquePixelLocations,
-} from "../../minecraft/textures/TextureUtilities";
-import FileTexture from "../../minecraft/textures/FileTexture";
 
 const MaxFreeSkins = 2;
 const MaxSkinsInAPack = 80;
@@ -182,13 +169,6 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
         resultFromTestWithMessage(Tests.DuplicateTextures, this.id, `Duplicate cape texture found: ${duplicate}`)
       );
 
-    //check cape textures
-    const capeTextureSet = new Set(capeTextureNames);
-    const capeTextures = await findEnsuredFiles(packItems, (item) => capeTextureSet.has(item.name));
-
-    const capeCheck = await Promise.all(capeTextures.map((cape) => this.validateCapeTextureImage(cape)));
-    const capeResults = capeCheck.filter(isResult);
-
     //check for duplicate skin textures
     const skinTextureNames = skins.map((skin) => skin.texture).filter((texture) => !!texture);
     const duplicateTextureResults = skinTextureNames
@@ -197,14 +177,8 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
         resultFromTestWithMessage(Tests.DuplicateTextures, this.id, `Duplicate skin texture found: ${duplicate}`)
       );
 
-    //check skin textures
-    const textureCheck = await Promise.all(
-      skins.map((skin) => this.validateTextureImage(skin, packItems, isMCCreator))
-    );
-    const textureResults = textureCheck.flatMap((result) => result);
-
     //check orphaned textures
-    const knownTextures = new Set([...skinTextureNames, ...capeTextureSet]);
+    const knownTextures = new Set([...skinTextureNames]);
     const allTexturesInProject = packItems.filter((item) => item.itemType === ProjectItemType.texture);
     const orphaned = allTexturesInProject.filter((texItem) => !knownTextures.has(texItem.name));
 
@@ -214,13 +188,7 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
     );
 
     // combine and return results
-    return [
-      ...duplicateCapeTexturesResults,
-      ...capeResults,
-      ...duplicateTextureResults,
-      ...textureResults,
-      ...orphanResults,
-    ];
+    return [...duplicateCapeTexturesResults, ...duplicateTextureResults, ...orphanResults];
   }
 
   private validateNonMCRestrictionsForSkin(skins: Skin[]) {
@@ -240,129 +208,6 @@ export default class CheckSkinPackJsonGenerator implements IProjectInfoGenerator
     }
 
     return results;
-  }
-
-  private async validateCapeTextureImage(textureFile: IFile | null) {
-    if (!textureFile) {
-      return null;
-    }
-
-    const texture = await FileTexture.readTextureFromProjectFile(textureFile);
-
-    if (!texture) {
-      const message = `Failed to read file: ${textureFile.name}`;
-      return resultFromTestWithMessage(Tests.FailedToReadFile, this.id, message);
-    }
-
-    if (!isValidCapeSize([texture.width, texture.height])) {
-      const message = `Texture: ${textureFile.name} is invalid size (${texture.width}x${texture.height})`;
-      return resultFromTestWithMessage(Tests.InvalidTextureSize, this.id, message);
-    }
-
-    return null;
-  }
-
-  private async validateTextureImage(
-    skin: Skin,
-    items: ProjectItem[],
-    isMCCreator: boolean
-  ): Promise<ProjectInfoItem[]> {
-    const textureFile = await getEnsuredFile(items, (item) => item.name === skin.texture);
-    if (!textureFile) {
-      return [];
-    }
-    const textureName = textureFile.name;
-
-    const texture = await FileTexture.readTextureFromProjectFile(textureFile);
-
-    if (!texture) {
-      const message = `Failed to read file: ${textureName}`;
-      return [resultFromTestWithMessage(Tests.FailedToReadFile, this.id, message)];
-    }
-
-    if (!isValidSkinModelTarget([texture.width, texture.height])) {
-      const message = `Texture: ${textureName} is invalid size (${texture.width}x${texture.height})`;
-      return [resultFromTestWithMessage(Tests.InvalidTextureSize, this.id, message)];
-    }
-
-    // remaining checks do not apply to MC creator
-    if (isMCCreator) {
-      return [];
-    }
-
-    const skinTarget = getSkinTargetFromName(textureName);
-
-    if (!skinTarget) {
-      return [
-        resultFromTestWithMessage(
-          Tests.InvalidSkinModelTarget,
-          this.id,
-          `No intended model tag in name. Slim model skins must have the prefix or suffix of  'a', 'alex', 'slim', 'customSlim' separated by an '_' ex. <name>_customSlim. Custom model skins must have the prefix or suffix of  's', 'steve', 'custom' separated by an '_' ex. <name>_custom.`
-        ),
-      ];
-    }
-
-    const geoSkinSize = getModelTargetGeometry(skin);
-
-    if (!geoSkinSize) {
-      return [
-        resultFromTestWithMessage(
-          Tests.InvalidSkinModelTarget,
-          this.id,
-          `geometry property: ${skin.geometry} not allowed`
-        ),
-      ];
-    }
-
-    const pixelSkinSize = getSkinTargetByUniquePixelLocations(texture);
-
-    const isSizeConsistent = skinTarget === geoSkinSize && skinTarget === pixelSkinSize;
-    if (!isSizeConsistent) {
-      const message = `Model size indicators are inconsistent. name: ${skinTarget}, geometry: ${geoSkinSize}, image data: ${pixelSkinSize}`;
-      return [resultFromTestWithMessage(Tests.InvalidSkinModelTarget, this.id, message)];
-    }
-
-    if (!isOuterAreaIsBlank(texture, skinTarget)) {
-      const message = `[${textureFile.name}]: Ensure that no pixels not visible on the model are filled in with an alpha greater than 0`;
-      return [resultFromTestWithMessage(Tests.OuterAreaIsBlank, this.id, message)];
-    }
-
-    const segmentVisibilities = getSegmentsVisibilities(texture, skinTarget);
-
-    const visErrors = segmentVisibilities
-      .flatMap((segment) => {
-        const messages = [];
-        if (!segment.visibilities.top && !segment.visibilities.bottom) {
-          messages.push(
-            `The ${segment.segmentName} is not visible from the top and the bottom. This could cause this part of the model to be completely invisible from certain angles.`
-          );
-        }
-
-        if (!segment.visibilities.front && segment.visibilities.back) {
-          messages.push(
-            `The ${segment.segmentName} is not visible from the front and the back. This could cause this part of the model to be completely invisible from certain angles.`
-          );
-        }
-
-        if (!segment.visibilities.left && !segment.visibilities.right) {
-          messages.push(
-            `The ${segment.segmentName} is not visible from the right and the left. This could cause this part of the model to be completely invisible from certain angles.`
-          );
-        }
-
-        return messages;
-      })
-      .map((message) => resultFromTestWithMessage(Tests.ModelInvisible, this.id, message));
-
-    const visWarnings = segmentVisibilities
-      .flatMap((segment) =>
-        Object.entries(segment.visibilities)
-          .filter(([_side, isVisible]) => !isVisible)
-          .map(([side]) => `Side: [${side}] of segment: [${segment.segmentName}] is not visible!`)
-      )
-      .map((message) => resultFromTestWithMessage(Tests.ModelPartiallyInvisible, this.id, message));
-
-    return [...visErrors, ...visWarnings];
   }
 
   private checkSkinLocalizations(locManager: LocManager, skinPack: SkinPack) {

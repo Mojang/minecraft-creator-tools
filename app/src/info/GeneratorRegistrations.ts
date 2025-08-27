@@ -46,7 +46,6 @@ import SoundsDefinitionInfoGenerator from "./projectGenerators/SoundDefinitionsI
 import SummaryInfoGenerator from "./SummaryInfoGenerator";
 import ScriptInfoGenerator from "./ScriptInfoGenerator";
 import CheckParticleIdentifierGenerator from "./projectGenerators/CheckParticleIdentifierGenerator";
-import CheckSkinPackJsonGenerator from "./projectGenerators/CheckSkinPackJsonGenerator";
 import CheckExperimentalFlagInfoGenerator from "./projectGenerators/CheckExperimentalFlagInfoGenerator";
 import CheckFeatureDeprecationInfoGenerator from "./projectGenerators/CheckFeatureDeprecationInfoGenerator";
 import SchemaItemInfoGenerator from "./SchemaItemInfoGenerator";
@@ -91,7 +90,6 @@ export default class GeneratorRegistrations {
     new CheckWorldIconsGenerator(),
     new SoundsDefinitionInfoGenerator(),
     new CheckParticleIdentifierGenerator(),
-    new CheckSkinPackJsonGenerator(),
     new CheckExperimentalFlagInfoGenerator(),
     new CheckFeatureDeprecationInfoGenerator(),
     new CheckForbiddenFilesGenerator(),
